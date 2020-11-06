@@ -365,10 +365,12 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
         col += ')';
       }
       if (dt[i].error && !_.isEmpty(dt[i].error)) {
-        col += ', Error ( status=' + dt[i].errorState;
-        col += ', code=' + dt[i].errorCode;
-        col += ', reason=' + dt[i].errorReason;
-        col += ', msg=' + dt[i].errorText + ')';
+        col += ', Error ( status=' + dt[i].error.errorState;
+        col += ', code=' + dt[i].error.errorCode;
+        if (dt[i].error.errorReason) {
+          col += ', reason=' + dt[i].error.errorReason;
+        }
+        col += ', msg=' + dt[i].error.errorText + ')';
       }
       if (dt[i].returnCode != null && dt[i].returnCode != undefined) {
         col += ', returnCode=' + dt[i].returnCode;

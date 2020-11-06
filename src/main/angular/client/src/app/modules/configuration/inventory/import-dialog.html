@@ -1,12 +1,13 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>workflow.label.import</span>
+    <span *ngIf="!isDeploy" translate>inventory.label.import</span>
+    <span *ngIf="isDeploy" translate>inventory.label.importAndDeploy</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="cancel()">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<form #myForm="ngForm">
+<form #myForm="ngForm" (ngSubmit)="import()">
   <div class="modal-body p-a" style="min-height: 300px">
     <div class="row">
       <div class="col-md-12" *ngIf="isDeploy">
@@ -31,7 +32,7 @@
             <label translate>inventory.label.signatureAlgorithm</label>
           </label>
           <div class="col-md-9">
-            <input type="text" name="signature" class="form-control" [(ngModel)]="signatureAlgorithm" placeholder="{{'inventory.placeholder.signatureAlgorithm' | translate}}">
+            <input type="text" name="signature" required class="form-control" [(ngModel)]="signatureAlgorithm" placeholder="{{'inventory.placeholder.signatureAlgorithm' | translate}}">
           </div>
         </div>
       </div>
@@ -174,7 +175,7 @@
     </div>
   </div>
   <div class="modal-footer text-left" *ngIf="uploader.queue.length>0">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="uploader.isUploading" (click)="import()" >
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || uploader.isUploading">
       <i class="fa fa-spin fa-spinner" *ngIf="uploader.isUploading"></i>
        <span translate>button.import</span>
     </button>

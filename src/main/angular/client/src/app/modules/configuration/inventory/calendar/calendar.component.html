@@ -13,7 +13,7 @@
                 <span translate>inventory.label.notValid</span>
                 <i nz-tooltip="{{invalidMsg | translate}}" class="fa fa-info-circle p-l-xs"></i>
               </span>
-            </span>
+          </span>
           <span class="badge" *ngIf="calendar.configuration" [ngClass]="!data.released ? 'badge-danger':'badge-success'">
               <span *ngIf="!data.released" translate>inventory.label.inProgress</span>
               <span *ngIf="data.released" class="text-capitalize" translate>inventory.label.released</span>

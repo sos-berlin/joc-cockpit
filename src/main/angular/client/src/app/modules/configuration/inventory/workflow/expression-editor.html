@@ -1,10 +1,17 @@
 <div class="form-group row" >
   <div class="col-sm-12 m-b-xs"><span translate>workflow.label.predicate</span>:</div>
-  <div class="col-sm-12" >
-    <ckeditor #ckeditor name="ckeditor" [editor]="Editor" [config]="config" [ngClass]="{'has-error' : error}" (ready)="onReady($event)" [(ngModel)]="selectedNode.obj.predicate" (change)="change()"></ckeditor>
-      <div *ngIf="error" class="text-danger help-block">
-          <div translate>message.requiredError</div>
+  <div class="col-md-12">
+    <div class="b-a p-a-xs" [ngClass]="{'invalid': error || (cm.invalid && (cm.dirty || cm.touched))}">
+      <ngx-codemirror required #codeMirror #cm="ngModel" [(ngModel)]="selectedNode.obj.predicate"
+                      [options]="cmOption"
+      ></ngx-codemirror>
+    </div>
+    <div *ngIf="error || (cm.invalid && (cm.dirty || cm.touched))"
+         class="text-danger help-block">
+      <div *ngIf="(cm.errors && cm.errors.required) || error">
+        <div translate>message.requiredError</div>
       </div>
+    </div>
   </div>
   <div class="m-t col-sm-12">
     <div class="text-center">

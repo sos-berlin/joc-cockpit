@@ -75,7 +75,7 @@
                     <i *ngIf="node.origin.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.origin.object == 'ORDER'" nz-icon nzType="unordered-list" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.origin.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
-                    <span *ngIf="node.origin.type" class="fa fa-circle-o text-xs" [ngClass]="node.origin.deploymentId ? ' text-success': ''" style="margin-top: 4px"></span>
+                    <span *ngIf="node.origin.type" class="fa fa-check-circle-o text-xs" [ngClass]="{'fa-circle-o': !node.origin.valid, 'text-success' :node.origin.deploymentId}" style="margin-top: 4px"></span>
                     <span class="p-l-sm">{{node.origin.name | translate}}</span>
                   </div>
                   <div class="m-l" *ngIf="node.origin.type && node.origin.deployablesVersions && node.origin.deployablesVersions.length >0">
@@ -83,6 +83,13 @@
                       name="'version-' + {{node.key}}"
                       [nzSize]="'small'"
                       [(ngModel)]="node.origin.deployId">
+                      <ng-container *ngIf="!child.valid" >
+                        <nz-option nzCustomContent [nzValue]="''" [nzLabel]="'workflow.label.draft' | translate">
+                          <div>
+                            <span class="fa fa-circle-o text-xs text-danger p-r-xs"></span>{{'workflow.label.draft' | translate}} - <span class="label bg-gold" translate>inventory.label.notValid</span>
+                          </div>
+                        </nz-option>
+                      </ng-container>
                       <ng-container *ngFor="let version of node.origin.deployablesVersions">
                         <nz-option nzCustomContent [nzValue]="version.deploymentId" [nzLabel]="(!version.versions || version.versions.length === 0) ? ('workflow.label.draft' | translate) : (version.versionDate | stringToDate)">
                             <div *ngIf="version.versions && version.versions.length>0">

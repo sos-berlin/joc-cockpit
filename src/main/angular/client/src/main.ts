@@ -4,6 +4,7 @@ import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 import 'codemirror/mode/shell/shell';
 import 'codemirror/mode/xml/xml';
+import 'codemirror/mode/ruby/ruby';
 
 if (environment.production) {
   enableProdMode();

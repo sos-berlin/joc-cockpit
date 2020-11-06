@@ -4,13 +4,13 @@ import {FileUploader} from 'ng2-file-upload';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd';
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import {Subscription} from 'rxjs';
 import * as _ from 'underscore';
 import {saveAs} from 'file-saver';
 import {WorkflowService} from '../../../../services/workflow.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
-import {Subscription} from 'rxjs';
+
 // Mx-Graph Objects
 declare const mxEditor;
 declare const mxUtils;
@@ -319,7 +319,7 @@ export class JobComponent implements OnChanges, OnDestroy {
   loadData(node, type, $event): void {
     setTimeout(() => {
       this.onBlur();
-    }, 50)
+    }, 50);
     if (!node.origin.type) {
 
       if ($event) {
@@ -386,22 +386,20 @@ export class JobComponent implements OnChanges, OnDestroy {
 export class ExpressionComponent implements OnInit {
   @Input() selectedNode: any;
   @Input() error: any;
-  public Editor = ClassicEditor;
   expression: any = {};
   operators = ['==', '!=', '<', '<=', '>', '>=', 'in', '&&', '||', '!'];
   functions = ['toNumber ', 'toBoolean', 'toLowerCase', 'toUpperCase'];
   variablesOperators = ['matches', 'startWith', 'endsWith', 'contains'];
   varExam = 'variable ("aString", default="") matches ".*"';
   lastSelectOperator = '';
-  @ViewChild('ckeditor', {static: true}) ckeditor: any;
-  config: any = {toolbar: [], removePlugins: ['Autoformat', 'Elementspath', 'TextTransformation', 'Autocorrect']};
-
+  @ViewChild('codeMirror', {static: false}) cm;
+  cmOption: any = {
+    lineNumbers: false,
+    autofocus: true,
+    autoRefresh: true,
+    mode: 'ruby'
+  };
   constructor() {
-    this.config.htmlEncodeOutput = false;
-    this.config.entities = false;
-    this.config.entities_latin = false;
-    this.config.htmlEncodeOutput = false;
-    this.config.entities_additional = false;
   }
 
   ngOnInit() {
@@ -434,15 +432,17 @@ export class ExpressionComponent implements OnInit {
         }
       }
     }
-    this.ckeditor.editorInstance.model.change(writer => {
-      writer.insertText(setText, this.ckeditor.editorInstance.model.document.selection.getFirstPosition());
-      writer.setSelection(this.ckeditor.editorInstance.model.document.getRoot(), 'end');
-      this.ckeditor.editorInstance.editing.view.focus();
-    });
+
+    this.insertText(setText, this.cm.codeMirror.getDoc());
   }
 
-  onReady(editor) {
-    editor.editing.view.focus();
+  // Begin inputting of clicked text into editor
+  private insertText(data, doc) {
+    const cursor = doc.getCursor(); // gets the line number in the cursor position
+    doc.replaceRange(data, cursor);
+    cursor.ch = cursor.ch + data.length;
+    this.cm.codeMirror.focus();
+    doc.setCursor(cursor);
   }
 
   change() {

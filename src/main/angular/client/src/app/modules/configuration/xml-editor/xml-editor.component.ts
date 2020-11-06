@@ -24,19 +24,17 @@ const convert = require('xml-js');
   templateUrl: './show-childs-dialog.html'
 })
 export class ShowChildModalComponent implements OnInit {
+  @Input() doc: any;
+  @Input() showAllChild: any;
+
   counter = 0;
   data: string;
   options: any = {};
   selectedNode: any;
-  @Input() doc: any;
-
   isExpandAll = false;
-
   nodes = [];
-  @Input() showAllChild: any;
 
   constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
-
   }
 
   ngOnInit(): void {
@@ -598,8 +596,8 @@ export class ShowModalComponent implements OnInit {
         this.toasterService.clear();
       }
     }, (error) => {
-      if (error.data && error.data.error) {
-        this.toasterService.pop('error', error.data.error.message);
+      if (error.error) {
+        this.toasterService.pop('error', error.error.message);
       }
     });
   }
@@ -1114,7 +1112,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         }
       }, (error) => {
-        this.toasterService.pop('error', error.data.error.message);
+        this.toasterService.pop('error', error.error.message);
       });
     } else {
       this.gotoErrorLocation();
@@ -1171,8 +1169,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.isLoading = false;
       this.tabsArray = [];
       this.error = true;
-      if (error.data && error.data.error) {
-        this.toasterService.pop('error', error.data.error.message);
+      if (error.error) {
+        this.toasterService.pop('error', error.error.message);
       }
     });
   }
@@ -4598,7 +4596,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }, (error) => {
       this.isLoading = false;
-      this.toasterService.pop('error', error.data.error.message);
+      this.toasterService.pop('error', error.error.message);
     });
     const modalRef = this.modalService.open(DiffPatchModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.liveXml = this.liveXml;
@@ -4745,8 +4743,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       // this._activeTab.isVisible = false;
     }, (error) => {
       this.isLoading = false;
-      if (error.data && error.data.error) {
-        this.toasterService.pop('error', error.data.error.message);
+      if (error.error) {
+        this.toasterService.pop('error', error.error.message);
       }
     });
   }
@@ -5408,7 +5406,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     }, (error) => {
-      this.toasterService.pop('error', error.data.error.message);
+      this.toasterService.pop('error', error.error.message);
     });
   }
 
@@ -5465,7 +5463,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.XSDState.modified = res.modified;
         this.prevXML = this._xml;
       }, (error) => {
-        this.toasterService.pop('error', error.data.error.message);
+        this.toasterService.pop('error', error.error.message);
       });
     } else if (!eRes) {
       this.coreService.post('xmleditor/store', {
@@ -5487,7 +5485,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           this.storeXML(undefined);
         }
       }, (error) => {
-        this.toasterService.pop('error', error.data.error.message);
+        this.toasterService.pop('error', error.error.message);
       });
     } else {
       if (cb) {
@@ -5761,8 +5759,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }, (error) => {
       this.validConfig = false;
-      if (error.data && error.data.error) {
-        this.toasterService.pop('error', error.data.error.message);
+      if (error.error) {
+        this.toasterService.pop('error', error.error.message);
       }
     });
   }
