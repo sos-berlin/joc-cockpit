@@ -8510,6 +8510,17 @@
                             for (let j = 0; j < mergeData.length; j++) {
                                 if (mergeData[j].job === vm.jobs[i].path) {
                                     vm.jobs[i].inconditions = mergeData[j].inconditions;
+                                    for(let x=0; x < vm.jobs[i].outconditions.length; x++) {
+                                        if (vm.jobs[i].outconditions[x].isExpanded) {
+                                            for (let y = 0; y < mergeData[j].outconditions.length; y++) {
+                                                if (vm.jobs[i].outconditions[x].id === mergeData[j].outconditions[y].id) {
+                                                    mergeData[j].outconditions[y].isExpanded = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+
                                     vm.jobs[i].outconditions = mergeData[j].outconditions;
                                     if (vm.jobs[i].isExpanded && !reCreate) {
                                         updateExpandedVertices(vm.jobs[i]);
@@ -8534,7 +8545,7 @@
                 });
             } else {
                 setTimeout(function () {
-                    updateConditionsByEvent(arr);
+                    updateConditionsByEvent(arr, reCreate);
                 }, 100)
             }
         }
@@ -11499,7 +11510,11 @@
                 for (let i = 0; i < vm.jobs.length; i++) {
                     if (vm.jobs[i].path == cell.getAttribute('actual')) {
                         vm.jobs[i].isExpanded = !vm.jobs[i].isExpanded;
-                        updateJobs();
+                        if(vm.jobs[i].isExpanded){
+                            updateConditionsByEvent([{job: vm.jobs[i].path}], true);
+                        }else {
+                            updateJobs();
+                        }
                         break;
                     }
                 }
@@ -12284,7 +12299,8 @@
                 let callEvent = false, arr = [];
                 for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
                     if ((vm.events[0].eventSnapshots[m].eventType === "EventCreated" || vm.events[0].eventSnapshots[m].eventType === "EventRemoved" || vm.events[0].eventSnapshots[m].eventType === "InconditionValidated") && !vm.events[0].eventSnapshots[m].eventId) {
-                        if (vm.events[0].eventSnapshots[m].path) {
+                       
+                        if (vm.events[0].eventSnapshots[m].eventType === "InconditionValidated" && vm.events[0].eventSnapshots[m].path) {
                             arr.push(vm.events[0].eventSnapshots[m].path);
                         } else {
                             if (vm.jobs.length > 0 && vm.events[0].eventSnapshots[m].state === vm.selectedSession.session &&
@@ -12319,6 +12335,7 @@
                         break;
                     } else if (vm.events[0].eventSnapshots[m].eventType === "JobStreamStarted" && vm.events[0].eventSnapshots[m].path.match(vm.selectedJobStreamObj.jobStream)) {
                         vm.getSessions();
+                        callEvent = true;
                     } else if (vm.events[0].eventSnapshots[m].eventType === "IsAlive") {
                         vm.isAlive = vm.events[0].eventSnapshots[m].state === 'Job Stream Plugin is active';
                         sessionStorage.$SOS$ISALIVE = vm.isAlive;
@@ -12326,7 +12343,7 @@
                     }
                 }
                 let _arr = [];
-                if (arr.length > 0) {
+                if (arr.length > 0 && !callEvent) {
                     for (let i = 0; i < vm.jobs.length; i++) {
                         for (let j = 0; j < arr.length; j++) {
                             if (arr[j] === vm.jobs[i].path) {
@@ -12349,7 +12366,7 @@
                     }
                 }
                 if (_arr.length > 0) {
-                    updateConditionsByEvent(_arr);
+                    updateConditionsByEvent(_arr, true);
                 }
                 if (callEvent) {
                     vm.getEvents(null);
