@@ -1,8 +1,9 @@
 import {Component, OnInit, Input} from '@angular/core';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {CoreService} from '../../../services/core.service';
 import * as moment from 'moment';
 import * as _ from 'underscore';
+import {CoreService} from '../../../services/core.service';
+import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 
 @Component({
   selector: 'app-start-order',
@@ -30,7 +31,7 @@ export class StartOrderModalComponent implements OnInit {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
-    console.log(this.order)
+    console.log(this.order);
     this.order.timeZone = this.preferences.zone;
     this.order.fromTime = new Date();
 
@@ -121,7 +122,7 @@ export class StartOrderModalComponent implements OnInit {
   selector: 'app-order-action',
   templateUrl: './order-action.component.html'
 })
-export class OrderActionComponent implements OnInit {
+export class OrderActionComponent {
 
   @Input() order: any;
   @Input() preferences: any;
@@ -131,23 +132,37 @@ export class OrderActionComponent implements OnInit {
   constructor(public modalService: NgbModal, public coreService: CoreService) {
   }
 
-  ngOnInit() {
-
-  }
-
-  startOrder() {
+  startOrder(order) {
     const obj: any = {
       jobschedulerId: this.schedulerId,
       orders: []
     };
-    let _order: any = {workflowPath: this.order.workflowId.path, orderId: this.order.orderId};
+    let _order: any = {workflowPath: order.workflowId.path, orderId: order.orderId};
     _order.scheduledFor = 'now';
     obj.orders.push(_order);
-    this.coreService.post('orders/add', obj).subscribe((res: any) => {
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Order',
+        operation: 'Start',
+        name: order.orderId
+      };
+      const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
+      modalRef.componentInstance.comments = comments;
+      modalRef.componentInstance.obj = obj;
+      modalRef.componentInstance.url = 'orders/add';
+      modalRef.result.then((result) => {
+        console.log(result);
+      }, (reason) => {
+        console.log('close...', reason);
+      });
+    } else {
+      this.coreService.post('orders/add', obj).subscribe((res: any) => {
 
-    }, err => {
+      }, err => {
 
-    });
+      });
+    }
   }
 
   startOrderAt() {
@@ -163,25 +178,82 @@ export class OrderActionComponent implements OnInit {
     });
   }
 
-  suspendOrder() {
-    this.coreService.post('orders/suspend', {
-      jobschedulerId: this.schedulerId, orderIds: [this.order.orderId]
-    }).subscribe(() => {
-    });
+  suspendOrder(order) {
+    const obj: any = {
+      jobschedulerId: this.schedulerId, orderIds: [order.orderId]
+    };
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Order',
+        operation: 'Suspend',
+        name: order.orderId
+      };
+      const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
+      modalRef.componentInstance.comments = comments;
+      modalRef.componentInstance.obj = obj;
+      modalRef.componentInstance.url = 'orders/suspend';
+      modalRef.result.then((result) => {
+        console.log(result);
+      }, (reason) => {
+        console.log('close...', reason);
+      });
+    } else {
+      this.coreService.post('orders/suspend', obj).subscribe(() => {
+      });
+    }
   }
 
   resumeOrder() {
-    this.coreService.post('orders/resume', {
+    const obj: any = {
       jobschedulerId: this.schedulerId, orderIds: [this.order.orderId]
-    }).subscribe(() => {
-    });
+    };
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Order',
+        operation: 'Resume',
+        name: this.order.orderId
+      };
+      const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
+      modalRef.componentInstance.comments = comments;
+      modalRef.componentInstance.obj = obj;
+      modalRef.componentInstance.url = 'orders/resume';
+      modalRef.result.then((result) => {
+        console.log(result);
+      }, (reason) => {
+        console.log('close...', reason);
+      });
+    } else {
+      this.coreService.post('orders/resume', obj).subscribe(() => {
+      });
+    }
   }
 
   cancelOrder() {
-    this.coreService.post('orders/cancel', {
+    const obj: any = {
       jobschedulerId: this.schedulerId, orderIds: [this.order.orderId]
-    }).subscribe(() => {
-    });
+    };
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Order',
+        operation: 'Cancel',
+        name: this.order.orderId
+      };
+      const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
+      modalRef.componentInstance.comments = comments;
+      modalRef.componentInstance.obj = obj;
+      modalRef.componentInstance.url = 'orders/cancel';
+      modalRef.result.then((result) => {
+        console.log(result);
+      }, (reason) => {
+        console.log('close...', reason);
+      });
+    } else {
+      this.coreService.post('orders/cancel', obj).subscribe(() => {
+      });
+    }
   }
 
 }

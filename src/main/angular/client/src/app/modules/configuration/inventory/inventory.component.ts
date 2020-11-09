@@ -4,13 +4,12 @@ import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploader} from 'ng2-file-upload';
 import {ToasterService} from 'angular2-toaster';
 import {NzFormatEmitEvent, NzMessageService, NzTreeNode} from 'ng-zorro-antd';
+import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
-
 import * as _ from 'underscore';
-import {TranslateService} from '@ngx-translate/core';
 
 declare const $;
 
@@ -23,11 +22,14 @@ export class SingleDeployComponent implements OnInit {
   @Input() data;
   @Input() type;
   @Input() releasable: boolean;
+  @Input() display: any;
   selectedSchedulerIds = [];
   deployablesObject = [];
   loading = true;
   submitted = false;
-
+  comments: any = {radio : 'predefined'};
+  required: boolean;
+  messageList: any;
   object: any = {
     checked : false,
     update: [],
@@ -39,6 +41,12 @@ export class SingleDeployComponent implements OnInit {
 
   ngOnInit() {
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
+    if (sessionStorage.comments) {
+      this.messageList = JSON.parse(sessionStorage.comments);
+    }
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     this.init();
   }
 
@@ -121,6 +129,16 @@ export class SingleDeployComponent implements OnInit {
     };
     if (!this.releasable) {
       obj.controllers = [];
+      obj.auditLog = {};
+      if (this.comments.comment) {
+        obj.auditLog.comment = this.comments.comment;
+      }
+      if (this.comments.timeSpent) {
+        obj.auditLog.timeSpent = this.comments.timeSpent;
+      }
+      if (this.comments.ticketLink) {
+        obj.auditLog.ticketLink = this.comments.ticketLink;
+      }
       this.selectedSchedulerIds.forEach(element => {
         obj.controllers.push({controller: element});
       });
@@ -168,6 +186,7 @@ export class DeployComponent implements OnInit {
   @Input() preferences;
   @Input() path: string;
   @Input() releasable: boolean;
+  @Input() display: any;
   selectedSchedulerIds = [];
   loading = true;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
@@ -178,12 +197,21 @@ export class DeployComponent implements OnInit {
   };
   isExpandAll = false;
   submitted = false;
+  comments: any = {radio : 'predefined'};
+  required: boolean;
+  messageList: any;
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
   }
 
   ngOnInit() {
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
+    if (sessionStorage.comments) {
+      this.messageList = JSON.parse(sessionStorage.comments);
+    }
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     this.buildTree();
   }
 
@@ -536,6 +564,16 @@ export class DeployComponent implements OnInit {
     }
     if (!this.releasable) {
       obj.controllers = [];
+      obj.auditLog = {};
+      if (this.comments.comment) {
+        obj.auditLog.comment = this.comments.comment;
+      }
+      if (this.comments.timeSpent) {
+        obj.auditLog.timeSpent = this.comments.timeSpent;
+      }
+      if (this.comments.ticketLink) {
+        obj.auditLog.ticketLink = this.comments.ticketLink;
+      }
       this.selectedSchedulerIds.forEach(element => {
         obj.controllers.push({controller: element});
       });
@@ -561,10 +599,14 @@ export class SetVersionComponent implements OnInit {
   @ViewChild('treeCtrl', {static: false}) treeCtrl;
   @Input() preferences;
   @Input() schedulerIds;
+  @Input() display: any;
   nodes: any = [{key: '/', path: '/', name: '/', children: []}];
   version = {type: 'setOneVersion', name: ''};
   isExpandAll = false;
   loading = true;
+  comments: any = {radio : 'predefined'};
+  required: boolean;
+  messageList: any;
   object: any = {
     isRecursive: true,
     configurations: [],
@@ -576,6 +618,12 @@ export class SetVersionComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (sessionStorage.comments) {
+      this.messageList = JSON.parse(sessionStorage.comments);
+    }
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     this.buildTree();
   }
 
@@ -818,6 +866,16 @@ export class SetVersionComponent implements OnInit {
       configurations: [],
       deployments: []
     };
+    obj.auditLog = {};
+    if (this.comments.comment) {
+      obj.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      obj.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      obj.auditLog.ticketLink = this.comments.ticketLink;
+    }
     this.getJSObject();
     if (this.version.type === 'setSeparateVersion') {
       obj.deployments = this.object.deployments;
@@ -924,6 +982,7 @@ export class ExportComponent implements OnInit {
   @ViewChild('treeCtrl', {static: false}) treeCtrl;
   @Input() schedulerIds;
   @Input() preferences;
+  @Input() display: any;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
   object: any = {
     configurations: [],
@@ -935,12 +994,21 @@ export class ExportComponent implements OnInit {
   isExpandAll = false;
   loading = true;
   submitted = false;
+  comments: any = {radio : 'predefined'};
+  required: boolean;
+  messageList: any;
 
-  // tslint:disable-next-line: max-line-length
-  constructor(public activeModal: NgbActiveModal, private authService: AuthService, private coreService: CoreService) {
+  constructor(public activeModal: NgbActiveModal, private authService: AuthService,
+              private coreService: CoreService) {
   }
 
   ngOnInit() {
+    if (sessionStorage.comments) {
+      this.messageList = JSON.parse(sessionStorage.comments);
+    }
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     this.buildTree();
   }
 
@@ -1897,6 +1965,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     const modalRef = this.modalService.open(ExportComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.schedulerIds = this.schedulerIds;
     modalRef.componentInstance.preferences = this.preferences;
+    modalRef.componentInstance.display = this.preferences.auditLog;
     modalRef.result.then((res: any) => {
 
     }, () => {
@@ -1930,6 +1999,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     const modalRef = this.modalService.open(SetVersionComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.schedulerIds = this.schedulerIds;
     modalRef.componentInstance.preferences = this.preferences;
+    modalRef.componentInstance.display = this.preferences.auditLog;
     modalRef.result.then((res: any) => {
 
     }, () => {
@@ -1961,6 +2031,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (origin.object || origin.type || origin.id) {
       const modalRef = this.modalService.open(SingleDeployComponent, {backdrop: 'static'});
       modalRef.componentInstance.schedulerIds = this.schedulerIds;
+      modalRef.componentInstance.display = this.preferences.auditLog;
       modalRef.componentInstance.data = origin;
       modalRef.componentInstance.releasable = releasable;
       modalRef.result.then((res: any) => {
@@ -1985,6 +2056,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       const modalRef = this.modalService.open(DeployComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.schedulerIds = this.schedulerIds;
       modalRef.componentInstance.preferences = this.preferences;
+      modalRef.componentInstance.display = this.preferences.auditLog;
       modalRef.componentInstance.path = origin.path;
       modalRef.componentInstance.releasable = releasable;
       modalRef.result.then((res: any) => {

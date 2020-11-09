@@ -20,7 +20,7 @@ export class AuthInterceptor implements HttpInterceptor {
     if (req.method === 'POST' || req.url.match('jobscheduler/log?')) {
       req = req.clone({
         url: './api/' + req.url,
-        headers: req.headers.set('Content-Type', 'application/json')
+        headers: req.headers.set('Content-Type', req.url.match('validate/predicate') ? 'text/plain' : 'application/json')
       });
       if (req.url.match('security/login')) {
         const user = req.body;

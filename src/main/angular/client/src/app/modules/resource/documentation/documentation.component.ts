@@ -221,7 +221,6 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
       };
 
       const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.document = document;
       modalRef.componentInstance.comments = comments;
       modalRef.componentInstance.obj = obj;
       modalRef.componentInstance.url = 'documentations/delete';

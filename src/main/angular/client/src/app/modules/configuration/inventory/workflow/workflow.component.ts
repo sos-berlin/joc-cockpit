@@ -388,7 +388,7 @@ export class ExpressionComponent implements OnInit {
   @Input() error: any;
   expression: any = {};
   operators = ['==', '!=', '<', '<=', '>', '>=', 'in', '&&', '||', '!'];
-  functions = ['toNumber ', 'toBoolean', 'toLowerCase', 'toUpperCase'];
+  functions = ['toNumber ', 'toBoolean'];
   variablesOperators = ['matches', 'startWith', 'endsWith', 'contains'];
   varExam = 'variable ("aString", default="") matches ".*"';
   lastSelectOperator = '';

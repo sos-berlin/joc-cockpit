@@ -9,6 +9,8 @@ import {SaveService} from '../../services/save.service';
 import {SearchPipe} from '../../filters/filter.pipe';
 import {ExcelService} from '../../services/excel.service';
 import {TranslateService} from '@ngx-translate/core';
+import {CommentModalComponent} from '../../components/comment-modal/comment.component';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 declare const $;
 
@@ -123,9 +125,9 @@ export class SingleOrderComponent implements OnInit {
     const obj = {
       jobschedulerId: this.schedulerId,
       workflowIds: []
-    }
+    };
     this.coreService.post('orders', obj).subscribe((res: any) => {
-      console.log(res.orders)
+      console.log(res.orders);
     });
   }
 
@@ -193,7 +195,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private route: ActivatedRoute, private dataService: DataService, private searchPipe: SearchPipe,
-              private translate: TranslateService, private excelService: ExcelService) {
+              private translate: TranslateService, private excelService: ExcelService, public modalService: NgbModal) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -310,9 +312,10 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   private getOrders(obj) {
+    this.reset();
     this.coreService.post('orders', obj).subscribe((res: any) => {
       this.orders = res.orders;
-      if(this.showPanelObj && this.showPanelObj.orderId) {
+      if (this.showPanelObj && this.showPanelObj.orderId) {
         let flag = true;
         if (this.orders.length > 0) {
           for (let i = 0; i < this.orders.length; i++) {
@@ -329,10 +332,10 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       this.searchInResult();
       this.loading = true;
       this.updatePanelHeight();
-/*      this.orders.forEach((order) => {
-        console.log(order);
-        order.path1 = order.path.substring(0, order.path.lastIndexOf('/')) || order.path.substring(0, order.path.lastIndexOf('/') + 1);
-      });*/
+      /*      this.orders.forEach((order) => {
+              console.log(order);
+              order.path1 = order.path.substring(0, order.path.lastIndexOf('/')) || order.path.substring(0, order.path.lastIndexOf('/') + 1);
+            });*/
     }, (err) => {
       this.loading = true;
     });
@@ -422,7 +425,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   updatePanelHeight() {
     let rsHt = this.saveService.resizerHeight ? JSON.parse(this.saveService.resizerHeight) || {} : {};
     if (rsHt.orderOverview) {
-        $('#orderTableId').css('height', this.resizerHeight);
+      $('#orderTableId').css('height', this.resizerHeight);
     } else {
       this._updatePanelHeight();
     }
@@ -442,7 +445,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         ht = 450;
       }
       this.resizerHeight = ht + 'px';
-      console.log(this.resizerHeight, 'this.resizerHeight')
       $('#orderTableId').css('height', this.resizerHeight);
     }, 5);
   }
@@ -452,16 +454,79 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.coreService.showLeftPanel();
   }
 
-  suspendAllOrder() {
+  checkAll() {
+    if (this.object.checkbox && this.orders.length > 0) {
+      this.object.orders = this.currentData;
+    } else {
+      this.object.orders = [];
+    }
+  }
 
+  checkMainCheckbox() {
+    if (this.object.orders && this.object.orders.length > 0) {
+      this.object.checkbox = this.object.orders.length === this.currentData.length;
+    } else {
+      this.object.checkbox = false;
+    }
+  }
+
+  suspendAllOrder() {
+    this._bulkOperation('suspend');
   }
 
   resumeAllOrder() {
-
+    this._bulkOperation('resume');
   }
 
   startAllOrder() {
+    this._bulkOperation('add');
+  }
 
+  cancelAllOrder() {
+    this._bulkOperation('cancel');
+  }
+
+  _bulkOperation(operation) {
+    const obj: any = {
+      jobschedulerId: this.schedulerIds.selected
+    };
+    if (operation === 'add') {
+      obj.orders = [];
+    } else {
+      obj.orderIds = [];
+    }
+    this.object.orders.forEach((order) => {
+      if(obj.orderIds) {
+        obj.orderIds.push(order.orderId);
+      }else{
+        obj.orders.push({workflowPath: order.workflowId.path, orderId: order.orderId, scheduledFor : 'now'});
+      }
+    });
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Order',
+        operation: operation,
+        name: ''
+      };
+      const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
+      modalRef.componentInstance.comments = comments;
+      modalRef.componentInstance.obj = obj;
+      modalRef.componentInstance.url = 'orders/' + operation;
+      modalRef.result.then((result) => {
+        this.reset();
+      }, (reason) => {
+        this.reset();
+      });
+    } else {
+      this.coreService.post('orders/' + operation, obj).subscribe(() => {
+      });
+    }
+  }
+
+  reset(){
+    this.object.orders = [];
+    this.object.checkbox = false;
   }
 
   /** ================================= End Action ============================*/

@@ -113,18 +113,23 @@
           </div>
           <div class="hide" [ngClass]="{'show-block':object.orders.length>0}">
             <button class="hide btn btn-grey btn-sm m-l-12"
+                    [ngClass]="{'show-block':permission.Order.execute.start}"
+                    [disabled]="object.runningSelected" (click)="startAllOrder()"><i class="fa fa-play p-r-xs"></i>
+              <span class="hidden-sm-down" translate>button.startOrderNow</span></button>
+            <button class="hide btn btn-grey btn-sm m-l-12"
+                    [ngClass]="{'show-block':permission.Order.execute}"
+                    [disabled]="object.runningSelected" (click)="cancelAllOrder()"><i class="fa fa-times p-r-xs"></i>
+              <span class="hidden-sm-down" translate>button.cancel</span></button>
+            <button class="hide btn btn-grey btn-sm m-l-12"
                     [ngClass]="{'show-block':permission.Order.execute.suspend}"
-                    [disabled]="object.suspendSelected" (click)="suspendAllOrder()"><i class="fa fa-stop"></i>
+                    [disabled]="object.suspendSelected" (click)="suspendAllOrder()"><i class="fa fa-stop p-r-xs"></i>
               <span class="hidden-sm-down" translate>button.suspendOrder</span></button>
             <button class="hide btn btn-grey btn-sm m-l-12"
                     [ngClass]="{'show-block':permission.Order.execute.resume}"
                     [disabled]="object.resumeSelected" (click)="resumeAllOrder()"><i
-              class="fa fa-step-forward"></i> <span class="hidden-sm-down" translate>button.resumeOrder</span>
+              class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down" translate>button.resumeOrder</span>
             </button>
-            <button class="hide btn btn-grey btn-sm m-l-12"
-                    [ngClass]="{'show-block':permission.Order.execute.start}"
-                    [disabled]="object.runningSelected" (click)="startAllOrder()"><i class="fa fa-play"></i>
-              <span class="hidden-sm-down" translate>button.startOrderNow</span></button>
+
           </div>
         </div>
       </div>
@@ -176,7 +181,11 @@
                   <div class="box card">
                     <div class="box-body">
                       <div>
-                        <div class="text-left block-ellipsis">
+                        <label class="md-check pos-abt">
+                          <input type="checkbox" [(checklist)]="object.orders" [checklistValue]="order"><i
+                          class="primary"></i>
+                        </label>
+                        <div class="text-left block-ellipsis m-l-md">
                           <i nz-icon nzType="unordered-list" class="p-r-xs" nzTheme="outline"></i>
                           <span [nz-tooltip]="order.title" [innerHtml]="order.orderId"></span>
                         </div>
@@ -205,7 +214,7 @@
                     </div>
                     <div class="box-footer b-t">
                       <div>
-                        <a class="hide text-left primary-text-hover-color" [ngClass]="{'show-block':permission.Order.execute.start}" (click)="actionChild.start(order);">
+                        <a class="hide text-left primary-text-hover-color" [ngClass]="{'show-block':permission.Order.execute.start}" (click)="actionChild.startOrder(order);">
                           <i class="fa fa-play p-r-xs text-black-lt"></i>
                           <span class="text-black-lt" translate>button.startNow</span>
                         </a>
@@ -239,7 +248,12 @@
                 >
                   <thead>
                   <tr>
-                    <th class="tableexport-ignore menu" rowspan="2"><span translate>label.action</span></th>
+                    <th class="chk">
+                      <label class="md-check lg-check">
+                        <input type="checkbox" [(ngModel)]="object.checkbox" (change)="checkAll()"><i class="primary"></i>
+                      </label>
+                    </th>
+                    <th class="menu" rowspan="2"><span translate>label.action</span></th>
                     <th (click)="sort('orderId')">
                       <a><span class="p-r-xs" translate>label.orderId</span>
                         <i *ngIf="orderFilters.filter.sortBy == 'orderId' && !orderFilters.reverse"
@@ -281,13 +295,19 @@
                   <ng-template ngFor let-order
                                [ngForOf]="ajaxTable.data | orderBy: orderFilters.filter.sortBy:orderFilters.reverse">
                     <tr [ngClass]="{'light-bg': (showPanelObj && showPanelObj.orderId == order.orderId)}">
-                      <td class="tableexport-ignore">
+                      <td>
+                        <label class="md-check">
+                          <input type="checkbox" [(checklist)]="object.orders"
+                                 [checklistValue]="order" (change)="checkMainCheckbox()"><i class="primary"></i>
+                        </label>
+                      </td>
+                      <td>
                         <app-order-action [order]="order" [schedulerId]="schedulerIds.selected" [permission]="permission" [preferences]="preferences"></app-order-action>
                       </td>
                       <td>
                         <span class="show-in-single-line">
-                          <i class="cursor fa fa-caret-down tableexport-ignore fa-lg p-l-xs p-r-xs" *ngIf="!order.show" (click)="showPanelFuc(order)"></i>
-                          <i class="cursor fa fa-caret-up tableexport-ignore fa-lg p-l-xs p-r-xs" *ngIf="order.show" (click)="hidePanelFuc(order)"></i>
+                          <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs" *ngIf="!order.show" (click)="showPanelFuc(order)"></i>
+                          <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" *ngIf="order.show" (click)="hidePanelFuc(order)"></i>
                           <a class="text-dark" (click)="showPanelFunc(order)">{{order.orderId}}</a>
                           <span *ngIf="order.title">-</span>
                           <i class="text-muted">{{order.title}}</i>
@@ -305,7 +325,7 @@
                       </td>
                       <td>{{order.scheduledFor | stringToDate}}</td>
                     </tr>
-                    <tr class="tableexport-ignore" *ngIf="order.show">
+                    <tr *ngIf="order.show">
                       <td colspan="7">
                         <div *ngIf="order.arguments && order.arguments.length > 0">
                           <div *ngFor="let argu of order.arguments"
@@ -408,9 +428,9 @@
                           <ng-template ngFor let-auditLog [ngForOf]="auditTable.data | orderBy: 'created':true">
                             <tr>
                               <td>
-                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!auditLog.show"
+                                <i class="cursor fa fa-caret-down fa-lg" *ngIf="!auditLog.show"
                                    (click)="auditLog.show =true"></i>
-                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
+                                <i class="cursor fa fa-caret-up fa-lg"
                                    *ngIf="auditLog.show" (click)="auditLog.show =false"></i>
                                 &nbsp;
                                 <span [innerHtml]="auditLog.created | stringToDate"></span>
@@ -428,7 +448,7 @@
                                 <a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank" [innerHtml]="auditLog.ticketLink"></a>
                               </td>
                             </tr>
-                            <tr class="tableexport-ignore" *ngIf="auditLog.show">
+                            <tr *ngIf="auditLog.show">
                               <td colspan="7">
                                 <div class="m-a-0">
                                   <span translate>label.parameters</span>

@@ -130,6 +130,9 @@
                      || (!node.origin.object && !node.origin.type && !node.origin.schedule))"
                         [nzDisabled]="!node.origin.hasDeployments && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valid))">
                       <a (click)="deployObject(node, false);" translate>inventory.button.deploy</a></li>
+                    <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && (node.origin.controller || (!node.origin.object && !node.origin.type))"
+                        [nzDisabled]="!node.origin.hasDeployments && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valid))">
+                      <a (click)="reDeployObject(node);" translate>inventory.button.redeploy</a></li>
                     <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && ((node.origin.object && (node.origin.object === 'CALENDAR' || node.origin.object === 'ORDER')) || (node.origin.type && (node.origin.type === 'CALENDAR' || node.origin.type === 'ORDER'))
                      || (!node.origin.object && !node.origin.type && !node.origin.controller))"
                         [nzDisabled]="!node.origin.hasReleases && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valid))">
