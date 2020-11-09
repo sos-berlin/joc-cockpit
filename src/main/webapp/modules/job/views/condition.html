@@ -1026,7 +1026,7 @@
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                    <tr ng-repeat="task in taskHistory | orderBy: 'startTime':true"
+                                                                    <tr ng-repeat="task in taskHistory | orderBy: 'taskId': true"
                                                                         class="cursor" ng-click="showLogWindow(null,task)"
                                                                         title="Show logs">
                                                                         <td nowrap>

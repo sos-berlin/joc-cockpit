@@ -1795,7 +1795,8 @@
                                             } else if (value1.eventType === "CurrentJobSchedulerChanged") {
                                                 getScheduleDetail();
                                                 $state.reload(vm.currentState);
-                                            }else if (value1.eventType === "IsAlive") {
+                                            }
+                                            if (value1.eventType === "IsAlive") {
                                                 vm.isAlive = value1.state === 'Job Stream Plugin is active';
                                                 $window.sessionStorage.$SOS$ISALIVE = vm.isAlive;
                                             }
