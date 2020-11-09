@@ -8533,9 +8533,16 @@
                                 break;
                             }
                         }
+                        refreshReferenceTab();
                         if (vm.isWorkflowGenerated && reCreate) {
                             vm.isWorkflowGenerated = false;
-                            createWorkflowDiagram(vm.jobs, {});
+                            let element = document.getElementById("graph");
+                            let scrollValue = {
+                                scrollTop: element.scrollTop,
+                                scrollLeft: element.scrollLeft,
+                                scale: vm.editor.graph.getView().getScale()
+                            };
+                            createWorkflowDiagram(vm.jobs, scrollValue);
                         }
                     }, function () {
                         vm.isLoaded = true;
@@ -8661,7 +8668,7 @@
             }
         }
 
-        function init(isLoad) {
+        function init() {
             if (vm.editor && !_.isEmpty(vm.editor)) {
                 vm.editor.destroy();
                 mxOutline.prototype.destroy()
@@ -10584,7 +10591,13 @@
                 } else {
                     if (vm.isWorkflowGenerated) {
                         vm.isWorkflowGenerated = false;
-                        createWorkflowDiagram(vm.jobs, {});
+                        let element = document.getElementById("graph");
+                        let scrollValue = {
+                            scrollTop: element.scrollTop,
+                            scrollLeft: element.scrollLeft,
+                            scale: vm.editor.graph.getView().getScale()
+                        };
+                        createWorkflowDiagram(vm.jobs, scrollValue);
                     }
                 }
             }
@@ -11256,6 +11269,9 @@
                 vm.navigateToEvent(evtName);
                 return;
             }
+            if(!vm.editor || !vm.editor.graph){
+                return;
+            }
             let vertices = vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent());
             let flag = false;
             for (let i = 0; i < vertices.length; i++) {
@@ -11475,37 +11491,18 @@
          * @param cell
          */
         function handleSingleClick(cell) {
+            vm.outVertex = null;
             vm.outEvents = null;
             if (cell.value && cell.value.tagName === 'InCondition') {
                 vm.jobFilters.graphViewDetail.tab = 'reference';
                 vm.referenceTabHeading = gettextCatalog.getString('InCondition') + ' : ' + cell.getAttribute('actual');
-                for (let i = 0; i < vm.jobs.length; i++) {
-                    if (vm.jobs[i].path === cell.getAttribute('job')) {
-                        for (let j = 0; j < vm.jobs[i].inconditions.length; j++) {
-                            if (vm.jobs[i].inconditions[j].id == cell.getAttribute('_id')) {
-                                vm._outconditionReference = vm.jobs[i].inconditions[j].outconditions;
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }
+                vm.outVertex = cell;
+                refreshReferenceTab();
             } else if (cell.value && cell.value.tagName === 'OutCondition') {
                 vm.jobFilters.graphViewDetail.tab = 'reference';
                 vm.outVertex = cell;
                 vm.referenceTabHeading = gettextCatalog.getString('OutCondition') + ' : ' + cell.getAttribute('actual');
-                for (let i = 0; i < vm.jobs.length; i++) {
-                    if (vm.jobs[i].path === cell.getAttribute('job')) {
-                        for (let j = 0; j < vm.jobs[i].outconditions.length; j++) {
-                            if (vm.jobs[i].outconditions[j].id == cell.getAttribute('_id')) {
-                                vm.outEvents = vm.jobs[i].outconditions[j].outconditionEvents;
-                                vm._outconditionReference = vm.jobs[i].outconditions[j].inconditions;
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }
+                refreshReferenceTab();
             } else if (cell.value.tagName === 'Job') {
                 for (let i = 0; i < vm.jobs.length; i++) {
                     if (vm.jobs[i].path == cell.getAttribute('actual')) {
@@ -11516,6 +11513,38 @@
                             updateJobs();
                         }
                         break;
+                    }
+                }
+            }
+        }
+
+        function refreshReferenceTab() {
+            if (vm.outVertex && vm.outVertex.value && vm.outVertex.value.tagName) {
+                let obj = {
+                    _id: vm.outVertex.getAttribute('_id'),
+                    job: vm.outVertex.getAttribute('job')
+                };
+                if (vm.jobFilters.graphViewDetail.tab === 'reference') {
+                    for (let i = 0; i < vm.jobs.length; i++) {
+                        if (vm.jobs[i].path === obj.job) {
+                            if (vm.outVertex.value.tagName === 'InCondition') {
+                                for (let j = 0; j < vm.jobs[i].inconditions.length; j++) {
+                                    if (vm.jobs[i].inconditions[j].id == obj._id) {
+                                        vm._outconditionReference = vm.jobs[i].inconditions[j].outconditions;
+                                        break;
+                                    }
+                                }
+                            } else {
+                                for (let j = 0; j < vm.jobs[i].outconditions.length; j++) {
+                                    if (vm.jobs[i].outconditions[j].id == obj._id) {
+                                        vm.outEvents = vm.jobs[i].outconditions[j].outconditionEvents;
+                                        vm._outconditionReference = vm.jobs[i].outconditions[j].inconditions;
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+                        }
                     }
                 }
             }
@@ -12333,7 +12362,8 @@
                     } else if (vm.events[0].eventSnapshots[m].eventType === "VariablesCustomEvent") {
                         updateJobStreamList();
                         break;
-                    } else if (vm.events[0].eventSnapshots[m].eventType === "JobStreamStarted" && vm.events[0].eventSnapshots[m].path.match(vm.selectedJobStreamObj.jobStream)) {
+                    } else if ((vm.events[0].eventSnapshots[m].eventType === "JobStreamStarted" ||
+                        vm.events[0].eventSnapshots[m].eventType === "JobStreamCompleted") && vm.events[0].eventSnapshots[m].path.match(vm.selectedJobStreamObj.jobStream)) {
                         vm.getSessions();
                         callEvent = true;
                     } else if (vm.events[0].eventSnapshots[m].eventType === "IsAlive") {

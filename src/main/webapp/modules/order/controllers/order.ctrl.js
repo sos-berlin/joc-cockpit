@@ -10273,27 +10273,34 @@
         vm.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots && vm.events[0].eventSnapshots.length > 0) {
                 for (let i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
-                    if (vm.events[0].eventSnapshots[i].eventType == 'ReportingChangedOrder' && isLoaded) {
+                    if (vm.events[0].eventSnapshots[i].eventType === 'ReportingChangedOrder' && isLoaded && vm.historyFilters.type === 'jobChain') {
                         isLoaded = false;
                         updateHistoryAfterEvent();
                         break;
-                    } else if (vm.events[0].eventSnapshots[i].eventType == 'ReportingChangedJob' && isLoaded) {
+                    } else if (vm.events[0].eventSnapshots[i].eventType === 'ReportingChangedJob' && isLoaded && vm.historyFilters.type === 'job') {
+                        isLoaded = false;
                         updateHistoryAfterEvent();
                         break;
-                    } else if (vm.events[0].eventSnapshots[i].objectType == 'OTHER') {
-                        if (vm.events[0].eventSnapshots[i].eventType == 'YADETransferStarted') {
+                    } else if ((vm.events[0].eventSnapshots[i].eventType === 'JobStreamStarted' || vm.events[0].eventSnapshots[i].eventType === 'JobStreamCompleted')
+                        && isLoaded && vm.historyFilters.type === 'jobStream') {
+                        isLoaded = false;
+                        updateHistoryAfterEvent();
+                        break;
+                    } else if (vm.events[0].eventSnapshots[i].objectType === 'OTHER' && vm.historyFilters.type === 'yade') {
+                        if (vm.events[0].eventSnapshots[i].eventType === 'YADETransferStarted') {
+                            isLoaded = false;
                             updateHistoryAfterEvent();
                             break;
-                        } else if (vm.events[0].eventSnapshots[i].eventType === 'YADETransferUpdated' && vm.historyFilters.type === 'yade') {
+                        } else if (vm.events[0].eventSnapshots[i].eventType === 'YADETransferUpdated') {
                             for (let x = 0; x < vm.yadeHistorys.length; x++) {
-                                if (vm.yadeHistorys[x].id == vm.events[0].eventSnapshots[i].path) {
+                                if (vm.yadeHistorys[x].id === vm.events[0].eventSnapshots[i].path) {
                                     getTransfer(vm.yadeHistorys[x]);
                                     break;
                                 }
                             }
                         } else if (vm.events[0].eventSnapshots[i].eventType === 'YADEFileStateChanged') {
                             for (let x = 0; x < vm.yadeHistorys.length; x++) {
-                                if (vm.yadeHistorys[x].id == vm.events[0].eventSnapshots[i].path && vm.yadeHistorys[x].show) {
+                                if (vm.yadeHistorys[x].id === vm.events[0].eventSnapshots[i].path && vm.yadeHistorys[x].show) {
                                     getFiles(vm.yadeHistorys[x]);
                                     break;
                                 }

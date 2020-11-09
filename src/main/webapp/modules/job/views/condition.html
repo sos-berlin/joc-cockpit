@@ -894,7 +894,7 @@
                                            ng-if="permission.Job.execute.start && selectedNode.type === 'Jobstream'"><span
                                                 translate>button.startNow</span></a>
                                         <a class="dropdown-item" ng-click="startJobStreamStarterParameterized(selectedNode);closeMenu()"
-                                           ng-if="permission.Job.execute.start"><span
+                                           ng-if="permission.Job.execute.start && selectedNode.type === 'Jobstream'"><span
                                                 translate>button.startJobStreamStarterParameterized</span></a>
                                         <a class="dropdown-item" ng-click="setRuntimeJobstream(selectedNode);closeMenu()"
                                            ng-if="permission.Job.change.runTime && permission.JobStream.change.jobStream && selectedNode.type === 'Jobstream'"><span
