@@ -2992,8 +2992,8 @@
                                 vm.showHistoryPanel.taskHistory = [];
                             })
                         }
-                        var path = vm.events[0].eventSnapshots[i].path.split(',')[0];
-                        if (vm.events[0].eventSnapshots[i].eventType === "AuditLogChanged" && (vm.events[0].eventSnapshots[i].objectType === "JOBCHAIN" || vm.events[0].eventSnapshots[i].objectType === "ORDER") && (path === vm.showHistoryPanel.path) && vm.isAuditLog) {
+
+                        if (vm.events[0].eventSnapshots[i].eventType === "AuditLogChanged" && (vm.events[0].eventSnapshots[i].objectType === "JOBCHAIN" || vm.events[0].eventSnapshots[i].objectType === "ORDER") && (vm.events[0].eventSnapshots[i].path === vm.showHistoryPanel.path) && vm.isAuditLog) {
                             if (vm.permission.AuditLog.view.status) {
                                 let obj = {};
                                 obj.jobschedulerId = vm.schedulerIds.selected;

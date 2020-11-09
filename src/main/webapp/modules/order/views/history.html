@@ -224,7 +224,7 @@
                                 </div>
                             </div>
                             <div class="btn-group dropdown m-r-sm">
-                                <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" ng-class="{'btn-primary': selectedFiltered4.name}" uib-tooltip="{{selectedFiltered4.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span ng-bind="selectedFiltered2.name"></span></button>
+                                <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" ng-class="{'btn-primary': selectedFiltered4.name}" uib-tooltip="{{selectedFiltered4.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span ng-bind="selectedFiltered4.name"></span></button>
                                 <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                                     <a class="dropdown-item" href ng-click="advanceFilter2()" translate>label.createFilter</a>
                                     <a class="dropdown-item" href ng-click="editFilters()" ng-if="jobStreamHistoryFilterList.length>0" translate>label.editExistingFilters</a>
@@ -790,13 +790,20 @@
                                        ng-model="jobStreamSearch.jobStream">
                             </div>
                         </div>
-                        <div class="form-group row">
+                        <div class="form-group row" ng-init="jobStreamSearch.status = 'all'">
                             <label class="col-lg-2 col-md-4" translate>label.status</label>
                             <div class="col-lg-6 col-md-8">
+                                <label class="md-check w-sm">
+                                    <input type="radio" name="status" ng-model="jobStreamSearch.status" value="'all'">
+                                    <i class="primary"></i> <span translate>label.all</span>
+                                </label>
+                                <label class="md-check w-sm">
+                                    <input type="radio" name="status" ng-model="jobStreamSearch.status" value="date">
+                                    <i class="primary"></i> <span translate>label.running</span>
+                                </label>
                                 <label class="md-check">
-                                    <input type="checkbox" data-checklist-model="jobStreamSearch.status"
-                                           data-checklist-value="'running'">
-                                    <i class="primary"></i><span translate>label.running</span>
+                                    <input type="radio" name="status" ng-model="jobStreamSearch.status" value="completed">
+                                    <i class="primary"></i> <span translate>label.completed</span>
                                 </label>
                             </div>
                         </div>

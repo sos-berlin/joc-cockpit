@@ -7699,9 +7699,7 @@
                 if (vm.selectedFiltered4.jobStream) {
                     filter.jobStream = vm.selectedFiltered4.jobStream;
                 }
-                if (vm.selectedFiltered4.status && vm.selectedFiltered4.status.length>0) {
-                    filter.status = vm.selectedFiltered4.status.toString();
-                }
+                filter.status = vm.selectedFiltered4.status === 'all' ? null : vm.selectedFiltered4.status;
                 filter = parseProcessExecuted(vm.selectedFiltered4.planned, filter);
             } else {
                 filter = setJobStreamDateRange(filter);
@@ -8264,9 +8262,7 @@
                 if (vm.jobStreamSearch.jobschedulerId) {
                     filter.jobschedulerId = vm.jobStreamSearch.jobschedulerId;
                 }
-                if (vm.jobStreamSearch.status && vm.jobStreamSearch.status.length>0) {
-                    filter.status = vm.jobStreamSearch.status.toString();
-                }
+                filter.status = vm.jobStreamSearch.status === 'all' ? null : vm.jobStreamSearch.status;
                 filter.timeZone = vm.userPreferences.zone;
                 if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
                     filter.timeZone = 'UTC';
@@ -10232,9 +10228,7 @@
                     if (vm.selectedFiltered4.jobStream) {
                         filter.jobStream = vm.selectedFiltered4.jobStream;
                     }
-                    if (vm.selectedFiltered4.status && vm.selectedFiltered4.status.length>0) {
-                        filter.status = vm.selectedFiltered4.status.toString();
-                    }
+                    filter.status = vm.selectedFiltered4.status === 'all' ? null : vm.selectedFiltered4.status;
                     filter = parseProcessExecuted(vm.selectedFiltered4.planned, filter);
                 } else {
                     filter = setJobStreamDateRange(filter);
