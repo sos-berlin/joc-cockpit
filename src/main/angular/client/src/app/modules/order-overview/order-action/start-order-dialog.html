@@ -1,0 +1,181 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate> label.startOrder</span> {{order.workflowId.path}}
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<form #myForm="ngForm" (ngSubmit)="onSubmit()">
+  <div class="modal-body p-a">
+    <div class="form-group row">
+      <label class="col-sm-3 form-control-label" translate>label.orderId</label>
+      <label class="col-sm-8">{{order.orderId}} <span *ngIf="order.title" class="text-muted"> - {{order.title}}</span></label>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-3 " translate>label.startTime</label>
+      <div class="col-md-8">
+        <label class="md-check w">
+          <input type="radio" name="at" [(ngModel)]="order.at" value="now">
+          <i class="primary"></i><span translate>label.now</span>
+        </label>
+        <label class="md-check w">
+          <input type="radio" name="radio" [(ngModel)]="order.at" value="date">
+          <i class="primary"></i> <span translate>label.specificDate</span>
+        </label>
+        <label class="md-check w">
+          <input type="radio" name="radio" [(ngModel)]="order.at" value="later">
+          <i class="primary"></i> <span translate>label.manualDate</span>
+        </label>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="order.at == 'later'">
+      <label class="col-sm-3 form-control-label" translate>label.time</label>
+
+      <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
+        <input validTimeReqex type="text" #time="ngModel" class="form-control" [required]="order.at == 'later'"
+               name="atTime" [(ngModel)]="order.atTime" placeholder="{{'placeholder.enterSecond' | translate}}">
+        <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
+          <div translate *ngIf="!time.valid">message.invalid</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="order.at == 'date'">
+      <label class="col-sm-3 form-control-label" translate>label.enterDateAndTime</label>
+      <div class="col-sm-6">
+        <nz-date-picker [required]="order.at == 'date'" [nzPlaceHolder]="dateFormat | uppercase" [nzFormat]="dateFormat" [(ngModel)]="order.fromDate"
+                        name="from"></nz-date-picker>
+        <nz-time-picker [nzDisabled]="!order.fromDate" [nzFormat]="'HH:mm:ss'"
+                        class="input-time m-l time-picker" [(ngModel)]="order.fromTime" name="fromTime"
+                        nzPlaceHolder="HH:MM:SS"></nz-time-picker>
+      </div>
+    </div>
+    <div class="form-group row" [hidden]="!(order.at =='date')">
+      <div class="col-sm-3 form-control-label" translate>label.timeZone</div>
+      <div class="col-sm-6">
+        <nz-select nzShowSearch name="timeZone" nzAllowClear [(ngModel)]="order.timeZone">
+          <nz-option *ngFor="let zone of zones" [nzValue]="zone" [nzLabel]="zone"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+    <div class="hide" [ngClass]="{'show': display}">
+      <div class="form-group row">
+        <label class="col-sm-3 " translate>label.selectComments</label>
+        <div class=" col-sm-6">
+          <div>
+            <label class="md-check w w-md">
+              <input type="radio" name="option" [(ngModel)]="comments.radio" value="predefined">
+              <i class="primary"></i> <span translate>label.predefined</span>
+            </label>
+            <label class="md-check w">
+              <input type="radio" name="option" [(ngModel)]="comments.radio" value="new">
+              <i class="primary"></i> <span translate>label.individual</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row" *ngIf="comments.radio=='predefined'"
+           [ngClass]="{'has-error' : ((comment.dirty || comment.touched) && comment.invalid)}">
+        <label class="col-sm-3 form-control-label" translate>label.selectComment</label>
+        <div class="col-sm-6">
+          <nz-select nzPlaceHolder="{{'label.selectPredefinedReason' | translate}}"
+                     [(ngModel)]="comments.comment" name="comment" #comment="ngModel"
+                     [required]="required && comments.radio=='predefined'">
+            <nz-option [nzValue]="''" [nzLabel]="'label.selectPredefinedReason' | translate"></nz-option>
+            <nz-option *ngFor="let list of messageList" [nzLabel]="list" [nzValue]="list"></nz-option>
+          </nz-select>
+          <div *ngIf="comment.invalid && (comment.dirty || comment.touched)" class="text-danger m-t-xs">
+            <div *ngIf="comment.errors.required" translate>
+              message.requiredError
+            </div>
+            <div *ngIf="comment.invalid && !comment.errors.required" translate>
+              message.invalid
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row" *ngIf="comments.radio=='new'"
+           [ngClass]="{'has-error' : ((textComment.dirty || textComment.touched) && textComment.invalid)}">
+        <label class="col-sm-3 " translate>label.comment</label>
+        <div class=" col-sm-6">
+              <textarea rows="3" class="form-control" maxlength="2000" name="textComment" #textComment="ngModel"
+                        [required]="required && comments.radio=='new'"
+                        [(ngModel)]="comments.textComment"
+                        placeholder="{{'placeholder.enterComment' | translate}}"></textarea>
+          <div *ngIf="textComment.invalid && (textComment.dirty || textComment.touched)"
+               class="text-danger help-block">
+            <div *ngIf="textComment.errors.required" translate>
+              message.requiredError
+            </div>
+            <div *ngIf="textComment.invalid && !textComment.errors.required" translate>
+              message.invalid
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row"
+           [ngClass]="{'has-error' : ((timeSpent.dirty || timeSpent.touched) && timeSpent.invalid)}">
+        <label class="col-sm-3 form-control-label" translate>label.timeSpend</label>
+        <div class="col-sm-6">
+          <input type="text" pattern="[1-9[0-9]*" class="form-control" name="timeSpent" #timeSpent="ngModel"
+                 placeholder="{{'placeholder.timeSpend' | translate}}" [(ngModel)]="comments.timeSpent">
+          <div *ngIf="timeSpent.invalid && (timeSpent.dirty || timeSpent.touched)" class="text-danger m-t-xs">
+            <div *ngIf="timeSpent.invalid && !timeSpent.errors.required" translate>
+              message.invalid
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row"
+           [ngClass]="{'has-error' : ((ticketLink.dirty || ticketLink.touched) && ticketLink.invalid)}">
+        <label class="col-sm-3 form-control-label" translate>label.ticketLink</label>
+        <div class="col-sm-6">
+          <input type="text"
+                 pattern="(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})"
+                 class="form-control" name="ticketLink" #ticketLink="ngModel"
+                 placeholder="{{'placeholder.ticketLink' | translate}}"
+                 [(ngModel)]="comments.ticketLink">
+          <div *ngIf="ticketLink.invalid && (ticketLink.dirty || ticketLink.touched)"
+               class="text-danger m-t-xs">
+            <div *ngIf="ticketLink.invalid && !ticketLink.errors.required" translate>
+              message.invalid
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="form-group row m-b-0" *ngFor="let argument of arguments; let i=index">
+        <div class="col-sm-3 m-b-sm" *ngIf="i==0" translate>label.name</div>
+        <div class="col-sm-9 m-b-sm" *ngIf="i==0" translate>label.value</div>
+        <div class="col-sm-3 m-b-sm">
+          <input autocomplete="off" type="text" name="name{{i}}" class="form-control" [appAutofocus]="i == arguments.length -1"
+                 [(ngModel)]="argument.name" placeholder="{{'placeholder.name' | translate}} {{i+1}}">
+        </div>
+
+        <div class="col-sm-6 m-b-sm">
+          <input autocomplete="off" type="text" name="value{{i}}" class="form-control" (keypress)="onKeyPress($event)"
+                 [(ngModel)]="argument.value" placeholder="{{'placeholder.value' | translate}} {{i+1}}">
+        </div>
+        <div class="col-sm-1 p-l-0">
+          <a><i (click)="removeArgument(i)" class="fa fa-times m-t-sm text-muted"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="permission.Order.change.parameter">
+      <div class="col-sm-12">
+        <a class="text-u-l" *ngIf="arguments.length>0" (click)="addArgument()" translate>button.addAnotherVariable</a>
+        <a class="text-u-l" *ngIf="arguments.length==0" (click)="addArgument()" translate>button.addVariable</a>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer text-left">
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+      {{'button.submit' | translate}}
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>button.cancel</button>
+  </div>
+</form>
+

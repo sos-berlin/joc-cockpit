@@ -6011,7 +6011,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private validatePredicate(predicate) {
-    this.coreService.log('inventory/validate/predicate', predicate, {'Content-Type' : 'text/plain'}).subscribe((res: any) => {
+    this.coreService.post('inventory/validate/predicate', predicate).subscribe((res: any) => {
       if (res.invalidMsg) {
         this.invalidMsg = res.invalidMsg;
         this.workflow.valid = false;

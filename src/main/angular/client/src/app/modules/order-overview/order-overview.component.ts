@@ -312,6 +312,20 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   private getOrders(obj) {
     this.coreService.post('orders', obj).subscribe((res: any) => {
       this.orders = res.orders;
+      if(this.showPanelObj && this.showPanelObj.orderId) {
+        let flag = true;
+        if (this.orders.length > 0) {
+          for (let i = 0; i < this.orders.length; i++) {
+            if (this.orders[i].orderId === this.showPanelObj.orderId) {
+              flag = false;
+              break;
+            }
+          }
+        }
+        if (flag) {
+          this.hideAuditPanel();
+        }
+      }
       this.searchInResult();
       this.loading = true;
       this.updatePanelHeight();

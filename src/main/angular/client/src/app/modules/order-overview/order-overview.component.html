@@ -181,7 +181,7 @@
                           <span [nz-tooltip]="order.title" [innerHtml]="order.orderId"></span>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
-                          <app-order-action [order]="order" [schedulerId]="schedulerIds.selected" [permission]="permission"></app-order-action>
+                          <app-order-action [order]="order" [schedulerId]="schedulerIds.selected" [permission]="permission" [preferences]="preferences"></app-order-action>
                         </div>
                         <div class="text-sm text-left text-muted p-t-sm">
                           <span translate>label.status </span>:
@@ -280,9 +280,9 @@
                   <tbody>
                   <ng-template ngFor let-order
                                [ngForOf]="ajaxTable.data | orderBy: orderFilters.filter.sortBy:orderFilters.reverse">
-                    <tr>
+                    <tr [ngClass]="{'light-bg': (showPanelObj && showPanelObj.orderId == order.orderId)}">
                       <td class="tableexport-ignore">
-                        <app-order-action [order]="order" [schedulerId]="schedulerIds.selected" [permission]="permission"></app-order-action>
+                        <app-order-action [order]="order" [schedulerId]="schedulerIds.selected" [permission]="permission" [preferences]="preferences"></app-order-action>
                       </td>
                       <td>
                         <span class="show-in-single-line">
@@ -313,7 +313,7 @@
                             <span>{{argu.name}} : {{argu.value}}</span>
                           </div>
                         </div>
-                        <div class="p-l" *ngIf="order.arguments && order.arguments.length === 0">
+                        <div class="p-l" *ngIf="!order.arguments || (order.arguments && order.arguments.length === 0)">
                           <span translate>message.noDataAvailable</span>
                         </div>
                       </td>
@@ -336,7 +336,7 @@
               <div class="col-md-12">
                 <div class="box white">
                   <div class="box-header">
-                    <span class="text">{{showPanelObj.path}}: {{showPanelObj.orderId}} <i *ngIf="showPanelObj.title">-</i> <i
+                    <span class="text">{{showPanelObj.workflowId.path}}: {{showPanelObj.orderId}} <i *ngIf="showPanelObj.title">-</i> <i
                       class="text-sm text-muted">{{showPanelObj.title}}</i></span>
                   </div>
                   <div class="box-tool">

@@ -29,6 +29,7 @@ export class SingleDeployComponent implements OnInit {
   submitted = false;
 
   object: any = {
+    checked : false,
     update: [],
     delete: []
   };
@@ -133,8 +134,23 @@ export class SingleDeployComponent implements OnInit {
     });
   }
 
+
+  checkAll() {
+    for (let i = 0; i < this.deployablesObject.length; i++) {
+      this.deployablesObject[i].isChecked = this.object.checked;
+    }
+  }
+
   handleCheckbox(node): void {
     node.isChecked = !node.isChecked;
+    let flag= true;
+    for (let i = 0; i < this.deployablesObject.length; i++) {
+      if(!this.deployablesObject[i].isChecked){
+        flag = false;
+        break;
+      }
+    }
+    this.object.checked = flag;
   }
 
   cancel() {
@@ -1977,6 +1993,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
       });
     }
+  }
+
+  reDeployObject(node){
+
   }
 
   releaseObject(data) {

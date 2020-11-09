@@ -6,7 +6,7 @@
   <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
     <ul nz-menu>
       <li nz-menu-item *ngIf="permission && permission.Order.execute.start">
-        <a (click)="startOrder(order)" translate>button.startOrderNow</a>
+        <a (click)="startOrder()" translate>button.startOrderNow</a>
       </li>
       <li nz-menu-item *ngIf="permission && permission.Order.execute.start">
         <a (click)="startOrderAt()" translate>button.startOrderat</a>

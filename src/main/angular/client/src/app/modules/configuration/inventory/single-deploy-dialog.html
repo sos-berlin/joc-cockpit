@@ -29,7 +29,11 @@
       <div class="row">
         <div class="col-md-12">
             <div class="m-b-sm">
-              <i nz-icon nzType="folder"
+              <label class="md-check w-18" style="top:2px">
+                <input type="checkbox" (change)="checkAll()"  name="chkAll" [(ngModel)]="object.checked"/>
+                <i class="primary"></i>
+              </label>
+              <i nz-icon nzType="folder" class="p-l-sm"
                  nzTheme="outline"></i>
               <span class="p-l-sm">{{data.path}}</span>
             </div>

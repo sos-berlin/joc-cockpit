@@ -25,7 +25,8 @@
              translate>label.allOrders</a></span>
         <a (click)="setFilter('ALL')" class="pull-right text primary-text-hover-color"
            [ngClass]="{'_600': state =='ALL'}"
-           [innerHtml]="snapshot.running+snapshot.suspended+snapshot.failed+snapshot.waiting+snapshot.pending+snapshot.blocked || 0"></a>
+           [innerHtml]="(snapshot.running || 0) + (snapshot.suspended || 0) + (snapshot.failed || 0)
+            + (snapshot.waiting || 0) + (snapshot.pending || 0) + (snapshot.blocked || 0)"></a>
       </div>
       <div class="pending">
         <span class="text-black-lt _300" [ngClass]="{'_600': state =='PENDING'}">
