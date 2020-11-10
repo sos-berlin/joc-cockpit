@@ -4,7 +4,8 @@ import {
   FilterModalComponent,
   OrderSearchComponent,
   YadeSearchComponent,
-  TaskSearchComponent
+  TaskSearchComponent,
+  DeploymentSearchComponent
 } from './history.component';
 import {HistoryRoutingModule} from './history-routing.module';
 import {SharedModule} from '../shared/shared.module';
@@ -21,7 +22,8 @@ import {EditIgnoreListModal} from '../../components/ignore-list-modal/ignore-lis
     EditIgnoreListModal,
     OrderSearchComponent,
     YadeSearchComponent,
-    TaskSearchComponent
+    TaskSearchComponent,
+    DeploymentSearchComponent
   ],
   entryComponents: [
     FilterModalComponent,

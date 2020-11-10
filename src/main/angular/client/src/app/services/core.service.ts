@@ -118,6 +118,15 @@ export class CoreService {
     this.tabs._history.yade.searchText = '';
     this.tabs._history.yade.currentPage = '1';
     this.tabs._history.yade.selectedView = true;
+    this.tabs._history.deployment = {};
+    this.tabs._history.deployment.filter = {};
+    this.tabs._history.deployment.filter.state = 'ALL';
+    this.tabs._history.deployment.filter.date = 'today';
+    this.tabs._history.deployment.filter.sortBy = 'start';
+    this.tabs._history.deployment.reverse = true;
+    this.tabs._history.deployment.searchText = '';
+    this.tabs._history.deployment.currentPage = '1';
+    this.tabs._history.deployment.selectedView = true;
 
     this.tabs._yade = {};
     this.tabs._yade.filter = {};
@@ -275,6 +284,15 @@ export class CoreService {
     this.tempTabs._history.yade.reverse = true;
     this.tempTabs._history.yade.currentPage = '1';
     this.tempTabs._history.yade.selectedView = true;
+    this.tempTabs._history.deployment = {};
+    this.tempTabs._history.deployment.filter = {};
+    this.tempTabs._history.deployment.filter.state = 'ALL';
+    this.tempTabs._history.deployment.filter.date = 'today';
+    this.tempTabs._history.deployment.filter.sortBy = 'start';
+    this.tempTabs._history.deployment.reverse = true;
+    this.tempTabs._history.deployment.searchText = '';
+    this.tempTabs._history.deployment.currentPage = '1';
+    this.tempTabs._history.deployment.selectedView = true;
 
     this.tempTabs._yade = {};
     this.tempTabs._yade.filter = {};

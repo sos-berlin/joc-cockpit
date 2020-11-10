@@ -187,6 +187,7 @@ export class DeployComponent implements OnInit {
   @Input() path: string;
   @Input() releasable: boolean;
   @Input() display: any;
+  @Input() reDeploy: any;
   selectedSchedulerIds = [];
   loading = true;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
@@ -197,7 +198,7 @@ export class DeployComponent implements OnInit {
   };
   isExpandAll = false;
   submitted = false;
-  comments: any = {radio : 'predefined'};
+  comments: any = {radio: 'predefined'};
   required: boolean;
   messageList: any;
 
@@ -323,7 +324,12 @@ export class DeployComponent implements OnInit {
 
   buildTree() {
     const URL = this.releasable ? 'inventory/releasables' : 'inventory/deployables';
-    this.coreService.post(URL, {folder: this.path || '/', recursive: true, onlyValidObjects: true, withVersions: true}).subscribe((res) => {
+    this.coreService.post(URL, {
+      folder: this.path || '/',
+      recursive: true,
+      onlyValidObjects: true,
+      withVersions: !this.reDeploy
+    }).subscribe((res) => {
       this.buildDeployablesTree(res);
       if (this.nodes.length > 0) {
         this.checkAndUpdateVersionList(this.nodes[0]);
@@ -552,18 +558,50 @@ export class DeployComponent implements OnInit {
     recursive(this.nodes);
   }
 
+  getRedeploy() {
+    this.object.excludes = [];
+    const self = this;
+
+    function recursive(nodes) {
+      for (let i = 0; i < nodes.length; i++) {
+        if ((nodes[i].type || nodes[i].isFolder) && !nodes[i].recursivelyDeploy) {
+          let obj: any = {path: nodes[i].path, invConfigurationId: nodes[i].key};
+          self.object.excludes.push(obj);
+        }
+        if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
+          recursive(nodes[i].children);
+        }
+      }
+    }
+
+    recursive(this.nodes);
+  }
+
   deploy() {
     this.submitted = true;
-    this.getJSObject();
+    if (this.reDeploy) {
+      this.getRedeploy();
+    } else {
+      this.getJSObject();
+    }
 
     const obj: any = {
       update: this.object.update,
     };
+    if (this.reDeploy) {
+      obj.folder = this.path || '/';
+      obj.excludes = this.object.excludes;
+    } else {
+      obj.update = this.object.update;
+    }
     if (this.object.delete.length > 0) {
       obj.delete = this.object.delete;
     }
     if (!this.releasable) {
       obj.controllers = [];
+      this.selectedSchedulerIds.forEach(element => {
+        obj.controllers.push({controller: element});
+      });
       obj.auditLog = {};
       if (this.comments.comment) {
         obj.auditLog.comment = this.comments.comment;
@@ -574,11 +612,11 @@ export class DeployComponent implements OnInit {
       if (this.comments.ticketLink) {
         obj.auditLog.ticketLink = this.comments.ticketLink;
       }
-      this.selectedSchedulerIds.forEach(element => {
-        obj.controllers.push({controller: element});
-      });
     }
-    const URL = this.releasable ? 'inventory/release' : 'publish/deploy';
+    let URL = this.releasable ? 'inventory/release' : 'publish/deploy';
+    if (this.reDeploy) {
+      URL = 'publish/re_deploy';
+    }
     this.coreService.post(URL, obj).subscribe((res: any) => {
       this.activeModal.close('ok');
     }, (error) => {
@@ -604,7 +642,7 @@ export class SetVersionComponent implements OnInit {
   version = {type: 'setOneVersion', name: ''};
   isExpandAll = false;
   loading = true;
-  comments: any = {radio : 'predefined'};
+  comments: any = {radio: 'predefined'};
   required: boolean;
   messageList: any;
   object: any = {
@@ -994,7 +1032,7 @@ export class ExportComponent implements OnInit {
   isExpandAll = false;
   loading = true;
   submitted = false;
-  comments: any = {radio : 'predefined'};
+  comments: any = {radio: 'predefined'};
   required: boolean;
   messageList: any;
 
@@ -1396,7 +1434,7 @@ export class ImportWorkflowModalComponent implements OnInit {
     };
   }
 
-  import(){
+  import() {
     this.uploader.queue[0].upload();
   }
 
@@ -2067,8 +2105,19 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  reDeployObject(node){
+  reDeployObject(node) {
+    let origin = node.origin ? node.origin : node;
+    const modalRef = this.modalService.open(DeployComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerIds = this.schedulerIds;
+    modalRef.componentInstance.preferences = this.preferences;
+    modalRef.componentInstance.display = this.preferences.auditLog;
+    modalRef.componentInstance.path = origin.path;
+    modalRef.componentInstance.reDeploy = true;
+    modalRef.result.then((res: any) => {
+      this.initTree(origin.path, null);
+    }, () => {
 
+    });
   }
 
   releaseObject(data) {
@@ -2318,7 +2367,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       }).subscribe((res: any) => {
         if ((obj.type === 'WORKINGDAYSCALENDAR' || obj.type === 'NONWORKINGDAYSCALENDAR')) {
           obj.objectType = obj.type;
-            obj.type = 'CALENDAR';
+          obj.type = 'CALENDAR';
         }
         obj.id = res.id;
         obj.valid = !(obj.type.match(/CALENDAR/) || obj.type === 'ORDER' || obj.type === 'AGENTCLUSTER' || obj.type === 'WORKFLOW');

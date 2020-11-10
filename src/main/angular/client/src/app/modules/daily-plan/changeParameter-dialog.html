@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>label.changeParameter</span>
+    <span translate>dailyPlan.label.setParameters</span>
     <i *ngIf="order" class="text-muted p-l-xs text">{{order.orderId}}</i>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
@@ -8,14 +8,13 @@
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
-  <div class="modal-body">
-    <div class="p-a">
+  <div class="modal-body p-a">
       <div class="row">
         <div class="col-sm-12 text m-b">
           <div class="form-group row m-b-0" *ngFor="let variable of variables; let i = index">
-            <div class="col-md-4 col-sm-5 m-b-sm text-left" *ngIf="i==0" translate>label.name</div>
+            <div class="col-md-5 col-sm-5 m-b-sm text-left" *ngIf="i==0" translate>label.name</div>
             <div class="col-md-6 col-sm-6 m-b-sm text-left" *ngIf="i==0" translate>label.value</div>
-            <div class="col-md-4 col-sm-6 m-b-sm">
+            <div class="col-md-5 col-sm-6 m-b-sm">
               <input autocomplete="off" type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == variables.length -1"
                      [(ngModel)]="variable.name" placeholder="{{'placeholder.name' | translate}} {{i+1}}">
             </div>
@@ -35,7 +34,6 @@
           </div>
         </div>
       </div>
-    </div>
   </div>
   <div class="modal-footer">
     <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">

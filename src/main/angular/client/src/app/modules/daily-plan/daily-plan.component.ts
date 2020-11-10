@@ -23,6 +23,7 @@ import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {OrderPipe} from 'ngx-order-pipe';
 import {ExcelService} from '../../services/excel.service';
+import {ToasterService} from 'angular2-toaster';
 
 declare const JSGantt;
 declare let jsgantt;
@@ -323,7 +324,7 @@ export class OrderTemplateModalComponent implements AfterViewInit {
   submitted = false;
   tempItems: any = [];
 
-  constructor(public activeModal: NgbActiveModal, public  coreService: CoreService) {
+  constructor(public activeModal: NgbActiveModal, public  coreService: CoreService, private toasterService: ToasterService) {
   }
 
   ngAfterViewInit() {
@@ -359,13 +360,14 @@ export class OrderTemplateModalComponent implements AfterViewInit {
   }
 
   onSubmit(): void {
-    this.submitted = true;
+    this.toasterService.pop('info', 'API not yet implement');
+   /* this.submitted = true;
     this.coreService.post('daily_plan/update/order', {}).subscribe((result) => {
       this.submitted = false;
       this.activeModal.close('Done');
     }, () => {
       this.submitted = false;
-    });
+    });*/
   }
 
   cancel() {
@@ -600,11 +602,11 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
     this.translate.get('dailyPlan.button.submitOrder').subscribe(translatedValue => {
       btnSubmitorder = translatedValue;
     });
-    this.translate.get('dailyPlan.button.changeParameter').subscribe(translatedValue => {
+    this.translate.get('dailyPlan.button.setParameters').subscribe(translatedValue => {
       btnChangeParameter = translatedValue;
     });
 
-    this.translate.get('dailyPlan.button.modifyOrder').subscribe(translatedValue => {
+    this.translate.get('dailyPlan.button.setStartTime').subscribe(translatedValue => {
       btnModifyOrder = translatedValue;
     });
 
@@ -1489,6 +1491,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private initConf() {
+    if(sessionStorage.preferences){
+      return;
+    }
     this.preferences = JSON.parse(sessionStorage.preferences) || {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
@@ -1530,7 +1535,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private openModel(plan, updateOnly) {
-    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static', size: 'lg'});
+    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.variable = plan.variables;
     modalRef.componentInstance.order = plan;
     modalRef.componentInstance.updateOnly = updateOnly;

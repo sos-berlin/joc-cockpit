@@ -166,10 +166,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.router.navigate(['/configuration/' + confFilters.state]);
         return;
       } else {
-        confFilters.state = 'others';
+        confFilters.state = 'other';
       }
     }
-    if (confFilters.state === 'inventory') {
+    if (confFilters.state === 'other') {
       if (this.permission.YADE.configurations.view) {
         this.router.navigate(['/configuration/' + confFilters.state]);
       }

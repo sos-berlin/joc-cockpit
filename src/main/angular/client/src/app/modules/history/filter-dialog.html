@@ -21,3 +21,7 @@
   <app-yade-form-template [filter]="filter" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="allFilter"
                           (onCancel)="cancel($event)"></app-yade-form-template>
 </div>
+<div *ngIf="type === 'DEPLOYMENT'">
+  <app-deployment-form-template [filter]="filter" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="allFilter"
+                          (onCancel)="cancel($event)"></app-deployment-form-template>
+</div>

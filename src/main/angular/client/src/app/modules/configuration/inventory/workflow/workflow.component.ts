@@ -4295,7 +4295,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             graph.getModel().execute(edit3);
           } else if (self.selectedNode.type === 'If') {
             const predicate = self.selectedNode.newObj.predicate;
-            self.validatePredicate(predicate);
+            self.validatePredicate(predicate, null, false);
             const edit = new mxCellAttributeChange(
               obj.cell, 'predicate', predicate);
             graph.getModel().execute(edit);
@@ -5832,6 +5832,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 }
               }
               return;
+            } else {
+              self.validatePredicate(json.instructions[x].predicate, json.instructions[x].id, isOpen);
             }
           }
           if (json.instructions[x].TYPE === 'Try') {
@@ -5931,8 +5933,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (json.instructions[x].then && json.instructions[x].then.instructions) {
             recursive(json.instructions[x].then);
           }
-          if (json.instructions[x].else && json.instructions[x].else.instructions) {
-            recursive(json.instructions[x].else);
+          if (json.instructions[x].else) {
+            if (json.instructions[x].else.instructions) {
+              recursive(json.instructions[x].else);
+            } else {
+              delete json.instructions[x]['else'];
+            }
           }
         }
       }
@@ -5954,6 +5960,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 this.invalidMsg = 'inventory.message.agentIsMissing';
               }
             }
+
             if (!flag && isValidate) {
               if (isOpen) {
                 self.openSideBar(ids.get(this.jobs[n].name));
@@ -6010,11 +6017,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     });
   }
 
-  private validatePredicate(predicate) {
+  private validatePredicate(predicate, id, isOpen) {
     this.coreService.post('inventory/validate/predicate', predicate).subscribe((res: any) => {
       if (res.invalidMsg) {
         this.invalidMsg = res.invalidMsg;
         this.workflow.valid = false;
+        if (isOpen) {
+          this.openSideBar(id);
+        }
       }
     }, () => {
     });

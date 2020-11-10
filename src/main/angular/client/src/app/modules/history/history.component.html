@@ -144,7 +144,7 @@
                       <span [nz-tooltip]="filter.account">{{filter.name}}</span>
                       <i (click)="changeFilter(null);$event.stopPropagation();"
                          *ngIf="savedHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove"
-                         [nz-tooltip]="'customization.customization.tooltip.deactivateCustomization' | translate"></i>
+                         [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"></i>
                     </a>
                   </li>
                 </ul>
@@ -433,9 +433,141 @@
               </nz-dropdown-menu>
             </div>
           </div>
-          <div class="btn-group dropdown" *ngIf="historyFilters.type != 'YADE'">
+          <div class="hide" [ngClass]="{'show-block':historyFilters.type == 'DEPLOYMENT'}">
+            <div class="btn-group m-l-12 hidden-btn-group">
+              <button [disabled]="savedDeploymentHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                      (click)="loadHistory('STATE','ALL')"
+                      [ngClass]="{'btn-primary': deployment.filter.state=='ALL'}" translate>history.button.allState
+              </button>
+              <button [disabled]="savedDeploymentHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                      (click)="loadHistory('STATE','DEPLOYED')"
+                      [ngClass]="{'btn-primary': deployment.filter.state=='DEPLOYED'}" translate>history.button.deployed
+              </button>
+              <button [disabled]="savedDeploymentHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                      (click)="loadHistory('STATE','NOT_DEPLOYED')"
+                      [ngClass]="{'btn-primary': deployment.filter.state=='NOT_DEPLOYED'}" translate>history.button.notDeployed
+              </button>
+            </div>
+            <div class="btn-group dropdown hidden-dropdown">
+              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="state" [nzPlacement]="'bottomRight'" translate>label.state
+                <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+              </button>
+              <nz-dropdown-menu #state="nzDropdownMenu" >
+                <ul nz-menu>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.state=='ALL', 'disable-link':savedDeploymentHistoryFilter.selected}">
+                    <a (click)="loadHistory('STATE','ALL')"
+                       translate>history.button.allState
+                    </a>
+                  </li>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.state=='DEPLOYED', 'disable-link':savedDeploymentHistoryFilter.selected}">
+                    <a (click)="loadHistory('STATE','DEPLOYED')"
+                       translate>history.button.deployed
+                    </a>
+                  </li>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.state=='NOT_DEPLOYED', 'disable-link':savedDeploymentHistoryFilter.selected}">
+                    <a (click)="loadHistory('STATE','NOT_DEPLOYED')"
+                       translate>history.button.notDeployed
+                    </a>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+            <div class="btn-group m-l-12 hidden-btn-group">
+              <button [disabled]="savedDeploymentHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                      (click)="loadHistory('DATE','ALL')"
+                      [ngClass]="{'btn-primary': deployment.filter.date=='ALL'}" translate>button.all
+              </button>
+              <button [disabled]="savedDeploymentHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                      (click)="loadHistory('DATE','today')"
+                      [ngClass]="{'btn-primary': deployment.filter.date=='today'}" translate>button.today
+              </button>
+              <button [disabled]="savedDeploymentHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                      (click)="loadHistory('DATE','-1h')"
+                      [ngClass]="{'btn-primary': deployment.filter.date=='-1h'}" translate>button.last1
+              </button>
+              <button [disabled]="savedDeploymentHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                      (click)="loadHistory('DATE','-12h')"
+                      [ngClass]="{'btn-primary': deployment.filter.date=='-12h'}" translate>button.last12
+              </button>
+              <button [disabled]="savedDeploymentHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                      (click)="loadHistory('DATE','-24h')"
+                      [ngClass]="{'btn-primary': deployment.filter.date=='-24h'}" translate>button.last24
+              </button>
+              <button [disabled]="savedDeploymentHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                      (click)="loadHistory('DATE','-7d')"
+                      [ngClass]="{'btn-primary': deployment.filter.date=='-7d'}" translate>button.lastWeak
+              </button>
+            </div>
+            <div class="btn-group dropdown hidden-dropdown">
+              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" type="button" translate>
+                label.anyDate
+                <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+              </button>
+              <nz-dropdown-menu #anyDate="nzDropdownMenu" >
+                <ul nz-menu>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.date=='ALL', 'disable-link':savedDeploymentHistoryFilter.selected}">
+                    <a (click)="loadHistory('DATE','ALL')"
+                       translate>button.all
+                    </a>
+                  </li>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.date=='today', 'disable-link':savedDeploymentHistoryFilter.selected}">
+                    <a (click)="loadHistory('DATE','today')"
+                       translate>button.today
+                    </a>
+                  </li>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.date=='-1h', 'disable-link':savedDeploymentHistoryFilter.selected}">
+                    <a (click)="loadHistory('DATE','-1h')"
+                       translate>button.last1
+                    </a>
+                  </li>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.date=='-12h', 'disable-link':savedDeploymentHistoryFilter.selected}">
+                    <a (click)="loadHistory('DATE','-12h')"
+                       translate>button.last12
+                    </a>
+                  </li>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.date=='-24h', 'disable-link':savedDeploymentHistoryFilter.selected}">
+                    <a (click)="loadHistory('DATE','-24h')"
+                       translate>button.last24
+                    </a>
+                  </li>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.date=='-7d', 'disable-link':savedDeploymentHistoryFilter.selected}">
+                    <a (click)="loadHistory('DATE','-7d')"
+                       translate>button.lastWeak
+                    </a>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+            <div class="btn-group dropdown">
+              <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered1.account" nz-dropdown nzTrigger="click" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'" type="button" translate>
+                {{'customization.label.customizations' | translate}} <span class="text-primary" [innerHtml]="selectedFiltered1.name"></span>
+                <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+              </button>
+              <nz-dropdown-menu #customization="nzDropdownMenu" >
+                <ul nz-menu>
+                  <li nz-menu-item >
+                    <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
+                  </li>
+                  <li nz-menu-item  *ngIf="deploymentHistoryFilterList.length>0">
+                    <a (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
+                  </li>
+                  <li nz-menu-divider *ngIf="deploymentHistoryFilterList.length>0"></li>
+                  <li nz-menu-item  *ngFor="let filter of deploymentHistoryFilterList | orderBy: 'name'"
+                      [ngClass]="{'ant-select-dropdown-menu-item-active': (savedDeploymentHistoryFilter.selected == filter.id)}">
+                    <a (click)="changeFilter(filter)">
+                      <span [nz-tooltip]="filter.account">{{filter.name}}</span>
+                      <i (click)="changeFilter(null);$event.stopPropagation();"
+                         *ngIf="savedDeploymentHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove"
+                         [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"></i>
+                    </a>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+          </div>
+          <div class="btn-group dropdown" *ngIf="historyFilters.type === 'ORDER' || historyFilters.type === 'TASK'">
             <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="ignoreYade" [nzPlacement]="'bottomRight'">
-              {{'label.ignoreList' | translate}}
+              {{'history.label.ignoreList' | translate}}
               <span class="text-primary"
                     *ngIf="savedIgnoreList.isEnable"
                     [innerHtml]="'label.active' | translate"></span>
@@ -444,19 +576,19 @@
             <nz-dropdown-menu #ignoreYade="nzDropdownMenu" >
               <ul nz-menu>
                 <li nz-menu-item  *ngIf="(savedIgnoreList.workflows.length > 0 || savedIgnoreList.orders.length > 0) && historyFilters.type == 'ORDER'">
-                  <a (click)="editIgnoreList()" translate>button.editIgnoreList</a>
+                  <a (click)="editIgnoreList()" translate>history.button.editIgnoreList</a>
                 </li>
                 <li nz-menu-item  *ngIf="savedIgnoreList.jobs.length > 0 && historyFilters.type == 'TASK'">
-                  <a (click)="editIgnoreList()" translate>button.editIgnoreList</a>
+                  <a (click)="editIgnoreList()" translate>history.button.editIgnoreList</a>
                 </li>
                 <li nz-menu-item  *ngIf="!savedIgnoreList.isEnable">
-                  <a (click)="enableDisableIgnoreList()" translate>button.enableIgnoreList</a>
+                  <a (click)="enableDisableIgnoreList()" translate>history.button.enableIgnoreList</a>
                 </li>
                 <li nz-menu-item  *ngIf="savedIgnoreList.isEnable">
-                  <a (click)="enableDisableIgnoreList()" translate>button.disableIgnoreList</a>
+                  <a (click)="enableDisableIgnoreList()" translate>history.button.disableIgnoreList</a>
                 </li>
                 <li nz-menu-item >
-                  <a (click)="resetIgnoreList()" translate>button.resetIgnoreList</a>
+                  <a (click)="resetIgnoreList()" translate>history.button.resetIgnoreList</a>
                 </li>
               </ul>
             </nz-dropdown-menu>
@@ -475,7 +607,7 @@
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
           <li class="nav-item" *ngIf="permission.History.view.status">
             <a class="nav-link" [ngClass]="{'active': historyFilters.type=='ORDER'}" (click)="orderHistory(null)">
-              <span class="nav-text text-dark p-b-sm"><span class="text" translate>button.order</span></span>
+              <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.order</span></span>
             </a>
           </li>
           <li class="nav-item dropdown-separator" *ngIf="permission.History.view.status">
@@ -483,7 +615,7 @@
           </li>
           <li class="nav-item" *ngIf="permission.History.view.status">
             <a class="nav-link" [ngClass]="{'active': historyFilters.type=='TASK'}" (click)="taskHistory(null)">
-              <span class="nav-text text-dark p-b-sm"><span class="text" translate>button.task</span></span>
+              <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.task</span></span>
             </a>
           </li>
           <li class="nav-item dropdown-separator" *ngIf="permission.YADE.view.status">
@@ -491,7 +623,15 @@
           </li>
           <li class="nav-item" *ngIf="permission.YADE.view.status">
             <a class="nav-link" [ngClass]="{'active': historyFilters.type=='YADE'}" (click)="yadeHistory(null)">
-              <span class="nav-text text-dark p-b-sm"><span class="text" translate>button.fileTransfer</span></span>
+              <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.fileTransfer</span></span>
+            </a>
+          </li>
+          <li class="nav-item dropdown-separator">
+            <span class="separator"></span>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [ngClass]="{'active': historyFilters.type=='DEPLOYMENT'}" (click)="deploymentHistory(null)">
+              <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.deployment</span></span>
             </a>
           </li>
         </ul>
@@ -524,6 +664,12 @@
           </label>
           <i *ngIf="historyFilters.type === 'YADE'" [hidden]="!yade.searchText" class="fa fa-times search-close"
              (click)="yade.searchText = '';searchInResult()"></i>
+          <label>
+            <input *ngIf="historyFilters.type === 'DEPLOYMENT'" type="search" placeholder="{{'placeholder.search' | translate}}"
+                   [(ngModel)]="deployment.searchText" (keyup)="searchInResult()">
+          </label>
+          <i *ngIf="historyFilters.type === 'DEPLOYMENT'" [hidden]="!deployment.searchText" class="fa fa-times search-close"
+             (click)="deployment.searchText = '';searchInResult()"></i>
         </div>
       </div>
     </div>
@@ -547,6 +693,12 @@
                                     [permission]="permission" [allFilter]="yadeHistoryFilterList"
                                     [isSearch]="true" (onCancel)="cancel()"
                                     (onSearch)="search($event)"></app-yade-form-template>
+          </div>
+          <div *ngIf="historyFilters.type === 'DEPLOYMENT'">
+            <app-deployment-form-template [filter]="deploymentSearch" [preferences]="preferences" [schedulerIds]="schedulerIds"
+                                    [permission]="permission" [allFilter]="deploymentHistoryFilterList"
+                                    [isSearch]="true" (onCancel)="cancel()"
+                                    (onSearch)="search($event)"></app-deployment-form-template>
           </div>
         </div>
       </div>
@@ -642,12 +794,12 @@
                     <ul nz-menu>
                       <li nz-menu-item >
                         <a [ngClass]="{'disable-link':(schedulerIds.selected != history.jobschedulerId && history.jobschedulerId)}"
-                          (click)="addOrderToIgnoreList(history.orderId,history.workflow)" translate>button.addOrderToIgnoreList</a>
+                          (click)="addOrderToIgnoreList(history.orderId,history.workflow)" translate>history.button.addOrderToIgnoreList</a>
                       </li>
                       <li nz-menu-item >
                         <a [ngClass]="{'disable-link':(schedulerIds.selected != history.jobschedulerId && history.jobschedulerId)}"
                           (click)="addWorkflowToIgnoreList(history.workflow)"
-                          translate>button.addWorkflowToIgnoreList</a>
+                          translate>history.button.addWorkflowToIgnoreList</a>
                       </li>
                     </ul>
                   </nz-dropdown-menu>
@@ -753,12 +905,12 @@
                     <li nz-menu-item >
                       <a [ngClass]="{'disable-link':(schedulerIds.selected != child.jobschedulerId && child.jobschedulerId)}"
                         (click)="addOrderToIgnoreList(child.orderId,child.workflow)"
-                        translate>button.addOrderToIgnoreList</a>
+                        translate>history.button.addOrderToIgnoreList</a>
                     </li>
                     <li nz-menu-item >
                       <a [ngClass]="{'disable-link':(schedulerIds.selected != child.jobschedulerId && child.jobschedulerId)}"
                         (click)="addWorkflowToIgnoreList(child.workflow)"
-                        translate>button.addWorkflowToIgnoreList</a>
+                        translate>history.button.addWorkflowToIgnoreList</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
@@ -970,12 +1122,12 @@
                   <ul nz-menu>
                     <li nz-menu-item >
                       <a [ngClass]="{'disable-link':(schedulerIds.selected != jobHistory.jobschedulerId && jobHistory.jobschedulerId)}"
-                        (click)="addJobToIgnoreList(jobHistory.job)" translate>button.addJobToIgnoreList</a>
+                        (click)="addJobToIgnoreList(jobHistory.job)" translate>history.button.addJobToIgnoreList</a>
                     </li>
                     <li nz-menu-item >
                       <a [ngClass]="{'disable-link':(schedulerIds.selected != jobHistory.jobschedulerId && jobHistory.jobschedulerId)}"
                         (click)="addWorkflowToIgnoreList(jobHistory.workflow)"
-                        translate>button.addWorkflowToIgnoreList</a>
+                        translate>history.button.addWorkflowToIgnoreList</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
@@ -1250,6 +1402,119 @@
           <span translate>label.total</span> {{data.length}}
           <span *ngIf="ajaxYadeTable.data.length >1" translate>label.historiesFound</span>
           <span *ngIf="ajaxYadeTable.data.length === 1" translate>label.historyFound</span>
+        </div>
+      </div>
+    </div>
+    <div class="m-t-sm box p-a" *ngIf="historyFilters.type == 'DEPLOYMENT'">
+      <div class="table-responsive">
+        <nz-table
+          #ajaxTable
+          [nzSize]="'small'"
+          [nzPageSize]="deployment.entryPerPage || preferences.entryPerPage"
+          [nzPageIndex]="deployment.currentPage"
+          [nzBordered]="true"
+          [nzShowPagination]="data.length > 0"
+          [nzData]="data"
+          [nzLoading]="!isLoading"
+          [nzShowSizeChanger]="true"
+          (nzPageIndexChange)="pageIndexChange($event)"
+          (nzPageSizeChange)="pageSizeChange($event)"
+          (nzCurrentPageDataChange)="currentPageDataChange($event)"
+          [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+        >
+          <thead>
+          <tr>
+            <th class="tableexport-ignore menu"><span translate>label.action</span></th>
+            <th *ngIf="!historyView.current" (click)="sort3('jobSchedulerId')">
+              <a><span class="p-r-xs" translate>label.jobSchedulerId</span>
+                <i *ngIf="deployment.filter.sortBy == 'jobSchedulerId' && !deployment.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="deployment.filter.sortBy == 'jobSchedulerId' && deployment.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort3('account')">
+              <a><span class="p-r-xs" translate>label.account</span>
+                <i *ngIf="deployment.filter.sortBy == 'account' && !deployment.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="deployment.filter.sortBy == 'account' && deployment.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort3('path')">
+              <a><span class="p-r-xs" translate>label.path</span>
+                <i *ngIf="deployment.filter.sortBy == 'path' && !deployment.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="deployment.filter.sortBy == 'path' && deployment.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort3('state')">
+              <a><span class="p-r-xs" translate>history.label.state</span>
+                <i *ngIf="deployment.filter.sortBy == 'state' && !deployment.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="deployment.filter.sortBy == 'state' && deployment.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort3('operation')">
+              <a><span class="p-r-xs" translate>history.label.operation</span>
+                <i *ngIf="deployment.filter.sortBy == 'operation' && !deployment.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="deployment.filter.sortBy == 'operation' && deployment.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort3('version')">
+              <a><span class="p-r-xs" translate>history.label.version</span>
+                <i *ngIf="deployment.filter.sortBy == 'version' && !deployment.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="deployment.filter.sortBy == 'version' && deployment.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort3('deploymentDate')">
+              <a><span class="p-r-xs" translate>history.label.deploymentDate</span>
+                <i *ngIf="deployment.filter.sortBy == 'deploymentDate' && !deployment.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="deployment.filter.sortBy == 'deploymentDate' && deployment.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort3('deleteDate')">
+              <a><span class="p-r-xs" translate>history.label.deleteDate</span>
+                <i *ngIf="deployment.filter.sortBy == 'deleteDate' && !deployment.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="deployment.filter.sortBy == 'deleteDate' && deployment.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let devHistory of ajaxTable.data | orderBy: deployment.filter.sortBy:deployment.reverse"
+              class="cursor">
+            <td class="tableexport-ignore">
+              <div class="btn-group dropdown">
+                <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="export3" type="button">
+                  <i class="fa fa-ellipsis-h"></i>
+                </button>
+                <nz-dropdown-menu #export3="nzDropdownMenu" role="menu" >
+                  <ul nz-menu>
+                    <li nz-menu-item >
+                      <a translate>history.button.delete</a>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+            </td>
+            <td *ngIf="!historyView.current"><span [innerHtml]="devHistory.jobschedulerId"></span></td>
+            <td><span [innerHtml]="devHistory.account"></span></td>
+            <td><span [innerHtml]="devHistory.path"></span></td>
+            <td><span [innerHtml]="devHistory.state"></span></td>
+            <td><span [innerHtml]="devHistory.operation"></span></td>
+            <td><span [innerHtml]="devHistory.version"></span></td>
+            <td [innerHtml]="devHistory.deploymentDate | stringToDate"></td>
+            <td [innerHtml]="devHistory.deleteDate | stringToDate"></td>
+          </tr>
+          </tbody>
+        </nz-table>
+        <div class="w-half label-top" *ngIf="ajaxTable.data.length >0">
+          <span translate>label.total</span> {{data.length}}
+          <span *ngIf="ajaxTable.data.length >1" translate>label.historiesFound</span>
+          <span *ngIf="ajaxTable.data.length === 1" translate>label.historyFound</span>
         </div>
       </div>
     </div>
