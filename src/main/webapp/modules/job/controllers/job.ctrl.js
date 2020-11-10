@@ -3671,7 +3671,7 @@
         function recursive(data, path) {
             for (let i = 0; i < data.folders.length; i++) {
                 if (data.folders[i].path != path) {
-                    if (path.match(data.folders[i].path)) {
+                    if (path && path.match(data.folders[i].path)) {
                         data.folders[i].expanded = true;
                     }
                     recursive(data.folders[i], path);
@@ -9073,7 +9073,7 @@
             }
             if (dropTarget) {
                 for (let i = 0; i < dropTarget.outconditions.length; i++) {
-                    if (dropTarget.outconditions[i].conditionExpression.expression.match(/rc:0/)) {
+                    if (dropTarget.outconditions[i].conditionExpression.expression && dropTarget.outconditions[i].conditionExpression.expression.match(/rc:0/)) {
                         let str = '';
                         if (dropTarget.outconditions[i].outconditionEvents.length > 0) {
                             for (let j = 0; j < dropTarget.outconditions[i].outconditionEvents.length; j++) {
@@ -12332,7 +12332,6 @@
                 let callEvent = false, arr = [];
                 for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
                     if ((vm.events[0].eventSnapshots[m].eventType === "EventCreated" || vm.events[0].eventSnapshots[m].eventType === "EventRemoved" || vm.events[0].eventSnapshots[m].eventType === "InconditionValidated") && !vm.events[0].eventSnapshots[m].eventId) {
-                       
                         if (vm.events[0].eventSnapshots[m].eventType === "InconditionValidated" && vm.events[0].eventSnapshots[m].path) {
                             arr.push(vm.events[0].eventSnapshots[m].path);
                         } else {
@@ -12367,7 +12366,7 @@
                         updateJobStreamList();
                         break;
                     } else if ((vm.events[0].eventSnapshots[m].eventType === "JobStreamStarted" ||
-                        vm.events[0].eventSnapshots[m].eventType === "JobStreamCompleted") && vm.events[0].eventSnapshots[m].path.match(vm.selectedJobStreamObj.jobStream)) {
+                        vm.events[0].eventSnapshots[m].eventType === "JobStreamCompleted") && (vm.events[0].eventSnapshots[m].path && vm.events[0].eventSnapshots[m].path.match(vm.selectedJobStreamObj.jobStream))) {
                         vm.getSessions();
                         callEvent = true;
                     } else if (vm.events[0].eventSnapshots[m].eventType === "IsAlive") {
