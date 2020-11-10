@@ -1856,8 +1856,8 @@
   "tooltip.expandOutConditionAndEvents": "Développer les Conditions de Sortie et les Événements",
   "tooltip.collapseEvents": "Cacher les Événements",
   "joe.button.deployObject":  "Déployer l'Objet",
-  "label.startJobStream": "Start Job Stream",
-  "button.startJobStreamStarterParameterized": "Start Parameterized",
-  "button.setInstanceToRunning" : "Set Instance to Running",
-  "button.setInstanceToComplete" : "Set Instance to Complete"
+  "label.startJobStream": "Lancer le Flot de Travaux",
+  "button.startJobStreamStarterParameterized": "Lancer le Flot de Travaux avec paramètres",
+  "button.setInstanceToRunning" : "Régler l'instance sur 'en cours'",
+  "button.setInstanceToComplete" : "Régler l'instance sur 'terminé'"
 }

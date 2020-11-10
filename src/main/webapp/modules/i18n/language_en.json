@@ -1857,7 +1857,7 @@
   "tooltip.collapseEvents": "Hide Events",
   "joe.button.deployObject": "Deploy Object",
   "label.startJobStream": "Start Job Stream",
-  "button.startJobStreamStarterParameterized": "Start Parameterized",
-  "button.setInstanceToRunning" : "Set Instance to Running",
-  "button.setInstanceToComplete" : "Set Instance to Complete"
+  "button.startJobStreamStarterParameterized": "Start Job Stream parameterized",
+  "button.setInstanceToRunning" : "Set Instance to 'Running'",
+  "button.setInstanceToComplete" : "Set Instance to 'Completed'"
 }
