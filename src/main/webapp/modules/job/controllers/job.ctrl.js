@@ -12531,7 +12531,7 @@
                 jobStreams.push(obj);
             }
 
-            let name = 'jobstream-' + vm.folderPath + '-1.13.6' + '.json';
+            let name = 'jobstream-' + vm.folderPath + '-1.13.7' + '.json';
             let fileType = 'application/octet-stream';
             let data = jobStreams;
             if (typeof data === 'object') {
@@ -12543,7 +12543,7 @@
 
         vm.exportInPng = function () {
             if (vm.editor && vm.editor.graph) {
-                vm.exportSvg('jobstream-' + vm.folderPath + '-1.13.6');
+                vm.exportSvg('jobstream-' + vm.folderPath + '-1.13.7');
             }
         };
 

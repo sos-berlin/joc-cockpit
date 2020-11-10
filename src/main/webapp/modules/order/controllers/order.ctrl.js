@@ -7699,7 +7699,9 @@
                 if (vm.selectedFiltered4.jobStream) {
                     filter.jobStream = vm.selectedFiltered4.jobStream;
                 }
-                filter.status = vm.selectedFiltered4.status === 'all' ? null : vm.selectedFiltered4.status;
+                if(vm.selectedFiltered4.status !== 'all') {
+                    filter.status = vm.selectedFiltered4.status;
+                }
                 filter = parseProcessExecuted(vm.selectedFiltered4.planned, filter);
             } else {
                 filter = setJobStreamDateRange(filter);
@@ -8263,7 +8265,9 @@
                 if (vm.jobStreamSearch.jobschedulerId) {
                     filter.jobschedulerId = vm.jobStreamSearch.jobschedulerId;
                 }
-                filter.status = vm.jobStreamSearch.status === 'all' ? null : vm.jobStreamSearch.status;
+                if(vm.jobStreamSearch.status !== 'all') {
+                    filter.status = vm.jobStreamSearch.status;
+                }
                 filter.timeZone = vm.userPreferences.zone;
                 if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
                     filter.timeZone = 'UTC';
@@ -10231,7 +10235,9 @@
                     if (vm.selectedFiltered4.jobStream) {
                         filter.jobStream = vm.selectedFiltered4.jobStream;
                     }
-                    filter.status = vm.selectedFiltered4.status === 'all' ? null : vm.selectedFiltered4.status;
+                    if(vm.selectedFiltered4.status !== 'all') {
+                        filter.status = vm.selectedFiltered4.status;
+                    }
                     filter = parseProcessExecuted(vm.selectedFiltered4.planned, filter);
                 } else {
                     filter = setJobStreamDateRange(filter);
