@@ -10712,6 +10712,10 @@
             ConditionService.updateState(obj).then(function (result) {
                 vm.object1.sessions = [];
                 vm.allSessionCheck.checkbox = false;
+                isSessionUpdated = true;
+                vm.getSessions(function () {
+                    isSessionUpdated = false;
+                });
             });
         }
 

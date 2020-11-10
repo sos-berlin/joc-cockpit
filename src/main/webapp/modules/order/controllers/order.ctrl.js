@@ -7835,6 +7835,7 @@
         }
 
         vm.search = function (flag) {
+            vm.reset();
             if (!flag) {
                 vm.loading = true;
             }
@@ -8377,6 +8378,7 @@
                 }
             }
             if (jobStreamSearch) {
+                vm.reset();
                 jobStreamSearch = false;
                 if (vm.historyFilters.type === 'jobStream') {
                     jobStreamHistory(filter);
@@ -9732,6 +9734,7 @@
         function _updateState(obj) {
             ConditionService.updateState(obj).then(function (result) {
                 vm.reset();
+                updateHistoryAfterEvent();
             });
         }
 
