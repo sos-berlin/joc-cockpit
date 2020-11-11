@@ -12366,7 +12366,9 @@
                         updateJobStreamList();
                         break;
                     } else if ((vm.events[0].eventSnapshots[m].eventType === "JobStreamStarted" ||
-                        vm.events[0].eventSnapshots[m].eventType === "JobStreamCompleted") && (vm.events[0].eventSnapshots[m].path && vm.events[0].eventSnapshots[m].path.match(vm.selectedJobStreamObj.jobStream))) {
+                        vm.events[0].eventSnapshots[m].eventType === "JobStreamCompleted") &&
+                        ((vm.events[0].eventSnapshots[m].path && vm.events[0].eventSnapshots[m].path.match(vm.selectedJobStreamObj.jobStream))
+                            || (vm.selectedSession && vm.events[0].eventSnapshots[m].state === vm.selectedSession.session))) {
                         vm.getSessions();
                         callEvent = true;
                     } else if (vm.events[0].eventSnapshots[m].eventType === "IsAlive") {
@@ -12455,7 +12457,7 @@
                 x = 0;
             }
             if (dom.clientHeight !== dom.scrollHeight) {
-                y = 0;
+                y = -0.01;
             }
             vm.editor.graph.center(true, true, x, y);
         }

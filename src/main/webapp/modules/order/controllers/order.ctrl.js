@@ -9723,12 +9723,12 @@
             let x = _.groupBy(vm.object.sessions, 'jobStreamId');
             for (let i in x) {
                 let obj = {
-                    jobschedulerId: $scope.schedulerIds.selected,
                     jobStreamId: i,
                     session: [],
                     status: status ? 'completed' : 'running'
                 }
                 angular.forEach(x[i], function (session) {
+                    obj.jobschedulerId = session.jobschedulerId;
                     obj.session.push(session.session);
                 })
                 _updateState(obj)
@@ -9744,7 +9744,7 @@
 
         vm.updateState = function (session) {
             let obj = {
-                jobschedulerId: $scope.schedulerIds.selected,
+                jobschedulerId: session.jobschedulerId,
                 jobStreamId: session.jobStreamId,
                 session: [session.session],
                 status: session.running ? 'completed' : 'running'
