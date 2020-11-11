@@ -1,5 +1,9 @@
 <div class="modal-header">
-  <h4 class="modal-title" translate>inventory.label.createFolder</h4>
+  <h4 class="modal-title" *ngIf="!rename" translate>inventory.label.createFolder</h4>
+  <h4 class="modal-title" *ngIf="rename">
+    <span translate>inventory.label.renameFolder</span>:
+    {{folders.key}}
+  </h4>
   <button type="button" class="close" (click)="activeModal.dismiss('Cross click')" aria-label="Close">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
@@ -28,7 +32,7 @@
   </div>
   <div class="modal-footer">
     <button type="submit" [disabled]="!myForm.form.valid || !isUnique || submitted || folder.error" class="btn btn-primary btn-sm">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>&nbsp;
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'button.submit' | translate}}
     </button>
     <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>

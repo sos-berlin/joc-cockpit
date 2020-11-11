@@ -1018,8 +1018,13 @@ export class CoreService {
   }
 
   getCopyName(actual_name, list): string {
-    let str = actual_name + '_copy_1';
-
+    let str = actual_name;
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].name == actual_name) {
+        str = str + '_copy_1'
+        break;
+      }
+    }
     function recursivelyCheck(name) {
       for (let i = 0; i < list.length; i++) {
         if (list[i].name == name) {

@@ -1,7 +1,7 @@
 <nz-tabset [(nzSelectedIndex)]="index" (nzSelectChange)="tabChange($event)">
   <nz-tab [nzTitle]="'workflow.tab.jobProperties' | translate">
     <div class="job-property-editor">
-      <div class="form-group row"  *ngIf="index === 0">
+      <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.name</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
           <input type="text" identifierValidation [appAutofocus]="true" autocomplete="off" required class="form-control"
@@ -13,6 +13,21 @@
               <div translate>message.requiredError</div>
             </div>
             <div *ngIf="name.errors.invalidIdentifier" translate>message.invalid</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row" >
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.label</label>
+        <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : (obj.label || errorMsg || (label.dirty || label.touched) && label.invalid)}">
+          <input type="text" identifierValidation id="label" required autocomplete="off" (blur)="onBlur();errorMsg=''" maxlength="30" class="form-control"
+                 name="label" #label="ngModel" [(ngModel)]="selectedNode.obj.label" [appAutofocus]="true">
+          <div *ngIf="obj.label || errorMsg || label.invalid && (label.dirty || label.touched)"
+               class="text-danger help-block">
+            <div *ngIf="label.errors && label.errors.invalidIdentifier" translate>message.invalid</div>
+            <div *ngIf="(label.errors && label.errors.required) || obj.label">
+              <div translate>message.requiredError</div>
+            </div>
+            <div *ngIf="!label.errors && errorMsg">{{errorMsg | translate}}</div>
           </div>
         </div>
       </div>
@@ -231,21 +246,6 @@
   </nz-tab>
   <nz-tab [nzTitle]="'workflow.tab.nodeProperties' | translate">
     <div>
-      <div class="form-group row" >
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.label</label>
-        <div class="col-md-8 col-lg-9"
-             [ngClass]="{'has-error' : (obj.label || (label.dirty || label.touched) && label.invalid)}">
-          <input type="text" identifierValidation id="label" required autocomplete="off" (blur)="onBlur()" maxlength="30" class="form-control"
-                 name="label" #label="ngModel" [(ngModel)]="selectedNode.obj.label" [appAutofocus]="true">
-          <div *ngIf="obj.label || label.invalid && (label.dirty || label.touched)"
-               class="text-danger help-block">
-            <div *ngIf="label.errors && label.errors.invalidIdentifier" translate>message.invalid</div>
-            <div *ngIf="(label.errors && label.errors.required) || obj.label">
-              <div translate>message.requiredError</div>
-            </div>
-          </div>
-        </div>
-      </div>
       <div class="form-group row">
         <label class="col-md-12 _600">{{'workflow.label.arguments' | translate}}</label>
         <div class="col-md-12" style="max-height: 650px; overflow: auto; margin-top: 12px">

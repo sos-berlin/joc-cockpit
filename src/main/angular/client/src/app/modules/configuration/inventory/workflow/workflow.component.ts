@@ -86,6 +86,7 @@ export class JobComponent implements OnChanges, OnDestroy {
   @Input() agentTree = [];
   @Input() jobClassTree = [];
   error: boolean;
+  errorMsg: string;
   obj: any = {};
   isDisplay = false;
   index = 0;
@@ -101,6 +102,11 @@ export class JobComponent implements OnChanges, OnDestroy {
   constructor(private coreService: CoreService, private workflowService: WorkflowService, private dataService: DataService) {
     this.subscription = dataService.reloadWorkflowError.subscribe(res => {
       this.error = res.error;
+      if (res.msg && res.msg.match('duplicateLabel')) {
+        this.errorMsg = res.msg;
+      } else {
+        this.errorMsg = '';
+      }
     });
   }
 
@@ -215,6 +221,7 @@ export class JobComponent implements OnChanges, OnDestroy {
   }
 
   private init() {
+    this.index = 0;
     this.getJobInfo();
     let defaultArguments = [];
     if (!this.selectedNode.obj.defaultArguments || _.isEmpty(this.selectedNode.obj.defaultArguments)) {
@@ -251,12 +258,6 @@ export class JobComponent implements OnChanges, OnDestroy {
       }, 10);
     }
     this.onBlur();
-    if (this.obj.agent || this.obj.script) {
-      this.index = 0;
-    } else if (this.obj.label) {
-      this.index = 2;
-    }
-
     if (this.index != 2) {
       this.reloadScript();
     }
@@ -3576,12 +3577,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 } else {
                   self.reloadDummyXml(graph, self.dummyXml);
                 }
-
-                setTimeout(() => {
-                  self.implicitSave = false;
-                }, 250);
                 self.validateJSON();
               }
+              setTimeout(() => {
+                self.implicitSave = false;
+              }, 250);
             }
 
           }, 200);
@@ -5779,7 +5779,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   private openSideBar(id) {
     this.error = true;
     if (this.editor && this.editor.graph && id) {
-      this.dataService.reloadWorkflowError.next({error: this.error});
+      this.dataService.reloadWorkflowError.next({error: this.error, msg: this.invalidMsg});
       this.editor.graph.setSelectionCells([this.editor.graph.getModel().getCell(id)]);
     }
   }
@@ -5793,6 +5793,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     const self = this;
     let flag = true;
     let ids = new Map();
+    let labels = new Map();
 
     function recursive(json) {
       if (json.instructions && (flag || !isValidate)) {
@@ -5805,12 +5806,25 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               self.invalidMsg = !json.instructions[x].label ? 'inventory.message.labelIsMissing' : 'inventory.message.nameIsNotValid';
               checkErr = true;
             }
+            if (flag) {
+              if (labels.has(json.instructions[x].label)) {
+                if (labels.get(json.instructions[x].label) !== json.instructions[x].id) {
+                  flag = false;
+                  self.invalidMsg = 'inventory.message.duplicateLabel';
+                  checkErr = true;
+                }
+              }
+              if (!labels.has(json.instructions[x].label)) {
+                labels.set(json.instructions[x].label, json.instructions[x].id);
+              }
+            }
             if (!flag && isValidate) {
               if (isOpen) {
                 self.openSideBar(json.instructions[x].id);
               }
               return;
             }
+
             if (flag && !ids.has(json.instructions[x].jobName)) {
               ids.set(json.instructions[x].jobName, json.instructions[x].id);
             }

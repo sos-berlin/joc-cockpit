@@ -1491,7 +1491,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private initConf() {
-    if(sessionStorage.preferences){
+    if(!sessionStorage.preferences) {
+      setTimeout(() => {
+        this.initConf();
+      }, 100);
       return;
     }
     this.preferences = JSON.parse(sessionStorage.preferences) || {};

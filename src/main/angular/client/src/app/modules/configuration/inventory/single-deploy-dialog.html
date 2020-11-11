@@ -116,11 +116,11 @@
       <div class="row">
         <div class="col-md-12">
             <div class="m-b-sm">
-              <label class="md-check w-18" style="top:2px">
+              <label class="md-check w-18" style="top:2px" *ngIf="data.object">
                 <input type="checkbox" (change)="checkAll()"  name="chkAll" [(ngModel)]="object.checked"/>
                 <i class="primary"></i>
               </label>
-              <i nz-icon nzType="folder" class="p-l-sm"
+              <i nz-icon nzType="folder" [ngClass]="{'p-l-sm' : data.object}"
                  nzTheme="outline"></i>
               <span class="p-l-sm">{{data.path}}</span>
             </div>
@@ -145,8 +145,8 @@
                 <i class="primary"></i>
               </label>
               <div>
-                <span  class="fa fa-check-circle-o text-xs p-l-sm"
-                       [ngClass]="{'fa-circle-o': !child.valid, 'text-success' :child.deploymentId}" style="margin-top: 4px"></span>
+                <span  class="fa fa-check-circle-o text-xs"
+                       [ngClass]="{'fa-circle-o': !child.valid, 'text-success' :child.deploymentId, 'p-l-sm' : data.object}" style="margin-top: 4px"></span>
                 <span class="p-l-sm">{{child.objectName | translate}}</span>
               </div>
               <div class="m-l"
