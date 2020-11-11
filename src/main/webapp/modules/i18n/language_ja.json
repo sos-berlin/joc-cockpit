@@ -1856,8 +1856,8 @@
   "tooltip.expandOutConditionAndEvents": "条件式とイベント表示",
   "tooltip.collapseEvents": "イベント非表示",
   "joe.button.deployObject": "配置",
-  "label.startJobStream": "Start Job Stream",
-  "button.startJobStreamStarterParameterized": "Start Parameterized",
-  "button.setInstanceToRunning" : "Set Instance to Running",
-  "button.setInstanceToComplete" : "Set Instance to Complete"
+  "label.startJobStream": "ジョブストリーム開始",
+  "button.startJobStreamStarterParameterized": "ジョブストリーム開始パラメータ設定",
+  "button.setInstanceToRunning" : "インスタンスを実行中に設定",
+  "button.setInstanceToComplete" : "インスタンスを完了に設定"
 }
