@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
@@ -10,7 +10,6 @@ import {Router} from '@angular/router';
   templateUrl: './order-summary.component.html'
 })
 export class OrderSummaryComponent implements OnInit, OnDestroy {
-
   orderSummary: any;
   schedulerIds: any;
   preferences: any = {};
@@ -27,7 +26,7 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
 
   refresh(args) {
     for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId == this.schedulerIds.selected) {
+      if (args[i].controllerId == this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
             if (args[i].eventSnapshots[j].eventType === 'ReportingChangedOrder') {
@@ -61,7 +60,7 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
 
   getSummary(): void {
     this.coreService.post('orders/overview/summary', {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       dateFrom: this.filters.date,
       timeZone: this.preferences.zone
     }).subscribe(res => {
@@ -76,7 +75,7 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
   getSummaryByDate(date): void {
     this.filters.date = date;
     this.coreService.post('orders/overview/summary', {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       dateFrom: date,
       timeZone: this.preferences.zone
     }).subscribe(res => {

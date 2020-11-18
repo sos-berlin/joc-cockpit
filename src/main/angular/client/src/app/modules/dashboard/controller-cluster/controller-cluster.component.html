@@ -1,8 +1,8 @@
 <div id="controllerClusterStatus1">
     <div class="box-header b-b remove">
         <h3>
-            <span *ngIf="selectedJobScheduler.role && selectedJobScheduler.role !== 'STANDALONE'" translate>dashboard.label.jobSchedulerClusterStatus</span>
-            <span *ngIf="selectedJobScheduler.role === 'STANDALONE' || !selectedJobScheduler.role" translate>dashboard.label.standaloneJobSchedulerController</span>
+            <span *ngIf="selectedController.role && selectedController.role !== 'STANDALONE'" translate>dashboard.label.jobSchedulerClusterStatus</span>
+            <span *ngIf="selectedController.role === 'STANDALONE' || !selectedController.role" translate>dashboard.label.standaloneJobSchedulerController</span>
         </h3>
     </div>
     <div class="box-body" [hidden]="!isLoaded" style="overflow-y:auto;"

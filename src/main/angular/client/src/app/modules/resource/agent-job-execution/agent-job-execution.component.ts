@@ -87,7 +87,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     }
     this.isLoading = false;
     let obj = {
-      jobschedulerId: this.agentJobExecutionFilters.current === true ? this.schedulerIds.selected : ''
+      controllerId: this.agentJobExecutionFilters.current === true ? this.schedulerIds.selected : ''
     };
     obj = this.setDateRange(obj);
     this.coreService.post('report/agents', obj).subscribe((res: any) => {
@@ -135,7 +135,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     this.agentJobExecutionFilters.filter.sortBy = propertyName;
   }
 
-  changeJobScheduler() {
+  changeController() {
 
   }
 
@@ -145,7 +145,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
 
   private refresh(args) {
     for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId === this.schedulerIds.selected) {
+      if (args[i].controllerId === this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
             if (args[i].eventSnapshots[j].eventType === 'JobStateChanged') {

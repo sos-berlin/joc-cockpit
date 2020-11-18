@@ -9,7 +9,7 @@ import {
 } from './history.component';
 import {HistoryRoutingModule} from './history-routing.module';
 import {SharedModule} from '../shared/shared.module';
-import {EditIgnoreListModal} from '../../components/ignore-list-modal/ignore-list.component';
+import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component';
 
 @NgModule({
   imports: [
@@ -19,7 +19,7 @@ import {EditIgnoreListModal} from '../../components/ignore-list-modal/ignore-lis
   declarations: [
     HistoryComponent,
     FilterModalComponent,
-    EditIgnoreListModal,
+    EditIgnoreListComponent,
     OrderSearchComponent,
     YadeSearchComponent,
     TaskSearchComponent,
@@ -27,7 +27,7 @@ import {EditIgnoreListModal} from '../../components/ignore-list-modal/ignore-lis
   ],
   entryComponents: [
     FilterModalComponent,
-    EditIgnoreListModal
+    EditIgnoreListComponent
   ]
 })
 export class HistoryModule {

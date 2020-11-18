@@ -6,7 +6,6 @@ import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.comp
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 
-
 @Component({
   selector: 'app-controllers',
   templateUrl: './controllers.component.html'
@@ -14,10 +13,8 @@ import {DataService} from '../../services/data.service';
 export class ControllersComponent implements OnInit {
   controllers: any = [];
 
-
   constructor(private coreService: CoreService, private modalService: NgbModal, private authService: AuthService,
               private dataService: DataService) {
-
   }
 
   ngOnInit(): void {
@@ -25,9 +22,9 @@ export class ControllersComponent implements OnInit {
   }
 
   getData(): void {
-    this.coreService.post('jobscheduler/ids', {})
+    this.coreService.post('controller/ids', {})
       .subscribe((data: any) => {
-        this.controllers = data.jobschedulerIds;
+        this.controllers = data.controllerIds;
       }, () => {
 
       });
@@ -47,7 +44,7 @@ export class ControllersComponent implements OnInit {
   }
 
   editController(matser) {
-    this.coreService.post('jobscheduler/controllers/p', {jobschedulerId: matser}).subscribe((res: any) => {
+    this.coreService.post('controllers/p', {controllerId: matser}).subscribe((res: any) => {
       const modalRef = this.modalService.open(StartUpModalComponent, {backdrop: 'static'});
       modalRef.componentInstance.isModal = true;
       modalRef.componentInstance.controllerInfo = res.controllers;
@@ -68,7 +65,7 @@ export class ControllersComponent implements OnInit {
     modalRef.componentInstance.type = 'Delete';
     modalRef.componentInstance.objectName = matser;
     modalRef.result.then((result) => {
-      this.coreService.post('jobscheduler/cleanup', {jobschedulerId: matser}).subscribe((res: any) => {
+      this.coreService.post('controller/cleanup', {controllerId: matser}).subscribe((res: any) => {
         this.getSchedulerIds(null);
       });
     }, () => {
@@ -86,8 +83,8 @@ export class ControllersComponent implements OnInit {
   }
 
   private getSchedulerIds(permission): void {
-    this.coreService.post('jobscheduler/ids', {}).subscribe((res: any) => {
-      this.controllers = res.jobschedulerIds;
+    this.coreService.post('controller/ids', {}).subscribe((res: any) => {
+      this.controllers = res.controllerIds;
       this.authService.setIds(res);
       this.authService.save();
       if (permission) {

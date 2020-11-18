@@ -230,7 +230,7 @@ export class UserComponent implements OnInit, OnDestroy {
   permission: any = {};
   object: any = {};
   schedulerIds: any = {};
-  selectedJobScheduler: any = {};
+  selectedController: any = {};
   selectAllJobModel;
   selectAllPositiveOrderModel;
   selectAllNegativeOrderModel;
@@ -297,7 +297,7 @@ export class UserComponent implements OnInit, OnDestroy {
       this.preferences = JSON.parse(sessionStorage.preferences);
       this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
       if (sessionStorage.$SOS$JOBSCHEDULE) {
-        this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE);
+        this.selectedController = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE);
       }
     }
   }
@@ -325,11 +325,11 @@ export class UserComponent implements OnInit, OnDestroy {
     this.zones = moment.tz.names();
     const localTZ = jstz.determine();
     if (localTZ) {
-      this.timeZone = localTZ.name() || this.selectedJobScheduler.timeZone;
+      this.timeZone = localTZ.name() || this.selectedController.timeZone;
     } else {
-      this.timeZone = this.selectedJobScheduler.timeZone;
+      this.timeZone = this.selectedController.timeZone;
     }
-    this.configObj.jobschedulerId = this.schedulerIds.selected;
+    this.configObj.controllerId = this.schedulerIds.selected;
     this.configObj.account = this.permission.user;
     this.configObj.configurationType = 'PROFILE';
     this.configObj.id = parseInt(sessionStorage.preferenceId, 10);

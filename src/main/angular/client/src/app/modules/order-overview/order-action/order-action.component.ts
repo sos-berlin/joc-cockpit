@@ -47,7 +47,7 @@ export class StartOrderModalComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
     const obj: any = {
-      jobschedulerId: this.schedulerId,
+      controllerId: this.schedulerId,
       orders: []
     };
     if (this.order.fromDate && this.order.fromTime) {
@@ -134,7 +134,7 @@ export class OrderActionComponent {
 
   startOrder(order) {
     const obj: any = {
-      jobschedulerId: this.schedulerId,
+      controllerId: this.schedulerId,
       orders: []
     };
     let _order: any = {workflowPath: order.workflowId.path, orderId: order.orderId};
@@ -180,7 +180,7 @@ export class OrderActionComponent {
 
   suspendOrder(order) {
     const obj: any = {
-      jobschedulerId: this.schedulerId, orderIds: [order.orderId]
+      controllerId: this.schedulerId, orderIds: [order.orderId]
     };
     if (this.preferences.auditLog) {
       let comments = {
@@ -206,7 +206,7 @@ export class OrderActionComponent {
 
   resumeOrder() {
     const obj: any = {
-      jobschedulerId: this.schedulerId, orderIds: [this.order.orderId]
+      controllerId: this.schedulerId, orderIds: [this.order.orderId]
     };
     if (this.preferences.auditLog) {
       let comments = {
@@ -232,7 +232,7 @@ export class OrderActionComponent {
 
   cancelOrder() {
     const obj: any = {
-      jobschedulerId: this.schedulerId, orderIds: [this.order.orderId]
+      controllerId: this.schedulerId, orderIds: [this.order.orderId]
     };
     if (this.preferences.auditLog) {
       let comments = {

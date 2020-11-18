@@ -118,7 +118,7 @@ export class SearchComponent implements OnInit {
   onSubmit(result): void {
     this.submitted = true;
     let configObj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'CUSTOMIZATION',
       objectType: 'WORKFLOW',
@@ -190,7 +190,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
     }
     this.permission = JSON.parse(this.authService.permission) || {};
     this.getWorkflowList({
-      jobschedulerId: this.schedulerId,
+      controllerId: this.schedulerId,
       workflowId: {path: this.path}
     });
   }
@@ -201,7 +201,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
 
   private refresh(args) {
     for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId === this.schedulerId) {
+      if (args[i].controllerId === this.schedulerId) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
             if (args[i].eventSnapshots[j].eventType === 'WorkflowChanged') {
@@ -220,7 +220,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
       this.loading = false;
       const request = {
         compact: true,
-        jobschedulerId: this.schedulerId,
+        controllerId: this.schedulerId,
         workflowIds: []
       };
       const path = res.workflow.path;
@@ -273,7 +273,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
 
   loadAuditLogs() {
     let obj = {
-      jobschedulerId: this.schedulerId,
+      controllerId: this.schedulerId,
       orders: [{workflowPath: this.showPanel.path}],
       limit: this.preferences.maxAuditLogPerObject
     };
@@ -284,7 +284,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
 
   loadOrderHistory() {
     let obj = {
-      jobschedulerId: this.schedulerId,
+      controllerId: this.schedulerId,
       orders: [{workflowPath: this.showPanel.path}],
       limit: this.preferences.maxAuditLogPerObject
     };
@@ -295,7 +295,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
 
   loadTaskHistory() {
     let obj = {
-      jobschedulerId: this.schedulerId,
+      controllerId: this.schedulerId,
       jobs: [{workflowPath: this.showPanel.path}],
       limit: this.preferences.maxAuditLogPerObject
     };
@@ -380,7 +380,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   private refresh(args) {
     for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId === this.schedulerIds.selected) {
+      if (args[i].controllerId === this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
             if (args[i].eventSnapshots[j].eventType === 'WorkflowChanged') {
@@ -416,7 +416,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   private initTree() {
     this.coreService.post('tree', {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       folders: [{
         folder: '/',
         recursive: true
@@ -438,7 +438,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   checkSharedFilters() {
     if (this.permission.JOCConfigurations.share.view) {
       let obj = {
-        jobschedulerId: this.schedulerIds.selected,
+        controllerId: this.schedulerIds.selected,
         configurationType: 'CUSTOMIZATION',
         objectType: 'WORKFLOW',
         shared: true
@@ -458,7 +458,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   getCustomizations() {
     let obj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'CUSTOMIZATION',
       objectType: 'WORKFLOW'
@@ -491,7 +491,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           if (value.id === this.savedFilter.selected) {
             flag = false;
             this.coreService.post('configuration', {
-              jobschedulerId: value.jobschedulerId,
+              controllerId: value.controllerId,
               id: value.id
             }).subscribe((conf: any) => {
               this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
@@ -515,7 +515,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.loading = false;
       const request = {
         compact: true,
-        jobschedulerId: this.schedulerIds.selected,
+        controllerId: this.schedulerIds.selected,
         workflowIds: []
       };
       for (let i = 0; i < res.workflows.length; i++) {
@@ -568,7 +568,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   loadWorkflow() {
     const obj = {
       folders: [],
-      jobschedulerId: this.schedulerIds.selected
+      controllerId: this.schedulerIds.selected
     };
     this.workflows = [];
     this.loading = true;
@@ -591,7 +591,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.loading = true;
     const obj = {
       folders: [{folder: data.path, recursive: recursive}],
-      jobschedulerId: this.schedulerIds.selected
+      controllerId: this.schedulerIds.selected
     };
     this.getWorkflowList(obj);
   }
@@ -665,7 +665,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.isSearchHit = true;
     let obj: any = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       compact: true
     };
     if (this.searchFilter && this.searchFilter.regex) {
@@ -731,7 +731,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   private openFilterModal(filter, isCopy) {
     let filterObj: any = {};
-    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
+    this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
       filterObj = JSON.parse(conf.configuration.configurationItem);
       filterObj.shared = filter.shared;
       if (isCopy) {
@@ -788,7 +788,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.savedFilter.selected = filter.id;
       this.workflowFilters.selectedView = true;
       this.coreService.post('configuration', {
-        jobschedulerId: filter.jobschedulerId,
+        controllerId: filter.controllerId,
         id: filter.id
       }).subscribe((conf: any) => {
         this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
@@ -889,7 +889,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   loadAuditLogs() {
     let obj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       orders: [{workflowPath: this.showPanel.path}],
       limit: this.preferences.maxAuditLogPerObject
     };
@@ -900,7 +900,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   loadOrderHistory() {
     let obj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       orders: [{workflowPath: this.showPanel.path}],
       limit: this.preferences.maxAuditLogPerObject
     };
@@ -911,7 +911,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   loadTaskHistory() {
     let obj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       jobs: [{workflowPath: this.showPanel.path}],
       limit: this.preferences.maxAuditLogPerObject
     };
@@ -1000,7 +1000,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   private saveProfileSettings(preferences) {
     const configObj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'PROFILE',
       id: parseInt(sessionStorage.preferenceId, 10),

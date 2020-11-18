@@ -125,14 +125,14 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
   loadOrderLog() {
     this.workflow = this.route.snapshot.queryParams['workflow'];
     const order: any = {};
-    order.jobschedulerId = this.route.snapshot.queryParams['schedulerId'];
+    order.controllerId = this.route.snapshot.queryParams['schedulerId'];
     order.historyId = parseInt(this.route.snapshot.queryParams['historyId'], 10);
     this.canceller = this.coreService.post('order/log', order).subscribe((res: any) => {
       if (res) {
         this.jsonToString(res);
         this.showHideTask(this.route.snapshot.queryParams['schedulerId'], res);
         if (!res.complete && !this.isCancel) {
-          this.runningOrderLog({historyId: order.historyId, jobschedulerId: order.jobschedulerId, eventId: res.eventId});
+          this.runningOrderLog({historyId: order.historyId, controllerId: order.controllerId, eventId: res.eventId});
         }
       }
     }, (err) => {
@@ -148,13 +148,12 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   showHideTask(id, res) {
-
     const x: any = document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
       const element = x[i];
       element['childNodes'][0].addEventListener('click', () => {
         const jobs: any = {};
-        jobs.jobschedulerId = id;
+        jobs.controllerId = id;
         jobs.taskId = document.getElementById('tx_id_' + (i + 1)).innerText;
         const a = document.getElementById('tx_log_' + (i + 1));
         if (a.classList.contains('hide')) {
@@ -169,7 +168,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
               a.classList.remove('hide');
               a.classList.add('show');
               if (res1.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
-                const obj = {jobschedulerId: jobs.jobschedulerId, tasks: []};
+                const obj = {controllerId: jobs.controllerId, tasks: []};
                 obj.tasks.push({taskId: jobs.taskId, eventId: res1.headers.get('X-Log-Event-Id')});
                 this.runningTaskLog(obj, 'tx_log_' + (i + 1));
               }
@@ -196,7 +195,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
   loadJobLog() {
     this.job = this.route.snapshot.queryParams['job'];
     let jobs: any = {};
-    jobs.jobschedulerId = this.route.snapshot.queryParams['schedulerId'];
+    jobs.controllerId = this.route.snapshot.queryParams['schedulerId'];
     jobs.taskId = this.taskId;
 
     this.canceller = this.coreService.log('task/log', jobs, {
@@ -206,7 +205,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
       if (res) {
         this.renderData(res.body, false);
         if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
-          const obj = {jobschedulerId: jobs.jobschedulerId, tasks: []};
+          const obj = {controllerId: jobs.controllerId, tasks: []};
           obj.tasks.push({taskId: jobs.taskId, eventId: res.headers.get('X-Log-Event-Id')});
           this.runningTaskLog(obj, false);
         }
@@ -511,7 +510,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     const arr: any = [];
     for (let i = 0; i < x.length; i++) {
       const jobs: any = {};
-      jobs.jobschedulerId = this.route.snapshot.queryParams['schedulerId'];
+      jobs.controllerId = this.route.snapshot.queryParams['schedulerId'];
       jobs.taskId = document.getElementById('tx_id_' + (i + 1)).innerText;
       const a = document.getElementById('tx_log_' + (i + 1));
       if (a.classList.contains('hide')) {
@@ -526,7 +525,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
             a.classList.remove('hide');
             a.classList.add('show');
             if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
-              const obj = {jobschedulerId: jobs.jobschedulerId, tasks: []};
+              const obj = {controllerId: jobs.controllerId, tasks: []};
               obj.tasks.push({taskId: jobs.taskId, eventId: res.headers.get('X-Log-Event-Id')});
               this.runningTaskLog(obj, 'tx_log_' + (i + 1));
             }
@@ -565,11 +564,11 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     const schedulerId = this.route.snapshot.queryParams['schedulerId'];
     if (this.route.snapshot.queryParams['orderId']) {
       const historyId = this.route.snapshot.queryParams['historyId'];
-      $('#tmpFrame').attr('src', './api/order/log/download?historyId=' + historyId + '&jobschedulerId=' + schedulerId +
+      $('#tmpFrame').attr('src', './api/order/log/download?historyId=' + historyId + '&controllerId=' + schedulerId +
         '&accessToken=' + this.authService.accessTokenId);
     } else if (this.route.snapshot.queryParams['taskId']) {
       const taskId = this.route.snapshot.queryParams['taskId'];
-      $('#tmpFrame').attr('src', './api/task/log/download?taskId=' + taskId + '&jobschedulerId=' + schedulerId +
+      $('#tmpFrame').attr('src', './api/task/log/download?taskId=' + taskId + '&controllerId=' + schedulerId +
         '&accessToken=' + this.authService.accessTokenId);
     }
   }
@@ -658,7 +657,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
   saveUserPreference() {
     this.preferences.logFilter = this.object.checkBoxs;
     let configObj: any = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'PROFILE',
       id: parseInt(window.sessionStorage.preferenceId, 10)

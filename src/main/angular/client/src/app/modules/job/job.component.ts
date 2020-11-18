@@ -53,7 +53,7 @@ export class JobComponent implements OnInit, OnDestroy {
 
   initTree() {
     this.coreService.post('tree', {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       compact: true,
       types: ['JOB']
     }).subscribe(res => {

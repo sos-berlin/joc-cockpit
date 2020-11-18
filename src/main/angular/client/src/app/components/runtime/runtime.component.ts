@@ -9,7 +9,6 @@ import {CalendarService} from '../../services/calendar.service';
 
 declare const $;
 
-
 @Component({
   selector: 'app-restriction',
   templateUrl: './add-restriction-dialog.html'

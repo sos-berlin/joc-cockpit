@@ -23,7 +23,7 @@ export class FileOverviewComponent implements OnInit, OnDestroy {
 
   refresh(args) {
     for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId == this.schedulerIds.selected) {
+      if (args[i].controllerId == this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
             if (args[i].eventSnapshots[j].eventType === 'YADEFileStateChanged') {
@@ -38,7 +38,7 @@ export class FileOverviewComponent implements OnInit, OnDestroy {
   }
 
   getSnapshot(): void {
-    this.coreService.post('yade/overview/snapshot', {jobschedulerId: this.schedulerIds.selected}).subscribe(res => {
+    this.coreService.post('yade/overview/snapshot', {controllerId: this.schedulerIds.selected}).subscribe(res => {
       this.yadeOverview = res;
       this.isLoaded = true;
     }, (err) => {

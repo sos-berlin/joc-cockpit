@@ -240,7 +240,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   loadAuditLogs() {
     let obj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       orders: [{workflowPath: this.workFlowJson.path}],
       limit: this.preferences.maxAuditLogPerObject
     };
@@ -251,7 +251,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   loadOrderHistory() {
     let obj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       orders: [{workflowPath: this.workFlowJson.path}],
       limit: this.preferences.maxAuditLogPerObject
     };
@@ -262,7 +262,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   loadTaskHistory() {
     let obj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       jobs: [{workflowPath: this.workFlowJson.path}],
       limit: this.preferences.maxAuditLogPerObject
     };
@@ -281,7 +281,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
     this.coreService.post('workflow', {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       workflowId: {path: this.path, versionId: this.versionId}
     }).subscribe((res: any) => {
       this.createEditor(this.configXml);
@@ -295,7 +295,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   private getOrders(workflow) {
     const obj = {
       compact: true,
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       workflowIds: [{path: workflow.path, versionId: workflow.versionId}]
     };
     this.coreService.post('orders', obj).subscribe((res: any) => {

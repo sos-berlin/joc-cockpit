@@ -1,12 +1,12 @@
 import {Component, Input, OnInit} from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { CoreService } from '../../services/core.service';
+import { CoreService } from '../../../services/core.service';
 
 @Component({
-    selector: 'ngbd-modal-content',
+    selector: 'app-ignore-list',
      templateUrl: './ignore-list.component.html'
 })
-export class EditIgnoreListModal {
+export class EditIgnoreListComponent {
 
   @Input() savedIgnoreList: any;
   @Input() historyFilters: any;

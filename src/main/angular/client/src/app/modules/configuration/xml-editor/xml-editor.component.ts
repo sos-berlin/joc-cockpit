@@ -581,7 +581,7 @@ export class ShowModalComponent implements OnInit {
 
   validateXML() {
     const obj: any = {
-      jobschedulerId: this.schedulerId,
+      controllerId: this.schedulerId,
       objectType: this.objectType,
       configuration: this.obj.xml
     };
@@ -609,7 +609,7 @@ export class ShowModalComponent implements OnInit {
   submitXML() {
     const data = this.obj.xml;
     const obj: any = {
-      jobschedulerId: this.schedulerId,
+      controllerId: this.schedulerId,
       objectType: this.objectType,
       configuration: data
     };
@@ -1042,7 +1042,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     modalRef.componentInstance.objectType = this.objectType;
     modalRef.result.then((res: any) => {
       const obj = {
-        jobschedulerId: this.schedulerIds.selected,
+        controllerId: this.schedulerIds.selected,
         objectTypes: ['OTHER'],
       };
       this.coreService.post('xmleditor/delete/all', obj).subscribe((res: any) => {
@@ -1095,7 +1095,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this._xml = this._showXml();
     if (_.isEmpty(this.nonValidattribute)) {
       this.coreService.post('xmleditor/deploy', {
-        jobschedulerId: this.schedulerIds.selected,
+        controllerId: this.schedulerIds.selected,
         objectType: this.objectType,
         configuration: this._xml,
         configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
@@ -1150,7 +1150,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   othersXSD() {
     this.submitXsd = false;
     this.coreService.post('xmleditor/read', {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       objectType: this.objectType
     }).subscribe((res: any) => {
       if (res.schemas) {
@@ -1179,7 +1179,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.nodes = [];
     this.selectedNode = [];
     this.coreService.post('xmleditor/read', {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       objectType: this.objectType,
       id: id
     }).subscribe((res: any) => {
@@ -1313,7 +1313,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   readXML() {
     this.selectedXsd = this.selectedXsd.toUpperCase();
     const obj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       objectType: this.objectType
     };
     this.coreService.post('xmleditor/read', obj).subscribe((res: any) => {
@@ -3511,7 +3511,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   renameFile(data) {
     this.coreService.post('xmleditor/rename', {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       objectType: this.objectType,
       id: data.id,
       name: data.name,
@@ -4523,7 +4523,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
                 const _tab = _.clone({id: -1, name: 'edit1', schemaIdentifier: this.schemaIdentifier});
                 this.tabsArray.push(_tab);
                 this.coreService.post('xmleditor/read', {
-                  jobschedulerId: this.schedulerIds.selected,
+                  controllerId: this.schedulerIds.selected,
                   objectType: this.objectType,
                   id: _tab.id
                 }).subscribe((res: any) => {
@@ -4555,7 +4555,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getXsdSchema() {
     const obj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       objectType: this.objectType,
       uri: this.schemaIdentifier
     };
@@ -4580,7 +4580,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.draftXml = this.prevXML;
     let liveVersion;
     this.coreService.post('xmleditor/read', {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       objectType: this.objectType,
       forceLive: true
     }).subscribe((res: any) => {
@@ -4722,7 +4722,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   othersSubmit(data) {
     this.isLoading = true;
     let obj: any = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       objectType: 'OTHER'
     };
     if (!this.importXSDFile) {
@@ -4754,14 +4754,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     let obj;
     if (!this.importXSDFile) {
       obj = {
-        jobschedulerId: this.schedulerIds.selected,
+        controllerId: this.schedulerIds.selected,
         objectType: 'OTHER',
         uri: this.selectedXsd,
         configuration: this._showXml()
       };
     } else {
       obj = {
-        jobschedulerId: this.schedulerIds.selected,
+        controllerId: this.schedulerIds.selected,
         objectType: 'OTHER',
         fileName: data._file.name,
         fileContent: this.uploadData,
@@ -4938,7 +4938,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   downloadSchema(objType, schemaIdentifier) {
-    let link = './api/xmleditor/schema/download?jobschedulerId='
+    let link = './api/xmleditor/schema/download?controllerId='
       + this.schedulerIds.selected + '&objectType=' + objType +
       '&accessToken=' + this.authService.accessTokenId;
     if (objType === 'OTHER') {
@@ -4950,7 +4950,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   showXSD(objType, schemaIdentifier) {
     const windowProperties = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
-    let link = './api/xmleditor/schema/download?show=true&jobschedulerId='
+    let link = './api/xmleditor/schema/download?show=true&controllerId='
       + this.schedulerIds.selected + '&objectType=' + objType + '&accessToken='
       + this.authService.accessTokenId;
     if (objType === 'OTHER') {
@@ -5327,7 +5327,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
     const obj: any = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       objectType: this.objectType,
     };
     if (this.objectType === 'OTHER') {
@@ -5337,7 +5337,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       if (res.configuration) {
         if (!this.ok(res.configuration)) {
           const obj1: any = {
-            jobschedulerId: this.schedulerIds.selected,
+            controllerId: this.schedulerIds.selected,
             objectType: this.objectType,
             configuration: res.configuration
           };
@@ -5453,7 +5453,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     if (!eRes && this.objectType !== 'OTHER') {
       this.coreService.post('xmleditor/store', {
-        jobschedulerId: this.schedulerIds.selected,
+        controllerId: this.schedulerIds.selected,
         objectType: this.objectType,
         configuration: this._xml,
         configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
@@ -5467,7 +5467,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       });
     } else if (!eRes) {
       this.coreService.post('xmleditor/store', {
-        jobschedulerId: this.schedulerIds.selected,
+        controllerId: this.schedulerIds.selected,
         objectType: this.objectType,
         configuration: this._xml,
         configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
@@ -5633,7 +5633,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private xmlToJsonService(data) {
     const obj: any = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       objectType: this.objectType,
       configuration: data
     };
@@ -5685,7 +5685,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private newConf() {
     const obj: any = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       objectType: this.objectType,
     };
     if (this._xml) {
@@ -5744,7 +5744,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   private validateSer() {
     this._xml = this._showXml();
     const obj: any = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       objectType: this.objectType,
       configuration: this._xml
     };

@@ -9,7 +9,6 @@ import {Subscription} from 'rxjs';
   templateUrl: './task-overview.component.html'
 })
 export class TaskOverviewComponent implements OnInit, OnDestroy {
-
   jobSnapshot: any = {};
   schedulerIds: any = {};
   isLoaded = false;
@@ -38,7 +37,7 @@ export class TaskOverviewComponent implements OnInit, OnDestroy {
 
   refresh(args) {
     for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId === this.schedulerIds.selected) {
+      if (args[i].controllerId === this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
             if (args[i].eventSnapshots[j].eventType === 'JobStateChanged') {
@@ -55,7 +54,7 @@ export class TaskOverviewComponent implements OnInit, OnDestroy {
   }
 
   getSnapshot(): void {
-    this.coreService.post('jobs/overview/snapshot', {jobschedulerId: this.schedulerIds.selected}).subscribe(res => {
+    this.coreService.post('jobs/overview/snapshot', {controllerId: this.schedulerIds.selected}).subscribe(res => {
       this.jobSnapshot = res;
       this.isLoaded = true;
     }, (err) => {
@@ -63,5 +62,4 @@ export class TaskOverviewComponent implements OnInit, OnDestroy {
       this.isLoaded = true;
     });
   }
-
 }

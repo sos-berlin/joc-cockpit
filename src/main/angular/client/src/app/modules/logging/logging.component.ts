@@ -95,7 +95,7 @@ export class LoggingComponent implements OnInit, OnDestroy {
 
   saveSettingConf() {
     let configObj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'SETTING',
       id: parseInt(sessionStorage.settingId, 10),

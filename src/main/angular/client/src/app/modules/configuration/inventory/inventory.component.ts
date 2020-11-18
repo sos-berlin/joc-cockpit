@@ -585,9 +585,7 @@ export class DeployComponent implements OnInit {
       this.getJSObject();
     }
 
-    const obj: any = {
-      update: this.object.update,
-    };
+    const obj: any = {};
     if (this.reDeploy) {
       obj.folder = this.path || '/';
       obj.excludes = this.object.excludes;
@@ -1341,6 +1339,15 @@ export class ExportComponent implements OnInit {
       if (this.object.deployments.length > 0) {
         param = param + '&deployments=' + this.object.deployments.toString();
       }
+      if (this.comments.comment) {
+        param = param + '&comment=' + this.comments.comment;
+      }
+      if (this.comments.timeSpent) {
+        param = param + '&timeSpent=' + this.comments.timeSpent;
+      }
+      if (this.comments.ticketLink) {
+        param = param + '&ticketLink=' + encodeURIComponent(this.comments.ticketLink);
+      }
       $('#tmpFrame').attr('src', './api/publish/export?accessToken=' + this.authService.accessTokenId + '&filename=' + this.object.filename + this.object.fileFormat + param);
       setTimeout(() => {
         this.submitted = false;
@@ -1623,7 +1630,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.isLoading = true;
     }
     this.coreService.post('tree', {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       forInventory: true,
       types: ['INVENTORY']
     }).subscribe((res: any) => {
@@ -1854,9 +1861,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
       controllerArr = [{name: 'Workflows', object: 'WORKFLOW', children: [], path: data.path, key: (_key + 'Workflows$')},
         {name: 'Job Classes', object: 'JOBCLASS', children: [], path: data.path, key: (_key + 'Job_Classes$')},
         {name: 'Junctions', object: 'JUNCTION', children: [], path: data.path, key: (_key + 'Junctions$')},
-        {name: 'Agent Clusters', object: 'AGENTCLUSTER', children: [], path: data.path, key: (_key + 'Agent_Clusters$')},
         {name: 'Locks', object: 'LOCK', children: [], path: data.path, key: (_key + 'Locks$')}];
-      scheduleArr = [{name: 'Orders', object: 'ORDER', children: [], path: data.path, key: (_key + 'Orders$')},
+      scheduleArr = [{name: 'Orders', object: 'ORDERTEMPLATE', children: [], path: data.path, key: (_key + 'Orders$')},
         {name: 'Calendars', object: 'CALENDAR', children: [], path: data.path, key: (_key + 'Calendars$')}];
     }
 
@@ -1872,8 +1878,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
           resObject = res.jobClasses;
         } else if (controllerArr[i].object === 'JUNCTION') {
           resObject = res.junctions;
-        } else if (controllerArr[i].object === 'AGENTCLUSTER') {
-          resObject = res.agentClusters;
         } else if (controllerArr[i].object === 'LOCK') {
           resObject = res.locks;
         }
@@ -1895,8 +1899,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
       for (let i = 0; i < scheduleArr.length; i++) {
         scheduleArr[i].deleted = data.deleted;
         let resObject;
-        if (scheduleArr[i].object === 'ORDER') {
-          resObject = res.orders;
+        if (scheduleArr[i].object === 'ORDERTEMPLATE') {
+          resObject = res.orderTemplates;
         } else if (scheduleArr[i].object === 'CALENDAR') {
           resObject = res.calendars;
         }
@@ -2229,7 +2233,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             }, true);
             return;
           }
-          if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'ORDER') {
+          if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'ORDERTEMPLATE') {
             data = object.children[1];
           }
           if (data) {
@@ -2291,7 +2295,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.type = 'Delete';
     modalRef.componentInstance.objectName = _path;
     modalRef.result.then((res: any) => {
-      this.coreService.post('inventory/deletedraft', {
+      this.coreService.post('inventory/delete_draft', {
         id: object.id
       }).subscribe((res) => {
         this.clearCopyObject(object);
@@ -2319,7 +2323,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (!object.type) {
       obj = {path: object.path, objectType: 'FOLDER'};
     }
-    this.coreService.post('inventory/undelete', obj).subscribe((res: any) => {
+    this.coreService.post('inventory/recover', obj).subscribe((res: any) => {
       object.deleted = false;
       this.initTree(obj.path || object.path, null);
     });
@@ -2331,7 +2335,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   private refresh(args) {
     for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId === this.schedulerIds.selected) {
+      if (args[i].controllerId === this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
             if (args[i].eventSnapshots[j].path) {
@@ -2418,12 +2422,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
       obj.name = this.coreService.getName(list, 'workflow1', 'name', 'workflow');
     } else if (type === 'JUNCTION') {
       obj.name = this.coreService.getName(list, 'junction1', 'name', 'junction');
-    } else if (type === 'AGENTCLUSTER') {
-      obj.name = this.coreService.getName(list, 'agent_cluster1', 'name', 'agent_cluster');
     } else if (type === 'JOBCLASS') {
       configuration = {maxProcesses: 1};
       obj.name = this.coreService.getName(list, 'job_class1', 'name', 'job_class');
-    } else if (type === 'ORDER') {
+    } else if (type === 'ORDERTEMPLATE') {
       obj.name = this.coreService.getName(list, 'order1', 'name', 'order');
       configuration = {controllerId: this.schedulerIds.selected};
     } else if (type === 'LOCK') {
@@ -2441,7 +2443,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.coreService.post('inventory/store', {
         objectType: obj.type,
         path: _path,
-        valid: !(obj.type.match(/CALENDAR/) || obj.type === 'ORDER' || obj.type === 'AGENTCLUSTER' || obj.type === 'WORKFLOW'),
+        valid: !(obj.type.match(/CALENDAR/) || obj.type === 'ORDERTEMPLATE' || obj.type === 'WORKFLOW'),
         configuration: configuration
       }).subscribe((res: any) => {
         if ((obj.type === 'WORKINGDAYSCALENDAR' || obj.type === 'NONWORKINGDAYSCALENDAR')) {
@@ -2449,7 +2451,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           obj.type = 'CALENDAR';
         }
         obj.id = res.id;
-        obj.valid = !(obj.type.match(/CALENDAR/) || obj.type === 'ORDER' || obj.type === 'AGENTCLUSTER' || obj.type === 'WORKFLOW');
+        obj.valid = !(obj.type.match(/CALENDAR/) || obj.type === 'ORDERTEMPLATE' || obj.type === 'WORKFLOW');
         list.push(obj);
         this.type = obj.type;
         this.selectedData = obj;
@@ -2464,7 +2466,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (!object.type) {
       obj = {path: _path, objectType: 'FOLDER'};
     }
-    this.coreService.post('inventory/delete', obj).subscribe((res: any) => {
+    this.coreService.post('inventory/remove', obj).subscribe((res: any) => {
       object.deleted = true;
       if (node) {
         object.expanded = false;

@@ -127,7 +127,7 @@ export class StartUpModalComponent implements OnInit {
         obj.controllers.push(_obj);
       }
     }
-    this.coreService.post('jobscheduler/register', obj).subscribe(res => {
+    this.coreService.post('controller/register', obj).subscribe(res => {
       this.submitted = false;
       if (this.modalRef) {
         this.modalRef.close(res);
@@ -141,11 +141,11 @@ export class StartUpModalComponent implements OnInit {
   testConnection(type, url) {
     this.error = false;
     this.setFlag(type, true);
-    this.coreService.post('jobscheduler/test', {url: url}).subscribe((res: any) => {
+    this.coreService.post('controller/test', {url: url}).subscribe((res: any) => {
       this.setFlag(type, false);
-      if (res && res.jobscheduler) {
+      if (res && res.controller) {
         let title = '', msg = '';
-        if (res.jobscheduler.connectionState && res.jobscheduler.connectionState._text === 'unreachable') {
+        if (res.controller.connectionState && res.controller.connectionState._text === 'unreachable') {
           this.error = true;
           this.translate.get('message.oops').subscribe(translatedValue => {
             title = translatedValue;
@@ -181,7 +181,7 @@ export class StartUpModalComponent implements OnInit {
     this.modalRef.dismiss();
   }
 
-  cancel(){
+  cancel() {
     this.router.navigate(['/dashboard']);
   }
 }
@@ -261,7 +261,7 @@ export class StartUpComponent implements OnInit {
   }
 
   getSchedulerIds(permission): void {
-    this.coreService.post('jobscheduler/ids', {}).subscribe((res: any) => {
+    this.coreService.post('controller/ids', {}).subscribe((res: any) => {
       this.authService.setIds(res);
       this.authService.save();
 

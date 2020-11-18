@@ -34,7 +34,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   preferences: any = {};
   schedulerIds: any = {};
   subscription: Subscription;
-  selectedJobScheduler: any = {};
+  selectedController: any = {};
   editor: any;
   controller: any;
   cluster: any;
@@ -99,13 +99,13 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
       this.preferences = JSON.parse(sessionStorage.preferences);
     }
     if (sessionStorage.$SOS$JOBSCHEDULE && JSON.parse(sessionStorage.$SOS$JOBSCHEDULE)) {
-      this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE) || {};
+      this.selectedController = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE) || {};
     }
-    if (_.isEmpty(this.selectedJobScheduler)) {
+    if (_.isEmpty(this.selectedController)) {
       const interval = setInterval(() => {
         if (sessionStorage.$SOS$JOBSCHEDULE && JSON.parse(sessionStorage.$SOS$JOBSCHEDULE)) {
-          this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE) || {};
-          if (!_.isEmpty(this.selectedJobScheduler)) {
+          this.selectedController = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE) || {};
+          if (!_.isEmpty(this.selectedController)) {
             clearInterval(interval);
           }
         }
@@ -117,7 +117,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   }
 
   getClusterStatusData(): void {
-    this.coreService.post('jobscheduler/components', {jobschedulerId: this.schedulerIds.selected}).subscribe((res: any) => {
+    this.coreService.post('controller/components', {controllerId: this.schedulerIds.selected}).subscribe((res: any) => {
       this.clusterStatusData = res;
       if (this.editor) {
         this.createWorkflowDiagram(this.editor.graph);
@@ -390,7 +390,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
             '</span></div>';
         }
         controllerTemplate = controllerTemplate + '<div class="text-xs text-left p-t-xs  p-l-sm block-ellipsis-cluster" style="width: 99%">' +
-          '<span class="text-black-dk" >' + labelControllerId + '</span>: <span class="text-sm">' + data.jobschedulerId + '</span></div>' +
+          '<span class="text-black-dk" >' + labelControllerId + '</span>: <span class="text-sm">' + data.controllerId + '</span></div>' +
           '<div class="text-left text-xs p-t-xs p-l-sm"><span class="text-black-dk" >' + labelState + '</span>: ' +
           '<span class="text-sm ' + colorClass + '">' + status + '</span></div>';
         if (data.clusterNodeState) {
@@ -700,7 +700,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     this.controller = null;
     this.cluster = null;
     let obj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       url: controller.url,
       withFailover: isFailOver,
       auditLog: {}
@@ -709,7 +709,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     if (this.preferences.auditLog && (action !== 'download')) {
       let comments = {
         radio: 'predefined',
-        name: obj.jobschedulerId + ' (' + obj.url + ')',
+        name: obj.controllerId + ' (' + obj.url + ')',
         operation: (action === 'terminate' && !isFailOver) ? 'Terminate without fail-over' : action === 'terminateAndRestart' ? 'Terminate and Restart' : action === 'abortAndRestart' ? 'Abort and Restart' : action === 'terminate' ? 'Terminate' : action === 'abort' ? 'Abort' : 'Switch Over'
       };
 
@@ -734,44 +734,44 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   performAction(action, obj, isFailOver): void {
     if (obj === null) {
       obj = {};
-      obj.jobschedulerId = this.schedulerIds.selected;
+      obj.controllerId = this.schedulerIds.selected;
       obj.withFailover = isFailOver;
       obj.auditLog = {};
     }
     if (action === 'terminate') {
-      this.postCall('jobscheduler/terminate', obj);
+      this.postCall('controller/terminate', obj);
     } else if (action === 'abort') {
-      this.postCall('jobscheduler/abort', obj);
+      this.postCall('controller/abort', obj);
     } else if (action === 'abortAndRestart') {
-      this.postCall('jobscheduler/abort_and_restart', obj);
+      this.postCall('controller/abort_and_restart', obj);
     } else if (action === 'terminateAndRestart') {
-      this.postCall('jobscheduler/restart', obj);
+      this.postCall('controller/restart', obj);
     } else if (action === 'switchover') {
       let obj1 = {
-        jobschedulerId: this.schedulerIds.selected,
+        controllerId: this.schedulerIds.selected,
         auditLog: {}
       };
-      this.postCall('jobscheduler/cluster/switchover', obj1);
+      this.postCall('controller/cluster/switchover', obj1);
     } else if (action === 'download') {
-      $('#tmpFrame').attr('src', './api/jobscheduler/log?url=' + obj.url + '&jobschedulerId=' + obj.jobschedulerId + '&accessToken=' + this.authService.accessTokenId);
+      $('#tmpFrame').attr('src', './api/controller/log?url=' + obj.url + '&controllerId=' + obj.controllerId + '&accessToken=' + this.authService.accessTokenId);
     }
   }
 
   restartService(type) {
-    this.postCall('cluster/restart', {type: type});
+    this.postCall('joc/cluster/restart', {type: type});
   }
 
   switchOver() {
-    this.postCall('cluster/switchMember', {memberId: this.joc.memberId});
+    this.postCall('joc/cluster/switchMember', {memberId: this.joc.memberId});
   }
 
   private refreshEvent(args) {
     for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId === this.schedulerIds.selected) {
+      if (args[i].controllerId === this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
             if (args[i].eventSnapshots[j].eventType === 'SchedulerStateChanged' ||
-              args[i].eventSnapshots[j].eventType === 'CurrentJobSchedulerChanged') {
+              args[i].eventSnapshots[j].eventType === 'CurrentcontrollerChanged') {
               this.isDataLoaded = false;
               this.reloadGraph();
               break;
@@ -784,11 +784,11 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   }
 
   downloadJocLog() {
-    $('#tmpFrame').attr('src', './api/log?accessToken=' + this.authService.accessTokenId);
+    $('#tmpFrame').attr('src', './api/joc/log?accessToken=' + this.authService.accessTokenId);
   }
 
   private onRefresh(): any {
-    return this.coreService.post('jobscheduler/components', {jobschedulerId: this.schedulerIds.selected});
+    return this.coreService.post('controller/components', {controllerId: this.schedulerIds.selected});
   }
 
   private postCall(url, obj) {

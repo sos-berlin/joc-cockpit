@@ -79,7 +79,7 @@ export class ActionComponent implements OnInit {
 
   clusterAction(action, data, isFailOver) {
     let obj = {
-      jobschedulerId: data.jobschedulerId || this.schedulerIds.selected,
+      controllerId: data.controllerId || this.schedulerIds.selected,
       url: data.url,
       withFailover: isFailOver,
       auditLog: {}
@@ -87,7 +87,7 @@ export class ActionComponent implements OnInit {
     if (this.preferences.auditLog && (action !== 'downloadLog')) {
       let comments = {
         radio: 'predefined',
-        name: obj.jobschedulerId + ' (' + obj.url + ')',
+        name: obj.controllerId + ' (' + obj.url + ')',
         operation: (action === 'terminate' && !isFailOver) ? 'Terminate without fail-over' : action === 'terminateAndRestart' ? 'Terminate and Restart' : action === 'abortAndRestart' ? 'Abort and Restart' : action === 'terminate' ? 'Terminate' : 'Abort'
       };
 
@@ -111,15 +111,15 @@ export class ActionComponent implements OnInit {
 
   performAction(action, obj): void {
     if (action === 'terminate') {
-      this.postCall('jobscheduler/terminate', obj);
+      this.postCall('controller/terminate', obj);
     } else if (action === 'abort') {
-      this.postCall('jobscheduler/abort', obj);
+      this.postCall('controller/abort', obj);
     } else if (action === 'abortAndRestart') {
-      this.postCall('jobscheduler/abort_and_restart', obj);
+      this.postCall('controller/abort_and_restart', obj);
     } else if (action === 'terminateAndRestart') {
-      this.postCall('jobscheduler/restart', obj);
+      this.postCall('controller/restart', obj);
     } else if (action === 'downloadLog') {
-      $('#tmpFrame').attr('src', './api/jobscheduler/log?url=' + obj.url + '&jobschedulerId=' + obj.jobschedulerId + '&accessToken=' + this.authService.accessTokenId);
+      $('#tmpFrame').attr('src', './api/controller/log?url=' + obj.url + '&controllerId=' + obj.controllerId + '&accessToken=' + this.authService.accessTokenId);
     }
   }
 

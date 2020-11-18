@@ -3,7 +3,6 @@ import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {Subscription} from 'rxjs';
-import * as _ from 'underscore';
 
 @Component({
   selector: 'app-scheduler-instance',
@@ -13,7 +12,6 @@ export class SchedulerInstanceComponent implements OnInit, OnDestroy {
   controllersList: any = [];
   isLoaded = false;
   subscription: Subscription;
-  // tslint:disable-next-line:no-input-rename
   @Input('sizeY') ybody: number;
 
   constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService) {
@@ -51,13 +49,13 @@ export class SchedulerInstanceComponent implements OnInit, OnDestroy {
   }
 
   private getInstances() {
-    this.coreService.post('jobscheduler/controllers', {
-      jobschedulerId: ''
+    this.coreService.post('controllers', {
+      controllerId: ''
     }).subscribe((res: any) => {
       this.controllersList = [];
       for (let i = 0; i < res.controllers.length; i++) {
-        if (this.authService.getPermission(res.controllers[i].jobschedulerId)) {
-          res.controllers[i].permission = this.authService.getPermission(res.controllers[i].jobschedulerId).JS7Controller;
+        if (this.authService.getPermission(res.controllers[i].controllerId)) {
+          res.controllers[i].permission = this.authService.getPermission(res.controllers[i].controllerId).JS7Controller;
         }
         this.controllersList.push(res.controllers[i]);
       }

@@ -1,8 +1,8 @@
 import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 
@@ -69,7 +69,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
 
   private initTree(type) {
     this.coreService.post('tree', {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       types: ['AGENTCLUSTER']
     }).subscribe(res => {
       this.tree = this.coreService.prepareTree(res, true);
@@ -84,7 +84,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
 
   private getAgentClassList(obj) {
     this.loading = false;
-/*    this.coreService.post('jobscheduler/agent_clusters', obj).subscribe((result: any) => {
+/*    this.coreService.post('controller/agent_clusters', obj).subscribe((result: any) => {
       this.loading = false;
       result.agentClusters.forEach((value) => {
         value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
@@ -102,7 +102,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
     let obj = {
       folders: [],
       state: this.agentsFilters.filter.state !== 'ALL' ? this.agentsFilters.filter.state : undefined,
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       compact: true
     };
 
@@ -122,11 +122,11 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
 
   loadAgentsV(data, type) {
     let obj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       folders: [{folder: data.path, recursive: type}],
       state: this.agentsFilters.filter.state !== 'ALL' ? this.agentsFilters.filter.state : undefined,
     };
-    this.coreService.post('jobscheduler/agent_clusters', obj).subscribe((res: any) => {
+    this.coreService.post('controller/agent_clusters', obj).subscribe((res: any) => {
       data.agentClusters = res.agentClusters;
       data.agentClusters.forEach((value) => {
         value.path1 = data.path;
@@ -145,7 +145,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
     let obj = {
       folders: [{folder: data.path, recursive: recursive}],
       type: this.agentsFilters.filter.type !== 'ALL' ? this.agentsFilters.filter.type : undefined,
-      jobschedulerId: this.schedulerIds.selected
+      controllerId: this.schedulerIds.selected
     };
     this.getAgentClassList(obj);
   }
@@ -161,7 +161,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
 
   private refresh(args) {
     for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId == this.schedulerIds.selected) {
+      if (args[i].controllerId == this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
             if ((args[i].eventSnapshots[j].eventType == 'FileBasedActivated' || args[i].eventSnapshots[j].eventType == 'FileBasedRemoved') && args[i].eventSnapshots[j].objectType === 'PROCESSCLASS') {

@@ -32,7 +32,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   private refresh(args) {
     for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId == this.schedulerIds.selected) {
+      if (args[i].controllerId == this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
             if (args[i].eventSnapshots[j].eventType === 'DailyPlanChanged') {
@@ -64,7 +64,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   getPlans(): void {
     let obj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       dateFrom: this.filters.date,
       timeZone: this.preferences.zone
     };

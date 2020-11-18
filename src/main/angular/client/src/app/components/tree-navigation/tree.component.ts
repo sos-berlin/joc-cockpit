@@ -1,4 +1,5 @@
-import {Component, OnInit, Input, Output, EventEmitter, HostListener, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, OnInit, Input, Output, EventEmitter,
+  HostListener, OnChanges, SimpleChanges} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 
 declare const $;

@@ -124,7 +124,7 @@ export class SearchComponent implements OnInit {
   onSubmit(result): void {
   this.submitted = true;
     let configObj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'CUSTOMIZATION',
       objectType: 'YADE',
@@ -249,7 +249,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.yadeFilters.entryPerPage = $event;
   }
 
-  changeJobScheduler() {
+  changeController() {
     this.load();
   }
 
@@ -276,7 +276,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     }
     let obj: any = {};
 
-    obj.jobschedulerId = this.yadeView.current == true ? this.schedulerIds.selected : '';
+    obj.controllerId = this.yadeView.current == true ? this.schedulerIds.selected : '';
 
     if (this.selectedFiltered && !_.isEmpty(this.selectedFiltered)) {
 
@@ -362,7 +362,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       this.fileTransfers = res.transfers || [];
 
       this.fileTransfers.forEach(function (transfer) {
-        let id = transfer.jobschedulerId || self.schedulerIds.selected;
+        let id = transfer.controllerId || self.schedulerIds.selected;
         transfer.permission = self.authService.getPermission(id).YADE;
         if (self.showFiles) {
           transfer.show = true;
@@ -377,7 +377,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   getTransfer(transfer) {
     let obj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       transferIds: [transfer.id]
 
     };
@@ -398,7 +398,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   getFileTransferById(transferId) {
     let obj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       transferIds: [transferId]
     };
     this.coreService.post('yade/transfers', obj).subscribe((result: any) => {
@@ -412,7 +412,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     let ids = [value.id];
     this.coreService.post('yade/files', {
       transferIds: ids,
-      jobschedulerId: value.jobschedulerId || this.schedulerIds.selected
+      controllerId: value.controllerId || this.schedulerIds.selected
     }).subscribe((res: any) => {
       value.files = res.files;
     });
@@ -514,7 +514,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   showTransferFuc(value) {
     let obj = {
-      jobschedulerId: value.jobschedulerId || this.schedulerIds.selected,
+      controllerId: value.controllerId || this.schedulerIds.selected,
       transferIds: [value.id]
     };
     this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
@@ -528,7 +528,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   search() {
     this.isLoaded = false;
     let filter: any = {
-      jobschedulerId: this.yadeView.current == true ? this.schedulerIds.selected : '',
+      controllerId: this.yadeView.current == true ? this.schedulerIds.selected : '',
       limit: parseInt(this.preferences.maxRecords, 10)
     };
 
@@ -619,8 +619,8 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (this.searchFilter.jobschedulerId) {
-      filter.jobschedulerId = this.searchFilter.jobschedulerId;
+    if (this.searchFilter.controllerId) {
+      filter.controllerId = this.searchFilter.controllerId;
     }
 
     filter.timeZone = this.preferences.zone;
@@ -673,7 +673,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   checkSharedFilters() {
     if (this.permission.JOCConfigurations.share.view) {
       let obj = {
-        jobschedulerId: this.schedulerIds.selected,
+        controllerId: this.schedulerIds.selected,
         configurationType: 'CUSTOMIZATION',
         objectType: 'YADE',
         shared: true
@@ -695,7 +695,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   getYadeCustomizations() {
     let obj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'CUSTOMIZATION',
       objectType: 'YADE'
@@ -728,7 +728,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
           if (value.id == this.savedFilter.selected) {
             flag = false;
             this.coreService.post('configuration', {
-              jobschedulerId: value.jobschedulerId,
+              controllerId: value.controllerId,
               id: value.id
             }).subscribe((conf: any) => {
               this.loadConfig = true;
@@ -758,7 +758,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   saveAsFilter() {
     let configObj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'CUSTOMIZATION',
       objectType: 'YADE',
@@ -879,7 +879,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       this.yadeFilters.selectedView = true;
       this.coreService.post('configuration',
         {
-          jobschedulerId: filter.jobschedulerId,
+          controllerId: filter.controllerId,
           id: filter.id
         }).subscribe((conf: any) => {
         this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
@@ -900,7 +900,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   private refresh(args) {
     for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId == this.schedulerIds.selected) {
+      if (args[i].controllerId == this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
             if (args[i].eventSnapshots[j].objectType === 'OTHER') {
@@ -1065,7 +1065,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   private openFilterModal(filter, isCopy) {
     let filterObj: any = {};
-    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
+    this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
       filterObj = JSON.parse(conf.configuration.configurationItem);
       filterObj.shared = filter.shared;
       if (isCopy) {

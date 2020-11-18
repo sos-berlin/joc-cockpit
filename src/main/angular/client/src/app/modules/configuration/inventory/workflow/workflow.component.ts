@@ -597,7 +597,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     if (this.agentTree.length === 0) {
       this.coreService.post('tree', {
-        jobschedulerId: this.schedulerId,
+        controllerId: this.schedulerId,
         forInventory: true,
         types: ['AGENTCLUSTER']
       }).subscribe((res) => {
@@ -606,7 +606,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     if (this.jobClassTree.length === 0) {
       this.coreService.post('tree', {
-        jobschedulerId: this.schedulerId,
+        controllerId: this.schedulerId,
         forInventory: true,
         types: ['JOBCLASS']
       }).subscribe((res) => {

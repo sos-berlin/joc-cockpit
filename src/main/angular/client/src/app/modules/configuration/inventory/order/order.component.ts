@@ -24,7 +24,7 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
   isVisible: boolean;
   dateFormat: any;
   isUnique = true;
-  objectType = 'ORDER';
+  objectType = 'ORDERTEMPLATE';
   workflowTree = [];
   invalidMsg: string;
 
@@ -47,7 +47,7 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
         this.getObject();
         if (this.workflowTree.length === 0) {
           this.coreService.post('tree', {
-            jobschedulerId: this.schedulerId,
+            controllerId: this.schedulerId,
             forInventory: true,
             types: ['WORKFLOW']
           }).subscribe((res) => {

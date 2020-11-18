@@ -122,18 +122,18 @@
                         <li nz-menu-item *ngIf="!node.origin.object && !node.origin.type && !node.origin.schedule"><a (click)="newObject(node, 'JOBCLASS')" translate>inventory.button.newJobClass</a></li>
                         <li nz-menu-item *ngIf="!node.origin.object && !node.origin.type && !node.origin.schedule"><a (click)="newObject(node, 'AGENTCLUSTER')" translate>inventory.button.newAgentCluster</a></li>
                         <li nz-menu-item *ngIf="!node.origin.object && !node.origin.type && !node.origin.schedule"><a (click)="newObject(node, 'LOCK')" translate>inventory.button.newLock</a></li>
-                        <li nz-menu-item *ngIf="!node.origin.object && !node.origin.type && !node.origin.controller"><a (click)="newObject(node, 'ORDER')" translate>inventory.button.newOrder</a></li>
+                        <li nz-menu-item *ngIf="!node.origin.object && !node.origin.type && !node.origin.controller"><a (click)="newObject(node, 'ORDERTEMPLATE')" translate>inventory.button.newOrder</a></li>
                         <li nz-menu-item *ngIf="!node.origin.object && !node.origin.type && !node.origin.controller"><a (click)="newObject(node, 'WORKINGDAYSCALENDAR')" translate>inventory.button.newCalendar</a></li>
                       </ul>
                     </li>
-                    <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && ((node.origin.object && node.origin.object !== 'CALENDAR' && node.origin.object !== 'ORDER') || (node.origin.type && node.origin.type !== 'CALENDAR' && node.origin.type !== 'ORDER')
+                    <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && ((node.origin.object && node.origin.object !== 'CALENDAR' && node.origin.object !== 'ORDERTEMPLATE') || (node.origin.type && node.origin.type !== 'CALENDAR' && node.origin.type !== 'ORDERTEMPLATE')
                      || (!node.origin.object && !node.origin.type && !node.origin.schedule))"
                         [nzDisabled]="!node.origin.hasDeployments && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valid))">
                       <a (click)="deployObject(node, false);" translate>inventory.button.deploy</a></li>
                     <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && !node.origin.deleted && (node.origin.controller || (!node.origin.object && !node.origin.type))"
                         [nzDisabled]="!node.origin.hasDeployments && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valid))">
                       <a (click)="reDeployObject(node);" translate>inventory.button.redeploy</a></li>
-                    <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && ((node.origin.object && (node.origin.object === 'CALENDAR' || node.origin.object === 'ORDER')) || (node.origin.type && (node.origin.type === 'CALENDAR' || node.origin.type === 'ORDER'))
+                    <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && ((node.origin.object && (node.origin.object === 'CALENDAR' || node.origin.object === 'ORDERTEMPLATE')) || (node.origin.type && (node.origin.type === 'CALENDAR' || node.origin.type === 'ORDERTEMPLATE'))
                      || (!node.origin.object && !node.origin.type && !node.origin.controller))"
                         [nzDisabled]="!node.origin.hasReleases && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valid))">
                       <a (click)="releaseObject(node);" translate>inventory.button.release</a></li>
@@ -141,7 +141,7 @@
                         [nzDisabled]="node.origin.deleted || node.origin.path === '/'">
                       <a (click)="renameFolder(node);" translate>button.rename</a></li>
                     <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.controller && !node.origin.schedule) && permission.Inventory.configurations.delete"
-                        [nzDisabled]="(node.origin.type && !node.origin.hasDeployments && node.origin.type !== 'ORDER' && node.origin.type !== 'CALENDAR') || (!node.origin.hasReleases && (node.origin.type === 'ORDER' || node.origin.type === 'CALENDAR')) || (!node.origin.type && !node.origin.object && node.origin.path === '/')">
+                        [nzDisabled]="(node.origin.type && !node.origin.hasDeployments && node.origin.type !== 'ORDERTEMPLATE' && node.origin.type !== 'CALENDAR') || (!node.origin.hasReleases && (node.origin.type === 'ORDERTEMPLATE' || node.origin.type === 'CALENDAR')) || (!node.origin.type && !node.origin.object && node.origin.path === '/')">
                       <a (click)="removeObject(node);" translate>button.delete</a></li>
                     <li nz-menu-item *ngIf="node.origin.type && permission.Inventory.configurations.delete" [nzDisabled]="node.origin.deployed || node.origin.released">
                       <a (click)="removeDraft(node);" translate>inventory.button.deleteDraft</a></li>
@@ -158,9 +158,8 @@
                   <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
                   <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
                   <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
-                  <i *ngIf="node.origin.object == 'ORDER'" nz-icon nzType="unordered-list" class="icon-color" nzTheme="outline"></i>
+                  <i *ngIf="node.origin.object == 'ORDERTEMPLATE'" nz-icon nzType="unordered-list" class="icon-color" nzTheme="outline"></i>
                   <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
-                  <i *ngIf="node.origin.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
                   <i *ngIf="node.origin.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
                   <span *ngIf="node.origin.type" class="fa fa-check-circle-o text-xs w-11" [ngClass]="{'fa-circle-o': !node.origin.valid , 'fa-circle text-success' : node.origin.deployed || node.origin.released}" style="margin-top: 4px"></span>
                   <span class="p-l-xs">
@@ -180,7 +179,7 @@
           <app-workflow [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"
                         [data]="selectedData" [copyObj]="copyObj"></app-workflow>
         </div>
-        <div *ngIf="type == 'ORDER'">
+        <div *ngIf="type == 'ORDERTEMPLATE'">
           <app-order [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"
                      [data]="selectedData" [copyObj]="copyObj"></app-order>
         </div>
@@ -195,10 +194,6 @@
         <div *ngIf="type == 'LOCK'">
           <app-lock [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission"
                     [data]="selectedData" [copyObj]="copyObj"></app-lock>
-        </div>
-        <div *ngIf="type == 'AGENTCLUSTER'">
-          <app-agent-cluster [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission"
-                             [data]="selectedData" [copyObj]="copyObj"></app-agent-cluster>
         </div>
         <div *ngIf="type == 'CALENDAR'">
           <app-calendar [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"

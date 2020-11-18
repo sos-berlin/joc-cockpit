@@ -7,7 +7,7 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <label class="md-check valign">
-            <input type="checkbox" [(ngModel)]="adtLog.current" name="checkbox" (change)="changeJobScheduler()">
+            <input type="checkbox" [(ngModel)]="adtLog.current" name="checkbox" (change)="changeController()">
             <i class="primary"></i><span translate>label.currentJobscheduler</span>
           </label>
 
@@ -143,10 +143,10 @@
           >
             <thead (nzSortChange)="sort($event)" nzSingleSort>
             <tr>
-              <th *ngIf="!adtLog.current" (click)="sort('jobschedulerId')"><a><span class="p-r-xs" translate>label.jobSchedulerId</span>
-                <i *ngIf="adtLog.filter.sortBy == 'jobschedulerId' && !adtLog.reverse"
+              <th *ngIf="!adtLog.current" (click)="sort('controllerId')"><a><span class="p-r-xs" translate>label.controllerId</span>
+                <i *ngIf="adtLog.filter.sortBy == 'controllerId' && !adtLog.reverse"
                    class="fa fa-caret-up "></i>
-                <i *ngIf="adtLog.filter.sortBy == 'jobschedulerId' && adtLog.reverse"
+                <i *ngIf="adtLog.filter.sortBy == 'controllerId' && adtLog.reverse"
                    class="fa fa-caret-down "></i></a>
               </th>
               <th (click)="sort('created')"><a><span class="p-r-xs" translate>label.created</span>
@@ -214,8 +214,8 @@
                    (click)="auditLog.show =true"></i>
                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" *ngIf="auditLog.show"
                    (click)="auditLog.show = false"></i>&nbsp;
-                <span [innerHtml]="auditLog.jobschedulerId"></span>
-                <span *ngIf="!auditLog.jobschedulerId">...</span>
+                <span [innerHtml]="auditLog.controllerId"></span>
+                <span *ngIf="!auditLog.controllerId">...</span>
               </td>
               <td nowrap>
                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore"

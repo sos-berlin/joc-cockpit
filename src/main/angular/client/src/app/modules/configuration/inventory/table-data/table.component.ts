@@ -18,7 +18,8 @@ export class TableComponent {
     searchKey: any;
     filter: any = {sortBy: 'name', reverse: false};
 
-    constructor(public coreService: CoreService, private modalService: NgbModal, private dataService: DataService) {
+    constructor(public coreService: CoreService, private modalService: NgbModal,
+                private dataService: DataService){
     }
 
     add() {
@@ -32,7 +33,7 @@ export class TableComponent {
       } else if (this.objectType === 'JOBCLASS') {
         name_type = 'job_class';
         configuration = {maxProcesses: 1};
-      } else if (this.objectType === 'ORDER') {
+      } else if (this.objectType === 'ORDERTEMPLATE') {
         name_type = 'order';
         configuration = {controllerId: this.schedulerId};
       } else if (this.objectType === 'LOCK') {
@@ -54,7 +55,7 @@ export class TableComponent {
       this.coreService.post('inventory/store', {
         objectType: this.objectType === 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : this.objectType,
         path: _path,
-        valid: !(this.objectType.match(/CALENDAR/) || this.objectType === 'ORDER' || this.objectType === 'AGENTCLUSTER' || this.objectType === 'WORKFLOW'),
+        valid: !(this.objectType.match(/CALENDAR/) || this.objectType === 'ORDERTEMPLATE' || this.objectType === 'AGENTCLUSTER' || this.objectType === 'WORKFLOW'),
         configuration: configuration
       }).subscribe((res: any) => {
         obj.id = res.id;
@@ -62,7 +63,7 @@ export class TableComponent {
           obj.type = 'CALENDAR';
           obj.objectType = 'WORKINGDAYSCALENDAR';
         }
-        obj.valid = !(this.objectType.match(/CALENDAR/) || this.objectType === 'ORDER' || this.objectType === 'AGENTCLUSTER' || this.objectType === 'WORKFLOW');
+        obj.valid = !(this.objectType.match(/CALENDAR/) || this.objectType === 'ORDERTEMPLATE' || this.objectType === 'AGENTCLUSTER' || this.objectType === 'WORKFLOW');
         this.dataObj.children.push(obj);
         this.dataObj.children = [...this.dataObj.children];
         this.dataService.reloadTree.next({add: true});

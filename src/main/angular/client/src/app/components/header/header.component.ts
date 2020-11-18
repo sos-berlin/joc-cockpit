@@ -28,7 +28,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   showGroupEvent: any = [];
   isLogout = false;
   showEvent = false;
-  selectedJobScheduler : any;
+  selectedController : any;
 
   @Output() myLogout: EventEmitter<any> = new EventEmitter();
 
@@ -40,8 +40,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.username = this.authService.currentUserData;
     this.reloadSettings();
     this.getSelectedSchedulerInfo();
-    if (this.schedulerIds && this.schedulerIds.jobschedulerIds && this.schedulerIds.jobschedulerIds.length > 0) {
-      this.getEvents(this.schedulerIds.jobschedulerIds);
+    if (this.schedulerIds && this.schedulerIds.controllerIds && this.schedulerIds.controllerIds.length > 0) {
+      this.getEvents(this.schedulerIds.controllerIds);
     }
 
     if (sessionStorage.$SOS$ALLEVENT != 'null' && sessionStorage.$SOS$ALLEVENT != null) {
@@ -56,13 +56,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   getSelectedSchedulerInfo() {
     if (sessionStorage.$SOS$JOBSCHEDULE && JSON.parse(sessionStorage.$SOS$JOBSCHEDULE)) {
-      this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE) || {};
+      this.selectedController = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE) || {};
     }
-    if (_.isEmpty(this.selectedJobScheduler)) {
+    if (_.isEmpty(this.selectedController)) {
       const interval = setInterval(() => {
         if (sessionStorage.$SOS$JOBSCHEDULE && JSON.parse(sessionStorage.$SOS$JOBSCHEDULE)) {
-          this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE) || {};
-          if (!_.isEmpty(this.selectedJobScheduler)) {
+          this.selectedController = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE) || {};
+          if (!_.isEmpty(this.selectedController)) {
             clearInterval(interval);
           }
         }
@@ -178,9 +178,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   filterEventResult(res): void {
     for (let i = 0; i < res.events.length; i++) {
-      if (res.events[i].jobschedulerId === this.schedulerIds.selected) {
+      if (res.events[i].controllerId === this.schedulerIds.selected) {
         this.eventsRequest.push({
-          jobschedulerId: res.events[i].jobschedulerId,
+          controllerId: res.events[i].controllerId,
           eventId: res.events[i].eventId
         });
         this.dataService.announceEvent(res.events);
@@ -189,9 +189,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     for (let i = 0; i < res.events.length; i++) {
-      if (res.events[i].jobschedulerId !== this.schedulerIds.selected) {
+      if (res.events[i].controllerId !== this.schedulerIds.selected) {
         this.eventsRequest.push({
-          jobschedulerId: res.events[i].jobschedulerId,
+          controllerId: res.events[i].controllerId,
           eventId: res.events[i].eventId
         });
       }
@@ -201,7 +201,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   getNotification(eventByPath, i, j): void {
-    eventByPath.jobschedulerId = this.allEvents[i].jobschedulerId;
+    eventByPath.controllerId = this.allEvents[i].controllerId;
     eventByPath.objectType = this.allEvents[i].eventSnapshots[j].objectType;
     eventByPath.eventId = this.allEvents[i].eventSnapshots[j].eventId;
 
@@ -223,7 +223,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       for (let x = 0; x <= this.allSessionEvent.group.length - 1; x++) {
         if (this.allSessionEvent.group[x].objectType === eventByPath.objectType &&
           this.allSessionEvent.group[x].path === eventByPath.path &&
-          this.allSessionEvent.group[x].jobschedulerId === eventByPath.jobschedulerId) {
+          this.allSessionEvent.group[x].controllerId === eventByPath.controllerId) {
           for (let m = 0; m <= eventByPath.events.length - 1; m++) {
             if (this.allSessionEvent.group[x].events.indexOf(eventByPath.events[m]) === -1) {
               this.allSessionEvent.group[x].eventId = eventByPath.eventId;
@@ -257,7 +257,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
               if (this.allEvents[i].eventSnapshots[j].eventId) {
                 const evnType = this.allEvents[i].eventSnapshots[j].eventType;
                 let eventByPath = {
-                  jobschedulerId: '',
+                  controllerId: '',
                   objectType: '',
                   path: '',
                   eventId: '',
@@ -288,33 +288,33 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-  getEvents(jobScheduler): void {
-    if (!jobScheduler) {
+  getEvents(controller): void {
+    if (!controller) {
       return;
     }
     if (!this.eventLoading) {
       this.eventLoading = true;
       let obj = {
-        jobscheduler: []
+        controllers: []
       };
       if (!this.eventsRequest || (this.eventsRequest && this.eventsRequest.length === 0)) {
-        for (let i = 0; i < jobScheduler.length; i++) {
-          if (this.schedulerIds.selected === jobScheduler[i]) {
-            obj.jobscheduler.push(
-              {'jobschedulerId': jobScheduler[i], 'eventId': this.eventId}
+        for (let i = 0; i < controller.length; i++) {
+          if (this.schedulerIds.selected === controller[i]) {
+            obj.controllers.push(
+              {'controllerId': controller[i], 'eventId': this.eventId}
             );
             break;
           }
         }
-        for (let j = 0; j < jobScheduler.length; j++) {
-          if (this.schedulerIds.selected !== jobScheduler[j]) {
-            obj.jobscheduler.push(
-              {'jobschedulerId': jobScheduler[j]}
+        for (let j = 0; j < controller.length; j++) {
+          if (this.schedulerIds.selected !== controller[j]) {
+            obj.controllers.push(
+              {'controllerId': controller[j]}
             );
           }
         }
       } else {
-        obj.jobscheduler = this.eventsRequest;
+        obj.controllers = this.eventsRequest;
       }
       this.coreService.post('events', obj).subscribe(res => {
         if (!this.switchScheduler && !this.isLogout) {
@@ -323,14 +323,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
         }
         if (!this.isLogout) {
           this.eventLoading = false;
-          this.getEvents(this.schedulerIds.jobschedulerIds);
+          this.getEvents(this.schedulerIds.controllerIds);
         }
         this.switchScheduler = false;
       }, (err) => {
         if (!this.isLogout && err && (err.status == 420 || err.status == 434 || err.status == 504)) {
           this.timeout = setTimeout(() => {
             this.eventLoading = false;
-            this.getEvents(this.schedulerIds.jobschedulerIds);
+            this.getEvents(this.schedulerIds.controllerIds);
             clearTimeout(this.timeout);
           }, 1000);
         }
@@ -373,7 +373,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     let p = event.path.substring(0, event.path.lastIndexOf('/'));
 
-    if (this.schedulerIds.selected != group.jobschedulerId) {
+    if (this.schedulerIds.selected != group.controllerId) {
       sessionStorage.$SOS$NAVIGATEOBJ = JSON.stringify({
         tab: event.objectType,
         path: p,

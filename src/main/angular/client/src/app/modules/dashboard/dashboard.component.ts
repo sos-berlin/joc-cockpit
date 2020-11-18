@@ -206,12 +206,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   setWidgetPreference() {
     this.preferences.dashboardLayout = this.widgets;
     sessionStorage.preferences = JSON.stringify(this.preferences);
-    let configObj: any = {};
-    configObj.jobschedulerId = this.schedulerIds.selected;
-    configObj.account = this.permission.user;
-    configObj.configurationType = 'PROFILE';
-    configObj.id = parseInt(sessionStorage.preferenceId, 10);
-    configObj.configurationItem = JSON.stringify(this.preferences);
+    const configObj: any = {
+      controllerId: this.schedulerIds.selected,
+      account: this.permission.user,
+      configurationType: 'PROFILE',
+      id : parseInt(sessionStorage.preferenceId, 10),
+      configurationItem: JSON.stringify(this.preferences)
+    };
     if (configObj.id && configObj.id > 0) {
       this.coreService.post('configuration/save', configObj).subscribe(() => {
 
@@ -245,10 +246,64 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboardLayout = [];
     this.widgets = [];
     this.dashboard = [];
+
     if (this.preferences.dashboardLayout) {
       this.dashboardLayout = this.preferences.dashboardLayout;
+      console.log(this.dashboardLayout, '???');
+      console.log(JSON.stringify(this.dashboardLayout));
     } else {
+      console.log(this.preferences, '???????????????');
       this.dashboardLayout = [{
+        'cols': 4,
+        'rows': 3,
+        'y': 6,
+        'x': 4,
+        'name': 'agentClusterStatus',
+        'visible': true,
+        'message': 'message.agentClusterStatus'
+      }, {
+        'cols': 4,
+        'rows': 3,
+        'y': 6,
+        'x': 8,
+        'name': 'agentClusterRunningTasks',
+        'visible': true,
+        'message': 'message.agentClusterRunningTasks'
+      }, {
+        'cols': 8,
+        'rows': 6,
+        'y': 0,
+        'x': 4,
+        'name': 'controllerClusterStatus',
+        'visible': true,
+        'message': 'message.controllerClusterStatus'
+      }, {
+        'cols': 12,
+        'rows': 3,
+        'y': 9,
+        'x': 0,
+        'name': 'jobSchedulerStatus',
+        'visible': true,
+        'message': 'message.jobSchedulerStatus'
+      }, {'cols': 4, 'rows': 3, 'y': 0, 'x': 0, 'name': 'ordersOverview', 'visible': true, 'message': 'message.ordersOverview'}, {
+        'cols': 4,
+        'rows': 2,
+        'y': 3,
+        'x': 0,
+        'name': 'ordersSummary',
+        'visible': true,
+        'message': 'message.ordersSummary'
+      }, {'cols': 4, 'rows': 2, 'y': 7, 'x': 0, 'name': 'tasksOverview', 'visible': true, 'message': 'message.tasksOverview'}, {
+        'cols': 4,
+        'rows': 2,
+        'y': 5,
+        'x': 0,
+        'name': 'tasksSummary',
+        'visible': true,
+        'message': 'message.tasksSummary'
+      }];
+
+      /*  {
         cols: 4, rows: 3, y: 0, x: 0,
         name: 'agentClusterStatus',
         visible: true,
@@ -298,8 +353,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         name: 'fileTransferSummary',
         visible: true,
         message: 'message.fileTransferSummary'
-      }];
- /*    {
+      }, {
         cols: 12, rows: 2, y: 8, x: 0,
           name: 'dailyPlanOverview',
           visible: true,

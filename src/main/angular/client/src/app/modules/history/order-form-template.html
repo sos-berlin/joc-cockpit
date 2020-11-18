@@ -61,11 +61,11 @@
       </div>
     </div>
     <div class="form-group row" *ngIf="isSearch">
-      <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
+      <label class="col-md-2 col-sm-4 form-control-label" translate>label.controllerId</label>
       <div class=" col-sm-6">
-        <nz-select nzPlaceHolder="{{'label.selectJobScheduler' | translate}}" [(ngModel)]="filter.jobschedulerId" name="id">
+        <nz-select nzPlaceHolder="{{'label.selectJobScheduler' | translate}}" [(ngModel)]="filter.controllerId" name="id">
           <nz-option [nzLabel]="'label.selectJobScheduler' | translate"></nz-option>
-          <nz-option *ngFor="let jobScheduler of schedulerIds.jobschedulerIds" [nzLabel]="jobScheduler" [nzValue]="jobScheduler"></nz-option>
+          <nz-option *ngFor="let jobScheduler of schedulerIds.controllerIds" [nzLabel]="jobScheduler" [nzValue]="jobScheduler"></nz-option>
         </nz-select>
       </div>
     </div>

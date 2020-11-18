@@ -64,7 +64,7 @@ export class ImportModalComponent implements OnInit {
     this.uploader.onBeforeUploadItem = (item: any) => {
       let obj: any = {
         folder: this.document.path,
-        jobschedulerId: this.schedulerId,
+        controllerId: this.schedulerId,
         accessToken: this.authService.accessTokenId,
         name: item.file.name
       };
@@ -133,7 +133,7 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
     }
     this.permission = JSON.parse(this.authService.permission) || {};
     this.getDocumentationsList({
-      jobschedulerId: this.schedulerId,
+      controllerId: this.schedulerId,
       documentations: [this.path]
     });
   }
@@ -154,7 +154,7 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
   /** ---------------------------- Action ----------------------------------*/
 
   previewDocument(document) {
-    const link = API_URL + 'documentation/preview?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId + '&jobschedulerId=' + this.schedulerId;
+    const link = API_URL + 'documentation/preview?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId + '&controllerId=' + this.schedulerId;
     if (this.preferences.isDocNewWindow === 'newWindow') {
       window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no', true);
     } else {
@@ -166,7 +166,7 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
     let documentObj = _.clone(document);
     this.coreService.post('documentation/used', {
       documentation: document.path,
-      jobschedulerId: this.schedulerId
+      controllerId: this.schedulerId
     }).subscribe((res: any) => {
       documentObj.usedIn = res.objects || [];
 
@@ -181,12 +181,12 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
   }
 
   exportDocument(document) {
-    let obj = {jobschedulerId: this.schedulerId, documentations: []};
+    let obj = {controllerId: this.schedulerId, documentations: []};
     if (document) {
       obj.documentations.push(document.path);
     }
     this.coreService.post('documentations/export/info', obj).subscribe((res: any) => {
-      $('#tmpFrame').attr('src', API_URL + 'documentations/export?jobschedulerId=' +
+      $('#tmpFrame').attr('src', API_URL + 'documentations/export?controllerId=' +
         this.schedulerId + '&filename=' + res.filename + '&accessToken=' +
         this.authService.accessTokenId);
     });
@@ -194,12 +194,12 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
 
   deleteDocumentations() {
     let obj: any = {
-      jobschedulerId: this.schedulerId,
+      controllerId: this.schedulerId,
       documentations: [this.path]
     };
     this.coreService.post('documentation/used', {
       documentation: this.path,
-      jobschedulerId: this.schedulerId
+      controllerId: this.schedulerId
     }).subscribe((res: any) => {
       this.deleteDocumentFn(obj, {usedIn : res.objects || [], path: this.path});
     });
@@ -293,7 +293,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
 
   initTree() {
     this.coreService.post('tree', {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       types: ['DOCUMENTATION']
     }).subscribe(res => {
       this.tree = this.coreService.prepareTree(res, true);
@@ -308,7 +308,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
 
   loadDocument() {
     this.object.documents = [];
-    let obj = {folders: [], types: [], jobschedulerId: this.schedulerIds.selected};
+    let obj = {folders: [], types: [], controllerId: this.schedulerIds.selected};
     this.documents = [];
     this.loading = true;
     let paths = [];
@@ -361,7 +361,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     this.loading = true;
     let obj = {
       folders: [{folder: data.path, recursive: recursive}],
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       compact: true
     };
 
@@ -405,7 +405,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   previewDocument(document) {
-    const link = API_URL + 'documentation/preview?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId + '&jobschedulerId=' + this.schedulerIds.selected;
+    const link = API_URL + 'documentation/preview?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId + '&controllerId=' + this.schedulerIds.selected;
     if (this.preferences.isDocNewWindow === 'newWindow') {
       window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no', true);
     } else {
@@ -417,7 +417,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     let documentObj = _.clone(document);
     this.coreService.post('documentation/used', {
       documentation: document.path,
-      jobschedulerId: this.schedulerIds.selected
+      controllerId: this.schedulerIds.selected
     }).subscribe((res: any) => {
       documentObj.usedIn = res.objects || [];
 
@@ -432,7 +432,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   exportDocument(document) {
-    let obj = {jobschedulerId: this.schedulerIds.selected, documentations: []};
+    let obj = {controllerId: this.schedulerIds.selected, documentations: []};
     if (document) {
       obj.documentations.push(document.path);
     } else {
@@ -441,7 +441,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       });
     }
     this.coreService.post('documentations/export/info', obj).subscribe((res: any) => {
-      $('#tmpFrame').attr('src', API_URL + 'documentations/export?jobschedulerId=' +
+      $('#tmpFrame').attr('src', API_URL + 'documentations/export?controllerId=' +
         this.schedulerIds.selected + '&filename=' + res.filename + '&accessToken=' +
         this.authService.accessTokenId);
     });
@@ -465,7 +465,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
 
   deleteDocumentations(document) {
     let obj: any = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       documentations: []
     };
     if (document) {
@@ -480,7 +480,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       documentObj.delete = true;
       this.coreService.post('documentation/used', {
         documentation: documentObj.path,
-        jobschedulerId: this.schedulerIds.selected
+        controllerId: this.schedulerIds.selected
       }).subscribe((res: any) => {
         documentObj.usedIn = res.objects || [];
         this.deleteDocumentFn(obj, documentObj, null);
@@ -490,7 +490,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       for (let i = 0; i < documentArr.length; i++) {
         this.coreService.post('documentation/used', {
           documentation: documentArr[i].path,
-          jobschedulerId: this.schedulerIds.selected
+          controllerId: this.schedulerIds.selected
         }).subscribe((res: any) => {
           documentArr[i].usedIn = res.objects || [];
           if (i === documentArr.length - 1) {

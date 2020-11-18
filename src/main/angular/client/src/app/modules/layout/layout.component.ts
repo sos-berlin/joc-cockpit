@@ -23,7 +23,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   schedulerIds: any = {};
   permission: any = {};
   selectedScheduler: any = {};
-  selectedJobScheduler: any = {};
+  selectedController: any = {};
   remainingSessionTime: string;
   interval: any;
   tabsMap = new Map();
@@ -92,13 +92,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
   refresh(args) {
     if (args && args.length) {
       for (let i = 0; i < args.length; i++) {
-        if (args[i].jobschedulerId === this.schedulerIds.selected) {
+        if (args[i].controllerId === this.schedulerIds.selected) {
           if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
             for (let j = 0; j < args[i].eventSnapshots.length; j++) {
               if (args[i].eventSnapshots[j].eventType === 'SchedulerStateChanged') {
                 this.loadScheduleDetail();
                 break;
-              } else if (args[i].eventSnapshots[j].eventType === 'CurrentJobSchedulerChanged') {
+              } else if (args[i].eventSnapshots[j].eventType === 'CurrentcontrollerChanged') {
                 this.getVolatileData(true);
                 break;
               }
@@ -155,10 +155,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   loadScheduleDetail() {
     if (sessionStorage.$SOS$JOBSCHEDULE && sessionStorage.$SOS$JOBSCHEDULE !== 'null') {
-      this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE);
-      this.selectedScheduler.scheduler = this.selectedJobScheduler;
+      this.selectedController = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE);
+      this.selectedScheduler.scheduler = this.selectedController;
       if (this.selectedScheduler && this.selectedScheduler.scheduler) {
-        document.title = 'JS7 : ' + this.selectedScheduler.scheduler.jobschedulerId;
+        document.title = 'JS7 : ' + this.selectedScheduler.scheduler.controllerId;
       }
     }
     if (this.schedulerIds && this.schedulerIds.selected) {
@@ -166,15 +166,15 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  changeScheduler(jobScheduler) {
+  changeScheduler(controller) {
     this.child.switchScheduler = true;
-    this.schedulerIds.selected = jobScheduler;
+    this.schedulerIds.selected = controller;
     const key = this.schedulerIds.selected;
     this.tabsMap.set(key, JSON.stringify(this.coreService.getTabs()));
-    this.coreService.post('jobscheduler/switch', {jobschedulerId: this.schedulerIds.selected}).subscribe(() => {
-      this.coreService.post('jobscheduler/ids', {}).subscribe((res) => {
+    this.coreService.post('controller/switch', {controllerId: this.schedulerIds.selected}).subscribe(() => {
+      this.coreService.post('controller/ids', {}).subscribe((res) => {
         if (res) {
-          let previousData = this.tabsMap.get(jobScheduler);
+          let previousData = this.tabsMap.get(controller);
           if (previousData) {
             previousData = JSON.parse(previousData);
             this.coreService.setTabs(previousData);
@@ -182,7 +182,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
             this.coreService.setDefaultTab();
           }
           this.authService.setIds(res);
-          this.authService.savePermission(jobScheduler);
+          this.authService.savePermission(controller);
           this.authService.save();
           this.reloadUI();
         } else {
@@ -274,9 +274,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
     if (sessionStorage.preferenceId === 0 || sessionStorage.preferenceId == '0') {
       const timezone = jstz.determine();
       if (timezone) {
-        preferences.zone = timezone.name() || this.selectedJobScheduler.timeZone;
+        preferences.zone = timezone.name() || this.selectedController.timeZone;
       } else {
-        preferences.zone = this.selectedJobScheduler.timeZone;
+        preferences.zone = this.selectedController.timeZone;
       }
       preferences.locale = 'en';
       preferences.dateFormat = 'DD.MM.YYYY HH:mm:ss';
@@ -330,7 +330,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   private getUserProfileConfiguration(id, user, reload: boolean) {
     const configObj = {
-      jobschedulerId: id,
+      controllerId: id,
       account: user,
       configurationType: 'PROFILE'
     };
@@ -352,7 +352,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   private loadSettingConfiguration() {
     if(this.permission.user) {
       const configObj = {
-        jobschedulerId: this.schedulerIds.selected,
+        controllerId: this.schedulerIds.selected,
         account: this.permission.user,
         configurationType: 'SETTING'
       };
@@ -378,7 +378,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   private saveSettingConf(flag) {
     if ((sessionStorage.settingId || flag) && this.permission.user) {
       let configObj = {
-        jobschedulerId: this.schedulerIds.selected,
+        controllerId: this.schedulerIds.selected,
         account: this.permission.user,
         configurationType: 'SETTING',
         id: flag ? 0 : parseInt(sessionStorage.settingId, 10),
@@ -407,16 +407,16 @@ export class LayoutComponent implements OnInit, OnDestroy {
     if (!res) {
       return;
     }
-    this.selectedJobScheduler = res.jobscheduler;
-    this.selectedScheduler.scheduler = this.selectedJobScheduler;
+    this.selectedController = res.controller;
+    this.selectedScheduler.scheduler = this.selectedController;
     if (this.selectedScheduler && this.selectedScheduler.scheduler) {
-      document.title = 'JS7:' + this.selectedScheduler.scheduler.jobschedulerId;
+      document.title = 'JS7:' + this.selectedScheduler.scheduler.controllerId;
     }
-    sessionStorage.$SOS$JOBSCHEDULE = JSON.stringify(this.selectedJobScheduler);
+    sessionStorage.$SOS$JOBSCHEDULE = JSON.stringify(this.selectedController);
   }
 
   private getVolatileData(flag: boolean): void {
-    this.coreService.post('jobscheduler', {jobschedulerId: this.schedulerIds.selected}).subscribe(res => {
+    this.coreService.post('controller', {controllerId: this.schedulerIds.selected}).subscribe(res => {
       this.updateTitle(res);
       this.child.switchSchedulerController();
       if (flag) {

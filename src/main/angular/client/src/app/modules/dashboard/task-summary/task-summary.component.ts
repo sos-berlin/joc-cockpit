@@ -10,7 +10,6 @@ import {Router} from '@angular/router';
   templateUrl: './task-summary.component.html'
 })
 export class TaskSummaryComponent implements OnInit, OnDestroy {
-
   taskSummary: any = {};
   preferences: any = {};
   schedulerIds: any = {};
@@ -43,7 +42,7 @@ export class TaskSummaryComponent implements OnInit, OnDestroy {
 
   refresh(args) {
     for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId == this.schedulerIds.selected) {
+      if (args[i].controllerId == this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
             if (args[i].eventSnapshots[j].eventType === 'ReportingChangedJob') {
@@ -59,7 +58,7 @@ export class TaskSummaryComponent implements OnInit, OnDestroy {
 
   getSummary(): void {
     this.coreService.post('jobs/overview/summary', {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       dateFrom: this.filters.date,
       timeZone: this.preferences.zone
     }).subscribe(res => {
@@ -74,14 +73,13 @@ export class TaskSummaryComponent implements OnInit, OnDestroy {
   getSummaryByDate(date): void {
     this.filters.date = date;
     this.coreService.post('jobs/overview/summary', {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       dateFrom: date,
       timeZone: this.preferences.zone
     }).subscribe(res => {
       this.taskSummary = res;
     });
   }
-
 
   showTaskSummary(state) {
     let filter = this.coreService.getHistoryTab();

@@ -49,7 +49,7 @@ export class LoginComponent implements OnInit {
   }
 
   private getComments(): void {
-    this.coreService.post('properties', {}).subscribe((result: any) => {
+    this.coreService.post('joc/properties', {}).subscribe((result: any) => {
       sessionStorage.$SOS$FORCELOGING = result.forceCommentsForAuditLog;
       sessionStorage.comments = JSON.stringify(result.comments);
       sessionStorage.showViews = JSON.stringify(result.showViews);
@@ -60,7 +60,7 @@ export class LoginComponent implements OnInit {
 
   private getPermissions(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.coreService.post('security/joc_cockpit_permissions', {jobschedulerId: this.schedulerIds.selected}).subscribe((permission) => {
+    this.coreService.post('security/joc_cockpit_permissions', {controllerId: this.schedulerIds.selected}).subscribe((permission) => {
       this.authService.setPermissions(permission);
       this.authService.save();
       if (this.schedulerIds) {
@@ -76,9 +76,9 @@ export class LoginComponent implements OnInit {
   }
 
   private getSchedulerIds(): void {
-    this.coreService.post('jobscheduler/ids', {}).subscribe((res: any) => {
+    this.coreService.post('controller/ids', {}).subscribe((res: any) => {
 
-      if (res && res.jobschedulerIds && res.jobschedulerIds.length > 0) {
+      if (res && res.controllerIds && res.controllerIds.length > 0) {
         this.authService.setIds(res);
         this.authService.save();
         this.getComments();

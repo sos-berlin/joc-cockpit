@@ -1,9 +1,6 @@
 import {Component, OnInit, OnDestroy, Input, ViewChild} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../services/core.service';
-import {NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd';
-import {forkJoin} from 'rxjs';
-
 declare const $;
 
 @Component({
@@ -32,7 +29,7 @@ export class TreeModalComponent implements OnInit, OnDestroy {
 
   init() {
     this.coreService.post('tree', {
-      jobschedulerId: this.schedulerId,
+      controllerId: this.schedulerId,
       forInventory: true,
       types: this.type ? [this.type] : undefined
     }).subscribe(res => {

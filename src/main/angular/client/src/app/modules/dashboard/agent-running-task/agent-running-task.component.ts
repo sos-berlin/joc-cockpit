@@ -5,8 +5,6 @@ import {Subscription} from 'rxjs';
 import {AuthService} from '../../../components/guard';
 
 
-declare var $: any;
-
 @Component({
   selector: 'app-agent-running-task',
   templateUrl: './agent-running-task.component.html'
@@ -31,7 +29,7 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
 
   refresh(args) {
     for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId === this.schedulerIds.selected) {
+      if (args[i].controllerId === this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
             if (args[i].eventSnapshots[j].eventType === 'JobStateChanged') {
@@ -68,7 +66,7 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
   getRunningTask(): void {
 
     this.coreService.post('process_classes', {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       isAgentCluster: true
     }).subscribe(res => {
       this.agentClusterRunningTaskGraph(res);

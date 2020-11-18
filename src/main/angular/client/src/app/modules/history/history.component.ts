@@ -14,6 +14,7 @@ import * as moment from 'moment';
 import {SearchPipe} from '../../filters/filter.pipe';
 import {TranslateService} from '@ngx-translate/core';
 import {ExcelService} from '../../services/excel.service';
+import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component';
 
 declare const $;
 
@@ -122,7 +123,7 @@ export class OrderSearchComponent implements OnInit {
   onSubmit(result): void {
     this.submitted = true;
     let configObj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'CUSTOMIZATION',
       objectType: 'ORDER_HISTORY',
@@ -246,7 +247,7 @@ export class TaskSearchComponent implements OnInit {
   onSubmit(result): void {
     this.submitted = true;
     let configObj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'CUSTOMIZATION',
       objectType: 'TASK_HISTORY',
@@ -370,7 +371,7 @@ export class YadeSearchComponent implements OnInit {
   onSubmit(result): void {
     this.submitted = true;
     let configObj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'CUSTOMIZATION',
       objectType: 'YADE_HISTORY',
@@ -496,7 +497,7 @@ export class DeploymentSearchComponent implements OnInit {
   onSubmit(result): void {
     this.submitted = true;
     let configObj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'CUSTOMIZATION',
       objectType: 'DEPLOYMENT_HISTORY',
@@ -641,7 +642,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.subscription2.unsubscribe();
   }
 
-  changeJobScheduler() {
+  changeController() {
     this.init();
   }
 
@@ -755,7 +756,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   orderHistory(obj) {
     this.historyFilters.type = 'ORDER';
     if (!obj) {
-      obj = {jobschedulerId: this.historyView.current == true ? this.schedulerIds.selected : ''};
+      obj = {controllerId: this.historyView.current == true ? this.schedulerIds.selected : ''};
     }
     this.isLoading = false;
     if (this.selectedFiltered1 && !_.isEmpty(this.selectedFiltered1)) {
@@ -848,7 +849,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.historyFilters.type = 'TASK';
 
     if (!obj) {
-      obj = {jobschedulerId: this.historyView.current == true ? this.schedulerIds.selected : ''};
+      obj = {controllerId: this.historyView.current == true ? this.schedulerIds.selected : ''};
     }
     this.isLoading = false;
 
@@ -902,7 +903,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   yadeHistory(obj) {
     this.historyFilters.type = 'YADE';
     if (!obj) {
-      obj = {jobschedulerId: this.historyView.current == true ? this.schedulerIds.selected : ''};
+      obj = {controllerId: this.historyView.current == true ? this.schedulerIds.selected : ''};
     }
     this.isLoading = false;
     if (this.selectedFiltered3 && !_.isEmpty(this.selectedFiltered3)) {
@@ -956,7 +957,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   deploymentHistory(obj){
     this.historyFilters.type = 'DEPLOYMENT';
     if (!obj) {
-      obj = {jobschedulerId: this.historyView.current == true ? this.schedulerIds.selected : ''};
+      obj = {controllerId: this.historyView.current == true ? this.schedulerIds.selected : ''};
     }
     this.isLoading = false;
     if (this.selectedFiltered3 && !_.isEmpty(this.selectedFiltered3)) {
@@ -982,7 +983,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   search(obj) {
     let filter: any = {
-      jobschedulerId: this.historyView.current == true ? this.schedulerIds.selected : '',
+      controllerId: this.historyView.current == true ? this.schedulerIds.selected : '',
       limit: parseInt(this.preferences.maxRecords, 10)
     };
     let fromDate, toDate;
@@ -1040,10 +1041,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (obj.regex) {
         filter.regex = obj.regex;
       }
-      if (obj.jobschedulerId) {
-        filter.jobschedulerId = obj.jobschedulerId;
+      if (obj.controllerId) {
+        filter.controllerId = obj.controllerId;
       } else {
-        filter.jobschedulerId = '';
+        filter.controllerId = '';
       }
       if (obj.paths && obj.paths.length > 0) {
         filter.folders = [];
@@ -1151,8 +1152,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (obj.regex) {
         filter.regex = obj.regex;
       }
-      if (obj.jobschedulerId) {
-        filter.jobschedulerId = obj.jobschedulerId;
+      if (obj.controllerId) {
+        filter.controllerId = obj.controllerId;
       }
       if (obj.paths && obj.paths.length > 0) {
         filter.folders = [];
@@ -1243,8 +1244,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (obj.regex) {
         filter.regex = obj.regex;
       }
-      if (obj.jobschedulerId) {
-        filter.jobschedulerId = obj.jobschedulerId;
+      if (obj.controllerId) {
+        filter.controllerId = obj.controllerId;
       }
       if (obj.paths && obj.paths.length > 0) {
         filter.folders = [];
@@ -1324,8 +1325,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (obj.regex) {
         filter.regex = obj.regex;
       }
-      if (obj.jobschedulerId) {
-        filter.jobschedulerId = obj.jobschedulerId;
+      if (obj.controllerId) {
+        filter.controllerId = obj.controllerId;
       }
       if (obj.paths && obj.paths.length > 0) {
         filter.folders = [];
@@ -1546,7 +1547,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     data.show = true;
     data.steps = [];
     let obj = {
-      jobschedulerId: data.jobschedulerId || this.schedulerIds.selected,
+      controllerId: data.controllerId || this.schedulerIds.selected,
       historyId: data.historyId
     };
     this.coreService.post('order/history', obj).subscribe((res: any) => {
@@ -1559,7 +1560,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   showTransferFuc(data) {
     const obj = {
-      jobschedulerId: data.jobschedulerId || this.schedulerIds.selected,
+      controllerId: data.controllerId || this.schedulerIds.selected,
       transferIds: [data.id]
     };
     this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
@@ -1592,7 +1593,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         }
       }
       let configObj = {
-        jobschedulerId: this.schedulerIds.selected,
+        controllerId: this.schedulerIds.selected,
         account: this.permission.user,
         configurationType: 'IGNORELIST',
         id: this.ignoreListConfigId,
@@ -1615,7 +1616,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         }
       }
       let configObj = {
-        jobschedulerId: this.schedulerIds.selected,
+        controllerId: this.schedulerIds.selected,
         account: this.permission.user,
         configurationType: 'IGNORELIST',
         id: this.ignoreListConfigId,
@@ -1638,7 +1639,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         }
       }
       let configObj = {
-        jobschedulerId: this.schedulerIds.selected,
+        controllerId: this.schedulerIds.selected,
         account: this.permission.user,
         configurationType: 'IGNORELIST',
         id: this.ignoreListConfigId,
@@ -1652,14 +1653,23 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   editIgnoreList() {
     if ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0) || (this.savedIgnoreList.orders && this.savedIgnoreList.orders.length > 0) || (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
-      //Open ignore list modal
+      const modalRef = this.modalService.open(EditIgnoreListComponent, {backdrop: 'static', size: 'lg'});
+      modalRef.componentInstance.savedIgnoreList = this.savedIgnoreList;
+      modalRef.componentInstance.historyFilters = this.historyFilters;
+      modalRef.componentInstance.action = this.action;
+      modalRef.componentInstance.self = this;
+      modalRef.result.then((configObj) => {
+
+      }, (reason) => {
+        console.log('close...', reason);
+      });
     }
   }
 
   enableDisableIgnoreList() {
     this.savedIgnoreList.isEnable = !this.savedIgnoreList.isEnable;
     let configObj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'IGNORELIST',
       id: this.ignoreListConfigId,
@@ -1694,7 +1704,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.savedIgnoreList.jobs = [];
     this.savedIgnoreList.isEnable = false;
     let configObj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'IGNORELIST',
       id: this.ignoreListConfigId,
@@ -1763,10 +1773,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       schedulerId = this.schedulerIds.selected;
     }
     if (this.historyFilters.type == 'ORDER') {
-      $('#tmpFrame').attr('src', './api/order/log/download?historyId=' + obj.historyId + '&jobschedulerId=' + schedulerId +
+      $('#tmpFrame').attr('src', './api/order/log/download?historyId=' + obj.historyId + '&controllerId=' + schedulerId +
         '&accessToken=' + this.authService.accessTokenId);
     } else {
-      $('#tmpFrame').attr('src', './api/task/log/download?taskId=' + obj.taskId + '&jobschedulerId=' + schedulerId +
+      $('#tmpFrame').attr('src', './api/task/log/download?taskId=' + obj.taskId + '&controllerId=' + schedulerId +
         '&accessToken=' + this.authService.accessTokenId);
     }
   }
@@ -1901,7 +1911,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.savedHistoryFilter.selected = filter.id;
         this.historyFilters.order.selectedView = true;
         this.coreService.post('configuration', {
-          jobschedulerId: filter.jobschedulerId,
+          controllerId: filter.controllerId,
           id: filter.id
         }).subscribe((conf: any) => {
           this.selectedFiltered1 = JSON.parse(conf.configuration.configurationItem);
@@ -1921,7 +1931,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.savedJobHistoryFilter.selected = filter.id;
         this.historyFilters.task.selectedView = true;
         this.coreService.post('configuration', {
-          jobschedulerId: filter.jobschedulerId,
+          controllerId: filter.controllerId,
           id: filter.id
         }).subscribe((conf: any) => {
           this.selectedFiltered2 = JSON.parse(conf.configuration.configurationItem);
@@ -1941,7 +1951,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.savedYadeHistoryFilter.selected = filter.id;
         this.historyFilters.yade.selectedView = true;
         this.coreService.post('configuration', {
-          jobschedulerId: filter.jobschedulerId,
+          controllerId: filter.controllerId,
           id: filter.id
         }).subscribe((conf: any) => {
           this.selectedFiltered3 = JSON.parse(conf.configuration.configurationItem);
@@ -1962,7 +1972,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.savedDeploymentHistoryFilter.selected = filter.id;
         this.historyFilters.yade.selectedView = true;
         this.coreService.post('configuration', {
-          jobschedulerId: filter.jobschedulerId,
+          controllerId: filter.controllerId,
           id: filter.id
         }).subscribe((conf: any) => {
           this.selectedFiltered3 = JSON.parse(conf.configuration.configurationItem);
@@ -1986,10 +1996,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
   /* --------------------------Actions -----------------------*/
 
   private exportToExcelOrder(): any {
-    let jobschedulerId = '', workflow = '', orderId = '', status = '', position = '',
+    let controllerId = '', workflow = '', orderId = '', status = '', position = '',
       startTime = '', endTime = '', duration = '', plannedTime = '';
-    this.translate.get('label.jobschedulerId').subscribe(translatedValue => {
-      jobschedulerId = translatedValue;
+    this.translate.get('label.controllerId').subscribe(translatedValue => {
+      controllerId = translatedValue;
     });
     this.translate.get('label.workflow').subscribe(translatedValue => {
       workflow = translatedValue;
@@ -2019,7 +2029,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     for (let i = 0; i < this.currentData.length; i++) {
       let obj: any = {};
       if (!this.historyView.current) {
-        obj[jobschedulerId] = this.currentData[i].jobschedulerId;
+        obj[controllerId] = this.currentData[i].controllerId;
       }
       obj[orderId] = this.currentData[i].orderId;
       obj[workflow] = this.currentData[i].workflow;
@@ -2037,10 +2047,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private exportToExcelTask(): any {
-    let jobschedulerId = '', workflow = '', job = '', status = '', position = '', plannedTime = '',
+    let controllerId = '', workflow = '', job = '', status = '', position = '', plannedTime = '',
       startTime = '', endTime = '', duration = '', criticality = '', returnCode = '';
-    this.translate.get('label.jobschedulerId').subscribe(translatedValue => {
-      jobschedulerId = translatedValue;
+    this.translate.get('label.controllerId').subscribe(translatedValue => {
+      controllerId = translatedValue;
     });
     this.translate.get('label.workflow').subscribe(translatedValue => {
       workflow = translatedValue;
@@ -2076,7 +2086,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     for (let i = 0; i < this.currentData.length; i++) {
       let obj: any = {};
       if (!this.historyView.current) {
-        obj[jobschedulerId] = this.currentData[i].jobschedulerId;
+        obj[controllerId] = this.currentData[i].controllerId;
       }
 
       obj[job] = this.currentData[i].job;
@@ -2096,10 +2106,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private exportToExcelYade(): any {
-    let jobschedulerId = '', profileName = '', mandator = '', operation = '', status = '', sourceHost = '', targetHost = '',
+    let controllerId = '', profileName = '', mandator = '', operation = '', status = '', sourceHost = '', targetHost = '',
       totalNumberOfFiles = '', lastErrorMessage = '', duration = '', startTime = '', endTime = '';
-    this.translate.get('label.jobschedulerId').subscribe(translatedValue => {
-      jobschedulerId = translatedValue;
+    this.translate.get('label.controllerId').subscribe(translatedValue => {
+      controllerId = translatedValue;
     });
     this.translate.get('label.profileName').subscribe(translatedValue => {
       profileName = translatedValue;
@@ -2138,7 +2148,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     for (let i = 0; i < this.currentData.length; i++) {
       let obj: any = {};
       if (!this.historyView.current) {
-        obj[jobschedulerId] = this.currentData[i].jobschedulerId;
+        obj[controllerId] = this.currentData[i].controllerId;
       }
       this.translate.get(this.currentData[i].state._text).subscribe(translatedValue => {
         obj[status] = translatedValue;
@@ -2160,9 +2170,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private exportToExcelDeployment(): any {
-    let jobschedulerId = '', status = '', duration = '', startTime = '', endTime = '';
-    this.translate.get('label.jobschedulerId').subscribe(translatedValue => {
-      jobschedulerId = translatedValue;
+    let controllerId = '', status = '', duration = '', startTime = '', endTime = '';
+    this.translate.get('label.controllerId').subscribe(translatedValue => {
+      controllerId = translatedValue;
     });
     this.translate.get('label.startTime').subscribe(translatedValue => {
       startTime = translatedValue;
@@ -2177,7 +2187,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     for (let i = 0; i < this.currentData.length; i++) {
       let obj: any = {};
       if (!this.historyView.current) {
-        obj[jobschedulerId] = this.currentData[i].jobschedulerId;
+        obj[controllerId] = this.currentData[i].controllerId;
       }
       this.translate.get(this.currentData[i].state._text).subscribe(translatedValue => {
         obj[status] = translatedValue;
@@ -2193,7 +2203,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   private refresh(args) {
     for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId == this.schedulerIds.selected) {
+      if (args[i].controllerId == this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
             if (args[i].eventSnapshots[j].eventType == 'ReportingChangedOrder' && this.isLoading && this.historyFilters.type == 'ORDER') {
@@ -2302,7 +2312,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   private checkSharedFilters(type) {
     let obj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       configurationType: 'CUSTOMIZATION',
       objectType: type === 'ORDER' ? 'ORDER_HISTORY' : type === 'TASK' ? 'TASK_HISTORY' : type === 'YADE' ? 'YADE_HISTORY' : 'DEPLOYMENT_HISTORY',
       shared: true
@@ -2382,7 +2392,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         if (this.orderHistoryFilterList[i].id == this.savedHistoryFilter.selected) {
           flag = false;
           this.coreService.post('configuration', {
-            jobschedulerId: this.orderHistoryFilterList[i].jobschedulerId,
+            controllerId: this.orderHistoryFilterList[i].controllerId,
             id: this.orderHistoryFilterList[i].id
           }).subscribe((conf: any) => {
             this.loadConfig = true;
@@ -2436,7 +2446,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         if (this.jobHistoryFilterList[i].id == this.savedJobHistoryFilter.selected) {
           flag = false;
           this.coreService.post('configuration', {
-            jobschedulerId: this.jobHistoryFilterList[i].jobschedulerId,
+            controllerId: this.jobHistoryFilterList[i].controllerId,
             id: this.jobHistoryFilterList[i].id
           }).subscribe((conf: any) => {
             this.loadConfig = true;
@@ -2489,7 +2499,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         if (this.deploymentHistoryFilterList[i].id == this.savedDeploymentHistoryFilter.selected) {
           flag = false;
           this.coreService.post('configuration', {
-            jobschedulerId: this.deploymentHistoryFilterList[i].jobschedulerId,
+            controllerId: this.deploymentHistoryFilterList[i].controllerId,
             id: this.deploymentHistoryFilterList[i].id
           }).subscribe((conf: any) => {
             this.loadConfig = true;
@@ -2545,7 +2555,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         if (this.yadeHistoryFilterList[i].id == this.savedYadeHistoryFilter.selected) {
           flag = false;
           this.coreService.post('configuration', {
-            jobschedulerId: this.yadeHistoryFilterList[i].jobschedulerId,
+            controllerId: this.yadeHistoryFilterList[i].controllerId,
             id: this.yadeHistoryFilterList[i].id
           }).subscribe((conf: any) => {
             this.loadConfig = true;
@@ -2571,7 +2581,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   private getIgnoreList() {
     let configObj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'IGNORELIST'
     };
@@ -2579,7 +2589,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (result.configurations && result.configurations.length > 0) {
         this.ignoreListConfigId = result.configurations[0].id;
         this.coreService.post('configuration', {
-          jobschedulerId: this.schedulerIds.selected,
+          controllerId: this.schedulerIds.selected,
           id: result.configurations[0].id
         }).subscribe((result1: any) => {
           if (result1.configuration && result1.configuration.configurationItem) {
@@ -2603,7 +2613,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   private init() {
     let obj = {
-      jobschedulerId: this.historyView.current == true ? this.schedulerIds.selected : ''
+      controllerId: this.historyView.current == true ? this.schedulerIds.selected : ''
     };
     if (this.loadConfig && this.loadIgnoreList) {
       this.isLoading = false;
@@ -2632,7 +2642,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   private editFilter(filter) {
     let filterObj: any = {};
-    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
+    this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
       filterObj = JSON.parse(conf.configuration.configurationItem);
       filterObj.shared = filter.shared;
       filterObj.id = filter.id;
@@ -2662,7 +2672,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   private copyFilter(filter) {
     let filterObj: any = {};
-    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
+    this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
       filterObj = JSON.parse(conf.configuration.configurationItem);
       filterObj.shared = filter.shared;
       if (this.historyFilters.type == 'ORDER') {

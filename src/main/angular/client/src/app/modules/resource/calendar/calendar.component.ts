@@ -60,7 +60,7 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
     this.getCalendarsList({
-      jobschedulerId: this.schedulerId,
+      controllerId: this.schedulerId,
       calendars: [this.path]
     });
   }
@@ -80,7 +80,7 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
     let cal = _.clone(calendar);
     this.coreService.post('calendar/used', {
       id: calendar.id,
-      jobschedulerId: this.schedulerIds.selected
+      controllerId: this.schedulerIds.selected
     }).subscribe((res: any) => {
       cal.usedIn = res;
       const modalRef = this.modalService.open(ShowModalComponent, {backdrop: 'static'});
@@ -159,7 +159,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   initTree() {
     this.coreService.post('tree', {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       types: ['WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR']
     }).subscribe(res => {
       this.tree = this.coreService.prepareTree(res, true);
@@ -178,7 +178,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   private refresh(args) {
     for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId == this.schedulerIds.selected) {
+      if (args[i].controllerId == this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
             if (args[i].eventSnapshots[j].eventType === 'CalendarCreated') {
@@ -233,7 +233,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     let obj = {
       folders: [],
       type: this.calendarFilters.filter.type != 'ALL' ? this.calendarFilters.filter.type : undefined,
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       compact: true
     };
     this.calendars = [];
@@ -255,7 +255,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     let obj = {
       folders: [{folder: data.path, recursive: recursive}],
       type: this.calendarFilters.filter.type != 'ALL' ? this.calendarFilters.filter.type : undefined,
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       compact: true
     };
 
@@ -298,7 +298,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     let cal = _.clone(calendar);
     this.coreService.post('calendar/used', {
       id: calendar.id,
-      jobschedulerId: this.schedulerIds.selected
+      controllerId: this.schedulerIds.selected
     }).subscribe((res: any) => {
       cal.usedIn = res;
       const modalRef = this.modalService.open(ShowModalComponent, {backdrop: 'static'});

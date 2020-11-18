@@ -131,12 +131,10 @@
                  nzTheme="outline"></i>
               <i *ngIf="data.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color"
                  nzTheme="outline"></i>
-              <i *ngIf="data.object == 'ORDER'" nz-icon nzType="unordered-list" class="icon-color"
+              <i *ngIf="data.object == 'ORDERTEMPLATE'" nz-icon nzType="unordered-list" class="icon-color"
                  nzTheme="outline"></i>
               <i *ngIf="data.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
               <i *ngIf="data.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
-              <i *ngIf="data.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color"
-                 nzTheme="outline"></i>
               <span class="p-l-sm">{{data.object}}</span>
             </div>
             <div class="m-l-md node-wrapper" style="width: 90%" *ngFor="let child of deployablesObject">

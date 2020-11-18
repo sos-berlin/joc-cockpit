@@ -60,7 +60,7 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
   loadProcessClass(status) {
     let obj = {
       folders: [],
-      jobschedulerId: this.schedulerIds.selected
+      controllerId: this.schedulerIds.selected
     };
 
     this.processClasses = [];
@@ -82,7 +82,7 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
     this.loading = true;
     let obj = {
       folders: [{folder: data.path, recursive: recursive}],
-      jobschedulerId: this.schedulerIds.selected
+      controllerId: this.schedulerIds.selected
     };
     this.getProcessClassList(obj);
   }
@@ -129,7 +129,7 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
 
   private refresh(args) {
     for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId == this.schedulerIds.selected) {
+      if (args[i].controllerId == this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
             if ((args[i].eventSnapshots[j].eventType == 'FileBasedActivated' || args[i].eventSnapshots[j].eventType == 'FileBasedRemoved') && args[i].eventSnapshots[j].objectType === 'PROCESSCLASS') {
@@ -140,7 +140,7 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
                 for (let x = 0; x < this.processClasses.length; x++) {
                   if (this.processClasses[x].path === args[i].eventSnapshots[j].path) {
                     let obj = {
-                      jobschedulerId: this.schedulerIds.selected,
+                      controllerId: this.schedulerIds.selected,
                       folders: [{folder: this.processClasses[x].path, recursive: false}]
                     };
                     this.coreService.post('process_classes', obj).subscribe(res => {
@@ -173,7 +173,7 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
 
   private initTree() {
     this.coreService.post('tree', {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       types: ['PROCESSCLASS']
     }).subscribe(res => {
       this.tree = this.coreService.prepareTree(res, true);

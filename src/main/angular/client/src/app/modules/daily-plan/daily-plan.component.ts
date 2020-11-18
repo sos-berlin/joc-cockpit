@@ -13,6 +13,8 @@ import {
 import {Subscription} from 'rxjs';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {TranslateService} from '@ngx-translate/core';
+import {OrderPipe} from 'ngx-order-pipe';
+import {ToasterService} from 'angular2-toaster';
 import * as moment from 'moment';
 import * as _ from 'underscore';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
@@ -21,9 +23,7 @@ import {CoreService} from '../../services/core.service';
 import {SaveService} from '../../services/save.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
-import {OrderPipe} from 'ngx-order-pipe';
 import {ExcelService} from '../../services/excel.service';
-import {ToasterService} from 'angular2-toaster';
 
 declare const JSGantt;
 declare let jsgantt;
@@ -742,7 +742,7 @@ export class SearchComponent implements OnInit {
 
   getFolderTree() {
     this.coreService.post('tree', {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       forInventory: true,
       types: ['ORDER']
     }).subscribe(res => {
@@ -781,7 +781,7 @@ export class SearchComponent implements OnInit {
   onSubmit(result): void {
     this.submitted = true;
     const configObj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'CUSTOMIZATION',
       objectType: 'DAILYPLAN',
@@ -1078,7 +1078,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (plan.show) {
       this.coreService.post('orders/variables', {
         orderId: plan.orderId,
-        jobschedulerId: this.schedulerIds.selected
+        controllerId: this.schedulerIds.selected
       }).subscribe((res: any) => {
         plan.variables = res.variables;
       }, err => {
@@ -1273,7 +1273,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (!order) {
       this.coreService.post('orders/variables', {
         orderId: plan.orderId,
-        jobschedulerId: this.schedulerIds.selected
+        controllerId: this.schedulerIds.selected
       }).subscribe((res: any) => {
         plan.variables = res.variables;
         this.openModel(plan, null);
@@ -1373,7 +1373,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.savedFilter.selected = filter.id;
       this.dailyPlanFilters.selectedView = true;
       this.coreService.post('configuration', {
-        jobschedulerId: filter.jobschedulerId,
+        controllerId: filter.controllerId,
         id: filter.id
       }).subscribe((conf: any) => {
         this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
@@ -1560,7 +1560,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   private refresh(args) {
     for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId === this.schedulerIds.selected) {
+      if (args[i].controllerId === this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
             if (args[i].eventSnapshots[j].eventType === 'DailyPlanChanged') {
@@ -1598,7 +1598,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   private checkSharedFilters() {
     if (this.permission.JOCConfigurations.share.view.status) {
       const obj = {
-        jobschedulerId: this.schedulerIds.selected,
+        controllerId: this.schedulerIds.selected,
         configurationType: 'CUSTOMIZATION',
         objectType: 'DAILYPLAN',
         shared: true
@@ -1644,7 +1644,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           flag = false;
           let result: any;
           self.coreService.post('configuration', {
-            jobschedulerId: value.jobschedulerId,
+            controllerId: value.controllerId,
             id: value.id
           }).subscribe(conf => {
             result = conf;
@@ -1666,7 +1666,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   private getCustomizations() {
     const obj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'CUSTOMIZATION',
       objectType: 'DAILYPLAN'
@@ -1719,7 +1719,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   private openFilterModal(filter, isCopy) {
     let filterObj: any = {};
-    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
+    this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
       filterObj = JSON.parse(conf.configuration.configurationItem);
       filterObj.shared = filter.shared;
       if (isCopy) {

@@ -48,7 +48,7 @@ export class AddOrderModalComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
     const obj: any = {
-      jobschedulerId: this.schedulerId,
+      controllerId: this.schedulerId,
       orders: []
     };
     if (this.order.fromDate && this.order.fromTime) {
@@ -57,7 +57,7 @@ export class AddOrderModalComponent implements OnInit {
       this.order.fromDate.setSeconds(moment(this.order.fromTime).seconds());
       this.order.fromDate.setMilliseconds(0);
     }
-    let order: any = {workflowPath: this.workflow.path, orderId: this.order.orderId};
+    const order: any = {workflowPath: this.workflow.path, orderName: this.order.orderId};
     if (this.order.at === 'now') {
       order.scheduledFor = 'now';
     } else if (this.order.at === 'later') {

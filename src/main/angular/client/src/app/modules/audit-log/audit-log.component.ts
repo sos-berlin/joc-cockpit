@@ -100,7 +100,7 @@ export class SearchComponent implements OnInit {
   onSubmit(result): void {
     this.submitted = true;
     let configObj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'CUSTOMIZATION',
       objectType: 'AUDITLOG',
@@ -212,7 +212,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   checkSharedFilters() {
     if (this.permission.JOCConfigurations.share.view) {
       let obj = {
-        jobschedulerId: this.schedulerIds.selected,
+        controllerId: this.schedulerIds.selected,
         configurationType: 'CUSTOMIZATION',
         objectType: 'AUDITLOG',
         shared: true
@@ -232,7 +232,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
   getCustomizations() {
     let obj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'CUSTOMIZATION',
       objectType: 'AUDITLOG'
@@ -265,7 +265,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
           if (value.id === this.savedFilter.selected) {
             flag = false;
             this.coreService.post('configuration', {
-              jobschedulerId: value.jobschedulerId,
+              controllerId: value.controllerId,
               id: value.id
             }).subscribe((conf: any) => {
               this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
@@ -301,7 +301,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       this.adtLog.filter.date = date;
     }
     let obj:any = {
-      jobschedulerId: this.adtLog.current == true ? this.schedulerIds.selected : '',
+      controllerId: this.adtLog.current == true ? this.schedulerIds.selected : '',
       limit: parseInt(this.preferences.maxAuditLogRecords, 10)
     };
     if (this.selectedFiltered && !_.isEmpty(this.selectedFiltered)) {
@@ -320,7 +320,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     });
   }
 
-  changeJobScheduler() {
+  changeController() {
     this.load(null);
   }
 
@@ -347,13 +347,13 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   exportToExcel() {
-    let created = '', jobSchedulerId = '', workflow = '', orderId = '', account = '',
+    let created = '', controllerId = '', workflow = '', orderId = '', account = '',
       request = '', job = '', comment = '', timeSpend = '', ticketLink = '';
     this.translate.get('label.created').subscribe(translatedValue => {
       created = translatedValue;
     });
-    this.translate.get('label.jobSchedulerId').subscribe(translatedValue => {
-      jobSchedulerId = translatedValue;
+    this.translate.get('label.controllerId').subscribe(translatedValue => {
+      controllerId = translatedValue;
     });
     this.translate.get('label.account').subscribe(translatedValue => {
       account = translatedValue;
@@ -383,7 +383,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     for (let i = 0; i < this.currentData.length; i++) {
       let obj: any = {};
       if (!this.adtLog.current) {
-        obj[jobSchedulerId] = this.currentData[i].orderId;
+        obj[controllerId] = this.currentData[i].orderId;
       }
       obj[created] = this.coreService.stringToDate(this.preferences, this.currentData[i].scheduledFor);
       obj[account] = this.currentData[i].account;
@@ -457,7 +457,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   search() {
     this.isLoaded = false;
     let filter: any = {
-      jobschedulerId: this.adtLog.current == true ? this.schedulerIds.selected : '',
+      controllerId: this.adtLog.current == true ? this.schedulerIds.selected : '',
       limit: parseInt(this.preferences.maxAuditLogRecords, 10),
       account: this.searchFilter.account ? this.searchFilter.account : undefined,
       timeZone: this.preferences.zone
@@ -556,7 +556,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       this.savedFilter.selected = filter.id;
       this.adtLog.selectedView = true;
       this.coreService.post('configuration', {
-        jobschedulerId: filter.jobschedulerId,
+        controllerId: filter.controllerId,
         id: filter.id
       }).subscribe((conf: any) => {
         this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
@@ -578,7 +578,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
   private refresh(args) {
     for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId === this.schedulerIds.selected) {
+      if (args[i].controllerId === this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
             if (args[i].eventSnapshots[j].eventType === 'AuditLogChanged') {
@@ -747,7 +747,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
   private openFilterModal(filter, isCopy) {
     let filterObj: any = {};
-    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
+    this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
       filterObj = JSON.parse(conf.configuration.configurationItem);
       filterObj.shared = filter.shared;
       if (isCopy) {

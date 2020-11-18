@@ -30,7 +30,7 @@ export class EditFilterModalComponent {
 
   makeShare(configObj) {
     this.coreService.post('configuration/share', {
-      jobschedulerId: configObj.jobschedulerId,
+      controllerId: configObj.controllerId,
       id: configObj.id
     }).subscribe(() => {
       configObj.shared = true;
@@ -39,7 +39,7 @@ export class EditFilterModalComponent {
 
   makePrivate(configObj) {
     this.coreService.post('configuration/private', {
-      jobschedulerId: configObj.jobschedulerId,
+      controllerId: configObj.controllerId,
       id: configObj.id
     }).subscribe(() => {
       configObj.shared = false;
@@ -65,7 +65,7 @@ export class EditFilterModalComponent {
 
   deleteFilter(filter) {
     this.coreService.post('configuration/delete', {
-      jobschedulerId: filter.jobschedulerId,
+      controllerId: filter.controllerId,
       id: filter.id
     }).subscribe(() => {
       for (let i = 0; i < this.filterList; i++) {
