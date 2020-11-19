@@ -42,30 +42,8 @@
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.agent</label>
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : (obj.agent || (agentRefPath.dirty || agentRefPath.touched) && agentRefPath.invalid)}">
-          <nz-tree-select
-            name="agentRefPath"
-            nzNoAnimation
-            #treeSelectCtrl
-            #agentRefPath="ngModel"
-            [nzNodes]="agentTree"
-            [nzAsyncData]="true"
-            [nzHideUnMatched]="true"
-            [nzDropdownStyle]="{ 'max-height': '260px' }"
-            nzShowSearch
-            [nzPlaceHolder]="'workflow.placeholder.enterAgentReference' | translate"
-            [(ngModel)]="selectedNode.job.agentRefPath"
-            (nzExpandChange)="onExpand($event, 'AGENT')"
-          >
-            <ng-template #nzTreeTemplate let-node>
-              <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'AGENT', $event);">
-                <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == selectedNode.job.agentRefPath">
-                  <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-                  <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                  {{node.origin.name}}
-                </div>
-              </div>
-            </ng-template>
-          </nz-tree-select>
+          <input type="text" autocomplete="off" maxlength="255" class="form-control" (blur)="onBlur();" [(ngModel)]="selectedNode.job.agentRefPath"
+                 placeholder="{{'workflow.placeholder.enterAgentReference' | translate}}" name="agentRefPath" #agentRefPath="ngModel">
           <div *ngIf="obj.agent || agentRefPath.invalid && (agentRefPath.dirty || agentRefPath.touched)"
                class="text-danger help-block">
             <div *ngIf="(agentRefPath.errors && agentRefPath.errors.required) || obj.agent">
@@ -109,7 +87,7 @@
             <input type="radio" name="type" [(ngModel)]="returnCodes.on" value="success" (click)="selectedNode.job.returnCodeMeaning.success = selectedNode.job.returnCodeMeaning.failure;selectedNode.job.returnCodeMeaning.failure = ''">
             <i class="primary"></i> <span translate>workflow.label.onSuccess</span>
           </label>
-          <label class="md-check w">
+          <label class="md-check w w-sm">
             <input type="radio" name="type" [(ngModel)]="returnCodes.on" value="failure" (click)="selectedNode.job.returnCodeMeaning.failure = selectedNode.job.returnCodeMeaning.success;selectedNode.job.returnCodeMeaning.success = ''">
             <i class="primary"></i> <span translate>workflow.label.onFailure</span>
           </label>

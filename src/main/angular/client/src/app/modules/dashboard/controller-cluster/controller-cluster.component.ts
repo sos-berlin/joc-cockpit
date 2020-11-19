@@ -747,10 +747,9 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     } else if (action === 'terminateAndRestart') {
       this.postCall('controller/restart', obj);
     } else if (action === 'switchover') {
-      let obj1 = {
-        controllerId: this.schedulerIds.selected,
-        auditLog: {}
-      };
+      
+      const obj1 = obj;
+      delete obj1['withFailover'];
       this.postCall('controller/cluster/switchover', obj1);
     } else if (action === 'download') {
       $('#tmpFrame').attr('src', './api/controller/log?url=' + obj.url + '&controllerId=' + obj.controllerId + '&accessToken=' + this.authService.accessTokenId);
@@ -762,7 +761,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   }
 
   switchOver() {
-    this.postCall('joc/cluster/switchMember', {memberId: this.joc.memberId});
+    this.postCall('joc/cluster/switch_member', {memberId: this.joc.memberId});
   }
 
   private refreshEvent(args) {

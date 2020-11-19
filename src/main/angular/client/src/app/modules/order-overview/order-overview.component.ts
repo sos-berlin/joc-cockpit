@@ -41,7 +41,7 @@ export class OrderPieChartComponent implements OnInit {
   }
 
   private init() {
-    this.coreService.post('orders/overview/snapshot', {jobschedulerId: this.schedulerId}).subscribe((res: any) => {
+    this.coreService.post('orders/overview/snapshot', {controllerId: this.schedulerId}).subscribe((res: any) => {
       this.snapshot = res.orders;
       this.preparePieData(this.snapshot);
       this.loading = false;
@@ -121,9 +121,9 @@ export class SingleOrderComponent implements OnInit {
     this.getOrder();
   }
 
-  getOrder(){
+  getOrder() {
     const obj = {
-      jobschedulerId: this.schedulerId,
+      controllerId: this.schedulerId,
       workflowIds: []
     };
     this.coreService.post('orders', obj).subscribe((res: any) => {
@@ -133,7 +133,7 @@ export class SingleOrderComponent implements OnInit {
 
   loadOrderHistory() {
     let obj = {
-      jobschedulerId: this.schedulerId,
+      controllerId: this.schedulerId,
       orders: [{workflowPath: this.order.workflowId.path, orderId: this.order.orderId}],
       limit: this.preferences.maxAuditLogPerObject
     };
@@ -144,7 +144,7 @@ export class SingleOrderComponent implements OnInit {
 
   loadAuditLogs() {
     let obj = {
-      jobschedulerId: this.schedulerId,
+      controllerId: this.schedulerId,
       orders: [{workflowPath: this.order.workflowId.path, orderId: this.order.orderId}],
       limit: this.preferences.maxAuditLogPerObject
     };
@@ -218,7 +218,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     if (this.sideView.orderOverview && !this.sideView.orderOverview.show) {
       this.hidePanel();
     }
-    this.getOrders({jobschedulerId: this.schedulerIds.selected, states: [this.orderFilters.filter.state]});
+    this.getOrders({controllerId: this.schedulerIds.selected, states: [this.orderFilters.filter.state]});
   }
 
   ngOnDestroy() {
@@ -242,7 +242,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   loadOrderHistory() {
     let obj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       orders: [{workflowPath: this.showPanelObj.workflowId.path, orderId: this.showPanelObj.orderId}],
       limit: this.preferences.maxAuditLogPerObject
     };
@@ -253,7 +253,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   loadAuditLogs() {
     let obj = {
-      jobschedulerId: this.schedulerIds.selected,
+      controllerId: this.schedulerIds.selected,
       orders: [{workflowPath: this.showPanelObj.workflowId.path, orderId: this.showPanelObj.orderId}],
       limit: this.preferences.maxAuditLogPerObject
     };
@@ -298,7 +298,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   private refresh(args) {
     for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId === this.schedulerIds.selected) {
+      if (args[i].controllerId === this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
             if (args[i].eventSnapshots[j].path) {
@@ -332,10 +332,10 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       this.searchInResult();
       this.loading = true;
       this.updatePanelHeight();
-      /*      this.orders.forEach((order) => {
-              console.log(order);
-              order.path1 = order.path.substring(0, order.path.lastIndexOf('/')) || order.path.substring(0, order.path.lastIndexOf('/') + 1);
-            });*/
+      /* this.orders.forEach((order) => {
+           console.log(order);
+           order.path1 = order.path.substring(0, order.path.lastIndexOf('/')) || order.path.substring(0, order.path.lastIndexOf('/') + 1);
+      });*/
     }, (err) => {
       this.loading = true;
     });
@@ -344,9 +344,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   changeStatus(state) {
     this.orderFilters.filter.state = state;
     if (state !== 'ALL') {
-      this.getOrders({jobschedulerId: this.schedulerIds.selected, states: [state]});
+      this.getOrders({controllerId: this.schedulerIds.selected, states: [state]});
     } else {
-      this.getOrders({jobschedulerId: this.schedulerIds.selected});
+      this.getOrders({controllerId: this.schedulerIds.selected});
     }
   }
 
@@ -488,7 +488,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   _bulkOperation(operation) {
     const obj: any = {
-      jobschedulerId: this.schedulerIds.selected
+      controllerId: this.schedulerIds.selected
     };
     if (operation === 'add') {
       obj.orders = [];

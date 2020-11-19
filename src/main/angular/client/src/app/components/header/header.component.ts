@@ -95,25 +95,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   navigateToResource() {
     const resourceFilters = this.coreService.getResourceTab();
-    if (resourceFilters.state === 'agent') {
-      if (this.permission.JS7UniversalAgent.view.status) {
-        this.router.navigate(['/resources/agent_clusters']);
-        return;
-      } else {
-        resourceFilters.state = 'agentJobExecutions';
-      }
-    }
     if (resourceFilters.state === 'agentJobExecutions') {
       if (this.permission.JS7UniversalAgent.view.status) {
         this.router.navigate(['/resources/agent_job_executions']);
-        return;
-      } else {
-        resourceFilters.state = 'processClass';
-      }
-    }
-    if (resourceFilters.state === 'processClass') {
-      if (this.permission.ProcessClass.view.status) {
-        this.router.navigate(['/resources/process_classes']);
         return;
       } else {
         resourceFilters.state = 'locks';

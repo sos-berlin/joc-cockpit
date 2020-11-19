@@ -83,7 +83,6 @@ export class JobComponent implements OnChanges, OnDestroy {
   @Input() schedulerId: any;
   @Input() selectedNode: any;
   @Input() jobs: any;
-  @Input() agentTree = [];
   @Input() jobClassTree = [];
   error: boolean;
   errorMsg: string;
@@ -237,16 +236,6 @@ export class JobComponent implements OnChanges, OnDestroy {
     if (this.selectedNode.obj.defaultArguments && this.selectedNode.obj.defaultArguments.length == 0) {
       this.addArgument();
     }
-    if (this.selectedNode.job.agentRefPath) {
-      const path = this.selectedNode.job.agentRefPath.substring(0, this.selectedNode.job.agentRefPath.lastIndexOf('/')) || '/';
-      setTimeout(() => {
-        const node = this.treeSelectCtrl.getTreeNodeByKey(path);
-        if (node) {
-          node.isExpanded = true;
-          this.loadData(node, 'AGENT', null);
-        }
-      }, 10);
-    }
     if (this.selectedNode.job.jobClass) {
       const path = this.selectedNode.job.jobClass.substring(0, this.selectedNode.job.jobClass.lastIndexOf('/')) || '/';
       setTimeout(() => {
@@ -333,28 +322,19 @@ export class JobComponent implements OnChanges, OnDestroy {
       if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
         this.coreService.post('inventory/read/folder', {
           path: node.key,
-          objectTypes: ['JOBCLASS', 'AGENTCLUSTER']
+          objectTypes: ['JOBCLASS']
         }).subscribe((res: any) => {
           let data;
           if (type === 'JOBCLASS') {
             data = res.jobClasses;
-          } else if (type === 'AGENT') {
-            data = res.agentClusters;
           }
-          let flag = false;
           for (let i = 0; i < data.length; i++) {
             const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-            if (this.selectedNode.job.agentRefPath === _path) {
-              flag = true;
-            }
             data[i].title = _path;
             data[i].path = _path;
             data[i].key = _path;
             data[i].type = type;
             data[i].isLeaf = true;
-          }
-          if (!flag) {
-            this.selectedNode.job.agentRefPath = null;
           }
           if (node.origin.children && node.origin.children.length > 0) {
             data = data.concat(node.origin.children);
@@ -365,11 +345,7 @@ export class JobComponent implements OnChanges, OnDestroy {
           node.origin.isLeaf = false;
 
           node.origin.children = data;
-          if (type === 'AGENT') {
-            this.agentTree = [...this.agentTree];
-          } else {
-            this.jobClassTree = [...this.jobClassTree];
-          }
+          this.jobClassTree = [...this.jobClassTree];
         });
       }
     }
@@ -540,7 +516,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   @Input() schedulerId: any;
   @Input() permission: any;
   @Input() copyObj: any;
-  agentTree = [];
   jobClassTree = [];
   configXml = './assets/mxgraph/config/diagrameditor.xml';
   editor: any;
@@ -594,15 +569,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       outln.style['background'] = '#FFFFFF';
       new mxOutline(this.editor.graph, outln);
       this.getObject();
-    }
-    if (this.agentTree.length === 0) {
-      this.coreService.post('tree', {
-        controllerId: this.schedulerId,
-        forInventory: true,
-        types: ['AGENTCLUSTER']
-      }).subscribe((res) => {
-        this.agentTree = this.coreService.prepareTree(res, true);
-      });
     }
     if (this.jobClassTree.length === 0) {
       this.coreService.post('tree', {

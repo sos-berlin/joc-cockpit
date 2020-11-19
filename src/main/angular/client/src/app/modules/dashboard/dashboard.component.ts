@@ -249,10 +249,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     if (this.preferences.dashboardLayout) {
       this.dashboardLayout = this.preferences.dashboardLayout;
-      console.log(this.dashboardLayout, '???');
-      console.log(JSON.stringify(this.dashboardLayout));
     } else {
-      console.log(this.preferences, '???????????????');
       this.dashboardLayout = [{
         'cols': 4,
         'rows': 3,
@@ -301,6 +298,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
         'name': 'tasksSummary',
         'visible': true,
         'message': 'message.tasksSummary'
+      }, {
+        cols: 8, rows: 2, y: 7, x: 0,
+        name: 'fileTransferOverview',
+        visible: false,
+        message: 'message.fileTransferOverview'
+      }, {
+        cols: 4, rows: 2, y: 7, x: 8,
+        name: 'fileTransferSummary',
+        visible: false,
+        message: 'message.fileTransferSummary'
       }];
 
       /*  {
