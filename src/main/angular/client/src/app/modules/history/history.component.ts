@@ -972,7 +972,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     this.convertRequestBody(obj);
     obj.compact = true;
-    this.coreService.post('publish/show_dep_history', obj).subscribe((res: any) => {
+    this.coreService.post('inventory/deployment/history', obj).subscribe((res: any) => {
       this.deploymentHistorys = res.depHistory;
       this.searchInResult();
       this.isLoading = true;
@@ -1345,7 +1345,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
         filter.dateTo = moment(filter.dateTo).tz(this.preferences.zone);
       }
-      this.coreService.post('publish/show_dep_history', filter).subscribe((res: any) => {
+      this.coreService.post('inventory/deployment/history', filter).subscribe((res: any) => {
         this.deploymentHistorys = res.depHistory;
         this.searchInResult();
         this.isLoading = true;

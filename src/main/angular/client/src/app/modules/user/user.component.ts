@@ -49,7 +49,7 @@ export class UpdateKeyModalComponent implements OnInit {
       }
     }
     obj.keyAlgorithm = this.algorithm.keyAlg;
-    this.coreService.post('publish/set_key', {keys :  obj}).subscribe(res => {
+    this.coreService.post('profile/key/store', {keys :  obj}).subscribe(res => {
       this.submitted = false;
       this.activeModal.close();
     }, (err) => {
@@ -76,7 +76,7 @@ export class ImportKeyModalComponent implements OnInit {
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private authService: AuthService, public translate: TranslateService, public toasterService: ToasterService) {
     this.uploader = new FileUploader({
-      url: './api/publish/import_key',
+      url: './api/profile/key/import',
       queueLimit: 2
     });
     let uo: FileUploaderOptions = {};
@@ -210,7 +210,7 @@ export class GenerateKeyComponent {
     if (this.expiry.dateValue === 'date') {
       obj.validUntil = this.key.date;
     }
-    this.coreService.post('publish/generate_key', obj).subscribe(res => {
+    this.coreService.post('profile/key/generate', obj).subscribe(res => {
       this.toasterService.pop('success', 'Key has been generated successfully');
       this.submitted = false;
       this.activeModal.close('ok');
@@ -366,7 +366,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   getKeys() {
     this.keys ={};
-    this.coreService.post('publish/show_key', {}).subscribe((res: any) => {
+    this.coreService.post('profile/key', {}).subscribe((res: any) => {
       this.keys = res;
       if (this.keys.validUntil) {
         this.keys.isKeyExpired = moment(moment(this.keys.validUntil).tz(this.preferences.zone)).diff(moment()) < 0;

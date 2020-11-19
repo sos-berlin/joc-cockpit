@@ -273,7 +273,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   getEvents(controller): void {
-    if (!controller) {
+    if (!controller || this.isLogout) {
       return;
     }
     if (!this.eventLoading) {

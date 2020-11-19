@@ -144,7 +144,7 @@ export class SingleDeployComponent implements OnInit {
       });
     }
 
-    const URL = this.releasable ? 'inventory/release' : 'publish/deploy';
+    const URL = this.releasable ? 'inventory/release' : 'inventory/deployment/deploy';
     this.coreService.post(URL, obj).subscribe((res: any) => {
       this.activeModal.close('ok');
     }, (error) => {
@@ -565,7 +565,7 @@ export class DeployComponent implements OnInit {
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if ((nodes[i].type || nodes[i].isFolder) && !nodes[i].recursivelyDeploy) {
-          let obj: any = {path: nodes[i].path, invConfigurationId: nodes[i].key};
+          let obj: any = {path: nodes[i].path, deployType: nodes[i].type || 'FOLDER'};
           self.object.excludes.push(obj);
         }
         if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
@@ -611,9 +611,9 @@ export class DeployComponent implements OnInit {
         obj.auditLog.ticketLink = this.comments.ticketLink;
       }
     }
-    let URL = this.releasable ? 'inventory/release' : 'publish/deploy';
+    let URL = this.releasable ? 'inventory/release' : 'inventory/deployment/deploy';
     if (this.reDeploy) {
-      URL = 'publish/re_deploy';
+      URL = 'inventory/deployment/redeploy';
     }
     this.coreService.post(URL, obj).subscribe((res: any) => {
       this.activeModal.close('ok');
@@ -915,7 +915,7 @@ export class SetVersionComponent implements OnInit {
     this.getJSObject();
     if (this.version.type === 'setSeparateVersion') {
       obj.deployments = this.object.deployments;
-      this.coreService.post('publish/set_versions', obj).subscribe((res: any) => {
+      this.coreService.post('inventory/deployment/set_versions', obj).subscribe((res: any) => {
         this.activeModal.close('ok');
       }, (error) => {
 
@@ -924,7 +924,7 @@ export class SetVersionComponent implements OnInit {
       if (this.object.deployments.length > 0) {
         obj.deployments = this.object.deployments;
         obj.version = this.version.name;
-        this.coreService.post('publish/set_version', obj).subscribe((res: any) => {
+        this.coreService.post('inventory/deployment/set_version', obj).subscribe((res: any) => {
           this.activeModal.close('ok');
         }, (error) => {
 
@@ -1348,7 +1348,7 @@ export class ExportComponent implements OnInit {
       if (this.comments.ticketLink) {
         param = param + '&ticketLink=' + encodeURIComponent(this.comments.ticketLink);
       }
-      $('#tmpFrame').attr('src', './api/publish/export?accessToken=' + this.authService.accessTokenId + '&filename=' + this.object.filename + this.object.fileFormat + param);
+      $('#tmpFrame').attr('src', './api/inventory/export?accessToken=' + this.authService.accessTokenId + '&filename=' + this.object.filename + this.object.fileFormat + param);
       setTimeout(() => {
         this.submitted = false;
         this.activeModal.close('ok');
@@ -1384,7 +1384,7 @@ export class ImportWorkflowModalComponent implements OnInit {
 
   ngOnInit() {
     this.uploader = new FileUploader({
-      url: this.isDeploy ? './api/publish/import_deploy' : './api/publish/import',
+      url: this.isDeploy ? './api/inventory/deployment/import_deploy' : './api/inventory/import',
       queueLimit: 1,
       headers: [{
         name: 'X-Access-Token',

@@ -90,7 +90,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
         $('[data-toggle="popover"]').popover('hide');
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 
@@ -143,7 +143,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
         this.getClusterStatusData();
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 
@@ -747,7 +747,6 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     } else if (action === 'terminateAndRestart') {
       this.postCall('controller/restart', obj);
     } else if (action === 'switchover') {
-      
       const obj1 = obj;
       delete obj1['withFailover'];
       this.postCall('controller/cluster/switchover', obj1);

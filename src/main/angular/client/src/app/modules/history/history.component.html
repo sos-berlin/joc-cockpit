@@ -814,7 +814,7 @@
                      *ngIf="history.show" (click)="history.show = false;$event.stopPropagation()"></i>&nbsp;
                   <i class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs"
                      (click)="downloadLog(history,history.controllerId);$event.stopPropagation()"></i>
-                   <span [innerHtml]="history.controllerId"></span>
+                   <span [innerHtml]="history.controllerId | highlight : order.searchText"></span>
                    <span *ngIf="!history.controllerId" [innerHtml]="orderSearch.controllerId"></span>
                 </span>
               </td>
@@ -830,12 +830,12 @@
                   <i *ngIf="historyView.current"
                      class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs"
                      (click)="downloadLog(history,history.controllerId);$event.stopPropagation()"></i>
-                  <span [innerHtml]="history.orderId"></span>
+                  <span [innerHtml]="history.orderId | highlight : order.searchText"></span>
                 </span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)">
                       <span (click)="coreService.showWorkflow(history.workflow);$event.stopPropagation()"
-                            class="text-hover-primary" [innerHtml]="history.workflow"></span>
+                            class="text-hover-primary" [innerHtml]="history.workflow | highlight : order.searchText"></span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)">
                 <span [innerHtml]="history.position"></span>
@@ -1137,19 +1137,19 @@
                 (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId, null)">
               <i class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs"
                  (click)="downloadLog(jobHistory,jobHistory.controllerId);$event.stopPropagation()"></i>
-              <span [innerHtml]="jobHistory.controllerId"></span>
+              <span [innerHtml]="jobHistory.controllerId | highlight : task.searchText"></span>
             </td>
             <td (click)="coreService.showLogWindow(null,jobHistory, null, null, null)">
               <i *ngIf="historyView.current" class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs"
                  (click)="downloadLog(jobHistory,jobHistory.controllerId);$event.stopPropagation()"></i>
-              <span [innerHtml]="jobHistory.job"></span>
+              <span [innerHtml]="jobHistory.job | highlight : task.searchText"></span>
             </td>
             <td (click)="coreService.showLogWindow(null,jobHistory, null, null, null)">
               <span (click)="coreService.showWorkflow(jobHistory.workflow);$event.stopPropagation()"
-                    class="text-hover-primary" [innerHtml]="jobHistory.workflow"></span>
+                    class="text-hover-primary" [innerHtml]="jobHistory.workflow | highlight : task.searchText"></span>
             </td>
             <td (click)="coreService.showLogWindow(null,jobHistory, null, null, null)">
-              <span [innerHtml]="jobHistory.position"></span>
+              <span [innerHtml]="jobHistory.position | highlight : task.searchText"></span>
             </td>
             <td (click)="coreService.showLogWindow(null,jobHistory,null,null,null)">
               <span class="label"
@@ -1165,7 +1165,7 @@
             <td (click)="coreService.showLogWindow(null,jobHistory,null,null,null)"
                 [innerHtml]="jobHistory.criticality | translate"></td>
             <td (click)="coreService.showLogWindow(null,jobHistory,null,null,null)"
-                [innerHtml]="jobHistory.exitCode"></td>
+                [innerHtml]="jobHistory.exitCode | highlight : task.searchText"></td>
           </tr>
           </tbody>
         </nz-table>

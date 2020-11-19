@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title" translate>workflow.label.export</h4>
+  <h4 class="modal-title" translate>inventory.label.export</h4>
   <button type="button" class="close" (click)="cancel()" aria-label="Close">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
@@ -58,7 +58,6 @@
                 <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
                 <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
                 <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
-                <i *ngIf="node.origin.object == 'AGENTCLUSTER'" nz-icon nzType="user" class="icon-color" nzTheme="outline"></i>
                 <span *ngIf="node.origin.type" [ngClass]="node.origin.deploymentId ? ' text-success': ''"
                       class="fa fa-circle-o text-xs" style="margin-top: 4px"></span>
                 <span class="p-l-sm">{{node.origin.name | translate}}</span>

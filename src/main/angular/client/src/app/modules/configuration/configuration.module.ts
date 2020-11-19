@@ -30,7 +30,6 @@ import {
   JobComponent,
   WorkflowComponent
 } from './inventory/workflow/workflow.component';
-import { AgentClusterComponent } from './inventory/agent-cluster/agent-cluster.component';
 import { JunctionComponent } from './inventory/junction/junction.component';
 import { JobClassComponent } from './inventory/job-class/job-class.component';
 import { XMLAutofocusDirective } from 'src/app/directives/core.directive';
@@ -60,7 +59,6 @@ const COMPONENTS = [ImportModalComponent, DiffPatchModalComponent, FrequencyModa
     OrderComponent,
     LockComponent,
     WorkflowComponent,
-    AgentClusterComponent,
     JunctionComponent,
     JobClassComponent,
     XMLAutofocusDirective,

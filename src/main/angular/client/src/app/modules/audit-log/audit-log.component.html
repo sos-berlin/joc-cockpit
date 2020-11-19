@@ -214,7 +214,7 @@
                    (click)="auditLog.show =true"></i>
                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" *ngIf="auditLog.show"
                    (click)="auditLog.show = false"></i>&nbsp;
-                <span [innerHtml]="auditLog.controllerId"></span>
+                <span [innerHtml]="auditLog.controllerId | highlight : adtLog.searchText"></span>
                 <span *ngIf="!auditLog.controllerId">...</span>
               </td>
               <td nowrap>
@@ -223,15 +223,15 @@
                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
                    *ngIf="auditLog.show && adtLog.current" (click)="auditLog.show = false"></i>&nbsp;
                 <span [innerHtml]="auditLog.created | stringToDate"></span></td>
-              <td><span [innerHtml]="auditLog.account"></span></td>
-              <td><span [innerHtml]="auditLog.request"></span></td>
+              <td><span [innerHtml]="auditLog.account | highlight : adtLog.searchText"></span></td>
+              <td><span [innerHtml]="auditLog.request | highlight : adtLog.searchText"></span></td>
               <td><span (click)="coreService.showOrderLink(auditLog.workflow);" class="text-hover-primary"
-                        [innerHtml]="auditLog.workflow"></span></td>
+                        [innerHtml]="auditLog.workflow | highlight : adtLog.searchText"></span></td>
               <td><span (click)="coreService.showOrderLink(auditLog.workflow);" class="text-hover-primary"
-                        [innerHtml]="auditLog.orderId"></span></td>
+                        [innerHtml]="auditLog.orderId | highlight : adtLog.searchText"></span></td>
               <td><span (click)="coreService.showJob(auditLog.job);" class="text-hover-primary"
-                        [innerHtml]="auditLog.job"></span></td>
-              <td><span [innerHtml]="auditLog.comment"></span></td>
+                        [innerHtml]="auditLog.job | highlight : adtLog.searchText"></span></td>
+              <td><span [innerHtml]="auditLog.comment | highlight : adtLog.searchText"></span></td>
               <td>
                 <span *ngIf="auditLog.timeSpent">
                   <span [innerHtml]="auditLog.timeSpent"></span>
@@ -239,7 +239,7 @@
                 </span>
               </td>
               <td><a href="{{auditLog.ticketLink}}" target="_blank" class="text-hover-primary"
-                     [innerHtml]="auditLog.ticketLink"></a></td>
+                     [innerHtml]="auditLog.ticketLink | highlight : adtLog.searchText"></a></td>
             </tr>
             <tr class="tableexport-ignore" *ngIf="auditLog.show">
               <td colspan="11">
