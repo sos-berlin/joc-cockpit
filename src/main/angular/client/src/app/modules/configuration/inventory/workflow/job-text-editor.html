@@ -41,12 +41,13 @@
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.agent</label>
         <div class="col-md-8 col-lg-9"
-             [ngClass]="{'has-error' : (obj.agent || (agentRefPath.dirty || agentRefPath.touched) && agentRefPath.invalid)}">
-          <input type="text" autocomplete="off" maxlength="255" class="form-control" (blur)="onBlur();" [(ngModel)]="selectedNode.job.agentRefPath"
-                 placeholder="{{'workflow.placeholder.enterAgentReference' | translate}}" name="agentRefPath" #agentRefPath="ngModel">
-          <div *ngIf="obj.agent || agentRefPath.invalid && (agentRefPath.dirty || agentRefPath.touched)"
+             [ngClass]="{'has-error' : (obj.agent || (agentName.dirty || agentName.touched) && agentName.invalid)}">
+          <input type="text" autocomplete="off" identifierValidation class="form-control" (blur)="onBlur();" [(ngModel)]="selectedNode.job.agentName"
+                 placeholder="{{'workflow.placeholder.enterAgentName' | translate}}" name="agentName" #agentName="ngModel">
+          <div *ngIf="obj.agent || agentName.invalid && (agentName.dirty || agentName.touched)"
                class="text-danger help-block">
-            <div *ngIf="(agentRefPath.errors && agentRefPath.errors.required) || obj.agent">
+            <div *ngIf="agentName.errors && agentName.errors.invalidIdentifier" translate>message.invalid</div>
+            <div *ngIf="(agentName.errors && agentName.errors.required) || obj.agent">
               <div translate>message.requiredError</div>
             </div>
           </div>

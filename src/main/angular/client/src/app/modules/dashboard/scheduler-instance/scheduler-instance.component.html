@@ -24,7 +24,7 @@
                   <app-action [controller]="controller"></app-action>
                 </td>
                 <td><a class="text-hover-primary"
-                       (click)="changeScheduler(controller.jobschedulerId)">{{controller.jobschedulerId}}</a></td>
+                       (click)="changeScheduler(controller.controllerId)">{{controller.controllerId}}</a></td>
                 <td><a class="text-hover-primary" target="_blank" href="{{controller.url}}">{{controller.url}}</a></td>
                 <td><span *ngIf="controller.componentState" [ngClass]="coreService.getColor(controller.componentState.severity, 'bg')"
                           class="label">{{controller.componentState._text | translate}}</span>

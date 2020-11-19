@@ -1790,15 +1790,17 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (node instanceof NzTreeNode) {
       node.isExpanded = !node.isExpanded;
       if (node.isExpanded && !node.origin.controller && !node.origin.schedule && !node.origin.type && !node.origin.object) {
-        let data = node.origin.children[0];
+        let data = node.origin.children;
         this.updateObjects(node.origin, (children) => {
-          if (data && data.controller) {
+          if (data.length > 1 && data[0].controller) {
+           
             node.isExpanded = true;
             node.origin.children[0] = children[0];
             node.origin.children[1] = children[1];
           } else {
+            
             node.origin.children = children;
-            if (data) {
+            if (data.length > 0) {
               node.origin.children = node.origin.children.concat(data);
             }
             node.origin.expanded = true;
@@ -1815,15 +1817,15 @@ export class InventoryComponent implements OnInit, OnDestroy {
         if (!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.schedule) {
           node.isExpanded = !node.isExpanded;
           if (node.origin.expanded) {
-            let data = node.origin.children[0];
+            let data = node.origin.children;
             this.updateObjects(node.origin, (children) => {
-              if (data && data.controller) {
+              if (data.length > 1 && data[0].controller) {
                 node.isExpanded = true;
                 node.origin.children[0] = children[0];
                 node.origin.children[1] = children[1];
               } else {
                 node.origin.children = children;
-                if (data) {
+                if (data.length > 0) {
                   node.origin.children = node.origin.children.concat(data);
                 }
                 node.origin.expanded = true;
@@ -2004,15 +2006,15 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (list) {
       this.createObject(type, list, node.origin.path);
     } else {
-      let data = node.origin.children[0];
+      let data = node.origin.children;
       this.updateObjects(node.origin, (children) => {
-        if (data && data.controller) {
+        if (data.length > 1 && data[0].controller) {
           node.isExpanded = true;
           node.origin.children[0] = children[0];
           node.origin.children[1] = children[1];
         } else {
           node.origin.children = children;
-          if (data) {
+          if (data.length > 0) {
             node.origin.children = node.origin.children.concat(data);
           }
           node.origin.expanded = true;
@@ -2220,11 +2222,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (node instanceof NzTreeNode) {
         object = node.origin;
         if (!object.controller && !object.schedule && !object.object) {
-          let data = object.children[0];
-          if (!data || !data.controller) {
+          let data = object.children;
+          if (!data[0] || !data[0].controller) {
             this.updateObjects(node.origin, (children) => {
               node.origin.children = children;
-              if (data) {
+              if (data.length > 0) {
                 node.origin.children = node.origin.children.concat(data);
               }
               node.origin.expanded = true;

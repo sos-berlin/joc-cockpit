@@ -36,7 +36,7 @@ import {
   AutofocusDirective,
   TimeValidatorDirective, TimeRegexValidator
 } from '../../directives/core.directive';
-import {StartUpModalComponent} from '../start-up/start-up.component';
+import {AgentModalComponent, StartUpModalComponent} from '../start-up/start-up.component';
 import {Shared2Module} from './shared2.module';
 import {CalendarModalComponent} from '../../components/calendar-modal/calendar.component';
 import {AddRestrictionComponent, PeriodComponent, RunTimeComponent} from '../../components/runtime/runtime.component';
@@ -46,7 +46,7 @@ const MODULES = [Shared2Module, NzTableModule, NzTabsModule,
   ChecklistModule, NzSelectModule, NzInputModule, NzMessageModule, NzTreeSelectModule, ClipboardModule,
   NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, OrderModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
-  CalendarModalComponent, TreeModalComponent, PeriodComponent, AddRestrictionComponent];
+  CalendarModalComponent, AgentModalComponent, TreeModalComponent, PeriodComponent, AddRestrictionComponent];
 const PIPES = [DurationPipe, StringDateFormatePipe,
   ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, ResizableDirective,

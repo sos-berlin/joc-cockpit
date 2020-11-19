@@ -4,8 +4,34 @@ import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 declare const $;
+
+@Component({
+  selector: 'app-agent-modal',
+  templateUrl: './agent.dialog.html'
+})
+export class AgentModalComponent implements OnInit {
+  @Input() agents: any;
+
+  constructor(public coreService: CoreService, public activeModal: NgbActiveModal) {
+  }
+
+  ngOnInit() {
+
+  }
+
+  onSubmit(): void {
+    this.activeModal.close('Done');
+  }
+
+
+  cancel(): void {
+    this.activeModal.dismiss();
+  }
+
+}
 
 @Component({
   selector: 'app-start-up-modal',
@@ -23,13 +49,16 @@ export class StartUpModalComponent implements OnInit {
   isBackupConnectionChecked = false;
   isConnectionChecked = false;
   required = false;
+  display: any;
   comments: any = {};
   schedulerIds: any = {};
   messageList: any = [];
+  agents: any = [];
   error: any;
+  controllerId = '';
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router,
-              public translate: TranslateService, private toasterService: ToasterService) {
+              public translate: TranslateService, private toasterService: ToasterService, public modalService: NgbModal) {
   }
 
   ngOnInit() {
@@ -41,9 +70,11 @@ export class StartUpModalComponent implements OnInit {
       backupTitle: 'BACKUP',
     };
     if (this.controllerInfo) {
+      this.agents = this.controllerInfo.agents;
       const len = this.controllerInfo.length;
       if (len > 0) {
         for (let i = 0; i < len; i++) {
+          this.controllerId = this.controllerInfo[i].controllerId;
           if (this.controllerInfo[i].role !== 'STANDALONE') {
             this.controller.type = 'CLUSTER';
             if (this.controllerInfo[i].role === 'BACKUP') {
@@ -62,6 +93,11 @@ export class StartUpModalComponent implements OnInit {
         }
       }
     }
+    let preferences:any = {};
+    if (sessionStorage.preferences) {
+      preferences = JSON.parse(sessionStorage.preferences);
+    }
+    this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
     if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
@@ -75,6 +111,7 @@ export class StartUpModalComponent implements OnInit {
     this.submitted = true;
     let obj: any = {
       controllers: [],
+      controllerId: this.controllerId
     };
 
     if (this.controller.type === 'STANDALONE') {
@@ -82,9 +119,6 @@ export class StartUpModalComponent implements OnInit {
       _obj.url = this.controller.url;
       _obj.title = this.controller.title;
       _obj.role = 'STANDALONE';
-      if (this.controllerInfo && this.controllerInfo.length > 0) {
-        _obj.id = this.controllerInfo[0].id;
-      }
       obj.controllers.push(_obj);
     } else {
       if (this.controller.primaryUrl) {
@@ -93,17 +127,6 @@ export class StartUpModalComponent implements OnInit {
         _obj.title = this.controller.primaryTitle;
         _obj.role = 'PRIMARY';
         _obj.clusterUrl = this.controller.primaryClusterUrl;
-        if (this.controllerInfo && this.controllerInfo.length > 0) {
-          for (let i = 0; i < this.controllerInfo.length; i++) {
-            if (this.controllerInfo[i].role === 'PRIMARY') {
-              _obj.id = this.controllerInfo[i].id;
-              break;
-            }
-          }
-          if (!_obj.id) {
-            _obj.id = this.controllerInfo[0].id;
-          }
-        }
         obj.controllers.push(_obj);
       }
 
@@ -113,18 +136,19 @@ export class StartUpModalComponent implements OnInit {
         _obj.role = 'BACKUP';
         _obj.clusterUrl = this.controller.backupClusterUrl;
         _obj.title = this.controller.backupTitle;
-        if (this.controllerInfo && this.controllerInfo.length > 0) {
-          for (let i = 0; i < this.controllerInfo.length; i++) {
-            if (this.controllerInfo[i].role === 'BACKUP') {
-              _obj.id = this.controllerInfo[i].id;
-              break;
-            }
-          }
-          if (!_obj.id) {
-            _obj.id = this.controllerInfo[0].id;
-          }
-        }
         obj.controllers.push(_obj);
+      }
+    }
+    if(this.display){
+      obj.auditLog = {};
+      if (this.comments.comment) {
+        obj.auditLog.comment = this.comments.comment;
+      }
+      if (this.comments.timeSpent) {
+        obj.auditLog.timeSpent = this.comments.timeSpent;
+      }
+      if (this.comments.ticketLink) {
+        obj.auditLog.ticketLink = this.comments.ticketLink;
       }
     }
     this.coreService.post('controller/register', obj).subscribe(res => {
@@ -141,7 +165,8 @@ export class StartUpModalComponent implements OnInit {
   testConnection(type, url) {
     this.error = false;
     this.setFlag(type, true);
-    this.coreService.post('controller/test', {url: url}).subscribe((res: any) => {
+    console.log(this.controllerInfo)
+    this.coreService.post('controller/test', {url: url, controllerId: this.new ? '' : this.controllerId}).subscribe((res: any) => {
       this.setFlag(type, false);
       if (res && res.controller) {
         let title = '', msg = '';
@@ -164,6 +189,16 @@ export class StartUpModalComponent implements OnInit {
     }, err => {
       this.error = true;
       this.setFlag(type, false);
+    });
+  }
+
+  showAgent(){
+    const modalRef = this.modalService.open(AgentModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.agents = this.agents;
+    modalRef.result.then((result) => {
+
+    }, (reason) => {
+      console.log('close...', reason);
     });
   }
 
@@ -201,7 +236,7 @@ export class StartUpComponent implements OnInit {
   count = 0;
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router,
-              public translate: TranslateService, private toasterService: ToasterService) {
+              public translate: TranslateService) {
   }
 
   ngOnInit() {
@@ -264,7 +299,7 @@ export class StartUpComponent implements OnInit {
     this.coreService.post('controller/ids', {}).subscribe((res: any) => {
       this.authService.setIds(res);
       this.authService.save();
-
+      console.log(res)
       this.setPermissions(permission);
     }, err => this.setPermissions(permission));
   }

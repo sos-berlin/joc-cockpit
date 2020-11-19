@@ -215,7 +215,7 @@
   </div>
   <div class="modal-footer text-left" >
       <button *ngIf="nodes.length > 0" type="submit" class="btn btn-primary btn-sm" [disabled]="selectedSchedulerIds.length === 0 || submitted">
-        <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>&nbsp;
+        <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
         {{'button.submit' | translate}}
       </button>
       <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>
