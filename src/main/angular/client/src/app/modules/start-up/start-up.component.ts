@@ -47,6 +47,19 @@ export class AgentModalComponent implements OnInit {
     }
     this.activeModal.close(this.agents);
   }
+
+  checkDisable(agent): void {
+    if (agent.disabled) {
+      let flag = this.agents.filter((value) => {
+        return value.disabled;
+      }).length > this.agents.length - 1;
+      if (flag) {
+        setTimeout(() => {
+          agent.disabled = false;
+        }, 0);
+      }
+    }
+  }
 }
 
 @Component({

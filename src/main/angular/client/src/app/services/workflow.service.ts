@@ -159,7 +159,7 @@ export class WorkflowService {
         if (typeof value.jobClass !== 'string') {
           delete value['jobClass'];
         }
-        if ((!value.executable || !value.executable.script || !value.agentRefPath)) {
+        if ((!value.executable || !value.executable.script || !value.agentName)) {
           return false;
         }
       }

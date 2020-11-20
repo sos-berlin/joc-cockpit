@@ -17,7 +17,7 @@
       <div class="col-sm-8" [ngClass]="{'has-error' : ((agentid.dirty || agentid.touched) && agentid.invalid) || !isUniqueId}">
         <input type="text" class="form-control" maxlength="30" name="agentId"
                required [(ngModel)]="agent.agentId" #agentid="ngModel" (blur)="checkId(agent.agentId)"
-               placeholder="{{'placeholder.enterAgentId' | translate}}">
+               placeholder="{{'agent.placeholder.enterAgentId' | translate}}">
         <div *ngIf="agentid.invalid && (agentid.dirty || agentid.touched)" class="text-danger help-block">
           <div *ngIf="agentid.errors.required">
             <div translate>message.requiredError</div>
@@ -30,17 +30,14 @@
     </div>
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" translate>agent.label.agentName</label>
-      <div class=" col-sm-8" [ngClass]="{'has-error' : ((agentName.dirty || agentName.touched) && agentName.invalid) || !isUnique}">
-        <input type="text" class="form-control" name="agentName" (blur)="checkName(agent.agentName)"
+      <div class=" col-sm-8" [ngClass]="{'has-error' : ((agentName.dirty || agentName.touched) && agentName.invalid)}">
+        <input type="text" class="form-control" name="agentName"
                required [(ngModel)]="agent.agentName" #agentName="ngModel"
-               placeholder="{{'placeholder.enterAgentName' | translate}}">
+               placeholder="{{'agent.placeholder.enterAgentName' | translate}}">
         <div *ngIf="agentName.invalid && (agentName.dirty || agentName.touched)" class="text-danger help-block">
           <div *ngIf="agentName.errors.required">
             <div translate>message.requiredError</div>
           </div>
-        </div>
-        <div class="help-block text-danger" *ngIf="!isUnique">
-          <div translate>message.uniqueError</div>
         </div>
       </div>
     </div>
@@ -64,14 +61,14 @@
       <label class="col-sm-4" translate>agent.label.disabled</label>
       <div class="col-sm-6">
         <label class="md-check">
-          <input type="checkbox" [disabled]="agents.length === 1" [(ngModel)]="agent.disabled" name="disabled">
+          <input type="checkbox" (change)="checkDisable()" [(ngModel)]="agent.disabled" name="disabled">
           <i class="primary"></i>
         </label>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || !isUniqueId || !isUnique || submitted" class="btn btn-primary btn-sm">
+    <button type="submit" [disabled]="!myForm.form.valid || !isUniqueId || submitted" class="btn btn-primary btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'button.submit' | translate}}
     </button>

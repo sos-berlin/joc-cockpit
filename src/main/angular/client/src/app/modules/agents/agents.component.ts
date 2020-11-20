@@ -17,7 +17,6 @@ export class AgentModalComponent implements OnInit {
   @Input() new: any;
   agent: any = {};
   submitted = false;
-  isUnique = true;
   isUniqueId = true;
   messageList: any = [];
   comments: any = {};
@@ -41,21 +40,25 @@ export class AgentModalComponent implements OnInit {
     }
   }
 
-  checkId(newId) {
-    this.isUniqueId = true;
-    for (let i = 0; i < this.agents.length; i++) {
-      if (this.agents[i].agentId === newId && newId !== this.data.agentId) {
-        this.isUniqueId = false;
-        break;
+  checkDisable() {
+    if (this.agent.disabled) {
+      const x = this.agents.filter((agent) => {
+        return agent.disabled;
+      });
+      let flag = x.length >= this.agents.length - 1;
+      if (flag) {
+        setTimeout(() => {
+          this.agent.disabled = false;
+        }, 0);
       }
     }
   }
 
-  checkName(newName) {
-    this.isUnique = true;
+  checkId(newId) {
+    this.isUniqueId = true;
     for (let i = 0; i < this.agents.length; i++) {
-      if (this.agents[i].agentName === newName && newName !== this.data.agentName) {
-        this.isUnique = false;
+      if (this.agents[i].agentId === newId && (this.data && newId !== this.data.agentId)) {
+        this.isUniqueId = false;
         break;
       }
     }
@@ -63,7 +66,6 @@ export class AgentModalComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-    this.isUnique = true;
     let obj: any = {controllerId: this.controllerId};
     if (this.display) {
       obj.auditLog = {};
@@ -84,7 +86,7 @@ export class AgentModalComponent implements OnInit {
           break;
         }
       }
-    }else{
+    } else {
       this.agents.push(this.agent);
     }
     obj.agents = this.agents;

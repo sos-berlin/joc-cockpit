@@ -77,10 +77,6 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
     });
   }
 
-  viewAllAgents(): void {
-
-  }
-
   onSelect(event) {
 
   }
