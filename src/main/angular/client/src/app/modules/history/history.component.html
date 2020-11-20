@@ -722,7 +722,7 @@
         >
           <thead>
           <tr>
-            <th class="tableexport-ignore menu"><span translate>label.action</span></th>
+            <th class=" menu"><span translate>label.action</span></th>
             <th *ngIf="!historyView.current" (click)="sort('controllerId')">
               <a><span class="p-r-xs" translate>label.controllerId</span>
                 <i *ngIf="order.filter.sortBy == 'controllerId' && !order.reverse"
@@ -785,7 +785,7 @@
           <ng-template ngFor let-history
                        [ngForOf]="ajaxOrderTable.data | orderBy: order.filter.sortBy:order.reverse">
             <tr class="cursor" [ngClass]="{'light-bg':history.show}">
-              <td class="tableexport-ignore">
+              <td class="">
                 <div class="btn-group dropdown">
                   <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="exportMenu" type="button">
                     <i class="fa fa-ellipsis-h"></i>
@@ -808,11 +808,11 @@
               <td *ngIf="!historyView.current">
                 <span class="show-in-single-line w-full"
                       (click)="coreService.showLogWindow(history,null,null,history.controllerId, null)">
-                  <i class="cursor fa fa-caret-down fa-lg tableexport-ignore p-l-xs p-r-xs"
+                  <i class="cursor fa fa-caret-down fa-lg  p-l-xs p-r-xs"
                      *ngIf="!history.show" (click)="showPanelFuc(history);$event.stopPropagation()"></i>
-                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore p-l-xs p-r-xs"
+                  <i class="cursor fa fa-caret-up fa-lg  p-l-xs p-r-xs"
                      *ngIf="history.show" (click)="history.show = false;$event.stopPropagation()"></i>&nbsp;
-                  <i class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs"
+                  <i class="cursor fa fa-download  text-hover-primary p-r-xs"
                      (click)="downloadLog(history,history.controllerId);$event.stopPropagation()"></i>
                    <span [innerHtml]="history.controllerId | highlight : order.searchText"></span>
                    <span *ngIf="!history.controllerId" [innerHtml]="orderSearch.controllerId"></span>
@@ -821,14 +821,14 @@
               <td>
                 <span class="show-in-single-line w-full"
                       (click)="coreService.showLogWindow(history,null,null,null,null)">
-                  <i class="cursor fa fa-caret-down fa-lg tableexport-ignore p-l-xs p-r-xs"
+                  <i class="cursor fa fa-caret-down fa-lg  p-l-xs p-r-xs"
                      *ngIf="!history.show && historyView.current"
                      (click)="showPanelFuc(history);$event.stopPropagation()"></i>
-                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore p-l-xs p-r-xs"
+                  <i class="cursor fa fa-caret-up fa-lg  p-l-xs p-r-xs"
                      *ngIf="history.show && historyView.current"
                      (click)="history.show = false;$event.stopPropagation()"></i>&nbsp;
                   <i *ngIf="historyView.current"
-                     class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs"
+                     class="cursor fa fa-download  text-hover-primary p-r-xs"
                      (click)="downloadLog(history,history.controllerId);$event.stopPropagation()"></i>
                   <span [innerHtml]="history.orderId | highlight : order.searchText"></span>
                 </span>
@@ -853,13 +853,13 @@
               <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)"
                   [innerHtml]="history.startTime | duration:history.endTime"></td>
             </tr>
-            <tr class="tableexport-ignore" *ngIf="history.show">
+            <tr *ngIf="history.show">
               <td></td>
               <td colspan="9" style="padding:0 !important">
                 <nz-table class="m-a-0 inner-table" #innerTable nzSize="small" [nzLoading]="history.loading"
                           [nzData]="history.steps" [nzShowPagination]="false">
           <thead>
-          <tr class="tableexport-ignore">
+          <tr class="">
             <th><span translate>label.job</span></th>
             <th><span translate>label.workflow</span></th>
             <th><span translate>label.position</span></th>
@@ -895,7 +895,7 @@
         </tr>
         <ng-template ngFor let-child [ngForOf]="history.children | orderBy: order.filter.sortBy:order.reverse">
           <tr class="cursor">
-            <td class="tableexport-ignore menu">
+            <td class=" menu">
               <div class="btn-group dropdown">
                 <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="export2" type="button">
                   <i class="fa fa-ellipsis-h"></i>
@@ -919,11 +919,11 @@
             <td *ngIf="!historyView.current">
               <span class="show-in-single-line w-full p-l-sm"
                     (click)="coreService.showLogWindow(child,null,null,child.controllerId, null)">
-                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore p-l-xs p-r-xs"
+                <i class="cursor fa fa-caret-down fa-lg  p-l-xs p-r-xs"
                    *ngIf="!child.show" (click)="showPanelFuc(child);$event.stopPropagation()"></i>
-                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore p-l-xs p-r-xs"
+                <i class="cursor fa fa-caret-up fa-lg  p-l-xs p-r-xs"
                    *ngIf="child.show" (click)="child.show = false;$event.stopPropagation()"></i>;
-                <i class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs"
+                <i class="cursor fa fa-download  text-hover-primary p-r-xs"
                    (click)="downloadLog(child,child.controllerId);$event.stopPropagation()"></i>
                 <span [innerHtml]="child.controllerId"></span>
               </span>
@@ -931,14 +931,14 @@
             <td>
               <span class="show-in-single-line w-full" [ngClass]="{'p-l-sm': historyView.current}"
                     (click)="coreService.showLogWindow(child,null,null,null,null)">
-                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore p-l-xs p-r-xs"
+                <i class="cursor fa fa-caret-down fa-lg  p-l-xs p-r-xs"
                    *ngIf="!child.show && historyView.current"
                    (click)="showPanelFuc(child);$event.stopPropagation()"></i>
-                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore p-l-xs p-r-xs"
+                <i class="cursor fa fa-caret-up fa-lg  p-l-xs p-r-xs"
                    *ngIf="child.show && historyView.current"
                    (click)="child.show = false;$event.stopPropagation()"></i>&nbsp;
                  <i *ngIf="historyView.current"
-                    class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs"
+                    class="cursor fa fa-download  text-hover-primary p-r-xs"
                     (click)="downloadLog(child,child.controllerId);$event.stopPropagation()"></i>
                 <span [innerHtml]="child.orderId"></span>
               </span>
@@ -963,14 +963,14 @@
             <td (click)="coreService.showLogWindow(child,null, null, child.controllerId, null)"
                 [innerHtml]="child.startTime | duration:child.endTime"></td>
           </tr>
-          <tr class="tableexport-ignore" *ngIf="child.show">
+          <tr *ngIf="child.show">
             <td></td>
             <td colspan="9" style="padding:0 !important">
               <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small" [nzLoading]="child.loading"
                         [nzData]="child.steps" [nzShowPagination]="false">
                 <thead>
                 <thead>
-                <tr class="tableexport-ignore">
+                <tr class="">
                   <th><span translate>label.job</span></th>
                   <th><span translate>label.workflow</span></th>
                   <th><span translate>label.position</span></th>
@@ -1037,7 +1037,7 @@
         >
           <thead>
           <tr>
-            <th class="tableexport-ignore menu"><span translate>label.action</span></th>
+            <th class=" menu"><span translate>label.action</span></th>
             <th *ngIf="!historyView.current" (click)="sort1('controllerId')">
               <a><span class="p-r-xs" translate>label.controllerId</span>
                 <i *ngIf="task.filter.sortBy == 'controllerId' && !task.reverse"
@@ -1113,7 +1113,7 @@
           <tbody>
           <tr *ngFor="let jobHistory of ajaxTable.data | orderBy: task.filter.sortBy:task.reverse"
               class="cursor">
-            <td class="tableexport-ignore">
+            <td class="">
               <div class="btn-group dropdown">
                 <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="export3" type="button">
                   <i class="fa fa-ellipsis-h"></i>
@@ -1135,12 +1135,12 @@
             </td>
             <td *ngIf="!historyView.current"
                 (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId, null)">
-              <i class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs"
+              <i class="cursor fa fa-download  text-hover-primary p-r-xs"
                  (click)="downloadLog(jobHistory,jobHistory.controllerId);$event.stopPropagation()"></i>
               <span [innerHtml]="jobHistory.controllerId | highlight : task.searchText"></span>
             </td>
             <td (click)="coreService.showLogWindow(null,jobHistory, null, null, null)">
-              <i *ngIf="historyView.current" class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs"
+              <i *ngIf="historyView.current" class="cursor fa fa-download  text-hover-primary p-r-xs"
                  (click)="downloadLog(jobHistory,jobHistory.controllerId);$event.stopPropagation()"></i>
               <span [innerHtml]="jobHistory.job | highlight : task.searchText"></span>
             </td>
@@ -1195,7 +1195,7 @@
         >
           <thead>
           <tr>
-            <th class="tableexport-ignore menu"><span translate>label.action</span></th>
+            <th class=" menu"><span translate>label.action</span></th>
             <th *ngIf="!historyView.current" (click)="sort2('controllerId')">
               <a><span class="p-r-xs" translate>label.controllerId</span>
               <i *ngIf="yade.filter.sortBy == 'controllerId' && !yade.reverse"
@@ -1278,19 +1278,19 @@
                        [ngForOf]="ajaxYadeTable.data | orderBy: yade.filter.sortBy:yade.reverse">
             <tr class="cursor" [ngClass]="{'light-bg':transfer.show}">
               <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" *ngIf="!historyView.current">
-                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore"
+                <i class="cursor fa fa-caret-down fa-lg "
                    *ngIf="!transfer.show && !historyView.current"
                    (click)="showTransferFuc(transfer);$event.stopPropagation()"></i>
-                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" *ngIf="transfer.show && !historyView.current"
+                <i class="cursor fa fa-caret-up fa-lg " *ngIf="transfer.show && !historyView.current"
                    (click)="transfer.show = false;$event.stopPropagation()"></i>&nbsp;
                 <span [innerHtml]="transfer.controllerId"></span>
                 <span *ngIf="!transfer.controllerId" [innerHtml]="transfer.controllerId"></span>
               </td>
               <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" class="nowrap">
-                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore"
+                <i class="cursor fa fa-caret-down fa-lg "
                    *ngIf="!transfer.show && historyView.current"
                    (click)="showTransferFuc(transfer);$event.stopPropagation()"></i>
-                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" *ngIf="transfer.show && historyView.current"
+                <i class="cursor fa fa-caret-up fa-lg " *ngIf="transfer.show && historyView.current"
                    (click)="transfer.show = false;$event.stopPropagation()"></i>&nbsp;
                 <span class="label" [ngClass]="coreService.getColor(transfer.state.severity,'bg')"
                       [innerHtml]="transfer.state._text | translate"></span>
@@ -1316,12 +1316,12 @@
               <td (click)="coreService.showLogWindow(null, transfer,null,null,true)"
                   [innerHtml]="transfer.start | duration:transfer.end"></td>
             </tr>
-            <tr class="tableexport-ignore" *ngIf="transfer.show">
+            <tr *ngIf="transfer.show">
               <td></td>
               <td colspan="12" style="padding: 0 !important;">
                 <nz-table #innerTable nzSize="small" [nzShowPagination]="false">
                   <thead>
-                  <tr class="tableexport-ignore">
+                  <tr class="">
                     <th translate>label.sourceHostUser</th>
                     <th translate>label.sourceHostPort</th>
                     <th translate>label.sourceHostProtocol</th>
@@ -1361,12 +1361,12 @@
                 </nz-table>
               </td>
             </tr>
-            <tr class="tableexport-ignore" *ngIf="transfer.show">
+            <tr *ngIf="transfer.show">
               <td></td>
               <td colspan="13" style="padding: 0 !important;">
                 <table class="table m-a-0">
                   <thead>
-                  <tr class="tableexport-ignore">
+                  <tr class="">
                     <th translate>label.sourceFileName</th>
                     <th translate>label.sourceFilePath</th>
                     <th translate>label.targetFileName</th>
@@ -1424,7 +1424,7 @@
         >
           <thead>
           <tr>
-            <th class="tableexport-ignore menu"><span translate>label.action</span></th>
+           <!-- <th class=" menu"><span translate>label.action</span></th>-->
             <th *ngIf="!historyView.current" (click)="sort3('controllerId')">
               <a><span class="p-r-xs" translate>label.controllerId</span>
                 <i *ngIf="deployment.filter.sortBy == 'controllerId' && !deployment.reverse"
@@ -1437,6 +1437,13 @@
                 <i *ngIf="deployment.filter.sortBy == 'account' && !deployment.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="deployment.filter.sortBy == 'account' && deployment.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort3('deployType')">
+              <a><span class="p-r-xs" translate>history.label.deployType</span>
+                <i *ngIf="deployment.filter.sortBy == 'deployType' && !deployment.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="deployment.filter.sortBy == 'deployType' && deployment.reverse"
                    class="fa fa-caret-down "></i></a>
             </th>
             <th (click)="sort3('path')">
@@ -1460,13 +1467,13 @@
                 <i *ngIf="deployment.filter.sortBy == 'operation' && deployment.reverse"
                    class="fa fa-caret-down "></i></a>
             </th>
-            <th (click)="sort3('version')">
+     <!--       <th (click)="sort3('version')">
               <a><span class="p-r-xs" translate>history.label.version</span>
                 <i *ngIf="deployment.filter.sortBy == 'version' && !deployment.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="deployment.filter.sortBy == 'version' && deployment.reverse"
                    class="fa fa-caret-down "></i></a>
-            </th>
+            </th>-->
             <th (click)="sort3('deploymentDate')">
               <a><span class="p-r-xs" translate>history.label.deploymentDate</span>
                 <i *ngIf="deployment.filter.sortBy == 'deploymentDate' && !deployment.reverse"
@@ -1486,7 +1493,7 @@
           <tbody>
           <tr *ngFor="let devHistory of ajaxTable.data | orderBy: deployment.filter.sortBy:deployment.reverse"
               class="cursor">
-            <td class="tableexport-ignore">
+<!--            <td class="">
               <div class="btn-group dropdown">
                 <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="export3" type="button">
                   <i class="fa fa-ellipsis-h"></i>
@@ -1499,13 +1506,14 @@
                   </ul>
                 </nz-dropdown-menu>
               </div>
-            </td>
+            </td>-->
             <td *ngIf="!historyView.current"><span [innerHtml]="devHistory.controllerId"></span></td>
             <td><span [innerHtml]="devHistory.account"></span></td>
+            <td><span [innerHtml]="devHistory.deployType | translate"></span></td>
             <td><span [innerHtml]="devHistory.path"></span></td>
-            <td><span [innerHtml]="devHistory.state"></span></td>
-            <td><span [innerHtml]="devHistory.operation"></span></td>
-            <td><span [innerHtml]="devHistory.version"></span></td>
+            <td><span class="label bg-green" [innerHtml]="devHistory.state | translate"></span></td>
+            <td><span [innerHtml]="devHistory.operation | translate"></span></td>
+            <!--<td><span [innerHtml]="devHistory.version"></span></td>-->
             <td [innerHtml]="devHistory.deploymentDate | stringToDate"></td>
             <td [innerHtml]="devHistory.deleteDate | stringToDate"></td>
           </tr>

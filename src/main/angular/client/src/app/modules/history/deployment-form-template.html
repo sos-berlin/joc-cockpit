@@ -90,11 +90,11 @@
       <label class="col-sm-4 " [ngClass]="{'col-md-2': isSearch}" translate>history.label.operation</label>
       <div class="col-sm-8">
         <label class="md-check w">
-          <input type="checkbox"  [(checklist)]="filter.operation"  [checklistValue]="'UPDATE'" name="update">
+          <input type="radio"  [(ngModel)]="filter.operation"  value="UPDATE" name="operation">
           <i class="primary"></i><span translate>history.label.update</span>
         </label>
         <label class="md-check w">
-          <input type="checkbox"  [(checklist)]="filter.operation"  [checklistValue]="'DELETE'" name="delete">
+          <input type="radio"  [(ngModel)]="filter.operation" value="DELETE" name="operation">
           <i class="primary"></i><span translate>history.label.delete</span>
         </label>
       </div>
@@ -103,11 +103,11 @@
       <label class="col-sm-4 " [ngClass]="{'col-md-2': isSearch}" translate>history.label.state</label>
       <div class="col-sm-8">
         <label class="md-check w">
-          <input type="checkbox"  [(checklist)]="filter.state"  [checklistValue]="'DEPLOYED'" name="deployed">
+          <input type="radio"  [(ngModel)]="filter.state" value="DEPLOYED" name="state">
           <i class="primary"></i><span translate>history.label.deployed</span>
         </label>
         <label class="md-check w">
-          <input type="checkbox"  [(checklist)]="filter.state"  [checklistValue]="'NOT_DEPLOYED'" name="notDeployed">
+          <input type="radio"  [(ngModel)]="filter.state" value="NOT_DEPLOYED" name="state">
           <i class="primary"></i><span translate>history.label.notDeployed</span>
         </label>
       </div>

@@ -1,13 +1,77 @@
-<div style="box-shadow: 0 0 8px rgba(0,0,0,0.18)">
-  <div class="modal-header">
-    <h4 class="modal-title">
-      <span translate>controller.label.addAgents</span>
-    </h4>
-    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body p-a">
-
-  </div>
+<div class="m-a" style="box-shadow: 0 4px 8px rgba(0,0,0,0.18)">
+  <form #myForm="ngForm">
+    <div class="modal-body p-a">
+      <div class="row m-b-sm">
+        <label class="col-sm-12" >
+          <span class="text-primary  text-capitalize" translate>agent.label.addAgents</span>
+        </label>
+        <a (click)="activeModal.dismiss('Cross click')" style="position: fixed; right: 10px; top: 0; font-size: 22px; opacity: .7"><i class="fa fa-times-circle"></i></a>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 text m-b">
+          <div class="form-group row m-b-0 b-t p-t" *ngFor="let agent of agents; let i = index">
+            <div class="col-sm-12 col-md-12">
+              <div class="form-group row">
+                <label class="col-sm-3 form-control-label" translate>agent.label.agentId</label>
+                <div class=" col-sm-8">
+                  <input type="text" class="form-control" maxlength="30" name="agentId{{i}}"
+                          required [(ngModel)]="agent.agentId"
+                          placeholder="{{'placeholder.enterAgentId' | translate}}">
+                </div>
+                <div class="col-sm-1 p-l-0" *ngIf="agents.length > 1">
+                  <a class="text-hover-color"><i (click)="removeAgent(i)" class="fa fa-times m-t-sm text-muted"></i></a>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-3 form-control-label" translate>agent.label.agentName</label>
+                <div class=" col-sm-8">
+                  <input type="text" class="form-control" maxlength="30" name="agentName{{i}}"
+                          required [(ngModel)]="agent.agentName"
+                          placeholder="{{'placeholder.enterAgentName' | translate}}">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-3 form-control-label" translate>agent.label.url</label>
+                <div class=" col-sm-8">
+                  <input type="url" pattern="(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})" class="form-control" name="url{{i}}"
+                          required [(ngModel)]="agent.url" placeholder="http://host:port">
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="type !== 'STANDALONE'">
+                <label class="col-sm-3" translate>agent.label.clusterWatcher</label>
+                <div class="col-sm-6">
+                  <label class="md-check">
+                    <input type="checkbox" [(ngModel)]="agent.isClusterWatcher" name="iscluter{{i}}">
+                    <i class="primary"></i>
+                  </label>
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="!new">
+                <label class="col-sm-3" translate>agent.label.disabled</label>
+                <div class="col-sm-6">
+                  <label class="md-check">
+                    <input type="checkbox" [(ngModel)]="agent.disabled" name="diabled{{i}}">
+                    <i class="primary"></i>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row m-b-0 p-t-sm b-t">
+            <div class="col-sm-12 col-md-12">
+              <a class="text-u-l" *ngIf="agents.length>0" (click)="addAgent()"
+                 translate>agent.button.addAnotherAgent</a>
+              <a class="text-u-l" *ngIf="agents.length==0" (click)="addAgent()"
+                 translate>agent.button.addAgent</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <button type="button" class="btn btn-grey btn-sm" (click)="close()" translate>
+          button.close
+        </button>
+      </div>
+    </div>
+  </form>
 </div>

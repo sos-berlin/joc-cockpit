@@ -84,6 +84,7 @@ export class JobComponent implements OnChanges, OnDestroy {
   @Input() selectedNode: any;
   @Input() jobs: any;
   @Input() jobClassTree = [];
+  @Input() agents = [];
   error: boolean;
   errorMsg: string;
   obj: any = {};
@@ -516,6 +517,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   @Input() schedulerId: any;
   @Input() permission: any;
   @Input() copyObj: any;
+  agents = [];
   jobClassTree = [];
   configXml = './assets/mxgraph/config/diagrameditor.xml';
   editor: any;
@@ -577,6 +579,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         types: ['JOBCLASS']
       }).subscribe((res) => {
         this.jobClassTree = this.coreService.prepareTree(res, true);
+      });
+    }
+    if (this.agents.length === 0) {
+      this.coreService.post('agents/names', {}).subscribe((res: any) => {
+        this.agents = res.agentNames;
       });
     }
   }

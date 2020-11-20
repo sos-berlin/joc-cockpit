@@ -583,6 +583,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   selectedFiltered1: any = {};
   selectedFiltered2: any = {};
   selectedFiltered3: any = {};
+  selectedFiltered4: any = {};
   temp_filter1: any = {};
   temp_filter2: any = {};
   temp_filter3: any = {};
@@ -599,26 +600,20 @@ export class HistoryComponent implements OnInit, OnDestroy {
   deploymentSearch: any = {paths: []};
   data = [];
   currentData = [];
-
   order: any = {};
   task: any = {};
   yade: any = {};
   deployment: any = {};
-
   historys: any = [];
   jobHistorys: any = [];
   yadeHistorys: any = [];
   deploymentHistorys: any = [];
-
   orderHistoryFilterList: any = [];
   jobHistoryFilterList: any = [];
   yadeHistoryFilterList: any = [];
   deploymentHistoryFilterList: any = [];
-
   object: any = {};
-
   ignoreListConfigId = 0;
-
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -717,7 +712,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   setOrderDateRange(filter) {
-    if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true') && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0) || (this.savedIgnoreList.orders && this.savedIgnoreList.orders.length > 0))) {
+    if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true')
+      && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0)
+        || (this.savedIgnoreList.orders && this.savedIgnoreList.orders.length > 0))) {
       filter.excludeOrders = [];
       this.savedIgnoreList.workflows.forEach(function (workflow) {
         filter.excludeOrders.push({workflow: workflow});
@@ -727,7 +724,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
         filter.excludeOrders.push(order);
       });
     }
-
     if (this.order.filter.date == 'today') {
       filter.dateFrom = '0d';
       filter.dateTo = '0d';
@@ -735,7 +731,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
     } else if (this.order.filter.date && this.order.filter.date != 'ALL') {
       filter.dateFrom = this.order.filter.date;
     }
-
     return filter;
   }
 
@@ -797,8 +792,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   jobParseDate(obj) {
-    if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true') && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
-
+    if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true')
+      && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
       obj.excludeJobs = [];
       this.savedIgnoreList.jobs.forEach(function (job) {
         obj.excludeJobs.push({job: job});
@@ -847,7 +842,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   taskHistory(obj) {
     this.historyFilters.type = 'TASK';
-
     if (!obj) {
       obj = {controllerId: this.historyView.current == true ? this.schedulerIds.selected : ''};
     }
@@ -881,7 +875,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.yade.filter.date = '';
     } else {
       if (this.temp_filter3.states) {
-        this.yade.filter.historyStates = _.clone(this.temp_filter3.historyStates);
+        this.yade.filter.historyStates = _.clone(this.temp_filter3.states);
         this.yade.filter.date = _.clone(this.temp_filter3.date);
       } else {
         this.yade.filter.historyStates = 'ALL';
@@ -929,16 +923,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   isCustomizationSelected4(flag) {
     if (flag) {
-      this.temp_filter4.states = _.clone(this.deployment.filter.historyStates);
+      this.temp_filter4.state = _.clone(this.deployment.filter.state);
       this.temp_filter4.date = _.clone(this.deployment.filter.date);
-      this.deployment.filter.historyStates = '';
+      this.deployment.filter.state = '';
       this.deployment.filter.date = '';
     } else {
-      if (this.temp_filter4.states) {
-        this.deployment.filter.historyStates = _.clone(this.temp_filter4.historyStates);
+      if (this.temp_filter4.state) {
+        this.deployment.filter.state = _.clone(this.temp_filter4.state);
         this.deployment.filter.date = _.clone(this.temp_filter4.date);
       } else {
-        this.deployment.filter.historyStates = 'ALL';
+        this.deployment.filter.state = 'ALL';
         this.deployment.filter.date = 'today';
       }
     }
@@ -960,18 +954,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
       obj = {controllerId: this.historyView.current == true ? this.schedulerIds.selected : ''};
     }
     this.isLoading = false;
-    if (this.selectedFiltered3 && !_.isEmpty(this.selectedFiltered3)) {
+    if (this.selectedFiltered4 && !_.isEmpty(this.selectedFiltered4)) {
       this.isCustomizationSelected4(true);
       // obj = this.deploymentParseDate(obj);
     } else {
       obj = this.setDeploymentDateRange(obj);
-      if (this.deployment.filter.historyStates && this.deployment.filter.historyStates != 'ALL' && this.deployment.filter.historyStates.length > 0) {
-        obj.states = [];
-        obj.states.push(this.deployment.filter.historyStates);
-      }
+      obj.state = this.deployment.filter.state !== 'ALL' ? this.deployment.filter.state : undefined;
     }
     this.convertRequestBody(obj);
-    obj.compact = true;
     this.coreService.post('inventory/deployment/history', obj).subscribe((res: any) => {
       this.deploymentHistorys = res.depHistory;
       this.searchInResult();
@@ -1280,11 +1270,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.isLoading = true;
       });
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
-      this.deployment.filter.historyStates = '';
+      this.deployment.filter.state = '';
       this.deployment.filter.date = '';
-      if (obj.states && obj.states.length > 0) {
-        filter.historyStates = obj.states;
-      }
+      filter.state = obj.state !== 'ALL' ? obj.state : undefined;
+      filter.operation = obj.operation;
+      filter.deployType = obj.deployType;
+     
       if (obj.radio == 'process') {
         filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);
       } else {
@@ -1322,9 +1313,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
         }
       }
 
-      if (obj.regex) {
-        filter.regex = obj.regex;
-      }
       if (obj.controllerId) {
         filter.controllerId = obj.controllerId;
       }
@@ -1975,15 +1963,15 @@ export class HistoryComponent implements OnInit, OnDestroy {
           controllerId: filter.controllerId,
           id: filter.id
         }).subscribe((conf: any) => {
-          this.selectedFiltered3 = JSON.parse(conf.configuration.configurationItem);
-          this.selectedFiltered3.account = filter.account;
+          this.selectedFiltered4 = JSON.parse(conf.configuration.configurationItem);
+          this.selectedFiltered4.account = filter.account;
           this.init();
         });
       } else {
         this.isCustomizationSelected3(false);
         this.savedDeploymentHistoryFilter.selected = filter;
         this.historyFilters.yade.selectedView = false;
-        this.selectedFiltered3 = {};
+        this.selectedFiltered4 = {};
         this.init();
       }
       this.historyFilterObj.yade = this.savedDeploymentHistoryFilter;
@@ -2341,6 +2329,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.getCustomizations(type, obj);
   }
 
+  /* --------------------------Customizations -----------------------*/
+
   private getCustomizations(type, obj) {
     obj.account = this.permission.user;
     obj.shared = false;
@@ -2503,8 +2493,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
             id: this.deploymentHistoryFilterList[i].id
           }).subscribe((conf: any) => {
             this.loadConfig = true;
-            this.selectedFiltered2 = JSON.parse(conf.configuration.configurationItem);
-            this.selectedFiltered2.account = this.deploymentHistoryFilterList[i].account;
+            this.selectedFiltered4 = JSON.parse(conf.configuration.configurationItem);
+            this.selectedFiltered4.account = this.deploymentHistoryFilterList[i].account;
             this.init();
           });
           break;
@@ -2521,8 +2511,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.init();
     }
   }
-
-  /* --------------------------Customizations -----------------------*/
 
   private checkYadeCustomization(result) {
     if (this.yadeHistoryFilterList && this.yadeHistoryFilterList.length > 0) {

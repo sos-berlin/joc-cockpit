@@ -2,9 +2,9 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 declare const $;
 
@@ -14,23 +14,39 @@ declare const $;
 })
 export class AgentModalComponent implements OnInit {
   @Input() agents: any;
+  @Input() type: any;
+  @Input() new: any;
 
   constructor(public coreService: CoreService, public activeModal: NgbActiveModal) {
   }
 
   ngOnInit() {
-
+    if (this.agents.length === 0) {
+      this.addAgent();
+    }
   }
 
-  onSubmit(): void {
-    this.activeModal.close('Done');
+  addAgent() {
+    const param = {
+      agentId: '',
+      agentName: '',
+      url: ''
+    };
+    if (!this.coreService.isLastEntryEmpty(this.agents, 'agentName', 'url')) {
+      this.agents.push(param);
+    }
   }
 
-
-  cancel(): void {
-    this.activeModal.dismiss();
+  removeAgent(index): void {
+    this.agents.splice(index, 1);
   }
 
+  close(): void {
+    if (this.coreService.isLastEntryEmpty(this.agents, 'agentName', 'url')) {
+      this.agents.splice(this.agents.length - 1, 1);
+    }
+    this.activeModal.close(this.agents);
+  }
 }
 
 @Component({
@@ -42,6 +58,7 @@ export class StartUpModalComponent implements OnInit {
   @Input() new: boolean;
   @Input() modalRef: any;
   @Input() controllerInfo: any;
+  @Input() agents: any;
   @Output() afterSubmit: EventEmitter<any> = new EventEmitter();
   submitted = false;
   controller: any = {};
@@ -53,7 +70,6 @@ export class StartUpModalComponent implements OnInit {
   comments: any = {};
   schedulerIds: any = {};
   messageList: any = [];
-  agents: any = [];
   error: any;
   controllerId = '';
 
@@ -70,7 +86,6 @@ export class StartUpModalComponent implements OnInit {
       backupTitle: 'BACKUP',
     };
     if (this.controllerInfo) {
-      this.agents = this.controllerInfo.agents;
       const len = this.controllerInfo.length;
       if (len > 0) {
         for (let i = 0; i < len; i++) {
@@ -93,7 +108,7 @@ export class StartUpModalComponent implements OnInit {
         }
       }
     }
-    let preferences:any = {};
+    let preferences: any = {};
     if (sessionStorage.preferences) {
       preferences = JSON.parse(sessionStorage.preferences);
     }
@@ -139,7 +154,7 @@ export class StartUpModalComponent implements OnInit {
         obj.controllers.push(_obj);
       }
     }
-    if(this.display){
+    if (this.display) {
       obj.auditLog = {};
       if (this.comments.comment) {
         obj.auditLog.comment = this.comments.comment;
@@ -151,6 +166,7 @@ export class StartUpModalComponent implements OnInit {
         obj.auditLog.ticketLink = this.comments.ticketLink;
       }
     }
+    obj.agents = this.agents;
     this.coreService.post('controller/register', obj).subscribe(res => {
       this.submitted = false;
       if (this.modalRef) {
@@ -165,7 +181,6 @@ export class StartUpModalComponent implements OnInit {
   testConnection(type, url) {
     this.error = false;
     this.setFlag(type, true);
-    console.log(this.controllerInfo)
     this.coreService.post('controller/test', {url: url, controllerId: this.new ? '' : this.controllerId}).subscribe((res: any) => {
       this.setFlag(type, false);
       if (res && res.controller) {
@@ -192,13 +207,15 @@ export class StartUpModalComponent implements OnInit {
     });
   }
 
-  showAgent(){
+  showAgent() {
     const modalRef = this.modalService.open(AgentModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.agents = this.agents;
+    modalRef.componentInstance.agents = this.coreService.clone(this.agents) || [];
+    modalRef.componentInstance.type = this.controller.type;
+    modalRef.componentInstance.new = this.new;
     modalRef.result.then((result) => {
+      this.agents = result;
+    }, () => {
 
-    }, (reason) => {
-      console.log('close...', reason);
     });
   }
 
@@ -299,7 +316,6 @@ export class StartUpComponent implements OnInit {
     this.coreService.post('controller/ids', {}).subscribe((res: any) => {
       this.authService.setIds(res);
       this.authService.save();
-      console.log(res)
       this.setPermissions(permission);
     }, err => this.setPermissions(permission));
   }

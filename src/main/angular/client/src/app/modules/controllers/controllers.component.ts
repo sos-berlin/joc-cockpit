@@ -48,6 +48,7 @@ export class ControllersComponent implements OnInit {
       const modalRef = this.modalService.open(StartUpModalComponent, {backdrop: 'static'});
       modalRef.componentInstance.isModal = true;
       modalRef.componentInstance.controllerInfo = res.controllers;
+      modalRef.componentInstance.agents = res.agents;
       modalRef.componentInstance.modalRef = modalRef;
       modalRef.result.then((result) => {
         console.log(result);

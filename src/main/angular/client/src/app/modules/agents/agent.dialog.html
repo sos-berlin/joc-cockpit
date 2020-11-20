@@ -1,0 +1,83 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span *ngIf="!new">
+      <span translate>agent.label.editAgent</span>:
+      <span [innerHtml]="data.agentName"></span>
+    </span>
+    <span *ngIf="new" translate>agent.label.addAgent</span>
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()">
+  <div class="modal-body p-a">
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>agent.label.agentId</label>
+      <div class="col-sm-8" [ngClass]="{'has-error' : ((agentid.dirty || agentid.touched) && agentid.invalid) || !isUniqueId}">
+        <input type="text" class="form-control" maxlength="30" name="agentId"
+               required [(ngModel)]="agent.agentId" #agentid="ngModel" (blur)="checkId(agent.agentId)"
+               placeholder="{{'placeholder.enterAgentId' | translate}}">
+        <div *ngIf="agentid.invalid && (agentid.dirty || agentid.touched)" class="text-danger help-block">
+          <div *ngIf="agentid.errors.required">
+            <div translate>message.requiredError</div>
+          </div>
+        </div>
+        <div class="help-block text-danger" *ngIf="!isUniqueId">
+          <div translate>message.uniqueError</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>agent.label.agentName</label>
+      <div class=" col-sm-8" [ngClass]="{'has-error' : ((agentName.dirty || agentName.touched) && agentName.invalid) || !isUnique}">
+        <input type="text" class="form-control" name="agentName" (blur)="checkName(agent.agentName)"
+               required [(ngModel)]="agent.agentName" #agentName="ngModel"
+               placeholder="{{'placeholder.enterAgentName' | translate}}">
+        <div *ngIf="agentName.invalid && (agentName.dirty || agentName.touched)" class="text-danger help-block">
+          <div *ngIf="agentName.errors.required">
+            <div translate>message.requiredError</div>
+          </div>
+        </div>
+        <div class="help-block text-danger" *ngIf="!isUnique">
+          <div translate>message.uniqueError</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>agent.label.url</label>
+      <div class=" col-sm-8" [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}">
+        <input type="url" class="form-control" name="url" #url="ngModel"
+               required [(ngModel)]="agent.url" placeholder="http://host:port">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-4" translate>agent.label.clusterWatcher</label>
+      <div class="col-sm-6">
+        <label class="md-check">
+          <input type="checkbox" [(ngModel)]="agent.isClusterWatcher" name="iscluter">
+          <i class="primary"></i>
+        </label>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="agents.length > 0">
+      <label class="col-sm-4" translate>agent.label.disabled</label>
+      <div class="col-sm-6">
+        <label class="md-check">
+          <input type="checkbox" [disabled]="agents.length === 1" [(ngModel)]="agent.disabled" name="disabled">
+          <i class="primary"></i>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" [disabled]="!myForm.form.valid || !isUniqueId || !isUnique || submitted" class="btn btn-primary btn-sm">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'button.submit' | translate}}
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
+      button.cancel
+    </button>
+  </div>
+</form>
+
