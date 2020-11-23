@@ -10,8 +10,8 @@ declare const $;
   template: `
     <div class="modal-header">
       <h4 class="modal-title">
-        <span *ngIf="!calendar" translate>label.calendarViewFor</span>
-        <span *ngIf="calendar" translate>label.showPreview</span>
+        <span *ngIf="!calendar" translate>runtime.label.calendarViewFor</span>
+        <span *ngIf="calendar" translate>runtime.label.showPreview</span>
         <span *ngIf="calendar">: </span>
         {{path}}
       </h4>
@@ -51,7 +51,7 @@ declare const $;
       </div>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>button.close</button>
+      <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>common.button.close</button>
     </div>
   `
 })

@@ -1,7 +1,7 @@
 <div class="modal-header">
     <h4 class="modal-title">
-        <span *ngIf="!copy" translate>label.addSpecialisation</span>
-        <span *ngIf="copy" ><span translate>label.copySpecialisation</span> : {{currentMaster.masterName || 'default'}}</span>
+        <span *ngIf="!copy" translate>user.label.addSpecialisation</span>
+        <span *ngIf="copy" ><span translate>user.label.copySpecialisation</span> : {{currentMaster.masterName || 'default'}}</span>
     </h4>
     <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
         <span aria-hidden="true">&times;</span>
@@ -10,32 +10,32 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit(currentMaster)">
     <div class="modal-body container">
         <div class="form-group row" [ngClass]="{'has-error' : ((masterName.dirty || masterName.touched) && masterName.invalid)}">
-            <label class="col-sm-4 form-control-label" translate>label.master</label>
+            <label class="col-sm-4 form-control-label" translate>user.label.js7Controller</label>
             <div class="col-sm-6">
-                <input type="text" class="form-control" name="name" placeholder="{{'placeholder.master' | translate}}"  [(ngModel)]="currentMaster.master" required autofocus autocomplete="false" #masterName="ngModel"
+                <input type="text" class="form-control" name="name" placeholder="{{'user.placeholder.enterController' | translate}}"  [(ngModel)]="currentMaster.master" required autofocus autocomplete="false" #masterName="ngModel"
                        (blur)="checkMaster(currentMaster.master)"/>
                  <div *ngIf="masterName.invalid && (masterName.dirty || masterName.touched)" class= "text-danger help-block">
                      <div *ngIf="masterName.errors.required" translate>
-                        message.requiredError
+                       common.message.requiredError
                     </div>
                  </div>
                 <div *ngIf="!isUnique" class="text-danger help-block" translate>
-                    message.uniqueError
+                  common.message.uniqueError
                 </div>
             </div>
         </div>
         <div class="form-group row" *ngIf="!copy" [ngClass]="{ 'has-error' : ((ipAddress.dirty || ipAddress.touched) && ipAddress.invalid)}">
-            <label class="col-sm-4 form-control-label" translate>label.remoteIPAddress</label>
+            <label class="col-sm-4 form-control-label" translate>user.label.remoteIPAddress</label>
             <div class="col-sm-6">
                 <input type="text" class="form-control" name="ipAddress" [(ngModel)]="currentMaster.ipAddress" #ipAddress="ngModel">
             </div>
         </div>
         <div class="form-group row" *ngIf="!copy">
-            <label class="col-sm-4 form-control-label" translate>label.roles</label>
+            <label class="col-sm-4 form-control-label" translate>user.label.roles</label>
             <div class="col-sm-6">
               <nz-select name="roles"
                          nzMode="multiple"
-                         nzPlaceHolder="{{'placeholder.selectRoles' | translate}}"
+                         nzPlaceHolder="{{'user.placeholder.selectRoles' | translate}}"
                          [(ngModel)]="currentMaster.roles">
                 <nz-option *ngFor="let option of allRoles" [nzLabel]="option" [nzValue]="option"></nz-option>
               </nz-select>
@@ -44,11 +44,11 @@
     </div>
     <div class="modal-footer">
         <button type="submit" [disabled]="!isUnique || !myForm.form.valid || submitted" class="btn btn-primary btn-sm">
-            <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
-            {{'button.submit' | translate}}
+            <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+            {{'common.button.submit' | translate}}
         </button>
         <button type="button" class="btn btn-outline-dark btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
-            button.cancel
+          common.button.cancel
         </button>
     </div>
 </form>

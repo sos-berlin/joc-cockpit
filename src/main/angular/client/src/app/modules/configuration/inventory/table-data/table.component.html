@@ -10,11 +10,11 @@
           <span *ngIf="objectType === 'CALENDAR'" translate>inventory.label.calendars</span>
         </span>
     <div class="inline">
-      <input type="search" placeholder="{{'placeholder.search' | translate}}"
+      <input type="search" placeholder="{{'common.placeholder.search' | translate}}"
              [(ngModel)]="searchKey" style="width: 180px" name="search">
       <button *ngIf="permission.Inventory.configurations.edit" type="button" [disabled]="!copyObj || (objectType !== copyObj.type)" class="btn btn-sm btn-grey m-l-12" (click)="paste()" >
         <i class="fa fa-paste p-r-xs"></i>
-        <span translate>button.paste</span>
+        <span translate>inventory.button.paste</span>
       </button>
       <button type="button" class="btn btn-sm btn-grey m-l-12" (click)="add()" *ngIf="permission.Inventory.configurations.edit">
         <i class="fa fa-plus p-r-xs"></i>
@@ -41,8 +41,8 @@
 
     <thead>
       <tr>
-        <th class="menu"><span translate>label.action</span></th>
-        <th (click)="sort('name')"><a><span class="p-r-xs" translate>label.name</span>
+        <th class="menu"><span translate>common.label.action</span></th>
+        <th (click)="sort('name')"><a><span class="p-r-xs" translate>common.label.name</span>
           <i *ngIf="filter.sortBy == 'name' && !filter.reverse"
              class="fa fa-caret-up "></i>
           <i *ngIf="filter.sortBy == 'name' && filter.reverse"
@@ -57,12 +57,12 @@
              class="fa fa-caret-up "></i>
           <i *ngIf="filter.sortBy == 'deployed' && filter.reverse"
              class="fa fa-caret-down "></i></a></th>
-        <th (click)="sort('released')" *ngIf="objectType === 'ORDERTEMPLATE' || objectType === 'CALENDAR'"><a><span class="p-r-xs" translate>label.status</span>
+        <th (click)="sort('released')" *ngIf="objectType === 'ORDERTEMPLATE' || objectType === 'CALENDAR'"><a><span class="p-r-xs" translate>common.label.status</span>
           <i *ngIf="filter.sortBy == 'released' && !filter.reverse"
              class="fa fa-caret-up "></i>
           <i *ngIf="filter.sortBy == 'released' && filter.reverse"
              class="fa fa-caret-down "></i></a></th>
-        <th (click)="sort('objectType')" *ngIf="objectType === 'CALENDAR'"><a><span class="p-r-xs" translate>label.type</span>
+        <th (click)="sort('objectType')" *ngIf="objectType === 'CALENDAR'"><a><span class="p-r-xs" translate>common.label.type</span>
           <i *ngIf="filter.sortBy == 'objectType' && !filter.reverse"
              class="fa fa-caret-up "></i>
           <i *ngIf="filter.sortBy == 'objectType' && filter.reverse"
@@ -82,11 +82,11 @@
               <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu">
                 <ul nz-menu>
                   <li nz-menu-item *ngIf="!data.deleted && permission.Inventory.configurations.edit">
-                    <a (click)="copyObject(data)" translate>button.copy</a>
+                    <a (click)="copyObject(data)" translate>inventory.button.copy</a>
                   </li>
-                  <li nz-menu-item *ngIf="!data.deleted && permission.Inventory.configurations.edit">
-                    <a (click)="editObject(data)" translate>button.edit</a>
-                  </li>
+   <!--               <li nz-menu-item *ngIf="!data.deleted && permission.Inventory.configurations.edit">
+                    <a (click)="editObject(data)" translate>inventory.button.edit</a>
+                  </li>-->
                   <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && objectType !== 'CALENDAR' && objectType !== 'ORDERTEMPLATE'" [nzDisabled]="!data.hasDeployments && !data.valid">
                     <a (click)="deployObject(data)" translate>inventory.button.deploy</a>
                   </li>
@@ -95,11 +95,11 @@
                   </li>
                   <li nz-menu-item [nzDisabled]="!data.hasDeployments"
                     *ngIf="permission.Inventory.configurations.delete && !data.deleted && objectType !== 'CALENDAR' && objectType !== 'ORDERTEMPLATE'">
-                    <a (click)="removeObject(data)" translate>button.delete</a>
+                    <a (click)="removeObject(data)" translate>inventory.button.remove</a>
                   </li>
                   <li nz-menu-item [nzDisabled]="!data.hasReleases"
                       *ngIf="permission.Inventory.configurations.delete && !data.deleted && (objectType === 'CALENDAR' || objectType === 'ORDERTEMPLATE')">
-                    <a (click)="removeObject(data)" translate>button.delete</a>
+                    <a (click)="removeObject(data)" translate>inventory.button.remove</a>
                   </li>
                   <li nz-menu-item *ngIf="permission.Inventory.configurations.delete" [nzDisabled]="data.deployed || data.released">
                     <a (click)="deleteDraft(data)" translate>inventory.button.deleteDraft</a>
@@ -144,8 +144,8 @@
   </div>
   <div class="w-half label-top"
        *ngIf="ajaxTable.data.length >0"><span
-    translate>label.total</span> {{(dataObj.children | filter: searchKey).length}}
-    <span *ngIf="ajaxTable.data.length >1" translate>label.entriesFound</span>
-    <span *ngIf="ajaxTable.data.length ==1" translate>label.entryFound</span>
+    translate>common.label.total</span> {{(dataObj.children | filter: searchKey).length}}
+    <span *ngIf="ajaxTable.data.length >1" translate>inventory.label.entriesFound</span>
+    <span *ngIf="ajaxTable.data.length ==1" translate>inventory.label.entryFound</span>
   </div>
 </div>

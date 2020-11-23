@@ -3,7 +3,6 @@ import {
   HistoryComponent,
   FilterModalComponent,
   OrderSearchComponent,
-  YadeSearchComponent,
   TaskSearchComponent,
   DeploymentSearchComponent
 } from './history.component';
@@ -21,7 +20,6 @@ import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component
     FilterModalComponent,
     EditIgnoreListComponent,
     OrderSearchComponent,
-    YadeSearchComponent,
     TaskSearchComponent,
     DeploymentSearchComponent
   ],

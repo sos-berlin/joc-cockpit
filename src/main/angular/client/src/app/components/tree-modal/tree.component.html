@@ -1,11 +1,11 @@
 <div style="box-shadow: 0 0 8px rgba(0,0,0,0.18)">
 <div id="tree-modal" class="modal-body p-a" style="min-height: 350px;">
   <a class="text" (click)="expandAll();"
-     [nz-tooltip]="'tooltip.expandAll' | translate">
+     [nz-tooltip]="'common.tooltip.expandAll' | translate">
     <i class="fa fa-angle-double-down fa-sm"></i>
   </a>
   <a class="text m-l-xs" (click)="collapseAll();"
-     [nz-tooltip]="'tooltip.collapseAll' | translate">
+     [nz-tooltip]="'common.tooltip.collapseAll' | translate">
     <i class="fa fa-angle-double-up fa-sm"></i>
   </a>
   <div class="tree-content m-t-sm">
@@ -40,17 +40,17 @@
 <div class="modal-footer ">
   <div *ngIf="showCheckBox || object">
     <button type="button" class="btn btn-primary btn-sm"  (click)="submit()"
-            translate>button.done
+            translate>common.button.done
     </button>
     <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="activeModal.dismiss('Cross click')"
             translate>
-      button.cancel
+      common.button.cancel
     </button>
   </div>
   <div *ngIf="!showCheckBox && !object">
     <button type="button" class="btn btn-grey btn-sm " (click)="activeModal.dismiss('Cross click')"
             translate>
-      button.close
+      common.button.close
     </button>
   </div>
 </div>

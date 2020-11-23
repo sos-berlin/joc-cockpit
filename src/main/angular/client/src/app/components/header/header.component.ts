@@ -55,13 +55,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   getSelectedSchedulerInfo() {
-    if (sessionStorage.$SOS$JOBSCHEDULE && JSON.parse(sessionStorage.$SOS$JOBSCHEDULE)) {
-      this.selectedController = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE) || {};
+    if (sessionStorage.$SOS$CONTROLLER && JSON.parse(sessionStorage.$SOS$CONTROLLER)) {
+      this.selectedController = JSON.parse(sessionStorage.$SOS$CONTROLLER) || {};
     }
     if (_.isEmpty(this.selectedController)) {
       const interval = setInterval(() => {
-        if (sessionStorage.$SOS$JOBSCHEDULE && JSON.parse(sessionStorage.$SOS$JOBSCHEDULE)) {
-          this.selectedController = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE) || {};
+        if (sessionStorage.$SOS$CONTROLLER && JSON.parse(sessionStorage.$SOS$CONTROLLER)) {
+          this.selectedController = JSON.parse(sessionStorage.$SOS$CONTROLLER) || {};
           if (!_.isEmpty(this.selectedController)) {
             clearInterval(interval);
           }

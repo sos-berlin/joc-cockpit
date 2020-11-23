@@ -16,7 +16,7 @@ export class ErrorComponent implements OnInit {
 
   ngOnInit() {
     const self = this;
-    this.translate.get('message.403').subscribe(translatedValue => {
+    this.translate.get('error.message.403').subscribe(translatedValue => {
       self.error = translatedValue;
     });
   }
@@ -39,7 +39,7 @@ export class PageNotFoundComponent implements OnInit {
 
   ngOnInit() {
     const self = this;
-    this.translate.get('message.404').subscribe(translatedValue => {
+    this.translate.get('error.message.404').subscribe(translatedValue => {
       self.error = translatedValue;
     });
   }

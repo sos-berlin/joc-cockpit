@@ -1,4 +1,4 @@
-import { Component, OnInit,Input } from '@angular/core';
+import {Component, OnInit, Input} from '@angular/core';
 
 @Component({
   selector: 'app-empty-data',
@@ -8,22 +8,22 @@ import { Component, OnInit,Input } from '@angular/core';
         'assets/images/empty.svg'
       "
       [nzNotFoundContent]="contentTpl"
-    title="">
+      title="">
       <ng-template #contentTpl>
-        <span class="text-u-c" >  {{title | translate}} </span>
+        <span class="text-u-c">  {{title | translate}} </span>
       </ng-template>
     </nz-empty>
   `,
 })
 export class EmptyDataComponent implements OnInit {
-
   @Input() title: string;
-  constructor() { }
 
-  ngOnInit() {
-    if(!this.title){
-      this.title = 'message.noDataAvailable';
-    }
+  constructor() {
   }
 
+  ngOnInit() {
+    if (!this.title) {
+      this.title = 'common.message.noDataAvailable';
+    }
+  }
 }

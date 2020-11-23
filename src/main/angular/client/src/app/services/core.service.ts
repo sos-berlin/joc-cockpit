@@ -39,18 +39,6 @@ export class CoreService {
               private clipboardService: ClipboardService, public modalService: NgbModal, private translate: TranslateService,
               private message: NzMessageService) {
 
-    this.tabs._job = {};
-    this.tabs._job.filter = {};
-    this.tabs._job.filter.state = 'ALL';
-    this.tabs._job.filter.type = 'ALL';
-    this.tabs._job.filter.sortBy = 'name';
-    this.tabs._job.reverse = false;
-    this.tabs._job.searchText = '';
-    this.tabs._job.currentPage = '1';
-    this.tabs._job.expandedKeys = ['/'];
-    this.tabs._job.selectedkeys = ['/'];
-    this.tabs._job.selectedView = true;
-
     this.tabs._workflow = {};
     this.tabs._workflow.filter = {};
     this.tabs._workflow.filter.sortBy = 'name';
@@ -163,15 +151,6 @@ export class CoreService {
     this.tabs._resource.locks.currentPage = '1';
     this.tabs._resource.locks.expandedKeys = ['/'];
     this.tabs._resource.locks.selectedkeys = ['/'];
-    this.tabs._resource.processClasses = {};
-    this.tabs._resource.processClasses.filter = {};
-    this.tabs._resource.processClasses.filter.state = 'ALL';
-    this.tabs._resource.processClasses.filter.sortBy = 'name';
-    this.tabs._resource.processClasses.reverse = false;
-    this.tabs._resource.processClasses.searchText = '';
-    this.tabs._resource.processClasses.currentPage = '1';
-    this.tabs._resource.processClasses.expandedKeys = ['/'];
-    this.tabs._resource.processClasses.selectedkeys = ['/'];
     this.tabs._resource.calendars = {};
     this.tabs._resource.calendars.filter = {};
     this.tabs._resource.calendars.filter.type = 'ALL';
@@ -198,18 +177,6 @@ export class CoreService {
     this.tabs._configuration.inventory = {};
     this.tabs._configuration.inventory.deployedMessages = [];
     this.tabs._configuration.inventory.activeTab = {type: '', object: '', path: ''};
-
-    this.tempTabs._job = {};
-    this.tempTabs._job.filter = {};
-    this.tempTabs._job.filter.state = 'ALL';
-    this.tempTabs._job.filter.type = 'ALL';
-    this.tempTabs._job.filter.sortBy = 'name';
-    this.tempTabs._job.reverse = false;
-    this.tempTabs._job.currentPage = '1';
-    this.tempTabs._job.expandedKeys = ['/'];
-    this.tempTabs._job.selectedkeys = ['/'];
-    this.tempTabs._job.selectedView = true;
-    this.tempTabs._job.showTaskPanel = undefined;
 
     this.tempTabs._workflow = {};
     this.tempTabs._workflow.filter = {};
@@ -316,14 +283,6 @@ export class CoreService {
     this.tempTabs._resource.locks.currentPage = '1';
     this.tempTabs._resource.locks.expandedKeys = ['/'];
     this.tempTabs._resource.locks.selectedkeys = ['/'];
-    this.tempTabs._resource.processClasses = {};
-    this.tempTabs._resource.processClasses.filter = {};
-    this.tempTabs._resource.processClasses.filter.state = 'ALL';
-    this.tempTabs._resource.processClasses.filter.sortBy = 'name';
-    this.tempTabs._resource.processClasses.reverse = false;
-    this.tempTabs._resource.processClasses.currentPage = '1';
-    this.tempTabs._resource.processClasses.expandedKeys = ['/'];
-    this.tempTabs._resource.processClasses.selectedkeys = ['/'];
     this.tempTabs._resource.calendars = {};
     this.tempTabs._resource.calendars.filter = {};
     this.tempTabs._resource.calendars.filter.type = 'ALL';
@@ -358,11 +317,11 @@ export class CoreService {
 
     this.dashboard._dashboard.dailyplan = '0d';
     this.dashboard._dashboard.order.date = '0d';
-    this.dashboard._dashboard.order.label = 'button.today';
+    this.dashboard._dashboard.order.label = 'filters.button.today';
     this.dashboard._dashboard.task.date = '0d';
-    this.dashboard._dashboard.task.label = 'button.today';
+    this.dashboard._dashboard.task.label = 'filters.button.today';
     this.dashboard._dashboard.file.date = '0d';
-    this.dashboard._dashboard.file.label = 'button.today';
+    this.dashboard._dashboard.file.label = 'filters.button.today';
 
     if (localStorage.$SOS$DASHBOARDTABS) {
       try {
@@ -396,10 +355,6 @@ export class CoreService {
 
   getDashboard() {
     return this.dashboard;
-  }
-
-  getJobTab() {
-    return this.tabs._job;
   }
 
   getWorkflowTab() {
@@ -835,10 +790,6 @@ export class CoreService {
     }
   }
 
-  showJob(job) {
-
-  }
-
   showWorkflow(workflow) {
     this.router.navigate(['/workflow']);
   }
@@ -942,10 +893,10 @@ export class CoreService {
 
   private downloadLog(data, id) {
     if (data.historyId) {
-      $('#tmpFrame').attr('src', './api/order/log/download?jobschedulerId=' + id + '&historyId=' + data.historyId +
+      $('#tmpFrame').attr('src', './api/order/log/download?controllerId=' + id + '&historyId=' + data.historyId +
         '&accessToken=' + this.authService.accessTokenId);
     } else if (data.taskId) {
-      $('#tmpFrame').attr('src', './api/task/log/download?&jobschedulerId=' + id + '&taskId=' + data.taskId +
+      $('#tmpFrame').attr('src', './api/task/log/download?&controllerId=' + id + '&taskId=' + data.taskId +
         '&accessToken=' + this.authService.accessTokenId);
     }
   }

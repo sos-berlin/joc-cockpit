@@ -7,15 +7,15 @@
       <span *ngIf="preferences.themeTitle" class="pull-left p-l-3 backup-text">
         <span [innerHtml]="preferences.themeTitle"
               class="_600 m-l-sm text-shadow _500 backup-text"></span> </span>
-      <span class="m-r-sm"><span class="text-muted" translate>label.time</span>:
+      <span class="m-r-sm"><span class="text-muted" translate>common.label.time</span>:
               <i [innerHtml]="currentTime | stringToDate" class="text-dark _500"></i></span>
       <i class="fa fa-circle-o circle"></i>
-      <span class="m-r-sm"><span class="text-muted" translate>label.remainingSessionTime</span>:
+      <span class="m-r-sm"><span class="text-muted" translate>common.label.remainingSessionTime</span>:
               <span [innerHtml]="remainingSessionTime" class="text-danger"></span></span>
       <i *ngIf="schedulerIds.selected" class="fa fa-circle-o circle"></i>
       <span *ngIf="schedulerIds.selected" class="dropdown">
         <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" nzPlacement="bottomRight">
-          <span class="backup-text text-muted" translate>label.jobSchedulerId</span>:
+          <span class="backup-text text-muted" translate>common.label.controllerId</span>:
           <span [innerHtml]="schedulerIds.selected" class="_500 text-orange"></span><i
           class="fa fa-caret-down p-l-xs"></i>
         </a>

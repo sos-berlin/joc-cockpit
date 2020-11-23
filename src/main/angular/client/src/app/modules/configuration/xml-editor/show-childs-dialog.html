@@ -9,10 +9,10 @@
 <div class="modal-body">
     <div class="row m-b-sm">
       <div class="col-md-2 m-l-xs">
-        <button class="btn btn-sm btn-grey" (click)="expandAll()" [nz-tooltip]="'tooltip.expandAll' | translate">
+        <button class="btn btn-sm btn-grey" (click)="expandAll()" [nz-tooltip]="'common.tooltip.expandAll' | translate">
           <i class="fa fa-expand"></i>
         </button>
-        <button class="btn btn-sm btn-grey m-l-sm" (click)="collapseAll()" [nz-tooltip]="'tooltip.collapseAll' | translate">
+        <button class="btn btn-sm btn-grey m-l-sm" (click)="collapseAll()" [nz-tooltip]="'common.tooltip.collapseAll' | translate">
           <i class="fa fa-compress"></i>
         </button>
       </div>
@@ -71,6 +71,6 @@
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
-    button.close
+    common.button.close
   </button>
 </div>

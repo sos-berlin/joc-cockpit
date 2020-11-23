@@ -11,7 +11,7 @@
             <!-- Sorting via Account Name Starts -->
             <div class="btn-group dropdown" *ngIf="route.match('/users/role')">
               <button class="btn btn-grey btn-sm m-l-12 "
-                nz-dropdown nzTrigger="click" [nzDropdownMenu]="account" [nzPlacement]="'bottomRight'">{{'label.user' | translate}}
+                nz-dropdown nzTrigger="click" [nzDropdownMenu]="account" [nzPlacement]="'bottomRight'">{{'user.label.user' | translate}}
                 <span class="text-primary">{{selectedUser | decodeSpace}} </span>
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
@@ -31,52 +31,52 @@
             <!-- Sorting via Account Name Ends -->
             <button *ngIf="route === '/users/account'" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
               <i class="fa fa-plus"></i>&nbsp;
-              <span translate>button.addUser</span>
+              <span translate>user.button.addUser</span>
             </button>
             <button *ngIf="route.match('/users/role')" class="btn btn-grey btn-sm m-l-12" (click)="addMaster()">
               <i class="fa fa-plus"></i>&nbsp;
-              <span translate>button.addSpecialisation</span>
+              <span translate>user.button.addSpecialisation</span>
             </button>
             <button *ngIf="route.match('/users/role')" class="btn btn-grey btn-sm m-l-12" (click)="addRole()">
               <i class="fa fa-plus"></i>&nbsp;
-              <span translate>button.addRole</span>
+              <span translate>user.button.addRole</span>
             </button>
             <button *ngIf="route === '/users/main_section'" type="button" [disabled]="!isLdapRealmEnable"
                     (click)="addLdapRealm()"
                     class="btn btn-sm btn-grey m-l-12">
               <i class="fa fa-plus"></i>&nbsp;
-              <span translate>button.addLdapRealm</span>
+              <span translate>user.button.addLdapRealm</span>
             </button>
             <button *ngIf="route === '/users/main_section'" type="button" [disabled]="!isJOCClusterEnable"
                     (click)="enableJOCCluster()"
                     class="btn btn-sm btn-grey m-l-12">
               <i class="fa fa-toggle-on"></i>&nbsp;
-              <span translate>button.enableJOCCluster</span>
+              <span translate>user.button.enableJOCCluster</span>
             </button>
             <button *ngIf="route === '/users/main_section'" type="button" class="btn btn-sm btn-grey m-l-12"
                     (click)="editMainSection()">
               <i class="fa fa-pencil"></i>&nbsp;
-              <span translate>button.updateSection</span>
+              <span translate>user.button.updateSection</span>
             </button>
             <button *ngIf="route === '/users/main_section'" type="button" class="btn btn-sm btn-grey m-l-12"
                     (click)="addMainSection()">
               <i class="fa fa-plus"></i>&nbsp;
-              <span translate>button.addEntry</span>
+              <span translate>user.button.addEntry</span>
             </button>
             <button *ngIf="route === '/users/profiles' && isButtonShow" type="button" class="btn btn-sm btn-grey m-l-12"
                     (click)="resetProfiles()">
               <i class="fa fa-refresh"></i>&nbsp;
-              <span translate>button.resetProfile</span>
+              <span translate>user.button.resetProfile</span>
             </button>
             <button type="button" class="btn btn-sm btn-grey m-l-12" *ngIf="route.match('/users/permissions')"
                     (click)="addFolder()">
               <i class="fa fa-plus"></i>
-              {{'button.addFolder' | translate}}
+              {{'user.button.addFolder' | translate}}
             </button>
             <button type="button" class="btn btn-sm btn-grey m-l-12" *ngIf="route.match('/users/permissions')"
                     [hidden]="pageView=='grid'" (click)="addPermission();">
               <i class="fa fa-plus"></i>&nbsp;
-              {{'button.addPermission' | translate}}
+              {{'user.button.addPermission' | translate}}
             </button>
             <div class="hide" [ngClass]="{'show-block': route.match('/users/permissions')}">
               <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
@@ -95,7 +95,7 @@
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
           <li class="nav-item">
             <a class="nav-link" routerLink="account" routerLinkActive="active">
-              <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.users</span></span>
+              <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.users</span></span>
             </a>
           </li>
           <li class="nav-item dropdown-separator">
@@ -103,7 +103,7 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" routerLink="role" routerLinkActive="active">
-              <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.manageRoles</span></span>
+              <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.manageRoles</span></span>
             </a>
           </li>
           <li class="nav-item dropdown-separator" *ngIf="!permission.JS7Controller.administration.editMainSection">
@@ -111,7 +111,7 @@
           </li>
           <li class="nav-item" *ngIf="!permission.JS7Controller.administration.editMainSection">
             <a class="nav-link" routerLink="main_section" routerLinkActive="active">
-              <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.mainSetting</span></span>
+              <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.mainSetting</span></span>
             </a>
           </li>
           <li class="nav-item dropdown-separator" *ngIf="!permission.JS7Controller.administration.editMainSection">
@@ -119,13 +119,13 @@
           </li>
           <li class="nav-item" *ngIf="!permission.JS7Controller.administration.editMainSection">
             <a class="nav-link" routerLink="profiles" routerLinkActive="active">
-              <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.profiles</span></span>
+              <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.profiles</span></span>
             </a>
           </li>
         </ul>
         <div *ngIf="route === '/users/account'" class="inline pull-right search-box-field" style="margin-top: 10px">
           <input type="search" #input (keyup)="searchBar(input.value)"
-                 placeholder="{{'placeholder.search' | translate}}" [(ngModel)]="searchKey">
+                 placeholder="{{'common.placeholder.search' | translate}}" [(ngModel)]="searchKey">
           <i *ngIf="searchKey" class="fa fa-times search-close" (click)="searchKey = ''"></i>
         </div>
       </div>

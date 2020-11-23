@@ -590,7 +590,7 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
   private init(): void {
     const self = this;
     let workflow = '', orderId = '', btnRemoveOrder = '', btnSubmitorder = '', btnChangeParameter = '', btnModifyOrder = '';
-    this.translate.get('label.workflow').subscribe(translatedValue => {
+    this.translate.get('dailyPlan.label.workflow').subscribe(translatedValue => {
       workflow = translatedValue;
     });
     this.translate.get('dailyPlan.label.order').subscribe(translatedValue => {
@@ -744,7 +744,7 @@ export class SearchComponent implements OnInit {
     this.coreService.post('tree', {
       controllerId: this.schedulerIds.selected,
       forInventory: true,
-      types: ['ORDER']
+      types: ['ORDERTEMPLATE']
     }).subscribe(res => {
       this.nodes = this.coreService.prepareTree(res, true);
       if (this.nodes.length > 0) {

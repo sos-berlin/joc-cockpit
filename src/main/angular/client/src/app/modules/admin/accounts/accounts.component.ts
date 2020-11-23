@@ -143,7 +143,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     this.users = res.users;
     setTimeout(() => {
       this.loading = false;
-    }, 400)
+    }, 400);
     this.getRoles();
   }
 
@@ -161,7 +161,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     };
 
     this.coreService.post('security_configuration/write', obj).subscribe(res => {
-      console.log(res);
+      this.users = [...this.users];
     }, err => {
 
     });
@@ -185,6 +185,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.newUser = true;
     modalRef.result.then((result) => {
       this.users = result;
+      this.users = [...this.users];
     }, (reason) => {
       console.log('close...', reason);
     });
@@ -198,19 +199,20 @@ export class AccountsComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.oldUser = user;
     modalRef.result.then((result) => {
       this.users = result;
+      this.users = [...this.users];
     }, (reason) => {
       console.log('close...', reason);
     });
   }
 
   copyUser(user) {
-
     const modalRef = this.modalService.open(AccountModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.userDetail = this.userDetail;
     modalRef.componentInstance.copy = true;
     modalRef.componentInstance.oldUser = user;
     modalRef.result.then((result) => {
       this.users = result;
+      this.users = [...this.users];
     }, (reason) => {
       console.log('close...', reason);
     });

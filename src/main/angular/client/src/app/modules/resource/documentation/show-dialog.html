@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>label.showUsage</span>
+    <span translate>resource.label.showUsage</span>
         : &nbsp;
     {{document.path}}
   </h4>
@@ -16,7 +16,7 @@
         <div class="p-l-sm" *ngIf="document.usedIn.length>0">
           <div class="row m-b">
             <div class="col-md-12">
-              <span class="text _600" translate>label.documentationUsedIn</span> : -
+              <span class="text _600" translate>resource.label.documentationUsedIn</span> : -
             </div>
           </div>
           <div class="row" *ngFor="let doc of document.usedIn">
@@ -28,13 +28,13 @@
             </div>
           </div>
         </div>
-        <div class="text-center text" *ngIf="!document.usedIn || document.usedIn.length ==0" translate>message.documentNotUsed</div>
+        <div class="text-center text" *ngIf="!document.usedIn || document.usedIn.length ==0" translate>resource.message.documentNotUsed</div>
       </div>
     </div>
   </div>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')"
-          translate>button.close
+          translate>common.button.close
   </button>
 </div>

@@ -32,10 +32,7 @@ export class ToggleComponent implements OnInit {
       workflow: this.view,
       workflowDetail: this.view,
       orderOverview: this.view,
-      job: this.view,
-      agent: this.view,
       lock: this.view,
-      processClass: this.view,
       documentation: this.view,
       calendar: this.view,
       permission: this.view
@@ -55,20 +52,14 @@ export class ToggleComponent implements OnInit {
     } else if (this.router.url === '/configuration/inventory') {
       // this.pageView = this.views.inventory;
       this.pageView = 'grid';
-    } else if (this.router.url === '/job') {
-      this.pageView = this.views.job;
-    } else if (this.router.url === '/workflow') {
+    }  else if (this.router.url === '/workflow') {
       this.pageView = this.views.workflow;
     } else if (this.router.url.match(/workflow_detail/)) {
       this.pageView = this.views.workflowDetail;
     } else if (this.router.url.match(/orders_overview/)) {
       this.pageView = this.views.orderOverview;
-    } else if (this.router.url.match('/resources/agent_cluster')) {
-      this.pageView = this.views.agent;
-    } else if (this.router.url === '/resources/lock') {
+    }  else if (this.router.url === '/resources/lock') {
       this.pageView = this.views.lock;
-    } else if (this.router.url === '/resources/process_class') {
-      this.pageView = this.views.processClass;
     } else if (this.router.url === '/resources/calendar') {
       this.pageView = this.views.calendar;
     } else if (this.router.url === '/resources/documentation') {
@@ -86,20 +77,14 @@ export class ToggleComponent implements OnInit {
       this.views.dailyPlan = view;
     } else if (this.router.url === '/inventory') {
       this.views.joe = view;
-    } else if (this.router.url === '/job') {
-      this.views.job = view;
     } else if (this.router.url === '/workflow') {
       this.views.workflow = view;
     } else if (this.router.url.match(/workflow_detail/)) {
       this.views.workflowDetail = view;
     } else if (this.router.url.match(/orders_overview/)) {
       this.views.orderOverview = this.pageView;
-    } else if (this.router.url.match('/resources/agent_cluster')) {
-      this.views.agent = view;
     } else if (this.router.url === '/resources/lock') {
       this.views.lock = view;
-    } else if (this.router.url === '/resources/process_class') {
-      this.views.processClass = view;
     } else if (this.router.url === '/resources/calendar') {
       this.views.calendar = view;
     } else if (this.router.url === '/resources/documentation') {

@@ -5,7 +5,7 @@
         </a>
         <!-- brand -->
         <a class="navbar-brand white fa-fa-color b-b-transparent p-l-3" style="width: 208px;">
-            <img class="cursor" (click)="coreService.about()" src="./assets/images/jobscheduler-logo.png" alt="JobScheduler">
+            <img class="cursor" (click)="coreService.about()" src="./assets/images/jobscheduler-logo.png" alt="JS7">
         </a>
         <!-- / brand -->
 
@@ -19,14 +19,14 @@
                 </a>
                 <nz-dropdown-menu #help="nzDropdownMenu">
                     <ul nz-menu >
-                        <li nz-menu-item><a (click)="coreService.about()">{{'info.button.aboutJobScheduler' | translate}}</a></li>
+                        <li nz-menu-item><a (click)="coreService.about()">{{'info.button.aboutJS7' | translate}}</a></li>
                         <li nz-submenu nzTitle="{{'info.button.featuresAndDownload' | translate}} " >
                             <ul>
                                 <li nz-menu-item >
-                                    <a target="_blank" href="https://www.sos-berlin.com/jobscheduler" >{{'info.button.jobSchedulerHome' | translate}}</a>
+                                    <a target="_blank" href="https://www.sos-berlin.com/js7" >{{'info.button.js7Home' | translate}}</a>
                                 </li>
                                 <li nz-menu-item >
-                                    <a target="_blank" href="https://www.sos-berlin.com/jobscheduler-downloads" >{{'info.button.jobSchedulerDownload' | translate}}</a>
+                                    <a target="_blank" href="https://www.sos-berlin.com/js7-downloads" >{{'info.button.js7Download' | translate}}</a>
                                 </li>
                             </ul>
                         </li>
@@ -36,10 +36,10 @@
                                     <a target="_blank" href="https://twitter.com/job_scheduler" >{{'info.button.followOnTwitter' | translate}}</a>
                                 </li>
                                 <li nz-menu-item >
-                                    <a target="_blank" href="https://www.sos-berlin.com/news" >{{'info.button.jobSchedulerNews' | translate}}</a>
+                                    <a target="_blank" href="https://www.sos-berlin.com/news" >{{'info.button.js7News' | translate}}</a>
                                 </li>
                                 <li nz-menu-item >
-                                    <a target="_blank" href="https://kb.sos-berlin.com/x/s4BB" >{{'info.button.jobSchedulerReleaseNotes' | translate}}</a>
+                                    <a target="_blank" href="https://kb.sos-berlin.com/x/s4BB" >{{'info.button.releaseNotes' | translate}}</a>
                                 </li>
                                 <li nz-menu-item >
                                     <a target="_blank" href="https://change.sos-berlin.com/" >{{'info.button.changeManagementSystem' | translate}}</a>
@@ -49,10 +49,10 @@
                         <li nz-submenu nzTitle="{{'info.button.documentation' | translate}}" >
                             <ul>
                                 <li nz-menu-item >
-                                    <a target="_blank" href="https://www.sos-berlin.com/doc/en/scheduler.doc/index.xml" >{{'info.button.jobSchedulerReferenceDocumentation' | translate}}</a>
+                                    <a target="_blank" href="https://www.sos-berlin.com/doc/en/scheduler.doc/index.xml" >{{'info.button.referenceDocumentation' | translate}}</a>
                                 </li>
                                 <li nz-menu-item >
-                                    <a target="_blank" href="https://kb.sos-berlin.com/x/fgKX" >{{'info.button.jobSchedulerTutorials' | translate}}</a>
+                                    <a target="_blank" href="https://kb.sos-berlin.com/x/fgKX" >{{'info.button.tutorials' | translate}}</a>
                                 </li>
                                 <li nz-menu-item >
                                     <a target="_blank" href="https://kb.sos-berlin.com/x/lo74" >{{'info.button.jocCockpitDocumentation' | translate}}</a>
@@ -65,17 +65,17 @@
                         <li nz-submenu nzTitle="{{'info.button.discussion' | translate}}" >
                             <ul>
                                 <li nz-menu-item >
-                                    <a target="_blank" href="https://kb.sos-berlin.com/x/LYBB" >{{'info.button.jobSchedulerFAQ' | translate}}</a>
+                                    <a target="_blank" href="https://kb.sos-berlin.com/x/LYBB" >{{'info.button.js7FAQ' | translate}}</a>
                                 </li>
                                 <li nz-menu-item >
-                                    <a target="_blank" href="https://sourceforge.net/p/jobscheduler/discussion/" >{{'info.button.jobSchedulerForum' | translate}}</a>
+                                    <a target="_blank" href="https://sourceforge.net/p/js7/discussion/" >{{'info.button.js7Forum' | translate}}</a>
                                 </li>
                             </ul>
                         </li>
                         <li nz-submenu nzTitle="{{'info.button.supportRequests' | translate}}" >
                             <ul>
                                 <li nz-menu-item >
-                                    <a target="_blank" href="https://sourceforge.net/p/jobscheduler/_list/tickets" >{{'info.button.openSourceUserTicketSystem' | translate}}</a>
+                                    <a target="_blank" href="https://sourceforge.net/p/js7/_list/tickets" >{{'info.button.openSourceUserTicketSystem' | translate}}</a>
                                 </li>
                                 <li nz-menu-item >
                                     <a target="_blank" href="https://support.sos-berlin.com/otrs/customer.pl?Lang=en" >{{'info.button.customerTicketSystem' | translate}}</a>
@@ -129,7 +129,7 @@
                                             <span class="_600" *ngIf="group.readCount>9">{{group.readCount}}&nbsp;</span>
                                             <span class="_600" *ngIf="group.readCount<9">0{{group.readCount}}&nbsp;</span>
                                             <span translate>label.newEventsOn</span>
-                                            <span class="text-black-dk">&nbsp;{{group.jobschedulerId}}</span>
+                                            <span class="text-black-dk">&nbsp;{{group.controllerId}}</span>
                                             <span>&nbsp;{{group.objectType | translate}}:</span>
                                             <span class="text-primary">&nbsp;{{group.path}}</span>
                                             <span class="text-muted">&nbsp;{{group.eventId/1000 | stringToDate}}</span>
@@ -169,7 +169,7 @@
                             </table>
                         </div>
                         <div class="text-center text m-t m-b h6 text-uppercase" *ngIf="!allSessionEvent.group || allSessionEvent.group.length==0" translate>
-                            message.noNotificationFound
+                            common.message.noNotificationFound
                         </div>
                       </li>
                     </ul>
@@ -251,22 +251,6 @@
                         <span class="nav-text">
                           <i class="icon-workflows-icon text-white"></i>
                           <span class="ico text-white text-u-c _600" translate>header.label.workflows</span>
-                        </span>
-                    </a>
-                </li>
-                <li class="nav-item" *ngIf="permission.Job && permission.Job.view.status">
-                    <a class="nav-link" routerLink="/jobs" [routerLinkActive]="['active']">
-                        <span class="nav-text">
-                            <i class="icon-jobs-icon text-white"></i>
-                            <span class="ico text-white text-u-c _600" translate>header.label.jobs</span>
-                        </span>
-                    </a>
-                </li>
-                <li class="nav-item" *ngIf="permission.YADE && permission.YADE.view.status">
-                    <a class="nav-link" routerLink="/file_transfer" [routerLinkActive]="['active']">
-                        <span class="nav-text">
-                            <i class="icon-file-transfers-icon text-white"></i>
-                            <span class="ico text-white text-u-c _600" translate>header.label.fileTransfers</span>
                         </span>
                     </a>
                 </li>

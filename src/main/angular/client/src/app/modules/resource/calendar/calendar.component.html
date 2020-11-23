@@ -13,35 +13,35 @@
                   <button class="btn btn-grey btn-sm "
                           (click)="loadCalendar('ALL')"
                           [ngClass]="{'btn-primary': calendarFilters.filter.type=='ALL'}"
-                          translate>label.all
+                          translate>common.button.all
                   </button>
                   <button class="btn btn-grey btn-sm "
                           (click)="loadCalendar('WORKINGDAYSCALENDAR')"
                           [ngClass]="{'btn-primary': calendarFilters.filter.type=='WORKINGDAYSCALENDAR'}"
-                          translate>button.workingDays
+                          translate>resource.button.workingDays
                   </button>
                   <button class="btn btn-grey btn-sm "
                           (click)="loadCalendar('NONWORKINGDAYSCALENDAR')"
                           [ngClass]="{'btn-primary': calendarFilters.filter.type=='NONWORKINGDAYSCALENDAR'}"
-                          translate>button.nonWorkingDays
+                          translate>resource.button.nonWorkingDays
                   </button>
                 </div>
                 <div class="btn-group dropdown">
                   <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'">
-                    <span translate>label.sortBy</span>
+                    <span translate>common.label.sortBy</span>
                     <span class="text-primary">
                          <span *ngIf="calendarFilters.filter.sortBy ==='name'">
-                        {{'label.name' | translate}}
+                        {{'common.label.name' | translate}}
                            <i *ngIf="!calendarFilters.reverse" class="fa fa-caret-up"></i>
                         <i *ngIf="calendarFilters.reverse" class="fa fa-caret-down"></i>
                       </span>
                       <span *ngIf="calendarFilters.filter.sortBy ==='path'">
-                        {{'label.path' | translate}}
+                        {{'common.label.path' | translate}}
                         <i *ngIf="!calendarFilters.reverse" class="fa fa-caret-up"></i>
                         <i *ngIf="calendarFilters.reverse" class="fa fa-caret-down"></i>
                       </span>
                       <span *ngIf="calendarFilters.filter.sortBy ==='type'">
-                        {{'label.type' | translate}}
+                        {{'common.label.type' | translate}}
                         <i *ngIf="!calendarFilters.reverse" class="fa fa-caret-up"></i>
                         <i *ngIf="calendarFilters.reverse" class="fa fa-caret-down"></i>
                       </span>
@@ -50,13 +50,13 @@
                   <nz-dropdown-menu #sortBy="nzDropdownMenu" >
                     <ul nz-menu>
                       <li nz-menu-item >
-                        <a (click)="sort('name')" translate>label.name</a>
+                        <a (click)="sort('name')" translate>common.label.name</a>
                       </li>
                       <li nz-menu-item >
-                        <a (click)="sort('path')" translate>label.path</a>
+                        <a (click)="sort('path')" translate>common.label.path</a>
                       </li>
                       <li nz-menu-item  >
-                        <a (click)="sort('type')" translate>label.type</a>
+                        <a (click)="sort('type')" translate>common.label.type</a>
                       </li>
                     </ul>
                   </nz-dropdown-menu>
@@ -109,32 +109,32 @@
                           <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
                             <ul nz-menu>
                               <li nz-menu-item >
-                                <a (click)="previewCalendar(calendar)" translate>button.showPreview</a>
+                                <a (click)="previewCalendar(calendar)" translate>resource.button.showPreview</a>
                               </li>
                               <li nz-menu-item [nzDisabled]="calendar.documentId">
-                                <a (click)="showDocumentation(calendar)" translate>button.showDocumentation</a>
+                                <a (click)="showDocumentation(calendar)" translate>resource.button.showDocumentation</a>
                               </li>
                               <li nz-menu-item >
-                                <a (click)="showUsage(calendar)" translate>button.showUsage</a>
+                                <a (click)="showUsage(calendar)" translate>resource.button.showUsage</a>
                               </li>
                               <li nz-menu-item >
-                                <a (click)="coreService.copyLink('calendar',calendar.path)" translate>button.copyLinkToObject</a>
+                                <a (click)="coreService.copyLink('calendar',calendar.path)" translate>common.button.copyLinkToObject</a>
                               </li>
                             </ul>
                           </nz-dropdown-menu>
                         </div>
                       </div>
                       <div class="text-sm text-left p-t-sm">
-                        <span translate>label.type </span>:
+                        <span translate>common.label.type </span>:
                         <span
                           [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'text-success':'text-gold'"
                           [innerHtml]="calendar.type | translate"></span>
                       </div>
                       <div class="text-sm text-left p-t-xs">
-                        <span *ngIf="calendar.from && calendar.to"><span translate>label.validity</span> :</span>
-                        <span *ngIf="!calendar.from && calendar.to"><span translate>label.validityUntil</span> : </span>
+                        <span *ngIf="calendar.from && calendar.to"><span translate>resource.label.validity</span> :</span>
+                        <span *ngIf="!calendar.from && calendar.to"><span translate>resource.label.validityUntil</span> : </span>
                         <span *ngIf="calendar.from" [innerHtml]="calendar.from | stringToDate1"></span>
-                        <span *ngIf="calendar.from && calendar.to" translate> label.to </span>
+                        <span *ngIf="calendar.from && calendar.to" translate>commonlabel.to </span>
                         <span [innerHtml]="calendar.to | stringToDate1"></span>
                       </div>
                     </div>
@@ -143,10 +143,10 @@
                         <a class="text-left primary-text-hover-color"
                            (click)="previewCalendar(calendar)">
                           <i class="fa fa-television text-black-lt"></i>&nbsp;
-                          <span class="text-black-lt" translate>button.showPreview</span></a>
+                          <span class="text-black-lt" translate>resource.button.showPreview</span></a>
                         <a class="pull-right primary-text-hover-color"
                            (click)="showUsage(calendar)"><i class="fa fa-eye text-black-lt"></i>&nbsp;
-                          <span class="text-black-lt" translate>button.showUsage</span></a>
+                          <span class="text-black-lt" translate>resource.button.showUsage</span></a>
                       </div>
                     </div>
                   </div>
@@ -171,32 +171,32 @@
                 >
                   <thead>
                   <tr>
-                    <th nzWidth="55px"><span translate>label.action</span></th>
-                    <th (click)="sort('name')"><a><span class="p-r-xs" translate>label.name</span>
+                    <th nzWidth="55px"><span translate>common.label.action</span></th>
+                    <th (click)="sort('name')"><a><span class="p-r-xs" translate>common.label.name</span>
                       <i *ngIf="calendarFilters.filter.sortBy == 'name' && !calendarFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="calendarFilters.filter.sortBy == 'name' && calendarFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('path')"><a><span class="p-r-xs" translate>label.path</span>
+                    <th (click)="sort('path')"><a><span class="p-r-xs" translate>common.label.path</span>
                       <i *ngIf="calendarFilters.filter.sortBy == 'path' && !calendarFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="calendarFilters.filter.sortBy == 'path' && calendarFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('type')"><a><span class="p-r-xs" translate>label.type</span>
+                    <th (click)="sort('type')"><a><span class="p-r-xs" translate>common.label.type</span>
                       <i *ngIf="calendarFilters.filter.sortBy == 'type' && !calendarFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="calendarFilters.filter.sortBy == 'type' && calendarFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('from')"><a><span class="p-r-xs" translate>label.validityFrom</span>
+                    <th (click)="sort('from')"><a><span class="p-r-xs" translate>resource.label.validityFrom</span>
                       <i *ngIf="calendarFilters.filter.sortBy == 'from' && !calendarFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="calendarFilters.filter.sortBy == 'from' && calendarFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('to')"><a><span class="p-r-xs" translate>label.validityTo</span>
+                    <th (click)="sort('to')"><a><span class="p-r-xs" translate>resource.label.validityTo</span>
                       <i *ngIf="calendarFilters.filter.sortBy == 'to' && !calendarFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="calendarFilters.filter.sortBy == 'to' && calendarFilters.reverse"
@@ -214,16 +214,16 @@
                         <nz-dropdown-menu #option="nzDropdownMenu" role="menu" >
                           <ul nz-menu>
                             <li nz-menu-item >
-                              <a (click)="previewCalendar(calendar)" translate>button.showPreview</a>
+                              <a (click)="previewCalendar(calendar)" translate>resource.button.showPreview</a>
                             </li>
                             <li nz-menu-item [nzDisabled]="calendar.documentId">
-                              <a (click)="showDocumentation(calendar)" translate>button.showDocumentation</a>
+                              <a (click)="showDocumentation(calendar)" translate>resource.button.showDocumentation</a>
                             </li>
                             <li nz-menu-item >
-                              <a (click)="showUsage(calendar)" translate>button.showUsage</a>
+                              <a (click)="showUsage(calendar)" translate>resource.button.showUsage</a>
                             </li>
                             <li nz-menu-item >
-                              <a (click)="coreService.copyLink('calendar',calendar.path)" translate>button.copyLinkToObject</a>
+                              <a (click)="coreService.copyLink('calendar',calendar.path)" translate>common.button.copyLinkToObject</a>
                             </li>
                           </ul>
                         </nz-dropdown-menu>
@@ -243,9 +243,9 @@
                   </tbody>
                 </nz-table>
                 <div class="w-half label-top"
-                     *ngIf="ajaxTable.data.length >0"><span translate>label.total</span> {{calendars.length}}
-                  <span translate *ngIf="ajaxTable.data.length >1">label.calendarsFound</span>
-                  <span translate *ngIf="ajaxTable.data.length ==1">label.calendarFound</span>
+                     *ngIf="ajaxTable.data.length >0"><span translate>common.label.total</span> {{calendars.length}}
+                  <span translate *ngIf="ajaxTable.data.length >1">resource.label.calendarsFound</span>
+                  <span translate *ngIf="ajaxTable.data.length ==1">resource.label.calendarFound</span>
                 </div>
               </div>
             </div>
@@ -253,7 +253,7 @@
               <app-empty-data></app-empty-data>
             </div>
           </div>
-          <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t" translate>
+          <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t">
             <app-empty-data></app-empty-data>
           </div>
         </div>

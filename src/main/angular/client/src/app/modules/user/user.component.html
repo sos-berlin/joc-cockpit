@@ -9,7 +9,7 @@
           <div class="show-inline">
             <button type="button" class="btn btn-sm btn-grey" (click)="resetProfile();">
               <i class="fa fa-refresh"></i>
-              {{'button.resetProfile' | translate}}
+              {{'profile.button.resetProfile' | translate}}
             </button>
           </div>
         </div>
@@ -24,7 +24,7 @@
         <div class="box p-a p-b-lg">
           <h5 translate>profile.label.userDetails</h5>
           <div class="row m-t">
-            <div class="col-md-4 col-lg-3"><span class="text-dark" translate>label.userName</span></div>
+            <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.userName</span></div>
             <div class="col-md-8 col-lg-9">
               <span class="text-black-lt" [innerHtml]="permission.user | decodeSpace"></span>
             </div>
@@ -48,7 +48,7 @@
             <nz-tab [nzTitle]="'profile.label.preferences' | translate">
               <div class="m-l-12">
                 <div class="row">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>label.language</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.language</div>
                   <div class="col-md-8 col-lg-9">
                     <nz-select name="language" class="w-xl"
                                nzPlaceHolder="{{'placeholder.selectRoles' | translate}}"
@@ -64,7 +64,7 @@
                     <nz-select nzShowSearch name="timeZone" class="w-xl"
                                [(ngModel)]="preferences.zone" (ngModelChange)="changeConfiguration()">
                       <nz-option [nzValue]="timeZone" [nzLabel]="'local '+timeZone"></nz-option>
-                      <!-- <nz-option [nzValue]="selectedJobScheduler.timeZone" [nzLabel]="'JobScheduler ('+ selectedJobScheduler.timeZone + ')'"></nz-option>-->
+                      <!-- <nz-option [nzValue]="selectedController.timeZone" [nzLabel]="'Controller ('+ selectedController.timeZone + ')'"></nz-option>-->
                       <nz-option nzDisabled [nzLabel]="'-----------------------------'"></nz-option>
                       <nz-option *ngFor="let option of zones" [nzLabel]="option" [nzValue]="option"></nz-option>
                     </nz-select>
@@ -231,25 +231,6 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfHistoryEntriesPerJobchain
-                  </div>
-                  <div class="col-sm-6">
-                    <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
-                                     [(ngModel)]="preferences.maxHistoryPerJobchain"
-                                     (nzBlur)="changeConfiguration()"></nz-input-number>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfOrdersPerJobChain
-                  </div>
-                  <div class="col-sm-6">
-                    <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxOrderPerJobchain"
-                                     (nzBlur)="changeConfiguration()"></nz-input-number>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
                        translate>profile.label.maxNumberOfAuditLogPerObject
                   </div>
                   <div class="col-sm-6">
@@ -352,7 +333,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>label.showDocumentations</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showDocumentations</div>
                   <div class="col-sm-6">
                     <label class="md-check w">
                       <input type="radio" name="doc" [(ngModel)]="preferences.isDocNewWindow" value="newWindow"
@@ -381,7 +362,7 @@
                     </label>
                   </div>
                 </div>
-                <div class="row m-t">
+<!--                <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showTasks</div>
                   <div class="col-sm-6">
                     <label class="md-check">
@@ -390,7 +371,7 @@
                       <i class="primary"></i>
                     </label>
                   </div>
-                </div>
+                </div>-->
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showOrders</div>
                   <div class="col-sm-6">
@@ -401,7 +382,7 @@
                     </label>
                   </div>
                 </div>
-                <div class="row m-t">
+<!--                <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showFilesImmediately</div>
                   <div class="col-sm-6">
                     <label class="md-check">
@@ -410,7 +391,7 @@
                       <i class="primary"></i>
                     </label>
                   </div>
-                </div>
+                </div>-->
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.enableCommentsForAuditLog</div>
                   <div class="col-sm-6">
@@ -447,7 +428,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showHistoryForJobScheduler</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showHistoryForController</div>
                   <div class="col-sm-6">
                     <label class="md-check w">
                       <input type="radio" name="history" [(ngModel)]="preferences.historyView" value="all"
@@ -462,7 +443,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>label.showAuditLogForJobScheduler</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showAuditLogForController</div>
                   <div class="col-sm-6">
                     <label class="md-check w">
                       <input type="radio" name="auditLog" [(ngModel)]="preferences.adtLog" value="all"
@@ -478,7 +459,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>
-                    profile.label.showAgentJobExecutionForJobScheduler
+                    profile.label.showAgentJobExecutionForController
                   </div>
                   <div class="col-sm-6">
                     <label class="md-check w">
@@ -493,8 +474,8 @@
                     </label>
                   </div>
                 </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showFileTransferForJobScheduler</div>
+                <!--<div class="row m-t">
+                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showFileTransferForController</div>
                   <div class="col-sm-6">
                     <label class="md-check w">
                       <input type="radio" name="fileTransfer" [(ngModel)]="preferences.fileTransfer" value="all"
@@ -507,8 +488,8 @@
                       <i class="primary"></i> <span translate>profile.label.current</span>
                     </label>
                   </div>
-                </div>
-                <hr>
+                </div>-->
+<!--                <hr>
                 <h5 translate>profile.label.eventFilters</h5>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3"><span class="text-dark " translate>profile.label.job</span></div>
@@ -523,7 +504,7 @@
                              (change)="selectJobFunction()"/> <i class="primary"></i> <span>{{job.label | translate}}</span>
                     </span>
                   </div>
-                </div>
+                </div>-->
                 <!-- <div class="row m-t">
                    <div class="col-md-4 col-lg-3"><span class="text-dark " translate>label.jobChain</span></div>
                    <div class="col-md-8 col-lg-9">
@@ -581,7 +562,7 @@
               <div class="m-l-12">
                 <div class="row">
                   <div class="col-md-4 col-lg-3"><span class="text-dark"
-                                                       translate>profile.label.jobSchedulerController</span>
+                                                       translate>profile.label.js7Controller</span>
                   </div>
                   <div class="row col-md-8 col-lg-9">
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
@@ -621,7 +602,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3"><span class="text-dark"
-                                                       translate>profile.label.jobSchedulerControllerCluster</span>
+                                                       translate>profile.label.js7ControllerCluster</span>
                   </div>
                   <div class="row col-md-8 col-lg-9">
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
@@ -640,7 +621,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3"><span class="text-dark"
-                                                       translate>profile.label.jobSchedulerUniversalAgent</span>
+                                                       translate>profile.label.js7UniversalAgent</span>
                   </div>
                   <div class="row col-md-8 col-lg-9">
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
@@ -731,7 +712,7 @@
                       translate>permission.label.reset</span></span>
                   </div>
                 </div>
-                <div class="row m-t">
+                <!--<div class="row m-t">
                   <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.job</span></div>
                   <div class="row col-md-8 col-lg-9">
                      <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
@@ -775,7 +756,7 @@
                                                             [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.continueAllTasks}"></i>&nbsp; <span
                       translate>permission.label.continueAllTasks</span></span>
                   </div>
-                </div>
+                </div>-->
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.workflow</span></div>
                   <div class="row col-md-8 col-lg-9">
@@ -813,19 +794,7 @@
                       translate>permission.label.processWorkflowNode</span></span>
                   </div>
                 </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.processClass</span>
-                  </div>
-                  <div class="row col-md-8 col-lg-9">
-                    <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
-                      class="fa fa-check text-success"
-                      [ngClass]="{'fa-times text-black-lt': !permission.ProcessClass.view.configuration}"></i>&nbsp; <span
-                      translate>permission.label.viewConfiguration</span></span>
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.ProcessClass.view.status}"></i>&nbsp; <span
-                      translate>permission.label.viewStatus</span></span>
-                  </div>
-                </div>
+
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.lock</span></div>
                   <div class="row col-md-8 col-lg-9">
@@ -927,7 +896,7 @@
                       translate>permission.label.generateKey</span></span>
                   </div>
                 </div>
-                <div class="row m-t">
+                <!--<div class="row m-t">
                   <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.yade</span></div>
                   <div class="row col-md-8 col-lg-9">
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
@@ -953,7 +922,7 @@
                                                             [ngClass]="{'fa-times text-black-lt': !permission.YADE.execute.transferStart}"></i>&nbsp; <span
                       translate>permission.label.start</span></span>
                   </div>
-                </div>
+                </div>-->
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.documentation</span>
                   </div>

@@ -108,8 +108,8 @@
                 </button>
                 <nz-dropdown-menu #menu="nzDropdownMenu" >
                   <ul nz-menu>
-                    <li nz-menu-item *ngIf="node.origin.type && !node.origin.deleted && permission.Inventory.configurations.edit"><a (click)="copy(node)" translate>button.copy</a></li>
-                    <li nz-menu-item [nzDisabled]="!copyObj || (node.origin.object && copyObj.type !== node.origin.object)" *ngIf="!node.origin.type && !node.origin.controller && !node.origin.schedule  && !node.origin.deleted && permission.Inventory.configurations.edit"><a (click)="paste(node)" translate>button.paste</a></li>
+                    <li nz-menu-item *ngIf="node.origin.type && !node.origin.deleted && permission.Inventory.configurations.edit"><a (click)="copy(node)" translate>inventory.button.copy</a></li>
+                    <li nz-menu-item [nzDisabled]="!copyObj || (node.origin.object && copyObj.type !== node.origin.object)" *ngIf="!node.origin.type && !node.origin.controller && !node.origin.schedule  && !node.origin.deleted && permission.Inventory.configurations.edit"><a (click)="paste(node)" translate>inventory.button.paste</a></li>
                     <li nz-menu-divider *ngIf="(node.origin.type || node.origin.object) && !node.origin.deleted && permission.Inventory.configurations.edit"></li>
                     <li nz-menu-item *ngIf="node.origin.object && permission.Inventory.configurations.edit" [nzDisabled]="node.origin.deleted">
                       <a (click)="addObject(node, node.origin.object == 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : null);" translate>inventory.button.new</a></li>
@@ -129,7 +129,7 @@
                      || (!node.origin.object && !node.origin.type && !node.origin.schedule))"
                         [nzDisabled]="!node.origin.hasDeployments && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valid))">
                       <a (click)="deployObject(node, false);" translate>inventory.button.deploy</a></li>
-                    <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && !node.origin.deleted && (node.origin.controller || (!node.origin.object && !node.origin.type))"
+                    <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && !node.origin.deleted && (node.origin.controller || (!node.origin.object && !node.origin.type && !node.origin.schedule))"
                         [nzDisabled]="!node.origin.hasDeployments && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valid))">
                       <a (click)="reDeployObject(node);" translate>inventory.button.redeploy</a></li>
                     <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && ((node.origin.object && (node.origin.object === 'CALENDAR' || node.origin.object === 'ORDERTEMPLATE')) || (node.origin.type && (node.origin.type === 'CALENDAR' || node.origin.type === 'ORDERTEMPLATE'))
@@ -138,10 +138,10 @@
                       <a (click)="releaseObject(node);" translate>inventory.button.release</a></li>
                     <li nz-menu-item *ngIf="!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.schedule && permission.Inventory.configurations.delete"
                         [nzDisabled]="node.origin.deleted || node.origin.path === '/'">
-                      <a (click)="renameFolder(node);" translate>button.rename</a></li>
+                      <a (click)="renameFolder(node);" translate>inventory.button.rename</a></li>
                     <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.controller && !node.origin.schedule) && permission.Inventory.configurations.delete"
                         [nzDisabled]="(node.origin.type && !node.origin.hasDeployments && node.origin.type !== 'ORDERTEMPLATE' && node.origin.type !== 'CALENDAR') || (!node.origin.hasReleases && (node.origin.type === 'ORDERTEMPLATE' || node.origin.type === 'CALENDAR')) || (!node.origin.type && !node.origin.object && node.origin.path === '/')">
-                      <a (click)="removeObject(node);" translate>button.delete</a></li>
+                      <a (click)="removeObject(node);" translate>inventory.button.remove</a></li>
                     <li nz-menu-item *ngIf="node.origin.type && permission.Inventory.configurations.delete" [nzDisabled]="node.origin.deployed || node.origin.released">
                       <a (click)="removeDraft(node);" translate>inventory.button.deleteDraft</a></li>
                     <li nz-menu-item *ngIf="!node.origin.object && !node.origin.controller && !node.origin.schedule && node.origin.deleted && permission.Inventory.configurations.delete"><a (click)="restoreObject(node);" translate>inventory.button.undelete</a></li>

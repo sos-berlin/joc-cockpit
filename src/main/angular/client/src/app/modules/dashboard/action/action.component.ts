@@ -14,7 +14,7 @@ export class CommentModalComponent implements OnInit {
   @Input() comments: any;
   @Input() obj: any;
   @Input() performAction;
-  @Input() jobScheduleID;
+  @Input() controllerID;
   submitted = false;
   messageList: any;
   required = false;

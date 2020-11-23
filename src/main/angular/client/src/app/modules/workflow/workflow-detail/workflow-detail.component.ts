@@ -600,6 +600,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             }
           }
         }
+        self.createOrder(graph, v1);
       }
     }
 
@@ -742,6 +743,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
     recursive(_json, '', defaultParent);
     connectWithDummyNodes(_json);
+  }
+
+  private createOrder(graph, node) {
+    console.log(this.workFlowJson.orders);
+    console.log(node)
   }
 
   private updateXMLJSON() {

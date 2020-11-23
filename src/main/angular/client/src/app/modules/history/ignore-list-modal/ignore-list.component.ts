@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {Component, Input} from '@angular/core';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { CoreService } from '../../../services/core.service';
 
 @Component({
@@ -25,15 +25,15 @@ export class EditIgnoreListComponent {
       this.ignoreListConfigId = res.id;
     });
     if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true)) {
-      if ((jobChainSearch && this.historyFilters.type == 'jobChain')) {
+      if ((workflowSearch && this.historyFilters.type == 'ORDER')) {
         this.search(true);
       } else
         this.init();
     }*/
   }
 
-  removeJobChainIgnoreList(name) {
-/*    this.savedIgnoreList.jobChains.splice(this.savedIgnoreList.jobChains.indexOf(name), 1);
+  removeWorkflowIgnoreList(name) {
+/*    this.savedIgnoreList.workflows.splice(this.savedIgnoreList.workflows.indexOf(name), 1);
     configObj.configurationType = "IGNORELIST";
     configObj.configurationItem = JSON.stringify(this.savedIgnoreList);
     configObj.id = this.ignoreListConfigId;
@@ -41,7 +41,7 @@ export class EditIgnoreListComponent {
       this.ignoreListConfigId = res.id;
     });
     if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true)) {
-      if ((jobChainSearch && this.historyFilters.type == 'jobChain')) {
+      if ((workflowSearch && this.historyFilters.type == 'ORDER')) {
         this.search(true);
       } else
         this.init();
@@ -57,7 +57,7 @@ export class EditIgnoreListComponent {
       this.ignoreListConfigId = res.id;
     });
     if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true)) {
-      if ((jobSearch && this.historyFilters.type != 'jobChain')) {
+      if ((jobSearch && this.historyFilters.type != 'ORDER')) {
         this.search(true);
       } else
         this.init();

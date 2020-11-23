@@ -18,16 +18,16 @@
           class="primary"></i>
         </label>
       </th>
-      <th nzWidth="62px"><span translate>label.action</span></th>
+      <th nzWidth="62px"><span translate>common.label.action</span></th>
       <th (click)="sort('user')">
-        <a><span class="p-r-xs" translate>label.user</span>
+        <a><span class="p-r-xs" translate>user.label.user</span>
           <i *ngIf="order == 'user' && !reverse"
              class="fa fa-caret-up "></i>
           <i *ngIf="order == 'user' && reverse"
              class="fa fa-caret-down "></i></a>
       </th>
       <th (click)="sort('modified')">
-        <a><span class="p-r-xs" translate>label.modified</span>
+        <a><span class="p-r-xs" translate>user.label.modified</span>
           <i *ngIf="order == 'modified' && !reverse"
              class="fa fa-caret-up "></i>
           <i *ngIf="order == 'modified' && reverse"
@@ -50,7 +50,7 @@
           <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
             <ul nz-menu >
               <li nz-menu-item >
-                <a (click)="resetProfile(profile)" translate="">button.resetProfile</a>
+                <a (click)="resetProfile(profile)" translate>user.button.resetProfile</a>
               </li>
             </ul>
           </nz-dropdown-menu>
@@ -64,8 +64,8 @@
     </tbody>
   </nz-table>
   <div class="w-half label-top" *ngIf="profiles.length >0">
-    <span translate>label.total</span><span> {{profiles.length}} </span>
-    <span translate *ngIf="profiles.length >1">label.usersFound</span>
-    <span translate *ngIf="profiles.length ==1">label.usersFound</span>
+    <span translate>common.label.total</span><span> {{profiles.length}} </span>
+    <span translate *ngIf="profiles.length >1">user.label.usersFound</span>
+    <span translate *ngIf="profiles.length ==1">user.label.usersFound</span>
   </div>
 </div>

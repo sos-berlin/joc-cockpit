@@ -154,8 +154,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   loadScheduleDetail() {
-    if (sessionStorage.$SOS$JOBSCHEDULE && sessionStorage.$SOS$JOBSCHEDULE !== 'null') {
-      this.selectedController = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE);
+    if (sessionStorage.$SOS$CONTROLLER && sessionStorage.$SOS$CONTROLLER !== 'null') {
+      this.selectedController = JSON.parse(sessionStorage.$SOS$CONTROLLER);
       this.selectedScheduler.scheduler = this.selectedController;
       if (this.selectedScheduler && this.selectedScheduler.scheduler) {
         document.title = 'JS7 : ' + this.selectedScheduler.scheduler.controllerId;
@@ -214,7 +214,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.authService.clearStorage();
     localStorage.setItem('logging', null);
     if (timeout) {
-      sessionStorage.setItem('$SOS$JOBSCHEDULE', null);
+      sessionStorage.setItem('$SOS$CONTROLLER', null);
       sessionStorage.setItem('$SOS$ALLEVENT', null);
       this.router.navigate(['login'], {queryParams: {returnUrl: this.router.url}});
     } else {
@@ -412,7 +412,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     if (this.selectedScheduler && this.selectedScheduler.scheduler) {
       document.title = 'JS7:' + this.selectedScheduler.scheduler.controllerId;
     }
-    sessionStorage.$SOS$JOBSCHEDULE = JSON.stringify(this.selectedController);
+    sessionStorage.$SOS$CONTROLLER = JSON.stringify(this.selectedController);
   }
 
   private getVolatileData(flag: boolean): void {

@@ -31,12 +31,6 @@ const routes: Routes = [
         canActivate: [AuthGuard]
       },
       {
-        path: 'jobs',
-        loadChildren: () => import('./../job/job.module').then(m => m.JobModule),
-        canActivate: [AuthGuard],
-        data: {breadcrumb: 'breadcrumb.label.jobs'}
-      },
-      {
         path: 'workflows',
         loadChildren: () => import('./../workflow/workflow.module').then(m => m.WorkflowModule),
         canActivate: [AuthGuard],
@@ -53,12 +47,6 @@ const routes: Routes = [
         loadChildren: () => import('./../history/history.module').then(m => m.HistoryModule),
         canActivate: [AuthGuard],
         data: {breadcrumb: 'breadcrumb.label.history'}
-      },
-      {
-        path: 'file_transfer',
-        loadChildren: () => import('./../file-transfer/file-transfer.module').then(m => m.FileTransferModule),
-        canActivate: [AuthGuard],
-        data: {breadcrumb: 'breadcrumb.label.fileTransfers'}
       },
       {
         path: 'audit_log',

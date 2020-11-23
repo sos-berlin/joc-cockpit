@@ -359,7 +359,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
     };
 
     this.coreService.post('security_configuration/write', obj).subscribe(res => {
-      console.log(res);
+      this.main = [...this.main];
     }, () => {
 
     });
@@ -371,6 +371,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.userDetail = this.userDetail;
     modalRef.result.then((result) => {
       this.main = result;
+      this.main = [...this.main];
     }, (reason) => {
       console.log('close...', reason);
     });
@@ -406,6 +407,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.isUpdate = true;
     modalRef.result.then((result) => {
       this.main = result;
+      this.main = [...this.main];
     }, (reason) => {
       console.log('close...', reason);
     });
@@ -417,6 +419,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.isldap = true;
     modalRef.result.then((result) => {
       this.main = result;
+      this.main = [...this.main];
     }, (reason) => {
       console.log('close...', reason);
     });
@@ -427,6 +430,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.userDetail = this.userDetail;
     modalRef.result.then((result) => {
       this.main = result;
+      this.main = [...this.main];
     }, (reason) => {
       console.log('close...', reason);
     });

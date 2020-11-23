@@ -16,8 +16,8 @@
             <div class="form-group row m-b-0">
                 <div class="row col-sm-12" *ngIf="PIndex==0">
                     <div class="col-sm-1" style="width: 30px"></div>
-                    <div class="col-sm-4 m-b-sm" translate>label.name</div>
-                    <div class="col-sm-7 m-b-sm p-l-md" translate>label.value</div>
+                    <div class="col-sm-4 m-b-sm" translate>common.label.name</div>
+                    <div class="col-sm-7 m-b-sm p-l-md" translate>common.label.value</div>
                 </div>
                 <div class="col-sm-1" style="width: 30px">
                     <a *ngIf="PIndex==mainSection.length-1"><i (click)="addMainEntry()"
@@ -25,7 +25,7 @@
                 </div>
                 <div class="col-sm-4 m-b-sm">
                     <input type="text" class="form-control" [(ngModel)]="entry.name" name="name{{PIndex+1}}"
-                           placeholder="{{'placeholder.name' | translate}} {{PIndex+1}}">
+                           placeholder="{{'common.placeholder.name' | translate}} {{PIndex+1}}">
                 </div>
 
                 <div class="col-sm-7 m-b-sm">
@@ -36,7 +36,7 @@
                         <div class="col-sm-10"
                              [ngClass]="{'m-t-sm' : cIndex>0, 'p-r-0': entry.name.indexOf('groupRolesMapping') == -1,'p-r-26': entry.name.indexOf('groupRolesMapping') > -1}">
                             <input type="text" class="form-control" [(ngModel)]="value.value" name="value{{PIndex+1}}{{cIndex+1}}"
-                                   placeholder="{{'placeholder.value' | translate}} {{cIndex+1}}">
+                                   placeholder="{{'common.placeholder.value' | translate}} {{cIndex+1}}">
                         </div>
                         <div class="col-sm-1 m-m-p-7" *ngIf="entry.name.indexOf('groupRolesMapping') > -1">
                             <a *ngIf="cIndex==entry.values.length-1 && entry.values.length>1">
@@ -52,7 +52,7 @@
                 </div>
                 <div class="col-sm-10">
                     <textarea rows="1" class="form-control"
-                              placeholder="{{'placeholder.writeComment' | translate}} {{cIndex1 +1}}"
+                              placeholder="{{'user.placeholder.writeComment' | translate}} {{cIndex1 +1}}"
                               [(ngModel)]="comment.value" name="comment{{PIndex+1}}{{cIndex1+1}}"></textarea>
                 </div>
                 <div class="col-sm-1 p-l-0" *ngIf="cIndex1==entry.comments.length-1">
@@ -64,10 +64,10 @@
     </div>
     <div class="modal-footer text-left">
         <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted" >
-            <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>&nbsp;
-            {{'button.submit' | translate}}
+            <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+            {{'common.button.submit' | translate}}
         </button>
-        <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="activeModal.dismiss('Cross click')" translate>button.cancel
+        <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="activeModal.dismiss('Cross click')" translate>common.button.cancel
         </button>
     </div>
 </form>

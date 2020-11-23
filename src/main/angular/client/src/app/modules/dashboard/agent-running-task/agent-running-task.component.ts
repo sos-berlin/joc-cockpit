@@ -4,7 +4,6 @@ import {DataService} from '../../../services/data.service';
 import {Subscription} from 'rxjs';
 import {AuthService} from '../../../components/guard';
 
-
 @Component({
   selector: 'app-agent-running-task',
   templateUrl: './agent-running-task.component.html'

@@ -58,13 +58,13 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link"
-                   [nz-tooltip]="'workflow.button.expandAll' | translate" (click)="expandAll()">
+                   [nz-tooltip]="'common.button.expandAll' | translate" (click)="expandAll()">
                   <span class="nav-text"> <i nz-icon nzType="plus" nzTheme="outline"></i></span>
                 </a>
               </li>
               <li class="nav-item">
                 <a class="nav-link"
-                   [nz-tooltip]="'workflow.button.collapseAll' | translate" (click)="collapseAll()">
+                   [nz-tooltip]="'common.button.collapseAll' | translate" (click)="collapseAll()">
                   <span class="nav-text"> <i nz-icon nzType="minus" nzTheme="outline"></i></span>
                 </a>
               </li>
@@ -75,10 +75,10 @@
           </div>
           <div class="inline" style="position: relative;top:-21px">
             <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="addOrder()" *ngIf="permission.Workflow.execute.addOrder"><i class="fa fa-plus-square"></i>
-              &nbsp;<span class="hidden-sm-down" translate>button.addAnOrder</span>
+              &nbsp;<span class="hidden-sm-down" translate>workflow.button.addOrder</span>
             </button>
             <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="showDailyPlan()" *ngIf="permission.Workflow.execute.addOrder"><i class="fa fa-calendar"></i>
-              &nbsp;<span class="hidden-sm-down" translate>button.showDailyPlan</span>
+              &nbsp;<span class="hidden-sm-down" translate>workflow.button.showDailyPlan</span>
             </button>
             <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
@@ -124,7 +124,7 @@
             </a>
           </div>
           <div class="scrollBottom-btn">
-            <a (click)="scrollBottom()" data-toggle="tooltip" title="{{'button.showHistory' | translate}}">
+            <a (click)="scrollBottom()" data-toggle="tooltip" title="{{'history.button.showHistory' | translate}}">
               <i class="fa fa-angle-down"></i>
             </a>
           </div>
@@ -140,7 +140,7 @@
           </div>
           <div class="box-body p-t-0 b-t">
             <nz-tabset>
-              <nz-tab [nzTitle]="'label.orderHistory' | translate" (nzClick)="loadOrderHistory()">
+              <nz-tab [nzTitle]="'history.label.orderHistory' | translate" (nzClick)="loadOrderHistory()">
                 <nz-table
                   #orderHistoryTable
                   [nzSize]="'small'"
@@ -150,18 +150,18 @@
                 >
                   <thead>
                   <tr>
-                    <th><span translate>label.orderId</span></th>
-                    <th><span translate>label.position</span></th>
-                    <th><span translate>label.status</span></th>
-                    <th><span translate>label.plannedTime</span></th>
-                    <th><span translate>label.startTime</span></th>
-                    <th><span translate>label.endTime</span></th>
-                    <th><span translate>label.duration</span></th>
+                    <th><span translate>history.label.orderId</span></th>
+                    <th><span translate>history.label.position</span></th>
+                    <th><span translate>history.label.status</span></th>
+                    <th><span translate>history.label.plannedTime</span></th>
+                    <th><span translate>history.label.startTime</span></th>
+                    <th><span translate>history.label.endTime</span></th>
+                    <th><span translate>history.label.duration</span></th>
                   </tr>
                   </thead>
                   <tbody>
                   <ng-template ngFor let-history [ngForOf]="orderHistoryTable.data | orderBy: 'plannedTime':true">
-                    <tr (click)="coreService.showLogWindow(history,null, null, history.jobschedulerId, null)" class="cursor">
+                    <tr (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)" class="cursor">
                       <td [innerHtml]="history.orderId"></td>
                       <td [innerHtml]="history.position"></td>
                       <td>
@@ -177,7 +177,7 @@
                   </tbody>
                 </nz-table>
               </nz-tab>
-              <nz-tab [nzTitle]="'label.taskHistory' | translate" (nzClick)="loadTaskHistory()">
+              <nz-tab [nzTitle]="'history.label.taskHistory' | translate" (nzClick)="loadTaskHistory()">
                 <nz-table
                   #taskHistoryTable
                   [nzSize]="'small'"
@@ -187,14 +187,14 @@
                 >
                   <thead>
                   <tr>
-                    <th><span translate>label.job</span></th>
-                    <th><span translate>label.position</span></th>
-                    <th><span translate>label.status</span></th>
-                    <th><span translate>label.startTime</span></th>
-                    <th><span translate>label.endTime</span></th>
-                    <th><span translate>label.duration</span></th>
-                    <th><span translate>label.criticality</span></th>
-                    <th><span translate>label.returnCode</span></th>
+                    <th><span translate>history.label.job</span></th>
+                    <th><span translate>history.label.position</span></th>
+                    <th><span translate>history.label.status</span></th>
+                    <th><span translate>history.label.startTime</span></th>
+                    <th><span translate>history.label.endTime</span></th>
+                    <th><span translate>history.label.duration</span></th>
+                    <th><span translate>history.label.criticality</span></th>
+                    <th><span translate>history.label.returnCode</span></th>
                   </tr>
                   </thead>
                   <tbody>
@@ -216,7 +216,7 @@
                   </tbody>
                 </nz-table>
               </nz-tab>
-              <nz-tab [nzTitle]="'label.auditLog' | translate" (nzClick)="loadAuditLogs()">
+              <nz-tab [nzTitle]="'auditLog.label.auditLog' | translate" (nzClick)="loadAuditLogs()">
                 <nz-table
                   #auditTable
                   [nzSize]="'small'"
@@ -226,13 +226,13 @@
                 >
                   <thead>
                   <tr>
-                    <th><span translate>label.created</span></th>
-                    <th><span translate>label.account</span></th>
-                    <th><span translate>label.request</span></th>
-                    <th><span translate>label.orderId</span></th>
-                    <th><span translate>label.comment</span></th>
-                    <th><span translate>label.timeSpend</span></th>
-                    <th><span translate>label.ticketLink</span></th>
+                    <th><span translate>auditLog.label.created</span></th>
+                    <th><span translate>auditLog.label.account</span></th>
+                    <th><span translate>auditLog.label.request</span></th>
+                    <th><span translate>auditLog.label.orderId</span></th>
+                    <th><span translate>auditLog.label.comment</span></th>
+                    <th><span translate>auditLog.label.timeSpend</span></th>
+                    <th><span translate>auditLog.label.ticketLink</span></th>
                   </tr>
                   </thead>
                   <tbody>
@@ -262,7 +262,7 @@
                     <tr class="tableexport-ignore" *ngIf="auditLog.show">
                       <td colspan="7">
                         <div class="m-a-0">
-                          <span translate>label.parameters</span>
+                          <span translate>auditLog.label.parameters</span>
                           :
                           <span [innerHtml]="auditLog.parameters"></span>
                         </div>

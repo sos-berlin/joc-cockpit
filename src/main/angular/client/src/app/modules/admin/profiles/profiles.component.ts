@@ -118,7 +118,6 @@ export class ProfilesComponent implements OnInit, OnDestroy {
       }
     }
     this.coreService.post('configurations/delete', obj).subscribe(res => {
-      console.log(res);
       if (profile) {
         for (let i = 0; i < this.profiles.length; i++) {
           if (this.profiles[i].account === profile.account) {
@@ -139,6 +138,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
         }
       }
       this.object.profiles = [];
+      this.profiles = [...this.profiles];
     }, err => {
 
     });
@@ -161,7 +161,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
       profiles: this.profiles
     };
     this.coreService.post('security_configuration/write', obj).subscribe(res => {
-      console.log(res);
+      this.profiles = [...this.profiles];
     }, err => {
 
     });

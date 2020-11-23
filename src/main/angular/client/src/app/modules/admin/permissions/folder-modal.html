@@ -1,10 +1,10 @@
 <div class="modal-header">
     <h4 class="modal-title">
         <span *ngIf="!newFolder">
-            <span translate>label.editFolder</span>:
+            <span translate>user.label.editFolder</span>:
             <span>{{currentFolder.folderName}}</span>
         </span>
-        <span *ngIf="newFolder" translate>label.addFolder</span>
+        <span *ngIf="newFolder" translate>user.label.addFolder</span>
     </h4>
     <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
         <span aria-hidden="true">&times;</span>
@@ -13,12 +13,12 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit(currentFolder)">
     <div class="modal-body p-a">
         <div class="form-group row" [ngClass]="{'has-error' : ((folder.dirty || folder.touched) && folder.invalid)}">
-            <label class="col-sm-4 form-control-label" translate>label.folders</label>
+            <label class="col-sm-4 form-control-label" translate>user.label.folders</label>
             <div class="col-sm-6">
-                <input type="text" class="form-control" name="name" placeholder="{{'placeholder.folderPath' | translate}}"  [(ngModel)]="currentFolder.folder" [required]="folderObj.paths.length===0" #folder="ngModel"/>
+                <input type="text" class="form-control" name="name" placeholder="{{'user.placeholder.folderPath' | translate}}"  [(ngModel)]="currentFolder.folder" [required]="folderObj.paths.length===0" #folder="ngModel"/>
                 <div *ngIf="folder.invalid && (folder.dirty || folder.touched) " class="text-danger help-block">
                     <div *ngIf="folder.errors.required">
-                        <div translate>message.requiredError</div>
+                        <div translate>common.message.requiredError</div>
                     </div>
                 </div>
             </div>
@@ -32,22 +32,22 @@
             </div>
         </div>
         <div class="form-group row">
-            <label class="col-sm-4" translate>label.recursive</label>
+            <label class="col-sm-4" translate>user.label.recursive</label>
             <div class=" col-sm-6">
                 <label class="md-check">
                     <input type="checkbox" [(ngModel)]="currentFolder.recursive" name="recursive">
-                    <i class="primary"></i><span class="m-l-xs" translate> </span>
+                    <i class="primary"></i><span class="m-l-xs"> </span>
                 </label>
             </div>
         </div>
     </div>
     <div class="modal-footer">
         <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
-            <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
-            {{'button.submit' | translate}}
+            <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+            {{'common.button.submit' | translate}}
         </button>
         <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
-            button.cancel
+          common.button.cancel
         </button>
     </div>
 </form>

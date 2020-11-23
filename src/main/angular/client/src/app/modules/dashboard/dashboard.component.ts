@@ -279,9 +279,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
         'rows': 3,
         'y': 9,
         'x': 0,
-        'name': 'jobSchedulerStatus',
+        'name': 'js7Status',
         'visible': true,
-        'message': 'message.jobSchedulerStatus'
+        'message': 'message.js7Status'
       }, {'cols': 4, 'rows': 3, 'y': 0, 'x': 0, 'name': 'ordersOverview', 'visible': true, 'message': 'message.ordersOverview'}, {
         'cols': 4,
         'rows': 2,
@@ -298,99 +298,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
         'name': 'tasksSummary',
         'visible': true,
         'message': 'message.tasksSummary'
-      }, {
-        cols: 8, rows: 2, y: 7, x: 0,
-        name: 'fileTransferOverview',
-        visible: false,
-        message: 'message.fileTransferOverview'
-      }, {
-        cols: 4, rows: 2, y: 7, x: 8,
-        name: 'fileTransferSummary',
-        visible: false,
-        message: 'message.fileTransferSummary'
       }];
-
-      /*  {
-        cols: 4, rows: 3, y: 0, x: 0,
-        name: 'agentClusterStatus',
-        visible: true,
-        message: 'message.agentClusterStatus'
-      }, {
-        cols: 4, rows: 3, y: 1, x: 0,
-        name: 'agentClusterRunningTasks',
-        visible: true,
-        message: 'message.agentClusterRunningTasks'
-      }, {
-        cols: 8, rows: 6, y: 0, x: 4,
-        name: 'controllerClusterStatus',
-        visible: true,
-        message: 'message.controllerClusterStatus'
-      }, {
-        cols: 12, rows: 3, y: 4, x: 0,
-        name: 'jobSchedulerStatus',
-        visible: true,
-        message: 'message.jobSchedulerStatus'
-      }, {
-        cols: 8, rows: 2, y: 5, x: 0,
-        name: 'ordersOverview',
-        visible: true,
-        message: 'message.ordersOverview'
-      }, {
-        cols: 4, rows: 2, y: 5, x: 8,
-        name: 'ordersSummary',
-        visible: true,
-        message: 'message.ordersSummary'
-      }, {
-        cols: 8, rows: 2, y: 6, x: 0,
-        name: 'tasksOverview',
-        visible: true,
-        message: 'message.tasksOverview'
-      }, {
-        cols: 4, rows: 2, y: 6, x: 8,
-        name: 'tasksSummary',
-        visible: true,
-        message: 'message.tasksSummary'
-      }, {
-        cols: 8, rows: 2, y: 7, x: 0,
-        name: 'fileTransferOverview',
-        visible: true,
-        message: 'message.fileTransferOverview'
-      }, {
-        cols: 4, rows: 2, y: 7, x: 8,
-        name: 'fileTransferSummary',
-        visible: true,
-        message: 'message.fileTransferSummary'
-      }, {
-        cols: 12, rows: 2, y: 8, x: 0,
-          name: 'dailyPlanOverview',
-          visible: true,
-          message: 'message.dailyPlanOverview'
-      }*/
     }
 
-    if (this.permission.JobschedulerMaster) {
+    if (this.permission.JS7Master) {
       for (let i = 0; i < this.dashboardLayout.length; i++) {
-        if (this.dashboardLayout[i].name === 'agentClusterStatus' && this.permission.JobschedulerUniversalAgent.view.status) {
+        if (this.dashboardLayout[i].name === 'agentClusterStatus' && this.permission.JS7UniversalAgent.view.status) {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'agentClusterRunningTasks' && this.permission.ProcessClass.view.status) {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'jobSchedulerStatus') {
+        } else if (this.dashboardLayout[i].name === 'js7Status') {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'controllerClusterStatus') {
           this.widgets.push(this.dashboardLayout[i]);
-        }/* else if (this.dashboardLayout[i].name === 'dailyPlanOverview' && this.permission.DailyPlan.view.status) {
-          this.widgets.push(this.dashboardLayout[i]);
-        }*/ else if (this.dashboardLayout[i].name === 'ordersOverview' && this.permission.Order.view.status) {
+        } else if (this.dashboardLayout[i].name === 'ordersOverview' && this.permission.Order.view.status) {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'ordersSummary' && this.permission.Order.view.status) {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'tasksOverview' && this.permission.Job.view.status) {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'tasksSummary' && this.permission.Job.view.status) {
-          this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'fileTransferOverview' && this.permission.YADE.view.status) {
-          this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'fileTransferSummary' && this.permission.YADE.view.status) {
           this.widgets.push(this.dashboardLayout[i]);
         }
       }

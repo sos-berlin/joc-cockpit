@@ -12,7 +12,7 @@
             <div class="inline" [ngClass]="{'hide':object.documents.length>0}">
               <div class="btn-group dropdown m-l-12">
                 <button class="btn btn-grey btn-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="type" [nzPlacement]="'bottomRight'" >
-                  <span translate>label.type</span>&nbsp;
+                  <span translate>common.label.type</span>&nbsp;
                   <span class="text-primary" [innerHTML]="documentFilters.filter.type"></span>
                   <span>
                     <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
@@ -30,20 +30,20 @@
               </div>
               <div class="btn-group dropdown">
                 <a class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'">
-                  <span translate>label.sortBy</span>
+                  <span translate>common.label.sortBy</span>
                   <span class="text-primary">
                       <span *ngIf="documentFilters.filter.sortBy =='name'">
-                      {{'label.name' | translate}}&nbsp;
+                      {{'common.label.name' | translate}}&nbsp;
                       <i *ngIf="!documentFilters.reverse" class="fa fa-caret-up"></i>
                       <i *ngIf="documentFilters.reverse" class="fa fa-caret-down"></i>
                     </span>
                     <span *ngIf="documentFilters.filter.sortBy =='path'">
-                      {{'label.path' | translate}}&nbsp;
+                      {{'common.label.path' | translate}}&nbsp;
                       <i *ngIf="!documentFilters.reverse" class="fa fa-caret-up"></i>
                       <i *ngIf="documentFilters.reverse" class="fa fa-caret-down"></i>
                     </span>
                     <span *ngIf="documentFilters.filter.sortBy =='type'">
-                      {{'label.type' | translate}}&nbsp;
+                      {{'common.label.type' | translate}}&nbsp;
                       <i *ngIf="!documentFilters.reverse" class="fa fa-caret-up"></i>
                       <i *ngIf="documentFilters.reverse" class="fa fa-caret-down"></i>
                     </span>
@@ -52,18 +52,18 @@
                 <nz-dropdown-menu #sortBy="nzDropdownMenu" >
                   <ul nz-menu>
                     <li nz-menu-item >
-                      <a (click)="sort('name')" translate>label.name</a>
+                      <a (click)="sort('name')" translate>common.label.name</a>
                     </li>
                     <li nz-menu-item >
-                      <a (click)="sort('path')" translate>label.path</a>
+                      <a (click)="sort('path')" translate>common.label.path</a>
                     </li>
                     <li nz-menu-item >
-                      <a (click)="sort('type')" translate>label.type</a>
+                      <a (click)="sort('type')" translate>common.label.type</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
               </div>
-              <button *ngIf="permission.Documentation.import" class="btn btn-grey btn-sm m-l-12" (click)="importDocument()"><i class="fa fa-upload"></i>&nbsp; {{'button.importDocument' | translate}}</button>
+              <button *ngIf="permission.Documentation.import" class="btn btn-grey btn-sm m-l-12" (click)="importDocument()"><i class="fa fa-upload"></i>&nbsp; {{'resource.button.importDocument' | translate}}</button>
               <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
             </div>
           </div>
@@ -116,40 +116,40 @@
                         <nz-dropdown-menu #option="nzDropdownMenu" >
                           <ul nz-menu>
                             <li nz-menu-item >
-                              <a (click)="previewDocument(document)" translate>button.previewDocument</a>
+                              <a (click)="previewDocument(document)" translate>resource.button.previewDocument</a>
                             </li>
                             <li nz-menu-item  *ngIf="permission.Documentation.export">
-                              <a (click)="exportDocument(document)" translate>button.export</a>
+                              <a (click)="exportDocument(document)" translate>common.button.export</a>
                             </li>
                             <li nz-menu-item class="bg-hover-color" *ngIf="permission.Documentation.delete">
-                              <a (click)="deleteDocumentations(document)" translate>button.delete</a>
+                              <a (click)="deleteDocumentations(document)" translate>common.button.delete</a>
                             </li>
                             <li nz-menu-item >
-                              <a (click)="showDocumentUsage(document)" translate>button.showUsage</a>
+                              <a (click)="showDocumentUsage(document)" translate>common.button.showUsage</a>
                             </li>
                             <li nz-menu-item >
-                              <a (click)="coreService.copyLink('document',document.path)" translate>button.copyLinkToObject</a>
+                              <a (click)="coreService.copyLink('document',document.path)" translate>common.button.copyLinkToObject</a>
                             </li>
                           </ul>
                         </nz-dropdown-menu>
                       </div>
                       <div class="text-sm  text-left text-muted p-t-sm">
-                        <span translate>label.type </span>:
+                        <span translate>common.label.type </span>:
                         <span [innerHtml]="document.type"></span>
                       </div>
                      <div class="text-sm text-left text-muted p-t-sm">
-                       <span translate>label.lastUpdateTime </span>:
+                       <span translate>resource.label.lastUpdateTime </span>:
                        <span [innerHtml]="document.modified | stringToDate"></span>
                      </div>
                     </div>
                     <div class="box-footer b-t" >
                       <a class="text-left primary-text-hover-color " *ngIf="permission.Documentation.export" (click)="exportDocument(document)">
                         <i class="fa fa-download text-black-lt"></i> &nbsp;
-                        <span class="text-black-lt" translate>button.export</span>
+                        <span class="text-black-lt" translate>common.button.export</span>
                       </a>
                       <a class="pull-right text-hover-color " *ngIf="permission.Documentation.delete" (click)="deleteDocumentations(document)">
                         <i class="fa fa-trash text-black-lt"></i> &nbsp;
-                        <span class="text-black-lt" translate>button.delete</span>
+                        <span class="text-black-lt" translate>common.button.delete</span>
                       </a>
                     </div>
                   </div>
@@ -179,26 +179,26 @@
                         <input type="checkbox" [(ngModel)]="object.checkbox" (change)="checkAll()"><i class="primary"></i>
                       </label>
                     </th>
-                    <th class="menu"><span translate>label.action</span></th>
-                    <th (click)="sort('name')"><a><span class="p-r-xs" translate>label.documentName</span>
+                    <th class="menu"><span translate>common.label.action</span></th>
+                    <th (click)="sort('name')"><a><span class="p-r-xs" translate>resource.label.documentName</span>
                       <i *ngIf="documentFilters.filter.sortBy == 'name' && !documentFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="documentFilters.filter.sortBy == 'name' && documentFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('path')"><a><span class="p-r-xs" translate>label.path</span>
+                    <th (click)="sort('path')"><a><span class="p-r-xs" translate>common.label.path</span>
                       <i *ngIf="documentFilters.filter.sortBy == 'path' && !documentFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="documentFilters.filter.sortBy == 'path' && documentFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('type')"><a><span class="p-r-xs" translate>label.type</span>
+                    <th (click)="sort('type')"><a><span class="p-r-xs" translate>common.label.type</span>
                       <i *ngIf="documentFilters.filter.sortBy == 'type' && !documentFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="documentFilters.filter.sortBy == 'type' && documentFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('modified')"><a><span class="p-r-xs" translate>label.lastUpdateTime</span>
+                    <th (click)="sort('modified')"><a><span class="p-r-xs" translate>resource.label.lastUpdateTime</span>
                       <i *ngIf="documentFilters.filter.sortBy == 'modified' && !documentFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="documentFilters.filter.sortBy == 'modified' && documentFilters.reverse"
@@ -221,20 +221,20 @@
                         <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
                           <ul nz-menu>
                             <li nz-menu-item >
-                              <a (click)="previewDocument(document)" translate>button.previewDocument</a>
+                              <a (click)="previewDocument(document)" translate>resource.button.previewDocument</a>
                             </li>
                             <li nz-menu-item  *ngIf="permission.Documentation.export">
-                              <a (click)="exportDocument(document)" translate>button.export</a>
+                              <a (click)="exportDocument(document)" translate>common.button.export</a>
                             </li>
                             <li nz-menu-item class="bg-hover-color" *ngIf="permission.Documentation.delete">
-                              <a (click)="deleteDocumentations(document)" translate>button.delete</a>
+                              <a (click)="deleteDocumentations(document)" translate>common.button.delete</a>
                             </li>
                             <li nz-menu-item  >
-                              <a (click)="showDocumentUsage(document)" translate>button.showUsage</a>
+                              <a (click)="showDocumentUsage(document)" translate>resource.button.showUsage</a>
                             </li>
                             <li nz-menu-item >
                               <a (click)="coreService.copyLink('document',document.path)"
-                                translate>button.copyLinkToObject</a>
+                                translate>common.button.copyLinkToObject</a>
                             </li>
                           </ul>
                         </nz-dropdown-menu>
@@ -248,9 +248,9 @@
                   </tbody>
                 </nz-table>
                 <div class="w-half label-top"
-                     *ngIf="ajaxTable.data.length >0"><span translate>label.total</span> {{documents.length}}
-                  <span translate *ngIf="ajaxTable.data.length >1">label.documentationsFound</span>
-                  <span translate *ngIf="ajaxTable.data.length ==1">label.documentationFound</span>
+                     *ngIf="ajaxTable.data.length >0"><span translate>common.label.total</span> {{documents.length}}
+                  <span translate *ngIf="ajaxTable.data.length >1">resource.label.documentationsFound</span>
+                  <span translate *ngIf="ajaxTable.data.length ==1">resource.label.documentationFound</span>
                 </div>
               </div>
             </div>
@@ -260,7 +260,7 @@
             </div>
           </div>
         </div>
-        <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t" translate>
+        <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t">
           <app-empty-data></app-empty-data>
         </div>
       </div>

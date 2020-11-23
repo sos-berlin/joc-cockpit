@@ -12,12 +12,12 @@
       <div class="col-md-12" *ngIf="uploader.queue.length === 0">
         <div ng2FileDrop [uploader]="uploader" class="drop-box-full">
           <div><i class="icon-upload-icon"></i></div>
-          <div translate>button.dragAndDropFileToUpload</div>
+          <div translate>common.button.dragAndDropFileToUpload</div>
         </div>
         <div class="p-l-sm p-t-sm" [hidden]="uploader.queue.length>0">
           <div class="upload-btn-wrapper">
             <button type="button" class="btn btn-grey btn-sm" >
-              <span translate>button.chooseFileToUpload</span>
+              <span translate>common.button.chooseFileToUpload</span>
             </button>
             <input type="file" accept=".json" ng2FileSelect (onFileSelected)="onFileSelected($event)" [uploader]="uploader">
           </div>
@@ -29,11 +29,11 @@
           <table class="table table-hover table-bordered  ">
             <thead>
             <tr>
-              <th><span translate>label.name</span></th>
-              <th><span translate>label.size</span></th>
-              <th><span class="text-capitalize" translate>label.progress</span></th>
-              <th><span translate>label.status</span></th>
-              <th *ngIf="uploader.queue[0].isError"><span translate>label.action</span></th>
+              <th><span translate>common.label.name</span></th>
+              <th><span translate>common.label.size</span></th>
+              <th><span translate>common.label.progress</span></th>
+              <th><span translate>common.label.status</span></th>
+              <th *ngIf="uploader.queue[0].isError"><span translate>common.label.action</span></th>
             </tr>
             </thead>
             <tbody>
@@ -63,10 +63,10 @@
   <div class="modal-footer" *ngIf="uploader.queue.length>0">
     <button type="submit" class="btn btn-primary btn-sm" [disabled]="submitted">
       <i class="fa fa-spin fa-spinner" *ngIf="submitted"></i>
-      <span translate>button.import</span>
+      <span translate>common.button.import</span>
     </button>
     <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
-      button.cancel
+      common.button.cancel
     </button>
   </div>
 </form>

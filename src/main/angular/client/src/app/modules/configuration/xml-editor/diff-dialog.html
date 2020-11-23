@@ -13,14 +13,14 @@
                   <input type="checkbox" name="draftVersion" [(ngModel)]="xmlVersionObj.draftVersion">
                   <i class="primary"></i>
               </span>
-                  <span class="form-control-label v-t" translate>joe.label.draftVersion</span>
+                  <span class="form-control-label v-t" translate>xml.label.draftVersion</span>
               </div>
               <div class="col-sm-6" style="height: auto">
               <span class="md-check lg-check" (click)="checkBoxCheck('liveVersion')">
                   <input type="checkbox" name="liveVersion" [(ngModel)]="xmlVersionObj.liveVersion">
                   <i class="primary"></i>
               </span>
-                  <span class="form-control-label v-t" translate>joe.label.liveVersion</span>
+                  <span class="form-control-label v-t" translate>xml.label.liveVersion</span>
               </div>
               <div class="col-sm-6">
                   <pre class="pre-diff">{{draftXml}}</pre>
@@ -32,7 +32,7 @@
       </div>
   </div>
   <div class="modal-footer text-left">
-      <button type="submit" class="btn btn-primary btn-sm" translate>button.submit</button>
-      <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>button.cancel</button>
+      <button type="submit" class="btn btn-primary btn-sm" translate>common.button.submit</button>
+      <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>common.button.cancel</button>
   </div>
 </form>

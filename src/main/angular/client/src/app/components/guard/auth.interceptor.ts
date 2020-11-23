@@ -17,7 +17,7 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (req.method === 'POST' || req.url.match('jobscheduler/log?')) {
+    if (req.method === 'POST' || req.url.match('controller/log?')) {
       req = req.clone({
         url: './api/' + req.url,
         headers: req.headers.set('Content-Type', req.url.match('validate/predicate') ? 'text/plain' : 'application/json')
@@ -52,10 +52,10 @@ export class AuthInterceptor implements HttpInterceptor {
           if ((err.status === 401 || err.status === 440 || (err.status === 420 && err.error.error && err.error.error.message.match(/UnknownSessionException/))) && this.router.url !== '/login') {
             let title = '';
             let msg = '';
-            this.translate.get('message.sessionTimeout').subscribe(translatedValue => {
+            this.translate.get('error.message.sessionTimeout').subscribe(translatedValue => {
               title = translatedValue;
             });
-            this.translate.get('message.sessionExpired').subscribe(translatedValue => {
+            this.translate.get('error.message.sessionExpired').subscribe(translatedValue => {
               msg = translatedValue;
             });
             this.toasterService.pop('error', title, msg);

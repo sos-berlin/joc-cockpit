@@ -8,11 +8,11 @@
             </div>
             <button class="btn btn-sm orange hide" (click)="undoPermission()"
                     [ngClass]="{'show-block':previousPermission.length>0}">
-                <span translate>button.undo</span>
+                <span translate>common.button.undo</span>
             </button>
             <button class="btn btn-sm btn-primary hide m-l-sm" (click)="resetPermission()"
                     [ngClass]="{'show-block':isReset}">
-                <span translate>button.reset</span>
+                <span translate>common.button.reset</span>
             </button>
         </div>
     </div>
@@ -20,7 +20,7 @@
 <div>
     <div class="row m-t folder">
         <div class="col-md-12">
-            <span class="text _600" translate>label.folder</span>&nbsp;
+            <span class="text _600" translate>user.label.folder</span>&nbsp;
             <i class="cursor fa fa-caret-down m-l-xs" [hidden]="showPanel2" (click)="showPanel2=true"></i>
             <i class="cursor fa fa-caret-up m-l-xs" *ngIf="showPanel2" (click)="showPanel2=false"></i>
         </div>
@@ -62,7 +62,7 @@
                       </span>
                     </div>
                     <div class="col-md-12 text-center" *ngIf="rolePermissions.length == 0">
-                        <span translate>message.noPermissionFound</span>
+                        <span translate>user.message.noPermissionFound</span>
                     </div>
                 </div>
             </div>

@@ -10,37 +10,37 @@
             <div class="btn-group m-l-12 hidden-btn-group">
               <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='ALL'}"
-                      (click)="dailyPlanFilters.filter.late=false;getPlans('ALL')" translate>button.allStatus
+                      (click)="dailyPlanFilters.filter.late=false;getPlans('ALL')" translate>common.button.allStatus
               </button>
               <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='PLANNED'}"
-                      (click)="getPlans('PLANNED')" translate>button.planned
+                      (click)="getPlans('PLANNED')" translate>common.button.planned
               </button>
               <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='PENDING'}"
-                      (click)="getPlans('PENDING')" translate>button.pending
+                      (click)="getPlans('PENDING')" translate>common.button.pending
               </button>
               <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='RUNNING'}"
-                      (click)="getPlans('RUNNING')" translate>button.running
+                      (click)="getPlans('RUNNING')" translate>common.button.running
               </button>
               <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='BLOCKED'}"
-                      (click)="getPlans('BLOCKED')" translate>button.blocked
+                      (click)="getPlans('BLOCKED')" translate>common.button.blocked
               </button>
               <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='FINISHED'}"
-                      (click)="getPlans('FINISHED');" translate>button.finished
+                      (click)="getPlans('FINISHED');" translate>common.button.finished
               </button>
               <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='FAILED'}"
-                      (click)="getPlans('FAILED')" translate>button.failed
+                      (click)="getPlans('FAILED')" translate>common.button.failed
               </button>
             </div>
             <div class="btn-group dropdown hidden-dropdown">
               <button class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
                       [nzDropdownMenu]="status" [nzPlacement]="'bottomRight'" type="button" translate>
-                label.status
+                common.label.status
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
               <nz-dropdown-menu #status="nzDropdownMenu">
@@ -48,36 +48,36 @@
                   <li nz-menu-item
                       [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='ALL', 'disable-link':savedFilter.selected}">
                     <a (click)="dailyPlanFilters.filter.late='';getPlans('ALL')"
-                       translate>button.allStatus</a>
+                       translate>common.button.allStatus</a>
                   </li>
                   <li nz-menu-item
                       [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='PLANNED', 'disable-link':savedFilter.selected}">
                     <a (click)="getPlans('PLANNED')"
-                       translate>button.planned</a>
+                       translate>common.button.planned</a>
                   </li>
                   <li nz-menu-item
                       [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='PENDING', 'disable-link':savedFilter.selected}">
                     <a (click)="getPlans('PENDING')"
-                       translate>button.pending</a>
+                       translate>common.button.pending</a>
                   </li>
                   <li nz-menu-item
                       [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='RUNNING', 'disable-link':savedFilter.selected}">
                     <a (click)="getPlans('RUNNING')"
-                       translate>button.running</a>
+                       translate>common.button.running</a>
                   </li>
                   <li nz-menu-item
                       [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='BLOCKED', 'disable-link':savedFilter.selected}">
                     <a (click)="getPlans('BLOCKED')"
-                       translate>button.blocked</a>
+                       translate>common.button.blocked</a>
                   </li>
                   <li nz-menu-item
                       [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='FINISHED', 'disable-link':savedFilter.selected}">
                     <a (click)="getPlans('FINISHED');"
-                       translate>button.finished</a>
+                       translate>common.button.finished</a>
                   </li>
                   <li nz-menu-item
                       [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='FAILED', 'disable-link':savedFilter.selected}">
-                    <a (click)="getPlans('FAILED')" translate>button.failed</a>
+                    <a (click)="getPlans('FAILED')" translate>common.button.failed</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -85,31 +85,31 @@
             <div class="btn-group m-l-12">
               <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': dailyPlanFilters.filter.late}" (click)="changeLate()">
-                <span translate>button.late</span>
+                <span translate>dailyPlan.button.late</span>
               </button>
             </div>
             <div class="btn-group dropdown">
               <button class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
                       [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" type="button" translate>
-                <span translate>label.sortBy</span>
+                <span translate>common.label.sortBy</span>
                 <span class="text-primary">
                   <span *ngIf="dailyPlanFilters.filter.sortBy ==='orderId'">
-                    {{'label.orderId' | translate}}
+                    {{'dailyPlan.label.order' | translate}}
                     <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
                     <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
                   </span>
                   <span *ngIf="dailyPlanFilters.filter.sortBy ==='workflow'">
-                    {{'label.workflow' | translate}}
+                    {{'dailyPlan.label.workflow' | translate}}
                     <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
                     <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
                   </span>
                   <span *ngIf="dailyPlanFilters.filter.sortBy ==='plannedStartTime'">
-                    {{'label.planned' | translate}}
+                    {{'dailyPlan.label.plannedStart' | translate}}
                     <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
                     <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
                   </span>
                   <span *ngIf="dailyPlanFilters.filter.sortBy ==='status'">
-                    {{'label.status' | translate}}
+                    {{'dailyPlan.label.status' | translate}}
                     <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
                     <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
                   </span>
@@ -118,16 +118,16 @@
               <nz-dropdown-menu #sortBy="nzDropdownMenu">
                 <ul nz-menu>
                   <li nz-menu-item>
-                    <a (click)="sort('orderId')" translate>label.orderId</a>
+                    <a (click)="sort('orderId')" translate>dailyPlan.label.order</a>
                   </li>
                   <li nz-menu-item>
-                    <a (click)="sort('workflow')" translate>label.workflow</a>
+                    <a (click)="sort('workflow')" translate>dailyPlan.label.workflow</a>
                   </li>
                   <li nz-menu-item>
-                    <a (click)="sort( 'plannedStartTime')" translate>label.plannedStart</a>
+                    <a (click)="sort( 'plannedStartTime')" translate>dailyPlan.label.plannedStart</a>
                   </li>
                   <li nz-menu-item>
-                    <a (click)="sort('status')" translate>label.status</a>
+                    <a (click)="sort('status')" translate>dailyPlan.label.status</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -219,10 +219,10 @@
         <div class="w-full p-l">
           <div class="row m-b">
             <div class="col-lg-12">
-              <button class="hide btn btn-sm btn-grey" nz-tooltip="{{'button.expandDetails' | translate}}" [ngClass]="{'show-block':planOrders.length>0}" (click)="expandCollapseDetails(true)" >
+              <button class="hide btn btn-sm btn-grey" nz-tooltip="{{'common.button.expandDetails' | translate}}" [ngClass]="{'show-block':planOrders.length>0}" (click)="expandCollapseDetails(true)" >
                 <i class="fa fa-expand text" ></i>
               </button>
-              <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm" nz-tooltip="{{'button.collapseDetails' | translate}}" [ngClass]="{'show-block':planOrders.length>0}" (click)="expandCollapseDetails(false)">
+              <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm" nz-tooltip="{{'common.button.collapseDetails' | translate}}" [ngClass]="{'show-block':planOrders.length>0}" (click)="expandCollapseDetails(false)">
                 <i class="fa fa-compress text"></i>
               </button>
               <button class="btn btn-grey btn-sm"
@@ -242,16 +242,16 @@
               </button>-->
               <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="advancedSearch()"
                       [hidden]="showSearchPanel">
-                <span translate>button.advancedSearch</span>
+                <span translate>common.button.advancedSearch</span>
                 <i class="fa fa-caret-down p-l-xs"></i>
               </button>
               <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
-                <span translate>button.advancedSearch</span>
+                <span translate>common.button.advancedSearch</span>
                 <i class="fa fa-caret-down p-l-xs"></i>
               </button>
               <div class="search-box-field pull-right">
                 <label>
-                  <input type="search" placeholder="{{'placeholder.search' | translate}}" (keyup)="searchInResult()"
+                  <input type="search" placeholder="{{'common.placeholder.search' | translate}}" (keyup)="searchInResult()"
                          [(ngModel)]="dailyPlanFilters.searchText">
                 </label>
                 <i [hidden]="!dailyPlanFilters.searchText" class="fa fa-times search-close"
@@ -304,7 +304,7 @@
                       <input type="checkbox" [(ngModel)]="object.checkbox" (change)="checkAll()"><i class="primary"></i>
                     </label>
                   </th>
-                  <th class="tableexport-ignore menu"><span translate>label.action</span></th>
+                  <th class="tableexport-ignore menu"><span translate>common.label.action</span></th>
                   <th (click)="sort('orderId')" *ngIf="dailyPlanFilters.filter.groupBy === 'ORDER'">
                     <a><span class="p-r-xs" translate>dailyPlan.label.order</span>
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'orderId' && !dailyPlanFilters.reverse"
@@ -313,70 +313,70 @@
                          class="fa fa-caret-down "></i></a>
                   </th>
                   <th (click)="sort('workflow')">
-                    <a><span class="p-r-xs" translate>label.workflow</span>
+                    <a><span class="p-r-xs" translate>dailyPlan.label.workflow</span>
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'workflow' && !dailyPlanFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'workflow' && dailyPlanFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                   </th>
                   <th (click)="sort('status')">
-                    <a><span class="p-r-xs" translate>label.status</span>
+                    <a><span class="p-r-xs" translate>dailyPlan.label.status</span>
                     <i *ngIf="dailyPlanFilters.filter.sortBy == 'status' && !dailyPlanFilters.reverse"
                        class="fa fa-caret-up "></i>
                     <i *ngIf="dailyPlanFilters.filter.sortBy == 'status' && dailyPlanFilters.reverse"
                        class="fa fa-caret-down "></i></a>
                   </th>
                   <th (click)="sort('late')">
-                    <a><span class="p-r-xs" translate>label.late</span>
+                    <a><span class="p-r-xs" translate>dailyPlan.label.late</span>
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'late' && !dailyPlanFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'late' && dailyPlanFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                   </th>
                   <th (click)="sort('plannedStartTime')">
-                    <a><span class="p-r-xs" translate>label.plannedStart</span>
+                    <a><span class="p-r-xs" translate>dailyPlan.label.plannedStart</span>
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'plannedStartTime' && !dailyPlanFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'plannedStartTime' && dailyPlanFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                   </th>
                   <th (click)="sort('expectedEndTime')">
-                    <a><span class="p-r-xs" translate>label.expectedEnd</span>
+                    <a><span class="p-r-xs" translate>dailyPlan.label.expectedEnd</span>
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'expectedEndTime' && !dailyPlanFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'expectedEndTime' && dailyPlanFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                   </th>
                   <th (click)="sort('expectedDuration')">
-                    <a><span class="p-r-xs" translate>label.expectedDuration</span>
+                    <a><span class="p-r-xs" translate>dailyPlan.label.expectedDuration</span>
                     <i *ngIf="dailyPlanFilters.filter.sortBy == 'duration' && !dailyPlanFilters.reverse"
                        class="fa fa-caret-up "></i>
                     <i *ngIf="dailyPlanFilters.filter.sortBy == 'duration' && dailyPlanFilters.reverse"
                        class="fa fa-caret-down "></i></a>
                   </th>
                   <th (click)="sort('startTime')">
-                    <a><span class="p-r-xs" translate>label.startTime</span>
+                    <a><span class="p-r-xs" translate>dailyPlan.label.startTime</span>
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'startTime' && !dailyPlanFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'startTime' && dailyPlanFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                   </th>
                   <th (click)="sort('endTime')">
-                    <a><span class="p-r-xs" translate>label.endTime</span>
+                    <a><span class="p-r-xs" translate>dailyPlan.label.endTime</span>
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'endTime' && !dailyPlanFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'endTime' && dailyPlanFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                   </th>
                   <th (click)="sort('duration')">
-                    <a><span class="p-r-xs" translate>label.duration</span>
+                    <a><span class="p-r-xs" translate>common.label.duration</span>
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'duration1' && !dailyPlanFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'duration1' && dailyPlanFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                   </th>
                   <th (click)="sort('period.repeat')">
-                    <a><span class="p-r-xs" translate>label.repeatInterval</span>
+                    <a><span class="p-r-xs" translate>dailyPlan.label.repeatInterval</span>
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'period.repeat' && !dailyPlanFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'period.repeat' && dailyPlanFilters.reverse"
@@ -471,7 +471,7 @@
                                   [ngClass]="coreService.getColor(value.state.severity,'bg')"
                                   [innerHtml]="value.status"> </span>
                           </td>
-                          <td><span *ngIf="value.late==true" translate>label.late</span></td>
+                          <td><span *ngIf="value.late==true" translate>dailyPlan.label.late</span></td>
                           <td><span [innerHtml]="value.plannedStartTime"></span></td>
                           <td><span [innerHtml]="value.expectedEndTime"></span></td>
                           <td><span
@@ -569,7 +569,7 @@
                                     [ngClass]="coreService.getColor(value.state.severity,'bg')"
                                     [innerHtml]="value.status"> </span>
                       </td>
-                      <td *ngIf="i"><span *ngIf="value.late==true" translate>label.late</span></td>
+                      <td *ngIf="i"><span *ngIf="value.late==true" translate>dailyPlan.label.late</span></td>
                       <td *ngIf="i"><span [innerHtml]="value.plannedStartTime"></span></td>
                       <td *ngIf="i"><span [innerHtml]="value.expectedEndTime"></span></td>
                       <td *ngIf="i"><span
@@ -632,7 +632,7 @@
                             <span class="label" [ngClass]="coreService.getColor(value.state.severity,'bg')"
                                   [innerHtml]="value.status"> </span>
                           </td>
-                          <td><span *ngIf="value.late==true" translate>label.late</span></td>
+                          <td><span *ngIf="value.late==true" translate>dailyPlan.label.late</span></td>
                           <td><span [innerHtml]="value.plannedStartTime"></span></td>
                           <td><span [innerHtml]="value.expectedEndTime"></span></td>
                           <td><span

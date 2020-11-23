@@ -22,7 +22,7 @@
     <div class="col-lg-12">
       <div class="search-box-field pull-right">
         <label>
-          <input type="search" placeholder="{{'placeholder.search' | translate}}"
+          <input type="search" placeholder="{{'common.placeholder.search' | translate}}"
                  [(ngModel)]="searchKey">
         </label>
         <i [hidden]="!searchKey" class="fa fa-times search-close"
@@ -48,7 +48,7 @@
           >
             <thead>
             <tr>
-              <th class="menu"><span translate>label.action</span></th>
+              <th class="menu"><span translate>common.label.action</span></th>
               <th (click)="sort('agentId')">
                 <a><span class="p-r-xs" translate>agent.label.agentId</span>
                   <i *ngIf="filter.sortBy == 'agentId' && !filter.reverse"
@@ -88,7 +88,7 @@
                   <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                     <ul nz-menu >
                       <li nz-menu-item >
-                        <a (click)="editAgent(agent)" translate>button.edit</a>
+                        <a (click)="editAgent(agent)" translate>common.button.edit</a>
                       </li>
                     </ul>
                   </nz-dropdown-menu>
@@ -103,7 +103,7 @@
           </nz-table>
         </div>
         <div class="w-half label-top" *ngIf="ajaxTable.data.length >0">
-          <span translate>label.total</span> <span> {{(agents | filter: searchKey).length}} </span>
+          <span translate>common.label.total</span> <span> {{(agents | filter: searchKey).length}} </span>
           <span translate *ngIf="ajaxTable.data.length >1">agent.label.agentsFound</span>
           <span translate *ngIf="ajaxTable.data.length ===1">agent.label.agentFound</span>
         </div>

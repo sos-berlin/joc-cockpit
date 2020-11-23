@@ -467,7 +467,7 @@ export class ImportComponent implements OnInit {
     let fileExt = item.name.slice(item.name.lastIndexOf('.') + 1).toUpperCase();
     if (fileExt != 'JSON') {
       let msg = '';
-      this.translate.get('message.invalidFileExtension').subscribe(translatedValue => {
+      this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
         msg = translatedValue;
       });
       this.toasterService.pop('error', '', fileExt + ' ' + msg);

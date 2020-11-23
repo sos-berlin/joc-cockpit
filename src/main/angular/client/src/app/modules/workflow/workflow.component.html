@@ -9,15 +9,15 @@
                     <div class="inline pull-right">
                       <div class="btn-group dropdown">
                         <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'">
-                          <span translate>label.sortBy</span>
+                          <span translate>common.label.sortBy</span>
                           <span class="text-primary">
                             <span *ngIf="workflowFilters.filter.sortBy ==='name'">
-                              {{'label.name' | translate}}
+                              {{'common.label.name' | translate}}
                                  <i *ngIf="!workflowFilters.reverse" class="fa fa-caret-up"></i>
                               <i *ngIf="workflowFilters.reverse" class="fa fa-caret-down"></i>
                             </span>
                             <span *ngIf="workflowFilters.filter.sortBy ==='path'">
-                              {{'label.path' | translate}}
+                              {{'common.label.path' | translate}}
                               <i *ngIf="!workflowFilters.reverse" class="fa fa-caret-up"></i>
                               <i *ngIf="workflowFilters.reverse" class="fa fa-caret-down"></i>
                             </span>
@@ -26,10 +26,10 @@
                         <nz-dropdown-menu #sortBy="nzDropdownMenu" >
                           <ul nz-menu>
                             <li nz-menu-item >
-                              <a (click)="sort('name')" translate>label.name</a>
+                              <a (click)="sort('name')" translate>common.label.name</a>
                             </li>
                             <li nz-menu-item >
-                              <a (click)="sort('path')" translate>label.path</a>
+                              <a (click)="sort('path')" translate>common.label.path</a>
                             </li>
                           </ul>
                         </nz-dropdown-menu>
@@ -61,7 +61,7 @@
                           </ul>
                         </nz-dropdown-menu>
                       </div>
-                      <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="'tooltip.exportInXLS' | translate"
+                      <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
                               [disabled]="data.length===0" (click)="exportToExcel()">
                         <i class="fa fa-share-square-o"></i></button>
                       <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
@@ -84,28 +84,28 @@
         <div id="rightPanel">
           <div class="row m-b m-t-xs">
             <div class="col-lg-12">
-              <button class="hide btn btn-sm btn-grey" nz-tooltip="{{'button.expandDetails' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="expandDetails()" >
+              <button class="hide btn btn-sm btn-grey" nz-tooltip="{{'common.button.expandDetails' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="expandDetails()" >
                 <i class="fa fa-expand text" ></i>
               </button>
-              <button class="hide btn btn-sm btn-grey m-l-sm" nz-tooltip="{{'button.collapseDetails' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="collapseDetails()">
+              <button class="hide btn btn-sm btn-grey m-l-sm" nz-tooltip="{{'common.button.collapseDetails' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="collapseDetails()">
                 <i class="fa fa-compress text"></i>
               </button>
-              <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm" nz-tooltip="{{'button.resetPanel' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="resetPanel()">
+              <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm" nz-tooltip="{{'common.button.resetPanel' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="resetPanel()">
                 <i class="fa fa-repeat text"></i>
               </button>
-              <button class="hide btn btn-grey btn-sm" nz-tooltip="{{'button.compactView' | translate}}" [ngClass]="{'btn-primary': workflowFilters.isCompact == true, 'show-block':data.length>0}"
+              <button class="hide btn btn-grey btn-sm" nz-tooltip="{{'common.button.compactView' | translate}}" [ngClass]="{'btn-primary': workflowFilters.isCompact == true, 'show-block':data.length>0}"
                       (click)="toggleCompactView()" >
                 <i class="fa fa-th-list text"></i>
               </button>
               <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="advancedSearch()" *ngIf="!showSearchPanel">
-                <span translate>button.advancedSearch</span> &nbsp;<i class="fa fa-caret-down p-l-xs"></i>
+                <span translate>common.button.advancedSearch</span> &nbsp;<i class="fa fa-caret-down p-l-xs"></i>
               </button>
               <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
-                <span translate>button.advancedSearch</span> &nbsp;<i class="fa fa-caret-down p-l-xs"></i>
+                <span translate>common.button.advancedSearch</span> &nbsp;<i class="fa fa-caret-down p-l-xs"></i>
               </button>
               <div class="search-box-field pull-right">
                 <label>
-                  <input type="search" placeholder="{{'placeholder.search' | translate}}" (keyup)="searchInResult()"
+                  <input type="search" placeholder="{{'common.placeholder.search' | translate}}" (keyup)="searchInResult()"
                          [(ngModel)]="workflowFilters.searchText">
                 </label>
                 <i [hidden]="!workflowFilters.searchText" class="fa fa-times search-close"
@@ -145,37 +145,37 @@
                       <div class="text-sm text-left text-muted p-t-xs" *ngIf="!workflowFilters.isCompact">
                         <span>
                           <span class="text-black _600 p-r-xs" [innerHtml]="workflow.numOfOrders "></span>
-                          <span *ngIf="workflow.numOfOrders>1" translate>label.orders</span>
-                          <span *ngIf="workflow.numOfOrders < 2" translate>label.order</span>
+                          <span *ngIf="workflow.numOfOrders>1" translate>workflow.label.orders</span>
+                          <span *ngIf="workflow.numOfOrders < 2" translate>workflow.label.order</span>
                         </span>
                       </div>
                       <div class="text-sm text-left text-muted m-l p-t-xs" *ngIf="!workflowFilters.isCompact">
                         <a class="text-black _600 text-hover-primary p-r-xs" (click)="viewOrders(workflow,'PENDING')" [innerHtml]="workflow.ordersSummary.pending || 0"></a>
-                        <span [innerHtml]="'label.pending' | translate"></span>
+                        <span [innerHtml]="'common.label.pending' | translate"></span>
                         <a class="text-black _600 m-l text-hover-primary p-r-xs" (click)="viewOrders(workflow,'RUNNING')" [innerHtml]="workflow.ordersSummary.running || 0"></a>
-                        <span [innerHtml]="'label.running' | translate"></span>
+                        <span [innerHtml]="'common.label.running' | translate"></span>
                         <a class="text-black _600 m-l text-hover-primary p-r-xs" (click)="viewOrders(workflow,'SUSPENDED')" [innerHtml]="workflow.ordersSummary.suspended || 0"></a>
-                        <span [innerHtml]="'label.suspended' | translate"></span>
+                        <span [innerHtml]="'common.label.suspended' | translate"></span>
                       </div>
                       <div class="text-sm text-left text-muted m-l p-t-xs" *ngIf="!workflowFilters.isCompact">
                         <a class="text-black _600 text-hover-primary p-r-xs" (click)="viewOrders(workflow,'FAILED')" [innerHtml]="workflow.ordersSummary.failed || 0"></a>
-                        <span [innerHtml]="'label.failed' | translate"></span>
+                        <span [innerHtml]="'common.label.failed' | translate"></span>
                         <a class="text-black _600 m-l text-hover-primary p-r-xs" (click)="viewOrders(workflow,'WAITING')" [innerHtml]="workflow.ordersSummary.waiting || 0"></a>
-                        <span [innerHtml]="'label.waiting' | translate"></span>
+                        <span [innerHtml]="'common.label.waiting' | translate"></span>
                         <a class="text-black _600 m-l text-hover-primary p-r-xs" (click)="viewOrders(workflow,'BLOCKED')" [innerHtml]="workflow.ordersSummary.blocked || 0"></a>
-                        <span [innerHtml]="'label.blocked' | translate"></span>
+                        <span [innerHtml]="'common.label.blocked' | translate"></span>
                       </div>
                     </div>
                     <div class="box-footer b-t">
                       <div>
                         <a class="hide text-left primary-text-hover-color" [ngClass]="{'show-block':permission.Workflow.execute.addOrder}" (click)="actionChild.addOrder(workflow);">
                           <i class="fa fa-plus-square-o text-black-lt p-r-xs"></i>
-                          <span class="text-black-lt" translate>button.addOrder</span>
+                          <span class="text-black-lt" translate>worklfow.button.addOrder</span>
                         </a>
                         <a class="text-right primary-text-hover-color" *ngIf="permission.DailyPlan.view.status" [ngClass]="{'pull-right':permission.Workflow.execute.addOrder}"
                            (click)="actionChild.showDailyPlan(workflow);">
                           <i class="fa fa-calendar text-black-lt p-r-xs"></i>
-                          <span class="text-black-lt" translate>button.showDailyPlan</span>
+                          <span class="text-black-lt" translate>worklfow.button.showDailyPlan</span>
                         </a>
                       </div>
                     </div>
@@ -202,68 +202,68 @@
                   >
                     <thead>
                     <tr>
-                      <th class="tableexport-ignore menu" rowspan="2"><span translate>label.action</span></th>
+                      <th class="tableexport-ignore menu" rowspan="2"><span translate>common.label.action</span></th>
                       <th (click)="sort('name')" rowspan="2">
-                        <a><span class="p-r-xs" translate>label.name</span>
+                        <a><span class="p-r-xs" translate>common.label.name</span>
                           <i *ngIf="workflowFilters.filter.sortBy == 'name' && !workflowFilters.reverse"
                              class="fa fa-caret-up "></i>
                           <i *ngIf="workflowFilters.filter.sortBy == 'name' && workflowFilters.reverse"
                              class="fa fa-caret-down "></i></a>
                       </th>
                       <th (click)="sort('path')" rowspan="2">
-                        <a><span class="p-r-xs" translate>label.path</span>
+                        <a><span class="p-r-xs" translate>common.label.path</span>
                           <i *ngIf="workflowFilters.filter.sortBy == 'path' && !workflowFilters.reverse"
                              class="fa fa-caret-up "></i>
                           <i *ngIf="workflowFilters.filter.sortBy == 'path' && workflowFilters.reverse"
                              class="fa fa-caret-down "></i></a>
                       </th>
                       <th (click)="sort('numOfOrders')" rowspan="2">
-                        <a><span class="p-r-xs" translate>label.noOfOrders</span>
+                        <a><span class="p-r-xs" translate>workflow.label.noOfOrders</span>
                           <i *ngIf="workflowFilters.filter.sortBy == 'numOfOrders' && !workflowFilters.reverse"
                              class="fa fa-caret-up "></i>
                           <i *ngIf="workflowFilters.filter.sortBy == 'numOfOrders' && workflowFilters.reverse"
                              class="fa fa-caret-down "></i></a>
                       </th>
-                      <th *ngIf="!workflowFilters.isCompact" colspan="6"><span translate>label.order</span></th>
+                      <th *ngIf="!workflowFilters.isCompact" colspan="6"><span translate>workflow.label.order</span></th>
                     </tr>
                     <tr *ngIf="!workflowFilters.isCompact">
                       <th (click)="sort('pending')">
-                        <a><span class="p-r-xs" translate>label.pending</span>
+                        <a><span class="p-r-xs" translate>common.label.pending</span>
                           <i *ngIf="workflowFilters.filter.sortBy == 'pending' && !workflowFilters.reverse"
                              class="fa fa-caret-up "></i>
                           <i *ngIf="workflowFilters.filter.sortBy == 'pending' && workflowFilters.reverse"
                              class="fa fa-caret-down "></i></a>
                       </th>
                       <th (click)="sort('ordersSummary.running')">
-                        <a><span class="p-r-xs" translate>label.running</span>
+                        <a><span class="p-r-xs" translate>common.label.running</span>
                           <i *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.running' && !workflowFilters.reverse"
                              class="fa fa-caret-up "></i>
                           <i *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.running' && workflowFilters.reverse"
                              class="fa fa-caret-down "></i></a>
                       </th>
                       <th (click)="sort('ordersSummary.suspended')">
-                        <a><span class="p-r-xs" translate>label.suspended</span>
+                        <a><span class="p-r-xs" translate>common.label.suspended</span>
                           <i *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.suspended' && !workflowFilters.reverse"
                              class="fa fa-caret-up "></i>
                           <i *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.suspended' && workflowFilters.reverse"
                              class="fa fa-caret-down "></i></a>
                       </th>
                       <th (click)="sort('ordersSummary.failed')">
-                        <a><span class="p-r-xs" translate>label.failed</span>
+                        <a><span class="p-r-xs" translate>common.label.failed</span>
                           <i *ngIf="workflowFilters.filter.sortBy == 'failed' && !workflowFilters.reverse"
                              class="fa fa-caret-up "></i>
                           <i *ngIf="workflowFilters.filter.sortBy == 'failed' && workflowFilters.reverse"
                              class="fa fa-caret-down "></i></a>
                       </th>
                       <th (click)="sort('ordersSummary.waiting')">
-                        <a><span class="p-r-xs" translate>label.waiting</span>
+                        <a><span class="p-r-xs" translate>common.label.waiting</span>
                           <i *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.waiting' && !workflowFilters.reverse"
                              class="fa fa-caret-up "></i>
                           <i *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.waiting' && workflowFilters.reverse"
                              class="fa fa-caret-down "></i></a>
                       </th>
                       <th (click)="sort('ordersSummary.blocked')">
-                        <a><span class="p-r-xs" translate>label.blocked</span>
+                        <a><span class="p-r-xs" translate>common.label.blocked</span>
                           <i *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.blocked' && !workflowFilters.reverse"
                              class="fa fa-caret-up "></i>
                           <i *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.blocked' && workflowFilters.reverse"
@@ -320,10 +320,10 @@
                       <tr class="tableexport-ignore" *ngIf="workflow.show">
                         <td colspan="10">
                           <div class="m-a-sm">
-                            <a class="text" (click)="workflow.isExpand = true;" [nz-tooltip]="'tooltip.expandAll' | translate">
+                            <a class="text" (click)="workflow.isExpand = true;" [nz-tooltip]="'common.tooltip.expandAll' | translate">
                               <i class="fa fa-angle-double-down fa-lg"></i>
                             </a>
-                            <a class="text m-l-xs" (click)="workflow.isExpand = false;" [nz-tooltip]="'tooltip.collapseAll' | translate">
+                            <a class="text m-l-xs" (click)="workflow.isExpand = false;" [nz-tooltip]="'common.tooltip.collapseAll' | translate">
                               <i class="fa fa-angle-double-up fa-lg"></i>
                             </a>
                             <div class="text-primary m-t-xs" translate>workflow.label.start</div>
@@ -336,9 +336,9 @@
                     </tbody>
                   </nz-table>
                   <div class="w-half label-top"
-                       *ngIf="ajaxTable.data.length >0"><span translate>label.total</span> {{data.length}}
-                    <span translate *ngIf="ajaxTable.data.length >1">label.workflowsFound</span>
-                    <span translate *ngIf="ajaxTable.data.length ==1">label.workflowFound</span>
+                       *ngIf="ajaxTable.data.length >0"><span translate>common.label.total</span> {{data.length}}
+                    <span translate *ngIf="ajaxTable.data.length >1">workflow.label.workflowsFound</span>
+                    <span translate *ngIf="ajaxTable.data.length ==1">workflow.label.workflowFound</span>
                   </div>
                 </div>
                 <div class="rg-bottom"><span></span></div>
@@ -362,7 +362,7 @@
                   </div>
                   <div class="box-body p-t-0 b-t">
                     <nz-tabset>
-                      <nz-tab [nzTitle]="'label.orderHistory' | translate" (nzClick)="loadOrderHistory()">
+                      <nz-tab [nzTitle]="'history.label.orderHistory' | translate" (nzClick)="loadOrderHistory()">
                         <nz-table
                           #orderHistoryTable
                           [nzSize]="'small'"
@@ -372,18 +372,18 @@
                         >
                           <thead>
                           <tr>
-                            <th><span translate>label.orderId</span></th>
-                            <th><span translate>label.position</span></th>
-                            <th><span translate>label.status</span></th>
-                            <th><span translate>label.plannedTime</span></th>
-                            <th><span translate>label.startTime</span></th>
-                            <th><span translate>label.endTime</span></th>
-                            <th><span translate>label.duration</span></th>
+                            <th><span translate>history.label.orderId</span></th>
+                            <th><span translate>history.label.position</span></th>
+                            <th><span translate>history.label.status</span></th>
+                            <th><span translate>history.label.plannedTime</span></th>
+                            <th><span translate>history.label.startTime</span></th>
+                            <th><span translate>history.label.endTime</span></th>
+                            <th><span translate>history.label.duration</span></th>
                           </tr>
                           </thead>
                           <tbody>
                           <ng-template ngFor let-history [ngForOf]="orderHistoryTable.data | orderBy: 'plannedTime':true">
-                            <tr (click)="coreService.showLogWindow(history,null, null, history.jobschedulerId, null)" class="cursor">
+                            <tr (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)" class="cursor">
                               <td [innerHtml]="history.orderId"></td>
                               <td [innerHtml]="history.position"></td>
                               <td>
@@ -399,7 +399,7 @@
                           </tbody>
                         </nz-table>
                       </nz-tab>
-                      <nz-tab [nzTitle]="'label.taskHistory' | translate" (nzClick)="loadTaskHistory()">
+                      <nz-tab [nzTitle]="'history.label.taskHistory' | translate" (nzClick)="loadTaskHistory()">
                         <nz-table
                           #taskHistoryTable
                           [nzSize]="'small'"
@@ -409,14 +409,14 @@
                         >
                           <thead>
                           <tr>
-                            <th><span translate>label.job</span></th>
-                            <th><span translate>label.position</span></th>
-                            <th><span translate>label.status</span></th>
-                            <th><span translate>label.startTime</span></th>
-                            <th><span translate>label.endTime</span></th>
-                            <th><span translate>label.duration</span></th>
-                            <th><span translate>label.criticality</span></th>
-                            <th><span translate>label.returnCode</span></th>
+                            <th><span translate>history.label.job</span></th>
+                            <th><span translate>history.label.position</span></th>
+                            <th><span translate>history.label.status</span></th>
+                            <th><span translate>history.label.startTime</span></th>
+                            <th><span translate>history.label.endTime</span></th>
+                            <th><span translate>history.label.duration</span></th>
+                            <th><span translate>history.label.criticality</span></th>
+                            <th><span translate>history.label.returnCode</span></th>
                           </tr>
                           </thead>
                           <tbody>
@@ -438,7 +438,7 @@
                           </tbody>
                         </nz-table>
                       </nz-tab>
-                      <nz-tab [nzTitle]="'label.auditLog' | translate" (nzClick)="loadAuditLogs()">
+                      <nz-tab [nzTitle]="'auditLog.label.auditLog' | translate" (nzClick)="loadAuditLogs()">
                         <nz-table
                           #auditTable
                           [nzSize]="'small'"
@@ -448,13 +448,13 @@
                         >
                           <thead>
                           <tr>
-                            <th><span translate>label.created</span></th>
-                            <th><span translate>label.account</span></th>
-                            <th><span translate>label.request</span></th>
-                            <th><span translate>label.orderId</span></th>
-                            <th><span translate>label.comment</span></th>
-                            <th><span translate>label.timeSpend</span></th>
-                            <th><span translate>label.ticketLink</span></th>
+                            <th><span translate>auditLog.label.created</span></th>
+                            <th><span translate>auditLog.label.account</span></th>
+                            <th><span translate>auditLog.label.request</span></th>
+                            <th><span translate>auditLog.label.orderId</span></th>
+                            <th><span translate>auditLog.label.comment</span></th>
+                            <th><span translate>auditLog.label.timeSpend</span></th>
+                            <th><span translate>auditLog.label.ticketLink</span></th>
                           </tr>
                           </thead>
                           <tbody>
@@ -484,7 +484,7 @@
                             <tr class="tableexport-ignore" *ngIf="auditLog.show">
                               <td colspan="7">
                                 <div class="m-a-0">
-                                  <span translate>label.parameters</span>
+                                  <span translate>auditLog.label.parameters</span>
                                   :
                                   <span [innerHtml]="auditLog.parameters"></span>
                                 </div>
@@ -500,7 +500,7 @@
               </div>
             </div>
           </div>
-          <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t" translate>
+          <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t">
             <app-empty-data></app-empty-data>
           </div>
         </div>

@@ -22,7 +22,7 @@
         <span class="text-black-lt _300" [ngClass]="{'_600': state =='ALL'}">
           <a class="primary-text-hover-color"
              (click)="setFilter('ALL')"
-             translate>label.allOrders</a></span>
+             translate>order.label.allOrders</a></span>
         <a (click)="setFilter('ALL')" class="pull-right text primary-text-hover-color"
            [ngClass]="{'_600': state =='ALL'}"
            [innerHtml]="(snapshot.running || 0) + (snapshot.suspended || 0) + (snapshot.failed || 0)
@@ -32,7 +32,7 @@
         <span class="text-black-lt _300" [ngClass]="{'_600': state =='PENDING'}">
           <a (click)="setFilter('PENDING')"
              class="primary-text-hover-color"
-             translate>label.pending</a></span>
+             translate>common.label.pending</a></span>
         <a (click)="setFilter('PENDING')" class="pull-right text primary-text-hover-color"
            [ngClass]="{'_600': state =='PENDING'}" [innerHtml]="snapshot.pending || 0"></a>
       </div>
@@ -40,7 +40,7 @@
         <span class="text-black-lt _300" [ngClass]="{'_600': state =='RUNNING'}">
           <a (click)="setFilter('RUNNING')"
              class="primary-text-hover-color"
-             translate>label.running</a></span>
+             translate>common.label.running</a></span>
         <a (click)="setFilter('RUNNING')" class="pull-right text primary-text-hover-color"
            [ngClass]="{'_600': state =='RUNNING'}" [innerHtml]="snapshot.running || 0"></a>
       </div>
@@ -49,7 +49,7 @@
         <span class="text-black-lt _300" [ngClass]="{'_600': state =='SUSPENDED'}">
           <a (click)="setFilter('SUSPENDED')"
              class="primary-text-hover-color"
-             translate>label.suspended</a></span>
+             translate>common.label.suspended</a></span>
         <a (click)="setFilter('SUSPENDED')" class="pull-right text primary-text-hover-color"
            [ngClass]="{'_600': state =='SUSPENDED'}" [innerHtml]="snapshot.suspended || 0"></a>
       </div>
@@ -57,7 +57,7 @@
         <span class="text-black-lt _300" [ngClass]="{'_600': state =='FAILED'}">
           <a (click)="setFilter('FAILED')"
              class="primary-text-hover-color"
-             translate>label.failed</a></span>
+             translate>common.label.failed</a></span>
         <a (click)="setFilter('FAILED')" class="pull-right text primary-text-hover-color"
            [ngClass]="{'_600': state =='FAILED'}" [innerHtml]="snapshot.failed || 0"></a>
       </div>
@@ -65,7 +65,7 @@
         <span class="text-black-lt _300" [ngClass]="{'_600': state =='WAITING'}">
           <a (click)="setFilter('WAITING')"
              class="primary-text-hover-color"
-             translate>label.waiting</a></span>
+             translate>common.label.waiting</a></span>
         <a (click)="setFilter('WAITING')" class="pull-right text primary-text-hover-color"
            [ngClass]="{'_600': state =='WAITING'}" [innerHtml]="snapshot.waiting || 0"></a>
       </div>
@@ -73,7 +73,7 @@
         <span class="text-black-lt _300" [ngClass]="{'_600': state =='BLOCKED'}">
           <a (click)="setFilter('BLOCKED')"
              class="primary-text-hover-color"
-             translate>label.blocked</a></span>
+             translate>common.label.blocked</a></span>
         <a (click)="setFilter('BLOCKED')" class="pull-right text primary-text-hover-color"
            [ngClass]="{'_600': state =='BLOCKED'}" [innerHtml]="snapshot.blocked || 0"></a>
       </div>

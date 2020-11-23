@@ -9,15 +9,15 @@
           <div class="inline">
             <div class="btn-group dropdown">
               <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'">
-                <span translate>label.sortBy</span>
+                <span translate>common.label.sortBy</span>
                 <span class="text-primary">
                   <span *ngIf="locksFilters.filter.sortBy =='name'">
-                    {{'label.name' | translate}}
+                    {{'common.label.name' | translate}}
                     <i *ngIf="!locksFilters.reverse" class="fa fa-caret-up"></i>
                     <i *ngIf="locksFilters.reverse" class="fa fa-caret-down"></i>
                   </span>
                   <span *ngIf="locksFilters.filter.sortBy =='path'">
-                    {{'label.path' | translate}}
+                    {{'common.label.path' | translate}}
                     <i *ngIf="!locksFilters.reverse" class="fa fa-caret-up"></i>
                     <i *ngIf="locksFilters.reverse" class="fa fa-caret-down"></i>
                   </span>
@@ -26,10 +26,10 @@
               <nz-dropdown-menu #sortBy="nzDropdownMenu" >
                 <ul nz-menu>
                   <li nz-menu-item  >
-                    <a (click)="sort('name')" translate>label.name</a>
+                    <a (click)="sort('name')" translate>common.label.name</a>
                   </li>
                   <li nz-menu-item  >
-                    <a (click)="sort('path')" translate>label.path</a>
+                    <a (click)="sort('path')" translate>common.label.path</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -80,28 +80,25 @@
                           <i class="text fa fa-ellipsis-h"></i></a>
                         <nz-dropdown-menu #option="nzDropdownMenu" >
                           <ul nz-menu>
-                            <li nz-menu-item  *ngIf="permission.Lock.view.configuration">
-                              <a (click)="showConfiguration(lock)" translate>button.showConfiguration</a>
-                            </li>
                             <li nz-menu-item  >
-                              <a (click)="coreService.copyLink('lock',lock.path)" translate>button.copyLinkToObject</a>
+                              <a (click)="coreService.copyLink('lock',lock.path)" translate>common.button.copyLinkToObject</a>
                             </li>
                           </ul>
                         </nz-dropdown-menu>
                       </div>
                       <div class="text-sm  text-left text-muted p-t-sm">
                         <span class="text-black _600" [innerHtml]="lock.maxNonExclusive || '0'"></span>
-                        {{'label.maxTask' | translate}}
+                        {{'resource.label.maxTask' | translate}}
                       </div>
                       <div class="text-sm  text-left text-muted p-t-xs">
                        <span class="text-black _600" *ngIf="lock.holders && lock.holders.tasks" [innerHtml]="lock.holders.tasks.length"></span>
                        <span class="text-black _600" *ngIf="!lock.holders || !lock.holders.tasks">0</span>
-                        {{'label.runningTask' | translate}}
+                        {{'resource.label.runningTask' | translate}}
                       </div>
                       <div class="text-sm  text-left text-muted p-t-xs">
                         <span class="text-black _600" *ngIf="lock.queue" [innerHtml]="lock.queue.length"></span>
                         <span class="text-black _600" *ngIf="!lock.queue">0</span>
-                        {{'label.waitingTask' | translate}}
+                        {{'resource.label.waitingTask' | translate}}
                       </div>
                     </div>
 
@@ -127,32 +124,32 @@
                 >
                   <thead>
                   <tr>
-                    <th class="noExl" nzWidth="45"><span translate>label.action</span></th>
-                    <th (click)="sort('name')"><a><span class="p-r-xs" translate>label.lockName</span>
+                    <th class="noExl" nzWidth="45"><span translate>common.label.action</span></th>
+                    <th (click)="sort('name')"><a><span class="p-r-xs" translate>resource.label.lockName</span>
                       <i *ngIf="locksFilters.filter.sortBy == 'name' && !locksFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="locksFilters.filter.sortBy == 'name' && locksFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('path')"><a><span class="p-r-xs" translate>label.path</span>
+                    <th (click)="sort('path')"><a><span class="p-r-xs" translate>common.label.path</span>
                       <i *ngIf="locksFilters.filter.sortBy == 'path' && !locksFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="locksFilters.filter.sortBy == 'path' && locksFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('maxNonExclusive')"><a><span class="p-r-xs" translate>label.maxNonExclusive</span>
+                    <th (click)="sort('maxNonExclusive')"><a><span class="p-r-xs" translate>resource.label.maxNonExclusive</span>
                       <i *ngIf="locksFilters.filter.sortBy == 'maxNonExclusive' && !locksFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="locksFilters.filter.sortBy == 'maxNonExclusive' && locksFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('holders.tasks.length')"><a><span class="p-r-xs" translate>label.runningTasks</span>
+                    <th (click)="sort('holders.tasks.length')"><a><span class="p-r-xs" translate>resource.label.runningTasks</span>
                       <i *ngIf="locksFilters.filter.sortBy == 'holders.tasks.length' && !locksFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="locksFilters.filter.sortBy == 'holders.tasks.length' && locksFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('queue.length')"><a><span class="p-r-xs" translate>label.waitingTask</span>
+                    <th (click)="sort('queue.length')"><a><span class="p-r-xs" translate>resource.label.waitingTask</span>
                       <i *ngIf="locksFilters.filter.sortBy == 'queue.length' && !locksFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="locksFilters.filter.sortBy == 'queue.length' && locksFilters.reverse"
@@ -168,11 +165,8 @@
                           <i class="fa fa-ellipsis-h"></i></button>
                         <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
                           <ul nz-menu>
-                            <li nz-menu-item  *ngIf="permission.Lock.view.configuration">
-                              <a (click)="showConfiguration(lock)" translate>button.showConfiguration</a>
-                            </li>
                             <li nz-menu-item  >
-                              <a (click)="coreService.copyLink('lock',lock.path)" translate>button.copyLinkToObject</a>
+                              <a (click)="coreService.copyLink('lock',lock.path)" translate>common.button.copyLinkToObject</a>
                             </li>
                           </ul>
                         </nz-dropdown-menu>
@@ -194,9 +188,9 @@
                   </tbody>
                 </nz-table>
                 <div class="w-half label-top"
-                     *ngIf="ajaxTable.data.length >0"><span translate>label.total</span> {{locks.length}}
-                  <span translate *ngIf="ajaxTable.data.length >1">label.locksFound</span>
-                  <span translate *ngIf="ajaxTable.data.length ==1">label.lockFound</span>
+                     *ngIf="ajaxTable.data.length >0"><span translate>common.label.total</span> {{locks.length}}
+                  <span translate *ngIf="ajaxTable.data.length >1">resource.label.locksFound</span>
+                  <span translate *ngIf="ajaxTable.data.length ==1">resource.label.lockFound</span>
                 </div>
               </div>
             </div>
@@ -206,7 +200,7 @@
             </div>
           </div>
         </div>
-        <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t" translate>
+        <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t">
           <app-empty-data></app-empty-data>
         </div>
       </div>

@@ -1,16 +1,16 @@
 import {Component, OnInit, Input, OnDestroy, EventEmitter, Output} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import * as _ from 'underscore';
+import {TranslateService} from '@ngx-translate/core';
+
+import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
+import {ExcelService} from '../../services/excel.service';
 import {CoreService} from '../../services/core.service';
 import {SaveService} from '../../services/save.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
-import {Subscription} from 'rxjs';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
-
-import * as _ from 'underscore';
 import {SearchPipe} from '../../filters/filter.pipe';
-import {TranslateService} from '@ngx-translate/core';
-import {ExcelService} from '../../services/excel.service';
 
 @Component({
   selector: 'app-ngbd-modal-content',
@@ -434,14 +434,6 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       } else {
         filter.orders.push({workflow: object.workflow});
       }
-    }
-    if (object.job) {
-      filter.jobs = [];
-      let s = object.job.replace(/\s*(,|^|$)\s*/g, '$1');
-      let jobs = s.split(',');
-      jobs.forEach(function (value) {
-        filter.jobs.push({job: value});
-      });
     }
     if (object.regex) {
       filter.regex = object.regex;

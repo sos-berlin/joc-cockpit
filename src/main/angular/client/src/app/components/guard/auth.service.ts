@@ -138,17 +138,6 @@ export class AuthService {
           }
         }
         break;
-      case 'Job':
-        if (showViews.jobs !== undefined) {
-          if (showViews.jobs) {
-            ifPermissionPassed = true;
-          }
-        } else {
-          if (permission.Job && permission.Job.view.status) {
-            ifPermissionPassed = true;
-          }
-        }
-        break;
       case 'Order':
         if (showViews.orders !== undefined) {
           if (showViews.orders) {

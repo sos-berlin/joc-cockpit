@@ -12,13 +12,13 @@
   >
     <thead>
     <tr>
-      <th nzWidth="50px"><span translate>label.action</span></th>
+      <th nzWidth="50px"><span translate>common.label.action</span></th>
       <th>
-        <span translate>label.entryName</span>
+        <span translate>user.label.entryName</span>
       </th>
-      <th><span translate>label.entryValue</span></th>
+      <th><span translate>user.label.entryValue</span></th>
       <th>
-        <span translate>label.entryComment</span>
+        <span translate>user.label.entryComment</span>
       </th>
     </tr>
     </thead>
@@ -31,10 +31,10 @@
           <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
             <ul nz-menu >
               <li nz-menu-item >
-                <a (click)="editMain(mainSection)" translate>button.edit</a>
+                <a (click)="editMain(mainSection)" translate>common.button.edit</a>
               </li>
               <li nz-menu-item class="bg-hover-color">
-                <a (click)="deleteMain(mainSection)" translate="">button.delete</a>
+                <a (click)="deleteMain(mainSection)" translate>common.button.delete</a>
               </li>
             </ul>
           </nz-dropdown-menu>
@@ -51,9 +51,9 @@
     </tbody>
   </nz-table>
   <div class="w-half label-top" *ngIf="main.length >0">
-    <span translate>label.total</span><span> {{main.length}} </span>
-    <span translate *ngIf="main.length >1">label.mainEntriesFound</span>
-    <span translate *ngIf="main.length ==1">label.mainEntryFound</span>
+    <span translate>common.label.total</span><span> {{main.length}} </span>
+    <span translate *ngIf="main.length >1">user.label.mainEntriesFound</span>
+    <span translate *ngIf="main.length ==1">user.label.mainEntryFound</span>
   </div>
 </div>
 

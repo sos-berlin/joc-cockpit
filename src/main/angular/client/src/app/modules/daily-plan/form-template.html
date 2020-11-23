@@ -5,29 +5,29 @@
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>customization.label.customizationName</label>
       <div class="col-sm-6">
         <input autocomplete="off" required class="form-control"
-               placeholder="{{'placeholder.name' | translate}}"
+               placeholder="{{'customization.placeholder.enterName' | translate}}"
                name="filtername" maxlength="30" [(ngModel)]="filter.name" #name="ngModel"
                (blur)="checkFilterName()">
         <div *ngIf="!isSearch && name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
           <div *ngIf="name.errors.required">
-            <div translate>message.requiredError</div>
+            <div translate>common.message.requiredError</div>
           </div>
         </div>
         <div class="help-block text-danger" *ngIf="!isUnique">
-          <div translate>message.uniqueError</div>
+          <div translate>common.message.uniqueError</div>
         </div>
       </div>
     </div>
     <div class="form-group m-b-sm row" *ngIf="isSearch">
-      <label class="col-md-2 col-sm-4 form-control-label" translate>label.dateRange</label>
+      <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.dateRange</label>
       <div class="col-md-6">
         <label class="md-check w">
           <input type="radio" name="radio" [(ngModel)]="filter.radio" value="current">
-          <i class="primary"></i> <span translate>label.specificDate</span>
+          <i class="primary"></i> <span translate>common.label.specificDate</span>
         </label>
         <label class="md-check w">
           <input type="radio" name="radio" [(ngModel)]="filter.radio" value="planned">
-          <i class="primary"></i> <span translate>label.manualDate</span>
+          <i class="primary"></i> <span translate>common.label.relativeDate</span>
         </label>
       </div>
     </div>
@@ -44,12 +44,12 @@
         <input autocomplete="off" validateDailyPlanReqex class="form-control" #processExc="ngModel" type="text" name="planned" placeholder="{{'dailyPlan.placeholder.timeRange' | translate}}"
                [(ngModel)]="filter.planned">
         <div *ngIf="processExc.errors && (processExc.dirty || processExc.touched)" class="help-block text-danger">
-          <div translate *ngIf="!processExc.valid">message.invalid</div>
+          <div translate *ngIf="!processExc.valid">common.message.invalid</div>
         </div>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.folders</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.folders</label>
       <div class="col-sm-6">
         <nz-tree-select
           name="folder"
@@ -59,7 +59,7 @@
           nzShowSearch
           [nzMultiple]="true"
           [nzDisplayWith]="displayWith"
-          [nzPlaceHolder]="'placeholder.selectFromTree' | translate"
+          [nzPlaceHolder]="'common.placeholder.selectFromTree' | translate"
           [(ngModel)]="filter.folders"
         >
           <ng-template #nzTreeTemplate let-node>
@@ -74,9 +74,9 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.workflow</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>dailyPlan.label.workflow</label>
       <div class="col-sm-6">
-        <input type="text" class="form-control" name="workflow" placeholder="{{'placeholder.workflowPath' | translate}}" [(ngModel)]="filter.workflow">
+        <input type="text" class="form-control" name="workflow" placeholder="{{'dailyPlan.placeholder.workflowPath' | translate}}" [(ngModel)]="filter.workflow">
       </div>
     </div>
     <div class="form-group row">
@@ -86,36 +86,36 @@
       </div>
     </div>
     <div class="form-group row ">
-      <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>label.status</label>
+      <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>common.label.status</label>
       <div class="col-sm-8">
         <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.state" checklistValue="PLANNED" name="planned"/>
-          <i class="primary"></i><span translate>label.planned</span>
+          <i class="primary"></i><span translate>common.label.planned</span>
         </label>
         <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.state" checklistValue="PENDING" name="pending"/>
-          <i class="primary"></i><span translate>label.pending</span>
+          <i class="primary"></i><span translate>common.label.pending</span>
         </label>
         <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.state" checklistValue="RUNNING" name="running"/>
-          <i class="primary"></i><span translate>label.running</span>
+          <i class="primary"></i><span translate>common.label.running</span>
         </label>
         <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.state" checklistValue="BLOCKED" name="blocked"/>
-          <i class="primary"></i><span translate>label.blocked</span>
+          <i class="primary"></i><span translate>common.label.blocked</span>
         </label>
         <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.state" checklistValue="FINISHED" name="finished"/>
-          <i class="primary"></i><span translate>label.finished</span>
+          <i class="primary"></i><span translate>common.label.finished</span>
         </label>
         <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.state" checklistValue="FAILED" name="failed"/>
-          <i class="primary"></i><span translate>label.failed</span>
+          <i class="primary"></i><span translate>common.label.failed</span>
         </label>
       </div>
     </div>
     <div class="form-group row ">
-      <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>label.late</label>
+      <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>dailyPlan.label.late</label>
       <div class="col-sm-8">
         <label class="md-check w">
           <input type="checkbox" [(ngModel)]="filter.late" name="late"/>
@@ -134,7 +134,7 @@
     </div>
     <div class="form-group m-t m-b-xs" *ngIf="isSearch">
       <button type="button" class="btn btn-primary btn-sm" (click)="search()" translate>
-        button.search
+        common.button.search
       </button>
       <button type="submit" class="btn orange btn-sm m-l-sm"
               [disabled]="!myForm.form.valid || !isUnique || !filter.name || submitted">
@@ -142,17 +142,17 @@
         {{'customization.button.saveAsCustomization' | translate}}
       </button>
       <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>
-        button.cancel
+        common.button.cancel
       </button>
     </div>
   </div>
   <div class="modal-footer" *ngIf="!isSearch">
     <button type="submit" [disabled]="!myForm.form.valid || !isUnique || submitted" class="btn btn-primary btn-sm">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
-      {{'button.submit' | translate}}
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
     </button>
     <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>
-      button.cancel
+      common.button.cancel
     </button>
   </div>
 </form>

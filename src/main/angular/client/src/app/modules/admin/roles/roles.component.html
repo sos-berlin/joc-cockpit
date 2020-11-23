@@ -8,10 +8,10 @@
                     <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                         <ul nz-menu >
                           <li nz-menu-item >
-                            <a (click)="copyMaster(master)" translate>button.copy</a>
+                            <a (click)="copyMaster(master)" translate>common.button.copy</a>
                           </li>
                           <li nz-menu-item class="bg-hover-color">
-                            <a (click)="deleteMaster(master)" translate="">button.delete</a>
+                            <a (click)="deleteMaster(master)" translate="">common.button.delete</a>
                           </li>
                         </ul>
                     </nz-dropdown-menu>
@@ -24,7 +24,7 @@
             </div>
         </div>
         <div *ngIf="showPanel[id]" class="row">
-            <div class="col-lg-1 col-md-2 col-sm-4"><span class="p-l-lg" translate>label.roles</span></div>
+            <div class="col-lg-1 col-md-2 col-sm-4"><span class="p-l-lg" translate>user.label.roles</span></div>
             <div class="col-lg-9 col-md-10 col-sm-8">
                 <div *ngFor="let role of master.roles" [hidden]="!getSelectedRole(role)" class="role">
                     <span class="fa fa-circle" style="font-size: 9px"></span>
@@ -42,7 +42,7 @@
     <div [ngClass]="{show : showMsg}" class="box-body p-b-0 hide">
         <div class="row">
             <div class="col-md-12 text-center">
-                <span translate>message.noRoleAssign</span>
+                <span translate>user.message.noRoleAssign</span>
             </div>
         </div>
     </div>

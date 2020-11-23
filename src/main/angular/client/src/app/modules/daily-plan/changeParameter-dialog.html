@@ -16,20 +16,20 @@
             <div class="col-md-6 col-sm-6 m-b-sm text-left" *ngIf="i==0" translate>label.value</div>
             <div class="col-md-5 col-sm-6 m-b-sm">
               <input autocomplete="off" type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == variables.length -1"
-                     [(ngModel)]="variable.name" placeholder="{{'placeholder.name' | translate}} {{i+1}}">
+                     [(ngModel)]="variable.name" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
             </div>
             <div class="col-md-6 col-sm-4 m-b-sm">
               <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event)"
-                     [(ngModel)]="variable.value" placeholder="{{'placeholder.value' | translate}} {{i+1}}">
+                     [(ngModel)]="variable.value" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
             </div>
             <a *ngIf="!updateOnly" class="p-l-0"><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
           </div>
           <div class="form-group row m-b-0 m-t-sm" *ngIf="!updateOnly">
             <div class="col-sm-12 col-md-12">
               <a class="text-u-l" *ngIf="variables.length>0" (click)="addVariable()"
-                 translate>button.addAnotherVariable</a>
+                 translate>dailyPlan.button.addAnotherVariable</a>
               <a class="text-u-l" *ngIf="variables.length==0" (click)="addVariable()"
-                 translate>button.addVariable</a>
+                 translate>dailyPlan.button.addVariable</a>
             </div>
           </div>
         </div>
@@ -38,10 +38,10 @@
   <div class="modal-footer">
     <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-      {{'button.submit' | translate}}
+      {{'common.button.submit' | translate}}
     </button>
     <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
-      button.cancel
+      common.button.cancel
     </button>
   </div>
 </form>

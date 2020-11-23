@@ -14,19 +14,9 @@
       <div class=" col-sm-12">
         <div class="p-l-sm">
           <div class="row form-group"
-               *ngIf="calendar.usedIn.orders || calendar.usedIn.jobs">
+               *ngIf="calendar.usedIn.orders">
             <div class="col-md-12">
               <span class="text _600" translate>label.usedIn</span> :
-            </div>
-          </div>
-          <div class="row form-group" *ngIf="calendar.usedIn.jobs">
-            <label class="col-md-3" translate="">
-              label.jobs
-            </label>
-            <div class="col-md-9">
-              <div *ngFor="let job of calendar.usedIn.jobs;let i = index">
-                {{i+1}} - <span style="cursor: pointer" class="text-hover-primary" (click)="coreService.showJob(job)">{{job}}</span>
-              </div>
             </div>
           </div>
           <div class="row form-group" *ngIf="calendar.usedIn.orders">
@@ -41,7 +31,7 @@
           </div>
         </div>
         <div class="text-center text"
-             *ngIf="!calendar.usedIn.orders && !calendar.usedIn.jobs" translate>
+             *ngIf="!calendar.usedIn.orders" translate>
           message.calendarNotUsed
         </div>
       </div>

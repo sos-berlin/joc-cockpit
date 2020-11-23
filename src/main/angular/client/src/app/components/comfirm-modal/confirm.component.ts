@@ -1,8 +1,6 @@
 import {Component, OnInit, Input} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 
-declare var $;
-
 @Component({
   selector: 'app-ngbd-modal-content',
   templateUrl: './confirm.component.html'

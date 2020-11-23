@@ -33,7 +33,7 @@
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.orderTemplateName</label>
           <div class="col-md-8 col-lg-6">
-            <input autocomplete="off" identifierValidation required class="form-control" placeholder="{{'inventory.placeholder.orderName' | translate}}"
+            <input autocomplete="off" identifierValidation required class="form-control" [appAutofocus]="true" placeholder="{{'inventory.placeholder.orderName' | translate}}"
                    name="name" [(ngModel)]="order.name" #name="ngModel" (blur)="rename(name.invalid)">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
               <div *ngIf="name.errors.invalidIdentifier" translate>message.invalid</div>

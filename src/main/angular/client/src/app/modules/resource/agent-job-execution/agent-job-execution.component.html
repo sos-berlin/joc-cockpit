@@ -10,58 +10,58 @@
                         <div class="show-block">
                             <label class="md-check  valign">
                                 <input type="checkbox" [(ngModel)]="agentJobExecutionFilters.current" (change)="changeController()">
-                                <i class="primary"></i><span translate>label.currentJobscheduler</span>
+                                <i class="primary"></i><span translate>common.label.currentController</span>
                             </label>
                             <div class="inline">
                                 <div class="btn-group m-l-12 hidden-btn-group">
                                     <button class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadAgentTasks('all')"
-                                            [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='all'}" translate>button.all
+                                            [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='all'}" translate>filters.button.all
                                     </button>
                                     <button class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadAgentTasks('today')"
-                                            [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='today'}" translate>button.today
+                                            [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='today'}" translate>filters.button.today
                                     </button>
                                     <button class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadAgentTasks('-1h')"
-                                            [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1h'}" translate>button.last1
+                                            [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1h'}" translate>filters.button.last1
                                     </button>
                                     <button class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadAgentTasks('-12h')"
-                                            [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-12h'}" translate>button.last12
+                                            [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-12h'}" translate>filters.button.last12
                                     </button>
                                     <button class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadAgentTasks('-1d')"
-                                            [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1d'}" translate>button.last24
+                                            [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1d'}" translate>filters.button.last24
                                     </button>
                                      <button class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadAgentTasks('-1w')"
-                                            [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1w'}" translate>button.lastWeak
+                                            [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1w'}" translate>filters.button.lastWeak
                                     </button>
                                 </div>
                                 <div class="btn-group m-l-12 dropdown hidden-dropdown">
                                     <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="state" [nzPlacement]="'bottomRight'"  translate>
-                                        label.state
+                                        common.label.state
                                         <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
                                     </button>
                                     <nz-dropdown-menu #state="nzDropdownMenu" >
                                         <ul nz-menu>
                                         <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': agentJobExecutionFilters.filter.date=='all'}">
-                                            <a (click)="loadAgentTasks('all')" translate>button.all</a>
+                                            <a (click)="loadAgentTasks('all')" translate>filters.button.all</a>
                                         </li>
                                         <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': agentJobExecutionFilters.filter.date=='today'}">
-                                            <a (click)="loadAgentTasks('today')" translate>button.today</a>
+                                            <a (click)="loadAgentTasks('today')" translate>filters.button.today</a>
                                         </li>
                                         <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': agentJobExecutionFilters.filter.date=='-1h'}">
-                                            <a (click)="loadAgentTasks('-1h')" translate>button.last1</a>
+                                            <a (click)="loadAgentTasks('-1h')" translate>filters.button.last1</a>
                                         </li>
                                         <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': agentJobExecutionFilters.filter.date=='-12h'}">
-                                            <a (click)="loadAgentTasks('-12h')" translate>button.last12</a>
+                                            <a (click)="loadAgentTasks('-12h')" translate>filters.button.last12</a>
                                         </li>
                                         <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': agentJobExecutionFilters.filter.date=='-1d'}">
-                                            <a (click)="loadAgentTasks('-1d')" translate>button.last24</a>
+                                            <a (click)="loadAgentTasks('-1d')" translate>filters.button.last24</a>
                                         </li>
                                         <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': agentJobExecutionFilters.filter.date=='-1w'}">
-                                            <a (click)="loadAgentTasks('-1w')" translate>button.lastWeak</a>
+                                            <a (click)="loadAgentTasks('-1w')" translate>filters.button.lastWeak</a>
                                         </li>
                                         </ul>
                                     </nz-dropdown-menu>
                                 </div>
-                                <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="'tooltip.exportInXLS' | translate"
+                                <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
                                         (click)="exportToExcel()"><i class="fa fa fa-share-square-o"></i></button>
                             </div>
                         </div>
@@ -78,11 +78,11 @@
     </div>
     <div class="col-md-4 text-right">
       <button class="btn btn-sm btn-grey" (click)="advancedSearch()" *ngIf="!showSearchPanel">
-        <span translate>button.advancedSearch</span>&nbsp;
+        <span translate>common.button.advancedSearch</span>&nbsp;
         <i class="fa fa-caret-down p-l-xs"></i>
       </button>
       <button class="btn btn-sm btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
-        <span translate>button.advancedSearch</span>&nbsp;
+        <span translate>common.button.advancedSearch</span>&nbsp;
         <i class="fa fa-caret-down p-l-xs"></i>
       </button>
     </div>
@@ -98,48 +98,48 @@
                           <div class="box p-a m-b-xs m-t-xs">
                               <form #myForm="ngForm" (ngSubmit)="search()">
                                     <div class="form-group row">
-                                      <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
+                                      <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.from</label>
                                       <div class="col-sm-6">
-                                        <nz-date-picker [nzPlaceHolder]="('placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat" [(ngModel)]=" agentJobSearch.from" name="from"></nz-date-picker>
+                                        <nz-date-picker [nzPlaceHolder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat" [(ngModel)]=" agentJobSearch.from" name="from"></nz-date-picker>
                                         <nz-time-picker timevalidator [nzDisabled]="! agentJobSearch.from" #fromTime="ngModel" [nzFormat]="'HH:mm:ss'"
                                                class="input-time m-l time-picker" [(ngModel)]=" agentJobSearch.fromTime" name="fromTime"
-                                               [nzPlaceHolder]="('placeholder.startTime' | translate) +' (HH:MM:SS)'" ></nz-time-picker>
+                                               [nzPlaceHolder]="('common.placeholder.startTime' | translate) +' (HH:MM:SS)'" ></nz-time-picker>
                                         <a class="text-sm text-primary p-l-xs" *ngIf=" agentJobSearch.from ||  agentJobSearch.fromTime"
-                                           (click)=" agentJobSearch.from=''; agentJobSearch.fromTime=''; " translate>button.clear</a>
+                                           (click)=" agentJobSearch.from=''; agentJobSearch.fromTime=''; " translate>common.button.clear</a>
                                       </div>
                                     </div>
                                     <div class="form-group row">
-                                      <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
+                                      <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.to</label>
                                       <div class="col-sm-6">
-                                        <nz-date-picker [nzPlaceHolder]="('placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat" [(ngModel)]=" agentJobSearch.to" name="to"></nz-date-picker>
+                                        <nz-date-picker [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat" [(ngModel)]=" agentJobSearch.to" name="to"></nz-date-picker>
                                         <nz-time-picker timevalidator [nzDisabled]="! agentJobSearch.to" #toTime="ngModel" [nzFormat]="'HH:mm:ss'"
                                                class="input-time m-l time-picker" [(ngModel)]=" agentJobSearch.toTime" name="toTime"
-                                               [nzPlaceHolder]="('placeholder.endTime' | translate) +' (HH:MM:SS)'" ></nz-time-picker>
+                                               [nzPlaceHolder]="('common.placeholder.endTime' | translate) +' (HH:MM:SS)'" ></nz-time-picker>
                                         <a class="text-sm text-primary p-l-xs" *ngIf=" agentJobSearch.to ||  agentJobSearch.toTime"
                                            (click)=" agentJobSearch.to=''; agentJobSearch.toTime=''; " translate>button.clear</a>
                                       </div>
                                     </div>
                                   <div class="form-group row" >
-                                      <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
+                                      <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.controllerId</label>
                                       <div class=" col-sm-6">
-                                          <nz-select nzPlaceHolder="{{'label.selectJobScheduler' | translate}}"
-                                                [(ngModel)]="agentJobSearch.jobschedulerId" name="jobschedulerId">
-                                              <nz-option *ngFor="let jobScheduler of schedulerIds.jobschedulerIds" [nzLabel]="jobScheduler" [nzValue]="jobScheduler"></nz-option>
+                                          <nz-select nzPlaceHolder="{{'common.label.selectController' | translate}}"
+                                                [(ngModel)]="agentJobSearch.controllerId" name="controllerId">
+                                              <nz-option *ngFor="let controller of schedulerIds.controllerIds" [nzLabel]="controller" [nzValue]="controller"></nz-option>
                                           </nz-select>
                                       </div>
                                   </div>
                                   <div class="form-group row" >
-                                      <label class="col-md-2 col-sm-4 form-control-label" translate>label.agentUrl</label>
+                                      <label class="col-md-2 col-sm-4 form-control-label" translate>resource.label.agentUrl</label>
                                       <div class=" col-sm-6">
-                                          <input type="text" class="form-control" name="url" placeholder="{{'placeholder.enterAgentUrl' | translate}}" [(ngModel)]="agentJobSearch.url">
+                                          <input type="text" class="form-control" name="url" placeholder="{{'resource.placeholder.enterAgentUrl' | translate}}" [(ngModel)]="agentJobSearch.url">
                                       </div>
                                   </div>
                                   <div class="form-group m-t m-b-xs">
                                       <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid" translate>
-                                          button.search
+                                        common.button.search
                                       </button>
                                       <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>
-                                          button.cancel
+                                        common.button.cancel
                                       </button>
                                   </div>
                               </form>
@@ -165,31 +165,31 @@
                             >
                               <thead>
                               <tr>
-                                <th *ngIf="!agentJobExecutionFilters.current" (click)="sort('jobschedulerId')"><a><span class="p-r-xs" translate>label.jobSchedulerId</span>
-                                  <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'jobschedulerId' && !agentJobExecutionFilters.reverse"
+                                <th *ngIf="!agentJobExecutionFilters.current" (click)="sort('controllerId')"><a><span class="p-r-xs" translate>common.label.controllerId</span>
+                                  <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'controllerId' && !agentJobExecutionFilters.reverse"
                                      class="fa fa-caret-up "></i>
-                                  <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'jobschedulerId' && agentJobExecutionFilters.reverse"
+                                  <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'controllerId' && agentJobExecutionFilters.reverse"
                                      class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th (click)="sort('agent')"><a><span class="p-r-xs" translate>label.agentUrl</span>
+                                <th (click)="sort('agent')"><a><span class="p-r-xs" translate>resource.label.agentUrl</span>
                                   <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'agent' && !agentJobExecutionFilters.reverse"
                                      class="fa fa-caret-up "></i>
                                   <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'agent' && agentJobExecutionFilters.reverse"
                                      class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th (click)="sort('cause')"><a><span class="p-r-xs" translate>label.causeOfTheTaskStart</span>
+                                <th (click)="sort('cause')"><a><span class="p-r-xs" translate>resource.label.causeOfTheTaskStart</span>
                                   <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'cause' && !agentJobExecutionFilters.reverse"
                                      class="fa fa-caret-up "></i>
                                   <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'cause' && agentJobExecutionFilters.reverse"
                                      class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th (click)="sort('numOfSuccessfulTasks')"><a><span class="p-r-xs" translate>label.numberOfSuccessfullyExecutedTask</span>
+                                <th (click)="sort('numOfSuccessfulTasks')"><a><span class="p-r-xs" translate>resource.label.numberOfSuccessfullyExecutedTask</span>
                                   <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'numOfSuccessfulTasks' && !agentJobExecutionFilters.reverse"
                                      class="fa fa-caret-up "></i>
                                   <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'numOfSuccessfulTasks' && agentJobExecutionFilters.reverse"
                                      class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th (click)="sort('numOfJobs')"><a><span class="p-r-xs" translate>label.numberOfJobsExecuted</span>
+                                <th (click)="sort('numOfJobs')"><a><span class="p-r-xs" translate>resource.label.numberOfJobsExecuted</span>
                                   <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'numOfJobs' && !agentJobExecutionFilters.reverse"
                                      class="fa fa-caret-up "></i>
                                   <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'numOfJobs' && agentJobExecutionFilters.reverse"
@@ -200,7 +200,7 @@
                               <tbody >
                                 <ng-template  ngFor let-agentTask [ngForOf]="ajaxTable.data | orderBy:agentJobExecutionFilters.filter.sortBy:agentJobExecutionFilters.reverse">
                                     <tr>
-                                        <td *ngIf="!agentJobExecutionFilters.current"><span [innerHtml]="agentTask.jobschedulerId"></span></td>
+                                        <td *ngIf="!agentJobExecutionFilters.current"><span [innerHtml]="agentTask.controllerId"></span></td>
                                         <td><a target="_blank" href="{{agentTask.agent}}" class="text-hover-primary" [innerHtml]="agentTask.agent"></a></td>
                                         <td><span [innerHtml]="agentTask.cause"></span></td>
                                         <td><span [innerHtml]="agentTask.numOfSuccessfulTasks"></span></td>
@@ -210,9 +210,9 @@
                                   </tbody>
                               </nz-table>
                               <div class="w-half label-top" *ngIf="ajaxTable.data.length >0"> {{agentTasks.length}}
-                                  <span translate *ngIf="ajaxTable.data.length >1">label.agentTasksFound</span>
-                                  <span translate *ngIf="ajaxTable.data.length ==1">label.agentTaskFound</span>.
-                                  <span translate>label.totalNumberOfExecutions</span>: {{totalJobExecution}}
+                                  <span translate *ngIf="ajaxTable.data.length >1">resource.label.agentTasksFound</span>
+                                  <span translate *ngIf="ajaxTable.data.length ==1">resource.label.agentTaskFound</span>.
+                                  <span translate>resource.label.totalNumberOfExecutions</span>: {{totalJobExecution}}
                               </div>
                           </div>
                       </div>

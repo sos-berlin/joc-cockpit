@@ -5,14 +5,14 @@
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.name</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
           <input type="text" identifierValidation [appAutofocus]="true" autocomplete="off" required class="form-control"
-                 placeholder="{{'placeholder.name' | translate}}" name="name" #name="ngModel" (blur)="checkJobInfo()"
+                 placeholder="{{'common.placeholder.name' | translate}}" name="name" #name="ngModel" (blur)="checkJobInfo()"
                  [(ngModel)]="selectedNode.obj.jobName">
           <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)"
                class="text-danger help-block">
             <div *ngIf="name.errors.required">
-              <div translate>message.requiredError</div>
+              <div translate>common.message.requiredError</div>
             </div>
-            <div *ngIf="name.errors.invalidIdentifier" translate>message.invalid</div>
+            <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
           </div>
         </div>
       </div>
@@ -20,12 +20,12 @@
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.label</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : (obj.label || errorMsg || (label.dirty || label.touched) && label.invalid)}">
           <input type="text" identifierValidation id="label" required autocomplete="off" (blur)="onBlur();errorMsg=''" maxlength="30" class="form-control"
-                 name="label" #label="ngModel" [(ngModel)]="selectedNode.obj.label" [appAutofocus]="true">
+                 name="label" #label="ngModel" [(ngModel)]="selectedNode.obj.label" [appAutofocus]="!!(obj.label || errorMsg)">
           <div *ngIf="obj.label || errorMsg || label.invalid && (label.dirty || label.touched)"
                class="text-danger help-block">
             <div *ngIf="label.errors && label.errors.invalidIdentifier" translate>message.invalid</div>
             <div *ngIf="(label.errors && label.errors.required) || obj.label">
-              <div translate>message.requiredError</div>
+              <div translate>common.message.requiredError</div>
             </div>
             <div *ngIf="!label.errors && errorMsg">{{errorMsg | translate}}</div>
           </div>
@@ -35,7 +35,7 @@
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.title</label>
         <div class="col-md-8 col-lg-9">
           <input type="text" autocomplete="off" maxlength="255" class="form-control" [(ngModel)]="selectedNode.job.title"
-                 placeholder="{{'placeholder.title' | translate}}" name="title">
+                 placeholder="{{'common.placeholder.title' | translate}}" name="title">
         </div>
       </div>
       <div class="form-group row">
@@ -49,7 +49,7 @@
           <div *ngIf="obj.agent || agentName.invalid && (agentName.dirty || agentName.touched)"
                class="text-danger help-block">
             <div *ngIf="(agentName.errors && agentName.errors.required) || obj.agent">
-              <div translate>message.requiredError</div>
+              <div translate>common.message.requiredError</div>
             </div>
           </div>
         </div>
@@ -100,7 +100,7 @@
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : ((success.dirty || success.touched) && success.invalid)}">
           <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex
-                 placeholder="{{'placeholder.enterPositiveNumber' | translate}}"
+                 placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
                  name="success" #success="ngModel" [(ngModel)]="selectedNode.job.returnCodeMeaning.success">
           <div *ngIf="success.invalid && (success.dirty || success.touched)"
                class="text-danger help-block">
@@ -113,7 +113,7 @@
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : ((failure.dirty || failure.touched) && failure.invalid)}">
           <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex
-                 placeholder="{{'placeholder.enterPositiveNumber' | translate}}"
+                 placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
                  #failure="ngModel" name="failure" [(ngModel)]="selectedNode.job.returnCodeMeaning.failure">
           <div *ngIf="failure.invalid && (failure.dirty || failure.touched)"
                class="text-danger help-block">
@@ -135,7 +135,7 @@
                   <div *ngIf="obj.script || (script.invalid && (script.dirty || script.touched))"
                        class="text-danger help-block">
                     <div *ngIf="(script.errors && script.errors.required) || obj.script">
-                      <div translate>message.requiredError</div>
+                      <div translate>common.message.requiredError</div>
                     </div>
                   </div>
                 </div>
@@ -145,15 +145,15 @@
               <div class="row">
                 <div class="col-md-12" style="max-height: 450px; overflow: auto">
                   <div class="form-group row m-b-0" *ngFor="let argument of selectedNode.job.defaultArguments; let i = index">
-                    <div class="col-md-4 col-lg-5 m-b-sm" *ngIf="i==0" translate>label.name</div>
-                    <div class="col-md-8 col-lg-6 m-b-sm" *ngIf="i==0" translate>label.value</div>
+                    <div class="col-md-4 col-lg-5 m-b-sm" *ngIf="i==0" translate>common.label.name</div>
+                    <div class="col-md-8 col-lg-6 m-b-sm" *ngIf="i==0" translate>common.label.value</div>
                     <div class="col-md-5 col-lg-5 m-b-sm">
                       <input autocomplete="off" type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == selectedNode.job.defaultArguments.length -1"
-                             [(ngModel)]="argument.name" placeholder="{{'placeholder.name' | translate}} {{i+1}}">
+                             [(ngModel)]="argument.name" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
                     </div>
                     <div class="col-md-6 col-lg-6 m-b-sm">
                       <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event, 'default')"
-                             [(ngModel)]="argument.value" placeholder="{{'placeholder.value' | translate}} {{i+1}}">
+                             [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
                     </div>
                     <div class="col-md-1 col-lg-1 p-l-0">
                       <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
@@ -175,14 +175,14 @@
   </nz-tab>
   <nz-tab [nzTitle]="'workflow.tab.jobOptions' | translate">
     <div>
-      <div class="form-group row">
+      <div class="form-group row" *ngIf="index === 1">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.taskLimit</label>
         <div class="col-md-8 col-lg-9"  [ngClass]="{'has-error' : ((taskLimit.dirty || taskLimit.touched) && taskLimit.invalid)}">
-          <nz-input-number [nzMin]="0" [nzStep]="1" required name="taskLimit" #taskLimit="ngModel" [(ngModel)]="selectedNode.job.taskLimit"></nz-input-number>
+          <nz-input-number [nzMin]="0" [nzAutoFocus]="true" [nzStep]="1" required name="taskLimit" #taskLimit="ngModel" [(ngModel)]="selectedNode.job.taskLimit"></nz-input-number>
           <div *ngIf="taskLimit.invalid && (taskLimit.dirty || taskLimit.touched)"
                class="text-danger help-block">
             <div *ngIf="taskLimit.errors.required">
-              <div translate>message.requiredError</div>
+              <div translate>common.message.requiredError</div>
             </div>
           </div>
         </div>
@@ -226,19 +226,19 @@
   </nz-tab>
   <nz-tab [nzTitle]="'workflow.tab.nodeProperties' | translate">
     <div>
-      <div class="form-group row">
+      <div class="form-group row" *ngIf="index==2">
         <label class="col-md-12 _600">{{'workflow.label.arguments' | translate}}</label>
         <div class="col-md-12" style="max-height: 650px; overflow: auto; margin-top: 12px">
           <div class="form-group row m-b-0" *ngFor="let argument of selectedNode.obj.defaultArguments; let i = index">
-            <div class="col-md-4 col-lg-5 m-b-sm" *ngIf="i==0" translate>label.name</div>
-            <div class="col-md-8 col-lg-6 m-b-sm" *ngIf="i==0" translate>label.value</div>
+            <div class="col-md-4 col-lg-5 m-b-sm" *ngIf="i==0" translate>common.label.name</div>
+            <div class="col-md-8 col-lg-6 m-b-sm" *ngIf="i==0" translate>common.label.value</div>
             <div class="col-md-5 col-lg-5 m-b-sm">
               <input autocomplete="off" type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == selectedNode.obj.defaultArguments.length -1"
-                     [(ngModel)]="argument.name" placeholder="{{'placeholder.name' | translate}} {{i+1}}">
+                     [(ngModel)]="argument.name" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
             </div>
             <div class="col-md-6 col-lg-6 m-b-sm">
               <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event, 'argu')"
-                     [(ngModel)]="argument.value" placeholder="{{'placeholder.value' | translate}} {{i+1}}">
+                     [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
             </div>
             <div class="col-md-1 col-lg-1 p-l-0">
               <a><i (click)="removeArgument(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>

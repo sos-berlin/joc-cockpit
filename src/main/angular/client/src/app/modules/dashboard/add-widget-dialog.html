@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title" translate>label.addWidget</h4>
+  <h4 class="modal-title" translate>dashboard.label.addWidget</h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
   </button>
@@ -8,15 +8,15 @@
   <div class="form-group row p-b b-b" *ngFor="let widget of widgets" [hidden]="widget.visible">
     <img class="pull-left m-l" src="./assets/images/{{widget.name}}.png" width="120px" height="60px">
     <div class="col-sm-10">
-      <label class="font14 text-dark m-b-0" [innerHtml]="'label.'+widget.name | translate"></label>
-      <p class="text-sm text-muted" >{{widget.message | translate}}</p>
+      <label class="font14 text-dark m-b-0" [innerHtml]="'dashboard.label.'+widget.name | translate"></label>
+      <p class="text-sm text-muted" >{{'dashboard.'+widget.message | translate}}</p>
       <button type="button" class="btn btn-grey btn-sm pos-abt" style="right: 0;top: 0" (click)="addWidgetFunc(widget)" translate>
         dashboard.button.widget
       </button>
     </div>
   </div>
   <div class="m-t-lg hide" [ngClass]="{'show':dashboard.length === widgets.length}">
-    <app-empty-data [title]="'message.noWidgetFound'"></app-empty-data>
+    <app-empty-data [title]="'dashboard.message.noWidgetFound'"></app-empty-data>
   </div>
 </div>
 

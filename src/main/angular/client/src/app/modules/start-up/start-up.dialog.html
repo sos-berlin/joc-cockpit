@@ -1,7 +1,7 @@
 <div class="modal-header" *ngIf="isModal">
   <h4 class="modal-title">
     <span *ngIf="new" translate>controller.label.newController</span>
-    <span *ngIf="!new" translate>label.registerController</span>
+    <span *ngIf="!new" translate>controller.label.registerController</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="close()">
     <span aria-hidden="true">&times;</span>
@@ -12,92 +12,92 @@
   <div [ngClass]="{'modal-body p-a' : isModal}">
     <div class="hide" [ngClass]="{'show': display}">
       <div class="form-group row">
-        <label class="col-sm-4" translate>label.selectComments</label>
+        <label class="col-sm-4" translate>common.label.selectComments</label>
         <div class=" col-sm-8">
           <div>
             <label class="md-check">
               <input type="radio" name="option" [(ngModel)]="comments.radio" value="predefined">
-              <i class="primary"></i> <span translate>label.predefined</span>
+              <i class="primary"></i> <span translate>common.label.predefined</span>
             </label>
             <label class="md-check m-l-md">
               <input type="radio" name="option" [(ngModel)]="comments.radio" value="new">
-              <i class="primary"></i> <span translate>label.individual</span>
+              <i class="primary"></i> <span translate>common.label.individual</span>
             </label>
           </div>
         </div>
       </div>
       <div class="form-group row" *ngIf="comments.radio=='predefined'"
            [ngClass]="{'has-error' : ((comment.dirty || comment.touched) && comment.invalid)}">
-        <label class="col-sm-4 form-control-label" translate>label.selectComment</label>
+        <label class="col-sm-4 form-control-label" translate>common.label.selectComment</label>
         <div class="col-sm-8">
-          <nz-select nzPlaceHolder="{{'label.selectPredefinedReason' | translate}}"
+          <nz-select nzPlaceHolder="{{'common.label.selectPredefinedReason' | translate}}"
                      [(ngModel)]="comments.comment" name="comment" #comment="ngModel"
                      [required]="required && comments.radio=='predefined'">
-            <nz-option [nzValue]="''" [nzLabel]="'label.selectPredefinedReason' | translate"></nz-option>
+            <nz-option [nzValue]="''" [nzLabel]="'common.label.selectPredefinedReason' | translate"></nz-option>
             <nz-option *ngFor="let list of messageList" [nzLabel]="list" [nzValue]="list"></nz-option>
           </nz-select>
           <div *ngIf="comment.invalid && (comment.dirty || comment.touched)" class="text-danger m-t-xs">
             <div *ngIf="comment.errors.required" translate>
-              message.requiredError
+              common.message.requiredError
             </div>
             <div *ngIf="comment.invalid && !comment.errors.required" translate>
-              message.invalid
+              common.message.invalid
             </div>
           </div>
         </div>
       </div>
       <div class="form-group row" *ngIf="comments.radio=='new'"
            [ngClass]="{'has-error' : ((textComment.dirty || textComment.touched) && textComment.invalid)}">
-        <label class="col-sm-4 " translate>label.comment</label>
+        <label class="col-sm-4 " translate>common.label.comment</label>
         <div class=" col-sm-8">
               <textarea rows="3" class="form-control" maxlength="2000" name="textComment" #textComment="ngModel"
                         [required]="required && comments.radio=='new'"
                         [(ngModel)]="comments.textComment"
-                        placeholder="{{'placeholder.enterComment' | translate}}"></textarea>
+                        placeholder="{{'common.placeholder.enterComment' | translate}}"></textarea>
           <div *ngIf="textComment.invalid && (textComment.dirty || textComment.touched)"
                class="text-danger help-block">
             <div *ngIf="textComment.errors.required" translate>
-              message.requiredError
+              common.message.requiredError
             </div>
             <div *ngIf="textComment.invalid && !textComment.errors.required" translate>
-              message.invalid
+              common.message.invalid
             </div>
           </div>
         </div>
       </div>
       <div class="form-group row"
            [ngClass]="{'has-error' : ((timeSpent.dirty || timeSpent.touched) && timeSpent.invalid)}">
-        <label class="col-sm-4 form-control-label" translate>label.timeSpend</label>
+        <label class="col-sm-4 form-control-label" translate>common.label.timeSpend</label>
         <div class="col-sm-8">
           <input type="text" pattern="[1-9[0-9]*" class="form-control" name="timeSpent" #timeSpent="ngModel"
-                 placeholder="{{'placeholder.timeSpend' | translate}}" [(ngModel)]="comments.timeSpent">
+                 placeholder="{{'common.placeholder.timeSpend' | translate}}" [(ngModel)]="comments.timeSpent">
           <div *ngIf="timeSpent.invalid && (timeSpent.dirty || timeSpent.touched)" class="text-danger m-t-xs">
             <div *ngIf="timeSpent.invalid && !timeSpent.errors.required" translate>
-              message.invalid
+              common.message.invalid
             </div>
           </div>
         </div>
       </div>
       <div class="form-group row"
            [ngClass]="{'has-error' : ((ticketLink.dirty || ticketLink.touched) && ticketLink.invalid)}">
-        <label class="col-sm-4 form-control-label" translate>label.ticketLink</label>
+        <label class="col-sm-4 form-control-label" translate>common.label.ticketLink</label>
         <div class="col-sm-8">
           <input type="text"
                  pattern="(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})"
                  class="form-control" name="ticketLink" #ticketLink="ngModel"
-                 placeholder="{{'placeholder.ticketLink' | translate}}"
+                 placeholder="{{'common.placeholder.ticketLink' | translate}}"
                  [(ngModel)]="comments.ticketLink">
           <div *ngIf="ticketLink.invalid && (ticketLink.dirty || ticketLink.touched)"
                class="text-danger m-t-xs">
             <div *ngIf="ticketLink.invalid && !ticketLink.errors.required" translate>
-              message.invalid
+              common.message.invalid
             </div>
           </div>
         </div>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4" translate>label.type</label>
+      <label class="col-sm-4" translate>common.label.type</label>
       <div class="col-sm-8">
         <label class="md-check w">
           <input type="radio" name="type" [(ngModel)]="controller.type" value="STANDALONE">
@@ -111,14 +111,14 @@
     </div>
     <div class="p-a b-a" *ngIf="controller.type === 'STANDALONE'">
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>label.title</label>
+        <label class="col-sm-4 form-control-label" translate>common.label.title</label>
         <div class="col-sm-8"
              [ngClass]="{ 'has-error' : ((title.dirty || title.touched) && title.invalid)}">
           <input type="text" maxlength="30" class="form-control" required name="title" [(ngModel)]="controller.title"
                  #title="ngModel">
           <div *ngIf="title.invalid && (title.dirty || title.touched)" class="text-danger help-block">
             <div *ngIf="title.errors.required">
-              <div translate>message.requiredError</div>
+              <div translate>common.message.requiredError</div>
             </div>
           </div>
         </div>
@@ -131,7 +131,7 @@
                  #remoteUrl="ngModel">
           <div *ngIf="remoteUrl.invalid && (remoteUrl.dirty || remoteUrl.touched)" class="text-danger help-block">
             <div *ngIf="remoteUrl.errors.required">
-              <div translate>message.requiredError</div>
+              <div translate>common.message.requiredError</div>
             </div>
           </div>
         </div>
@@ -152,7 +152,7 @@
       </div>
       <div class="p-a b-a">
         <div class="form-group row">
-          <label class="col-sm-4 form-control-label" translate>label.title</label>
+          <label class="col-sm-4 form-control-label" translate>common.label.title</label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((primaryTitle.dirty || primaryTitle.touched) && primaryTitle.invalid)}">
             <input type="text" maxlength="30" class="form-control" required name="primaryTitle" [(ngModel)]="controller.primaryTitle"
@@ -171,7 +171,7 @@
             <input type="url" placeholder="http://host:port" class="form-control" required name="primaryUrl" [(ngModel)]="controller.primaryUrl" #primaryUrl="ngModel">
             <div *ngIf="primaryUrl.invalid && (primaryUrl.dirty || primaryUrl.touched)" class="text-danger help-block">
               <div *ngIf="primaryUrl.errors.required">
-                <div translate>message.requiredError</div>
+                <div translate>common.message.requiredError</div>
               </div>
             </div>
           </div>
@@ -198,7 +198,7 @@
       </div>
       <div class="p-a b-a">
         <div class="form-group row">
-          <label class="col-sm-4 form-control-label" translate>label.title</label>
+          <label class="col-sm-4 form-control-label" translate>common.label.title</label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((backupTitle.dirty || backupTitle.touched) && backupTitle.invalid)}">
             <input maxlength="30" type="text" class="form-control" required name="backupTitle" [(ngModel)]="controller.backupTitle"
@@ -263,10 +263,10 @@
   <div class="modal-footer" *ngIf="isModal">
     <button type="submit" [disabled]="!myForm.form.valid || submitted || error" class="btn btn-primary btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-      {{'button.submit' | translate}}
+      {{'common.button.submit' | translate}}
     </button>
     <button type="button" class="btn btn-grey btn-sm" (click)="close()" translate>
-      button.cancel
+      common.button.cancel
     </button>
   </div>
 </form>

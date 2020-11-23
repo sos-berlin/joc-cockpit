@@ -1,7 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="add" translate>label.addPermission</span>
-    <span *ngIf="!add"><span translate>label.editPermission</span> : {{currentPermission.permissionLabel}} </span>
+    <span *ngIf="add" translate>user.label.addPermission</span>
+    <span *ngIf="!add"><span translate>user.label.editPermission</span> : {{currentPermission.permissionLabel}} </span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
@@ -10,7 +10,7 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit(currentPermission)">
   <div class="modal-body p-a">
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>label.permission</label>
+      <label class="col-sm-3 form-control-label" translate>user.label.permission</label>
       <div class="col-sm-6">
         <nz-select [(ngModel)]="currentPermission.path" name="path1" required
                    (ngModelChange)="checkCovered(currentPermission)">
@@ -24,17 +24,17 @@
                  [(ngModel)]="currentPermission.path" name="path" (blur)="checkCovered(currentPermission)">
         </div>
         <div class="help-block text-danger" [ngClass]="{'m-b-sm':isCovered}" *ngIf="isCovered">
-          <div translate>message.permissionIsAlreadyCovered</div>
+          <div translate>user.message.permissionIsAlreadyCovered</div>
         </div>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-3" translate>label.excluded</label>
+      <label class="col-sm-3" translate>user.label.excluded</label>
       <div class=" col-sm-6">
         <label class="md-check">
           <input type="checkbox" [(ngModel)]="currentPermission.excluded" name="excluded"
                  (change)="checkCovered(currentPermission)">
-          <i class="primary"></i><span class="m-l-xs" translate> </span>
+          <i class="primary"></i><span class="m-l-xs" > </span>
         </label>
       </div>
     </div>
@@ -42,10 +42,10 @@
   <div class="modal-footer">
     <button type="submit" [disabled]="!myForm.form.valid || isCovered || submitted" class="btn btn-primary btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
-      {{'button.submit' | translate}}
+      {{'common.button.submit' | translate}}
     </button>
     <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
-      button.cancel
+      commonbutton.cancel
     </button>
   </div>
 </form>

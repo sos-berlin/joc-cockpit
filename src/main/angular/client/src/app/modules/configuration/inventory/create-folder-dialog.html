@@ -20,12 +20,12 @@
         <div *ngIf="name.invalid && (name.dirty || name.touched)"
              class="text-danger help-block">
           <div *ngIf="(name.errors && name.errors.required)">
-            <div translate>message.requiredError</div>
+            <div translate>common.message.requiredError</div>
           </div>
           <div *ngIf="name.errors.invalidIdentifier" translate>message.invalid</div>
         </div>
         <div class="help-block text-danger" *ngIf="!isUnique">
-          <div translate>message.uniqueError</div>
+          <div translate>common.message.uniqueError</div>
         </div>
       </div>
     </div>
@@ -33,10 +33,10 @@
   <div class="modal-footer">
     <button type="submit" [disabled]="!myForm.form.valid || !isUnique || submitted || folder.error" class="btn btn-primary btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-      {{'button.submit' | translate}}
+      {{'common.button.submit' | translate}}
     </button>
     <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
-      button.cancel
+      common.button.cancel
     </button>
   </div>
 </form>

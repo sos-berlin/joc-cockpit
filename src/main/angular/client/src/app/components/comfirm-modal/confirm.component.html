@@ -1,14 +1,14 @@
 <div class="modal-header">
   <h4 class="modal-title">
     <span *ngIf="type === 'Delete'">
-      <span class="text-capitalize">{{'label.' + title | translate}}</span>
+      <span class="text-capitalize">{{'common.label.' + title | translate}}</span>
       <span *ngIf="objectName">:
         {{objectName}}
       </span>
       ?
     </span>
     <span *ngIf="type !== 'Delete'">
-      <span>{{'label.' + title | translate}}</span>
+      <span>{{'common.label.' + title | translate}}</span>
       <span *ngIf="objectName">
         {{objectName}}
       </span>
@@ -21,22 +21,12 @@
 <div class="modal-body p-a">
   <div class="row text-center">
     <div class="col-sm-12 m-t m-b">
-      <span class="text">{{'message.' + message | translate}}</span>
+      <span class="text">{{'common.message.' + message | translate}}</span>
     </div>
     <div class="col-sm-12 m-t" *ngIf="calendar && calendar.usedIn">
-      <div *ngIf="calendar.usedIn.jobs" class="row form-group">
-        <label class="col-md-3" translate="">
-          label.jobs
-        </label>
-        <div class="col-md-9">
-          <div *ngFor="let job of calendar.usedIn.jobs; let i = index">
-            {{i + 1}} - {{job}}
-          </div>
-        </div>
-      </div>
       <div *ngIf="calendar.usedIn.orders" class="row form-group">
         <label class="col-md-3" translate="">
-          label.orders
+          common.label.orders
         </label>
         <div class="col-md-9">
           <div *ngFor="let order of calendar.usedIn.orders; let i = index">
@@ -44,35 +34,15 @@
           </div>
         </div>
       </div>
-      <div *ngIf="calendar.usedIn.schedules" class="row form-group">
-        <label class="col-md-3" translate="">
-          label.schedules
-        </label>
-        <div class="col-md-9">
-          <div *ngFor="let schedule of calendar.usedIn.schedules; let i = index">
-            {{i + 1}} - {{schedule}}
-          </div>
-        </div>
-      </div>
     </div>
     <div class="col-sm-12 m-t" *ngIf="calendarArr && calendarArr.length > 0">
       <div *ngFor="let calendar of calendarArr; let x = index" [ngClass]="{'b-t p-t': x !=0}" class="row">
         <div class="row col-sm-12">
-          <span class="col-md-3" translate="">label.calendar</span>
+          <span class="col-md-3" translate>label.calendar</span>
           <label class="col-md-9">{{calendar.path}}</label>
         </div>
         <div class="col-sm-12">
           <div>
-            <div *ngIf="calendar.usedIn.jobs" class="row form-group">
-              <label class="col-md-3" translate="">
-                label.jobs
-              </label>
-              <div class="col-md-9">
-                <div *ngFor="let job of calendar.usedIn.jobs; let i = index">
-                  {{i + 1}} - {{job}}
-                </div>
-              </div>
-            </div>
             <div *ngIf="calendar.usedIn.orders" class="row form-group">
               <label class="col-md-3" translate="">
                 label.orders
@@ -80,16 +50,6 @@
               <div class="col-md-9">
                 <div *ngFor="let order of calendar.usedIn.orders; let i = index">
                   {{i + 1}} - {{order}}
-                </div>
-              </div>
-            </div>
-            <div *ngIf="calendar.usedIn.schedules" class="row form-group">
-              <label class="col-md-3" translate="">
-                label.schedules
-              </label>
-              <div class="col-md-9">
-                <div *ngFor="let schedule of calendar.usedIn.schedules; let i = index">
-                  {{i + 1}} - {{schedule}}
                 </div>
               </div>
             </div>
@@ -106,16 +66,6 @@
         </div>
         <div class=" col-sm-12">
           <div>
-            <div *ngIf="calendar.usedBy.jobs" class="row form-group">
-              <label class="col-md-3" translate="">
-                label.jobs
-              </label>
-              <div class="col-md-9">
-                <div *ngFor="let job of calendar.usedBy.jobs; let i = index">
-                  {{i + 1}} - {{job}}
-                </div>
-              </div>
-            </div>
             <div *ngIf="calendar.usedBy.orders" class="row form-group">
               <label class="col-md-3" translate="">
                 label.orders
@@ -123,16 +73,6 @@
               <div class="col-md-9">
                 <div *ngFor="let order of calendar.usedBy.orders; let i = index">
                   {{i + 1}} - {{order}}
-                </div>
-              </div>
-            </div>
-            <div *ngIf="calendar.usedBy.schedules" class="row form-group">
-              <label class="col-md-3" translate="">
-                label.schedules
-              </label>
-              <div class="col-md-9">
-                <div *ngFor="let schedule of calendar.usedBy.schedules; let i = index">
-                  {{i + 1}} - {{schedule}}
                 </div>
               </div>
             </div>
@@ -185,11 +125,11 @@
 <div class="modal-footer">
   <button type="button" [ngClass]="{'btn-primary' : type !== 'Delete'}" class="btn btn-danger btn-sm"
           (click)="activeModal.close()">
-    <span *ngIf="type === 'Delete'">{{'button.delete' | translate}}</span>
-    <span *ngIf="type !== 'Delete'">{{'button.confirm' | translate}}</span>
+    <span *ngIf="type === 'Delete'">{{'common.button.delete' | translate}}</span>
+    <span *ngIf="type !== 'Delete'">{{'common.button.confirm' | translate}}</span>
   </button>
   <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
-    button.cancel
+    common.button.cancel
   </button>
 </div>
 

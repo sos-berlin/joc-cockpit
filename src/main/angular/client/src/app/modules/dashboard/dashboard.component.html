@@ -23,11 +23,11 @@
                       </button>
                       <button class="btn btn-grey btn-sm m-l-12" (click)="saveWidget()">
                           <i class="fa fa-save"></i>&nbsp;
-                          <span translate>button.save</span>
+                          <span translate>common.button.save</span>
                       </button>
                       <button class="btn btn-grey btn-sm m-l-12" (click)="cancelWidget()">
                           <i class="fa fa-times"></i>&nbsp;
-                          <span translate>button.cancel</span>
+                          <span translate>common.button.cancel</span>
                       </button>
                   </div>
               </div>
@@ -45,7 +45,7 @@
       <gridster [options]="options">
           <gridster-item  [item]="item" *ngFor="let item of dashboard"  id = "{{item.name}}" >
               <div class="destroy-button">
-                  <i *ngIf="editLayoutObj" class="fa fa-times-circle" (click)="removeWidget($event, item)"></i>
+                  <i *ngIf="editLayoutObj" class="fa fa-times-circle" [nz-tooltip]="'common.button.remove' | translate" (click)="removeWidget($event, item)"></i>
               </div>
               <div *ngIf="item.name === 'agentClusterStatus'">
                   <app-agent-status [sizeY]="item.rows"></app-agent-status>
@@ -56,7 +56,7 @@
               <div *ngIf="item.name === 'agentClusterRunningTasks'">
                   <app-agent-running-task [sizeY]="item.rows"></app-agent-running-task>
               </div>
-              <div *ngIf="item.name === 'jobSchedulerStatus'">
+              <div *ngIf="item.name === 'js7Status'">
                   <app-scheduler-instance [sizeY]="item.rows"></app-scheduler-instance>
               </div>
               <div *ngIf="item.name === 'ordersOverview'">
@@ -71,15 +71,6 @@
               <div *ngIf="item.name === 'tasksSummary'">
                    <app-task-summary></app-task-summary>
               </div>
-              <div *ngIf="item.name === 'fileTransferOverview'">
-                   <app-file-overview></app-file-overview>
-              </div>
-              <div *ngIf="item.name === 'fileTransferSummary'">
-                 <app-file-summary></app-file-summary>
-              </div>
-<!--              <div *ngIf="item.name === 'dailyPlanOverview'">
-                  <app-daily-plan></app-daily-plan>
-              </div>-->
           </gridster-item>
       </gridster>
   </div>

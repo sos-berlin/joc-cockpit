@@ -31,9 +31,11 @@ export class SingleDeployComponent implements OnInit {
   required: boolean;
   messageList: any;
   object: any = {
-    checked : false,
+    checked: false,
     update: [],
-    delete: []
+    delete: [],
+    store: {draftConfigurations: [], deployConfigurations: []},
+    deleteObj: {deployConfigurations: []}
   };
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
@@ -101,20 +103,36 @@ export class SingleDeployComponent implements OnInit {
     const self = this;
     for (let i = 0; i < this.deployablesObject.length; i++) {
       if (this.deployablesObject[i].isChecked || !this.data.object) {
-        const obj: any = {};
+        console.log(this.deployablesObject[i]);
+        const obj: any = {}, objDep: any = {};
         if (!this.releasable) {
           if (this.deployablesObject[i].deployId || this.deployablesObject[i].deploymentId) {
-            obj.deploymentId = this.deployablesObject[i].deployId || this.deployablesObject[i].deploymentId;
+            objDep.deployConfiguration = {
+              path: this.deployablesObject[i].folder + (this.deployablesObject[i].folder === '/' ? '' : '/') + this.deployablesObject[i].objectName,
+              objectType: this.deployablesObject[i].objectType,
+              commitId: this.deployablesObject[i].deployId || this.deployablesObject[i].deploymentId
+            };
           } else {
-            obj.configurationId = this.deployablesObject[i].id;
+            objDep.draftConfiguration = {
+              path: this.deployablesObject[i].folder + (this.deployablesObject[i].folder === '/' ? '' : '/') + this.deployablesObject[i].objectName,
+              objectType: this.deployablesObject[i].objectType
+            };
           }
         } else {
           obj.id = this.deployablesObject[i].id;
         }
         if (this.deployablesObject[i].deleted) {
-          self.object.delete.push(obj);
+          if(!_.isEmpty(obj)) {
+            self.object.delete.push(obj);
+          }else {
+            self.object.deleteObj.deployConfigurations.push(objDep);
+          }
         } else {
-          self.object.update.push(obj);
+          if (!_.isEmpty(obj)) {
+            self.object.update.push(obj);
+          } else {
+            self.object.store.deployConfigurations.push(objDep);
+          }
         }
       }
     }
@@ -124,11 +142,15 @@ export class SingleDeployComponent implements OnInit {
     this.submitted = true;
     this.getJSObject();
     const obj: any = {
-      update: this.object.update,
-      delete: this.object.delete
     };
     if (!this.releasable) {
       obj.controllers = [];
+      if(this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
+        obj.store = this.object.store;
+      }
+      if(this.object.deleteObj.deployConfigurations.length > 0) {
+        obj.delete = this.object.deleteObj;
+      }
       obj.auditLog = {};
       if (this.comments.comment) {
         obj.auditLog.comment = this.comments.comment;
@@ -142,6 +164,10 @@ export class SingleDeployComponent implements OnInit {
       this.selectedSchedulerIds.forEach(element => {
         obj.controllers.push({controller: element});
       });
+    } else{
+      obj.delete = this.object.delete;
+      obj.update = this.object.update;
+
     }
 
     const URL = this.releasable ? 'inventory/release' : 'inventory/deployment/deploy';
@@ -530,7 +556,7 @@ export class DeployComponent implements OnInit {
   }
 
   getJSObject() {
-    this.object.update = [];
+    this.object.store = [];
     this.object.delete = [];
     const self = this;
 
@@ -546,7 +572,7 @@ export class DeployComponent implements OnInit {
           if (nodes[i].deleted) {
             self.object.delete.push(obj);
           } else {
-            self.object.update.push(obj);
+            self.object.store.push(obj);
           }
         }
         if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
@@ -590,7 +616,7 @@ export class DeployComponent implements OnInit {
       obj.folder = this.path || '/';
       obj.excludes = this.object.excludes;
     } else {
-      obj.update = this.object.update;
+      obj.store = this.object.store;
     }
     if (this.object.delete.length > 0) {
       obj.delete = this.object.delete;
@@ -1793,12 +1819,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
         let data = node.origin.children;
         this.updateObjects(node.origin, (children) => {
           if (data.length > 1 && data[0].controller) {
-           
+
             node.isExpanded = true;
             node.origin.children[0] = children[0];
             node.origin.children[1] = children[1];
           } else {
-            
+
             node.origin.children = children;
             if (data.length > 0) {
               node.origin.children = node.origin.children.concat(data);

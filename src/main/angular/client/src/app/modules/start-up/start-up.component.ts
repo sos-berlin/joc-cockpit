@@ -200,15 +200,15 @@ export class StartUpModalComponent implements OnInit {
         let title = '', msg = '';
         if (res.controller.connectionState && res.controller.connectionState._text === 'unreachable') {
           this.error = true;
-          this.translate.get('message.oops').subscribe(translatedValue => {
+          this.translate.get('error.message.oops').subscribe(translatedValue => {
             title = translatedValue;
           });
-          this.translate.get('message.connectionError').subscribe(translatedValue => {
+          this.translate.get('error.message.connectionError').subscribe(translatedValue => {
             msg = translatedValue;
           });
           this.toasterService.pop('error', title, msg);
         } else {
-          this.translate.get('message.connectionSuccess').subscribe(translatedValue => {
+          this.translate.get('error.message.connectionSuccess').subscribe(translatedValue => {
             msg = translatedValue;
           });
           this.toasterService.pop('success', '', msg);

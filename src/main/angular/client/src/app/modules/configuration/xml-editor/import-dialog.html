@@ -14,12 +14,12 @@
       <div class="col-md-12" *ngIf="uploader.queue.length === 0">
           <div ng2FileDrop [uploader]="uploader" class="drop-box-full" (onFileDrop)="onFileSelected($event)">
             <div><i class="icon-upload-icon"></i></div>
-            <div translate>button.dragAndDropFileToUpload</div>
+            <div translate>common.button.dragAndDropFileToUpload</div>
           </div>
           <div class="p-l-sm p-t-sm" [hidden]="uploader.queue.length>0">
             <div class="upload-btn-wrapper">
               <button type="button" class="btn btn-grey btn-sm" >
-                <span translate>button.chooseFileToUpload</span>
+                <span translate>common.button.chooseFileToUpload</span>
               </button>
               <input type="file" ng2FileSelect [uploader]="uploader" (onFileSelected)="onFileSelected($event)">
             </div>
@@ -31,11 +31,11 @@
           <table class="table table-hover table-bordered  ">
             <thead>
             <tr>
-              <th><span translate>label.name</span></th>
-              <th><span translate>label.size</span></th>
-              <th><span class="text-capitalize" translate>label.progress</span></th>
-              <th><span translate>label.status</span></th>
-              <th *ngIf="uploader.queue[0].isError"><span translate>label.action</span></th>
+              <th><span translate>common.label.name</span></th>
+              <th><span translate>common.label.size</span></th>
+              <th><span translate>common.label.progress</span></th>
+              <th><span translate>common.label.status</span></th>
+              <th *ngIf="uploader.queue[0].isError"><span translate>common.label.action</span></th>
             </tr>
             </thead>
             <tbody>
@@ -69,7 +69,7 @@
             </span>
             <span class="form-group" *ngIf="importObj && (importObj.assignXsd !== 'NOTIFICATION' && importObj.assignXsd !== 'YADE')">
               <nz-select class="form-control" [(ngModel)]="importObj.assignXsd" required name="schema">
-                <nz-option *ngFor="let xsd of otherSchema; let i=index" [nzValue]="xsd" [nzLabel="xsd"]></nz-option>
+                <nz-option *ngFor="let xsd of otherSchema; let i=index" [nzValue]="xsd" [nzLabel]="xsd"></nz-option>
               </nz-select>
             </span>
           </div>
@@ -79,15 +79,15 @@
   </div>
   <div class="modal-footer text-left" *ngIf="uploader.queue.length>0">
     <button type="submit" class="btn btn-primary btn-sm" *ngIf="!importXsd" [disabled]="!uploadData || (importObj && !importObj.assignXsd)" translate>
-      <i class="fa fa-spin fa-spinner" *ngIf="uploader.isUploading"></i>
-       button.import
+      <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="uploader.isUploading"></i>
+      {{'common.button.import' | translate}}
     </button>
-    <button type="submit" class="btn btn-primary btn-sm"  *ngIf="importXsd" [disabled]="!uploadData" translate>
-      <i class="fa fa-spin fa-spinner" *ngIf="uploader.isUploading"></i>
-       button.import
+    <button type="submit" class="btn btn-primary btn-sm"  *ngIf="importXsd" [disabled]="!uploadData">
+      <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="uploader.isUploading"></i>
+      {{'common.button.import' | translate}}
     </button>
     <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="uploader.queue[0].remove();cancel()" translate>
-      button.cancel
+      common.button.cancel
     </button>
   </div>
 </form>
