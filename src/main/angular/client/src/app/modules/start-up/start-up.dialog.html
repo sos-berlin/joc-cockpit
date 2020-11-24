@@ -205,7 +205,7 @@
                    #backupTitle="ngModel">
             <div *ngIf="backupTitle.invalid && (backupTitle.dirty || backupTitle.touched)" class="text-danger help-block">
               <div *ngIf="backupTitle.errors.required">
-                <div translate>message.requiredError</div>
+                <div translate>common.message.requiredError</div>
               </div>
             </div>
           </div>
@@ -217,7 +217,7 @@
             <input type="url"  placeholder="http://host:port" class="form-control" required name="backupUrl" [(ngModel)]="controller.backupUrl" #backupUrl="ngModel">
             <div *ngIf="backupUrl.invalid && (backupUrl.dirty || backupUrl.touched)" class="text-danger help-block">
               <div *ngIf="backupUrl.errors.required">
-                <div translate>message.requiredError</div>
+                <div translate>common.message.requiredError</div>
               </div>
             </div>
           </div>
@@ -240,22 +240,22 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="!isModal">
-      <div class="col-md-12 m-t">
-        <button type="submit" [disabled]="!myForm.form.valid || submitted || error" class="btn btn-primary btn-sm">
-          <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
-          {{'button.submit' | translate}}
-        </button>
-        <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>
-          button.cancel
-        </button>
-      </div>
-    </div>
     <div class="row ">
       <div class="col-md-12 m-t">
         <button type="button" (click)="showAgent()"
                 class="btn btn-grey btn-sm">
           {{'agent.button.agent' | translate}}
+        </button>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="!isModal">
+      <div class="col-md-12 m-t">
+        <button type="submit" [disabled]="!myForm.form.valid || submitted || error" class="btn btn-primary btn-sm">
+          <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+          {{'common.button.submit' | translate}}
+        </button>
+        <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>
+          common.button.cancel
         </button>
       </div>
     </div>

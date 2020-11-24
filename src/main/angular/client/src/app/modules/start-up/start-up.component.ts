@@ -16,6 +16,7 @@ export class AgentModalComponent implements OnInit {
   @Input() agents: any;
   @Input() type: any;
   @Input() new: any;
+  @Input() isModal: any;
 
   constructor(public coreService: CoreService, public activeModal: NgbActiveModal) {
   }
@@ -222,8 +223,9 @@ export class StartUpModalComponent implements OnInit {
 
   showAgent() {
     const modalRef = this.modalService.open(AgentModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.agents = this.coreService.clone(this.agents) || [];
+    modalRef.componentInstance.agents = this.coreService.clone(this.agents || []);
     modalRef.componentInstance.type = this.controller.type;
+    modalRef.componentInstance.isModal = this.isModal;
     modalRef.componentInstance.new = this.new;
     modalRef.result.then((result) => {
       this.agents = result;

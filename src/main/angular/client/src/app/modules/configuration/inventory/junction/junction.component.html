@@ -3,7 +3,7 @@
     <div class="box p-a">
       <div class="b-b p-b m-b">
         <span class="text-left">
-          <a (click)="backToListView()"><i nz-tooltip="{{'button.back' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
+          <a (click)="backToListView()"><i nz-tooltip="{{'common.button.back' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
           <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
         </span>
         <div class="inline pull-right">
@@ -23,22 +23,22 @@
       <form *ngIf="junction.configuration">
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>label.name</label>
+          <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.name</label>
           <div class="col-md-8 col-lg-6">
             <input type="text" required identifierValidation class="form-control" [appAutofocus]="true"
                    name="name" [(ngModel)]="junction.name" #name="ngModel" autocomplete="off" (blur)="rename(name.invalid)">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
               <div *ngIf="name.errors.required">
-                <div translate>message.requiredError</div>
+                <div translate>common.message.requiredError</div>
               </div>
-              <div *ngIf="name.errors.invalidIdentifier" translate>message.invalid</div>
+              <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
             </div>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
+          <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
           <div class="col-md-8 col-lg-6">
-            <input type="text" class="form-control" autocomplete="off" placeholder="{{'placeholder.title' | translate}}"
+            <input type="text" class="form-control" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
                    name="title" [(ngModel)]="junction.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
@@ -51,7 +51,7 @@
                    validateDurtionReqex [(ngModel)]="junction.configuration.lifetime">
             <div *ngIf="lifetime.invalid && (lifetime.dirty || lifetime.touched)" class="text-danger help-block">
               <div *ngIf="lifetime.errors.required">
-                <div translate>message.requiredError</div>
+                <div translate>common.message.requiredError</div>
               </div>
             </div>
           </div>

@@ -3,7 +3,7 @@
     <div class="box p-a">
       <div class="b-b p-b m-b">
         <span class="text-left">
-          <a (click)="backToListView()"><i nz-tooltip="{{'button.back' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
+          <a (click)="backToListView()"><i nz-tooltip="{{'common.button.back' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
           <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
         </span>
         <div class="inline pull-right">
@@ -36,23 +36,23 @@
             <input autocomplete="off" identifierValidation required class="form-control" [appAutofocus]="true" placeholder="{{'inventory.placeholder.orderName' | translate}}"
                    name="name" [(ngModel)]="order.name" #name="ngModel" (blur)="rename(name.invalid)">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
-              <div *ngIf="name.errors.invalidIdentifier" translate>message.invalid</div>
+              <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
               <div *ngIf="name.errors.required">
-                <div translate>message.requiredError</div>
+                <div translate>common.message.requiredError</div>
               </div>
             </div>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
+          <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
           <div class="col-md-8 col-lg-6">
-            <input type="text" class="form-control" autocomplete="off" placeholder="{{'placeholder.title' | translate}}"
+            <input type="text" class="form-control" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
                    name="title" [(ngModel)]="order.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((path.dirty || path.touched) && path.invalid))}">
-          <label class="col-md-4 col-lg-3  form-control-label" translate>label.workflowPath</label>
+          <label class="col-md-4 col-lg-3  form-control-label" translate>inventory.label.workflowPath</label>
           <div class="col-md-8 col-lg-6">
             <nz-tree-select
               required
@@ -82,7 +82,7 @@
           </nz-tree-select>
             <div *ngIf="path.invalid && (path.dirty || path.touched)" class="text-danger help-block">
               <div *ngIf="path.errors.required">
-                <div translate>message.requiredError</div>
+                <div translate>common.message.requiredError</div>
               </div>
             </div>
           </div>
@@ -106,18 +106,18 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-12 _600" translate>label.variables</label>
+          <label class="col-md-12 _600" translate>order.label.variables</label>
         </div>
         <div class="form-group row m-b-0" *ngFor="let variable of order.configuration.variables; let i = index">
-          <div class="col-md-4 col-lg-3 m-b-sm" *ngIf="i==0" translate>label.name</div>
-          <div class="col-md-8 col-lg-9 m-b-sm" *ngIf="i==0" translate>label.value</div>
+          <div class="col-md-4 col-lg-3 m-b-sm" *ngIf="i==0" translate>common.label.name</div>
+          <div class="col-md-8 col-lg-9 m-b-sm" *ngIf="i==0" translate>common.label.value</div>
           <div class="col-md-4 col-lg-3 m-b-sm">
             <input autocomplete="off" type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == order.configuration.variables.length -1"
-                   [(ngModel)]="variable.name" placeholder="{{'placeholder.name' | translate}} {{i+1}}">
+                   [(ngModel)]="variable.name" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
           </div>
           <div class="col-md-7 col-lg-6 m-b-sm">
             <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event)"
-                   [(ngModel)]="variable.value" placeholder="{{'placeholder.value' | translate}} {{i+1}}">
+                   [(ngModel)]="variable.value" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
           </div>
           <div class="col-md-1 col-lg-1 p-l-0">
             <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
@@ -125,8 +125,8 @@
         </div>
         <div class="form-group row">
           <div class="col-sm-12">
-            <a class="text-u-l" *ngIf="order.configuration.variables.length>0" (click)="addVariable()" translate>button.addAnotherVariable</a>
-            <a class="text-u-l" *ngIf="order.configuration.variables.length==0" (click)="addVariable()" translate>button.addVariable</a>
+            <a class="text-u-l" *ngIf="order.configuration.variables.length>0" (click)="addVariable()" translate>order.button.addAnotherVariable</a>
+            <a class="text-u-l" *ngIf="order.configuration.variables.length==0" (click)="addVariable()" translate>order.button.addVariable</a>
           </div>
         </div>
       </form>
@@ -145,7 +145,7 @@
 <div id="rightSideBar" *ngIf="isVisible && data.type" class="slideInRight">
   <div class="close-btn" (click)="closeCalendarView()"></div>
   <div *ngIf="isVisible">
-    <div class="text-center m-b text" ><i class="fa fa-clock-o"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm" translate>label.runTime</span></div>
+    <div class="text-center m-b text" ><i class="fa fa-clock-o"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm" translate>runtime.label.runTime</span></div>
     <app-run-time [order]="order" [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"></app-run-time>
   </div>
 </div>

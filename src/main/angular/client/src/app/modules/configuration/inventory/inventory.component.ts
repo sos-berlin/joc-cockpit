@@ -144,7 +144,7 @@ export class SingleDeployComponent implements OnInit {
     const obj: any = {
     };
     if (!this.releasable) {
-      obj.controllers = [];
+      obj.controllerIds = [];
       if(this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
         obj.store = this.object.store;
       }
@@ -162,12 +162,11 @@ export class SingleDeployComponent implements OnInit {
         obj.auditLog.ticketLink = this.comments.ticketLink;
       }
       this.selectedSchedulerIds.forEach(element => {
-        obj.controllers.push({controller: element});
+        obj.controllerIds.push({controllerId: element});
       });
-    } else{
+    } else {
       obj.delete = this.object.delete;
       obj.update = this.object.update;
-
     }
 
     const URL = this.releasable ? 'inventory/release' : 'inventory/deployment/deploy';
@@ -220,7 +219,9 @@ export class DeployComponent implements OnInit {
   object: any = {
     isRecursive: true,
     delete: [],
-    update: []
+    update: [],
+    store: {draftConfigurations: [], deployConfigurations: []},
+    deleteObj: {deployConfigurations: []}
   };
   isExpandAll = false;
   submitted = false;
@@ -556,23 +557,44 @@ export class DeployComponent implements OnInit {
   }
 
   getJSObject() {
-    this.object.store = [];
-    this.object.delete = [];
     const self = this;
-
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if ((nodes[i].type || nodes[i].isFolder) && nodes[i].recursivelyDeploy) {
-          let obj: any = {};
-          if (nodes[i].deployId || nodes[i].deploymentId) {
-            obj.deploymentId = nodes[i].deployId || nodes[i].deploymentId;
+          let obj: any = {}, objDep: any = {};
+          if (!self.releasable && !self.reDeploy) {
+            if (nodes[i].deployId || nodes[i].deploymentId) {
+              objDep.deployConfiguration = {
+                path: nodes[i].folder + (nodes[i].folder === '/' ? '' : '/') + nodes[i].objectName,
+                objectType: nodes[i].objectType,
+                commitId: nodes[i].deployId || nodes[i].deploymentId
+              };
+            } else {
+              objDep.draftConfiguration = {
+                path: nodes[i].folder + (nodes[i].folder === '/' ? '' : '/') + nodes[i].objectName,
+                objectType: nodes[i].objectType
+              };
+            }
           } else {
-            obj.configurationId = nodes[i].key;
+            if (nodes[i].deployId || nodes[i].deploymentId) {
+              obj.deploymentId = nodes[i].deployId || nodes[i].deploymentId;
+            } else {
+              obj.configurationId = nodes[i].key;
+            }
           }
+
           if (nodes[i].deleted) {
-            self.object.delete.push(obj);
+            if(!_.isEmpty(obj)) {
+              self.object.delete.push(obj);
+            }else {
+              self.object.deleteObj.deployConfigurations.push(objDep);
+            }
           } else {
-            self.object.store.push(obj);
+            if (!_.isEmpty(obj)) {
+              self.object.update.push(obj);
+            } else {
+              self.object.store.deployConfigurations.push(objDep);
+            }
           }
         }
         if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
@@ -613,19 +635,24 @@ export class DeployComponent implements OnInit {
 
     const obj: any = {};
     if (this.reDeploy) {
+      obj.controllerId = this.schedulerIds.selected;
       obj.folder = this.path || '/';
       obj.excludes = this.object.excludes;
-    } else {
-      obj.store = this.object.store;
     }
-    if (this.object.delete.length > 0) {
-      obj.delete = this.object.delete;
-    }
-    if (!this.releasable) {
-      obj.controllers = [];
+
+    if (!this.releasable && !this.reDeploy) {
+      obj.controllerIds = [];
       this.selectedSchedulerIds.forEach(element => {
-        obj.controllers.push({controller: element});
+        obj.controllerIds.push({controllerId: element});
       });
+
+      if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
+        obj.store = this.object.store;
+      }
+      if (this.object.deleteObj.deployConfigurations.length > 0) {
+        obj.delete = this.object.deleteObj;
+      }
+
       obj.auditLog = {};
       if (this.comments.comment) {
         obj.auditLog.comment = this.comments.comment;
@@ -635,6 +662,13 @@ export class DeployComponent implements OnInit {
       }
       if (this.comments.ticketLink) {
         obj.auditLog.ticketLink = this.comments.ticketLink;
+      }
+    } else if (this.releasable) {
+      if (this.object.delete.length > 0) {
+        obj.delete = this.object.delete;
+      }
+      if (this.object.update.length > 0) {
+        obj.update = this.object.update;
       }
     }
     let URL = this.releasable ? 'inventory/release' : 'inventory/deployment/deploy';

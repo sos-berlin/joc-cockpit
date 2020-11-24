@@ -63,14 +63,14 @@ const routes: Routes = [
         path: 'controllers',
         loadChildren: () => import('./../controllers/controllers.module').then(m => m.ControllersModule),
         canActivate: [AuthGuard],
-        data: {breadcrumb: 'breadcrumb.label.manageControllers'}
+        data: {breadcrumb: 'breadcrumb.label.manageControllersAndAgents'}
       },
-      {
+/*      {
         path: 'agents',
         loadChildren: () => import('./../agents/agents.module').then(m => m.AgentsModule),
         canActivate: [AuthGuard],
         data: {breadcrumb: 'breadcrumb.label.manageAgents'}
-      },
+      },*/
       {
         path: 'user',
         component: UserComponent,

@@ -12,7 +12,7 @@
     <div class="form-group row">
       <label class="col-sm-3 form-control-label" translate>workflow.label.orderId</label>
       <div class="col-sm-6" [ngClass]="{ 'has-error' : (((orderId.dirty || orderId.touched) && orderId.invalid))}">
-        <input type="text" maxlength="30" name="orderId" required #orderId="ngModel" class="form-control" placeholder="{{'placeholder.orderId' | translate}}"
+        <input type="text" maxlength="30" name="orderId" required #orderId="ngModel" class="form-control" placeholder="{{'workflow.placeholder.orderId' | translate}}"
                [(ngModel)]="order.orderId">
         <div *ngIf="orderId.invalid && (orderId.dirty || orderId.touched)" class="text-danger help-block">
           <div *ngIf="orderId.errors.required">
@@ -173,8 +173,8 @@
     </div>
     <div class="form-group row" *ngIf="permission.Order.change.parameter">
       <div class="col-sm-12">
-        <a class="text-u-l" *ngIf="arguments.length>0" (click)="addArgument()" translate>workflow.button.addAnotherVariable</a>
-        <a class="text-u-l" *ngIf="arguments.length==0" (click)="addArgument()" translate>workflow.button.addVariable</a>
+        <a class="text-u-l" *ngIf="arguments.length>0" (click)="addArgument()" translate>order.button.addAnotherVariable</a>
+        <a class="text-u-l" *ngIf="arguments.length==0" (click)="addArgument()" translate>order.button.addVariable</a>
       </div>
     </div>
   </div>

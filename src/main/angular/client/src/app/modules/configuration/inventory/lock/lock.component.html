@@ -3,7 +3,7 @@
     <div class="box p-a">
       <div class="b-b p-b m-b">
         <span class="text-left">
-          <a (click)="backToListView()"><i nz-tooltip="{{'button.back' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
+          <a (click)="backToListView()"><i nz-tooltip="{{'common.button.back' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
           <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
         </span>
         <div class="inline pull-right">
@@ -23,34 +23,34 @@
       <form *ngIf="lock.configuration">
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>label.name</label>
+          <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.name</label>
           <div class="col-md-8 col-lg-6">
             <input type="text" required identifierValidation [appAutofocus]="true" class="form-control" (blur)="rename(name.invalid)"
                    name="name" [(ngModel)]="lock.name" #name="ngModel" autocomplete="off">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
               <div *ngIf="name.errors.required">
-                <div translate>message.requiredError</div>
+                <div translate>common.message.requiredError</div>
               </div>
-              <div *ngIf="name.errors.invalidIdentifier" translate>message.invalid</div>
+              <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
             </div>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
+          <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
           <div class="col-md-8 col-lg-6">
-            <input type="text" class="form-control" autocomplete="off" placeholder="{{'placeholder.title' | translate}}"
+            <input type="text" class="form-control" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
                    name="title" [(ngModel)]="lock.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>label.maxNonExclusive</label>
+          <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.maxNonExclusive</label>
           <div class="col-md-8 col-lg-6">
             <nz-input-number [nzMin]="0" [nzStep]="1" [nzPlaceHolder]="'inventory.placeholder.enterNonExclusive' | translate"
                    name="maxNonExclusive" [(ngModel)]="lock.configuration.maxNonExclusive" ></nz-input-number>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>label.capacity</label>
+          <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.capacity</label>
           <div class="col-md-8 col-lg-6">
             <nz-input-number [nzMin]="0" [nzStep]="1" [nzPlaceHolder]="'inventory.placeholder.enterCapacity' | translate"
                              name="capacity" [(ngModel)]="lock.configuration.capacity" ></nz-input-number>

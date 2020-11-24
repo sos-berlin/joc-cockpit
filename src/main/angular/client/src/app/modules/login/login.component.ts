@@ -77,18 +77,31 @@ export class LoginComponent implements OnInit {
 
   private getSchedulerIds(): void {
     this.coreService.post('controller/ids', {}).subscribe((res: any) => {
-
       if (res && res.controllerIds && res.controllerIds.length > 0) {
         this.authService.setIds(res);
         this.authService.save();
         this.getComments();
         this.getPermissions();
       } else {
-        this.navigate();
+        this.coreService.post('controllers/security_level', {}).subscribe((result: any) => {
+          this.checkSecurityControllers(result);
+        }, ()=>{
+          this.checkSecurityControllers(null);
+        });
       }
     }, () => {
       this.navigate();
     });
+  }
+
+  private checkSecurityControllers(res) {
+    if (res && res.controllers && res.controllers.length > 0) {
+      this.getComments();
+      this.router.navigate(['/controllers']);
+      this.submitted = false;
+    } else {
+      this.navigate();
+    }
   }
 
   private navigate(){

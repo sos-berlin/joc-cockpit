@@ -29,16 +29,22 @@
                   <i class="fa fa-ellipsis-h"></i></button>
                 <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
                   <ul nz-menu>
-                      <li nz-menu-item >
-                        <a (click)="editController(controller)" translate>common.button.edit</a>
-                      </li>
-                      <li nz-menu-item >
-                        <a (click)="deleteController(controller)" translate="">common.button.delete</a>
-                      </li>
+                    <li nz-menu-item *ngIf="!currentSecurityLevel || currentSecurityLevel === controller.securityLevel">
+                      <a (click)="editController(controller.controllerId)" translate>common.button.edit</a>
+                    </li>
+                    <li nz-menu-item class="bg-hover-color" *ngIf="!currentSecurityLevel || currentSecurityLevel === controller.securityLevel">
+                      <a (click)="deleteController(controller.controllerId)" translate="">common.button.delete</a>
+                    </li>
+                    <li nz-menu-item *ngIf="currentSecurityLevel && currentSecurityLevel !== controller.securityLevel">
+                      <a (click)="migrateController(controller.controllerId)" translate="">controller.button.MigrateControllerToSecurityLevel</a>
+                    </li>
                   </ul>
                 </nz-dropdown-menu>
               </div>
-              <h5 class="text-dark">{{controller}}</h5>
+              <h5 class="text-dark">
+                <a  *ngIf="!currentSecurityLevel || currentSecurityLevel === controller.securityLevel" (click)="editController(controller.controllerId)">{{controller.controllerId}}</a>
+                <span  *ngIf="currentSecurityLevel && currentSecurityLevel !== controller.securityLevel">{{controller.controllerId}}</span>
+              </h5>
             </div>
           </div>
         </div>

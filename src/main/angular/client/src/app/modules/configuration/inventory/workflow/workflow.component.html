@@ -35,30 +35,29 @@
               <li class="nav-item dropdown-separator">
                 <span class="separator"></span>
               </li>
-              <li class="nav-item">
+              <li class="nav-item" [nz-tooltip]="'workflow.button.undo' | translate">
                 <a class="nav-link" [ngClass]="{'disable-link': history.length ===0 || indexOfNextAdd === 0}"
-                   [nz-tooltip]="'workflow.button.undo' | translate" (click)="undo()">
+                    (click)="undo()">
                   <span class="nav-text"> <i nz-icon nzType="undo" nzTheme="outline"></i></span>
                 </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item" [nz-tooltip]="'workflow.button.redo' | translate">
                 <a class="nav-link" [ngClass]="{'disable-link': history.length ===0 || indexOfNextAdd >= history.length}"
-                   [nz-tooltip]="'workflow.button.redo' | translate" (click)="redo()">
+                    (click)="redo()">
                   <span class="nav-text"> <i nz-icon nzType="redo" nzTheme="outline"></i></span>
                 </a>
               </li>
               <li class="nav-item dropdown-separator">
                 <span class="separator"></span>
               </li>
-              <li class="nav-item">
+              <li class="nav-item" [nz-tooltip]="'inventory.button.export' | translate">
                 <a class="nav-link"
-                   [nz-tooltip]="'button.export' | translate" (click)="exportJSON()">
+                    (click)="exportJSON()">
                   <span class="nav-text">  <i nz-icon nzType="download" nzTheme="outline"></i></span>
                 </a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link"
-                   [nz-tooltip]="'button.import' | translate" (click)="importJSON()">
+              <li class="nav-item" [nz-tooltip]="'inventory.button.import' | translate">
+                <a class="nav-link" (click)="importJSON()">
                   <span class="nav-text">  <i nz-icon nzType="upload" nzTheme="outline"></i></span>
                 </a>
               </li>
@@ -261,7 +260,7 @@
             <div *ngIf="maxTries.invalid && (maxTries.dirty || maxTries.touched)"
                  class="text-danger help-block">
               <div *ngIf="maxTries.errors.required">
-                <div translate>message.requiredError</div>
+                <div translate>common.message.requiredError</div>
               </div>
             </div>
           </div>
@@ -311,17 +310,17 @@
   <ul nz-menu >
     <li nz-menu-item>
       <a (click)="copy(node);closeMenu()"><i nz-icon nzType="copy" nzTheme="outline"></i>&nbsp;
-        <span translate>button.copy</span>
+        <span translate>common.button.copy</span>
       </a>
     </li>
     <li nz-menu-item>
       <a (click)="cut(node);closeMenu()"><i nz-icon nzType="scissor" nzTheme="outline"></i>&nbsp;
-        <span translate>button.cut</span>
+        <span translate>common.button.cut</span>
       </a>
     </li>
     <li nz-menu-item>
       <a (click)="delete();closeMenu()"><i nz-icon nzType="delete" nzTheme="outline"></i>&nbsp;
-        <span translate>button.delete</span>
+        <span translate>common.button.delete</span>
       </a>
     </li>
   </ul>

@@ -1,9 +1,17 @@
-<div class="m-a" style="box-shadow: 0 4px 8px rgba(0,0,0,0.18)">
+<div [ngClass]="{'m-a' : isModal}" style="box-shadow: 0 4px 8px rgba(0,0,0,.18)" >
+  <div class="modal-header" *ngIf="!isModal">
+    <h4 class="modal-title">
+      <span translate>agent.label.addAgents</span>
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
   <form #myForm="ngForm">
     <div class="modal-body p-a">
-      <div class="row m-b-sm">
+      <div class="row m-b-sm" *ngIf="isModal">
         <label class="col-sm-12" >
-          <span class="text-primary  text-capitalize" translate>agent.label.addAgents</span>
+          <span class="text-primary" translate>agent.label.addAgents</span>
         </label>
         <a (click)="activeModal.dismiss('Cross click')" style="position: fixed; right: 10px; top: 0; font-size: 22px; opacity: .7"><i class="fa fa-times-circle"></i></a>
       </div>
@@ -14,9 +22,16 @@
               <div class="form-group row">
                 <label class="col-sm-3 form-control-label" translate>agent.label.agentId</label>
                 <div class=" col-sm-8" [ngClass]="{'has-error' : ((agentId.dirty || agentId.touched) && agentId.invalid)}">
-                  <input type="text" class="form-control" maxlength="30" name="agentId{{i}}"
+                  <input type="text" identifierValidation class="form-control" maxlength="30" name="agentId{{i}}"
                           required [(ngModel)]="agent.agentId" #agentId="ngModel"
                           placeholder="{{'agent.placeholder.enterAgentId' | translate}}">
+                  <div *ngIf="agentId.invalid && (agentId.dirty || agentId.touched)"
+                       class="text-danger help-block">
+                    <div *ngIf="(agentId.errors && agentId.errors.required)">
+                      <div translate>common.message.requiredError</div>
+                    </div>
+                    <div *ngIf="agentId.errors.invalidIdentifier" translate>common.message.invalid</div>
+                  </div>
                 </div>
                 <div class="col-sm-1 p-l-0" *ngIf="agents.length > 1">
                   <a class="text-hover-color"><i (click)="removeAgent(i)" class="fa fa-times m-t-sm text-muted"></i></a>
@@ -67,11 +82,19 @@
           </div>
         </div>
       </div>
-      <div>
+      <div *ngIf="isModal">
         <button type="button" class="btn btn-grey btn-sm" [disabled]="!myForm.form.valid" (click)="close()" translate>
           common.button.close
         </button>
       </div>
+    </div>
+    <div class="modal-footer" *ngIf="!isModal">
+      <button type="submit" [disabled]="!myForm.form.valid" (click)="close()" class="btn btn-primary btn-sm">
+        {{'common.button.submit' | translate}}
+      </button>
+      <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
+        common.button.cancel
+      </button>
     </div>
   </form>
 </div>

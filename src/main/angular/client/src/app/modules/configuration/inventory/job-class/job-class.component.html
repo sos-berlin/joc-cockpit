@@ -3,7 +3,7 @@
     <div class="box p-a">
       <div class="b-b p-b m-b">
         <span class="text-left">
-          <a (click)="backToListView()"><i nz-tooltip="{{'button.back' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
+          <a (click)="backToListView()"><i nz-tooltip="{{'common.button.back' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
           <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
         </span>
         <div class="inline pull-right">
@@ -22,39 +22,39 @@
       </div>
       <form *ngIf="jobClass.configuration">
         <div class="form-group row" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>label.name</label>
+          <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.name</label>
           <div class="col-md-8 col-lg-6">
             <input type="text" class="form-control" [appAutofocus]="true" identifierValidation required name="name" #name="ngModel" autocomplete="off"
                    [(ngModel)]="jobClass.name" (blur)="rename(name.invalid)">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
               <div *ngIf="name.errors.required">
-                <div translate>message.requiredError</div>
+                <div translate>common.message.requiredError</div>
               </div>
-              <div *ngIf="name.errors.invalidIdentifier" translate>message.invalid</div>
+              <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
             </div>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
+          <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
           <div class="col-md-8 col-lg-6">
-            <input type="text" class="form-control" autocomplete="off" placeholder="{{'placeholder.title' | translate}}"
+            <input type="text" class="form-control" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
                    name="title" [(ngModel)]="jobClass.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
         <div class="form-group row" [ngClass]="{ 'has-error' : (((maxProcesses.dirty || maxProcesses.touched) && maxProcesses.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>label.maxProcesses</label>
+          <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.maxProcesses</label>
           <div class="col-md-8 col-lg-6">
-            <nz-input-number [nzMin]="0" #maxProcesses="ngModel" required [nzStep]="1" [nzPlaceHolder]="'placeholder.maximumProcesses' | translate"
+            <nz-input-number [nzMin]="0" #maxProcesses="ngModel" required [nzStep]="1" [nzPlaceHolder]="'inventory.placeholder.maximumProcesses' | translate"
                              name="max" [(ngModel)]="jobClass.configuration.maxProcesses" (nzBlur)="saveJSON()"></nz-input-number>
             <div *ngIf="maxProcesses.invalid && (maxProcesses.dirty || maxProcesses.touched)" class="text-danger help-block">
               <div *ngIf="maxProcesses.errors.required">
-                <div translate>message.requiredError</div>
+                <div translate>common.message.requiredError</div>
               </div>
             </div>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>label.priority</label>
+          <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.priority</label>
           <div class="col-md-8 col-lg-6">
             <nz-select name="priority" [nzPlaceHolder]="'inventory.placeholder.selectPriority' | translate"
                        [(ngModel)]="jobClass.configuration.priority" (nzBlur)="saveJSON()">

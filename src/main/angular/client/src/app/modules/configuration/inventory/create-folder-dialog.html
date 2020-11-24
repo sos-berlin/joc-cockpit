@@ -22,7 +22,7 @@
           <div *ngIf="(name.errors && name.errors.required)">
             <div translate>common.message.requiredError</div>
           </div>
-          <div *ngIf="name.errors.invalidIdentifier" translate>message.invalid</div>
+          <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
         </div>
         <div class="help-block text-danger" *ngIf="!isUnique">
           <div translate>common.message.uniqueError</div>

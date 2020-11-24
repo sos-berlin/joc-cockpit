@@ -85,7 +85,7 @@
                     <i *ngIf="orderFilters.reverse" class="fa fa-caret-down"></i>
                   </span>
                   <span *ngIf="orderFilters.filter.sortBy ==='path'">
-                    {{'order.label.path' | translate}}
+                    {{'common.label.path' | translate}}
                     <i *ngIf="!orderFilters.reverse" class="fa fa-caret-up"></i>
                     <i *ngIf="orderFilters.reverse" class="fa fa-caret-down"></i>
                   </span>
@@ -97,7 +97,7 @@
                     <a (click)="sort('orderId')" translate>order.label.orderId</a>
                   </li>
                   <li nz-menu-item >
-                    <a (click)="sort('path')" translate>order.label.path</a>
+                    <a (click)="sort('path')" translate>common.label.path</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
