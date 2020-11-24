@@ -13,6 +13,11 @@ import * as _ from 'underscore';
 
 declare const $;
 
+const capitalize = (s) => {
+  if (typeof s !== 'string') return '';
+  return s.charAt(0).toUpperCase() + s.slice(1);
+};
+
 @Component({
   selector: 'app-deploy-draft-modal',
   templateUrl: './single-deploy-dialog.html'
@@ -27,7 +32,7 @@ export class SingleDeployComponent implements OnInit {
   deployablesObject = [];
   loading = true;
   submitted = false;
-  comments: any = {radio : 'predefined'};
+  comments: any = {radio: 'predefined'};
   required: boolean;
   messageList: any;
   object: any = {
@@ -109,29 +114,39 @@ export class SingleDeployComponent implements OnInit {
           if (this.deployablesObject[i].deployId || this.deployablesObject[i].deploymentId) {
             objDep.deployConfiguration = {
               path: this.deployablesObject[i].folder + (this.deployablesObject[i].folder === '/' ? '' : '/') + this.deployablesObject[i].objectName,
-              objectType: this.deployablesObject[i].objectType,
-              commitId: this.deployablesObject[i].deployId || this.deployablesObject[i].deploymentId
+              objectType: capitalize(this.deployablesObject[i].objectType.toLowerCase()),
+              commitId: ''
             };
+            for (let j = 0; j < this.deployablesObject[i].deployablesVersions.length; j++) {
+              if (this.deployablesObject[i].deployablesVersions[j].deploymentId === this.deployablesObject[i].deploymentId) {
+                objDep.deployConfiguration.commitId = this.deployablesObject[i].deployablesVersions[j].commitId;
+                break;
+              }
+            }
           } else {
             objDep.draftConfiguration = {
               path: this.deployablesObject[i].folder + (this.deployablesObject[i].folder === '/' ? '' : '/') + this.deployablesObject[i].objectName,
-              objectType: this.deployablesObject[i].objectType
+              objectType: capitalize(this.deployablesObject[i].objectType.toLowerCase()),
             };
           }
         } else {
           obj.id = this.deployablesObject[i].id;
         }
         if (this.deployablesObject[i].deleted) {
-          if(!_.isEmpty(obj)) {
+          if (!_.isEmpty(obj)) {
             self.object.delete.push(obj);
-          }else {
+          } else if (objDep.deployConfiguration) {
             self.object.deleteObj.deployConfigurations.push(objDep);
           }
         } else {
           if (!_.isEmpty(obj)) {
             self.object.update.push(obj);
           } else {
-            self.object.store.deployConfigurations.push(objDep);
+            if (objDep.deployConfiguration) {
+              self.object.store.deployConfigurations.push(objDep);
+            } else {
+              self.object.store.draftConfigurations.push(objDep);
+            }
           }
         }
       }
@@ -141,14 +156,20 @@ export class SingleDeployComponent implements OnInit {
   deploy() {
     this.submitted = true;
     this.getJSObject();
-    const obj: any = {
-    };
+    const obj: any = {};
     if (!this.releasable) {
       obj.controllerIds = [];
-      if(this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
+      if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
+        if (this.object.store.draftConfigurations.length === 0) {
+          delete this.object.store['draftConfigurations'];
+        }
+        if (this.object.store.deployConfigurations.length === 0) {
+          delete this.object.store['deployConfigurations'];
+        }
         obj.store = this.object.store;
       }
-      if(this.object.deleteObj.deployConfigurations.length > 0) {
+
+      if (this.object.deleteObj.deployConfigurations.length > 0) {
         obj.delete = this.object.deleteObj;
       }
       obj.auditLog = {};
@@ -186,9 +207,9 @@ export class SingleDeployComponent implements OnInit {
 
   handleCheckbox(node): void {
     node.isChecked = !node.isChecked;
-    let flag= true;
+    let flag = true;
     for (let i = 0; i < this.deployablesObject.length; i++) {
-      if(!this.deployablesObject[i].isChecked){
+      if (!this.deployablesObject[i].isChecked) {
         flag = false;
         break;
       }
@@ -558,21 +579,31 @@ export class DeployComponent implements OnInit {
 
   getJSObject() {
     const self = this;
+
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if ((nodes[i].type || nodes[i].isFolder) && nodes[i].recursivelyDeploy) {
+
           let obj: any = {}, objDep: any = {};
           if (!self.releasable && !self.reDeploy) {
             if (nodes[i].deployId || nodes[i].deploymentId) {
               objDep.deployConfiguration = {
-                path: nodes[i].folder + (nodes[i].folder === '/' ? '' : '/') + nodes[i].objectName,
-                objectType: nodes[i].objectType,
-                commitId: nodes[i].deployId || nodes[i].deploymentId
+                path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
+                objectType: nodes[i].type ? capitalize(nodes[i].type.toLowerCase()) : 'Folder',
+                commitId: ''
               };
+              if (nodes[i].deployablesVersions) {
+                for (let j = 0; j < nodes[i].deployablesVersions.length; j++) {
+                  if (nodes[i].deployablesVersions[j].deploymentId === nodes[i].deploymentId) {
+                    objDep.deployConfiguration.commitId = nodes[i].deployablesVersions[j].commitId;
+                    break;
+                  }
+                }
+              }
             } else {
-              objDep.draftConfiguration = {
-                path: nodes[i].folder + (nodes[i].folder === '/' ? '' : '/') + nodes[i].objectName,
-                objectType: nodes[i].objectType
+              objDep[nodes[i].deleted ? 'deployConfiguration' : 'draftConfiguration'] = {
+                path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
+                objectType: nodes[i].type ? capitalize(nodes[i].type.toLowerCase()) : 'Folder'
               };
             }
           } else {
@@ -584,16 +615,20 @@ export class DeployComponent implements OnInit {
           }
 
           if (nodes[i].deleted) {
-            if(!_.isEmpty(obj)) {
+            if (!_.isEmpty(obj)) {
               self.object.delete.push(obj);
-            }else {
+            } else if (objDep.deployConfiguration) {
               self.object.deleteObj.deployConfigurations.push(objDep);
             }
           } else {
             if (!_.isEmpty(obj)) {
               self.object.update.push(obj);
             } else {
-              self.object.store.deployConfigurations.push(objDep);
+              if (objDep.deployConfiguration) {
+                self.object.store.deployConfigurations.push(objDep);
+              } else {
+                self.object.store.draftConfigurations.push(objDep);
+              }
             }
           }
         }
@@ -647,8 +682,15 @@ export class DeployComponent implements OnInit {
       });
 
       if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
+        if (this.object.store.draftConfigurations.length === 0) {
+          delete this.object.store['draftConfigurations'];
+        }
+        if (this.object.store.deployConfigurations.length === 0) {
+          delete this.object.store['deployConfigurations'];
+        }
         obj.store = this.object.store;
       }
+
       if (this.object.deleteObj.deployConfigurations.length > 0) {
         obj.delete = this.object.deleteObj;
       }
@@ -1792,12 +1834,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
       function traverseTree(data) {
         if (path && data.path && (path === data.path)) {
           self.updateObjects(data, (children) => {
-            if(data.children[0]) {
+            if (data.children[0]) {
               const index = data.children[0].controller ? 1 : 0;
               const index2 = data.children[1].schedule ? 1 : 0;
               data.children.splice(0, index, children[0]);
               data.children.splice(1, index2, children[1]);
-            }else{
+            } else {
               data.children = children;
             }
             self.updateTree();

@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>label.writeComment</span>
+    <span translate>common.label.writeComment</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
@@ -9,19 +9,15 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
     <div class="form-group row" *ngIf="comments.node">
-      <label class="col-sm-4" translate>label.node</label>
+      <label class="col-sm-4" translate>common.label.node</label>
       <label class="col-sm-8">{{comments.node}}</label>
     </div>
     <div class="form-group row">
       <label class="col-sm-4" translate>{{comments.type | translate}}</label>
       <label class="col-sm-8">{{comments.name}} <i *ngIf="comments.title">-</i> <span class="text-muted">{{comments.title}}</span></label>
     </div>
-    <div class="form-group row" *ngIf="comments.task">
-      <label class="col-sm-4" translate>label.taskId</label>
-      <label class="col-sm-8">{{comments.task}}</label>
-    </div>
     <div class="form-group row">
-      <label class="col-sm-4" translate>label.operation</label>
+      <label class="col-sm-4" translate>common.label.operation</label>
       <label class="col-sm-8">{{comments.operation | translate}}</label>
     </div>
     <div class="form-group row">
@@ -30,23 +26,23 @@
         <div>
           <label class="md-check w-160">
             <input type="radio" name="radio" [(ngModel)]="comments.radio" value="predefined">
-            <i class="primary"></i> <span translate>label.predefined</span>
+            <i class="primary"></i> <span translate>common.label.predefined</span>
           </label>
           <label class="md-check w-160">
             <input type="radio" name="radio" [(ngModel)]="comments.radio" value="new">
-            <i class="primary"></i> <span translate>label.individual</span>
+            <i class="primary"></i> <span translate>common.label.individual</span>
           </label>
         </div>
       </div>
     </div>
     <div class="form-group row" *ngIf="comments.radio=='predefined'"
          [ngClass]="{'has-error' : ((comment.dirty || comment.touched) && comment.invalid)}">
-      <label class="col-sm-4 form-control-label" translate>label.selectComment</label>
+      <label class="col-sm-4 form-control-label" translate>common.label.selectComment</label>
 
       <div class="col-sm-6">
-        <nz-select nzPlaceHolder="{{'label.selectPredefinedReason' | translate}}" [(ngModel)]="comments.comment" name="comment" #comment="ngModel"
+        <nz-select nzPlaceHolder="{{'common.label.selectPredefinedReason' | translate}}" [(ngModel)]="comments.comment" name="comment" #comment="ngModel"
                 [required]="required && comments.radio=='predefined'">
-          <nz-option [nzValue]="''" [nzLabel]="'label.selectPredefinedReason' | translate"></nz-option>
+          <nz-option [nzValue]="''" [nzLabel]="'common.label.selectPredefinedReason' | translate"></nz-option>
           <nz-option *ngFor="let list of messageList" [nzLabel]="list" [nzValue]="list"></nz-option>
         </nz-select>
         <div *ngIf="comment.invalid && (comment.dirty || comment.touched)" class="text-danger m-t-xs">
@@ -81,42 +77,42 @@
     </div>
     <div class="form-group row"
          [ngClass]="{'has-error' : ((timeSpent.dirty || timeSpent.touched) && timeSpent.invalid)}">
-      <label class="col-sm-4 form-control-label" translate>label.timeSpend</label>
+      <label class="col-sm-4 form-control-label" translate>common.label.timeSpend</label>
       <div class="col-sm-6">
         <input type="text" pattern="[1-9[0-9]*" class="form-control" name="timeSpent" #timeSpent="ngModel"
-               placeholder="{{'placeholder.timeSpend' | translate}}" [(ngModel)]="comments.timeSpent">
+               placeholder="{{'common.placeholder.timeSpend' | translate}}" [(ngModel)]="comments.timeSpent">
         <div *ngIf="timeSpent.invalid && (timeSpent.dirty || timeSpent.touched)" class="text-danger m-t-xs">
           <div *ngIf="timeSpent.invalid && !timeSpent.errors.required" translate>
-            message.invalid
+            common.message.invalid
           </div>
         </div>
       </div>
     </div>
     <div class="form-group row"
          [ngClass]="{'has-error' : ((ticketLink.dirty || ticketLink.touched) && ticketLink.invalid)}">
-      <label class="col-sm-4 form-control-label" translate>label.ticketLink</label>
+      <label class="col-sm-4 form-control-label" translate>common.label.ticketLink</label>
       <div class="col-sm-6">
         <input type="text"
                pattern="(https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|www\\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9]\\.[^\\s]{2,}|www\\.[a-zA-Z0-9]\\.[^\\s]{2,})"
                class="form-control" name="ticketLink" #ticketLink="ngModel"
-               placeholder="{{'placeholder.ticketLink' | translate}}"
+               placeholder="{{'common.placeholder.ticketLink' | translate}}"
                [(ngModel)]="comments.ticketLink">
         <div *ngIf="ticketLink.invalid && (ticketLink.dirty || ticketLink.touched)"
              class="text-danger m-t-xs">
           <div *ngIf="ticketLink.invalid && !ticketLink.errors.required" translate>
-            message.invalid
+            common.message.invalid
           </div>
         </div>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm" translate>
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
-      {{'button.submit' | translate}}
+    <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
     </button>
     <button type="button" class="btn btn-outline-dark btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
-      button.cancel
+      common.button.cancel
     </button>
   </div>
 </form>

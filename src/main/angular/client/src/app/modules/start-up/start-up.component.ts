@@ -29,6 +29,7 @@ export class AgentModalComponent implements OnInit {
 
   addAgent() {
     const param = {
+      new : true,
       agentId: '',
       agentName: '',
       url: ''

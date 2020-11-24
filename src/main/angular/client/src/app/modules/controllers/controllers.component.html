@@ -21,7 +21,7 @@
   <div class="row m-b m-t-xs">
     <div class="col-md-12">
       <div class="box p-a">
-        <div *ngFor="let controller of controllers;" class="box-body p-b-0">
+        <div *ngFor="let controller of controllers; let id = index" class="box-body p-b-0">
           <div class="row">
             <div class="col-sm-12">
               <div class="btn-group dropdown pull-left m-r-sm">
@@ -44,9 +44,28 @@
               <h5 class="text-dark">
                 <a  *ngIf="!currentSecurityLevel || currentSecurityLevel === controller.securityLevel" (click)="editController(controller.controllerId)">{{controller.controllerId}}</a>
                 <span  *ngIf="currentSecurityLevel && currentSecurityLevel !== controller.securityLevel">{{controller.controllerId}}</span>
+
+                <i (click)="showPanel[id] = true;getAgents(controller)" [hidden]="showPanel[id]" class="cursor fa fa-caret-up m-l-xs"></i>
+                <i (click)="showPanel[id]  = false" *ngIf="showPanel[id]"
+                   class="cursor fa fa-caret-down m-l-xs"></i>
               </h5>
             </div>
           </div>
+          <div *ngIf="showPanel[id]" class="row">
+            <div class="col-lg-1 col-md-2 col-sm-4"><span class="p-l-lg" translate>agent.label.agents</span></div>
+            <div class="col-lg-9 col-md-10 col-sm-8">
+              <div *ngFor="let agent of controller.agents" class="role">
+                <span [ngClass]="{'disable-link' : agent.disabled}" class="fa fa-circle" style="font-size: 9px"></span>
+                <a [ngClass]="{'disable-link' : agent.disabled}" (click)="editAgent(agent, controller)" class="cursor">
+                  {{agent.agentName}}
+                </a>
+                -
+                <a class="text-primary p-l-xs">{{agent.url}}</a>
+                <i (click)="editAgent(agent, controller)" class="fa fa-pencil"></i>
+              </div>
+            </div>
+          </div>
+          <hr *ngIf="showPanel[id]">
         </div>
         <div *ngIf="controllers.length==0">
           <app-empty-data></app-empty-data>

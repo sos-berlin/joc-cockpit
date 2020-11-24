@@ -12,8 +12,8 @@
       <div class="row">
         <div class="col-sm-12 text m-b">
           <div class="form-group row m-b-0" *ngFor="let variable of variables; let i = index">
-            <div class="col-md-5 col-sm-5 m-b-sm text-left" *ngIf="i==0" translate>label.name</div>
-            <div class="col-md-6 col-sm-6 m-b-sm text-left" *ngIf="i==0" translate>label.value</div>
+            <div class="col-md-5 col-sm-5 m-b-sm text-left" *ngIf="i==0" translate>common.label.name</div>
+            <div class="col-md-6 col-sm-6 m-b-sm text-left" *ngIf="i==0" translate>common.label.value</div>
             <div class="col-md-5 col-sm-6 m-b-sm">
               <input autocomplete="off" type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == variables.length -1"
                      [(ngModel)]="variable.name" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
@@ -27,9 +27,9 @@
           <div class="form-group row m-b-0 m-t-sm" *ngIf="!updateOnly">
             <div class="col-sm-12 col-md-12">
               <a class="text-u-l" *ngIf="variables.length>0" (click)="addVariable()"
-                 translate>dailyPlan.button.addAnotherVariable</a>
+                 translate>order.button.addAnotherVariable</a>
               <a class="text-u-l" *ngIf="variables.length==0" (click)="addVariable()"
-                 translate>dailyPlan.button.addVariable</a>
+                 translate>order.button.addVariable</a>
             </div>
           </div>
         </div>

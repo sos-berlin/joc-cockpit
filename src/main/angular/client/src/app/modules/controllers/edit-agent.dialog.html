@@ -1,10 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="!new">
       <span translate>agent.label.editAgent</span>:
       <span [innerHtml]="data.agentName"></span>
-    </span>
-    <span *ngIf="new" translate>agent.label.addAgent</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
@@ -14,30 +11,21 @@
   <div class="modal-body p-a">
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" translate>agent.label.agentId</label>
-      <div class="col-sm-8" [ngClass]="{'has-error' : ((agentid.dirty || agentid.touched) && agentid.invalid) || !isUniqueId}">
-        <input type="text" class="form-control" maxlength="30" name="agentId"
-               required [(ngModel)]="agent.agentId" #agentid="ngModel" (blur)="checkId(agent.agentId)"
-               placeholder="{{'agent.placeholder.enterAgentId' | translate}}">
-        <div *ngIf="agentid.invalid && (agentid.dirty || agentid.touched)" class="text-danger help-block">
-          <div *ngIf="agentid.errors.required">
-            <div translate>message.requiredError</div>
-          </div>
-        </div>
-        <div class="help-block text-danger" *ngIf="!isUniqueId">
-          <div translate>message.uniqueError</div>
-        </div>
+      <div class="col-sm-8">
+        {{agent.agentId}}
       </div>
     </div>
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" translate>agent.label.agentName</label>
       <div class=" col-sm-8" [ngClass]="{'has-error' : ((agentName.dirty || agentName.touched) && agentName.invalid)}">
-        <input type="text" class="form-control" name="agentName"
+        <input type="text" identifierValidation class="form-control" name="agentName" [appAutofocus]="true"
                required [(ngModel)]="agent.agentName" #agentName="ngModel"
                placeholder="{{'agent.placeholder.enterAgentName' | translate}}">
         <div *ngIf="agentName.invalid && (agentName.dirty || agentName.touched)" class="text-danger help-block">
           <div *ngIf="agentName.errors.required">
             <div translate>message.requiredError</div>
           </div>
+          <div *ngIf="agentName.errors.invalidIdentifier" translate>common.message.invalid</div>
         </div>
       </div>
     </div>
@@ -46,6 +34,12 @@
       <div class=" col-sm-8" [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}">
         <input type="url" class="form-control" name="url" #url="ngModel"
                required [(ngModel)]="agent.url" placeholder="http://host:port">
+        <div *ngIf="url.invalid && (url.dirty || url.touched)"
+             class="text-danger help-block">
+          <div *ngIf="(url.errors && url.errors.required)">
+            <div translate>common.message.requiredError</div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="form-group row">
@@ -68,7 +62,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || !isUniqueId || submitted" class="btn btn-primary btn-sm">
+    <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>

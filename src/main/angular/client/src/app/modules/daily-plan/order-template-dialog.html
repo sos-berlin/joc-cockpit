@@ -17,11 +17,11 @@
   </div>
   <div class="modal-footer">
     <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>&nbsp;
-      {{'button.submit' | translate}}
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
     </button>
     <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
-      button.cancel
+      common.button.cancel
     </button>
   </div>
 </form>

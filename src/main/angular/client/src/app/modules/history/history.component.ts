@@ -777,7 +777,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       // obj = this.deploymentParseDate(obj);
     } else {
       obj = this.setDeploymentDateRange(obj);
-      obj.state = this.deployment.filter.state !== 'ALL' ? this.deployment.filter.state : undefined;
+      obj.state = (this.deployment.filter.state && this.deployment.filter.state !== 'ALL') ? this.deployment.filter.state : undefined;
     }
     this.convertRequestBody(obj);
     this.coreService.post('inventory/deployment/history', obj).subscribe((res: any) => {
@@ -998,9 +998,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
       this.deployment.filter.state = '';
       this.deployment.filter.date = '';
-      filter.state = obj.state !== 'ALL' ? obj.state : undefined;
-      filter.operation = obj.operation;
-      filter.deployType = obj.deployType;
+      filter.state = (obj.state && obj.state !== 'ALL') ? obj.state : undefined;
+      filter.operation = obj.operation ? obj.operation : undefined;
+      filter.deployType = obj.deployType ? obj.deployType : undefined;
 
       if (obj.radio == 'process') {
         filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);

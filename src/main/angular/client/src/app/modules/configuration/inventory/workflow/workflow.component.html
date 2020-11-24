@@ -166,7 +166,7 @@
             <span translate>workflow.label.branchId</span> ({{i + 1}})
           </label>
           <div class="col-md-8 col-lg-9">
-            <input type="text" identifierValidation required class="form-control" [maxLength]="10" [appAutofocus]="i == selectedNode.obj.branches.length -1"
+            <input type="text" identifierValidation required class="form-control" [maxLength]="10" [appAutofocus]="i == 0"
                    name="branch{{i}}" [(ngModel)]="branch.label">
           </div>
         </div>

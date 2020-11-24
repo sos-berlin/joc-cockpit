@@ -61,7 +61,11 @@ export class AuthInterceptor implements HttpInterceptor {
             this.toasterService.pop('error', title, msg);
             this.authService.clearUser();
             this.authService.clearStorage();
-            return this.router.navigate(['login'], {queryParams: {returnUrl: this.router.url}});
+            let url = this.router.url;
+            if (url && url.match(/returnUrl/)) {
+              url = url.substring(0, url.indexOf('returnUrl'));
+            }
+            return this.router.navigate(['login'], {queryParams: {returnUrl: url}});
           } else if (err.status && err.status !== 434) {
             if (err.error.error) {
               this.toasterService.pop('error', '', err.error.error.message);

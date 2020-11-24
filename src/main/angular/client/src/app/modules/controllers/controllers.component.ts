@@ -1,10 +1,106 @@
-import {Component, OnInit} from '@angular/core';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Component, Input, OnInit} from '@angular/core';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../services/core.service';
 import {StartUpModalComponent} from '../start-up/start-up.component';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
+
+@Component({
+  selector: 'app-agent-modal',
+  templateUrl: './edit-agent.dialog.html'
+})
+export class UpdateAgentModalComponent implements OnInit {
+  @Input() agents: any;
+  @Input() data: any;
+  @Input() controllerId: any;
+  agent: any = {};
+  submitted = false;
+  isUniqueId = true;
+  messageList: any = [];
+  comments: any = {};
+  required = false;
+  preferences: any;
+  display: any;
+
+  constructor(public coreService: CoreService, public activeModal: NgbActiveModal) {
+  }
+
+  ngOnInit() {
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    }
+    this.display = this.preferences.auditLog;
+    this.comments.radio = 'predefined';
+    if (sessionStorage.comments) {
+      this.messageList = JSON.parse(sessionStorage.comments);
+    }
+    if (sessionStorage.$SOS$FORCELOGING == 'true') {
+      this.required = true;
+    }
+    if (this.data) {
+      this.agent = this.coreService.clone(this.data);
+    }
+  }
+
+  checkDisable() {
+    if (this.agent.disabled) {
+      const x = this.agents.filter((agent) => {
+        return agent.disabled;
+      });
+      let flag = x.length >= this.agents.length - 1;
+      if (flag) {
+        setTimeout(() => {
+          this.agent.disabled = false;
+        }, 0);
+      }
+    }
+  }
+
+  checkId(newId) {
+    this.isUniqueId = true;
+    for (let i = 0; i < this.agents.length; i++) {
+      if (this.agents[i].agentId === newId && (this.data && newId !== this.data.agentId)) {
+        this.isUniqueId = false;
+        break;
+      }
+    }
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    let obj: any = {controllerId: this.controllerId};
+    if (this.display) {
+      obj.auditLog = {};
+      if (this.comments.comment) {
+        obj.auditLog.comment = this.comments.comment;
+      }
+      if (this.comments.timeSpent) {
+        obj.auditLog.timeSpent = this.comments.timeSpent;
+      }
+      if (this.comments.ticketLink) {
+        obj.auditLog.ticketLink = this.comments.ticketLink;
+      }
+    }
+    if (this.data) {
+      for (let i = 0; i < this.agents.length; i++) {
+        if (this.agents[i].agentId === this.data.agentId && this.agents[i].agentName === this.data.agentName) {
+          this.agents[i] = this.agent;
+          break;
+        }
+      }
+    } else {
+      this.agents.push(this.agent);
+    }
+    obj.agents = this.agents;
+    this.coreService.post('agents/store', obj).subscribe(res => {
+      this.submitted = false;
+      this.activeModal.close();
+    }, err => {
+      this.submitted = false;
+    });
+  }
+}
 
 @Component({
   selector: 'app-controllers',
@@ -14,6 +110,7 @@ export class ControllersComponent implements OnInit {
   data: any = [];
   controllers: any = [];
   currentSecurityLevel: string;
+  showPanel = [true];
 
   constructor(private coreService: CoreService, private modalService: NgbModal, private authService: AuthService,
               private dataService: DataService) {
@@ -62,6 +159,9 @@ export class ControllersComponent implements OnInit {
     } else if (securityData) {
       this.controllers = securityData.controllers;
     }
+    if (this.controllers.length > 0) {
+      this.getAgents(this.controllers[0]);
+    }
   }
 
   migrateController(controller) {
@@ -69,6 +169,18 @@ export class ControllersComponent implements OnInit {
       .subscribe((data: any) => {
         this.getSecurity();
       });
+  }
+
+  getAgents(controller): void {
+    if (!controller.agents) {
+      this.coreService.post('agents/p', {
+        controllerId: controller.controllerId
+      }).subscribe((data: any) => {
+        controller.agents = data.agents;
+      }, () => {
+        controller.agents = [];
+      });
+    }
   }
 
   addController() {
@@ -114,18 +226,34 @@ export class ControllersComponent implements OnInit {
     });
   }
 
+
+  editAgent(agent, controller) {
+    console.log(agent, controller)
+    const modalRef = this.modalService.open(UpdateAgentModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.controllerId = controller.controllerId;
+    modalRef.componentInstance.agents = controller.agents;
+    modalRef.componentInstance.data = agent;
+    modalRef.componentInstance.modalRef = modalRef;
+    modalRef.result.then(() => {
+      this.getData();
+    }, () => {
+
+    });
+  }
+
   private checkIsFirstEntry(_permission) {
     this.authService.setPermissions(_permission);
     this.authService.save();
-    if (this.controllers.length === 1) {
-      this.authService.savePermission(this.controllers[0]);
-      this.dataService.switchScheduler(this.controllers[0]);
+    if (this.data.length === 1) {
+      this.authService.savePermission(this.data[0]);
+      this.dataService.switchScheduler(this.data[0]);
     }
   }
 
   private getSchedulerIds(permission): void {
     this.coreService.post('controller/ids', {}).subscribe((res: any) => {
-      this.controllers = res.controllerIds;
+      this.data = res.controllerIds;
+      this.getSecurity();
       this.authService.setIds(res);
       this.authService.save();
       if (permission) {
