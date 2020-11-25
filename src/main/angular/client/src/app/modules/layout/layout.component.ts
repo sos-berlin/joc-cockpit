@@ -284,8 +284,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
       preferences.maxAuditLogRecords = 10000;
       preferences.maxHistoryPerOrder = 30;
       preferences.maxHistoryPerTask = 10;
-      preferences.maxHistoryPerJobchain = 30;
-      preferences.maxOrderPerJobchain = 5;
       preferences.maxAuditLogPerObject = 10;
       preferences.maxEntryPerPage = '1000';
       preferences.entryPerPage = '10';
@@ -294,10 +292,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
       preferences.theme = 'light';
       preferences.historyView = 'current';
       preferences.adtLog = 'current';
-      preferences.agentTask = 'current';
       preferences.fileTransfer = 'current';
       preferences.logTimezone = true;
-      preferences.showTasks = true;
       preferences.showOrders = false;
       if (sessionStorage.$SOS$FORCELOGING === 'true' || sessionStorage.$SOS$FORCELOGING === true) {
         preferences.auditLog = true;
@@ -334,7 +330,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       account: user,
       configurationType: 'PROFILE'
     };
-    let preferences: any = {};
+    const preferences: any = {};
     this.coreService.post('configurations', configObj).subscribe((res: any) => {
       sessionStorage.preferenceId = 0;
       if (res.configurations && res.configurations.length > 0) {

@@ -160,7 +160,7 @@
                     <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
-                    <i *ngIf="node.origin.object == 'ORDERTEMPLATE'" nz-icon nzType="unordered-list" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object == 'ORDERTEMPLATE'" nz-icon nzType="schedule" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.origin.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
                     <span *ngIf="node.origin.type" class="fa fa-check-circle-o text-xs" [ngClass]="{'fa-circle-o': !node.origin.valid, 'text-success' :node.origin.deploymentId}" style="margin-top: 4px"></span>
                     <span class="p-l-sm">{{node.origin.name | translate}}</span>

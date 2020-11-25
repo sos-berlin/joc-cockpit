@@ -127,12 +127,12 @@
             <nz-tab [nzTitle]="'workflow.label.script' | translate" (nzClick)="reloadScript()">
               <div class="row" *ngIf="isDisplay">
                 <div class="col-md-12">
-                  <div class="b-a p-a-xs" [ngClass]="{'invalid': obj.script || (script.invalid && (script.dirty || script.touched))}">
+                  <div class="b-a p-a-xs" [ngClass]="{'invalid': obj.script || (script.invalid && (script.dirty && script.touched))}">
                     <ngx-codemirror required #script="ngModel" [(ngModel)]="selectedNode.job.executable.script"
                                     [options]="cmOption" (focusChange)="focusChange()"
                     ></ngx-codemirror>
                   </div>
-                  <div *ngIf="obj.script || (script.invalid && (script.dirty || script.touched))"
+                  <div *ngIf="obj.script || (script.invalid && (script.dirty && script.touched))"
                        class="text-danger help-block">
                     <div *ngIf="(script.errors && script.errors.required) || obj.script">
                       <div translate>common.message.requiredError</div>
