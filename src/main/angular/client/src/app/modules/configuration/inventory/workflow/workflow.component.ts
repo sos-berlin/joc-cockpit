@@ -377,6 +377,7 @@ export class ExpressionComponent implements OnInit {
     autoRefresh: true,
     mode: 'ruby'
   };
+
   constructor() {
   }
 
@@ -542,7 +543,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   cutCell: any;
   copyId: any;
   skipXMLToJSONConversion = false;
-  isUndoable = false;
   objectType = 'WORKFLOW';
   invalidMsg: string;
 
@@ -606,6 +606,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private getObject() {
+    this.error = false;
+    this.history = [];
+    this.indexOfNextAdd = 0;
     this.isLoading = true;
     this.coreService.post('inventory/read/configuration', {
       id: this.data.id
@@ -638,6 +641,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.centered();
         this.checkGraphHeight();
         this.isLoading = false;
+        this.history.push(this.workflow.actual);
+        this.indexOfNextAdd = this.history.length;
       }
     }, () => {
       this.isLoading = false;
@@ -756,14 +761,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
    * Redoes the last change.
    */
   redo() {
-    this.closeMenu();
     const n = this.history.length;
     if (this.indexOfNextAdd < n) {
       const obj = this.history[this.indexOfNextAdd++];
-      this.workflow.configuration = JSON.parse(obj.json);
-      this.jobs = JSON.parse(obj.jobs);
-      this.isUndoable = false;
-      this.updateXMLJSON(true);
+      this.reloadWorkflow(obj);
     }
   }
 
@@ -773,14 +774,23 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
    * Undoes the last change.
    */
   undo() {
-    this.closeMenu();
     if (this.indexOfNextAdd > 0) {
       const obj = this.history[--this.indexOfNextAdd];
-      this.workflow.configuration = JSON.parse(obj.json);
-      this.jobs = JSON.parse(obj.jobs);
-      this.isUndoable = false;
-      this.updateXMLJSON(true);
+      this.reloadWorkflow(obj);
     }
+  }
+
+  private reloadWorkflow(obj) {
+    this.closeMenu();
+    this.workflow.configuration = JSON.parse(obj);
+    if (this.workflow.configuration.jobs) {
+      if (this.workflow.configuration.jobs && !_.isEmpty(this.workflow.configuration.jobs)) {
+        this.jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
+          return {name: k, value: v};
+        });
+      }
+    }
+    this.updateXMLJSON(false);
   }
 
   expandAll() {
@@ -2726,6 +2736,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               if (self.droppedCell && me.getCell()) {
                 rearrangeCell(self.droppedCell);
                 self.droppedCell = null;
+              } else {
+                self.storeJSON();
               }
             }
           },
@@ -3130,6 +3142,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 }
                 flag = true;
               }
+              setTimeout(() => {
+                self.validateJSON(true);
+              }, 50);
             } else {
               movedTarget = drpTargt;
             }
@@ -3155,7 +3170,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             _graph.container.focus();
           }
           if (flag) {
-            self.isUndoable = true;
             WorkflowService.executeLayout(graph);
           }
         };
@@ -3537,20 +3551,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 } else {
                   self.skipXMLToJSONConversion = false;
                 }
-                if (self.isUndoable) {
-                  if (self.history.length === 20) {
-                    self.history.shift();
-                  }
-                  self.isUndoable = false;
-                  self.history.push({json: JSON.stringify(self.workflow.configuration), jobs: JSON.stringify(self.jobs)});
-                  self.indexOfNextAdd = self.history.length;
-                }
                 if (self.workflow.configuration && self.workflow.configuration.instructions && self.workflow.configuration.instructions.length > 0) {
                   graph.setEnabled(true);
                 } else {
                   self.reloadDummyXml(graph, self.dummyXml);
                 }
-                self.validateJSON();
+                self.validateJSON(false);
               }
               setTimeout(() => {
                 self.implicitSave = false;
@@ -4334,7 +4340,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           graph.getModel().endUpdate();
           if (flag) {
             self.updateJobs(graph);
-            self.isUndoable = true;
           }
         }
       }
@@ -4596,7 +4601,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             targetObject.instructions.splice(targetIndex + 1, 0, copyObject);
           }
         }
-        self.isUndoable = true;
         self.updateXMLJSON(true);
       }
     }
@@ -4828,7 +4832,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             selectedCellsObj = null;
           } else {
             addInstructionToCell(clickedCell, targetCell);
-            self.isUndoable = true;
           }
           targetCell = null;
           dropTarget = null;
@@ -5386,7 +5389,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         if (isDone) {
           source.instructions.splice(sourceIndex, 1);
           if (!_.isEqual(tempJson, JSON.stringify(self.workflow.configuration))) {
-            self.isUndoable = true;
             self.updateXMLJSON(true);
           }
         }
@@ -5614,7 +5616,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (dropObject && dropObject.instructions && dropObject.instructions.length === 0) {
             delete dropObject['instructions'];
           }
-          self.isUndoable = true;
+
           self.updateXMLJSON(true);
         }
       }
@@ -5731,17 +5733,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private storeJSON() {
-    this.isUndoable = false;
     setTimeout(() => {
       if (this.editor && this.editor.graph && !this.implicitSave) {
-        if (this.history.length === 20) {
-          this.history.shift();
-        }
-        this.history.push({json: JSON.stringify(this.workflow.configuration), jobs: JSON.stringify(this.jobs)});
-        this.indexOfNextAdd = this.history.length;
         this.noSave = true;
         this.xmlToJsonParser(null);
-        this.validateJSON();
+        this.validateJSON(false);
         setTimeout(() => {
           this.noSave = false;
         }, 250);
@@ -5971,13 +5967,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     return flag;
   }
 
-  validateJSON() {
+  validateJSON(skip) {
     if (!this.isUpdate) {
       this.isUpdate = true;
       if (this.workflow.configuration && this.workflow.configuration.instructions && this.workflow.configuration.instructions.length > 0) {
         let data = this.coreService.clone(this.workflow.configuration);
         this.workflow.valid = this.modifyJSON(data, true, false);
-        this.saveJSON(this.workflow.valid ? data : 'false');
+        this.saveJSON(this.workflow.valid ? data : skip ? false : 'false');
       }
       setTimeout(() => {
         this.isUpdate = false;
@@ -6036,6 +6032,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
 
     if (!_.isEqual(this.workflow.actual, JSON.stringify(data))) {
+      if (this.history.length === 20) {
+        this.history.shift();
+      }
+      this.history.push(JSON.stringify(data));
+      this.indexOfNextAdd = this.history.length;
+
       this.coreService.post('inventory/store', {
         configuration: data,
         path: this.workflow.path,

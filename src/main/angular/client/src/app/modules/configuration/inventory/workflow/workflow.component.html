@@ -36,13 +36,13 @@
                 <span class="separator"></span>
               </li>
               <li class="nav-item" [nz-tooltip]="'workflow.button.undo' | translate">
-                <a class="nav-link" [ngClass]="{'disable-link': history.length ===0 || indexOfNextAdd === 0}"
+                <a class="nav-link"
                     (click)="undo()">
                   <span class="nav-text"> <i nz-icon nzType="undo" nzTheme="outline"></i></span>
                 </a>
               </li>
               <li class="nav-item" [nz-tooltip]="'workflow.button.redo' | translate">
-                <a class="nav-link" [ngClass]="{'disable-link': history.length ===0 || indexOfNextAdd >= history.length}"
+                <a class="nav-link"
                     (click)="redo()">
                   <span class="nav-text"> <i nz-icon nzType="redo" nzTheme="outline"></i></span>
                 </a>

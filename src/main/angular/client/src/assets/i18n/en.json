@@ -107,7 +107,8 @@
     "button.addAgent": "Add Agent",
     "button.addAnotherAgent": "Add another Agent",
     "placeholder.enterAgentId": "Enter Agent ID",
-    "placeholder.enterAgentName": "Enter Agent name"
+    "placeholder.enterAgentName": "Enter Agent name",
+    "placeholder.enterAgentNameAliases": "Enter aliases separated by comma"
   },
   "auditLog": {
     "label.auditLog": "Audit Log",

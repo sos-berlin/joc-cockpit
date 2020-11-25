@@ -30,7 +30,7 @@
             </nz-select>
           </div>
         </div>
-        <div class="hide" [ngClass]="{'show': display}">
+        <div class="hide" [ngClass]="{'show': display && !releasable}">
           <div class="form-group row">
             <label class="col-md-3 " translate>common.label.selectComments</label>
             <div class=" col-md-6" [ngClass]="{'col-md-8' : reDeploy}">
@@ -161,13 +161,12 @@
                     <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.origin.object == 'ORDERTEMPLATE'" nz-icon nzType="schedule" class="icon-color" nzTheme="outline"></i>
-                    <i *ngIf="node.origin.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object && node.origin.object.match('CALENDAR')" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
                     <span *ngIf="node.origin.type" class="fa fa-check-circle-o text-xs" [ngClass]="{'fa-circle-o': !node.origin.valid, 'text-success' :node.origin.deploymentId}" style="margin-top: 4px"></span>
-                    <span class="p-l-sm">{{node.origin.name | translate}}</span>
+                    <span class="p-l-sm" >{{node.origin.name | translate}}</span>
                   </div>
                   <div class="m-l" *ngIf="node.origin.type && node.origin.deployablesVersions && node.origin.deployablesVersions.length >0">
-                    <nz-select
-                      name="'version-' + {{node.key}}"
+                    <nz-select name="'version-' + {{node.key}}"
                       [nzSize]="'small'"
                       [(ngModel)]="node.origin.deployId">
                       <ng-container *ngIf="!node.origin.valid" >

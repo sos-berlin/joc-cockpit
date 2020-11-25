@@ -40,7 +40,7 @@
               <div class="form-group row">
                 <label class="col-sm-3 form-control-label" translate>agent.label.agentName</label>
                 <div class=" col-sm-8" [ngClass]="{'has-error' : ((agentName.dirty || agentName.touched) && agentName.invalid)}">
-                  <input type="text" identifierValidation class="form-control" maxlength="30" name="agentName{{i}}"
+                  <input type="text" class="form-control" maxlength="30" name="agentName{{i}}"
                           required [(ngModel)]="agent.agentName" #agentName="ngModel" [appAutofocus]="!agent.new"
                           placeholder="{{'agent.placeholder.enterAgentName' | translate}}">
                   <div *ngIf="agentName.invalid && (agentName.dirty || agentName.touched)"
@@ -48,7 +48,6 @@
                     <div *ngIf="(agentName.errors && agentName.errors.required)">
                       <div translate>common.message.requiredError</div>
                     </div>
-                    <div *ngIf="agentName.errors.invalidIdentifier" translate>common.message.invalid</div>
                   </div>
                 </div>
               </div>

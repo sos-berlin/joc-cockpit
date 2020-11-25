@@ -26,7 +26,7 @@
           </nz-select>
         </div>
       </div>
-      <div class="hide" [ngClass]="{'show': display}">
+      <div class="hide" [ngClass]="{'show': display && !releasable}">
         <div class="form-group row">
           <label class="col-md-3 " translate>common.label.selectComments</label>
           <div class=" col-md-8">
@@ -133,7 +133,7 @@
                  nzTheme="outline"></i>
               <i *ngIf="data.object == 'ORDERTEMPLATE'" nz-icon nzType="schedule" class="icon-color"
                  nzTheme="outline"></i>
-              <i *ngIf="data.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
+              <i *ngIf="data.object && data.object.match('CALENDAR')" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
               <i *ngIf="data.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
               <span class="p-l-sm">{{data.object}}</span>
             </div>

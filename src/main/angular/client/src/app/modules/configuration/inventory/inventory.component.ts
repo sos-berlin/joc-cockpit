@@ -13,11 +13,6 @@ import * as _ from 'underscore';
 
 declare const $;
 
-const capitalize = (s) => {
-  if (typeof s !== 'string') return '';
-  return s.charAt(0).toUpperCase() + s.slice(1);
-};
-
 @Component({
   selector: 'app-deploy-draft-modal',
   templateUrl: './single-deploy-dialog.html'
@@ -113,7 +108,7 @@ export class SingleDeployComponent implements OnInit {
           if (this.deployablesObject[i].deployId || this.deployablesObject[i].deploymentId) {
             objDep.deployConfiguration = {
               path: this.deployablesObject[i].folder + (this.deployablesObject[i].folder === '/' ? '' : '/') + this.deployablesObject[i].objectName,
-              objectType: capitalize(this.deployablesObject[i].objectType.toLowerCase()),
+              objectType: this.deployablesObject[i].objectType,
               commitId: ''
             };
             for (let j = 0; j < this.deployablesObject[i].deployablesVersions.length; j++) {
@@ -125,7 +120,7 @@ export class SingleDeployComponent implements OnInit {
           } else {
             objDep.draftConfiguration = {
               path: this.deployablesObject[i].folder + (this.deployablesObject[i].folder === '/' ? '' : '/') + this.deployablesObject[i].objectName,
-              objectType: capitalize(this.deployablesObject[i].objectType.toLowerCase()),
+              objectType: this.deployablesObject[i].objectType
             };
           }
         } else {
@@ -415,6 +410,7 @@ export class DeployComponent implements OnInit {
 
   private buildDeployablesTree(result) {
     if (result && result.length > 0) {
+      // result = _.sortBy(result, 'objectType').reverse();
       const arr = _.groupBy(_.sortBy(result, 'folder'), (res) => {
         return res.folder;
       });
@@ -459,6 +455,7 @@ export class DeployComponent implements OnInit {
       for (let i = 0; i < nodes.length; i++) {
         if (!nodes[i].type && !nodes[i].object) {
           if (nodes[i].path === path) {
+            nodes[i].isLeaf = false;
             if (!nodes[i].children || nodes[i].children.length === 0) {
               for (let j = 0; j < arr.length; j++) {
                 if (arr[j].name === nodes[i].name && arr[j].path === nodes[i].path) {
@@ -520,6 +517,7 @@ export class DeployComponent implements OnInit {
         }
       }
       if (!falg) {
+        node.isLeaf = false;
         node.children.push({
           name: _path.substring(_path.lastIndexOf('/') + 1),
           path: _path,
@@ -539,7 +537,7 @@ export class DeployComponent implements OnInit {
       const temp: any = value;
       if (key !== 'FOLDER') {
         let parentObj: any = {
-          name: value[0].objectType,
+          name:  value[0].objectType,
           object: value[0].objectType,
           path: value[0].folder,
           key: value[0].folder + (value[0].folder === '/' ? '' : '/') + value[0].objectType,
@@ -567,6 +565,8 @@ export class DeployComponent implements OnInit {
             name: data.objectName,
             path: data.folder + (data.folder === '/' ? '' : '/') + data.objectName,
             key: data.id,
+            isFolder: true,
+            isLeaf: true,
             deleted: data.deleted,
             children: []
           });
@@ -589,7 +589,7 @@ export class DeployComponent implements OnInit {
             if (nodes[i].deployId || nodes[i].deploymentId) {
               objDep.deployConfiguration = {
                 path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
-                objectType: nodes[i].type ? capitalize(nodes[i].type.toLowerCase()) : 'Folder',
+                objectType: nodes[i].type,
                 commitId: ''
               };
               if (nodes[i].deployablesVersions) {
@@ -603,7 +603,7 @@ export class DeployComponent implements OnInit {
             } else {
               objDep[nodes[i].deleted ? 'deployConfiguration' : 'draftConfiguration'] = {
                 path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
-                objectType: nodes[i].type ? capitalize(nodes[i].type.toLowerCase()) : 'Folder'
+                objectType: nodes[i].type
               };
             }
           } else {
@@ -644,11 +644,13 @@ export class DeployComponent implements OnInit {
   getRedeploy() {
     this.object.excludes = [];
     const self = this;
-
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if ((nodes[i].type || nodes[i].isFolder) && !nodes[i].recursivelyDeploy) {
-          let obj: any = {path: nodes[i].path, deployType: nodes[i].type || 'FOLDER'};
+          const obj: any = {
+            path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
+            deployType: nodes[i].type ? nodes[i].type : 'FOLDER'
+          };
           self.object.excludes.push(obj);
         }
         if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
@@ -680,7 +682,6 @@ export class DeployComponent implements OnInit {
       this.selectedSchedulerIds.forEach(element => {
         obj.controllerIds.push({controllerId: element});
       });
-
       if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
         if (this.object.store.draftConfigurations.length === 0) {
           delete this.object.store['draftConfigurations'];
@@ -694,7 +695,15 @@ export class DeployComponent implements OnInit {
       if (this.object.deleteObj.deployConfigurations.length > 0) {
         obj.delete = this.object.deleteObj;
       }
-
+    } else if (this.releasable) {
+      if (this.object.delete.length > 0) {
+        obj.delete = this.object.delete;
+      }
+      if (this.object.update.length > 0) {
+        obj.update = this.object.update;
+      }
+    }
+    if(!this.releasable){
       obj.auditLog = {};
       if (this.comments.comment) {
         obj.auditLog.comment = this.comments.comment;
@@ -704,13 +713,6 @@ export class DeployComponent implements OnInit {
       }
       if (this.comments.ticketLink) {
         obj.auditLog.ticketLink = this.comments.ticketLink;
-      }
-    } else if (this.releasable) {
-      if (this.object.delete.length > 0) {
-        obj.delete = this.object.delete;
-      }
-      if (this.object.update.length > 0) {
-        obj.update = this.object.update;
       }
     }
     let URL = this.releasable ? 'inventory/release' : 'inventory/deployment/deploy';
@@ -2217,25 +2219,18 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.data = origin;
       modalRef.componentInstance.releasable = releasable;
       modalRef.result.then((res: any) => {
-        if (releasable) {
-          origin.released = true;
-          if (!node.origin) {
-            this.selectedData.released = true;
-          }
-        } else {
-          origin.deployed = true;
-          if (!node.origin) {
-            this.selectedData.deployed = true;
-          }
+        let path = origin.path;
+        if (!node.origin) {
+          path = path.substring(0, path.lastIndexOf('/') + 1);
         }
-        this.updateFolders(origin.path, () => {
+        this.updateFolders(path, () => {
           this.updateTree();
         });
       }, () => {
 
       });
     } else {
-      const modalRef = this.modalService.open(DeployComponent, {backdrop: 'static', size: 'lg'});
+      const modalRef = this.modalService.open(DeployComponent, {backdrop: 'static', size: releasable ? 'sm' : 'lg'});
       modalRef.componentInstance.schedulerIds = this.schedulerIds;
       modalRef.componentInstance.preferences = this.preferences;
       modalRef.componentInstance.display = this.preferences.auditLog;

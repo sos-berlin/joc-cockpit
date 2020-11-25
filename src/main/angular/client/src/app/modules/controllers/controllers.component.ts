@@ -40,6 +40,9 @@ export class UpdateAgentModalComponent implements OnInit {
     }
     if (this.data) {
       this.agent = this.coreService.clone(this.data);
+      if (this.agent.agentNameAliases) {
+        this.agent.agentNameAliases = this.agent.agentNameAliases.toString();
+      }
     }
   }
 
@@ -81,6 +84,9 @@ export class UpdateAgentModalComponent implements OnInit {
       if (this.comments.ticketLink) {
         obj.auditLog.ticketLink = this.comments.ticketLink;
       }
+    }
+    if (this.agent.agentNameAliases) {
+      this.agent.agentNameAliases = this.agent.agentNameAliases.split(',');
     }
     if (this.data) {
       for (let i = 0; i < this.agents.length; i++) {
@@ -160,7 +166,9 @@ export class ControllersComponent implements OnInit {
       this.controllers = securityData.controllers;
     }
     if (this.controllers.length > 0) {
-      this.getAgents(this.controllers[0]);
+      for (let i = 0; i < this.showPanel.length; i++) {
+        this.getAgents(this.controllers[i]);
+      }
     }
   }
 
