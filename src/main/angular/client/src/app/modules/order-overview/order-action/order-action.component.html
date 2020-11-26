@@ -6,22 +6,22 @@
   <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
     <ul nz-menu>
       <li nz-menu-item *ngIf="permission && permission.Order.execute.start">
-        <a (click)="startOrder(order)" translate>button.startOrderNow</a>
+        <a (click)="startOrder(order)" translate>order.button.startOrderNow</a>
       </li>
       <li nz-menu-item *ngIf="permission && permission.Order.execute.start">
-        <a (click)="startOrderAt()" translate>button.startOrderat</a>
+        <a (click)="startOrderAt()" translate>order.button.startOrderat</a>
       </li>
       <li nz-menu-item *ngIf="permission && permission.Order.execute">
-        <a (click)="cancelOrder()" translate>button.cancelOrder</a>
+        <a (click)="cancelOrder()" translate>order.button.cancelOrder</a>
       </li>
       <li nz-menu-item *ngIf="permission && permission.Order.execute.suspend">
-        <a (click)="suspendOrder(order)" translate>button.suspendOrder</a>
+        <a (click)="suspendOrder(order)" translate>order.button.suspendOrder</a>
       </li>
       <li nz-menu-item *ngIf="permission && permission.Order.execute.resume">
-        <a (click)="resumeOrder()" translate>button.resumeOrder</a>
+        <a (click)="resumeOrder()" translate>order.button.resumeOrder</a>
       </li>
       <li nz-menu-item>
-        <a (click)="coreService.copyLink('order',order.orderId)" translate>button.copyLinkToObject</a>
+        <a (click)="coreService.copyLink('order',order.orderId)" translate>common.button.copyLinkToObject</a>
       </li>
     </ul>
   </nz-dropdown-menu>

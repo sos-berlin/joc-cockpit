@@ -8,11 +8,12 @@ import {DataService} from '../../services/data.service';
 
 @Component({
   selector: 'app-agent-modal',
-  templateUrl: './edit-agent.dialog.html'
+  templateUrl: './agent.dialog.html'
 })
-export class UpdateAgentModalComponent implements OnInit {
+export class AgentModalComponent implements OnInit {
   @Input() agents: any;
   @Input() data: any;
+  @Input() new: any;
   @Input() controllerId: any;
   agent: any = {};
   submitted = false;
@@ -72,7 +73,8 @@ export class UpdateAgentModalComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-    let obj: any = {controllerId: this.controllerId};
+    const obj: any = {controllerId: this.controllerId};
+    const _agent: any = this.coreService.clone(this.agent);
     if (this.display) {
       obj.auditLog = {};
       if (this.comments.comment) {
@@ -86,23 +88,30 @@ export class UpdateAgentModalComponent implements OnInit {
       }
     }
     if (this.agent.agentNameAliases) {
-      this.agent.agentNameAliases = this.agent.agentNameAliases.split(',');
+      _agent.agentNameAliases = this.agent.agentNameAliases.split(',');
     }
     if (this.data) {
       for (let i = 0; i < this.agents.length; i++) {
         if (this.agents[i].agentId === this.data.agentId && this.agents[i].agentName === this.data.agentName) {
-          this.agents[i] = this.agent;
+          this.agents[i] = _agent;
           break;
         }
       }
     } else {
-      this.agents.push(this.agent);
+      this.agents.push(_agent);
     }
     obj.agents = this.agents;
     this.coreService.post('agents/store', obj).subscribe(res => {
       this.submitted = false;
       this.activeModal.close();
     }, err => {
+      for (let i = 0; i < this.agents.length; i++) {
+        if (this.new && this.agents[i].agentId === this.agent.agentId && this.agents[i].agentName === this.agent.agentName
+          && this.agents[i].url === this.agent.url) {
+          this.agents.splice(i, 1);
+          break;
+        }
+      }
       this.submitted = false;
     });
   }
@@ -167,7 +176,7 @@ export class ControllersComponent implements OnInit {
     }
     if (this.controllers.length > 0) {
       for (let i = 0; i < this.showPanel.length; i++) {
-        this.getAgents(this.controllers[i]);
+        this.getAgents(this.controllers[i], null);
       }
     }
   }
@@ -179,15 +188,23 @@ export class ControllersComponent implements OnInit {
       });
   }
 
-  getAgents(controller): void {
+  getAgents(controller, cb): void {
     if (!controller.agents) {
       this.coreService.post('agents/p', {
         controllerId: controller.controllerId
       }).subscribe((data: any) => {
         controller.agents = data.agents;
+        if (cb) {
+          cb();
+        }
       }, () => {
         controller.agents = [];
+        if (cb) {
+          cb();
+        }
       });
+    } else if (cb) {
+      cb();
     }
   }
 
@@ -234,18 +251,31 @@ export class ControllersComponent implements OnInit {
     });
   }
 
+  addAgent(controller) {
+    this.getAgents(controller, () => {
+      const modalRef = this.modalService.open(AgentModalComponent, {backdrop: 'static'});
+      modalRef.componentInstance.controllerId = controller.controllerId;
+      modalRef.componentInstance.agents = controller.agents;
+      modalRef.componentInstance.new = true;
+      modalRef.result.then(() => {
+        this.getData();
+      }, () => {
+
+      });
+    });
+  }
 
   editAgent(agent, controller) {
-    console.log(agent, controller)
-    const modalRef = this.modalService.open(UpdateAgentModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.controllerId = controller.controllerId;
-    modalRef.componentInstance.agents = controller.agents;
-    modalRef.componentInstance.data = agent;
-    modalRef.componentInstance.modalRef = modalRef;
-    modalRef.result.then(() => {
-      this.getData();
-    }, () => {
+    this.getAgents(controller, () => {
+      const modalRef = this.modalService.open(AgentModalComponent, {backdrop: 'static'});
+      modalRef.componentInstance.controllerId = controller.controllerId;
+      modalRef.componentInstance.agents = controller.agents;
+      modalRef.componentInstance.data = agent;
+      modalRef.result.then(() => {
+        this.getData();
+      }, () => {
 
+      });
     });
   }
 

@@ -9,7 +9,7 @@
 </div>
 <form name="form" (ngSubmit)="deploy()" spellcheck="false">
   <div class="modal-body p-a">
-    <div *ngIf="deployablesObject.length > 0 && !loading">
+    <div *ngIf="actualResult.length > 0 && !loading">
       <div class="form-group row" *ngIf="!releasable">
         <label class="col-md-3 form-control-label">
           <label translate>inventory.label.controllers</label>
@@ -19,6 +19,7 @@
             nzMode="multiple"
             nzShowSearch
             name="schedulerIds"
+            (ngModelChange)="checkControllers($event)"
             [(ngModel)]="selectedSchedulerIds">
             <ng-container *ngFor="let id of schedulerIds.controllerIds">
               <nz-option [nzValue]="id" [nzLabel]="id"></nz-option>

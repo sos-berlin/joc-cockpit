@@ -10,7 +10,7 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>workflow.label.orderId</label>
+      <label class="col-sm-3 form-control-label" translate>order.label.orderId</label>
       <div class="col-sm-6" [ngClass]="{ 'has-error' : (((orderId.dirty || orderId.touched) && orderId.invalid))}">
         <input type="text" maxlength="30" name="orderId" required #orderId="ngModel" class="form-control" placeholder="{{'workflow.placeholder.orderId' | translate}}"
                [(ngModel)]="order.orderId">

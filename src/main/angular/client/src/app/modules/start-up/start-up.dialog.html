@@ -114,7 +114,7 @@
         <label class="col-sm-4 form-control-label" translate>common.label.title</label>
         <div class="col-sm-8"
              [ngClass]="{ 'has-error' : ((title.dirty || title.touched) && title.invalid)}">
-          <input type="text" maxlength="30" class="form-control" required name="title" [(ngModel)]="controller.title"
+          <input type="text" class="form-control" required name="title" [(ngModel)]="controller.title"
                  #title="ngModel">
           <div *ngIf="title.invalid && (title.dirty || title.touched)" class="text-danger help-block">
             <div *ngIf="title.errors.required">
@@ -155,7 +155,7 @@
           <label class="col-sm-4 form-control-label" translate>common.label.title</label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((primaryTitle.dirty || primaryTitle.touched) && primaryTitle.invalid)}">
-            <input type="text" maxlength="30" class="form-control" required name="primaryTitle" [(ngModel)]="controller.primaryTitle"
+            <input type="text" class="form-control" required name="primaryTitle" [(ngModel)]="controller.primaryTitle"
                    #primaryTitle="ngModel">
             <div *ngIf="primaryTitle.invalid && (primaryTitle.dirty || primaryTitle.touched)" class="text-danger help-block">
               <div *ngIf="primaryTitle.errors.required">
@@ -201,7 +201,7 @@
           <label class="col-sm-4 form-control-label" translate>common.label.title</label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((backupTitle.dirty || backupTitle.touched) && backupTitle.invalid)}">
-            <input maxlength="30" type="text" class="form-control" required name="backupTitle" [(ngModel)]="controller.backupTitle"
+            <input type="text" class="form-control" required name="backupTitle" [(ngModel)]="controller.backupTitle"
                    #backupTitle="ngModel">
             <div *ngIf="backupTitle.invalid && (backupTitle.dirty || backupTitle.touched)" class="text-danger help-block">
               <div *ngIf="backupTitle.errors.required">
@@ -214,7 +214,7 @@
           <label class="col-sm-4 form-control-label" [nz-tooltip]="'controller.tooltip.backupUrlForJOC' | translate" translate>controller.label.jocUrlForBackup</label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((backupUrl.dirty || backupUrl.touched) && backupUrl.invalid)}">
-            <input type="url"  placeholder="http://host:port" class="form-control" required name="backupUrl" [(ngModel)]="controller.backupUrl" #backupUrl="ngModel">
+            <input type="url" placeholder="http://host:port" class="form-control" required name="backupUrl" [(ngModel)]="controller.backupUrl" #backupUrl="ngModel">
             <div *ngIf="backupUrl.invalid && (backupUrl.dirty || backupUrl.touched)" class="text-danger help-block">
               <div *ngIf="backupUrl.errors.required">
                 <div translate>common.message.requiredError</div>
@@ -240,12 +240,79 @@
         </div>
       </div>
     </div>
-    <div class="row ">
-      <div class="col-md-12 m-t">
-        <button type="button" (click)="showAgent()"
-                class="btn btn-grey btn-sm">
-          {{'agent.button.agent' | translate}}
-        </button>
+    <div class="m-t">
+      <div class="form-group row">
+        <div class="col-sm-12 col-md-12">
+          <div class="form-group row" *ngIf="new">
+            <label class="col-sm-4 form-control-label" translate>agent.label.agentId</label>
+            <div class=" col-sm-8" [ngClass]="{'has-error' : ((agentId.dirty || agentId.touched) && agentId.invalid)}">
+              <input type="text" identifierValidation class="form-control" name="agentId"
+                     required [(ngModel)]="agent.agentId" #agentId="ngModel"
+                     placeholder="{{'agent.placeholder.enterAgentId' | translate}}">
+              <div *ngIf="agentId.invalid && (agentId.dirty || agentId.touched)"
+                   class="text-danger help-block">
+                <div *ngIf="(agentId.errors && agentId.errors.required)">
+                  <div translate>common.message.requiredError</div>
+                </div>
+                <div *ngIf="agentId.errors.invalidIdentifier" translate>common.message.invalid</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row" *ngIf="!new">
+            <label class="col-sm-4 form-control-label" translate>agent.label.agentId</label>
+            <div class="col-sm-8">
+              <nz-select nzShowSearch [(ngModel)]="agent" name="selectAgentId">
+                <nz-option *ngFor="let list of agents" [nzLabel]="list.agentId" [nzValue]="list"></nz-option>
+              </nz-select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>agent.label.agentName</label>
+            <div class=" col-sm-8"
+                 [ngClass]="{'has-error' : ((agentName.dirty || agentName.touched) && agentName.invalid)}">
+              <input type="text" class="form-control" name="agentName"
+                     required [(ngModel)]="agent.agentName" #agentName="ngModel"
+                     placeholder="{{'agent.placeholder.enterAgentName' | translate}}">
+              <div *ngIf="agentName.invalid && (agentName.dirty || agentName.touched)"
+                   class="text-danger help-block">
+                <div *ngIf="(agentName.errors && agentName.errors.required)">
+                  <div translate>common.message.requiredError</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>agent.label.url</label>
+            <div class=" col-sm-8" [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}">
+              <input type="url" class="form-control" name="url" #url="ngModel"
+                     required [(ngModel)]="agent.url" placeholder="http://host:port">
+              <div *ngIf="url.invalid && (url.dirty || url.touched)"
+                   class="text-danger help-block">
+                <div *ngIf="(url.errors && url.errors.required)">
+                  <div translate>common.message.requiredError</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row" *ngIf="controller.type !== 'STANDALONE'">
+            <label class="col-sm-4" translate>agent.label.clusterWatcher</label>
+            <div class="col-sm-6">
+              <label class="md-check">
+                <input type="checkbox" [(ngModel)]="agent.isClusterWatcher" name="isClusterWatcher">
+                <i class="primary"></i>
+              </label>
+            </div>
+          </div>
+          <div class="form-group row" *ngIf="agents.length > 0">
+            <label class="col-sm-4" translate>agent.label.disabled</label>
+            <div class="col-sm-6">
+              <label class="md-check">
+                <input type="checkbox" (change)="checkDisable()" [(ngModel)]="agent.disabled" name="disabled">
+                <i class="primary"></i>
+              </label>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="form-group row" *ngIf="!isModal">

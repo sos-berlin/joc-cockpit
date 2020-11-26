@@ -2,67 +2,12 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
+import {DataService} from '../../services/data.service';
 
 declare const $;
-
-@Component({
-  selector: 'app-agent-modal',
-  templateUrl: './agent.dialog.html'
-})
-export class AgentModalComponent implements OnInit {
-  @Input() agents: any;
-  @Input() type: any;
-  @Input() new: any;
-  @Input() isModal: any;
-
-  constructor(public coreService: CoreService, public activeModal: NgbActiveModal) {
-  }
-
-  ngOnInit() {
-    if (this.agents.length === 0) {
-      this.addAgent();
-    }
-  }
-
-  addAgent() {
-    const param = {
-      new : true,
-      agentId: '',
-      agentName: '',
-      url: ''
-    };
-    if (!this.coreService.isLastEntryEmpty(this.agents, 'agentName', 'url')) {
-      this.agents.push(param);
-    }
-  }
-
-  removeAgent(index): void {
-    this.agents.splice(index, 1);
-  }
-
-  close(): void {
-    if (this.coreService.isLastEntryEmpty(this.agents, 'agentName', 'url')) {
-      this.agents.splice(this.agents.length - 1, 1);
-    }
-    this.activeModal.close(this.agents);
-  }
-
-  checkDisable(agent): void {
-    if (agent.disabled) {
-      let flag = this.agents.filter((value) => {
-        return value.disabled;
-      }).length > this.agents.length - 1;
-      if (flag) {
-        setTimeout(() => {
-          agent.disabled = false;
-        }, 0);
-      }
-    }
-  }
-}
 
 @Component({
   selector: 'app-start-up-modal',
@@ -83,6 +28,7 @@ export class StartUpModalComponent implements OnInit {
   required = false;
   display: any;
   comments: any = {};
+  agent: any = {};
   schedulerIds: any = {};
   messageList: any = [];
   error: any;
@@ -100,6 +46,11 @@ export class StartUpModalComponent implements OnInit {
       primaryTitle: 'PRIMARY',
       backupTitle: 'BACKUP',
     };
+    if (this.agents && this.agents.length > 0 && !this.new) {
+      this.agent = this.agents[0];
+    } else if (this.new) {
+      this.agents = [];
+    }
     if (this.controllerInfo) {
       const len = this.controllerInfo.length;
       if (len > 0) {
@@ -181,6 +132,9 @@ export class StartUpModalComponent implements OnInit {
         obj.auditLog.ticketLink = this.comments.ticketLink;
       }
     }
+    if(this.agents.length === 0){
+      this.agents.push(this.agent);
+    }
     obj.agents = this.agents;
     this.coreService.post('controller/register', obj).subscribe(res => {
       this.submitted = false;
@@ -222,19 +176,6 @@ export class StartUpModalComponent implements OnInit {
     });
   }
 
-  showAgent() {
-    const modalRef = this.modalService.open(AgentModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.agents = this.coreService.clone(this.agents || []);
-    modalRef.componentInstance.type = this.controller.type;
-    modalRef.componentInstance.isModal = this.isModal;
-    modalRef.componentInstance.new = this.new;
-    modalRef.result.then((result) => {
-      this.agents = result;
-    }, () => {
-
-    });
-  }
-
   setFlag(type, flag): void {
     if (type === 'ALL') {
       this.isConnectionChecked = flag;
@@ -242,6 +183,20 @@ export class StartUpModalComponent implements OnInit {
       this.isPrimaryConnectionChecked = flag;
     } else if (type === 'BACKUP') {
       this.isBackupConnectionChecked = flag;
+    }
+  }
+
+  checkDisable() {
+    if (this.agent.disabled) {
+      const x = this.agents.filter((agent) => {
+        return agent.disabled;
+      });
+      const flag = x.length >= this.agents.length - 1;
+      if (flag) {
+        setTimeout(() => {
+          this.agent.disabled = false;
+        }, 0);
+      }
     }
   }
 
@@ -269,7 +224,7 @@ export class StartUpComponent implements OnInit {
   count = 0;
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router,
-              public translate: TranslateService) {
+              public translate: TranslateService, private dataService: DataService) {
   }
 
   ngOnInit() {
@@ -325,6 +280,7 @@ export class StartUpComponent implements OnInit {
     } else {
       this.authService.savePermission('');
     }
+    this.dataService.isProfileReload.next(true);
     this.router.navigate(['/dashboard']);
   }
 

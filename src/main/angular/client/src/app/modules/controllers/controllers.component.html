@@ -38,6 +38,9 @@
                     <li nz-menu-item *ngIf="currentSecurityLevel && currentSecurityLevel !== controller.securityLevel">
                       <a (click)="migrateController(controller.controllerId)" translate="">controller.button.MigrateControllerToSecurityLevel</a>
                     </li>
+                    <li nz-menu-item *ngIf="!currentSecurityLevel || currentSecurityLevel === controller.securityLevel">
+                      <a (click)="addAgent(controller)" translate="">agent.button.addAgent</a>
+                    </li>
                   </ul>
                 </nz-dropdown-menu>
               </div>
@@ -45,7 +48,7 @@
                 <a  *ngIf="!currentSecurityLevel || currentSecurityLevel === controller.securityLevel" (click)="editController(controller.controllerId)">{{controller.controllerId}}</a>
                 <span  *ngIf="currentSecurityLevel && currentSecurityLevel !== controller.securityLevel">{{controller.controllerId}}</span>
 
-                <i (click)="showPanel[id] = true;getAgents(controller)" [hidden]="showPanel[id]" class="cursor fa fa-caret-up m-l-xs"></i>
+                <i (click)="showPanel[id] = true;getAgents(controller, null)" [hidden]="showPanel[id]" class="cursor fa fa-caret-up m-l-xs"></i>
                 <i (click)="showPanel[id]  = false" *ngIf="showPanel[id]"
                    class="cursor fa fa-caret-down m-l-xs"></i>
               </h5>

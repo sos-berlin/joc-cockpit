@@ -24,6 +24,7 @@ export class SingleDeployComponent implements OnInit {
   @Input() releasable: boolean;
   @Input() display: any;
   selectedSchedulerIds = [];
+  actualResult = [];
   deployablesObject = [];
   loading = true;
   submitted = false;
@@ -64,22 +65,57 @@ export class SingleDeployComponent implements OnInit {
     }
     const URL = this.releasable ? 'inventory/releasables' : 'inventory/deployables';
     this.coreService.post(URL, obj).subscribe((res: any) => {
-      this.deployablesObject = this.releasable ? res.releasables : res.deployables;
-      if (this.deployablesObject && this.deployablesObject.length > 0) {
-        for (let j = 0; j < this.deployablesObject.length; j++) {
-          if (this.deployablesObject[j].deployablesVersions && this.deployablesObject[j].deployablesVersions.length > 0) {
-            this.deployablesObject[j].deployId = '';
-            if (this.deployablesObject[j].valid && this.deployablesObject[j].deployablesVersions[0].versions && this.deployablesObject[j].deployablesVersions[0].versions.length > 0) {
-              this.deployablesObject[j].deployId = this.deployablesObject[j].deployablesVersions[0].deploymentId;
-            }
-          }
-        }
-      }
+      this.actualResult = this.releasable ? res.releasables : res.deployables;
+      this.checkControllers(this.selectedSchedulerIds);
       this.loading = false;
     }, (err) => {
       this.loading = false;
     });
   }
+
+  checkControllers($event): void {
+    if ($event.length !== 1) {
+      this.filterTree(true, $event);
+    } else {
+      this.filterTree(false, $event);
+    }
+  }
+
+  private filterTree(isDraftOnly, $event) {
+    this.deployablesObject = !this.releasable ? isDraftOnly ? this.actualResult.filter((value) => {
+      return !value.deployed;
+    }) : this.coreService.clone(this.actualResult).filter((value) => {
+      let flag = true;
+      if (value.deployed && value.deployablesVersions) {
+        value.deployablesVersions = value.deployablesVersions.filter((version) => {
+          let isCheck = false;
+          if (version.versions) {
+            for (let i = 0; i < version.versions.length; i++) {
+              if (version.versions[i].controllerId === $event[0]) {
+                isCheck = true;
+                break;
+              }
+            }
+            flag = isCheck;
+          }
+          return isCheck;
+        });
+      }
+      return flag;
+    }) : this.actualResult;
+
+    if (this.deployablesObject && this.deployablesObject.length > 0) {
+      for (let j = 0; j < this.deployablesObject.length; j++) {
+        if (this.deployablesObject[j].deployablesVersions && this.deployablesObject[j].deployablesVersions.length > 0) {
+          this.deployablesObject[j].deployId = '';
+          if (this.deployablesObject[j].valid && this.deployablesObject[j].deployablesVersions[0].versions && this.deployablesObject[j].deployablesVersions[0].versions.length > 0) {
+            this.deployablesObject[j].deployId = this.deployablesObject[j].deployablesVersions[0].deploymentId;
+          }
+        }
+      }
+    }
+  }
+
 
   private getSingleObject(obj) {
     this.coreService.post('inventory/deployable', obj).subscribe((res: any) => {
@@ -90,7 +126,8 @@ export class SingleDeployComponent implements OnInit {
           result.deployId = result.deployablesVersions[0].deploymentId;
         }
       }
-      this.deployablesObject = [result];
+      this.actualResult = [result];
+      this.checkControllers(this.selectedSchedulerIds);
       this.loading = false;
     }, (err) => {
       this.loading = false;
@@ -98,8 +135,13 @@ export class SingleDeployComponent implements OnInit {
   }
 
   getJSObject() {
-    this.object.update = [];
-    this.object.delete = [];
+    this.object = {
+      checked: false,
+      update: [],
+      delete: [],
+      store: {draftConfigurations: [], deployConfigurations: []},
+      deleteObj: {deployConfigurations: []}
+    };
     const self = this;
     for (let i = 0; i < this.deployablesObject.length; i++) {
       if (this.deployablesObject[i].isChecked || !this.data.object) {
@@ -229,6 +271,7 @@ export class DeployComponent implements OnInit {
   @Input() display: any;
   @Input() reDeploy: any;
   selectedSchedulerIds = [];
+  actualResult = [];
   loading = true;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
   object: any = {
@@ -289,6 +332,51 @@ export class DeployComponent implements OnInit {
         this.expandCollapseRec(node[i].children);
       }
     }
+  }
+
+  checkControllers($event): void {
+    if ($event.length !== 1) {
+      this.filterTree(true, $event);
+    } else {
+      this.filterTree(false, $event);
+    }
+  }
+
+  private filterTree(isDraftOnly, $event) {
+    this.nodes = [{path: '/', key: '/', name: '/', children: []}];
+    const newArr = !this.releasable ? isDraftOnly ? this.actualResult.filter((value) => {
+      return !value.deployed;
+    }) : this.coreService.clone(this.actualResult).filter((value) => {
+      let flag = true;
+      if (value.deployed && value.deployablesVersions) {
+        value.deployablesVersions = value.deployablesVersions.filter((version) => {
+          let isCheck = false;
+          if (version.versions) {
+            for (let i = 0; i < version.versions.length; i++) {
+              if (version.versions[i].controllerId === $event[0]) {
+                isCheck = true;
+                break;
+              }
+            }
+            flag = isCheck;
+          }
+          return isCheck;
+        });
+      }
+      return flag;
+    }) : this.actualResult;
+
+    this.buildDeployablesTree(newArr);
+    if (this.nodes.length > 0) {
+      this.checkAndUpdateVersionList(this.nodes[0]);
+    }
+    setTimeout(() => {
+      this.loading = false;
+      if (this.path) {
+        this.getChildTree();
+      }
+      this.updateTree();
+    }, 0);
   }
 
   handleCheckbox(node): void {
@@ -372,17 +460,8 @@ export class DeployComponent implements OnInit {
       onlyValidObjects: true,
       withVersions: !this.reDeploy
     }).subscribe((res: any) => {
-      this.buildDeployablesTree(this.releasable ? res.releasables : res.deployables);
-      if (this.nodes.length > 0) {
-        this.checkAndUpdateVersionList(this.nodes[0]);
-      }
-      setTimeout(() => {
-        this.loading = false;
-        if (this.path) {
-          this.getChildTree();
-        }
-        this.updateTree();
-      }, 0);
+      this.actualResult = this.releasable ? res.releasables : res.deployables;
+      this.checkControllers(this.selectedSchedulerIds);
     }, (err) => {
       this.loading = false;
       this.nodes = [];
@@ -537,7 +616,7 @@ export class DeployComponent implements OnInit {
       const temp: any = value;
       if (key !== 'FOLDER') {
         let parentObj: any = {
-          name:  value[0].objectType,
+          name: value[0].objectType,
           object: value[0].objectType,
           path: value[0].folder,
           key: value[0].folder + (value[0].folder === '/' ? '' : '/') + value[0].objectType,
@@ -552,6 +631,7 @@ export class DeployComponent implements OnInit {
             type: data.objectType,
             deleted: data.deleted,
             deployed: data.deployed,
+            valid: data.valid,
             deploymentId: data.deploymentId,
             deployablesVersions: data.deployablesVersions,
             isLeaf: true
@@ -578,6 +658,13 @@ export class DeployComponent implements OnInit {
   }
 
   getJSObject() {
+    this.object = {
+      checked: false,
+      update: [],
+      delete: [],
+      store: {draftConfigurations: [], deployConfigurations: []},
+      deleteObj: {deployConfigurations: []}
+    };
     const self = this;
 
     function recursive(nodes) {
@@ -644,6 +731,7 @@ export class DeployComponent implements OnInit {
   getRedeploy() {
     this.object.excludes = [];
     const self = this;
+
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if ((nodes[i].type || nodes[i].isFolder) && !nodes[i].recursivelyDeploy) {
@@ -703,7 +791,7 @@ export class DeployComponent implements OnInit {
         obj.update = this.object.update;
       }
     }
-    if(!this.releasable){
+    if (!this.releasable) {
       obj.auditLog = {};
       if (this.comments.comment) {
         obj.auditLog.comment = this.comments.comment;

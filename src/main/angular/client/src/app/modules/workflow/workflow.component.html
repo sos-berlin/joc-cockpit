@@ -144,9 +144,9 @@
                       </div>
                       <div class="text-sm text-left text-muted p-t-xs" *ngIf="!workflowFilters.isCompact">
                         <span>
-                          <span class="text-black _600 p-r-xs" [innerHtml]="workflow.numOfOrders "></span>
+                          <span class="text-black _600 p-r-xs" [innerHtml]="workflow.numOfOrders || 0"></span>
                           <span *ngIf="workflow.numOfOrders>1" translate>workflow.label.orders</span>
-                          <span *ngIf="workflow.numOfOrders < 2" translate>workflow.label.order</span>
+                          <span *ngIf="!workflow.numOfOrder || workflow.numOfOrders < 2" translate>workflow.label.order</span>
                         </span>
                       </div>
                       <div class="text-sm text-left text-muted m-l p-t-xs" *ngIf="!workflowFilters.isCompact">
@@ -170,12 +170,12 @@
                       <div>
                         <a class="hide text-left primary-text-hover-color" [ngClass]="{'show-block':permission.Workflow.execute.addOrder}" (click)="actionChild.addOrder(workflow);">
                           <i class="fa fa-plus-square-o text-black-lt p-r-xs"></i>
-                          <span class="text-black-lt" translate>worklfow.button.addOrder</span>
+                          <span class="text-black-lt" translate>workflow.button.addOrder</span>
                         </a>
                         <a class="text-right primary-text-hover-color" *ngIf="permission.DailyPlan.view.status" [ngClass]="{'pull-right':permission.Workflow.execute.addOrder}"
                            (click)="actionChild.showDailyPlan(workflow);">
                           <i class="fa fa-calendar text-black-lt p-r-xs"></i>
-                          <span class="text-black-lt" translate>worklfow.button.showDailyPlan</span>
+                          <span class="text-black-lt" translate>workflow.button.showDailyPlan</span>
                         </a>
                       </div>
                     </div>

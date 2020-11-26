@@ -193,7 +193,7 @@
                           <app-order-action [order]="order" [schedulerId]="schedulerIds.selected" [permission]="permission" [preferences]="preferences"></app-order-action>
                         </div>
                         <div class="text-sm text-left text-muted p-t-sm">
-                          <span translate>order.label.status </span>:
+                          <span translate>common.label.status </span>:
                           <span [ngClass]="coreService.getColor(order.state.severity, 'text')" [innerHtml]="order.state._text | translate"></span>
                         </div>
                         <div class="text-sm text-left text-muted p-t-xs">
@@ -221,7 +221,7 @@
                         <a class="text-right primary-text-hover-color" *ngIf="permission.Order.execute.suspend" [ngClass]="{'pull-right':permission.Order.execute.start}"
                            (click)="actionChild.suspendOrder(order);">
                           <i class="fa fa-pause p-r-xs text-black-lt"></i>
-                          <span class="text-black-lt" translate>order.button.suspend</span>
+                          <span class="text-black-lt" translate>order.button.suspendOrder</span>
                         </a>
                       </div>
                     </div>
