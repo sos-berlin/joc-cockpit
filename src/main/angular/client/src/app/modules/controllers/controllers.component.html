@@ -55,16 +55,29 @@
             </div>
           </div>
           <div *ngIf="showPanel[id]" class="row">
-            <div class="col-lg-1 col-md-2 col-sm-4"><span class="p-l-lg" translate>agent.label.agents</span></div>
-            <div class="col-lg-9 col-md-10 col-sm-8">
-              <div *ngFor="let agent of controller.agents" class="role">
-                <span [ngClass]="{'disable-link' : agent.disabled}" class="fa fa-circle" style="font-size: 9px"></span>
-                <a [ngClass]="{'disable-link' : agent.disabled}" (click)="editAgent(agent, controller)" class="cursor">
-                  {{agent.agentName}}
-                </a>
-                -
-                <a class="text-primary p-l-xs">{{agent.url}}</a>
-                <i (click)="editAgent(agent, controller)" class="fa fa-pencil"></i>
+            <div class="col-md-12">
+              <div class="p-a-sm p-b-0" style="max-height: 350px;overflow: auto">
+                <table class="table table-hover m-b-0">
+                  <thead>
+                  <tr>
+                    <th><span translate>agent.label.agentId</span></th>
+                    <th><span translate>agent.label.agentName</span></th>
+                    <th><span translate>agent.label.agentNameAliases</span></th>
+                    <th><span translate>agent.label.url</span></th>
+                    <th><span translate>agent.label.clusterWatcher</span></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let agent of controller.agents" class="cursor"
+                      [ngClass]="{'disabled-row': agent.disabled}" (click)="editAgent(agent, controller)">
+                    <td><span [innerHtml]="agent.agentId"></span></td>
+                    <td><span [innerHtml]="agent.agentName"></span></td>
+                    <td><span [innerHtml]="agent.agentNameAliases || '-'"></span></td>
+                    <td><span [innerHtml]="agent.url"></span></td>
+                    <td>{{agent.isClusterWatcher ? 'Yes' : 'No'}}</td>
+                  </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>

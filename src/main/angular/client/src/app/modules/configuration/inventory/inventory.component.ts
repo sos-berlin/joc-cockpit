@@ -268,12 +268,18 @@ export class DeployComponent implements OnInit {
   @Input() preferences;
   @Input() path: string;
   @Input() releasable: boolean;
+  @Input() reDeploy: boolean;
+  @Input() isExport: boolean;
   @Input() display: any;
-  @Input() reDeploy: any;
   selectedSchedulerIds = [];
   actualResult = [];
   loading = true;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
+
+  exportObj = {
+    filename: '',
+    fileFormat: '.zip'
+  };
   object: any = {
     isRecursive: true,
     delete: [],
@@ -287,7 +293,8 @@ export class DeployComponent implements OnInit {
   required: boolean;
   messageList: any;
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
+  constructor(public activeModal: NgbActiveModal, private coreService: CoreService,
+              private authService: AuthService) {
   }
 
   ngOnInit() {
@@ -297,6 +304,9 @@ export class DeployComponent implements OnInit {
     }
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+    }
+    if (this.isExport) {
+      this.object.isRecursive = false;
     }
     this.buildTree();
   }
@@ -757,7 +767,10 @@ export class DeployComponent implements OnInit {
     } else {
       this.getJSObject();
     }
-
+    if (this.isExport) {
+      this.export();
+      return;
+    }
     const obj: any = {};
     if (this.reDeploy) {
       obj.controllerId = this.schedulerIds.selected;
@@ -812,6 +825,36 @@ export class DeployComponent implements OnInit {
     }, (error) => {
       this.submitted = false;
     });
+  }
+
+  export() {
+    if ((this.object.store.deployConfigurations && this.object.store.deployConfigurations.length > 0) ||
+      (this.object.store.draftConfigurations.length && this.object.store.draftConfigurations.length > 0)) {
+      let param = '';
+      if (this.object.store.deployConfigurations && this.object.store.deployConfigurations.length === 0) {
+        delete this.object.store['deployConfigurations'];
+      }
+      if (this.object.store.draftConfigurations && this.object.store.draftConfigurations.length === 0) {
+        delete this.object.store['draftConfigurations'];
+      }
+
+      param = param + '&exportFilter=' + JSON.stringify(this.object.store);
+      if (this.comments.comment) {
+        param = param + '&comment=' + this.comments.comment;
+      }
+      if (this.comments.timeSpent) {
+        param = param + '&timeSpent=' + this.comments.timeSpent;
+      }
+      if (this.comments.ticketLink) {
+        param = param + '&ticketLink=' + encodeURIComponent(this.comments.ticketLink);
+      }
+      //console.log('http://jstest.zehntech.net:7446/joc/api/inventory/export?accessToken=' + this.authService.accessTokenId + '&filename=' + this.exportObj.filename + this.exportObj.fileFormat + param);
+      $('#tmpFrame').attr('src', './api/inventory/export?accessToken=' + this.authService.accessTokenId + '&filename=' + this.exportObj.filename + this.exportObj.fileFormat + param);
+      setTimeout(() => {
+        this.submitted = false;
+        this.activeModal.close('ok');
+      }, 150);
+    }
   }
 
   cancel() {
@@ -2234,10 +2277,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   export() {
-    const modalRef = this.modalService.open(ExportComponent, {backdrop: 'static', size: 'lg'});
+    const modalRef = this.modalService.open(DeployComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.schedulerIds = this.schedulerIds;
     modalRef.componentInstance.preferences = this.preferences;
     modalRef.componentInstance.display = this.preferences.auditLog;
+    modalRef.componentInstance.isExport = true;
     modalRef.result.then((res: any) => {
 
     }, () => {
@@ -2395,7 +2439,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   copy(node) {
     this.copyObj = node.copy || node.origin;
     let msg;
-    this.translate.get('message.copied').subscribe(translatedValue => {
+    this.translate.get('common.message.copied').subscribe(translatedValue => {
       msg = translatedValue;
     });
     this.message.success(msg);
@@ -2439,7 +2483,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
         let obj: any = {
           type: this.copyObj.type === 'CALENDAR' ? res.configuration.type : this.copyObj.type,
           path: object.path,
-          name: this.coreService.getCopyName(this.copyObj.name, object.children)
+          name: this.coreService.getCopyName(this.copyObj.name, object.children),
+          valid: res.valid
         };
         object.expanded = true;
         this.storeObject(obj, object.children, res.configuration);
@@ -2630,7 +2675,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.coreService.post('inventory/store', {
         objectType: obj.type,
         path: _path,
-        valid: !(obj.type.match(/CALENDAR/) || obj.type === 'ORDERTEMPLATE' || obj.type === 'WORKFLOW'),
+        valid: obj.valid ? obj.valid : !(obj.type.match(/CALENDAR/) || obj.type === 'ORDERTEMPLATE' || obj.type === 'WORKFLOW'),
         configuration: configuration
       }).subscribe((res: any) => {
         if ((obj.type === 'WORKINGDAYSCALENDAR' || obj.type === 'NONWORKINGDAYSCALENDAR')) {

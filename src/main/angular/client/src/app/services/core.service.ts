@@ -783,7 +783,7 @@ export class CoreService {
     if (link !== '') {
       this.clipboardService.copyFromContent(link + '&scheduler_id=' + JSON.parse(this.authService.scheduleIds).selected);
       let msg;
-      this.translate.get('message.copied').subscribe(translatedValue => {
+      this.translate.get('common.message.copied').subscribe(translatedValue => {
         msg = translatedValue;
       });
       this.message.success(msg);
