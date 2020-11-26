@@ -8359,7 +8359,6 @@
         vm.jobs = [];
 
         vm.flag = false;
-        vm.isUpdated = true;
         vm.eventNodes = [];
         vm.jobStreamList = [];
         vm.tree_handler = {};
@@ -8822,11 +8821,26 @@
                 vm.jobFilters.graphViewDetail.tab = 'jobStream';
             }
             if (vm.allJobs.length > 0) {
-                let res1, result1;
+                let res1, result1, flag = vm.jobFilters.graphViewDetail.isWorkflowCompact;
+                if (vm.workflows && flag) {
+                    for (let i = 0; i < vm.workflows.length; i++) {
+                        if (vm.workflows[i].jobStream === vm.selectedJobStream) {
+                            for (let j = 0; j < vm.workflows[i].jobs.length; j++) {
+                                if (vm.workflows[i].jobs[j].isExpanded) {
+                                    flag = false;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+
                 ConditionService.inCondition({
                     jobschedulerId: $scope.schedulerIds.selected,
                     session: vm.selectedSession.session,
-                    folder: vm.allJobs[0].path1
+                    folder: vm.allJobs[0].path1,
+                    compact: flag
                 }).then(function (res) {
                     if (result1) {
                         mergeConditions(res, result1, checkScroll, tempJobs, cb, isEvent);
@@ -8843,7 +8857,8 @@
                 ConditionService.outCondition({
                     jobschedulerId: $scope.schedulerIds.selected,
                     session: vm.selectedSession.session,
-                    folder: vm.allJobs[0].path1
+                    folder: vm.allJobs[0].path1,
+                    compact: flag
                 }).then(function (result) {
                     if (res1) {
                         mergeConditions(res1, result, checkScroll, tempJobs, cb, isEvent);
@@ -8945,7 +8960,6 @@
                 }
             }
             vm.isJobStreamLoaded = true;
-            vm.isUpdated = true;
             let scrollValue = {scrollTop: 0, scrollLeft: 0};
             if (checkScroll && reCreate) {
                 let element = document.getElementById("graph");
@@ -9866,7 +9880,7 @@
             }
         };
 
-        vm.startTaskParameterizedForInstance  = function (job) {
+        vm.startTaskParameterizedForInstance = function (job) {
             if (!vm.selectedSession.session) {
                 toasty.warning({
                     title: gettextCatalog.getString("message.pleaseSelectSession"),
@@ -9899,7 +9913,7 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                var obj = {jobschedulerId : vm.schedulerIds.selected};
+                var obj = {jobschedulerId: vm.schedulerIds.selected};
                 obj.params = job.params;
                 obj.job = job.path;
                 if (job.date && job.time) {
@@ -10365,7 +10379,17 @@
             }
         }
 
-        function updateStreamObj(res, obj, isRename, updateStarter){
+        function updateStreamObj(res, obj, isRename, updateStarter) {
+            if (vm.selectedJobStream === vm.selectedJobStreamObj.jobStream && vm.selectedJobStream === obj.jobStream) {
+                if (res.jobStream === vm.selectedJobStreamObj.jobStream) {
+                    for (let i = 0; i < vm.jobStreamList.length; i++) {
+                        if (vm.jobStreamList[i].jobStream === vm.selectedJobStream) {
+                            vm.jobStreamList[i] = res;
+                            break;
+                        }
+                    }
+                }
+            }
             let outCond = [], inCond = [], _jobs;
             if (vm.workflows) {
                 for (let x = 0; x < vm.workflows.length; x++) {
@@ -10378,7 +10402,7 @@
 
             let _extraJobs = [];
             for (let m = 0; m < res.jobstreamStarters.length; m++) {
-                if(updateStarter) {
+                if (updateStarter) {
                     if (updateStarter.title === res.jobstreamStarters[m].title) {
                         vm.selectedStarterId = res.jobstreamStarters[m].jobStreamStarterId;
                     }
