@@ -103,7 +103,7 @@
                             <div class="col-sm-6"
                                  ng-class="{ 'has-error' : (form['job'+$index].$invalid && form['job'+$index].$dirty)}">
                                 <ui-select required name="job{{$index}}" ng-model="_job.job" ng-change="checkJobName(starter.jobs, _job)" theme="selectize" ng-disabled="job.selected" >
-                                    <ui-select-match>{{$select.selected.path}}</ui-select-match>
+                                    <ui-select-match>{{$select.selected.name}}</ui-select-match>
                                     <ui-select-choices repeat="job.path as job in jobList | filter: $select.search">
                                         <span ng-class="{'disable-link':job.selected}" ng-bind-html="job.name | highlight: $select.search"></span>
                                     </ui-select-choices>
@@ -148,7 +148,7 @@
                     <label class="col-sm-4 form-control-label" translate>label.requiredJob</label>
                     <div class="col-sm-6">
                         <ui-select name="requiredJob" ng-model="starter.requiredJob" theme="selectize">
-                            <ui-select-match>{{$select.selected.path}}</ui-select-match>
+                            <ui-select-match>{{$select.selected.name}}</ui-select-match>
                             <ui-select-choices repeat="job.path as job in jobList | filter: $select.search">
                                 <span ng-bind-html="job.name | highlight: $select.search"></span>
                             </ui-select-choices>
@@ -161,7 +161,7 @@
                     <label class="col-sm-4 form-control-label" translate>label.endOfJobStream</label>
                     <div class="col-sm-6">
                         <ui-select name="endOfJobStream" ng-model="starter.endOfJobStream" theme="selectize">
-                            <ui-select-match>{{$select.selected.path}}</ui-select-match>
+                            <ui-select-match>{{$select.selected.name}}</ui-select-match>
                             <ui-select-choices repeat="job.path as job in jobList | filter: $select.search">
                                 <span ng-bind-html="job.name | highlight: $select.search"></span>
                             </ui-select-choices>
