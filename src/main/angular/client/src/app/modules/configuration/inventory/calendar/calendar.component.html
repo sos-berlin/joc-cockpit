@@ -46,13 +46,13 @@
               <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
               <div class="col-md-8 col-lg-6">
                 <input type="text" class="form-control" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
-                       [(ngModel)]="calendar.configuration.title" name="title">
+                       [(ngModel)]="calendar.configuration.title" name="title" (blur)="saveJSON()">
               </div>
             </div>
             <div class="form-group row">
               <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.type</label>
               <div class="col-md-8 col-lg-6">
-                <nz-select [(ngModel)]="calendar.configuration.type" name="cType">
+                <nz-select [(ngModel)]="calendar.configuration.type" name="cType" (ngModelChange)="saveJSON()">
                   <nz-option nzValue="WORKINGDAYSCALENDAR" [nzLabel]="'runtime.label.workingDay' | translate"></nz-option>
                   <nz-option nzValue="NONWORKINGDAYSCALENDAR" [nzLabel]="'runtime.label.nonWorkingDay' | translate"></nz-option>
                 </nz-select>

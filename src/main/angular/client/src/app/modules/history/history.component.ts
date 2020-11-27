@@ -341,7 +341,7 @@ export class DeploymentSearchComponent implements OnInit {
 
   ngOnInit() {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.deployTypes = ['WORKFLOW', 'JOBCLASS', 'AGENTREF', 'LOCK', 'JUNCTION'];
+    this.deployTypes = ['WORKFLOW', 'JOBCLASS', 'LOCK', 'JUNCTION'];
   }
 
   getFolderTree(flag) {

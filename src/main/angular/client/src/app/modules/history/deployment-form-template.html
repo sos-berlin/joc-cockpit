@@ -81,8 +81,8 @@
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>history.label.deployType</label>
       <div class="col-sm-6">
-        <nz-select [(ngModel)]="filter.deployType" name="id">
-          <nz-option *ngFor="let type of deployTypes" [nzLabel]="type | translate" [nzValue]="type"></nz-option>
+        <nz-select nzAllowClear [(ngModel)]="filter.deployType" name="deployType" nzPlaceHolder="{{'history.placeholder.selectDeployType' | translate}}">
+          <nz-option *ngFor="let type of deployTypes" nzLabel="{{type | translate}}" [nzValue]="type"></nz-option>
         </nz-select>
       </div>
     </div>

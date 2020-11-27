@@ -84,6 +84,7 @@
                   <li nz-menu-item *ngIf="!data.deleted && permission.Inventory.configurations.edit">
                     <a (click)="copyObject(data)" translate>inventory.button.copy</a>
                   </li>
+                  <li nz-menu-divider *ngIf="!data.deleted && permission.Inventory.configurations.edit">
    <!--               <li nz-menu-item *ngIf="!data.deleted && permission.Inventory.configurations.edit">
                     <a (click)="editObject(data)" translate>inventory.button.edit</a>
                   </li>-->
@@ -93,6 +94,7 @@
                   <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && objectType === 'CALENDAR' || objectType === 'ORDERTEMPLATE'" [nzDisabled]="!data.valid">
                     <a (click)="releaseObject(data)" translate>inventory.button.release</a>
                   </li>
+                  <li nz-menu-divider>
                   <li nz-menu-item [nzDisabled]="!data.hasDeployments"
                     *ngIf="permission.Inventory.configurations.delete && !data.deleted && objectType !== 'CALENDAR' && objectType !== 'ORDERTEMPLATE'">
                     <a (click)="removeObject(data)" translate>inventory.button.remove</a>

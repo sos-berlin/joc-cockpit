@@ -1,7 +1,8 @@
 <div class="modal-header">
   <h4 class="modal-title" >
-    <span *ngIf="!releasable" translate>inventory.label.deploy</span>
+    <span *ngIf="!releasable && !isExport" translate>inventory.label.deploy</span>
     <span *ngIf="releasable" translate>inventory.label.release</span>
+    <span *ngIf="isExport" translate>inventory.label.export</span>
   </h4>
   <button type="button" class="close" (click)="cancel()" aria-label="Close">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -10,7 +11,7 @@
 <form name="form" (ngSubmit)="deploy()" spellcheck="false">
   <div class="modal-body p-a">
     <div *ngIf="actualResult.length > 0 && !loading">
-      <div class="form-group row" *ngIf="!releasable">
+      <div class="form-group row" *ngIf="!releasable && !isExport">
         <label class="col-md-3 form-control-label">
           <label translate>inventory.label.controllers</label>
         </label>
@@ -25,6 +26,26 @@
               <nz-option [nzValue]="id" [nzLabel]="id"></nz-option>
             </ng-container>
           </nz-select>
+        </div>
+      </div>
+      <div class="form-group row" *ngIf="isExport">
+        <label class="col-md-3 form-control-label" translate>inventory.label.fileName</label>
+        <div class="col-md-6" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+          <nz-input-group [nzAddOnAfter]="addOnAfterTemplate">
+            <input type="text" nz-input required name="name" #name="ngModel" placeholder="{{'inventory.placeholder.enterFileName' | translate}}" [(ngModel)]="exportObj.filename" />
+          </nz-input-group>
+          <ng-template #addOnAfterTemplate>
+            <nz-select name="format" [(ngModel)]="exportObj.fileFormat">
+              <nz-option nzLabel=".zip" nzValue=".zip"></nz-option>
+              <nz-option nzLabel=".tar.gz" nzValue=".tar.gz"></nz-option>
+              <nz-option nzLabel=".gz" nzValue=".gz"></nz-option>
+            </nz-select>
+          </ng-template>
+          <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)" class="text-danger help-block">
+            <div *ngIf="name.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="hide" [ngClass]="{'show': display && !releasable}">

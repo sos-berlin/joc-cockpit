@@ -22,6 +22,8 @@ export class SingleDeployComponent implements OnInit {
   @Input() data;
   @Input() type;
   @Input() releasable: boolean;
+  @Input() isExport: boolean;
+  @Input() isExportReleaseable: boolean;
   @Input() display: any;
   selectedSchedulerIds = [];
   actualResult = [];
@@ -63,9 +65,9 @@ export class SingleDeployComponent implements OnInit {
       obj.folder = this.data.path;
       obj.objectTypes = this.data.object === 'CALENDAR' ? ['WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'] : [this.data.object];
     }
-    const URL = this.releasable ? 'inventory/releasables' : 'inventory/deployables';
+    const URL = (this.isExportReleaseable || this.releasable) ? 'inventory/releasables' : 'inventory/deployables';
     this.coreService.post(URL, obj).subscribe((res: any) => {
-      this.actualResult = this.releasable ? res.releasables : res.deployables;
+      this.actualResult = (this.isExportReleaseable || this.releasable) ? res.releasables : res.deployables;
       this.checkControllers(this.selectedSchedulerIds);
       this.loading = false;
     }, (err) => {
@@ -172,6 +174,7 @@ export class SingleDeployComponent implements OnInit {
           if (!_.isEmpty(obj)) {
             self.object.delete.push(obj);
           } else if (objDep.deployConfiguration) {
+            delete objDep['commitId'];
             self.object.deleteObj.deployConfigurations.push(objDep);
           }
         } else {
@@ -270,6 +273,7 @@ export class DeployComponent implements OnInit {
   @Input() releasable: boolean;
   @Input() reDeploy: boolean;
   @Input() isExport: boolean;
+  @Input() isExportReleaseable: boolean;
   @Input() display: any;
   selectedSchedulerIds = [];
   actualResult = [];
@@ -463,14 +467,14 @@ export class DeployComponent implements OnInit {
   }
 
   buildTree() {
-    const URL = this.releasable ? 'inventory/releasables' : 'inventory/deployables';
+    const URL = (this.isExportReleaseable || this.releasable) ? 'inventory/releasables' : 'inventory/deployables';
     this.coreService.post(URL, {
       folder: this.path || '/',
       recursive: true,
       onlyValidObjects: true,
       withVersions: !this.reDeploy
     }).subscribe((res: any) => {
-      this.actualResult = this.releasable ? res.releasables : res.deployables;
+      this.actualResult = (this.isExportReleaseable || this.releasable) ? res.releasables : res.deployables;
       this.checkControllers(this.selectedSchedulerIds);
     }, (err) => {
       this.loading = false;
@@ -646,7 +650,9 @@ export class DeployComponent implements OnInit {
             deployablesVersions: data.deployablesVersions,
             isLeaf: true
           };
-          tempArr.push(child);
+          if(!(data.deleted && this.isExport)) {
+            tempArr.push(child);
+          }
         });
 
       } else {
@@ -686,7 +692,7 @@ export class DeployComponent implements OnInit {
             if (nodes[i].deployId || nodes[i].deploymentId) {
               objDep.deployConfiguration = {
                 path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
-                objectType: nodes[i].type,
+                objectType: nodes[i].isFolder ? 'FOLDER' : nodes[i].type,
                 commitId: ''
               };
               if (nodes[i].deployablesVersions) {
@@ -700,21 +706,18 @@ export class DeployComponent implements OnInit {
             } else {
               objDep[nodes[i].deleted ? 'deployConfiguration' : 'draftConfiguration'] = {
                 path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
-                objectType: nodes[i].type
+                objectType: nodes[i].isFolder ? 'FOLDER' : nodes[i].type
               };
             }
           } else {
-            if (nodes[i].deployId || nodes[i].deploymentId) {
-              obj.deploymentId = nodes[i].deployId || nodes[i].deploymentId;
-            } else {
-              obj.configurationId = nodes[i].key;
-            }
+            obj.id = nodes[i].key;
           }
 
           if (nodes[i].deleted) {
             if (!_.isEmpty(obj)) {
               self.object.delete.push(obj);
             } else if (objDep.deployConfiguration) {
+              delete objDep['commitId'];
               self.object.deleteObj.deployConfigurations.push(objDep);
             }
           } else {
@@ -1246,357 +1249,6 @@ export class SetVersionComponent implements OnInit {
 }
 
 @Component({
-  selector: 'app-export-modal',
-  templateUrl: './export-dialog.html'
-})
-export class ExportComponent implements OnInit {
-  @ViewChild('treeCtrl', {static: false}) treeCtrl;
-  @Input() schedulerIds;
-  @Input() preferences;
-  @Input() display: any;
-  nodes: any = [{path: '/', key: '/', name: '/', children: []}];
-  object: any = {
-    configurations: [],
-    deployments: [],
-    fileFormat: '.zip'
-  };
-  showUnSigned = true;
-  showSigned = true;
-  isExpandAll = false;
-  loading = true;
-  submitted = false;
-  comments: any = {radio: 'predefined'};
-  required: boolean;
-  messageList: any;
-
-  constructor(public activeModal: NgbActiveModal, private authService: AuthService,
-              private coreService: CoreService) {
-  }
-
-  ngOnInit() {
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
-    }
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
-      this.required = true;
-    }
-    this.buildTree();
-  }
-
-  expandAll(): void {
-    this.isExpandAll = true;
-  }
-
-  // Collapse all Node
-  collapseAll() {
-    this.isExpandAll = false;
-    this.expandCollapseRec(this.nodes);
-  }
-
-  private expandCollapseRec(node) {
-    for (let i = 0; i < node.length; i++) {
-      if (node[i].children && node[i].children.length > 0) {
-        const a = this.treeCtrl.getTreeNodeByKey(node[i].key);
-        a.isExpanded = false;
-        this.expandCollapseRec(node[i].children);
-      }
-    }
-  }
-
-  handleCheckbox(node): void {
-    node.recursivelyDeploy = !node.recursivelyDeploy;
-    if (!node.type) {
-      this.toggleObject(node, node.recursivelyDeploy);
-    }
-    this.getParent(node, node.recursivelyDeploy);
-    this.updateTree();
-  }
-
-  private getParent(node, flag) {
-    const parent = this.treeCtrl.getTreeNodeByKey(node.path);
-    if (parent) {
-      if (!flag) {
-        parent.origin.recursivelyDeploy = flag;
-      } else if (parent.origin.children) {
-        let flg = true;
-        for (let i = 0; i < parent.origin.children.length; i++) {
-          if (parent.origin.children[i].type && !parent.origin.children[i].recursivelyDeploy) {
-            flg = false;
-            break;
-          } else if (!parent.origin.children[i].type && !parent.origin.children[i].object && !parent.origin.children[i].recursivelyDeploy) {
-            flg = false;
-            break;
-          }
-        }
-        parent.origin.recursivelyDeploy = flg;
-      }
-      if (parent.origin.path !== '/') {
-        if (parent.getParentNode()) {
-          this.getParent(parent.getParentNode().origin, flag);
-        }
-      }
-    }
-  }
-
-  private toggleObject(data, flag) {
-    for (let i = 0; i < data.children.length; i++) {
-      if (data.children[i].type) {
-        data.children[i].recursivelyDeploy = flag;
-      } else if (!data.children[i].object) {
-        data.children[i].recursivelyDeploy = flag;
-        this.toggleObject(data.children[i], flag);
-      }
-    }
-  }
-
-  updateTree() {
-    this.nodes = [...this.nodes];
-  }
-
-  buildTree() {
-    this.coreService.post('inventory/deployables', {
-      folder: '/',
-      recursive: true,
-      onlyValidObjects: true,
-      withVersions: true
-    }).subscribe((res) => {
-      this.buildDeployablesTree(res);
-      if (this.nodes.length > 0) {
-        this.checkAndUpdateVersionList(this.nodes[0]);
-      }
-      setTimeout(() => {
-        this.loading = false;
-        this.updateTree();
-      }, 0);
-    }, (err) => {
-      this.loading = false;
-      this.nodes = [];
-    });
-  }
-
-  getDeploymentVersion(e: NzFormatEmitEvent): void {
-    let node = e.node;
-    if (node && node.origin && node.origin.expanded && !node.origin.isCall) {
-      this.checkAndUpdateVersionList(node.origin);
-    }
-  }
-
-  private checkAndUpdateVersionList(data) {
-    data.isCall = true;
-    for (let i = 0; i < data.children.length; i++) {
-      if (data.children[i].deployablesVersions && data.children[i].deployablesVersions.length > 0) {
-        data.children[i].deployId = '';
-        if (data.children[i].valid && data.children[i].deployablesVersions[0].versions && data.children[i].deployablesVersions[0].versions.length > 0) {
-          data.children[i].deployId = data.children[i].deployablesVersions[0].deploymentId;
-        }
-      }
-    }
-  }
-
-  private buildDeployablesTree(result) {
-    if (result.deployables && result.deployables.length > 0) {
-      const arr = _.groupBy(_.sortBy(result.deployables, 'folder'), (res) => {
-        return res.folder;
-      });
-      this.generateTree(arr);
-    } else {
-      this.nodes = [];
-    }
-  }
-
-  private generateTree(arr) {
-    for (const [key, value] of Object.entries(arr)) {
-      if (key !== '/') {
-        let paths = key.split('/');
-        if (paths.length > 1) {
-          let pathArr = [];
-          for (let i = 0; i < paths.length; i++) {
-            if (paths[i]) {
-              if (i > 0 && paths[i - 1]) {
-                pathArr.push('/' + paths[i - 1] + '/' + paths[i]);
-              } else {
-                pathArr.push('/' + paths[i]);
-              }
-            }
-          }
-          for (let i = 0; i < pathArr.length; i++) {
-            this.checkAndAddFolder(pathArr[i]);
-          }
-        }
-      }
-      this.checkFolderRecur(key, value);
-    }
-  }
-
-  private checkFolderRecur(_path, data) {
-    let flag = false;
-    let arr = [];
-    if (data.length > 0) {
-      arr = this.createTempArray(data);
-    }
-
-    function recursive(path, nodes) {
-      for (let i = 0; i < nodes.length; i++) {
-        if (!nodes[i].type && !nodes[i].object) {
-          if (nodes[i].path === path) {
-            if (!nodes[i].children || nodes[i].children.length === 0) {
-              nodes[i].children = arr;
-            } else {
-              nodes[i].children = nodes[i].children.concat(arr);
-            }
-            flag = true;
-            break;
-          }
-          if (!flag && nodes[i].children) {
-            recursive(path, nodes[i].children);
-          }
-        }
-      }
-    }
-
-    if (this.nodes && this.nodes[0]) {
-      this.nodes[0].expanded = true;
-      recursive(_path, this.nodes);
-    }
-  }
-
-  private checkAndAddFolder(_path) {
-    let node: any;
-
-    function recursive(path, nodes) {
-      for (let i = 0; i < nodes.length; i++) {
-        if (!nodes[i].type && !nodes[i].object) {
-          if (nodes[i].path === path.substring(0, path.lastIndexOf('/') + 1) || nodes[i].path === path.substring(0, path.lastIndexOf('/'))) {
-            node = nodes[i];
-            break;
-          }
-          if (nodes[i].children) {
-            recursive(path, nodes[i].children);
-          }
-        }
-      }
-    }
-
-    recursive(_path, this.nodes);
-
-    if (node) {
-      let falg = false;
-      for (let x = 0; x < node.children.length; x++) {
-        if (!node.children[x].type && !node.children[x].object && node.children[x].path === _path) {
-          falg = true;
-          break;
-        }
-      }
-      if (!falg) {
-        node.children.push({
-          name: _path.substring(_path.lastIndexOf('/') + 1),
-          path: _path,
-          key: _path,
-          children: []
-        });
-      }
-    }
-  }
-
-  private createTempArray(arr) {
-    let x = _.groupBy(arr, (res) => {
-      return res.objectType;
-    });
-    let tempArr = [], folderArr = [];
-    for (const [key, value] of Object.entries(x)) {
-      const temp: any = value;
-      if (key !== 'FOLDER') {
-        let parentObj: any = {
-          name: value[0].objectType,
-          object: value[0].objectType,
-          path: value[0].folder,
-          key: value[0].folder + (value[0].folder === '/' ? '' : '/') + value[0].objectType,
-          isLeaf: true
-        };
-        tempArr.push(parentObj);
-        temp.forEach(data => {
-          const child: any = {
-            name: data.objectName,
-            path: data.folder,
-            key: data.id,
-            type: data.objectType,
-            deploymentId: data.deploymentId,
-            deployablesVersions: data.deployablesVersions,
-            isLeaf: true
-          };
-          tempArr.push(child);
-        });
-      } else {
-        temp.forEach(data => {
-          folderArr.push({
-            name: data.objectName,
-            path: data.folder,
-            key: data.id,
-            children: []
-          });
-        });
-      }
-    }
-    return tempArr.concat(folderArr);
-  }
-
-  getJSObject() {
-    this.object.configurations = [];
-    this.object.deployments = [];
-    const self = this;
-
-    function recursive(nodes) {
-      for (let i = 0; i < nodes.length; i++) {
-        if (nodes[i].type && nodes[i].recursivelyDeploy) {
-          if (nodes[i].deployId || nodes[i].deploymentId) {
-            self.object.deployments.push(nodes[i].deployId || nodes[i].deploymentId);
-          } else {
-            self.object.configurations.push(nodes[i].key);
-          }
-        }
-        if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
-          recursive(nodes[i].children);
-        }
-      }
-    }
-
-    recursive(this.nodes);
-  }
-
-  export() {
-    this.submitted = true;
-    this.getJSObject();
-    if (this.object.configurations.length > 0 || this.object.deployments.length > 0) {
-      let param = '';
-      if (this.object.configurations.length > 0) {
-        param = '&configurations=' + this.object.configurations.toString();
-      }
-      if (this.object.deployments.length > 0) {
-        param = param + '&deployments=' + this.object.deployments.toString();
-      }
-      if (this.comments.comment) {
-        param = param + '&comment=' + this.comments.comment;
-      }
-      if (this.comments.timeSpent) {
-        param = param + '&timeSpent=' + this.comments.timeSpent;
-      }
-      if (this.comments.ticketLink) {
-        param = param + '&ticketLink=' + encodeURIComponent(this.comments.ticketLink);
-      }
-      $('#tmpFrame').attr('src', './api/inventory/export?accessToken=' + this.authService.accessTokenId + '&filename=' + this.object.filename + this.object.fileFormat + param);
-      setTimeout(() => {
-        this.submitted = false;
-        this.activeModal.close('ok');
-      }, 150);
-    }
-  }
-
-  cancel() {
-    this.activeModal.dismiss();
-  }
-}
-
-@Component({
   selector: 'app-import-modal-content',
   templateUrl: './import-dialog.html'
 })
@@ -1967,7 +1619,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       function traverseTree(data) {
         if (path && data.path && (path === data.path)) {
           self.updateObjects(data, (children) => {
-            if (data.children[0]) {
+            if (data.children.length > 1 && data.children[0].controller) {
               const index = data.children[0].controller ? 1 : 0;
               const index2 = data.children[1].dailyPlan ? 1 : 0;
               data.children.splice(0, index, children[0]);
@@ -2338,8 +1990,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  deployObject(node, releasable) {
-    let origin = node.origin ? node.origin : node;
+  exportObject(node) {
+    this.openPopupDialog(node, false, true);
+  }
+
+  openPopupDialog(node, releasable, isExport) {
+    const origin = node.origin ? node.origin : node;
+  
     if (releasable && origin.id) {
       this.releaseSingleObject(origin);
       return;
@@ -2350,6 +2007,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.display = this.preferences.auditLog;
       modalRef.componentInstance.data = origin;
       modalRef.componentInstance.releasable = releasable;
+      modalRef.componentInstance.isExport = isExport;
+      modalRef.componentInstance.isExportReleaseable = origin.dailyPlan;
       modalRef.result.then((res: any) => {
         let path = origin.path;
         if (!node.origin) {
@@ -2368,12 +2027,18 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.display = this.preferences.auditLog;
       modalRef.componentInstance.path = origin.path;
       modalRef.componentInstance.releasable = releasable;
+      modalRef.componentInstance.isExport = isExport;
+      modalRef.componentInstance.isExportReleaseable = origin.dailyPlan;
       modalRef.result.then((res: any) => {
         this.initTree(origin.path, null);
       }, () => {
 
       });
     }
+  }
+
+  deployObject(node, releasable) {
+    this.openPopupDialog(node, releasable, false);
   }
 
   reDeployObject(node) {

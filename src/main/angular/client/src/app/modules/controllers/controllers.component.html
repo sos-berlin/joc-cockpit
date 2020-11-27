@@ -30,6 +30,9 @@
                 <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
                   <ul nz-menu>
                     <li nz-menu-item *ngIf="!currentSecurityLevel || currentSecurityLevel === controller.securityLevel">
+                      <a (click)="addAgent(controller)" translate="">agent.button.addAgent</a>
+                    </li>
+                    <li nz-menu-item *ngIf="!currentSecurityLevel || currentSecurityLevel === controller.securityLevel">
                       <a (click)="editController(controller.controllerId)" translate>common.button.edit</a>
                     </li>
                     <li nz-menu-item class="bg-hover-color" *ngIf="!currentSecurityLevel || currentSecurityLevel === controller.securityLevel">
@@ -37,9 +40,6 @@
                     </li>
                     <li nz-menu-item *ngIf="currentSecurityLevel && currentSecurityLevel !== controller.securityLevel">
                       <a (click)="migrateController(controller.controllerId)" translate="">controller.button.MigrateControllerToSecurityLevel</a>
-                    </li>
-                    <li nz-menu-item *ngIf="!currentSecurityLevel || currentSecurityLevel === controller.securityLevel">
-                      <a (click)="addAgent(controller)" translate="">agent.button.addAgent</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
@@ -60,6 +60,7 @@
                 <table class="table table-hover m-b-0">
                   <thead>
                   <tr>
+                    <th class="menu"><span translate>common.label.action</span></th>
                     <th><span translate>agent.label.agentId</span></th>
                     <th><span translate>agent.label.agentName</span></th>
                     <th><span translate>agent.label.agentNameAliases</span></th>
@@ -68,8 +69,20 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr *ngFor="let agent of controller.agents" class="cursor"
-                      [ngClass]="{'disabled-row': agent.disabled}" (click)="editAgent(agent, controller)">
+                  <tr *ngFor="let agent of controller.agents"
+                      [ngClass]="{'disabled-row': agent.disabled}">
+                    <td class="menu">
+                      <div class="btn-group dropdown pull-left m-r-sm">
+                        <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
+                        <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                          <ul nz-menu >
+                            <li nz-menu-item >
+                              <a (click)="editAgent(agent, controller)" translate>common.button.edit</a>
+                            </li>
+                          </ul>
+                        </nz-dropdown-menu>
+                      </div>
+                    </td>
                     <td><span [innerHtml]="agent.agentId"></span></td>
                     <td><span [innerHtml]="agent.agentName"></span></td>
                     <td><span [innerHtml]="agent.agentNameAliases || '-'"></span></td>

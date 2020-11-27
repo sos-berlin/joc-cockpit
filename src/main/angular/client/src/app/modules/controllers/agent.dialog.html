@@ -46,7 +46,7 @@
         </div>
       </div>
     </div>
-    <div class="form-group row">
+    <div class="form-group row" *ngIf="!new">
       <label class="col-sm-4 form-control-label" translate>agent.label.agentNameAliases</label>
       <div class=" col-sm-8">
         <input type="text" class="form-control" name="agentNameAliases"
@@ -67,7 +67,7 @@
         </div>
       </div>
     </div>
-<!--    <div class="form-group row">
+    <div class="form-group row">
       <label class="col-sm-4" translate>agent.label.clusterWatcher</label>
       <div class="col-sm-6">
         <label class="md-check">
@@ -75,12 +75,12 @@
           <i class="primary"></i>
         </label>
       </div>
-    </div>-->
+    </div>
     <div class="form-group row" *ngIf="!new">
       <label class="col-sm-4" translate>agent.label.disabled</label>
       <div class="col-sm-6">
         <label class="md-check">
-          <input type="checkbox" (change)="checkDisable()" [(ngModel)]="agent.disabled" name="disabled">
+          <input type="checkbox" [(ngModel)]="agent.disabled" name="disabled">
           <i class="primary"></i>
         </label>
       </div>

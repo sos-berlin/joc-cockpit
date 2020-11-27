@@ -539,6 +539,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   noSave = false;
   isLoading = true;
   isUpdate: boolean;
+  isStore = false;
   error: boolean;
   cutCell: any;
   copyId: any;
@@ -6031,13 +6032,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       data = noValidate;
     }
 
-    if (!_.isEqual(this.workflow.actual, JSON.stringify(data))) {
+    if (!_.isEqual(this.workflow.actual, JSON.stringify(data)) && !this.isStore) {
+      this.isStore = true;
       if (this.history.length === 20) {
         this.history.shift();
       }
       this.history.push(JSON.stringify(data));
       this.indexOfNextAdd = this.history.length;
-
       this.coreService.post('inventory/store', {
         configuration: data,
         path: this.workflow.path,
@@ -6045,6 +6046,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         valid: this.workflow.valid,
         objectType: this.objectType
       }).subscribe((res: any) => {
+        this.isStore = false;
         if (res.id === this.data.id && this.workflow.id === this.data.id) {
           this.workflow.actual = JSON.stringify(data);
           this.workflow.deployed = false;
@@ -6056,6 +6058,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
         }
       }, (err) => {
+        this.isStore = false;
         console.error(err);
       });
     }
