@@ -12,7 +12,7 @@
       <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
-<form name="form" (ngSubmit)="deploy()" spellcheck="false">
+<form #myForm="ngForm" (ngSubmit)="deploy()" spellcheck="false">
   <div class="modal-body p-a">
     <div *ngIf="actualResult.length>0 && !loading">
         <div class="form-group row" *ngIf="!releasable && !reDeploy && !isExport">
@@ -235,7 +235,7 @@
     </div>
   </div>
   <div class="modal-footer text-left" >
-      <button *ngIf="nodes.length > 0" type="submit" class="btn btn-primary btn-sm" [disabled]="selectedSchedulerIds.length === 0 || submitted">
+      <button *ngIf="nodes.length > 0" type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || selectedSchedulerIds.length === 0 || submitted">
         <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
         {{'common.button.submit' | translate}}
       </button>

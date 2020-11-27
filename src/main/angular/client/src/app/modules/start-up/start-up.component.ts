@@ -28,7 +28,6 @@ export class StartUpModalComponent implements OnInit {
   required = false;
   display: any;
   comments: any = {};
-  agent: any = {};
   schedulerIds: any = {};
   messageList: any = [];
   error: any;
@@ -46,11 +45,7 @@ export class StartUpModalComponent implements OnInit {
       primaryTitle: 'PRIMARY',
       backupTitle: 'BACKUP',
     };
-    if (this.agents && this.agents.length > 0 && !this.new) {
-      this.agent = this.agents[0];
-    } else if (this.new) {
-      this.agents = [];
-    }
+
     if (this.controllerInfo) {
       const len = this.controllerInfo.length;
       if (len > 0) {
@@ -132,10 +127,10 @@ export class StartUpModalComponent implements OnInit {
         obj.auditLog.ticketLink = this.comments.ticketLink;
       }
     }
-    if(this.agents.length === 0){
-      this.agents.push(this.agent);
+    if (this.agents && this.agents.length > 0) {
+      obj.agents = this.agents;
     }
-    obj.agents = this.agents;
+
     this.coreService.post('controller/register', obj).subscribe(res => {
       this.submitted = false;
       if (this.modalRef) {
@@ -183,20 +178,6 @@ export class StartUpModalComponent implements OnInit {
       this.isPrimaryConnectionChecked = flag;
     } else if (type === 'BACKUP') {
       this.isBackupConnectionChecked = flag;
-    }
-  }
-
-  checkDisable() {
-    if (this.agent.disabled) {
-      const x = this.agents.filter((agent) => {
-        return agent.disabled;
-      });
-      const flag = x.length >= this.agents.length - 1;
-      if (flag) {
-        setTimeout(() => {
-          this.agent.disabled = false;
-        }, 0);
-      }
     }
   }
 

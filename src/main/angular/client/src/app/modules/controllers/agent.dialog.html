@@ -49,8 +49,7 @@
     <div class="form-group row" *ngIf="!new">
       <label class="col-sm-4 form-control-label" translate>agent.label.agentNameAliases</label>
       <div class=" col-sm-8">
-        <input type="text" class="form-control" name="agentNameAliases"
-               required [(ngModel)]="agent.agentNameAliases"
+        <input type="text" class="form-control" name="agentNameAliases" [(ngModel)]="agent.agentNameAliases"
                placeholder="{{'agent.placeholder.enterAgentNameAliases' | translate}}">
       </div>
     </div>
