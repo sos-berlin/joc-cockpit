@@ -374,7 +374,7 @@
     "label.agentClusterRunningTasks": "Agent Running Tasks",
     "label.js7ClusterStatus": "JS7 Cluster Status",
     "label.standaloneJS7Controller": "JS7 Status",
-    "label.js7Status": "JS7 Status",
+    "label.js7Status": "JS7 Controller Status",
     "label.tasksOverview": "Task Summary",
     "label.tasksSummary": "Task History",
     "label.ordersSummary": "Order History",
