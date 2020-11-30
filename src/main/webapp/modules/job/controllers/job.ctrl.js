@@ -8960,7 +8960,7 @@
                 }
             }
             vm.isJobStreamLoaded = true;
-            let scrollValue = {scrollTop: 0, scrollLeft: 0};
+            let scrollValue = {};
             if (checkScroll && reCreate) {
                 let element = document.getElementById("graph");
                 scrollValue.scrollTop = element.scrollTop;
@@ -9519,7 +9519,7 @@
                 executeLayout(graph);
             }
 
-            if (scrollValue && scrollValue.scrollTop) {
+            if (scrollValue && (scrollValue.scrollTop || scrollValue.scrollTop === 0)) {
                 let element = document.getElementById("graph");
                 element.scrollTop = scrollValue.scrollTop;
                 element.scrollLeft = scrollValue.scrollLeft;
@@ -9529,13 +9529,12 @@
             } else {
                 makeCenter();
             }
-
-            vm.expandingInProgress = false;
             if (timeout) {
                 $timeout.cancel(timeout);
             }
             timeout = $timeout(function () {
                 vm.isWorkflowGenerated = true;
+                vm.isJobStreamLoaded = true;
                 $('[data-toggle="tooltip"]').tooltip();
                 updateWorkflowDiagram(vm.jobs);
                 if (vm.jobs && vm.editor && !interval)

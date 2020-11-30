@@ -3747,7 +3747,7 @@ input[type=search] {
     -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
     box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
     padding: 2px 8px;
-    position: absolute;
+    position: fixed;
     z-index: 99999999;
     background: #ffff;
     max-height: 136px;
@@ -3755,7 +3755,7 @@ input[type=search] {
 }
 
 .ui-select-choices-row {
-    padding-top: 3px
+    padding: 2px 4px;
 }
 
 .selectize-input input[type=search], .selectize-input input[type=search]:focus {
@@ -3769,6 +3769,17 @@ input[type=search] {
 .ui-select-multiple {
     background: 0 0 !important
 }
+.ui-select-match{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+/*
+.ui-select-choices-row.active{
+    background-color: #007da6 !important;
+    color: #fff;
+}
+*/
 
 input[type=search]:focus {
     font-weight: 300;
@@ -6012,7 +6023,7 @@ span.cm-error {
 }
 
 .selectize-control > .selectize-dropdown {
-    width: 94%
+    width: 46.7%
 }
 
 div.order-panel div.enqueue {
