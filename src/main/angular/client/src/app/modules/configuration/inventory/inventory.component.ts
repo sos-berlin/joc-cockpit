@@ -24,6 +24,7 @@ export class SingleDeployComponent implements OnInit {
   @Input() releasable: boolean;
   @Input() isExport: boolean;
   @Input() isExportReleaseable: boolean;
+  @Input() exportObject: any;
   @Input() display: any;
   selectedSchedulerIds = [];
   actualResult = [];
@@ -60,7 +61,7 @@ export class SingleDeployComponent implements OnInit {
   }
 
   init() {
-    let obj: any = {onlyValidObjects: true, withVersions: true, withoutRemovedObjects : this.isExport};
+    let obj: any = {onlyValidObjects: true, withVersions: true};
     if (this.data.id) {
       obj.id = this.data.id;
       this.getSingleObject(obj);
@@ -69,9 +70,23 @@ export class SingleDeployComponent implements OnInit {
       obj.folder = this.data.path;
       obj.objectTypes = this.data.object === 'CALENDAR' ? ['WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'] : [this.data.object];
     }
+    if (this.exportObject) {
+      obj.withoutRemovedObjects = true;
+      obj.withVersions = this.exportObject.version !== 'draft';
+      obj.onlyValidObjects = this.exportObject.isValid;
+    }
     const URL = (this.isExportReleaseable || this.releasable) ? 'inventory/releasables' : 'inventory/deployables';
     this.coreService.post(URL, obj).subscribe((res: any) => {
       this.actualResult = (this.isExportReleaseable || this.releasable) ? res.releasables : res.deployables;
+      if (this.exportObject && this.exportObject.version !== 'any') {
+        this.actualResult = this.actualResult.filter((value) => {
+          if ((this.isExportReleaseable || this.releasable)) {
+            return (this.exportObject.version !== 'draft' && value.release) || (this.exportObject.version === 'draft' && !value.release);
+          } else {
+            return (this.exportObject.version !== 'draft' && value.deployed) || (this.exportObject.version === 'draft' && !value.deployed);
+          }
+        });
+      }
       this.checkControllers(this.selectedSchedulerIds);
       this.loading = false;
     }, (err) => {
@@ -267,12 +282,17 @@ export class SingleDeployComponent implements OnInit {
         param = param + '&ticketLink=' + encodeURIComponent(this.comments.ticketLink);
       }
      // console.log('http://jstest.zehntech.net:7446/joc/api/inventory/export?accessToken=' + this.authService.accessTokenId + '&filename=' + this.exportObj.filename + this.exportObj.fileFormat + param);
-      $('#tmpFrame').attr('src', './api/inventory/export?accessToken=' + this.authService.accessTokenId + '&filename=' + this.exportObj.filename + this.exportObj.fileFormat + param);
-      setTimeout(() => {
+      try {
+        $('#tmpFrame').attr('src', './api/inventory/export?accessToken=' + this.authService.accessTokenId + '&filename=' + this.exportObj.filename + this.exportObj.fileFormat + param);
+        setTimeout(() => {
+          this.submitted = false;
+          this.activeModal.close('ok');
+        }, 150);
+      } catch (e) {
+        console.log(e);
         this.submitted = false;
-        this.activeModal.close('ok');
-      }, 150);
-    } else{
+      }
+    } else {
       this.submitted = false;
     }
   }
@@ -313,6 +333,7 @@ export class DeployComponent implements OnInit {
   @Input() reDeploy: boolean;
   @Input() isExport: boolean;
   @Input() isExportReleaseable: boolean;
+  @Input() exportObject: any;
   @Input() display: any;
   selectedSchedulerIds = [];
   actualResult = [];
@@ -506,15 +527,29 @@ export class DeployComponent implements OnInit {
   }
 
   buildTree() {
-    const URL = (this.isExportReleaseable || this.releasable) ? 'inventory/releasables' : 'inventory/deployables';
-    this.coreService.post(URL, {
+    const obj: any = {
       folder: this.path || '/',
       recursive: true,
       onlyValidObjects: true,
-      withVersions: !this.reDeploy,
-      withoutRemovedObjects: this.isExport
-    }).subscribe((res: any) => {
+      withVersions: !this.reDeploy
+    };
+    if (this.exportObject) {
+      obj.withoutRemovedObjects = true;
+      obj.withVersions = this.exportObject.version !== 'draft';
+      obj.onlyValidObjects = this.exportObject.isValid;
+    }
+    const URL = (this.isExportReleaseable || this.releasable) ? 'inventory/releasables' : 'inventory/deployables';
+    this.coreService.post(URL, obj).subscribe((res: any) => {
       this.actualResult = (this.isExportReleaseable || this.releasable) ? res.releasables : res.deployables;
+      if (this.exportObject && this.exportObject.version !== 'any') {
+        this.actualResult = this.actualResult.filter((value) => {
+          if ((this.isExportReleaseable || this.releasable)) {
+            return (this.exportObject.version !== 'draft' && value.release) || (this.exportObject.version === 'draft' && !value.release);
+          } else {
+            return (this.exportObject.version !== 'draft' && value.deployed) || (this.exportObject.version === 'draft' && !value.deployed);
+          }
+        });
+      }
       this.checkControllers(this.selectedSchedulerIds);
     }, (err) => {
       this.loading = false;
@@ -903,13 +938,92 @@ export class DeployComponent implements OnInit {
         param = param + '&ticketLink=' + encodeURIComponent(this.comments.ticketLink);
       }
       //console.log('http://jstest.zehntech.net:7446/joc/api/inventory/export?accessToken=' + this.authService.accessTokenId + '&filename=' + this.exportObj.filename + this.exportObj.fileFormat + param);
-      $('#tmpFrame').attr('src', './api/inventory/export?accessToken=' + this.authService.accessTokenId + '&filename=' + this.exportObj.filename + this.exportObj.fileFormat + param);
-      setTimeout(() => {
+      try {
+        $('#tmpFrame').attr('src', './api/inventory/export?accessToken=' + this.authService.accessTokenId + '&filename=' + this.exportObj.filename + this.exportObj.fileFormat + param);
+        setTimeout(() => {
+          this.submitted = false;
+          this.activeModal.close('ok');
+        }, 150);
+      } catch (e) {
+        console.log(e);
         this.submitted = false;
-        this.activeModal.close('ok');
-      }, 150);
-    } else{
+      }
+    } else {
       this.submitted = false;
+    }
+  }
+
+  cancel() {
+    this.activeModal.dismiss();
+  }
+}
+
+@Component({
+  selector: 'app-export-modal',
+  templateUrl: './export-dialog.html'
+})
+export class ExportComponent implements OnInit {
+  @Input() schedulerIds;
+  @Input() preferences;
+  @Input() origin: any;
+  @Input() display: any;
+
+  exportObj: any = {};
+  path: string;
+  isExportReleaseable = false;
+  isObjectTypeVisible = true;
+
+  constructor(public activeModal: NgbActiveModal, public modalService: NgbModal) {
+  }
+
+  ngOnInit() {
+    this.exportObj.objectType = 'controller';
+    this.exportObj.version = 'any';
+    this.exportObj.isValid = true;
+    if (this.origin) {
+      this.path = this.origin.path;
+      this.isExportReleaseable = this.origin.dailyPlan;
+      if (this.origin.controller || this.origin.dailyPlan || this.origin.object) {
+        this.isObjectTypeVisible = false;
+      }
+      if (this.origin.dailyPlan || (this.origin.object &&
+        (this.origin.object === 'ORDERTEMPLATE' || this.origin.object.match('CALENDAR')))) {
+        this.exportObj.objectType = 'schedule';
+      }
+    }
+  }
+
+  onSubmit() {
+    if (this.exportObj.objectType === 'schedule') {
+      this.isExportReleaseable = true;
+    } else {
+      this.isExportReleaseable = false;
+    }
+    if (this.origin && this.origin.object) {
+      const modalRef = this.modalService.open(SingleDeployComponent, {backdrop: 'static'});
+      modalRef.componentInstance.schedulerIds = this.schedulerIds;
+      modalRef.componentInstance.display = this.preferences.auditLog;
+      modalRef.componentInstance.data = this.origin;
+      modalRef.componentInstance.exportObject = this.exportObj;
+      modalRef.componentInstance.isExport = true;
+      modalRef.componentInstance.isExportReleaseable = this.isExportReleaseable;
+      modalRef.result.then((res: any) => {
+        this.activeModal.close();
+      }, () => {
+      });
+    } else {
+      const modalRef = this.modalService.open(DeployComponent, {backdrop: 'static', size: 'lg'});
+      modalRef.componentInstance.schedulerIds = this.schedulerIds;
+      modalRef.componentInstance.preferences = this.preferences;
+      modalRef.componentInstance.display = this.preferences.auditLog;
+      modalRef.componentInstance.path = this.path;
+      modalRef.componentInstance.exportObject = this.exportObj;
+      modalRef.componentInstance.isExport = true;
+      modalRef.componentInstance.isExportReleaseable = this.isExportReleaseable;
+      modalRef.result.then((res: any) => {
+        this.activeModal.close();
+      }, () => {
+      });
     }
   }
 
@@ -1982,12 +2096,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   export() {
-    const modalRef = this.modalService.open(DeployComponent, {backdrop: 'static', size: 'lg'});
+    const modalRef = this.modalService.open(ExportComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerIds = this.schedulerIds;
     modalRef.componentInstance.preferences = this.preferences;
     modalRef.componentInstance.display = this.preferences.auditLog;
-    modalRef.componentInstance.isExport = true;
-    modalRef.result.then((res: any) => {
+    modalRef.result.then((result: any) => {
     }, () => {
     });
   }
@@ -2035,12 +2148,20 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   exportObject(node) {
-    this.openPopupDialog(node, false, true);
+    const origin = node.origin ? node.origin : node;
+    const modalRef = this.modalService.open(ExportComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerIds = this.schedulerIds;
+    modalRef.componentInstance.preferences = this.preferences;
+    modalRef.componentInstance.display = this.preferences.auditLog;
+    modalRef.componentInstance.origin = origin;
+    modalRef.result.then((result: any) => {
+
+    }, () => {
+    });
   }
 
-  openPopupDialog(node, releasable, isExport) {
+  deployObject(node, releasable) {
     const origin = node.origin ? node.origin : node;
-  
     if (releasable && origin.id) {
       this.releaseSingleObject(origin);
       return;
@@ -2051,18 +2172,15 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.display = this.preferences.auditLog;
       modalRef.componentInstance.data = origin;
       modalRef.componentInstance.releasable = releasable;
-      modalRef.componentInstance.isExport = isExport;
-      modalRef.componentInstance.isExportReleaseable = origin.dailyPlan;
       modalRef.result.then((res: any) => {
-        if (!isExport) {
-          let path = origin.path;
-          if (!node.origin) {
-            path = path.substring(0, path.lastIndexOf('/') + 1);
-          }
-          this.updateFolders(path, () => {
-            this.updateTree();
-          });
+        let path = origin.path;
+        if (!node.origin) {
+          path = path.substring(0, path.lastIndexOf('/') + 1);
         }
+        this.updateFolders(path, () => {
+          this.updateTree();
+        });
+
       }, () => {
       });
     } else {
@@ -2072,19 +2190,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.display = this.preferences.auditLog;
       modalRef.componentInstance.path = origin.path;
       modalRef.componentInstance.releasable = releasable;
-      modalRef.componentInstance.isExport = isExport;
-      modalRef.componentInstance.isExportReleaseable = origin.dailyPlan;
       modalRef.result.then((res: any) => {
-        if (!isExport) {
-          this.initTree(origin.path, null);
-        }
+        this.initTree(origin.path, null);
       }, () => {
       });
     }
-  }
-
-  deployObject(node, releasable) {
-    this.openPopupDialog(node, releasable, false);
   }
 
   reDeployObject(node) {

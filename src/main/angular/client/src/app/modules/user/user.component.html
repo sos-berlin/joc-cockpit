@@ -985,19 +985,19 @@
                           </span>
                           <div class="inline pull-right">
                             <button class="btn btn-sm btn-grey m-l-12" (click)="pasteKey()"
-                                    [nz-tooltip]="'button.updateKey' | translate">
+                                    [nz-tooltip]="'profile.tooltip.updateKey' | translate">
                               <i class="fa fa-paste"></i>
                             </button>
                             <button *ngIf="permission.Inventory.configurations.publish.importKey"
                                     class="btn btn-sm btn-grey m-l-12" (click)="importKey()"
-                                    [nz-tooltip]="'button.import' | translate">
+                                    [nz-tooltip]="'profile.tooltip.import' | translate">
                               <i nz-icon nzType="upload" nzTheme="outline"></i>
                             </button>
                             <button
                               *ngIf="securityLevel ==='MEDIUM' && permission.Inventory.configurations.publish.generateKey"
                               class="btn btn-sm btn-grey m-l-12"
                               (click)="showGenerateKeyModal()"
-                              [nz-tooltip]="'button.generate' | translate">
+                              [nz-tooltip]="'profile.tooltip.generate' | translate">
                               <i nz-icon nzType="file-protect" nzTheme="outline"></i>
                             </button>
                           </div>

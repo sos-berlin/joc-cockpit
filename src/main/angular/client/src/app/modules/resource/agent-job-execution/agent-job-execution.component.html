@@ -104,8 +104,6 @@
                                         <nz-time-picker timevalidator [nzDisabled]="! agentJobSearch.from" #fromTime="ngModel" [nzFormat]="'HH:mm:ss'"
                                                class="input-time m-l time-picker" [(ngModel)]=" agentJobSearch.fromTime" name="fromTime"
                                                [nzPlaceHolder]="('common.placeholder.startTime' | translate) +' (HH:MM:SS)'" ></nz-time-picker>
-                                        <a class="text-sm text-primary p-l-xs" *ngIf=" agentJobSearch.from ||  agentJobSearch.fromTime"
-                                           (click)=" agentJobSearch.from=''; agentJobSearch.fromTime=''; " translate>common.button.clear</a>
                                       </div>
                                     </div>
                                     <div class="form-group row">
@@ -115,8 +113,6 @@
                                         <nz-time-picker timevalidator [nzDisabled]="! agentJobSearch.to" #toTime="ngModel" [nzFormat]="'HH:mm:ss'"
                                                class="input-time m-l time-picker" [(ngModel)]=" agentJobSearch.toTime" name="toTime"
                                                [nzPlaceHolder]="('common.placeholder.endTime' | translate) +' (HH:MM:SS)'" ></nz-time-picker>
-                                        <a class="text-sm text-primary p-l-xs" *ngIf=" agentJobSearch.to ||  agentJobSearch.toTime"
-                                           (click)=" agentJobSearch.to=''; agentJobSearch.toTime=''; " translate>button.clear</a>
                                       </div>
                                     </div>
                                   <div class="form-group row" >

@@ -12,7 +12,7 @@
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="deploy()" spellcheck="false">
-  <div class="modal-body p-a">
+  <div class="modal-body p-a" style="min-height: 150px">
     <div *ngIf="actualResult.length > 0 && !loading">
       <div class="form-group row" *ngIf="!releasable && !isExport">
         <label class="col-md-3 form-control-label">
@@ -210,7 +210,7 @@
         </div>
       </div>
     </div>
-    <div *ngIf="deployablesObject.length===0 && !loading">
+    <div class="m-t-md" *ngIf="deployablesObject.length===0 && !loading">
       <app-empty-data></app-empty-data>
     </div>
     <div class="text-center" *ngIf="loading">

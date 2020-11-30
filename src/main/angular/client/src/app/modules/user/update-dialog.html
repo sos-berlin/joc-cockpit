@@ -38,7 +38,7 @@
         <textarea class="form-control" rows="10" name="privateKey" [(ngModel)]="data.privateKey" placeholder="{{'profile.placeholder.pastePrivateKey' | translate}}"  [readOnly]="!paste" required #privateKey="ngModel" autofocus autocomplete="false"></textarea>
         <div *ngIf="privateKey.invalid && (privateKey.dirty || privateKey.touched)" class="text-danger help-block">
           <div *ngIf="privateKey.errors.required">
-            <div translate>message.requiredError</div>
+            <div translate>common.message.requiredError</div>
           </div>
         </div>
       </div>
@@ -50,7 +50,7 @@
 
         <div *ngIf="publicKey.invalid && (publicKey.dirty || publicKey.touched)" class="text-danger help-block">
           <div *ngIf="publicKey.errors.required">
-            <div translate>message.requiredError</div>
+            <div translate>common.message.requiredError</div>
           </div>
         </div>
       </div>
@@ -62,7 +62,7 @@
 
         <div *ngIf="certificate.invalid && (certificate.dirty || certificate.touched)" class="text-danger help-block">
           <div *ngIf="certificate.errors.required">
-            <div translate>message.requiredError</div>
+            <div translate>common.message.requiredError</div>
           </div>
         </div>
       </div>
@@ -76,12 +76,12 @@
   </div>
   <div class="modal-footer">
     <button *ngIf="paste" type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>&nbsp;
-      {{'button.submit' | translate}}
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
     </button>
     <button type="button" class="btn btn-outline-dark btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')">
-      <span *ngIf="paste" translate>button.cancel</span>
-      <span *ngIf="!paste" translate>button.close</span>
+      <span *ngIf="paste" translate>common.button.cancel</span>
+      <span *ngIf="!paste" translate>common.button.close</span>
     </button>
   </div>
 </form>

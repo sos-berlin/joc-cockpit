@@ -1,0 +1,64 @@
+<div class="modal-header">
+  <h4 class="modal-title" >
+    <span translate>inventory.label.export</span>
+    <span *ngIf="path">:
+      {{path}}
+    </span>
+  </h4>
+  <button type="button" class="close" (click)="cancel()" aria-label="Close">
+      <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
+  <div class="modal-body p-a">
+    <div class="form-group row" *ngIf="isObjectTypeVisible">
+      <label class="col-sm-3 " translate>inventory.label.objectType</label>
+      <div class="col-md-9">
+        <label class="md-check w w-130">
+          <input type="radio" name="objectType" [(ngModel)]="exportObj.objectType" value="controller">
+          <i class="primary"></i><span translate>inventory.label.controller</span>
+        </label>
+        <label class="md-check w w-130">
+          <input type="radio" name="objectType" [(ngModel)]="exportObj.objectType" value="schedule">
+          <i class="primary"></i> <span translate>inventory.label.schedule</span>
+        </label>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-3 " translate>inventory.label.objectVersion</label>
+      <div class="col-md-9">
+        <label class="md-check w w-130">
+          <input type="radio" name="version" [(ngModel)]="exportObj.version" value="any">
+          <i class="primary"></i><span translate>inventory.label.any</span>
+        </label>
+        <label class="md-check w w-130">
+          <input type="radio" name="version" [(ngModel)]="exportObj.version" value="draft">
+          <i class="primary"></i> <span translate>inventory.label.draft</span>
+        </label>
+        <label class="md-check w w-130">
+          <input type="radio" name="version" [(ngModel)]="exportObj.version" value="version">
+          <i class="primary"></i> <span translate>inventory.label.version</span>
+        </label>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-3">
+        <label translate>inventory.label.validOnly</label>
+      </div>
+      <div class="col-md-9">
+        <label class="md-check w w-130">
+          <input type="checkbox" name="isValid" [(ngModel)]="exportObj.isValid">
+          <i class="primary"></i>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer text-left" >
+      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid">
+        {{'common.button.apply' | translate}}
+      </button>
+      <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>
+        common.button.cancel
+      </button>
+  </div>
+</form>

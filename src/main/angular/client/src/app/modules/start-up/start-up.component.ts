@@ -28,6 +28,7 @@ export class StartUpModalComponent implements OnInit {
   required = false;
   display: any;
   comments: any = {};
+  agent: any = {};
   schedulerIds: any = {};
   messageList: any = [];
   error: any;
@@ -45,6 +46,15 @@ export class StartUpModalComponent implements OnInit {
       primaryTitle: 'PRIMARY',
       backupTitle: 'BACKUP',
     };
+
+    if(this.agents && this.agents.length > 0) {
+      for (let i = 0; i < this.agents.length; i++) {
+        if (this.agents[i].isClusterWatcher) {
+          this.agent = this.agents[i];
+          break;
+        }
+      }
+    }
 
     if (this.controllerInfo) {
       const len = this.controllerInfo.length;
@@ -114,6 +124,7 @@ export class StartUpModalComponent implements OnInit {
         _obj.title = this.controller.backupTitle;
         obj.controllers.push(_obj);
       }
+      obj.clusterWatcher = this.agent;
     }
     if (this.display) {
       obj.auditLog = {};
@@ -126,9 +137,6 @@ export class StartUpModalComponent implements OnInit {
       if (this.comments.ticketLink) {
         obj.auditLog.ticketLink = this.comments.ticketLink;
       }
-    }
-    if (this.agents && this.agents.length > 0) {
-      obj.agents = this.agents;
     }
 
     this.coreService.post('controller/register', obj).subscribe(res => {

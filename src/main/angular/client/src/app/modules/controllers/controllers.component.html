@@ -65,12 +65,12 @@
                     <th><span translate>agent.label.agentName</span></th>
                     <th><span translate>agent.label.agentNameAliases</span></th>
                     <th><span translate>agent.label.url</span></th>
+                    <th><span translate>agent.label.disabled</span></th>
                     <th><span translate>agent.label.clusterWatcher</span></th>
                   </tr>
                   </thead>
                   <tbody>
-                  <tr *ngFor="let agent of controller.agents"
-                      [ngClass]="{'disabled-row': agent.disabled}">
+                  <tr     [ngClass]="{'disabled-row': agent.disabled}" *ngFor="let agent of controller.agents" class="cursor" (click)="editAgent(agent, controller)">
                     <td class="menu">
                       <div class="btn-group dropdown pull-left m-r-sm">
                         <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
@@ -78,6 +78,12 @@
                           <ul nz-menu >
                             <li nz-menu-item >
                               <a (click)="editAgent(agent, controller)" translate>common.button.edit</a>
+                            </li>
+                            <li nz-menu-item *ngIf="!agent.disabled">
+                              <a (click)="disableAgent(agent, controller)" translate>agent.button.disable</a>
+                            </li>
+                            <li nz-menu-item *ngIf="agent.disabled">
+                              <a (click)="enableAgent(agent, controller)" translate>agent.button.enable</a>
                             </li>
                           </ul>
                         </nz-dropdown-menu>
@@ -87,6 +93,7 @@
                     <td><span [innerHtml]="agent.agentName"></span></td>
                     <td><span [innerHtml]="agent.agentNameAliases || '-'"></span></td>
                     <td><span [innerHtml]="agent.url"></span></td>
+                    <td>{{agent.disabled ? 'Yes' : 'No'}}</td>
                     <td>{{agent.isClusterWatcher ? 'Yes' : 'No'}}</td>
                   </tr>
                   </tbody>

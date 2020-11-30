@@ -10,16 +10,16 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<form #myForm="ngForm" (ngSubmit)="onSubmit()">
+<form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
     <div class="form-group row" *ngIf="!new">
-      <label class="col-sm-4 form-control-label" translate>agent.label.agentId</label>
+      <label class="col-sm-3 form-control-label" translate>agent.label.agentId</label>
       <div class="col-sm-8">
         {{agent.agentId}}
       </div>
     </div>
     <div class="form-group row" *ngIf="new">
-      <label class="col-sm-4 form-control-label" translate>agent.label.agentId</label>
+      <label class="col-sm-3 form-control-label" translate>agent.label.agentId</label>
       <div class=" col-sm-8" [ngClass]="{'has-error' : ((agentId.dirty || agentId.touched) && agentId.invalid)}">
         <input type="text" identifierValidation class="form-control" name="agentId"
                required [(ngModel)]="agent.agentId" #agentId="ngModel" [appAutofocus]="true"
@@ -34,7 +34,7 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>agent.label.agentName</label>
+      <label class="col-sm-3 form-control-label" translate>agent.label.agentName</label>
       <div class=" col-sm-8" [ngClass]="{'has-error' : ((agentName.dirty || agentName.touched) && agentName.invalid)}">
         <input type="text" class="form-control" name="agentName" [appAutofocus]="!new"
                required [(ngModel)]="agent.agentName" #agentName="ngModel"
@@ -46,15 +46,18 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="!new">
-      <label class="col-sm-4 form-control-label" translate>agent.label.agentNameAliases</label>
+    <div class="form-group row" *ngFor="let alisa of agentNameAliases; let i = index">
+      <label class="col-sm-3 form-control-label"><span *ngIf="i==0" translate>agent.label.agentNameAliases</span></label>
       <div class=" col-sm-8">
-        <input type="text" class="form-control" name="agentNameAliases" [(ngModel)]="agent.agentNameAliases"
-               placeholder="{{'agent.placeholder.enterAgentNameAliases' | translate}}">
+        <input type="text" class="form-control" name="agentNameAliases{{i}}" [(ngModel)]="alisa.name"
+               placeholder="{{'agent.placeholder.enterAgentNameAlias' | translate}} {{i}}">
       </div>
+      <div class="p-l-0 m-l-0 col-sm-1" *ngIf="agentNameAliases.length > 1 && agentNameAliases.length - 1 !== i" style="padding-top: 6px"><i (click)="removeAlise(i)" class="cursor text-muted fa fa-times"></i></div>
+      <div class="p-l-0 m-l-0 col-sm-1" *ngIf="agentNameAliases.length - 1 == i" style="padding-top: 6px"><i (click)="addAlise()" class="cursor text-muted fa fa-plus"></i></div>
     </div>
+
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>agent.label.url</label>
+      <label class="col-sm-3 form-control-label" translate>agent.label.url</label>
       <div class=" col-sm-8" [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}">
         <input type="url" class="form-control" name="url" #url="ngModel"
                required [(ngModel)]="agent.url" placeholder="http://host:port">
@@ -66,17 +69,8 @@
         </div>
       </div>
     </div>
-    <div class="form-group row">
-      <label class="col-sm-4" translate>agent.label.clusterWatcher</label>
-      <div class="col-sm-6">
-        <label class="md-check">
-          <input type="checkbox" [(ngModel)]="agent.isClusterWatcher" name="iscluter">
-          <i class="primary"></i>
-        </label>
-      </div>
-    </div>
     <div class="form-group row" *ngIf="!new">
-      <label class="col-sm-4" translate>agent.label.disabled</label>
+      <label class="col-sm-3" translate>agent.label.disabled</label>
       <div class="col-sm-6">
         <label class="md-check">
           <input type="checkbox" [(ngModel)]="agent.disabled" name="disabled">

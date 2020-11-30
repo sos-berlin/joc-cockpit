@@ -19,6 +19,7 @@ export class AgentModalComponent implements OnInit {
   submitted = false;
   isUniqueId = true;
   messageList: any = [];
+  agentNameAliases: any = [];
   comments: any = {};
   required = false;
   preferences: any;
@@ -41,10 +42,27 @@ export class AgentModalComponent implements OnInit {
     }
     if (this.data) {
       this.agent = this.coreService.clone(this.data);
-      if (this.agent.agentNameAliases) {
-        this.agent.agentNameAliases = this.agent.agentNameAliases.toString();
-      }
     }
+    if (!this.agent.agentNameAliases || this.agent.agentNameAliases.length === 0) {
+      this.agentNameAliases = [{name: ''}];
+    } else {
+      this.agent.agentNameAliases.filter((val) => {
+        this.agentNameAliases.push({name: val});
+      });
+    }
+  }
+
+  addAlise() {
+    console.log(this.agentNameAliases[0], 'this.agent.agentNameAliases[0]');
+    console.log(this.agentNameAliases, 'this.agent.agentNameAliases');
+    if (this.agentNameAliases[this.agentNameAliases.length - 1].name) {
+      console.log('??if<<');
+      this.agentNameAliases.push({name: ''});
+    }
+  }
+
+  removeAlise(index) {
+    this.agent.agentNameAliases.splice(index, 1);
   }
 
   checkDisable() {
@@ -87,8 +105,13 @@ export class AgentModalComponent implements OnInit {
         obj.auditLog.ticketLink = this.comments.ticketLink;
       }
     }
-    if (this.agent.agentNameAliases) {
-      _agent.agentNameAliases = this.agent.agentNameAliases.split(',');
+    if (this.agentNameAliases.length > 0) {
+      _agent.agentNameAliases = [];
+      this.agentNameAliases.filter((val) => {
+        if (val.name) {
+          _agent.agentNameAliases.push(val.name);
+        }
+      });
     }
     if (this.data) {
       for (let i = 0; i < this.agents.length; i++) {
@@ -141,44 +164,6 @@ export class ControllersComponent implements OnInit {
         this.data = data.controllerIds;
         this.getSecurity();
       });
-  }
-
-  private getSecurity() {
-    this.coreService.post('controllers/security_level', {})
-      .subscribe((data: any) => {
-        this.mergeData(data);
-      }, (err) => {
-        this.mergeData(null);
-      });
-  }
-
-  private mergeData(securityData) {
-    this.controllers = [];
-    this.currentSecurityLevel = securityData ? securityData.currentSecurityLevel : '';
-    if (this.data.length > 0) {
-      for (let i = 0; i < this.data.length; i++) {
-        const obj: any = {
-          controllerId: this.data[i]
-        };
-        if (securityData) {
-          for (let j = 0; j < securityData.controllers.length; j++) {
-            if (this.data[i] === securityData.controllers[j].controllerId) {
-              obj.securityLevel = securityData.controllers[j].securityLevel;
-              securityData.controllers.splice(j, 1);
-              break;
-            }
-          }
-        }
-        this.controllers.push(obj);
-      }
-    } else if (securityData) {
-      this.controllers = securityData.controllers;
-    }
-    if (this.controllers.length > 0) {
-      for (let i = 0; i < this.showPanel.length; i++) {
-        this.getAgents(this.controllers[i], null);
-      }
-    }
   }
 
   migrateController(controller) {
@@ -277,6 +262,63 @@ export class ControllersComponent implements OnInit {
 
       });
     });
+  }
+
+  disableAgent(agent, controller) {
+    agent.disabled = true;
+    this.coreService.post('agents/store', {
+      controllerId: controller.controllerId, agents:
+      controller.agents
+    }).subscribe(res => {
+
+    });
+  }
+
+  enableAgent(agent, controller) {
+    agent.disabled = false;
+    this.coreService.post('agents/store', {
+      controllerId: controller.controllerId, agents: controller.agents
+    }).subscribe(res => {
+
+    });
+  }
+
+  private getSecurity() {
+    this.coreService.post('controllers/security_level', {})
+      .subscribe((data: any) => {
+        this.mergeData(data);
+      }, (err) => {
+        this.mergeData(null);
+      });
+  }
+
+  private mergeData(securityData) {
+    this.controllers = [];
+    this.currentSecurityLevel = securityData ? securityData.currentSecurityLevel : '';
+    if (this.data.length > 0) {
+      for (let i = 0; i < this.data.length; i++) {
+        const obj: any = {
+          controllerId: this.data[i]
+        };
+        if (securityData) {
+          for (let j = 0; j < securityData.controllers.length; j++) {
+            if (this.data[i] === securityData.controllers[j].controllerId) {
+              obj.securityLevel = securityData.controllers[j].securityLevel;
+              securityData.controllers.splice(j, 1);
+              break;
+            }
+          }
+        }
+        this.controllers.push(obj);
+      }
+    } else if (securityData) {
+      this.controllers = securityData.controllers;
+    }
+    if (this.controllers.length > 0) {
+      for (let i = 0; i < this.showPanel.length; i++) {
+        this.getAgents(this.controllers[i], null);
+      }
+    }
   }
 
   private checkIsFirstEntry(_permission) {
