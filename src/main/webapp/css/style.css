@@ -3769,17 +3769,12 @@ input[type=search] {
 .ui-select-multiple {
     background: 0 0 !important
 }
-.ui-select-match{
+.selectize-input .ui-select-match{
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
-/*
-.ui-select-choices-row.active{
-    background-color: #007da6 !important;
-    color: #fff;
-}
-*/
+
 
 input[type=search]:focus {
     font-weight: 300;
