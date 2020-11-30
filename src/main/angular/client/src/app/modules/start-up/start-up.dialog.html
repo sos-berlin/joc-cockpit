@@ -255,13 +255,10 @@
           <label class="col-sm-4 form-control-label" translate>agent.label.agentId</label>
           <div class=" col-sm-8" [ngClass]="{'has-error' : ((agentId.dirty || agentId.touched) && agentId.invalid)}">
             <input type="text" identifierValidation class="form-control" name="agentId"
-                   required [(ngModel)]="agent.agentId" #agentId="ngModel"
+                   [(ngModel)]="agent.agentId" #agentId="ngModel"
                    placeholder="{{'agent.placeholder.enterAgentId' | translate}}">
             <div *ngIf="agentId.invalid && (agentId.dirty || agentId.touched)"
                  class="text-danger help-block">
-              <div *ngIf="(agentId.errors && agentId.errors.required)">
-                <div translate>common.message.requiredError</div>
-              </div>
               <div *ngIf="agentId.errors.invalidIdentifier" translate>common.message.invalid</div>
             </div>
           </div>
@@ -271,27 +268,15 @@
           <div class=" col-sm-8"
                [ngClass]="{'has-error' : ((agentName.dirty || agentName.touched) && agentName.invalid)}">
             <input type="text" class="form-control" name="agentName" [readonly]="!new"
-                   required [(ngModel)]="agent.agentName" #agentName="ngModel"
+                   [(ngModel)]="agent.agentName" #agentName="ngModel"
                    placeholder="{{'agent.placeholder.enterAgentName' | translate}}">
-            <div *ngIf="agentName.invalid && (agentName.dirty || agentName.touched)"
-                 class="text-danger help-block">
-              <div *ngIf="(agentName.errors && agentName.errors.required)">
-                <div translate>common.message.requiredError</div>
-              </div>
-            </div>
           </div>
         </div>
         <div class="row">
           <label class="col-sm-4 form-control-label" translate>agent.label.url</label>
           <div class=" col-sm-8" [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}">
             <input type="url" class="form-control" name="url" #url="ngModel" [readonly]="!new"
-                   required [(ngModel)]="agent.url" placeholder="http://host:port">
-            <div *ngIf="url.invalid && (url.dirty || url.touched)"
-                 class="text-danger help-block">
-              <div *ngIf="(url.errors && url.errors.required)">
-                <div translate>common.message.requiredError</div>
-              </div>
-            </div>
+                   [(ngModel)]="agent.url" placeholder="http://host:port">
           </div>
         </div>
       </div>

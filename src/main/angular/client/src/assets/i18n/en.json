@@ -542,6 +542,7 @@
     "label.operation": "Operation",
     "label.version": "Version",
     "label.job": "Job",
+    "label.active": "Active",
     "label.state": "State",
     "label.deployed": "Deployed",
     "label.notDeployed": "Not Deployed",

@@ -98,7 +98,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
               if (args[i].eventSnapshots[j].eventType === 'SchedulerStateChanged') {
                 this.loadScheduleDetail();
                 break;
-              } else if (args[i].eventSnapshots[j].eventType === 'CurrentcontrollerChanged') {
+              } else if (args[i].eventSnapshots[j].eventType === 'CurrentControllerChanged') {
                 this.getVolatileData(true);
                 break;
               }

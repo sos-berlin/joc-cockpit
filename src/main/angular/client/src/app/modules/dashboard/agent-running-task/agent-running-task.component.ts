@@ -64,7 +64,7 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
 
   getRunningTask(): void {
 
-    this.coreService.post('process_classes', {
+/*    this.coreService.post('agents/p', {
       controllerId: this.schedulerIds.selected,
       isAgentCluster: true
     }).subscribe(res => {
@@ -73,7 +73,8 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
     }, (err) => {
       console.log(err);
       this.isLoaded = true;
-    });
+    });*/
+    this.isLoaded = true;
   }
 
   onSelect(event) {

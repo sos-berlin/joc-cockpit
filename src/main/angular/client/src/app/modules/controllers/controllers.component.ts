@@ -113,28 +113,11 @@ export class AgentModalComponent implements OnInit {
         }
       });
     }
-    if (this.data) {
-      for (let i = 0; i < this.agents.length; i++) {
-        if (this.agents[i].agentId === this.data.agentId && this.agents[i].agentName === this.data.agentName) {
-          this.agents[i] = _agent;
-          break;
-        }
-      }
-    } else {
-      this.agents.push(_agent);
-    }
-    obj.agents = this.agents;
+    obj.agents = [_agent];
     this.coreService.post('agents/store', obj).subscribe(res => {
       this.submitted = false;
       this.activeModal.close();
     }, err => {
-      for (let i = 0; i < this.agents.length; i++) {
-        if (this.new && this.agents[i].agentId === this.agent.agentId && this.agents[i].agentName === this.agent.agentName
-          && this.agents[i].url === this.agent.url) {
-          this.agents.splice(i, 1);
-          break;
-        }
-      }
       this.submitted = false;
     });
   }

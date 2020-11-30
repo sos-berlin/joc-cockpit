@@ -769,7 +769,15 @@ export class HistoryComponent implements OnInit, OnDestroy {
   deploymentHistory(obj){
     this.historyFilters.type = 'DEPLOYMENT';
     if (!obj) {
-      obj = {controllerId: this.historyView.current == true ? this.schedulerIds.selected : ''};
+      if (this.historyView.current == true) {
+        obj = {controllerId: this.schedulerIds.selected};
+      } else {
+        obj = {};
+      }
+    } else{
+      if(!obj.controllerId){
+        delete obj['controllerId'];
+      }
     }
     this.isLoading = false;
     if (this.selectedFiltered4 && !_.isEmpty(this.selectedFiltered4)) {
