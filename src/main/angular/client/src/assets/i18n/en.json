@@ -1270,7 +1270,7 @@
     "message.invalidTarget": "Invalid Target",
     "message.validationError": "Instruction can have only one outgoing and one incoming edge",
     "message.orderInstructionValidationError": "Instruction can have only order events",
-    "message.otherInstructionValidationError": "Cannot have more than one outgoing Edge",
+    "message.otherInstructionValidationError": "Cannot have more than one outgoing edge",
     "message.ifInstructionValidationError": "Cannot have more than one condition",
     "message.awaitInstructionValidationError": "Only Await instruction can have order events",
     "message.invalidInstructionsSelected": "Selection of instructions is not valid",
