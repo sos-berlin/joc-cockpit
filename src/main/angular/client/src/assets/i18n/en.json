@@ -385,7 +385,7 @@
     "label.clusterState": "Cluster Status",
     "label.componentState": "Status",
     "label.clusterNodeState": "Cluster Node State",
-    "label.JS7ControllerId": "JS7 Controller ID",
+    "label.JS7ControllerId": "Controller ID",
     "label.architecture": "Architecture",
     "label.version": "Version",
     "label.title": "Title",
