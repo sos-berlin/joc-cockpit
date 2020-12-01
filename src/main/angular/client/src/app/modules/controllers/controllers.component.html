@@ -70,7 +70,7 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr     [ngClass]="{'disabled-row': agent.disabled}" *ngFor="let agent of controller.agents" class="cursor" (click)="editAgent(agent, controller)">
+                  <tr [ngClass]="{'disabled-row': agent.disabled}" *ngFor="let agent of controller.agents" class="cursor" (click)="editAgent(agent, controller)">
                     <td class="menu">
                       <div class="btn-group dropdown pull-left m-r-sm">
                         <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
@@ -95,6 +95,11 @@
                     <td><span [innerHtml]="agent.url"></span></td>
                     <td>{{agent.disabled ? 'Yes' : 'No'}}</td>
                     <td>{{agent.isClusterWatcher ? 'Yes' : 'No'}}</td>
+                  </tr>
+                  <tr *ngIf="!controller.agents || controller.agents.length===0">
+                    <td colspan="7">
+                      <div class="m-a-sm"> <app-empty-data></app-empty-data></div>
+                    </td>
                   </tr>
                   </tbody>
                 </table>

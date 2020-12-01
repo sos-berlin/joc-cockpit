@@ -157,7 +157,7 @@ export class ControllersComponent implements OnInit {
   }
 
   getAgents(controller, cb): void {
-    if (!controller.agents) {
+    if (controller && !controller.agents) {
       this.coreService.post('agents/p', {
         controllerId: controller.controllerId
       }).subscribe((data: any) => {
@@ -299,7 +299,9 @@ export class ControllersComponent implements OnInit {
     }
     if (this.controllers.length > 0) {
       for (let i = 0; i < this.showPanel.length; i++) {
-        this.getAgents(this.controllers[i], null);
+        if (this.controllers[i]) {
+          this.getAgents(this.controllers[i], null);
+        }
       }
     }
   }

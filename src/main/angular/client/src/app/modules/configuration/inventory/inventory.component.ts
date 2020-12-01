@@ -252,6 +252,14 @@ export class SingleDeployComponent implements OnInit {
       obj.update = this.object.update;
     }
 
+    if (!this.releasable && _.isEmpty(obj.store) && _.isEmpty(obj.delete)) {
+      this.submitted = false;
+      return;
+    } else if (this.releasable && _.isEmpty(obj.update) && _.isEmpty(obj.delete)) {
+      this.submitted = false;
+      return;
+    }
+
     const URL = this.releasable ? 'inventory/release' : 'inventory/deployment/deploy';
     this.coreService.post(URL, obj).subscribe((res: any) => {
       this.activeModal.close('ok');
@@ -281,7 +289,7 @@ export class SingleDeployComponent implements OnInit {
       if (this.comments.ticketLink) {
         param = param + '&ticketLink=' + encodeURIComponent(this.comments.ticketLink);
       }
-     // console.log('http://jstest.zehntech.net:7446/joc/api/inventory/export?accessToken=' + this.authService.accessTokenId + '&filename=' + this.exportObj.filename + this.exportObj.fileFormat + param);
+      // console.log('http://jstest.zehntech.net:7446/joc/api/inventory/export?accessToken=' + this.authService.accessTokenId + '&filename=' + this.exportObj.filename + this.exportObj.fileFormat + param);
       try {
         $('#tmpFrame').attr('src', './api/inventory/export?accessToken=' + this.authService.accessTokenId + '&filename=' + this.exportObj.filename + this.exportObj.fileFormat + param);
         setTimeout(() => {
@@ -784,10 +792,12 @@ export class DeployComponent implements OnInit {
               }
             } else {
               if (nodes[i].isFolder) {
-                objDep[nodes[i].deleted ? 'deployConfiguration' : 'draftConfiguration'] = {
-                  path: nodes[i].path,
-                  objectType: 'FOLDER'
-                };
+                if (nodes[i].deleted) {
+                  objDep.deployConfiguration = {
+                    path: nodes[i].path,
+                    objectType: 'FOLDER'
+                  };
+                }
               } else {
                 objDep[nodes[i].deleted ? 'deployConfiguration' : 'draftConfiguration'] = {
                   path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
@@ -812,7 +822,7 @@ export class DeployComponent implements OnInit {
             } else {
               if (objDep.deployConfiguration) {
                 self.object.store.deployConfigurations.push(objDep);
-              } else {
+              } else if (objDep.draftConfiguration) {
                 self.object.store.draftConfigurations.push(objDep);
               }
             }
@@ -905,6 +915,18 @@ export class DeployComponent implements OnInit {
         obj.auditLog.ticketLink = this.comments.ticketLink;
       }
     }
+    if (!this.releasable && !this.reDeploy && _.isEmpty(obj.store) && _.isEmpty(obj.delete)) {
+      this.submitted = false;
+      return;
+    } else {
+      if (this.releasable) {
+        if (_.isEmpty(obj) || (_.isEmpty(obj.update) && _.isEmpty(obj.delete))) {
+          this.submitted = false;
+          return;
+        }
+      }
+    }
+
     let URL = this.releasable ? 'inventory/release' : 'inventory/deployment/deploy';
     if (this.reDeploy) {
       URL = 'inventory/deployment/redeploy';

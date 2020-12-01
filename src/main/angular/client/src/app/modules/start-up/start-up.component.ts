@@ -124,7 +124,9 @@ export class StartUpModalComponent implements OnInit {
         _obj.title = this.controller.backupTitle;
         obj.controllers.push(_obj);
       }
-      obj.clusterWatcher = this.agent;
+      if (this.agent && this.agent.agentId) {
+        obj.clusterWatcher = this.agent;
+      }
     }
     if (this.display) {
       obj.auditLog = {};

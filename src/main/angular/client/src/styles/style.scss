@@ -900,7 +900,7 @@ button.close {
 .navbar {
   .collapse.in, .collapsing {
     clear: left;
-    padding-bottom: 0px;
+    padding-bottom: 0;
 
     > ul {
       display: flex;
@@ -2451,7 +2451,9 @@ pre.log {
 .w-sm {
   width: 120px;
 }
-
+.w-130{
+  width: 130px !important;
+}
 .w {
   width: 145px;
 }
@@ -3117,7 +3119,7 @@ div.order-panel div {
 
 .ant-dropdown-menu-item .ant-dropdown-menu-submenu-arrow-icon, .ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-arrow-icon,
 .cluster-rect, .connection, .cluster, .icon-color, .ant-tree li {
-  color: rgba(255, 255, 255, .87)
+  color: rgba(255, 255, 255, 0.87)
 }
 
 .connection {
@@ -5307,7 +5309,6 @@ div.bar-chart div {
   line-height: 15px;
   position: absolute;
   z-index: 1;
-  -moz-user-select: -moz-none;
   -ms-user-select: none;
   -webkit-user-select: none;
   user-select: none;
