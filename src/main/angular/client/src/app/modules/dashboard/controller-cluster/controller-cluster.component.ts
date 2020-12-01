@@ -768,8 +768,8 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
       if (args[i].controllerId === this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].eventType === 'SchedulerStateChanged' ||
-              args[i].eventSnapshots[j].eventType === 'CurrentcontrollerChanged') {
+            if (args[i].eventSnapshots[j].eventType === 'ControllerStateChanged' ||
+              args[i].eventSnapshots[j].eventType === 'JOCStateChanged') {
               this.isDataLoaded = false;
               this.reloadGraph();
               break;

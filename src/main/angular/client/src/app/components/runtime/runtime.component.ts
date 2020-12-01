@@ -1204,7 +1204,7 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
 
   private getDates(obj, flag: boolean): void {
     this.planItems = [];
-    this.coreService.post(!this.calendar ? 'order_template/runtime' : 'inventory/calendar/dates',
+    this.coreService.post(!this.calendar ? 'schedule/runtime' : 'inventory/calendar/dates',
       obj).subscribe((result: any) => {
       this.filterDates(result, flag);
     });

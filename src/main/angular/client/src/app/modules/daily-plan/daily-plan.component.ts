@@ -127,7 +127,7 @@ export class SelectOrderTemplatesComponent implements OnInit {
   }
 
   getOrderTemplates() {
-    this.coreService.post('order_templates/list', {controllerId: this.schedulerId}).subscribe((res: any) => {
+    this.coreService.post('schedule/list', {controllerId: this.schedulerId}).subscribe((res: any) => {
       this.orderTemplates = res.orderTemplates;
       const treeObj = [];
       for (let i = 0; i < this.orderTemplates.length; i++) {
@@ -489,7 +489,7 @@ export class RemovePlanModalComponent implements OnInit {
 
   private remove(obj) {
     this.submitted = true;
-    this.coreService.post('daily_plan/remove_orders', obj).subscribe((res) => {
+    this.coreService.post('daily_plan/orders/remove', obj).subscribe((res) => {
       this.submitted = false;
       this.activeModal.close('Done');
     }, () => {

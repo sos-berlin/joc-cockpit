@@ -43,7 +43,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       if (args[i].controllerId == this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].eventType === 'OrderStateChanged') {
+            if (args[i].eventSnapshots[j].eventType.match(/Order/)) {
               this.getSnapshot();
               break;
             }

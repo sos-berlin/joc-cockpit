@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy, HostListener} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import * as _ from 'underscore';
 import {AuthService} from '../../../components/guard';
@@ -7,6 +7,8 @@ import {CoreService} from '../../../services/core.service';
 import {WorkflowService} from '../../../services/workflow.service';
 import {AddOrderModalComponent} from '../workflow-action/workflow-action.component';
 import {CalendarModalComponent} from '../../../components/calendar-modal/calendar.component';
+import {DataService} from '../../../services/data.service';
+import {Subscription} from 'rxjs';
 
 declare const mxEditor;
 declare const mxUtils;
@@ -47,8 +49,13 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   nodeMap = new Map();
   configXml = './assets/mxgraph/config/diagrameditor.xml';
 
+  subscription: Subscription;
+
   constructor(private authService: AuthService, public coreService: CoreService, private route: ActivatedRoute,
-              private workflowService: WorkflowService, public modalService: NgbModal) {
+              private workflowService: WorkflowService, public modalService: NgbModal, private dataService: DataService) {
+    this.subscription = dataService.eventAnnounced$.subscribe(res => {
+      this.refresh(res);
+    });
   }
 
   ngOnInit() {
@@ -92,7 +99,24 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     this.showAndHideBtn();
   }
 
+  refresh(args) {
+    for (let i = 0; i < args.length; i++) {
+      if (args[i].controllerId == this.schedulerIds.selected) {
+        if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
+          for (let j = 0; j < args[i].eventSnapshots.length; j++) {
+            if (args[i].eventSnapshots[j].eventType === 'WorkflowStateChanged') {
+              this.init();
+              break;
+            }
+          }
+        }
+        break;
+      }
+    }
+  }
+
   ngOnDestroy() {
+    this.subscription.unsubscribe();
     try {
       if (this.editor) {
         this.editor.destroy();

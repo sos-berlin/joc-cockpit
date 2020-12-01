@@ -95,12 +95,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
         if (args[i].controllerId === this.schedulerIds.selected) {
           if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
             for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-              if (args[i].eventSnapshots[j].eventType === 'SchedulerStateChanged') {
+              if (args[i].eventSnapshots[j].eventType === 'ControllerStateChanged') {
                 this.loadScheduleDetail();
                 break;
-              } else if (args[i].eventSnapshots[j].eventType === 'CurrentControllerChanged') {
-                this.getVolatileData(true);
-                break;
+              } else if (args[i].eventSnapshots[j].eventType.match(/Problem/) && args[i].eventSnapshots[j].message) {
+                if (args[i].eventSnapshots[j].accessToken == this.authService.accessTokenId) {
+                  this.toasterService.pop('error', '', args[i].eventSnapshots[j].message);
+                }
               }
             }
           }

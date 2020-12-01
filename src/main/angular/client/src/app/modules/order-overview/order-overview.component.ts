@@ -3,7 +3,7 @@ import {CoreService} from '../../services/core.service';
 import {DataService} from '../../services/data.service';
 import {Subscription} from 'rxjs';
 import {AuthService} from '../../components/guard';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {OrderActionComponent} from './order-action/order-action.component';
 import {SaveService} from '../../services/save.service';
 import {SearchPipe} from '../../filters/filter.pipe';
@@ -18,7 +18,7 @@ declare const $;
   selector: 'app-pie-chart',
   templateUrl: './chart-template.component.html',
 })
-export class OrderPieChartComponent implements OnInit {
+export class OrderPieChartComponent implements OnInit, OnDestroy {
   @Input() schedulerId: any;
   @Input() state: any;
   @Output() setState: EventEmitter<any> = new EventEmitter();
@@ -33,11 +33,19 @@ export class OrderPieChartComponent implements OnInit {
     domain: []
   };
 
-  constructor(public coreService: CoreService) {
+  subscription: Subscription;
+
+  constructor(public coreService: CoreService, private dataService: DataService) {
+    this.subscription = dataService.eventAnnounced$.subscribe(res => {
+      this.refresh(res);
+    });
   }
 
   ngOnInit() {
     this.init();
+  }
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   private init() {
@@ -48,6 +56,22 @@ export class OrderPieChartComponent implements OnInit {
     }, (err) => {
       this.loading = false;
     });
+  }
+
+  refresh(args) {
+    for (let i = 0; i < args.length; i++) {
+      if (args[i].controllerId == this.schedulerId) {
+        if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
+          for (let j = 0; j < args[i].eventSnapshots.length; j++) {
+            if (args[i].eventSnapshots[j].eventType.match(/Order/)) {
+              this.init();
+              break;
+            }
+          }
+        }
+        break;
+      }
+    }
   }
 
   private preparePieData(res) {
@@ -99,7 +123,6 @@ export class SingleOrderComponent implements OnInit {
   preferences: any = {};
   order: any = {};
   resizerHeight: any = 200;
-  subscription1: Subscription;
   orders = [];
   history = [];
   auditLogs = [];
@@ -301,8 +324,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       if (args[i].controllerId === this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].path) {
-              console.log(args[i].eventSnapshots[j]);
+            if (args[i].eventSnapshots[j].eventType.match(/Order/)) {
+              this.getOrders({controllerId: this.schedulerIds.selected, states: [this.orderFilters.filter.state]});
+              break;
             }
           }
         }

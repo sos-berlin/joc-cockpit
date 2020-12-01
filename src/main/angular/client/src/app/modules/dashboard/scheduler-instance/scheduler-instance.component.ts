@@ -35,7 +35,7 @@ export class SchedulerInstanceComponent implements OnInit, OnDestroy {
       if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
         let flag = false;
         for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-          if (args[i].eventSnapshots[j].eventType === 'SchedulerStateChanged') {
+          if (args[i].eventSnapshots[j].eventType === 'ControllerStateChanged') {
             this.getInstances();
             flag = true;
             break;
