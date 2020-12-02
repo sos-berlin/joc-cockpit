@@ -117,7 +117,6 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   path: string;
 
-
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
               private modalService: NgbModal, private dataService: DataService, private route: ActivatedRoute) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {

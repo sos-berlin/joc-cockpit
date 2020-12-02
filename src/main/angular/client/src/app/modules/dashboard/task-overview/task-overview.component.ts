@@ -24,9 +24,9 @@ export class TaskOverviewComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.jobSnapshot = {jobs: {}};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    if(this.schedulerIds.selected) {
+    if (this.schedulerIds.selected) {
       this.getSnapshot();
-    }else{
+    } else {
       this.notAuthenticate = true;
     }
   }
@@ -36,19 +36,14 @@ export class TaskOverviewComponent implements OnInit, OnDestroy {
   }
 
   refresh(args) {
-    for (let i = 0; i < args.length; i++) {
-      if (args[i].controllerId === this.schedulerIds.selected) {
-        if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
-          for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].eventType === 'JobStateChanged') {
-              if (!this.notAuthenticate) {
-                this.getSnapshot();
-              }
-              break;
-            }
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].eventType === 'JobStateChanged') {
+          if (!this.notAuthenticate) {
+            this.getSnapshot();
           }
+          break;
         }
-        break;
       }
     }
   }

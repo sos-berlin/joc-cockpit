@@ -127,32 +127,27 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   private refresh(args) {
-    for (let i = 0; i < args.length; i++) {
-      if (args[i].controllerId == this.schedulerIds.selected) {
-        if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
-          for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if ((args[i].eventSnapshots[j].eventType == 'FileBasedActivated' || args[i].eventSnapshots[j].eventType == 'FileBasedRemoved') && args[i].eventSnapshots[j].objectType === 'PROCESSCLASS') {
-              this.initTree();
-              break;
-            } else if (args[i].eventSnapshots[j].eventType === 'JobStateChanged' && args[i].eventSnapshots[j].path) {
-              if (this.locks.length > 0) {
-                for (let x = 0; x < this.locks.length; x++) {
-                  if (this.locks[x].path === args[i].eventSnapshots[j].path) {
-                    let obj = {
-                      controllerId: this.schedulerIds.selected,
-                      folders: [{folder: this.locks[x].path, recursive: false}]
-                    };
-                    this.coreService.post('locks', obj).subscribe(res => {
-                      //TODO merge
-                      console.log(res);
-                    });
-                  }
-                }
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if ((args.eventSnapshots[j].eventType == 'FileBasedActivated' || args.eventSnapshots[j].eventType == 'FileBasedRemoved') && args.eventSnapshots[j].objectType === 'PROCESSCLASS') {
+          this.initTree();
+          break;
+        } else if (args.eventSnapshots[j].eventType === 'JobStateChanged' && args.eventSnapshots[j].path) {
+          if (this.locks.length > 0) {
+            for (let x = 0; x < this.locks.length; x++) {
+              if (this.locks[x].path === args.eventSnapshots[j].path) {
+                let obj = {
+                  controllerId: this.schedulerIds.selected,
+                  folders: [{folder: this.locks[x].path, recursive: false}]
+                };
+                this.coreService.post('locks', obj).subscribe(res => {
+                  //TODO merge
+                  console.log(res);
+                });
               }
             }
           }
         }
-        break;
       }
     }
   }

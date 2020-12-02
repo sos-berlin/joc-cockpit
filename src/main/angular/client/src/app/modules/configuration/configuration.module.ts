@@ -21,7 +21,6 @@ import {CalendarService} from '../../services/calendar.service';
 import {SharedModule} from '../shared/shared.module';
 import {WorkflowService} from '../../services/workflow.service';
 import {CalendarComponent, FrequencyModalComponent} from './inventory/calendar/calendar.component';
-import {OrderComponent} from './inventory/order/order.component';
 import { LockComponent } from './inventory/lock/lock.component';
 import {
   UpdateWorkflowComponent,
@@ -34,6 +33,7 @@ import { JunctionComponent } from './inventory/junction/junction.component';
 import { JobClassComponent } from './inventory/job-class/job-class.component';
 import { XMLAutofocusDirective } from 'src/app/directives/core.directive';
 import {TableComponent} from './inventory/table-data/table.component';
+import {ScheduleComponent} from './inventory/schedule/schedule.component';
 
 const COMPONENTS = [ImportModalComponent, DiffPatchModalComponent, FrequencyModalComponent, ShowModalComponent,
   ImportComponent, UpdateWorkflowComponent, ShowChildModalComponent, ConfirmationModalComponent, SingleDeployComponent,
@@ -56,7 +56,7 @@ const COMPONENTS = [ImportModalComponent, DiffPatchModalComponent, FrequencyModa
     JobComponent,
     ExpressionComponent,
     CalendarComponent,
-    OrderComponent,
+    ScheduleComponent,
     LockComponent,
     WorkflowComponent,
     JunctionComponent,

@@ -28,13 +28,11 @@ export class TableComponent {
         name_type = 'workflow';
       } else if (this.objectType === 'JUNCTION') {
         name_type = 'junction';
-      } else if (this.objectType === 'AGENTCLUSTER') {
-        name_type = 'agent_cluster';
       } else if (this.objectType === 'JOBCLASS') {
         name_type = 'job_class';
         configuration = {maxProcesses: 1};
-      } else if (this.objectType === 'ORDERTEMPLATE') {
-        name_type = 'order';
+      } else if (this.objectType === 'SCHEDULE') {
+        name_type = 'schedule';
         configuration = {controllerId: this.schedulerId};
       } else if (this.objectType === 'LOCK') {
         name_type = 'lock';
@@ -55,7 +53,7 @@ export class TableComponent {
       this.coreService.post('inventory/store', {
         objectType: this.objectType === 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : this.objectType,
         path: _path,
-        valid: !(this.objectType.match(/CALENDAR/) || this.objectType === 'ORDERTEMPLATE' || this.objectType === 'AGENTCLUSTER' || this.objectType === 'WORKFLOW'),
+        valid: !(this.objectType.match(/CALENDAR/) || this.objectType === 'SCHEDULE' || this.objectType === 'WORKFLOW'),
         configuration: configuration
       }).subscribe((res: any) => {
         obj.id = res.id;
@@ -63,7 +61,7 @@ export class TableComponent {
           obj.type = 'CALENDAR';
           obj.objectType = 'WORKINGDAYSCALENDAR';
         }
-        obj.valid = !(this.objectType.match(/CALENDAR/) || this.objectType === 'ORDERTEMPLATE' || this.objectType === 'AGENTCLUSTER' || this.objectType === 'WORKFLOW');
+        obj.valid = !(this.objectType.match(/CALENDAR/) || this.objectType === 'SCHEDULE' || this.objectType === 'WORKFLOW');
         this.dataObj.children.push(obj);
         this.dataObj.children = [...this.dataObj.children];
         this.dataService.reloadTree.next({add: true});

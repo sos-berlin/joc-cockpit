@@ -1009,18 +1009,14 @@ export class ExportComponent implements OnInit {
         this.isObjectTypeVisible = false;
       }
       if (this.origin.dailyPlan || (this.origin.object &&
-        (this.origin.object === 'ORDERTEMPLATE' || this.origin.object.match('CALENDAR')))) {
+        (this.origin.object === 'SCHEDULE' || this.origin.object.match('CALENDAR')))) {
         this.exportObj.objectType = 'schedule';
       }
     }
   }
 
   onSubmit() {
-    if (this.exportObj.objectType === 'schedule') {
-      this.isExportReleaseable = true;
-    } else {
-      this.isExportReleaseable = false;
-    }
+    this.isExportReleaseable = this.exportObj.objectType === 'schedule';
     if (this.origin && this.origin.object) {
       const modalRef = this.modalService.open(SingleDeployComponent, {backdrop: 'static'});
       modalRef.componentInstance.schedulerIds = this.schedulerIds;
@@ -1940,7 +1936,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         {name: 'Job Classes', object: 'JOBCLASS', children: [], path: data.path, key: (_key + 'Job_Classes$')},
         {name: 'Junctions', object: 'JUNCTION', children: [], path: data.path, key: (_key + 'Junctions$')},
         {name: 'Locks', object: 'LOCK', children: [], path: data.path, key: (_key + 'Locks$')}];
-      dailyPlanArr = [{name: 'Schedules', object: 'ORDERTEMPLATE', children: [], path: data.path, key: (_key + 'Schedules$')},
+      dailyPlanArr = [{name: 'Schedules', object: 'SCHEDULE', children: [], path: data.path, key: (_key + 'Schedules$')},
         {name: 'Calendars', object: 'CALENDAR', children: [], path: data.path, key: (_key + 'Calendars$')}];
     }
 
@@ -1977,8 +1973,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
       for (let i = 0; i < dailyPlanArr.length; i++) {
         dailyPlanArr[i].deleted = data.deleted;
         let resObject;
-        if (dailyPlanArr[i].object === 'ORDERTEMPLATE') {
-          resObject = res.orderTemplates;
+        if (dailyPlanArr[i].object === 'SCHEDULE') {
+          resObject = res.schedules;
         } else if (dailyPlanArr[i].object === 'CALENDAR') {
           resObject = res.calendars;
         }
@@ -2188,17 +2184,18 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.releaseSingleObject(origin);
       return;
     }
+
     if (origin.object || origin.type || origin.id) {
+      if (!node.origin) {
+        origin.path = origin.path.substring(0, origin.path.lastIndexOf('/') + 1);
+      }
+      const path = origin.path;
       const modalRef = this.modalService.open(SingleDeployComponent, {backdrop: 'static'});
       modalRef.componentInstance.schedulerIds = this.schedulerIds;
       modalRef.componentInstance.display = this.preferences.auditLog;
       modalRef.componentInstance.data = origin;
       modalRef.componentInstance.releasable = releasable;
       modalRef.result.then((res: any) => {
-        let path = origin.path;
-        if (!node.origin) {
-          path = path.substring(0, path.lastIndexOf('/') + 1);
-        }
         this.updateFolders(path, () => {
           this.updateTree();
         });
@@ -2305,7 +2302,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             }, true);
             return;
           }
-          if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'ORDERTEMPLATE') {
+          if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'SCHEDULE') {
             data = object.children[1];
           }
           if (data) {
@@ -2406,27 +2403,22 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private refresh(args) {
-    for (let i = 0; i < args.length; i++) {
-      if (args[i].controllerId === this.schedulerIds.selected) {
-        if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
-          for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].path) {
-              let path = args[i].eventSnapshots[j].path.substring(0, args[i].eventSnapshots[j].path.lastIndexOf('/') + 1) || '/';
-              if (args[i].eventSnapshots[j].eventType.match(/FileBase/) && !args[i].eventSnapshots[j].eventId && this.isLoading) {
-                this.initTree(args[i].eventSnapshots[j].path, path);
-                break;
-              } else if (args[i].eventSnapshots[j].eventType === 'JoeUpdated' && !args[i].eventSnapshots[j].eventId) {
-                if (args[i].eventSnapshots[j].objectType === 'FOLDER' && this.isLoading) {
-                  this.initTree(args[i].eventSnapshots[j].path, path);
-                  break;
-                } else {
-                  console.log(args[i].eventSnapshots[j]);
-                }
-              }
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].path) {
+          let path = args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/') + 1) || '/';
+          if (args.eventSnapshots[j].eventType.match(/FileBase/) && !args.eventSnapshots[j].eventId && this.isLoading) {
+            this.initTree(args.eventSnapshots[j].path, path);
+            break;
+          } else if (args.eventSnapshots[j].eventType === 'JoeUpdated' && !args.eventSnapshots[j].eventId) {
+            if (args.eventSnapshots[j].objectType === 'FOLDER' && this.isLoading) {
+              this.initTree(args.eventSnapshots[j].path, path);
+              break;
+            } else {
+              console.log(args.eventSnapshots[j]);
             }
           }
         }
-        break;
       }
     }
   }
@@ -2497,8 +2489,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
     } else if (type === 'JOBCLASS') {
       configuration = {maxProcesses: 1};
       obj.name = this.coreService.getName(list, 'job_class1', 'name', 'job_class');
-    } else if (type === 'ORDERTEMPLATE') {
-      obj.name = this.coreService.getName(list, 'order1', 'name', 'order');
+    } else if (type === 'SCHEDULE') {
+      obj.name = this.coreService.getName(list, 'schedule1', 'name', 'schedule');
       configuration = {controllerId: this.schedulerIds.selected};
     } else if (type === 'LOCK') {
       obj.name = this.coreService.getName(list, 'lock1', 'name', 'lock');
@@ -2515,7 +2507,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.coreService.post('inventory/store', {
         objectType: obj.type,
         path: _path,
-        valid: obj.valid ? obj.valid : !(obj.type.match(/CALENDAR/) || obj.type === 'ORDERTEMPLATE' || obj.type === 'WORKFLOW'),
+        valid: obj.valid ? obj.valid : !(obj.type.match(/CALENDAR/) || obj.type === 'SCHEDULE' || obj.type === 'WORKFLOW'),
         configuration: configuration
       }).subscribe((res: any) => {
         if ((obj.type === 'WORKINGDAYSCALENDAR' || obj.type === 'NONWORKINGDAYSCALENDAR')) {
@@ -2523,7 +2515,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           obj.type = 'CALENDAR';
         }
         obj.id = res.id;
-        obj.valid = !(obj.type.match(/CALENDAR/) || obj.type === 'ORDERTEMPLATE' || obj.type === 'WORKFLOW');
+        obj.valid = !(obj.type.match(/CALENDAR/) || obj.type === 'SCHEDULE' || obj.type === 'WORKFLOW');
         list.push(obj);
         this.type = obj.type;
         this.selectedData = obj;

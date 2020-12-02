@@ -5,7 +5,7 @@ import {
   RemovePlanModalComponent,
   SearchComponent,
   CreatePlanModalComponent,
-  OrderTemplateModalComponent,
+  ScheduleTemplateModalComponent,
   GanttComponent,
   SelectOrderTemplatesComponent,
   ChangeParameterModalComponent,
@@ -23,12 +23,12 @@ import {GroupByPipe} from '../../filters/filter.pipe';
   ],
   declarations: [DailyPlanComponent, GanttComponent, RemovePlanModalComponent, SubmitOrderModalComponent, FilterModalComponent,
     SearchComponent, DailyPlanRegexValidator, CreatePlanModalComponent, ChangeParameterModalComponent,
-    OrderTemplateModalComponent, SelectOrderTemplatesComponent],
+    ScheduleTemplateModalComponent, SelectOrderTemplatesComponent],
   entryComponents: [
     FilterModalComponent,
     RemovePlanModalComponent,
     SubmitOrderModalComponent,
-    OrderTemplateModalComponent,
+    ScheduleTemplateModalComponent,
     CreatePlanModalComponent,
     ChangeParameterModalComponent
   ], providers: [GroupByPipe]

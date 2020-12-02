@@ -41,17 +41,12 @@ export class TaskSummaryComponent implements OnInit, OnDestroy {
   }
 
   refresh(args) {
-    for (let i = 0; i < args.length; i++) {
-      if (args[i].controllerId == this.schedulerIds.selected) {
-        if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
-          for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].eventType === 'JobStateChanged') {
-              this.getSummary();
-              break;
-            }
-          }
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].eventType === 'JobStateChanged') {
+          this.getSummary();
+          break;
         }
-        break;
       }
     }
   }

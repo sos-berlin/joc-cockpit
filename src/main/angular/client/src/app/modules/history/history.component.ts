@@ -1754,20 +1754,18 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private refresh(args) {
-    for (let i = 0; i < args.length; i++) {
-      if (args[i].controllerId == this.schedulerIds.selected) {
-        if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
-          for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].eventType == 'ReportingChangedOrder' && this.isLoading && this.historyFilters.type == 'ORDER') {
-              //  this.updateHistoryAfterEvent();
-              break;
-            } else if (args[i].eventSnapshots[j].eventType == 'ReportingChangedJob' && this.isLoading && this.historyFilters.type == 'TASK') {
-              //   this.updateHistoryAfterEvent();
-              break;
-            }
-          }
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].eventType == 'ReportingChangedOrder' && this.isLoading && this.historyFilters.type == 'ORDER') {
+          //  this.updateHistoryAfterEvent();
+          break;
+        } else if (args.eventSnapshots[j].eventType == 'ReportingChangedJob' && this.isLoading && this.historyFilters.type == 'TASK') {
+          //   this.updateHistoryAfterEvent();
+          break;
+        } else if (args.eventSnapshots[j].eventType == 'ReportingChangedJob' && this.isLoading && this.historyFilters.type == 'DEPLOYMENT') {
+          //   this.updateHistoryAfterEvent();
+          break;
         }
-        break;
       }
     }
   }

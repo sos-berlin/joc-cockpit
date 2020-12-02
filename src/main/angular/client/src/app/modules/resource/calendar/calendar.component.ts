@@ -177,23 +177,18 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   private refresh(args) {
-    for (let i = 0; i < args.length; i++) {
-      if (args[i].controllerId == this.schedulerIds.selected) {
-        if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
-          for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].eventType === 'CalendarCreated') {
-              const path = args[i].eventSnapshots[j].path.substring(0, args[i].eventSnapshots[j].path.lastIndexOf('/')) || '/';
-              this.calendarFilters.selectedkeys = [path];
-              this.addPathToExpand(path);
-              this.initTree();
-              break;
-            } else if (args[i].eventSnapshots[j].eventType.match('Calendar')) {
-              this.initTree();
-              break;
-            }
-          }
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].eventType === 'CalendarCreated') {
+          const path = args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/')) || '/';
+          this.calendarFilters.selectedkeys = [path];
+          this.addPathToExpand(path);
+          this.initTree();
+          break;
+        } else if (args.eventSnapshots[j].eventType.match('Calendar')) {
+          this.initTree();
+          break;
         }
-        break;
       }
     }
   }

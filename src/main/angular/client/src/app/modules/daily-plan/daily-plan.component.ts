@@ -91,7 +91,7 @@ export class ChangeParameterModalComponent implements OnInit {
 }
 
 @Component({
-  selector: 'app-select-order-template',
+  selector: 'app-select-schedule-template',
   template: '<nz-tree-select\n' +
     '          name="template"\n' +
     '          [nzNodes]="nodes"\n' +
@@ -100,7 +100,7 @@ export class ChangeParameterModalComponent implements OnInit {
     '          nzShowSearch\n' +
     '          [nzMultiple]="true"\n' +
     '          [nzPlaceHolder]="\'dailyPlan.placeholder.selectOrderTemplate\' | translate"\n' +
-    '          [(ngModel)]="object.orderTemplates"\n' +
+    '          [(ngModel)]="object.schedules"\n' +
     '        >\n' +
     '          <ng-template #nzTreeTemplate let-node>\n' +
     '            <div style="width: 93%" class="node-wrapper" (click)="loadData(node, $event);">\n' +
@@ -117,7 +117,7 @@ export class SelectOrderTemplatesComponent implements OnInit {
   @Input() schedulerId;
   @Input() object;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
-  orderTemplates: any = [];
+  schedules: any = [];
 
   constructor(public  coreService: CoreService) {
   }
@@ -128,10 +128,10 @@ export class SelectOrderTemplatesComponent implements OnInit {
 
   getOrderTemplates() {
     this.coreService.post('schedule/list', {controllerId: this.schedulerId}).subscribe((res: any) => {
-      this.orderTemplates = res.orderTemplates;
+      this.schedules = res.schedules;
       const treeObj = [];
-      for (let i = 0; i < this.orderTemplates.length; i++) {
-        const path = this.orderTemplates[i].path;
+      for (let i = 0; i < this.schedules.length; i++) {
+        const path = this.schedules[i].path;
         const obj = {
           name: path.substring(path.lastIndexOf('/') + 1),
           path: path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1),
@@ -278,8 +278,8 @@ export class CreatePlanModalComponent implements OnInit {
   object: any = {at: 'all', overwrite: false, submitWith: false};
   plan: any;
   submitted = false;
-  orderTemplates: any = [];
-  selectedTemplates: any = {orderTemplates: []};
+  schedules: any = [];
+  selectedTemplates: any = {schedules: []};
 
   constructor(public activeModal: NgbActiveModal, public  coreService: CoreService) {
   }
@@ -295,8 +295,8 @@ export class CreatePlanModalComponent implements OnInit {
       withSubmit: this.object.submitWith,
       controllerId: this.schedulerId
     };
-    if (this.object.at === 'template' && this.selectedTemplates.orderTemplates.length > 0) {
-      obj.orderTemplates = this.selectedTemplates.orderTemplates;
+    if (this.object.at === 'template' && this.selectedTemplates.schedules.length > 0) {
+      obj.schedules = this.selectedTemplates.schedules;
     }
 
     obj.dailyPlanDate = moment(this.selectedDate).format('YYYY-MM-DD');
@@ -314,10 +314,10 @@ export class CreatePlanModalComponent implements OnInit {
 }
 
 @Component({
-  selector: 'app-order-template',
-  templateUrl: './order-template-dialog.html'
+  selector: 'app-schedule-template',
+  templateUrl: './schedule-template-dialog.html'
 })
-export class OrderTemplateModalComponent implements AfterViewInit {
+export class ScheduleTemplateModalComponent implements AfterViewInit {
   @Input() schedulerId;
   @Input() plan: any;
   @Input() order: any;
@@ -407,7 +407,7 @@ export class SubmitOrderModalComponent implements OnInit {
     } else {
       if (this.order) {
         if (this.plan) {
-          obj.orderTemplates = [this.order.orderTemplatePath];
+          obj.schedules = [this.order.orderTemplatePath];
         } else {
           obj.orderKeys = [this.order.orderId];
         }
@@ -465,7 +465,7 @@ export class RemovePlanModalComponent implements OnInit {
     } else {
       if (this.order) {
         if (this.plan) {
-          obj.orderTemplates = [this.order.orderTemplatePath];
+          obj.schedules = [this.order.orderTemplatePath];
         } else {
           obj.orderKeys = [this.order.orderId];
         }
@@ -689,7 +689,7 @@ export class FilterModalComponent implements OnInit {
       this.filter = {
         radio: 'planned',
         planned: 'today',
-        orderTemplates: [],
+        schedules: [],
         state: [],
         shared: false
       };
@@ -730,7 +730,7 @@ export class SearchComponent implements OnInit {
   submitted = false;
   isUnique = true;
   nodes = [];
-  orderTemplates = [];
+  schedules = [];
 
   constructor(public coreService: CoreService) {
   }
@@ -744,7 +744,7 @@ export class SearchComponent implements OnInit {
     this.coreService.post('tree', {
       controllerId: this.schedulerIds.selected,
       forInventory: true,
-      types: ['ORDERTEMPLATE']
+      types: ['SCHEDULE']
     }).subscribe(res => {
       this.nodes = this.coreService.prepareTree(res, true);
       if (this.nodes.length > 0) {
@@ -794,7 +794,7 @@ export class SearchComponent implements OnInit {
     const obj: any = {};
     obj.workflow = result.workflow;
     obj.folders = result.folders;
-    obj.orderTemplates = result.orderTemplates;
+    obj.schedules = result.schedules;
     obj.dailyPlanDate = result.dailyPlanDate;
     obj.state = result.state;
     obj.late = result.late;
@@ -1174,7 +1174,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       radio: 'current',
       planned: 'today',
       dailyPlanDate: new Date(),
-      orderTemplates: [],
+      schedules: [],
       state: []
     };
   }
@@ -1194,8 +1194,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (filter.state && filter.state.length > 0) {
       obj.states = filter.state;
     }
-    if (filter.orderTemplates && filter.orderTemplates.length > 0) {
-      obj.orderTemplates = filter.orderTemplates;
+    if (filter.schedules && filter.schedules.length > 0) {
+      obj.schedules = filter.schedules;
     }
     return obj;
   }
@@ -1258,7 +1258,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   modifyOrder(order, plan) {
     console.log(plan);
     console.log(order);
-    const modalRef = this.modalService.open(OrderTemplateModalComponent, {backdrop: 'static', size: 'lg'});
+    const modalRef = this.modalService.open(ScheduleTemplateModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.order = order;
     modalRef.componentInstance.plan = plan;
@@ -1559,18 +1559,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private refresh(args) {
-    for (let i = 0; i < args.length; i++) {
-      if (args[i].controllerId === this.schedulerIds.selected) {
-        if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
-          for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].eventType === 'DailyPlanChanged') {
-              this.load(this.selectedDate);
-              this.loadOrderPlan();
-              break;
-            }
-          }
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].eventType === 'DailyPlanChanged') {
+          this.load(this.selectedDate);
+          this.loadOrderPlan();
+          break;
         }
-        break;
       }
     }
   }

@@ -167,7 +167,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
           controllerId: res.events[i].controllerId,
           eventId: res.events[i].eventId
         });
-        this.dataService.announceEvent(res.events);
+        this.dataService.announceEvent(res.events[i]);
         break;
       }
     }

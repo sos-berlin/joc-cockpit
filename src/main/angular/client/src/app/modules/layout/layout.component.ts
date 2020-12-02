@@ -90,22 +90,16 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   refresh(args) {
-    if (args && args.length) {
-      for (let i = 0; i < args.length; i++) {
-        if (args[i].controllerId === this.schedulerIds.selected) {
-          if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
-            for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-              if (args[i].eventSnapshots[j].eventType === 'ControllerStateChanged') {
-                this.loadScheduleDetail();
-                break;
-              } else if (args[i].eventSnapshots[j].eventType.match(/Problem/) && args[i].eventSnapshots[j].message) {
-                if (args[i].eventSnapshots[j].accessToken == this.authService.accessTokenId) {
-                  this.toasterService.pop('error', '', args[i].eventSnapshots[j].message);
-                }
-              }
-            }
-          }
+    console.log(args)
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].eventType === 'ControllerStateChanged') {
+          this.loadScheduleDetail();
           break;
+        } else if (args.eventSnapshots[j].eventType.match(/Problem/) && args.eventSnapshots[j].message) {
+          if (args.eventSnapshots[j].accessToken === this.authService.accessTokenId) {
+            this.toasterService.pop('error', '', args.eventSnapshots[j].message);
+          }
         }
       }
     }

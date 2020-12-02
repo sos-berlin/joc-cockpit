@@ -8,10 +8,10 @@ import {CalendarService} from '../../../../services/calendar.service';
 declare const $;
 
 @Component({
-  selector: 'app-order',
-  templateUrl: './order.component.html',
+  selector: 'app-schedule',
+  templateUrl: './schedule.component.html',
 })
-export class OrderComponent implements OnInit, OnDestroy, OnChanges {
+export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
@@ -24,7 +24,7 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
   isVisible: boolean;
   dateFormat: any;
   isUnique = true;
-  objectType = 'ORDERTEMPLATE';
+  objectType = 'SCHEDULE';
   workflowTree = [];
   invalidMsg: string;
 
@@ -388,6 +388,7 @@ export class OrderComponent implements OnInit, OnDestroy, OnChanges {
           obj.variables.splice(obj.variables.length - 1, 1);
         }
       }
+      obj.path = _path;
       if (obj.calendars.length > 0) {
         for (let i = 0; i < obj.calendars.length; i++) {
           if (obj.calendars[i].frequencyList) {

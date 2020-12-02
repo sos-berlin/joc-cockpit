@@ -6,7 +6,7 @@
           <span *ngIf="objectType === 'JOBCLASS'" translate>inventory.label.jobClasses</span>
           <span *ngIf="objectType === 'JUNCTION'" translate>inventory.label.junctions</span>
           <span *ngIf="objectType === 'LOCK'" translate>inventory.label.locks</span>
-          <span *ngIf="objectType === 'ORDERTEMPLATE'" translate>inventory.label.orders</span>
+          <span *ngIf="objectType === 'SCHEDULE'" translate>inventory.label.orders</span>
           <span *ngIf="objectType === 'CALENDAR'" translate>inventory.label.calendars</span>
         </span>
     <div class="inline">
@@ -22,7 +22,7 @@
         <span *ngIf="objectType === 'JOBCLASS'" translate>inventory.button.newJobClass</span>
         <span *ngIf="objectType === 'JUNCTION'" translate>inventory.button.newJunction</span>
         <span *ngIf="objectType === 'LOCK'" translate>inventory.button.newLock</span>
-        <span *ngIf="objectType === 'ORDERTEMPLATE'" translate>inventory.button.newOrder</span>
+        <span *ngIf="objectType === 'SCHEDULE'" translate>inventory.button.newOrder</span>
         <span *ngIf="objectType === 'CALENDAR'" translate>inventory.button.newCalendar</span>
       </button>
     </div>
@@ -52,12 +52,12 @@
              class="fa fa-caret-up "></i>
           <i *ngIf="filter.sortBy == 'valid' && filter.reverse"
              class="fa fa-caret-down "></i></a></th>
-        <th (click)="sort('deployed')" *ngIf="objectType !== 'CALENDAR' && objectType !== 'ORDERTEMPLATE'"><a><span class="p-r-xs" translate>common.label.status</span>
+        <th (click)="sort('deployed')" *ngIf="objectType !== 'CALENDAR' && objectType !== 'SCHEDULE'"><a><span class="p-r-xs" translate>common.label.status</span>
           <i *ngIf="filter.sortBy == 'deployed' && !filter.reverse"
              class="fa fa-caret-up "></i>
           <i *ngIf="filter.sortBy == 'deployed' && filter.reverse"
              class="fa fa-caret-down "></i></a></th>
-        <th (click)="sort('released')" *ngIf="objectType === 'ORDERTEMPLATE' || objectType === 'CALENDAR'"><a><span class="p-r-xs" translate>common.label.status</span>
+        <th (click)="sort('released')" *ngIf="objectType === 'SCHEDULE' || objectType === 'CALENDAR'"><a><span class="p-r-xs" translate>common.label.status</span>
           <i *ngIf="filter.sortBy == 'released' && !filter.reverse"
              class="fa fa-caret-up "></i>
           <i *ngIf="filter.sortBy == 'released' && filter.reverse"
@@ -88,19 +88,19 @@
    <!--               <li nz-menu-item *ngIf="!data.deleted && permission.Inventory.configurations.edit">
                     <a (click)="editObject(data)" translate>inventory.button.edit</a>
                   </li>-->
-                  <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && objectType !== 'CALENDAR' && objectType !== 'ORDERTEMPLATE'" [nzDisabled]="!data.hasDeployments && !data.valid">
+                  <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE'" [nzDisabled]="!data.hasDeployments && !data.valid">
                     <a (click)="deployObject(data)" translate>inventory.button.deploy</a>
                   </li>
-                  <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && objectType === 'CALENDAR' || objectType === 'ORDERTEMPLATE'" [nzDisabled]="!data.valid">
+                  <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && objectType === 'CALENDAR' || objectType === 'SCHEDULE'" [nzDisabled]="!data.valid">
                     <a (click)="releaseObject(data)" translate>inventory.button.release</a>
                   </li>
                   <li nz-menu-divider>
                   <li nz-menu-item [nzDisabled]="!data.hasDeployments"
-                    *ngIf="permission.Inventory.configurations.delete && !data.deleted && objectType !== 'CALENDAR' && objectType !== 'ORDERTEMPLATE'">
+                    *ngIf="permission.Inventory.configurations.delete && !data.deleted && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE'">
                     <a (click)="removeObject(data)" translate>inventory.button.remove</a>
                   </li>
                   <li nz-menu-item [nzDisabled]="!data.hasReleases"
-                      *ngIf="permission.Inventory.configurations.delete && !data.deleted && (objectType === 'CALENDAR' || objectType === 'ORDERTEMPLATE')">
+                      *ngIf="permission.Inventory.configurations.delete && !data.deleted && (objectType === 'CALENDAR' || objectType === 'SCHEDULE')">
                     <a (click)="removeObject(data)" translate>inventory.button.remove</a>
                   </li>
                   <li nz-menu-item *ngIf="permission.Inventory.configurations.delete" [nzDisabled]="data.deployed || data.released">
@@ -126,13 +126,13 @@
                   translate>inventory.label.notValid</span>
           </td>
           <td class="cursor" (click)="editObject(data)">
-            <span class="label bg-green" *ngIf="data.deployed && objectType !== 'CALENDAR' && objectType !== 'ORDERTEMPLATE'" [ngClass]="{'bg-crimson' : data.deleted}"
+            <span class="label bg-green" *ngIf="data.deployed && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE'" [ngClass]="{'bg-crimson' : data.deleted}"
                   translate>inventory.label.deployed</span>
-            <span class="label bg-gold" *ngIf="!data.deployed && objectType !== 'CALENDAR' && objectType !== 'ORDERTEMPLATE'" [ngClass]="{'bg-crimson' : data.deleted}"
+            <span class="label bg-gold" *ngIf="!data.deployed && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE'" [ngClass]="{'bg-crimson' : data.deleted}"
                 translate>inventory.label.notDeployed</span>
-            <span class="label bg-green" *ngIf="data.released && (objectType === 'ORDERTEMPLATE' || objectType === 'CALENDAR')" [ngClass]="{'bg-crimson' : data.deleted}"
+            <span class="label bg-green" *ngIf="data.released && (objectType === 'SCHEDULE' || objectType === 'CALENDAR')" [ngClass]="{'bg-crimson' : data.deleted}"
                   translate>inventory.label.released</span>
-            <span class="label bg-gold" *ngIf="!data.released && (objectType === 'ORDERTEMPLATE' || objectType === 'CALENDAR')" [ngClass]="{'bg-crimson' : data.deleted}"
+            <span class="label bg-gold" *ngIf="!data.released && (objectType === 'SCHEDULE' || objectType === 'CALENDAR')" [ngClass]="{'bg-crimson' : data.deleted}"
                   translate>inventory.label.notReleased</span>
           </td>
           <td class="cursor" (click)="editObject(data)" *ngIf="objectType === 'CALENDAR'">
