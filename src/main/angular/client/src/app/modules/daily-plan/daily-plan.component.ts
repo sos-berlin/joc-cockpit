@@ -1097,37 +1097,37 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   exportToExcel() {
     let workflow = '', order = '', status = '', late = '', plannedStart = '', exceptedEnd = '', expectedDuration = '',
       startTime = '', endTime = '', duration = '', repeatInterval = '';
-    this.translate.get('label.workflow').subscribe(translatedValue => {
+    this.translate.get('dailyPlan.label.workflow').subscribe(translatedValue => {
       workflow = translatedValue;
     });
     this.translate.get('dailyPlan.label.order').subscribe(translatedValue => {
       order = translatedValue;
     });
-    this.translate.get('label.status').subscribe(translatedValue => {
+    this.translate.get('dailyPlan.label.status').subscribe(translatedValue => {
       status = translatedValue;
     });
-    this.translate.get('label.late').subscribe(translatedValue => {
+    this.translate.get('dailyPlan.label.late').subscribe(translatedValue => {
       late = translatedValue;
     });
-    this.translate.get('label.plannedStart').subscribe(translatedValue => {
+    this.translate.get('dailyPlan.label.plannedStart').subscribe(translatedValue => {
       plannedStart = translatedValue;
     });
-    this.translate.get('label.expectedEnd').subscribe(translatedValue => {
+    this.translate.get('dailyPlan.label.expectedEnd').subscribe(translatedValue => {
       exceptedEnd = translatedValue;
     });
-    this.translate.get('label.expectedDuration').subscribe(translatedValue => {
+    this.translate.get('dailyPlan.label.expectedDuration').subscribe(translatedValue => {
       expectedDuration = translatedValue;
     });
-    this.translate.get('label.startTime').subscribe(translatedValue => {
+    this.translate.get('dailyPlan.label.startTime').subscribe(translatedValue => {
       startTime = translatedValue;
     });
-    this.translate.get('label.endTime').subscribe(translatedValue => {
+    this.translate.get('dailyPlan.label.endTime').subscribe(translatedValue => {
       endTime = translatedValue;
     });
-    this.translate.get('label.repeatInterval').subscribe(translatedValue => {
+    this.translate.get('dailyPlan.label.repeatInterval').subscribe(translatedValue => {
       repeatInterval = translatedValue;
     });
-    this.translate.get('label.duration').subscribe(translatedValue => {
+    this.translate.get('dailyPlan.label.duration').subscribe(translatedValue => {
       duration = translatedValue;
     });
 

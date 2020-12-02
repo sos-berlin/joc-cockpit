@@ -348,35 +348,32 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
   exportToExcel() {
     let created = '', controllerId = '', workflow = '', orderId = '', account = '',
-      request = '', job = '', comment = '', timeSpend = '', ticketLink = '';
-    this.translate.get('label.created').subscribe(translatedValue => {
+      request = '', comment = '', timeSpend = '', ticketLink = '';
+    this.translate.get('auditLog.label.created').subscribe(translatedValue => {
       created = translatedValue;
     });
-    this.translate.get('label.controllerId').subscribe(translatedValue => {
+    this.translate.get('common.label.controllerId').subscribe(translatedValue => {
       controllerId = translatedValue;
     });
-    this.translate.get('label.account').subscribe(translatedValue => {
+    this.translate.get('auditLog.label.account').subscribe(translatedValue => {
       account = translatedValue;
     });
-    this.translate.get('label.request').subscribe(translatedValue => {
+    this.translate.get('auditLog.label.request').subscribe(translatedValue => {
       request = translatedValue;
     });
-    this.translate.get('label.workflow').subscribe(translatedValue => {
+    this.translate.get('auditLog.label.workflow').subscribe(translatedValue => {
       workflow = translatedValue;
     });
-    this.translate.get('label.orderId').subscribe(translatedValue => {
+    this.translate.get('auditLog.label.orderId').subscribe(translatedValue => {
       orderId = translatedValue;
     });
-    this.translate.get('label.job').subscribe(translatedValue => {
-      job = translatedValue;
-    });
-    this.translate.get('label.comment').subscribe(translatedValue => {
+    this.translate.get('auditLog.label.comment').subscribe(translatedValue => {
       comment = translatedValue;
     });
-    this.translate.get('label.timeSpend').subscribe(translatedValue => {
+    this.translate.get('auditLog.label.timeSpend').subscribe(translatedValue => {
       timeSpend = translatedValue;
     });
-    this.translate.get('label.ticketLink').subscribe(translatedValue => {
+    this.translate.get('auditLog.label.ticketLink').subscribe(translatedValue => {
       ticketLink = translatedValue;
     });
     let data = [];
@@ -390,7 +387,6 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       obj[request] = this.currentData[i].request;
       obj[workflow] = this.currentData[i].workflow;
       obj[orderId] = this.currentData[i].orderId;
-      obj[job] = this.currentData[i].job;
       obj[comment] = this.currentData[i].comment;
       obj[timeSpend] = this.currentData[i].timeSpend;
       obj[ticketLink] = this.currentData[i].ticketLink;

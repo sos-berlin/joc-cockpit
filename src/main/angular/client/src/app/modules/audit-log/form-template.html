@@ -3,7 +3,7 @@
     <div class="form-group row" [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>customization.label.customizationName</label>
       <div class="col-sm-6">
-        <input autocomplete="off" type="text" required class="form-control" placeholder="{{'placeholder.name' | translate}}"
+        <input autocomplete="off" type="text" required class="form-control" placeholder="{{'customization.placeholder.enterName' | translate}}"
                name="name" maxlength="30" [(ngModel)]="filter.name" #name="ngModel"
                (blur)="checkFilterName()">
         <div *ngIf="!isSearch && name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
@@ -39,7 +39,7 @@
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.radio === 'current'" [ngClass]="{'has-error': ((toTime.dirty || toTime.touched) && toTime.invalid)}">
-      <label class="col-sm-2 form-control-label" translate>label.to</label>
+      <label class="col-sm-2 form-control-label" translate>common.label.to</label>
       <div class="col-sm-6" [ngClass]="{'has-error': ((to.dirty || to.touched) && to.invalid)}">
         <nz-date-picker [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat" [(ngModel)]="filter.to" displayDate="" #to="ngModel" name="to"></nz-date-picker>
         <nz-time-picker [nzDisabled]="!filter.to" class="input-time m-l time-picker"
@@ -60,36 +60,36 @@
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.comment</label>
       <div class="col-sm-6">
-        <input autocomplete="off" type="text" class="form-control" placeholder="{{'placeholder.enterComment' | translate}}"
+        <input autocomplete="off" type="text" class="form-control" placeholder="{{'common.placeholder.enterComment' | translate}}"
                [(ngModel)]="filter.regex" name="regex">
       </div>
     </div>
     <div class="form-group row" *ngIf="isSearch">
-      <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.controller</label>
+      <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.controllerId</label>
       <div class=" col-sm-6">
-        <nz-select nzPlaceHolder="{{'common.placeholder.selectController' | translate}}" [(ngModel)]="filter.controllerId" name="id">
+        <nz-select nzPlaceHolder="{{'common.label.selectController' | translate}}" [(ngModel)]="filter.controllerId" name="id">
           <nz-option *ngFor="let controller of schedulerIds.controllerIds" [nzLabel]="controller" [nzValue]="controller"></nz-option>
         </nz-select>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.workflow</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.label.workflow</label>
       <div class="col-sm-6" >
-        <input autocomplete="off" type="text" class="form-control" placeholder="{{'placeholder.workflowPath' | translate}}"
+        <input autocomplete="off" type="text" class="form-control" placeholder="{{'inventory.placeholder.workflowPath' | translate}}"
                [(ngModel)]="filter.workflow" name="workflow">
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.orderIds</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.label.orderIds</label>
       <div class="col-sm-6" >
-        <input autocomplete="off" type="text" class="form-control" placeholder="{{'placeholder.enterOrderIds' | translate}}"
+        <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.placeholder.enterOrderIds' | translate}}"
                [(ngModel)]="filter.orderIds" name="orderid">
       </div>
     </div>
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}"  translate>auditLog.label.account</label>
       <div class="col-sm-6">
-        <input autocomplete="off" type="text" class="form-control" placeholder="{{'common.placeholder.enterAccount' | translate}}"
+        <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.placeholder.enterAccount' | translate}}"
                [(ngModel)]="filter.account" name="account">
       </div>
     </div>
@@ -108,7 +108,7 @@
       </button>
       <button type="submit" class="btn orange btn-sm m-l-sm"
               [disabled]="!myForm.form.valid || !isUnique || !filter.name || submitted">
-         <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+         <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
         {{'customization.button.saveAsCustomization' | translate}}
       </button>
       <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>

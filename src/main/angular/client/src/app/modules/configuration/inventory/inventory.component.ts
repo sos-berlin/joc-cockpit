@@ -108,19 +108,21 @@ export class SingleDeployComponent implements OnInit {
     }) : this.coreService.clone(this.actualResult).filter((value) => {
       let flag = true;
       if (value.deployed && value.deployablesVersions) {
+        let isCheck1 = false;
         value.deployablesVersions = value.deployablesVersions.filter((version) => {
           let isCheck = false;
           if (version.versions) {
             for (let i = 0; i < version.versions.length; i++) {
               if (version.versions[i].controllerId === $event[0]) {
                 isCheck = true;
+                isCheck1 = true;
                 break;
               }
             }
-            flag = isCheck;
           }
           return isCheck;
         });
+        flag = isCheck1;
       }
       return flag;
     }) : this.actualResult;
@@ -431,19 +433,21 @@ export class DeployComponent implements OnInit {
     }) : this.coreService.clone(this.actualResult).filter((value) => {
       let flag = true;
       if (value.deployed && value.deployablesVersions) {
+        let isCheck1 = false;
         value.deployablesVersions = value.deployablesVersions.filter((version) => {
           let isCheck = false;
           if (version.versions) {
             for (let i = 0; i < version.versions.length; i++) {
               if (version.versions[i].controllerId === $event[0]) {
                 isCheck = true;
+                isCheck1 = true;
                 break;
               }
             }
-            flag = isCheck;
           }
           return isCheck;
         });
+        flag = isCheck1;
       }
       return flag;
     }) : this.actualResult;
@@ -1615,6 +1619,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   inventoryConfig: any;
   subscription1: Subscription;
   subscription2: Subscription;
+  subscription3: Subscription;
 
   @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
 
@@ -1654,9 +1659,16 @@ export class InventoryComponent implements OnInit, OnDestroy {
         }
       }
     });
+    this.subscription3 = dataService.refreshAnnounced$.subscribe(() => {
+      this.initConf();
+    });
   }
 
   ngOnInit() {
+    this.initConf();
+  }
+
+  private initConf() {
     if (this.authService.permission) {
       this.permission = JSON.parse(this.authService.permission) || {};
     }
@@ -1677,6 +1689,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.coreService.setSideView(this.sideView);
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.subscription3.unsubscribe();
     this.coreService.tabs._configuration.state = 'inventory';
     this.inventoryConfig.expand_to = this.tree;
     this.inventoryConfig.selectedObj = this.selectedObj;
@@ -2196,10 +2209,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.data = origin;
       modalRef.componentInstance.releasable = releasable;
       modalRef.result.then((res: any) => {
-        this.updateFolders(path, () => {
-          this.updateTree();
-        });
-
+        setTimeout(() => {
+          this.updateFolders(path, () => {
+            this.updateTree();
+          });
+        }, 100)
       }, () => {
       });
     } else {
@@ -2210,7 +2224,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.path = origin.path;
       modalRef.componentInstance.releasable = releasable;
       modalRef.result.then((res: any) => {
-        this.initTree(origin.path, null);
+        setTimeout(() => {
+          this.initTree(origin.path, null);
+        }, 200);
       }, () => {
       });
     }

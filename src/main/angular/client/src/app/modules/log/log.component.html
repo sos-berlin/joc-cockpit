@@ -10,11 +10,11 @@
                     </div>
                     <button type="button" class="btn btn-grey btn-sm m-l-12" (click)="cancel()">
                         <i class="fa fa-times"></i>&nbsp;
-                        <span translate>button.cancel</span>
+                        <span translate>common.button.cancel</span>
                     </button>
                     <button type="button" class="btn btn-grey btn-sm m-l-12" (click)="downloadLog()">
                         <i class="fa fa-download"></i>&nbsp;
-                        <span translate>button.download</span>
+                        <span translate>common.button.download</span>
                     </button>
                 </div>
             </div>
@@ -27,7 +27,7 @@
         <div class="col-md-12">
             <h5 class=" _300 m-t-sm">
                 <span *ngIf="orderId">{{workflow}} - <i class="text-muted">{{orderId}}</i></span>
-                <span *ngIf="taskId"><span *ngIf="job">{{job}} </span> <span *ngIf="!job" translate>label.taskId </span> - <i class="text-muted">{{taskId}}</i></span>
+                <span *ngIf="taskId"><span *ngIf="job">{{job}} </span> <span *ngIf="!job" translate>common.label.taskId </span> - <i class="text-muted">{{taskId}}</i></span>
             </h5>
         </div>
     </div>

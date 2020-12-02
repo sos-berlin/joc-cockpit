@@ -1239,7 +1239,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       historyId: data.historyId
     };
     this.coreService.post('order/history', obj).subscribe((res: any) => {
-      data.steps = res.history;
+      data.children = res.children;
+      data.states = res.states;
       data.loading = false;
     }, function () {
       data.loading = false;
@@ -1613,31 +1614,31 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private exportToExcelOrder(): any {
     let controllerId = '', workflow = '', orderId = '', status = '', position = '',
       startTime = '', endTime = '', duration = '', plannedTime = '';
-    this.translate.get('label.controllerId').subscribe(translatedValue => {
+    this.translate.get('common.label.controllerId').subscribe(translatedValue => {
       controllerId = translatedValue;
     });
-    this.translate.get('label.workflow').subscribe(translatedValue => {
+    this.translate.get('history.label.workflow').subscribe(translatedValue => {
       workflow = translatedValue;
     });
-    this.translate.get('label.orderId').subscribe(translatedValue => {
+    this.translate.get('history.label.orderId').subscribe(translatedValue => {
       orderId = translatedValue;
     });
-    this.translate.get('label.state').subscribe(translatedValue => {
+    this.translate.get('history.label.state').subscribe(translatedValue => {
       status = translatedValue;
     });
-    this.translate.get('label.position').subscribe(translatedValue => {
+    this.translate.get('history.label.position').subscribe(translatedValue => {
       position = translatedValue;
     });
-    this.translate.get('label.plannedTime').subscribe(translatedValue => {
+    this.translate.get('history.label.plannedTime').subscribe(translatedValue => {
       plannedTime = translatedValue;
     });
-    this.translate.get('label.startTime').subscribe(translatedValue => {
+    this.translate.get('history.label.startTime').subscribe(translatedValue => {
       startTime = translatedValue;
     });
-    this.translate.get('label.endTime').subscribe(translatedValue => {
+    this.translate.get('history.label.endTime').subscribe(translatedValue => {
       endTime = translatedValue;
     });
-    this.translate.get('label.duration').subscribe(translatedValue => {
+    this.translate.get('history.label.duration').subscribe(translatedValue => {
       duration = translatedValue;
     });
     let data = [];
@@ -1664,37 +1665,37 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private exportToExcelTask(): any {
     let controllerId = '', workflow = '', job = '', status = '', position = '', plannedTime = '',
       startTime = '', endTime = '', duration = '', criticality = '', returnCode = '';
-    this.translate.get('label.controllerId').subscribe(translatedValue => {
+    this.translate.get('common.label.controllerId').subscribe(translatedValue => {
       controllerId = translatedValue;
     });
-    this.translate.get('label.workflow').subscribe(translatedValue => {
+    this.translate.get('history.label.workflow').subscribe(translatedValue => {
       workflow = translatedValue;
     });
-    this.translate.get('label.job').subscribe(translatedValue => {
+    this.translate.get('history.label.job').subscribe(translatedValue => {
       job = translatedValue;
     });
-    this.translate.get('label.state').subscribe(translatedValue => {
+    this.translate.get('history.label.state').subscribe(translatedValue => {
       status = translatedValue;
     });
-    this.translate.get('label.position').subscribe(translatedValue => {
+    this.translate.get('history.label.position').subscribe(translatedValue => {
       position = translatedValue;
     });
-    this.translate.get('label.plannedTime').subscribe(translatedValue => {
+    this.translate.get('history.label.plannedTime').subscribe(translatedValue => {
       plannedTime = translatedValue;
     });
-    this.translate.get('label.startTime').subscribe(translatedValue => {
+    this.translate.get('history.label.startTime').subscribe(translatedValue => {
       startTime = translatedValue;
     });
-    this.translate.get('label.endTime').subscribe(translatedValue => {
+    this.translate.get('history.label.endTime').subscribe(translatedValue => {
       endTime = translatedValue;
     });
-    this.translate.get('label.duration').subscribe(translatedValue => {
+    this.translate.get('history.label.duration').subscribe(translatedValue => {
       duration = translatedValue;
     });
-    this.translate.get('label.criticality').subscribe(translatedValue => {
+    this.translate.get('history.label.criticality').subscribe(translatedValue => {
       criticality = translatedValue;
     });
-    this.translate.get('label.returnCode').subscribe(translatedValue => {
+    this.translate.get('history.label.returnCode').subscribe(translatedValue => {
       returnCode = translatedValue;
     });
     let data = [];
@@ -1723,16 +1724,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   private exportToExcelDeployment(): any {
     let controllerId = '', status = '', duration = '', startTime = '', endTime = '';
-    this.translate.get('label.controllerId').subscribe(translatedValue => {
+    this.translate.get('common.label.controllerId').subscribe(translatedValue => {
       controllerId = translatedValue;
     });
-    this.translate.get('label.startTime').subscribe(translatedValue => {
+    this.translate.get('history.label.startTime').subscribe(translatedValue => {
       startTime = translatedValue;
     });
-    this.translate.get('label.endTime').subscribe(translatedValue => {
+    this.translate.get('history.label.endTime').subscribe(translatedValue => {
       endTime = translatedValue;
     });
-    this.translate.get('label.duration').subscribe(translatedValue => {
+    this.translate.get('history.label.duration').subscribe(translatedValue => {
       duration = translatedValue;
     });
     let data = [];
