@@ -87,51 +87,21 @@ export class SingleDeployComponent implements OnInit {
           }
         });
       }
-      this.checkControllers(this.selectedSchedulerIds);
+      this.filterTree();
       this.loading = false;
     }, (err) => {
       this.loading = false;
     });
   }
 
-  checkControllers($event): void {
-    if ($event.length !== 1) {
-      this.filterTree(true, $event);
-    } else {
-      this.filterTree(false, $event);
-    }
-  }
-
-  private filterTree(isDraftOnly, $event) {
-    this.deployablesObject = !this.releasable ? isDraftOnly ? this.actualResult.filter((value) => {
-      return !value.deployed;
-    }) : this.coreService.clone(this.actualResult).filter((value) => {
-      let flag = true;
-      if (value.deployed && value.deployablesVersions) {
-        let isCheck1 = false;
-        value.deployablesVersions = value.deployablesVersions.filter((version) => {
-          let isCheck = false;
-          if (version.versions) {
-            for (let i = 0; i < version.versions.length; i++) {
-              if (version.versions[i].controllerId === $event[0]) {
-                isCheck = true;
-                isCheck1 = true;
-                break;
-              }
-            }
-          }
-          return isCheck;
-        });
-        flag = isCheck1;
-      }
-      return flag;
-    }) : this.actualResult;
-
+  private filterTree() {
+    this.deployablesObject = this.actualResult;
     if (this.deployablesObject && this.deployablesObject.length > 0) {
       for (let j = 0; j < this.deployablesObject.length; j++) {
         if (this.deployablesObject[j].deployablesVersions && this.deployablesObject[j].deployablesVersions.length > 0) {
           this.deployablesObject[j].deployId = '';
-          if (this.deployablesObject[j].valid && this.deployablesObject[j].deployablesVersions[0].versions && this.deployablesObject[j].deployablesVersions[0].versions.length > 0) {
+          if (this.deployablesObject[j].valid && this.deployablesObject[j].deployablesVersions[0].versions &&
+            this.deployablesObject[j].deployablesVersions[0].versions.length > 0) {
             this.deployablesObject[j].deployId = this.deployablesObject[j].deployablesVersions[0].deploymentId;
           }
         }
@@ -150,7 +120,7 @@ export class SingleDeployComponent implements OnInit {
         }
       }
       this.actualResult = [result];
-      this.checkControllers(this.selectedSchedulerIds);
+      this.filterTree();
       this.loading = false;
     }, (err) => {
       this.loading = false;
@@ -418,41 +388,9 @@ export class DeployComponent implements OnInit {
     }
   }
 
-  checkControllers($event): void {
-    if ($event.length !== 1) {
-      this.filterTree(true, $event);
-    } else {
-      this.filterTree(false, $event);
-    }
-  }
-
-  private filterTree(isDraftOnly, $event) {
+  private filterTree() {
     this.nodes = [{path: '/', key: '/', name: '/', children: []}];
-    const newArr = !this.releasable ? isDraftOnly ? this.actualResult.filter((value) => {
-      return !value.deployed;
-    }) : this.coreService.clone(this.actualResult).filter((value) => {
-      let flag = true;
-      if (value.deployed && value.deployablesVersions) {
-        let isCheck1 = false;
-        value.deployablesVersions = value.deployablesVersions.filter((version) => {
-          let isCheck = false;
-          if (version.versions) {
-            for (let i = 0; i < version.versions.length; i++) {
-              if (version.versions[i].controllerId === $event[0]) {
-                isCheck = true;
-                isCheck1 = true;
-                break;
-              }
-            }
-          }
-          return isCheck;
-        });
-        flag = isCheck1;
-      }
-      return flag;
-    }) : this.actualResult;
-
-    this.buildDeployablesTree(newArr);
+    this.buildDeployablesTree(this.actualResult);
     if (this.nodes.length > 0) {
       this.checkAndUpdateVersionList(this.nodes[0]);
     }
@@ -562,7 +500,7 @@ export class DeployComponent implements OnInit {
           }
         });
       }
-      this.checkControllers(this.selectedSchedulerIds);
+      this.filterTree();
     }, (err) => {
       this.loading = false;
       this.nodes = [];
@@ -2357,9 +2295,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
       _path = object.path;
     }
     const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.title = 'delete';
-    modalRef.componentInstance.message = 'deleteObject';
-    modalRef.componentInstance.type = 'Delete';
+    modalRef.componentInstance.title = 'remove';
+    modalRef.componentInstance.message = 'removeObject';
+    modalRef.componentInstance.type = 'Remove';
     modalRef.componentInstance.objectName = _path;
     modalRef.result.then((res: any) => {
       this.deleteObject(_path, object, node);

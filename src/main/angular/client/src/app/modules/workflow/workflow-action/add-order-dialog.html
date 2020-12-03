@@ -12,12 +12,13 @@
     <div class="form-group row">
       <label class="col-sm-3 form-control-label" translate>order.label.orderId</label>
       <div class="col-sm-6" [ngClass]="{ 'has-error' : (((orderId.dirty || orderId.touched) && orderId.invalid))}">
-        <input type="text" maxlength="30" name="orderId" required #orderId="ngModel" class="form-control" placeholder="{{'workflow.placeholder.orderId' | translate}}"
+        <input type="text" identifierValidation [appAutofocus]="true" maxlength="30" name="orderId" required #orderId="ngModel" class="form-control" placeholder="{{'workflow.placeholder.orderId' | translate}}"
                [(ngModel)]="order.orderId">
         <div *ngIf="orderId.invalid && (orderId.dirty || orderId.touched)" class="text-danger help-block">
           <div *ngIf="orderId.errors.required">
             <div translate>common.message.requiredError</div>
           </div>
+          <div *ngIf="orderId.errors.invalidIdentifier" translate>common.message.invalid</div>
         </div>
       </div>
     </div>

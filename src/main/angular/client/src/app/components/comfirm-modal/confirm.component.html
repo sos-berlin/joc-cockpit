@@ -1,13 +1,13 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="type === 'Delete'">
+    <span *ngIf="type === 'Delete' || type === 'Remove'">
       <span>{{'common.label.' + title | translate}}</span>
       <span *ngIf="objectName">:
         {{objectName}}
       </span>
       ?
     </span>
-    <span *ngIf="type !== 'Delete'">
+    <span *ngIf="type !== 'Delete' && type !== 'Remove'">
       <span>{{'common.label.' + title | translate}}</span>
       <span *ngIf="objectName">
         {{objectName}}
@@ -123,10 +123,11 @@
   </div>
 </div>
 <div class="modal-footer">
-  <button type="button" [ngClass]="{'btn-primary' : type !== 'Delete'}" class="btn btn-danger btn-sm"
+  <button type="button" [ngClass]="{'btn-primary' : type !== 'Delete' && type !== 'Remove'}" class="btn btn-danger btn-sm"
           (click)="activeModal.close()">
     <span *ngIf="type === 'Delete'">{{'common.button.delete' | translate}}</span>
-    <span *ngIf="type !== 'Delete'">{{'common.button.confirm' | translate}}</span>
+    <span *ngIf="type === 'Remove'">{{'common.button.remove' | translate}}</span>
+    <span *ngIf="type !== 'Delete' && type !== 'Remove'">{{'common.button.confirm' | translate}}</span>
   </button>
   <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
     common.button.cancel

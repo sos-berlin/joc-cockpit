@@ -1233,7 +1233,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
   showPanelFuc(data) {
     data.loading = true;
     data.show = true;
-    data.steps = [];
+    data.children = [];
+    data.states = [];
     let obj = {
       controllerId: data.controllerId || this.schedulerIds.selected,
       historyId: data.historyId
@@ -1247,6 +1248,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
+  hidePanelFuc(data){
+    data.show = false;
+  }
 
   /* --------------------------Ignore List -----------------------*/
   addOrderToIgnoreList(orderId, workflow) {
@@ -1757,14 +1761,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType == 'ReportingChangedOrder' && this.isLoading && this.historyFilters.type == 'ORDER') {
-          //  this.updateHistoryAfterEvent();
+        if (args.eventSnapshots[j].eventType.match(/Order/) && this.isLoading && this.historyFilters.type == 'ORDER') {
+          this.init();
           break;
-        } else if (args.eventSnapshots[j].eventType == 'ReportingChangedJob' && this.isLoading && this.historyFilters.type == 'TASK') {
-          //   this.updateHistoryAfterEvent();
+        } else if (args.eventSnapshots[j].eventType == 'JobStateChanged' && this.isLoading && this.historyFilters.type == 'TASK') {
+          this.init();
           break;
-        } else if (args.eventSnapshots[j].eventType == 'ReportingChangedJob' && this.isLoading && this.historyFilters.type == 'DEPLOYMENT') {
-          //   this.updateHistoryAfterEvent();
+        } else if (args.eventSnapshots[j].eventType.match(/Deploy/) && this.isLoading && this.historyFilters.type == 'DEPLOYMENT') {
+          this.init();
           break;
         }
       }

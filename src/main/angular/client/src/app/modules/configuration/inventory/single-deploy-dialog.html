@@ -23,7 +23,6 @@
             nzMode="multiple"
             nzShowSearch
             name="schedulerIds"
-            (ngModelChange)="checkControllers($event)"
             [(ngModel)]="selectedSchedulerIds">
             <ng-container *ngFor="let id of schedulerIds.controllerIds">
               <nz-option [nzValue]="id" [nzLabel]="id"></nz-option>
@@ -204,7 +203,7 @@
                    *ngIf="(!child.deployablesVersions || child.deployablesVersions.length ===0)">
                 <i class="text-muted" *ngIf="!child.deleted" translate>workflow.label.draft</i>
                 <i class="text-danger" *ngIf="child.deleted && child.deploymentId" translate>inventory.label.deployMarkDelete</i>
-                <i class="text-danger" *ngIf="child.deleted && !child.deploymentId" translate>inventory.label.draftMarkDelete</i>
+                <i class="text-danger" *ngIf="child.deleted && !child.deploymentId" translate>inventory.label.markForDelete</i>
               </div>
             </div>
         </div>
