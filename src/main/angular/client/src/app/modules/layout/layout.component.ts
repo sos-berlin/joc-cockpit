@@ -90,16 +90,15 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   refresh(args) {
-    console.log(args)
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'ControllerStateChanged') {
-          this.loadScheduleDetail();
-          break;
-        } else if (args.eventSnapshots[j].eventType.match(/Problem/) && args.eventSnapshots[j].message) {
+        if (args.eventSnapshots[j].eventType === 'ProblemEvent' && args.eventSnapshots[j].message) {
           if (args.eventSnapshots[j].accessToken === this.authService.accessTokenId) {
             this.toasterService.pop('error', '', args.eventSnapshots[j].message);
           }
+        } else if (args.eventSnapshots[j].eventType === 'ControllerStateChanged') {
+          this.loadScheduleDetail();
+          break;
         }
       }
     }
@@ -283,8 +282,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
       preferences.maxEntryPerPage = '1000';
       preferences.entryPerPage = '10';
       preferences.isNewWindow = 'newWindow';
+      preferences.isDocNewWindow = 'newTab';
+      preferences.isXSDNewWindow = 'newTab';
       preferences.pageView = 'list';
       preferences.theme = 'light';
+      preferences.historyTab = 'order';
+      preferences.expandOption = 'single';
       preferences.historyView = 'current';
       preferences.adtLog = 'current';
       preferences.fileTransfer = 'current';

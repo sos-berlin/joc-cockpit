@@ -19,6 +19,51 @@ import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component
 declare const $;
 
 @Component({
+  selector: 'app-order-history-template',
+  templateUrl: './order-history-template.html'
+})
+
+export class OrderTemplateComponent implements OnInit {
+  @Input() history: any;
+  @Input() historyView: any;
+  @Input() schedulerId: any;
+  @Input() orderSearch: any;
+  @Input() widths: any;
+
+  constructor(public coreService: CoreService, private authService: AuthService) {
+  }
+
+  ngOnInit() {
+    console.log(this.widths, this.widths.length);
+  }
+
+  downloadLog(obj, schedulerId) {
+    if (!schedulerId) {
+      schedulerId = this.schedulerId;
+    }
+    $('#tmpFrame').attr('src', './api/order/log/download?historyId=' + obj.historyId + '&controllerId=' + schedulerId +
+      '&accessToken=' + this.authService.accessTokenId);
+  }
+
+  showPanelFuc(data) {
+    data.loading = true;
+    data.show = true;
+    data.steps = [];
+    let obj = {
+      controllerId: data.controllerId || this.schedulerId,
+      historyId: data.historyId
+    };
+    this.coreService.post('order/history', obj).subscribe((res: any) => {
+      data.children = res.children;
+      data.states = res.states;
+      data.loading = false;
+    }, () => {
+      data.loading = false;
+    });
+  }
+}
+
+@Component({
   selector: 'app-ngbd-modal-content',
   templateUrl: './filter-dialog.html'
 })
@@ -510,17 +555,17 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   changeController() {
-    this.init();
+    this.init(true);
   }
 
   orderParseDate(obj) {
     if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true') && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0) || (this.savedIgnoreList.orders && this.savedIgnoreList.orders.length > 0))) {
       obj.excludeOrders = [];
-      this.savedIgnoreList.workflows.forEach(function (workflow) {
+      this.savedIgnoreList.workflows.forEach((workflow) => {
         obj.excludeOrders.push({workflow: workflow});
       });
 
-      this.savedIgnoreList.orders.forEach(function (order) {
+      this.savedIgnoreList.orders.forEach((order) => {
         obj.excludeOrders.push(order);
       });
     }
@@ -530,17 +575,17 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     if (this.selectedFiltered1.paths && this.selectedFiltered1.paths.length > 0) {
       obj.folders = [];
-      this.selectedFiltered1.paths.forEach(function (value) {
+      this.selectedFiltered1.paths.forEach((value) => {
         obj.folders.push({folder: value, recursive: true});
       });
     }
     if ((this.selectedFiltered1.workflows && this.selectedFiltered1.workflows.length > 0) || (this.selectedFiltered1.orders && this.selectedFiltered1.orders.length > 0)) {
       obj.orders = [];
-      this.selectedFiltered1.orders.forEach(function (value) {
+      this.selectedFiltered1.orders.forEach((value) => {
         obj.orders.push({workflow: value.workflow, orderId: value.orderId});
       });
       if (!this.selectedFiltered1.orders || this.selectedFiltered1.orders.length == 0) {
-        this.selectedFiltered1.workflows.forEach(function (value) {
+        this.selectedFiltered1.workflows.forEach((value) => {
           obj.orders.push({workflow: value});
         });
       } else {
@@ -588,11 +633,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
       && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0)
         || (this.savedIgnoreList.orders && this.savedIgnoreList.orders.length > 0))) {
       filter.excludeOrders = [];
-      this.savedIgnoreList.workflows.forEach(function (workflow) {
+      this.savedIgnoreList.workflows.forEach((workflow) => {
         filter.excludeOrders.push({workflow: workflow});
       });
 
-      this.savedIgnoreList.orders.forEach(function (order) {
+      this.savedIgnoreList.orders.forEach((order) => {
         filter.excludeOrders.push(order);
       });
     }
@@ -620,7 +665,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  orderHistory(obj) {
+  orderHistory(obj, flag) {
     this.historyFilters.type = 'ORDER';
     if (!obj) {
       obj = {controllerId: this.historyView.current == true ? this.schedulerIds.selected : ''};
@@ -639,10 +684,74 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.convertRequestBody(obj);
     this.coreService.post('orders/history', obj).subscribe((res: any) => {
       this.historys = this.setDuration(res);
-      this.searchInResult();
+      if (flag) {
+        this.mergeOldData();
+      } else {
+        this.searchInResult();
+      }
       this.isLoading = true;
     }, () => {
       this.isLoading = true;
+    });
+  }
+
+  private mergeOldData() {
+    let oldEntires = _.clone(this.data);
+    let arr = this.order.searchText ? this.searchPipe.transform(this.historys, this.order.searchText) : this.historys;
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0; j < oldEntires.length; j++) {
+        if (arr[i].orderId === oldEntires[j].orderId) {
+          if (oldEntires[j].show) {
+            arr[i].show = true;
+            arr[i].children = oldEntires[j].children;
+            this.recursiveMerge(arr[i], null);
+          }
+          oldEntires.splice(j, 1);
+          break;
+        }
+      }
+    }
+    this.data = arr;
+  }
+
+  private recursiveMerge(data, widths) {
+    data.loading = true;
+    let obj = {
+      controllerId: data.controllerId || this.schedulerIds.selected,
+      historyId: data.historyId
+    };
+    let perviousArr = data.children.filter((value) => {
+      return value.order;
+    });
+    if (!widths) {
+      this.updateDimensions(data);
+    } else {
+      data.widths = widths;
+    }
+
+    console.log(perviousArr, 'perviousArr');
+    this.coreService.post('order/history', obj).subscribe((res: any) => {
+      for (let i = 0; i < res.children.length; i++) {
+        if (res.children[i].order) {
+          for (let j = 0; j < perviousArr.length; j++) {
+            if (res.children[i].order.orderId === perviousArr[j].orderId) {
+              if (perviousArr[j].show) {
+                console.log('perviousArr[j]', perviousArr[j])
+                res.children[i].order.show = true;
+                res.children[i].order.children = perviousArr[j].children;
+                this.recursiveMerge(res.children[i].order, data.widths);
+              }
+              perviousArr.splice(j, 1);
+              break;
+            }
+          }
+        }
+      }
+      data.children = res.children;
+      data.states = res.states;
+      data.loading = false;
+    }, () => {
+      data.loading = false;
     });
   }
 
@@ -667,7 +776,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true')
       && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
       obj.excludeJobs = [];
-      this.savedIgnoreList.jobs.forEach(function (job) {
+      this.savedIgnoreList.jobs.forEach((job) => {
         obj.excludeJobs.push({job: job});
       });
     }
@@ -680,14 +789,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     if (this.selectedFiltered2.paths && this.selectedFiltered2.paths.length > 0) {
       obj.folders = [];
-      this.selectedFiltered2.paths.forEach(function (value) {
+      this.selectedFiltered2.paths.forEach((value) => {
         obj.folders.push({folder: value, recursive: true});
       });
     }
     if (this.selectedFiltered2.jobs && this.selectedFiltered2.jobs.length > 0) {
       obj.jobs = [];
 
-      this.selectedFiltered2.jobs.forEach(function (value) {
+      this.selectedFiltered2.jobs.forEach((value) => {
         obj.jobs.push({job: value});
       });
 
@@ -699,7 +808,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   setTaskDateRange(filter) {
     if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true') && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
       filter.excludeJobs = [];
-      this.savedIgnoreList.jobs.forEach(function (job) {
+      this.savedIgnoreList.jobs.forEach((job) => {
         filter.excludeJobs.push({job: job});
       });
     }
@@ -766,7 +875,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     return filter;
   }
 
-  deploymentHistory(obj){
+  deploymentHistory(obj) {
     this.historyFilters.type = 'DEPLOYMENT';
     if (!obj) {
       if (this.historyView.current == true) {
@@ -774,8 +883,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       } else {
         obj = {};
       }
-    } else{
-      if(!obj.controllerId){
+    } else {
+      if (!obj.controllerId) {
         delete obj['controllerId'];
       }
     }
@@ -811,7 +920,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         if (obj.orderIds) {
           var s = obj.orderIds.replace(/,\s+/g, ',');
           var orderIds = s.split(',');
-          orderIds.forEach(function (value) {
+          orderIds.forEach((value) => {
             filter.orders.push({workflow: obj.workflow, orderId: value});
           });
         } else {
@@ -864,18 +973,18 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       if (obj.paths && obj.paths.length > 0) {
         filter.folders = [];
-        obj.paths.forEach(function (value) {
+        obj.paths.forEach((value) => {
           filter.folders.push({folder: value, recursive: true});
         });
       }
       if ((obj.workflows && obj.workflows.length > 0) || (obj.orders && obj.orders.length > 0)) {
         filter.orders = [];
 
-        obj.orders.forEach(function (value) {
+        obj.orders.forEach((value) => {
           filter.orders.push({workflow: value.workflow, orderId: value.orderId});
         });
         if (!obj.orders || obj.orders.length == 0) {
-          obj.workflows.forEach(function (value) {
+          obj.workflows.forEach((value) => {
             filter.orders.push({workflow: value});
           });
         } else {
@@ -919,7 +1028,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         filter.jobs = [];
         let s = obj.job.replace(/,\s+/g, ',');
         var jobs = s.split(',');
-        jobs.forEach(function (value) {
+        jobs.forEach((value) => {
           filter.jobs.push({job: value});
         });
       }
@@ -973,7 +1082,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       if (obj.paths && obj.paths.length > 0) {
         filter.folders = [];
-        obj.paths.forEach(function (value) {
+        obj.paths.forEach((value) => {
           filter.folders.push({folder: value, recursive: true});
         });
       }
@@ -981,7 +1090,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (obj.jobs && obj.jobs.length > 0) {
         filter.jobs = [];
 
-        obj.jobs.forEach(function (value) {
+        obj.jobs.forEach((value) => {
           filter.jobs.push({job: value});
         });
 
@@ -1052,7 +1161,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       if (obj.paths && obj.paths.length > 0) {
         filter.folders = [];
-        obj.paths.forEach(function (value) {
+        obj.paths.forEach((value) => {
           filter.folders.push({folder: value, recursive: true});
         });
       }
@@ -1152,7 +1261,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.order.filter.date = value;
       }
 
-    } else if (this.historyFilters.type == 'DEPLOYMENT'){
+    } else if (this.historyFilters.type == 'DEPLOYMENT') {
       this.deploymentSearch = {};
       this.deploymentSearch.date = 'date';
       if (type === 'STATE') {
@@ -1161,7 +1270,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.deployment.filter.date = value;
       }
     }
-    this.init();
+    this.init(false);
   }
 
   /**--------------- sorting and pagination -------------------*/
@@ -1230,6 +1339,22 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.excelService.exportAsExcelFile(data, fileName);
   }
 
+  updateDimensions(data) {
+    data.widths = [];
+    if (!this.historyView.current) {
+      $('#orderTable').find('thead th.dynamic-thead-o').each(function () {
+        const w = $(this).outerWidth();
+        data.widths.push(w);
+      });
+    } else {
+      data.widths.push(0);
+    }
+    $('#orderTable').find('thead th.dynamic-thead').each(function () {
+      const w = $(this).outerWidth();
+      data.widths.push(w);
+    });
+  }
+
   showPanelFuc(data) {
     data.loading = true;
     data.show = true;
@@ -1239,16 +1364,17 @@ export class HistoryComponent implements OnInit, OnDestroy {
       controllerId: data.controllerId || this.schedulerIds.selected,
       historyId: data.historyId
     };
+    this.updateDimensions(data);
     this.coreService.post('order/history', obj).subscribe((res: any) => {
       data.children = res.children;
       data.states = res.states;
       data.loading = false;
-    }, function () {
+    }, () => {
       data.loading = false;
     });
   }
 
-  hidePanelFuc(data){
+  hidePanelFuc(data) {
     data.show = false;
   }
 
@@ -1265,7 +1391,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         if (this.orderSearch) {
           this.search(true);
         } else {
-          this.init();
+          this.init(false);
         }
       }
       let configObj = {
@@ -1288,7 +1414,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         if (this.jobSearch) {
           this.search(true);
         } else {
-          this.init();
+          this.init(false);
         }
       }
       let configObj = {
@@ -1311,7 +1437,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         if (this.orderSearch) {
           this.search(true);
         } else {
-          this.init();
+          this.init(false);
         }
       }
       let configObj = {
@@ -1357,7 +1483,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if ((this.jobSearch && this.historyFilters.type != 'ORDER') || (this.orderSearch && this.historyFilters.type == 'ORDER')) {
       this.search(true);
     } else {
-      this.init();
+      this.init(false);
     }
   }
 
@@ -1366,13 +1492,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (this.orderSearch) {
         this.search(true);
       } else {
-        this.init();
+        this.init(false);
       }
     } else if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true) && this.historyFilters.type != 'ORDER' && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
       if (this.jobSearch) {
         this.search(true);
       } else {
-        this.init();
+        this.init(false);
       }
     }
     this.savedIgnoreList.orders = [];
@@ -1557,14 +1683,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
         }).subscribe((conf: any) => {
           this.selectedFiltered1 = JSON.parse(conf.configuration.configurationItem);
           this.selectedFiltered1.account = filter.account;
-          this.init();
+          this.init(false);
         });
       } else {
         this.isCustomizationSelected1(false);
         this.savedHistoryFilter.selected = filter;
         this.historyFilters.order.selectedView = false;
         this.selectedFiltered1 = {};
-        this.init();
+        this.init(false);
       }
       this.historyFilterObj.order = this.savedHistoryFilter;
     } else if (this.historyFilters.type == 'TASK') {
@@ -1577,14 +1703,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
         }).subscribe((conf: any) => {
           this.selectedFiltered2 = JSON.parse(conf.configuration.configurationItem);
           this.selectedFiltered2.account = filter.account;
-          this.init();
+          this.init(false);
         });
       } else {
         this.isCustomizationSelected2(false);
         this.savedJobHistoryFilter.selected = filter;
         this.historyFilters.task.selectedView = false;
         this.selectedFiltered2 = {};
-        this.init();
+        this.init(false);
       }
       this.historyFilterObj.job = this.savedJobHistoryFilter;
     } else if (this.historyFilters.type == 'DEPLOYMENT') {
@@ -1597,14 +1723,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
         }).subscribe((conf: any) => {
           this.selectedFiltered4 = JSON.parse(conf.configuration.configurationItem);
           this.selectedFiltered4.account = filter.account;
-          this.init();
+          this.init(false);
         });
       } else {
         this.isCustomizationSelected4(false);
         this.savedDeploymentHistoryFilter.selected = filter;
         this.historyFilters.depleyment.selectedView = false;
         this.selectedFiltered4 = {};
-        this.init();
+        this.init(false);
       }
       this.historyFilterObj.depleyment = this.savedDeploymentHistoryFilter;
 
@@ -1762,13 +1888,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType.match(/Order/) && this.isLoading && this.historyFilters.type == 'ORDER') {
-          this.init();
+          this.init(true);
           break;
         } else if (args.eventSnapshots[j].eventType == 'JobStateChanged' && this.isLoading && this.historyFilters.type == 'TASK') {
-          this.init();
+          this.init(true);
           break;
         } else if (args.eventSnapshots[j].eventType.match(/Deploy/) && this.isLoading && this.historyFilters.type == 'DEPLOYMENT') {
-          this.init();
+          this.init(true);
           break;
         }
       }
@@ -1877,7 +2003,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }, (err) => {
       this.savedHistoryFilter.selected = undefined;
       this.loadConfig = true;
-      this.init();
+      this.init(false);
     });
   }
 
@@ -1918,7 +2044,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             this.loadConfig = true;
             this.selectedFiltered1 = JSON.parse(conf.configuration.configurationItem);
             this.selectedFiltered1.account = this.orderHistoryFilterList[i].account;
-            this.init();
+            this.init(false);
           });
           break;
         }
@@ -1927,12 +2053,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (flag) {
         this.savedHistoryFilter.selected = undefined;
         this.loadConfig = true;
-        this.init();
+        this.init(false);
       }
     } else {
       this.loadConfig = true;
       this.savedHistoryFilter.selected = undefined;
-      this.init();
+      this.init(false);
     }
   }
 
@@ -1972,7 +2098,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             this.loadConfig = true;
             this.selectedFiltered2 = JSON.parse(conf.configuration.configurationItem);
             this.selectedFiltered2.account = this.jobHistoryFilterList[i].account;
-            this.init();
+            this.init(false);
           });
           break;
         }
@@ -1980,12 +2106,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (flag) {
         this.savedJobHistoryFilter.selected = undefined;
         this.loadConfig = true;
-        this.init();
+        this.init(false);
       }
     } else {
       this.loadConfig = true;
       this.savedJobHistoryFilter.selected = undefined;
-      this.init();
+      this.init(false);
     }
   }
 
@@ -2025,7 +2151,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             this.loadConfig = true;
             this.selectedFiltered4 = JSON.parse(conf.configuration.configurationItem);
             this.selectedFiltered4.account = this.deploymentHistoryFilterList[i].account;
-            this.init();
+            this.init(false);
           });
           break;
         }
@@ -2033,12 +2159,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (flag) {
         this.savedDeploymentHistoryFilter.selected = undefined;
         this.loadConfig = true;
-        this.init();
+        this.init(false);
       }
     } else {
       this.loadConfig = true;
       this.savedDeploymentHistoryFilter.selected = undefined;
-      this.init();
+      this.init(false);
     }
   }
 
@@ -2059,40 +2185,41 @@ export class HistoryComponent implements OnInit, OnDestroy {
             this.savedIgnoreList = JSON.parse(result1.configuration.configurationItem) || {};
           }
           this.loadIgnoreList = true;
-          this.init();
+          this.init(false);
         }, () => {
           this.loadIgnoreList = true;
-          this.init();
+          this.init(false);
         });
       } else {
         this.loadIgnoreList = true;
-        this.init();
+        this.init(false);
       }
     }, () => {
       this.loadIgnoreList = true;
-      this.init();
+      this.init(false);
     });
   }
 
-  private init() {
+  private init(flag) {
     let obj = {
       controllerId: this.historyView.current == true ? this.schedulerIds.selected : ''
     };
     if (this.loadConfig && this.loadIgnoreList) {
       this.isLoading = false;
       if (this.historyFilters.type == 'ORDER') {
-        this.orderHistory(obj);
+        this.orderHistory(obj, flag);
       } else if (this.historyFilters.type == 'TASK') {
         this.taskHistory(obj);
-      } else if (this.historyFilters.type == 'DEPLOYMENT') {
-        this.deploymentHistory(obj);
       }
+    }
+    if (this.historyFilters.type == 'DEPLOYMENT') {
+      this.deploymentHistory(obj);
     }
   }
 
   private setDuration(histories): any {
     if (histories.history) {
-      histories.history.forEach(function (history, index) {
+      histories.history.forEach((history, index) => {
         if (history.startTime && history.endTime) {
           histories.history[index].duration = new Date(history.endTime).getTime() - new Date(history.startTime).getTime();
         }

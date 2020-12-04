@@ -376,7 +376,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   private refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'WorkflowChanged') {
+        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
           this.initTree();
           break;
         }

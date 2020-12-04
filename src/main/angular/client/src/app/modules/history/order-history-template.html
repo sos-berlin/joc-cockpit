@@ -1,0 +1,156 @@
+<tr *ngIf="history.states && history.states.length> 0 && !history.loading">
+  <td class="menu"></td>
+  <td colspan="11" style="padding:0 !important">
+    <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small"
+              [nzData]="history.states" [nzShowPagination]="false">
+      <thead>
+      <tr>
+        <th><span translate>history.label.state</span></th>
+        <th><span translate>history.label.stateTime</span></th>
+        <th><span translate>history.label.stateText</span></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let state of innerChildTable.data">
+        <td>
+            <span class="label" [ngClass]="coreService.getColor(state.state.severity,'bg')"
+                  [innerHtml]="state.state._text | translate"></span>
+        </td>
+        <td>{{state.stateTime | stringToDate}}</td>
+        <td>{{state.stateText}}</td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </td>
+</tr>
+
+<ng-template ngFor let-child [ngForOf]="history.children">
+  <tr *ngIf="child.task">
+    <td class="menu"></td>
+    <td colspan="11" style="padding:0 !important;">
+      <nz-table class="m-a-0 inner-table" #innerChildTaskTable nzSize="small" [nzLoading]="history.loading"
+                [nzData]="[child.task]" [nzShowPagination]="false">
+        <thead>
+        <tr >
+          <th><span translate>history.label.job</span></th>
+          <th><span translate>history.label.position</span></th>
+          <th><span translate>history.label.status</span></th>
+          <th><span translate>history.label.startTime</span></th>
+          <th><span translate>history.label.endTime</span></th>
+          <th><span translate>history.label.duration</span></th>
+          <th><span translate>history.label.criticality</span></th>
+          <th><span translate>history.label.returnCode</span></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let ch of innerChildTaskTable.data">
+          <td (click)="coreService.showLogWindow(null,ch, null, null, null)">{{ch.job}}</td>
+          <td (click)="coreService.showLogWindow(null,ch, null, null, null)">{{ch.position}}</td>
+          <td (click)="coreService.showLogWindow(null,ch,null,null,null)">
+              <span *ngIf="ch.state" class="label" [ngClass]="coreService.getColor(ch.state.severity,'bg')"
+                    [innerHtml]="ch.state._text | translate"></span>
+          <td
+            (click)="coreService.showLogWindow(null,ch, null, null, null)">{{ch.startTime | stringToDate}}</td>
+          <td
+            (click)="coreService.showLogWindow(null,ch, null, null, null)">{{ch.endTime | stringToDate}}</td>
+          <td
+            (click)="coreService.showLogWindow(null,ch, null, null, null)">{{ch.startTime | duration:ch.endTime}}</td>
+          <td
+            (click)="coreService.showLogWindow(null,ch, null, null, null)">{{ch.criticality | translate}}</td>
+          <td (click)="coreService.showLogWindow(null,ch, null, null, null)">{{ch.exitCode}}</td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </td>
+  </tr>
+  <tr *ngIf="child.order">
+    <td colspan="11" style="padding:0 !important">
+        <tr class="tr-border cursor" [ngClass]="{'light-bg':child.order.show}">
+          <td class="menu">
+            <div class="btn-group dropdown">
+              <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="exportMenu"
+                      type="button">
+                <i class="fa fa-ellipsis-h"></i>
+              </button>
+              <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu">
+                <ul nz-menu>
+                  <li nz-menu-item>
+                    <a translate>history.button.addOrderToIgnoreList</a>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+          </td>
+          <td [ngStyle]="{'width' : widths[0]}" *ngIf="!historyView.current">
+            <span class="show-in-single-line w-full"
+                  (click)="coreService.showLogWindow(child.order,null,null,child.order.controllerId, null)">
+              <i class="cursor fa fa-caret-down fa-lg  p-l-xs p-r-xs"
+                 *ngIf="!child.order.show" (click)="showPanelFuc(child.order);$event.stopPropagation()"></i>
+              <i class="cursor fa fa-caret-up fa-lg  p-l-xs p-r-xs"
+                 *ngIf="child.order.show" (click)="child.order.show = false;$event.stopPropagation()"></i>&nbsp;
+              <i class="cursor fa fa-download  text-hover-primary p-r-xs"
+                 (click)="downloadLog(child.order,child.order.controllerId);$event.stopPropagation()"></i>
+              <span [innerHtml]="child.order.controllerId"></span>
+              <span *ngIf="!child.order.controllerId" [innerHtml]="orderSearch.controllerId"></span>
+            </span>
+          </td>
+          <td [style.width]="widths[1]+'px'">
+            <span class="show-in-single-line w-full"
+                  (click)="coreService.showLogWindow(child.order,null,null,null,null)">
+              <i class="cursor fa fa-caret-down fa-lg  p-l-xs p-r-xs"
+                 *ngIf="!child.order.show && historyView.current"
+                 (click)="showPanelFuc(child.order);$event.stopPropagation()"></i>
+              <i class="cursor fa fa-caret-up fa-lg  p-l-xs p-r-xs"
+                 *ngIf="child.order.show && historyView.current"
+                 (click)="child.order.show = false;$event.stopPropagation()"></i>&nbsp;
+              <i *ngIf="historyView.current"
+                 class="cursor fa fa-download  text-hover-primary p-r-xs"
+                 (click)="downloadLog(child.order,child.order.controllerId);$event.stopPropagation()"></i>
+              <span [innerHtml]="child.order.orderId"></span>
+            </span>
+          </td>
+          <td [style.width]="widths[2]+'px'"
+              (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null)">
+            <span (click)="coreService.showWorkflow(child.order.workflow);$event.stopPropagation()"
+                  class="text-hover-primary" [innerHtml]="child.order.workflow"></span>
+          </td>
+          <td [style.width]="widths[3]+'px'"
+              (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null)">
+            <span [innerHtml]="child.order.position"></span>
+          </td>
+          <td [style.width]="widths[4]+'px'"
+              (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null)">
+            <span *ngIf="child.order.state" class="label" [ngClass]="coreService.getColor(child.order.state.severity,'bg')"
+                          [innerHtml]="child.order.state._text | translate"></span>
+          </td>
+          <td [style.width]="widths[5]+'px'"
+              (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null)">
+            <span *ngIf="child.order.orderState" class="label" [ngClass]="coreService.getColor(child.order.orderState.severity,'bg')"
+                          [innerHtml]="child.order.orderState._text | translate"></span>
+          </td>
+          <td [style.width]="widths[6]+'px'"
+              (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null)"
+              [innerHtml]="child.order.plannedTime | stringToDate"></td>
+          <td [style.width]="widths[7]+'px'"
+              (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null)"
+              [innerHtml]="child.order.startTime | stringToDate"></td>
+          <td [style.width]="widths[8]+'px'"
+              (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null)"
+              [innerHtml]="child.order.endTime | stringToDate"></td>
+          <td [style.width]="widths[9]+'px'"
+              (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null)"
+              [innerHtml]="child.order.startTime | duration:child.order.endTime"></td>
+        </tr>
+        <tr *ngIf="child.order.show">
+          <td colspan="11" style="padding:0 !important">
+            <app-order-history-template style="display: block" [history]="child.order" [schedulerId]="schedulerId" [widths]="widths"
+                                        [historyView]="historyView" [orderSearch]="orderSearch"
+            ></app-order-history-template>
+          </td>
+        </tr>
+    </td>
+  </tr>
+</ng-template>
+
+
+

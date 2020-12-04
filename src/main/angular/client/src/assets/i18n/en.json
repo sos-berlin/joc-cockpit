@@ -45,6 +45,7 @@
   "OrderStepStarted": "Order Step started",
   "OrderSuspended": "Order suspended",
   "FINISHED": "finished",
+  "RESUMED": "resumed",
   "PAUSED": "paused",
   "BLOCKED": "blocked",
   "PENDING": "pending",

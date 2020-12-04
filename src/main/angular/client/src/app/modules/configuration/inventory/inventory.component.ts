@@ -1854,8 +1854,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
                 node.origin.expanded = true;
                 this.updateTree();
               }
-            }, true);
+            }, false);
           }
+        } else if (node.origin.controller || node.origin.dailyPlan) {
+          node.isExpanded = !node.isExpanded;
         }
         return;
       }
