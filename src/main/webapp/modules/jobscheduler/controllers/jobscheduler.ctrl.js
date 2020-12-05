@@ -3548,6 +3548,7 @@
         }
 
         vm.substitute = function (schedule) {
+            vm.runTimes = undefined;
             vm.sch = {};
             vm.sch.folder = '/';
             vm.comments = {};
@@ -3573,7 +3574,7 @@
                     createSchedule();
                 }else {
                     vm.substituteCalendars = [];
-                    vm.runTimes = {};
+                    vm.runTimes = undefined;
                 }
             });
 

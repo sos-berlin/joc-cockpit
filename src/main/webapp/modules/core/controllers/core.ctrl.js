@@ -4599,7 +4599,19 @@
             if (vm.order) {
                 vm.order.runTime = vm.jsonObj.json.run_time;
             } else {
-                vm.schedule.runTime = vm.jsonObj.json.schedule;
+                if (vm.jsonObj.json.schedule.name) {
+                    vm.schedule.runTime = {schedule: vm.jsonObj.json.schedule};
+                    vm.schedule.runTime.schedule.substitute = vm.schedule.runTime.path;
+                    delete vm.schedule.runTime.schedule['path'];
+                    delete vm.schedule.runTime.schedule['path1'];
+                    delete vm.schedule.runTime.schedule['surveyDate'];
+                    delete vm.schedule.runTime.schedule['configurationDate'];
+                    delete vm.schedule.runTime.schedule['state'];
+                    delete vm.schedule.runTime.schedule['usedByOrders'];
+                    delete vm.schedule.runTime.schedule['usedByJobs'];
+                } else {
+                    vm.schedule.runTime = vm.jsonObj.json.schedule;
+                }
             }
             setCalendarToRuntime();
             if (vm.order) {
@@ -5777,7 +5789,7 @@
             $rootScope.$broadcast('period-editor', {
                 frequency: data,
                 isOrderJob: (vm.order && vm.order.isOrderJob != undefined) ? vm.order.isOrderJob : null,
-                isJobStream: vm.order.isJobStream && !vm.order.jobChain
+                isJobStream: vm.order ? vm.order.isJobStream && !vm.order.jobChain : false
             });
             isPress = true;
             $('#period-editor').modal('show');
@@ -5861,7 +5873,7 @@
                 period: period,
                 periodStr: periodStr,
                 isOrderJob: (vm.order && vm.order.isOrderJob != undefined) ? vm.order.isOrderJob : null,
-                isJobStream: vm.order.isJobStream && !vm.order.jobChain
+                isJobStream: vm.order ? vm.order.isJobStream && !vm.order.jobChain : false
             });
             isPress = true;
             $('#period-editor').modal('show');

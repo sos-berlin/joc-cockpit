@@ -4149,7 +4149,7 @@
                     getFilteredData();
                 }
                 vm.noReload = false;
-                $scope.$broadcast('reloadWorkflow');
+                $scope.$broadcast('reloadWorkflow', vm.allJobs);
                 updateTreeData(expandNode, treeUpdate);
             }, function () {
                 updateTreeData(expandNode, treeUpdate);
@@ -4283,7 +4283,7 @@
                 vm.isLoaded = true;
                 volatileInformation(obj, null, true);
                 if (reload) {
-                    $scope.$broadcast('reloadWorkflow');
+                    $scope.$broadcast('reloadWorkflow', vm.allJobs);
                 }
             }, function () {
                 volatileInformation(obj, null, true);
@@ -6721,9 +6721,9 @@
         });
     }
 
-    JobOverviewCtrl.$inject = ["$scope", "$rootScope", "JobService", "$uibModal", "TaskService", "CoreService", "OrderService", "AuditLogService", "$stateParams", "$filter", "SavedFilter", "$timeout"];
+    JobOverviewCtrl.$inject = ["$scope", "$rootScope", "JobService", "$uibModal", "orderByFilter", "TaskService", "CoreService", "OrderService", "AuditLogService", "$stateParams", "$filter", "SavedFilter", "$timeout"];
 
-    function JobOverviewCtrl($scope, $rootScope, JobService, $uibModal, TaskService, CoreService, OrderService, AuditLogService, $stateParams, $filter, SavedFilter, $timeout) {
+    function JobOverviewCtrl($scope, $rootScope, JobService, $uibModal, orderBy, TaskService, CoreService, OrderService, AuditLogService, $stateParams, $filter, SavedFilter, $timeout) {
         var vm = $scope;
         vm.jobFilters = CoreService.getJobDetailTab();
         vm.sideView = CoreService.getSideView();
@@ -8391,11 +8391,11 @@
             let flag = false;
             ConditionService.getSessions({
                 jobschedulerId: $scope.schedulerIds.selected,
-                jobStreamId: vm.selectedJobStreamObj.jobStreamId ? vm.selectedJobStreamObj.jobStreamId : vm.jobStreamList[0].jobStreamId,
+                jobStream: vm.selectedJobStreamObj.jobStream ? vm.selectedJobStreamObj.jobStream : vm.jobStreamList[0].jobStream,
                 jobStreamStarterId: vm.selectedStarterId,
                 limit: vm.userPreferences.maxJobstreamHistory ? parseInt(vm.userPreferences.maxJobstreamHistory) : 30
             }).then(function (res) {
-                vm.sessions = res.jobstreamSessions;
+                vm.sessions = orderBy(res.jobstreamSessions, 'started', true);
                 if (vm.sessions && vm.sessions.length > 0) {
                     let _session = vm.sessions[0];
                     if (vm.selectedSession.jobStream !== _session.jobStream || (vm.selectedSession.jobStream === _session.jobStream && vm.selectedSession.id !== _session.id)) {
@@ -10260,15 +10260,15 @@
             })
         };
 
-        vm.deleteJobstreamStarter = function(jobStreamObj, starter, jobStream){
+        vm.deleteJobstreamStarter = function (jobStreamObj, starter, jobStream) {
             let obj = {
                 jobschedulerId: $scope.schedulerIds.selected
             };
             let strter;
-            if(jobStreamObj) {
+            if (jobStreamObj) {
                 obj.jobStreamId = jobStreamObj.cell.getAttribute('jobStreamId');
                 strter = JSON.parse(jobStreamObj.cell.getAttribute('starter'));
-            }else{
+            } else {
                 obj.jobStreamId = jobStream.jobStreamId;
                 strter = starter;
             }
@@ -10349,9 +10349,9 @@
                 obj.oldJobStreamName = isRename;
             }
             let updateStarter;
-            if(vm.selectedStarterId){
+            if (vm.selectedStarterId) {
                 for (let i = 0; i < obj.jobstreamStarters.length; i++) {
-                    if(obj.jobstreamStarters[i].jobStreamStarterId === vm.selectedStarterId){
+                    if (obj.jobstreamStarters[i].jobStreamStarterId === vm.selectedStarterId) {
                         updateStarter = obj.jobstreamStarters[i];
                         break;
                     }
@@ -10368,11 +10368,11 @@
                     obj.auditLog.ticketLink = vm.comments.ticketLink;
                 }
             }
-            if(isNew){
+            if (isNew) {
                 ConditionService.addJobStream(obj).then(function (res) {
                     updateStreamObj(res, obj, isRename, updateStarter);
                 })
-            }else {
+            } else {
                 ConditionService.editJobStream(obj).then(function (res) {
                     updateStreamObj(res, obj, isRename, updateStarter);
                 })
@@ -11173,6 +11173,13 @@
         };
 
         vm.resetJob = function (cell) {
+            if (!vm.selectedSession.session) {
+                toasty.warning({
+                    title: gettextCatalog.getString("message.pleaseSelectSession"),
+                    timeout: 4000
+                });
+                return;
+            }
             ConditionService.resetWorkflow({
                 jobschedulerId: $scope.schedulerIds.selected,
                 job: cell.getAttribute('actual'),
@@ -11359,7 +11366,8 @@
             }
         };
 
-        $scope.$on('reloadWorkflow', function () {
+        $scope.$on('reloadWorkflow', function (evt, arg) {
+            
             if (vm.reloadNewWorkflow) {
                 let evt = angular.copy(vm.reloadNewWorkflow.evt);
                 if (vm.reloadNewWorkflow.workflow) {
@@ -11368,10 +11376,13 @@
                     vm.selectedJobStream = angular.copy(vm.reloadNewWorkflow);
                 }
                 vm.reloadNewWorkflow = null;
-                vm.getSessions(function () {
-                    recursivelyConnectJobs(false, function () {
-                        vm.navigateToEvent(evt);
-                    });
+                vm.selectedSession = {};
+                vm.selectedJobStreamObj = {};
+                if(arg.length != vm.allJobs.length || vm.allJobs[0].path !== arg[0].path){
+                    vm.allJobs = arg;
+                }
+                vm.getJobStreams(function () {
+                    vm.navigateToEvent(evt);
                 });
             } else {
                 updateWorkflowDiagram(vm.jobs);
@@ -12353,10 +12364,11 @@
         let isSessionUpdated = false;
         $scope.$on('event-started', function () {
             if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
-                let callEvent = false, arr = [];
+                let callEvent = false, arr = [], checkStreamList = false;
                 for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
                     if ((vm.events[0].eventSnapshots[m].eventType === "EventCreated" || vm.events[0].eventSnapshots[m].eventType === "EventRemoved" || vm.events[0].eventSnapshots[m].eventType === "InconditionValidated") && !vm.events[0].eventSnapshots[m].eventId) {
                         if (vm.events[0].eventSnapshots[m].eventType === "InconditionValidated" && vm.events[0].eventSnapshots[m].path) {
+                            checkStreamList = true;
                             arr.push(vm.events[0].eventSnapshots[m].path);
                         } else {
                             if (vm.jobs.length > 0 && vm.events[0].eventSnapshots[m].state === vm.selectedSession.session &&
@@ -12387,6 +12399,7 @@
                             vm.loadAuditLogs();
                         }
                     } else if (vm.events[0].eventSnapshots[m].eventType === "VariablesCustomEvent") {
+                        checkStreamList = false;
                         updateJobStreamList();
                         break;
                     } else if ((vm.events[0].eventSnapshots[m].eventType === "JobStreamStarted" ||
@@ -12425,10 +12438,20 @@
                     }
                 }
                 if (_arr.length > 0) {
+                    checkStreamList = false;
                     updateConditionsByEvent(_arr, true);
                 }
                 if (callEvent) {
                     vm.getEvents(null);
+                }
+                if (checkStreamList && arr.length > 0) {
+                    for (let i = 0; i < vm.allJobs.length; i++) {
+                        if (arr.indexOf(vm.allJobs[i].path) !== -1) {
+                            updateJobStreamList();
+                            break;
+                        }
+                    }
+
                 }
             }
         });
