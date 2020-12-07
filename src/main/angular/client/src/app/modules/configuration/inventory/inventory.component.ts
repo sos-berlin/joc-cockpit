@@ -2471,7 +2471,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           obj.type = 'CALENDAR';
         }
         obj.id = res.id;
-        obj.valid = !(obj.type.match(/CALENDAR/) || obj.type === 'SCHEDULE' || obj.type === 'WORKFLOW');
+        obj.valid = obj.valid ? obj.valid : !(obj.type.match(/CALENDAR/) || obj.type === 'SCHEDULE' || obj.type === 'WORKFLOW');
         list.push(obj);
         this.type = obj.type;
         this.selectedData = obj;

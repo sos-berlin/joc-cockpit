@@ -5457,38 +5457,10 @@ General CSS
   min-width: 80px;
 }
 
-#jobChainTableId {
-  th.num-long-header {
-    width: 100px;
-  }
-
-  .inner-table th {
-    &.menu {
-      width: 50px;
-    }
-
-    &.num {
-      width: 60px;
-    }
-
-    &.state {
-      width: 100px;
-    }
-
-    &.status {
-      width: 90px;
-    }
-  }
-}
 
 .ant-table-small .inner-table table {
   table-layout: fixed;
   word-wrap: break-word;
-}
-
-
-.inner-table table .step {
-  width: 65px;
 }
 
 .inner-history-table table {
@@ -6194,12 +6166,18 @@ pre#pre {
   border-color: $border-color;
 }
 
-.ant-table-thead > tr > th, .ant-table-tbody > tr > td {
+.ant-table-thead > tr > th, .ant-table-tbody > tr > td, tr.tr-border td{
   padding: 2px 8px !important;
   border-color: $border-color;
   border-width: 1px;
   background: transparent;
   color: $default;
+}
+
+tr.tr-border td {
+  border: 1px solid $border-color !important;
+  border-right-color: transparent !important;
+  word-break: break-all;
 }
 
 .ant-table-thead > tr > th {
@@ -6385,6 +6363,9 @@ form .ant-select-selection{
 }
 .ant-table-small.ant-table-bordered{
   border-right: 1px solid $border-color;
+}
+.inner-table .ant-table-small.ant-table-bordered{
+  border-bottom: none;
 }
 .ant-calendar-picker-input:focus,
 .ant-time-picker-input:focus,

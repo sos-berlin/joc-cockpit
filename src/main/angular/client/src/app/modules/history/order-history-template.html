@@ -67,19 +67,7 @@
     <td colspan="11" style="padding:0 !important">
         <tr class="tr-border cursor" [ngClass]="{'light-bg':child.order.show}">
           <td class="menu">
-            <div class="btn-group dropdown">
-              <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="exportMenu"
-                      type="button">
-                <i class="fa fa-ellipsis-h"></i>
-              </button>
-              <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu">
-                <ul nz-menu>
-                  <li nz-menu-item>
-                    <a translate>history.button.addOrderToIgnoreList</a>
-                  </li>
-                </ul>
-              </nz-dropdown-menu>
-            </div>
+
           </td>
           <td [ngStyle]="{'width' : widths[0]}" *ngIf="!historyView.current">
             <span class="show-in-single-line w-full"

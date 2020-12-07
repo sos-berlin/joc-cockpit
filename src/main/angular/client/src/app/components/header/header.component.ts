@@ -171,13 +171,22 @@ export class HeaderComponent implements OnInit, OnDestroy {
         break;
       }
     }
-
-
-    if (res.controllerId !== this.schedulerIds.selected) {
-      this.eventsRequest.push({
-        controllerId: res.controllerId,
-        eventId: res.eventId
-      });
+    if (res.controllerId) {
+      if (res.controllerId !== this.schedulerIds.selected) {
+        this.eventsRequest.push({
+          controllerId: res.controllerId,
+          eventId: res.eventId
+        });
+      }
+    } else {
+      for (let i = 0; i < res.events.length; i++) {
+        if (res.events[i].controllerId !== this.schedulerIds.selected) {
+          this.eventsRequest.push({
+            controllerId: res.events[i].controllerId,
+            eventId: res.events[i].eventId
+          });
+        }
+      }
     }
     this.allEvents = res.events;
     this.reformatEventResult();

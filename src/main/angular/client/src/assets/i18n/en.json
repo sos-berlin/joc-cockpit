@@ -580,7 +580,6 @@
     "label.historyFound": "History entry found",
     "button.resetIgnoreList": "Reset Ignore List",
     "button.addJobToIgnoreList": "Add Job to Ignore List",
-    "button.addOrderToIgnoreList": "Add Order to Ignore List",
     "button.addWorkflowToIgnoreList": "Add Workflow to Ignore List",
     "button.disableIgnoreList": "Disable Ignore List",
     "button.editIgnoreList": "Edit Ignore List",

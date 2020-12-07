@@ -767,8 +767,6 @@ export class CoreService {
 
     if (objType === 'workflow' && path) {
       link = host + 'workflows/workflow?path=' + encodeURIComponent(path);
-    } else if (objType === 'job' && path) {
-      link = host + 'job?path=' + encodeURIComponent(path);
     } else if (objType === 'order' && path) {
       link = host + 'order?orderId=' + encodeURIComponent(path);
     } else if (objType === 'lock' && path) {
@@ -791,15 +789,27 @@ export class CoreService {
   }
 
   showWorkflow(workflow) {
-    this.router.navigate(['/workflow']);
-  }
-
-  showOrderLink(order) {
-
-  }
-
-  showCalendarLink(calendar) {
-
+    let pathArr = [];
+    let arr = workflow.split('/');
+    let workflowFilters = this.getWorkflowTab();
+    workflowFilters.selectedkeys = [];
+    let len = arr.length - 1;
+    if (len > 1) {
+      for (let i = 0; i < len; i++) {
+        if (arr[i]) {
+          if (i > 0 && pathArr[i - 1]) {
+            pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + arr[i]);
+          } else {
+            pathArr.push('/' + arr[i]);
+          }
+        } else {
+          pathArr.push('/');
+        }
+      }
+    }
+    workflowFilters.expandedKeys = pathArr;
+    workflowFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
+    this.router.navigate(['/workflows']);
   }
 
   isLastEntryEmpty(list, key1, key2): boolean {

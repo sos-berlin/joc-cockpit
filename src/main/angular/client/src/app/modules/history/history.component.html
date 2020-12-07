@@ -639,10 +639,6 @@
                     <ul nz-menu>
                       <li nz-menu-item >
                         <a [ngClass]="{'disable-link':(schedulerIds.selected != history.controllerId && history.controllerId)}"
-                          (click)="addOrderToIgnoreList(history.orderId,history.workflow)" translate>history.button.addOrderToIgnoreList</a>
-                      </li>
-                      <li nz-menu-item >
-                        <a [ngClass]="{'disable-link':(schedulerIds.selected != history.controllerId && history.controllerId)}"
                           (click)="addWorkflowToIgnoreList(history.workflow)"
                           translate>history.button.addWorkflowToIgnoreList</a>
                       </li>
@@ -679,8 +675,8 @@
                 </span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)">
-                      <span (click)="coreService.showWorkflow(history.workflow);$event.stopPropagation()"
-                            class="text-hover-primary" [innerHtml]="history.workflow | highlight : order.searchText"></span>
+                <span (click)="coreService.showWorkflow(history.workflow);$event.stopPropagation()"
+                      class="text-hover-primary" [innerHtml]="history.workflow | highlight : order.searchText"></span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)">
                 <span [innerHtml]="history.position"></span>
