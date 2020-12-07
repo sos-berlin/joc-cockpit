@@ -441,7 +441,7 @@
   },
   "dailyPlan": {
     "label.createPlan": "Create Daily Plan",
-    "label.orderTemplates": "Schedules",
+    "label.schedules": "Schedules",
     "label.order": "Order",
     "label.totalEntry": "Total {{total}} Schedules and {{orderCount}} orders found",
     "label.all": "All",

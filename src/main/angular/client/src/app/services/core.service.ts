@@ -176,7 +176,6 @@ export class CoreService {
     this.tabs._configuration.state = 'inventory';
     this.tabs._configuration.inventory = {};
     this.tabs._configuration.inventory.deployedMessages = [];
-    this.tabs._configuration.inventory.activeTab = {type: '', object: '', path: ''};
 
     this.tempTabs._workflow = {};
     this.tempTabs._workflow.filter = {};
@@ -306,9 +305,7 @@ export class CoreService {
     this.tempTabs._configuration = {};
     this.tempTabs._configuration.state = 'inventory';
     this.tempTabs._configuration.inventory = {};
-    this.tempTabs._configuration.inventory.expandedKeys = ['/'];
     this.tempTabs._configuration.inventory.deployedMessages = [];
-    this.tempTabs._configuration.inventory.activeTab = {type: '', object: '', path: ''};
 
     this.dashboard._dashboard = {};
     this.dashboard._dashboard.order = {};

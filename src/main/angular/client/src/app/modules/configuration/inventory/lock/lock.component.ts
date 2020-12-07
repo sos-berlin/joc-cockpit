@@ -49,23 +49,25 @@ export class LockComponent implements OnChanges {
   }
 
   rename(inValid) {
-    if (!inValid) {
-      const data = this.coreService.clone(this.data);
-      const name = this.lock.name;
-      this.coreService.post('inventory/rename', {
-        id: data.id,
-        name: name
-      }).subscribe((res) => {
-        if (data.id === this.data.id) {
-          this.data.name = name;
-        }
-        data.name = name;
-        this.dataService.reloadTree.next({rename: data});
-      }, (err) => {
+    if (this.data.id === this.lock.id && this.data.name !== this.lock.name) {
+      if (!inValid) {
+        const data = this.coreService.clone(this.data);
+        const name = this.lock.name;
+        this.coreService.post('inventory/rename', {
+          id: data.id,
+          name: name
+        }).subscribe((res) => {
+          if (data.id === this.data.id) {
+            this.data.name = name;
+          }
+          data.name = name;
+          this.dataService.reloadTree.next({rename: data});
+        }, (err) => {
+          this.lock.name = this.data.name;
+        });
+      } else {
         this.lock.name = this.data.name;
-      });
-    } else {
-      this.lock.name = this.data.name;
+      }
     }
   }
 

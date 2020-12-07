@@ -129,6 +129,9 @@ export class SelectOrderTemplatesComponent implements OnInit {
   getOrderTemplates() {
     this.coreService.post('schedule/list', {controllerId: this.schedulerId}).subscribe((res: any) => {
       this.schedules = res.schedules;
+      if(!res.schedules || res.schedules.length===0){
+        this.nodes = [];
+      }
       const treeObj = [];
       for (let i = 0; i < this.schedules.length; i++) {
         const path = this.schedules[i].path;
@@ -144,6 +147,8 @@ export class SelectOrderTemplatesComponent implements OnInit {
         return result.path;
       });
       this.generateTree(arr);
+    }, ()=>{
+      this.nodes = [];
     });
   }
 
@@ -743,6 +748,7 @@ export class SearchComponent implements OnInit {
   getFolderTree() {
     this.coreService.post('tree', {
       controllerId: this.schedulerIds.selected,
+      onlyValidObjects: true,
       forInventory: true,
       types: ['SCHEDULE']
     }).subscribe(res => {

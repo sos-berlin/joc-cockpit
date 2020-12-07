@@ -1,14 +1,14 @@
 <div style="box-shadow: 0 0 8px rgba(0,0,0,0.18)">
 <div id="tree-modal" class="modal-body p-a" style="min-height: 350px;">
-  <a class="text" (click)="expandAll();"
+  <a class="text" (click)="expandAll();" *ngIf="tree.length > 0"
      [nz-tooltip]="'common.tooltip.expandAll' | translate">
     <i class="fa fa-angle-double-down fa-sm"></i>
   </a>
-  <a class="text m-l-xs" (click)="collapseAll();"
+  <a class="text m-l-xs" (click)="collapseAll();" *ngIf="tree.length > 0"
      [nz-tooltip]="'common.tooltip.collapseAll' | translate">
     <i class="fa fa-angle-double-up fa-sm"></i>
   </a>
-  <div class="tree-content m-t-sm">
+  <div class="tree-content m-t-sm" *ngIf="tree.length > 0">
     <nz-tree
       nzNoAnimation
       [nzExpandAll]="isExpandAll"
@@ -35,6 +35,9 @@
           <span style="margin-top: 4px" class="p-l-sm"><i class="fa fa-calendar text-sm">&nbsp;</i>{{cal.name}}</span>
         </div>
       </ng-template>
+  </div>
+  <div class="m-t-lg" *ngIf="tree.length === 0">
+    <app-empty-data></app-empty-data>
   </div>
 </div>
 <div class="modal-footer ">

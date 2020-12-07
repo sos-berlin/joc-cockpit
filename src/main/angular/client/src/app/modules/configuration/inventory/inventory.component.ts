@@ -1764,7 +1764,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
               data.children = children;
             }
             self.updateTree();
-          }, true);
+          }, !path);
           matchData = data;
         }
 
@@ -1814,6 +1814,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
       node.isExpanded = !node.isExpanded;
       if (node.isExpanded && !node.origin.controller && !node.origin.dailyPlan && !node.origin.type && !node.origin.object) {
         let data = node.origin.children;
+        if (!(data.length > 1 && data[0].controller)) {
+          node.origin.loading = true;
+        }
         this.updateObjects(node.origin, (children) => {
           if (data.length > 1 && data[0].controller) {
 
@@ -1826,6 +1829,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             if (data.length > 0) {
               node.origin.children = node.origin.children.concat(data);
             }
+            node.origin.loading = false;
             node.origin.expanded = true;
             this.updateTree();
           }
@@ -1839,8 +1843,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if ((!node.origin.object && !node.origin.type)) {
         if (!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.dailyPlan) {
           node.isExpanded = !node.isExpanded;
-          if (node.origin.expanded) {
+          if (node.isExpanded) {
             let data = node.origin.children;
+            if (!(data.length > 1 && data[0].controller)) {
+              node.origin.loading = true;
+            }
             this.updateObjects(node.origin, (children) => {
               if (data.length > 1 && data[0].controller) {
                 node.isExpanded = true;
@@ -1851,6 +1858,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
                 if (data.length > 0) {
                   node.origin.children = node.origin.children.concat(data);
                 }
+                node.origin.loading = false;
                 node.origin.expanded = true;
                 this.updateTree();
               }
@@ -1871,102 +1879,106 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   updateObjects(data, cb, isExpandConfiguration) {
-    let flag = true, controllerArr = [], dailyPlanArr = [];
+
+    let flag = true, controllerObj: any = {controllerArr: []}, dailyPlanObj: any = {dailyPlanArr: []};
     const _key = data.path === '/' ? '/' : (data.path + '/');
     if (!data.children) {
       data.children = [];
     } else if (data.children.length > 0) {
       if (data.children[0].controller) {
-        controllerArr = data.children[0].children;
+        controllerObj.controllerArr = data.children[0].children;
+        controllerObj.expanded = data.children[0].expanded;
+        controllerObj.expanded1 = true;
       }
       if (data.children.length > 1 && data.children[1].dailyPlan) {
         flag = false;
-        dailyPlanArr = data.children[1].children;
+        dailyPlanObj.dailyPlanArr = data.children[1].children;
+        dailyPlanObj.expanded = data.children[1].expanded;
       }
     }
     if (flag) {
-      controllerArr = [{name: 'Workflows', object: 'WORKFLOW', children: [], path: data.path, key: (_key + 'Workflows$')},
+      controllerObj.controllerArr = [{name: 'Workflows', object: 'WORKFLOW', children: [], path: data.path, key: (_key + 'Workflows$')},
         {name: 'Job Classes', object: 'JOBCLASS', children: [], path: data.path, key: (_key + 'Job_Classes$')},
         {name: 'Junctions', object: 'JUNCTION', children: [], path: data.path, key: (_key + 'Junctions$')},
         {name: 'Locks', object: 'LOCK', children: [], path: data.path, key: (_key + 'Locks$')}];
-      dailyPlanArr = [{name: 'Schedules', object: 'SCHEDULE', children: [], path: data.path, key: (_key + 'Schedules$')},
+      dailyPlanObj.dailyPlanArr = [{name: 'Schedules', object: 'SCHEDULE', children: [], path: data.path, key: (_key + 'Schedules$')},
         {name: 'Calendars', object: 'CALENDAR', children: [], path: data.path, key: (_key + 'Calendars$')}];
     }
 
     this.coreService.post('inventory/read/folder', {
       path: data.path
     }).subscribe((res: any) => {
-      for (let i = 0; i < controllerArr.length; i++) {
-        controllerArr[i].deleted = data.deleted;
+      for (let i = 0; i < controllerObj.controllerArr.length; i++) {
+        controllerObj.controllerArr[i].deleted = data.deleted;
         let resObject;
-        if (controllerArr[i].object === 'WORKFLOW') {
+        if (controllerObj.controllerArr[i].object === 'WORKFLOW') {
           resObject = res.workflows;
-        } else if (controllerArr[i].object === 'JOBCLASS') {
+        } else if (controllerObj.controllerArr[i].object === 'JOBCLASS') {
           resObject = res.jobClasses;
-        } else if (controllerArr[i].object === 'JUNCTION') {
+        } else if (controllerObj.controllerArr[i].object === 'JUNCTION') {
           resObject = res.junctions;
-        } else if (controllerArr[i].object === 'LOCK') {
+        } else if (controllerObj.controllerArr[i].object === 'LOCK') {
           resObject = res.locks;
         }
         if (resObject) {
           if (!flag) {
-            this.mergeFolderData(resObject, controllerArr[i], res.path);
+            this.mergeFolderData(resObject, controllerObj.controllerArr[i], res.path);
           } else {
-            controllerArr[i].children = resObject;
-            controllerArr[i].children.forEach((child, index) => {
-              controllerArr[i].children[index].type = controllerArr[i].object;
-              controllerArr[i].children[index].path = res.path;
+            controllerObj.controllerArr[i].children = resObject;
+            controllerObj.controllerArr[i].children.forEach((child, index) => {
+              controllerObj.controllerArr[i].children[index].type = controllerObj.controllerArr[i].object;
+              controllerObj.controllerArr[i].children[index].path = res.path;
             });
-            controllerArr[i].children = _.sortBy(controllerArr[i].children, 'name');
+            controllerObj.controllerArr[i].children = _.sortBy(controllerObj.controllerArr[i].children, 'name');
           }
         } else {
-          controllerArr[i].children = [];
+          controllerObj.controllerArr[i].children = [];
         }
       }
-      for (let i = 0; i < dailyPlanArr.length; i++) {
-        dailyPlanArr[i].deleted = data.deleted;
+      for (let i = 0; i < dailyPlanObj.dailyPlanArr.length; i++) {
+        dailyPlanObj.dailyPlanArr[i].deleted = data.deleted;
         let resObject;
-        if (dailyPlanArr[i].object === 'SCHEDULE') {
+        if (dailyPlanObj.dailyPlanArr[i].object === 'SCHEDULE') {
           resObject = res.schedules;
-        } else if (dailyPlanArr[i].object === 'CALENDAR') {
+        } else if (dailyPlanObj.dailyPlanArr[i].object === 'CALENDAR') {
           resObject = res.calendars;
         }
         if (resObject) {
           if (!flag) {
-            this.mergeFolderData(resObject, dailyPlanArr[i], res.path);
+            this.mergeFolderData(resObject, dailyPlanObj.dailyPlanArr[i], res.path);
           } else {
-            dailyPlanArr[i].children = resObject;
-            dailyPlanArr[i].children.forEach((child, index) => {
-              dailyPlanArr[i].children[index].type = dailyPlanArr[i].object;
-              dailyPlanArr[i].children[index].path = res.path;
+            dailyPlanObj.dailyPlanArr[i].children = resObject;
+            dailyPlanObj.dailyPlanArr[i].children.forEach((child, index) => {
+              dailyPlanObj.dailyPlanArr[i].children[index].type = dailyPlanObj.dailyPlanArr[i].object;
+              dailyPlanObj.dailyPlanArr[i].children[index].path = res.path;
             });
-            dailyPlanArr[i].children = _.sortBy(dailyPlanArr[i].children, 'name');
+            dailyPlanObj.dailyPlanArr[i].children = _.sortBy(dailyPlanObj.dailyPlanArr[i].children, 'name');
           }
         } else {
-          dailyPlanArr[i].children = [];
+          dailyPlanObj.dailyPlanArr[i].children = [];
         }
       }
       const conf = [{
         name: 'Controller',
         controller: 'CONTROLLER',
         isLeaf: false,
-        children: controllerArr,
+        children: controllerObj.controllerArr,
         path: data.path,
         key: (_key + 'Controller$'),
-        expanded: false,
+        expanded: controllerObj.expanded,
         deleted: data.deleted
       }, {
         name: 'Daily Plan',
         dailyPlan: 'DAILYPLAN',
         isLeaf: false,
-        children: dailyPlanArr,
+        children: dailyPlanObj.dailyPlanArr,
         path: data.path,
         key: (_key + 'Schedule$'),
-        expanded: false,
+        expanded: dailyPlanObj.expanded,
         deleted: data.deleted
       }];
 
-      if ((this.preferences.joeExpandOption === 'both' || isExpandConfiguration)) {
+      if ((this.preferences.joeExpandOption === 'both' || isExpandConfiguration) && !controllerObj.expanded1) {
         conf[0].expanded = true;
         conf[1].expanded = true;
       }
@@ -1976,14 +1988,14 @@ export class InventoryComponent implements OnInit, OnDestroy {
         name: 'Controller',
         controller: 'CONTROLLER',
         key: (_key + 'Controller$'),
-        children: controllerArr,
+        children: controllerObj.controllerArr,
         path: data.path,
         deleted: data.deleted
       }, {
         name: 'Daily Plan',
         dailyPlan: 'DAILYPLAN',
         key: (_key + 'Schedule$'),
-        children: dailyPlanArr,
+        children: dailyPlanObj.dailyPlanArr,
         path: data.path,
         deleted: data.deleted
       });
@@ -2033,6 +2045,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
     } else {
       let data = node.origin.children;
       this.updateObjects(node.origin, (children) => {
+        if ((type.match('CALENDAR') || type === 'SCHEDULE')) {
+          children[1].expanded = true;
+        } else {
+          children[0].expanded = true;
+        }
         if (data.length > 1 && data[0].controller) {
           node.isExpanded = true;
           node.origin.children[0] = children[0];
@@ -2140,7 +2157,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
     if (origin.object || origin.type || origin.id) {
       if (!node.origin) {
-        origin.path = origin.path.substring(0, origin.path.lastIndexOf('/') + 1);
+        origin.path = origin.path.substring(0, origin.path.lastIndexOf('/')) || '/';
       }
       const path = origin.path;
       const modalRef = this.modalService.open(SingleDeployComponent, {backdrop: 'static'});
@@ -2153,7 +2170,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.updateFolders(path, () => {
             this.updateTree();
           });
-        }, 100)
+        }, 200);
       }, () => {
       });
     } else {
@@ -2246,8 +2263,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
         object = node.origin;
         if (!object.controller && !object.dailyPlan && !object.object) {
           let data = object.children;
-          if (!data[0] || !data[0].controller) {
+          if (!data[0] || !data[0].controller || data.length === 0) {
             this.updateObjects(node.origin, (children) => {
+              if ((this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'SCHEDULE')) {
+                children[1].expanded = true;
+              } else {
+                children[0].expanded = true;
+              }
               node.origin.children = children;
               if (data.length > 0) {
                 node.origin.children = node.origin.children.concat(data);
@@ -2260,8 +2282,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
           }
           if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'SCHEDULE') {
             data = object.children[1];
+          } else {
+            data = object.children[0];
           }
-          if (data) {
+          data.expanded = true;
+          if (data && data.children) {
             for (let i = 0; i < data.children.length; i++) {
               if (data.children[i].object === this.copyObj.type) {
                 object = data.children[i];
@@ -2321,9 +2346,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.type = 'Delete';
     modalRef.componentInstance.objectName = _path;
     modalRef.result.then((res: any) => {
-      this.coreService.post('inventory/delete_draft', {
-        id: object.id
-      }).subscribe((res) => {
+      let obj: any = {id: object.id};
+      if (!object.type) {
+        obj = {path: _path, objectType: 'FOLDER'};
+      }
+      this.coreService.post('inventory/delete_draft', obj).subscribe((res) => {
         this.clearCopyObject(object);
         if (node.parentNode && node.parentNode.origin && node.parentNode.origin.children) {
           for (let i = 0; i < node.parentNode.origin.children.length; i++) {

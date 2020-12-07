@@ -18,7 +18,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   @Input() data: any;
   @Input() copyObj: any;
 
-  order: any = {};
+  schedule: any = {};
   workingDayCalendar: any;
   nonWorkingDayCalendar: any;
   isVisible: boolean;
@@ -39,7 +39,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.order.actual) {
+    if (this.schedule.actual) {
       this.saveJSON();
     }
     if (changes.data) {
@@ -55,13 +55,13 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           });
         }
       } else {
-        this.order = {};
+        this.schedule = {};
       }
     }
   }
 
   ngOnDestroy() {
-    if (this.order.name) {
+    if (this.schedule.name) {
       this.saveJSON();
     }
   }
@@ -82,9 +82,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       name: '',
       value: ''
     };
-    if (this.order.configuration.variables) {
-      if (!this.coreService.isLastEntryEmpty(this.order.configuration.variables, 'name', '')) {
-        this.order.configuration.variables.push(param);
+    if (this.schedule.configuration.variables) {
+      if (!this.coreService.isLastEntryEmpty(this.schedule.configuration.variables, 'name', '')) {
+        this.schedule.configuration.variables.push(param);
       }
     }
   }
@@ -96,7 +96,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   removeVariable(index): void {
-    this.order.configuration.variables.splice(index, 1);
+    this.schedule.configuration.variables.splice(index, 1);
     this.saveJSON();
   }
 
@@ -127,7 +127,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           let flag = false;
           for (let i = 0; i < data.length; i++) {
             const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-            if (this.order.configuration.workflowPath === _path) {
+            if (this.schedule.configuration.workflowPath === _path) {
               flag = true;
             }
             data[i].title = _path;
@@ -137,7 +137,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
             data[i].isLeaf = true;
           }
           if (!flag) {
-            this.order.configuration.workflowPath = null;
+            this.schedule.configuration.workflowPath = null;
           }
           if (node.origin.children && node.origin.children.length > 0) {
             data = data.concat(node.origin.children);
@@ -164,32 +164,35 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   rename(inValid) {
-    if (!inValid) {
-      const data = this.coreService.clone(this.data);
-      const name = this.order.name;
-      this.coreService.post('inventory/rename', {
-        id: data.id,
-        name: name
-      }).subscribe((res) => {
-        if (data.id === this.data.id) {
-          this.data.name = name;
-        }
-        data.name = name;
-        this.dataService.reloadTree.next({rename: data});
-      }, (err) => {
-        this.order.name = this.data.name;
-      });
-    } else {
-      this.order.name = this.data.name;
+    if (this.data.id === this.schedule.id && this.data.name !== this.schedule.name) {
+      
+      if (!inValid) {
+        const data = this.coreService.clone(this.data);
+        const name = this.schedule.name;
+        this.coreService.post('inventory/rename', {
+          id: data.id,
+          name: name
+        }).subscribe((res) => {
+          if (data.id === this.data.id) {
+            this.data.name = name;
+          }
+          data.name = name;
+          this.dataService.reloadTree.next({rename: data});
+        }, (err) => {
+          this.schedule.name = this.data.name;
+        });
+      } else {
+        this.schedule.name = this.data.name;
+      }
     }
   }
 
   release() {
-    this.dataService.reloadTree.next({release: this.order});
+    this.dataService.reloadTree.next({release: this.schedule});
   }
 
   backToListView() {
-    this.dataService.reloadTree.next({back: this.order});
+    this.dataService.reloadTree.next({back: this.schedule});
   }
 
   private convertObjToArr(calendar) {
@@ -318,34 +321,34 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         res.configuration = {};
       }
 
-      this.order = res;
-      this.order.path1 = this.data.path;
-      this.order.name = this.data.name;
-      if (!this.order.configuration.calendars) {
-        this.order.configuration.calendars = [];
+      this.schedule = res;
+      this.schedule.path1 = this.data.path;
+      this.schedule.name = this.data.name;
+      if (!this.schedule.configuration.calendars) {
+        this.schedule.configuration.calendars = [];
       } else {
-        for (let i = 0; i < this.order.configuration.calendars.length; i++) {
-          this.convertObjToArr(this.order.configuration.calendars[i]);
+        for (let i = 0; i < this.schedule.configuration.calendars.length; i++) {
+          this.convertObjToArr(this.schedule.configuration.calendars[i]);
         }
       }
-      if (!this.order.configuration.nonWorkingCalendars) {
-        this.order.configuration.nonWorkingCalendars = [];
+      if (!this.schedule.configuration.nonWorkingCalendars) {
+        this.schedule.configuration.nonWorkingCalendars = [];
       }
-      if (!this.order.configuration.variables) {
-        this.order.configuration.variables = [];
+      if (!this.schedule.configuration.variables) {
+        this.schedule.configuration.variables = [];
       }
-      if (this.order.configuration.variables.length === 0) {
+      if (this.schedule.configuration.variables.length === 0) {
         this.addVariable();
       }
-      if (this.order.configuration.workflowPath) {
-        const path = this.order.configuration.workflowPath.substring(0, this.order.configuration.workflowPath.lastIndexOf('/')) || '/';
+      if (this.schedule.configuration.workflowPath) {
+        const path = this.schedule.configuration.workflowPath.substring(0, this.schedule.configuration.workflowPath.lastIndexOf('/')) || '/';
         this.loadWorkflowTree(path);
       }
-      this.order.actual = JSON.stringify(res.configuration);
+      this.schedule.actual = JSON.stringify(res.configuration);
       if (!res.valid) {
-        if (!this.order.configuration.workflowPath) {
+        if (!this.schedule.configuration.workflowPath) {
           this.invalidMsg = 'inventory.message.workflowIsMissing';
-        } else if (this.order.configuration.calendars.length === 0) {
+        } else if (this.schedule.configuration.calendars.length === 0) {
           this.invalidMsg = 'inventory.message.calendarIsMissing';
         } else {
           this.invalidMsg = 'inventory.message.startTimeIsMissing';
@@ -378,11 +381,11 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   saveJSON() {
-    if (!_.isEqual(this.order.actual, JSON.stringify(this.order.configuration))) {
-      const _path = this.order.path1 + (this.order.path1 === '/' ? '' : '/') + this.order.name;
-      this.order.configuration.controllerId = this.schedulerId;
-      // this.order.configuration.path = _path;
-      let obj = this.coreService.clone(this.order.configuration);
+    if (!_.isEqual(this.schedule.actual, JSON.stringify(this.schedule.configuration))) {
+      const _path = this.schedule.path1 + (this.schedule.path1 === '/' ? '' : '/') + this.schedule.name;
+      this.schedule.configuration.controllerId = this.schedulerId;
+      // this.schedule.configuration.path = _path;
+      let obj = this.coreService.clone(this.schedule.configuration);
       if (obj.variables) {
         if (this.coreService.isLastEntryEmpty(obj.variables, 'name', '')) {
           obj.variables.splice(obj.variables.length - 1, 1);
@@ -410,14 +413,14 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         configuration: obj,
         path: _path,
         valid: isValid,
-        id: this.order.id,
+        id: this.schedule.id,
         objectType: this.objectType
       }).subscribe((res: any) => {
-        if (res.id === this.data.id && this.order.id === this.data.id) {
-          this.order.actual = JSON.stringify(this.order.configuration);
-          this.order.valid = res.valid;
+        if (res.id === this.data.id && this.schedule.id === this.data.id) {
+          this.schedule.actual = JSON.stringify(this.schedule.configuration);
+          this.schedule.valid = res.valid;
           this.data.valid = res.valid;
-          this.order.released = false;
+          this.schedule.released = false;
           this.data.released = false;
           if (res.invalidMsg) {
             if (res.invalidMsg.match('workflowPath')) {

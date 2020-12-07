@@ -844,7 +844,7 @@ export class PeriodComponent implements OnInit {
   templateUrl: './run-time-dialog.html',
 })
 export class RunTimeComponent implements OnDestroy, OnChanges {
-  @Input() order: any;
+  @Input() schedule: any;
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
@@ -1174,14 +1174,14 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
   /** ===================== End Restriction  ======================*/
 
   ngOnDestroy(): void {
-    if (this.order.configuration) {
+    if (this.schedule.configuration) {
       if (this.timeZone) {
         for (let i = 0; i < this.calendars.length; i++) {
           this.calendars[i].timeZone = this.timeZone;
         }
       }
-      this.order.configuration.calendars = this.calendars;
-      this.order.configuration.nonWorkingCalendars = this.nonWorkingCalendars;
+      this.schedule.configuration.calendars = this.calendars;
+      this.schedule.configuration.nonWorkingCalendars = this.nonWorkingCalendars;
     }
   }
 
@@ -1190,9 +1190,9 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
   }
 
   private init(): void {
-    if (this.order.configuration) {
-      this.calendars = this.order.configuration.calendars;
-      this.nonWorkingCalendars = this.order.configuration.nonWorkingCalendars;
+    if (this.schedule.configuration) {
+      this.calendars = this.schedule.configuration.calendars;
+      this.nonWorkingCalendars = this.schedule.configuration.nonWorkingCalendars;
     }
     if (this.calendars.length > 0) {
       this.timeZone = this.calendars[0].timeZone;

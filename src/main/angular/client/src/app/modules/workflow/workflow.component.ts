@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild, OnDestroy, Input, Output, EventEmitter} fr
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import * as _ from 'underscore';
 import {Subscription} from 'rxjs';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {AuthService} from '../../components/guard';
@@ -340,7 +340,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   @ViewChild(TreeComponent, {static: false}) child;
   @ViewChild(WorkflowActionComponent, {static: false}) actionChild;
 
-  constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private router: Router,
+  constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private modalService: NgbModal, private workflowService: WorkflowService,
               private translate: TranslateService, private searchPipe: SearchPipe, private excelService: ExcelService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {

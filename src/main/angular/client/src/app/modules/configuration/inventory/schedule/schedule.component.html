@@ -7,18 +7,18 @@
           <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
         </span>
         <div class="inline pull-right">
-          <span class="badge m-r-12" *ngIf="order.configuration" [ngClass]="!order.valid ? 'badge-danger':'badge-success'">
-              <span *ngIf="order.valid" translate>inventory.label.valid</span>
-              <span *ngIf="!order.valid">
+          <span class="badge m-r-12" *ngIf="schedule.configuration" [ngClass]="!schedule.valid ? 'badge-danger':'badge-success'">
+              <span *ngIf="schedule.valid" translate>inventory.label.valid</span>
+              <span *ngIf="!schedule.valid">
                 <span translate>inventory.label.notValid</span>
                 <i nz-tooltip="{{invalidMsg | translate}}" class="fa fa-info-circle p-l-xs"></i>
               </span>
             </span>
-          <span class="badge" *ngIf="order.configuration" [ngClass]="!data.released ? 'badge-danger':'badge-success'">
+          <span class="badge" *ngIf="schedule.configuration" [ngClass]="!data.released ? 'badge-danger':'badge-success'">
               <span *ngIf="!data.released" translate>inventory.label.inProgress</span>
               <span *ngIf="data.released" class="text-capitalize" translate>inventory.label.released</span>
             </span>
-          <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!order.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="release()" >
+          <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!schedule.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="release()" >
             <i class="fa fa-rocket p-r-xs"></i>
             <span translate>inventory.button.release</span>
           </button>
@@ -28,13 +28,13 @@
           </button>
         </div>
       </div>
-      <form *ngIf="order.configuration">
+      <form *ngIf="schedule.configuration">
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.orderTemplateName</label>
           <div class="col-md-8 col-lg-6">
             <input autocomplete="off" identifierValidation required class="form-control" [appAutofocus]="true" placeholder="{{'inventory.placeholder.orderName' | translate}}"
-                   name="name" [(ngModel)]="order.name" #name="ngModel" (blur)="rename(name.invalid)">
+                   name="name" [(ngModel)]="schedule.name" #name="ngModel" (blur)="rename(name.invalid)">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
               <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
               <div *ngIf="name.errors.required">
@@ -47,7 +47,7 @@
           <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
           <div class="col-md-8 col-lg-6">
             <input type="text" class="form-control" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
-                   name="title" [(ngModel)]="order.configuration.title" (blur)="saveJSON()">
+                   name="title" [(ngModel)]="schedule.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
         <div class="form-group row"
@@ -67,12 +67,12 @@
               [nzDropdownStyle]="{ 'max-height': '260px' }"
               nzShowSearch
               [nzPlaceHolder]="'inventory.placeholder.workflowPath' | translate"
-              [(ngModel)]="order.configuration.workflowPath"
+              [(ngModel)]="schedule.configuration.workflowPath"
               (nzExpandChange)="onExpand($event, 'WORKFLOW')"
             >
             <ng-template #nzTreeTemplate let-node>
               <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'WORKFLOW', $event);">
-                <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == order.configuration.workflowPath">
+                <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == schedule.configuration.workflowPath">
                   <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                   <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
                   {{node.origin.name}}
@@ -91,7 +91,7 @@
           <label class="col-md-4 col-lg-3" translate>inventory.label.planOrderAutomatically</label>
           <div class="col-md-8 col-lg-6">
             <label class="md-check">
-              <input type="checkbox" (ngModelChange)="saveJSON()" [(ngModel)]="order.configuration.planOrderAutomatically" name="planOrderAutomatically">
+              <input type="checkbox" (ngModelChange)="saveJSON()" [(ngModel)]="schedule.configuration.planOrderAutomatically" name="planOrderAutomatically">
               <i class="primary"></i>
             </label>
           </div>
@@ -100,7 +100,7 @@
           <label class="col-md-4 col-lg-3" translate>inventory.label.submitOrderToControllerWhenPlanned</label>
           <div class="col-md-8 col-lg-6">
             <label class="md-check">
-              <input type="checkbox" (ngModelChange)="saveJSON()" [(ngModel)]="order.configuration.submitOrderToControllerWhenPlanned" name="submitOrderToControllerWhenPlanned">
+              <input type="checkbox" (ngModelChange)="saveJSON()" [(ngModel)]="schedule.configuration.submitOrderToControllerWhenPlanned" name="submitOrderToControllerWhenPlanned">
               <i class="primary"></i>
             </label>
           </div>
@@ -108,11 +108,11 @@
         <div class="form-group row">
           <label class="col-md-12 _600" translate>order.label.variables</label>
         </div>
-        <div class="form-group row m-b-0" *ngFor="let variable of order.configuration.variables; let i = index">
+        <div class="form-group row m-b-0" *ngFor="let variable of schedule.configuration.variables; let i = index">
           <div class="col-md-4 col-lg-3 m-b-sm" *ngIf="i==0" translate>common.label.name</div>
           <div class="col-md-8 col-lg-9 m-b-sm" *ngIf="i==0" translate>common.label.value</div>
           <div class="col-md-4 col-lg-3 m-b-sm">
-            <input autocomplete="off" type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == order.configuration.variables.length -1"
+            <input autocomplete="off" type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == schedule.configuration.variables.length -1"
                    [(ngModel)]="variable.name" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
           </div>
           <div class="col-md-7 col-lg-6 m-b-sm">
@@ -125,8 +125,8 @@
         </div>
         <div class="form-group row">
           <div class="col-sm-12">
-            <a class="text-u-l" *ngIf="order.configuration.variables.length>0" (click)="addVariable()" translate>order.button.addAnotherVariable</a>
-            <a class="text-u-l" *ngIf="order.configuration.variables.length==0" (click)="addVariable()" translate>order.button.addVariable</a>
+            <a class="text-u-l" *ngIf="schedule.configuration.variables.length>0" (click)="addVariable()" translate>order.button.addAnotherVariable</a>
+            <a class="text-u-l" *ngIf="schedule.configuration.variables.length==0" (click)="addVariable()" translate>order.button.addVariable</a>
           </div>
         </div>
       </form>
@@ -146,6 +146,6 @@
   <div class="close-btn" (click)="closeCalendarView()"></div>
   <div *ngIf="isVisible">
     <div class="text-center m-b text" ><i class="fa fa-clock-o"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm" translate>runtime.label.runTime</span></div>
-    <app-run-time [order]="order" [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"></app-run-time>
+    <app-run-time [schedule]="schedule" [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"></app-run-time>
   </div>
 </div>

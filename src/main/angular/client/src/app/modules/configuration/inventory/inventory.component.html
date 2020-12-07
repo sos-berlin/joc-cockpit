@@ -90,12 +90,13 @@
             ></nz-tree>
             <ng-template #nzTreeTemplate let-node>
               <div class="node-wrapper">
-                 <span *ngIf="node.origin.children && node.origin.children.length > 0 && (((node.origin.children.length > 2 || !node.origin.children[0].controller)) || node.origin.controller || node.origin.dailyPlan || node.origin.object )"
+                 <span *ngIf="node.origin.loading || (node.origin.children && node.origin.children.length > 0 && (((node.origin.children.length > 2 || !node.origin.children[0].controller)) || node.origin.controller || node.origin.dailyPlan || node.origin.object ))"
                        [class.toggle-children-wrapper-expanded]="node.isExpanded"
                        [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
                        (click)="openFolder(node)" class="cursor w-14 m-l-xxs" [ngClass]="{'m-l-0': node.origin.path === '/' , 'disable-link' : node.origin.deleted}" style="margin-top: -1px;">
-                   <i *ngIf="!node.isExpanded" nz-icon nzType="caret-right" nzTheme="outline"></i>
-                   <i *ngIf="node.isExpanded" nz-icon nzType="caret-down" nzTheme="outline"></i>
+                   <i *ngIf="!node.isExpanded && !node.origin.loading" nz-icon nzType="caret-right" nzTheme="outline"></i>
+                   <i *ngIf="node.isExpanded && !node.origin.loading" nz-icon nzType="caret-down" nzTheme="outline"></i>
+                   <i *ngIf="node.origin.loading"><nz-spin nzSimple [nzSize]="'small'"></nz-spin></i>
                 </span>
                 <span *ngIf="(!node.origin.children || node.origin.children.length === 0 || ((node.origin.children.length===2 && node.origin.children[0].controller))) && !node.origin.type" class="w-16">
                   <span class="fa fa-lg p-r-sm"></span>
@@ -151,7 +152,8 @@
                     <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.controller && !node.origin.dailyPlan) && permission.Inventory.configurations.delete"
                         [nzDisabled]="(node.origin.type && !node.origin.hasDeployments && node.origin.type !== 'SCHEDULE' && node.origin.type !== 'CALENDAR') || (!node.origin.hasReleases && (node.origin.type === 'SCHEDULE' || node.origin.type === 'CALENDAR')) || (!node.origin.type && !node.origin.object && node.origin.path === '/')">
                       <a (click)="removeObject(node);" translate>inventory.button.remove</a></li>
-                    <li nz-menu-item *ngIf="node.origin.type && permission.Inventory.configurations.delete" [nzDisabled]="node.origin.deployed || node.origin.released">
+                    <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.controller && !node.origin.dailyPlan) && permission.Inventory.configurations.delete"
+                        [nzDisabled]="node.origin.deployed || node.origin.released || (!node.origin.type && !node.origin.object && node.origin.path === '/')">
                       <a (click)="removeDraft(node);" translate>inventory.button.deleteDraft</a></li>
                     <li nz-menu-item *ngIf="!node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.deleted && permission.Inventory.configurations.delete"><a (click)="restoreObject(node);" translate>inventory.button.undelete</a></li>
                   </ul>

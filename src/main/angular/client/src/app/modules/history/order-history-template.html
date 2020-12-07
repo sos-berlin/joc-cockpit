@@ -70,7 +70,7 @@
 
           </td>
           <td [ngStyle]="{'width' : widths[0]}" *ngIf="!historyView.current">
-            <span class="show-in-single-line w-full"
+            <span class="show-in-single-line w-full p-l-sm"
                   (click)="coreService.showLogWindow(child.order,null,null,child.order.controllerId, null)">
               <i class="cursor fa fa-caret-down fa-lg  p-l-xs p-r-xs"
                  *ngIf="!child.order.show" (click)="showPanelFuc(child.order);$event.stopPropagation()"></i>
@@ -83,7 +83,7 @@
             </span>
           </td>
           <td [style.width]="widths[1]+'px'">
-            <span class="show-in-single-line w-full"
+            <span class="show-in-single-line w-full p-l-sm"
                   (click)="coreService.showLogWindow(child.order,null,null,null,null)">
               <i class="cursor fa fa-caret-down fa-lg  p-l-xs p-r-xs"
                  *ngIf="!child.order.show && historyView.current"

@@ -1,21 +1,18 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription} from 'rxjs';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {TranslateService} from '@ngx-translate/core';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {SaveService} from '../../services/save.service';
-
+import {ExcelService} from '../../services/excel.service';
 import {TreeModalComponent} from '../../components/tree-modal/tree.component';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
-
+import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component';
+import {SearchPipe} from '../../filters/filter.pipe';
 import * as _ from 'underscore';
 import * as moment from 'moment';
-import {SearchPipe} from '../../filters/filter.pipe';
-import {TranslateService} from '@ngx-translate/core';
-import {ExcelService} from '../../services/excel.service';
-import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component';
-
 declare const $;
 
 @Component({
@@ -23,7 +20,7 @@ declare const $;
   templateUrl: './order-history-template.html'
 })
 
-export class OrderTemplateComponent implements OnInit {
+export class OrderTemplateComponent {
   @Input() history: any;
   @Input() historyView: any;
   @Input() schedulerId: any;
@@ -31,10 +28,6 @@ export class OrderTemplateComponent implements OnInit {
   @Input() widths: any;
 
   constructor(public coreService: CoreService, private authService: AuthService) {
-  }
-
-  ngOnInit() {
-    console.log(this.widths, this.widths.length);
   }
 
   downloadLog(obj, schedulerId) {
