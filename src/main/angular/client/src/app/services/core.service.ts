@@ -1031,6 +1031,33 @@ export class CoreService {
     return time;
   }
 
+  calRowWidth(currentView) {
+    setTimeout(() => {
+
+
+      let arr = [53];
+      if (!currentView) {
+        $('#orderTable').find('thead th.dynamic-thead-o').each(function () {
+          const w = $(this).outerWidth();
+          arr.push(w);
+        });
+      }
+      $('#orderTable').find('thead th.dynamic-thead').each(function () {
+        const w = $(this).outerWidth();
+        arr.push(w);
+      });
+      let count = -1;
+      $('tr.tr-border').find('td').each(function (i) {
+        count = count + 1;
+        if (arr.length === count) {
+          count = 0;
+        }
+        const w = $(this).outerWidth();
+        $(this).css('width', arr[count] + 'px');
+      });
+    }, 100);
+  }
+
   clone(json): any {
     return JSON.parse(JSON.stringify(json));
   }

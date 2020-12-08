@@ -30,7 +30,7 @@
               </button>
             </div>
             <div class="btn-group dropdown hidden-dropdown">
-              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="state" [nzPlacement]="'bottomRight'" translate>label.state
+              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="state" [nzPlacement]="'bottomRight'" translate>common.label.state
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
               <nz-dropdown-menu #state="nzDropdownMenu" >
@@ -86,7 +86,7 @@
             </div>
             <div class="btn-group dropdown hidden-dropdown">
               <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" type="button" translate>
-                label.anyDate
+                common.label.anyDate
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
               <nz-dropdown-menu #anyDate="nzDropdownMenu" >
@@ -171,7 +171,7 @@
               </button>
             </div>
             <div class="btn-group dropdown hidden-dropdown">
-              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="state2" [nzPlacement]="'bottomRight'" translate>label.state
+              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="state2" [nzPlacement]="'bottomRight'" translate>common.label.state
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
               <nz-dropdown-menu #state2="nzDropdownMenu" >
@@ -227,7 +227,7 @@
             </div>
             <div class="btn-group dropdown hidden-dropdown">
               <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate2" [nzPlacement]="'bottomRight'" type="button" translate>
-                label.anyDate
+                common.label.anyDate
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
               <nz-dropdown-menu #anyDate2="nzDropdownMenu" >
@@ -308,7 +308,7 @@
               </button>
             </div>
             <div class="btn-group dropdown hidden-dropdown">
-              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="state" [nzPlacement]="'bottomRight'" translate>label.state
+              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="state" [nzPlacement]="'bottomRight'" translate>common.label.state
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
               <nz-dropdown-menu #state="nzDropdownMenu" >
@@ -359,7 +359,7 @@
             </div>
             <div class="btn-group dropdown hidden-dropdown">
               <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" type="button" translate>
-                label.anyDate
+                common.label.anyDate
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
               <nz-dropdown-menu #anyDate="nzDropdownMenu" >
@@ -543,7 +543,7 @@
       </div>
     </div>
     <div class="m-t-sm box p-a" *ngIf="historyFilters.type == 'ORDER'">
-      <div class="table-responsive" id="orderTable">
+      <div class="table-responsive " id="orderTable">
         <nz-table
           #ajaxOrderTable
           [nzSize]="'small'"
@@ -675,7 +675,7 @@
                 </span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)">
-                <span (click)="coreService.showWorkflow(history.workflow);$event.stopPropagation()"
+                <span (click)="navToWorkflowTab(history.workflow);$event.stopPropagation()"
                       class="text-hover-primary" [innerHtml]="history.workflow | highlight : order.searchText"></span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)">
@@ -700,7 +700,7 @@
             </tr>
             <tr *ngIf="history.show">
               <td colspan="11" style="padding:0 !important">
-              <app-order-history-template style="display: block" [history]="history" [schedulerId]="schedulerIds.selected" [widths]="history.widths"
+              <app-order-history-template style="display: block" [history]="history" [schedulerId]="schedulerIds.selected"
                                           [historyView]="historyView" [orderSearch]="orderSearch"
               ></app-order-history-template>
               </td>
@@ -842,7 +842,7 @@
               <span [innerHtml]="jobHistory.job | highlight : task.searchText"></span>
             </td>
             <td (click)="coreService.showLogWindow(null,jobHistory, null, null, null)">
-              <span (click)="coreService.showWorkflow(jobHistory.workflow);$event.stopPropagation()"
+              <span (click)="navToWorkflowTab(jobHistory.workflow);$event.stopPropagation()"
                     class="text-hover-primary" [innerHtml]="jobHistory.workflow | highlight : task.searchText"></span>
             </td>
             <td (click)="coreService.showLogWindow(null,jobHistory, null, null, null)">
@@ -975,9 +975,10 @@
               </div>
             </td>-->
             <td *ngIf="!historyView.current"><span [innerHtml]="devHistory.controllerId"></span></td>
-            <td><span [innerHtml]="devHistory.account"></span></td>
+            <td><span [innerHtml]="devHistory.account | highlight : deployment.searchText"></span></td>
             <td><span [innerHtml]="devHistory.deployType | translate"></span></td>
-            <td><span [innerHtml]="devHistory.path"></span></td>
+            <td><span [ngClass]="devHistory.operation === 'UPDATE' ? 'text-hover-primary' : ''" (click)="navToInventoryTab(devHistory);$event.stopPropagation()"
+                       [innerHtml]="devHistory.path | highlight : deployment.searchText"></span></td>
             <td><span class="label bg-green" [innerHtml]="devHistory.state | translate"></span></td>
             <td><span [innerHtml]="devHistory.operation | translate"></span></td>
             <!--<td><span [innerHtml]="devHistory.version"></span></td>-->

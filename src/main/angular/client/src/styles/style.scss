@@ -6176,8 +6176,12 @@ pre#pre {
 
 tr.tr-border td {
   border: 1px solid $border-color !important;
+  border-bottom-color: transparent !important;
   border-right-color: transparent !important;
-  word-break: break-all;
+  word-break: break-all !important;
+}
+.inner-table .ant-table-small{
+  border-bottom: none !important;
 }
 
 .ant-table-thead > tr > th {

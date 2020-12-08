@@ -35,6 +35,7 @@ export class SingleDeployComponent implements OnInit {
   required: boolean;
   messageList: any;
   exportObj = {
+    forSigning: false,
     filename: '',
     fileFormat: '.zip'
   };
@@ -251,7 +252,7 @@ export class SingleDeployComponent implements OnInit {
         delete this.object.store['draftConfigurations'];
       }
 
-      param = param + '&exportFilter=' + JSON.stringify(this.object.store);
+      param = param + '&exportFilter=' + JSON.stringify({'forSigning': this.exportObj.forSigning, deployables: this.object.store});
       if (this.comments.comment) {
         param = param + '&comment=' + this.comments.comment;
       }
@@ -321,6 +322,7 @@ export class DeployComponent implements OnInit {
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
 
   exportObj = {
+    forSigning: false,
     filename: '',
     fileFormat: '.zip'
   };
@@ -748,7 +750,9 @@ export class DeployComponent implements OnInit {
               }
             }
           } else {
-            obj.id = nodes[i].key;
+            if (!nodes[i].isFolder) {
+              obj.id = nodes[i].key;
+            }
           }
 
           if (nodes[i].deleted) {
@@ -890,8 +894,7 @@ export class DeployComponent implements OnInit {
       if (this.object.store.draftConfigurations && this.object.store.draftConfigurations.length === 0) {
         delete this.object.store['draftConfigurations'];
       }
-
-      param = param + '&exportFilter=' + JSON.stringify(this.object.store);
+      param = param + '&exportFilter=' + JSON.stringify({'forSigning': this.exportObj.forSigning, deployables: this.object.store});
       if (this.comments.comment) {
         param = param + '&comment=' + this.comments.comment;
       }
@@ -1688,6 +1691,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
           } else {
             this.isLoading = false;
           }
+        } else if (!_.isEmpty(this.inventoryConfig.selectedObj)) {
+          this.tree = tree;
+          this.selectedObj = this.inventoryConfig.selectedObj;
+          this.recursivelyExpandTree();
         } else {
           this.tree = tree;
           if (this.tree.length > 0) {
@@ -1705,6 +1712,72 @@ export class InventoryComponent implements OnInit, OnDestroy {
         }
       }
     }, () => this.isLoading = false);
+  }
+
+  recursivelyExpandTree() {
+    const pathArr = [];
+    const arr = this.inventoryConfig.selectedObj.path.split('/');
+    const len = arr.length;
+    if (len > 1) {
+      for (let i = 0; i < len; i++) {
+        if (arr[i]) {
+          if (i > 0 && pathArr[i - 1]) {
+            pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + arr[i]);
+          } else {
+            pathArr.push('/' + arr[i]);
+          }
+        } else {
+          pathArr.push('/');
+        }
+      }
+    }
+    const self = this;
+    if (this.tree.length > 0) {
+      function traverseTree(data) {
+        let flag = false;
+        for (let i = 0; i < pathArr.length; i++) {
+          if (pathArr[i] === data.path) {
+            data.expanded = true;
+            flag = true;
+            pathArr.splice(i, 1);
+            break;
+          }
+        }
+        if (flag) {
+          self.updateObjects(data, (children) => {
+            data.children.splice(0, 0, children[0]);
+            data.children.splice(1, 0, children[1]);
+            if (self.selectedObj.path === children[0].path) {
+              children[0].expanded = true;
+              for (let j = 0; j < children[0].children.length; j++) {
+                let x = children[0].children[j];
+                if (x.object === self.selectedObj.type) {
+                  x.expanded = true;
+                  for (let k = 0; k < x.children.length; k++) {
+                    if (x.children[k].name === self.selectedObj.name) {
+                      self.selectedData =  x.children[k];
+                      break;
+                    }
+                  }
+                  break;
+                }
+              }
+
+              self.type = self.inventoryConfig.selectedObj.type;
+              self.isLoading = false;
+              self.updateTree();
+            }
+          }, false);
+        }
+        if (data.children && pathArr.length > 0) {
+          for (let i = 0; i < data.children.length; i++) {
+            traverseTree(data.children[i]);
+          }
+        }
+      }
+
+      traverseTree(this.tree[0]);
+    }
   }
 
   recursiveTreeUpdate(scr, dest) {
@@ -1870,7 +1943,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         return;
       }
       if (this.preferences.expandOption === 'both' && !node.origin.type) {
-        node.isExpanded = true;
+        node.isExpanded = !node.isExpanded;
       }
       this.type = node.origin.object || node.origin.type;
       this.selectedData = node.origin;
@@ -1879,8 +1952,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   updateObjects(data, cb, isExpandConfiguration) {
-
-    let flag = true, controllerObj: any = {controllerArr: []}, dailyPlanObj: any = {dailyPlanArr: []};
+    let flag = true;
+    const controllerObj: any = {controllerArr: []}, dailyPlanObj: any = {dailyPlanArr: []};
     const _key = data.path === '/' ? '/' : (data.path + '/');
     if (!data.children) {
       data.children = [];
@@ -2127,9 +2200,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
       modalRef.componentInstance.folders = node.origin;
       modalRef.result.then((res: any) => {
-        node.origin.children.push(res);
-        node.origin.children = _.sortBy(node.origin.children, 'name');
-        this.updateTree();
+        this.initTree(node.origin.path, null);
       }, () => {
       });
     }
@@ -2500,6 +2571,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         obj.id = res.id;
         obj.valid = obj.valid ? obj.valid : !(obj.type.match(/CALENDAR/) || obj.type === 'SCHEDULE' || obj.type === 'WORKFLOW');
         list.push(obj);
+        //list =  _.sortBy(list, 'name');
         this.type = obj.type;
         this.selectedData = obj;
         this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);

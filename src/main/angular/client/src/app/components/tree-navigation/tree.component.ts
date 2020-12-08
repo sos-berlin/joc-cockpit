@@ -109,7 +109,7 @@ export class TreeComponent implements OnInit, OnChanges {
 
   selectNode(e): void {
     if (this.preferences.expandOption === 'both') {
-      e.isExpanded = true;
+      e.isExpanded = !e.isExpanded;
     }
     this.defaultSelectedKeys = [e.origin.key];
     e.origin.action = 'NODE';

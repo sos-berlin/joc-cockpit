@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {TranslateService} from '@ngx-translate/core';
@@ -13,6 +13,8 @@ import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component
 import {SearchPipe} from '../../filters/filter.pipe';
 import * as _ from 'underscore';
 import * as moment from 'moment';
+import {Router} from '@angular/router';
+
 declare const $;
 
 @Component({
@@ -25,9 +27,8 @@ export class OrderTemplateComponent {
   @Input() historyView: any;
   @Input() schedulerId: any;
   @Input() orderSearch: any;
-  @Input() widths: any;
 
-  constructor(public coreService: CoreService, private authService: AuthService) {
+  constructor(public coreService: CoreService, private authService: AuthService, private router: Router) {
   }
 
   downloadLog(obj, schedulerId) {
@@ -38,7 +39,7 @@ export class OrderTemplateComponent {
       '&accessToken=' + this.authService.accessTokenId);
   }
 
-  showPanelFuc(data) {
+  showPanelFuc(data, count) {
     data.loading = true;
     data.show = true;
     data.steps = [];
@@ -48,11 +49,23 @@ export class OrderTemplateComponent {
     };
     this.coreService.post('order/history', obj).subscribe((res: any) => {
       data.children = res.children;
+      data.level = count + 1;
       data.states = res.states;
       data.loading = false;
+      this.coreService.calRowWidth(this.historyView.current);
     }, () => {
       data.loading = false;
     });
+  }
+
+  navToWorkflowTab(workflow) {
+    this.coreService.getConfigurationTab().inventory.expand_to = [];
+    this.coreService.getConfigurationTab().inventory.selectedObj = {
+      name: workflow.substring(workflow.lastIndexOf('/') + 1),
+      path: workflow.substring(0, workflow.lastIndexOf('/')) || '/',
+      type: 'WORKFLOW'
+    };
+    this.router.navigate(['/configuration/inventory']);
   }
 }
 
@@ -529,7 +542,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private modalService: NgbModal, private searchPipe: SearchPipe,
-              private translate: TranslateService, private excelService: ExcelService) {
+              private router: Router, private translate: TranslateService, private excelService: ExcelService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -697,7 +710,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           if (oldEntires[j].show) {
             arr[i].show = true;
             arr[i].children = oldEntires[j].children;
-            this.recursiveMerge(arr[i], null);
+            this.recursiveMerge(arr[i], 1);
           }
           oldEntires.splice(j, 1);
           break;
@@ -707,7 +720,15 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.data = arr;
   }
 
-  private recursiveMerge(data, widths) {
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    if (this.historyFilters.type === 'ORDER') {
+      this.coreService.calRowWidth(this.historyView.current);
+    }
+  }
+
+
+  private recursiveMerge(data, count) {
     data.loading = true;
     let obj = {
       controllerId: data.controllerId || this.schedulerIds.selected,
@@ -716,23 +737,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
     let perviousArr = data.children.filter((value) => {
       return value.order;
     });
-    if (!widths) {
-      this.updateDimensions(data);
-    } else {
-      data.widths = widths;
-    }
 
-    console.log(perviousArr, 'perviousArr');
     this.coreService.post('order/history', obj).subscribe((res: any) => {
       for (let i = 0; i < res.children.length; i++) {
         if (res.children[i].order) {
           for (let j = 0; j < perviousArr.length; j++) {
             if (res.children[i].order.orderId === perviousArr[j].orderId) {
               if (perviousArr[j].show) {
-                console.log('perviousArr[j]', perviousArr[j])
                 res.children[i].order.show = true;
                 res.children[i].order.children = perviousArr[j].children;
-                this.recursiveMerge(res.children[i].order, data.widths);
+                this.recursiveMerge(res.children[i].order, ++count);
               }
               perviousArr.splice(j, 1);
               break;
@@ -740,9 +754,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
           }
         }
       }
+      data.level = count;
       data.children = res.children;
       data.states = res.states;
       data.loading = false;
+      this.coreService.calRowWidth(this.historyView.current);
     }, () => {
       data.loading = false;
     });
@@ -1266,6 +1282,29 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.init(false);
   }
 
+  /**--------------- Navigate to inventory tab -------------------*/
+  navToWorkflowTab(workflow) {
+    this.coreService.getConfigurationTab().inventory.expand_to = [];
+    this.coreService.getConfigurationTab().inventory.selectedObj = {
+      name: workflow.substring(workflow.lastIndexOf('/') + 1),
+      path: workflow.substring(0, workflow.lastIndexOf('/')) || '/',
+      type: 'WORKFLOW'
+    };
+    this.router.navigate(['/configuration/inventory']);
+  }
+
+  navToInventoryTab(data) {
+    if (data.operation === 'UPDATE') {
+      this.coreService.getConfigurationTab().inventory.expand_to = [];
+      this.coreService.getConfigurationTab().inventory.selectedObj = {
+        name: data.path.substring(data.path.lastIndexOf('/') + 1),
+        path: data.folder,
+        type: data.deployType.toUpperCase()
+      };
+      this.router.navigate(['/configuration/inventory']);
+    }
+  }
+
   /**--------------- sorting and pagination -------------------*/
   sort(propertyName): void {
     this.order.reverse = !this.order.reverse;
@@ -1332,22 +1371,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.excelService.exportAsExcelFile(data, fileName);
   }
 
-  updateDimensions(data) {
-    data.widths = [];
-    if (!this.historyView.current) {
-      $('#orderTable').find('thead th.dynamic-thead-o').each(function () {
-        const w = $(this).outerWidth();
-        data.widths.push(w);
-      });
-    } else {
-      data.widths.push(0);
-    }
-    $('#orderTable').find('thead th.dynamic-thead').each(function () {
-      const w = $(this).outerWidth();
-      data.widths.push(w);
-    });
-  }
-
   showPanelFuc(data) {
     data.loading = true;
     data.show = true;
@@ -1357,11 +1380,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
       controllerId: data.controllerId || this.schedulerIds.selected,
       historyId: data.historyId
     };
-    this.updateDimensions(data);
     this.coreService.post('order/history', obj).subscribe((res: any) => {
+      data.level = 1;
       data.children = res.children;
       data.states = res.states;
       data.loading = false;
+      this.coreService.calRowWidth(this.historyView.current);
     }, () => {
       data.loading = false;
     });

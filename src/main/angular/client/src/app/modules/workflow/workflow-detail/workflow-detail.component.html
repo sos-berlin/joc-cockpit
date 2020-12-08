@@ -153,6 +153,7 @@
                     <th><span translate>history.label.orderId</span></th>
                     <th><span translate>history.label.position</span></th>
                     <th><span translate>history.label.status</span></th>
+                    <th><span translate>history.label.orderState</span></th>
                     <th><span translate>history.label.plannedTime</span></th>
                     <th><span translate>history.label.startTime</span></th>
                     <th><span translate>history.label.endTime</span></th>
@@ -165,8 +166,12 @@
                       <td [innerHtml]="history.orderId"></td>
                       <td [innerHtml]="history.position"></td>
                       <td>
-                                <span class="label" [ngClass]="coreService.getColor(history.state.severity,'bg')"
-                                      [innerHtml]="history.state._text | translate"></span>
+                        <span class="label" [ngClass]="coreService.getColor(history.state.severity,'bg')"
+                              [innerHtml]="history.state._text | translate"></span>
+                      </td>
+                      <td>
+                        <span *ngIf="history.orderState" class="label" [ngClass]="coreService.getColor(history.orderState.severity,'bg')"
+                                      [innerHtml]="history.orderState._text | translate"></span>
                       </td>
                       <td [innerHtml]="history.plannedTime | stringToDate"></td>
                       <td [innerHtml]="history.startTime | stringToDate"></td>

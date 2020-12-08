@@ -247,7 +247,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
                   events: [],
                   readCount: 0
                 };
-                if (evnType !== 'JobStateChanged' && evnType !== 'JobChainStateChanged') {
+                if (evnType !== 'JobStateChanged' && evnType !== 'WorkflowStateChanged') {
                   if (eventFilter.indexOf(evnType) !== -1) {
                     this.getNotification(eventByPath, i, j);
                   }
@@ -256,8 +256,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
                   if (eventFilter.indexOf(type) !== -1) {
                     this.getNotification(eventByPath, i, j);
                   }
-                } else if (evnType === 'JobChainStateChanged') {
-                  const type = 'JobChain' + this.allEvents[i].eventSnapshots[j].state.charAt(0).toUpperCase() + this.allEvents[i].eventSnapshots[j].state.slice(1);
+                } else if (evnType === 'WorkflowStateChanged') {
+                  const type = 'Workflow' + this.allEvents[i].eventSnapshots[j].state.charAt(0).toUpperCase() + this.allEvents[i].eventSnapshots[j].state.slice(1);
                   if (eventFilter.indexOf(type) !== -1) {
                     this.getNotification(eventByPath, i, j);
                   }
@@ -283,9 +283,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       if (!this.eventsRequest || (this.eventsRequest && this.eventsRequest.length === 0)) {
         for (let i = 0; i < controller.length; i++) {
           if (this.schedulerIds.selected === controller[i]) {
-            obj.controllers.push(
-              {'controllerId': controller[i], 'eventId': this.eventId}
-            );
+            obj.controllers.push({'controllerId': controller[i], 'eventId': this.eventId});
             break;
           }
         }

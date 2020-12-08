@@ -375,12 +375,18 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   private refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      const workflows = [];
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
-          this.initTree();
-          break;
+        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow) {
+          for (let i = 0; i < this.workflows.length; i++) {
+            if (this.workflows[i].path === args.eventSnapshots[j].workflow.path) {
+              workflows.push(args.eventSnapshots[j].workflow);
+              break;
+            }
+          }
         }
       }
+      this.updateWorkflow(workflows);
     }
   }
 
@@ -535,10 +541,21 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     });
   }
 
+  private updateWorkflow(workflows) {
+    const request = {
+      compact: true,
+      controllerId: this.schedulerIds.selected,
+      workflowIds: workflows
+    };
+    this.getOrders(request);
+  }
+
   private getOrders(obj) {
     this.coreService.post('orders', obj).subscribe((res: any) => {
       if (res.orders && res.orders.length > 0) {
         for (let i = 0; i < this.workflows.length; i++) {
+          this.workflows[i].numOfOrders = 0;
+          this.workflows[i].ordersSummary = {};
           for (let j = 0; j < res.orders.length; j++) {
             if (this.workflows[i].path === res.orders[j].workflowId.path) {
               this.workflows[i].numOfOrders = (this.workflows[i].numOfOrders || 0) + 1;

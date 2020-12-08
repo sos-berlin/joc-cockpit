@@ -10,32 +10,6 @@
 <form #myForm="ngForm" (ngSubmit)="import()">
   <div class="modal-body p-a" style="min-height: 300px">
     <div class="row">
-      <div class="col-md-12" *ngIf="isDeploy">
-        <div class="form-group row">
-          <label class="col-md-3 form-control-label">
-            <label translate>inventory.label.controllers</label>
-          </label>
-          <div class="col-md-9">
-            <nz-select
-              nzMode="multiple"
-              nzShowSearch
-              name="schedulerIds"
-              [(ngModel)]="selectedSchedulerIds">
-              <ng-container *ngFor="let id of schedulerIds.controllerIds">
-                <nz-option [nzValue]="id" [nzLabel]="id"></nz-option>
-              </ng-container>
-            </nz-select>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-md-3 form-control-label">
-            <label translate>inventory.label.signatureAlgorithm</label>
-          </label>
-          <div class="col-md-9">
-            <input type="text" name="signature" required class="form-control" [(ngModel)]="signatureAlgorithm" placeholder="{{'inventory.placeholder.signatureAlgorithm' | translate}}">
-          </div>
-        </div>
-      </div>
       <div class="col-md-12 hide" [ngClass]="{'show': display}">
         <div class="form-group row">
           <label class="col-sm-3 " translate>common.label.selectComments</label>
@@ -120,6 +94,32 @@
                 common.message.invalid
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12" *ngIf="isDeploy">
+        <div class="form-group row">
+          <label class="col-md-3 form-control-label">
+            <label translate>inventory.label.controllers</label>
+          </label>
+          <div class="col-md-9">
+            <nz-select
+              nzMode="multiple"
+              nzShowSearch
+              name="schedulerIds"
+              [(ngModel)]="selectedSchedulerIds">
+              <ng-container *ngFor="let id of schedulerIds.controllerIds">
+                <nz-option [nzValue]="id" [nzLabel]="id"></nz-option>
+              </ng-container>
+            </nz-select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-3 form-control-label">
+            <label translate>inventory.label.signatureAlgorithm</label>
+          </label>
+          <div class="col-md-9">
+            <input type="text" name="signature" required class="form-control" [(ngModel)]="signatureAlgorithm" placeholder="{{'inventory.placeholder.signatureAlgorithm' | translate}}">
           </div>
         </div>
       </div>
