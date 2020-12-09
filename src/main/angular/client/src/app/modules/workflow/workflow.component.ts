@@ -168,9 +168,6 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
   workflows: any = [];
   path: any;
   showPanel: any;
-  auditLogs: any = [];
-  orderHistory: any = [];
-  taskHistory: any = [];
   subscription1: Subscription;
 
   @ViewChild(WorkflowActionComponent, {static: false}) actionChild;
@@ -202,9 +199,12 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
   private refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'WorkflowChanged') {
-          // TODO
-          break;
+        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow.path == this.path) {
+          this.getOrders({
+            compact: true,
+            controllerId: this.schedulerId,
+            workflowIds: args.eventSnapshots[j].workflow
+          });
         }
       }
     }
@@ -229,7 +229,6 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
         this.getOrders(request);
       }
       this.showPanel = this.workflows[0];
-      this.loadOrderHistory();
     }, () => {
       this.loading = false;
     });
@@ -266,39 +265,6 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
     delete workflow['configuration'];
   }
 
-  loadAuditLogs() {
-    let obj = {
-      controllerId: this.schedulerId,
-      orders: [{workflowPath: this.showPanel.path}],
-      limit: this.preferences.maxAuditLogPerObject
-    };
-    this.coreService.post('audit_log', obj).subscribe((res: any) => {
-      this.auditLogs = res.auditLog;
-    });
-  }
-
-  loadOrderHistory() {
-    let obj = {
-      controllerId: this.schedulerId,
-      orders: [{workflowPath: this.showPanel.path}],
-      limit: this.preferences.maxAuditLogPerObject
-    };
-    this.coreService.post('orders/history', obj).subscribe((res: any) => {
-      this.orderHistory = res.history;
-    });
-  }
-
-  loadTaskHistory() {
-    let obj = {
-      controllerId: this.schedulerId,
-      jobs: [{workflowPath: this.showPanel.path}],
-      limit: this.preferences.maxAuditLogPerObject
-    };
-    this.coreService.post('tasks/history', obj).subscribe((res: any) => {
-      this.taskHistory = res.history;
-    });
-  }
-
   viewOrders(workflow, state) {
   }
 }
@@ -322,9 +288,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   selectedPath: string;
   workflowFilters: any = {};
   showPanel: any;
-  auditLogs: any = [];
-  orderHistory: any = [];
-  taskHistory: any = [];
   showSearchPanel = false;
   searchFilter: any = {};
   temp_filter: any = {};
@@ -514,6 +477,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         controllerId: this.schedulerIds.selected,
         workflowIds: []
       };
+      let flag = true;
       for (let i = 0; i < res.workflows.length; i++) {
         const path = res.workflows[i].path;
         res.workflows[i].name = path.substring(path.lastIndexOf('/') + 1);
@@ -526,6 +490,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.workflowFilters.expandedObjects.indexOf(path) > -1) {
           this.showPanelFuc(res.workflows[i]);
         }
+        if(this.showPanel && this.showPanel.path === path){
+          flag = false;
+        }
+      }
+      if(flag){
+        this.hidePanel();
       }
       this.workflows = res.workflows;
       this.searchInResult();
@@ -839,7 +809,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   showPanelFunc(value) {
     this.showPanel = value;
-    this.loadOrderHistory();
   }
 
   exportToExcel() {
@@ -894,40 +863,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.excelService.exportAsExcelFile(data, 'JS7-workflows');
   }
 
-  loadAuditLogs() {
-    let obj = {
-      controllerId: this.schedulerIds.selected,
-      orders: [{workflowPath: this.showPanel.path}],
-      limit: this.preferences.maxAuditLogPerObject
-    };
-    this.coreService.post('audit_log', obj).subscribe((res: any) => {
-      this.auditLogs = res.auditLog;
-    });
-  }
-
-  loadOrderHistory() {
-    let obj = {
-      controllerId: this.schedulerIds.selected,
-      orders: [{workflowPath: this.showPanel.path}],
-      limit: this.preferences.maxAuditLogPerObject
-    };
-    this.coreService.post('orders/history', obj).subscribe((res: any) => {
-      this.orderHistory = res.history;
-    });
-  }
-
-  loadTaskHistory() {
-    let obj = {
-      controllerId: this.schedulerIds.selected,
-      jobs: [{workflowPath: this.showPanel.path}],
-      limit: this.preferences.maxAuditLogPerObject
-    };
-    this.coreService.post('tasks/history', obj).subscribe((res: any) => {
-      this.taskHistory = res.history;
-    });
-  }
-
-  hideAuditPanel() {
+  hidePanel() {
     this.showPanel = '';
   }
 

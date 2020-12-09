@@ -5,6 +5,7 @@ import {WorkflowRoutingModule} from './workflow-routing.module';
 import {WorkflowService} from '../../services/workflow.service';
 import {AddOrderModalComponent, WorkflowActionComponent} from './workflow-action/workflow-action.component';
 import {WorkflowDetailComponent} from './workflow-detail/workflow-detail.component';
+import {WorkflowHistoryComponent, WorkflowTemplateComponent} from './workflow-history/workflow-history.component';
 
 @NgModule({
   imports: [
@@ -12,7 +13,7 @@ import {WorkflowDetailComponent} from './workflow-detail/workflow-detail.compone
     WorkflowRoutingModule
   ],
   providers: [WorkflowService],
-  declarations: [WorkflowComponent, WorkflowDetailComponent, SingleWorkflowComponent, FilterModalComponent, AddOrderModalComponent, SearchComponent, WorkflowActionComponent],
+  declarations: [WorkflowComponent, WorkflowDetailComponent, WorkflowHistoryComponent, WorkflowTemplateComponent, SingleWorkflowComponent, FilterModalComponent, AddOrderModalComponent, SearchComponent, WorkflowActionComponent],
   entryComponents: [
     FilterModalComponent,
     AddOrderModalComponent

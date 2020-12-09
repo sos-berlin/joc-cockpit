@@ -1033,8 +1033,6 @@ export class CoreService {
 
   calRowWidth(currentView) {
     setTimeout(() => {
-
-
       let arr = [53];
       if (!currentView) {
         $('#orderTable').find('thead th.dynamic-thead-o').each(function () {

@@ -1,26 +1,26 @@
 <div id="tasksOverview1">
     <div class="box-header b-b remove">
-        <h3 translate>dashboard.label.tasksOverview</h3>
+        <h3 translate>dashboard.label.inventoryStatistics</h3>
     </div>
     <div class="box-body">
         <div class="table-responsive">
             <table class="w-full" *ngIf="!notAuthenticate && isLoaded">
                 <tr class="text-center">
                     <td width="50%">
-                        <div translate>common.label.pending</div>
+                        <div translate>dashboard.label.jobs</div>
                     </td>
                     <td width="50%">
-                        <div translate>common.label.running</div>
+                        <div translate>dashboard.label.workflows</div>
                     </td>
                 </tr>
                 <tr class="text-center">
                     <td width="50%">
                         <span class="text-lg _600 "
-                           [innerHtml]="jobSnapshot.jobs.pending || 0"></span>
+                           [innerHtml]="statistics.numOfJobs || 0"></span>
                     </td>
                     <td width="50%">
                         <span  class="text-lg _600 "
-                           [innerHtml]="jobSnapshot.jobs.running || 0"></span>
+                           [innerHtml]="statistics.numOfWorkflows || 0"></span>
                     </td>
                 </tr>
             </table>

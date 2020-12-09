@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy, HostListener} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import * as _ from 'underscore';
 import {AuthService} from '../../../components/guard';
@@ -40,9 +40,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   permission: any = {};
   isExpandAll: boolean;
   pageView: any;
-  orderHistory = [];
-  taskHistory = [];
-  auditLogs = [];
   editor: any;
   selectedPath: string;
   worflowFilters: any = {};
@@ -151,7 +148,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   isWorkflowStored(_json): void {
     this.workFlowJson = _json;
     this.workFlowJson.name = _json.path.substring(_json.path.lastIndexOf('/') + 1);
-    this.loadOrderHistory();
     if (_json && !_.isEmpty(_json)) {
       if (_json && !_.isEmpty(_json)) {
         this.initEditorConf(this.editor, true);
@@ -255,39 +251,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         this.actual();
       }, 10);
     }
-  }
-
-  loadAuditLogs() {
-    let obj = {
-      controllerId: this.schedulerIds.selected,
-      orders: [{workflowPath: this.workFlowJson.path}],
-      limit: this.preferences.maxAuditLogPerObject
-    };
-    this.coreService.post('audit_log', obj).subscribe((res: any) => {
-      this.auditLogs = res.auditLog;
-    });
-  }
-
-  loadOrderHistory() {
-    let obj = {
-      controllerId: this.schedulerIds.selected,
-      orders: [{workflowPath: this.workFlowJson.path}],
-      limit: this.preferences.maxAuditLogPerObject
-    };
-    this.coreService.post('orders/history', obj).subscribe((res: any) => {
-      this.orderHistory = res.history;
-    });
-  }
-
-  loadTaskHistory() {
-    let obj = {
-      controllerId: this.schedulerIds.selected,
-      jobs: [{workflowPath: this.workFlowJson.path}],
-      limit: this.preferences.maxAuditLogPerObject
-    };
-    this.coreService.post('tasks/history', obj).subscribe((res: any) => {
-      this.taskHistory = res.history;
-    });
   }
 
   private init() {

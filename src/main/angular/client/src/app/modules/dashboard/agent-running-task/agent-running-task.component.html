@@ -5,21 +5,19 @@
     <div class="box-body" [hidden]="!isLoaded" style="overflow-y: auto;"
     [ngStyle]="{'max-height':(ybody * 55 +((ybody -1) *20 -50)) +'px'}">
         <div style="overflow: auto;" *ngIf="data.length>0">
-            <ngx-charts-bar-vertical
+            <ngx-charts-bar-horizontal
               [view]="view"
               [scheme]="colorScheme"
               [results]="data"
               [gradient]="true"
               [xAxis]="true"
               [yAxis]="true"
-              [xAxisLabel]="true"
+              [xAxisLabel]="false"
               [yAxisLabel]="true"
               [showGridLines]="true"
               [roundDomains]="true"
-              [barPadding]="25"
-              [yScaleMax]="5"
               (select)="onSelect($event)">
-            </ngx-charts-bar-vertical>
+            </ngx-charts-bar-horizontal>
         </div>
     </div>
     <div *ngIf="data.length==0 && isLoaded" class="vert-middle" [ngStyle]="{'height':(ybody * 55 + ((ybody -1) *20 -50)) +'px'}">

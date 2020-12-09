@@ -36,6 +36,14 @@
         <a (click)="setFilter('PENDING')" class="pull-right text primary-text-hover-color"
            [ngClass]="{'_600': state =='PENDING'}" [innerHtml]="snapshot.pending || 0"></a>
       </div>
+      <div class="suspended">
+        <span class="text-black-lt _300" [ngClass]="{'_600': state =='INPROGRESS'}">
+          <a (click)="setFilter('INPROGRESS')"
+             class="primary-text-hover-color"
+             translate>common.label.incomplete</a></span>
+        <a (click)="setFilter('INPROGRESS')" class="pull-right text primary-text-hover-color"
+           [ngClass]="{'_600': state =='INPROGRESS'}" [innerHtml]="snapshot.inProgress || 0"></a>
+      </div>
       <div class="running">
         <span class="text-black-lt _300" [ngClass]="{'_600': state =='RUNNING'}">
           <a (click)="setFilter('RUNNING')"

@@ -271,9 +271,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
         'rows': 6,
         'y': 0,
         'x': 4,
-        'name': 'controllerClusterStatus',
+        'name': 'js7ClusterStatus',
         'visible': true,
-        'message': 'message.controllerClusterStatus'
+        'message': 'message.js7ClusterStatus'
       }, {
         'cols': 12,
         'rows': 3,
@@ -290,7 +290,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         'name': 'ordersSummary',
         'visible': true,
         'message': 'message.ordersSummary'
-      }, {'cols': 4, 'rows': 2, 'y': 7, 'x': 0, 'name': 'tasksOverview', 'visible': true, 'message': 'message.tasksOverview'}, {
+      }, {'cols': 4, 'rows': 2, 'y': 7, 'x': 0, 'name': 'inventoryStatistics', 'visible': true, 'message': 'message.inventoryStatistics'}, {
         'cols': 4,
         'rows': 2,
         'y': 5,
@@ -309,7 +309,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'js7Status') {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'controllerClusterStatus') {
+        } else if (this.dashboardLayout[i].name === 'js7ClusterStatus') {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'ordersOverview' && this.permission.Order.view.status) {
           this.widgets.push(this.dashboardLayout[i]);

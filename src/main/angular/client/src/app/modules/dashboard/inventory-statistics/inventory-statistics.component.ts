@@ -5,11 +5,11 @@ import {DataService} from '../../../services/data.service';
 import {Subscription} from 'rxjs';
 
 @Component({
-  selector: 'app-task-overview',
-  templateUrl: './task-overview.component.html'
+  selector: 'app-inventory-statistics',
+  templateUrl: './inventory-statistics.component.html'
 })
-export class TaskOverviewComponent implements OnInit, OnDestroy {
-  jobSnapshot: any = {};
+export class InventoryStatisticsComponent implements OnInit, OnDestroy {
+  statistics: any = {};
   schedulerIds: any = {};
   isLoaded = false;
   notAuthenticate = false;
@@ -22,10 +22,10 @@ export class TaskOverviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.jobSnapshot = {jobs: {}};
+    this.statistics = {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     if (this.schedulerIds.selected) {
-      this.getSnapshot();
+      this.getStatistics();
     } else {
       this.notAuthenticate = true;
     }
@@ -38,9 +38,9 @@ export class TaskOverviewComponent implements OnInit, OnDestroy {
   refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'JobStateChanged') {
+        if (args.eventSnapshots[j].eventType === 'ItemAdded' || args.eventSnapshots[j].eventType === 'ItemUpdated') {
           if (!this.notAuthenticate) {
-            this.getSnapshot();
+            this.getStatistics();
           }
           break;
         }
@@ -48,9 +48,9 @@ export class TaskOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  getSnapshot(): void {
-    this.coreService.post('jobs/overview/snapshot', {controllerId: this.schedulerIds.selected}).subscribe(res => {
-      this.jobSnapshot = res;
+  getStatistics(): void {
+    this.coreService.post('inventory/statistics', {controllerId: this.schedulerIds.selected}).subscribe(res => {
+      this.statistics = res;
       this.isLoaded = true;
     }, (err) => {
       this.notAuthenticate = !err.isPermitted;

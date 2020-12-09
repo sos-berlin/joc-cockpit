@@ -50,7 +50,7 @@
               <div *ngIf="item.name === 'agentClusterStatus'">
                   <app-agent-status [sizeY]="item.rows"></app-agent-status>
               </div>
-              <div *ngIf="item.name === 'controllerClusterStatus'">
+              <div *ngIf="item.name === 'js7ClusterStatus'">
                   <app-controller-cluster [sizeY]="item.rows" [permission]="permission"></app-controller-cluster>
               </div>
               <div *ngIf="item.name === 'agentClusterRunningTasks'">
@@ -65,8 +65,8 @@
               <div *ngIf="item.name === 'ordersSummary'">
                   <app-order-summary></app-order-summary>
               </div>
-              <div *ngIf="item.name === 'tasksOverview'">
-                  <app-task-overview></app-task-overview>
+              <div *ngIf="item.name === 'inventoryStatistics'">
+                  <app-inventory-statistics></app-inventory-statistics>
               </div>
               <div *ngIf="item.name === 'tasksSummary'">
                    <app-task-summary></app-task-summary>

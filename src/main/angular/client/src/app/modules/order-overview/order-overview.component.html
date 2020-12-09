@@ -15,6 +15,9 @@
                       [ngClass]="{'btn-primary': orderFilters.filter.state=='PENDING'}" (click)="changeStatus('PENDING')" translate>common.button.pending
               </button>
               <button class="btn btn-grey btn-sm button-group-ellipsis"
+                      [ngClass]="{'btn-primary': orderFilters.filter.state=='INPROGRESS'}" (click)="changeStatus('INPROGRESS')" translate>common.button.inProgress
+              </button>
+              <button class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': orderFilters.filter.state=='RUNNING'}" (click)="changeStatus('RUNNING')" translate>common.button.running
               </button>
               <button class="btn btn-grey btn-sm button-group-ellipsis"
@@ -45,6 +48,11 @@
                   <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': orderFilters.filter.state=='PENDING'}">
                     <a (click)="changeStatus('PENDING')"
                        translate>common.button.pending
+                    </a>
+                  </li>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': orderFilters.filter.state=='INPROGRESS'}">
+                    <a (click)="changeStatus('INPROGRESS')"
+                       translate>common.button.inProgress
                     </a>
                   </li>
                   <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': orderFilters.filter.state=='RUNNING'}">

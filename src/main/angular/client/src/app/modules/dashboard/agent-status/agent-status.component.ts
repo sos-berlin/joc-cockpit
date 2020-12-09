@@ -53,10 +53,10 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
         result.color = '#7ab97a';
       } else if (value.state._text === 'DECOUPLED') {
         label = 'agent.label.decoupled';
-        result.color = '#e86680';
+        result.color = 'rgba(255, 195, 0, 0.9)';
       } else {
         label = 'agent.label.couplingFailed';
-        result.color = 'rgba(255, 195, 0, 0.9)';
+        result.color = '#e86680';
       }
       this.translate.get(label).subscribe(translatedValue => {
         result._text = translatedValue;
@@ -103,7 +103,6 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
     this.data = [];
     this.view[0] = (this.ybody * 50 - 8 ) * 3;
     this.view[1] = (this.ybody * 50);
-   
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     if (this.schedulerIds.selected) {
       this.getStatus();
