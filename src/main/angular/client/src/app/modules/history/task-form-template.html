@@ -4,7 +4,7 @@
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>customization.label.customizationName</label>
       <div class="col-sm-6">
         <input autocomplete="off" type="text" required class="form-control"
-               placeholder="{{'common.placeholder.name' | translate}}"
+               placeholder="{{'customization.placeholder.enterName' | translate}}"
                name="name" maxlength="25" [(ngModel)]="filter.name" #name="ngModel"
                (blur)="checkFilterName()">
         <div *ngIf="!isSearch && name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
@@ -85,7 +85,7 @@
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.paths && filter.paths.length>0">
-      <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>history.label.folders</label>
+      <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>common.label.folders</label>
       <div class="col-sm-6" style="max-height: 140px; overflow: auto">
         <div *ngFor="let path of filter.paths">
           <span class="">{{path}}</span>

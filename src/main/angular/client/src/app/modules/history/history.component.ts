@@ -14,6 +14,7 @@ import {SearchPipe} from '../../filters/filter.pipe';
 import * as _ from 'underscore';
 import * as moment from 'moment';
 import {Router} from '@angular/router';
+import {NzMessageService} from 'ng-zorro-antd';
 
 declare const $;
 
@@ -149,7 +150,7 @@ export class OrderSearchComponent implements OnInit {
     const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.paths = this.filter.paths || [];
-    modalRef.componentInstance.type = 'ORDER_HISTORY';
+    modalRef.componentInstance.type = 'FOLDER';
     modalRef.componentInstance.showCheckBox = !flag;
     modalRef.result.then((result) => {
       this.filter.paths = result;
@@ -273,7 +274,7 @@ export class TaskSearchComponent implements OnInit {
     const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.paths = this.filter.paths || [];
-    modalRef.componentInstance.type = 'TASK_HISTORY';
+    modalRef.componentInstance.type = 'FOLDER';
     modalRef.componentInstance.showCheckBox = !flag;
     modalRef.result.then((result) => {
       this.filter.paths = result;
@@ -399,7 +400,7 @@ export class DeploymentSearchComponent implements OnInit {
     const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.paths = this.filter.paths || [];
-    modalRef.componentInstance.type = 'DEPLOYMENT_HISTORY';
+    modalRef.componentInstance.type = 'FOLDER';
     modalRef.componentInstance.showCheckBox = !flag;
     modalRef.result.then((result) => {
       this.filter.paths = result;
@@ -519,10 +520,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
   savedHistoryFilter: any = {};
   savedJobHistoryFilter: any = {};
   savedDeploymentHistoryFilter: any = {};
-  savedIgnoreList: any = {workflows: [], jobs: [], orders: []};
-  orderSearch: any = {paths: []};
-  jobSearch: any = {paths: []};
-  deploymentSearch: any = {paths: []};
+  savedIgnoreList: any = {workflows: [], jobs: []};
+  orderSearch: any = {};
+  jobSearch: any = {};
+  deploymentSearch: any = {};
   data = [];
   currentData = [];
   order: any = {};
@@ -542,7 +543,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private modalService: NgbModal, private searchPipe: SearchPipe,
-              private router: Router, private translate: TranslateService, private excelService: ExcelService) {
+              private message: NzMessageService, private router: Router, private translate: TranslateService, private excelService: ExcelService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -565,17 +566,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   orderParseDate(obj) {
-    if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true') && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0) || (this.savedIgnoreList.orders && this.savedIgnoreList.orders.length > 0))) {
-      obj.excludeOrders = [];
-      this.savedIgnoreList.workflows.forEach((workflow) => {
-        obj.excludeOrders.push({workflow: workflow});
-      });
-
-      this.savedIgnoreList.orders.forEach((order) => {
-        obj.excludeOrders.push(order);
-      });
-    }
-
     if (this.selectedFiltered1.regex) {
       obj.regex = this.selectedFiltered1.regex;
     }
@@ -636,15 +626,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   setOrderDateRange(filter) {
     if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true')
-      && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0)
-        || (this.savedIgnoreList.orders && this.savedIgnoreList.orders.length > 0))) {
+      && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0))) {
       filter.excludeOrders = [];
       this.savedIgnoreList.workflows.forEach((workflow) => {
-        filter.excludeOrders.push({workflow: workflow});
-      });
-
-      this.savedIgnoreList.orders.forEach((order) => {
-        filter.excludeOrders.push(order);
+        filter.excludeOrders.push({workflowPath: workflow});
       });
     }
     if (this.order.filter.date == 'today') {
@@ -676,6 +661,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (!obj) {
       obj = {controllerId: this.historyView.current == true ? this.schedulerIds.selected : ''};
     }
+
+    if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true') && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0))) {
+      obj.excludeOrders = [];
+      this.savedIgnoreList.workflows.forEach((workflow) => {
+        obj.excludeOrders.push({workflowPath: workflow});
+      });
+    }
+
     this.isLoading = false;
     if (this.selectedFiltered1 && !_.isEmpty(this.selectedFiltered1)) {
       this.isCustomizationSelected1(true);
@@ -782,14 +775,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   jobParseDate(obj) {
-    if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true')
-      && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
-      obj.excludeJobs = [];
-      this.savedIgnoreList.jobs.forEach((job) => {
-        obj.excludeJobs.push({job: job});
-      });
-    }
-
     if (this.selectedFiltered2.regex) {
       obj.regex = this.selectedFiltered2.regex;
     }
@@ -836,7 +821,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
       obj = {controllerId: this.historyView.current == true ? this.schedulerIds.selected : ''};
     }
     this.isLoading = false;
-
+    if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true')
+      && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
+      obj.excludeJobs = [];
+      this.savedIgnoreList.jobs.forEach((job) => {
+        obj.excludeJobs.push({job: job});
+      });
+    }
     if (this.selectedFiltered2 && !_.isEmpty(this.selectedFiltered2)) {
       this.isCustomizationSelected2(true);
       obj = this.jobParseDate(obj);
@@ -1023,6 +1014,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
         filter.dateTo = moment(filter.dateTo).tz(this.preferences.zone);
       }
+      if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true') && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0))) {
+        filter.excludeOrders = [];
+        this.savedIgnoreList.workflows.forEach((workflow) => {
+          filter.excludeOrders.push({workflowPath: workflow});
+        });
+      }
       this.coreService.post('orders/history', filter).subscribe((res: any) => {
         this.historys = this.setDuration(res);
         this.searchInResult();
@@ -1114,6 +1111,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
         filter.dateTo = moment(filter.dateTo).tz(this.preferences.zone);
       }
+      if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true')
+        && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
+        filter.excludeJobs = [];
+        this.savedIgnoreList.jobs.forEach((job) => {
+          filter.excludeJobs.push({job: job});
+        });
+      }
+
       this.coreService.post('tasks/history', filter).subscribe((res: any) => {
         this.jobHistorys = this.setDuration(res);
         this.searchInResult();
@@ -1371,6 +1376,40 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.excelService.exportAsExcelFile(data, fileName);
   }
 
+  showAllPanelFuc(data) {
+    data.showAll = true;
+    data.show = true;
+    this.recursiveExpand(data, 1);
+  }
+
+  private recursiveExpand(data, count) {
+    data.loading = true;
+    let obj = {
+      controllerId: data.controllerId || this.schedulerIds.selected,
+      historyId: data.historyId
+    };
+    this.coreService.post('order/history', obj).subscribe((res: any) => {
+      for (let i = 0; i < res.children.length; i++) {
+        if (res.children[i].order) {
+          res.children[i].order.show = true;
+          this.recursiveExpand(res.children[i].order, ++count);
+        }
+      }
+      data.level = count;
+      data.children = res.children;
+      data.states = res.states;
+      data.loading = false;
+      this.coreService.calRowWidth(this.historyView.current);
+    }, () => {
+      data.loading = false;
+    });
+  }
+
+  hideAllPanelFuc(data) {
+    data.showAll = false;
+    data.show = false;
+  }
+
   showPanelFuc(data) {
     data.loading = true;
     data.show = true;
@@ -1393,89 +1432,61 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   hidePanelFuc(data) {
     data.show = false;
+    data.showAll = false;
   }
 
   /* --------------------------Ignore List -----------------------*/
-  addOrderToIgnoreList(orderId, workflow) {
-    let obj = {
-      workflow: workflow,
-      orderId: orderId
-    };
-
-    if (this.savedIgnoreList.orders.indexOf(obj) === -1) {
-      this.savedIgnoreList.orders.push(obj);
-      if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true)) {
-        if (this.orderSearch) {
-          this.search(true);
-        } else {
-          this.init(false);
-        }
-      }
-      let configObj = {
-        controllerId: this.schedulerIds.selected,
-        account: this.permission.user,
-        configurationType: 'IGNORELIST',
-        id: this.ignoreListConfigId,
-        configurationItem: JSON.stringify(this.savedIgnoreList)
-      };
-      this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-        this.ignoreListConfigId = res.id;
-      });
-    }
-  }
 
   addJobToIgnoreList(name) {
     if (this.savedIgnoreList.jobs.indexOf(name) === -1) {
       this.savedIgnoreList.jobs.push(name);
-      if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true)) {
-        if (this.jobSearch) {
-          this.search(true);
-        } else {
-          this.init(false);
-        }
-      }
-      let configObj = {
-        controllerId: this.schedulerIds.selected,
-        account: this.permission.user,
-        configurationType: 'IGNORELIST',
-        id: this.ignoreListConfigId,
-        configurationItem: JSON.stringify(this.savedIgnoreList)
-      };
-      this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-        this.ignoreListConfigId = res.id;
-      });
+      this.saveIgnoreList((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true));
     }
   }
 
   addWorkflowToIgnoreList(name) {
     if (this.savedIgnoreList.workflows.indexOf(name) === -1) {
       this.savedIgnoreList.workflows.push(name);
-      if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true)) {
-        if (this.orderSearch) {
-          this.search(true);
-        } else {
-          this.init(false);
-        }
-      }
-      let configObj = {
-        controllerId: this.schedulerIds.selected,
-        account: this.permission.user,
-        configurationType: 'IGNORELIST',
-        id: this.ignoreListConfigId,
-        configurationItem: JSON.stringify(this.savedIgnoreList)
-      };
-      this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-        this.ignoreListConfigId = res.id;
-      });
+      this.saveIgnoreList((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true));
     }
   }
 
+  removeObjectFromIgnoreList() {
+    this.saveIgnoreList(true);
+  }
+
+  private saveIgnoreList(flag) {
+    if (!flag) {
+      let msg;
+      this.translate.get('history.message.addedToIgnoreList').subscribe(translatedValue => {
+        msg = translatedValue;
+      });
+      this.message.success(msg);
+    }
+    if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true)) {
+      if ((!_.isEmpty(this.jobSearch) && this.historyFilters.type === 'TASK') || (!_.isEmpty(this.orderSearch) && this.historyFilters.type === 'ORDER')) {
+        this.search(true);
+      } else {
+        this.init(false);
+      }
+    }
+    let configObj = {
+      controllerId: this.schedulerIds.selected,
+      account: this.permission.user,
+      configurationType: 'IGNORELIST',
+      id: this.ignoreListConfigId,
+      configurationItem: JSON.stringify(this.savedIgnoreList)
+    };
+    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+      this.ignoreListConfigId = res.id;
+    });
+  }
+
   editIgnoreList() {
-    if ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0) || (this.savedIgnoreList.orders && this.savedIgnoreList.orders.length > 0) || (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
+    if ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0) || (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
       const modalRef = this.modalService.open(EditIgnoreListComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.savedIgnoreList = this.savedIgnoreList;
       modalRef.componentInstance.historyFilters = this.historyFilters;
-      modalRef.componentInstance.action = this.action;
       modalRef.componentInstance.self = this;
       modalRef.result.then((configObj) => {
 
@@ -1497,7 +1508,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
       this.ignoreListConfigId = res.id;
     });
-    if ((this.jobSearch && this.historyFilters.type != 'ORDER') || (this.orderSearch && this.historyFilters.type == 'ORDER')) {
+    if ((!_.isEmpty(this.jobSearch) && this.historyFilters.type === 'TASK') || (!_.isEmpty(this.orderSearch) && this.historyFilters.type === 'ORDER')) {
       this.search(true);
     } else {
       this.init(false);
@@ -1505,20 +1516,19 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   resetIgnoreList() {
-    if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true) && this.historyFilters.type == 'ORDER' && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0) || (this.savedIgnoreList.orders && this.savedIgnoreList.orders.length > 0))) {
-      if (this.orderSearch) {
+    if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true) && this.historyFilters.type == 'ORDER' && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0))) {
+      if (!_.isEmpty(this.orderSearch)) {
         this.search(true);
       } else {
         this.init(false);
       }
     } else if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true) && this.historyFilters.type != 'ORDER' && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
-      if (this.jobSearch) {
+      if (!_.isEmpty(this.jobSearch)) {
         this.search(true);
       } else {
         this.init(false);
       }
     }
-    this.savedIgnoreList.orders = [];
     this.savedIgnoreList.workflows = [];
     this.savedIgnoreList.jobs = [];
     this.savedIgnoreList.isEnable = false;

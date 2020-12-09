@@ -17,7 +17,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
   isLoaded = false;
   data: any[];
   view: any[] = [140, 140];
-  showLegend = false;
+  showLegend = true;
   showLabels = false;
   explodeSlices = false;
   doughnut = false;
@@ -34,7 +34,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
   refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'FileBasedActivated') {
+        if (args.eventSnapshots[j].eventType === 'AgentAdded' || args.eventSnapshots[j].eventType === 'AgentUpdated' || args.eventSnapshots[j].eventType === 'AgentStateChanged') {
           this.getStatus();
           break;
         }
@@ -48,21 +48,19 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
     data.forEach((value) => {
       let result = {count: 1, _text: '', color: ''};
       let label: string;
-      if (value.state._text === 'ALL_AGENTS_ARE_RUNNING') {
-        label = 'label.healthyAgentCluster';
+      if (value.state._text === 'COUPLED') {
+        label = 'agent.label.coupled';
         result.color = '#7ab97a';
-      } else if (value.state._text.toLowerCase() === 'all_agents_are_unreachable') {
-        label = 'label.unreachableAgentCluster';
+      } else if (value.state._text === 'DECOUPLED') {
+        label = 'agent.label.decoupled';
         result.color = '#e86680';
       } else {
-        label = 'label.unhealthyAgentCluster';
+        label = 'agent.label.couplingFailed';
         result.color = 'rgba(255, 195, 0, 0.9)';
       }
       this.translate.get(label).subscribe(translatedValue => {
         result._text = translatedValue;
-
       });
-
 
       if (results.length > 0) {
         for (let i = 0; i < results.length; i++) {
@@ -74,16 +72,15 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
         }
       }
       results.push(result);
-
     });
     return results;
   }
 
   prepareAgentClusterData(result) {
-    this.agentClusters = result.agentClusters;
+    this.agentClusters = result.agents;
     let seriesData = [];
     let colors = [];
-    this.groupBy(result.agentClusters).forEach(function (value) {
+    this.groupBy(result.agents).forEach(function (value) {
       seriesData.push({value: value.count, name: value._text, color: value.color});
       colors.push(value.color);
     });
@@ -93,21 +90,24 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
 
   getStatus(): void {
     this.isLoaded = true;
-/*    this.coreService.post('controller/agent_clusters', {controllerId: this.schedulerIds.selected}).subscribe(res => {
+    this.coreService.post('agents', {controllerId: this.schedulerIds.selected, compact: true}).subscribe(res => {
       this.prepareAgentClusterData(res);
       this.isLoaded = true;
 
     }, (err) => {
       this.isLoaded = true;
-    });*/
+    });
   }
 
   ngOnInit() {
     this.data = [];
+    this.view[0] = (this.ybody * 50 - 8 ) * 3;
+    this.view[1] = (this.ybody * 50);
+   
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     if (this.schedulerIds.selected) {
       this.getStatus();
-    }else{
+    } else {
       this.isLoaded = true;
     }
   }

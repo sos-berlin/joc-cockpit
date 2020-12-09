@@ -14,7 +14,7 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
   schedulerIds: any;
   subscription: Subscription;
   data = [];
-  view: any[] = [600, 160];
+  view: any[] = [560, 190];
   @Input('sizeY') ybody: number;
   colorScheme = {
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
@@ -29,7 +29,8 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
   refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'JobStateChanged') {
+        if (args.eventSnapshots[j].eventType === 'AgentAdded' || args.eventSnapshots[j].eventType === 'AgentUpdated'
+          || args.eventSnapshots[j].eventType === 'JobStateChanged') {
           this.getRunningTask();
           break;
         }
@@ -39,11 +40,13 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    if(this.schedulerIds.selected) {
+    if (this.schedulerIds.selected) {
       this.getRunningTask();
-    }else{
+    } else {
       this.isLoaded = true;
     }
+    //this.view[1] = (this.ybody * 50 + ((this.ybody - 1) * 20 - 50));
+   
   }
 
   ngOnDestroy() {
@@ -52,23 +55,22 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
 
   agentClusterRunningTaskGraph(res) {
     this.data = [];
-    for (let i = 0; i < res.processClasses.length; i++) {
-      this.data.push({name: res.processClasses[i].path, value: res.processClasses[i].numOfProcesses});
+    for (let i = 0; i < res.agents.length; i++) {
+      this.data.push({name: res.agents[i].agentName, value: res.agents[i].runningTasks});
     }
   }
 
   getRunningTask(): void {
-
-/*    this.coreService.post('agents/p', {
+    this.coreService.post('agents', {
       controllerId: this.schedulerIds.selected,
-      isAgentCluster: true
-    }).subscribe(res => {
+      compact: true
+    }).subscribe((res: any) => {
       this.agentClusterRunningTaskGraph(res);
       this.isLoaded = true;
     }, (err) => {
       console.log(err);
       this.isLoaded = true;
-    });*/
+    });
     this.isLoaded = true;
   }
 

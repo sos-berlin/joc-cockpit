@@ -2,9 +2,9 @@
     <div class="box-header b-b remove">
         <h3 translate>dashboard.label.agentClusterRunningTasks</h3>
     </div>
-    <div class="row"  [hidden]="!isLoaded" style="overflow-y: auto;"
+    <div class="box-body" [hidden]="!isLoaded" style="overflow-y: auto;"
     [ngStyle]="{'max-height':(ybody * 55 +((ybody -1) *20 -50)) +'px'}">
-        <div class="m-l m-r m-t w-full chart-margin" style="overflow: auto;" *ngIf="data.length>0">
+        <div style="overflow: auto;" *ngIf="data.length>0">
             <ngx-charts-bar-vertical
               [view]="view"
               [scheme]="colorScheme"

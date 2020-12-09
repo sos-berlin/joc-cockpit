@@ -4,7 +4,7 @@
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>customization.label.customizationName</label>
       <div class="col-sm-6">
         <input autocomplete="off" type="text" class="form-control"
-               placeholder="{{'common.placeholder.name' | translate}}" required
+               placeholder="{{'customization.placeholder.enterName' | translate}}" required
                name="name" maxlength="25" [(ngModel)]="filter.name" #name="ngModel"
                (blur)="checkFilterName()">
         <div *ngIf="!isSearch && name.invalid && (name.dirty || name.touched)" class="text-danger help-block">

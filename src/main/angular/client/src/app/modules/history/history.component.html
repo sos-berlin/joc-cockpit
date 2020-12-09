@@ -434,7 +434,7 @@
             </button>
             <nz-dropdown-menu #ignoreList="nzDropdownMenu" >
               <ul nz-menu>
-                <li nz-menu-item  *ngIf="(savedIgnoreList.workflows.length > 0 || savedIgnoreList.orders.length > 0) && historyFilters.type == 'ORDER'">
+                <li nz-menu-item  *ngIf="savedIgnoreList.workflows.length > 0 && historyFilters.type == 'ORDER'">
                   <a (click)="editIgnoreList()" translate>history.button.editIgnoreList</a>
                 </li>
                 <li nz-menu-item  *ngIf="savedIgnoreList.jobs.length > 0 && historyFilters.type == 'TASK'">
@@ -642,6 +642,14 @@
                           (click)="addWorkflowToIgnoreList(history.workflow)"
                           translate>history.button.addWorkflowToIgnoreList</a>
                       </li>
+                      <li nz-menu-item *ngIf="!history.showAll">
+                        <a (click)="showAllPanelFuc(history)"
+                           translate>history.button.expandAll</a>
+                      </li>
+                      <li nz-menu-item *ngIf="history.showAll">
+                        <a (click)="hideAllPanelFuc(history)"
+                           translate>history.button.collapseAll</a>
+                      </li>
                     </ul>
                   </nz-dropdown-menu>
                 </div>
@@ -649,11 +657,15 @@
               <td *ngIf="!historyView.current">
                 <span class="show-in-single-line w-full"
                       (click)="coreService.showLogWindow(history,null,null,history.controllerId, null)">
-                  <i class="cursor fa fa-caret-down fa-lg  p-l-xs p-r-xs"
+                <!--  <i class="cursor fa fa-chevron-down fa-lg p-l-xs p-r-xs"
+                     *ngIf="!history.showAll" (click)="showAllPanelFuc(history);$event.stopPropagation()"></i>
+                  <i class="cursor fa fa-chevron-up fa-lg p-l-xs p-r-xs"
+                     *ngIf="history.showAll" (click)="hideAllPanelFuc(history);$event.stopPropagation()"></i>-->
+                  <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
                      *ngIf="!history.show" (click)="showPanelFuc(history);$event.stopPropagation()"></i>
-                  <i class="cursor fa fa-caret-up fa-lg  p-l-xs p-r-xs"
-                     *ngIf="history.show" (click)="hidePanelFuc(history);$event.stopPropagation()"></i>&nbsp;
-                  <i class="cursor fa fa-download  text-hover-primary p-r-xs"
+                  <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+                     *ngIf="history.show" (click)="hidePanelFuc(history);$event.stopPropagation()"></i>
+                  <i class="cursor fa fa-download text-hover-primary p-r-xs"
                      (click)="downloadLog(history,history.controllerId);$event.stopPropagation()"></i>
                    <span [innerHtml]="history.controllerId | highlight : order.searchText"></span>
                    <span *ngIf="!history.controllerId" [innerHtml]="orderSearch.controllerId"></span>
@@ -662,21 +674,28 @@
               <td>
                 <span class="show-in-single-line w-full"
                       (click)="coreService.showLogWindow(history,null,null,null,null)">
-                  <i class="cursor fa fa-caret-down fa-lg  p-l-xs p-r-xs"
+                  <!-- <i class="cursor fa fa-chevron-down fa-lg p-l-xs p-r-xs"
+                      *ngIf="!history.showAll" (click)="showAllPanelFuc(history);$event.stopPropagation()"></i>
+                  <i class="cursor fa fa-chevron-up fa-lg p-l-xs p-r-xs"
+                     *ngIf="history.showAll" (click)="hideAllPanelFuc(history);$event.stopPropagation()"></i>-->
+                  <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
                      *ngIf="!history.show && historyView.current"
                      (click)="showPanelFuc(history);$event.stopPropagation()"></i>
-                  <i class="cursor fa fa-caret-up fa-lg  p-l-xs p-r-xs"
+                  <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
                      *ngIf="history.show && historyView.current"
-                     (click)="hidePanelFuc(history);$event.stopPropagation()"></i>&nbsp;
+                     (click)="hidePanelFuc(history);$event.stopPropagation()"></i>
                   <i *ngIf="historyView.current"
-                     class="cursor fa fa-download  text-hover-primary p-r-xs"
+                     class="cursor fa fa-download text-hover-primary p-r-xs"
                      (click)="downloadLog(history,history.controllerId);$event.stopPropagation()"></i>
                   <span [innerHtml]="history.orderId | highlight : order.searchText"></span>
                 </span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)">
-                <span (click)="navToWorkflowTab(history.workflow);$event.stopPropagation()"
-                      class="text-hover-primary" [innerHtml]="history.workflow | highlight : order.searchText"></span>
+                <span class="show-in-single-line w-full">
+                  <span (click)="coreService.showWorkflow(history.workflow);$event.stopPropagation()"
+                        class="text-hover-primary" [innerHtml]="history.workflow | highlight : order.searchText"></span>
+                  <i (click)="navToWorkflowTab(history.workflow);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-l-xs"></i>
+                </span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)">
                 <span [innerHtml]="history.position"></span>
@@ -700,7 +719,7 @@
             </tr>
             <tr *ngIf="history.show">
               <td colspan="11" style="padding:0 !important">
-              <app-order-history-template style="display: block" [history]="history" [schedulerId]="schedulerIds.selected"
+              <app-order-history-template class="order-history-template0" style="display: block" [history]="history" [schedulerId]="schedulerIds.selected"
                                           [historyView]="historyView" [orderSearch]="orderSearch"
               ></app-order-history-template>
               </td>
@@ -842,8 +861,11 @@
               <span [innerHtml]="jobHistory.job | highlight : task.searchText"></span>
             </td>
             <td (click)="coreService.showLogWindow(null,jobHistory, null, null, null)">
-              <span (click)="navToWorkflowTab(jobHistory.workflow);$event.stopPropagation()"
-                    class="text-hover-primary" [innerHtml]="jobHistory.workflow | highlight : task.searchText"></span>
+              <span class="show-in-single-line w-full">
+                <span (click)="coreService.showWorkflow(jobHistory.workflow);$event.stopPropagation()"
+                      class="text-hover-primary" [innerHtml]="jobHistory.workflow | highlight : task.searchText"></span>
+                <i (click)="navToWorkflowTab(jobHistory.workflow);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-l-xs"></i>
+              </span>
             </td>
             <td (click)="coreService.showLogWindow(null,jobHistory, null, null, null)">
               <span [innerHtml]="jobHistory.position | highlight : task.searchText"></span>
@@ -977,8 +999,13 @@
             <td *ngIf="!historyView.current"><span [innerHtml]="devHistory.controllerId"></span></td>
             <td><span [innerHtml]="devHistory.account | highlight : deployment.searchText"></span></td>
             <td><span [innerHtml]="devHistory.deployType | translate"></span></td>
-            <td><span [ngClass]="devHistory.operation === 'UPDATE' ? 'text-hover-primary' : ''" (click)="navToInventoryTab(devHistory);$event.stopPropagation()"
-                       [innerHtml]="devHistory.path | highlight : deployment.searchText"></span></td>
+            <td>
+              <span class="show-in-single-line w-full">
+                <span [ngClass]="(devHistory.deployType === 'Workflow' && devHistory.operation === 'UPDATE') ? 'text-hover-primary' : ''" (click)="coreService.showWorkflow(devHistory.path);$event.stopPropagation()"
+                      [innerHtml]="devHistory.path | highlight : deployment.searchText"></span>
+                <i *ngIf="devHistory.operation === 'UPDATE'" (click)="navToInventoryTab(devHistory);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-l-xs"></i>
+              </span>
+            </td>
             <td><span class="label bg-green" [innerHtml]="devHistory.state | translate"></span></td>
             <td><span [innerHtml]="devHistory.operation | translate"></span></td>
             <!--<td><span [innerHtml]="devHistory.version"></span></td>-->

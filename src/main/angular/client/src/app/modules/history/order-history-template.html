@@ -99,10 +99,12 @@
               <span [innerHtml]="child.order.orderId"></span>
             </span>
           </td>
-          <td
-              (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null)">
-            <span (click)="navToWorkflowTab(child.order.workflow);$event.stopPropagation()"
-                  class="text-hover-primary" [innerHtml]="child.order.workflow"></span>
+          <td (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null)">
+            <span class="show-in-single-line w-full">
+                <span (click)="coreService.showWorkflow(child.order.workflow);$event.stopPropagation()"
+                      class="text-hover-primary" [innerHtml]="child.order.workflow"></span>
+                <i (click)="navToWorkflowTab(child.order.workflow);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-l-xs"></i>
+              </span>
           </td>
           <td
               (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null)">
@@ -133,7 +135,7 @@
         </tr>
         <tr *ngIf="child.order.show">
           <td colspan="11" style="padding:0 !important">
-            <app-order-history-template style="display: block" [history]="child.order" [schedulerId]="schedulerId"
+            <app-order-history-template class="order-history-template{{history.level}}" style="display: block" [history]="child.order" [schedulerId]="schedulerId"
                                         [historyView]="historyView" [orderSearch]="orderSearch"
             ></app-order-history-template>
           </td>
