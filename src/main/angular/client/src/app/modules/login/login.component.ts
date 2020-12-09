@@ -60,7 +60,7 @@ export class LoginComponent implements OnInit {
 
   private getPermissions(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.coreService.post('security/joc_cockpit_permissions', {controllerId: this.schedulerIds.selected}).subscribe((permission) => {
+    this.coreService.post('authentication/joc_cockpit_permissions', {controllerId: this.schedulerIds.selected}).subscribe((permission) => {
       this.authService.setPermissions(permission);
       this.authService.save();
       if (this.schedulerIds) {
