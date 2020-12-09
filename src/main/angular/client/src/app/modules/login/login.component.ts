@@ -113,7 +113,7 @@ export class LoginComponent implements OnInit {
   onSubmit(values): void {
     this.submitted = true;
     this.errorMsg = false;
-    this.coreService.post('security/login', values).subscribe((data) => {
+    this.coreService.post('authentication/login', values).subscribe((data) => {
       this.authService.rememberMe = this.rememberMe;
       if (this.rememberMe) {
         const urs = crypto.AES.encrypt(values.userName, '$SOSJOBSCHEDULER2');

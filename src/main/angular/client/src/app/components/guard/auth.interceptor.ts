@@ -22,7 +22,7 @@ export class AuthInterceptor implements HttpInterceptor {
         url: './api/' + req.url,
         headers: req.headers.set('Content-Type', req.url.match('validate/predicate') ? 'text/plain' : 'application/json')
       });
-      if (req.url.match('security/login')) {
+      if (req.url.match('authentication/login')) {
         const user = req.body;
         req = req.clone({
           headers: req.headers.set('Authorization', 'Basic ' + btoa(unescape(encodeURIComponent(user.userName + ':' + user.password)))),

@@ -254,7 +254,7 @@ export class StartUpComponent implements OnInit {
   }
 
   logout() {
-    this.coreService.post('security/logout', {}).subscribe(() => {
+    this.coreService.post('authentication/logout', {}).subscribe(() => {
       this.authService.clearUser();
       this.authService.clearStorage();
       sessionStorage.clear();

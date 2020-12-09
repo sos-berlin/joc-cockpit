@@ -196,7 +196,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   logout(timeout) {
     this.isLogout = true;
     this.child.isLogout = true;
-    this.coreService.post('security/logout', {}).subscribe(() => {
+    this.coreService.post('authentication/logout', {}).subscribe(() => {
       this._logout(timeout);
     }, () => {
       this._logout(timeout);
