@@ -4752,27 +4752,17 @@ svg text {
   visibility: hidden;
 }
 
-#agentClusterStatus1 {
-  min-height: 223px;
-  max-height: 247px;
+#agentClusterStatus1 .chart-body{
+  margin-top: 8px;
+  margin-left: -32px;
 }
 
 div.min-ht-widget-agent {
   min-height: 192px !important;
 }
 
-#agentClusterRunningTasks1 {
-  min-height: 228px;
-  max-height: 247px;
-}
-
 div.min-ht-widget {
   min-height: 192px !important;
-}
-
-#controllerClusterStatus1 {
-  min-height: 410px;
-  max-height: 468px;
 }
 
 div.min-ht-widget-controller-status {

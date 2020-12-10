@@ -3,24 +3,26 @@
         <h3 translate>dashboard.label.agentClusterRunningTasks</h3>
     </div>
     <div class="box-body" [hidden]="!isLoaded" style="overflow-y: auto;"
-    [ngStyle]="{'max-height':(ybody * 55 +((ybody -1) *20 -50)) +'px'}">
+    [ngStyle]="{'max-height':(layout.rows * 55 +((layout.rows -1) *20 -50)) + 4 +'px'}">
         <div style="overflow: auto;" *ngIf="data.length>0">
             <ngx-charts-bar-horizontal
+              (window:resize)="onResize($event)"
               [view]="view"
               [scheme]="colorScheme"
               [results]="data"
               [gradient]="true"
               [xAxis]="true"
               [yAxis]="true"
-              [xAxisLabel]="false"
+              [xAxisLabel]="true"
               [yAxisLabel]="true"
               [showGridLines]="true"
               [roundDomains]="true"
+              [barPadding]="5"
               (select)="onSelect($event)">
             </ngx-charts-bar-horizontal>
         </div>
     </div>
-    <div *ngIf="data.length==0 && isLoaded" class="vert-middle" [ngStyle]="{'height':(ybody * 55 + ((ybody -1) *20 -50)) +'px'}">
+    <div *ngIf="data.length==0 && isLoaded" class="vert-middle" [ngStyle]="{'height':(layout.rows * 55 + ((layout.rows -1) *20 -50)) +'px'}">
       <div>
         <app-empty-data></app-empty-data>
       </div>

@@ -127,7 +127,7 @@ export class SelectOrderTemplatesComponent implements OnInit {
   }
 
   getOrderTemplates() {
-    this.coreService.post('schedule/list', {controllerId: this.schedulerId}).subscribe((res: any) => {
+    this.coreService.post('schedules', {controllerId: this.schedulerId}).subscribe((res: any) => {
       this.schedules = res.schedules;
       if(!res.schedules || res.schedules.length===0){
         this.nodes = [];
@@ -1510,6 +1510,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.savedFilter = JSON.parse(this.saveService.dailyPlanFilters) || {};
     if (this.dailyPlanFilters.selectedDate) {
       this.selectedDate = this.dailyPlanFilters.selectedDate;
+      if (typeof this.selectedDate.getMonth !== 'function') {
+        this.selectedDate = new Date(this.selectedDate);
+      }
       this.isPastDate = this.selectedDate.setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
     } else {
       const d = new Date().setHours(0, 0, 0, 0);

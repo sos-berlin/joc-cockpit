@@ -209,7 +209,7 @@
                 </div>
               </div>
             </div>
-            <div class="box p-a m-t-xs m-b-0" *ngIf="pageView==='list' && tree.length > 0">
+            <div class="box p-a m-t-xs m-b-0" *ngIf="pageView!=='grid' && tree.length > 0">
               <div appResizable class="table-responsive resizable" style="position: initial" [height]="resizerHeight"
                    [type]="'workflow'" [path]="'/'" id="workflowTableId">
                 <nz-table
@@ -380,7 +380,7 @@
                  class="text-center m-t h6">
               <app-empty-data></app-empty-data>
             </div>
-            <div class="row m-t hide" *ngIf="showPanel" [ngClass]="{'show': pageView=='list'}">
+            <div class="row m-t hide" *ngIf="showPanel" [ngClass]="{'show': pageView!=='grid'}">
               <div class="col-md-12" [hidden]="loading">
                 <div class="box white">
                   <div class="box-header">

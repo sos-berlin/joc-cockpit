@@ -642,11 +642,11 @@
                           (click)="addWorkflowToIgnoreList(history.workflow)"
                           translate>history.button.addWorkflowToIgnoreList</a>
                       </li>
-                      <li nz-menu-item *ngIf="!history.showAll">
+                      <li nz-menu-item>
                         <a (click)="showAllPanelFuc(history)"
                            translate>history.button.expandAll</a>
                       </li>
-                      <li nz-menu-item *ngIf="history.showAll">
+                      <li nz-menu-item>
                         <a (click)="hideAllPanelFuc(history)"
                            translate>history.button.collapseAll</a>
                       </li>
@@ -657,10 +657,6 @@
               <td *ngIf="!historyView.current">
                 <span class="show-in-single-line w-full"
                       (click)="coreService.showLogWindow(history,null,null,history.controllerId, null)">
-                <!--  <i class="cursor fa fa-chevron-down fa-lg p-l-xs p-r-xs"
-                     *ngIf="!history.showAll" (click)="showAllPanelFuc(history);$event.stopPropagation()"></i>
-                  <i class="cursor fa fa-chevron-up fa-lg p-l-xs p-r-xs"
-                     *ngIf="history.showAll" (click)="hideAllPanelFuc(history);$event.stopPropagation()"></i>-->
                   <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
                      *ngIf="!history.show" (click)="showPanelFuc(history);$event.stopPropagation()"></i>
                   <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
@@ -674,10 +670,6 @@
               <td>
                 <span class="show-in-single-line w-full"
                       (click)="coreService.showLogWindow(history,null,null,null,null)">
-                  <!-- <i class="cursor fa fa-chevron-down fa-lg p-l-xs p-r-xs"
-                      *ngIf="!history.showAll" (click)="showAllPanelFuc(history);$event.stopPropagation()"></i>
-                  <i class="cursor fa fa-chevron-up fa-lg p-l-xs p-r-xs"
-                     *ngIf="history.showAll" (click)="hideAllPanelFuc(history);$event.stopPropagation()"></i>-->
                   <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
                      *ngIf="!history.show && historyView.current"
                      (click)="showPanelFuc(history);$event.stopPropagation()"></i>

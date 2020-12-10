@@ -48,13 +48,13 @@
                   <i *ngIf="editLayoutObj" class="fa fa-times-circle" [nz-tooltip]="'common.button.remove' | translate" (click)="removeWidget($event, item)"></i>
               </div>
               <div *ngIf="item.name === 'agentClusterStatus'">
-                  <app-agent-status [sizeY]="item.rows"></app-agent-status>
+                  <app-agent-status [layout]="item"></app-agent-status>
               </div>
               <div *ngIf="item.name === 'js7ClusterStatus'">
                   <app-controller-cluster [sizeY]="item.rows" [permission]="permission"></app-controller-cluster>
               </div>
               <div *ngIf="item.name === 'agentClusterRunningTasks'">
-                  <app-agent-running-task [sizeY]="item.rows"></app-agent-running-task>
+                  <app-agent-running-task [layout]="item"></app-agent-running-task>
               </div>
               <div *ngIf="item.name === 'js7Status'">
                   <app-scheduler-instance [sizeY]="item.rows"></app-scheduler-instance>

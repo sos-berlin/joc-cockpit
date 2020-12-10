@@ -237,7 +237,7 @@
                 </div>
               </div>
             </div>
-            <div class="box p-a m-t-xs m-b-0" *ngIf="pageView === 'list'">
+            <div class="box p-a m-t-xs m-b-0" *ngIf="pageView !== 'grid'">
               <div appResizable class="table-responsive resizable" style="position: initial" [height]="resizerHeight" [type]="'orderOverview'" id="orderTableId">
                 <nz-table
                   #ajaxTable
@@ -360,7 +360,7 @@
             <div *ngIf="pageView=='grid' && loading && data.length==0" class="text-center m-t h6">
               <app-empty-data></app-empty-data>
             </div>
-            <div class="row m-t hide" *ngIf="showPanelObj" [ngClass]="{'show': pageView=='list'}">
+            <div class="row m-t hide" *ngIf="showPanelObj" [ngClass]="{'show': pageView!=='grid'}">
               <div class="col-md-12">
                 <div class="box white">
                   <div class="box-header">

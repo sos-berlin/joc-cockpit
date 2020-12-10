@@ -34,7 +34,9 @@ export class SingleDeployComponent implements OnInit {
   comments: any = {radio: 'predefined'};
   required: boolean;
   messageList: any;
+  securityLevel: string;
   exportObj = {
+    controllerId:'',
     forSigning: false,
     filename: '',
     fileFormat: '.zip'
@@ -52,6 +54,8 @@ export class SingleDeployComponent implements OnInit {
 
   ngOnInit() {
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
+    this.exportObj.controllerId=  this.schedulerIds.selected;
+    this.securityLevel = sessionStorage.securityLevel;
     if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
     }
@@ -251,8 +255,11 @@ export class SingleDeployComponent implements OnInit {
       if (this.object.store.draftConfigurations && this.object.store.draftConfigurations.length === 0) {
         delete this.object.store['draftConfigurations'];
       }
-
-      param = param + '&exportFilter=' + JSON.stringify({'forSigning': this.exportObj.forSigning, deployables: this.object.store});
+      let obj:any = {'forSigning': this.exportObj.forSigning, deployables: this.object.store}
+      if(this.exportObj.forSigning){
+        obj.controllerId = this.exportObj.controllerId;
+      }
+      param = param + '&exportFilter=' + JSON.stringify(obj);
       if (this.comments.comment) {
         param = param + '&comment=' + this.comments.comment;
       }
@@ -320,8 +327,9 @@ export class DeployComponent implements OnInit {
   actualResult = [];
   loading = true;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
-
+  securityLevel: string;
   exportObj = {
+    controllerId: '',
     forSigning: false,
     filename: '',
     fileFormat: '.zip'
@@ -345,6 +353,8 @@ export class DeployComponent implements OnInit {
 
   ngOnInit() {
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
+    this.exportObj.controllerId=  this.schedulerIds.selected;
+    this.securityLevel = sessionStorage.securityLevel;
     if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
     }
@@ -894,7 +904,11 @@ export class DeployComponent implements OnInit {
       if (this.object.store.draftConfigurations && this.object.store.draftConfigurations.length === 0) {
         delete this.object.store['draftConfigurations'];
       }
-      param = param + '&exportFilter=' + JSON.stringify({'forSigning': this.exportObj.forSigning, deployables: this.object.store});
+      let obj:any = {'forSigning': this.exportObj.forSigning, deployables: this.object.store}
+      if(this.exportObj.forSigning){
+        obj.controllerId = this.exportObj.controllerId;
+      }
+      param = param + '&exportFilter=' + JSON.stringify(obj);
       if (this.comments.comment) {
         param = param + '&comment=' + this.comments.comment;
       }
@@ -1394,6 +1408,10 @@ export class ImportWorkflowModalComponent implements OnInit {
   signatureAlgorithm: string;
   selectedSchedulerIds = [];
   comments: any = {};
+  requestObj: any = {
+    overwrite: false,
+    folder: ''
+  };
 
   constructor(public activeModal: NgbActiveModal, public modalService: NgbModal,
               public toasterService: ToasterService, private authService: AuthService) {
@@ -1429,6 +1447,12 @@ export class ImportWorkflowModalComponent implements OnInit {
       }
       if (this.comments.ticketLink) {
         obj.ticketLink = this.comments.ticketLink;
+      }
+      if (!this.isDeploy) {
+        if(this.requestObj.folder) {
+          obj.folder = this.requestObj.folder
+        }
+        obj.overwrite = this.requestObj.overwrite;
       }
       if (this.selectedSchedulerIds && this.selectedSchedulerIds.length > 0) {
         const importDeployFilter = {controllers: []};

@@ -8,6 +8,11 @@ const routes: Routes = [
     component: ResourceComponent,
     children: [
       {
+        path: 'agents',
+        loadChildren: () => import('./agent/agent.module').then(m => m.AgentModule),
+        data: {breadcrumb: 'breadcrumb.label.agents'}
+      },
+      {
         path: 'agent_job_executions',
         loadChildren: () => import('./agent-job-execution/agent-job-execution.module').then(m => m.AgentJobExecutionModule),
         data: {breadcrumb: 'breadcrumb.label.agentJobExecutions'}

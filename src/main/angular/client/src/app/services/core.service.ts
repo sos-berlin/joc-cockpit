@@ -135,6 +135,13 @@ export class CoreService {
     this.tabs._auditLog.currentPage = '1';
 
     this.tabs._resource = {};
+    this.tabs._resource.agents = {};
+    this.tabs._resource.agents.filter = {};
+    this.tabs._resource.agents.filter.state = 'ALL';
+    this.tabs._resource.agents.filter.sortBy = 'path';
+    this.tabs._resource.agents.reverse = false;
+    this.tabs._resource.agents.searchText = '';
+    this.tabs._resource.agents.currentPage = '1';
     this.tabs._resource.agentJobExecution = {};
     this.tabs._resource.agentJobExecution.filter = {};
     this.tabs._resource.agentJobExecution.filter.date = 'today';
@@ -170,7 +177,7 @@ export class CoreService {
     this.tabs._resource.documents.expandedKeys = ['/'];
     this.tabs._resource.documents.selectedkeys = ['/'];
     this.tabs._resource.documents.selectedView = true;
-    this.tabs._resource.state = 'agentJobExecutions';
+    this.tabs._resource.state = 'agent';
 
     this.tabs._configuration = {};
     this.tabs._configuration.state = 'inventory';
@@ -268,6 +275,13 @@ export class CoreService {
     this.tempTabs._auditLog.currentPage = '1';
 
     this.tempTabs._resource = {};
+    this.tempTabs._resource.agents = {};
+    this.tempTabs._resource.agents.filter = {};
+    this.tempTabs._resource.agents.filter.state = 'ALL';
+    this.tempTabs._resource.agents.filter.sortBy = 'path';
+    this.tempTabs._resource.agents.reverse = false;
+    this.tempTabs._resource.agents.searchText = '';
+    this.tempTabs._resource.agents.currentPage = '1';
     this.tempTabs._resource.agentJobExecution = {};
     this.tempTabs._resource.agentJobExecution.filter = {};
     this.tempTabs._resource.agentJobExecution.filter.date = 'today';
@@ -300,7 +314,7 @@ export class CoreService {
     this.tempTabs._resource.documents.expandedKeys = ['/'];
     this.tempTabs._resource.documents.selectedkeys = ['/'];
     this.tempTabs._resource.documents.selectedView = true;
-    this.tempTabs._resource.state = 'agentJobExecutions';
+    this.tempTabs._resource.state = 'agent';
 
     this.tempTabs._configuration = {};
     this.tempTabs._configuration.state = 'inventory';

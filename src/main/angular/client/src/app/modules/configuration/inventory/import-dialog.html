@@ -123,6 +123,27 @@
           </div>
         </div>
       </div>
+      <div class="col-md-12" *ngIf="!isDeploy">
+        <div class="row">
+          <label class="col-md-3 form-control-label">
+            <label translate>inventory.label.folder</label>
+          </label>
+          <div class="col-md-9">
+            <input type="text" name="folder" class="form-control" [(ngModel)]="requestObj.folder" placeholder="{{'inventory.placeholder.enterFolderPath' | translate}}">
+          </div>
+        </div>
+        <div class="m-t-sm row">
+          <label class="col-md-3">
+            <label translate>inventory.label.overwrite</label>
+          </label>
+          <div class="col-md-9">
+            <label class="md-check w">
+              <input type="checkbox" name="overwrite" [(ngModel)]="requestObj.overwrite">
+              <i class="primary"></i>
+            </label>
+          </div>
+        </div>
+      </div>
       <div class="col-md-12" *ngIf="uploader.queue.length === 0">
           <div ng2FileDrop [uploader]="uploader" class="drop-box-full">
             <div><i class="icon-upload-icon"></i></div>
@@ -137,8 +158,8 @@
             </div>
           </div>
       </div>
-      <div class="col-md-12">
-        <div class="table-responsive" *ngIf="uploader.queue.length>0"
+      <div class="col-md-12" *ngIf="uploader.queue.length>0">
+        <div class="table-responsive"
              style="min-height: 250px; max-height: 600px; overflow: auto">
           <table class="table table-hover table-bordered  ">
             <thead>

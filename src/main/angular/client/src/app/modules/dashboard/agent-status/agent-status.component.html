@@ -3,35 +3,26 @@
         <h3 translate>dashboard.label.agentClusterStatus</h3>
     </div>
     <div class="row"  [hidden]="!isLoaded" style="overflow-y: auto;"
-    [ngStyle]="{'max-height':(ybody * 50) +'px'}">
-        <div class="col-md-12">
-            <div>
-                <div [ngClass]="{'hide': data.length==0}">
-                    <ngx-charts-pie-chart
-                      [view]="view"
-                      [scheme]="colorScheme"
-                      [results]="data"
-                      [legend]="showLegend"
-                      [explodeSlices]="explodeSlices"
-                      [labels]="showLabels"
-                      [doughnut]="doughnut"
-                      (select)="onSelect($event)"></ngx-charts-pie-chart>
-                </div>
-            </div>
-        <!--    <div class="col-xs-7 col-md-8 col-lg-7" *ngIf="data.length>0">
-                <ul class="status-list p-l" [ngClass]="{'m-top-60': data.length==1, 'm-top-50': data.length==2 }">
-                    <li id="{{d.name}}" *ngFor="let d of data" class="p-a-xs block-ellipsis-job">
-                        <i class="fa fa-stop" [ngStyle]="{color: d.color}"></i>
-                        <a (click)="setLabel(d.name)" > {{d.name | translate}}</a>
-                    </li>
-                </ul>
-            </div>-->
+    [ngStyle]="{'max-height':(layout.rows * 55 +((layout.rows -1) *20 -50)) + 4 +'px'}">
+      <div class="col-md-12">
+        <div class="chart-body" [ngClass]="{'hide': data.length==0}">
+          <ngx-charts-pie-chart
+            (window:resize)="onResize($event)"
+            [view]="view"
+            [scheme]="colorScheme"
+            [results]="data"
+            [legend]="showLegend"
+            [explodeSlices]="explodeSlices"
+            [labels]="showLabels"
+            [doughnut]="doughnut"
+            (select)="onSelect($event)"></ngx-charts-pie-chart>
         </div>
+      </div>
     </div>
     <div [hidden]="isLoaded" class="text-center m-t-lg p-b-lg text-primary text">
       <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
     </div>
-    <div *ngIf="data.length==0 && isLoaded" class="vert-middle" [ngStyle]="{'height':(ybody * 55 -20) +'px'}">
+    <div *ngIf="data.length==0 && isLoaded" class="vert-middle" [ngStyle]="{'height':(layout.rows * 55 -20) +'px'}">
       <div>
         <app-empty-data></app-empty-data>
       </div>

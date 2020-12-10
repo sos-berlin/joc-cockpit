@@ -6,52 +6,62 @@
         <div class="table-responsive">
             <table class="w-full" *ngIf="!notAuthenticate && isLoaded">
                 <tr class="text-center">
-                    <td width="14.28%">
+                    <td width="25%">
                         <div translate>common.label.pending</div>
                     </td>
-                    <td width="14.28%">
+                    <td width="25%">
                       <div translate>common.label.incomplete</div>
                     </td>
-                    <td width="14.28%">
+                    <td width="25%">
                         <div translate>common.label.running</div>
                     </td>
-                    <td width="14.28%">
+                    <td width="25%">
                         <div translate>common.label.suspended</div>
-                    </td>
-                    <td width="14.28%">
-                        <div translate>common.label.failed</div>
-                    </td>
-
-                    <td width="14.28%">
-                        <div translate>common.label.waiting</div>
-                    </td>
-                    <td width="14.28%">
-                        <div translate>common.label.blocked</div>
                     </td>
                 </tr>
                 <tr class="text-center">
-                    <td width="14.28%">
+                    <td width="25%">
                         <a (click)="navigate('PENDING')" class="text-lg _600" [innerHtml]="snapshot.orders.pending || 0"></a>
                     </td>
-                    <td width="14.28%">
+                    <td width="25%">
                       <a (click)="navigate('INPROGRESS')" class="text-lg _600" [innerHtml]="snapshot.orders.inProgress || 0"></a>
                     </td>
-                    <td width="14.28%">
+                    <td width="25%">
                         <a (click)="navigate('RUNNING')" class="text-lg _600" [innerHtml]="snapshot.orders.running || 0"></a>
                     </td>
-                    <td width="14.28%">
+                    <td width="25%">
                         <a (click)="navigate('SUSPENDED')" class="text-lg _600 "
                            [ngClass]="{'dark-orange':snapshot.orders.suspended >0}" [innerHtml]="snapshot.orders.suspended || 0"></a>
                     </td>
-                    <td width="14.28%">
-                        <a (click)="navigate('FAILED')" class="text-lg _600" [innerHtml]="snapshot.orders.failed || 0"></a>
-                    </td>
-                    <td width="14.28%">
-                        <a (click)="navigate('WAITING')" class="text-lg _600" [innerHtml]="snapshot.orders.waiting || 0"></a>
-                    </td>
-                    <td width="14.28%">
-                        <a (click)="navigate('BLOCKED')" class="text-lg _600" [innerHtml]="snapshot.orders.blocked || 0"></a>
-                    </td>
+                </tr>
+                <tr class="text-center" style="border-top: 16px solid transparent">
+                  <td width="25%">
+                    <div translate>common.label.calling</div>
+                  </td>
+                  <td width="25%">
+                    <div translate>common.label.waiting</div>
+                  </td>
+                  <td width="25%">
+                    <div translate>common.label.blocked</div>
+                  </td>
+                  <td width="25%">
+                    <div translate>common.label.failed</div>
+                  </td>
+                </tr>
+                <tr class="text-center">
+                  <td width="25%">
+                    <span class="text-lg _600 "
+                       [innerHtml]="snapshot.orders.calling || 0"></span>
+                  </td>
+                  <td width="25%">
+                    <a (click)="navigate('WAITING')" class="text-lg _600" [innerHtml]="snapshot.orders.waiting || 0"></a>
+                  </td>
+                  <td width="25%">
+                    <a (click)="navigate('BLOCKED')" class="text-lg _600" [innerHtml]="snapshot.orders.blocked || 0"></a>
+                  </td>
+                  <td width="25%">
+                    <a [ngClass]="{'crimson':snapshot.orders.failed >0}" (click)="navigate('FAILED')" class="text-lg _600" [innerHtml]="snapshot.orders.failed || 0"></a>
+                  </td>
                 </tr>
             </table>
         </div>

@@ -4,6 +4,7 @@ import {AuthService} from '../guard';
 import {DataService} from '../../services/data.service';
 import {Router} from '@angular/router';
 import * as _ from 'underscore';
+import {Subscription} from 'rxjs';
 declare const $;
 
 @Component({
@@ -28,14 +29,24 @@ export class HeaderComponent implements OnInit, OnDestroy {
   showGroupEvent: any = [];
   isLogout = false;
   showEvent = false;
-  selectedController : any;
+  selectedController: any;
+  subscription: Subscription;
 
   @Output() myLogout: EventEmitter<any> = new EventEmitter();
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router, private dataService: DataService) {
+    this.subscription = dataService.isProfileReload.subscribe(res => {
+      if (res) {
+        this.init();
+      }
+    });
   }
 
   ngOnInit() {
+   this.init();
+  }
+
+  private init(){
     this.allSessionEvent = {group: [], eventUnReadCount: 0};
     this.username = this.authService.currentUserData;
     this.reloadSettings();
@@ -95,6 +106,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   navigateToResource() {
     const resourceFilters = this.coreService.getResourceTab();
+    if (resourceFilters.state === 'agent') {
+      if (this.permission.JS7UniversalAgent.view.status) {
+        this.router.navigate(['/resources/agents']);
+        return;
+      } else {
+        resourceFilters.state = 'agentJobExecutions';
+      }
+    }
     if (resourceFilters.state === 'agentJobExecutions') {
       if (this.permission.JS7UniversalAgent.view.status) {
         this.router.navigate(['/resources/agent_job_executions']);

@@ -15,6 +15,7 @@ import {InventoryStatisticsComponent} from './inventory-statistics/inventory-sta
 import {SharedModule} from '../shared/shared.module';
 
 const ENTRYCOMPONENTS = [CommentModalComponent, AddWidgetModalComponent];
+
 @NgModule({
   imports: [
     NgxChartsModule,
@@ -35,7 +36,7 @@ const ENTRYCOMPONENTS = [CommentModalComponent, AddWidgetModalComponent];
     SchedulerInstanceComponent,
     ActionComponent
   ],
-  entryComponents: [...ENTRYCOMPONENTS],
+  entryComponents: [...ENTRYCOMPONENTS]
 })
 export class DashboardModule {
 

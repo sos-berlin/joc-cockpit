@@ -1,0 +1,264 @@
+<div class="white box-shadow sub-header">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="padding">
+        <div class="text-right ">
+          <div class="pull-left">
+            <app-breadcrumbs></app-breadcrumbs>
+          </div>
+          <div class="inline">
+            <div class="show-block">
+              <div class="btn-group hidden-btn-group">
+                <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': agentsFilters.filter.state=='ALL'}"
+                        (click)="loadAgents('ALL')" translate>agent.button.allAgent
+                </button>
+                <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': agentsFilters.filter.state=='COUPLED'}"
+                        (click)="loadAgents('COUPLED')" translate>agent.button.coupled
+                </button>
+                <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': agentsFilters.filter.state=='DECOUPLED'}"
+                        (click)="loadAgents('DECOUPLED')" translate>agent.button.decoupled
+                </button>
+                <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': agentsFilters.filter.state=='COUPLINGFAILED'}"
+                        (click)="loadAgents('COUPLINGFAILED')" translate>agent.button.couplingFailed
+                </button>
+              </div>
+              <div class="btn-group dropdown hidden-dropdown">
+                <button class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
+                        [nzDropdownMenu]="status" [nzPlacement]="'bottomRight'" type="button" translate>
+                  agent.label.status
+                  <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+                </button>
+                <nz-dropdown-menu #status="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li nz-menu-item
+                        [ngClass]="{'ant-select-dropdown-menu-item-active': agentsFilters.filter.state=='ALL'}">
+                      <a (click)="loadAgents('ALL')"
+                         translate>agent.button.allAgent</a>
+                    </li>
+                    <li nz-menu-item
+                        [ngClass]="{'ant-select-dropdown-menu-item-active': agentsFilters.filter.state=='COUPLED'}">
+                      <a (click)="loadAgents('COUPLED')"
+                         translate>agent.button.coupled</a>
+                    </li>
+                    <li nz-menu-item
+                        [ngClass]="{'ant-select-dropdown-menu-item-active': agentsFilters.filter.state=='DECOUPLED'}">
+                      <a (click)="loadAgents('DECOUPLED')"
+                         translate>agent.button.decoupled</a>
+                    </li>
+                    <li nz-menu-item
+                        [ngClass]="{'ant-select-dropdown-menu-item-active': agentsFilters.filter.state=='COUPLINGFAILED'}">
+                      <a (click)="loadAgents('COUPLINGFAILED')"
+                         translate>agent.button.couplingFailed</a>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+              <div class="btn-group dropdown">
+                <button class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
+                        [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'">
+                  <span translate>common.label.sortBy</span>
+                  <span class="text-primary">
+                    <span *ngIf="agentsFilters.filter.sortBy =='path'">
+                      {{'common.label.path' | translate}}
+                      <i *ngIf="!agentsFilters.reverse" class="fa fa-caret-up"></i>
+                      <i *ngIf="agentsFilters.reverse" class="fa fa-caret-down"></i>
+                    </span>
+                    <span *ngIf="agentsFilters.filter.sortBy =='state._text'">
+                      {{'common.label.status' | translate}}
+                      <i *ngIf="!agentsFilters.reverse" class="fa fa-caret-up"></i>
+                      <i *ngIf="agentsFilters.reverse" class="fa fa-caret-down"></i>
+                    </span>
+                  </span>
+                </button>
+                <nz-dropdown-menu #sortBy="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li nz-menu-item>
+                      <a (click)="sort('path')" translate>common.label.path</a>
+                    </li>
+                    <li nz-menu-item>
+                      <a (click)="sort('state._text')" translate>common.label.status</a>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+              <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="sub-link">
+  <div class="row">
+    <div class="col-md-8">
+      <app-links></app-links>
+    </div>
+    <div class="col-md-4 text-right" *ngIf="agentClusters && agentClusters.length>0 && pageView=='list'">
+      <button class="btn btn-sm btn-grey" (click)="expandDetails()">
+        <i class="fa fa-caret-down"></i>&nbsp;
+        <span translate>common.button.expandDetails</span>
+      </button>
+      <button class="btn btn-sm btn-grey m-l-12" (click)="collapseDetails()">
+        <i class="fa fa-caret-up"></i>&nbsp;
+        <span translate>common.button.collapseDetails</span>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="scroll-y max-ht2">
+  <div class="padding p-b-0">
+    <div class="row">
+      <div class="col-sm-12">
+          <div class="m-t-xs">
+            <div class="row " *ngIf="pageView=='grid' && agentClusters.length>0" [hidden]="loading">
+                <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
+                     *ngFor="let cluster of agentClusters | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse">
+                  <div class="box card" [ngClass]="coreService.getColor(cluster.state.severity,'border')">
+                    <div class="box-body">
+                      <div>
+                        <span class="text-left ">
+                          <span class="fa fa-stop pos-abt m-t-xs text-xs"
+                                [ngClass]="coreService.getColor(cluster.state.severity,'text')"></span>&nbsp;
+                          <i class="fa fa-server m-l m-r-xs"></i>&nbsp;
+                          <span
+                            [nz-tooltip]="cluster.path"
+                            class="text text-ellipsis1"
+                            [innerHtml]="cluster.agentName"></span>
+                        </span>
+                      </div>
+                      <div class="text-sm  text-left text-muted p-t-xs p-l">
+                        <span class="text-black _600"
+                              [innerHtml]="cluster.runningTasks"></span> {{'label.runningTasks' | translate}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="box p-a" *ngIf="pageView !=='grid'">
+              <div  >
+                <nz-table
+                  #ajaxTable
+                  [nzSize]="'small'"
+                  [nzPageSize]="agentsFilters.entryPerPage ||  preferences.entryPerPage"
+                  [nzPageIndex]="agentsFilters.currentPage"
+                  [nzBordered]="true"
+                  [nzShowPagination]="agentClusters.length > 0"
+                  [nzData]="agentClusters"
+                  [nzLoading]="loading"
+                  [nzShowSizeChanger]="true"
+                  (nzPageIndexChange)="pageIndexChange($event)"
+                  (nzPageSizeChange)="pageSizeChange($event)"
+                  [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+                >
+                  <thead>
+                  <tr>
+                    <th (click)="sort('agentId')"><a><span class="p-r-xs" translate>agent.label.agentId</span>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'agentId' && !agentsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'agentId' && agentsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th (click)="sort('agentName')"><a><span class="p-r-xs" translate>agent.label.agentName</span>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'agentName' && !agentsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'agentName' && agentsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th class="status" (click)="sort('state._text')"><a><span class="p-r-xs" translate>common.label.status</span>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'state._text' && !agentsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'state._text' && agentsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th *ngIf="!agentsFilters.isCompact" (click)="sort('url')"><a><span class="p-r-xs" translate>agent.label.url</span>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'url' && !agentsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'url' && agentsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th *ngIf="!agentsFilters.isCompact" (click)="sort('runningTasks')"><a><span class="p-r-xs" translate>agent.label.runningTasks</span>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'runningTasks' && !agentsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'runningTasks' && agentsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <ng-template ngFor let-cluster
+                               [ngForOf]="ajaxTable.data | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse">
+                    <tr [ngClass]="{'light-bg':cluster.show}">
+                      <td>
+                        <i class="cursor fa fa-caret-down fa-lg p-r-xs p-l-xs" *ngIf="!cluster.show"
+                           (click)="showAgents(cluster)"></i>
+                        <i class="cursor fa fa-caret-up fa-lg p-r-xs p-l-xs" *ngIf="cluster.show" (click)="hideAgents(cluster)"></i>
+                        <span [innerHtml]="cluster.agentId"></span>
+                      </td>
+                      <td><span [innerHtml]="cluster.agentName"></span></td>
+                      <td>
+                        <span [nz-tooltip]="cluster.errorMessage" class="label" [ngClass]="coreService.getColor(cluster.state.severity,'bg')">
+                          <span>{{cluster.state._text | translate}}</span>
+                        </span>
+                      </td>
+                      <td><span [innerHtml]="cluster.url"></span></td>
+                      <td>{{cluster.runningTasks}}</td>
+                    </tr>
+                    <tr *ngIf="cluster.show">
+                      <td colspan="6" style="padding: 0 !important;">
+                        <nz-table class="m-a-0 inner-table"
+                                  #clusterTable
+                                  [nzSize]="'small'"
+                                  [nzLoading]="cluster.loading"
+                                  [nzData]="cluster.orders"
+                                  [nzShowPagination]="false">
+                        <thead>
+                        <tr class="tableexport-ignore">
+                          <th><span translate>order.label.orderId</span></th>
+                          <th><span translate>order.label.workflow</span></th>
+                          <th><span translate>order.label.position</span></th>
+                          <th><span translate>order.label.state</span></th>
+                          <th><span translate>order.label.scheduledFor</span></th>
+                        </tr>
+                        </thead>
+                        <tbody *ngFor="let order of clusterTable.data">
+                        <tr>
+                          <td> {{order.orderId}}</td>
+                          <td [innerHtml]="order.workflowId.path"></td>
+                          <td>
+                              <span *ngIf="order.position && order.position.length>0">
+                                {{order.position[0]}}
+                              </span>
+                          </td>
+                          <td><span class="label"
+                                    [ngClass]="coreService.getColor(order.state.severity,'bg')">{{order.state._text | translate}}</span>
+                          </td>
+                          <td>{{order.scheduledFor | stringToDate}}</td>
+                        </tr>
+                        </tbody>
+                      </nz-table>
+                    </td>
+                  </tr>
+                </ng-template>
+                </tbody>
+                </nz-table>
+                <div class="w-half label-top" *ngIf="ajaxTable.data.length >0"><span
+                  translate>common.label.total</span> {{agentClusters.length}}
+                  <span translate *ngIf="ajaxTable.data.length >1">agent.label.agentsFound</span>
+                  <span translate *ngIf="ajaxTable.data.length ==1">agent.label.agentFound</span>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="pageView=='grid' && !loading && agentClusters.length==0" class="text-center m-t">
+              <app-empty-data></app-empty-data>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="spinner" *ngIf="loading">
+  <div class="cssload-inner cssload-one"></div>
+  <div class="cssload-inner cssload-two"></div>
+  <div class="cssload-inner cssload-three"></div>
+</div>

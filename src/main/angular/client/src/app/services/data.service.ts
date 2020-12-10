@@ -15,10 +15,12 @@ export class DataService {
   public reloadTree: BehaviorSubject<any> = new BehaviorSubject<any>({});
   public reloadWorkflowError: BehaviorSubject<any> = new BehaviorSubject<any>({});
   private functionSource = new Subject<string>();
+  private refreshWidgetSource = new Subject<any>();
 
   // Observable string streams
   eventAnnounced$ = this.eventAnnouncedSource.asObservable();
   refreshAnnounced$ = this.refreshUISource.asObservable();
+  refreshWidgetAnnounced$ = this.refreshWidgetSource.asObservable();
   switchSchedulerAnnounced$ = this.switchSchedulerSource.asObservable();
   functionAnnounced$ = this.functionSource.asObservable();
 
@@ -37,6 +39,10 @@ export class DataService {
 
   announceFunction(data: string) {
     this.functionSource.next(data);
+  }
+
+  refreshWidget(event: any) {
+    this.refreshWidgetSource.next(event);
   }
 }
 

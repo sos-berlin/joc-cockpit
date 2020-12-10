@@ -1,6 +1,13 @@
 <div>
     <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-
+      <li class="nav-item" *ngIf="permission.JS7UniversalAgent.view.status">
+        <a class="nav-link" [routerLink]="['/resources/agents']" [routerLinkActive]="['active']">
+          <span class="nav-text text-dark p-b-sm"><span translate>resource.label.agentView</span></span>
+        </a>
+      </li>
+      <li class="nav-item dropdown-separator" *ngIf="permission.JS7UniversalAgent.view.status">
+        <span class="separator"></span>
+      </li>
       <li class="nav-item" *ngIf="permission.JS7UniversalAgent.view.status">
         <a class="nav-link" [routerLink]="['/resources/agent_job_executions']" [routerLinkActive]="['active']">
           <span class="nav-text text-dark p-b-sm"><span translate>resource.label.agentJobExecution</span></span>

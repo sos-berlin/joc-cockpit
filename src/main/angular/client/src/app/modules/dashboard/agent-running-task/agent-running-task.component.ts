@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, Input} from '@angular/core';
+import {Component, OnInit, OnDestroy, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {Subscription} from 'rxjs';
@@ -9,20 +9,33 @@ import {AuthService} from '../../../components/guard';
   templateUrl: './agent-running-task.component.html'
 })
 export class AgentRunningTaskComponent implements OnInit, OnDestroy {
+  @Input('layout') layout: any;
 
   isLoaded = false;
   schedulerIds: any;
-  subscription: Subscription;
   data = [];
   view: any[] = [560, 150];
-  @Input('sizeY') ybody: number;
+  subscription1: Subscription;
+  subscription2: Subscription;
   colorScheme = {
-    domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
+    domain: ['rgb(168, 56, 93)', 'rgb(122, 163, 229)', 'rgb(162, 126, 168)', 'rgb(170, 227, 245)']
   };
 
   constructor(private coreService: CoreService, private authService: AuthService, private dataService: DataService) {
-    this.subscription = dataService.eventAnnounced$.subscribe(res => {
+    this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+    });
+    this.subscription2 = dataService.refreshWidgetAnnounced$.subscribe((res) => {
+      if (res) {
+        for (let i = 0; i < res.length; i++) {
+          if (res[i].name === 'agentClusterRunningTasks') {
+            this.layout = res[i];
+            this.setViewSize(window);
+            this.getRunningTask();
+            break;
+          }
+        }
+      }
     });
   }
 
@@ -45,12 +58,22 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
     } else {
       this.isLoaded = true;
     }
-    //this.view[1] = (this.ybody * 50 + ((this.ybody - 1) * 20 - 50));
-   
+    this.setViewSize(window);
+  }
+
+  onResize(event) {
+    this.setViewSize(event.target);
+  }
+
+  private setViewSize(target) {
+    let w = target.innerWidth / 12;
+    this.view[0] = w * this.layout.cols - 90;
+    this.view[1] = (this.layout.rows * 50 + ((this.layout.rows - 1) * 20 - 50)) - 6;
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
   }
 
   agentClusterRunningTaskGraph(res) {
@@ -63,7 +86,8 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
   getRunningTask(): void {
     this.coreService.post('agents', {
       controllerId: this.schedulerIds.selected,
-      compact: true
+      compact: true,
+      states: ['COUPLED', 'DECOUPLED']
     }).subscribe((res: any) => {
       this.agentClusterRunningTaskGraph(res);
       this.isLoaded = true;
@@ -71,7 +95,6 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
       console.log(err);
       this.isLoaded = true;
     });
-    this.isLoaded = true;
   }
 
   onSelect(event) {

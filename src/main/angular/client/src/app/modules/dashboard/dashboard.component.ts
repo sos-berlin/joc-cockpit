@@ -49,7 +49,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   subscription: any;
   isLoading = false;
 
-  constructor(private authService: AuthService, public coreService: CoreService, private modalService: NgbModal, private dataService: DataService) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modalService: NgbModal,
+              private dataService: DataService) {
     this.subscription = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
     });
@@ -204,6 +205,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   setWidgetPreference() {
+    this.dataService.refreshWidget(this.widgets);
     this.preferences.dashboardLayout = this.widgets;
     sessionStorage.preferences = JSON.stringify(this.preferences);
     const configObj: any = {

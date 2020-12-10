@@ -32,6 +32,9 @@ export class LoginComponent implements OnInit {
       this.rememberMe = true;
     }
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    if (this.returnUrl.match(/login/)) {
+      this.returnUrl = '/';
+    }
     // this.getDefaultConfiguration();
   }
 
