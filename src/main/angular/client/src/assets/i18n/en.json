@@ -428,6 +428,7 @@
     "button.editLayout": "Edit Layout",
     "button.resetLayout": "Reset Layout",
     "button.widget": "Add Widget",
+    "button.changeSize": "Adjust Size",
     "button.addNewWidget": "Add a new widget",
     "button.terminate": "Terminate",
     "button.terminateAndRestart": "Terminate and Restart",

@@ -7,12 +7,35 @@
 <div class="modal-body p-a-md" style="min-height: 180px; max-height: 640px; overflow: auto">
   <div class="form-group row p-b b-b" *ngFor="let widget of widgets" [hidden]="widget.visible">
     <img class="pull-left m-l" src="./assets/images/{{widget.name}}.png" width="120px" height="60px">
-    <div class="col-sm-10">
+    <div class="col-sm-6">
       <label class="font14 text-dark m-b-0" [innerHtml]="'dashboard.label.'+widget.name | translate"></label>
       <p class="text-sm text-muted" >{{'dashboard.'+widget.message | translate}}</p>
-      <button type="button" class="btn btn-grey btn-sm pos-abt" style="right: 0;top: 0" (click)="addWidgetFunc(widget)" translate>
-        dashboard.button.widget
-      </button>
+    </div>
+    <div class="col-sm-4 text-right">
+      <div>
+        <button type="button" class="btn btn-grey btn-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="size" translate>
+        <i class="fa fa-cog"></i> dashboard.button.changeSize
+        </button>
+        <nz-dropdown-menu #size="nzDropdownMenu">
+          <ul nz-menu style="max-height: 120px;overflow: auto;max-width: 110px;">
+            <li nz-menu-item class="w-xs" (click)="widget.cols= 4;widget.rows = 2;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 2}"><a>1 <i class="fa fa-times"></i> 2</a></li>
+            <li nz-menu-item class="w-xs" (click)="widget.cols= 4;widget.rows = 3;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 3}"><a>1 <i class="fa fa-times"></i> 3</a></li>
+            <li nz-menu-item class="w-xs" (click)="widget.cols= 4;widget.rows = 4;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 4}"><a>1 <i class="fa fa-times"></i> 4</a></li>
+            <li nz-menu-item class="w-xs" (click)="widget.cols= 4;widget.rows = 5;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 5}"><a>1 <i class="fa fa-times"></i> 5</a></li>
+            <li nz-menu-item class="w-xs" (click)="widget.cols= 8;widget.rows = 2;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 8 && widget.rows == 2}"><a>2 <i class="fa fa-times"></i> 2</a></li>
+            <li nz-menu-item class="w-xs" (click)="widget.cols= 8;widget.rows = 3;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 8 && widget.rows == 3}"><a>2 <i class="fa fa-times"></i> 3</a></li>
+            <li nz-menu-item class="w-xs" (click)="widget.cols= 8;widget.rows = 4;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 8 && widget.rows == 4}"><a>2 <i class="fa fa-times"></i> 4</a></li>
+            <li nz-menu-item class="w-xs" (click)="widget.cols= 8;widget.rows = 5;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 8 && widget.rows == 5}"><a>2 <i class="fa fa-times"></i> 5</a></li>
+            <li nz-menu-item class="w-xs" (click)="widget.cols= 12;widget.rows = 2;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 12 && widget.rows == 2}"><a>3 <i class="fa fa-times"></i> 2</a></li>
+            <li nz-menu-item class="w-xs" (click)="widget.cols= 12;widget.rows = 3;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 12 && widget.rows == 3}"><a>3 <i class="fa fa-times"></i> 3</a></li>
+            <li nz-menu-item class="w-xs" (click)="widget.cols= 12;widget.rows = 4;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 12 && widget.rows == 4}"><a>3 <i class="fa fa-times"></i> 4</a></li>
+            <li nz-menu-item class="w-xs" (click)="widget.cols= 12;widget.rows = 5;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 12 && widget.rows == 5}"><a>3 <i class="fa fa-times"></i> 5</a></li>
+          </ul>
+        </nz-dropdown-menu>
+        <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="addWidgetFunc(widget)" translate>
+          <i class="fa fa-plus"></i> dashboard.button.widget
+        </button>
+      </div>
     </div>
   </div>
   <div class="m-t-lg hide" [ngClass]="{'show':dashboard.length === widgets.length}">

@@ -13,12 +13,14 @@ import {ActionComponent, CommentModalComponent} from './action/action.component'
 import {ControllerClusterComponent} from './controller-cluster/controller-cluster.component';
 import {InventoryStatisticsComponent} from './inventory-statistics/inventory-statistics.component';
 import {SharedModule} from '../shared/shared.module';
+import {ChartsModule, ThemeService} from 'ng2-charts';
 
 const ENTRYCOMPONENTS = [CommentModalComponent, AddWidgetModalComponent];
 
 @NgModule({
   imports: [
     NgxChartsModule,
+    ChartsModule,
     GridsterModule,
     SharedModule,
     DashboardRoutingModule
@@ -36,7 +38,8 @@ const ENTRYCOMPONENTS = [CommentModalComponent, AddWidgetModalComponent];
     SchedulerInstanceComponent,
     ActionComponent
   ],
-  entryComponents: [...ENTRYCOMPONENTS]
+  entryComponents: [...ENTRYCOMPONENTS],
+  providers:[ThemeService]
 })
 export class DashboardModule {
 

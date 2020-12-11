@@ -1,10 +1,13 @@
 import {Component, OnInit, OnDestroy, Input} from '@angular/core';
-import {CoreService} from '../../../services/core.service';
-import {AuthService} from '../../../components/guard';
 import {TranslateService} from '@ngx-translate/core';
 import {Subscription} from 'rxjs';
-import {DataService} from '../../../services/data.service';
 import {Router} from '@angular/router';
+import {ChartOptions} from 'chart.js';
+import {Label} from 'ng2-charts';
+import * as pluginDataLabels from 'chartjs-plugin-datalabels';
+import {DataService} from '../../../services/data.service';
+import {CoreService} from '../../../services/core.service';
+import {AuthService} from '../../../components/guard';
 
 @Component({
   selector: 'app-agent-status',
@@ -13,42 +16,67 @@ import {Router} from '@angular/router';
 export class AgentStatusComponent implements OnInit, OnDestroy {
   @Input('layout') layout: any;
   schedulerIds: any = {};
-  agentClusters: any = {};
+  agentClusters: any = [];
   isLoaded = false;
-  data: any[];
-  view: any[] = [140, 140];
-  showLegend = true;
-  showLabels = false;
-  explodeSlices = false;
-  doughnut = false;
-  colorScheme = {
-    domain: []
-  };
   subscription1: Subscription;
-  subscription2: Subscription;
+
+  pieChartOptions: ChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    legend: {
+      position: 'right',
+      onHover: function (e: any) {
+        e.target.style.cursor = 'pointer';
+      },
+      onLeave: function (e: any) {
+        e.target.style.cursor = 'default';
+      },
+      onClick: ($event, item) => {
+        this.navToAgentView(item.fillStyle);
+      }
+    },
+    hover: {
+      onHover: function (e: any) {
+        const point = this.getElementAtEvent(e);
+        if (point.length) {
+          e.target.style.cursor = 'pointer';
+        } else {
+          e.target.style.cursor = 'default';
+        }
+      }
+    },
+    plugins: {
+      datalabels: {
+        formatter: (value) => {
+          return Math.round((value * 100) / this.agentClusters.length) + '%';
+        }
+      }
+    }
+  };
+  pieChartLabels: Label[] = [];
+  pieChartData: number[] = [];
+  pieChartLegend = true;
+  pieChartPlugins = [pluginDataLabels];
+  pieChartColors = [
+    {
+      borderWidth: 1,
+      hoverBackgroundColor: [],
+      backgroundColor: []
+    }
+  ];
 
   constructor(private coreService: CoreService, private authService: AuthService, public translate: TranslateService,
               private router: Router, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
-    this.subscription2 = dataService.refreshWidgetAnnounced$.subscribe((res) => {
-      if (res) {
-        for (let i = 0; i < res.length; i++) {
-          if (res[i].name === 'agentClusterStatus') {
-            this.layout = res[i];
-            this.setViewSize(window);
-            this.getStatus();
-            break;
-          }
-        }
-      }
-    });
   }
 
   ngOnInit() {
-    this.data = [];
-    this.setViewSize(window);
+    this.pieChartData = [];
+    this.pieChartLabels = [];
+    this.pieChartColors[0].backgroundColor = [];
+    this.pieChartColors[0].hoverBackgroundColor = [];
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     if (this.schedulerIds.selected) {
       this.getStatus();
@@ -59,18 +87,6 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription1.unsubscribe();
-    this.subscription2.unsubscribe();
-  }
-
-
-  onResize(event) {
-    this.setViewSize(event.target);
-  }
-
-  private setViewSize(target) {
-    let w = target.innerWidth / 12;
-    this.view[0] = w * this.layout.cols - 100;
-    this.view[1] = (this.layout.rows * 50 + ((this.layout.rows - 1) * 20 - 50));
   }
 
   refresh(args) {
@@ -88,17 +104,20 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
     let results = [];
     if (!(data)) return;
     data.forEach((value) => {
-      let result = {count: 1, _text: '', color: ''};
+      let result = {count: 1, _text: '', color: '',hoverColor: ''};
       let label: string;
       if (value.state._text === 'COUPLED') {
         label = 'agent.label.coupled';
         result.color = '#7ab97a';
+        result.hoverColor = 'rgba(122, 185, 122, .8)';
       } else if (value.state._text === 'DECOUPLED') {
         label = 'agent.label.decoupled';
-        result.color = 'rgba(255, 195, 0, 0.9)';
+        result.color = 'rgba(255,195,0,0.9)';
+        result.hoverColor = 'rgba(255, 195, 0, .7)';
       } else {
         label = 'agent.label.couplingFailed';
         result.color = '#e86680';
+        result.hoverColor = 'rgba(232, 102, 128, .8)';
       }
       this.translate.get(label).subscribe(translatedValue => {
         result._text = translatedValue;
@@ -120,33 +139,44 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
 
   prepareAgentClusterData(result) {
     this.agentClusters = result.agents;
-    let seriesData = [];
-    let colors = [];
-    this.groupBy(result.agents).forEach(function (value) {
-      seriesData.push({value: value.count, name: value._text, color: value.color});
-      colors.push(value.color);
+    this.groupBy(result.agents).forEach((value, index) => {
+      this.pieChartData.push(value.count);
+      this.pieChartColors[0].backgroundColor.push(value.color);
+      this.pieChartColors[0].hoverBackgroundColor.push(value.hoverColor);
+      this.pieChartLabels.push(value._text);
     });
-    this.data = seriesData;
-    this.colorScheme.domain = colors;
   }
 
   getStatus(): void {
     this.coreService.post('agents', {controllerId: this.schedulerIds.selected, compact: true}).subscribe(res => {
-      this.prepareAgentClusterData(res);
       this.isLoaded = true;
-
+      this.prepareAgentClusterData(res);
     }, (err) => {
       this.isLoaded = true;
     });
   }
 
-  onSelect(event) {
-    let type = event;
-    if (event.name) {
-      type = event.name;
+  onChartClick(e: any): void {
+    if (e.active.length > 0) {
+      const chart = e.active[0]._chart;
+      const activePoints = chart.getElementAtEvent(e.event);
+      if (activePoints.length > 0 && activePoints[0]._options) {
+        this.navToAgentView(activePoints[0]._options.backgroundColor);
+      }
     }
-    console.log('type', type, event)
-    this.coreService.getResourceTab().agents.filter.state = type === 'Coupling Failed' ? 'COUPLINGFAILED' : 'COUPLED';
+  }
+
+  navToAgentView(color) {
+    let state = '';
+    if (color === '#7ab97a') {
+      state = 'COUPLED';
+    } else if (color === '#e86680') {
+      state = 'COUPLINGFAILED';
+    } else {
+      state = 'DECOUPLED';
+    }
+    this.coreService.getResourceTab().agents.filter.state = state;
     this.router.navigate(['/resources/agents']);
   }
+
 }

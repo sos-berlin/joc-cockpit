@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
@@ -10,7 +10,8 @@ import {Router} from '@angular/router';
   templateUrl: './order-overview.component.html'
 })
 export class OrderOverviewComponent implements OnInit, OnDestroy {
-
+  @Input('sizeX') xbody: number;
+  @Input('sizeY') ybody: number;
   snapshot: any = {};
   schedulerIds: any = {};
   notAuthenticate = false;

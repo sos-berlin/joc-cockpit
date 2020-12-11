@@ -41,7 +41,7 @@
           <a class="cursor" (click)="addWidgetDialog()" translate>dashboard.button.addNewWidget</a>
       </div>
   </div>
-  <div class="gridster">
+  <div class="gridster" *ngIf="dashboard.length > 0">
       <gridster [options]="options">
           <gridster-item  [item]="item" *ngFor="let item of dashboard"  id = "{{item.name}}" >
               <div class="destroy-button">
@@ -60,7 +60,7 @@
                   <app-scheduler-instance [sizeY]="item.rows"></app-scheduler-instance>
               </div>
               <div *ngIf="item.name === 'ordersOverview'">
-                  <app-order-overview></app-order-overview>
+                  <app-order-overview [sizeX]="item.cols" [sizeY]="item.rows"></app-order-overview>
               </div>
               <div *ngIf="item.name === 'ordersSummary'">
                   <app-order-summary></app-order-summary>

@@ -5077,23 +5077,6 @@ tr.disabled-row td:not(.menu) {
   cursor: not-allowed !important
 }
 
-div.bar-chart div {
-  width: 100% !important;
-  text-align: center !important;
-
-  canvas {
-    position: relative !important;
-  }
-}
-.legend-title-text{
-  display: none !important;
-}
-.chart-legend .legend-labels{
-  width: auto !important;
-  background: transparent !important;
-  margin-top: 16px;
-}
-
 #clusterStatusContainer {
   position: relative;
   height: 337px;
@@ -6471,6 +6454,9 @@ form .ant-select-selection{
 .ant-dropdown-menu-item, .ant-dropdown-menu-submenu-title {
   min-width: 150px;
   padding: 5px 20px;
+}
+.w-xs.ant-dropdown-menu-item{
+  min-width: 90px;
 }
 
 /** ----- Code Mirror ----------- ****/
