@@ -519,6 +519,16 @@
                 });
                 return deferred.promise;
             },
+            getMissingEvents: function (filter) {
+                let deferred = $q.defer();
+                let Event = $resource('jobstreams/missing_events');
+                Event.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             addEvent: function (filter) {
                 let deferred = $q.defer();
                 let Event = $resource('jobstreams/event/add');
