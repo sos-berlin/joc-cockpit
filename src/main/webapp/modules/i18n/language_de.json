@@ -1859,5 +1859,9 @@
   "label.startJobStream": "Job-Folge starten",
   "button.startJobStreamStarterParameterized": "Job-Folge parametrisiert starten",
   "button.setInstanceToRunning" : "Instanz auf 'Laufend' setzen",
-  "button.setInstanceToComplete" : "Instanz auf 'Abgeschlossen' setzen"
+  "button.setInstanceToComplete" : "Instanz auf 'Abgeschlossen' setzen",
+  "button.editEvents": "Edit Events",
+  "label.updateEvents": "Update Events",
+  "tab.missingEvents": "Missing Events",
+  "tab.existingEvents": "Existing Events"
 }

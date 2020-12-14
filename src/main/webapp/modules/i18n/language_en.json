@@ -1858,6 +1858,10 @@
   "joe.button.deployObject": "Deploy Object",
   "label.startJobStream": "Start Job Stream",
   "button.startJobStreamStarterParameterized": "Start Job Stream parameterized",
-  "button.setInstanceToRunning" : "Set Instance to 'Running'",
-  "button.setInstanceToComplete" : "Set Instance to 'Completed'"
+  "button.setInstanceToRunning": "Set Instance to 'Running'",
+  "button.setInstanceToComplete": "Set Instance to 'Completed'",
+  "button.editEvents": "Edit Events",
+  "label.updateEvents": "Update Events",
+  "tab.missingEvents": "Missing Events",
+  "tab.existingEvents": "Existing Events"
 }

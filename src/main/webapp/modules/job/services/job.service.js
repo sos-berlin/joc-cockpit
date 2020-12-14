@@ -519,9 +519,9 @@
                 });
                 return deferred.promise;
             },
-            getMissingEvents: function (filter) {
+            getExpressionEvents: function (filter) {
                 let deferred = $q.defer();
-                let Event = $resource('jobstreams/missing_events');
+                let Event = $resource('jobstreams/expression_events');
                 Event.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {

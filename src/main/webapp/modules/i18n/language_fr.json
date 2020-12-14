@@ -1859,5 +1859,9 @@
   "label.startJobStream": "Lancer le Flot de Travaux",
   "button.startJobStreamStarterParameterized": "Lancer le Flot de Travaux avec paramètres",
   "button.setInstanceToRunning" : "Régler l'instance sur 'en cours'",
-  "button.setInstanceToComplete" : "Régler l'instance sur 'terminé'"
+  "button.setInstanceToComplete" : "Régler l'instance sur 'terminé'",
+  "button.editEvents": "Edit Events",
+  "label.updateEvents": "Update Events",
+  "tab.missingEvents": "Missing Events",
+  "tab.existingEvents": "Existing Events"
 }

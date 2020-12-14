@@ -1859,5 +1859,9 @@
   "label.startJobStream": "ジョブストリーム開始",
   "button.startJobStreamStarterParameterized": "ジョブストリーム開始パラメータ設定",
   "button.setInstanceToRunning" : "インスタンスを実行中に設定",
-  "button.setInstanceToComplete" : "インスタンスを完了に設定"
+  "button.setInstanceToComplete" : "インスタンスを完了に設定",
+  "button.editEvents": "Edit Events",
+  "label.updateEvents": "Update Events",
+  "tab.missingEvents": "Missing Events",
+  "tab.existingEvents": "Existing Events"
 }

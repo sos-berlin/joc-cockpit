@@ -8635,6 +8635,75 @@
             }
         }
 
+        function updateEvent(job) {
+            if (vm.editor && vm.editor.graph) {
+                const graph = vm.editor.graph;
+                let v = graph.getModel().getCell(job.jId)
+                let edges = v.edges;
+                let parent = graph.getDefaultParent();
+                graph.getModel().beginUpdate();
+                try {
+                    for (let i = 0; i < edges.length; i++) {
+                        let c1;
+                        if (edges[i].source.id == v.id) {
+                            c1 = edges[i].target;
+                        }
+                        if (c1) {
+                            if (c1.value.tagName === 'OutCondition') {
+                                for (let j = 0; j < job.outconditions.length; j++) {
+                                    if (job.outconditions[j].id == c1.getAttribute('_id')) {
+                                        graph.removeCellOverlay(c1);
+                                        let style = 'condition2';
+                                        if (job.outconditions[j].conditionExpression.value) {
+                                            style += ';strokeColor=green;';
+                                        }
+                                        c1.setStyle(style);
+                                        addOverlays(graph, c1, job.outconditions[j].conditionExpression.value ? 'green' : '');
+                                        let evntEdges = graph.getOutgoingEdges(c1, parent);
+                                        for (let m = 0; m < evntEdges.length; m++) {
+                                            if (evntEdges[m].source.id == c1.id) {
+                                                let e1 = evntEdges[m].target;
+                                                if (e1.value.tagName === 'Event') {
+                                                    for (let n = 0; n < job.outconditions[j].outconditionEvents.length; n++) {
+                                                        if (job.outconditions[j].outconditionEvents[n].event === e1.getAttribute('actual')) {
+                                                            let flg = job.outconditions[j].outconditionEvents[n].exists ? true : job.outconditions[j].outconditionEvents[n].existsInJobStream;
+                                                            const edit1 = new mxCellAttributeChange(
+                                                                e1, 'isExist', flg);
+                                                            graph.getModel().execute(edit1);
+                                                            const edit2 = new mxCellAttributeChange(
+                                                                e1, 'globalEvent', job.outconditions[j].outconditionEvents[n].globalEvent);
+                                                            graph.getModel().execute(edit2);
+                                                            let style = 'event';
+                                                            if (!job.outconditions[j].outconditionEvents[n].existsInJobStream && job.outconditions[j].outconditionEvents[n].exists) {
+                                                                style += ';dashed=1';
+                                                            }
+                                                            if (!job.outconditions[j].outconditionEvents[n].exists && !job.outconditions[j].outconditionEvents[n].existsInJobStream) {
+                                                                style += ';fillColor=none';
+                                                            }
+                                                            e1.setStyle(style);
+                                                            break;
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                        break
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }
+                } catch (e) {
+                    console.error(e)
+                } finally {
+                    // Updates the display
+                    graph.getModel().endUpdate();
+                }
+            }
+        }
+
         vm.getJobStreams();
 
         function checkToolbarWidth() {
@@ -10575,20 +10644,97 @@
         function updateStateOfStarter(obj, starter) {
             vm.isJobStreamLoaded = false;
             ConditionService.editJobStreamStarter(obj).then(function (res) {
-                for (let i = 0; i < vm.jobStreamList.length; i++) {
-                    if (parseInt(vm.jobStreamList[i].jobStreamId) === parseInt(obj.jobStreamId)) {
-                        for (let j = 0; j < vm.jobStreamList[i].jobstreamStarters.length; j++) {
-                            if (vm.jobStreamList[i].jobstreamStarters[j].jobStreamStarterId == starter.jobStreamStarterId) {
-                                vm.jobStreamList[i].jobstreamStarters.splice(j, 1);
-                                break;
+                if(starter) {
+                    for (let i = 0; i < vm.jobStreamList.length; i++) {
+                        if (parseInt(vm.jobStreamList[i].jobStreamId) === parseInt(obj.jobStreamId)) {
+                            for (let j = 0; j < vm.jobStreamList[i].jobstreamStarters.length; j++) {
+                                if (vm.jobStreamList[i].jobstreamStarters[j].jobStreamStarterId == starter.jobStreamStarterId) {
+                                    vm.jobStreamList[i].jobstreamStarters.splice(j, 1);
+                                    break;
+                                }
                             }
+                            vm.jobStreamList[i].jobstreamStarters = vm.jobStreamList[i].jobstreamStarters.concat(res.jobstreamStarters);
+                            break;
                         }
-                        vm.jobStreamList[i].jobstreamStarters = vm.jobStreamList[i].jobstreamStarters.concat(res.jobstreamStarters);
-                        break;
                     }
                 }
                 updateJobs();
             })
+        }
+
+        vm.updateEvents = function (cell, jobStream) {
+            vm.updateEventObj ={
+                existingEvents : [],
+                missingEvents: []
+            };
+            if(cell) {
+                vm.updateEventObj.expression = cell.getAttribute('actual');
+                vm.updateEventObj.jobStream = cell.getAttribute('jobStream');
+                for (let i = 0; i < vm.jobs.length; i++) {
+                    if (vm.jobs[i].path === cell.getAttribute('job')) {
+                        vm.updateEventObj.folder = vm.jobs[i].path1;
+                        for (let j = 0; j < vm.jobs[i].outconditions.length; j++) {
+                            vm.updateEventObj.existingEvents = vm.updateEventObj.existingEvents.concat(vm.jobs[i].outconditions[j].outconditionEvents);
+                        }
+                        break;
+                    }
+                }
+            } else{
+                vm.updateEventObj.folder = vm.jobs[0].path1;
+            }
+            getExpressionEvents(vm.updateEventObj)
+            let modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/edit-events-dialog.html',
+                controller: 'DialogCtrl1',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                addAndRemoveEvents(vm.updateEventObj);
+            }, function () {
+                vm._jobStream = {};
+            })
+        };
+
+        function addAndRemoveEvents(obj) {
+            for (let i = 0; i < obj.existingEvents.length; i++) {
+                if (obj.existingEvents[i].checked) {
+                    let requestObj = {
+                        jobschedulerId: $scope.schedulerIds.selected,
+                        session: vm.selectedSession.session,
+                        jobStream: vm.selectedJobStream,
+                        event: obj.existingEvents[i].event
+                    };
+                    ConditionService.deleteEvent(requestObj);
+                }
+            }
+            for (let i = 0; i < obj.missingEvents.length; i++) {
+                if (obj.missingEvents[i].checked) {
+                    let requestObj = {
+                        jobschedulerId: $scope.schedulerIds.selected,
+                        session: vm.selectedSession.session,
+                        jobStream: vm.selectedJobStream,
+                        event: obj.missingEvents[i].event
+                    };
+                    ConditionService.addEvent(requestObj);
+                }
+            }
+        }
+
+         function getExpressionEvents(updateEventObj){
+            let obj ={
+                jobschedulerId: $scope.schedulerIds.selected,
+                session: vm.selectedSession.session,
+                folder :  updateEventObj.folder,
+                jobStream :  updateEventObj.jobStream
+            };
+            if(updateEventObj.expression){
+                obj.expression = updateEventObj.expression;
+            }
+            ConditionService.getExpressionEvents(obj).then(function (res) {
+                updateEventObj.existingEvents = res.conditionEvents;
+                updateEventObj.missingEvents = res.conditionMissingEvents;
+            });
         }
 
         vm.changeGraph = function (jobStream, selectedStarterId) {
@@ -10977,17 +11123,6 @@
             }
         };
 
-        vm.getMissingEvents = function(job){
-            let obj ={
-                jobschedulerId: $scope.schedulerIds.selected,
-                session: vm.selectedSession.session,
-                folder: job.path1
-            };
-            ConditionService.getEvents(obj).then(function (res) {
-                console.log(res.conditionEvents, ' conditionEvents')
-            });
-        };
-
         vm.changeEvents = function (jobStream) {
             let obj = {jobschedulerId: $scope.schedulerIds.selected, session: vm.selectedSession.session};
             if (jobStream) {
@@ -11345,10 +11480,13 @@
             }
 
             if (!flag) {
-                let flg = false;
+                let flg = false, updateByAPI = false
                 for (let i = 0; i < vm.jobs.length; i++) {
                     if (vm.jobs[i].outconditions.length > 0) {
                         for (let j = 0; j < vm.jobs[i].outconditions.length; j++) {
+                            if (vm.jobs[i].outconditions[j].value === true || vm.jobs[i].outconditions[j].value === false) {
+                                updateByAPI = true;
+                            }
                             if (vm.jobs[i].outconditions[j].outconditionEvents.length > 0) {
                                 for (let x = 0; x < vm.jobs[i].outconditions[j].outconditionEvents.length; x++) {
                                     if (vm.jobs[i].outconditions[j].outconditionEvents[x].event === evtName) {
@@ -11363,11 +11501,25 @@
                             }
                         }
                         if (flg) {
+                            if (updateByAPI) {
+                                ConditionService.outCondition({
+                                    jobschedulerId: $scope.schedulerIds.selected,
+                                    session: vm.selectedSession.session,
+                                    jobs: [{job: vm.jobs[i].path}]
+                                }).then(function (result) {
+                                    for (let j = 0; j < result.jobsOutconditions[0].outconditions.length; j++) {
+                                        result.jobsOutconditions[0].outconditions[j].isExpanded = true;
+                                    }
+                                    vm.jobs[i].outconditions = result.jobsOutconditions[0].outconditions;
+                                    updateEvent(vm.jobs[i]);
+                                });
+                            }
                             vm.jobs[i].isExpanded = true;
                             break;
                         }
                     }
                 }
+
                 if (flg) {
                     if (vm.isWorkflowGenerated) {
                         vm.isWorkflowGenerated = false;
