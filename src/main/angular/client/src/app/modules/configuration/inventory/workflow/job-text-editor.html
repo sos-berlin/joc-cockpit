@@ -174,11 +174,10 @@
     </div>
   </nz-tab>
   <nz-tab [nzTitle]="'workflow.tab.jobOptions' | translate">
-    <div>
-      <div class="form-group row" *ngIf="index === 1">
+      <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.taskLimit</label>
-        <div class="col-md-8 col-lg-9"  [ngClass]="{'has-error' : ((taskLimit.dirty || taskLimit.touched) && taskLimit.invalid)}">
-          <nz-input-number [nzMin]="0" [nzAutoFocus]="true" [nzStep]="1" required name="taskLimit" #taskLimit="ngModel" [(ngModel)]="selectedNode.job.taskLimit"></nz-input-number>
+        <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((taskLimit.dirty || taskLimit.touched) && taskLimit.invalid)}">
+          <nz-input-number [nzMin]="0" id="taskLimitId" [nzStep]="1" required name="taskLimit" #taskLimit="ngModel" [(ngModel)]="selectedNode.job.taskLimit"></nz-input-number>
           <div *ngIf="taskLimit.invalid && (taskLimit.dirty || taskLimit.touched)"
                class="text-danger help-block">
             <div *ngIf="taskLimit.errors.required">
@@ -222,13 +221,11 @@
           </nz-select>
         </div>
       </div>
-    </div>
   </nz-tab>
   <nz-tab [nzTitle]="'workflow.tab.nodeProperties' | translate">
-    <div>
       <div class="form-group row">
         <label class="col-md-12 _600">{{'workflow.label.arguments' | translate}}</label>
-        <div class="col-md-12" *ngIf="index==2">
+        <div class="col-md-12">
           <div class="form-group row m-b-0" *ngFor="let argument of selectedNode.obj.defaultArguments; let i = index">
             <div class="col-md-4 col-lg-5 m-b-sm" *ngIf="i==0" translate>common.label.name</div>
             <div class="col-md-8 col-lg-6 m-b-sm" *ngIf="i==0" translate>common.label.value</div>
@@ -252,6 +249,5 @@
           </div>
         </div>
       </div>
-    </div>
   </nz-tab>
 </nz-tabset>

@@ -128,10 +128,10 @@ export class JobComponent implements OnChanges, OnDestroy {
   }
 
   tabChange($event) {
-    if ($event.index === 2) {
+    if ($event.index === 1) {
       setTimeout(() => {
-        $('#label').focus();
-      }, 500);
+        $('#taskLimitId input').focus();
+      }, 100);
     } else if ($event.index === 0) {
       this.reloadScript();
     }
@@ -248,7 +248,7 @@ export class JobComponent implements OnChanges, OnDestroy {
       }, 10);
     }
     this.onBlur();
-    if (this.index != 2) {
+    if (this.index === 0) {
       this.reloadScript();
     }
   }

@@ -73,10 +73,6 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.pieChartData = [];
-    this.pieChartLabels = [];
-    this.pieChartColors[0].backgroundColor = [];
-    this.pieChartColors[0].hoverBackgroundColor = [];
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     if (this.schedulerIds.selected) {
       this.getStatus();
@@ -104,7 +100,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
     let results = [];
     if (!(data)) return;
     data.forEach((value) => {
-      let result = {count: 1, _text: '', color: '',hoverColor: ''};
+      let result = {count: 1, _text: '', color: '', hoverColor: ''};
       let label: string;
       if (value.state._text === 'COUPLED') {
         label = 'agent.label.coupled';
@@ -139,6 +135,10 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
 
   prepareAgentClusterData(result) {
     this.agentClusters = result.agents;
+    this.pieChartData = [];
+    this.pieChartLabels = [];
+    this.pieChartColors[0].backgroundColor = [];
+    this.pieChartColors[0].hoverBackgroundColor = [];
     this.groupBy(result.agents).forEach((value, index) => {
       this.pieChartData.push(value.count);
       this.pieChartColors[0].backgroundColor.push(value.color);

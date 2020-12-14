@@ -18,7 +18,7 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
   colorScheme = {
-    domain: ['rgb(168, 56, 93)', 'rgb(122, 163, 229)', 'rgb(162, 126, 168)', 'rgb(170, 227, 245)']
+    domain: ['rgb(173, 205, 237)', 'rgb(122, 163, 229)', 'rgb(162, 126, 168)', 'rgb(170, 227, 245)']
   };
 
   constructor(private coreService: CoreService, private authService: AuthService, private dataService: DataService) {
