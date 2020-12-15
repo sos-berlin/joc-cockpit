@@ -5,7 +5,7 @@
         </button>
         <h4 class="modal-title" translate>
             <span translate>label.updateEvents</span>
-            <span>: {{updateEventObj.path}}</span>
+            <span ng-if="updateEventObj.jobStream">: {{updateEventObj.jobStream}}</span>
         </h4>
     </div>
     <form name="form" role="form" ng-submit="ok()" novalidate>
@@ -19,11 +19,11 @@
                         <ul class="nav nav-tabs">
                             <li class="nav-item">
                                 <a class="nav-link active"
-                                   href data-toggle="tab" data-target="#tab1" translate>tab.existingEvents</a>
+                                   href data-toggle="tab" data-target="#tab1" translate>tab.deleteExistingEvents</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link"
-                                   href data-toggle="tab" data-target="#tab2" translate>tab.missingEvents</a>
+                                   href data-toggle="tab" data-target="#tab2" translate>tab.addMissingEvents</a>
                             </li>
                         </ul>
                     </div>

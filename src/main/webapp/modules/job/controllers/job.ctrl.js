@@ -9295,12 +9295,30 @@
                 _node.setAttribute('enquePeriod', enqueTask.enqueued);
             }
             let style = 'job';
-            style += ';strokeColor=' + (CoreService.getColorBySeverity(job.state.severity) || '#999');
+            let flag = true;
+            let barColor;
+            if(vm.taskHistory) {
+                for (let x = 0; x < vm.taskHistory.length; x++) {
+                    if (vm.taskHistory[x].job === job.path && vm.taskHistory[x].state && vm.taskHistory[x].state._text) {
+                        if (vm.taskHistory[x].state._text === 'SUCCESSFUL') {
+                            flag = false;
+                            style += ';strokeColor=' + '#007da6';
+                            barColor = 'blue';
+                        }
+                        break;
+                    }
+                }
+            }
+            if(flag) {
+                style += ';strokeColor=' + (CoreService.getColorBySeverity(job.state.severity) || '#999');
+            }
             if (nextPeriod || job.nextPeriod) {
                 style += ';fillColor=none';
             }
             let v1 = createVertex(graph.getDefaultParent(), _node, job.name, style);
-            let barColor = job.state._text === 'RUNNING' ? 'green' : job.state._text === 'PENDING' ? 'yellow' : job.state._text === undefined ? 'grey' : 'red';
+            if(!barColor) {
+                barColor = job.state._text === 'RUNNING' ? 'green' : job.state._text === 'PENDING' ? 'yellow' : job.state._text === undefined ? 'grey' : 'red';
+            }
             if (barColor !== 'red' && enqueTask) {
                 barColor = 'orange'
             }
@@ -9712,25 +9730,12 @@
                                 if(tempHistory) {
                                     for (let x = 0; x < tempHistory.length; x++) {
                                         if (tempHistory[x].job === jobPath && tempHistory[x].state && tempHistory[x].state._text) {
-                                            flag = false;
-                                            style += ';strokeColor=' + (tempHistory[x].state._text === 'SUCCESSFUL' ? '#007da6' : tempHistory[x].state._text === 'RUNNING' ? '#228b22' : tempHistory[x].state._text === 'FAILED' ? '#dc143c' : (CoreService.getColorBySeverity(tempJobs[j].state.severity) || '#999'));
-                                            graph.removeCellOverlay(vertices[i]);
-                                            let barColor = '';
-                                            if (tempHistory[x].state._text === 'SUCCESSFUL' || tempHistory[x].state._text === 'RUNNING' || tempHistory[x].state._text === 'FAILED') {
-                                                barColor = tempHistory[x].state._text === 'SUCCESSFUL' ? 'blue' : tempHistory[x].state._text === 'RUNNING' ? 'green' : 'red';
-                                            } else {
-                                                barColor = tempJobs[j].state._text === 'RUNNING' ? 'green' : tempJobs[j].state._text === 'PENDING' ? 'yellow' : tempJobs[j].state._text === undefined ? 'grey' : 'red';
-                                                if (barColor !== 'red' && enqueTask) {
-                                                    barColor = 'orange';
-                                                }
-                                            }
-                                            console.log('tempHistory[x].state._text ', tempHistory[x].state._text )
-                                            console.log('barColor', barColor)
-                                            addOverlays(graph, vertices[i], barColor);
-                                            if (tempHistory[x].state._text === 'RUNNING' || tempJobs[j].state._text === 'RUNNING') {
-                                                edges = edges.concat(graph.getOutgoingEdges(vertices[i], parent));
-                                            } else {
-                                                edges2 = edges2.concat(graph.getOutgoingEdges(vertices[i], parent));
+                                            if (tempHistory[x].state._text === 'SUCCESSFUL' ||  tempHistory[x].state._text === 'FAILED') {
+                                                flag = false;
+                                                style += ';strokeColor=' + (tempHistory[x].state._text === 'SUCCESSFUL' ? '#007da6' : '#dc143c');
+                                                graph.removeCellOverlay(vertices[i]);
+                                                let barColor = tempHistory[x].state._text === 'SUCCESSFUL' ? 'blue' : 'red';
+                                                addOverlays(graph, vertices[i], barColor);
                                             }
                                             tempHistory.splice(x, 1);
                                             break;
@@ -10067,6 +10072,7 @@
                 starter.jobs.push({job: '', startDelay: 0});
             }
         };
+
         vm.removeJob = function (index, starter) {
             if (starter.jobs.length > 1) {
                 starter.jobs.splice(index, 1)
@@ -10609,7 +10615,6 @@
         };
 
         function setStarterStatus(cell, status, starter, jobStream) {
-
             let obj = {
                 jobschedulerId: $scope.schedulerIds.selected
             };
@@ -10694,6 +10699,7 @@
                     }
                 }
             } else{
+                vm.updateEventObj.jobStream = vm.selectedJobStream;
                 vm.updateEventObj.folder = vm.jobs[0].path1;
             }
             getExpressionEvents(vm.updateEventObj)
@@ -10716,7 +10722,7 @@
                     let requestObj = {
                         jobschedulerId: $scope.schedulerIds.selected,
                         session: vm.selectedSession.session,
-                        jobStream: vm.selectedJobStream,
+                        jobStream: vm.updateEventObj.jobStream,
                         event: obj.existingEvents[i].event,
                         outConditionId: obj.existingEvents[i].outConditionId || 0
                     };
@@ -10728,7 +10734,7 @@
                     let requestObj = {
                         jobschedulerId: $scope.schedulerIds.selected,
                         session: vm.selectedSession.session,
-                        jobStream: vm.selectedJobStream,
+                        jobStream: vm.updateEventObj.jobStream,
                         event: obj.missingEvents[i].event,
                         outConditionId: obj.missingEvents[i].outConditionId || 0
                     };

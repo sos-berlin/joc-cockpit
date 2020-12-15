@@ -1862,6 +1862,6 @@
   "button.setInstanceToComplete": "Set Instance to 'Completed'",
   "button.editEvents": "Edit Events",
   "label.updateEvents": "Update Events",
-  "tab.missingEvents": "Missing Events",
-  "tab.existingEvents": "Existing Events"
+  "tab.addMissingEvents": "Add Missing Events",
+  "tab.deleteExistingEvents": "Delete Existing Events"
 }
