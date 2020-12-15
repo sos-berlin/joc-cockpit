@@ -79,7 +79,7 @@ export class AccountModalComponent implements OnInit {
       }
     }
 
-    this.coreService.post('security_configuration/write', this.userDetail).subscribe(res => {
+    this.coreService.post('authentication/shiro/store', this.userDetail).subscribe(res => {
       this.submitted = false;
       this.activeModal.close(this.userDetail.users);
     }, err => {
@@ -160,7 +160,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       main: this.userDetail.main
     };
 
-    this.coreService.post('security_configuration/write', obj).subscribe(res => {
+    this.coreService.post('authentication/shiro/store', obj).subscribe(res => {
       this.users = [...this.users];
     }, err => {
 
@@ -168,9 +168,11 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   getRoles() {
-    this.coreService.post('security/permissions', {}).subscribe((res: any) => {
-      this.roles = res.SOSPermissionRoles.SOSPermissionRole;
-    });
+    if (this.roles.length === 0) {
+      this.coreService.post('authentication/permissions', {}).subscribe((res: any) => {
+        this.roles = res.SOSPermissionRoles.SOSPermissionRole;
+      });
+    }
   }
 
   showMaster(user) {

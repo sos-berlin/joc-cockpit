@@ -1,11 +1,10 @@
-import {Component, OnInit, OnDestroy, Input} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../data.service';
-
 
 @Component({
   selector: 'app-profiles',
@@ -160,7 +159,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
       main: this.users.main,
       profiles: this.profiles
     };
-    this.coreService.post('security_configuration/write', obj).subscribe(res => {
+    this.coreService.post('authentication/shiro/store', obj).subscribe(res => {
       this.profiles = [...this.profiles];
     }, err => {
 

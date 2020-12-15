@@ -126,9 +126,8 @@
             </nz-input-group>
             <ng-template #addOnAfterTemplate>
               <nz-select name="format" [(ngModel)]="exportObj.fileFormat">
-                <nz-option nzLabel=".zip" nzValue=".zip"></nz-option>
-                <nz-option nzLabel=".tar.gz" nzValue=".tar.gz"></nz-option>
-                <nz-option nzLabel=".gz" nzValue=".gz"></nz-option>
+                <nz-option nzLabel=".zip" nzValue="ZIP"></nz-option>
+                <nz-option nzLabel=".tar.gz" nzValue="TAR_GZ"></nz-option>
               </nz-select>
             </ng-template>
             <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)" class="text-danger help-block">

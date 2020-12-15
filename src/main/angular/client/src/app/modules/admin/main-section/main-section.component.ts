@@ -59,7 +59,7 @@ export class MainSectionModalComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
     this.userDetail.main = this.userDetail.main.concat(this.mainSection);
-    this.coreService.post('security_configuration/write', this.userDetail).subscribe(() => {
+    this.coreService.post('authentication/shiro/store', this.userDetail).subscribe(() => {
       this.submitted = false;
       this.activeModal.close(this.userDetail.main);
     }, () => {
@@ -177,7 +177,7 @@ export class EditMainSectionModalComponent implements OnInit {
       }
     });
 
-    this.coreService.post('security_configuration/write', this.userDetail).subscribe(res => {
+    this.coreService.post('authentication/shiro/store', this.userDetail).subscribe(res => {
       this.submitted = false;
       this.activeModal.close(this.userDetail.main);
     }, err => {
@@ -291,7 +291,7 @@ export class LdapSectionModalComponent implements OnInit {
       }
     }
     this.userDetail.main = this.userDetail.main.concat(this.mainSection);
-    this.coreService.post('security_configuration/write', this.userDetail).subscribe(res => {
+    this.coreService.post('authentication/shiro/store', this.userDetail).subscribe(res => {
       this.submitted = false;
       this.activeModal.close(this.userDetail.main);
     }, () => {
@@ -358,7 +358,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
       main: this.main
     };
 
-    this.coreService.post('security_configuration/write', obj).subscribe(res => {
+    this.coreService.post('authentication/shiro/store', obj).subscribe(res => {
       this.main = [...this.main];
     }, () => {
 

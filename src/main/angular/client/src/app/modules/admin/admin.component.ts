@@ -121,7 +121,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   private getUsersData() {
-    this.coreService.post('security_configuration/read', {}).subscribe(res => {
+    this.coreService.post('authentication/shiro', {}).subscribe(res => {
       this.userObj = res;
       this.users = this.userObj.users;
       this.dataService.announceData(this.userObj);

@@ -107,7 +107,7 @@ export class RoleModalComponent implements OnInit {
       }
     }
 
-    this.coreService.post('security_configuration/write', this.userDetail).subscribe(() => {
+    this.coreService.post('authentication/shiro/store', this.userDetail).subscribe(() => {
       this.submitted = false;
       this.activeModal.close(this.userDetail.masters);
     }, () => {
@@ -187,7 +187,7 @@ export class MasterModalComponent implements OnInit {
 
       this.userDetail.masters.push(data);
     }
-    this.coreService.post('security_configuration/write', this.userDetail).subscribe(() => {
+    this.coreService.post('authentication/shiro/store', this.userDetail).subscribe(() => {
       this.submitted = false;
       this.activeModal.close(this.userDetail.masters);
     }, () => {
@@ -250,9 +250,11 @@ export class RolesComponent implements OnInit, OnDestroy {
   }
 
   getRoles() {
-    this.coreService.post('security/permissions', {}).subscribe((res: any) => {
-      this.roles = res.SOSPermissionRoles.SOSPermissionRole;
-    });
+    if (this.roles.length === 0) {
+      this.coreService.post('authentication/permissions', {}).subscribe((res: any) => {
+        this.roles = res.SOSPermissionRoles.SOSPermissionRole;
+      });
+    }
   }
 
   selectUser(user) {
@@ -311,7 +313,7 @@ export class RolesComponent implements OnInit, OnDestroy {
       masters: this.masters,
       main: this.userDetail.main
     };
-    this.coreService.post('security_configuration/write', obj).subscribe(res => {
+    this.coreService.post('authentication/shiro/store', obj).subscribe(res => {
       console.log(res);
     }, () => {
 

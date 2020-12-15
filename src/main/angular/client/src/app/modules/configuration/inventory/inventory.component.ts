@@ -36,10 +36,10 @@ export class SingleDeployComponent implements OnInit {
   messageList: any;
   securityLevel: string;
   exportObj = {
-    controllerId:'',
+    controllerId: '',
     forSigning: false,
     filename: '',
-    fileFormat: '.zip'
+    fileFormat: 'ZIP'
   };
   object: any = {
     checked: false,
@@ -54,7 +54,7 @@ export class SingleDeployComponent implements OnInit {
 
   ngOnInit() {
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
-    this.exportObj.controllerId=  this.schedulerIds.selected;
+    this.exportObj.controllerId = this.schedulerIds.selected;
     this.securityLevel = sessionStorage.securityLevel;
     if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
@@ -255,9 +255,19 @@ export class SingleDeployComponent implements OnInit {
       if (this.object.store.draftConfigurations && this.object.store.draftConfigurations.length === 0) {
         delete this.object.store['draftConfigurations'];
       }
-      let obj:any = {'forSigning': this.exportObj.forSigning, deployables: this.object.store}
-      if(this.exportObj.forSigning){
+      let obj: any = {
+        exportFile: {name: this.exportObj.filename, format: this.exportObj.fileFormat}
+      };
+
+      if (this.exportObj.forSigning) {
         obj.controllerId = this.exportObj.controllerId;
+        obj.forSigning = {controllerId: this.exportObj.controllerId, deployables: this.object.store};
+      } else {
+        if(this.isExportReleaseable) {
+          obj.forBackup = {releasables: this.object.store};
+        }else{
+          obj.forBackup = {deployables: this.object.store};
+        }
       }
       param = param + '&exportFilter=' + JSON.stringify(obj);
       if (this.comments.comment) {
@@ -269,9 +279,9 @@ export class SingleDeployComponent implements OnInit {
       if (this.comments.ticketLink) {
         param = param + '&ticketLink=' + encodeURIComponent(this.comments.ticketLink);
       }
-      // console.log('http://jstest.zehntech.net:7446/joc/api/inventory/export?accessToken=' + this.authService.accessTokenId + '&filename=' + this.exportObj.filename + this.exportObj.fileFormat + param);
+      // console.log('http://jstest.zehntech.net:7446/joc/api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
       try {
-        $('#tmpFrame').attr('src', './api/inventory/export?accessToken=' + this.authService.accessTokenId + '&filename=' + this.exportObj.filename + this.exportObj.fileFormat + param);
+        $('#tmpFrame').attr('src', './api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
         setTimeout(() => {
           this.submitted = false;
           this.activeModal.close('ok');
@@ -332,7 +342,7 @@ export class DeployComponent implements OnInit {
     controllerId: '',
     forSigning: false,
     filename: '',
-    fileFormat: '.zip'
+    fileFormat: 'ZIP'
   };
   object: any = {
     isRecursive: true,
@@ -353,7 +363,7 @@ export class DeployComponent implements OnInit {
 
   ngOnInit() {
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
-    this.exportObj.controllerId=  this.schedulerIds.selected;
+    this.exportObj.controllerId = this.schedulerIds.selected;
     this.securityLevel = sessionStorage.securityLevel;
     if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
@@ -904,10 +914,20 @@ export class DeployComponent implements OnInit {
       if (this.object.store.draftConfigurations && this.object.store.draftConfigurations.length === 0) {
         delete this.object.store['draftConfigurations'];
       }
-      let obj:any = {'forSigning': this.exportObj.forSigning, deployables: this.object.store}
-      if(this.exportObj.forSigning){
-        obj.controllerId = this.exportObj.controllerId;
+      let obj: any = {
+        exportFile: {name: this.exportObj.filename, format: this.exportObj.fileFormat}
+      };
+      if (this.exportObj.forSigning) {
+        obj.forSigning = {controllerId: this.exportObj.controllerId, deployables: this.object.store};
+      } else {
+        if(this.isExportReleaseable) {
+          obj.forBackup = {releasables: this.object.store};
+        }else{
+          obj.forBackup = {deployables: this.object.store};
+        }
       }
+
+     
       param = param + '&exportFilter=' + JSON.stringify(obj);
       if (this.comments.comment) {
         param = param + '&comment=' + this.comments.comment;
@@ -918,9 +938,9 @@ export class DeployComponent implements OnInit {
       if (this.comments.ticketLink) {
         param = param + '&ticketLink=' + encodeURIComponent(this.comments.ticketLink);
       }
-      //console.log('http://jstest.zehntech.net:7446/joc/api/inventory/export?accessToken=' + this.authService.accessTokenId + '&filename=' + this.exportObj.filename + this.exportObj.fileFormat + param);
+      //console.log('http://jstest.zehntech.net:7446/joc/api/inventory/export?accessToken=' + this.authService.accessTokenId +  param);
       try {
-        $('#tmpFrame').attr('src', './api/inventory/export?accessToken=' + this.authService.accessTokenId + '&filename=' + this.exportObj.filename + this.exportObj.fileFormat + param);
+        $('#tmpFrame').attr('src', './api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
         setTimeout(() => {
           this.submitted = false;
           this.activeModal.close('ok');
@@ -1449,8 +1469,8 @@ export class ImportWorkflowModalComponent implements OnInit {
         obj.ticketLink = this.comments.ticketLink;
       }
       if (!this.isDeploy) {
-        if(this.requestObj.folder) {
-          obj.folder = this.requestObj.folder
+        if (this.requestObj.folder) {
+          obj.folder = this.requestObj.folder;
         }
         obj.overwrite = this.requestObj.overwrite;
       }
@@ -1779,7 +1799,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
                   x.expanded = true;
                   for (let k = 0; k < x.children.length; k++) {
                     if (x.children[k].name === self.selectedObj.name) {
-                      self.selectedData =  x.children[k];
+                      self.selectedData = x.children[k];
                       break;
                     }
                   }

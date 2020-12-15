@@ -98,7 +98,7 @@
                     <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
                     <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
                   </span>
-                  <span *ngIf="dailyPlanFilters.filter.sortBy ==='workflow'">
+                  <span *ngIf="dailyPlanFilters.filter.sortBy ==='workflowPath'">
                     {{'dailyPlan.label.workflow' | translate}}
                     <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
                     <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
@@ -121,7 +121,7 @@
                     <a (click)="sort('orderId')" translate>dailyPlan.label.order</a>
                   </li>
                   <li nz-menu-item>
-                    <a (click)="sort('workflow')" translate>dailyPlan.label.workflow</a>
+                    <a (click)="sort('workflowPath')" translate>dailyPlan.label.workflow</a>
                   </li>
                   <li nz-menu-item>
                     <a (click)="sort( 'plannedStartTime')" translate>dailyPlan.label.plannedStart</a>
@@ -312,11 +312,11 @@
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'orderId' && dailyPlanFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                   </th>
-                  <th (click)="sort('workflow')">
+                  <th (click)="sort('workflowPath')">
                     <a><span class="p-r-xs" translate>dailyPlan.label.workflow</span>
-                      <i *ngIf="dailyPlanFilters.filter.sortBy == 'workflow' && !dailyPlanFilters.reverse"
+                      <i *ngIf="dailyPlanFilters.filter.sortBy == 'workflowPath' && !dailyPlanFilters.reverse"
                          class="fa fa-caret-up "></i>
-                      <i *ngIf="dailyPlanFilters.filter.sortBy == 'workflow' && dailyPlanFilters.reverse"
+                      <i *ngIf="dailyPlanFilters.filter.sortBy == 'workflowPath' && dailyPlanFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                   </th>
                   <th (click)="sort('status')">
@@ -512,11 +512,11 @@
                               <span>{{order.name}} : {{order.value}}</span>
                             </div>
                             <div class="p-l" *ngIf="value.variables && value.variables.length === 0">
-                              <span translate>message.noDataAvailable</span>
+                              <span translate>common.message.noDataAvailable</span>
                             </div>
                             <div class="p-l p-t-xs" *ngIf="!value.variables">
                               <i class="fa fa-spin fa-spinner"></i>
-                              <span class="p-l-xs" translate>label.loading</span>
+                              <span class="p-l-xs" translate>common.label.loading</span>
                             </div>
                           </td>
                         </tr>
@@ -559,10 +559,10 @@
                            (click)="expandCollapseOrder(plan)" aria-hidden="true"></i>
                         <i class="fa fa-angle-right cursor fa-lg p-r-xs" *ngIf="!plan.order"
                            (click)="expandCollapseOrder(plan)" aria-hidden="true"></i>
-                        {{value.orderTemplatePath}}
+                        {{value.schedulePath}}
                       </td>
                       <td *ngIf="i">
-                              <span>{{value.workflow}} </span>
+                              <span>{{value.workflowPath}} </span>
                       </td>
                       <td *ngIf="i">
                               <span class="label"
@@ -626,7 +626,7 @@
                             [innerHtml]="value.orderId"></span>
                           </td>
                           <td>
-                            <span>{{value.workflow}} </span>
+                            <span>{{value.workflowPath}} </span>
                           </td>
                           <td>
                             <span class="label" [ngClass]="coreService.getColor(value.state.severity,'bg')"
@@ -643,7 +643,7 @@
                           <td><span [innerHtml]="value.duration"></span>
                           </td>
                           <td><span *ngIf="value.period.repeat">
-                                  {{'label.repeatEvery' | translate}}
+                                  {{'dailyPlan.label.repeatEvery' | translate}}
                             {{value.period.repeat}}s</span></td>
                         </tr>
                         <tr *ngIf="value.show">
@@ -674,11 +674,11 @@
                               <span>{{order.name}} : {{order.value}}</span>
                             </div>
                             <div class="p-l" *ngIf="value.variables && value.variables.length === 0">
-                              <span translate>message.noDataAvailable</span>
+                              <span translate>common.message.noDataAvailable</span>
                             </div>
                             <div class="p-l p-t-xs" *ngIf="!value.variables">
                               <i class="fa fa-spin fa-spinner"></i>
-                              <span class="p-l-xs" translate>label.loading</span>
+                              <span class="p-l-xs" translate>common.label.loading</span>
                             </div>
                           </td>
                         </tr>

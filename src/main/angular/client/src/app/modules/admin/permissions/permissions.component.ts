@@ -70,7 +70,7 @@ export class PermissionModalComponent {
       }
     }
 
-    this.coreService.post('security_configuration/write', this.userDetail).subscribe(res => {
+    this.coreService.post('authentication/shiro/store', this.userDetail).subscribe(res => {
       this.submitted = false;
       if (this.add) {
         this.activeModal.close(this.rolePermissions);
@@ -142,7 +142,7 @@ export class FolderModalComponent implements OnInit {
       }
     }
 
-    this.coreService.post('security_configuration/write', this.userDetail).subscribe(res => {
+    this.coreService.post('authentication/shiro/store', this.userDetail).subscribe(res => {
       this.submitted = false;
       this.activeModal.close(this.folderArr);
     }, err => {
@@ -246,7 +246,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   getPermissions() {
-    this.coreService.post('security/permissions', {}).subscribe(res => {
+    console.log('getPermissions')
+    this.coreService.post('authentication/permissions', {}).subscribe(res => {
       this.PermissionsObj = res;
       this.permissions = this.PermissionsObj.SOSPermissions;
       this.loadPermission();
@@ -685,7 +686,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       main: this.userDetail.main
     };
 
-    this.coreService.post('security_configuration/write', obj).subscribe(res => {
+    this.coreService.post('authentication/shiro/store', obj).subscribe(res => {
       console.log(res);
     }, err => {
 
