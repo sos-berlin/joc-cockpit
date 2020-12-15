@@ -1029,7 +1029,7 @@
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                    <tr ng-repeat="task in taskHistory | orderBy: 'taskId': true"
+                                                                    <tr ng-repeat="task in taskHistory"
                                                                         class="cursor" ng-click="showLogWindow(null,task)"
                                                                         title="Show logs">
                                                                         <td nowrap>
@@ -1561,7 +1561,7 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr ng-repeat="task in taskHistory" class="cursor" ng-click="showLogWindow(null,task)" title="Show logs">
+                                                        <tr ng-repeat="task in taskHistory | orderBy: 'startTime':true" class="cursor" ng-click="showLogWindow(null,task)" title="Show logs">
                                                            <td nowrap>
                                                                 <i class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs" ng-click="downloadLog(task);$event.stopPropagation()"></i>
                                                                 <span ng-bind="task.taskId"></span>

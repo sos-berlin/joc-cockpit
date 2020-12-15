@@ -3591,7 +3591,9 @@
                             _cm.setOption('mode', vm.getLanguage(vm.job.script.language, vm.job.script.content || ''));
                         });
                         _cm.on("change", function () {
-                            vm.job.deployed = false;
+                            if(vm.job.script.content !== _cm.getValue()) {
+                                vm.job.deployed = false;
+                            }
                         })
                     }
                 };
@@ -9463,11 +9465,13 @@
         function center() {
             let dom = document.getElementById('graph');
             let x = 0.5, y = 0.2;
-            if (dom.clientWidth !== dom.scrollWidth) {
-                x = 0;
-            }
-            if (dom.clientHeight !== dom.scrollHeight) {
-                y = 0;
+            if (dom) {
+                if (dom.clientWidth !== dom.scrollWidth) {
+                    x = 0;
+                }
+                if (dom.clientHeight !== dom.scrollHeight) {
+                    y = 0;
+                }
             }
             vm.editor.graph.center(true, true, x, y);
         }

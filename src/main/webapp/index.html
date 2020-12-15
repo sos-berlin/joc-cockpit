@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <!--
-/********************************************************* begin of preamble
+/*
 **
-** Copyright (C) 2002-2020 Software- und Organisations-Service GmbH.
+** Copyright (C) 2002-2021 Software- und Organisations-Service GmbH.
 ** All rights reserved.
 **
 ** This file may be used under the terms of either the
@@ -31,7 +31,7 @@
 ** CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ** ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 ** POSSIBILITY OF SUCH DAMAGE.
-********************************************************** end of preamble*/
+*/
 
 //-->
 <!--[if IE 8]>
@@ -63,19 +63,19 @@
     <link rel="stylesheet" href="bower_components/angular-ui-select/dist/select.css"/>
     <link rel="stylesheet" href="bower_components/codemirror/lib/codemirror.css"/>
     <!-- custom-->
-    <link rel="stylesheet" href="css/style.css?_v=1597213035337" type="text/css"/>
-    <link rel="stylesheet" href="css/light-style.css?_v=1597213035337" type="text/css" id="style-color"/>
+    <link rel="stylesheet" href="css/style.css?_v=1608012679343" type="text/css"/>
+    <link rel="stylesheet" href="css/light-style.css?_v=1608012679343" type="text/css" id="style-color"/>
     <script>
         function themeInit() {
             if (window.localStorage.$SOS$THEME !== undefined && window.localStorage.$SOS$THEME !== 'undefined') {
-                document.getElementById('style-color').href = 'css/' + window.localStorage.$SOS$THEME + '-style.css?_v=1597213035337';
+                document.getElementById('style-color').href = 'css/' + window.localStorage.$SOS$THEME + '-style.css?_v=1608012679343';
             }
         }
 
         themeInit();
     </script>
-    <link rel="stylesheet" href="css/style.responsive.css?_v=1597213035337" type="text/css"/>
-    <link rel="stylesheet" href="css/table-layout.css?_v=1597213035337" type="text/css"/>
+    <link rel="stylesheet" href="css/style.responsive.css?_v=1608012679343" type="text/css"/>
+    <link rel="stylesheet" href="css/table-layout.css?_v=1608012679343" type="text/css"/>
 </head>
 <body ng-controller="AppCtrl">
 <!--[if lt IE 9]>
@@ -125,8 +125,8 @@
 <!-- Breadcrumb -->
 <script type="text/javascript" src="bower_components/angular-breadcrumb/dist/angular-breadcrumb.min.js"></script>
 <!-- table-->
-<script type="text/javascript" src="bower_components/angular-bootstrap-grid-tree/src/tree-grid-directive.js?_v=1597213035337"></script>
-<script type="text/javascript" src="bower_components/angular-resizable-master/angular-resizable.min.js?_v=1597213035337"></script>
+<script type="text/javascript" src="bower_components/angular-bootstrap-grid-tree/src/tree-grid-directive.js?_v=1608012679344"></script>
+<script type="text/javascript" src="bower_components/angular-resizable-master/angular-resizable.min.js?_v=1608012679344"></script>
 <script type="text/javascript" src="bower_components/oclazyload/dist/ocLazyLoad.min.js"></script>
 <!-- AngularJS directive for D3 and NVD3 -->
 <script type="text/javascript" src="bower_components/d3/d3.min.js"></script>
@@ -154,60 +154,60 @@
 <script type="text/javascript" src="bower_components/codemirror/addon/display/autorefresh.js"></script>
 <script type="text/javascript" src="bower_components/angular-ui-codemirror/ui-codemirror.min.js"></script>
 <!--[if !IE]><!-->
-<script type="text/javascript" src="js/jquery.table2excel.js?_v=1597213035337"></script>
+<script type="text/javascript" src="js/jquery.table2excel.js?_v=1608012679344"></script>
 <!--<![endif]-->
 <!-- Calendar -->
-<script type="text/javascript" src="js/full-year-calendar.js?_v=1597213035337"></script>
-<script type="text/javascript" src="js/stickySidebar.js?_v=1597213035337"></script>
-<script type="text/javascript" src="js/tableexport.min.js?_v=1597213035337"></script>
-<script type="text/javascript" src="js/ui-sortable.js?_v=1597213035337"></script>
+<script type="text/javascript" src="js/full-year-calendar.js?_v=1608012679344"></script>
+<script type="text/javascript" src="js/stickySidebar.js?_v=1608012679344"></script>
+<script type="text/javascript" src="js/tableexport.min.js?_v=1608012679344"></script>
+<script type="text/javascript" src="js/ui-sortable.js?_v=1608012679344"></script>
 <!-- runtime editor js files-->
-<script type="text/javascript" src="js/xml2json.min.js?_v=1597213035337"></script>
-<script type="text/javascript" src="js/vkbeautify.js?_v=1597213035337"></script>
-<script type="text/javascript" src="js/bundle.js?_v=1597213035337"></script>
-<script type="text/javascript" src="js/lodash.js?_v=1597213035337"></script>
-<script type="text/javascript" src="js/gridstack.js?_v=1597213035337"></script>
-<script type="text/javascript" src="js/slimscroll.js?_v=1597213035337"></script>
-<script type="text/javascript" src="js/gridstack.jQueryUI.js?_v=1597213035337"></script>
-<script type="text/javascript" src="js/xpath.js?_v=1597213035337"></script>
-<script type="text/javascript" src="mxgraph/mxClient.min.js?_v=1597213035337"></script>
-<script type="text/javascript" src="js/saveSvgAsPng.js?_v=1597213035337"></script>
-<script type="text/javascript" src="js/clean-deep.js?_v=1597213035337"></script>
+<script type="text/javascript" src="js/xml2json.min.js?_v=1608012679344"></script>
+<script type="text/javascript" src="js/vkbeautify.js?_v=1608012679344"></script>
+<script type="text/javascript" src="js/bundle.js?_v=1608012679344"></script>
+<script type="text/javascript" src="js/lodash.js?_v=1608012679344"></script>
+<script type="text/javascript" src="js/gridstack.js?_v=1608012679344"></script>
+<script type="text/javascript" src="js/slimscroll.js?_v=1608012679344"></script>
+<script type="text/javascript" src="js/gridstack.jQueryUI.js?_v=1608012679344"></script>
+<script type="text/javascript" src="js/xpath.js?_v=1608012679344"></script>
+<script type="text/javascript" src="mxgraph/mxClient.min.js?_v=1608012679344"></script>
+<script type="text/javascript" src="js/saveSvgAsPng.js?_v=1608012679344"></script>
+<script type="text/javascript" src="js/clean-deep.js?_v=1608012679344"></script>
 <!-- app -->
-<script type="text/javascript" src="modules/app.js?_v=1597213035337"></script>
-<script type="text/javascript" src="modules/router.js?_v=1597213035337"></script>
-<script type="text/javascript" src="modules/i18n/translations.js?_v=1597213035337"></script>
+<script type="text/javascript" src="modules/app.js?_v=1608012679344"></script>
+<script type="text/javascript" src="modules/router.js?_v=1608012679344"></script>
+<script type="text/javascript" src="modules/i18n/translations.js?_v=1608012679344"></script>
 <!-- core module-->
-<script type="text/javascript" src="modules/core/controllers/core.ctrl.js?_v=1597213035337"></script>
-<script type="text/javascript" src="modules/core/directives/core.directive.js?_v=1597213035337"></script>
-<script type="text/javascript" src="modules/core/directives/tree.directive.js?_v=1597213035337"></script>
-<script type="text/javascript" src="modules/core/services/core.service.js?_v=1597213035337"></script>
-<script type="text/javascript" src="modules/core/services/runtime.service.js?_v=1597213035337"></script>
-<script type="text/javascript" src="modules/core/filters/core.filter.js?_v=1597213035337"></script>
+<script type="text/javascript" src="modules/core/controllers/core.ctrl.js?_v=1608012679344"></script>
+<script type="text/javascript" src="modules/core/directives/core.directive.js?_v=1608012679344"></script>
+<script type="text/javascript" src="modules/core/directives/tree.directive.js?_v=1608012679344"></script>
+<script type="text/javascript" src="modules/core/services/core.service.js?_v=1608012679344"></script>
+<script type="text/javascript" src="modules/core/services/runtime.service.js?_v=1608012679344"></script>
+<script type="text/javascript" src="modules/core/filters/core.filter.js?_v=1608012679344"></script>
 <!-- user module-->
-<script type="text/javascript" src="modules/user/controllers/user.ctrl.js?_v=1597213035337"></script>
-<script type="text/javascript" src="modules/user/services/user.service.js?_v=1597213035337"></script>
-<script type="text/javascript" src="modules/user/services/user.auth.js?_v=1597213035337"></script>
+<script type="text/javascript" src="modules/user/controllers/user.ctrl.js?_v=1608012679344"></script>
+<script type="text/javascript" src="modules/user/services/user.service.js?_v=1608012679344"></script>
+<script type="text/javascript" src="modules/user/services/user.auth.js?_v=1608012679344"></script>
 <!-- job and jobchain module-->
-<script type="text/javascript" src="modules/job/controllers/job.ctrl.js?_v=1597213035337"></script>
-<script type="text/javascript" src="modules/job/services/job.service.js?_v=1597213035337"></script>
-<script type="text/javascript" src="modules/job/directives/job.directive.js?_v=1597213035337"></script>
+<script type="text/javascript" src="modules/job/controllers/job.ctrl.js?_v=1608012679344"></script>
+<script type="text/javascript" src="modules/job/services/job.service.js?_v=1608012679344"></script>
+<script type="text/javascript" src="modules/job/directives/job.directive.js?_v=1608012679344"></script>
 <!-- jobscheduler module-->
-<script type="text/javascript" src="modules/jobscheduler/controllers/jobscheduler.ctrl.js?_v=1597213035337"></script>
-<script type="text/javascript" src="modules/jobscheduler/services/jobscheduler.service.js?_v=1597213035337"></script>
-<script type="text/javascript" src="modules/jobscheduler/directives/dashboard.directive.js?_v=1597213035337"></script>
+<script type="text/javascript" src="modules/jobscheduler/controllers/jobscheduler.ctrl.js?_v=1608012679344"></script>
+<script type="text/javascript" src="modules/jobscheduler/services/jobscheduler.service.js?_v=1608012679344"></script>
+<script type="text/javascript" src="modules/jobscheduler/directives/dashboard.directive.js?_v=1608012679344"></script>
 <!-- order module-->
-<script type="text/javascript" src="modules/order/controllers/order.ctrl.js?_v=1597213035337"></script>
-<script type="text/javascript" src="modules/order/services/order.service.js?_v=1597213035337"></script>
-<script type="text/javascript" src="modules/order/directives/order.directive.js?_v=1597213035337"></script>
+<script type="text/javascript" src="modules/order/controllers/order.ctrl.js?_v=1608012679344"></script>
+<script type="text/javascript" src="modules/order/services/order.service.js?_v=1608012679344"></script>
+<script type="text/javascript" src="modules/order/directives/order.directive.js?_v=1608012679344"></script>
 <!-- yade module-->
-<script type="text/javascript" src="modules/yade/controllers/yade.ctrl.js?_v=1597213035337"></script>
-<script type="text/javascript" src="modules/yade/services/yade.service.js?_v=1597213035337"></script>
-<script type="text/javascript" src="modules/yade/directive/yade.directive.js?_v=1597213035337"></script>
+<script type="text/javascript" src="modules/yade/controllers/yade.ctrl.js?_v=1608012679344"></script>
+<script type="text/javascript" src="modules/yade/services/yade.service.js?_v=1608012679344"></script>
+<script type="text/javascript" src="modules/yade/directive/yade.directive.js?_v=1608012679344"></script>
 <!-- editor module-->
-<script type="text/javascript" src="modules/configuration/controllers/configuration.ctrl.js?_v=1597213035337"></script>
-<script type="text/javascript" src="modules/configuration/controllers/xml-editor.ctrl.js?_v=1597213035337"></script>
-<script type="text/javascript" src="modules/configuration/services/configuration.service.js?_v=1597213035337"></script>
+<script type="text/javascript" src="modules/configuration/controllers/configuration.ctrl.js?_v=1608012679344"></script>
+<script type="text/javascript" src="modules/configuration/controllers/xml-editor.ctrl.js?_v=1608012679344"></script>
+<script type="text/javascript" src="modules/configuration/services/configuration.service.js?_v=1608012679344"></script>
 
 <!-- endbuild -->
 <script>

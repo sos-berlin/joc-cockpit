@@ -9711,12 +9711,26 @@
                                 let flag = true;
                                 if(tempHistory) {
                                     for (let x = 0; x < tempHistory.length; x++) {
-                                        if(tempHistory[x].job === jobPath && tempHistory[x].state && tempHistory[x].state ._text){
+                                        if (tempHistory[x].job === jobPath && tempHistory[x].state && tempHistory[x].state._text) {
                                             flag = false;
                                             style += ';strokeColor=' + (tempHistory[x].state._text === 'SUCCESSFUL' ? '#007da6' : tempHistory[x].state._text === 'RUNNING' ? '#228b22' : tempHistory[x].state._text === 'FAILED' ? '#dc143c' : (CoreService.getColorBySeverity(tempJobs[j].state.severity) || '#999'));
-                                            if(tempHistory[x].state._text === 'SUCCESSFUL' || tempHistory[x].state._text === 'RUNNING' || tempHistory[x].state._text === 'FAILED') {
-                                                graph.removeCellOverlay(vertices[i]);
-                                                addOverlays(graph, vertices[i], (tempHistory[x].state._text === 'SUCCESSFUL' ? 'blue' : tempHistory[x].state._text === 'RUNNING' ? 'green' : 'red'));
+                                            graph.removeCellOverlay(vertices[i]);
+                                            let barColor = '';
+                                            if (tempHistory[x].state._text === 'SUCCESSFUL' || tempHistory[x].state._text === 'RUNNING' || tempHistory[x].state._text === 'FAILED') {
+                                                barColor = tempHistory[x].state._text === 'SUCCESSFUL' ? 'blue' : tempHistory[x].state._text === 'RUNNING' ? 'green' : 'red';
+                                            } else {
+                                                barColor = tempJobs[j].state._text === 'RUNNING' ? 'green' : tempJobs[j].state._text === 'PENDING' ? 'yellow' : tempJobs[j].state._text === undefined ? 'grey' : 'red';
+                                                if (barColor !== 'red' && enqueTask) {
+                                                    barColor = 'orange';
+                                                }
+                                            }
+                                            console.log('tempHistory[x].state._text ', tempHistory[x].state._text )
+                                            console.log('barColor', barColor)
+                                            addOverlays(graph, vertices[i], barColor);
+                                            if (tempHistory[x].state._text === 'RUNNING' || tempJobs[j].state._text === 'RUNNING') {
+                                                edges = edges.concat(graph.getOutgoingEdges(vertices[i], parent));
+                                            } else {
+                                                edges2 = edges2.concat(graph.getOutgoingEdges(vertices[i], parent));
                                             }
                                             tempHistory.splice(x, 1);
                                             break;
@@ -9731,7 +9745,7 @@
                                 }
 
                                 vertices[i].setStyle(style);
-                                if (isChange && flag) {
+                                if (flag) {
                                     graph.removeCellOverlay(vertices[i]);
                                     let barColor = tempJobs[j].state._text === 'RUNNING' ? 'green' : tempJobs[j].state._text === 'PENDING' ? 'yellow' : tempJobs[j].state._text === undefined ? 'grey' : 'red';
                                     if (barColor !== 'red' && enqueTask) {
@@ -10703,7 +10717,8 @@
                         jobschedulerId: $scope.schedulerIds.selected,
                         session: vm.selectedSession.session,
                         jobStream: vm.selectedJobStream,
-                        event: obj.existingEvents[i].event
+                        event: obj.existingEvents[i].event,
+                        outConditionId: obj.existingEvents[i].outConditionId || 0
                     };
                     ConditionService.deleteEvent(requestObj);
                 }
@@ -10714,7 +10729,8 @@
                         jobschedulerId: $scope.schedulerIds.selected,
                         session: vm.selectedSession.session,
                         jobStream: vm.selectedJobStream,
-                        event: obj.missingEvents[i].event
+                        event: obj.missingEvents[i].event,
+                        outConditionId: obj.missingEvents[i].outConditionId || 0
                     };
                     ConditionService.addEvent(requestObj);
                 }
@@ -12517,6 +12533,7 @@
                             history.requiredJob = vm.selectedSession.jobStreamStarter.requiredJob;
                         });
                     }
+                    updateWorkflowDiagram(vm.jobs)
                 });
             } else{
                 vm.taskHistory = [];
