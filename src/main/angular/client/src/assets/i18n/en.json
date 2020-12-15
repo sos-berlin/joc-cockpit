@@ -211,8 +211,8 @@
     "tooltip.standaloneUrlForJOC": "URL of the Standalone Controller as seen by JOC Cockpit",
     "tooltip.primaryUrlForJOC": "URL of the Primary Controller as seen by JOC Cockpit",
     "tooltip.backupUrlForJOC": "URL of the Backup Controller as seen by JOC Cockpit",
-    "tooltip.urlForBackup": "URL of the Backup Controller as seen by the Primary Controller",
-    "tooltip.urlForPrimary": "URL of the Primary Controller as seen by the Backup Controller"
+    "tooltip.urlForBackup": "URL of the Primary Controller as seen by the Backup Controller",
+    "tooltip.urlForPrimary": "URL of the Backup Controller as seen by the Primary Controller"
   },
   "common": {
     "label.now": "Now",
