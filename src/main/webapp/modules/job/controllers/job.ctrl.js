@@ -11523,7 +11523,7 @@
                             }
                         }
                         if (flg) {
-                            if (updateByAPI) {
+                            if (!updateByAPI) {
                                 ConditionService.outCondition({
                                     jobschedulerId: $scope.schedulerIds.selected,
                                     session: vm.selectedSession.session,
