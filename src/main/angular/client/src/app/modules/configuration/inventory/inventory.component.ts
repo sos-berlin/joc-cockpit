@@ -2274,18 +2274,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (!node.origin) {
         origin.path = origin.path.substring(0, origin.path.lastIndexOf('/')) || '/';
       }
-      const path = origin.path;
       const modalRef = this.modalService.open(SingleDeployComponent, {backdrop: 'static'});
       modalRef.componentInstance.schedulerIds = this.schedulerIds;
       modalRef.componentInstance.display = this.preferences.auditLog;
       modalRef.componentInstance.data = origin;
       modalRef.componentInstance.releasable = releasable;
       modalRef.result.then((res: any) => {
-        setTimeout(() => {
-          this.updateFolders(path, () => {
-            this.updateTree();
-          });
-        }, 200);
+
       }, () => {
       });
     } else {
@@ -2296,9 +2291,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.path = origin.path;
       modalRef.componentInstance.releasable = releasable;
       modalRef.result.then((res: any) => {
-        setTimeout(() => {
-          this.initTree(origin.path, null);
-        }, 200);
+
       }, () => {
       });
     }
@@ -2505,16 +2498,18 @@ export class InventoryComponent implements OnInit, OnDestroy {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].path) {
           let path = args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/') + 1) || '/';
-          if (args.eventSnapshots[j].eventType.match(/FileBase/) && !args.eventSnapshots[j].eventId && this.isLoading) {
-            this.initTree(args.eventSnapshots[j].path, path);
+          if (args.eventSnapshots[j].eventType.match(/ItemAdded/) || args.eventSnapshots[j].eventType.match(/ItemUpdated/)) {
+           
+            this.initTree(path, null);
             break;
-          } else if (args.eventSnapshots[j].eventType === 'JoeUpdated' && !args.eventSnapshots[j].eventId) {
-            if (args.eventSnapshots[j].objectType === 'FOLDER' && this.isLoading) {
-              this.initTree(args.eventSnapshots[j].path, path);
-              break;
-            } else {
-              console.log(args.eventSnapshots[j]);
-            }
+          } else if (args.eventSnapshots[j].eventType.match(/ItemChanged/)) {
+           
+            this.updateFolders(path, () => {
+              this.updateTree();
+            });
+            break;
+          } else {
+            console.log(args.eventSnapshots[j]);
           }
         }
       }
@@ -2643,7 +2638,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         }
         this.initTree(obj.path, null);
       } else {
-        this.clearCopyObject(obj);
+        this.clearCopyObject(object);
         this.updateTree();
       }
     });

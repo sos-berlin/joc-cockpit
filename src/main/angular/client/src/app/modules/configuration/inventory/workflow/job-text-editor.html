@@ -41,14 +41,14 @@
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.agent</label>
         <div class="col-md-8 col-lg-9"
-             [ngClass]="{'has-error' : (obj.agent || (agentName.dirty || agentName.touched) && agentName.invalid)}">
-          <nz-select nzShowSearch name="agentName" nzPlaceHolder="{{'workflow.placeholder.selectAgentName' | translate}}"
-                     [(ngModel)]="selectedNode.job.agentName" #agentName="ngModel" (ngModelChange)="onBlur();">
+             [ngClass]="{'has-error' : (obj.agent || (agentId.dirty || agentId.touched) && agentId.invalid)}">
+          <nz-select nzShowSearch name="agentId" nzPlaceHolder="{{'workflow.placeholder.selectAgentId' | translate}}"
+                     [(ngModel)]="selectedNode.job.agentId" #agentId="ngModel" (ngModelChange)="onBlur();">
             <nz-option *ngFor="let agent of agents" [nzLabel]="agent" [nzValue]="agent"></nz-option>
           </nz-select>
-          <div *ngIf="obj.agent || agentName.invalid && (agentName.dirty || agentName.touched)"
+          <div *ngIf="obj.agent || agentId.invalid && (agentId.dirty || agentId.touched)"
                class="text-danger help-block">
-            <div *ngIf="(agentName.errors && agentName.errors.required) || obj.agent">
+            <div *ngIf="(agentId.errors && agentId.errors.required) || obj.agent">
               <div translate>common.message.requiredError</div>
             </div>
           </div>

@@ -301,7 +301,7 @@ export class CreatePlanModalComponent implements OnInit {
       controllerId: this.schedulerId
     };
     if (this.object.at === 'template' && this.selectedTemplates.schedules.length > 0) {
-      obj.schedules = this.selectedTemplates.schedules;
+      obj.selector = {schedulePaths : this.selectedTemplates.schedules};
     }
 
     obj.dailyPlanDate = moment(this.selectedDate).format('YYYY-MM-DD');
@@ -447,6 +447,7 @@ export class RemovePlanModalComponent implements OnInit {
   @Input() order;
   @Input() plan;
   @Input() workflow;
+  @Input() timeZone;
   submissionHistory: any = [];
   filter: any = {selectedTemplates: []};
 
@@ -463,23 +464,24 @@ export class RemovePlanModalComponent implements OnInit {
   onSubmit() {
     const obj: any = {
       controllerId: this.schedulerId,
+      filter: {}
     };
 
     if (this.workflow) {
-      obj.workflow = this.order.key;
+      obj.filter.workflowPaths = [this.order.key];
     } else {
       if (this.order) {
         if (this.plan) {
-          obj.schedules = [this.order.schedulePath];
+          obj.filter.schedulePaths = [this.order.schedulePath];
         } else {
-          obj.orderKeys = [this.order.orderId];
+          obj.filter.orderIds = [this.order.orderId];
         }
       } else {
         if (this.filter.dailyPlanDate) {
-          obj.dailyPlanDate = this.filter.dailyPlanDate ? moment(this.filter.dailyPlanDate).format('YYYY-MM-DD') : undefined;
+          obj.filter.dailyPlanDate = this.filter.dailyPlanDate ? moment(this.filter.dailyPlanDate).format('YYYY-MM-DD') : undefined;
         }
-        obj.workflow = this.filter.workflow;
-        obj.submissionHistoryId = this.filter.submissionHistoryId;
+        obj.filter.workflowPaths = [this.filter.workflow];
+        obj.filter.submissionHistoryIds = [this.filter.submissionHistoryId];
       }
     }
 
@@ -505,7 +507,10 @@ export class RemovePlanModalComponent implements OnInit {
   getSubmissions(date) {
     const obj: any = {
       controllerId: this.schedulerId,
-      dateTo: date ? moment(date).format('YYYY-MM-DD') : '0d'
+      timeZone : this.timeZone,
+      filter: {
+        dateTo: date ? moment(date).format('YYYY-MM-DD') : '0d'
+      }
     };
     this.coreService.post('daily_plan/submissions', obj).subscribe((res: any) => {
       this.submissionHistory = res.submissionHistoryItems;
@@ -736,6 +741,7 @@ export class SearchComponent implements OnInit {
   isUnique = true;
   nodes = [];
   schedules = [];
+  workflowTree = [];
 
   constructor(public coreService: CoreService) {
   }
@@ -748,7 +754,6 @@ export class SearchComponent implements OnInit {
   getFolderTree() {
     this.coreService.post('tree', {
       controllerId: this.schedulerIds.selected,
-      onlyValidObjects: true,
       forInventory: true,
       types: ['SCHEDULE']
     }).subscribe(res => {
@@ -756,6 +761,13 @@ export class SearchComponent implements OnInit {
       if (this.nodes.length > 0) {
         this.nodes[0].expanded = true;
       }
+    });
+    this.coreService.post('tree', {
+      controllerId: this.schedulerIds.selected,
+      forInventory: true,
+      types: ['WORKFLOW']
+    }).subscribe((res) => {
+      this.workflowTree = this.coreService.prepareTree(res, true);
     });
   }
 
@@ -771,6 +783,53 @@ export class SearchComponent implements OnInit {
     if (!node.origin.type) {
       if ($event) {
         $event.stopPropagation();
+      }
+    }
+  }
+
+  loadWorkflow(node, $event): void {
+    if (!node || !node.origin) {
+      return;
+    }
+    if (!node.origin.type) {
+      if ($event) {
+        $event.stopPropagation();
+      }
+      let flag = true;
+      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
+        flag = false;
+      }
+      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
+        let obj: any = {
+          path: node.key,
+          objectTypes: ['WORKFLOW']
+        };
+        this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
+          let data = res.workflows;
+          let flag = false;
+          for (let i = 0; i < data.length; i++) {
+            const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
+            if (this.filter.workflowPaths === _path) {
+              flag = true;
+            }
+            data[i].title = _path;
+            data[i].path = _path;
+            data[i].key = _path;
+            data[i].isLeaf = true;
+          }
+          if (!flag) {
+            this.filter.workflowPaths = null;
+          }
+          if (node.origin.children && node.origin.children.length > 0) {
+            data = data.concat(node.origin.children);
+          }
+          if (node.origin.isLeaf) {
+            node.origin.expanded = true;
+          }
+          node.origin.isLeaf = false;
+          node.origin.children = data;
+          this.workflowTree = [...this.workflowTree];
+        });
       }
     }
   }
@@ -904,22 +963,23 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   loadOrderPlan() {
     let obj: any = {
-      controllerId: this.schedulerIds.selected
+      controllerId: this.schedulerIds.selected,
+      filter: {}
     };
     if (this.selectedFiltered && this.selectedFiltered.name) {
       this.selectedDate = new Date(new Date().setFullYear(1970));
       $('#full-calendar').data('calendar').setSelectedDate(this.selectedDate);
-      obj = this.applySearchFilter(obj, this.selectedFiltered);
+      this.applySearchFilter(obj.filter, this.selectedFiltered);
     } else {
-      obj.dailyPlanDate = moment(this.selectedDate).format('YYYY-MM-DD');
+      obj.filter.dailyPlanDate = moment(this.selectedDate).format('YYYY-MM-DD');
       if (this.selectedSubmissionId) {
-        obj.submissionHistoryId = this.selectedSubmissionId;
+        obj.filter.submissionHistoryIds = [this.selectedSubmissionId];
       }
       if (this.dailyPlanFilters.filter.status && this.dailyPlanFilters.filter.status !== 'ALL') {
-        obj.states = [this.dailyPlanFilters.filter.status];
+        obj.filter.states = [this.dailyPlanFilters.filter.status];
       }
       if (this.dailyPlanFilters.filter.late) {
-        obj.late = true;
+        obj.filter.late = true;
       }
     }
     this.coreService.post('daily_plan/orders', obj).subscribe((res: any) => {
@@ -944,9 +1004,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 0);
     const obj: any = {
       controllerId: this.schedulerIds.selected,
-      dateFrom: firstDay,
-      dateTo: lastDay,
-      userAccount: this.authService.currentUserData
+      timeZone : this.preferences.zone,
+      filter: {
+        dateFrom: firstDay,
+        dateTo: lastDay
+      }
     };
     this.coreService.post('daily_plan/submissions', obj).subscribe((result: any) => {
       this.submissionHistoryItems = [];
@@ -1055,6 +1117,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.orders = this.object.templates;
+    modalRef.componentInstance.timeZone = this.preferences.zone;
     modalRef.result.then((res) => {
       this.load(this.selectedDate);
       this.resetCheckBox();
@@ -1070,12 +1133,22 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.order = order;
     modalRef.componentInstance.plan = workflow ? null : plan;
     modalRef.componentInstance.workflow = workflow;
+    modalRef.componentInstance.timeZone = this.preferences.zone;
     modalRef.result.then((res) => {
       this.load(this.selectedDate);
       this.resetCheckBox();
       this.loadOrderPlan();
     }, (reason) => {
       console.log('close...', reason);
+    });
+  }
+
+  cancelOrder(order, plan, workflow) {
+    this.coreService.post('daily_plan/orders/cancel', {
+      controllerId: this.schedulerIds.selected
+    }).subscribe((res) => {
+    }, () => {
+
     });
   }
 
@@ -1186,8 +1259,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   applySearchFilter(obj, filter) {
-    if (filter.workflowPath) {
-      obj.workflowPath = filter.workflowPath;
+    if (filter.workflowPaths) {
+      obj.workflowPaths = filter.workflowPaths;
     }
     if (filter.radio === 'planned' || !filter.radio) {
       obj.dailyPlanDate = this.parseProcessExecuted(filter.planned);
@@ -1201,16 +1274,18 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       obj.states = filter.state;
     }
     if (filter.schedules && filter.schedules.length > 0) {
-      obj.schedules = filter.schedules;
+      obj.schedulePaths = filter.schedules;
     }
     return obj;
   }
 
   search() {
     this.isSearchHit = true;
-    let obj: any = {};
-    obj.controllerId = this.schedulerIds.selected;
-    obj = this.applySearchFilter(obj, this.searchFilter);
+    let obj: any = {
+      controllerId: this.schedulerIds.selected,
+      filter: {}
+    };
+    this.applySearchFilter(obj.filter, this.searchFilter);
     this.coreService.post('daily_plan/orders', obj).subscribe((res: any) => {
       this.filterData(res.plannedOrderItems);
       this.isLoaded = true;

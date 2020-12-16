@@ -144,7 +144,7 @@ export class JobComponent implements OnChanges, OnDestroy {
   onBlur() {
     if (this.error && this.selectedNode && this.selectedNode.obj) {
       this.obj.label = !this.selectedNode.obj.label;
-      this.obj.agent = !this.selectedNode.job.agentName;
+      this.obj.agent = !this.selectedNode.job.agentId;
       this.obj.script = !this.selectedNode.job.executable.script;
     } else {
       this.obj = {};
@@ -5940,7 +5940,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               checkErr = true;
               if (!this.jobs[n].value.executable.script || !this.jobs[n].value.executable.script) {
                 this.invalidMsg = 'inventory.message.scriptIsMissing';
-              } else if (!this.jobs[n].value.agentName) {
+              } else if (!this.jobs[n].value.agentId) {
                 this.invalidMsg = 'inventory.message.agentIsMissing';
               }
             }

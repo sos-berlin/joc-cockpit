@@ -15,7 +15,7 @@
                       [ngClass]="{'btn-primary': orderFilters.filter.state=='PENDING'}" (click)="changeStatus('PENDING')" translate>common.button.pending
               </button>
               <button class="btn btn-grey btn-sm button-group-ellipsis"
-                      [ngClass]="{'btn-primary': orderFilters.filter.state=='INPROGRESS'}" (click)="changeStatus('INPROGRESS')" translate>common.button.inProgress
+                      [ngClass]="{'btn-primary': orderFilters.filter.state=='INPROGRESS'}" (click)="changeStatus('INPROGRESS')" translate>common.button.incomplete
               </button>
               <button class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': orderFilters.filter.state=='RUNNING'}" (click)="changeStatus('RUNNING')" translate>common.button.running
@@ -24,13 +24,13 @@
                       [ngClass]="{'btn-primary': orderFilters.filter.state=='SUSPENDED'}" (click)="changeStatus('SUSPENDED')" translate>common.button.suspended
               </button>
               <button class="btn btn-grey btn-sm button-group-ellipsis"
-                      [ngClass]="{'btn-primary': orderFilters.filter.state=='FAILED'}" (click)="changeStatus('FAILED')" translate>common.button.failed
-              </button>
-              <button class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': orderFilters.filter.state=='WAITING'}" (click)="changeStatus('WAITING')" translate>common.button.waiting
               </button>
               <button class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': orderFilters.filter.state=='BLOCKED'}" (click)="changeStatus('BLOCKED')" translate>common.button.blocked
+              </button>
+              <button class="btn btn-grey btn-sm button-group-ellipsis"
+                      [ngClass]="{'btn-primary': orderFilters.filter.state=='FAILED'}" (click)="changeStatus('FAILED')" translate>common.button.failed
               </button>
             </div>
             <div class="btn-group dropdown hidden-dropdown">
@@ -52,7 +52,7 @@
                   </li>
                   <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': orderFilters.filter.state=='INPROGRESS'}">
                     <a (click)="changeStatus('INPROGRESS')"
-                       translate>common.button.inProgress
+                       translate>common.button.incomplete
                     </a>
                   </li>
                   <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': orderFilters.filter.state=='RUNNING'}">
@@ -65,11 +65,6 @@
                        translate>common.button.suspended
                     </a>
                   </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': orderFilters.filter.state=='FAILED'}">
-                    <a (click)="changeStatus('FAILED')"
-                       translate>common.button.failed
-                    </a>
-                  </li>
                   <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': orderFilters.filter.state=='WAITING'}">
                     <a (click)="changeStatus('WAITING')"
                        translate>common.button.waiting
@@ -78,6 +73,11 @@
                   <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': orderFilters.filter.state=='BLOCKED'}">
                     <a (click)="changeStatus('BLOCKED')"
                        translate>common.button.blocked
+                    </a>
+                  </li>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': orderFilters.filter.state=='FAILED'}">
+                    <a (click)="changeStatus('FAILED')"
+                       translate>common.button.failed
                     </a>
                   </li>
                 </ul>

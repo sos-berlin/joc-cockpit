@@ -43,7 +43,7 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'AgentAdded' || args.eventSnapshots[j].eventType === 'AgentUpdated'
-          || args.eventSnapshots[j].eventType === 'JobStateChanged') {
+          || args.eventSnapshots[j].eventType === 'JobStateChanged' || args.eventSnapshots[j].eventType === 'AgentStateChanged') {
           this.getRunningTask();
           break;
         }
@@ -66,7 +66,7 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
   }
 
   private setViewSize(target) {
-    let w = target.innerWidth / 12;
+    const w = target.innerWidth / 12;
     this.view[0] = w * this.layout.cols - 90;
     this.view[1] = (this.layout.rows * 50 + ((this.layout.rows - 1) * 20 - 50)) - 6;
   }

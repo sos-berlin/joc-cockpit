@@ -2988,17 +2988,18 @@ div.order-panel div {
   border-left-color: #228b22;
 }
 
-.gold, .order-panel .pending, .text-gold, .unhealthy {
+.gold, .order-panel .pending, .text-gold {
   color: #ffc300;
   border-left-color: #ffc300;
 }
 
-.healthyAgentCluster, .text-green {
-  color: #7ab97a;
+.order-panel .inprogress {
+  color: #d6d313;
+  border-left-color: #d6d313;
 }
 
-.unhealthyAgentCluster {
-  color: rgba(255, 195, 0, 0.9);
+.healthyAgentCluster, .text-green {
+  color: #7ab97a;
 }
 
 .unreachableAgentCluster, .text-red {
@@ -3051,12 +3052,12 @@ div.order-panel div {
   background: #7ab97a;
 }
 
-._1, .b-unhealthy, .bg-gold {
+._1, .bg-gold {
   background: rgba(255, 195, 0, 0.9);
   color: #4d4d4d;
 }
 
-._2, .b-unreachable, .bg-crimson {
+._2, .bg-crimson {
   background: #e86680;
 }
 

@@ -235,11 +235,6 @@
                       (click)="groupByWorkflow('WORKFLOW')">&nbsp;
                 <span translate>dailyPlan.button.groupByWorkflow</span>
               </button>
-<!--              <button [disabled]="object.templates.length > 0"
-                      class="btn btn-grey btn-sm bg-hover-color m-l-12" (click)="removeAllOrder()">
-                <i class="fa fa-trash"></i>&nbsp;
-                <span translate>dailyPlan.button.removeOrders</span>
-              </button>-->
               <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="advancedSearch()"
                       [hidden]="showSearchPanel">
                 <span translate>common.button.advancedSearch</span>
@@ -410,6 +405,9 @@
                               <li nz-menu-item class="bg-hover-color">
                                 <a (click)="removeOrder(plan, null, true )" translate>dailyPlan.button.removeOrder</a>
                               </li>
+                              <li nz-menu-item>
+                                <a (click)="cancelOrder(plan, null, true )" translate>order.button.cancelOrder</a>
+                              </li>
                             </ul>
                           </nz-dropdown-menu>
                         </div>
@@ -443,8 +441,11 @@
                                   <li nz-menu-item>
                                     <a (click)="submitOrder(value, null, false)" translate>dailyPlan.button.submitOrder</a>
                                   </li>
-                                  <li nz-menu-item class="bg-hover-color">
+                                  <li nz-menu-item class="bg-hover-color" *ngIf="value.state && value.state._text === 'PLANNED'">
                                     <a (click)="removeOrder(value, null, false)" translate>dailyPlan.button.removeOrder</a>
+                                  </li>
+                                  <li nz-menu-item *ngIf="value.state && value.state._text !== 'PLANNED'">
+                                    <a (click)="cancelOrder(plan, null, true )" translate>order.button.cancelOrder</a>
                                   </li>
                                   <li nz-menu-item>
                                     <a (click)="modifyOrder(value, null)"
@@ -547,8 +548,11 @@
                               <li nz-menu-item>
                                 <a (click)="submitOrder(value, plan, false)" translate>dailyPlan.button.submitOrder</a>
                               </li>
-                              <li nz-menu-item class="bg-hover-color">
+                              <li nz-menu-item class="bg-hover-color" *ngIf="value.state && value.state._text === 'PLANNED'">
                                 <a (click)="removeOrder(value, plan, false)" translate>dailyPlan.button.removeOrder</a>
+                              </li>
+                              <li nz-menu-item *ngIf="value.state && value.state._text !== 'PLANNED'">
+                                <a (click)="cancelOrder(plan, null, true )" translate>order.button.cancelOrder</a>
                               </li>
                             </ul>
                           </nz-dropdown-menu>
@@ -604,8 +608,11 @@
                                   <li nz-menu-item>
                                     <a (click)="submitOrder(value, null, false)" translate>dailyPlan.button.submitOrder</a>
                                   </li>
-                                  <li nz-menu-item class="bg-hover-color">
+                                  <li nz-menu-item class="bg-hover-color" *ngIf="value.state && value.state._text === 'PLANNED'">
                                     <a (click)="removeOrder(value, null, false)" translate>dailyPlan.button.removeOrder</a>
+                                  </li>
+                                  <li nz-menu-item *ngIf="value.state && value.state._text !== 'PLANNED'">
+                                    <a (click)="cancelOrder(plan, null, true )" translate>order.button.cancelOrder</a>
                                   </li>
                                   <li nz-menu-item>
                                     <a (click)="modifyOrder(value, null)" translate>dailyPlan.button.setStartTime</a>

@@ -22,7 +22,6 @@ export class WorkflowService {
     mxTooltipHandler.prototype.delay = 0;
   }
 
-
   /**
    * Reformat the layout
    */
@@ -159,7 +158,7 @@ export class WorkflowService {
         if (typeof value.jobClass !== 'string') {
           delete value['jobClass'];
         }
-        if ((!value.executable || !value.executable.script || !value.agentName)) {
+        if ((!value.executable || !value.executable.script || !value.agentId)) {
           return false;
         }
       }
