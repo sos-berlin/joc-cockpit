@@ -445,7 +445,7 @@
                                     <a (click)="removeOrder(value, null, false)" translate>dailyPlan.button.removeOrder</a>
                                   </li>
                                   <li nz-menu-item *ngIf="value.state && value.state._text !== 'PLANNED'">
-                                    <a (click)="cancelOrder(plan, null, true )" translate>order.button.cancelOrder</a>
+                                    <a (click)="cancelOrder(value, null, false )" translate>order.button.cancelOrder</a>
                                   </li>
                                   <li nz-menu-item>
                                     <a (click)="modifyOrder(value, null)"
@@ -548,11 +548,11 @@
                               <li nz-menu-item>
                                 <a (click)="submitOrder(value, plan, false)" translate>dailyPlan.button.submitOrder</a>
                               </li>
-                              <li nz-menu-item class="bg-hover-color" *ngIf="value.state && value.state._text === 'PLANNED'">
+                              <li nz-menu-item class="bg-hover-color">
                                 <a (click)="removeOrder(value, plan, false)" translate>dailyPlan.button.removeOrder</a>
                               </li>
-                              <li nz-menu-item *ngIf="value.state && value.state._text !== 'PLANNED'">
-                                <a (click)="cancelOrder(plan, null, true )" translate>order.button.cancelOrder</a>
+                              <li nz-menu-item>
+                                <a (click)="cancelOrder(value, plan, false )" translate>order.button.cancelOrder</a>
                               </li>
                             </ul>
                           </nz-dropdown-menu>
@@ -612,7 +612,7 @@
                                     <a (click)="removeOrder(value, null, false)" translate>dailyPlan.button.removeOrder</a>
                                   </li>
                                   <li nz-menu-item *ngIf="value.state && value.state._text !== 'PLANNED'">
-                                    <a (click)="cancelOrder(plan, null, true )" translate>order.button.cancelOrder</a>
+                                    <a (click)="cancelOrder(value, null, false )" translate>order.button.cancelOrder</a>
                                   </li>
                                   <li nz-menu-item>
                                     <a (click)="modifyOrder(value, null)" translate>dailyPlan.button.setStartTime</a>

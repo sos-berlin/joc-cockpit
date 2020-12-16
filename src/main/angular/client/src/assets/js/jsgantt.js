@@ -4069,10 +4069,19 @@ var JSGantt = function () {
           f && (m = "width:auto;padding-right:16px"), this.defined(g.align) && (m += "text-align:" + g.align + ";");
           var $ = t._waiAria.gridCellAttrString(g, u);
           if (0 == c) {
+            let c1, c2;
+            if (e.status) {
+              c1 = e.status === 'planned' ? 'show' : 'hide';
+              c2 = e.status === 'planned' ? 'hide' : 'show';
+            } else {
+              c1 = 'show';
+              c2 = 'show';
+            }
             let i = e.id,
               n = '<div class="btn-group dropdown m-r-sm" style="vertical-align: top"><button type="button" class="btn-drop dropdown-timeline more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button> <div class="dropdown-menu ant-dropdown-menu list-dropdown" role="menu">';
             n = e.open ? n + '<li class="ant-dropdown-menu-item"><a id="' + i + 'submitBtn" >' + t.config.btnSubmitOrder + '</a></li><li class="ant-dropdown-menu-item bg-hover-color"><a id="' + i + 'removeBtn" >' + t.config.btnRemoveOrder + "</a></li></div></div>" : n + '<li class="ant-dropdown-menu-item"><a id="' + i + 'submitBtn" >' + t.config.btnSubmitOrder + '</a></li>' +
-              '<li class="ant-dropdown-menu-item bg-hover-color"><a id="' + i + 'removeBtn" >' + t.config.btnRemoveOrder + "</a></li>" +
+              '<li class="ant-dropdown-menu-item bg-hover-color ' + c1 + '"><a id="' + i + 'removeBtn" >' + t.config.btnRemoveOrder + "</a></li>" +
+              '<li class="ant-dropdown-menu-item ' + c2 + '"><a id="' + i + 'cancelBtn" >' + t.config.btnCancelOrder + "</a></li>" +
               '<li class="ant-dropdown-menu-item"><a id="' + i + 'editOrderBtn" >' + t.config.btnModifyOrder + "</a></li>" +
               '<li class="ant-dropdown-menu-item"><a id="' + i + 'editBtn" >' + t.config.btnChangeParameter + "</a></li>" +
               "</div></div>", p.push(n)
@@ -5948,6 +5957,7 @@ var JSGantt = function () {
           align: "left"
         }],
         btnRemoveOrder: "Remove Order",
+        btnCancelOrder: "Cancel Order",
         btnSubmitOrder: "Submit Order",
         btnChangeParameter: "Change Parameter",
         btnModifyOrder: "Modify Order",

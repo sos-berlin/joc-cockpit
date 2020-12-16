@@ -78,6 +78,7 @@
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>dailyPlan.label.workflow</label>
       <div class="col-sm-6">
         <nz-tree-select
+          name="workflowPaths"
           [nzMultiple]="true"
           [nzAllowClear]="true"
           [nzNodes]="workflowTree"
@@ -87,7 +88,7 @@
           nzShowSearch
           [nzPlaceHolder]="'dailyPlan.placeholder.workflowPath' | translate"
           [(ngModel)]="filter.workflowPaths"
-          (nzExpandChange)="loadWorkflow($event.node, 'WORKFLOW')"
+          (nzExpandChange)="loadWorkflow($event.node, null)"
         >
           <ng-template #nzTreeTemplate let-node>
             <div style="width: 93%" class="node-wrapper" (click)="loadWorkflow(node, $event);">

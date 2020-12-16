@@ -256,7 +256,7 @@ export class SingleDeployComponent implements OnInit {
         delete this.object.store['draftConfigurations'];
       }
       let obj: any = {
-        exportFile: {name: this.exportObj.filename, format: this.exportObj.fileFormat}
+        exportFile: {filename: this.exportObj.filename, format: this.exportObj.fileFormat}
       };
 
       if (this.exportObj.forSigning) {
@@ -287,7 +287,7 @@ export class SingleDeployComponent implements OnInit {
           this.activeModal.close('ok');
         }, 150);
       } catch (e) {
-        console.log(e);
+        console.error(e);
         this.submitted = false;
       }
     } else {
@@ -336,7 +336,7 @@ export class DeployComponent implements OnInit {
   selectedSchedulerIds = [];
   actualResult = [];
   loading = true;
-  nodes: any = [{path: '/', key: '/', name: '/', children: []}];
+  nodes: any = [{path: '/', key: '/', name: '/', children: [], isFolder : true}];
   securityLevel: string;
   exportObj = {
     controllerId: '',
@@ -411,7 +411,7 @@ export class DeployComponent implements OnInit {
   }
 
   private filterTree() {
-    this.nodes = [{path: '/', key: '/', name: '/', children: []}];
+    this.nodes = [{path: '/', key: '/', name: '/', children: [], isFolder : true}];
     this.buildDeployablesTree(this.actualResult);
     if (this.nodes.length > 0) {
       this.checkAndUpdateVersionList(this.nodes[0]);
@@ -662,6 +662,7 @@ export class DeployComponent implements OnInit {
           name: _path.substring(_path.lastIndexOf('/') + 1),
           path: _path,
           key: _path,
+          isFolder : true,
           children: []
         });
       }
@@ -705,7 +706,7 @@ export class DeployComponent implements OnInit {
           folderArr.push({
             name: data.objectName,
             path: data.folder + (data.folder === '/' ? '' : '/') + data.objectName,
-            key: data.id,
+            key: data.folder + (data.folder === '/' ? '' : '/') + data.objectName,
             isFolder: true,
             isLeaf: true,
             deleted: data.deleted,
@@ -733,11 +734,12 @@ export class DeployComponent implements OnInit {
         if ((nodes[i].type || nodes[i].isFolder) && nodes[i].recursivelyDeploy) {
           let obj: any = {}, objDep: any = {};
           if (!self.releasable && !self.reDeploy) {
-            if (nodes[i].deployId || nodes[i].deploymentId) {
+            if (nodes[i].deployId || nodes[i].deploymentId || nodes[i].isFolder) {
               if (nodes[i].isFolder) {
                 objDep.deployConfiguration = {
                   path: nodes[i].path,
-                  objectType: 'FOLDER'
+                  objectType: 'FOLDER',
+                  recursive: true
                 };
               } else {
                 objDep.deployConfiguration = {
@@ -759,7 +761,8 @@ export class DeployComponent implements OnInit {
                 if (nodes[i].deleted) {
                   objDep.deployConfiguration = {
                     path: nodes[i].path,
-                    objectType: 'FOLDER'
+                    objectType: 'FOLDER',
+                    recursive: true
                   };
                 }
               } else {
@@ -794,7 +797,7 @@ export class DeployComponent implements OnInit {
             }
           }
         }
-        if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
+        if (!nodes[i].type && !nodes[i].object && nodes[i].children && !nodes[i].recursivelyDeploy) {
           recursive(nodes[i].children);
         }
       }
@@ -915,7 +918,7 @@ export class DeployComponent implements OnInit {
         delete this.object.store['draftConfigurations'];
       }
       let obj: any = {
-        exportFile: {name: this.exportObj.filename, format: this.exportObj.fileFormat}
+        exportFile: {filename: this.exportObj.filename, format: this.exportObj.fileFormat}
       };
       if (this.exportObj.forSigning) {
         obj.forSigning = {controllerId: this.exportObj.controllerId, deployables: this.object.store};
@@ -1038,7 +1041,7 @@ export class SetVersionComponent implements OnInit {
   @Input() preferences;
   @Input() schedulerIds;
   @Input() display: any;
-  nodes: any = [{key: '/', path: '/', name: '/', children: []}];
+  nodes: any = [{key: '/', path: '/', name: '/', children: [], isFolder : true}];
   version = {type: 'setOneVersion', name: ''};
   isExpandAll = false;
   loading = true;
@@ -1047,8 +1050,7 @@ export class SetVersionComponent implements OnInit {
   messageList: any;
   object: any = {
     isRecursive: true,
-    configurations: [],
-    deployments: [],
+    deployConfigurations: [],
     prevVersion: ''
   };
 
@@ -1094,6 +1096,7 @@ export class SetVersionComponent implements OnInit {
       folder: '/',
       recursive: true,
       onlyValidObjects: true,
+      withoutRemovedObjects: true,
       withVersions: true
     }).subscribe((res) => {
       this.buildDeployablesTree(res);
@@ -1168,15 +1171,27 @@ export class SetVersionComponent implements OnInit {
     if (data.length > 0) {
       arr = this.createTempArray(data);
     }
-
     function recursive(path, nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if (!nodes[i].type && !nodes[i].object) {
           if (nodes[i].path === path) {
+            nodes[i].isLeaf = false;
             if (!nodes[i].children || nodes[i].children.length === 0) {
+              for (let j = 0; j < arr.length; j++) {
+                if (arr[j].name === nodes[i].name && arr[j].path === nodes[i].path) {
+                  nodes[i].key = arr[j].key;
+                  nodes[i].deleted = arr[j].deleted;
+                  nodes[i].isFolder = true;
+                  arr.splice(j, 1);
+                  break;
+                }
+              }
               nodes[i].children = arr;
             } else {
               nodes[i].children = nodes[i].children.concat(arr);
+            }
+            if (nodes[i].children.length === 0 && !nodes[i].isFolder) {
+              nodes[i].isLeaf = true;
             }
             flag = true;
             break;
@@ -1222,10 +1237,12 @@ export class SetVersionComponent implements OnInit {
         }
       }
       if (!falg) {
+        node.isLeaf = false;
         node.children.push({
           name: _path.substring(_path.lastIndexOf('/') + 1),
           path: _path,
           key: _path,
+          isFolder : true,
           children: []
         });
       }
@@ -1265,8 +1282,10 @@ export class SetVersionComponent implements OnInit {
         temp.forEach(data => {
           folderArr.push({
             name: data.objectName,
-            path: data.folder,
-            key: data.id,
+            path: data.folder + (data.folder === '/' ? '' : '/') + data.objectName,
+            key: data.folder + (data.folder === '/' ? '' : '/') + data.objectName,
+            isFolder: true,
+            isLeaf: true,
             children: []
           });
         });
@@ -1276,17 +1295,33 @@ export class SetVersionComponent implements OnInit {
   }
 
   getJSObject() {
-    this.object.deployments = [];
+    this.object.deployConfigurations = [];
     const self = this;
 
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if (nodes[i].type && (nodes[i].version || nodes[i].recursivelyDeploy)) {
           if (nodes[i].deployId || nodes[i].deploymentId) {
+            const configuration = {
+              path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
+              objectType: nodes[i].type,
+              commitId: ''
+            };
+            if (nodes[i].deployablesVersions) {
+              for (let j = 0; j < nodes[i].deployablesVersions.length; j++) {
+                if (nodes[i].deployablesVersions[j].deploymentId === nodes[i].deploymentId) {
+                  configuration.commitId = nodes[i].deployablesVersions[j].commitId;
+                  break;
+                }
+              }
+            }
             if (self.version.type === 'setSeparateVersion') {
-              self.object.deployments.push({deploymentId: nodes[i].deployId || nodes[i].deploymentId, version: nodes[i].version});
+              self.object.deployConfigurations.push({
+                configuration: configuration,
+                version: nodes[i].version
+              });
             } else {
-              self.object.deployments.push(nodes[i].deployId || nodes[i].deploymentId);
+              self.object.deployConfigurations.push({configuration: configuration});
             }
           }
         }
@@ -1301,10 +1336,8 @@ export class SetVersionComponent implements OnInit {
 
   setVersion() {
     const obj: any = {
-      configurations: [],
-      deployments: []
+      auditLog : {}
     };
-    obj.auditLog = {};
     if (this.comments.comment) {
       obj.auditLog.comment = this.comments.comment;
     }
@@ -1316,15 +1349,15 @@ export class SetVersionComponent implements OnInit {
     }
     this.getJSObject();
     if (this.version.type === 'setSeparateVersion') {
-      obj.deployments = this.object.deployments;
+      obj.deployConfigurations = this.object.deployConfigurations;
       this.coreService.post('inventory/deployment/set_versions', obj).subscribe((res: any) => {
         this.activeModal.close('ok');
       }, (error) => {
 
       });
     } else {
-      if (this.object.deployments.length > 0) {
-        obj.deployments = this.object.deployments;
+      if (this.object.deployConfigurations.length > 0) {
+        obj.deployConfigurations = this.object.deployConfigurations;
         obj.version = this.version.name;
         this.coreService.post('inventory/deployment/set_version', obj).subscribe((res: any) => {
           this.activeModal.close('ok');
@@ -2499,11 +2532,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
         if (args.eventSnapshots[j].path) {
           let path = args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/') + 1) || '/';
           if (args.eventSnapshots[j].eventType.match(/ItemAdded/) || args.eventSnapshots[j].eventType.match(/ItemUpdated/)) {
-           
             this.initTree(path, null);
             break;
           } else if (args.eventSnapshots[j].eventType.match(/ItemChanged/)) {
-           
             this.updateFolders(path, () => {
               this.updateTree();
             });
@@ -2652,8 +2683,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private clearCopyObject(obj) {
-    if (this.selectedData && this.selectedData.type === obj.type && this.selectedData.name === obj.name
-      && this.selectedData.path === obj.path) {
+    if ((this.selectedData && this.selectedData.type === obj.type && this.selectedData.name === obj.name
+      && this.selectedData.path === obj.path)) {
       this.type = null;
       this.selectedData = {};
       this.selectedObj = {};
