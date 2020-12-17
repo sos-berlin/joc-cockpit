@@ -10,55 +10,226 @@
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
-  <div class="modal-body p-a">
-    <div class="form-group row" *ngIf="isObjectTypeVisible">
-      <label class="col-sm-3 " translate>inventory.label.objectType</label>
-      <div class="col-md-9">
-        <label class="md-check w w-130">
-          <input type="radio" name="objectType" [(ngModel)]="exportObj.objectType" value="controller">
-          <i class="primary"></i><span translate>inventory.label.controller</span>
-        </label>
-        <label class="md-check w w-130">
-          <input type="radio" name="objectType" [(ngModel)]="exportObj.objectType" value="schedule">
-          <i class="primary"></i> <span translate>inventory.label.schedule</span>
-        </label>
+  <div class="modal-body p-a" style="min-height: 150px">
+    <div *ngIf="actualResult.length>0 && !loading">
+      <div class="hide" [ngClass]="{'show': display}">
+        <div class="form-group row">
+          <label class="col-md-3 " translate>common.label.selectComments</label>
+          <div class=" col-md-6">
+            <div>
+              <label class="md-check w w-md">
+                <input type="radio" name="radio" [(ngModel)]="comments.radio" value="predefined">
+                <i class="primary"></i> <span translate>common.label.predefined</span>
+              </label>
+              <label class="md-check  w">
+                <input type="radio" name="radio" [(ngModel)]="comments.radio" value="new">
+                <i class="primary"></i> <span translate>common.label.individual</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="comments.radio=='predefined'"
+             [ngClass]="{'has-error' : ((comment.dirty || comment.touched) && comment.invalid)}">
+          <label class="col-md-3 form-control-label" translate>common.label.selectComment</label>
+          <div class="col-md-6">
+            <nz-select nzPlaceHolder="{{'common.label.selectPredefinedReason' | translate}}"
+                       [(ngModel)]="comments.comment" name="comment" #comment="ngModel"
+                       [required]="required && comments.radio=='predefined'">
+              <nz-option [nzValue]="''" [nzLabel]="'common.label.selectPredefinedReason' | translate"></nz-option>
+              <nz-option *ngFor="let list of messageList" [nzLabel]="list" [nzValue]="list"></nz-option>
+            </nz-select>
+            <div *ngIf="comment.invalid && (comment.dirty || comment.touched)" class="text-danger m-t-xs">
+              <div *ngIf="comment.errors.required" translate>
+                common.message.requiredError
+              </div>
+              <div *ngIf="comment.invalid && !comment.errors.required" translate>
+                common.message.invalid
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="comments.radio=='new'"
+             [ngClass]="{'has-error' : ((textComment.dirty || textComment.touched) && textComment.invalid)}">
+          <label class="col-md-3 " translate>common.label.comment</label>
+          <div class=" col-md-6">
+                  <textarea rows="3" class="form-control" maxlength="2000" name="textComment" #textComment="ngModel"
+                            [required]="required && comments.radio=='new'"
+                            [(ngModel)]="comments.textComment"
+                            placeholder="{{'common.placeholder.enterComment' | translate}}"
+                  ></textarea>
+            <div *ngIf="textComment.invalid && (textComment.dirty || textComment.touched)"
+                 class="text-danger help-block">
+              <div *ngIf="textComment.errors.required" translate>
+                common.message.requiredError
+              </div>
+              <div *ngIf="textComment.invalid && !textComment.errors.required" translate>
+                common.message.invalid
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row"
+             [ngClass]="{'has-error' : ((timeSpent.dirty || timeSpent.touched) && timeSpent.invalid)}">
+          <label class="col-md-3 form-control-label" translate>common.label.timeSpend</label>
+          <div class="col-md-6">
+            <input type="text" pattern="[1-9[0-9]*" class="form-control" name="timeSpent" #timeSpent="ngModel"
+                   placeholder="{{'common.placeholder.timeSpend' | translate}}" [(ngModel)]="comments.timeSpent">
+            <div *ngIf="timeSpent.invalid && (timeSpent.dirty || timeSpent.touched)" class="text-danger m-t-xs">
+              <div *ngIf="timeSpent.invalid && !timeSpent.errors.required" translate>
+                common.message.invalid
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row"
+             [ngClass]="{'has-error' : ((ticketLink.dirty || ticketLink.touched) && ticketLink.invalid)}">
+          <label class="col-md-3 form-control-label" translate>common.label.ticketLink</label>
+          <div class="col-md-6">
+            <input type="text"
+                   pattern="(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})"
+                   class="form-control" name="ticketLink" #ticketLink="ngModel"
+                   placeholder="{{'common.placeholder.ticketLink' | translate}}"
+                   [(ngModel)]="comments.ticketLink">
+            <div *ngIf="ticketLink.invalid && (ticketLink.dirty || ticketLink.touched)"
+                 class="text-danger m-t-xs">
+              <div *ngIf="ticketLink.invalid && !ticketLink.errors.required" translate>
+                common.message.invalid
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-3 form-control-label" translate>inventory.label.fileName</label>
+        <div class="col-md-6" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+          <nz-input-group [nzAddOnAfter]="addOnAfterTemplate">
+            <input type="text" nz-input required name="name" #name="ngModel" placeholder="{{'inventory.placeholder.enterFileName' | translate}}" [(ngModel)]="exportObj.filename" />
+          </nz-input-group>
+          <ng-template #addOnAfterTemplate>
+            <nz-select name="format" [(ngModel)]="exportObj.fileFormat">
+              <nz-option nzLabel="ZIP" nzValue="ZIP"></nz-option>
+              <nz-option nzLabel="TAR_GZ" nzValue="TAR_GZ"></nz-option>
+            </nz-select>
+          </ng-template>
+          <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)" class="text-danger help-block">
+            <div *ngIf="name.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row" *ngIf="securityLevel === 'HIGH'">
+        <div class="col-md-3 form-control-label">
+          <label translate>common.label.controllerId</label>
+        </div>
+        <div class="col-md-6">
+          <nz-select
+            nzShowSearch
+            name="schedulerIds"
+            [(ngModel)]="exportObj.controllerId">
+            <ng-container *ngFor="let id of schedulerIds.controllerIds">
+              <nz-option [nzValue]="id" [nzLabel]="id"></nz-option>
+            </ng-container>
+          </nz-select>
+        </div>
+      </div>
+      <div class="form-group row" *ngIf="securityLevel === 'HIGH'">
+        <div class="col-md-3">
+          <label translate>inventory.label.forSigning</label>
+        </div>
+        <div class="col-md-6">
+          <label class="md-check w">
+            <input type="checkbox" name="forSigning" [(ngModel)]="exportObj.forSigning" (ngModelChange)="onchangeSigning()">
+            <i class="primary"></i>
+          </label>
+        </div>
+      </div>
+
+      <div class="row m-b-sm">
+        <div class="col-md-12">
+          <a class="text" (click)="expandAll();" [nz-tooltip]="'common.tooltip.expandAll' | translate">
+            <i class="fa fa-angle-double-down fa-lg"></i>
+          </a>
+          <a class="text m-l-xs" (click)="collapseAll();" [nz-tooltip]="'common.tooltip.collapseAll' | translate">
+            <i class="fa fa-angle-double-up fa-lg"></i>
+          </a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <nz-tree
+            #treeCtrl
+            nzNoAnimation
+            [nzData]="nodes"
+            [nzExpandAll]="isExpandAll"
+            [nzTreeTemplate]="nzTreeTemplate"
+            (nzExpandChange)="getDeploymentVersion($event)"
+          ></nz-tree>
+          <ng-template #nzTreeTemplate let-node>
+            <label class="md-check w-18 m-r-xs" style="top: 2px" *ngIf="!node.origin.object">
+              <input type="checkbox" (click)="handleCheckbox(node.origin)"  name="'chk-' + {{node.key}}" [(ngModel)]="node.origin.recursivelyDeploy"/>
+              <i class="primary"></i>
+            </label>
+            <div class="node-wrapper">
+              <div [ngClass]="{'m-t-xs' :node.origin.object}">
+                <i *ngIf="!node.origin.object && !node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
+                <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
+                <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
+                <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
+                <i *ngIf="node.origin.object == 'SCHEDULE'" nz-icon nzType="schedule" class="icon-color" nzTheme="outline"></i>
+                <i *ngIf="node.origin.object && node.origin.object.match('CALENDAR')" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
+                <span *ngIf="node.origin.type" class="fa fa-check-circle-o text-xs" [ngClass]="{'fa-circle-o': !node.origin.valid, 'text-success' :node.origin.deploymentId}" style="margin-top: 4px"></span>
+                <span class="p-l-sm" >{{node.origin.name | translate}}</span>
+              </div>
+              <div class="m-l" *ngIf="node.origin.type && node.origin.deployablesVersions && node.origin.deployablesVersions.length >0">
+                <nz-select name="'version-' + {{node.key}}"
+                           [nzSize]="'small'"
+                           [(ngModel)]="node.origin.deployId">
+                  <ng-container *ngIf="!node.origin.valid" >
+                    <nz-option nzCustomContent [nzValue]="''" [nzLabel]="'workflow.label.draft' | translate">
+                      <div>
+                        <span class="fa fa-circle-o text-xs text-danger p-r-xs"></span>{{'workflow.label.draft' | translate}} - <span class="label bg-gold" translate>inventory.label.notValid</span>
+                      </div>
+                    </nz-option>
+                  </ng-container>
+                  <ng-container *ngFor="let version of node.origin.deployablesVersions">
+                    <nz-option nzCustomContent [nzValue]="version.deploymentId" [nzLabel]="(!version.versions || version.versions.length === 0) ? ('workflow.label.draft' | translate) : (version.versionDate | stringToDate)">
+                      <div *ngIf="version.versions && version.versions.length>0">
+                        <span class="fa fa-circle-o text-xs p-r-xs" [ngClass]="version.deploymentId ? ' text-success': ''"></span>
+                        {{version.versionDate | stringToDate}} <span class="p-l-sm" [ngClass]="version.deploymentOperation === 'delete' ? ' text-danger': ''">{{version.deploymentOperation}}</span> <i *ngIf="version.deploymentPath" [nz-tooltip]="version.deploymentPath" class="text-muted p-l-sm">{{version.deploymentPath}}</i></div>
+                      <div class="version-inner-list" *ngFor="let ver of version.versions">
+                        {{ver.controllerId}} <i *ngIf="ver.version">,</i> {{ver.version}}
+                      </div>
+                      <div *ngIf="!version.versions || version.versions.length === 0">
+                        <span class="fa fa-circle-o text-xs p-r-xs"></span>{{'workflow.label.draft' | translate}}
+                      </div>
+                    </nz-option>
+                  </ng-container>
+                </nz-select>
+              </div>
+              <div class="m-l" *ngIf="node.origin.type && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)">
+                <i class="text-muted" translate>workflow.label.draft</i>
+              </div>
+            </div>
+          </ng-template>
+        </div>
       </div>
     </div>
-    <div class="form-group row">
-      <label class="col-sm-3 " translate>inventory.label.objectVersion</label>
-      <div class="col-md-9">
-        <label class="md-check w w-130">
-          <input type="radio" name="version" [(ngModel)]="exportObj.version" value="any">
-          <i class="primary"></i><span translate>inventory.label.any</span>
-        </label>
-        <label class="md-check w w-130">
-          <input type="radio" name="version" [(ngModel)]="exportObj.version" value="draft">
-          <i class="primary"></i> <span translate>inventory.label.draft</span>
-        </label>
-        <label class="md-check w w-130">
-          <input type="radio" name="version" [(ngModel)]="exportObj.version" value="version">
-          <i class="primary"></i> <span translate>inventory.label.version</span>
-        </label>
-      </div>
+    <div class="m-t-md" *ngIf="nodes.length===0">
+      <app-empty-data></app-empty-data>
     </div>
-    <div class="form-group row">
-      <div class="col-md-3">
-        <label translate>inventory.label.validOnly</label>
-      </div>
-      <div class="col-md-9">
-        <label class="md-check w w-130">
-          <input type="checkbox" name="isValid" [(ngModel)]="exportObj.isValid">
-          <i class="primary"></i>
-        </label>
-      </div>
+    <div class="text-center m-t-md" *ngIf="loading">
+      <nz-spin nzSimple></nz-spin>
     </div>
   </div>
   <div class="modal-footer text-left" >
-      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid">
-        {{'common.button.apply' | translate}}
-      </button>
-      <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>
-        common.button.cancel
-      </button>
+    <button *ngIf="nodes.length > 0" type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>
+      common.button.cancel
+    </button>
   </div>
 </form>

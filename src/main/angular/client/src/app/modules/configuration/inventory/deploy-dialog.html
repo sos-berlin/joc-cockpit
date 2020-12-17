@@ -1,9 +1,8 @@
 <div class="modal-header">
   <h4 class="modal-title" >
-    <span *ngIf="!releasable && !reDeploy && !isExport" translate>inventory.label.deploy</span>
+    <span *ngIf="!releasable && !reDeploy" translate>inventory.label.deploy</span>
     <span *ngIf="reDeploy" translate>inventory.label.redeploy</span>
     <span *ngIf="releasable" translate>inventory.label.release</span>
-    <span *ngIf="isExport" translate>inventory.label.export</span>
     <span *ngIf="path">:
       {{path}}
     </span>
@@ -102,7 +101,7 @@
             </div>
           </div>
         </div>
-        <div class="form-group row" *ngIf="!releasable && !reDeploy && !isExport">
+        <div class="form-group row" *ngIf="!releasable && !reDeploy">
           <label class="col-md-3 form-control-label">
             <label translate>inventory.label.controllers</label>
           </label>
@@ -118,53 +117,7 @@
             </nz-select>
           </div>
         </div>
-        <div class="form-group row" *ngIf="isExport">
-          <label class="col-md-3 form-control-label" translate>inventory.label.fileName</label>
-          <div class="col-md-6" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-            <nz-input-group [nzAddOnAfter]="addOnAfterTemplate">
-              <input type="text" nz-input required name="name" #name="ngModel" placeholder="{{'inventory.placeholder.enterFileName' | translate}}" [(ngModel)]="exportObj.filename" />
-            </nz-input-group>
-            <ng-template #addOnAfterTemplate>
-              <nz-select name="format" [(ngModel)]="exportObj.fileFormat">
-                <nz-option nzLabel="ZIP" nzValue="ZIP"></nz-option>
-                <nz-option nzLabel="TAR_GZ" nzValue="TAR_GZ"></nz-option>
-              </nz-select>
-            </ng-template>
-            <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)" class="text-danger help-block">
-              <div *ngIf="name.errors.required">
-                <div translate>common.message.requiredError</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="isExport && securityLevel === 'HIGH'">
-          <div class="col-md-3">
-            <label translate>common.label.controllerId</label>
-          </div>
-          <div class="col-md-6">
-            <nz-select
-              nzShowSearch
-              name="schedulerIds"
-              [(ngModel)]="exportObj.controllerId">
-              <ng-container *ngFor="let id of schedulerIds.controllerIds">
-                <nz-option [nzValue]="id" [nzLabel]="id"></nz-option>
-              </ng-container>
-            </nz-select>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="isExport && securityLevel === 'HIGH'">
-          <div class="col-md-3">
-            <label translate>inventory.label.forSigning</label>
-          </div>
-          <div class="col-md-6">
-            <label class="md-check w">
-              <input type="checkbox" name="forSigning" [(ngModel)]="exportObj.forSigning">
-              <i class="primary"></i>
-            </label>
-          </div>
-        </div>
-
-        <div class="form-group row" *ngIf="!path && !isExport">
+        <div class="form-group row" *ngIf="!path">
           <div class="col-md-3">
             <label translate>inventory.label.handleRecursively</label>
           </div>

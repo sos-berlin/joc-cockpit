@@ -34,6 +34,7 @@ import { JobClassComponent } from './inventory/job-class/job-class.component';
 import { XMLAutofocusDirective } from 'src/app/directives/core.directive';
 import {TableComponent} from './inventory/table-data/table.component';
 import {ScheduleComponent} from './inventory/schedule/schedule.component';
+import {InventoryService} from './inventory/inventory.service';
 
 const COMPONENTS = [ImportModalComponent, DiffPatchModalComponent, FrequencyModalComponent, ShowModalComponent,
   ImportComponent, UpdateWorkflowComponent, ShowChildModalComponent, ConfirmationModalComponent, SingleDeployComponent,
@@ -48,7 +49,7 @@ const COMPONENTS = [ImportModalComponent, DiffPatchModalComponent, FrequencyModa
     CKEditorModule,
     CodemirrorModule
   ],
-  providers: [DatePipe, CalendarService, WorkflowService],
+  providers: [DatePipe, CalendarService, WorkflowService, InventoryService],
   declarations: [
     ConfigurationComponent,
     XmlEditorComponent,

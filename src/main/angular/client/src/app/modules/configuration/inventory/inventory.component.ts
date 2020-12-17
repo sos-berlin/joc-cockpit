@@ -1,5 +1,5 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Subscription} from 'rxjs';
+import {forkJoin, Subscription} from 'rxjs';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploader} from 'ng2-file-upload';
 import {ToasterService} from 'angular2-toaster';
@@ -9,6 +9,7 @@ import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
+import {InventoryService} from './inventory.service';
 import * as _ from 'underscore';
 
 declare const $;
@@ -21,41 +22,24 @@ export class SingleDeployComponent implements OnInit {
   @Input() schedulerIds;
   @Input() data;
   @Input() type;
-  @Input() releasable: boolean;
-  @Input() isExport: boolean;
-  @Input() isExportReleaseable: boolean;
-  @Input() exportObject: any;
   @Input() display: any;
   selectedSchedulerIds = [];
-  actualResult = [];
   deployablesObject = [];
   loading = true;
   submitted = false;
   comments: any = {radio: 'predefined'};
   required: boolean;
   messageList: any;
-  securityLevel: string;
-  exportObj = {
-    controllerId: '',
-    forSigning: false,
-    filename: '',
-    fileFormat: 'ZIP'
-  };
   object: any = {
-    checked: false,
-    update: [],
-    delete: [],
     store: {draftConfigurations: [], deployConfigurations: []},
-    deleteObj: {deployConfigurations: []}
+    delete: {deployConfigurations: []}
   };
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private authService: AuthService) {
+  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
   }
 
   ngOnInit() {
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
-    this.exportObj.controllerId = this.schedulerIds.selected;
-    this.securityLevel = sessionStorage.securityLevel;
     if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
     }
@@ -66,54 +50,9 @@ export class SingleDeployComponent implements OnInit {
   }
 
   init() {
-    let obj: any = {onlyValidObjects: true, withVersions: true};
-    if (this.data.id) {
-      obj.id = this.data.id;
-      this.getSingleObject(obj);
-      return;
-    } else if (this.data.object) {
-      obj.folder = this.data.path;
-      obj.objectTypes = this.data.object === 'CALENDAR' ? ['WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'] : [this.data.object];
-    }
-    if (this.exportObject) {
-      obj.withoutRemovedObjects = true;
-      obj.withVersions = this.exportObject.version !== 'draft';
-      obj.onlyValidObjects = this.exportObject.isValid;
-    }
-    const URL = (this.isExportReleaseable || this.releasable) ? 'inventory/releasables' : 'inventory/deployables';
-    this.coreService.post(URL, obj).subscribe((res: any) => {
-      this.actualResult = (this.isExportReleaseable || this.releasable) ? res.releasables : res.deployables;
-      if (this.exportObject && this.exportObject.version !== 'any') {
-        this.actualResult = this.actualResult.filter((value) => {
-          if ((this.isExportReleaseable || this.releasable)) {
-            return (this.exportObject.version !== 'draft' && value.release) || (this.exportObject.version === 'draft' && !value.release);
-          } else {
-            return (this.exportObject.version !== 'draft' && value.deployed) || (this.exportObject.version === 'draft' && !value.deployed);
-          }
-        });
-      }
-      this.filterTree();
-      this.loading = false;
-    }, (err) => {
-      this.loading = false;
-    });
+    let obj: any = {onlyValidObjects: true, withVersions: true, id: this.data.id};
+    this.getSingleObject(obj);
   }
-
-  private filterTree() {
-    this.deployablesObject = this.actualResult;
-    if (this.deployablesObject && this.deployablesObject.length > 0) {
-      for (let j = 0; j < this.deployablesObject.length; j++) {
-        if (this.deployablesObject[j].deployablesVersions && this.deployablesObject[j].deployablesVersions.length > 0) {
-          this.deployablesObject[j].deployId = '';
-          if (this.deployablesObject[j].valid && this.deployablesObject[j].deployablesVersions[0].versions &&
-            this.deployablesObject[j].deployablesVersions[0].versions.length > 0) {
-            this.deployablesObject[j].deployId = this.deployablesObject[j].deployablesVersions[0].deploymentId;
-          }
-        }
-      }
-    }
-  }
-
 
   private getSingleObject(obj) {
     this.coreService.post('inventory/deployable', obj).subscribe((res: any) => {
@@ -124,8 +63,7 @@ export class SingleDeployComponent implements OnInit {
           result.deployId = result.deployablesVersions[0].deploymentId;
         }
       }
-      this.actualResult = [result];
-      this.filterTree();
+      this.deployablesObject = [result];
       this.loading = false;
     }, (err) => {
       this.loading = false;
@@ -134,57 +72,48 @@ export class SingleDeployComponent implements OnInit {
 
   getJSObject() {
     this.object = {
-      checked: false,
-      update: [],
-      delete: [],
       store: {draftConfigurations: [], deployConfigurations: []},
-      deleteObj: {deployConfigurations: []}
+      delete: {deployConfigurations: []}
     };
     const self = this;
     for (let i = 0; i < this.deployablesObject.length; i++) {
       if (this.deployablesObject[i].isChecked || !this.data.object) {
         const obj: any = {}, objDep: any = {};
-        if (!this.releasable) {
-          if (this.deployablesObject[i].deployId || this.deployablesObject[i].deploymentId) {
-            objDep.configuration = {
-              path: this.deployablesObject[i].folder + (this.deployablesObject[i].folder === '/' ? '' : '/') + this.deployablesObject[i].objectName,
-              objectType: this.deployablesObject[i].objectType,
-              commitId: ''
-            };
-            for (let j = 0; j < this.deployablesObject[i].deployablesVersions.length; j++) {
-              if (this.deployablesObject[i].deployablesVersions[j].deploymentId === this.deployablesObject[i].deploymentId) {
-                objDep.configuration.commitId = this.deployablesObject[i].deployablesVersions[j].commitId;
-                break;
-              }
+        if (this.deployablesObject[i].deployId || this.deployablesObject[i].deploymentId) {
+          objDep.configuration = {
+            path: this.deployablesObject[i].folder + (this.deployablesObject[i].folder === '/' ? '' : '/') + this.deployablesObject[i].objectName,
+            objectType: this.deployablesObject[i].objectType,
+            commitId: ''
+          };
+          for (let j = 0; j < this.deployablesObject[i].deployablesVersions.length; j++) {
+            if (this.deployablesObject[i].deployablesVersions[j].deploymentId === this.deployablesObject[i].deploymentId) {
+              objDep.configuration.commitId = this.deployablesObject[i].deployablesVersions[j].commitId;
+              break;
             }
-          } else {
-            objDep.configuration = {
-              path: this.deployablesObject[i].folder + (this.deployablesObject[i].folder === '/' ? '' : '/') + this.deployablesObject[i].objectName,
-              objectType: this.deployablesObject[i].objectType
-            };
           }
         } else {
-          obj.id = this.deployablesObject[i].id;
+          objDep.configuration = {
+            path: this.deployablesObject[i].folder + (this.deployablesObject[i].folder === '/' ? '' : '/') + this.deployablesObject[i].objectName,
+            objectType: this.deployablesObject[i].objectType
+          };
         }
+
         if (this.deployablesObject[i].deleted) {
           if (!_.isEmpty(obj)) {
             self.object.delete.push(obj);
           } else if (objDep.configuration) {
             delete objDep['commitId'];
-            self.object.deleteObj.deployConfigurations.push(objDep);
+            self.object.delete.deployConfigurations.push(objDep);
           }
         } else {
-          if (!_.isEmpty(obj)) {
-            self.object.update.push(obj);
-          } else {
-            if (objDep.configuration) {
-              if (objDep.configuration.commitId) {
-                self.object.store.deployConfigurations.push(objDep);
-              } else {
-                self.object.store.draftConfigurations.push(objDep);
-              }
+          if (objDep.configuration) {
+            if (objDep.configuration.commitId) {
+              self.object.store.deployConfigurations.push(objDep);
+            } else {
+              self.object.store.draftConfigurations.push(objDep);
             }
           }
+
         }
       }
     }
@@ -193,126 +122,45 @@ export class SingleDeployComponent implements OnInit {
   deploy() {
     this.submitted = true;
     this.getJSObject();
-    if (this.isExport) {
-      this.export();
-      return;
+    const obj: any = {
+      controllerIds: [],
+      auditLog: {}
+    };
+    if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
+      if (this.object.store.draftConfigurations.length === 0) {
+        delete this.object.store['draftConfigurations'];
+      }
+      if (this.object.store.deployConfigurations.length === 0) {
+        delete this.object.store['deployConfigurations'];
+      }
+      obj.store = this.object.store;
     }
-    const obj: any = {};
-    if (!this.releasable) {
-      obj.controllerIds = [];
-      if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
-        if (this.object.store.draftConfigurations.length === 0) {
-          delete this.object.store['draftConfigurations'];
-        }
-        if (this.object.store.deployConfigurations.length === 0) {
-          delete this.object.store['deployConfigurations'];
-        }
-        obj.store = this.object.store;
-      }
-
-      if (this.object.deleteObj.deployConfigurations.length > 0) {
-        obj.delete = this.object.deleteObj;
-      }
-      obj.auditLog = {};
-      if (this.comments.comment) {
-        obj.auditLog.comment = this.comments.comment;
-      }
-      if (this.comments.timeSpent) {
-        obj.auditLog.timeSpent = this.comments.timeSpent;
-      }
-      if (this.comments.ticketLink) {
-        obj.auditLog.ticketLink = this.comments.ticketLink;
-      }
-      this.selectedSchedulerIds.forEach(element => {
-        obj.controllerIds.push({controllerId: element});
-      });
-    } else {
+    if (this.object.delete.deployConfigurations.length > 0) {
       obj.delete = this.object.delete;
-      obj.update = this.object.update;
     }
-
-    if (!this.releasable && _.isEmpty(obj.store) && _.isEmpty(obj.delete)) {
+    if (this.comments.comment) {
+      obj.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      obj.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      obj.auditLog.ticketLink = this.comments.ticketLink;
+    }
+    this.selectedSchedulerIds.forEach(element => {
+      obj.controllerIds.push({controllerId: element});
+    });
+    if (_.isEmpty(obj.store) && _.isEmpty(obj.delete)) {
       this.submitted = false;
       return;
-    } else if (this.releasable && _.isEmpty(obj.update) && _.isEmpty(obj.delete)) {
-      this.submitted = false;
-      return;
     }
-
-    const URL = this.releasable ? 'inventory/release' : 'inventory/deployment/deploy';
+    const URL = 'inventory/deployment/deploy';
+    console.log(obj, ' obj');
     this.coreService.post(URL, obj).subscribe((res: any) => {
       this.activeModal.close('ok');
     }, (error) => {
       this.submitted = false;
     });
-  }
-
-  export() {
-    if ((this.object.store.deployConfigurations && this.object.store.deployConfigurations.length > 0) ||
-      (this.object.store.draftConfigurations.length && this.object.store.draftConfigurations.length > 0)) {
-      let param = '';
-      if (this.object.store.deployConfigurations && this.object.store.deployConfigurations.length === 0) {
-        delete this.object.store['deployConfigurations'];
-      }
-      if (this.object.store.draftConfigurations && this.object.store.draftConfigurations.length === 0) {
-        delete this.object.store['draftConfigurations'];
-      }
-      let obj: any = {
-        exportFile: {filename: this.exportObj.filename, format: this.exportObj.fileFormat}
-      };
-
-      if (this.exportObj.forSigning) {
-        obj.controllerId = this.exportObj.controllerId;
-        obj.forSigning = {controllerId: this.exportObj.controllerId, deployables: this.object.store};
-      } else {
-        if(this.isExportReleaseable) {
-          obj.forBackup = {releasables: this.object.store};
-        }else{
-          obj.forBackup = {deployables: this.object.store};
-        }
-      }
-      param = param + '&exportFilter=' + JSON.stringify(obj);
-      if (this.comments.comment) {
-        param = param + '&comment=' + this.comments.comment;
-      }
-      if (this.comments.timeSpent) {
-        param = param + '&timeSpent=' + this.comments.timeSpent;
-      }
-      if (this.comments.ticketLink) {
-        param = param + '&ticketLink=' + encodeURIComponent(this.comments.ticketLink);
-      }
-      // console.log('http://jstest.zehntech.net:7446/joc/api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
-      try {
-        $('#tmpFrame').attr('src', './api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
-        setTimeout(() => {
-          this.submitted = false;
-          this.activeModal.close('ok');
-        }, 150);
-      } catch (e) {
-        console.error(e);
-        this.submitted = false;
-      }
-    } else {
-      this.submitted = false;
-    }
-  }
-
-  checkAll() {
-    for (let i = 0; i < this.deployablesObject.length; i++) {
-      this.deployablesObject[i].isChecked = this.object.checked;
-    }
-  }
-
-  handleCheckbox(node): void {
-    node.isChecked = !node.isChecked;
-    let flag = true;
-    for (let i = 0; i < this.deployablesObject.length; i++) {
-      if (!this.deployablesObject[i].isChecked) {
-        flag = false;
-        break;
-      }
-    }
-    this.object.checked = flag;
   }
 
   cancel() {
@@ -331,21 +179,12 @@ export class DeployComponent implements OnInit {
   @Input() path: string;
   @Input() releasable: boolean;
   @Input() reDeploy: boolean;
-  @Input() isExport: boolean;
-  @Input() isExportReleaseable: boolean;
-  @Input() exportObject: any;
   @Input() display: any;
+  @Input() data: any;
   selectedSchedulerIds = [];
   actualResult = [];
   loading = true;
-  nodes: any = [{path: '/', key: '/', name: '/', children: [], isFolder : true}];
-  securityLevel: string;
-  exportObj = {
-    controllerId: '',
-    forSigning: false,
-    filename: '',
-    fileFormat: 'ZIP'
-  };
+  nodes: any = [{path: '/', key: '/', name: '/', children: [], isFolder: true}];
   object: any = {
     isRecursive: true,
     delete: [],
@@ -360,21 +199,16 @@ export class DeployComponent implements OnInit {
   messageList: any;
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService,
-              private authService: AuthService) {
+              private authService: AuthService, private inventoryService: InventoryService) {
   }
 
   ngOnInit() {
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
-    this.exportObj.controllerId = this.schedulerIds.selected;
-    this.securityLevel = sessionStorage.securityLevel;
     if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
     }
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
-    }
-    if (this.isExport) {
-      this.object.isRecursive = false;
     }
     this.buildTree();
   }
@@ -387,7 +221,7 @@ export class DeployComponent implements OnInit {
       for (let i = 0; i < node.length; i++) {
         if (node[i].children && node[i].children.length > 0) {
           if (!node[i].isCall) {
-            self.checkAndUpdateVersionList(node[i]);
+            self.inventoryService.checkAndUpdateVersionList(node[i]);
           }
           recursive(node[i].children);
         }
@@ -413,10 +247,10 @@ export class DeployComponent implements OnInit {
   }
 
   private filterTree() {
-    this.nodes = [{path: '/', key: '/', name: '/', children: [], isFolder : true}];
+    this.nodes = [{path: '/', key: '/', name: '/', children: [], isFolder: true}];
     this.buildDeployablesTree(this.actualResult);
     if (this.nodes.length > 0) {
-      this.checkAndUpdateVersionList(this.nodes[0]);
+      this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
     }
     setTimeout(() => {
       this.loading = false;
@@ -430,47 +264,10 @@ export class DeployComponent implements OnInit {
   handleCheckbox(node): void {
     node.recursivelyDeploy = !node.recursivelyDeploy;
     if (!node.type) {
-      this.toggleObject(node, node.recursivelyDeploy);
+      this.inventoryService.toggleObject(node, node.recursivelyDeploy);
     }
-    this.getParent(node, node.recursivelyDeploy);
+    this.inventoryService.getParent(node, node.recursivelyDeploy, this.treeCtrl);
     this.updateTree();
-  }
-
-  private getParent(node, flag) {
-    const parent = this.treeCtrl.getTreeNodeByKey(node.path);
-    if (parent) {
-      if (!flag) {
-        parent.origin.recursivelyDeploy = flag;
-      } else if (parent.origin.children) {
-        let flg = true;
-        for (let i = 0; i < parent.origin.children.length; i++) {
-          if (parent.origin.children[i].type && !parent.origin.children[i].recursivelyDeploy) {
-            flg = false;
-            break;
-          } else if (!parent.origin.children[i].type && !parent.origin.children[i].object && !parent.origin.children[i].recursivelyDeploy) {
-            flg = false;
-            break;
-          }
-        }
-        parent.origin.recursivelyDeploy = flg;
-      }
-      if (parent.origin.path !== '/') {
-        if (parent.getParentNode()) {
-          this.getParent(parent.getParentNode().origin, flag);
-        }
-      }
-    }
-  }
-
-  private toggleObject(data, flag) {
-    for (let i = 0; i < data.children.length; i++) {
-      if (data.children[i].type) {
-        data.children[i].recursivelyDeploy = flag;
-      } else if (!data.children[i].object) {
-        data.children[i].recursivelyDeploy = flag;
-        this.toggleObject(data.children[i], flag);
-      }
-    }
   }
 
   updateTree() {
@@ -507,23 +304,14 @@ export class DeployComponent implements OnInit {
       onlyValidObjects: true,
       withVersions: !this.reDeploy
     };
-    if (this.exportObject) {
-      obj.withoutRemovedObjects = true;
-      obj.withVersions = this.exportObject.version !== 'draft';
-      obj.onlyValidObjects = this.exportObject.isValid;
+    if (this.data && this.data.object) {
+      obj.recursive = false;
+      obj.objectTypes = this.data.object === 'CALENDAR' ? ['WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'] : [this.data.object];
     }
-    const URL = (this.isExportReleaseable || this.releasable) ? 'inventory/releasables' : 'inventory/deployables';
+    const URL = this.releasable ? 'inventory/releasables' : 'inventory/deployables';
     this.coreService.post(URL, obj).subscribe((res: any) => {
-      this.actualResult = (this.isExportReleaseable || this.releasable) ? res.releasables : res.deployables;
-      if (this.exportObject && this.exportObject.version !== 'any') {
-        this.actualResult = this.actualResult.filter((value) => {
-          if ((this.isExportReleaseable || this.releasable)) {
-            return (this.exportObject.version !== 'draft' && value.release) || (this.exportObject.version === 'draft' && !value.release);
-          } else {
-            return (this.exportObject.version !== 'draft' && value.deployed) || (this.exportObject.version === 'draft' && !value.deployed);
-          }
-        });
-      }
+      this.actualResult = this.releasable ? res.releasables : res.deployables;
+      this.actualResult = this.inventoryService.sortList(this.actualResult);
       this.filterTree();
     }, (err) => {
       this.loading = false;
@@ -534,198 +322,23 @@ export class DeployComponent implements OnInit {
   getDeploymentVersion(e: NzFormatEmitEvent): void {
     let node = e.node;
     if (node && node.origin && node.origin.expanded && !node.origin.isCall) {
-      this.checkAndUpdateVersionList(node.origin);
-    }
-  }
-
-  private checkAndUpdateVersionList(data) {
-    data.isCall = true;
-    for (let i = 0; i < data.children.length; i++) {
-      if (data.children[i].deployablesVersions && data.children[i].deployablesVersions.length > 0) {
-        data.children[i].deployId = '';
-        if (data.children[i].deployablesVersions[0].versions && data.children[i].deployablesVersions[0].versions.length > 0) {
-          data.children[i].deployId = data.children[i].deployablesVersions[0].deploymentId;
-        }
-      }
+      this.inventoryService.checkAndUpdateVersionList(node.origin);
     }
   }
 
   private buildDeployablesTree(result) {
     if (result && result.length > 0) {
-      // result = _.sortBy(result, 'objectType').reverse();
       const arr = _.groupBy(_.sortBy(result, 'folder'), (res) => {
         return res.folder;
       });
-      this.generateTree(arr);
+      this.inventoryService.generateTree(arr, this.nodes);
     } else {
       this.nodes = [];
     }
   }
 
-  private generateTree(arr) {
-    for (const [key, value] of Object.entries(arr)) {
-      if (key !== '/') {
-        let paths = key.split('/');
-        if (paths.length > 1) {
-          let pathArr = [];
-          for (let i = 0; i < paths.length; i++) {
-            if (paths[i]) {
-              if (i > 0 && paths[i - 1]) {
-                pathArr.push('/' + paths[i - 1] + '/' + paths[i]);
-              } else {
-                pathArr.push('/' + paths[i]);
-              }
-            }
-          }
-          for (let i = 0; i < pathArr.length; i++) {
-            this.checkAndAddFolder(pathArr[i]);
-          }
-        }
-      }
-      this.checkFolderRecur(key, value);
-    }
-  }
-
-  private checkFolderRecur(_path, data) {
-    let flag = false;
-    let arr = [];
-    if (data.length > 0) {
-      arr = this.createTempArray(data);
-    }
-
-    function recursive(path, nodes) {
-      for (let i = 0; i < nodes.length; i++) {
-        if (!nodes[i].type && !nodes[i].object) {
-          if (nodes[i].path === path) {
-            nodes[i].isLeaf = false;
-            if (!nodes[i].children || nodes[i].children.length === 0) {
-              for (let j = 0; j < arr.length; j++) {
-                if (arr[j].name === nodes[i].name && arr[j].path === nodes[i].path) {
-                  nodes[i].key = arr[j].key;
-                  nodes[i].deleted = arr[j].deleted;
-                  nodes[i].isFolder = true;
-                  arr.splice(j, 1);
-                  break;
-                }
-              }
-              nodes[i].children = arr;
-            } else {
-              nodes[i].children = nodes[i].children.concat(arr);
-            }
-            if (nodes[i].children.length === 0 && !nodes[i].isFolder) {
-              nodes[i].isLeaf = true;
-            }
-            flag = true;
-            break;
-          }
-          if (!flag && nodes[i].children) {
-            recursive(path, nodes[i].children);
-          }
-        }
-      }
-    }
-
-    if (this.nodes && this.nodes[0]) {
-      this.nodes[0].expanded = true;
-      recursive(_path, this.nodes);
-    }
-  }
-
-  private checkAndAddFolder(_path) {
-    let node: any;
-
-    function recursive(path, nodes) {
-      for (let i = 0; i < nodes.length; i++) {
-        if (!nodes[i].type && !nodes[i].object) {
-          if (nodes[i].path === path.substring(0, path.lastIndexOf('/') + 1) || nodes[i].path === path.substring(0, path.lastIndexOf('/'))) {
-            node = nodes[i];
-            break;
-          }
-          if (nodes[i].children) {
-            recursive(path, nodes[i].children);
-          }
-        }
-      }
-    }
-
-    recursive(_path, this.nodes);
-
-    if (node) {
-      let falg = false;
-      for (let x = 0; x < node.children.length; x++) {
-        if (!node.children[x].type && !node.children[x].object && node.children[x].path === _path) {
-          falg = true;
-          break;
-        }
-      }
-      if (!falg) {
-        node.isLeaf = false;
-        node.children.push({
-          name: _path.substring(_path.lastIndexOf('/') + 1),
-          path: _path,
-          key: _path,
-          isFolder : true,
-          children: []
-        });
-      }
-    }
-  }
-
-  private createTempArray(arr) {
-    let x = _.groupBy(arr, (res) => {
-      return res.objectType;
-    });
-    let tempArr = [], folderArr = [];
-    for (const [key, value] of Object.entries(x)) {
-      const temp: any = value;
-      if (key !== 'FOLDER') {
-        let parentObj: any = {
-          name: value[0].objectType,
-          object: value[0].objectType,
-          path: value[0].folder,
-          key: value[0].folder + (value[0].folder === '/' ? '' : '/') + value[0].objectType,
-          isLeaf: true
-        };
-        tempArr.push(parentObj);
-        temp.forEach(data => {
-          const child: any = {
-            name: data.objectName,
-            path: data.folder,
-            key: data.id,
-            type: data.objectType,
-            deleted: data.deleted,
-            deployed: data.deployed,
-            valid: data.valid,
-            deploymentId: data.deploymentId,
-            deployablesVersions: data.deployablesVersions,
-            isLeaf: true
-          };
-          tempArr.push(child);
-        });
-
-      } else {
-        temp.forEach(data => {
-          folderArr.push({
-            name: data.objectName,
-            path: data.folder + (data.folder === '/' ? '' : '/') + data.objectName,
-            key: data.folder + (data.folder === '/' ? '' : '/') + data.objectName,
-            isFolder: true,
-            isLeaf: true,
-            deleted: data.deleted,
-            children: []
-          });
-        });
-
-      }
-    }
-    return tempArr.concat(folderArr);
-  }
-
   getJSObject() {
     this.object = {
-      checked: false,
-      update: [],
-      delete: [],
       store: {draftConfigurations: [], deployConfigurations: []},
       deleteObj: {deployConfigurations: []}
     };
@@ -734,22 +347,19 @@ export class DeployComponent implements OnInit {
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if ((nodes[i].type || nodes[i].isFolder) && nodes[i].recursivelyDeploy) {
-          let obj: any = {}, objDep: any = {};
-          if (!self.releasable && !self.reDeploy) {
-            if (nodes[i].deployId || nodes[i].deploymentId || nodes[i].isFolder) {
-              if (nodes[i].isFolder) {
-                objDep.configuration = {
-                  path: nodes[i].path,
-                  objectType: 'FOLDER',
-                  recursive: true
-                };
-              } else {
-                objDep.configuration = {
-                  path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
-                  objectType: nodes[i].type,
-                  commitId: ''
-                };
-              }
+          let objDep: any = {};
+          if (nodes[i].deployId || nodes[i].deploymentId || nodes[i].isFolder) {
+            if (nodes[i].isFolder) {
+              objDep.configuration = {
+                path: nodes[i].path,
+                objectType: 'FOLDER',
+                recursive: true
+              };
+            } else {
+              objDep.configuration = {
+                path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
+                objectType: nodes[i].type
+              };
               if (nodes[i].deployablesVersions) {
                 for (let j = 0; j < nodes[i].deployablesVersions.length; j++) {
                   if (nodes[i].deployablesVersions[j].deploymentId === nodes[i].deploymentId) {
@@ -758,40 +368,35 @@ export class DeployComponent implements OnInit {
                   }
                 }
               }
-            } else {
+            }
+          } else {
+            objDep.configuration = {
+              path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
+              objectType: nodes[i].type
+            };
+          }
+          if (nodes[i].deleted) {
+            self.object.deleteObj.deployConfigurations.push(objDep);
+          } else {
+            if (objDep.configuration) {
+              console.log('objDep', objDep)
               if (nodes[i].isFolder) {
-                if (nodes[i].deleted) {
-                  objDep.configuration = {
-                    path: nodes[i].path,
-                    objectType: 'FOLDER',
-                    recursive: true
-                  };
+                let check1 = false, check2 = false;
+                for (let j = 0; j < nodes[i].children.length; j++) {
+                  if (nodes[i].children[j].type) {
+                    if ((nodes[i].children[j].deployId || nodes[i].children[j].deploymentId) && !check1) {
+                      check1 = true;
+                      self.object.deployConfigurations.push(objDep);
+                    } else if (!check2) {
+                      check2 = true;
+                      self.object.draftConfigurations.push(objDep);
+                    }
+                    if (check1 && check2) {
+                      break;
+                    }
+                  }
                 }
               } else {
-                objDep.configuration = {
-                  path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
-                  objectType: nodes[i].type
-                };
-              }
-            }
-          } else {
-            if (!nodes[i].isFolder) {
-              obj.id = nodes[i].key;
-            }
-          }
-
-          if (nodes[i].deleted) {
-            if (!_.isEmpty(obj)) {
-              self.object.delete.push(obj);
-            } else if (objDep.configuration) {
-              delete objDep['commitId'];
-              self.object.deleteObj.deployConfigurations.push(objDep);
-            }
-          } else {
-            if (!_.isEmpty(obj)) {
-              self.object.update.push(obj);
-            } else {
-              if (objDep.configuration) {
                 if (objDep.configuration.commitId) {
                   self.object.store.deployConfigurations.push(objDep);
                 } else {
@@ -807,6 +412,41 @@ export class DeployComponent implements OnInit {
       }
     }
 
+    recursive(this.nodes);
+  }
+
+  getReleaseObject() {
+    this.object = {
+      update: [],
+      delete: []
+    };
+    const self = this;
+
+    function recursive(nodes) {
+      for (let i = 0; i < nodes.length; i++) {
+        if ((nodes[i].type || nodes[i].isFolder) && nodes[i].recursivelyDeploy) {
+          if (nodes[i].isFolder && nodes[i].deleted) {
+            self.object.delete.push({
+              path: nodes[i].path,
+              objectType: 'FOLDER'
+            });
+          } else if (nodes[i].type) {
+            const obj: any = {
+              path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
+              objectType: nodes[i].type
+            };
+            if (nodes[i].deleted) {
+              self.object.delete.push(obj);
+            } else {
+              self.object.update.push(obj);
+            }
+          }
+        }
+        if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
+          recursive(nodes[i].children);
+        }
+      }
+    }
     recursive(this.nodes);
   }
 
@@ -836,12 +476,10 @@ export class DeployComponent implements OnInit {
     this.submitted = true;
     if (this.reDeploy) {
       this.getRedeploy();
+    } else if (this.releasable) {
+      this.getReleaseObject();
     } else {
       this.getJSObject();
-    }
-    if (this.isExport) {
-      this.export();
-      return;
     }
     const obj: any = {};
     if (this.reDeploy) {
@@ -911,30 +549,348 @@ export class DeployComponent implements OnInit {
     });
   }
 
-  export() {
-    if ((this.object.store.deployConfigurations && this.object.store.deployConfigurations.length > 0) ||
-      (this.object.store.draftConfigurations.length && this.object.store.draftConfigurations.length > 0)) {
-      let param = '';
-      if (this.object.store.deployConfigurations && this.object.store.deployConfigurations.length === 0) {
-        delete this.object.store['deployConfigurations'];
+  cancel() {
+    this.activeModal.dismiss();
+  }
+}
+
+@Component({
+  selector: 'app-export-modal',
+  templateUrl: './export-dialog.html'
+})
+export class ExportComponent implements OnInit {
+  @ViewChild('treeCtrl', {static: false}) treeCtrl;
+  @Input() schedulerIds;
+  @Input() preferences;
+  @Input() origin: any;
+  @Input() display: any;
+  actualResult = [];
+  loading = true;
+  nodes: any = [{path: '/', key: '/', name: '/', children: [], isFolder: true}];
+  isExpandAll = false;
+  submitted = false;
+  comments: any = {radio: 'predefined'};
+  required: boolean;
+  exportType = 'BOTH';
+  messageList: any;
+  path: string;
+  securityLevel: string;
+  exportObj = {
+    controllerId: '',
+    forSigning: false,
+    filename: '',
+    fileFormat: 'ZIP'
+  };
+  object: any = {draftConfigurations: [], releaseDraftConfigurations: [], deployConfigurations: [], releasedConfigurations: []};
+
+  constructor(public activeModal: NgbActiveModal, private coreService: CoreService,
+              private authService: AuthService, private inventoryService: InventoryService) {
+  }
+
+  ngOnInit() {
+    this.exportObj.controllerId = this.schedulerIds.selected;
+    this.securityLevel = sessionStorage.securityLevel;
+    if (sessionStorage.comments) {
+      this.messageList = JSON.parse(sessionStorage.comments);
+    }
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
+    if (this.origin) {
+      this.path = this.origin.path;
+      if (this.origin.dailyPlan || (this.origin.object &&
+        (this.origin.object === 'SCHEDULE' || this.origin.object.match('CALENDAR')))) {
+        this.exportType = this.origin.object || 'DAILYPLAN';
+      } else {
+        if (this.origin.controller || this.origin.object) {
+          this.exportType = this.origin.object || 'CONTROLLER';
+        }
       }
-      if (this.object.store.draftConfigurations && this.object.store.draftConfigurations.length === 0) {
-        delete this.object.store['draftConfigurations'];
+    }
+    this.buildTree();
+  }
+
+  buildTree() {
+    const obj: any = {
+      folder: this.path || '/',
+      onlyValidObjects: false,
+      withVersions: true,
+      withoutRemovedObjects: true
+    };
+
+    const APIs = [];
+    if (this.exportType === 'BOTH') {
+      obj.recursive = true;
+      APIs.push(this.coreService.post('inventory/deployables', obj));
+      APIs.push(this.coreService.post('inventory/releasables', obj));
+    } else {
+      if (this.exportType === 'CONTROLLER' || this.exportType === 'DAILYPLAN') {
+        obj.recursive = true;
+      } else {
+        obj.objectTypes = this.exportType === 'CALENDAR' ? [this.exportType] : ['WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'];
+      }
+      if (this.exportType === 'DAILYPLAN' || this.exportType === 'SCHEDULE' || this.exportType.match('CALENDAR')) {
+        APIs.push(this.coreService.post('inventory/releasables', obj));
+      } else {
+        APIs.push(this.coreService.post('inventory/deployables', obj));
+      }
+    }
+    forkJoin(APIs).subscribe(res => {
+      this.actualResult = [];
+      res.forEach((data) => {
+        if (data.releasables) {
+          this.actualResult = this.actualResult.concat(data.releasables);
+        } else {
+          this.actualResult = this.actualResult.concat(data.deployables);
+        }
+      });
+      this.actualResult = this.inventoryService.sortList(this.actualResult);
+      this.filterTree();
+    }, (err) => {
+      this.loading = false;
+      this.nodes = [];
+    });
+  }
+
+  onchangeSigning() {
+    this.filterTree();
+  }
+
+  expandAll(): void {
+    this.isExpandAll = true;
+    const self = this;
+
+    function recursive(node) {
+      for (let i = 0; i < node.length; i++) {
+        if (node[i].children && node[i].children.length > 0) {
+          if (!node[i].isCall) {
+            self.inventoryService.checkAndUpdateVersionList(node[i]);
+          }
+          recursive(node[i].children);
+        }
+      }
+    }
+
+    recursive(this.nodes);
+  }
+
+  collapseAll() {
+    this.isExpandAll = false;
+    this.expandCollapseRec(this.nodes);
+  }
+
+  private expandCollapseRec(node) {
+    for (let i = 0; i < node.length; i++) {
+      if (node[i].children && node[i].children.length > 0) {
+        const a = this.treeCtrl.getTreeNodeByKey(node[i].key);
+        a.isExpanded = false;
+        this.expandCollapseRec(node[i].children);
+      }
+    }
+  }
+
+  private filterTree() {
+    this.nodes = [{path: '/', key: '/', name: '/', children: [], isFolder: true}];
+    const arr = this.exportObj.forSigning ? this.actualResult.filter((value) => {
+      return !(value.objectType === 'SCHEDULE' || value.objectType.match(/CALENDAR/));
+    }) : this.actualResult;
+    this.buildDeployablesTree(arr);
+    if (this.nodes.length > 0) {
+      this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
+    }
+    setTimeout(() => {
+      this.loading = false;
+      if (this.path) {
+        this.getChildTree();
+      }
+      this.updateTree();
+    }, 0);
+  }
+
+  handleCheckbox(node): void {
+    node.recursivelyDeploy = !node.recursivelyDeploy;
+    if (!node.type) {
+      this.inventoryService.toggleObject(node, node.recursivelyDeploy);
+    }
+    this.inventoryService.getParent(node, node.recursivelyDeploy, this.treeCtrl);
+    this.updateTree();
+  }
+
+  updateTree() {
+    this.nodes = [...this.nodes];
+  }
+
+  private getChildTree() {
+    const self = this;
+
+    function recursive(nodes) {
+      for (let i = 0; i < nodes.length; i++) {
+        let flag = false;
+        if (!nodes[i].type && !nodes[i].object) {
+          if (nodes[i].path === self.path) {
+            flag = true;
+            self.nodes = nodes;
+            break;
+          }
+          if (!flag && nodes[i].children) {
+            recursive(nodes[i].children);
+          }
+        }
+      }
+    }
+
+    recursive(this.nodes);
+  }
+
+  getDeploymentVersion(e: NzFormatEmitEvent): void {
+    let node = e.node;
+    if (node && node.origin && node.origin.expanded && !node.origin.isCall) {
+      this.inventoryService.checkAndUpdateVersionList(node.origin);
+    }
+  }
+
+  private buildDeployablesTree(result) {
+    if (result && result.length > 0) {
+      const arr = _.groupBy(_.sortBy(result, 'folder'), (res) => {
+        return res.folder;
+      });
+      this.inventoryService.generateTree(arr, this.nodes);
+    } else {
+      this.nodes = [];
+    }
+  }
+
+  getJSObject() {
+    const self = this;
+
+    function recursive(nodes) {
+      for (let i = 0; i < nodes.length; i++) {
+        if ((nodes[i].type || nodes[i].isFolder) && nodes[i].recursivelyDeploy) {
+          const objDep: any = {};
+          if (nodes[i].isFolder) {
+            objDep.configuration = {
+              path: nodes[i].path,
+              objectType: 'FOLDER',
+              recursive: true
+            };
+          } else {
+            objDep.configuration = {
+              path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
+              objectType: nodes[i].type
+            };
+          }
+          if (nodes[i].deployablesVersions) {
+            for (let j = 0; j < nodes[i].deployablesVersions.length; j++) {
+              if (nodes[i].deployablesVersions[j].deploymentId === nodes[i].deploymentId) {
+                objDep.configuration.commitId = nodes[i].deployablesVersions[j].commitId;
+                break;
+              }
+            }
+          }
+          if (objDep.configuration.objectType !== 'FOLDER') {
+            if (self.inventoryService.isControllerObject(nodes[i].type)) {
+              if (objDep.configuration.commitId) {
+                self.object.deployConfigurations.push(objDep);
+              } else {
+                self.object.draftConfigurations.push(objDep);
+              }
+            } else {
+              if (nodes[i].release) {
+                self.object.releasedConfigurations.push(objDep);
+              } else {
+                self.object.releaseDraftConfigurations.push(objDep);
+              }
+            }
+          } else {
+            let check1 = false, check2 = false, check3 = false, check4 = false;
+            for (let j = 0; j < nodes[i].children.length; j++) {
+              if (nodes[i].children[j].type) {
+                if (self.inventoryService.isControllerObject(nodes[i].children[j].type)) {
+                  if ((nodes[i].children[j].deployId || nodes[i].children[j].deploymentId) && !check1) {
+                    check1 = true;
+                    self.object.deployConfigurations.push(objDep);
+                  } else if (!check2) {
+                    check2 = true;
+                    self.object.draftConfigurations.push(objDep);
+                  }
+                } else {
+                  if (nodes[i].children[j].release && !check3) {
+                    check3 = true;
+                    self.object.releasedConfigurations.push(objDep);
+                  } else if (!check4) {
+                    check4 = true;
+                    self.object.releaseDraftConfigurations.push(objDep);
+                  }
+                }
+                if (check1 && check2 && check3 && check4) {
+                  break;
+                }
+              }
+            }
+          }
+
+        }
+        if (!nodes[i].type && !nodes[i].object && nodes[i].children && !nodes[i].recursivelyDeploy) {
+          recursive(nodes[i].children);
+        }
+      }
+    }
+
+    recursive(this.nodes);
+  }
+
+  onSubmit() {
+    this.submitted = true;
+    this.getJSObject();
+    this.export();
+  }
+
+  export() {
+    if ((this.object.deployConfigurations && this.object.deployConfigurations.length > 0) ||
+      (this.object.draftConfigurations.length && this.object.draftConfigurations.length > 0) ||
+      (this.object.releasedConfigurations && this.object.releasedConfigurations.length > 0) ||
+      (this.object.releaseDraftConfigurations.length && this.object.releaseDraftConfigurations.length > 0)) {
+      let param = '';
+      if (this.object.deployConfigurations && this.object.deployConfigurations.length === 0) {
+        delete this.object['deployConfigurations'];
+      }
+      if (this.object.draftConfigurations && this.object.draftConfigurations.length === 0) {
+        delete this.object['draftConfigurations'];
+      }
+      if (this.object.releasedConfigurations && this.object.releasedConfigurations.length === 0) {
+        delete this.object['releasedConfigurations'];
+      }
+      if (this.object.releaseDraftConfigurations && this.object.releaseDraftConfigurations.length === 0) {
+        delete this.object['releaseDraftConfigurations'];
       }
       let obj: any = {
         exportFile: {filename: this.exportObj.filename, format: this.exportObj.fileFormat}
       };
       if (this.exportObj.forSigning) {
-        obj.forSigning = {controllerId: this.exportObj.controllerId, deployables: this.object.store};
+        obj.forSigning = {controllerId: this.exportObj.controllerId};
+        if (this.object.draftConfigurations || this.object.deployConfigurations) {
+          obj.forBackup.deployables = {
+            draftConfigurations: this.object.draftConfigurations,
+            deployConfigurations: this.object.deployConfigurations
+          };
+        }
       } else {
-        if(this.isExportReleaseable) {
-          obj.forBackup = {releasables: this.object.store};
-        }else{
-          obj.forBackup = {deployables: this.object.store};
+        obj.forBackup = {};
+        if (this.object.releasedConfigurations || this.object.releaseDraftConfigurations) {
+          obj.forBackup.releasables = {
+            releasedConfigurations: this.object.releasedConfigurations,
+            draftConfigurations: this.object.releaseDraftConfigurations
+          };
+        }
+        if (this.object.draftConfigurations || this.object.deployConfigurations) {
+          obj.forBackup.deployables = {
+            draftConfigurations: this.object.draftConfigurations,
+            deployConfigurations: this.object.deployConfigurations
+          };
         }
       }
+      console.log(obj.forBackup);
 
-     
       param = param + '&exportFilter=' + JSON.stringify(obj);
       if (this.comments.comment) {
         param = param + '&comment=' + this.comments.comment;
@@ -945,7 +901,8 @@ export class DeployComponent implements OnInit {
       if (this.comments.ticketLink) {
         param = param + '&ticketLink=' + encodeURIComponent(this.comments.ticketLink);
       }
-      //console.log('http://jstest.zehntech.net:7446/joc/api/inventory/export?accessToken=' + this.authService.accessTokenId +  param);
+      console.log('http://jstest.zehntech.net:7446/joc/api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
+      this.submitted = false;
       try {
         $('#tmpFrame').attr('src', './api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
         setTimeout(() => {
@@ -967,76 +924,6 @@ export class DeployComponent implements OnInit {
 }
 
 @Component({
-  selector: 'app-export-modal',
-  templateUrl: './export-dialog.html'
-})
-export class ExportComponent implements OnInit {
-  @Input() schedulerIds;
-  @Input() preferences;
-  @Input() origin: any;
-  @Input() display: any;
-
-  exportObj: any = {};
-  path: string;
-  isExportReleaseable = false;
-  isObjectTypeVisible = true;
-
-  constructor(public activeModal: NgbActiveModal, public modalService: NgbModal) {
-  }
-
-  ngOnInit() {
-    this.exportObj.objectType = 'controller';
-    this.exportObj.version = 'any';
-    this.exportObj.isValid = true;
-    if (this.origin) {
-      this.path = this.origin.path;
-      this.isExportReleaseable = this.origin.dailyPlan;
-      if (this.origin.controller || this.origin.dailyPlan || this.origin.object) {
-        this.isObjectTypeVisible = false;
-      }
-      if (this.origin.dailyPlan || (this.origin.object &&
-        (this.origin.object === 'SCHEDULE' || this.origin.object.match('CALENDAR')))) {
-        this.exportObj.objectType = 'schedule';
-      }
-    }
-  }
-
-  onSubmit() {
-    this.isExportReleaseable = this.exportObj.objectType === 'schedule';
-    if (this.origin && this.origin.object) {
-      const modalRef = this.modalService.open(SingleDeployComponent, {backdrop: 'static'});
-      modalRef.componentInstance.schedulerIds = this.schedulerIds;
-      modalRef.componentInstance.display = this.preferences.auditLog;
-      modalRef.componentInstance.data = this.origin;
-      modalRef.componentInstance.exportObject = this.exportObj;
-      modalRef.componentInstance.isExport = true;
-      modalRef.componentInstance.isExportReleaseable = this.isExportReleaseable;
-      modalRef.result.then((res: any) => {
-        this.activeModal.close();
-      }, () => {
-      });
-    } else {
-      const modalRef = this.modalService.open(DeployComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.schedulerIds = this.schedulerIds;
-      modalRef.componentInstance.preferences = this.preferences;
-      modalRef.componentInstance.display = this.preferences.auditLog;
-      modalRef.componentInstance.path = this.path;
-      modalRef.componentInstance.exportObject = this.exportObj;
-      modalRef.componentInstance.isExport = true;
-      modalRef.componentInstance.isExportReleaseable = this.isExportReleaseable;
-      modalRef.result.then((res: any) => {
-        this.activeModal.close();
-      }, () => {
-      });
-    }
-  }
-
-  cancel() {
-    this.activeModal.dismiss();
-  }
-}
-
-@Component({
   selector: 'app-set-version-modal',
   templateUrl: './setVersion-dialog.html'
 })
@@ -1045,7 +932,7 @@ export class SetVersionComponent implements OnInit {
   @Input() preferences;
   @Input() schedulerIds;
   @Input() display: any;
-  nodes: any = [{key: '/', path: '/', name: '/', children: [], isFolder : true}];
+  nodes: any = [{key: '/', path: '/', name: '/', children: [], isFolder: true}];
   version = {type: 'setOneVersion', name: ''};
   isExpandAll = false;
   loading = true;
@@ -1058,7 +945,7 @@ export class SetVersionComponent implements OnInit {
     prevVersion: ''
   };
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
+  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private inventoryService: InventoryService) {
   }
 
   ngOnInit() {
@@ -1102,10 +989,10 @@ export class SetVersionComponent implements OnInit {
       onlyValidObjects: true,
       withoutRemovedObjects: true,
       withVersions: true
-    }).subscribe((res) => {
-      this.buildDeployablesTree(res);
+    }).subscribe((res: any) => {
+      this.buildDeployablesTree(this.inventoryService.sortList(res.deployables));
       if (this.nodes.length > 0) {
-        this.checkAndUpdateVersionList(this.nodes[0]);
+        this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
       }
       setTimeout(() => {
         this.loading = false;
@@ -1120,182 +1007,17 @@ export class SetVersionComponent implements OnInit {
   getDeploymentVersion(e: NzFormatEmitEvent): void {
     let node = e.node;
     if (node && node.origin && node.origin.expanded && !node.origin.isCall) {
-      this.checkAndUpdateVersionList(node.origin);
-    }
-  }
-
-  private checkAndUpdateVersionList(data) {
-    data.isCall = true;
-    for (let i = 0; i < data.children.length; i++) {
-      if (data.children[i].deployablesVersions && data.children[i].deployablesVersions.length > 0) {
-        data.children[i].deployId = '';
-        if (data.children[i].deployablesVersions[0].versions && data.children[i].deployablesVersions[0].versions.length > 0) {
-          data.children[i].deployId = data.children[i].deployablesVersions[0].deploymentId;
-        }
-      }
+      this.inventoryService.checkAndUpdateVersionList(node.origin);
     }
   }
 
   private buildDeployablesTree(result) {
-    if (result.deployables && result.deployables.length > 0) {
-      const arr = _.groupBy(_.sortBy(result.deployables, 'folder'), (res) => {
+    if (result && result.length > 0) {
+      const arr = _.groupBy(_.sortBy(result, 'folder'), (res) => {
         return res.folder;
       });
-      this.generateTree(arr);
+      this.inventoryService.generateTree(arr, this.nodes);
     }
-  }
-
-  private generateTree(arr) {
-    for (const [key, value] of Object.entries(arr)) {
-      if (key !== '/') {
-        let paths = key.split('/');
-        if (paths.length > 1) {
-          let pathArr = [];
-          for (let i = 0; i < paths.length; i++) {
-            if (paths[i]) {
-              if (i > 0 && paths[i - 1]) {
-                pathArr.push('/' + paths[i - 1] + '/' + paths[i]);
-              } else {
-                pathArr.push('/' + paths[i]);
-              }
-            }
-          }
-          for (let i = 0; i < pathArr.length; i++) {
-            this.checkAndAddFolder(pathArr[i]);
-          }
-        }
-      }
-      this.checkFolderRecur(key, value);
-    }
-  }
-
-  private checkFolderRecur(_path, data) {
-    let flag = false;
-    let arr = [];
-    if (data.length > 0) {
-      arr = this.createTempArray(data);
-    }
-    function recursive(path, nodes) {
-      for (let i = 0; i < nodes.length; i++) {
-        if (!nodes[i].type && !nodes[i].object) {
-          if (nodes[i].path === path) {
-            nodes[i].isLeaf = false;
-            if (!nodes[i].children || nodes[i].children.length === 0) {
-              for (let j = 0; j < arr.length; j++) {
-                if (arr[j].name === nodes[i].name && arr[j].path === nodes[i].path) {
-                  nodes[i].key = arr[j].key;
-                  nodes[i].deleted = arr[j].deleted;
-                  nodes[i].isFolder = true;
-                  arr.splice(j, 1);
-                  break;
-                }
-              }
-              nodes[i].children = arr;
-            } else {
-              nodes[i].children = nodes[i].children.concat(arr);
-            }
-            if (nodes[i].children.length === 0 && !nodes[i].isFolder) {
-              nodes[i].isLeaf = true;
-            }
-            flag = true;
-            break;
-          }
-          if (!flag && nodes[i].children) {
-            recursive(path, nodes[i].children);
-          }
-        }
-      }
-    }
-
-    if (this.nodes && this.nodes[0]) {
-      this.nodes[0].expanded = true;
-      recursive(_path, this.nodes);
-    }
-  }
-
-  private checkAndAddFolder(_path) {
-    let node: any;
-
-    function recursive(path, nodes) {
-      for (let i = 0; i < nodes.length; i++) {
-        if (!nodes[i].type && !nodes[i].object) {
-          if (nodes[i].path === path.substring(0, path.lastIndexOf('/') + 1) || nodes[i].path === path.substring(0, path.lastIndexOf('/'))) {
-            node = nodes[i];
-            break;
-          }
-          if (nodes[i].children) {
-            recursive(path, nodes[i].children);
-          }
-        }
-      }
-    }
-
-    recursive(_path, this.nodes);
-
-    if (node) {
-      let falg = false;
-      for (let x = 0; x < node.children.length; x++) {
-        if (!node.children[x].type && !node.children[x].object && node.children[x].path === _path) {
-          falg = true;
-          break;
-        }
-      }
-      if (!falg) {
-        node.isLeaf = false;
-        node.children.push({
-          name: _path.substring(_path.lastIndexOf('/') + 1),
-          path: _path,
-          key: _path,
-          isFolder : true,
-          children: []
-        });
-      }
-    }
-  }
-
-  private createTempArray(arr) {
-    let x = _.groupBy(arr, (res) => {
-      return res.objectType;
-    });
-    let tempArr = [], folderArr = [];
-    for (const [key, value] of Object.entries(x)) {
-      const temp: any = value;
-      if (key !== 'FOLDER') {
-        let parentObj: any = {
-          name: value[0].objectType,
-          object: value[0].objectType,
-          path: value[0].folder,
-          key: value[0].folder + (value[0].folder === '/' ? '' : '/') + value[0].objectType,
-          isLeaf: true
-        };
-        tempArr.push(parentObj);
-        temp.forEach(data => {
-          const child: any = {
-            name: data.objectName,
-            path: data.folder,
-            key: data.id,
-            type: data.objectType,
-            deploymentId: data.deploymentId,
-            deployablesVersions: data.deployablesVersions,
-            isLeaf: true
-          };
-          tempArr.push(child);
-        });
-
-      } else {
-        temp.forEach(data => {
-          folderArr.push({
-            name: data.objectName,
-            path: data.folder + (data.folder === '/' ? '' : '/') + data.objectName,
-            key: data.folder + (data.folder === '/' ? '' : '/') + data.objectName,
-            isFolder: true,
-            isLeaf: true,
-            children: []
-          });
-        });
-      }
-    }
-    return tempArr.concat(folderArr);
   }
 
   getJSObject() {
@@ -1340,7 +1062,7 @@ export class SetVersionComponent implements OnInit {
 
   setVersion() {
     const obj: any = {
-      auditLog : {}
+      auditLog: {}
     };
     if (this.comments.comment) {
       obj.auditLog.comment = this.comments.comment;
@@ -1401,47 +1123,10 @@ export class SetVersionComponent implements OnInit {
   handleCheckbox(node): void {
     node.recursivelyDeploy = !node.recursivelyDeploy;
     if (!node.type) {
-      this.toggleObject(node, node.recursivelyDeploy);
+      this.inventoryService.toggleObject(node, node.recursivelyDeploy);
     }
-    this.getParent(node, node.recursivelyDeploy);
+    this.inventoryService.getParent(node, node.recursivelyDeploy, this.treeCtrl);
     this.updateTree();
-  }
-
-  private getParent(node, flag) {
-    const parent = this.treeCtrl.getTreeNodeByKey(node.path);
-    if (parent) {
-      if (!flag) {
-        parent.origin.recursivelyDeploy = flag;
-      } else if (parent.origin.children) {
-        let flg = true;
-        for (let i = 0; i < parent.origin.children.length; i++) {
-          if (parent.origin.children[i].type && !parent.origin.children[i].recursivelyDeploy) {
-            flg = false;
-            break;
-          } else if (!parent.origin.children[i].type && !parent.origin.children[i].object && !parent.origin.children[i].recursivelyDeploy) {
-            flg = false;
-            break;
-          }
-        }
-        parent.origin.recursivelyDeploy = flg;
-      }
-      if (parent.origin.path !== '/') {
-        if (parent.getParentNode()) {
-          this.getParent(parent.getParentNode().origin, flag);
-        }
-      }
-    }
-  }
-
-  private toggleObject(data, flag) {
-    for (let i = 0; i < data.children.length; i++) {
-      if (data.children[i].type) {
-        data.children[i].recursivelyDeploy = flag;
-      } else if (!data.children[i].object) {
-        data.children[i].recursivelyDeploy = flag;
-        this.toggleObject(data.children[i], flag);
-      }
-    }
   }
 
   cancel() {
@@ -1649,6 +1334,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     public coreService: CoreService,
     private dataService: DataService,
+    private inventoryService: InventoryService,
     public modalService: NgbModal,
     private translate: TranslateService,
     private message: NzMessageService) {
@@ -2237,12 +1923,18 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  export() {
-    const modalRef = this.modalService.open(ExportComponent, {backdrop: 'static'});
+  exportObject(node) {
+    let origin = null;
+    if (node) {
+      origin = node.origin ? node.origin : node;
+    }
+    const modalRef = this.modalService.open(ExportComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.schedulerIds = this.schedulerIds;
     modalRef.componentInstance.preferences = this.preferences;
     modalRef.componentInstance.display = this.preferences.auditLog;
+    modalRef.componentInstance.origin = origin;
     modalRef.result.then((result: any) => {
+
     }, () => {
     });
   }
@@ -2287,19 +1979,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  exportObject(node) {
-    const origin = node.origin ? node.origin : node;
-    const modalRef = this.modalService.open(ExportComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerIds = this.schedulerIds;
-    modalRef.componentInstance.preferences = this.preferences;
-    modalRef.componentInstance.display = this.preferences.auditLog;
-    modalRef.componentInstance.origin = origin;
-    modalRef.result.then((result: any) => {
-
-    }, () => {
-    });
-  }
-
   deployObject(node, releasable) {
     const origin = node.origin ? node.origin : node;
     if (releasable && origin.id) {
@@ -2307,7 +1986,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (origin.object || origin.type || origin.id) {
+    if (origin.type || this.inventoryService.isControllerObject(origin.objectType)) {
       if (!node.origin) {
         origin.path = origin.path.substring(0, origin.path.lastIndexOf('/')) || '/';
       }
@@ -2321,11 +2000,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
       }, () => {
       });
     } else {
+      
       const modalRef = this.modalService.open(DeployComponent, {backdrop: 'static', size: releasable ? 'sm' : 'lg'});
       modalRef.componentInstance.schedulerIds = this.schedulerIds;
       modalRef.componentInstance.preferences = this.preferences;
       modalRef.componentInstance.display = this.preferences.auditLog;
       modalRef.componentInstance.path = origin.path;
+      modalRef.componentInstance.data = origin;
       modalRef.componentInstance.releasable = releasable;
       modalRef.result.then((res: any) => {
 

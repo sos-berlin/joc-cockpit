@@ -432,7 +432,7 @@ export class SubmitOrderModalComponent implements OnInit {
         });
       }
     }
-    this.coreService.post('daily_plan/submit_orders', obj).subscribe((res) => {
+    this.coreService.post('daily_plan/orders/submit', obj).subscribe((res) => {
       this.submitted = false;
       this.activeModal.close('');
     }, () => {

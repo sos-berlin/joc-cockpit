@@ -1,11 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title" >
-    <span *ngIf="!releasable && !isExport" translate>inventory.label.deploy</span>
-    <span *ngIf="releasable" translate>inventory.label.release</span>
-    <span *ngIf="isExport" translate>inventory.label.export</span>
-    <span *ngIf="data.path">:
-      {{data.path}}
-    </span>
+    <span translate>inventory.label.deploy</span>
   </h4>
   <button type="button" class="close" (click)="cancel()" aria-label="Close">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -13,8 +8,8 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="deploy()" spellcheck="false">
   <div class="modal-body p-a" style="min-height: 150px">
-    <div *ngIf="actualResult.length > 0 && !loading">
-      <div class="hide" [ngClass]="{'show': display && !releasable}">
+    <div *ngIf="deployablesObject.length > 0 && !loading">
+      <div class="hide" [ngClass]="{'show': display}">
         <div class="form-group row">
           <label class="col-md-3 " translate>common.label.selectComments</label>
           <div class=" col-md-8">
@@ -101,7 +96,7 @@
           </div>
         </div>
       </div>
-      <div class="form-group row" *ngIf="!releasable && !isExport">
+      <div class="form-group row">
         <label class="col-md-3 form-control-label">
           <label translate>inventory.label.controllers</label>
         </label>
@@ -117,83 +112,18 @@
           </nz-select>
         </div>
       </div>
-      <div class="form-group row" *ngIf="isExport">
-        <label class="col-md-3 form-control-label" translate>inventory.label.fileName</label>
-        <div class="col-md-6" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-          <nz-input-group [nzAddOnAfter]="addOnAfterTemplate">
-            <input type="text" nz-input required name="name" #name="ngModel" placeholder="{{'inventory.placeholder.enterFileName' | translate}}" [(ngModel)]="exportObj.filename" />
-          </nz-input-group>
-          <ng-template #addOnAfterTemplate>
-            <nz-select name="format" [(ngModel)]="exportObj.fileFormat">
-              <nz-option nzLabel="ZIP" nzValue="ZIP"></nz-option>
-              <nz-option nzLabel="TAR_GZ" nzValue="TAR_GZ"></nz-option>
-            </nz-select>
-          </ng-template>
-          <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)" class="text-danger help-block">
-            <div *ngIf="name.errors.required">
-              <div translate>common.message.requiredError</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group row" *ngIf="isExport && securityLevel === 'HIGH'">
-        <div class="col-md-3">
-          <label translate>common.label.controllerId</label>
-        </div>
-        <div class="col-md-6">
-          <nz-select
-            nzShowSearch
-            name="schedulerIds"
-            [(ngModel)]="exportObj.controllerId">
-            <ng-container *ngFor="let id of schedulerIds.controllerIds">
-              <nz-option [nzValue]="id" [nzLabel]="id"></nz-option>
-            </ng-container>
-          </nz-select>
-        </div>
-      </div>
-      <div class="form-group row" *ngIf="isExport && securityLevel === 'HIGH'">
-        <div class="col-md-3">
-          <label translate>inventory.label.forSigning</label>
-        </div>
-        <div class="col-md-6">
-          <label class="md-check w">
-            <input type="checkbox" name="forSigning" [(ngModel)]="exportObj.forSigning">
-            <i class="primary"></i>
-          </label>
-        </div>
-      </div>
       <div class="row" *ngIf="deployablesObject.length > 0">
         <div class="col-md-12">
             <div class="m-b-sm">
-              <label class="md-check w-18" style="top:2px" *ngIf="data.object">
-                <input type="checkbox" (change)="checkAll()"  name="chkAll" [(ngModel)]="object.checked"/>
-                <i class="primary"></i>
-              </label>
-              <i nz-icon nzType="folder" [ngClass]="{'p-l-sm' : data.object}"
+              <i nz-icon nzType="folder"
                  nzTheme="outline"></i>
               <span class="p-l-sm">{{data.path}}</span>
             </div>
-            <div class="m-l m-b-sm" *ngIf="data.object">
-              <i *ngIf="data.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color"
-                 nzTheme="outline"></i>
-              <i *ngIf="data.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color"
-                 nzTheme="outline"></i>
-              <i *ngIf="data.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color"
-                 nzTheme="outline"></i>
-              <i *ngIf="data.object == 'SCHEDULE'" nz-icon nzType="schedule" class="icon-color"
-                 nzTheme="outline"></i>
-              <i *ngIf="data.object && data.object.match('CALENDAR')" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
-              <i *ngIf="data.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
-              <span class="p-l-sm">{{data.object}}</span>
-            </div>
+
             <div class="m-l-md node-wrapper" style="width: 90%" *ngFor="let child of deployablesObject">
-              <label class="md-check w-18" *ngIf="data.object">
-                <input type="checkbox" (click)="handleCheckbox(child)"  name="'chk-' + {{child.id}}" [(ngModel)]="child.isChecked"/>
-                <i class="primary"></i>
-              </label>
               <div>
                 <span  class="fa fa-check-circle-o text-xs"
-                       [ngClass]="{'fa-circle-o': !child.valid, 'text-success' :child.deploymentId, 'p-l-sm' : data.object}" style="margin-top: 4px"></span>
+                       [ngClass]="{'fa-circle-o': !child.valid, 'text-success' :child.deploymentId}" style="margin-top: 4px"></span>
                 <span class="p-l-sm">{{child.objectName | translate}}</span>
               </div>
               <div class="m-l"
