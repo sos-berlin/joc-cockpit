@@ -146,19 +146,19 @@ export class SingleDeployComponent implements OnInit {
         const obj: any = {}, objDep: any = {};
         if (!this.releasable) {
           if (this.deployablesObject[i].deployId || this.deployablesObject[i].deploymentId) {
-            objDep.deployConfiguration = {
+            objDep.configuration = {
               path: this.deployablesObject[i].folder + (this.deployablesObject[i].folder === '/' ? '' : '/') + this.deployablesObject[i].objectName,
               objectType: this.deployablesObject[i].objectType,
               commitId: ''
             };
             for (let j = 0; j < this.deployablesObject[i].deployablesVersions.length; j++) {
               if (this.deployablesObject[i].deployablesVersions[j].deploymentId === this.deployablesObject[i].deploymentId) {
-                objDep.deployConfiguration.commitId = this.deployablesObject[i].deployablesVersions[j].commitId;
+                objDep.configuration.commitId = this.deployablesObject[i].deployablesVersions[j].commitId;
                 break;
               }
             }
           } else {
-            objDep.draftConfiguration = {
+            objDep.configuration = {
               path: this.deployablesObject[i].folder + (this.deployablesObject[i].folder === '/' ? '' : '/') + this.deployablesObject[i].objectName,
               objectType: this.deployablesObject[i].objectType
             };
@@ -169,7 +169,7 @@ export class SingleDeployComponent implements OnInit {
         if (this.deployablesObject[i].deleted) {
           if (!_.isEmpty(obj)) {
             self.object.delete.push(obj);
-          } else if (objDep.deployConfiguration) {
+          } else if (objDep.configuration) {
             delete objDep['commitId'];
             self.object.deleteObj.deployConfigurations.push(objDep);
           }
@@ -177,10 +177,12 @@ export class SingleDeployComponent implements OnInit {
           if (!_.isEmpty(obj)) {
             self.object.update.push(obj);
           } else {
-            if (objDep.deployConfiguration) {
-              self.object.store.deployConfigurations.push(objDep);
-            } else {
-              self.object.store.draftConfigurations.push(objDep);
+            if (objDep.configuration) {
+              if (objDep.configuration.commitId) {
+                self.object.store.deployConfigurations.push(objDep);
+              } else {
+                self.object.store.draftConfigurations.push(objDep);
+              }
             }
           }
         }
@@ -736,13 +738,13 @@ export class DeployComponent implements OnInit {
           if (!self.releasable && !self.reDeploy) {
             if (nodes[i].deployId || nodes[i].deploymentId || nodes[i].isFolder) {
               if (nodes[i].isFolder) {
-                objDep.deployConfiguration = {
+                objDep.configuration = {
                   path: nodes[i].path,
                   objectType: 'FOLDER',
                   recursive: true
                 };
               } else {
-                objDep.deployConfiguration = {
+                objDep.configuration = {
                   path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
                   objectType: nodes[i].type,
                   commitId: ''
@@ -751,7 +753,7 @@ export class DeployComponent implements OnInit {
               if (nodes[i].deployablesVersions) {
                 for (let j = 0; j < nodes[i].deployablesVersions.length; j++) {
                   if (nodes[i].deployablesVersions[j].deploymentId === nodes[i].deploymentId) {
-                    objDep.deployConfiguration.commitId = nodes[i].deployablesVersions[j].commitId;
+                    objDep.configuration.commitId = nodes[i].deployablesVersions[j].commitId;
                     break;
                   }
                 }
@@ -759,14 +761,14 @@ export class DeployComponent implements OnInit {
             } else {
               if (nodes[i].isFolder) {
                 if (nodes[i].deleted) {
-                  objDep.deployConfiguration = {
+                  objDep.configuration = {
                     path: nodes[i].path,
                     objectType: 'FOLDER',
                     recursive: true
                   };
                 }
               } else {
-                objDep[nodes[i].deleted ? 'deployConfiguration' : 'draftConfiguration'] = {
+                objDep.configuration = {
                   path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
                   objectType: nodes[i].type
                 };
@@ -781,7 +783,7 @@ export class DeployComponent implements OnInit {
           if (nodes[i].deleted) {
             if (!_.isEmpty(obj)) {
               self.object.delete.push(obj);
-            } else if (objDep.deployConfiguration) {
+            } else if (objDep.configuration) {
               delete objDep['commitId'];
               self.object.deleteObj.deployConfigurations.push(objDep);
             }
@@ -789,10 +791,12 @@ export class DeployComponent implements OnInit {
             if (!_.isEmpty(obj)) {
               self.object.update.push(obj);
             } else {
-              if (objDep.deployConfiguration) {
-                self.object.store.deployConfigurations.push(objDep);
-              } else if (objDep.draftConfiguration) {
-                self.object.store.draftConfigurations.push(objDep);
+              if (objDep.configuration) {
+                if (objDep.configuration.commitId) {
+                  self.object.store.deployConfigurations.push(objDep);
+                } else {
+                  self.object.store.draftConfigurations.push(objDep);
+                }
               }
             }
           }

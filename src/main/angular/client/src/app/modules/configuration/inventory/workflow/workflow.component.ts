@@ -900,19 +900,16 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   importJSON() {
     const modalRef = this.modalService.open(ImportComponent, {backdrop: 'static', size: 'lg'});
     modalRef.result.then((result) => {
-      this.workflow.configuration = result;
+      this.workflow.configuration = this.coreService.clone(result);
       if (result.jobs && !_.isEmpty(result.jobs)) {
-        this.jobs = Object.entries(result.jobs).map(([k, v]) => {
+        this.jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
           return {name: k, value: v};
         });
       }
       this.history = [];
       this.indexOfNextAdd = 0;
       this.updateXMLJSON(false);
-      setTimeout(() => {
-        this.saveJSON(false);
-      }, 100);
-
+      this.storeData(result);
     }, (reason) => {
 
     });
@@ -6039,28 +6036,32 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
       this.history.push(JSON.stringify(data));
       this.indexOfNextAdd = this.history.length;
-      this.coreService.post('inventory/store', {
-        configuration: data,
-        path: this.workflow.path,
-        id: this.workflow.id,
-        valid: this.workflow.valid,
-        objectType: this.objectType
-      }).subscribe((res: any) => {
-        this.isStore = false;
-        if (res.id === this.data.id && this.workflow.id === this.data.id) {
-          this.workflow.actual = JSON.stringify(data);
-          this.workflow.deployed = false;
-          this.workflow.valid = res.valid;
-          this.data.valid = res.valid;
-          this.data.deployed = false;
-          if (!this.invalidMsg && res.invalidMsg) {
-            this.invalidMsg = res.invalidMsg;
-          }
-        }
-      }, (err) => {
-        this.isStore = false;
-        console.error(err);
-      });
+      this.storeData(data);
     }
+  }
+
+  private storeData(data){
+    this.coreService.post('inventory/store', {
+      configuration: data,
+      path: this.workflow.path,
+      id: this.workflow.id,
+      valid: this.workflow.valid,
+      objectType: this.objectType
+    }).subscribe((res: any) => {
+      this.isStore = false;
+      if (res.id === this.data.id && this.workflow.id === this.data.id) {
+        this.workflow.actual = JSON.stringify(data);
+        this.workflow.deployed = false;
+        this.workflow.valid = res.valid;
+        this.data.valid = res.valid;
+        this.data.deployed = false;
+        if (!this.invalidMsg && res.invalidMsg) {
+          this.invalidMsg = res.invalidMsg;
+        }
+      }
+    }, (err) => {
+      this.isStore = false;
+      console.error(err);
+    });
   }
 }

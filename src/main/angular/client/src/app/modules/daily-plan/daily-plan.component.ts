@@ -129,7 +129,7 @@ export class SelectOrderTemplatesComponent implements OnInit {
   getOrderTemplates() {
     this.coreService.post('schedules', {
       controllerId: this.schedulerId,
-      selector: {folders: [{folder: '/', recursice: 'true'}]}
+      selector: {folders: [{folder: '/', recursive: true}]}
     }).subscribe((res: any) => {
       this.schedules = res.schedules;
       if (!res.schedules || res.schedules.length === 0) {
