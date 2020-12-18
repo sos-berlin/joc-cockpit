@@ -123,7 +123,7 @@ export class SingleDeployComponent implements OnInit {
     this.submitted = true;
     this.getJSObject();
     const obj: any = {
-      controllerIds: [],
+      controllerIds: this.selectedSchedulerIds,
       auditLog: {}
     };
     if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
@@ -147,9 +147,7 @@ export class SingleDeployComponent implements OnInit {
     if (this.comments.ticketLink) {
       obj.auditLog.ticketLink = this.comments.ticketLink;
     }
-    this.selectedSchedulerIds.forEach(element => {
-      obj.controllerIds.push({controllerId: element});
-    });
+
     if (_.isEmpty(obj.store) && _.isEmpty(obj.delete)) {
       this.submitted = false;
       return;
@@ -492,10 +490,7 @@ export class DeployComponent implements OnInit {
     }
 
     if (!this.releasable && !this.reDeploy) {
-      obj.controllerIds = [];
-      this.selectedSchedulerIds.forEach(element => {
-        obj.controllerIds.push({controllerId: element});
-      });
+      obj.controllerIds = this.selectedSchedulerIds;
       if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
         if (this.object.store.draftConfigurations.length === 0) {
           delete this.object.store['draftConfigurations'];
