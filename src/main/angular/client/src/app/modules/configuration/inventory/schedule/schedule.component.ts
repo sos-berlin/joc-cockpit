@@ -321,7 +321,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         res.configuration = {};
       }
 
-      this.schedule = res;
+      this.schedule = this.coreService.clone(res);
       this.schedule.path1 = this.data.path;
       this.schedule.name = this.data.name;
       if (!this.schedule.configuration.calendars) {
@@ -344,14 +344,14 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         const path = this.schedule.configuration.workflowPath.substring(0, this.schedule.configuration.workflowPath.lastIndexOf('/')) || '/';
         this.loadWorkflowTree(path);
       }
-      this.schedule.actual = JSON.stringify(res.configuration);
+      this.schedule.actual = JSON.stringify(this.schedule.configuration);
       if (!res.valid) {
         if (!this.schedule.configuration.workflowPath) {
           this.invalidMsg = 'inventory.message.workflowIsMissing';
         } else if (this.schedule.configuration.calendars.length === 0) {
           this.invalidMsg = 'inventory.message.calendarIsMissing';
         } else {
-          this.invalidMsg = 'inventory.message.startTimeIsMissing';
+          this.validateJSON(res.configuration);
         }
       } else {
         this.invalidMsg = '';
@@ -378,6 +378,32 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     interval();
+  }
+
+  private validateJSON(json) {
+    const obj = _.clone(json);
+    obj.path = this.data.path;
+    this.coreService.post('inventory/' + this.objectType + '/validate', obj).subscribe((res: any) => {
+      this.setErrorMessage(res);
+    }, () => {
+    });
+  }
+
+  private setErrorMessage(res) {
+    if (res.invalidMsg) {
+      if (res.invalidMsg.match('workflowPath')) {
+        this.invalidMsg = 'inventory.message.workflowIsMissing';
+      } else if (res.invalidMsg.match('periods')) {
+        this.invalidMsg = 'inventory.message.startTimeIsMissing';
+      } else if (res.invalidMsg.match('calendars')) {
+        this.invalidMsg = 'inventory.message.calendarIsMissing';
+      }
+      if (!this.invalidMsg) {
+        this.invalidMsg = res.invalidMsg;
+      }
+    } else {
+      this.invalidMsg = '';
+    }
   }
 
   saveJSON() {
@@ -422,17 +448,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           this.data.valid = res.valid;
           this.schedule.released = false;
           this.data.released = false;
-          if (res.invalidMsg) {
-            if (res.invalidMsg.match('workflowPath')) {
-              this.invalidMsg = 'inventory.message.workflowIsMissing';
-            } else if (res.invalidMsg.match('periods')) {
-              this.invalidMsg = 'inventory.message.startTimeIsMissing';
-            } else if (res.invalidMsg.match('calendars')) {
-              this.invalidMsg = 'inventory.message.calendarIsMissing';
-            }
-          } else {
-            this.invalidMsg = '';
-          }
+          this.setErrorMessage(res);
         }
       }, (err) => {
         console.log(err);

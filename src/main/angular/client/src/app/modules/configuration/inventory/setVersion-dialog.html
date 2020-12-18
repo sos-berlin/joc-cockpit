@@ -153,7 +153,7 @@
               <label *ngIf="version.type==='setOneVersion'" class="md-check w-18 m-l-xxs m-r-xs"
                      [hidden]="node.origin.object">
                 <input type="checkbox" (click)="handleCheckbox(node.origin)" name="'deploy' + {{node.key}}"
-                       [(ngModel)]="node.origin.recursivelyDeploy" [disabled]="object.isRecursive && node.origin.type">
+                       [(ngModel)]="node.origin.recursivelyDeploy">
                 <i class="primary"></i>
               </label>
               <div class="btn-group" *ngIf="version.type === 'setSeparateVersion' && node.origin.type"

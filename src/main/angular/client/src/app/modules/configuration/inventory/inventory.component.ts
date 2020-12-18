@@ -155,7 +155,6 @@ export class SingleDeployComponent implements OnInit {
       return;
     }
     const URL = 'inventory/deployment/deploy';
-    console.log(obj, ' obj');
     this.coreService.post(URL, obj).subscribe((res: any) => {
       this.activeModal.close('ok');
     }, (error) => {
@@ -264,9 +263,9 @@ export class DeployComponent implements OnInit {
   handleCheckbox(node): void {
     node.recursivelyDeploy = !node.recursivelyDeploy;
     if (!node.type) {
-      this.inventoryService.toggleObject(node, node.recursivelyDeploy);
+      this.inventoryService.toggleObject(node, node.recursivelyDeploy, this.object.isRecursive);
     }
-    this.inventoryService.getParent(node, node.recursivelyDeploy, this.treeCtrl);
+    this.inventoryService.getParent(node, node.recursivelyDeploy, this.object.isRecursive, this.treeCtrl);
     this.updateTree();
   }
 
@@ -301,12 +300,17 @@ export class DeployComponent implements OnInit {
     const obj: any = {
       folder: this.path || '/',
       recursive: true,
-      onlyValidObjects: true,
-      withVersions: !this.reDeploy
+      onlyValidObjects: true
     };
     if (this.data && this.data.object) {
       obj.recursive = false;
       obj.objectTypes = this.data.object === 'CALENDAR' ? ['WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'] : [this.data.object];
+    }
+    if (this.releasable) {
+      obj.withoutReleased = true;
+      obj.withoutDrafts = true;
+    } else {
+      obj.withVersions = !this.reDeploy;
     }
     const URL = this.releasable ? 'inventory/releasables' : 'inventory/deployables';
     this.coreService.post(URL, obj).subscribe((res: any) => {
@@ -353,7 +357,7 @@ export class DeployComponent implements OnInit {
               objDep.configuration = {
                 path: nodes[i].path,
                 objectType: 'FOLDER',
-                recursive: true
+                recursive: self.object.isRecursive
               };
             } else {
               objDep.configuration = {
@@ -379,17 +383,16 @@ export class DeployComponent implements OnInit {
             self.object.deleteObj.deployConfigurations.push(objDep);
           } else {
             if (objDep.configuration) {
-              console.log('objDep', objDep)
               if (nodes[i].isFolder) {
                 let check1 = false, check2 = false;
                 for (let j = 0; j < nodes[i].children.length; j++) {
                   if (nodes[i].children[j].type) {
                     if ((nodes[i].children[j].deployId || nodes[i].children[j].deploymentId) && !check1) {
                       check1 = true;
-                      self.object.deployConfigurations.push(objDep);
+                      self.object.store.deployConfigurations.push(objDep);
                     } else if (!check2) {
                       check2 = true;
-                      self.object.draftConfigurations.push(objDep);
+                      self.object.store.draftConfigurations.push(objDep);
                     }
                     if (check1 && check2) {
                       break;
@@ -571,11 +574,13 @@ export class ExportComponent implements OnInit {
   submitted = false;
   comments: any = {radio: 'predefined'};
   required: boolean;
+  inValid = false;
   exportType = 'BOTH';
   messageList: any;
   path: string;
   securityLevel: string;
   exportObj = {
+    isRecursive: false,
     controllerId: '',
     forSigning: false,
     filename: '',
@@ -610,17 +615,23 @@ export class ExportComponent implements OnInit {
     this.buildTree();
   }
 
+  checkFileName() {
+    console.log(this.exportObj.filename,
+      this.exportObj.fileFormat);
+  }
+
   buildTree() {
     const obj: any = {
       folder: this.path || '/',
       onlyValidObjects: false,
-      withVersions: true,
       withoutRemovedObjects: true
     };
 
     const APIs = [];
     if (this.exportType === 'BOTH') {
       obj.recursive = true;
+      obj.withoutReleased = false;
+      obj.withoutDrafts = false;
       APIs.push(this.coreService.post('inventory/deployables', obj));
       APIs.push(this.coreService.post('inventory/releasables', obj));
     } else {
@@ -630,8 +641,11 @@ export class ExportComponent implements OnInit {
         obj.objectTypes = this.exportType === 'CALENDAR' ? [this.exportType] : ['WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'];
       }
       if (this.exportType === 'DAILYPLAN' || this.exportType === 'SCHEDULE' || this.exportType.match('CALENDAR')) {
+        obj.withoutReleased = false;
+        obj.withoutDrafts = false;
         APIs.push(this.coreService.post('inventory/releasables', obj));
       } else {
+        obj.withVersions = true;
         APIs.push(this.coreService.post('inventory/deployables', obj));
       }
     }
@@ -710,9 +724,9 @@ export class ExportComponent implements OnInit {
   handleCheckbox(node): void {
     node.recursivelyDeploy = !node.recursivelyDeploy;
     if (!node.type) {
-      this.inventoryService.toggleObject(node, node.recursivelyDeploy);
+      this.inventoryService.toggleObject(node, node.recursivelyDeploy, this.exportObj.isRecursive);
     }
-    this.inventoryService.getParent(node, node.recursivelyDeploy, this.treeCtrl);
+    this.inventoryService.getParent(node, node.recursivelyDeploy, this.exportObj.isRecursive, this.treeCtrl);
     this.updateTree();
   }
 
@@ -771,7 +785,7 @@ export class ExportComponent implements OnInit {
             objDep.configuration = {
               path: nodes[i].path,
               objectType: 'FOLDER',
-              recursive: true
+              recursive: self.exportObj.isRecursive
             };
           } else {
             objDep.configuration = {
@@ -795,7 +809,7 @@ export class ExportComponent implements OnInit {
                 self.object.draftConfigurations.push(objDep);
               }
             } else {
-              if (nodes[i].release) {
+              if (nodes[i].releaseId) {
                 self.object.releasedConfigurations.push(objDep);
               } else {
                 self.object.releaseDraftConfigurations.push(objDep);
@@ -830,12 +844,19 @@ export class ExportComponent implements OnInit {
           }
 
         }
-        if (!nodes[i].type && !nodes[i].object && nodes[i].children && !nodes[i].recursivelyDeploy) {
-          recursive(nodes[i].children);
+        if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
+          if (!nodes[i].recursivelyDeploy) {
+            recursive(nodes[i].children);
+          } else if (!self.exportObj.isRecursive) {
+            for (let j = 0; j < nodes[i].children.length; j++) {
+              if (nodes[i].children[j].isFolder && nodes[i].children[j].children) {
+                recursive(nodes[i].children[j].children);
+              }
+            }
+          }
         }
       }
     }
-
     recursive(this.nodes);
   }
 
@@ -889,7 +910,6 @@ export class ExportComponent implements OnInit {
           };
         }
       }
-      console.log(obj.forBackup);
 
       param = param + '&exportFilter=' + JSON.stringify(obj);
       if (this.comments.comment) {
@@ -940,7 +960,7 @@ export class SetVersionComponent implements OnInit {
   required: boolean;
   messageList: any;
   object: any = {
-    isRecursive: true,
+    isRecursive: false,
     deployConfigurations: [],
     prevVersion: ''
   };
@@ -1123,9 +1143,9 @@ export class SetVersionComponent implements OnInit {
   handleCheckbox(node): void {
     node.recursivelyDeploy = !node.recursivelyDeploy;
     if (!node.type) {
-      this.inventoryService.toggleObject(node, node.recursivelyDeploy);
+      this.inventoryService.toggleObject(node, node.recursivelyDeploy, this.object.isRecursive);
     }
-    this.inventoryService.getParent(node, node.recursivelyDeploy, this.treeCtrl);
+    this.inventoryService.getParent(node, node.recursivelyDeploy, this.object.isRecursive, this.treeCtrl);
     this.updateTree();
   }
 
@@ -2000,7 +2020,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
       }, () => {
       });
     } else {
-      
       const modalRef = this.modalService.open(DeployComponent, {backdrop: 'static', size: releasable ? 'sm' : 'lg'});
       modalRef.componentInstance.schedulerIds = this.schedulerIds;
       modalRef.componentInstance.preferences = this.preferences;

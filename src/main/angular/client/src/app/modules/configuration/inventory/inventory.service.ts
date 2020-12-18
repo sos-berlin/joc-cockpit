@@ -37,14 +37,16 @@ export class InventoryService {
           let pathArr = [];
           for (let i = 0; i < paths.length; i++) {
             if (paths[i]) {
-              if (i > 0 && paths[i - 1]) {
-                pathArr.push('/' + paths[i - 1] + '/' + paths[i]);
+              if (i > 0 && pathArr[i - 1]) {
+                pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + paths[i]);
               } else {
                 pathArr.push('/' + paths[i]);
               }
+            } else {
+              pathArr.push('/');
             }
           }
-          for (let i = 0; i < pathArr.length; i++) {
+          for (let i = 1; i < pathArr.length; i++) {
             this.checkAndAddFolder(pathArr[i], treeArr);
           }
         }
@@ -166,6 +168,7 @@ export class InventoryService {
             valid: data.valid,
             deploymentId: data.deploymentId,
             deployablesVersions: data.deployablesVersions,
+            releasableVersions: data.releasableVersions,
             isLeaf: true
           };
           tempArr.push(child);
@@ -189,7 +192,7 @@ export class InventoryService {
     return tempArr.concat(folderArr);
   }
 
-  getParent(node, flag, treeCtrl) {
+  getParent(node, flag, recursive, treeCtrl) {
     const parent = treeCtrl.getTreeNodeByKey(node.path);
     if (parent) {
       if (!flag) {
@@ -200,7 +203,7 @@ export class InventoryService {
           if (parent.origin.children[i].type && !parent.origin.children[i].recursivelyDeploy) {
             flg = false;
             break;
-          } else if (!parent.origin.children[i].type && !parent.origin.children[i].object && !parent.origin.children[i].recursivelyDeploy) {
+          } else if (!parent.origin.children[i].type && !parent.origin.children[i].object && !parent.origin.children[i].recursivelyDeploy && recursive) {
             flg = false;
             break;
           }
@@ -208,20 +211,20 @@ export class InventoryService {
         parent.origin.recursivelyDeploy = flg;
       }
       if (parent.origin.path !== '/') {
-        if (parent.getParentNode()) {
-          this.getParent(parent.getParentNode().origin, flag, treeCtrl);
+        if (parent.getParentNode() && recursive) {
+          this.getParent(parent.getParentNode().origin, flag, recursive, treeCtrl);
         }
       }
     }
   }
 
-  toggleObject(data, flag) {
+  toggleObject(data, flag, recursive) {
     for (let i = 0; i < data.children.length; i++) {
       if (data.children[i].type) {
         data.children[i].recursivelyDeploy = flag;
-      } else if (!data.children[i].object) {
+      } else if (!data.children[i].object && recursive) {
         data.children[i].recursivelyDeploy = flag;
-        this.toggleObject(data.children[i], flag);
+        this.toggleObject(data.children[i], flag, recursive);
       }
     }
   }
@@ -234,6 +237,9 @@ export class InventoryService {
         if (data.children[i].deployablesVersions[0].versions && data.children[i].deployablesVersions[0].versions.length > 0) {
           data.children[i].deployId = data.children[i].deployablesVersions[0].deploymentId;
         }
+      }
+      if (data.children[i].releasableVersions && data.children[i].releasableVersions.length > 0) {
+        data.children[i].releaseId = data.children[i].releasableVersions[0].releaseId;
       }
     }
   }

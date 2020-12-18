@@ -101,9 +101,10 @@
       </div>
       <div class="form-group row">
         <label class="col-md-3 form-control-label" translate>inventory.label.fileName</label>
-        <div class="col-md-6" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+        <div class="col-md-6" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || inValid}">
           <nz-input-group [nzAddOnAfter]="addOnAfterTemplate">
-            <input type="text" nz-input required name="name" #name="ngModel" placeholder="{{'inventory.placeholder.enterFileName' | translate}}" [(ngModel)]="exportObj.filename" />
+            <input type="text" nz-input required name="name" #name="ngModel" (blur)="checkFileName()"
+                   placeholder="{{'inventory.placeholder.enterFileName' | translate}}" [(ngModel)]="exportObj.filename" />
           </nz-input-group>
           <ng-template #addOnAfterTemplate>
             <nz-select name="format" [(ngModel)]="exportObj.fileFormat">
@@ -111,9 +112,12 @@
               <nz-option nzLabel="TAR_GZ" nzValue="TAR_GZ"></nz-option>
             </nz-select>
           </ng-template>
-          <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)" class="text-danger help-block">
-            <div *ngIf="name.errors.required">
+          <div *ngIf="inValid || (name.invalid && name.errors && (name.dirty || name.touched))" class="text-danger help-block">
+            <div *ngIf="name.errors && name.errors.required">
               <div translate>common.message.requiredError</div>
+            </div>
+            <div *ngIf="inValid">
+              <div translate>common.message.invalid</div>
             </div>
           </div>
         </div>
@@ -144,7 +148,17 @@
           </label>
         </div>
       </div>
-
+      <div class="form-group row">
+        <div class="col-md-3">
+          <label translate>inventory.label.handleRecursively</label>
+        </div>
+        <div class="col-md-6">
+          <label class="md-check w">
+            <input type="checkbox" name="isRecursive" [(ngModel)]="exportObj.isRecursive">
+            <i class="primary"></i>
+          </label>
+        </div>
+      </div>
       <div class="row m-b-sm">
         <div class="col-md-12">
           <a class="text" (click)="expandAll();" [nz-tooltip]="'common.tooltip.expandAll' | translate">
@@ -179,7 +193,7 @@
                 <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
                 <i *ngIf="node.origin.object == 'SCHEDULE'" nz-icon nzType="schedule" class="icon-color" nzTheme="outline"></i>
                 <i *ngIf="node.origin.object && node.origin.object.match('CALENDAR')" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
-                <span *ngIf="node.origin.type" class="fa fa-check-circle-o text-xs" [ngClass]="{'fa-circle-o': !node.origin.valid, 'text-success' :node.origin.deploymentId}" style="margin-top: 4px"></span>
+                <span *ngIf="node.origin.type" class="fa fa-check-circle-o text-xs" [ngClass]="{'fa-circle-o': !node.origin.valid, 'text-success' :node.origin.deployed || node.origin.released}" style="margin-top: 4px"></span>
                 <span class="p-l-sm" >{{node.origin.name | translate}}</span>
               </div>
               <div class="m-l" *ngIf="node.origin.type && node.origin.deployablesVersions && node.origin.deployablesVersions.length >0">
@@ -208,7 +222,25 @@
                   </ng-container>
                 </nz-select>
               </div>
-              <div class="m-l" *ngIf="node.origin.type && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)">
+              <div class="m-l" *ngIf="node.origin.type && node.origin.releasableVersions && node.origin.releasableVersions.length >0">
+                <nz-select name="'version-' + {{node.key}}" [nzSize]="'small'" [(ngModel)]="node.origin.releaseId">
+                  <ng-container *ngIf="!node.origin.valid" >
+                    <nz-option nzCustomContent [nzValue]="''" [nzLabel]="'workflow.label.draft' | translate">
+                      <div>
+                        <span class="fa fa-circle-o text-xs text-danger p-r-xs"></span>{{'workflow.label.draft' | translate}} - <span class="label bg-gold" translate>inventory.label.notValid</span>
+                      </div>
+                    </nz-option>
+                  </ng-container>
+                  <ng-container *ngFor="let version of node.origin.releasableVersions">
+                    <nz-option nzCustomContent [nzValue]="version.releaseId" [nzLabel]="(version.versionDate | stringToDate)">
+                      <div>
+                        <span class="fa fa-circle-o text-xs p-r-xs" [ngClass]="version.releaseId ? ' text-success': ''"></span>
+                        {{version.versionDate | stringToDate}} <i *ngIf="version.releasePath" [nz-tooltip]="version.releasePath" class="text-muted p-l-sm">{{version.releasePath}}</i></div>
+                    </nz-option>
+                  </ng-container>
+                </nz-select>
+              </div>
+              <div class="m-l" *ngIf="node.origin.type && (!node.origin.releasableVersions || node.origin.releasableVersions.length ===0) && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)">
                 <i class="text-muted" translate>workflow.label.draft</i>
               </div>
             </div>
