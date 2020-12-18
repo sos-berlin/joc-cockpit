@@ -12568,8 +12568,8 @@
                             checkStreamList = true;
                             arr.push(vm.events[0].eventSnapshots[m].path);
                         } else {
-                            if (vm.jobs.length > 0 && vm.events[0].eventSnapshots[m].state === vm.selectedSession.session &&
-                                (!vm.jobs[0].path1 || (vm.jobs[0].path1 && vm.jobs[0].path1.match(vm.events[0].eventSnapshots[m].path)))) {
+                            if (vm.jobs.length > 0 && ((vm.events[0].eventSnapshots[m].state === vm.selectedSession.session) ||
+                                (!vm.jobs[0].path1 || (vm.jobs[0].path1 && vm.jobs[0].path1.match(vm.events[0].eventSnapshots[m].path))))) {
                                 callEvent = true;
                             }
                         }

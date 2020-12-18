@@ -933,7 +933,7 @@
 <div ui-include="'modules/core/template/assign-calendar-dialog.html'"></div>
 <div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static" style="background: rgba(0,0,0,.1)">
     <div class="modal-dialog box-shadow b-a " style="margin-top: 8%" ng-controller="PeriodEditorCtrl">
-        <div class="modal-content" style="box-shadow: 0 0 8px rgba(0,0,0,0.18)">
+        <div class="modal-content" style="box-shadow: 0 0 8px rgba(0,0,0,0.18)" ng-if="filterTree1">
             <div class="modal-body p-a" style="min-height: 500px;max-height: 600px; overflow: auto">
                 <div ng-show="filterTree1 && filterTree1.length>0">
                     <a class="text" ng-click="filter_tree.expand_all();"
