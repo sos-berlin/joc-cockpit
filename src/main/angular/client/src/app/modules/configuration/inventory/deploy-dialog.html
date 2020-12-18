@@ -117,13 +117,13 @@
             </nz-select>
           </div>
         </div>
-        <div class="form-group row" *ngIf="!path">
+        <div class="form-group row" *ngIf="!data || !data.object">
           <div class="col-md-3">
             <label translate>inventory.label.handleRecursively</label>
           </div>
           <div class="col-md-6" [ngClass]="{'col-md-8' : reDeploy}">
             <label class="md-check w">
-              <input type="checkbox" name="isRecursive" [(ngModel)]="object.isRecursive" (change)="updateTree()">
+              <input type="checkbox" name="isRecursive" [(ngModel)]="object.isRecursive">
               <i class="primary"></i>
             </label>
           </div>
@@ -139,6 +139,7 @@
           </div>
         </div>
         <div class="row">
+
           <div class="col-md-12">
             <nz-tree
               #treeCtrl

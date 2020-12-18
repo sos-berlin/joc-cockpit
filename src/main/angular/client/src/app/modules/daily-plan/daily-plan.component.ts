@@ -399,6 +399,7 @@ export class SubmitOrderModalComponent implements OnInit {
   @Input() order;
   @Input() plan;
   @Input() workflow;
+  @Input() selectedDate;
 
   constructor(public activeModal: NgbActiveModal, public  coreService: CoreService) {
   }
@@ -421,7 +422,7 @@ export class SubmitOrderModalComponent implements OnInit {
     } else {
       if (this.order) {
         if (this.plan) {
-          obj.filter.schedules = [this.order.schedulePath];
+          obj.filter.schedulePaths = [this.order.schedulePath];
         } else {
           obj.filter.orderIds = [this.order.orderId];
         }
@@ -457,6 +458,7 @@ export class RemovePlanModalComponent implements OnInit {
   @Input() plan;
   @Input() workflow;
   @Input() timeZone;
+  @Input() selectedDate;
   submissionHistory: any = [];
   filter: any = {selectedTemplates: []};
 
@@ -464,7 +466,6 @@ export class RemovePlanModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.getSubmissions(null);
     if (this.workflow && !this.order.key) {
       this.order.key = this.order.workflow;
     }
@@ -489,8 +490,8 @@ export class RemovePlanModalComponent implements OnInit {
         if (this.filter.dailyPlanDate) {
           obj.filter.dailyPlanDate = this.filter.dailyPlanDate ? moment(this.filter.dailyPlanDate).format('YYYY-MM-DD') : undefined;
         }
-        obj.filter.workflowPaths = [this.filter.workflow];
-        obj.filter.submissionHistoryIds = [this.filter.submissionHistoryId];
+        obj.filter.workflowPaths = this.filter.workflow ? [this.filter.workflow] : undefined;
+        obj.filter.submissionHistoryIds = this.filter.submissionHistoryId ? [this.filter.submissionHistoryId] : undefined;
       }
     }
 
@@ -499,6 +500,9 @@ export class RemovePlanModalComponent implements OnInit {
       this.orders.forEach((order) => {
         obj.filter.orderIds.push(order.orderId);
       });
+    }
+    if (!obj.filter.dailyPlanDate && this.selectedDate) {
+      obj.filter.dailyPlanDate = moment(this.selectedDate).format('YYYY-MM-DD');
     }
     this.remove(obj);
   }
@@ -1131,6 +1135,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.orders = this.object.templates;
     modalRef.componentInstance.timeZone = this.preferences.zone;
+    modalRef.componentInstance.selectedDate = this.selectedDate;
     modalRef.result.then((res) => {
       this.load(this.selectedDate);
       this.resetCheckBox();
@@ -1147,6 +1152,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.plan = workflow ? null : plan;
     modalRef.componentInstance.workflow = workflow;
     modalRef.componentInstance.timeZone = this.preferences.zone;
+    modalRef.componentInstance.selectedDate = this.selectedDate;
     modalRef.result.then((res) => {
       this.load(this.selectedDate);
       this.resetCheckBox();
