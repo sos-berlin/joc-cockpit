@@ -391,7 +391,7 @@
     "button.saveCustomization": "Save Customization",
     "button.updateCustomization": "Update Customization",
     "placeholder.enterName": "Enter name",
-    "message.filterDeleteSuccessfully": " Customization deleted successfully",
+    "message.filterDeleteSuccessfully": " Customization successfully deleted",
     "tooltip.deactivateCustomization": "Deactivate Customization",
     "tooltip.useDefault": "Use as default customization"
   },
@@ -647,7 +647,7 @@
     "label.notValid": "Not valid",
     "label.inProgress": "In Progress",
     "label.deployed": "deployed",
-    "label.deleted": "deleted",
+    "label.deleted": "removed",
     "label.notDeployed": "not deployed",
     "label.released": "released",
     "label.notReleased": "not released",
