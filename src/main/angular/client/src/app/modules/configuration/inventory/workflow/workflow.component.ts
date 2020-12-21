@@ -472,7 +472,7 @@ export class ImportComponent implements OnInit {
         msg = translatedValue;
       });
       this.toasterService.pop('error', '', fileExt + ' ' + msg);
-      //  item.remove();
+      this.uploader.clearQueue();
     } else {
       let reader = new FileReader();
       reader.readAsText(item, 'UTF-8');
@@ -583,8 +583,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       });
     }
     if (this.agents.length === 0) {
-      this.coreService.post('agents/names', {}).subscribe((res: any) => {
-        this.agents = res.agentNames;
+      this.coreService.post('agents/names', {controllerId: this.schedulerId}).subscribe((res: any) => {
+        this.agents = res.agentNames ? res.agentNames.sort() : [];
       });
     }
   }

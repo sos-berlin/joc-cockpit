@@ -103,7 +103,7 @@
         <label class="col-md-3 form-control-label" translate>inventory.label.fileName</label>
         <div class="col-md-6" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || inValid}">
           <nz-input-group [nzAddOnAfter]="addOnAfterTemplate">
-            <input type="text" nz-input required name="name" #name="ngModel" (blur)="checkFileName()"
+            <input type="text" [pattern]="REGEX" nz-input required name="name" #name="ngModel" (blur)="checkFileName()" (focus)="inValid=false"
                    placeholder="{{'inventory.placeholder.enterFileName' | translate}}" [(ngModel)]="exportObj.filename" />
           </nz-input-group>
           <ng-template #addOnAfterTemplate>
@@ -256,7 +256,7 @@
     </div>
   </div>
   <div class="modal-footer text-left" >
-    <button *ngIf="nodes.length > 0" type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted">
+    <button *ngIf="nodes.length > 0" type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted || inValid">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>

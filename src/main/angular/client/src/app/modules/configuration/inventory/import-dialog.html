@@ -145,7 +145,7 @@
         </div>
       </div>
       <div class="col-md-12" *ngIf="uploader.queue.length === 0">
-          <div ng2FileDrop [uploader]="uploader" class="drop-box-full">
+          <div ng2FileDrop (onFileDrop)="onFileSelected($event)" [uploader]="uploader" class="drop-box-full">
             <div><i class="icon-upload-icon"></i></div>
             <div translate>common.button.dragAndDropFileToUpload</div>
           </div>
@@ -154,7 +154,7 @@
               <button type="button" class="btn btn-grey btn-sm" >
                 <span translate>common.button.chooseFileToUpload</span>
               </button>
-              <input type="file" accept="zip, tar.gz, gz" ng2FileSelect [uploader]="uploader">
+              <input type="file" accept=".zip, .tar.gz, .gz" ng2FileSelect (onFileSelected)="onFileSelected($event)" [uploader]="uploader">
             </div>
           </div>
       </div>

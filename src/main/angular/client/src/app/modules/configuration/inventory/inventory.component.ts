@@ -295,7 +295,8 @@ export class DeployComponent implements OnInit {
     const obj: any = {
       folder: this.path || '/',
       recursive: true,
-      onlyValidObjects: true
+      onlyValidObjects: true,
+      withRemovedObjects: true
     };
     if (this.data && this.data.object) {
       obj.recursive = false;
@@ -303,7 +304,6 @@ export class DeployComponent implements OnInit {
     }
     if (this.releasable) {
       obj.withoutReleased = true;
-      obj.withoutDrafts = true;
     } else {
       obj.withVersions = !this.reDeploy;
     }
@@ -345,8 +345,8 @@ export class DeployComponent implements OnInit {
     let selectFolder = true;
     if (this.data && this.data.object) {
       selectFolder = false;
-     
     }
+
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if ((nodes[i].type || nodes[i].isFolder) && nodes[i].recursivelyDeploy) {
@@ -587,6 +587,7 @@ export class ExportComponent implements OnInit {
   messageList: any;
   path: string;
   securityLevel: string;
+  REGEX = /^[0-9a-zA-Z\^\&\'\@\{\}\[\]\,\$\=\!\-\#\(\)\.\%\+\~\_ ]+$/;
   exportObj = {
     isRecursive: false,
     controllerId: '',
@@ -624,8 +625,16 @@ export class ExportComponent implements OnInit {
   }
 
   checkFileName() {
-    console.log(this.exportObj.filename,
-      this.exportObj.fileFormat);
+    const ext = this.exportObj.filename.split('.').pop();
+    if (ext) {
+      if (this.exportObj.fileFormat === 'ZIP' && (ext === 'ZIP' || ext === 'zip')) {
+        this.inValid = false;
+      } else {
+        this.inValid = !(this.exportObj.fileFormat === 'TAR_GZ' && (ext === 'tar' || ext === 'gz'));
+      }
+    } else {
+      this.inValid = true;
+    }
   }
 
   buildTree() {
@@ -744,6 +753,7 @@ export class ExportComponent implements OnInit {
 
   private getChildTree() {
     const self = this;
+
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
         let flag = false;
@@ -786,9 +796,8 @@ export class ExportComponent implements OnInit {
     let selectFolder = true;
     if (this.exportType && this.exportType !== 'CONTROLLER' && this.exportType !== 'DAILYPLAN') {
       selectFolder = false;
-      console.log('say no....')
     }
-    console.log(this.exportType, 'this.exportType')
+
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if ((nodes[i].type || nodes[i].isFolder) && nodes[i].recursivelyDeploy) {
@@ -936,7 +945,7 @@ export class ExportComponent implements OnInit {
       if (this.comments.ticketLink) {
         param = param + '&ticketLink=' + encodeURIComponent(this.comments.ticketLink);
       }
-      console.log('http://jstest.zehntech.net:7446/joc/api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
+      //console.log('http://jstest.zehntech.net:7446/joc/api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
       this.submitted = false;
       try {
         $('#tmpFrame').attr('src', './api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
@@ -945,7 +954,7 @@ export class ExportComponent implements OnInit {
           this.activeModal.close('ok');
         }, 150);
       } catch (e) {
-        console.log(e);
+        console.error(e);
         this.submitted = false;
       }
     } else {
@@ -1190,7 +1199,7 @@ export class ImportWorkflowModalComponent implements OnInit {
     folder: ''
   };
 
-  constructor(public activeModal: NgbActiveModal, public modalService: NgbModal,
+  constructor(public activeModal: NgbActiveModal, public modalService: NgbModal, private translate: TranslateService,
               public toasterService: ToasterService, private authService: AuthService) {
   }
 
@@ -1257,6 +1266,20 @@ export class ImportWorkflowModalComponent implements OnInit {
         this.toasterService.pop('error', res.error.code, res.error.message);
       }
     };
+  }
+
+  // CALLBACKS
+  onFileSelected(event: any): void {
+    let item = event['0'];
+    let fileExt = item.name.slice(item.name.lastIndexOf('.') + 1);
+    if (!(fileExt && fileExt === 'zip' || fileExt.match(/tar/) || fileExt.match(/gz/))) {
+      let msg = '';
+      this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
+        msg = translatedValue;
+      });
+      this.toasterService.pop('error', '', fileExt + ' ' + msg);
+      this.uploader.clearQueue();
+    }
   }
 
   import() {
@@ -2043,7 +2066,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.data = origin;
       modalRef.componentInstance.releasable = releasable;
       modalRef.result.then((res: any) => {
-
+        if (releasable) {
+          setTimeout(() => {
+            this.initTree(origin.path, null);
+          }, 10);
+        }
       }, () => {
       });
     }

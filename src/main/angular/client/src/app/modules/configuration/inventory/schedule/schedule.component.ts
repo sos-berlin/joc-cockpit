@@ -165,7 +165,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
 
   rename(inValid) {
     if (this.data.id === this.schedule.id && this.data.name !== this.schedule.name) {
-      
+
       if (!inValid) {
         const data = this.coreService.clone(this.data);
         const name = this.schedule.name;
@@ -317,7 +317,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         delete res.configuration['TYPE'];
         delete res.configuration['path'];
         delete res.configuration['versionId'];
-      }else {
+      } else {
         res.configuration = {};
       }
 

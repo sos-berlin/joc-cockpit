@@ -5,7 +5,6 @@ import * as _ from 'underscore';
 export class InventoryService {
 
   sortList(arr) {
-    let temp = [];
     for (let i = 0; i < arr.length; i++) {
       if (arr[i].objectType === 'WORKFLOW') {
         arr[i].level = 0;
@@ -22,11 +21,8 @@ export class InventoryService {
       } else if (arr[i].objectType === 'NONWORKINGDAYSCALENDAR') {
         arr[i].level = 6;
       }
-      if (arr[i].objectType !== 'FOLDER') {
-        temp.push(arr[i]);
-      }
     }
-    return _.sortBy(temp, 'level');
+    return _.sortBy(arr, 'level');
   }
 
   generateTree(arr, treeArr) {
@@ -61,7 +57,6 @@ export class InventoryService {
     if (data.length > 0) {
       arr = this.createTempArray(data);
     }
-
     function recursive(path, nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if (!nodes[i].type && !nodes[i].object) {
@@ -102,7 +97,6 @@ export class InventoryService {
 
   private checkAndAddFolder(_path, treeArr) {
     let node: any;
-
     function recursive(path, nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if (!nodes[i].type && !nodes[i].object) {
@@ -173,20 +167,20 @@ export class InventoryService {
           };
           tempArr.push(child);
         });
-
       } else {
-        /*        temp.forEach(data => {
-                  folderArr.push({
-                    name: data.objectName,
-                    path: data.folder + (data.folder === '/' ? '' : '/') + data.objectName,
-                    key: data.folder + (data.folder === '/' ? '' : '/') + data.objectName,
-                    isFolder: true,
-                    isLeaf: true,
-                    deleted: data.deleted,
-                    children: []
-                  });
-                });*/
-
+        temp.forEach(data => {
+          if (data.deleted) {
+            folderArr.push({
+              name: data.objectName,
+              path: data.folder + (data.folder === '/' ? '' : '/') + data.objectName,
+              key: data.folder + (data.folder === '/' ? '' : '/') + data.objectName,
+              isFolder: true,
+              isLeaf: true,
+              deleted: data.deleted,
+              children: []
+            });
+          }
+        });
       }
     }
     return tempArr.concat(folderArr);
