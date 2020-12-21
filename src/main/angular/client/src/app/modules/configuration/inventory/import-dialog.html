@@ -124,12 +124,23 @@
         </div>
       </div>
       <div class="col-md-12" *ngIf="!isDeploy">
-        <div class="row">
+        <div class="form-group row">
           <label class="col-md-3 form-control-label">
             <label translate>inventory.label.folder</label>
           </label>
           <div class="col-md-9">
-            <input type="text" name="folder" class="form-control" [(ngModel)]="requestObj.folder" placeholder="{{'inventory.placeholder.enterFolderPath' | translate}}">
+            <input type="text" name="folder" class="form-control" [(ngModel)]="requestObj.targetFolder" placeholder="{{'inventory.placeholder.enterFolderPath' | translate}}">
+          </div>
+        </div>
+        <div class="row">
+          <label class="col-md-3 form-control-label">
+            <label translate>inventory.label.fileFormat</label>
+          </label>
+          <div class="col-md-9">
+            <nz-select name="format" [(ngModel)]="requestObj.format">
+              <nz-option nzLabel="ZIP" nzValue="ZIP"></nz-option>
+              <nz-option nzLabel="TAR_GZ" nzValue="TAR_GZ"></nz-option>
+            </nz-select>
           </div>
         </div>
         <div class="m-t-sm row">

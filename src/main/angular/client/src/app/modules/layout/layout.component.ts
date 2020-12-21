@@ -425,5 +425,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.child.reloadSettings();
     this.preferences = JSON.parse(sessionStorage.preferences);
     this.permission = JSON.parse(this.authService.permission);
+    this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, true);
+    this.loadSettingConfiguration();
   }
 }

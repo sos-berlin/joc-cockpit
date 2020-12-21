@@ -1196,7 +1196,8 @@ export class ImportWorkflowModalComponent implements OnInit {
   comments: any = {};
   requestObj: any = {
     overwrite: false,
-    folder: ''
+    format: 'ZIP',
+    targetFolder: ''
   };
 
   constructor(public activeModal: NgbActiveModal, public modalService: NgbModal, private translate: TranslateService,
@@ -1235,9 +1236,10 @@ export class ImportWorkflowModalComponent implements OnInit {
         obj.ticketLink = this.comments.ticketLink;
       }
       if (!this.isDeploy) {
-        if (this.requestObj.folder) {
-          obj.folder = this.requestObj.folder;
+        if (this.requestObj.targetFolder) {
+          obj.targetFolder = this.requestObj.targetFolder;
         }
+        obj.format = this.requestObj.format;
         obj.overwrite = this.requestObj.overwrite;
       }
       if (this.selectedSchedulerIds && this.selectedSchedulerIds.length > 0) {

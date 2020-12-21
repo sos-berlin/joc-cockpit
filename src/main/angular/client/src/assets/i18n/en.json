@@ -701,6 +701,7 @@
     "label.controller": "Controller",
     "label.schedule": "Schedule",
     "label.objectType": "Object Type",
+    "label.fileFormat": "File Format",
     "button.setVersion": "Set Version",
     "button.new": "New",
     "button.newFolder": "New Folder",
