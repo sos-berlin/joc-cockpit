@@ -314,6 +314,7 @@ export class JobComponent implements OnChanges, OnDestroy {
     if (!node.origin.type) {
 
       if ($event) {
+        node.isExpanded = !node.isExpanded;
         $event.stopPropagation();
       }
       let flag = true;

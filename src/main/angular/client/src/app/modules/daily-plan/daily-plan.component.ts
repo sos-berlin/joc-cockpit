@@ -578,74 +578,22 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
     $(this.editor.nativeElement).on('mouseout', '.my-tooltip', function () {
       $('.tooltip').tooltip('hide');
     });
-    $(document).on('click', '.ant-dropdown-menu-item a', function (e) {
-      const id = $(this).attr('id');
-      if (id) {
-        let _id = '';
-        const _len = self.tasks.length;
-        const order: any = {action: 'REMOVE_ORDER', value: null};
-        if (id.match('submit')) {
-          order.action = 'SUBMIT_ORDER';
-        } else if (id.match('editBtn')) {
-          order.action = 'CHANGE_PARAMETER';
-        } else if (id.match('cancelBtn')) {
-          order.action = 'CANCEL_ORDER';
-        } else if (id.match('editOrderBtn')) {
-          order.action = 'CHANGE_ORDER';
-        }
-        _id = id.match(/\d+/)[0];
-        for (let x = 0; x < _len; x++) {
-          if (self.tasks[x].id == _id) {
-            order.orderId = self.tasks[x].col1;
-            order.workflow = self.tasks[x].col2;
-            if (self.tasks[x].$level === 0) {
-              order.value = self.tasks[x].value;
-              order.schedulePath = self.tasks[x].col1;
-            }
-            break;
-          }
-        }
-        self.dataEvent.emit(order);
-      }
-    });
-
     this.editor.nativeElement.style.height = 'calc(100vh - 248px)';
   }
 
   private init(): void {
     const self = this;
-    let workflow = '', orderId = '', btnRemoveOrder = '', btnSubmitorder = '', btnChangeParameter = '', btnModifyOrder = '', btnCancelOrder ='';
+    let workflow = '', orderId = '';
     this.translate.get('dailyPlan.label.workflow').subscribe(translatedValue => {
       workflow = translatedValue;
     });
-    this.translate.get('dailyPlan.label.order').subscribe(translatedValue => {
+    this.translate.get('dailyPlan.label.scheduleAndOrder').subscribe(translatedValue => {
       orderId = translatedValue;
-    });
-    this.translate.get('dailyPlan.button.removeOrder').subscribe(translatedValue => {
-      btnRemoveOrder = translatedValue;
-    });
-    this.translate.get('order.button.cancelOrder').subscribe(translatedValue => {
-      btnCancelOrder = translatedValue;
-    });
-    this.translate.get('dailyPlan.button.submitOrder').subscribe(translatedValue => {
-      btnSubmitorder = translatedValue;
-    });
-    this.translate.get('dailyPlan.button.setParameters').subscribe(translatedValue => {
-      btnChangeParameter = translatedValue;
-    });
-
-    this.translate.get('dailyPlan.button.setStartTime').subscribe(translatedValue => {
-      btnModifyOrder = translatedValue;
     });
 
     jsgantt.config.columns = [{name: 'col2', tree: !0, label: workflow, align: 'left'}, {
       name: 'col1', label: orderId, width: '*', align: 'left'
     }];
-    jsgantt.config.btnRemoveOrder = btnRemoveOrder;
-    jsgantt.config.btnCancelOrder = btnCancelOrder;
-    jsgantt.config.btnSubmitorder = btnSubmitorder;
-    jsgantt.config.btnChangeParameter = btnChangeParameter;
-    jsgantt.config.btnModifyOrder = btnModifyOrder;
 
     jsgantt.templates.task_class = function (start, end, task) {
       return task.class;
@@ -659,7 +607,7 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
       for (let i = 0; i < len; i++) {
         const _obj = {
           id: ++count,
-          col1: this.groupBy === 'WORKFLOW' ? plans[i].value[0].orderId : plans[i].key,
+          col1: this.groupBy === 'WORKFLOW' ? '' : plans[i].key,
           col2: this.groupBy === 'WORKFLOW' ? plans[i].key : plans[i].value[0].workflowPath,
           value: plans[i].value,
           open: this.toggle,
@@ -813,6 +761,7 @@ export class SearchComponent implements OnInit {
     }
     if (!node.origin.type) {
       if ($event) {
+        node.isExpanded = !node.isExpanded;
         $event.stopPropagation();
       }
       let flag = true;
@@ -962,22 +911,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.subscription2.unsubscribe();
   }
 
-  receiveData(object) {
-    console.log(object);
-    if (object.action === 'CHANGE_PARAMETER') {
-      this.changeParameter(object, null);
-    } else if (object.action === 'CHANGE_ORDER') {
-      this.modifyOrder(object, null);
-    } else if (object.action === 'REMOVE_ORDER') {
-      this.removeOrder(object, object.value ? object : null, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW');
-    } else if (object.action === 'CANCEL_ORDER') {
-      this.cancelOrder(object, object.value ? object : null, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW');
-    } else {
-      this.submitOrder(object, object.value ? object : null, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW');
-    }
-
-  }
-
   loadOrderPlan() {
     let obj: any = {
       controllerId: this.schedulerIds.selected,
@@ -1125,8 +1058,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.load(this.selectedDate);
       this.resetCheckBox();
       this.loadOrderPlan();
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -1140,8 +1073,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.load(this.selectedDate);
       this.resetCheckBox();
       this.loadOrderPlan();
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -1157,8 +1090,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.load(this.selectedDate);
       this.resetCheckBox();
       this.loadOrderPlan();
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -1364,8 +1297,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.plan = plan;
     modalRef.result.then((res) => {
 
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -1432,8 +1365,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       } else if (obj.type === 'COPY') {
         this.copyFilter(obj);
       }
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -1494,6 +1427,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   receiveMessage($event) {
     this.pageView = $event;
+    this.object.templates = [];
   }
 
   checkAll() {
@@ -1656,8 +1590,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           }
         }
       }
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
     });
   }
 
@@ -1831,10 +1764,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.allFilter = this.filterList;
       modalRef.componentInstance.filter = filterObj;
       modalRef.componentInstance.edit = !isCopy;
-      modalRef.result.then((configObj) => {
+      modalRef.result.then(() => {
 
-      }, (reason) => {
-        console.log('close...', reason);
+      }, () => {
+
       });
     });
   }

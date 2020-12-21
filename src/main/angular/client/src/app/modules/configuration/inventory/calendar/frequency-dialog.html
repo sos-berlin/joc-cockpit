@@ -12,11 +12,10 @@
                     : <span class="text-muted">{{_temp.str | translate}}</span>
                 </label>
             </div>
-
             <div>
                 <div class="m-b">
                     <div class="form-group row" *ngIf="isVisible">
-                        <label class="col-sm-3 _600" translate>runtime.label.frequencyType</label>
+                        <label class="col-sm-3 form-control-label" translate>runtime.label.frequencyType</label>
                         <div class="col-sm-6">
                             <nz-select nzShowSearch [(ngModel)]="frequency.tab"
                                     (ngModelChange)="changeFrequency()" name="frequencyTab">
@@ -517,7 +516,6 @@
                                (click)="showMonthRange=false"></i>
                         </a>
                     </label>
-
                     <div class="col-sm-9" [hidden]="!showMonthRange">
                         <label class="md-check w">
                             <input type="checkbox" [(ngModel)]="frequency.allMonth" name="month" (change)="selectAllMonth()">

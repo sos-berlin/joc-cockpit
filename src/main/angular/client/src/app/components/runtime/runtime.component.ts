@@ -26,13 +26,11 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
   selectedMonthsU: any = [];
   tempItems: any = [];
   toDate: any;
-  temp: any;
+  _temp: any;
   frequency: any = {};
   calendarTitle: any;
   isRuntimeEdit: boolean;
-  countryField: boolean;
   isCalendarDisplay = false;
-  showMonthRange = false;
   editor: any = {isEnable: false};
   excludedDates: any = [];
   includedDates: any = [];
@@ -40,16 +38,18 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
   updateFrequency: any = {};
   tempList: any = [];
   frequencyList: any = [];
-  frequencyList1: any = [];
-  excludeFrequencyList: any = [];
   dateFormat: any;
   dateFormatM: any;
   str: string;
+  isVisible: boolean;
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService, public modalService: NgbModal, private datePipe: DatePipe, private calendarService: CalendarService) {
   }
 
   ngOnInit() {
+    setTimeout(() => {
+      this.isVisible = true;
+    }, 0);
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
     this.str = 'label.weekDays';
@@ -62,56 +62,19 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
       this.calendar.frequencyList = [];
     }
 
-    this.temp = this.data.updateFrequency;
-    if (this.temp && !_.isEmpty(this.temp)) {
+    this._temp = this.data.updateFrequency;
+    if (this._temp && !_.isEmpty(this._temp)) {
       this.editor.create = false;
       this.isRuntimeEdit = true;
-      this.frequency = this.coreService.clone(this.temp);
+      this.frequency = this.coreService.clone(this._temp);
       for (let i = 0; i < this.calendar.frequencyList.length; i++) {
-        if (this.calendar.frequencyList[i] == this.temp || _.isEqual(this.temp, this.calendar.frequencyList[i])) {
-          if (this.calendar.frequencyList[i].tab == 'monthDays') {
-            if (this.calendar.frequencyList[i].isUltimos === 'months') {
-              this.frequency.selectedMonths = this.coreService.clone(this.calendar.frequencyList[i].selectedMonths);
-            } else {
-              this.frequency.selectedMonthsU = this.coreService.clone(this.calendar.frequencyList[i].selectedMonthsU);
-            }
-            if (this.calendar.frequencyList[i].isUltimos === 'months') {
-              this.selectedMonths = [];
-              this.calendar.frequencyList[i].selectedMonths.forEach((val) => {
-                this.selectMonthDaysFunc(val);
-              });
-            } else {
-              this.selectedMonthsU = [];
-              this.calendar.frequencyList[i].selectedMonthsU.forEach((val) => {
-                this.selectMonthDaysUFunc(val);
-              });
-            }
-          } else if (this.calendar.frequencyList[i].tab === 'specificDays') {
-            this.calendar.frequencyList[i].dates.forEach((date) => {
-              this.tempItems.push({
-                startDate: this.convertStringToDate(date),
-                endDate: this.convertStringToDate(date),
-                color: 'blue'
-              });
-            });
-            let dom = $('#calendar');
-            if (dom && dom.data('calendar')) {
-
-            } else {
-              dom.calendar({
-                language: localStorage.$SOS$LANG,
-                clickDay: (e) => {
-                  this.selectDate(e.date);
-                }
-              });
-            }
-            dom.data('calendar').setDataSource(this.tempItems);
-          }
+        if (this.calendar.frequencyList[i] == this._temp || _.isEqual(this._temp, this.calendar.frequencyList[i])) {
+          this.updateFrequencyObj(i);
           break;
         }
       }
     } else {
-      this.temp = {};
+      this._temp = {};
       this.editor.create = true;
       this.frequency = {};
       this.frequency.tab = 'weekDays';
@@ -163,22 +126,21 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
         this.frequency.endOnM = moment(this.calendar.frequencyList[i].endOnM).format(this.dateFormatM);
       }
     } else if (this.calendar.frequencyList[i].tab === 'specificDays') {
-      for (let m = 0; m < this.calendar.frequencyList[i].dates.length; m++) {
-        let x = this.calendar.frequencyList[i].dates[m].split('-');
-        this.tempItems.push({
-          startDate: new Date(x[0], x[1] - 1, x[2] - 1),
-          endDate: new Date(x[0], x[1] - 1, x[2] - 1),
-          color: '#007da6'
+      if (this.calendar.frequencyList[i].dates) {
+        this.calendar.frequencyList[i].dates.forEach((date) => {
+          this.tempItems.push({
+            startDate: this.convertStringToDate(date),
+            endDate: this.convertStringToDate(date),
+            color: '#007da6'
+          });
         });
       }
-
       if (this.calendar.frequencyList[i].startingWithS) {
         this.frequency.startingWithS = moment(this.calendar.frequencyList[i].startingWithS).format(this.dateFormatM);
       }
       if (this.calendar.frequencyList[i].endOnS) {
         this.frequency.endOnS = moment(this.calendar.frequencyList[i].endOnS).format(this.dateFormatM);
       }
-
     }
     if (this.calendar.frequencyList[i].tab === 'weekDays') {
       this.frequency.days = this.coreService.clone(this.calendar.frequencyList[i].days);
@@ -270,8 +232,7 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
     }
   }
 
-  changeFrequency(str) {
-    this.frequency.tab = str;
+  changeFrequency() {
     this.onFrequencyChange();
     if (this.frequency.tab === 'specificDays') {
       $('#calendar').calendar({
@@ -347,12 +308,12 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
       this.isRuntimeEdit = false;
       if (this.calendar.frequencyList.length > 0) {
         for (let i = 0; i < this.calendar.frequencyList.length; i++) {
-          if (this.calendar.frequencyList[i].tab == this.temp.tab && this.calendar.frequencyList[i].str == this.temp.str && this.calendar.frequencyList[i].type == this.temp.type) {
-            if (this.frequency.tab == 'specificDays') {
+          if (this.calendar.frequencyList[i].tab == this._temp.tab && this.calendar.frequencyList[i].str == this._temp.str && this.calendar.frequencyList[i].type == this._temp.type) {
+            if (this.frequency.tab === 'specificDays') {
               this.frequency.dates = [];
-              for (let j = 0; j < this.tempItems.length; j++) {
-                this.frequency.dates.push(moment(this.tempItems[j].startDate).format('YYYY-MM-DD'));
-              }
+              this.tempItems.forEach((date) => {
+                this.frequency.dates.push(moment(date.startDate).format('YYYY-MM-DD'));
+              });
               this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
             }
             this.calendar.frequencyList[i] = this.coreService.clone(this.frequency);
@@ -360,7 +321,7 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
           }
         }
       }
-      this.temp = {};
+      this._temp = {};
       if (this.calendar.frequencyList && this.calendar.frequencyList.length > 0) {
         this.generateFrequencyObj();
       }
@@ -384,7 +345,6 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
     if (flag) {
       return;
     }
-    let _dates = [], datesArr;
 
     if (this.calendar.frequencyList.length > 0) {
       let flag1 = false;
@@ -523,15 +483,7 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
           }
         }
       }
-      if (_dates && _dates.length > 0) {
-        for (let i = 0; i < _dates.length; i++) {
-          let obj = this.coreService.clone(this.frequency);
-          obj.type = this.editor.frequencyType;
-          obj.nationalHoliday = _dates[i];
-          obj.str = this.calendarService.freqToStr(obj, this.dateFormat);
-          this.calendar.frequencyList.push(obj);
-        }
-      }
+
       if (!flag1) {
         if (this.frequency.tab == 'specificDays') {
           this.frequency.dates = [];
@@ -540,14 +492,11 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
           }
           this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
         }
-        if (this.frequency.tab != 'nationalHoliday') {
-          this.frequency.type = this.editor.frequencyType;
-          this.calendar.frequencyList.push(this.coreService.clone(this.frequency));
-        }
-      } else {
-        this.frequency.nationHoliday = [];
-      }
 
+        this.frequency.type = this.editor.frequencyType;
+        this.calendar.frequencyList.push(this.coreService.clone(this.frequency));
+
+      }
     } else {
       if (this.frequency.tab == 'specificDays') {
         this.frequency.dates = [];
@@ -563,7 +512,7 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
   }
 
   editFrequency(data) {
-    this.temp = this.coreService.clone(data);
+    this._temp = this.coreService.clone(data);
     this.frequency = this.coreService.clone(data);
     this.isRuntimeEdit = true;
     if (this.frequency.tab == 'monthDays') {
@@ -585,7 +534,7 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
   deleteFrequency(data, index) {
     this.calendar.frequencyList.splice(index, 1);
     if (this.calendar.frequencyList.length == 0) {
-      var temp = this.coreService.clone(this.frequency);
+      let temp = this.coreService.clone(this.frequency);
       this.frequency = {};
       this.frequency.tab = temp.tab;
       this.frequency.isUltimos = temp.isUltimos;
@@ -603,135 +552,10 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
     this.activeModal.close('');
   }
 
-  private checkDate(date) {
-    let planData = {
-      startDate: date,
-      endDate: date,
-      color: '#007da6'
-    };
-
-    let flag = false, isFound = false, flg = false;
-    if (this.calObj.frequency == 'all' || this.calObj.frequency.type == 'INCLUDE') {
-      if (this.planItems.length == 0) {
-        this.includedDates = [];
-        this.includedDates.push(planData);
-        this.planItems.push(planData);
-      } else {
-        for (let i = 0; i < this.planItems.length; i++) {
-          if ((new Date(this.planItems[i].startDate).setHours(0, 0, 0, 0) == new Date(planData.startDate).setHours(0, 0, 0, 0))) {
-            isFound = true;
-            if (this.planItems[i].color != '#eb8814') {
-              this.planItems[i].color = '#eb8814';
-              flag = true;
-            } else {
-              this.planItems[i].color = '#007da6';
-            }
-            break;
-          }
-        }
-        if (!isFound) {
-          planData.color = '#007da6';
-          this.includedDates.push(planData);
-          this.planItems.push(planData);
-        } else {
-          if (this.includedDates.length > 0) {
-            for (let i = 0; i < this.includedDates.length; i++) {
-              if ((new Date(this.includedDates[i].startDate).setHours(0, 0, 0, 0) == new Date(planData.startDate).setHours(0, 0, 0, 0))) {
-                this.includedDates.splice(i, 1);
-                break;
-              }
-            }
-          }
-        }
-        if (isFound && !flag) {
-          this.includedDates.push(planData);
-        }
-      }
-
-      if (!flag) {
-        if (this.excludedDates.length > 0) {
-          for (let i = 0; i < this.excludedDates.length; i++) {
-            if ((new Date(this.excludedDates[i].startDate).setHours(0, 0, 0, 0) == new Date(planData.startDate).setHours(0, 0, 0, 0))) {
-              this.excludedDates.splice(i, 1);
-              break;
-            }
-          }
-        }
-      } else {
-        for (let i = 0; i < this.excludedDates.length; i++) {
-          if ((new Date(this.excludedDates[i].startDate).setHours(0, 0, 0, 0) == new Date(planData.startDate).setHours(0, 0, 0, 0))) {
-            flg = true;
-            break;
-          }
-        }
-        if (!flg) {
-          this.excludedDates.push(planData);
-        }
-      }
-
-    } else if (this.calObj.frequency.type == 'EXCLUDE') {
-      if (this.planItems.length == 0) {
-        this.excludedDates = [];
-        this.excludedDates.push(planData);
-        this.planItems.push(planData);
-      } else {
-        for (let i = 0; i < this.planItems.length; i++) {
-          if ((new Date(this.planItems[i].startDate).setHours(0, 0, 0, 0) == new Date(planData.startDate).setHours(0, 0, 0, 0))) {
-            isFound = true;
-            if (this.planItems[i].color != '#eb8814') {
-              this.planItems[i].color = '#eb8814';
-            } else {
-              this.planItems[i].color = '#007da6';
-              flag = true;
-            }
-            break;
-          }
-        }
-        if (!isFound) {
-          planData.color = '#eb8814';
-          this.excludedDates.push(planData);
-          this.planItems.push(planData);
-        } else {
-          if (this.excludedDates.length > 0) {
-            for (let i = 0; i < this.excludedDates.length; i++) {
-              if ((new Date(this.excludedDates[i].startDate).setHours(0, 0, 0, 0) == new Date(planData.startDate).setHours(0, 0, 0, 0))) {
-                this.excludedDates.splice(i, 1);
-                break;
-              }
-            }
-          }
-        }
-      }
-      if (!flag) {
-        if (this.includedDates.length > 0) {
-          for (let i = 0; i < this.includedDates.length; i++) {
-            if ((new Date(this.includedDates[i].startDate).setHours(0, 0, 0, 0) == new Date(planData.startDate).setHours(0, 0, 0, 0))) {
-              this.includedDates.splice(i, 1);
-              break;
-            }
-          }
-        }
-      } else {
-        for (let i = 0; i < this.includedDates.length; i++) {
-          if ((new Date(this.includedDates[i].startDate).setHours(0, 0, 0, 0) == new Date(planData.startDate).setHours(0, 0, 0, 0))) {
-            flg = true;
-            break;
-          }
-        }
-        if (!flg) {
-          this.includedDates.push(planData);
-        }
-      }
-    }
-
-    $('#full-calendar').data('calendar').setDataSource(this.planItems);
-  }
-
   private selectDate(e) {
     let obj = {
       startDate: e.date,
       endDate: e.date,
-      date: e.date,
       color: '#007da6'
     };
     let flag = false;
@@ -877,8 +701,8 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
     modalRef.componentInstance.object = 'Calendar';
     modalRef.result.then((result) => {
       this.calendars = this.calendars.concat(result);
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -892,8 +716,8 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
     modalRef.result.then((result) => {
       this.nonWorkingCalendars = this.nonWorkingCalendars.concat(result);
       _.unique(this.nonWorkingCalendars);
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -983,8 +807,8 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
       if (!flag) {
         calendar.periods.push(result.period);
       }
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -993,8 +817,8 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
     modalRef.componentInstance.data = period;
     modalRef.result.then((result) => {
       calendar.periods[index] = result.period;
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -1136,8 +960,8 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
       if (result) {
         this.saveRestriction(result);
       }
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -1158,7 +982,7 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
         this.saveRestriction(result);
       }
     }, (reason) => {
-      console.log('close...', reason);
+
     });
   }
 
@@ -1214,7 +1038,7 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
     if (result.periods) {
       this.populatePlanItems(result);
     } else {
-      if(result.dates) {
+      if (result.dates) {
         for (let i = 0; i < result.dates.length; i++) {
           let x = result.dates[i];
           let obj = {

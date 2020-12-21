@@ -15,7 +15,7 @@
         inventory.label.folderName
       </label>
       <div class="col-md-6" [ngClass]="{'has-error' : !isUnique || ((name.dirty || name.touched) && name.invalid)}">
-        <input type="text" (blur)="checkFolderName()" class="form-control" name="name" required
+        <input type="text" (blur)="checkFolderName()" identifierValidation class="form-control" name="name" required
                #name="ngModel" [(ngModel)]="folder.name" appAutofocus autocomplete="off">
         <div *ngIf="name.invalid && (name.dirty || name.touched)"
              class="text-danger help-block">

@@ -106,6 +106,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
     if (!node.origin.type) {
       if ($event) {
+        node.isExpanded = !node.isExpanded;
         $event.stopPropagation();
       }
       let flag = true;
@@ -113,50 +114,54 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         flag = false;
       }
       if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        let obj: any = {
-          path: node.key,
-          objectTypes: [type]
-        };
-        this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
-          let data;
-          if (type === 'WORKFLOW') {
-            data = res.workflows;
-          } else {
-            data = res.calendars;
-          }
-          let flag = false;
-          for (let i = 0; i < data.length; i++) {
-            const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-            if (this.schedule.configuration.workflowPath === _path) {
-              flag = true;
-            }
-            data[i].title = _path;
-            data[i].path = _path;
-            data[i].key = _path;
-            data[i].type = type;
-            data[i].isLeaf = true;
-          }
-          if (!flag) {
-            this.schedule.configuration.workflowPath = null;
-          }
-          if (node.origin.children && node.origin.children.length > 0) {
-            data = data.concat(node.origin.children);
-          }
-          if (node.origin.isLeaf) {
-            node.origin.expanded = true;
-          }
-          node.origin.isLeaf = false;
-          node.origin.children = data;
-          if (type === 'WORKFLOW') {
-            this.workflowTree = [...this.workflowTree];
-          }
-        });
+        this.updateList(node, type);
       }
     } else {
       setTimeout(() => {
         this.saveJSON();
       }, 10);
     }
+  }
+
+  updateList(node, type){
+    let obj: any = {
+      path: node.key,
+      objectTypes: [type]
+    };
+    this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
+      let data;
+      if (type === 'WORKFLOW') {
+        data = res.workflows;
+      } else {
+        data = res.calendars;
+      }
+      let flag = false;
+      for (let i = 0; i < data.length; i++) {
+        const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
+        if (this.schedule.configuration.workflowPath === _path) {
+          flag = true;
+        }
+        data[i].title = _path;
+        data[i].path = _path;
+        data[i].key = _path;
+        data[i].type = type;
+        data[i].isLeaf = true;
+      }
+      if (!flag) {
+        this.schedule.configuration.workflowPath = null;
+      }
+      if (node.origin.children && node.origin.children.length > 0) {
+        data = data.concat(node.origin.children);
+      }
+      if (node.origin.isLeaf) {
+        node.origin.expanded = true;
+      }
+      node.origin.isLeaf = false;
+      node.origin.children = data;
+      if (type === 'WORKFLOW') {
+        this.workflowTree = [...this.workflowTree];
+      }
+    });
   }
 
   onExpand(e, type) {

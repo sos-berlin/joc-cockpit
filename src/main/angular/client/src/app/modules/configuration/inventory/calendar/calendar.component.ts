@@ -672,8 +672,8 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
   }
 
   editFrequency(data) {
-    this._temp = _.clone(data);
-    this.frequency = _.clone(data);
+    this._temp = this.coreService.clone(data);
+    this.frequency = this.coreService.clone(data);
 
     if (this.frequency.tab == 'nationalHoliday') {
       this.frequency.year = new Date(data.nationalHoliday[0]).getFullYear();

@@ -291,6 +291,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       preferences.historyView = 'current';
       preferences.adtLog = 'current';
       preferences.fileTransfer = 'current';
+      preferences.agentTask = 'current';
       preferences.logTimezone = true;
       preferences.showOrders = false;
       if (sessionStorage.$SOS$FORCELOGING === 'true' || sessionStorage.$SOS$FORCELOGING === true) {
@@ -344,7 +345,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private loadSettingConfiguration() {
-    if(this.permission.user) {
+    if (this.permission.user) {
       const configObj = {
         controllerId: this.schedulerIds.selected,
         account: this.permission.user,

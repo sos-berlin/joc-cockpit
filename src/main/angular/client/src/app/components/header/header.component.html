@@ -92,7 +92,7 @@
                        <span class="label label-sm up notification" *ngIf="allSessionEvent.eventUnReadCount>0">
                            {{allSessionEvent.eventUnReadCount}}
                        </span>
-                      <i id ="notifyBell" class="fa fa-lg fa-bell notify"></i>
+                      <i id="notifyBell" class="fa fa-lg fa-bell notify"></i>
                   </span>
                 </a>
                 <nz-dropdown-menu #bell="nzDropdownMenu" id="notification">
@@ -179,47 +179,45 @@
                 <a class="nav-link text-white" nz-dropdown nzTrigger="click" [nzDropdownMenu]="user" nzPlacement="bottomRight">
                  <span class="avatar" id="avatarBg" [innerHtml]="username | slice:0:1"></span>
                   <span class="text-left p-l-sm">
-                        <span class="_500 text-md" >{{username | decodeSpace}}</span>
-                        <i class="fa fa-caret-down p-l-xs"></i>
+                    <span class="_500 text-md" >{{username | decodeSpace}}</span>
+                    <i class="fa fa-caret-down p-l-xs"></i>
                   </span>
                 </a>
                 <nz-dropdown-menu #user="nzDropdownMenu">
                     <ul nz-menu>
-                        <li nz-menu-item >
-                            <a routerLink="/user">
-                                <i class="fa fa-user"></i>
-                                {{'header.button.profile' | translate}}
-                            </a>
+                        <li nz-menu-item routerLink="/user">
+                          <a>
+                            <i class="fa fa-user"></i>
+                            {{'header.button.profile' | translate}}
+                          </a>
                         </li>
-                        <li>
-                          <a class="dropdown-item" routerLink="/logging">
+                        <li nz-menu-item routerLink="/logging">
+                          <a>
                             <i class="fa fa-file text-xs"></i>
                             {{'header.button.logging' | translate}}
                           </a>
                         </li>
                         <li nz-menu-item routerLink="/users/account" *ngIf="permission && permission.JS7Controller && permission.JS7Controller.administration.editPermissions">
-                            <a >
-                                <i class="fa fa-users"></i>
-                                {{'header.button.manageAccount' | translate}}
-                            </a>
+                          <a><i class="fa fa-users"></i>
+                            {{'header.button.manageAccount' | translate}}
+                          </a>
                         </li>
                         <li nz-menu-item  routerLink="/controllers">
-                          <a >
+                          <a>
                             <i class="fa fa-id-card-o"></i>
                             {{'header.button.manageControllersAndAgents' | translate}}
                           </a>
                         </li>
                         <li nz-menu-item (click)="logout()">
-                            <a>
-                                <i class="fa fa-sign-out"></i>
-                                {{'header.button.logOut' | translate}}
-                            </a>
+                          <a>
+                            <i class="fa fa-sign-out"></i>
+                            {{'header.button.logOut' | translate}}
+                          </a>
                         </li>
                     </ul>
                 </nz-dropdown-menu>
             </li>
         </ul>
-
         <!-- navbar collapse -->
         <div class="collapse navbar-toggleable-custom" id="navbar1">
             <!-- link -->

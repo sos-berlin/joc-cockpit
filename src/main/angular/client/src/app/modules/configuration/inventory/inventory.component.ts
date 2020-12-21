@@ -194,12 +194,16 @@ export class DeployComponent implements OnInit {
   comments: any = {radio: 'predefined'};
   required: boolean;
   messageList: any;
+  isDeleted = false;
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService,
               private authService: AuthService, private inventoryService: InventoryService) {
   }
 
   ngOnInit() {
+    if(this.data && this.data.deleted){
+      this.isDeleted = true;
+    }
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
     if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
@@ -382,7 +386,12 @@ export class DeployComponent implements OnInit {
           }
           if(objDep.configuration) {
             if (nodes[i].deleted) {
-              self.object.deleteObj.deployConfigurations.push(objDep);
+              if(objDep.configuration) {
+                if (objDep.configuration.objectType === 'FOLDER') {
+                  objDep.configuration.recursive = true;
+                }
+                self.object.deleteObj.deployConfigurations.push(objDep);
+              }
             } else {
               if (objDep.configuration) {
                 if (nodes[i].isFolder) {
@@ -1237,6 +1246,9 @@ export class ImportWorkflowModalComponent implements OnInit {
       }
       if (!this.isDeploy) {
         if (this.requestObj.targetFolder) {
+          if (this.requestObj.targetFolder.substring(0, 1) !== '/') {
+            this.requestObj.targetFolder = '/' + this.requestObj.targetFolder;
+          }
           obj.targetFolder = this.requestObj.targetFolder;
         }
         obj.format = this.requestObj.format;
@@ -1273,8 +1285,9 @@ export class ImportWorkflowModalComponent implements OnInit {
   // CALLBACKS
   onFileSelected(event: any): void {
     let item = event['0'];
-    let fileExt = item.name.slice(item.name.lastIndexOf('.') + 1);
-    if (!(fileExt && fileExt === 'zip' || fileExt.match(/tar/) || fileExt.match(/gz/))) {
+    const fileExt = item.name.slice(item.name.lastIndexOf('.') + 1);
+    if (!(fileExt && ((fileExt === 'zip' && this.requestObj.format === 'ZIP') ||
+      (this.requestObj.format !== 'ZIP' && (fileExt.match(/tar/) || fileExt.match(/gz/)))))) {
       let msg = '';
       this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
         msg = translatedValue;
@@ -2050,13 +2063,18 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (!node.origin) {
         origin.path = origin.path.substring(0, origin.path.lastIndexOf('/')) || '/';
       }
+      const path = origin.path;
       const modalRef = this.modalService.open(SingleDeployComponent, {backdrop: 'static'});
       modalRef.componentInstance.schedulerIds = this.schedulerIds;
       modalRef.componentInstance.display = this.preferences.auditLog;
       modalRef.componentInstance.data = origin;
       modalRef.componentInstance.releasable = releasable;
       modalRef.result.then((res: any) => {
-
+        setTimeout(() => {
+          this.updateFolders(path, () => {
+            this.updateTree();
+          });
+        }, 200);
       }, () => {
       });
     } else {
@@ -2068,11 +2086,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.data = origin;
       modalRef.componentInstance.releasable = releasable;
       modalRef.result.then((res: any) => {
-        if (releasable) {
-          setTimeout(() => {
-            this.initTree(origin.path, null);
-          }, 10);
-        }
+        setTimeout(() => {
+          this.initTree(origin.path, null);
+        }, 200);
       }, () => {
       });
     }
@@ -2389,7 +2405,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
         obj.id = res.id;
         obj.valid = obj.valid ? obj.valid : !(obj.type.match(/CALENDAR/) || obj.type === 'SCHEDULE' || obj.type === 'WORKFLOW');
         list.push(obj);
-        //list =  _.sortBy(list, 'name');
         this.type = obj.type;
         this.selectedData = obj;
         this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);

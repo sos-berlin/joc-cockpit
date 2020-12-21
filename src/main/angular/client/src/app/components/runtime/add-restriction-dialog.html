@@ -6,26 +6,24 @@
     <div class="row m-b-sm">
       <label class="col-sm-12" [hidden]="!editor.create">
         <span class="text-primary " translate>runtime.label.addFrequencies</span>
-        : <span class="text-muted" translate>{{'runtime.'+str}}</span>
+        : <span class="text-muted">{{'runtime.'+str | translate}}</span>
       </label>
       <label class="col-sm-12" [hidden]="editor.create">
         <span class="text-primary " translate>runtime.label.editFrequencies</span>
-        : <span class="text-muted" translate>{{'runtime.'+str}}</span>
+        : <span class="text-muted">{{_temp.str | translate}}</span>
       </label>
     </div>
     <div class="m-b">
-      <div class="form-group row">
-        <label class="col-sm-3 form-control-label" style="font-weight: 600" translate>runtime.label.frequencyType</label>
-
-        <div class="col-sm-3">
-          <nz-select name="tab" [(ngModel)]="frequency.tab" (ngModelChange)="changeFrequency(frequency.tab)">
+      <div class="form-group row"  *ngIf="isVisible">
+        <label class="col-sm-3 form-control-label" translate>runtime.label.frequencyType</label>
+        <div class="col-sm-6">
+          <nz-select nzShowSearch name="frequencyTab" [(ngModel)]="frequency.tab" (ngModelChange)="changeFrequency()">
             <nz-option nzValue="weekDays" [nzLabel]="'runtime.label.weekDays' | translate"></nz-option>
             <nz-option nzValue="specificWeekDays" [nzLabel]="'runtime.label.specificWeekDays' | translate"></nz-option>
             <nz-option nzValue="specificDays" [nzLabel]="'runtime.label.specificDays' | translate"></nz-option>
             <nz-option nzValue="monthDays" [nzLabel]="'runtime.label.monthDays' | translate"></nz-option>
             <nz-option nzValue="every" [nzLabel]="'runtime.label.every' | translate"></nz-option>
           </nz-select>
-
         </div>
       </div>
     </div>
@@ -391,7 +389,7 @@
             </thead>
             <tbody>
             <tr *ngFor="let data of calendar.frequencyList; let i = index" class="cursor"
-                [ngClass]="{'light-bg' : (temp.tab ==data.tab  && temp.str ==data.str)}">
+                [ngClass]="{'light-bg' : (_temp.tab ==data.tab && _temp.day ==data.day && _temp.months ==data.months && _temp.isUltimos ==data.isUltimos && _temp.dateEntity ==data.dateEntity && _temp.str ==data.str)}">
               <td (click)="editFrequency(data)">{{i + 1}}</td>
               <td (click)="editFrequency(data)">
                 <i *ngIf="data.exclude" class="fa fa-minus"> </i>
