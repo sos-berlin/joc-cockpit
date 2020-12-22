@@ -883,7 +883,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.closeMenu();
     if (this.workflow.configuration && this.workflow.configuration.instructions && this.workflow.configuration.instructions.length > 0) {
       this.editor.graph.clearSelection();
-      const name = 'workflow' + '.json';
+      const name = (this.workflow.name || 'workflow') + '.json';
       const fileType = 'application/octet-stream';
       let data = this.coreService.clone(this.workflow.configuration);
       const flag = this.modifyJSON(data, true, true);

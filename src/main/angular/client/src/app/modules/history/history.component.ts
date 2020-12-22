@@ -867,10 +867,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   setDeploymentDateRange(filter) {
     if (this.deployment.filter.date == 'today') {
-      filter.dateFrom = '0d';
-      filter.dateTo = '0d';
+      filter.from = '0d';
+      filter.to = '0d';
     } else if (this.deployment.filter.date && this.deployment.filter.date != 'ALL') {
-      filter.dateFrom = this.deployment.filter.date;
+      filter.from = this.deployment.filter.date;
     }
     return filter;
   }
@@ -894,16 +894,31 @@ export class HistoryComponent implements OnInit, OnDestroy {
       // obj = this.deploymentParseDate(obj);
     } else {
       obj = this.setDeploymentDateRange(obj);
-      obj.state = (this.deployment.filter.state && this.deployment.filter.state !== 'ALL') ? this.deployment.filter.state : undefined;
+    //  obj.state = (this.deployment.filter.state && this.deployment.filter.state !== 'ALL') ? this.deployment.filter.state : undefined;
     }
-    this.convertRequestBody(obj);
-    this.coreService.post('inventory/deployment/history', obj).subscribe((res: any) => {
+    this.convertDeployRequestBody(obj);
+    console.log(obj, '>>>')
+    this.coreService.post('inventory/deployment/history', {compactFilter: obj}).subscribe((res: any) => {
       this.deploymentHistorys = res.depHistory;
       this.searchInResult();
       this.isLoading = true;
     }, () => {
       this.isLoading = true;
     });
+  }
+
+  private convertDeployRequestBody(obj) {
+    obj.limit = parseInt(this.preferences.maxRecords, 10);
+    obj.timeZone = this.preferences.zone;
+    if ((obj.from && typeof obj.from.getMonth === 'function') || (obj.to && typeof obj.to.getMonth === 'function')) {
+      delete obj['timeZone'];
+    }
+    if ((obj.from && typeof obj.from.getMonth === 'function')) {
+      obj.from = moment(obj.from).tz(this.preferences.zone);
+    }
+    if ((obj.to && typeof obj.to.getMonth === 'function')) {
+      obj.to = moment(obj.to).tz(this.preferences.zone);
+    }
   }
 
   search(obj) {

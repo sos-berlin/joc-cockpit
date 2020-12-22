@@ -1656,7 +1656,19 @@ export class InventoryComponent implements OnInit, OnDestroy {
         for (let j = 0; j < scrTree.length; j++) {
           for (let i = 0; i < destTree.length; i++) {
             if (destTree[i].path && scrTree[j].path && (destTree[i].path === scrTree[j].path)) {
-              if (scrTree[j].object === destTree[i].object) {
+              if (scrTree[j].object && destTree[i].object) {
+                if (scrTree[j].object === destTree[i].object) {
+                  scrTree[j].expanded = destTree[i].expanded;
+                }
+              } else if (scrTree[j].controller && destTree[i].controller) {
+                if (scrTree[j].controller === destTree[i].controller) {
+                  scrTree[j].expanded = destTree[i].expanded;
+                }
+              } else if (scrTree[j].dailyPlan && destTree[i].dailyPlan) {
+                if (scrTree[j].dailyPlan === destTree[i].dailyPlan) {
+                  scrTree[j].expanded = destTree[i].expanded;
+                }
+              } else if (scrTree[j].name === destTree[i].name && scrTree[j].path === destTree[i].path) {
                 scrTree[j].expanded = destTree[i].expanded;
               }
               if (destTree[i].children && destTree[i].children.length > 0 && !destTree[i].object) {
