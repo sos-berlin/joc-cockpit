@@ -2362,15 +2362,6 @@
                 vm.masterName = $scope.schedulerIds.selected;
             }
             vm.object.paths = [];
-            if(vm.folderObj.paths.length ===0) {
-                if (vm.folderArr && vm.folderArr.length > 0) {
-                    for (let i = 0; i < vm.folderArr.length; i++) {
-                        vm.object.paths.push(vm.folderArr[i].folder)
-                    }
-                }
-            }else{
-                vm.object.paths = vm.folderObj.paths;
-            }
             ResourceService.tree({jobschedulerId: vm.masterName, compact: true, force: true}).then(function (res) {
                 vm.folderList = res.folders;
                 angular.forEach(vm.folderList, function (value) {
@@ -2405,28 +2396,35 @@
             });
             modalInstance.result.then(function () {
                 if (vm.folder.folder) {
-                    if (vm.folder.calendar && vm.folder.folder.indexOf('/*calendar') === -1) {
-                        if (vm.folder.folder.substring(0,1) === '/') {
-                            vm.folderArr.push({
-                                folder: '/*calendar' + vm.folder.folder,
-                                recursive: vm.folder.recursive
-                            });
+                    let flag = checkFolder(vm.folder.folder);
+                    if (flag) {
+                        if (vm.folder.calendar && vm.folder.folder.indexOf('/*calendar') === -1) {
+                            if (vm.folder.folder.substring(0, 1) === '/') {
+                                vm.folderArr.push({
+                                    folder: '/*calendar' + vm.folder.folder,
+                                    recursive: vm.folder.recursive
+                                });
+                            } else {
+                                vm.folderArr.push({
+                                    folder: '/*calendar/' + vm.folder.folder,
+                                    recursive: vm.folder.recursive
+                                });
+                            }
                         } else {
-                            vm.folderArr.push({
-                                folder: '/*calendar/' + vm.folder.folder,
-                                recursive: vm.folder.recursive
-                            });
+                            vm.folderArr.push({folder: vm.folder.folder, recursive: vm.folder.recursive});
                         }
-                    } else {
-                        vm.folderArr.push({folder: vm.folder.folder, recursive: vm.folder.recursive});
                     }
                 }
+
                 if (vm.folderObj.paths && vm.folderObj.paths.length > 0) {
                     angular.forEach(vm.folderObj.paths, function (path) {
-                        if (vm.folder.calendar && path.indexOf('/*calendar') === -1) {
-                            vm.folderArr.push({folder: '/*calendar' + path, recursive: vm.folder.recursive});
-                        } else {
-                            vm.folderArr.push({folder: path, recursive: vm.folder.recursive});
+                        let flag = checkFolder(path);
+                        if (flag) {
+                            if (vm.folder.calendar && path.indexOf('/*calendar') === -1) {
+                                vm.folderArr.push({folder: '/*calendar' + path, recursive: vm.folder.recursive});
+                            } else {
+                                vm.folderArr.push({folder: path, recursive: vm.folder.recursive});
+                            }
                         }
                     });
                 }
@@ -2440,6 +2438,29 @@
                 vm.folderObj.paths = [];
             });
         });
+
+        function checkFolder(folder) {
+            let flag = true;
+            for (let i = 0; i < vm.folderArr.length; i++) {
+                if (vm.folderArr[i].folder === folder && !vm.folder.calendar) {
+                    vm.folderArr[i].recursive = vm.folder.recursive;
+                    flag = false;
+                    break;
+                } else if (vm.folder.calendar) {
+                    if (folder.substring(0, 1) === '/') {
+                        folder = '/*calendar' + folder;
+                    } else {
+                        folder = '/*calendar/' + folder;
+                    }
+                    if (vm.folderArr[i].folder === folder) {
+                        vm.folderArr[i].recursive = vm.folder.recursive;
+                        flag = false;
+                        break;
+                    }
+                }
+            }
+            return flag;
+        }
 
         vm.editFolder = function (folder) {
             vm.folder = angular.copy(folder);
@@ -2477,6 +2498,9 @@
                         }
                         vm.folderArr[index].recursive = vm.folder.recursive;
                     }
+                });
+                vm.folderArr = _.uniqBy(vm.folderArr, function (e) {
+                    return e.folder;
                 });
                 saveInfo();
                 vm.folder = {};

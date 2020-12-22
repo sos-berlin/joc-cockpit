@@ -2184,7 +2184,6 @@
 
     function DialogCtrl($scope, $uibModalInstance, $window, $uibModal, toasty, gettextCatalog, EditorService) {
         const vm = $scope;
-        console.log('>>>> DialogCtrl <<<<')
         vm.error = false;
         if (vm.userPreferences.auditLog) {
             vm.display = true;
