@@ -548,7 +548,6 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
   @Input() groupBy: any;
   @Input() preferences: any;
   @Input() toggle: boolean;
-  @Output() dataEvent = new EventEmitter<any>();
   tasks = [];
 
   constructor(public coreService: CoreService, public translate: TranslateService) {
@@ -1061,6 +1060,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }, () => {
 
     });
+  }
+
+  cancelSelectedOrder(){
+
   }
 
   removeSelectedOrder() {

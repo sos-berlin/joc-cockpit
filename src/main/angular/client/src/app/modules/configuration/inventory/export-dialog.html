@@ -148,7 +148,29 @@
           </label>
         </div>
       </div>
-      <div class="form-group row">
+      <div class="m-b-sm row">
+        <div class="col-md-3">
+          <label translate>inventory.export.label.filter</label>
+        </div>
+        <div class="col-md-9">
+          <label class="md-check w">
+            <input type="checkbox" name="valid" [(ngModel)]="filter.valid" (ngModelChange)="filterList()">
+            <i class="primary"></i>
+            {{'inventory.export.label.validOnly'| translate}}
+          </label>
+          <label class="md-check w">
+            <input type="checkbox" name="draft" [(ngModel)]="filter.draft" (ngModelChange)="filterList()">
+            <i class="primary"></i>
+            {{'inventory.export.label.draft'| translate}}
+          </label>
+          <label class="md-check w">
+            <input type="checkbox" name="deploy" [(ngModel)]="filter.deploy" (ngModelChange)="filterList()">
+            <i class="primary"></i>
+            {{'inventory.export.label.deployed'| translate}}
+          </label>
+        </div>
+      </div>
+      <div class="form-group row" *ngIf="nodes.length > 0">
         <div class="col-md-3">
           <label translate>inventory.label.handleRecursively</label>
         </div>
@@ -159,7 +181,7 @@
           </label>
         </div>
       </div>
-      <div class="row m-b-sm">
+      <div class="row m-b-sm" *ngIf="nodes.length > 0">
         <div class="col-md-12">
           <a class="text" (click)="expandAll();" [nz-tooltip]="'common.tooltip.expandAll' | translate">
             <i class="fa fa-angle-double-down fa-lg"></i>
@@ -181,7 +203,7 @@
           ></nz-tree>
           <ng-template #nzTreeTemplate let-node>
             <label class="md-check w-18 m-r-xs" style="top: 2px" *ngIf="!node.origin.object">
-              <input type="checkbox" (click)="handleCheckbox(node.origin)"  name="'chk-' + {{node.key}}" [(ngModel)]="node.origin.recursivelyDeploy"/>
+              <input type="checkbox" (ngModelChange)="handleCheckbox(node.origin)"  name="'chk-' + {{node.key}}" [(ngModel)]="node.origin.recursivelyDeploy"/>
               <i class="primary"></i>
             </label>
             <div class="node-wrapper">

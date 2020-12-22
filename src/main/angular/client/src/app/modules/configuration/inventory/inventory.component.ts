@@ -341,10 +341,8 @@ export class DeployComponent implements OnInit {
   }
 
   getJSObject() {
-    this.object = {
-      store: {draftConfigurations: [], deployConfigurations: []},
-      deleteObj: {deployConfigurations: []}
-    };
+    this.object.store = {draftConfigurations: [], deployConfigurations: []};
+    this.object.deleteObj = {deployConfigurations: []};
     const self = this;
     let selectFolder = true;
     if (this.data && this.data.object) {
@@ -357,7 +355,7 @@ export class DeployComponent implements OnInit {
           let objDep: any = {};
           if (nodes[i].deployId || nodes[i].deploymentId || nodes[i].isFolder) {
             if (nodes[i].isFolder) {
-              if(selectFolder) {
+              if (selectFolder) {
                 objDep.configuration = {
                   path: nodes[i].path,
                   objectType: 'FOLDER',
@@ -384,9 +382,9 @@ export class DeployComponent implements OnInit {
               objectType: nodes[i].type
             };
           }
-          if(objDep.configuration) {
+          if (objDep.configuration) {
             if (nodes[i].deleted) {
-              if(objDep.configuration) {
+              if (objDep.configuration) {
                 if (objDep.configuration.objectType === 'FOLDER') {
                   objDep.configuration.recursive = true;
                 }
@@ -604,6 +602,11 @@ export class ExportComponent implements OnInit {
     filename: '',
     fileFormat: 'ZIP'
   };
+  filter = {
+    draft: true,
+    deploy: true,
+    valid: false,
+  };
   object: any = {draftConfigurations: [], releaseDraftConfigurations: [], deployConfigurations: [], releasedConfigurations: []};
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService,
@@ -727,6 +730,33 @@ export class ExportComponent implements OnInit {
         this.expandCollapseRec(node[i].children);
       }
     }
+  }
+
+  filterList() {
+    this.nodes = [{path: '/', key: '/', name: '/', children: [], isFolder: true}];
+    const arr = this.actualResult.filter((value) => {
+      if (value.objectType === 'FOLDER') {
+        return false;
+      }
+      if (this.exportObj.forSigning) {
+        return !(value.objectType === 'SCHEDULE' || value.objectType.match(/CALENDAR/));
+      }
+      if (this.filter.draft && (value.deployed === false || value.released === false)) {
+        return !(this.filter.valid && !value.valid);
+      }
+      return !!(this.filter.deploy && (value.deployed || value.released));
+    });
+    this.buildDeployablesTree(arr);
+    if (this.nodes.length > 0) {
+      this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
+    }
+    setTimeout(() => {
+      this.loading = false;
+      if (this.path) {
+        this.getChildTree();
+      }
+      this.updateTree();
+    }, 0);
   }
 
   private filterTree() {
@@ -2092,6 +2122,29 @@ export class InventoryComponent implements OnInit, OnDestroy {
       }, () => {
       });
     }
+  }
+
+  deletePermanently(node) {
+    const object = node.origin;
+    const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.title = 'delete';
+    modalRef.componentInstance.message = 'deleteDraftObject';
+    modalRef.componentInstance.type = 'Delete';
+    modalRef.componentInstance.objectName = object.path;
+    modalRef.result.then((res: any) => {
+      this.coreService.post('inventory/deployment/deploy', {
+        controllerIds: this.schedulerIds.controllerIds,
+        delete: {deployConfigurations: [{configuration: {objectType: 'FOLDER', recursive: true, path: object.path}}]}
+      }).subscribe(() => {
+        this.initTree(object.path, null);
+      });
+      this.coreService.post('inventory/release', {
+        delete: [{objectType: 'FOLDER', path: object.path}]
+      }).subscribe(() => {
+
+      });
+    }, () => {
+    });
   }
 
   reDeployObject(node) {

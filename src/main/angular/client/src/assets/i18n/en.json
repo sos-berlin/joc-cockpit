@@ -463,6 +463,7 @@
     "label.createPlan": "Create Daily Plan",
     "label.schedules": "Schedules",
     "label.scheduleAndOrder": "Schedule/Order",
+    "label.workflowAndOrder": "Workflow/Order",
     "label.order": "Order",
     "label.totalEntry": "Total {{total}} Schedules and {{orderCount}} orders found",
     "label.all": "All",
@@ -502,6 +503,7 @@
     "button.generatePlan": "Generate Daily Plan",
     "button.createPlan": "Create Daily Plan",
     "button.submitOrder": "Submit Order",
+    "button.cancelSelectedOrder": "Cancel selected Orders",
     "button.removeSelectedOrder": "Remove selected Orders",
     "button.submitSelectedOrder": "Submit selected Orders",
     "button.deployOrderTemplate": "Release Schedules",
@@ -693,11 +695,6 @@
     "label.orderTemplateName": "Schedule Name",
     "label.signatureAlgorithm": "Signature Algorithm",
     "label.entryFound": "entry found",
-    "label.entriesFound": "entries found",
-    "label.objectVersion": "Object Version",
-    "label.validOnly": "Valid Only",
-    "label.any": "Any",
-    "label.draft": "Draft",
     "label.version": "Version",
     "label.controller": "Controller",
     "label.schedule": "Schedule",
@@ -719,6 +716,7 @@
     "button.deploy": "Deploy",
     "button.redeploy": "Redeploy",
     "button.release": "Release",
+    "button.delete": "Delete",
     "button.remove": "Remove",
     "button.rename": "Rename",
     "button.copy": "Copy",
@@ -762,7 +760,13 @@
     "message.invalidRetryInstruction": "Retry instruction can't be empty",
     "message.invalidAwaitInstruction": "Await instruction is not valid",
     "message.nameIsNotValid": "Invalid name",
-    "message.invalidForkInstruction": "Fork instruction must have minimum two branchs"
+    "message.invalidForkInstruction": "Fork instruction must have minimum two branches",
+    "export": {
+      "label.filter": "Filter Type",
+      "label.validOnly": "Valid Only",
+      "label.draft": "Draft",
+      "label.deployed": "Deployed"
+    }
   },
   "log": {
     "label.logs": "Logs",

@@ -151,7 +151,7 @@
             ></nz-tree>
             <ng-template #nzTreeTemplate let-node>
               <label class="md-check w-18 m-r-xs" style="top: 2px" *ngIf="!node.origin.object">
-                <input type="checkbox" (click)="handleCheckbox(node.origin)"  name="'chk-' + {{node.key}}" [(ngModel)]="node.origin.recursivelyDeploy"/>
+                <input type="checkbox" (ngModelChange)="handleCheckbox(node.origin)"  name="'chk-' + {{node.key}}" [(ngModel)]="node.origin.recursivelyDeploy"/>
                 <i class="primary"></i>
               </label>
               <div class="node-wrapper">

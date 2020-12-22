@@ -173,11 +173,12 @@
             <button class="btn btn-grey btn-sm m-l-12" (click)="submitSelectedOrder()"><i
               class="fa fa-rocket"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.submitSelectedOrder</span></button>
-          </div>
-          <div class="hide" [ngClass]="{'show-block':object.templates.length>0}">
             <button class="btn btn-grey btn-sm m-l-12 bg-hover-color" (click)="removeSelectedOrder()"><i
               class="fa fa-trash"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.removeSelectedOrder</span></button>
+            <button class="btn btn-grey btn-sm m-l-12" (click)="cancelSelectedOrder()"><i
+              class="fa fa-times"></i>&nbsp;
+              <span class="hidden-sm-down" translate>dailyPlan.button.cancelSelectedOrder</span></button>
           </div>
           <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
         </div>
@@ -202,6 +203,7 @@
                   <span translate>dailyPlan.button.createPlan</span>
                 </button>
                 <div class="box-shadow m-t p-a-sm p-l-0" *ngIf="submissionHistory.length > 0">
+                  <div class="_600 m-b-sm text-left p-l" style="font-size: 14px" translate>dailyPlan.label.submissionHistory</div>
                   <ul class="text-left p-l" style="max-height: 250px; overflow: auto">
                     <li *ngFor="let history of submissionHistory">
                       <a [ngClass]="{ 'text-primary' : selectedSubmissionId === history.submissionHistoryId }" (click)="selectSubmissionHistory(history.submissionHistoryId)">
@@ -268,7 +270,7 @@
               <div class="row">
                 <div class="col-md-12">
                   <app-gantt [data]="planOrders" [groupBy]="dailyPlanFilters.filter.groupBy" [toggle]="isToggle"
-                             (dataEvent)="receiveData($event)" [preferences]="preferences"></app-gantt>
+                             [preferences]="preferences"></app-gantt>
                 </div>
               </div>
             </div>
@@ -308,7 +310,9 @@
                          class="fa fa-caret-down "></i></a>
                   </th>
                   <th (click)="sort('workflowPath')">
-                    <a><span class="p-r-xs" translate>dailyPlan.label.workflow</span>
+                    <a>
+                      <span class="p-r-xs" *ngIf="dailyPlanFilters.filter.groupBy === 'ORDER'" translate>dailyPlan.label.workflow</span>
+                      <span class="p-r-xs" *ngIf="dailyPlanFilters.filter.groupBy !== 'ORDER'" translate>dailyPlan.label.workflowAndOrder</span>
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'workflowPath' && !dailyPlanFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'workflowPath' && dailyPlanFilters.reverse"
