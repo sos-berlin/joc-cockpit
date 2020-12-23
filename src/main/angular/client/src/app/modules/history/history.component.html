@@ -465,7 +465,7 @@
       <div class="col-md-6 col-sm-4">
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
           <li class="nav-item" *ngIf="permission.History.view.status">
-            <a class="nav-link" [ngClass]="{'active': historyFilters.type=='ORDER'}" (click)="orderHistory(null)">
+            <a class="nav-link" [ngClass]="{'active': historyFilters.type=='ORDER'}" (click)="orderHistory(null,false)">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.order</span></span>
             </a>
           </li>
@@ -481,7 +481,7 @@
             <span class="separator"></span>
           </li>
           <li class="nav-item">
-            <a class="nav-link" [ngClass]="{'active': historyFilters.type=='DEPLOYMENT'}" (click)="deploymentHistory(null)">
+            <a class="nav-link" [ngClass]="{'active': historyFilters.type=='DEPLOYMENT'}" (click)="deploymentHistory(null,false)">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.deployment</span></span>
             </a>
           </li>
@@ -906,7 +906,6 @@
         >
           <thead>
           <tr>
-           <!-- <th class=" menu"><span translate>label.action</span></th>-->
             <th *ngIf="!historyView.current" (click)="sort3('controllerId')">
               <a><span class="p-r-xs" translate>common.label.controllerId</span>
                 <i *ngIf="deployment.filter.sortBy == 'controllerId' && !deployment.reverse"
@@ -914,25 +913,18 @@
                 <i *ngIf="deployment.filter.sortBy == 'controllerId' && deployment.reverse"
                    class="fa fa-caret-down "></i></a>
             </th>
+            <th (click)="sort3('commitId')">
+              <a><span class="p-r-xs" translate>history.label.commitId</span>
+                <i *ngIf="deployment.filter.sortBy == 'commitId' && !deployment.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="deployment.filter.sortBy == 'commitId' && deployment.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
             <th (click)="sort3('account')">
               <a><span class="p-r-xs" translate>common.label.account</span>
                 <i *ngIf="deployment.filter.sortBy == 'account' && !deployment.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="deployment.filter.sortBy == 'account' && deployment.reverse"
-                   class="fa fa-caret-down "></i></a>
-            </th>
-            <th (click)="sort3('deployType')">
-              <a><span class="p-r-xs" translate>history.label.deployType</span>
-                <i *ngIf="deployment.filter.sortBy == 'deployType' && !deployment.reverse"
-                   class="fa fa-caret-up "></i>
-                <i *ngIf="deployment.filter.sortBy == 'deployType' && deployment.reverse"
-                   class="fa fa-caret-down "></i></a>
-            </th>
-            <th (click)="sort3('path')">
-              <a><span class="p-r-xs" translate>common.label.path</span>
-                <i *ngIf="deployment.filter.sortBy == 'path' && !deployment.reverse"
-                   class="fa fa-caret-up "></i>
-                <i *ngIf="deployment.filter.sortBy == 'path' && deployment.reverse"
                    class="fa fa-caret-down "></i></a>
             </th>
             <th (click)="sort3('state')">
@@ -949,61 +941,71 @@
                 <i *ngIf="deployment.filter.sortBy == 'operation' && deployment.reverse"
                    class="fa fa-caret-down "></i></a>
             </th>
-     <!--       <th (click)="sort3('version')">
-              <a><span class="p-r-xs" translate>history.label.version</span>
-                <i *ngIf="deployment.filter.sortBy == 'version' && !deployment.reverse"
-                   class="fa fa-caret-up "></i>
-                <i *ngIf="deployment.filter.sortBy == 'version' && deployment.reverse"
-                   class="fa fa-caret-down "></i></a>
-            </th>-->
-            <th (click)="sort3('deploymentDate')">
-              <a><span class="p-r-xs" translate>history.label.deploymentDate</span>
-                <i *ngIf="deployment.filter.sortBy == 'deploymentDate' && !deployment.reverse"
-                   class="fa fa-caret-up "></i>
-                <i *ngIf="deployment.filter.sortBy == 'deploymentDate' && deployment.reverse"
-                   class="fa fa-caret-down "></i></a>
-            </th>
-            <th (click)="sort3('deleteDate')">
-              <a><span class="p-r-xs" translate>history.label.deleteDate</span>
-                <i *ngIf="deployment.filter.sortBy == 'deleteDate' && !deployment.reverse"
-                   class="fa fa-caret-up "></i>
-                <i *ngIf="deployment.filter.sortBy == 'deleteDate' && deployment.reverse"
-                   class="fa fa-caret-down "></i></a>
-            </th>
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let devHistory of ajaxTable.data | orderBy: deployment.filter.sortBy:deployment.reverse">
-<!--            <td class="">
-              <div class="btn-group dropdown">
-                <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="export3" type="button">
-                  <i class="fa fa-ellipsis-h"></i>
-                </button>
-                <nz-dropdown-menu #export3="nzDropdownMenu" role="menu" >
-                  <ul nz-menu>
-                    <li nz-menu-item >
-                      <a translate>history.button.delete</a>
-                    </li>
-                  </ul>
-                </nz-dropdown-menu>
-              </div>
-            </td>-->
-            <td *ngIf="!historyView.current"><span [innerHtml]="devHistory.controllerId"></span></td>
-            <td><span [innerHtml]="devHistory.account | highlight : deployment.searchText"></span></td>
-            <td><span [innerHtml]="devHistory.deployType | translate"></span></td>
-            <td>
-              <span class="show-in-single-line w-full">
-                <span [ngClass]="(devHistory.deployType === 'Workflow' && devHistory.operation === 'UPDATE') ? 'text-hover-primary' : ''" (click)="coreService.showWorkflow(devHistory.path);$event.stopPropagation()"
-                      [innerHtml]="devHistory.path | highlight : deployment.searchText"></span>
-                <i *ngIf="devHistory.operation === 'UPDATE'" (click)="navToInventoryTab(devHistory);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-l-xs"></i>
-              </span>
-            </td>
-            <td><span class="label bg-green" [innerHtml]="devHistory.state | translate"></span></td>
-            <td><span [innerHtml]="devHistory.operation | translate"></span></td>
-            <!--<td><span [innerHtml]="devHistory.version"></span></td>-->
-            <td [innerHtml]="devHistory.deploymentDate | stringToDate"></td>
-            <td [innerHtml]="devHistory.deleteDate | stringToDate"></td>
-          </tr>
+          <ng-template ngFor let-depHistory
+                       [ngForOf]="ajaxTable.data | orderBy: deployment.filter.sortBy:deployment.reverse">
+            <tr [ngClass]="{'light-bg':depHistory.show}">
+              <td *ngIf="!historyView.current">
+                <span class="show-in-single-line w-full">
+                  <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                     *ngIf="!depHistory.show" (click)="showChildHistory(depHistory);"></i>
+                  <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+                     *ngIf="depHistory.show" (click)="depHistory.show = false;"></i>
+                   <span [innerHtml]="depHistory.controllerId | highlight : order.searchText"></span>
+                   <span *ngIf="!depHistory.controllerId" [innerHtml]="orderSearch.controllerId"></span>
+                </span>
+              </td>
+              <td>
+                <span class="show-in-single-line w-full">
+                  <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                     *ngIf="!depHistory.show && historyView.current"
+                     (click)="showChildHistory(depHistory);"></i>
+                  <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+                     *ngIf="depHistory.show && historyView.current"
+                     (click)="depHistory.show = false;"></i>
+                  <span [innerHtml]="depHistory.commitId | highlight : order.searchText"></span>
+                </span>
+              </td>
+              <td><span [innerHtml]="depHistory.account | highlight : deployment.searchText"></span></td>
+              <td><span class="label bg-green" [innerHtml]="depHistory.state | translate"></span></td>
+              <td><span [innerHtml]="depHistory.operation | translate"></span></td>
+            </tr>
+            <tr *ngIf="depHistory.show">
+              <td colspan="7" style="padding:0 !important">
+                <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small" [nzLoading]="depHistory.loading"
+                          [nzData]="depHistory.children" [nzShowPagination]="false">
+                  <thead>
+                  <tr>
+                    <th><span translate>history.label.deployType</span></th>
+                    <th><span translate>common.label.path</span></th>
+                    <th><span translate>history.label.deploymentDate</span></th>
+                    <th><span translate>history.label.deleteDate</span></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let child of innerChildTable.data">
+                    <td><span [innerHtml]="child.deployType | translate"></span></td>
+                    <td>
+                      <span class="show-in-single-line w-full">
+                        <span
+                          [ngClass]="(child.deployType === 'Workflow' && child.operation === 'UPDATE') ? 'text-hover-primary' : ''"
+                          (click)="coreService.showWorkflow(child.path);$event.stopPropagation()"
+                          [innerHtml]="child.path"></span>
+                        <i *ngIf="child.operation === 'UPDATE'"
+                           (click)="navToInventoryTab(child);$event.stopPropagation()"
+                           class="cursor fa fa-pencil text-hover-primary p-l-xs"></i>
+                      </span>
+                    </td>
+                    <td [innerHtml]="child.deploymentDate | stringToDate"></td>
+                    <td [innerHtml]="child.deleteDate | stringToDate"></td>
+                  </tr>
+                  </tbody>
+                </nz-table>
+              </td>
+            </tr>
+          </ng-template>
           </tbody>
         </nz-table>
         <div class="w-half label-top" *ngIf="ajaxTable.data.length >0">

@@ -268,6 +268,7 @@ export class SelectOrderTemplatesComponent implements OnInit {
   loadData(node, $event) {
     if (!node.origin.type) {
       if ($event) {
+        node.isExpanded = !node.isExpanded;
         $event.stopPropagation();
       }
     }
@@ -459,13 +460,28 @@ export class RemovePlanModalComponent implements OnInit {
   @Input() workflow;
   @Input() timeZone;
   @Input() selectedDate;
-  submissionHistory: any = [];
-  filter: any = {selectedTemplates: []};
+  @Input() operation: string;
+
+  preferences: any;
+  display: any;
+  messageList: any;
+  required = false;
+  comments: any = {};
+  filter = {kill : false};
 
   constructor(public activeModal: NgbActiveModal, public  coreService: CoreService) {
   }
 
   ngOnInit() {
+    this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.display = this.preferences.auditLog;
+    this.comments.radio = 'predefined';
+    if (sessionStorage.comments) {
+      this.messageList = JSON.parse(sessionStorage.comments);
+    }
+    if (sessionStorage.$SOS$FORCELOGING == 'true') {
+      this.required = true;
+    }
     if (this.workflow && !this.order.key) {
       this.order.key = this.order.workflow;
     }
@@ -486,12 +502,6 @@ export class RemovePlanModalComponent implements OnInit {
         } else {
           obj.filter.orderIds = [this.order.orderId];
         }
-      } else {
-        if (this.filter.dailyPlanDate) {
-          obj.filter.dailyPlanDate = this.filter.dailyPlanDate ? moment(this.filter.dailyPlanDate).format('YYYY-MM-DD') : undefined;
-        }
-        obj.filter.workflowPaths = this.filter.workflow ? [this.filter.workflow] : undefined;
-        obj.filter.submissionHistoryIds = this.filter.submissionHistoryId ? [this.filter.submissionHistoryId] : undefined;
       }
     }
 
@@ -504,7 +514,11 @@ export class RemovePlanModalComponent implements OnInit {
     if (!obj.filter.dailyPlanDate && this.selectedDate) {
       obj.filter.dailyPlanDate = moment(this.selectedDate).format('YYYY-MM-DD');
     }
-    this.remove(obj);
+    if (this.operation === 'REMOVE') {
+      this.remove(obj);
+    } else {
+      this.cancelOrder(obj);
+    }
   }
 
   private remove(obj) {
@@ -517,16 +531,24 @@ export class RemovePlanModalComponent implements OnInit {
     });
   }
 
-  getSubmissions(date) {
-    const obj: any = {
-      controllerId: this.schedulerId,
-      timeZone : this.timeZone,
-      filter: {
-        dateTo: date ? moment(date).format('YYYY-MM-DD') : '0d'
-      }
-    };
-    this.coreService.post('daily_plan/submissions', obj).subscribe((res: any) => {
-      this.submissionHistory = res.submissionHistoryItems;
+  private cancelOrder(obj) {
+    this.submitted = true;
+    obj.kill = this.filter.kill;
+    obj.auditLog = {};
+    if (this.comments.comment) {
+      obj.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      obj.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      obj.auditLog.ticketLink = this.comments.ticketLink;
+    }
+    this.coreService.post('daily_plan/orders/cancel', obj).subscribe((res) => {
+      this.submitted = false;
+      this.activeModal.close('Done');
+    }, () => {
+      this.submitted = false;
     });
   }
 
@@ -627,7 +649,7 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
             class: this.coreService.getColor(plans[i].value[j].state.severity, 'bg'),
             duration: dur > 60 ? (dur / (60 * 60)) : 1,
             progress: dur > 60 ? (dur / (60 * 60)) : 0.1,
-            status: plans[i].value[j].status,
+            state: plans[i].value[j].state,
             parent: _obj.id
           };
           this.tasks.push(obj);
@@ -1063,7 +1085,19 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   cancelSelectedOrder(){
+    const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.orders = this.object.templates;
+    modalRef.componentInstance.timeZone = this.preferences.zone;
+    modalRef.componentInstance.selectedDate = this.selectedDate;
+    modalRef.componentInstance.operation = 'CANCEL';
+    modalRef.result.then((res) => {
+      this.load(this.selectedDate);
+      this.resetCheckBox();
+      this.loadOrderPlan();
+    }, () => {
 
+    });
   }
 
   removeSelectedOrder() {
@@ -1072,6 +1106,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.orders = this.object.templates;
     modalRef.componentInstance.timeZone = this.preferences.zone;
     modalRef.componentInstance.selectedDate = this.selectedDate;
+    modalRef.componentInstance.operation = 'REMOVE';
     modalRef.result.then((res) => {
       this.load(this.selectedDate);
       this.resetCheckBox();
@@ -1089,6 +1124,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.workflow = workflow;
     modalRef.componentInstance.timeZone = this.preferences.zone;
     modalRef.componentInstance.selectedDate = this.selectedDate;
+    modalRef.componentInstance.operation = 'REMOVE';
     modalRef.result.then((res) => {
       this.load(this.selectedDate);
       this.resetCheckBox();
@@ -1099,9 +1135,18 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   cancelOrder(order, plan, workflow) {
-    this.coreService.post('daily_plan/orders/cancel', {
-      controllerId: this.schedulerIds.selected
-    }).subscribe((res) => {
+    const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.order = order;
+    modalRef.componentInstance.plan = workflow ? null : plan;
+    modalRef.componentInstance.workflow = workflow;
+    modalRef.componentInstance.timeZone = this.preferences.zone;
+    modalRef.componentInstance.selectedDate = this.selectedDate;
+    modalRef.componentInstance.operation = 'CANCEL';
+    modalRef.result.then((res) => {
+      this.load(this.selectedDate);
+      this.resetCheckBox();
+      this.loadOrderPlan();
     }, () => {
 
     });
@@ -1726,7 +1771,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         planItems[i].endTime = this.coreService.stringToDate(this.preferences, planItems[i].endTime);
         if (planItems[i].state && planItems[i].state._text) {
           this.translate.get(planItems[i].state._text).subscribe(translatedValue => {
-            planItems[i].status = translatedValue;
+            planItems[i].state = translatedValue;
           });
         }
       }

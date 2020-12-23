@@ -660,6 +660,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.historyFilters.type = 'ORDER';
     if (!obj) {
       obj = {controllerId: this.historyView.current == true ? this.schedulerIds.selected : ''};
+      this.isLoading = false;
+      this.data = [];
     }
 
     if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true') && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0))) {
@@ -669,7 +671,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
       });
     }
 
-    this.isLoading = false;
     if (this.selectedFiltered1 && !_.isEmpty(this.selectedFiltered1)) {
       this.isCustomizationSelected1(true);
       obj = this.orderParseDate(obj);
@@ -690,6 +691,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       this.isLoading = true;
     }, () => {
+      this.data = [];
       this.isLoading = true;
     });
   }
@@ -719,7 +721,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.coreService.calRowWidth(this.historyView.current);
     }
   }
-
 
   private recursiveMerge(data, count) {
     data.loading = true;
@@ -819,8 +820,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.historyFilters.type = 'TASK';
     if (!obj) {
       obj = {controllerId: this.historyView.current == true ? this.schedulerIds.selected : ''};
+      this.isLoading = false;
+      this.data = [];
     }
-    this.isLoading = false;
     if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true')
       && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
       obj.excludeJobs = [];
@@ -844,6 +846,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.searchInResult();
       this.isLoading = true;
     }, () => {
+      this.data = [];
       this.isLoading = true;
     });
   }
@@ -865,6 +868,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
+  deploymentParseDate(obj) {
+    obj.state = (this.selectedFiltered4.state && this.selectedFiltered4.state !== 'ALL') ? this.selectedFiltered4.state : undefined;
+    obj.operation = (this.selectedFiltered4.operation && this.selectedFiltered4.operation !== 'ALL') ? this.selectedFiltered4.operation : undefined;
+    obj.deployType = this.selectedFiltered4.deployType ? this.selectedFiltered4.deployType : undefined;
+    obj = this.coreService.parseProcessExecutedRegex(this.selectedFiltered4.planned, obj);
+    return obj;
+  }
+
   setDeploymentDateRange(filter) {
     if (this.deployment.filter.date == 'today') {
       filter.from = '0d';
@@ -875,7 +886,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     return filter;
   }
 
-  deploymentHistory(obj) {
+  deploymentHistory(obj, flag) {
     this.historyFilters.type = 'DEPLOYMENT';
     if (!obj) {
       if (this.historyView.current == true) {
@@ -883,28 +894,51 @@ export class HistoryComponent implements OnInit, OnDestroy {
       } else {
         obj = {};
       }
+      this.isLoading = false;
+      this.data = [];
     } else {
       if (!obj.controllerId) {
         delete obj['controllerId'];
       }
     }
-    this.isLoading = false;
     if (this.selectedFiltered4 && !_.isEmpty(this.selectedFiltered4)) {
       this.isCustomizationSelected4(true);
-      // obj = this.deploymentParseDate(obj);
+      obj = this.deploymentParseDate(obj);
     } else {
       obj = this.setDeploymentDateRange(obj);
-    //  obj.state = (this.deployment.filter.state && this.deployment.filter.state !== 'ALL') ? this.deployment.filter.state : undefined;
+      obj.state = (this.deployment.filter.state && this.deployment.filter.state !== 'ALL') ? this.deployment.filter.state : undefined;
     }
     this.convertDeployRequestBody(obj);
-    console.log(obj, '>>>')
     this.coreService.post('inventory/deployment/history', {compactFilter: obj}).subscribe((res: any) => {
       this.deploymentHistorys = res.depHistory;
-      this.searchInResult();
+      if (flag) {
+        this.mergeDepData();
+      } else {
+        this.searchInResult();
+      }
       this.isLoading = true;
     }, () => {
+      this.data = [];
       this.isLoading = true;
     });
+  }
+
+  private mergeDepData() {
+    let oldEntires = _.clone(this.data);
+    let arr = this.deployment.searchText ? this.searchPipe.transform(this.deploymentHistorys, this.deployment.searchText) : this.deploymentHistorys;
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0; j < oldEntires.length; j++) {
+        if (arr[i].commitId === oldEntires[j].commitId) {
+          if (oldEntires[j].show) {
+            arr[i].show = true;
+            arr[i].children = oldEntires[j].children;
+          }
+          oldEntires.splice(j, 1);
+          break;
+        }
+      }
+    }
+    this.data = arr;
   }
 
   private convertDeployRequestBody(obj) {
@@ -933,8 +967,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (obj.workflow) {
         filter.orders = [];
         if (obj.orderIds) {
-          var s = obj.orderIds.replace(/,\s+/g, ',');
-          var orderIds = s.split(',');
+          let s = obj.orderIds.replace(/,\s+/g, ',');
+          let orderIds = s.split(',');
           orderIds.forEach((value) => {
             filter.orders.push({workflow: obj.workflow, orderId: value});
           });
@@ -945,7 +979,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (obj.states && obj.states.length > 0) {
         filter.historyStates = obj.states;
       }
-      if (obj.radio == 'process') {
+      if (obj.radio == 'planned') {
         filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);
       } else {
         if (obj.from) {
@@ -1040,6 +1074,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.searchInResult();
         this.isLoading = true;
       }, () => {
+        this.data = [];
         this.isLoading = true;
       });
     } else if (this.historyFilters.type === 'TASK') {
@@ -1059,7 +1094,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (obj.criticality && obj.criticality.length > 0) {
         filter.criticality = obj.criticality;
       }
-      if (obj.radio == 'process') {
+      if (obj.radio == 'planned') {
         filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);
       } else {
         if (obj.from) {
@@ -1139,49 +1174,46 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.searchInResult();
         this.isLoading = true;
       }, () => {
+        this.data = [];
         this.isLoading = true;
       });
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
       this.deployment.filter.state = '';
       this.deployment.filter.date = '';
       filter.state = (obj.state && obj.state !== 'ALL') ? obj.state : undefined;
-      filter.operation = obj.operation ? obj.operation : undefined;
+      filter.operation = (obj.operation && obj.operation !== 'ALL') ? obj.operation : undefined;
       filter.deployType = obj.deployType ? obj.deployType : undefined;
 
-      if (obj.radio == 'process') {
+      if (obj.radio == 'planned') {
         filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);
       } else {
         if (obj.from) {
           fromDate = new Date(obj.from);
           if (obj.fromTime) {
-
             fromDate.setHours(obj.fromTime.getHours());
             fromDate.setMinutes(obj.fromTime.getMinutes());
             fromDate.setSeconds(obj.fromTime.getSeconds());
-
           } else {
             fromDate.setHours(0);
             fromDate.setMinutes(0);
             fromDate.setSeconds(0);
           }
           fromDate.setMilliseconds(0);
-          filter.dateFrom = moment.utc(fromDate);
+          filter.from = moment.utc(fromDate);
         }
         if (obj.to) {
           toDate = new Date(obj.to);
           if (obj.toTime) {
-
             toDate.setHours(obj.toTime.getHours());
             toDate.setMinutes(obj.toTime.getMinutes());
             toDate.setSeconds(obj.toTime.getSeconds());
-
           } else {
             toDate.setHours(0);
             toDate.setMinutes(0);
             toDate.setSeconds(0);
           }
           toDate.setMilliseconds(0);
-          filter.dateTo = moment.utc(toDate);
+          filter.to = moment.utc(toDate);
         }
       }
 
@@ -1196,20 +1228,21 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
 
       filter.timeZone = this.preferences.zone;
-      if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
+      if ((filter.from && (typeof filter.from.getMonth === 'function' || typeof filter.from === 'object')) || (filter.to && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
         filter.timeZone = 'UTC';
       }
-      if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-        filter.dateFrom = moment(filter.dateFrom).tz(this.preferences.zone);
+      if ((filter.from && typeof filter.from.getMonth === 'function')) {
+        filter.from = moment(filter.from).tz(this.preferences.zone);
       }
-      if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-        filter.dateTo = moment(filter.dateTo).tz(this.preferences.zone);
+      if ((filter.to && typeof filter.to.getMonth === 'function')) {
+        filter.to = moment(filter.to).tz(this.preferences.zone);
       }
-      this.coreService.post('inventory/deployment/history', filter).subscribe((res: any) => {
+      this.coreService.post('inventory/deployment/history', {compactFilter: filter}).subscribe((res: any) => {
         this.deploymentHistorys = res.depHistory;
         this.searchInResult();
         this.isLoading = true;
       }, () => {
+        this.data = [];
         this.isLoading = true;
       });
     }
@@ -1233,6 +1266,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.jobSearch = {
       radio: 'current',
       planned: 'today',
+      operation: 'ALL',
+      state: 'ALL',
       from: new Date(),
       to: new Date(),
       toTime: new Date()
@@ -1448,6 +1483,24 @@ export class HistoryComponent implements OnInit, OnDestroy {
   hidePanelFuc(data) {
     data.show = false;
     data.showAll = false;
+  }
+
+  showChildHistory(data){
+    data.loading = true;
+    data.show = true;
+    data.children = [];
+    let obj = {
+      detailFilter: {
+        controllerId: data.controllerId || this.schedulerIds.selected,
+        commitId: data.commitId
+      }
+    };
+    this.coreService.post('inventory/deployment/history', obj).subscribe((res: any) => {
+      data.children = res.depHistory;
+      data.loading = false;
+    }, () => {
+      data.loading = false;
+    });
   }
 
   /* --------------------------Ignore List -----------------------*/
@@ -2247,7 +2300,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       controllerId: this.historyView.current == true ? this.schedulerIds.selected : ''
     };
     if (this.loadConfig && this.loadIgnoreList) {
-      this.isLoading = false;
+      if (!flag) {
+        this.isLoading = false;
+        this.data = [];
+      }
       if (this.historyFilters.type == 'ORDER') {
         this.orderHistory(obj, flag);
       } else if (this.historyFilters.type == 'TASK') {
@@ -2255,7 +2311,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
     }
     if (this.historyFilters.type == 'DEPLOYMENT') {
-      this.deploymentHistory(obj);
+      this.deploymentHistory(obj, flag);
     }
   }
 

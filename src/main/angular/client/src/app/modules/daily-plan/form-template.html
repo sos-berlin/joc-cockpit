@@ -110,7 +110,7 @@
       </div>
     </div>
     <div class="form-group row ">
-      <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>common.label.status</label>
+      <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>common.label.state</label>
       <div class="col-sm-8">
         <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.state" checklistValue="PLANNED" name="planned"/>
@@ -121,20 +121,36 @@
           <i class="primary"></i><span translate>common.label.pending</span>
         </label>
         <label class="md-check w-115">
+          <input type="checkbox" [(checklist)]="filter.state" checklistValue="INPROGRESS" name="inpregress"/>
+          <i class="primary"></i><span translate>common.label.incomplete</span>
+        </label>
+        <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.state" checklistValue="RUNNING" name="running"/>
           <i class="primary"></i><span translate>common.label.running</span>
+        </label>
+        <label class="md-check w-115">
+          <input type="checkbox" [(checklist)]="filter.state" checklistValue="SUSPENDED" name="suspended"/>
+          <i class="primary"></i><span translate>common.label.suspended</span>
+        </label>
+        <label class="md-check w-115">
+          <input type="checkbox" [(checklist)]="filter.state" checklistValue="CALLING" name="calling"/>
+          <i class="primary"></i><span translate>common.label.calling</span>
+        </label>
+        <label class="md-check w-115">
+          <input type="checkbox" [(checklist)]="filter.state" checklistValue="WAITING" name="waiting"/>
+          <i class="primary"></i><span translate>common.label.waiting</span>
         </label>
         <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.state" checklistValue="BLOCKED" name="blocked"/>
           <i class="primary"></i><span translate>common.label.blocked</span>
         </label>
         <label class="md-check w-115">
-          <input type="checkbox" [(checklist)]="filter.state" checklistValue="FINISHED" name="finished"/>
-          <i class="primary"></i><span translate>common.label.finished</span>
-        </label>
-        <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.state" checklistValue="FAILED" name="failed"/>
           <i class="primary"></i><span translate>common.label.failed</span>
+        </label>
+        <label class="md-check w-115">
+          <input type="checkbox" [(checklist)]="filter.state" checklistValue="FINISHED" name="finished"/>
+          <i class="primary"></i><span translate>common.label.finished</span>
         </label>
       </div>
     </div>

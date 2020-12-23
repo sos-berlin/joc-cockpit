@@ -87,10 +87,12 @@ export class OrderPieChartComponent implements OnInit, OnDestroy {
           this.colorScheme.domain.push('#b966b9');
         } else if (prop === 'pending') {
           this.colorScheme.domain.push('rgba(255,195,0,0.9)');
-        } else if (prop === 'pending' || prop === 'inProgress') {
+        } else if (prop === 'inProgress') {
           this.colorScheme.domain.push('#d6d313');
         } else if (prop === 'failed') {
           this.colorScheme.domain.push('#e86680');
+        } else if (prop === 'calling') {
+          this.colorScheme.domain.push('#d2691e');
         }
       }
     }

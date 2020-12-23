@@ -2998,15 +2998,11 @@ div.order-panel div {
   border-left-color: #d6d313;
 }
 
-.healthyAgentCluster, .text-green {
+.text-green {
   color: #7ab97a;
 }
 
-.unreachableAgentCluster, .text-red {
-  color: #e86680;
-}
-
-.crimson, .order-panel .suspended, .unreachable {
+.crimson, .order-panel .suspended {
   color: #dc143c !important;
   border-left-color: #dc143c;
 }
@@ -3029,6 +3025,10 @@ div.order-panel div {
 .dark-mangenta, .order-panel .blacklist {
   color: #8b008b;
   border-left-color: #8b008b;
+}
+.order-panel .calling{
+  color: #d2691e;
+  border-left-color: #d2691e;
 }
 
 .chocolate {

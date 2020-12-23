@@ -25,8 +25,8 @@
              translate>order.label.allOrders</a></span>
         <a (click)="setFilter('ALL')" class="pull-right text primary-text-hover-color"
            [ngClass]="{'_600': state =='ALL'}"
-           [innerHtml]="(snapshot.running || 0) + (snapshot.suspended || 0) + (snapshot.failed || 0)
-            + (snapshot.waiting || 0) + (snapshot.pending || 0) + (snapshot.blocked || 0)"></a>
+           [innerHtml]="(snapshot.running || 0) + (snapshot.suspended || 0) + (snapshot.failed || 0) + (snapshot.inProgress || 0)
+            + (snapshot.calling || 0) + (snapshot.waiting || 0) + (snapshot.pending || 0) + (snapshot.blocked || 0)"></a>
       </div>
       <div class="pending">
         <span class="text-black-lt _300" [ngClass]="{'_600': state =='PENDING'}">
@@ -60,6 +60,13 @@
              translate>common.label.suspended</a></span>
         <a (click)="setFilter('SUSPENDED')" class="pull-right text primary-text-hover-color"
            [ngClass]="{'_600': state =='SUSPENDED'}" [innerHtml]="snapshot.suspended || 0"></a>
+      </div>
+      <div class="calling">
+        <span class="text-black-lt _300" [ngClass]="{'_600': state =='CALLING'}">
+          <a class="primary-text-hover-color"
+             translate>common.label.calling</a></span>
+        <a class="pull-right text"
+           [ngClass]="{'_600': state =='CALLING'}" [innerHtml]="snapshot.calling || 0"></a>
       </div>
       <div class="setback">
         <span class="text-black-lt _300" [ngClass]="{'_600': state =='WAITING'}">

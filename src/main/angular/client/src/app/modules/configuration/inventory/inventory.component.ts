@@ -953,21 +953,23 @@ export class ExportComponent implements OnInit {
       if (this.exportObj.forSigning) {
         obj.forSigning = {controllerId: this.exportObj.controllerId};
         if (this.object.draftConfigurations || this.object.deployConfigurations) {
-          obj.forBackup.deployables = {
+          obj.forSigning.deployables = {
             draftConfigurations: this.object.draftConfigurations,
             deployConfigurations: this.object.deployConfigurations
           };
         }
       } else {
-        obj.forBackup = {};
+        obj.shallowCopy = {
+          withoutInvalid: this.filter.valid
+        };
         if (this.object.releasedConfigurations || this.object.releaseDraftConfigurations) {
-          obj.forBackup.releasables = {
+          obj.shallowCopy.releasables = {
             releasedConfigurations: this.object.releasedConfigurations,
             draftConfigurations: this.object.releaseDraftConfigurations
           };
         }
         if (this.object.draftConfigurations || this.object.deployConfigurations) {
-          obj.forBackup.deployables = {
+          obj.shallowCopy.deployables = {
             draftConfigurations: this.object.draftConfigurations,
             deployConfigurations: this.object.deployConfigurations
           };
@@ -1698,7 +1700,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
         }
       }
     }
-
     recursive(scr, dest);
     return scr;
   }

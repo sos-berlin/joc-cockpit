@@ -31,7 +31,6 @@ export class StartOrderModalComponent implements OnInit {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
-    console.log(this.order);
     this.order.timeZone = this.preferences.zone;
     this.order.fromTime = new Date();
 
