@@ -178,6 +178,7 @@ export class DeployComponent implements OnInit {
   @Input() reDeploy: boolean;
   @Input() display: any;
   @Input() data: any;
+  @Input() isRemove: any;
   selectedSchedulerIds = [];
   actualResult = [];
   loading = true;
@@ -201,7 +202,7 @@ export class DeployComponent implements OnInit {
   }
 
   ngOnInit() {
-    if(this.data && this.data.deleted){
+    if (this.data && this.data.deleted) {
       this.isDeleted = true;
     }
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
@@ -277,6 +278,7 @@ export class DeployComponent implements OnInit {
 
   private getChildTree() {
     const self = this;
+
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
         let flag = false;
@@ -292,6 +294,7 @@ export class DeployComponent implements OnInit {
         }
       }
     }
+
     recursive(this.nodes);
   }
 
@@ -310,6 +313,11 @@ export class DeployComponent implements OnInit {
       obj.withoutReleased = true;
     } else {
       obj.withVersions = !this.reDeploy;
+    }
+    if (this.isRemove) {
+      obj.recursive = false;
+      obj.withRemovedObjects = false;
+      obj.withoutDrafts = true;
     }
     const URL = this.releasable ? 'inventory/releasables' : 'inventory/deployables';
     this.coreService.post(URL, obj).subscribe((res: any) => {
@@ -468,6 +476,7 @@ export class DeployComponent implements OnInit {
         }
       }
     }
+
     recursive(this.nodes);
   }
 
@@ -565,6 +574,26 @@ export class DeployComponent implements OnInit {
     }, (error) => {
       this.submitted = false;
     });
+  }
+
+  remove() {
+    if (this.nodes.length > 0) {
+      this.submitted = true;
+      for (let i = 0; i < this.nodes[0].children.length; i++) {
+        console.log(this.nodes[0].children[i]);
+        if (this.nodes[0].children[i].type && this.nodes[0].children[i].recursivelyDeploy) {
+          this.coreService.post('inventory/remove', {
+            objectType: this.nodes[0].children[i].type,
+            path: this.nodes[0].children[i].path + (this.nodes[0].children[i].path === '/' ? '' : '/') + this.nodes[0].children[i].name
+          }).subscribe((res: any) => {
+            if (this.nodes[0].children.length - 1 === i) {
+              this.submitted = false;
+              this.activeModal.close('ok');
+            }
+          });
+        }
+      }
+    }
   }
 
   cancel() {
@@ -842,7 +871,7 @@ export class ExportComponent implements OnInit {
         if ((nodes[i].type || nodes[i].isFolder) && nodes[i].recursivelyDeploy) {
           const objDep: any = {};
           if (nodes[i].isFolder) {
-            if(selectFolder) {
+            if (selectFolder) {
               objDep.configuration = {
                 path: nodes[i].path,
                 objectType: 'FOLDER',
@@ -855,7 +884,7 @@ export class ExportComponent implements OnInit {
               objectType: nodes[i].type
             };
           }
-          if(objDep.configuration) {
+          if (objDep.configuration) {
             if (nodes[i].deployablesVersions) {
               for (let j = 0; j < nodes[i].deployablesVersions.length; j++) {
                 if (nodes[i].deployablesVersions[j].deploymentId === nodes[i].deploymentId) {
@@ -920,6 +949,7 @@ export class ExportComponent implements OnInit {
         }
       }
     }
+
     recursive(this.nodes);
   }
 
@@ -2286,21 +2316,42 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   removeObject(node) {
     const object = node.origin;
-    let _path;
-    if (object.type) {
-      _path = object.path + (object.path === '/' ? '' : '/') + object.name;
+    if (object.object || object.controller || object.dailyPlan) {
+      let releasable = false;
+      if (object.dailyPlan || (object.object && (object.object === 'SCHEDULE' || object.object.match('CALENDAR')))) {
+        releasable = true;
+      }
+      const modalRef = this.modalService.open(DeployComponent, {backdrop: 'static'});
+      modalRef.componentInstance.schedulerIds = this.schedulerIds;
+      modalRef.componentInstance.preferences = this.preferences;
+      modalRef.componentInstance.display = this.preferences.auditLog;
+      modalRef.componentInstance.data = object;
+      modalRef.componentInstance.path = object.path;
+      modalRef.componentInstance.isRemove = true;
+      modalRef.componentInstance.releasable = releasable;
+      modalRef.result.then((res: any) => {
+        setTimeout(() => {
+          this.initTree(object.path, null);
+        }, 100);
+      }, () => {
+      });
     } else {
-      _path = object.path;
+      let _path;
+      if (object.type) {
+        _path = object.path + (object.path === '/' ? '' : '/') + object.name;
+      } else {
+        _path = object.path;
+      }
+      const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
+      modalRef.componentInstance.title = 'remove';
+      modalRef.componentInstance.message = 'removeObject';
+      modalRef.componentInstance.type = 'Remove';
+      modalRef.componentInstance.objectName = _path;
+      modalRef.result.then((res: any) => {
+        this.deleteObject(_path, object, node);
+      }, () => {
+      });
     }
-    const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.title = 'remove';
-    modalRef.componentInstance.message = 'removeObject';
-    modalRef.componentInstance.type = 'Remove';
-    modalRef.componentInstance.objectName = _path;
-    modalRef.result.then((res: any) => {
-      this.deleteObject(_path, object, node);
-    }, () => {
-    });
   }
 
   removeDraft(node) {

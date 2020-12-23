@@ -676,6 +676,7 @@
     "label.setSeparateVersion": "set version to objects separately",
     "label.export": "Export",
     "label.import": "Import",
+    "label.remove": "Remove",
     "label.importAndDeploy": "Import Sign Configuration And Deploy",
     "label.signed": "signed",
     "label.unSigned": "unsigned",

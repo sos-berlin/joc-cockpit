@@ -1,8 +1,9 @@
 <div class="modal-header">
   <h4 class="modal-title" >
-    <span *ngIf="!releasable && !reDeploy" translate>inventory.label.deploy</span>
-    <span *ngIf="reDeploy" translate>inventory.label.redeploy</span>
-    <span *ngIf="releasable" translate>inventory.label.release</span>
+    <span *ngIf="!releasable && !reDeploy && !isRemove" translate>inventory.label.deploy</span>
+    <span *ngIf="reDeploy && !isRemove" translate>inventory.label.redeploy</span>
+    <span *ngIf="releasable && !isRemove" translate>inventory.label.release</span>
+    <span *ngIf="isRemove" translate>inventory.label.remove</span>
     <span *ngIf="path">:
       {{path}}
     </span>
@@ -101,7 +102,7 @@
             </div>
           </div>
         </div>
-        <div class="form-group row" *ngIf="!releasable && !reDeploy">
+        <div class="form-group row" *ngIf="!releasable && !reDeploy && !isRemove">
           <label class="col-md-3 form-control-label">
             <label translate>inventory.label.controllers</label>
           </label>
@@ -117,7 +118,7 @@
             </nz-select>
           </div>
         </div>
-        <div class="form-group row" *ngIf="(!data || !data.object) && !isDeleted">
+        <div class="form-group row" *ngIf="(!data || !data.object) && !isDeleted && !isRemove">
           <div class="col-md-3">
             <label translate>inventory.label.handleRecursively</label>
           </div>
@@ -128,7 +129,7 @@
             </label>
           </div>
         </div>
-        <div class="row m-b-sm" *ngIf="!isDeleted">
+        <div class="row m-b-sm" *ngIf="!isDeleted && !isRemove">
           <div class="col-md-12">
             <a class="text" (click)="expandAll();" [nz-tooltip]="'common.tooltip.expandAll' | translate">
               <i class="fa fa-angle-double-down fa-lg"></i>
@@ -166,7 +167,7 @@
                     <span *ngIf="node.origin.type" class="fa fa-check-circle-o text-xs" [ngClass]="{'fa-circle-o': !node.origin.valid, 'text-success' :node.origin.deploymentId}" style="margin-top: 4px"></span>
                     <span class="p-l-sm" >{{node.origin.name | translate}}</span>
                   </div>
-                  <div class="m-l" *ngIf="node.origin.type && node.origin.deployablesVersions && node.origin.deployablesVersions.length >0">
+                  <div class="m-l" *ngIf="!isRemove && node.origin.type && node.origin.deployablesVersions && node.origin.deployablesVersions.length >0">
                     <nz-select name="'version-' + {{node.key}}"
                       [nzSize]="'small'"
                       [(ngModel)]="node.origin.deployId">
@@ -192,12 +193,12 @@
                       </ng-container>
                     </nz-select>
                   </div>
-                  <div class="m-l" *ngIf="node.origin.type && !reDeploy && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)">
+                  <div class="m-l" *ngIf="!isRemove &&  node.origin.type && !reDeploy && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)">
                     <i class="text-muted" *ngIf="!node.origin.deleted" translate>workflow.label.draft</i>
                     <i class="text-danger" *ngIf="node.origin.deleted && node.origin.deploymentId" translate>inventory.label.deployMarkDelete</i>
                     <i class="text-danger" *ngIf="node.origin.deleted && !node.origin.deploymentId" translate>inventory.label.markForDelete</i>
                   </div>
-                  <div class="m-l" *ngIf="!node.origin.type && !node.origin.object">
+                  <div class="m-l" *ngIf="!isRemove &&  !node.origin.type && !node.origin.object">
                     <i class="text-danger" *ngIf="node.origin.deleted && node.origin.deploymentId" translate>inventory.label.deployMarkDelete</i>
                     <i class="text-danger" *ngIf="node.origin.deleted && !node.origin.deploymentId" translate>inventory.label.markForDelete</i>
                   </div>
@@ -214,9 +215,13 @@
     </div>
   </div>
   <div class="modal-footer text-left" >
-      <button *ngIf="nodes.length > 0" type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || selectedSchedulerIds.length === 0 || submitted">
+      <button *ngIf="nodes.length > 0 && !isRemove" type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || selectedSchedulerIds.length === 0 || submitted">
         <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
         {{'common.button.submit' | translate}}
+      </button>
+      <button *ngIf="isRemove" type="button" class="btn btn-danger btn-sm" [disabled]="submitted" (click)="remove()">
+        <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+        <span>{{'common.button.remove' | translate}}</span>
       </button>
       <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>
         common.button.cancel

@@ -154,8 +154,7 @@ export class OrderSearchComponent implements OnInit {
     modalRef.componentInstance.showCheckBox = !flag;
     modalRef.result.then((result) => {
       this.filter.paths = result;
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
     });
   }
 
@@ -278,8 +277,7 @@ export class TaskSearchComponent implements OnInit {
     modalRef.componentInstance.showCheckBox = !flag;
     modalRef.result.then((result) => {
       this.filter.paths = result;
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
     });
   }
 
@@ -404,8 +402,7 @@ export class DeploymentSearchComponent implements OnInit {
     modalRef.componentInstance.showCheckBox = !flag;
     modalRef.result.then((result) => {
       this.filter.paths = result;
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
     });
   }
 
@@ -1556,10 +1553,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.savedIgnoreList = this.savedIgnoreList;
       modalRef.componentInstance.historyFilters = this.historyFilters;
       modalRef.componentInstance.self = this;
-      modalRef.result.then((configObj) => {
+      modalRef.result.then(() => {
 
-      }, (reason) => {
-        console.log('close...', reason);
+      }, () => {
       });
     }
   }
@@ -1625,10 +1621,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     modalRef.componentInstance.new = true;
     modalRef.componentInstance.type = this.historyFilters.type;
-    modalRef.result.then((configObj) => {
+    modalRef.result.then(() => {
 
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
     });
   }
 
@@ -1655,8 +1650,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       } else if (obj.type === 'COPY') {
         this.copyFilter(obj);
       }
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+      
     });
   }
 
@@ -2348,8 +2343,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.type = this.historyFilters.type;
       modalRef.result.then((configObj) => {
 
-      }, (reason) => {
-        console.log('close...', reason);
+      }, () => {
+
       });
     });
   }
@@ -2379,10 +2374,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
         modalRef.componentInstance.allFilter = this.deploymentHistoryFilterList;
       }
       modalRef.componentInstance.filter = filterObj;
-      modalRef.result.then((configObj) => {
+      modalRef.result.then(() => {
 
-      }, (reason) => {
-        console.log('close...', reason);
+      }, () => {
+
       });
     });
   }
