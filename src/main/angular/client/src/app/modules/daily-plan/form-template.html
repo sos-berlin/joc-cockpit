@@ -32,19 +32,36 @@
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.radio === 'current'">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>dailyPlan.label.planeDate</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.from</label>
       <div class="col-sm-6">
-        <nz-date-picker name="dailyPlanDate" required=true
-                        [(ngModel)]="filter.dailyPlanDate" [nzFormat]="'yyyy-MM-dd'"></nz-date-picker>
+        <nz-date-picker name="from" required=true [nzAllowClear]="false"
+                        [(ngModel)]="filter.from" [nzFormat]="'yyyy-MM-dd'"></nz-date-picker>
       </div>
     </div>
-    <div class="form-group row" *ngIf="filter.radio === 'planned'" [ngClass]="{'has-error' : ((processExc.dirty || processExc.touched) && processExc.invalid)}">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>dailyPlan.label.planeDate</label>
-      <div class=" col-sm-6">
-        <input autocomplete="off" validateDailyPlanReqex class="form-control" #processExc="ngModel" type="text" name="planned" placeholder="{{'dailyPlan.placeholder.timeRange' | translate}}"
-               [(ngModel)]="filter.planned">
-        <div *ngIf="processExc.errors && (processExc.dirty || processExc.touched)" class="help-block text-danger">
-          <div translate *ngIf="!processExc.valid">common.message.invalid</div>
+    <div class="form-group row" *ngIf="filter.radio === 'current'">
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.to</label>
+      <div class="col-sm-6">
+        <nz-date-picker name="to" required=true [nzAllowClear]="false"
+                        [(ngModel)]="filter.to" [nzFormat]="'yyyy-MM-dd'"></nz-date-picker>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="filter.radio === 'planned'">
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.from</label>
+      <div class=" col-sm-6" [ngClass]="{'has-error' : ((from.dirty || from.touched) && from.invalid)}">
+        <input autocomplete="off" validateDailyPlanReqex required class="form-control" #from="ngModel" type="text" name="from" placeholder="{{'dailyPlan.placeholder.timeRange' | translate}}"
+               [(ngModel)]="filter.from1">
+        <div *ngIf="from.errors && (from.dirty || from.touched)" class="help-block text-danger">
+          <div translate *ngIf="!from.valid">common.message.invalid</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="filter.radio === 'planned'">
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.to</label>
+      <div class=" col-sm-6" [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}">
+        <input autocomplete="off" validateDailyPlanReqex required class="form-control" #to="ngModel" type="text" name="to" placeholder="{{'dailyPlan.placeholder.timeRange' | translate}}"
+               [(ngModel)]="filter.to1">
+        <div *ngIf="to.errors && (to.dirty || to.touched)" class="help-block text-danger">
+          <div translate *ngIf="!to.valid">common.message.invalid</div>
         </div>
       </div>
     </div>
@@ -102,7 +119,6 @@
         </nz-tree-select>
       </div>
     </div>
-
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>dailyPlan.label.schedules</label>
       <div class="col-sm-6">
@@ -111,7 +127,7 @@
     </div>
     <div class="form-group row ">
       <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>common.label.state</label>
-      <div class="col-sm-8">
+      <div class="col-sm-8" [ngClass]="{'col-md-6': isSearch}">
         <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.state" checklistValue="PLANNED" name="planned"/>
           <i class="primary"></i><span translate>common.label.planned</span>
@@ -173,7 +189,7 @@
       </div>
     </div>
     <div class="form-group m-t m-b-xs" *ngIf="isSearch">
-      <button type="button" class="btn btn-primary btn-sm" (click)="search()" translate>
+      <button type="button" class="btn btn-primary btn-sm" [disabled]="submitted" (click)="search()" translate>
         common.button.search
       </button>
       <button type="submit" class="btn orange btn-sm m-l-sm"

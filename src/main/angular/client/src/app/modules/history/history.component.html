@@ -906,39 +906,32 @@
         >
           <thead>
           <tr>
-            <th *ngIf="!historyView.current" (click)="sort3('controllerId')">
+            <th width="25%" *ngIf="!historyView.current" (click)="sort3('controllerId')">
               <a><span class="p-r-xs" translate>common.label.controllerId</span>
                 <i *ngIf="deployment.filter.sortBy == 'controllerId' && !deployment.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="deployment.filter.sortBy == 'controllerId' && deployment.reverse"
                    class="fa fa-caret-down "></i></a>
             </th>
-            <th (click)="sort3('commitId')">
-              <a><span class="p-r-xs" translate>history.label.commitId</span>
-                <i *ngIf="deployment.filter.sortBy == 'commitId' && !deployment.reverse"
+            <th [width]="historyView.current ? '50%' : '25%'" (click)="sort3('deploymentDate')">
+              <a><span class="p-r-xs" translate>history.label.deploymentDate</span>
+                <i *ngIf="deployment.filter.sortBy == 'deploymentDate' && !deployment.reverse"
                    class="fa fa-caret-up "></i>
-                <i *ngIf="deployment.filter.sortBy == 'commitId' && deployment.reverse"
+                <i *ngIf="deployment.filter.sortBy == 'deploymentDate' && deployment.reverse"
                    class="fa fa-caret-down "></i></a>
             </th>
-            <th (click)="sort3('account')">
+            <th width="25%" (click)="sort3('account')">
               <a><span class="p-r-xs" translate>common.label.account</span>
                 <i *ngIf="deployment.filter.sortBy == 'account' && !deployment.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="deployment.filter.sortBy == 'account' && deployment.reverse"
                    class="fa fa-caret-down "></i></a>
             </th>
-            <th (click)="sort3('state')">
+            <th width="25%" (click)="sort3('state')">
               <a><span class="p-r-xs" translate>history.label.state</span>
                 <i *ngIf="deployment.filter.sortBy == 'state' && !deployment.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="deployment.filter.sortBy == 'state' && deployment.reverse"
-                   class="fa fa-caret-down "></i></a>
-            </th>
-            <th (click)="sort3('operation')">
-              <a><span class="p-r-xs" translate>history.label.operation</span>
-                <i *ngIf="deployment.filter.sortBy == 'operation' && !deployment.reverse"
-                   class="fa fa-caret-up "></i>
-                <i *ngIf="deployment.filter.sortBy == 'operation' && deployment.reverse"
                    class="fa fa-caret-down "></i></a>
             </th>
           </tr>
@@ -965,23 +958,22 @@
                   <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
                      *ngIf="depHistory.show && historyView.current"
                      (click)="depHistory.show = false;"></i>
-                  <span [innerHtml]="depHistory.commitId | highlight : order.searchText"></span>
+                  <span [innerHtml]="depHistory.deploymentDate | stringToDate"></span>
                 </span>
               </td>
               <td><span [innerHtml]="depHistory.account | highlight : deployment.searchText"></span></td>
               <td><span class="label bg-green" [innerHtml]="depHistory.state | translate"></span></td>
-              <td><span [innerHtml]="depHistory.operation | translate"></span></td>
             </tr>
             <tr *ngIf="depHistory.show">
-              <td colspan="7" style="padding:0 !important">
+              <td colspan="4" style="padding:0 !important" class="order-history-template0">
                 <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small" [nzLoading]="depHistory.loading"
                           [nzData]="depHistory.children" [nzShowPagination]="false">
                   <thead>
                   <tr>
-                    <th><span translate>history.label.deployType</span></th>
-                    <th><span translate>common.label.path</span></th>
-                    <th><span translate>history.label.deploymentDate</span></th>
-                    <th><span translate>history.label.deleteDate</span></th>
+                    <th width="24.95%"><span translate>history.label.deployType</span></th>
+                    <th width="24.97%"><span translate>common.label.path</span></th>
+                    <th width="24.95%"><span translate>history.label.operation</span></th>
+                    <th width="24.95%"><span translate>history.label.deleteDate</span></th>
                   </tr>
                   </thead>
                   <tbody>
@@ -998,7 +990,7 @@
                            class="cursor fa fa-pencil text-hover-primary p-l-xs"></i>
                       </span>
                     </td>
-                    <td [innerHtml]="child.deploymentDate | stringToDate"></td>
+                    <td><span [innerHtml]="child.operation | translate"></span></td>
                     <td [innerHtml]="child.deleteDate | stringToDate"></td>
                   </tr>
                   </tbody>

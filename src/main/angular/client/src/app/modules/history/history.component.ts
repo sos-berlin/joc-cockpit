@@ -138,12 +138,24 @@ export class OrderSearchComponent implements OnInit {
   existingName: any;
   submitted = false;
   isUnique = true;
+  workflowTree = [];
 
   constructor(public coreService: CoreService, private modalService: NgbModal) {
   }
 
   ngOnInit() {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.getWorkflowTree();
+  }
+
+  private getWorkflowTree() {
+    this.coreService.post('tree', {
+      controllerId: this.schedulerIds.selected,
+      forInventory: true,
+      types: ['WORKFLOW']
+    }).subscribe((res) => {
+      this.workflowTree = this.coreService.prepareTree(res, true);
+    });
   }
 
   getFolderTree(flag) {
@@ -171,6 +183,56 @@ export class OrderSearchComponent implements OnInit {
     }
   }
 
+  loadData(node, $event) {
+    if (!node.origin.type) {
+      if ($event) {
+        $event.stopPropagation();
+      }
+    }
+  }
+
+  loadWorkflow(node, $event): void {
+    if (!node || !node.origin) {
+      return;
+    }
+    if (!node.origin.type) {
+      if ($event) {
+        node.isExpanded = !node.isExpanded;
+        $event.stopPropagation();
+      }
+      let flag = true;
+      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
+        flag = false;
+      }
+      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
+        let obj: any = {
+          path: node.key,
+          objectTypes: ['WORKFLOW']
+        };
+        this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
+          let data = res.workflows;
+          for (let i = 0; i < data.length; i++) {
+            const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
+            data[i].title = _path;
+            data[i].path = _path;
+            data[i].type = 'WORKFLOW';
+            data[i].key = _path;
+            data[i].isLeaf = true;
+          }
+          if (node.origin.children && node.origin.children.length > 0) {
+            data = data.concat(node.origin.children);
+          }
+          if (node.origin.isLeaf) {
+            node.origin.expanded = true;
+          }
+          node.origin.isLeaf = false;
+          node.origin.children = data;
+          this.workflowTree = [...this.workflowTree];
+        });
+      }
+    }
+  }
+
   onSubmit(result): void {
     this.submitted = true;
     let configObj = {
@@ -188,9 +250,7 @@ export class OrderSearchComponent implements OnInit {
     let obj: any = {};
     obj.regex = result.regex;
     obj.paths = result.paths;
-    obj.workflow = result.workflow;
-    obj.orderId = result.orderId;
-    obj.job = result.job;
+    obj.workflowPaths = result.workflowPaths;
     obj.state = result.state;
     obj.name = result.name;
     if (result.radio != 'current') {
@@ -261,12 +321,24 @@ export class TaskSearchComponent implements OnInit {
   existingName: any;
   submitted = false;
   isUnique = true;
+  workflowTree = [];
 
   constructor(public coreService: CoreService, private modalService: NgbModal) {
   }
 
   ngOnInit() {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.getWorkflowTree();
+  }
+
+  private getWorkflowTree() {
+    this.coreService.post('tree', {
+      controllerId: this.schedulerIds.selected,
+      forInventory: true,
+      types: ['WORKFLOW']
+    }).subscribe((res) => {
+      this.workflowTree = this.coreService.prepareTree(res, true);
+    });
   }
 
   getFolderTree(flag) {
@@ -294,6 +366,56 @@ export class TaskSearchComponent implements OnInit {
     }
   }
 
+  loadData(node, $event) {
+    if (!node.origin.type) {
+      if ($event) {
+        $event.stopPropagation();
+      }
+    }
+  }
+
+  loadWorkflow(node, $event): void {
+    if (!node || !node.origin) {
+      return;
+    }
+    if (!node.origin.type) {
+      if ($event) {
+        node.isExpanded = !node.isExpanded;
+        $event.stopPropagation();
+      }
+      let flag = true;
+      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
+        flag = false;
+      }
+      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
+        let obj: any = {
+          path: node.key,
+          objectTypes: ['WORKFLOW']
+        };
+        this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
+          let data = res.workflows;
+          for (let i = 0; i < data.length; i++) {
+            const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
+            data[i].title = _path;
+            data[i].path = _path;
+            data[i].type = 'WORKFLOW';
+            data[i].key = _path;
+            data[i].isLeaf = true;
+          }
+          if (node.origin.children && node.origin.children.length > 0) {
+            data = data.concat(node.origin.children);
+          }
+          if (node.origin.isLeaf) {
+            node.origin.expanded = true;
+          }
+          node.origin.isLeaf = false;
+          node.origin.children = data;
+          this.workflowTree = [...this.workflowTree];
+        });
+      }
+    }
+  }
+
   onSubmit(result): void {
     this.submitted = true;
     let configObj = {
@@ -311,8 +433,7 @@ export class TaskSearchComponent implements OnInit {
     let obj: any = {};
     obj.regex = result.regex;
     obj.paths = result.paths;
-    obj.workflow = result.workflow;
-    obj.orderId = result.orderId;
+    obj.workflowPaths = result.workflowPaths;
     obj.job = result.job;
     obj.state = result.state;
     obj.name = result.name;
@@ -392,18 +513,6 @@ export class DeploymentSearchComponent implements OnInit {
   ngOnInit() {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.deployTypes = ['WORKFLOW', 'JOBCLASS', 'LOCK', 'JUNCTION'];
-  }
-
-  getFolderTree(flag) {
-    const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.paths = this.filter.paths || [];
-    modalRef.componentInstance.type = 'FOLDER';
-    modalRef.componentInstance.showCheckBox = !flag;
-    modalRef.result.then((result) => {
-      this.filter.paths = result;
-    }, () => {
-    });
   }
 
   remove(path) {
@@ -572,29 +681,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
         obj.folders.push({folder: value, recursive: true});
       });
     }
-    if ((this.selectedFiltered1.workflows && this.selectedFiltered1.workflows.length > 0) || (this.selectedFiltered1.orders && this.selectedFiltered1.orders.length > 0)) {
+    if (this.selectedFiltered1.workflowPaths && this.selectedFiltered1.workflowPaths.length > 0) {
       obj.orders = [];
-      this.selectedFiltered1.orders.forEach((value) => {
-        obj.orders.push({workflow: value.workflow, orderId: value.orderId});
+      this.selectedFiltered1.workflowPaths.workflowPaths((value) => {
+        obj.orders.push({workflowPath: value});
       });
-      if (!this.selectedFiltered1.orders || this.selectedFiltered1.orders.length == 0) {
-        this.selectedFiltered1.workflows.forEach((value) => {
-          obj.orders.push({workflow: value});
-        });
-      } else {
-        for (let i = 0; i < this.selectedFiltered1.workflows.length; i++) {
-          let flag = true;
-          for (let j = 0; j < obj.orders.length; j++) {
-            if (obj.orders[j].workflow == this.selectedFiltered1.workflows[i]) {
-              flag = false;
-              break;
-            }
-          }
-          if (flag) {
-            obj.orders.push({workflow: this.selectedFiltered1.workflows[i]});
-          }
-        }
-      }
     }
     if (this.selectedFiltered1.state && this.selectedFiltered1.state.length > 0) {
       obj.historyStates = this.selectedFiltered1.state;
@@ -785,13 +876,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
         obj.folders.push({folder: value, recursive: true});
       });
     }
-    if (this.selectedFiltered2.jobs && this.selectedFiltered2.jobs.length > 0) {
+    if (this.selectedFiltered2.workflowPaths && this.selectedFiltered2.workflowPaths.length > 0) {
       obj.jobs = [];
-
-      this.selectedFiltered2.jobs.forEach((value) => {
-        obj.jobs.push({job: value});
+      this.selectedFiltered2.workflowPaths.forEach((value) => {
+        obj.jobs.push({workflowPath: value});
       });
-
     }
     obj = this.coreService.parseProcessExecutedRegex(this.selectedFiltered2.planned, obj);
     return obj;
@@ -961,17 +1050,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (this.historyFilters.type === 'ORDER') {
       this.order.filter.historyStates = '';
       this.order.filter.date = '';
-      if (obj.workflow) {
+      if (obj.workflowPaths) {
         filter.orders = [];
-        if (obj.orderIds) {
-          let s = obj.orderIds.replace(/,\s+/g, ',');
-          let orderIds = s.split(',');
-          orderIds.forEach((value) => {
-            filter.orders.push({workflow: obj.workflow, orderId: value});
-          });
-        } else {
-          filter.orders.push({workflow: obj.workflow});
-        }
+        obj.workflowPaths.forEach((value) => {
+          filter.orders.push({workflowPath: value});
+        });
       }
       if (obj.states && obj.states.length > 0) {
         filter.historyStates = obj.states;
@@ -1051,9 +1134,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
       }
       filter.timeZone = this.preferences.zone;
-      if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
-        filter.timeZone = 'UTC';
-      }
       if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
         filter.dateFrom = moment(filter.dateFrom).tz(this.preferences.zone);
       }
@@ -1077,12 +1157,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
     } else if (this.historyFilters.type === 'TASK') {
       this.task.filter.historyStates = '';
       this.task.filter.date = '';
-      if (obj.job) {
+      if (obj.workflowPaths) {
         filter.jobs = [];
-        let s = obj.job.replace(/,\s+/g, ',');
-        var jobs = s.split(',');
-        jobs.forEach((value) => {
-          filter.jobs.push({job: value});
+        obj.workflowPaths.forEach((value) => {
+          filter.jobs.push({workflowPath: value});
         });
       }
       if (obj.states && obj.states.length > 0) {
@@ -1149,9 +1227,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
       }
       filter.timeZone = this.preferences.zone;
-      if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
-        filter.timeZone = 'UTC';
-      }
       if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
         filter.dateFrom = moment(filter.dateFrom).tz(this.preferences.zone);
       }
@@ -1225,9 +1300,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
 
       filter.timeZone = this.preferences.zone;
-      if ((filter.from && (typeof filter.from.getMonth === 'function' || typeof filter.from === 'object')) || (filter.to && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
-        filter.timeZone = 'UTC';
-      }
       if ((filter.from && typeof filter.from.getMonth === 'function')) {
         filter.from = moment(filter.from).tz(this.preferences.zone);
       }
@@ -1650,8 +1722,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       } else if (obj.type === 'COPY') {
         this.copyFilter(obj);
       }
-    }, () => {
-      
+    }, (reason) => {
+
     });
   }
 
@@ -1941,7 +2013,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
     return data;
   }
 
-
   private exportToExcelDeployment(): any {
     let controllerId = '', status = '', duration = '', startTime = '', endTime = '';
     this.translate.get('common.label.controllerId').subscribe(translatedValue => {
@@ -2123,7 +2194,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
     if (this.savedHistoryFilter.selected) {
       let flag = true;
-
       for (let i = 0; i < this.orderHistoryFilterList.length; i++) {
         if (this.orderHistoryFilterList[i].id == this.savedHistoryFilter.selected) {
           flag = false;
@@ -2291,10 +2361,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private init(flag) {
-    let obj = {
-      controllerId: this.historyView.current == true ? this.schedulerIds.selected : ''
-    };
     if (this.loadConfig && this.loadIgnoreList) {
+      let obj = {
+        controllerId: this.historyView.current == true ? this.schedulerIds.selected : ''
+      };
       if (!flag) {
         this.isLoading = false;
         this.data = [];
@@ -2303,10 +2373,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.orderHistory(obj, flag);
       } else if (this.historyFilters.type == 'TASK') {
         this.taskHistory(obj);
+      } else if (this.historyFilters.type == 'DEPLOYMENT') {
+        this.deploymentHistory(obj, flag);
       }
-    }
-    if (this.historyFilters.type == 'DEPLOYMENT') {
-      this.deploymentHistory(obj, flag);
     }
   }
 

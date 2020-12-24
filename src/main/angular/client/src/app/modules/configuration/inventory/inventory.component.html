@@ -126,7 +126,6 @@
                       </ul>
                     </li>
                     <li nz-menu-divider *ngIf="((!node.origin.object && !node.origin.type) || node.origin.object) && permission.Inventory.configurations.edit"></li>
-
                     <li nz-menu-item *ngIf="node.origin.type && !node.origin.deleted && permission.Inventory.configurations.edit"><a (click)="copy(node)" translate>inventory.button.copy</a></li>
                     <li nz-menu-item [nzDisabled]="!copyObj || (node.origin.object && copyObj.type !== node.origin.object)" *ngIf="!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.deleted && permission.Inventory.configurations.edit">
                       <a (click)="paste(node)" translate>inventory.button.paste</a></li>
@@ -156,7 +155,7 @@
                         [nzDisabled]="node.origin.deployed || node.origin.released || (!node.origin.type && !node.origin.object && node.origin.path === '/')">
                       <a (click)="removeDraft(node);" translate>inventory.button.deleteDraft</a></li>
                     <li nz-menu-divider *ngIf="!node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.deleted && permission.Inventory.configurations.delete"></li>
-                    <li nz-menu-item *ngIf="!node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.deleted && permission.Inventory.configurations.delete"><a (click)="deletePermanently(node);" translate>inventory.button.delete</a></li>
+                    <li nz-menu-item *ngIf="!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.deleted && permission.Inventory.configurations.delete"><a (click)="deletePermanently(node);" translate>inventory.button.delete</a></li>
                     <li nz-menu-item *ngIf="!node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.deleted && permission.Inventory.configurations.delete"><a (click)="restoreObject(node);" translate>inventory.button.undelete</a></li>
                   </ul>
                 </nz-dropdown-menu>

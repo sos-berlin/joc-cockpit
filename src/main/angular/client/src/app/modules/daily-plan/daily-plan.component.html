@@ -64,7 +64,7 @@
                   <li nz-menu-item
                       [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='ALL', 'disable-link':savedFilter.selected}">
                     <a (click)="dailyPlanFilters.filter.late='';getPlans('ALL')"
-                       translate>common.button.allStatus</a>
+                       translate>common.button.allState</a>
                   </li>
                   <li nz-menu-item
                       [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status==='PLANNED', 'disable-link':savedFilter.selected}">
@@ -144,7 +144,7 @@
                     <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
                     <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
                   </span>
-                  <span *ngIf="dailyPlanFilters.filter.sortBy ==='state'">
+                  <span *ngIf="dailyPlanFilters.filter.sortBy ==='status'">
                     {{'dailyPlan.label.state' | translate}}
                     <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
                     <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
@@ -163,7 +163,7 @@
                     <a (click)="sort( 'plannedStartTime')" translate>dailyPlan.label.plannedStart</a>
                   </li>
                   <li nz-menu-item>
-                    <a (click)="sort('state')" translate>dailyPlan.label.state</a>
+                    <a (click)="sort('status')" translate>dailyPlan.label.state</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -200,7 +200,7 @@
                 </ul>
               </nz-dropdown-menu>
             </div>
-            <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="'tooltip.exportInXLS' | translate"
+            <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
                     [disabled]="(planOrders | filter: dailyPlanFilters.searchText).length===0" (click)="exportToExcel()">
               <i class="fa fa-share-square-o"></i>
             </button>
@@ -227,7 +227,7 @@
   <div class="padding p-b-0">
     <div class="hide p-t-sm" [ngClass]="{'show': isLoaded }">
       <div class="d-flex w-full">
-        <div style="width: 336px">
+        <div style="width: 336px" [hidden]="pageView == 'grid'">
           <div class="box m-b-0" style="height: calc(100vh - 155px)">
             <div class="p-b b-b">
               <div class="calendar-sm m-t-0" id="full-calendar"></div>
@@ -239,10 +239,13 @@
                   <span translate>dailyPlan.button.createPlan</span>
                 </button>
                 <div class="box-shadow m-t p-a-sm p-l-0" *ngIf="submissionHistory.length > 0">
-                  <div class="_600 m-b-sm text-left p-l" style="font-size: 14px" translate>dailyPlan.label.submissionHistory</div>
+                  <div class="_600 m-b-sm text-left p-l" style="font-size: 14px" translate>
+                    dailyPlan.label.submissionHistory
+                  </div>
                   <ul class="text-left p-l" style="max-height: 250px; overflow: auto">
                     <li *ngFor="let history of submissionHistory">
-                      <a [ngClass]="{ 'text-primary' : selectedSubmissionId === history.submissionHistoryId }" (click)="selectSubmissionHistory(history.submissionHistoryId)">
+                      <a [ngClass]="{ 'text-primary' : selectedSubmissionId === history.submissionHistoryId }"
+                         (click)="selectSubmissionHistory(history.submissionHistoryId)">
                         <i class="fa fa-circle p-r-xs"></i>
                         <span translate>dailyPlan.label.submission</span> -
                         <i class="text-muted">({{history.submissionTime | stringToTime}})</i>
@@ -354,11 +357,11 @@
                       <i *ngIf="dailyPlanFilters.filter.sortBy == 'workflowPath' && dailyPlanFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                   </th>
-                  <th (click)="sort('state')">
+                  <th (click)="sort('status')">
                     <a><span class="p-r-xs" translate>dailyPlan.label.state</span>
-                    <i *ngIf="dailyPlanFilters.filter.sortBy == 'state' && !dailyPlanFilters.reverse"
+                    <i *ngIf="dailyPlanFilters.filter.sortBy == 'status' && !dailyPlanFilters.reverse"
                        class="fa fa-caret-up "></i>
-                    <i *ngIf="dailyPlanFilters.filter.sortBy == 'state' && dailyPlanFilters.reverse"
+                    <i *ngIf="dailyPlanFilters.filter.sortBy == 'status' && dailyPlanFilters.reverse"
                        class="fa fa-caret-down "></i></a>
                   </th>
                   <th (click)="sort('late')">
@@ -478,13 +481,13 @@
                               </button>
                               <nz-dropdown-menu #export2="nzDropdownMenu" role="menu">
                                 <ul nz-menu>
-                                  <li nz-menu-item>
+                                  <li nz-menu-item *ngIf="value.state && value.state._text === 'PLANNED'">
                                     <a (click)="submitOrder(value, null, false)" translate>dailyPlan.button.submitOrder</a>
                                   </li>
                                   <li nz-menu-item class="bg-hover-color" *ngIf="value.state && value.state._text === 'PLANNED'">
                                     <a (click)="removeOrder(value, null, false)" translate>dailyPlan.button.removeOrder</a>
                                   </li>
-                                  <li nz-menu-item *ngIf="value.state && value.state._text !== 'PLANNED'">
+                                  <li nz-menu-item *ngIf="value.state && value.state._text !== 'PLANNED' && value.state._text !== 'FINISHED'">
                                     <a (click)="cancelOrder(value, null, false )" translate>order.button.cancelOrder</a>
                                   </li>
                                   <li nz-menu-item>
@@ -509,7 +512,7 @@
                           </td>
                           <td>
                             <span class="label" [ngClass]="coreService.getColor(value.state.severity,'bg')"
-                                  [innerHtml]="value.state"> </span>
+                                  [innerHtml]="value.status"> </span>
                           </td>
                           <td><span *ngIf="value.late==true" translate>dailyPlan.label.late</span></td>
                           <td><span [innerHtml]="value.plannedStartTime"></span></td>
@@ -608,7 +611,7 @@
                       <td *ngIf="i">
                               <span class="label"
                                     [ngClass]="coreService.getColor(value.state.severity,'bg')"
-                                    [innerHtml]="value.state"> </span>
+                                    [innerHtml]="value.status"> </span>
                       </td>
                       <td *ngIf="i"><span *ngIf="value.late==true" translate>dailyPlan.label.late</span></td>
                       <td *ngIf="i"><span [innerHtml]="value.plannedStartTime"></span></td>
@@ -642,13 +645,13 @@
                               </button>
                               <nz-dropdown-menu #export5="nzDropdownMenu" role="menu">
                                 <ul nz-menu>
-                                  <li nz-menu-item>
+                                  <li nz-menu-item *ngIf="value.state && value.state._text === 'PLANNED'">
                                     <a (click)="submitOrder(value, null, false)" translate>dailyPlan.button.submitOrder</a>
                                   </li>
                                   <li nz-menu-item class="bg-hover-color" *ngIf="value.state && value.state._text === 'PLANNED'">
                                     <a (click)="removeOrder(value, null, false)" translate>dailyPlan.button.removeOrder</a>
                                   </li>
-                                  <li nz-menu-item *ngIf="value.state && value.state._text !== 'PLANNED'">
+                                  <li nz-menu-item *ngIf="value.state && value.state._text !== 'PLANNED' && value.state._text !== 'FINISHED'">
                                     <a (click)="cancelOrder(value, null, false )" translate>order.button.cancelOrder</a>
                                   </li>
                                   <li nz-menu-item>
@@ -674,7 +677,7 @@
                           </td>
                           <td>
                             <span class="label" [ngClass]="coreService.getColor(value.state.severity,'bg')"
-                                  [innerHtml]="value.state"> </span>
+                                  [innerHtml]="value.status"> </span>
                           </td>
                           <td><span *ngIf="value.late==true" translate>dailyPlan.label.late</span></td>
                           <td><span [innerHtml]="value.plannedStartTime"></span></td>

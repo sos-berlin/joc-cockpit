@@ -109,7 +109,7 @@ export class CoreService {
     this.tabs._history.deployment.filter = {};
     this.tabs._history.deployment.filter.state = 'ALL';
     this.tabs._history.deployment.filter.date = 'today';
-    this.tabs._history.deployment.filter.sortBy = 'start';
+    this.tabs._history.deployment.filter.sortBy = 'deploymentDate';
     this.tabs._history.deployment.reverse = true;
     this.tabs._history.deployment.searchText = '';
     this.tabs._history.deployment.currentPage = '1';
@@ -251,7 +251,7 @@ export class CoreService {
     this.tempTabs._history.deployment.filter = {};
     this.tempTabs._history.deployment.filter.state = 'ALL';
     this.tempTabs._history.deployment.filter.date = 'today';
-    this.tempTabs._history.deployment.filter.sortBy = 'start';
+    this.tempTabs._history.deployment.filter.sortBy = 'deploymentDate';
     this.tempTabs._history.deployment.reverse = true;
     this.tempTabs._history.deployment.searchText = '';
     this.tempTabs._history.deployment.currentPage = '1';
@@ -636,7 +636,6 @@ export class CoreService {
 
   parseProcessExecutedRegex(regex, obj): any {
     let fromDate, toDate, date, arr;
-
     if (/^\s*(-)\s*(\d+)([shdwMy])\s*$/.test(regex)) {
       fromDate = /^\s*(-)\s*(\d+)([shdwMy])\s*$/.exec(regex)[0];
     } else if (/^\s*(now\s*-)\s*(\d+)\s*$/i.test(regex)) {
@@ -817,6 +816,9 @@ export class CoreService {
           pathArr.push('/');
         }
       }
+    }
+    if (pathArr.length === 0) {
+      pathArr.push('/');
     }
     workflowFilters.expandedKeys = pathArr;
     workflowFilters.selectedkeys.push(pathArr[pathArr.length - 1]);

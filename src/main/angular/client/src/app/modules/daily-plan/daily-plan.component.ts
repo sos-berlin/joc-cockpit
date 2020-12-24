@@ -467,14 +467,14 @@ export class RemovePlanModalComponent implements OnInit {
   messageList: any;
   required = false;
   comments: any = {};
-  filter = {kill : false};
+  filter = {kill: false};
 
   constructor(public activeModal: NgbActiveModal, public  coreService: CoreService) {
   }
 
   ngOnInit() {
     this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    this.display = this.preferences.auditLog;
+    // this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
     if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
@@ -533,16 +533,18 @@ export class RemovePlanModalComponent implements OnInit {
 
   private cancelOrder(obj) {
     this.submitted = true;
-    obj.kill = this.filter.kill;
-    obj.auditLog = {};
-    if (this.comments.comment) {
-      obj.auditLog.comment = this.comments.comment;
-    }
-    if (this.comments.timeSpent) {
-      obj.auditLog.timeSpent = this.comments.timeSpent;
-    }
-    if (this.comments.ticketLink) {
-      obj.auditLog.ticketLink = this.comments.ticketLink;
+    obj.filter.kill = this.filter.kill;
+    if (this.display) {
+      obj.auditLog = {};
+      if (this.comments.comment) {
+        obj.auditLog.comment = this.comments.comment;
+      }
+      if (this.comments.timeSpent) {
+        obj.auditLog.timeSpent = this.comments.timeSpent;
+      }
+      if (this.comments.ticketLink) {
+        obj.auditLog.ticketLink = this.comments.ticketLink;
+      }
     }
     this.coreService.post('daily_plan/orders/cancel', obj).subscribe((res) => {
       this.submitted = false;
@@ -576,12 +578,14 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnInit() {
+    this.toggle = true;
+    console.log('ngOnInit', this.toggle);
     this.initConfig();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.data);
     JSGantt();
+    console.log('ngOnChanges', this.toggle);
     this.init();
   }
 
@@ -591,11 +595,9 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private initConfig(): void {
-    const self = this;
     $(this.editor.nativeElement).on('mouseover', '.my-tooltip', function () {
       $(this).tooltip('show');
     });
-
     $(this.editor.nativeElement).on('mouseout', '.my-tooltip', function () {
       $('.tooltip').tooltip('hide');
     });
@@ -611,11 +613,9 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
     this.translate.get('dailyPlan.label.scheduleAndOrder').subscribe(translatedValue => {
       orderId = translatedValue;
     });
-
     jsgantt.config.columns = [{name: 'col2', tree: !0, label: workflow, align: 'left'}, {
       name: 'col1', label: orderId, width: '*', align: 'left'
     }];
-
     jsgantt.templates.task_class = function (start, end, task) {
       return task.class;
     };
@@ -625,6 +625,7 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
     const len = plans.length;
     if (len > 0) {
       let count = 0;
+      console.log(this.toggle, 'this.toggle')
       for (let i = 0; i < len; i++) {
         const _obj = {
           id: ++count,
@@ -658,7 +659,6 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
     }
     jsgantt.parse({data: this.tasks});
   }
-
 }
 
 @Component({
@@ -890,7 +890,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   submissionHistoryItems: any = [];
   planOrders: any = [];
   isLoaded = false;
-  notAuthenticate = false;
   dailyPlanFilters: any = {filter: {}};
   pageView: string;
   savedFilter: any = {};
@@ -924,6 +923,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.initConf();
+    if (this.pageView === 'grid') {
+      this.isToggle = true;
+    }
   }
 
   ngOnDestroy() {
@@ -1251,8 +1253,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.showSearchPanel = true;
     this.searchFilter = {
       radio: 'current',
-      planned: 'today',
-      dailyPlanDate: new Date(),
+      from1: 'today',
+      to1: 'today',
+      from: new Date(),
+      to: new Date(),
       schedules: [],
       state: []
     };
@@ -1279,12 +1283,35 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     return obj;
   }
 
+  getDates(startDate, endDate) {
+    let dates = [],
+      currentDate = startDate,
+      addDays = function (days) {
+        const date = new Date(this.valueOf());
+        date.setDate(date.getDate() + days);
+        return date;
+      };
+    while (currentDate <= endDate) {
+      dates.push(currentDate);
+      currentDate = addDays.call(currentDate, 1);
+    }
+    return dates;
+  }
+
   search() {
     this.isSearchHit = true;
     let obj: any = {
       controllerId: this.schedulerIds.selected,
       filter: {}
     };
+
+    if(this.searchFilter.radio === 'current') {
+      let dates = this.getDates(this.searchFilter.from, this.searchFilter.to);
+      dates.forEach(function (date) {
+        console.log(date);
+      });
+    }
+
     this.applySearchFilter(obj.filter, this.searchFilter);
     this.coreService.post('daily_plan/orders', obj).subscribe((res: any) => {
       this.filterData(res.plannedOrderItems);
@@ -1295,11 +1322,26 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private updateTable(filterData) {
+    let tempArr = [];
+    if (this.planOrders && this.planOrders.length > 0) {
+      tempArr = this.coreService.clone(this.planOrders);
+    }
     this.planOrders = this.groupBy.transform(filterData, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW' ? 'workflowPath' : 'schedulePath');
     if (this.dailyPlanFilters.filter.sortBy === 'orderId') {
       this.planOrders = this.orderPipe.transform(this.planOrders,
         this.dailyPlanFilters.filter.groupBy === 'ORDER' ? 'schedulePath' : this.dailyPlanFilters.filter.sortBy,
         this.dailyPlanFilters.reverse);
+    }
+    if (tempArr.length > 0) {
+      for (let i = 0; i < tempArr.length; i++) {
+        for (let j = 0; j < this.planOrders.length; j++) {
+          if (this.planOrders[j].key === tempArr[i].key) {
+            this.planOrders[j].order = tempArr[i].order;
+            this.planOrders[j].show = tempArr[i].show;
+            break;
+          }
+        }
+      }
     }
     this.planOrders = [...this.planOrders];
   }
@@ -1474,6 +1516,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   receiveMessage($event) {
+    if ($event === 'grid') {
+      this.isToggle = true;
+    }
     this.pageView = $event;
     this.object.templates = [];
   }
@@ -1759,6 +1804,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private filterData(planItems): void {
+
     if (planItems && planItems.length) {
       for (let i = 0; i < planItems.length; i++) {
         planItems[i].plannedDate = planItems[i].plannedStartTime;
@@ -1771,10 +1817,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         planItems[i].endTime = this.coreService.stringToDate(this.preferences, planItems[i].endTime);
         if (planItems[i].state && planItems[i].state._text) {
           this.translate.get(planItems[i].state._text).subscribe(translatedValue => {
-            planItems[i].state = translatedValue;
+            planItems[i].status = translatedValue;
           });
         }
       }
+
       this.plans = planItems;
       this.sortBy();
     } else {

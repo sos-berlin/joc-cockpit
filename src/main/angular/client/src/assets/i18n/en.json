@@ -481,6 +481,7 @@
     "label.setParameters": "Set Parameters",
     "label.repeatInterval": "Repeat Interval",
     "label.late": "Late",
+    "label.kill": "Kill",
     "label.repeatEvery": "Repeat every",
     "label.workflow": "Workflow",
     "label.state": "State",
@@ -514,7 +515,7 @@
     "placeholder.selectOrderTemplate": "Select Schedules",
     "placeholder.selectSubmissionHistory": "Select Submission History",
     "placeholder.timeRange": "now, (+/-)(d), today",
-    "placeholder.workflowPath": "Enter Workflow Path",
+    "placeholder.workflowPath": "Select Workflow",
     "popup.removeSelectedOrder": "Are Are you sure you want to remove this order?",
     "popup.removeAllOrders": "Are you sure you want to remove all orders?",
     "popup.removeOrderCount": "Are you sure you want to remove {{count}} orders?",
@@ -522,7 +523,7 @@
     "popup.submitOrderCount": "Are you sure you want to submit {{count}} orders?"
   },
   "error": {
-    "button.backHome" : "Back Home",
+    "button.backHome": "Back Home",
     "message.403": "Sorry, you are not authorized to access this page.",
     "message.404": "Sorry, the page you try to visit does not exist.",
     "message.oops": "Oops",
@@ -533,7 +534,8 @@
     "message.sessionTimeout": "Session Timeout!",
     "message.invalidFileExtension": "Extension is not allowed",
     "message.connectionError": "Unable to connect to given Controller",
-    "message.connectionSuccess": "Connected successfully to Controller"
+    "message.connectionSuccess": "Connected successfully to Controller",
+    "message.objectNotFound": "Object does not exist any longer"
   },
   "filters" : {
     "button.all": "All",

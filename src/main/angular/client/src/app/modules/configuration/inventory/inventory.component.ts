@@ -57,11 +57,13 @@ export class SingleDeployComponent implements OnInit {
   private getSingleObject(obj) {
     this.coreService.post('inventory/deployable', obj).subscribe((res: any) => {
       const result = res.deployable;
-      if (result.deployablesVersions && result.deployablesVersions.length > 0) {
+      if (result.deployablesVersions && result.deployablesVersions.length > 0 && !result.deleted) {
         result.deployId = '';
         if (result.valid && result.deployablesVersions[0].versions && result.deployablesVersions[0].versions.length > 0) {
           result.deployId = result.deployablesVersions[0].deploymentId;
         }
+      } else {
+        result.deployablesVersions = [];
       }
       this.deployablesObject = [result];
       this.loading = false;
@@ -82,11 +84,11 @@ export class SingleDeployComponent implements OnInit {
         if (this.deployablesObject[i].deployId || this.deployablesObject[i].deploymentId) {
           objDep.configuration = {
             path: this.deployablesObject[i].folder + (this.deployablesObject[i].folder === '/' ? '' : '/') + this.deployablesObject[i].objectName,
-            objectType: this.deployablesObject[i].objectType,
-            commitId: ''
+            objectType: this.deployablesObject[i].objectType
           };
           for (let j = 0; j < this.deployablesObject[i].deployablesVersions.length; j++) {
-            if (this.deployablesObject[i].deployablesVersions[j].deploymentId === this.deployablesObject[i].deploymentId) {
+            if (this.deployablesObject[i].deployablesVersions[j].deploymentId === this.deployablesObject[i].deploymentId ||
+              this.deployablesObject[i].deployablesVersions[j].deploymentId === this.deployablesObject[i].deployId) {
               objDep.configuration.commitId = this.deployablesObject[i].deployablesVersions[j].commitId;
               break;
             }
@@ -102,7 +104,6 @@ export class SingleDeployComponent implements OnInit {
           if (!_.isEmpty(obj)) {
             self.object.delete.push(obj);
           } else if (objDep.configuration) {
-            delete objDep['commitId'];
             self.object.delete.deployConfigurations.push(objDep);
           }
         } else {
@@ -377,7 +378,8 @@ export class DeployComponent implements OnInit {
               };
               if (nodes[i].deployablesVersions) {
                 for (let j = 0; j < nodes[i].deployablesVersions.length; j++) {
-                  if (nodes[i].deployablesVersions[j].deploymentId === nodes[i].deploymentId) {
+                  if (nodes[i].deployablesVersions[j].deploymentId === nodes[i].deploymentId ||
+                    nodes[i].deployablesVersions[j].deploymentId === nodes[i].deployId) {
                     objDep.configuration.commitId = nodes[i].deployablesVersions[j].commitId;
                     break;
                   }
@@ -580,7 +582,6 @@ export class DeployComponent implements OnInit {
     if (this.nodes.length > 0) {
       this.submitted = true;
       for (let i = 0; i < this.nodes[0].children.length; i++) {
-        console.log(this.nodes[0].children[i]);
         if (this.nodes[0].children[i].type && this.nodes[0].children[i].recursivelyDeploy) {
           this.coreService.post('inventory/remove', {
             objectType: this.nodes[0].children[i].type,
@@ -1143,10 +1144,9 @@ export class SetVersionComponent implements OnInit {
       for (let i = 0; i < nodes.length; i++) {
         if (nodes[i].type && (nodes[i].version || nodes[i].recursivelyDeploy)) {
           if (nodes[i].deployId || nodes[i].deploymentId) {
-            const configuration = {
+            const configuration: any = {
               path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
-              objectType: nodes[i].type,
-              commitId: ''
+              objectType: nodes[i].type
             };
             if (nodes[i].deployablesVersions) {
               for (let j = 0; j < nodes[i].deployablesVersions.length; j++) {
@@ -1439,7 +1439,7 @@ export class CreateFolderModalComponent implements OnInit {
 }
 
 @Component({
-  selector: 'app-joe',
+  selector: 'app-inventory',
   templateUrl: './inventory.component.html',
   styleUrls: ['./inventory.component.scss']
 })
@@ -1617,69 +1617,82 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   recursivelyExpandTree() {
-    const pathArr = [];
-    const arr = this.inventoryConfig.selectedObj.path.split('/');
-    const len = arr.length;
-    if (len > 1) {
-      for (let i = 0; i < len; i++) {
-        if (arr[i]) {
-          if (i > 0 && pathArr[i - 1]) {
-            pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + arr[i]);
-          } else {
-            pathArr.push('/' + arr[i]);
-          }
-        } else {
-          pathArr.push('/');
-        }
-      }
-    }
-    const self = this;
-    if (this.tree.length > 0) {
-      function traverseTree(data) {
-        let flag = false;
-        for (let i = 0; i < pathArr.length; i++) {
-          if (pathArr[i] === data.path) {
-            data.expanded = true;
-            flag = true;
-            pathArr.splice(i, 1);
-            break;
-          }
-        }
-        if (flag) {
-          self.updateObjects(data, (children) => {
-            data.children.splice(0, 0, children[0]);
-            data.children.splice(1, 0, children[1]);
-            if (self.selectedObj.path === children[0].path) {
-              children[0].expanded = true;
-              for (let j = 0; j < children[0].children.length; j++) {
-                let x = children[0].children[j];
-                if (x.object === self.selectedObj.type) {
-                  x.expanded = true;
-                  for (let k = 0; k < x.children.length; k++) {
-                    if (x.children[k].name === self.selectedObj.name) {
-                      self.selectedData = x.children[k];
-                      break;
-                    }
-                  }
-                  break;
-                }
-              }
-
-              self.type = self.inventoryConfig.selectedObj.type;
-              self.isLoading = false;
-              self.updateTree();
+    this.coreService.post('inventory/read/configuration', {
+      objectType: this.inventoryConfig.selectedObj.type,
+      path: this.inventoryConfig.selectedObj.path + (this.inventoryConfig.selectedObj.path === '/' ? '' : '/') + this.inventoryConfig.selectedObj.name,
+    }).subscribe((res: any) => {
+      const pathArr = [];
+      const arr = this.inventoryConfig.selectedObj.path.split('/');
+      const len = arr.length;
+      if (len > 1) {
+        for (let i = 0; i < len; i++) {
+          if (arr[i]) {
+            if (i > 0 && pathArr[i - 1]) {
+              pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + arr[i]);
+            } else {
+              pathArr.push('/' + arr[i]);
             }
-          }, false);
-        }
-        if (data.children && pathArr.length > 0) {
-          for (let i = 0; i < data.children.length; i++) {
-            traverseTree(data.children[i]);
+          } else {
+            pathArr.push('/');
           }
         }
       }
+      const self = this;
+      if (this.tree.length > 0) {
+        function traverseTree(data) {
+          let flag = false;
+          for (let i = 0; i < pathArr.length; i++) {
+            if (pathArr[i] === data.path) {
+              data.expanded = true;
+              flag = true;
+              pathArr.splice(i, 1);
+              break;
+            }
+          }
+          if (flag) {
+            self.updateObjects(data, (children) => {
+              data.children.splice(0, 0, children[0]);
+              data.children.splice(1, 0, children[1]);
+              if (self.selectedObj.path === children[0].path) {
+                children[0].expanded = true;
+                for (let j = 0; j < children[0].children.length; j++) {
+                  let x = children[0].children[j];
+                  if (x.object === self.selectedObj.type) {
+                    x.expanded = true;
+                    for (let k = 0; k < x.children.length; k++) {
+                      if (x.children[k].name === self.selectedObj.name) {
+                        self.selectedData = x.children[k];
+                        break;
+                      }
+                    }
+                    break;
+                  }
+                }
 
-      traverseTree(this.tree[0]);
-    }
+                self.type = self.inventoryConfig.selectedObj.type;
+                self.isLoading = false;
+                self.updateTree();
+              }
+            }, false);
+          }
+          if (data.children && pathArr.length > 0) {
+            for (let i = 0; i < data.children.length; i++) {
+              traverseTree(data.children[i]);
+            }
+          }
+        }
+
+        traverseTree(this.tree[0]);
+      }
+    }, () => {
+      this.updateObjects(this.tree[0], (children) => {
+        this.isLoading = false;
+        this.tree[0].children.splice(0, 0, children[0]);
+        this.tree[0].children.splice(1, 0, children[1]);
+        this.tree[0].expanded = true;
+        this.updateTree();
+      }, false);
+    });
   }
 
   recursiveTreeUpdate(scr, dest) {
@@ -1730,6 +1743,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         }
       }
     }
+
     recursive(scr, dest);
     return scr;
   }
@@ -2190,19 +2204,19 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  reDeployObject(node) {
-    const origin = node.origin ? node.origin : node;
-    const modalRef = this.modalService.open(DeployComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerIds = this.schedulerIds;
-    modalRef.componentInstance.preferences = this.preferences;
-    modalRef.componentInstance.display = this.preferences.auditLog;
-    modalRef.componentInstance.path = origin.path;
-    modalRef.componentInstance.reDeploy = true;
-    modalRef.result.then((res: any) => {
-      this.initTree(origin.path, null);
-    }, () => {
-    });
-  }
+  /*  reDeployObject(node) {
+      const origin = node.origin ? node.origin : node;
+      const modalRef = this.modalService.open(DeployComponent, {backdrop: 'static'});
+      modalRef.componentInstance.schedulerIds = this.schedulerIds;
+      modalRef.componentInstance.preferences = this.preferences;
+      modalRef.componentInstance.display = this.preferences.auditLog;
+      modalRef.componentInstance.path = origin.path;
+      modalRef.componentInstance.reDeploy = true;
+      modalRef.result.then((res: any) => {
+        this.initTree(origin.path, null);
+      }, () => {
+      });
+    }*/
 
   releaseObject(data) {
     this.deployObject(data, true);

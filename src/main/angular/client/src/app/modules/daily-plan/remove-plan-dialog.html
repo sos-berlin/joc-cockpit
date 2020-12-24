@@ -12,12 +12,11 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a text-center">
-    <div *ngIf="!order && operation === 'CANCEL'">
+    <div class="text-left" *ngIf="operation === 'CANCEL'">
       <div class="hide" [ngClass]="{'show': display}">
         <div class="form-group row">
-          <label class="col-sm-3 " translate>common.label.selectComments</label>
-          <div class=" col-sm-6">
-            <div>
+          <label class="col-sm-3" translate>common.label.selectComments</label>
+          <div class="col-sm-9">
               <label class="md-check w w-md">
                 <input type="radio" name="option" [(ngModel)]="comments.radio" value="predefined">
                 <i class="primary"></i> <span translate>common.label.predefined</span>
@@ -26,7 +25,6 @@
                 <input type="radio" name="option" [(ngModel)]="comments.radio" value="new">
                 <i class="primary"></i> <span translate>common.label.individual</span>
               </label>
-            </div>
           </div>
         </div>
         <div class="form-group row" *ngIf="comments.radio=='predefined'"
@@ -100,8 +98,8 @@
         </div>
       </div>
       <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>dailyPlan.label.kill</label>
-          <div class="col-md-8 col-lg-9">
+          <label class="col-sm-3" translate>dailyPlan.label.kill</label>
+          <div class="col-sm-6">
             <label class="md-check w">
               <input type="checkbox" name="kill" [(ngModel)]="filter.kill">
               <i class="primary"></i>
@@ -109,7 +107,7 @@
           </div>
         </div>
     </div>
-    <div *ngIf="!order && operation !== 'CANCEL'">
+    <div *ngIf="operation !== 'CANCEL'">
       <div class="m-t text" *ngIf="order">
         <p class="m-t" *ngIf="plan">
           <span translate [translateParams]="{count: plan.value ? plan.value.length : 0}">dailyPlan.popup.removeOrderCount</span>
@@ -129,9 +127,13 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="submitted" class="btn btn-danger btn-sm">
+    <button type="submit" *ngIf="operation === 'REMOVE'" [disabled]="submitted" class="btn btn-danger btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.remove' | translate}}
+    </button>
+    <button type="submit" *ngIf="operation !== 'REMOVE'" [disabled]="submitted" class="btn btn-primary btn-sm">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
     </button>
     <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
       common.button.cancel

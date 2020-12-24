@@ -15,6 +15,7 @@ import {WorkflowActionComponent} from './workflow-action/workflow-action.compone
 import {SearchPipe} from '../../filters/filter.pipe';
 import {TranslateService} from '@ngx-translate/core';
 import {ExcelService} from '../../services/excel.service';
+import {ToasterService} from 'angular2-toaster';
 
 declare const $;
 
@@ -290,7 +291,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   showPanel: any;
   showSearchPanel = false;
   searchFilter: any = {};
-  temp_filter: any = {};
   sideView: any = {};
   selectedFiltered: any = {};
   savedFilter: any = {};
@@ -305,7 +305,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private modalService: NgbModal, private workflowService: WorkflowService,
-              private translate: TranslateService, private searchPipe: SearchPipe, private excelService: ExcelService) {
+              private translate: TranslateService, private searchPipe: SearchPipe, private excelService: ExcelService,
+              private toasterService: ToasterService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -490,11 +491,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.workflowFilters.expandedObjects.indexOf(path) > -1) {
           this.showPanelFuc(res.workflows[i]);
         }
-        if(this.showPanel && this.showPanel.path === path){
+        if (this.showPanel && this.showPanel.path === path) {
           flag = false;
         }
       }
-      if(flag){
+      if (flag) {
         this.hidePanel();
       }
       this.workflows = res.workflows;
@@ -524,7 +525,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.coreService.post('orders', obj).subscribe((res: any) => {
       if (res.orders && res.orders.length > 0) {
         for (let i = 0; i < this.workflows.length; i++) {
-          if(obj.workflowIds && obj.workflowIds.length > 0 && this.workflows[i].ordersSummary) {
+          if (obj.workflowIds && obj.workflowIds.length > 0 && this.workflows[i].ordersSummary) {
             for (let j = 0; j < obj.workflowIds.length; j++) {
               if (this.workflows[i].path === obj.workflowIds[j].path) {
                 this.workflows[i].numOfOrders = 0;
@@ -564,12 +565,46 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
       paths = this.child.defaultSelectedKeys;
     } else {
+      if (this.workflowFilters.selectedkeys.length === 1 && this.workflowFilters.selectedkeys[0] !== '/') {
+        if (!this.getMatchPath(this.workflowFilters.selectedkeys[0])) {
+          this.workflowFilters.selectedkeys = ['/'];
+          let msg = '';
+          this.translate.get('error.message.objectNotFound').subscribe(translatedValue => {
+            msg = translatedValue;
+          });
+          this.toasterService.pop('error', '', msg);
+        }
+      }
       paths = this.workflowFilters.selectedkeys;
     }
     for (let x = 0; x < paths.length; x++) {
       obj.folders.push({folder: paths[x], recursive: false});
     }
     this.getWorkflowList(obj);
+  }
+
+  private getMatchPath(path): boolean {
+    let flag = false;
+
+    function traverseTree1(data) {
+      if (!flag) {
+        for (let i = 0; i < data.children.length; i++) {
+          console.log(data.children[i].path);
+          if (data.children[i].path === path) {
+            flag = true;
+            break;
+          }
+          if (data.children[i].children && data.children[i].children.length > 0) {
+            traverseTree1(data.children[i]);
+          }
+        }
+      }
+    }
+
+    for (let i = 0; i < this.tree.length; i++) {
+      traverseTree1(this.tree[i]);
+    }
+    return flag;
   }
 
   getWorkflows(data, recursive) {
