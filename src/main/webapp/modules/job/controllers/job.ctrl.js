@@ -6305,7 +6305,7 @@
                                     }
                                 }
                                 getFilteredData();
-                                vm.$broadcast('reloadJobStreamJobs');
+                                vm.$broadcast('reloadJobStreamJobs', arr);
                             }
                         });
                     }
@@ -8460,12 +8460,12 @@
                 } else {
                     vm.isJobStreamLoaded = true;
                 }
-            }, function (err) {
+            }, function () {
                 vm.isJobStreamLoaded = true;
             })
         };
 
-        function updateJobStreamList() {
+        function updateJobStreamList(type) {
             let path = vm.allJobs[0].path1;
             if (path.substring(0, 1) !== '/') {
                 path = '/' + path;
@@ -8475,9 +8475,11 @@
                 folder: path
             }).then(function (res) {
                 vm.jobStreamList = res.jobstreams;
-                vm.getSessions(function () {
-                    recursivelyConnectJobs(true);
-                });
+                if (type !== 'CheckStreamList') {
+                    vm.getSessions(function () {
+                        recursivelyConnectJobs(true);
+                    });
+                }
             })
         }
 
@@ -9297,18 +9299,15 @@
             let style = 'job';
             let flag = true;
             let barColor;
-            if(vm.taskHistory) {
-                for (let x = 0; x < vm.taskHistory.length; x++) {
-                    if (vm.taskHistory[x].job === job.path && vm.taskHistory[x].state && vm.taskHistory[x].state._text) {
-                        if (vm.taskHistory[x].state._text === 'SUCCESSFUL') {
-                            flag = false;
-                            style += ';strokeColor=' + '#007da6';
-                            barColor = 'blue';
-                        }
-                        break;
-                    }
+            if (vm.historyMapObj && vm.historyMapObj.size > 0 && job.state._text !== 'RUNNING') {
+                let _history = vm.historyMapObj.get(job.path);
+                if (_history && _history._text === 'SUCCESSFUL') {
+                    flag = false;
+                    style += ';strokeColor=' + '#007da6';
+                    barColor = 'blue';
                 }
             }
+
             if(flag) {
                 style += ';strokeColor=' + (CoreService.getColorBySeverity(job.state.severity) || '#999');
             }
@@ -9615,10 +9614,24 @@
                 vm.isWorkflowGenerated = true;
                 vm.isJobStreamLoaded = true;
                 $('[data-toggle="tooltip"]').tooltip();
-                updateWorkflowDiagram(vm.jobs);
+               // updateWorkflowDiagram(vm.jobs);
                 if (vm.jobs && vm.editor && !interval)
                     startInterval();
             }, 100);
+        }
+
+        vm.disableColorChangefunc = function() {
+            console.log(vm.jobFilters.disableColorChange, ' >>>>');
+            vm.historyMapObj = null;
+            if (!vm.jobFilters.disableColorChange) {
+                vm.historyMapObj = new Map();
+                for (let i = 0; i < vm.taskHistory.length; i++) {
+                    if (vm.taskHistory[i].state && (vm.taskHistory[i].state._text === 'SUCCESSFUL' || vm.taskHistory[i].state._text === 'FAILED')) {
+                        vm.historyMapObj.set(vm.taskHistory[i].job, vm.taskHistory[i].state);
+                    }
+                }
+            }
+            updateWorkflowDiagram(vm.jobs);
         }
 
         function mergeJobsConditionsState(job, _tempJob) {
@@ -9661,7 +9674,7 @@
             return flag;
         }
 
-        function updateWorkflowDiagram(jobs) {
+        function updateWorkflowDiagram(jobs, changesJobs) {
             if (!jobs || !vm.editor) return;
             if (!vm.editor.graph) return;
             vm.runningTasks = [];
@@ -9671,100 +9684,109 @@
             graph.getModel().beginUpdate();
             let edges = [];
             let edges2 = [];
-            let tempJobs = angular.copy(jobs);
-            let tempHistory = angular.copy(vm.taskHistory);
+            let jobMapObj = new Map();
+
+            jobs.forEach(function (job) {
+                if (changesJobs) {
+                    for (let i = 0; i < changesJobs.length; i++) {
+                        if (changesJobs[i].job === job.path) {
+                            jobMapObj.set(job.path, job);
+                            changesJobs.splice(i, 1);
+                            break;
+                        }
+                    }
+                } else {
+                    jobMapObj.set(job.path, job);
+                }
+                if (job.runningTasks && job.runningTasks.length > 0) {
+                    angular.forEach(job.runningTasks, function (value, index) {
+                        job.runningTasks[index].path = job.path;
+                    });
+                    vm.runningTasks = vm.runningTasks.concat(job.runningTasks)
+                }
+                if (job.taskQueue && job.taskQueue.length > 0) {
+                    angular.forEach(job.taskQueue, function (value, index) {
+                        job.taskQueue[index].path = job.path;
+                    });
+                    vm.taskQueue = vm.taskQueue.concat(job.taskQueue)
+                }
+            });
             try {
                 let vertices = graph.getChildVertices(parent);
                 let len = vertices.length;
                 for (let i = 0; i < len; i++) {
                     if (vertices[i].value.tagName === 'Job') {
                         let jobPath = vertices[i].getAttribute('actual');
-                        let len2 = tempJobs.length;
                         let oldStatus = vertices[i].getAttribute('status');
-                        for (let j = 0; j < len2; j++) {
-                            if (jobPath === tempJobs[j].path) {
-                                let isChange = oldStatus !== tempJobs[j].state._text;
-                                if (tempJobs[j].runningTasks && tempJobs[j].runningTasks.length > 0) {
-                                    angular.forEach(tempJobs[j].runningTasks, function (value, index) {
-                                        tempJobs[j].runningTasks[index].path = tempJobs[j].path;
-                                    });
-                                    vm.runningTasks = vm.runningTasks.concat(tempJobs[j].runningTasks)
-                                }
-                                if (tempJobs[j].taskQueue && tempJobs[j].taskQueue.length > 0) {
-                                    angular.forEach(tempJobs[j].taskQueue, function (value, index) {
-                                        tempJobs[j].taskQueue[index].path = tempJobs[j].path;
-                                    });
-                                    vm.taskQueue = vm.taskQueue.concat(tempJobs[j].taskQueue)
-                                }
-                                let enqueTask, nextPeriod = checkNextPeriod(tempJobs[j]);
-                                if (vertices[i].getAttribute('nextPeriod') !== nextPeriod) {
-                                    const edit1 = new mxCellAttributeChange(
-                                        vertices[i], 'nextPeriod', nextPeriod);
-                                    graph.getModel().execute(edit1);
-                                }
-                                if (isChange) {
-                                    const edit2 = new mxCellAttributeChange(
-                                        vertices[i], 'status', tempJobs[j].state._text);
-                                    graph.getModel().execute(edit2);
-                                }
-                                if (vertices[i].getAttribute('nextStartTime') !== tempJobs[j].nextStartTime) {
-                                    const edit3 = new mxCellAttributeChange(
-                                        vertices[i], 'nextStartTime', tempJobs[j].nextStartTime);
-                                    graph.getModel().execute(edit3);
-                                }
-                                let edit4;
-                                if (tempJobs[j].taskQueue && tempJobs[j].taskQueue.length > 0) {
-                                    enqueTask = tempJobs[j].taskQueue[tempJobs[j].taskQueue.length - 1];
-                                    edit4 = new mxCellAttributeChange(
-                                        vertices[i], 'enquePeriod', enqueTask.enqueued);
-                                } else if (vertices[i].getAttribute('enquePeriod')) {
-                                    edit4 = new mxCellAttributeChange(
-                                        vertices[i], 'enquePeriod', '');
-                                }
-                                if (edit4) {
-                                    graph.getModel().execute(edit4);
-                                }
+                        let _job = jobMapObj.get(jobPath);
+                        if (_job) {
+                            let _style = vertices[i].getStyle();
+                            let isChange = oldStatus !== _job.state._text;
+                            let enqueTask, nextPeriod = checkNextPeriod(_job);
+                            if (vertices[i].getAttribute('nextPeriod') !== nextPeriod) {
+                                const edit1 = new mxCellAttributeChange(
+                                    vertices[i], 'nextPeriod', nextPeriod);
+                                graph.getModel().execute(edit1);
+                            }
+                            if (isChange) {
+                                const edit2 = new mxCellAttributeChange(
+                                    vertices[i], 'status', _job.state._text);
+                                graph.getModel().execute(edit2);
+                            }
+                            if (vertices[i].getAttribute('nextStartTime') !== _job.nextStartTime) {
+                                const edit3 = new mxCellAttributeChange(
+                                    vertices[i], 'nextStartTime', _job.nextStartTime);
+                                graph.getModel().execute(edit3);
+                            }
+                            let edit4;
+                            if (_job.taskQueue && _job.taskQueue.length > 0) {
+                                enqueTask = _job.taskQueue[_job.taskQueue.length - 1];
+                                edit4 = new mxCellAttributeChange(
+                                    vertices[i], 'enquePeriod', enqueTask.enqueued);
+                            } else if (vertices[i].getAttribute('enquePeriod')) {
+                                edit4 = new mxCellAttributeChange(
+                                    vertices[i], 'enquePeriod', '');
+                            }
+                            if (edit4) {
+                                graph.getModel().execute(edit4);
+                            }
 
-                                let style = 'job';
-                                let flag = true;
-                                if(tempHistory) {
-                                    for (let x = 0; x < tempHistory.length; x++) {
-                                        if (tempHistory[x].job === jobPath && tempHistory[x].state && tempHistory[x].state._text) {
-                                            if (tempHistory[x].state._text === 'SUCCESSFUL' ||  tempHistory[x].state._text === 'FAILED') {
-                                                flag = false;
-                                                style += ';strokeColor=' + (tempHistory[x].state._text === 'SUCCESSFUL' ? '#007da6' : '#dc143c');
-                                                graph.removeCellOverlay(vertices[i]);
-                                                let barColor = tempHistory[x].state._text === 'SUCCESSFUL' ? 'blue' : 'red';
-                                                addOverlays(graph, vertices[i], barColor);
-                                            }
-                                            tempHistory.splice(x, 1);
-                                            break;
-                                        }
-                                    }
+                            let style = 'job', barColor = '';
+                            let flag = true;
+                            if (vm.historyMapObj && vm.historyMapObj.size > 0 && _job.state._text !== 'RUNNING') {
+                                let _history = vm.historyMapObj.get(jobPath);
+                                if (_history) {
+                                    flag = false;
+                                    style += ';strokeColor=' + (_history._text === 'SUCCESSFUL' ? '#007da6' : '#dc143c');
+                                    barColor = _history._text === 'SUCCESSFUL' ? 'blue' : 'red';
+                                    edges2 = edges2.concat(graph.getOutgoingEdges(vertices[i], parent));
                                 }
-                                if(flag) {
-                                    style += ';strokeColor=' + (CoreService.getColorBySeverity(tempJobs[j].state.severity) || '#999');
+                            }
+                            if (flag) {
+                                style += ';strokeColor=' + (CoreService.getColorBySeverity(_job.state.severity) || '#999');
+                            }
+                            if (nextPeriod) {
+                                style += ';fillColor=none';
+                            }
+                            if (_style === style) {
+                                continue;
+                            }
+                            vertices[i].setStyle(style);
+                            if (flag) {
+                                barColor = _job.state._text === 'RUNNING' ? 'green' : _job.state._text === 'PENDING' ? 'yellow' : _job.state._text === undefined ? 'grey' : 'red';
+                                if (barColor !== 'red' && enqueTask) {
+                                    barColor = 'orange';
                                 }
-                                if (nextPeriod) {
-                                    style += ';fillColor=none';
+                                addOverlays(graph, vertices[i], barColor);
+                                if (_job.state._text === 'RUNNING') {
+                                    edges = edges.concat(graph.getOutgoingEdges(vertices[i], parent));
+                                } else {
+                                    edges2 = edges2.concat(graph.getOutgoingEdges(vertices[i], parent));
                                 }
-
-                                vertices[i].setStyle(style);
-                                if (flag) {
-                                    graph.removeCellOverlay(vertices[i]);
-                                    let barColor = tempJobs[j].state._text === 'RUNNING' ? 'green' : tempJobs[j].state._text === 'PENDING' ? 'yellow' : tempJobs[j].state._text === undefined ? 'grey' : 'red';
-                                    if (barColor !== 'red' && enqueTask) {
-                                        barColor = 'orange';
-                                    }
-                                    addOverlays(graph, vertices[i], barColor);
-                                    if (tempJobs[j].state._text === 'RUNNING') {
-                                        edges = edges.concat(graph.getOutgoingEdges(vertices[i], parent));
-                                    } else {
-                                        edges2 = edges2.concat(graph.getOutgoingEdges(vertices[i], parent));
-                                    }
-                                }
-                                tempJobs.splice(j, 1);
-                                break;
+                            }
+                            if (barColor) {
+                                graph.removeCellOverlay(vertices[i]);
+                                addOverlays(graph, vertices[i], barColor);
                             }
                         }
                     }
@@ -10469,16 +10491,16 @@
             }
             if (isNew) {
                 ConditionService.addJobStream(obj).then(function (res) {
-                    updateStreamObj(res, obj, isRename, updateStarter);
+                    updateStreamObj(res, obj, isRename, updateStarter, isNew);
                 })
             } else {
                 ConditionService.editJobStream(obj).then(function (res) {
-                    updateStreamObj(res, obj, isRename, updateStarter);
+                    updateStreamObj(res, obj, isRename, updateStarter, isNew);
                 })
             }
         }
 
-        function updateStreamObj(res, obj, isRename, updateStarter) {
+        function updateStreamObj(res, obj, isRename, updateStarter, isNew) {
             if (vm.selectedJobStream === vm.selectedJobStreamObj.jobStream && vm.selectedJobStream === obj.jobStream) {
                 if (res.jobStream === vm.selectedJobStreamObj.jobStream) {
                     for (let i = 0; i < vm.jobStreamList.length; i++) {
@@ -10597,6 +10619,8 @@
                                     break;
                                 }
                             }
+                        }else if(isNew){
+                            vm.jobStreamList.push(res);
                         }
                         recursivelyConnectJobs(true);
                     }
@@ -10699,7 +10723,7 @@
                     }
                 }
             } else{
-                vm.updateEventObj.jobStream = vm.selectedJobStream;
+                vm.updateEventObj.jobStream = jobStream || vm.selectedJobStream;
                 vm.updateEventObj.folder = vm.jobs[0].path1;
             }
             getExpressionEvents(vm.updateEventObj)
@@ -10889,7 +10913,7 @@
 
                     if (vm.comments.ticketLink)
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
-                    deleteStream(obj);
+                    deleteStream(obj, index, jobStream);
                 }, function () {
 
                 });
@@ -10902,7 +10926,7 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    deleteStream(obj);
+                    deleteStream(obj, index, jobStream);
                     vm.deleteJobSteam = undefined;
                 }, function () {
                     vm.deleteJobSteam = undefined;
@@ -10956,7 +10980,7 @@
             }
         };
 
-        function deleteStream(obj) {
+        function deleteStream(obj, index, jobStream) {
             ConditionService.deleteJobStream(obj).then(function () {
                 vm.jobStreamList.splice(index, 1);
                 reset(jobStream);
@@ -11579,7 +11603,7 @@
                     vm.navigateToEvent(evt);
                 });
             } else {
-                updateWorkflowDiagram(vm.jobs);
+                updateWorkflowDiagram(vm.jobs, null);
             }
 
         });
@@ -12531,15 +12555,27 @@
                 session: vm.selectedSession.session,
                 jobStreamId: vm.selectedJobStreamObj.jobStreamId
             };
+            vm.historyMapObj = new Map();
             if (vm.selectedSession.session && vm.selectedJobStreamObj) {
                 ConditionService.history(obj).then(function (res) {
                     vm.taskHistory = res.history;
                     if (vm.selectedSession.jobStreamStarter.requiredJob) {
                         vm.taskHistory.forEach(function (history) {
                             history.requiredJob = vm.selectedSession.jobStreamStarter.requiredJob;
+                            if (!vm.jobFilters.disableColorChange && history.state && (history.state._text === 'SUCCESSFUL' || history.state._text === 'FAILED')) {
+                                vm.historyMapObj.set(history.job, history.state);
+                            }
                         });
+                    }else if(!vm.jobFilters.disableColorChange){
+                        for (let i = 0; i < vm.taskHistory.length; i++) {
+                            if (vm.taskHistory[i].state && (vm.taskHistory[i].state._text === 'SUCCESSFUL' || vm.taskHistory[i].state._text === 'FAILED')) {
+                                vm.historyMapObj.set(vm.taskHistory[i].job, vm.taskHistory[i].state);
+                            }
+                        }
                     }
-                    updateWorkflowDiagram(vm.jobs)
+                    if(vm.jobs && vm.jobs.length > 0 && vm.historyMapObj && vm.historyMapObj.size > 0) {
+                        updateWorkflowDiagram(vm.jobs, null)
+                    }
                 });
             } else{
                 vm.taskHistory = [];
@@ -12644,7 +12680,7 @@
                 if (checkStreamList && arr.length > 0) {
                     for (let i = 0; i < vm.allJobs.length; i++) {
                         if (arr.indexOf(vm.allJobs[i].path) !== -1) {
-                            updateJobStreamList();
+                            updateJobStreamList('CheckStreamList');
                             break;
                         }
                     }
@@ -12653,9 +12689,9 @@
             }
         });
 
-        $scope.$on('reloadJobStreamJobs', function () {
+        $scope.$on('reloadJobStreamJobs', function (evt, arg) {
             if (vm.editor && vm.editor.graph && vm.isWorkflowGenerated) {
-                updateWorkflowDiagram(vm.jobs);
+                updateWorkflowDiagram(vm.jobs, arg);
             }
         });
 

@@ -796,6 +796,11 @@
                                                 <span>{{session.started | stringToDate}}</span>
                                             </a>
                                         </div>
+                                        <label class="md-check m-l-md">
+                                            <input type="checkbox" ng-model="jobFilters.disableColorChange" ng-change="disableColorChangefunc()">
+                                            <i class="primary"></i>
+                                            Disable Color Change
+                                        </label>
                                     </div>
                                     <div class="box-shadow-z1" id="graph" ondragover="allowDrop(event)"></div>
                                     <div id="dropContainer" class="dropContainer">
@@ -1277,13 +1282,13 @@
                                         <div class="b-b">
                                           <ul class="nav nav-tabs">
                                               <li class="nav-item" >
-                                                  <a class="nav-link" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'jobStream' }" ng-click="changeTab('jobStream')" href data-toggle="tab" translate>label.jobStreams</a>
+                                                  <a class="nav-link" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'jobStream' }" ng-click="changeTab('jobStream')" href translate>label.jobStreams</a>
                                               </li>
                                               <li class="nav-item" ng-if="permission.JobStream.view.eventlist">
-                                                  <a class="nav-link" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'event' }" ng-click="changeTab('event')" href data-toggle="tab" translate>label.events</a>
+                                                  <a class="nav-link" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'event' }" ng-click="changeTab('event')" href translate>label.events</a>
                                               </li>
                                               <li class="nav-item" >
-                                                  <a class="nav-link" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'reference', 'disable-link':jobFilters.graphViewDetail.tab !== 'reference' && !_outconditionReference }" href data-toggle="tab" translate>label.reference</a>
+                                                  <a class="nav-link" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'reference', 'disable-link':jobFilters.graphViewDetail.tab !== 'reference' && !_outconditionReference }" ng-click="jobFilters.graphViewDetail.tab = 'reference'" href translate>label.reference</a>
                                               </li>
                                           </ul>
                                         </div>
