@@ -8388,6 +8388,7 @@
             if (vm.jobStreamList.length === 0) {
                 return;
             }
+            let flag = false;
             ConditionService.getSessions({
                 jobschedulerId: $scope.schedulerIds.selected,
                 jobStream: vm.selectedJobStreamObj.jobStream ? vm.selectedJobStreamObj.jobStream : vm.jobStreamList[0].jobStream,
@@ -8407,18 +8408,26 @@
                     cb();
                 }
                 vm.getEvents(null);
-                vm.loadHistory();
+                if ((vm.historyTabActive || vm.userPreferences.jobStreamWithColor) && !flag) {
+                    flag = true;
+                    vm.loadHistory();
+                }
             }, function (err) {
 
             })
+            if ((vm.historyTabActive || vm.userPreferences.jobStreamWithColor) && vm.selectedSession && vm.selectedSession.session && !flag) {
+                flag = true;
+                vm.loadHistory();
+            }
         };
 
-        vm.selectSession = function (session, isNavToHistroy) {
+        vm.selectSession = function (session, isNavToHistory) {
             vm.selectedSession = session;
+            vm.historyTabActive = true;
             recursivelyConnectJobs(true);
             vm.getEvents(null);
             vm.loadHistory();
-            if (isNavToHistroy) {
+            if (isNavToHistory) {
                 $('#myTab li:nth-child(2) a').tab('show')
             }
         };
@@ -8485,60 +8494,30 @@
 
         function updateConditionsByEvent(arr, reCreate) {
             if (vm.isLoaded) {
+                let res, result;
                 vm.isLoaded = false;
                 ConditionService.inCondition({
                     jobschedulerId: $scope.schedulerIds.selected,
                     session: vm.selectedSession.session,
                     jobs: arr
-                }).then(function (res) {
-                    ConditionService.outCondition({
-                        jobschedulerId: $scope.schedulerIds.selected,
-                        session: vm.selectedSession.session,
-                        jobs: arr
-                    }).then(function (result) {
-                        vm.isLoaded = true;
-                        let mergeData = _.merge(res.jobsInconditions, result.jobsOutconditions);
-                        for (let i = 0; i < vm.jobs.length; i++) {
-                            for (let j = 0; j < mergeData.length; j++) {
-                                if (mergeData[j].job === vm.jobs[i].path) {
-                                    vm.jobs[i].inconditions = mergeData[j].inconditions;
-                                    for (let x = 0; x < vm.jobs[i].outconditions.length; x++) {
-                                        if (vm.jobs[i].outconditions[x].isExpanded) {
-                                            for (let y = 0; y < mergeData[j].outconditions.length; y++) {
-                                                if (vm.jobs[i].outconditions[x].id === mergeData[j].outconditions[y].id) {
-                                                    mergeData[j].outconditions[y].isExpanded = true;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
+                }).then(function (res1) {
+                    res = res1;
+                    if(result) {
+                        mergerDataAndUpdate(res, result, reCreate);
+                    }
+                }, function () {
+                    vm.isLoaded = true;
+                });
 
-                                    vm.jobs[i].outconditions = mergeData[j].outconditions;
-                                    if (vm.jobs[i].isExpanded && !reCreate) {
-                                        updateExpandedVertices(vm.jobs[i]);
-                                    }
-                                    mergeData.splice(j, 1);
-                                    break;
-                                }
-                            }
-                            if (mergeData.length === 0) {
-                                break;
-                            }
-                        }
-                        refreshReferenceTab();
-                        if (vm.isWorkflowGenerated && reCreate) {
-                            vm.isWorkflowGenerated = false;
-                            let element = document.getElementById("graph");
-                            let scrollValue = {
-                                scrollTop: element.scrollTop,
-                                scrollLeft: element.scrollLeft,
-                                scale: vm.editor.graph.getView().getScale()
-                            };
-                            createWorkflowDiagram(vm.jobs, scrollValue);
-                        }
-                    }, function () {
-                        vm.isLoaded = true;
-                    });
+                ConditionService.outCondition({
+                    jobschedulerId: $scope.schedulerIds.selected,
+                    session: vm.selectedSession.session,
+                    jobs: arr
+                }).then(function (result1) {
+                    result= result1;
+                    if(res) {
+                        mergerDataAndUpdate(res, result, reCreate);
+                    }
                 }, function () {
                     vm.isLoaded = true;
                 });
@@ -8546,6 +8525,48 @@
                 setTimeout(function () {
                     updateConditionsByEvent(arr, reCreate);
                 }, 100)
+            }
+        }
+
+        function mergerDataAndUpdate(res, result, reCreate){
+            vm.isLoaded = true;
+            let mergeData = _.merge(res.jobsInconditions, result.jobsOutconditions);
+            for (let i = 0; i < vm.jobs.length; i++) {
+                for (let j = 0; j < mergeData.length; j++) {
+                    if (mergeData[j].job === vm.jobs[i].path) {
+                        vm.jobs[i].inconditions = mergeData[j].inconditions;
+                        for (let x = 0; x < vm.jobs[i].outconditions.length; x++) {
+                            if (vm.jobs[i].outconditions[x].isExpanded) {
+                                for (let y = 0; y < mergeData[j].outconditions.length; y++) {
+                                    if (vm.jobs[i].outconditions[x].id === mergeData[j].outconditions[y].id) {
+                                        mergeData[j].outconditions[y].isExpanded = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        vm.jobs[i].outconditions = mergeData[j].outconditions;
+                        if (vm.jobs[i].isExpanded && !reCreate) {
+                            updateExpandedVertices(vm.jobs[i]);
+                        }
+                        mergeData.splice(j, 1);
+                        break;
+                    }
+                }
+                if (mergeData.length === 0) {
+                    break;
+                }
+            }
+            refreshReferenceTab();
+            if (vm.isWorkflowGenerated && reCreate) {
+                vm.isWorkflowGenerated = false;
+                let element = document.getElementById("graph");
+                let scrollValue = {
+                    scrollTop: element.scrollTop,
+                    scrollLeft: element.scrollLeft,
+                    scale: vm.editor.graph.getView().getScale()
+                };
+                createWorkflowDiagram(vm.jobs, scrollValue);
             }
         }
 
@@ -9620,20 +9641,6 @@
             }, 100);
         }
 
-        vm.disableColorChangefunc = function() {
-            console.log(vm.jobFilters.disableColorChange, ' >>>>');
-            vm.historyMapObj = null;
-            if (!vm.jobFilters.disableColorChange) {
-                vm.historyMapObj = new Map();
-                for (let i = 0; i < vm.taskHistory.length; i++) {
-                    if (vm.taskHistory[i].state && (vm.taskHistory[i].state._text === 'SUCCESSFUL' || vm.taskHistory[i].state._text === 'FAILED')) {
-                        vm.historyMapObj.set(vm.taskHistory[i].job, vm.taskHistory[i].state);
-                    }
-                }
-            }
-            updateWorkflowDiagram(vm.jobs);
-        }
-
         function mergeJobsConditionsState(job, _tempJob) {
             if (_tempJob.length > 0) {
                 for (let j = 0; j < _tempJob.length; j++) {
@@ -10675,12 +10682,12 @@
 
                     if (vm.comments.ticketLink)
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
-                    updateStateOfStarter(obj, starter);
+                    updateStateOfStarter(obj, starterObj);
                 }, function () {
 
                 });
             } else {
-                updateStateOfStarter(obj, starter);
+                updateStateOfStarter(obj, starterObj);
             }
         }
 
@@ -10812,7 +10819,7 @@
                     }
                 }
 
-                if (_arr.length > 0) {
+                if (_arr.length > 0 && flag){
                     updateConditionsByEvent(_arr, true);
                 } else {
                     if (vm.isWorkflowGenerated) {
@@ -12224,9 +12231,18 @@
                                 if (state.cell.value.tagName === 'Job') {
                                     _x -= 148;
                                     if (vm.userPreferences.locale === 'de') {
-                                        _x -= 160;
+                                        _x -= 16;
                                     } else if (vm.userPreferences.locale === 'fr') {
-                                        _x -= 175;
+                                        _x -= 115;
+                                    } else if (vm.userPreferences.locale === 'ja') {
+                                        _x += 35;
+                                    }
+                                } else if (state.cell.value.tagName === 'Jobstream') {
+                                    _x -= 68;
+                                    if (vm.userPreferences.locale === 'fr') {
+                                        _x -= 55;
+                                    }else if (vm.userPreferences.locale === 'ja') {
+                                        _x -= 18;
                                     }
                                 }
                                 vm.openToRight = false;
@@ -12265,7 +12281,7 @@
                                 _y = _y - 328;
                             }
                             $menu.style.left = _x + "px";
-                            $menu.style.top = (_y + 48) + "px";
+                            $menu.style.top = (_y + 44) + "px";
 
                             this.destroy();
                         })
@@ -12562,11 +12578,11 @@
                     if (vm.selectedSession.jobStreamStarter.requiredJob) {
                         vm.taskHistory.forEach(function (history) {
                             history.requiredJob = vm.selectedSession.jobStreamStarter.requiredJob;
-                            if (!vm.jobFilters.disableColorChange && history.state && (history.state._text === 'SUCCESSFUL' || history.state._text === 'FAILED')) {
+                            if (vm.userPreferences.jobStreamWithColor && history.state && (history.state._text === 'SUCCESSFUL' || history.state._text === 'FAILED')) {
                                 vm.historyMapObj.set(history.job, history.state);
                             }
                         });
-                    }else if(!vm.jobFilters.disableColorChange){
+                    }else if(vm.userPreferences.jobStreamWithColor){
                         for (let i = 0; i < vm.taskHistory.length; i++) {
                             if (vm.taskHistory[i].state && (vm.taskHistory[i].state._text === 'SUCCESSFUL' || vm.taskHistory[i].state._text === 'FAILED')) {
                                 vm.historyMapObj.set(vm.taskHistory[i].job, vm.taskHistory[i].state);
@@ -12583,10 +12599,11 @@
         };
 
         vm.loadAuditLogs = function () {
-            var obj = {};
-            obj.jobschedulerId = vm.schedulerIds.selected;
-            obj.jobStreams = [{jobStream: vm.selectedJobStream}];
-            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject);
+            let obj = {
+                jobschedulerId: vm.schedulerIds.selected,
+                jobStreams: [{jobStream: vm.selectedJobStream}],
+                limit: parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject)
+            };
             AuditLogService.getLogs(obj).then(function (result) {
                 if (result && result.auditLog) {
                     vm.auditLogs = result.auditLog;
@@ -12609,23 +12626,16 @@
                                 callEvent = true;
                             }
                         }
-                    } else if (vm.events[0].eventSnapshots[m].eventType === "TaskEnded") {
+                    } else if (vm.events[0].eventSnapshots[m].eventType === "TaskEnded" && (vm.events[0].eventSnapshots[m].state === vm.selectedSession.session)) {
                         if (!isSessionUpdated) {
-                            let flg = false;
-                            for (let i = 0; i < vm.jobs.length; i++) {
-                                if (vm.jobs[i].path === vm.events[0].eventSnapshots[m].path) {
-                                    flg = true;
-                                    break;
-                                }
-                            }
-                            if (flg || (vm.selectedSession && vm.events[0].eventSnapshots[m].state === vm.selectedSession.session)) {
-                                isSessionUpdated = true;
-                                vm.getSessions(function () {
-                                    isSessionUpdated = false;
-                                });
-                            }
+                            isSessionUpdated = true;
+                            vm.getSessions(function () {
+                                isSessionUpdated = false;
+                            });
                         } else {
-                            vm.loadHistory();
+                            if (vm.historyTabActive || vm.userPreferences.jobStreamWithColor) {
+                                vm.loadHistory();
+                            }
                         }
                     } else if (vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "JOB" && !vm.events[0].eventSnapshots[m].eventId) {
                         if (vm.permission.AuditLog.view.status && vm.auditLogs) {

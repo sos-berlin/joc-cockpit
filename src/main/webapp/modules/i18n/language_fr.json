@@ -1862,6 +1862,7 @@
   "button.setInstanceToComplete" : "Régler l'instance sur 'terminé'",
   "button.editEvents": "Edit Events",
   "label.updateEvents": "Update Events",
+  "label.showJobInJobStreamWithColor": "Show Jobs in Job Stream with color",
   "tab.addMissingEvents": "Add Missing Events",
   "tab.deleteExistingEvents": "Delete Existing Events"
 }

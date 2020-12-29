@@ -253,7 +253,7 @@
                                         <i ng-if="job.documentation && permission.Job.view.documentation" ng-click="showDocumentation('job', job.path)" class="cursor fa fa-book"></i>
                                         <span uib-tooltip="{{job.title}}" class="{{(job.isOrderJob != undefined && job.isOrderJob!=true) ? 'text-u-l' :''}} {{job.configurationStatus.severity==2 ? 'crimson':''}}"  ng-bind-html="job.name | highlight:jobFilters.searchText"></span>
                                     </div>
-                                    <div class="btn-group dropdown pull-right abt-dropdown ">
+                                    <div class="btn-group dropdown pull-right abt-dropdown">
                                         <a href class=" more-option text-black-lt" data-toggle="dropdown">
                                             <i class="text fa fa-ellipsis-h"></i></a>
                                         <div class="dropdown-menu dropdown-ac dropdown-more">
@@ -796,11 +796,6 @@
                                                 <span>{{session.started | stringToDate}}</span>
                                             </a>
                                         </div>
-                                        <label class="md-check m-l-md">
-                                            <input type="checkbox" ng-model="jobFilters.disableColorChange" ng-change="disableColorChangefunc()">
-                                            <i class="primary"></i>
-                                            Disable Color Change
-                                        </label>
                                     </div>
                                     <div class="box-shadow-z1" id="graph" ondragover="allowDrop(event)"></div>
                                     <div id="dropContainer" class="dropContainer">
@@ -898,10 +893,10 @@
                                         <a class="dropdown-item" ng-click="editJobstreamStarter(selectedNode);closeMenu()"
                                            ng-if="permission.JobStream.change.jobStream && selectedNode.type === 'Jobstream'"><span
                                                 translate>button.edit</span></a>
-                                        <a class="dropdown-item" ng-click="startJobstream(selectedNode);closeMenu()"
+                                        <a class="dropdown-item" ng-click="startJobstream(selectedNode);closeMenu()" ng-class="{'disable-link': selectedNode.status == 'paused'}"
                                            ng-if="permission.Job.execute.start && selectedNode.type === 'Jobstream'"><span
                                                 translate>button.startNow</span></a>
-                                        <a class="dropdown-item" ng-click="startJobStreamStarterParameterized(selectedNode);closeMenu()"
+                                        <a class="dropdown-item" ng-click="startJobStreamStarterParameterized(selectedNode);closeMenu()" ng-class="{'disable-link': selectedNode.status == 'paused'}"
                                            ng-if="permission.Job.execute.start && selectedNode.type === 'Jobstream'"><span
                                                 translate>button.startJobStreamStarterParameterized</span></a>
                                         <a class="dropdown-item" ng-click="setRuntimeJobstream(selectedNode);closeMenu()"
@@ -925,23 +920,23 @@
                                                 <div class="b-b">
                                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                                         <li class="nav-item" >
-                                                            <a class="nav-link active" data-toggle="tab"
+                                                            <a class="nav-link active" ng-click="historyTabActive = false;" data-toggle="tab"
                                                                data-target="#tab1_5" translate>label.sessions</a>
                                                         </li>
                                                         <li class="nav-item">
-                                                            <a class="nav-link" data-toggle="tab"
-                                                               data-target="#tab1_1" translate>label.taskHistory</a>
+                                                            <a class="nav-link" ng-click="historyTabActive = true;loadHistory()"
+                                                               data-toggle="tab" data-target="#tab1_1" translate>label.taskHistory</a>
                                                         </li>
                                                         <li class="nav-item">
-                                                            <a class="nav-link" data-toggle="tab"
+                                                            <a class="nav-link" ng-click="historyTabActive = false;" data-toggle="tab"
                                                                data-target="#tab1_2" translate>label.taskQueue</a>
                                                         </li>
                                                         <li class="nav-item">
-                                                            <a class="nav-link" data-toggle="tab"
+                                                            <a class="nav-link" ng-click="historyTabActive = false;" data-toggle="tab"
                                                                data-target="#tab1_3" translate>label.runningTask</a>
                                                         </li>
                                                         <li class="nav-item" ng-if="permission.AuditLog.view.status">
-                                                            <a class="nav-link" ng-click="loadAuditLogs()" data-toggle="tab"
+                                                            <a class="nav-link" ng-click="historyTabActive = false;loadAuditLogs()" data-toggle="tab"
                                                                data-target="#tab1_4" translate>label.auditLog</a>
                                                         </li>
                                                     </ul>
