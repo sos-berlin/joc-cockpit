@@ -4112,11 +4112,13 @@
                     obj.states.push(vm.jobFilters.filter.state);
                 }
             }
-            delete obj ['folders'];
-            obj.jobs = [];
-            for (let i = 0; i < vm.filtered.length; i++) {
-                if (!vm.filtered[i].state) {
-                    obj.jobs.push({job: vm.filtered[i].path});
+            if(!vm.isConditionTab) {
+                delete obj ['folders'];
+                obj.jobs = [];
+                for (let i = 0; i < vm.filtered.length; i++) {
+                    if (!vm.filtered[i].state) {
+                        obj.jobs.push({job: vm.filtered[i].path});
+                    }
                 }
             }
             if (vm.allJobs.length === 0) {
