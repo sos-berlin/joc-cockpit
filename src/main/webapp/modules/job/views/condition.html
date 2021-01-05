@@ -893,10 +893,10 @@
                                         <a class="dropdown-item" ng-click="editJobstreamStarter(selectedNode);closeMenu()"
                                            ng-if="permission.JobStream.change.jobStream && selectedNode.type === 'Jobstream'"><span
                                                 translate>button.edit</span></a>
-                                        <a class="dropdown-item" ng-click="startJobstream(selectedNode);closeMenu()" ng-class="{'disable-link': selectedNode.status == 'paused'}"
+                                        <a class="dropdown-item" ng-click="startJobstream(selectedNode);closeMenu()"
                                            ng-if="permission.Job.execute.start && selectedNode.type === 'Jobstream'"><span
                                                 translate>button.startNow</span></a>
-                                        <a class="dropdown-item" ng-click="startJobStreamStarterParameterized(selectedNode);closeMenu()" ng-class="{'disable-link': selectedNode.status == 'paused'}"
+                                        <a class="dropdown-item" ng-click="startJobStreamStarterParameterized(selectedNode);closeMenu()"
                                            ng-if="permission.Job.execute.start && selectedNode.type === 'Jobstream'"><span
                                                 translate>button.startJobStreamStarterParameterized</span></a>
                                         <a class="dropdown-item" ng-click="setRuntimeJobstream(selectedNode);closeMenu()"
@@ -1037,7 +1037,7 @@
                                                                                ng-click="downloadLog(task);$event.stopPropagation()"></i>
                                                                             <span ng-bind="task.taskId"></span>
                                                                         </td>
-                                                                        <td>{{task.job.substring(task.job.lastIndexOf('/')+1)}}</td>
+                                                                        <td>{{task.job}}</td>
                                                                         <td>
                                                                             <span class="label" ng-if="task.state._text" ng-class="[bgColorFunction(task.state.severity), {'primary' :
                                                                                             task.requiredJob === task.job}]">

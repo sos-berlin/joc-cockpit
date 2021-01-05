@@ -6275,6 +6275,7 @@
                         }
                     }
                     if (arr.length > 0) {
+
                         let obj = {};
                         obj.jobschedulerId = $scope.schedulerIds.selected;
                         obj.jobs = [];
@@ -8905,7 +8906,6 @@
             if (vm.jobFilters.graphViewDetail.tab === 'reference') {
                 vm.jobFilters.graphViewDetail.tab = 'jobStream';
             }
-
             if (vm.allJobs.length > 0) {
                 let res1, result1, flag = vm.jobFilters.graphViewDetail.isWorkflowCompact;
                 if (vm.workflows && flag) {
@@ -9324,10 +9324,10 @@
             let barColor;
             if (vm.historyMapObj && vm.historyMapObj.size > 0 && job.state._text !== 'RUNNING') {
                 let _history = vm.historyMapObj.get(job.path);
-                if (_history && _history._text === 'SUCCESSFUL') {
+                if (_history) {
                     flag = false;
-                    style += ';strokeColor=' + '#007da6';
-                    barColor = 'blue';
+                    style += ';strokeColor=' + (_history._text === 'SUCCESSFUL' ? '#007da6' : '#dc143c');
+                    barColor = _history._text === 'SUCCESSFUL' ? 'blue' : 'red';
                 }
             }
 
@@ -9683,7 +9683,7 @@
             return flag;
         }
 
-        function updateWorkflowDiagram(jobs, changesJobs) {
+        function updateWorkflowDiagram(jobs, changesJobs, isHistory) {
             if (!jobs || !vm.editor) return;
             if (!vm.editor.graph) return;
             vm.runningTasks = [];
@@ -9694,18 +9694,42 @@
             let edges = [];
             let edges2 = [];
             let jobMapObj = new Map();
-
+            let vertices = [];
             jobs.forEach(function (job) {
                 if (changesJobs) {
                     for (let i = 0; i < changesJobs.length; i++) {
-                        if (changesJobs[i].job === job.path) {
+                        if (changesJobs[i].job === job.path){
+                            vertices.push(graph.getModel().getCell(job.jId));
                             jobMapObj.set(job.path, job);
                             changesJobs.splice(i, 1);
                             break;
                         }
                     }
                 } else {
-                    jobMapObj.set(job.path, job);
+                    let flag = true;
+                    if(isHistory){
+                        if (vm.historyMapObj && vm.historyMapObj.size > 0 && job.state._text !== 'RUNNING') {
+                            let _history = vm.historyMapObj.get(job.path);
+                            if (_history) {
+                                let barColor = _history._text === 'SUCCESSFUL' ? 'blue' : 'red';
+                                if(job.barColor) {
+                                    if (job.barColor === barColor) {
+                                        flag = false;
+                                    }
+                                }else{
+                                    job.barColor = barColor;
+                                }
+                            }else{
+                                job.barColor = null;
+                            }
+                        }else{
+                            job.barColor = null;
+                        }
+                    }
+                    if(flag) {
+                        vertices.push(graph.getModel().getCell(job.jId));
+                        jobMapObj.set(job.path, job);
+                    }
                 }
                 if (job.runningTasks && job.runningTasks.length > 0) {
                     angular.forEach(job.runningTasks, function (value, index) {
@@ -9721,82 +9745,76 @@
                 }
             });
             try {
-                let vertices = graph.getChildVertices(parent);
                 let len = vertices.length;
                 for (let i = 0; i < len; i++) {
-                    if (vertices[i].value.tagName === 'Job') {
-                        let jobPath = vertices[i].getAttribute('actual');
-                        let oldStatus = vertices[i].getAttribute('status');
-                        let _job = jobMapObj.get(jobPath);
-                        if (_job) {
-                            let _style = vertices[i].getStyle();
-                            let isChange = oldStatus !== _job.state._text;
-                            let enqueTask, nextPeriod = checkNextPeriod(_job);
-                            if (vertices[i].getAttribute('nextPeriod') !== nextPeriod) {
-                                const edit1 = new mxCellAttributeChange(
-                                    vertices[i], 'nextPeriod', nextPeriod);
-                                graph.getModel().execute(edit1);
-                            }
-                            if (isChange) {
-                                const edit2 = new mxCellAttributeChange(
-                                    vertices[i], 'status', _job.state._text);
-                                graph.getModel().execute(edit2);
-                            }
-                            if (vertices[i].getAttribute('nextStartTime') !== _job.nextStartTime) {
-                                const edit3 = new mxCellAttributeChange(
-                                    vertices[i], 'nextStartTime', _job.nextStartTime);
-                                graph.getModel().execute(edit3);
-                            }
-                            let edit4;
-                            if (_job.taskQueue && _job.taskQueue.length > 0) {
-                                enqueTask = _job.taskQueue[_job.taskQueue.length - 1];
-                                edit4 = new mxCellAttributeChange(
-                                    vertices[i], 'enquePeriod', enqueTask.enqueued);
-                            } else if (vertices[i].getAttribute('enquePeriod')) {
-                                edit4 = new mxCellAttributeChange(
-                                    vertices[i], 'enquePeriod', '');
-                            }
-                            if (edit4) {
-                                graph.getModel().execute(edit4);
-                            }
+                    let jobPath = vertices[i].getAttribute('actual');
+                    let oldStatus = vertices[i].getAttribute('status');
+                    let _job = jobMapObj.get(jobPath);
+                    if (_job) {
+                        let _style = vertices[i].getStyle();
+                        let isChange = oldStatus !== _job.state._text;
+                        let enqueTask, nextPeriod = checkNextPeriod(_job);
+                        if (vertices[i].getAttribute('nextPeriod') !== nextPeriod) {
+                            const edit1 = new mxCellAttributeChange(
+                                vertices[i], 'nextPeriod', nextPeriod);
+                            graph.getModel().execute(edit1);
+                        }
+                        if (isChange) {
+                            const edit2 = new mxCellAttributeChange(
+                                vertices[i], 'status', _job.state._text);
+                            graph.getModel().execute(edit2);
+                        }
+                        if (vertices[i].getAttribute('nextStartTime') !== _job.nextStartTime) {
+                            const edit3 = new mxCellAttributeChange(
+                                vertices[i], 'nextStartTime', _job.nextStartTime);
+                            graph.getModel().execute(edit3);
+                        }
+                        let edit4;
+                        if (_job.taskQueue && _job.taskQueue.length > 0) {
+                            enqueTask = _job.taskQueue[_job.taskQueue.length - 1];
+                            edit4 = new mxCellAttributeChange(
+                                vertices[i], 'enquePeriod', enqueTask.enqueued);
+                        } else if (vertices[i].getAttribute('enquePeriod')) {
+                            edit4 = new mxCellAttributeChange(
+                                vertices[i], 'enquePeriod', '');
+                        }
+                        if (edit4) {
+                            graph.getModel().execute(edit4);
+                        }
 
-                            let style = 'job', barColor = '';
-                            let flag = true;
-                            if (vm.historyMapObj && vm.historyMapObj.size > 0 && _job.state._text !== 'RUNNING') {
-                                let _history = vm.historyMapObj.get(jobPath);
-                                if (_history) {
-                                    flag = false;
-                                    style += ';strokeColor=' + (_history._text === 'SUCCESSFUL' ? '#007da6' : '#dc143c');
-                                    barColor = _history._text === 'SUCCESSFUL' ? 'blue' : 'red';
-                                    edges2 = edges2.concat(graph.getOutgoingEdges(vertices[i], parent));
-                                }
+                        let style = 'job', barColor = '';
+                        let flag = true;
+                        if (_job.barColor) {
+                            flag = false;
+                            style += ';strokeColor=' + (_job.barColor === 'blue' ? '#007da6' : '#dc143c');
+                            barColor = _job.barColor;
+                            edges2 = edges2.concat(graph.getOutgoingEdges(vertices[i], parent));
+                        }
+                        if (flag) {
+                            style += ';strokeColor=' + (CoreService.getColorBySeverity(_job.state.severity) || '#999');
+                        }
+                        if (nextPeriod) {
+                            style += ';fillColor=none';
+                        }
+                        if (_style === style) {
+                            continue;
+                        }
+                        vertices[i].setStyle(style);
+                        if (flag) {
+                            barColor = _job.state._text === 'RUNNING' ? 'green' : _job.state._text === 'PENDING' ? 'yellow' : _job.state._text === undefined ? 'grey' : 'red';
+                            if (barColor !== 'red' && enqueTask) {
+                                barColor = 'orange';
                             }
-                            if (flag) {
-                                style += ';strokeColor=' + (CoreService.getColorBySeverity(_job.state.severity) || '#999');
+                            addOverlays(graph, vertices[i], barColor);
+                            if (_job.state._text === 'RUNNING') {
+                                edges = edges.concat(graph.getOutgoingEdges(vertices[i], parent));
+                            } else {
+                                edges2 = edges2.concat(graph.getOutgoingEdges(vertices[i], parent));
                             }
-                            if (nextPeriod) {
-                                style += ';fillColor=none';
-                            }
-                            if (_style === style) {
-                                continue;
-                            }
-                            vertices[i].setStyle(style);
-                            if (flag) {
-                                barColor = _job.state._text === 'RUNNING' ? 'green' : _job.state._text === 'PENDING' ? 'yellow' : _job.state._text === undefined ? 'grey' : 'red';
-                                if (barColor !== 'red' && enqueTask) {
-                                    barColor = 'orange';
-                                }
-                                addOverlays(graph, vertices[i], barColor);
-                                if (_job.state._text === 'RUNNING') {
-                                    edges = edges.concat(graph.getOutgoingEdges(vertices[i], parent));
-                                } else {
-                                    edges2 = edges2.concat(graph.getOutgoingEdges(vertices[i], parent));
-                                }
-                            }
-                            if (barColor) {
-                                graph.removeCellOverlay(vertices[i]);
-                                addOverlays(graph, vertices[i], barColor);
-                            }
+                        }
+                        if (barColor) {
+                            graph.removeCellOverlay(vertices[i]);
+                            addOverlays(graph, vertices[i], barColor);
                         }
                     }
                 }
@@ -12592,7 +12610,7 @@
                         }
                     }
                     if(vm.jobs && vm.jobs.length > 0 && vm.historyMapObj && vm.historyMapObj.size > 0) {
-                        updateWorkflowDiagram(vm.jobs, null)
+                        updateWorkflowDiagram(vm.jobs, null, true)
                     }
                 });
             } else{
@@ -12629,15 +12647,8 @@
                             }
                         }
                     } else if (vm.events[0].eventSnapshots[m].eventType === "TaskEnded" && (vm.events[0].eventSnapshots[m].state === vm.selectedSession.session)) {
-                        if (!isSessionUpdated) {
-                            isSessionUpdated = true;
-                            vm.getSessions(function () {
-                                isSessionUpdated = false;
-                            });
-                        } else {
-                            if (vm.historyTabActive || vm.userPreferences.jobStreamWithColor) {
-                                vm.loadHistory();
-                            }
+                        if (vm.historyTabActive || vm.userPreferences.jobStreamWithColor) {
+                            vm.loadHistory();
                         }
                     } else if (vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "JOB" && !vm.events[0].eventSnapshots[m].eventId) {
                         if (vm.permission.AuditLog.view.status && vm.auditLogs) {
@@ -12646,7 +12657,6 @@
                     } else if (vm.events[0].eventSnapshots[m].eventType === "VariablesCustomEvent") {
                         checkStreamList = false;
                         updateJobStreamList();
-                        break;
                     } else if ((vm.events[0].eventSnapshots[m].eventType === "JobStreamStarted" ||
                         vm.events[0].eventSnapshots[m].eventType === "JobStreamCompleted") &&
                         ((vm.events[0].eventSnapshots[m].path && vm.events[0].eventSnapshots[m].path.match(vm.selectedJobStreamObj.jobStream))
