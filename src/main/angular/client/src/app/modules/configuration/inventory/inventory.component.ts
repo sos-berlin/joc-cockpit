@@ -2368,7 +2368,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  removeDraft(node) {
+  deleteDraft(node) {
     const object = node.origin;
     let _path;
     if (object.type) {

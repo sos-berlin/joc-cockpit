@@ -68,7 +68,7 @@
         <a class="pull-right text"
            [ngClass]="{'_600': state =='CALLING'}" [innerHtml]="snapshot.calling || 0"></a>
       </div>
-      <div class="setback">
+      <div class="waiting">
         <span class="text-black-lt _300" [ngClass]="{'_600': state =='WAITING'}">
           <a (click)="setFilter('WAITING')"
              class="primary-text-hover-color"

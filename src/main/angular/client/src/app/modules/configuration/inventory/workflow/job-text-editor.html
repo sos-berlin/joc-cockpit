@@ -1,4 +1,4 @@
-<nz-tabset [(nzSelectedIndex)]="index" (nzSelectChange)="tabChange($event)">
+<nz-tabset [(nzSelectedIndex)]="index" [nzAnimated]="false" (nzSelectChange)="tabChange($event)">
   <nz-tab [nzTitle]="'workflow.tab.jobProperties' | translate">
     <div class="job-property-editor">
       <div class="form-group row">
@@ -42,7 +42,7 @@
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.agent</label>
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : (obj.agent || (agentId.dirty || agentId.touched) && agentId.invalid)}">
-          <nz-select nzShowSearch name="agentId" nzPlaceHolder="{{'workflow.placeholder.selectAgentId' | translate}}"
+          <nz-select nzShowSearch name="agentId" nzPlaceHolder="{{'workflow.placeholder.selectAgentName' | translate}}"
                      [(ngModel)]="selectedNode.job.agentId" #agentId="ngModel" (ngModelChange)="onBlur();">
             <nz-option *ngFor="let agent of agents" [nzLabel]="agent" [nzValue]="agent"></nz-option>
           </nz-select>
@@ -174,6 +174,7 @@
     </div>
   </nz-tab>
   <nz-tab [nzTitle]="'workflow.tab.jobOptions' | translate">
+    <div class="job-property-editor">
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.taskLimit</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((taskLimit.dirty || taskLimit.touched) && taskLimit.invalid)}">
@@ -205,8 +206,8 @@
         <div class="col-md-8 col-lg-9">
           <nz-select name="criticality" nzAllowClear class="w-full" [nzPlaceHolder]="'inventory.placeholder.selectCriticality' | translate"
                      [(ngModel)]="selectedNode.job.criticality">
-            <nz-option [nzLabel]="'NORMAL'" [nzValue]="'label.normal' | translate"></nz-option>
-            <nz-option [nzLabel]="'CRITICAL'" [nzValue]="'label.critical' | translate"></nz-option>
+            <nz-option [nzValue]="'NORMAL'" [nzLabel]="'common.label.normal' | translate"></nz-option>
+            <nz-option [nzValue]="'CRITICAL'" [nzLabel]="'common.label.critical' | translate"></nz-option>
           </nz-select>
         </div>
       </div>
@@ -215,14 +216,16 @@
         <div class="col-md-8 col-lg-9">
           <nz-select name="logLevel" nzAllowClear class="w-full" [nzPlaceHolder]="'inventory.placeholder.selectLogLevel' | translate"
                      [(ngModel)]="selectedNode.job.logLevel">
-            <nz-option [nzLabel]="'INFO'" [nzValue]="'label.info' | translate"></nz-option>
-            <nz-option [nzLabel]="'DEBUG'" [nzValue]="'label.debug' | translate"></nz-option>
-            <nz-option [nzLabel]="'TRACE'" [nzValue]="'label.trace' | translate"></nz-option>
+            <nz-option [nzValue]="'INFO'" [nzLabel]="'log.label.info' | translate"></nz-option>
+            <nz-option [nzValue]="'DEBUG'" [nzLabel]="'log.label.debug' | translate"></nz-option>
+            <nz-option [nzValue]="'TRACE'" [nzLabel]="'log.label.trace' | translate"></nz-option>
           </nz-select>
         </div>
       </div>
+    </div>
   </nz-tab>
   <nz-tab [nzTitle]="'workflow.tab.nodeProperties' | translate">
+    <div class="job-property-editor">
       <div class="form-group row">
         <label class="col-md-12 _600">{{'workflow.label.arguments' | translate}}</label>
         <div class="col-md-12">
@@ -249,5 +252,6 @@
           </div>
         </div>
       </div>
+    </div>
   </nz-tab>
 </nz-tabset>

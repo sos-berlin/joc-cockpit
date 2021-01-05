@@ -1,21 +1,21 @@
 import {Component, OnInit, ViewChild, OnDestroy, Input, Output, EventEmitter} from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import * as _ from 'underscore';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
+import {ToasterService} from 'angular2-toaster';
+import * as _ from 'underscore';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
+import {TreeModalComponent} from '../../components/tree-modal/tree.component';
+import {WorkflowActionComponent} from './workflow-action/workflow-action.component';
 import {AuthService} from '../../components/guard';
 import {SaveService} from '../../services/save.service';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {WorkflowService} from '../../services/workflow.service';
-import {TreeModalComponent} from '../../components/tree-modal/tree.component';
-import {WorkflowActionComponent} from './workflow-action/workflow-action.component';
-import {SearchPipe} from '../../filters/filter.pipe';
-import {TranslateService} from '@ngx-translate/core';
 import {ExcelService} from '../../services/excel.service';
-import {ToasterService} from 'angular2-toaster';
+import {SearchPipe} from '../../filters/filter.pipe';
 
 declare const $;
 
@@ -66,7 +66,6 @@ export class FilterModalComponent implements OnInit {
   templateUrl: './form-template.html',
 })
 export class SearchComponent implements OnInit {
-
   @Input() schedulerIds: any;
   @Input() filter: any;
   @Input() preferences: any;
@@ -529,6 +528,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             for (let j = 0; j < obj.workflowIds.length; j++) {
               if (this.workflows[i].path === obj.workflowIds[j].path) {
                 this.workflows[i].numOfOrders = 0;
+                this.workflows[i].orders = [];
                 this.workflows[i].ordersSummary = {};
                 obj.workflowIds.splice(i, 1);
                 break;
@@ -538,6 +538,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           for (let j = 0; j < res.orders.length; j++) {
             if (this.workflows[i].path === res.orders[j].workflowId.path) {
               this.workflows[i].numOfOrders = (this.workflows[i].numOfOrders || 0) + 1;
+              if (!this.workflows[i].orders) {
+                this.workflows[i].orders = [];
+              }
+              this.workflows[i].orders.push(res.orders[j]);
               const state = res.orders[j].state._text.toLowerCase();
               if (this.workflows[i].ordersSummary[state]) {
                 this.workflows[i].ordersSummary[state] = this.workflows[i].ordersSummary[state] + 1;
@@ -589,7 +593,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     function traverseTree1(data) {
       if (!flag) {
         for (let i = 0; i < data.children.length; i++) {
-          console.log(data.children[i].path);
           if (data.children[i].path === path) {
             flag = true;
             break;
@@ -708,7 +711,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.allFilter = this.filterList;
     modalRef.componentInstance.new = true;
     modalRef.result.then((configObj) => {
-      if (this.filterList.length == 1) {
+      if (this.filterList.length === 1) {
         this.savedFilter.selected = configObj.id;
         this.workflowFilters.selectedView = true;
         this.selectedFiltered = configObj;
@@ -767,8 +770,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.edit = !isCopy;
       modalRef.result.then((configObj) => {
 
-      }, (reason) => {
-        console.log('close...', reason);
+      }, () => {
+
       });
     });
   }

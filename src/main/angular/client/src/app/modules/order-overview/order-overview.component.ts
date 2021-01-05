@@ -71,6 +71,7 @@ export class OrderPieChartComponent implements OnInit, OnDestroy {
 
   private preparePieData(res) {
     let ordersData = [];
+    this.colorScheme.domain = [];
     for (let prop in res) {
       if (res[prop] > 0) {
         let obj: any = {};
@@ -81,13 +82,13 @@ export class OrderPieChartComponent implements OnInit, OnDestroy {
           this.colorScheme.domain.push('#7ab97a');
         } else if (prop === 'suspended') {
           this.colorScheme.domain.push('#ffa366');
-        } else if (prop === 'waiting') {
+        } else if (prop === 'inProgress') {
           this.colorScheme.domain.push('#99b2df');
         } else if (prop === 'blocked') {
           this.colorScheme.domain.push('#b966b9');
         } else if (prop === 'pending') {
           this.colorScheme.domain.push('rgba(255,195,0,0.9)');
-        } else if (prop === 'inProgress') {
+        } else if (prop === 'waiting') {
           this.colorScheme.domain.push('#d6d313');
         } else if (prop === 'failed') {
           this.colorScheme.domain.push('#e86680');
@@ -240,7 +241,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     if (this.sideView.orderOverview && !this.sideView.orderOverview.show) {
       this.hidePanel();
     }
-    this.getOrders({controllerId: this.schedulerIds.selected, states: [this.orderFilters.filter.state]});
+    this.getOrders({controllerId: this.schedulerIds.selected, states: this.orderFilters.filter.state !== 'ALL' ? [this.orderFilters.filter.state] : undefined});
   }
 
   ngOnDestroy() {
@@ -322,7 +323,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType.match(/Order/) || args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
-          this.getOrders({controllerId: this.schedulerIds.selected, states: [this.orderFilters.filter.state]});
+          this.getOrders({controllerId: this.schedulerIds.selected, states: this.orderFilters.filter.state !== 'ALL' ? [this.orderFilters.filter.state] : undefined });
           break;
         }
       }
@@ -361,11 +362,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   changeStatus(state) {
     this.orderFilters.filter.state = state;
-    if (state !== 'ALL') {
-      this.getOrders({controllerId: this.schedulerIds.selected, states: [state]});
-    } else {
-      this.getOrders({controllerId: this.schedulerIds.selected});
-    }
+    this.getOrders({controllerId: this.schedulerIds.selected, states: state !== 'ALL' ? [state] : undefined});
   }
 
   /** ----------------------------Begin Action ----------------------------------*/

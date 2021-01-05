@@ -901,12 +901,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   importJSON() {
     const modalRef = this.modalService.open(ImportComponent, {backdrop: 'static', size: 'lg'});
     modalRef.result.then((result) => {
+      this.parseWorkflowJSON(result);
       this.workflow.configuration = this.coreService.clone(result);
       if (result.jobs && !_.isEmpty(result.jobs)) {
         this.jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
           return {name: k, value: v};
         });
       }
+
       this.history = [];
       this.indexOfNextAdd = 0;
       this.updateXMLJSON(false);
@@ -914,6 +916,28 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }, (reason) => {
 
     });
+  }
+
+  private parseWorkflowJSON(result) {
+    if (result.jobs && !_.isEmpty(result.jobs)) {
+      for (let x in result.jobs) {
+        let v: any = result.jobs[x];
+        const obj = {
+          agentId: v.agentId,
+          executable: v.executable,
+          returnCodeMeaning: v.returnCodeMeaning,
+          defaultArguments: v.defaultArguments,
+          jobClass: v.jobClass,
+          title: v.title,
+          logLevel: v.logLevel,
+          criticality: v.criticality,
+          timeout: v.timeout,
+          graceTimeout: v.graceTimeout,
+          taskLimit: v.taskLimit
+        };
+        result.jobs[x] = obj;
+      }
+    }
   }
 
   @HostListener('window:beforeunload', ['$event'])

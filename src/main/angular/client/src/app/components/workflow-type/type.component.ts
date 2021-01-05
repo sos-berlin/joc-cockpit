@@ -1,4 +1,5 @@
 import {Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges} from '@angular/core';
+import {CoreService} from '../../services/core.service';
 
 declare const $;
 
@@ -10,9 +11,13 @@ declare const $;
 export class TypeComponent implements OnChanges {
   @Input() configuration;
   @Input() expandAll;
+  @Input() orders;
+  @Input() preferences: any;
+  @Input() permission: any;
+  @Input() schedulerId: any;
   @Output() update: EventEmitter<any> = new EventEmitter();
 
-  constructor() {
+  constructor(public coreService: CoreService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -29,6 +34,9 @@ export class TypeComponent implements OnChanges {
           this.configuration.instructions[i].show = true;
         }
       }
+    }
+    if (changes.orders) {
+      this.updateOrder();
     }
   }
 
@@ -87,6 +95,93 @@ export class TypeComponent implements OnChanges {
     }
 
     recursive(node);
+  }
+
+  private updateOrder() {
+    let mapObj = new Map();
+    for (let j = 0; j < this.orders.length; j++) {
+      mapObj.set(JSON.stringify(this.orders[j].position), this.orders[j]);
+    }
+
+    function recursive(json, count) {
+      if (json.instructions) {
+        for (let x = 0; x < json.instructions.length; x++) {
+          if (json.instructions[x].position) {
+            delete json.instructions[x]['order'];
+            let _order = mapObj.get(JSON.stringify(json.instructions[x].position));
+            if (_order) {
+              json.instructions[x].order = _order;
+              ++count;
+            }
+            json.instructions[x].count = count;
+          }
+          if (json.instructions[x].TYPE === 'Fork') {
+            if (json.instructions[x].branches) {
+              for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                if (json.instructions[x].branches[i].position) {
+                  delete json.instructions[x].branches[i]['order'];
+                  let _order = mapObj.get(JSON.stringify(json.instructions[x].branches[i].position));
+                  if (_order) {
+                    json.instructions[x].branches[i].order = _order;
+                    ++count;
+                  }
+                }
+                json.instructions[x].branches[i].count = count;
+                if (json.instructions[x].branches[i].instructions) {
+                  recursive(json.instructions[x].branches[i], count);
+                }
+              }
+            }
+          }
+
+          if (json.instructions[x].instructions) {
+            recursive(json.instructions[x], 0);
+          }
+          if (json.instructions[x].catch) {
+            if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+              recursive(json.instructions[x].catch, count);
+            }
+          }
+          if (json.instructions[x].then && json.instructions[x].then.instructions) {
+            recursive(json.instructions[x].then, count);
+          }
+          if (json.instructions[x].else && json.instructions[x].else.instructions) {
+            recursive(json.instructions[x].else, count);
+          }
+          console.log(json.instructions[x].position, 'poistion', count);
+        }
+      } else {
+        if (json.branches) {
+          for (let i = 0; i < json.branches.length; i++) {
+            if (json.branches[i].position) {
+              delete json.branches[i]['order'];
+              let _order = mapObj.get(JSON.stringify(json.branches[i].position));
+              if (_order) {
+                json.branches[i].order = _order;
+                ++count;
+              }
+            }
+            json.branches[i].count = count;
+            if (json.branches[i].instructions) {
+              recursive(json.branches[i], 0);
+            }
+          }
+        }
+      }
+    }
+
+    if (this.orders) {
+      let count = 0;
+      for (let i = 0; i < this.configuration.instructions.length; i++) {
+        delete this.configuration.instructions[i]['order'];
+        let _order = mapObj.get(JSON.stringify(this.configuration.instructions[i].position));
+        if (_order) {
+          this.configuration.instructions[i].order = _order;
+          ++count;
+        }
+        recursive(this.configuration.instructions[i], count);
+      }
+    }
   }
 
   expandNode(node) {

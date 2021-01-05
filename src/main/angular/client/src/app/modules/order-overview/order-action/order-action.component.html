@@ -5,24 +5,30 @@
   </button>
   <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
     <ul nz-menu>
-      <li nz-menu-item *ngIf="permission && permission.Order.execute.start">
+<!--      <li nz-menu-item *ngIf="permission && permission.Order.execute.start">
         <a (click)="startOrder(order)" translate>order.button.startOrderNow</a>
       </li>
       <li nz-menu-item *ngIf="permission && permission.Order.execute.start">
         <a (click)="startOrderAt()" translate>order.button.startOrderat</a>
+      </li>-->
+      <li nz-menu-item *ngIf="permission && permission.Order.execute">
+        <a (click)="cancelOrder()" translate>order.button.cancel</a>
       </li>
       <li nz-menu-item *ngIf="permission && permission.Order.execute">
-        <a (click)="cancelOrder()" translate>order.button.cancelOrder</a>
+        <a (click)="cancelOrderWithKill()" translate>order.button.cancelAndKillTask</a>
       </li>
-      <li nz-menu-item *ngIf="permission && permission.Order.execute.suspend">
-        <a (click)="suspendOrder(order)" translate>order.button.suspendOrder</a>
+      <li nz-menu-item *ngIf="permission && permission.Order.execute.suspend && (order.state._text === 'RUNNING' || order.state._text === 'INPROGRESS')">
+        <a (click)="suspendOrder(order)" translate>order.button.suspend</a>
       </li>
-      <li nz-menu-item *ngIf="permission && permission.Order.execute.resume">
-        <a (click)="resumeOrder()" translate>order.button.resumeOrder</a>
+      <li nz-menu-item *ngIf="permission && permission.Order.execute && (order.state._text === 'RUNNING' || order.state._text === 'INPROGRESS')">
+        <a (click)="suspendOrderWithKill()" translate>order.button.suspendAndKillTask</a>
       </li>
-      <li nz-menu-item>
+      <li nz-menu-item *ngIf="permission && permission.Order.execute.resume && order.state._text === 'FAILED'">
+        <a (click)="resumeOrder()" translate>order.button.resume</a>
+      </li>
+<!--      <li nz-menu-item>
         <a (click)="coreService.copyLink('order',order.orderId)" translate>common.button.copyLinkToObject</a>
-      </li>
+      </li>-->
     </ul>
   </nz-dropdown-menu>
 </div>

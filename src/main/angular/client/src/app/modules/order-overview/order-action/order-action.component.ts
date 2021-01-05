@@ -177,31 +177,6 @@ export class OrderActionComponent {
     });
   }
 
-  suspendOrder(order) {
-    const obj: any = {
-      controllerId: this.schedulerId, orderIds: [order.orderId]
-    };
-    if (this.preferences.auditLog) {
-      let comments = {
-        radio: 'predefined',
-        type: 'Order',
-        operation: 'Suspend',
-        name: order.orderId
-      };
-      const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.comments = comments;
-      modalRef.componentInstance.obj = obj;
-      modalRef.componentInstance.url = 'orders/suspend';
-      modalRef.result.then((result) => {
-        console.log(result);
-      }, (reason) => {
-        console.log('close...', reason);
-      });
-    } else {
-      this.coreService.post('orders/suspend', obj).subscribe(() => {
-      });
-    }
-  }
 
   resumeOrder() {
     const obj: any = {
@@ -229,28 +204,44 @@ export class OrderActionComponent {
     }
   }
 
+  suspendOrder(order) {
+    this.restCall(true, 'Cancel', order);
+  }
+
+  suspendOrderWithKill() {
+    this.restCall(true, 'Cancel', this.order);
+  }
+
   cancelOrder() {
+    this.restCall(false, 'Cancel', this.order);
+  }
+
+  cancelOrderWithKill() {
+    this.restCall(true, 'Cancel', this.order);
+  }
+
+  private restCall(isKill, type, order) {
     const obj: any = {
-      controllerId: this.schedulerId, orderIds: [this.order.orderId]
+      controllerId: this.schedulerId, orderIds: [order.orderId], kill: isKill
     };
     if (this.preferences.auditLog) {
       let comments = {
         radio: 'predefined',
         type: 'Order',
-        operation: 'Cancel',
-        name: this.order.orderId
+        operation: type,
+        name: order.orderId
       };
       const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.comments = comments;
       modalRef.componentInstance.obj = obj;
-      modalRef.componentInstance.url = 'orders/cancel';
+      modalRef.componentInstance.url = 'orders/' + type.toLowerCase();
       modalRef.result.then((result) => {
         console.log(result);
       }, (reason) => {
         console.log('close...', reason);
       });
     } else {
-      this.coreService.post('orders/cancel', obj).subscribe(() => {
+      this.coreService.post('orders/' + type.toLowerCase(), obj).subscribe(() => {
       });
     }
   }

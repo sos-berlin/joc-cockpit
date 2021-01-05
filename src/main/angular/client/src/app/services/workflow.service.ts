@@ -332,8 +332,8 @@ export class WorkflowService {
 
   public convertValueToString(cell, graph): string {
     function truncate(input) {
-      if (input.length > 40) {
-        return input.substring(0, 40) + '...';
+      if (input.length > 22) {
+        return input.substring(0, 22) + '...';
       } else {
         return input;
       }

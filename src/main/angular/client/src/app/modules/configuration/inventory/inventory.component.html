@@ -151,9 +151,9 @@
                     <li nz-menu-item *ngIf="permission.Inventory.configurations.delete && !node.origin.deleted"
                         [nzDisabled]="(node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.hasDeployments && node.origin.type !== 'SCHEDULE' && node.origin.type !== 'CALENDAR') || (!node.origin.hasReleases && (node.origin.type === 'SCHEDULE' || node.origin.type === 'CALENDAR')) || (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object && node.origin.path === '/')">
                       <a (click)="removeObject(node);" translate>inventory.button.remove</a></li>
-                    <li nz-menu-item *ngIf="(!node.origin.object && !node.origin.deleted && !node.origin.controller && !node.origin.dailyPlan) && permission.Inventory.configurations.delete"
-                        [nzDisabled]="node.origin.deployed || node.origin.released || (!node.origin.type && !node.origin.object && node.origin.path === '/')">
-                      <a (click)="removeDraft(node);" translate>inventory.button.deleteDraft</a></li>
+                    <li nz-menu-item *ngIf="!node.origin.deleted && permission.Inventory.configurations.delete"
+                        [nzDisabled]="node.origin.deployed || node.origin.released || (node.origin.object && node.origin.children.length === 0) || (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object && node.origin.path === '/')">
+                      <a (click)="deleteDraft(node);" translate>inventory.button.deleteDraft</a></li>
                     <li nz-menu-divider *ngIf="!node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.deleted && permission.Inventory.configurations.delete"></li>
                     <li nz-menu-item *ngIf="!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.deleted && permission.Inventory.configurations.delete"><a (click)="deletePermanently(node);" translate>inventory.button.delete</a></li>
                     <li nz-menu-item *ngIf="!node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.deleted && permission.Inventory.configurations.delete"><a (click)="restoreObject(node);" translate>inventory.button.undelete</a></li>

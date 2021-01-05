@@ -10,9 +10,20 @@
           <i class="fa fa-lg fa-angle-double-down" (click)="expandNode(instruction)"></i>
           <i class="fa fa-lg fa-angle-double-up p-l-xs" (click)="collapseNode(instruction)"></i>
         </span>
+        
+        <span class="m-l" *ngIf="instruction.order">
+          <app-order-action [order]="instruction.order" [schedulerId]="schedulerId" [permission]="permission" [preferences]="preferences"></app-order-action>
+          <i class="fa fa-circle p-r-s" [ngClass]="coreService.getColor(instruction.order.state.severity, 'text')"></i>
+          {{instruction.order.orderId}}
+        </span>
       </a>
       <div *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'Publish' || instruction.TYPE === 'Await'">
         {{instruction.jobName || instruction.TYPE}}
+        <span class="m-l-md" *ngIf="instruction.order">
+          <app-order-action [order]="instruction.order" [schedulerId]="schedulerId" [permission]="permission" [preferences]="preferences"></app-order-action>
+          <i class="fa fa-circle p-r-s" [ngClass]="coreService.getColor(instruction.order.state.severity, 'text')"></i>
+          {{instruction.order.orderId}}
+        </span>
       </div>
       <div *ngIf="instruction.TYPE === 'Fork' && (instruction.show || expandAll)">
         <div *ngFor="let branch of instruction.branches">
@@ -21,42 +32,59 @@
               <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (branch.show || expandAll)}"></i>
               <i class="_600">{{branch.id}}</i>
             </a>
+           
+            <span class="m-l-md" *ngIf="branch.order">
+              <app-order-action [order]="branch.order" [schedulerId]="schedulerId" [permission]="permission" [preferences]="preferences"></app-order-action>
+              <i class="fa fa-circle p-r-s" [ngClass]="coreService.getColor(branch.order.state.severity, 'text')"></i>
+                  {{branch.order.orderId}}
+            </span>
             <div class="p-l" *ngIf="branch.instructions && (branch.show || expandAll)">
-              <app-type [configuration]="branch" [expandAll]="expandAll"></app-type>
+              <app-type [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
+                        [configuration]="branch" [expandAll]="expandAll"></app-type>
             </div>
           </div>
         </div>
       </div>
       <div *ngIf="instruction.TYPE === 'If' && (instruction.show || expandAll)">
         <div *ngIf="instruction.then && instruction.then.instructions">
-          <app-type [configuration]="instruction.then" [expandAll]="expandAll"></app-type>
+          <app-type [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
+                    [configuration]="instruction.then" [expandAll]="expandAll"></app-type>
           <div class="p-l-md">
             <a class="m-l" *ngIf="instruction.else" (click)="collapse(instruction.else)">
               <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.else.show || expandAll)}"></i>
               <i class="_600">Else</i>
             </a>
+            
+            <span class="m-l-md" *ngIf="instruction.else.order">
+              <app-order-action [order]="instruction.else.order" [schedulerId]="schedulerId" [permission]="permission" [preferences]="preferences"></app-order-action>
+              <i class="fa fa-circle p-r-s" [ngClass]="coreService.getColor(instruction.else.order.state.severity, 'text')"></i>
+              {{instruction.else.order.orderId}}
+            </span>
             <div class="p-l" *ngIf="instruction.else && (instruction.else.show || expandAll)">
-              <app-type [configuration]="instruction.else" [expandAll]="expandAll" *ngIf="instruction.else.instructions"></app-type>
+              <app-type [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
+                        [configuration]="instruction.else" [expandAll]="expandAll" *ngIf="instruction.else.instructions"></app-type>
             </div>
           </div>
         </div>
       </div>
       <div *ngIf="instruction.TYPE === 'Try' && (instruction.show || expandAll)">
-          <app-type [configuration]="instruction" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
+          <app-type [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
+                    [configuration]="instruction" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
           <div class="p-l-md">
             <a class="m-l" *ngIf="instruction.catch" (click)="collapse(instruction.catch)">
               <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.catch.show || expandAll)}"></i>
               <i class="_600">Catch</i>
             </a>
             <div class="m-l" *ngIf="instruction.catch && (instruction.catch.show || expandAll)">
-              <app-type [configuration]="instruction.catch" [expandAll]="expandAll"
-                        *ngIf="instruction.catch.instructions"></app-type>
+              <app-type [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
+                        [configuration]="instruction.catch" [expandAll]="expandAll" *ngIf="instruction.catch.instructions"></app-type>
             </div>
           </div>
       </div>
       <div *ngIf="instruction.TYPE === 'Retry' && (instruction.show || expandAll)">
         <div>
-          <app-type [configuration]="instruction" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
+          <app-type [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
+                    [configuration]="instruction" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
         </div>
       </div>
     </li>

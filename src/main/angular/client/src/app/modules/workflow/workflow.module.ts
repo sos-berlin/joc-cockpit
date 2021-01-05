@@ -13,7 +13,17 @@ import {WorkflowHistoryComponent, WorkflowTemplateComponent} from './workflow-hi
     WorkflowRoutingModule
   ],
   providers: [WorkflowService],
-  declarations: [WorkflowComponent, WorkflowDetailComponent, WorkflowHistoryComponent, WorkflowTemplateComponent, SingleWorkflowComponent, FilterModalComponent, AddOrderModalComponent, SearchComponent, WorkflowActionComponent],
+  declarations: [
+    WorkflowComponent,
+    WorkflowDetailComponent,
+    WorkflowHistoryComponent,
+    WorkflowTemplateComponent,
+    SingleWorkflowComponent,
+    FilterModalComponent,
+    AddOrderModalComponent,
+    SearchComponent,
+    WorkflowActionComponent
+  ],
   entryComponents: [
     FilterModalComponent,
     AddOrderModalComponent
