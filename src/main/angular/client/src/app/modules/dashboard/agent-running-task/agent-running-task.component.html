@@ -2,9 +2,10 @@
     <div class="box-header b-b remove">
         <h3 translate>dashboard.label.agentClusterRunningTasks</h3>
     </div>
-    <div class="box-body" [hidden]="!isLoaded" style="overflow-y: auto;"
+    <div class="row" [hidden]="!isLoaded" style="overflow-y: auto;"
     [ngStyle]="{'max-height':(layout.rows * 55 +((layout.rows -1) *20 -50)) + 4 +'px'}">
-        <div style="overflow: auto;" *ngIf="data.length>0">
+      <div class="col-md-12">
+        <div class="p-a-sm" *ngIf="data.length>0">
             <ngx-charts-bar-horizontal
               (window:resize)="onResize($event)"
               [view]="view"
@@ -21,14 +22,15 @@
               (select)="onSelect($event)">
             </ngx-charts-bar-horizontal>
         </div>
-    </div>
-    <div *ngIf="data.length==0 && isLoaded" class="vert-middle" [ngStyle]="{'height':(layout.rows * 55 + ((layout.rows -1) *20 -50)) +'px'}">
-      <div>
-        <app-empty-data></app-empty-data>
       </div>
     </div>
     <div [hidden]="data.length>0" class="hide text-center m-t-lg p-b-lg text-primary text"
          [ngClass]="{'show': !isLoaded}">
         <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+    </div>
+    <div *ngIf="data.length==0 && isLoaded" class="vert-middle" [ngStyle]="{'height':(layout.rows * 55 -20) +'px'}">
+      <div>
+        <app-empty-data></app-empty-data>
+      </div>
     </div>
 </div>

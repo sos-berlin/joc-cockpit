@@ -99,10 +99,6 @@ export class TypeComponent implements OnChanges {
 
   private updateOrder() {
     let mapObj = new Map();
-    for (let j = 0; j < this.orders.length; j++) {
-      mapObj.set(JSON.stringify(this.orders[j].position), this.orders[j]);
-    }
-
     function recursive(json, count) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -171,6 +167,9 @@ export class TypeComponent implements OnChanges {
     }
 
     if (this.orders) {
+      for (let j = 0; j < this.orders.length; j++) {
+        mapObj.set(JSON.stringify(this.orders[j].position), this.orders[j]);
+      }
       let count = 0;
       for (let i = 0; i < this.configuration.instructions.length; i++) {
         delete this.configuration.instructions[i]['order'];

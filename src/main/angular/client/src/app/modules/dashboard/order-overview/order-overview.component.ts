@@ -32,6 +32,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       this.getSnapshot();
     } else {
       this.notAuthenticate = true;
+      this.isLoaded = true;
     }
   }
 

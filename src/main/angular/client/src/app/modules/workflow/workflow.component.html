@@ -370,7 +370,7 @@
                            [innerHtml]="workflow.ordersSummary.failed || 0"></a>
                       </td>
                     </tr>
-                    <tr class="tableexport-ignore" *ngIf="workflow.show">
+                    <tr *ngIf="workflow.show">
                       <td colspan="12">
                         <div class="m-a-sm">
                           <a class="text" (click)="workflow.isExpand = true;"

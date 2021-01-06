@@ -38,6 +38,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
+  workflow: any = {};
   isExpandAll: boolean;
   pageView: any;
   editor: any;
@@ -99,8 +100,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
-          this.init();
+        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow.path == this.path) {
+          this.getOrders(this.workflow);
           break;
         }
       }
@@ -266,6 +267,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       controllerId: this.schedulerIds.selected,
       workflowId: {path: this.path, versionId: this.versionId}
     }).subscribe((res: any) => {
+      this.workflow = res.workflow;
       this.createEditor(this.configXml);
       this.getOrders(res.workflow);
     }, () => {
@@ -281,7 +283,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       workflowIds: [{path: workflow.path, versionId: workflow.versionId}]
     };
     this.coreService.post('orders', obj).subscribe((res: any) => {
-      workflow.orders = res.orders;
+      this.workflow.orders = res.orders;
       this.isWorkflowStored(workflow);
       this.loading = true;
     }, () => {
@@ -760,8 +762,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.workflow = this.workFlowJson;
     modalRef.result.then((result) => {
       console.log(result);
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -770,8 +772,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.path = this.workFlowJson.path;
     modalRef.result.then((result) => {
       console.log(result);
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 }

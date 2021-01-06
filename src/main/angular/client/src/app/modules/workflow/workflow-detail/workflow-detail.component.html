@@ -109,7 +109,9 @@
             <div class="box m-b-0 p-a-0 resizable" appResizable [height]="worflowFilters.panelSize2" [workflowTab]="worflowFilters" id="workflowTextId">
               <div class="p-a overflow-y" style="height: 100%">
                 <div class="text-primary" translate>workflow.label.start</div>
-                <app-type [configuration]="workFlowJson" [expandAll]="isExpandAll"></app-type>
+                <app-type [configuration]="workFlowJson" [permission]="permission" [preferences]="preferences"
+                          [schedulerId]="schedulerIds.selected" [expandAll]="isExpandAll"
+                          [orders]="workflow.orders"></app-type>
                 <div class="text-primary" translate>workflow.label.end</div>
                 <div class="rg-bottom"><span></span></div>
               </div>

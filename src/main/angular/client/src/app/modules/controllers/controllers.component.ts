@@ -149,13 +149,6 @@ export class ControllersComponent implements OnInit {
       });
   }
 
-  migrateController(controller) {
-    this.coreService.post('controllers/security_level/take_over', {controllerId: controller})
-      .subscribe((data: any) => {
-        this.getSecurity();
-      });
-  }
-
   getAgents(controller, cb): void {
     if (controller && !controller.agents) {
       this.coreService.post('agents/p', {

@@ -2,7 +2,7 @@
     <div class="box-header b-b remove">
         <h3 translate>dashboard.label.agentClusterStatus</h3>
     </div>
-    <div class="row"  [hidden]="!isLoaded">
+    <div class="row" [hidden]="!isLoaded">
       <div class="col-md-12">
         <div class="p-a" [ngStyle]="{'height':(layout.rows * 55 +((layout.rows -1) *20 -50)) + 4 +'px', 'width': '90%'}" [ngClass]="{'hide': pieChartData.length==0}">
           <canvas baseChart

@@ -93,13 +93,13 @@
         </tr>
       </table>
     </div>
-    <div *ngIf="notAuthenticate">
+    <div *ngIf="notAuthenticate" class="vert-middle" [ngStyle]="{'height':(ybody * 55 + ((ybody -1) *20 -50) - 25) +'px'}">
       <div>
         <app-empty-data></app-empty-data>
       </div>
     </div>
     <div [hidden]="notAuthenticate" class="hide text-center text-primary text m-t-md m-b"
-         [ngClass]="{'show': !isLoaded}">
+         [ngClass]="{'show': !isLoaded}" >
       <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
     </div>
   </div>

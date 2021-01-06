@@ -33,6 +33,7 @@ export class TaskSummaryComponent implements OnInit, OnDestroy {
       this.getSummary();
     } else {
       this.notPermissionForTaskSummary = true;
+      this.isLoaded = true;
     }
   }
 

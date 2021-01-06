@@ -207,7 +207,6 @@
     "label.primaryUrl": "URL for Primary",
     "button.testConnection": "Test Connection",
     "button.newController": "New Controller",
-    "button.MigrateControllerToSecurityLevel": "Migrate Controller to Security Level",
     "tooltip.standaloneUrlForJOC": "URL of the Standalone Controller as seen by JOC Cockpit",
     "tooltip.primaryUrlForJOC": "URL of the Primary Controller as seen by JOC Cockpit",
     "tooltip.backupUrlForJOC": "URL of the Backup Controller as seen by JOC Cockpit",

@@ -16,7 +16,7 @@
       </label>
       <div class="col-md-6" [ngClass]="{'has-error' : !isUnique || ((name.dirty || name.touched) && name.invalid)}">
         <input type="text" (blur)="checkFolderName()" identifierValidation class="form-control" name="name" required
-               #name="ngModel" [(ngModel)]="folder.name" appAutofocus autocomplete="off">
+               #name="ngModel" [(ngModel)]="folder.name" [appAutofocus]="true" autocomplete="off">
         <div *ngIf="name.invalid && (name.dirty || name.touched)"
              class="text-danger help-block">
           <div *ngIf="(name.errors && name.errors.required)">

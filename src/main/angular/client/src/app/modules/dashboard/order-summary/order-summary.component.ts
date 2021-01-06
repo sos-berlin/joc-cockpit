@@ -46,6 +46,7 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
       this.getSummary();
     } else {
       this.notAuthenticate = true;
+      this.isLoaded = true;
     }
   }
 
