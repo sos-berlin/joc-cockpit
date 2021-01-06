@@ -53,7 +53,7 @@
                             <button class="btn-drop more-option-h" data-toggle="dropdown" dropdown type="button">
                                 <i class="fa fa-ellipsis-h"></i>
                             </button>
-                            <ul class="dropdown-menu dropdown-ac1 dropdown-more list-dropdown" role="menu">
+                            <ul class="dropdown-menu dropdown-ac1 dropdown-more joe-list-dropdown list-dropdown" role="menu">
                                 <li ng-if="node.type && permission.JobschedulerMaster.administration.configurations.edit"><a class="dropdown-item" ng-click="copy(node)" translate>button.copy</a></li>
                                 <li ng-if="node.object && permission.JobschedulerMaster.administration.configurations.edit"><a class="dropdown-item" ng-class="{'disable-link' : !copyData || (node.object !== copyData.type)}" ng-click="paste(node, null, this)" translate>button.paste</a></li>
                                 <li ng-if="node.param == 'ORDER' && permission.JobschedulerMaster.administration.configurations.edit"><a class="dropdown-item" ng-class="{'disable-link' : !copyData || (node.param !== copyData.type)}" ng-click="pasteOrder(this)" translate>button.paste</a></li>

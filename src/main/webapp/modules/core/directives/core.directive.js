@@ -714,6 +714,9 @@
                     const top = e.clientY + 8;
                     const left = e.clientX - 20;
                     let dropdownHt = $('.list-dropdown').height();
+                    if($('.joe-list-dropdown') && $('.joe-list-dropdown').height()) {
+                        dropdownHt = 160;
+                    }
                     if (window.innerHeight > (top + dropdownHt)) {
                         $('.list-dropdown').css({top: top + "px", left: left + "px", bottom: 'auto'})
                             .removeClass('arrow-down').addClass('dropdown-ac');

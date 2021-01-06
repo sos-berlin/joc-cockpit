@@ -6522,6 +6522,23 @@
             }
         });
 
+        function getJobStreamList(name) {
+            ConditionService.getJobStreams({
+                jobschedulerId: $scope.schedulerIds.selected,
+                jobStream: name
+            }).then(function (res) {
+                if (res.jobstreams && res.jobstreams.length > 0) {
+                    vm.importJobstreamObj.existingStreams = res.jobstreams;
+                    for (let i = 0; i < res.jobstreams.length; i++) {
+                        if (res.jobstreams[i].folder !== vm.importJobstreamObj.path) {
+                            vm.importJobstreamObj.isSame = true;
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+
         function onLoadFile(event) {
             try {
                 let data = JSON.parse(event.target.result);
@@ -6542,6 +6559,7 @@
                             }
                             vm.fileContentJobStreams.push(data[i]);
                         }
+                        getJobStreamList(data[i].jobStream);
                     }
                 }
             } catch (e) {
@@ -6602,9 +6620,7 @@
                 if (uploader && uploader.queue && uploader.queue.length > 0) {
                     uploader.queue[0].remove();
                 }
-
                 updateStarterAndConditions();
-
             }, function () {
                 vm.importJobstreamObj = {};
             });
@@ -6623,6 +6639,26 @@
             let isDone = false;
             vm.importJobstreamObj.jobs = [];
             for (let i = 0; i < vm.importJobstreamObj.jobstreams.length; i++) {
+                if (!vm.importJobstreamObj.merge) {
+                    let isChange = false;
+                    for (let j = 0; j < vm.importJobstreamObj.existingStreams.length; j++) {
+                        if (vm.importJobstreamObj.jobstreams[i].jobStream === vm.importJobstreamObj.existingStreams[j].jobStream) {
+                            vm.importJobstreamObj.jobstreams[i].jobStream = 'copy_of_' + vm.importJobstreamObj.jobstreams[i].jobStream;
+                            isChange = true;
+                            break;
+                        }
+                    }
+                    if (isChange) {
+                        for (let j = 0; j < vm.importJobstreamObj.jobstreams[i].jobs.length; j++) {
+                            for (let k = 0; k < vm.importJobstreamObj.jobstreams[i].jobs[j].inconditions.length; k++) {
+                                vm.importJobstreamObj.jobstreams[i].jobs[j].inconditions[k].jobStream = vm.importJobstreamObj.jobstreams[i].jobStream;
+                            }
+                            for (let k = 0; k < vm.importJobstreamObj.jobstreams[i].jobs[j].outconditions.length; k++) {
+                                vm.importJobstreamObj.jobstreams[i].jobs[j].outconditions[k].jobStream = vm.importJobstreamObj.jobstreams[i].jobStream;
+                            }
+                        }
+                    }
+                }
                 vm.importJobstreamObj.jobs = vm.importJobstreamObj.jobs.concat(vm.importJobstreamObj.jobstreams[i].jobs);
                 for (let j = 0; j < vm.importJobstreamObj.jobstreams[i].jobstreamStarters.length; j++) {
                     vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].jobStream = undefined;
@@ -6638,7 +6674,6 @@
                     auditLog.comment = vm.comments.comment;
                 if (vm.comments.timeSpent)
                     auditLog.timeSpent = vm.comments.timeSpent;
-
                 if (vm.comments.ticketLink)
                     auditLog.ticketLink = vm.comments.ticketLink;
                 let obj = {
@@ -8411,14 +8446,14 @@
                     cb();
                 }
                 vm.getEvents(null);
-                if ((vm.historyTabActive || vm.userPreferences.jobStreamWithColor) && !flag) {
+                if ((vm.historyTabActive || vm.userPreferences.jobStreamWithColor) && !flag && !vm.isHistoryLoaded) {
                     flag = true;
                     vm.loadHistory();
                 }
             }, function (err) {
 
             })
-            if ((vm.historyTabActive || vm.userPreferences.jobStreamWithColor) && vm.selectedSession && vm.selectedSession.session && !flag) {
+            if ((vm.historyTabActive || vm.userPreferences.jobStreamWithColor) && vm.selectedSession && vm.selectedSession.session && !flag && !vm.isHistoryLoaded) {
                 flag = true;
                 vm.loadHistory();
             }
@@ -8429,6 +8464,7 @@
             vm.historyTabActive = true;
             recursivelyConnectJobs(true);
             vm.getEvents(null);
+            vm.isHistoryLoaded = false;
             vm.loadHistory();
             if (isNavToHistory) {
                 $('#myTab li:nth-child(2) a').tab('show')
@@ -8505,7 +8541,7 @@
                     jobs: arr
                 }).then(function (res1) {
                     res = res1;
-                    if(result) {
+                    if (result) {
                         mergerDataAndUpdate(res, result, reCreate);
                     }
                 }, function () {
@@ -8517,8 +8553,8 @@
                     session: vm.selectedSession.session,
                     jobs: arr
                 }).then(function (result1) {
-                    result= result1;
-                    if(res) {
+                    result = result1;
+                    if (res) {
                         mergerDataAndUpdate(res, result, reCreate);
                     }
                 }, function () {
@@ -8531,7 +8567,7 @@
             }
         }
 
-        function mergerDataAndUpdate(res, result, reCreate){
+        function mergerDataAndUpdate(res, result, reCreate) {
             vm.isLoaded = true;
             let mergeData = _.merge(res.jobsInconditions, result.jobsOutconditions);
             for (let i = 0; i < vm.jobs.length; i++) {
@@ -9563,6 +9599,7 @@
                     delete jobs[i]['nextPeriod'];
                     delete jobs[i]['isStarterJob'];
                     delete jobs[i]['jId'];
+                    delete jobs[i]['barColor'];
                     delete jobs[i]['boxId'];
                     delete jobs[i]['inConditionProceed'];
                     mapObj.set(jobs[i].path, jobs[i]);
@@ -9698,7 +9735,8 @@
             jobs.forEach(function (job) {
                 if (changesJobs) {
                     for (let i = 0; i < changesJobs.length; i++) {
-                        if (changesJobs[i].job === job.path){
+                        if (changesJobs[i].job === job.path) {
+                            checkHistoryStatus(job);
                             vertices.push(graph.getModel().getCell(job.jId));
                             jobMapObj.set(job.path, job);
                             changesJobs.splice(i, 1);
@@ -9707,26 +9745,10 @@
                     }
                 } else {
                     let flag = true;
-                    if(isHistory){
-                        if (vm.historyMapObj && vm.historyMapObj.size > 0 && job.state._text !== 'RUNNING') {
-                            let _history = vm.historyMapObj.get(job.path);
-                            if (_history) {
-                                let barColor = _history._text === 'SUCCESSFUL' ? 'blue' : 'red';
-                                if(job.barColor) {
-                                    if (job.barColor === barColor) {
-                                        flag = false;
-                                    }
-                                }else{
-                                    job.barColor = barColor;
-                                }
-                            }else{
-                                job.barColor = null;
-                            }
-                        }else{
-                            job.barColor = null;
-                        }
+                    if (isHistory) {
+                        flag = checkHistoryStatus(job);
                     }
-                    if(flag) {
+                    if (flag) {
                         vertices.push(graph.getModel().getCell(job.jId));
                         jobMapObj.set(job.path, job);
                     }
@@ -9747,6 +9769,9 @@
             try {
                 let len = vertices.length;
                 for (let i = 0; i < len; i++) {
+                    if(!vertices[i]){
+                        continue;
+                    }
                     let jobPath = vertices[i].getAttribute('actual');
                     let oldStatus = vertices[i].getAttribute('status');
                     let _job = jobMapObj.get(jobPath);
@@ -9832,6 +9857,28 @@
                 let state = graph.view.getState(edges2[i]);
                 state.shape.node.getElementsByTagName('path')[1].removeAttribute('class');
             }
+        }
+
+        function checkHistoryStatus(job){
+            let flag = true;
+            if (vm.historyMapObj && vm.historyMapObj.size > 0 && job.state._text !== 'RUNNING') {
+                let _history = vm.historyMapObj.get(job.path);
+                if (_history) {
+                    let barColor = _history._text === 'SUCCESSFUL' ? 'blue' : 'red';
+                    if (job.barColor) {
+                        if (job.barColor === barColor) {
+                            flag = false;
+                        }
+                    } else {
+                        job.barColor = barColor;
+                    }
+                } else {
+                    job.barColor = null;
+                }
+            } else {
+                job.barColor = null;
+            }
+            return flag;
         }
 
         function checkNextPeriod(job) {
@@ -10646,7 +10693,7 @@
                                     break;
                                 }
                             }
-                        }else if(isNew){
+                        } else if (isNew) {
                             vm.jobStreamList.push(res);
                         }
                         recursivelyConnectJobs(true);
@@ -10794,20 +10841,22 @@
             }
         }
 
-         function getExpressionEvents(updateEventObj){
-            let obj ={
-                jobschedulerId: $scope.schedulerIds.selected,
-                session: vm.selectedSession.session,
-                folder :  updateEventObj.folder,
-                jobStream :  updateEventObj.jobStream
-            };
-            if(updateEventObj.expression){
-                obj.expression = updateEventObj.expression;
+        function getExpressionEvents(updateEventObj) {
+            if(vm.selectedSession.session) {
+                let obj = {
+                    jobschedulerId: $scope.schedulerIds.selected,
+                    session: vm.selectedSession.session,
+                    folder: updateEventObj.folder,
+                    jobStream: updateEventObj.jobStream
+                };
+                if (updateEventObj.expression) {
+                    obj.expression = updateEventObj.expression;
+                }
+                ConditionService.getExpressionEvents(obj).then(function (res) {
+                    updateEventObj.existingEvents = res.conditionEvents;
+                    updateEventObj.missingEvents = res.conditionMissingEvents;
+                });
             }
-            ConditionService.getExpressionEvents(obj).then(function (res) {
-                updateEventObj.existingEvents = res.conditionEvents;
-                updateEventObj.missingEvents = res.conditionMissingEvents;
-            });
         }
 
         vm.changeGraph = function (jobStream, selectedStarterId) {
@@ -11009,7 +11058,12 @@
 
         function deleteStream(obj, index, jobStream) {
             ConditionService.deleteJobStream(obj).then(function () {
-                vm.jobStreamList.splice(index, 1);
+                for (let i = 0; i < vm.jobStreamList.length; i++) {
+                    if (vm.jobStreamList[i].jobStream === jobStream.jobStream) {
+                        vm.jobStreamList.splice(i, 1);
+                        break;
+                    }
+                }
                 reset(jobStream);
             });
         }
@@ -12592,9 +12646,11 @@
                 jobStreamId: vm.selectedJobStreamObj.jobStreamId
             };
             vm.historyMapObj = new Map();
-            if (vm.selectedSession.session && vm.selectedJobStreamObj) {
+            if (vm.selectedSession.session && vm.selectedJobStreamObj && !vm.isHistoryLoaded) {
+                vm.isHistoryLoaded = true;
                 ConditionService.history(obj).then(function (res) {
                     vm.taskHistory = res.history;
+                    vm.isHistoryLoaded = false;
                     if (vm.selectedSession.jobStreamStarter.requiredJob) {
                         vm.taskHistory.forEach(function (history) {
                             history.requiredJob = vm.selectedSession.jobStreamStarter.requiredJob;
@@ -12602,18 +12658,20 @@
                                 vm.historyMapObj.set(history.job, history.state);
                             }
                         });
-                    }else if(vm.userPreferences.jobStreamWithColor){
+                    } else if (vm.userPreferences.jobStreamWithColor) {
                         for (let i = 0; i < vm.taskHistory.length; i++) {
                             if (vm.taskHistory[i].state && (vm.taskHistory[i].state._text === 'SUCCESSFUL' || vm.taskHistory[i].state._text === 'FAILED')) {
                                 vm.historyMapObj.set(vm.taskHistory[i].job, vm.taskHistory[i].state);
                             }
                         }
                     }
-                    if(vm.jobs && vm.jobs.length > 0 && vm.historyMapObj && vm.historyMapObj.size > 0) {
+                    if (vm.jobs && vm.jobs.length > 0 && vm.historyMapObj && vm.historyMapObj.size > 0) {
                         updateWorkflowDiagram(vm.jobs, null, true)
                     }
+                }, function () {
+                    vm.isHistoryLoaded = false;
                 });
-            } else{
+            } else {
                 vm.taskHistory = [];
             }
         };
@@ -12634,7 +12692,7 @@
         let isSessionUpdated = false;
         $scope.$on('event-started', function () {
             if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
-                let callEvent = false, arr = [], checkStreamList = false;
+                let callEvent = false, arr = [], checkStreamList = false, isHistoryCall = false, isAuditLogCall = false;
                 for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
                     if ((vm.events[0].eventSnapshots[m].eventType === "EventCreated" || vm.events[0].eventSnapshots[m].eventType === "EventRemoved" || vm.events[0].eventSnapshots[m].eventType === "InconditionValidated") && !vm.events[0].eventSnapshots[m].eventId) {
                         if (vm.events[0].eventSnapshots[m].eventType === "InconditionValidated" && vm.events[0].eventSnapshots[m].path) {
@@ -12647,13 +12705,9 @@
                             }
                         }
                     } else if (vm.events[0].eventSnapshots[m].eventType === "TaskEnded" && (vm.events[0].eventSnapshots[m].state === vm.selectedSession.session)) {
-                        if (vm.historyTabActive || vm.userPreferences.jobStreamWithColor) {
-                            vm.loadHistory();
-                        }
+                        isHistoryCall = true;
                     } else if (vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "JOB" && !vm.events[0].eventSnapshots[m].eventId) {
-                        if (vm.permission.AuditLog.view.status && vm.auditLogs) {
-                            vm.loadAuditLogs();
-                        }
+                        isAuditLogCall = true
                     } else if (vm.events[0].eventSnapshots[m].eventType === "VariablesCustomEvent") {
                         checkStreamList = false;
                         updateJobStreamList();
@@ -12668,6 +12722,12 @@
                         sessionStorage.$SOS$ISALIVE = vm.isAlive;
                         isAlive();
                     }
+                }
+                if (vm.permission.AuditLog.view.status && vm.auditLogs && isAuditLogCall) {
+                    vm.loadAuditLogs();
+                }
+                if ((vm.historyTabActive || vm.userPreferences.jobStreamWithColor) && isHistoryCall && !vm.isHistoryLoaded) {
+                    vm.loadHistory();
                 }
                 let _arr = [];
                 if (arr.length > 0 && !callEvent) {

@@ -74,8 +74,8 @@
             <div ng-hide="fileLoading">
                 <div class="p-l-a p-b-0">
                     <div ng-if="uploader.queue.length>0" class="form-group row" ng-class="{ 'has-error' : form1.path.$invalid && form1.path.$dirty }">
-                        <label class="col-sm-3 form-control-label" translate>label.path</label>
-                        <div class="col-sm-9">
+                        <label class="col-sm-3 form-control-label" ng-class="{'col-sm-4':importJobstreamObj.isSame}" translate>label.path</label>
+                        <div class="col-sm-6">
                             <input type="text" required class="form-control" placeholder="{{'placeholder.enterOrSelectFromTree' | translate}}" name="path"
                                    ng-model="importJobstreamObj.path">
                             <div class="help-block text-danger" ng-if="form1.path.$dirty" ng-messages="form1.path.$error">
@@ -84,6 +84,15 @@
                             <div style="position: absolute; right: 25px;margin-top:6px;top:0">
                                 <a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a>
                             </div>
+                        </div>
+                    </div>
+                    <div ng-if="uploader.queue.length>0 && importJobstreamObj.isSame" class="form-group row">
+                        <label class="col-sm-4" translate>label.mergeJobStreamWithOtherFolder</label>
+                        <div class="col-sm-6">
+                            <label class="md-check">
+                                <input type="checkbox" ng-model="importJobstreamObj.merge"
+                                       name="merge"><i class="primary"></i>
+                            </label>
                         </div>
                     </div>
                     <div ng-if="uploader.queue.length>0" style="min-height: 250px; max-height: 600px; overflow: auto">

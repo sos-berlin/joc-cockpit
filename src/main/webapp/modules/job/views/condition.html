@@ -876,7 +876,7 @@
                                         <a class="dropdown-item"
                                            ng-if="selectedNode.type === 'InCondition' || selectedNode.type === 'OutCondition' && permission.JobStream.change.conditions"
                                            ng-click="openModel(selectedNode.cell);closeMenu()" translate>button.updateExpression</a>
-                                        <a class="dropdown-item"
+                                        <a class="dropdown-item" ng-class="{'disable-link' : !selectedSession.session}"
                                            ng-if="selectedNode.type === 'InCondition' && permission.JobStream.change.conditions"
                                            ng-click="updateEvents(selectedNode.cell);closeMenu()" translate>button.editEvents</a>
                                         <div class="dropdown-divider" ng-if="selectedNode.type === 'OutCondition'"></div>

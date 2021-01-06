@@ -1825,7 +1825,7 @@
                         eventLoading = false;
                         setTimeout(function () {
                             vm.changeEvent(vm.schedulerIds.jobschedulerIds);
-                        }, res.events.length > 0 ? 100 : 1000)
+                        }, res.events.length > 0 ? 200 : 1000)
                         if (res.events.length === 0) {
                             vm.refreshSession();
                         }
