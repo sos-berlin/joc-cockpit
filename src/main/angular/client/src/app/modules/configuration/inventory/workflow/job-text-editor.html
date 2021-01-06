@@ -19,11 +19,11 @@
       <div class="form-group row" >
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.label</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : (obj.label || errorMsg || (label.dirty || label.touched) && label.invalid)}">
-          <input type="text" identifierValidation id="label" required autocomplete="off" (blur)="onBlur();errorMsg=''" maxlength="30" class="form-control"
+          <input type="text" labelValidation required autocomplete="off" (blur)="onBlur();errorMsg=''" maxlength="30" class="form-control"
                  name="label" #label="ngModel" [(ngModel)]="selectedNode.obj.label" [appAutofocus]="!!(obj.label || errorMsg)">
           <div *ngIf="obj.label || errorMsg || label.invalid && (label.dirty || label.touched)"
                class="text-danger help-block">
-            <div *ngIf="label.errors && label.errors.invalidIdentifier" translate>message.invalid</div>
+            <div *ngIf="label.errors && label.errors.invalidIdentifier" translate>common.message.invalid</div>
             <div *ngIf="(label.errors && label.errors.required) || obj.label">
               <div translate>common.message.requiredError</div>
             </div>

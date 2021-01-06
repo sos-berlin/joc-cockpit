@@ -811,6 +811,7 @@
     "label.startOrder": "Start order",
     "label.orderFound": "Order found",
     "label.ordersFound": "Orders found",
+    "label.lastOutCome": "Last Outcome",
     "button.allOrders": "All Orders",
     "button.cancel": "Cancel",
     "button.startNow": "Start Now",

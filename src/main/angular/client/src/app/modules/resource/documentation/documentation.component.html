@@ -125,7 +125,7 @@
                               <a (click)="deleteDocumentations(document)" translate>common.button.delete</a>
                             </li>
                             <li nz-menu-item >
-                              <a (click)="showDocumentUsage(document)" translate>common.button.showUsage</a>
+                              <a (click)="showDocumentUsage(document)" translate>resource.button.showUsage</a>
                             </li>
                             <li nz-menu-item >
                               <a (click)="coreService.copyLink('document',document.path)" translate>common.button.copyLinkToObject</a>
@@ -144,11 +144,11 @@
                     </div>
                     <div class="box-footer b-t" >
                       <a class="text-left primary-text-hover-color " *ngIf="permission.Documentation.export" (click)="exportDocument(document)">
-                        <i class="fa fa-download text-black-lt"></i> &nbsp;
+                        <i class="fa fa-download text-black-lt p-r-xs"></i>
                         <span class="text-black-lt" translate>common.button.export</span>
                       </a>
                       <a class="pull-right text-hover-color " *ngIf="permission.Documentation.delete" (click)="deleteDocumentations(document)">
-                        <i class="fa fa-trash text-black-lt"></i> &nbsp;
+                        <i class="fa fa-trash text-black-lt p-r-xs"></i>
                         <span class="text-black-lt" translate>common.button.delete</span>
                       </a>
                     </div>

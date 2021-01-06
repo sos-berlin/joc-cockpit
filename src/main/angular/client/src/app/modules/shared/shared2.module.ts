@@ -20,6 +20,7 @@ import {SubLinkComponent} from '../resource/sub-link/sub-link.component';
 import {BreadcrumbsComponent} from '../../components/breadcrumbs/breadcrumbs.component';
 import {TypeComponent} from '../../components/workflow-type/type.component';
 import {OrderActionComponent} from '../order-overview/order-action/order-action.component';
+import {NgZorroAntdModule} from 'ng-zorro-antd';
 
 const MODULES = [CommonModule, FormsModule, NgbModalModule, NzDropDownModule, NzResultModule, TranslateModule, NzEmptyModule];
 const PIPES = [StringDatePipe, StringTimePipe, DecodeSpacePipe, SafeHtmlPipe, SearchPipe, HighlightSearch];
@@ -28,7 +29,8 @@ const EXPORTS = [...PIPES,  EmptyDataComponent, SubLinkComponent, BreadcrumbsCom
 @NgModule({
   imports: [
     ...MODULES,
-    RouterModule
+    RouterModule,
+    NgZorroAntdModule
   ],
   declarations: [
     ...EXPORTS

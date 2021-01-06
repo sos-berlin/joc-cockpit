@@ -34,7 +34,7 @@ import {
   IdentifierValidator,
   ResizableDirective,
   AutofocusDirective,
-  TimeValidatorDirective, TimeRegexValidator
+  TimeValidatorDirective, TimeRegexValidator, LabelValidator
 } from '../../directives/core.directive';
 import {StartUpModalComponent} from '../start-up/start-up.component';
 import {Shared2Module} from './shared2.module';
@@ -49,7 +49,7 @@ const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModa
   CalendarModalComponent, TreeModalComponent, PeriodComponent, AddRestrictionComponent];
 const PIPES = [DurationPipe, StringDateFormatePipe,
   ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
-const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, ResizableDirective,
+const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, ResizableDirective, LabelValidator,
   NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent,
   StartUpModalComponent, TreeComponent, RunTimeComponent];

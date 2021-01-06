@@ -28,6 +28,7 @@ export class InventoryStatisticsComponent implements OnInit, OnDestroy {
       this.getStatistics();
     } else {
       this.notAuthenticate = true;
+      this.isLoaded = true;
     }
   }
 

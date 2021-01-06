@@ -211,7 +211,6 @@ export class DurationRegexValidator implements Validator {
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => IdentifierValidator), multi: true}
   ]
 })
-
 export class IdentifierValidator implements Validator {
   validate(c: AbstractControl): { [key: string]: any } {
     let v = c.value;
@@ -231,6 +230,33 @@ export class IdentifierValidator implements Validator {
         return {
           invalidIdentifier: true
         };
+      }
+    } else {
+      return null;
+    }
+  }
+}
+
+@Directive({
+  selector: '[labelValidation][formControlName],[labelValidation][formControl],[labelValidation][ngModel]',
+  providers: [
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => LabelValidator), multi: true}
+  ]
+})
+
+export class LabelValidator implements Validator {
+  validate(c: AbstractControl): { [key: string]: any } {
+    let v = c.value;
+    if (v != null) {
+      if (v == '') {
+        return null;
+      }
+      if (!/^([A-Z]|[a-z]|[0-9]|_|\$)([A-Z]|[a-z]|[0-9]|\$|_|,|-|#|:|!|)*$/.test(v)) {
+          return {
+            invalidIdentifier: true
+          };
+      } else {
+        return null;
       }
     } else {
       return null;
@@ -335,7 +361,6 @@ export class AutofocusDirective implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-
     if(this.appAutoFocus) {
       setTimeout(() => {
         this.el.nativeElement.focus();
