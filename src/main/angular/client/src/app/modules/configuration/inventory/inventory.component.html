@@ -157,6 +157,15 @@
                     <li nz-menu-divider *ngIf="!node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.deleted && permission.Inventory.configurations.delete"></li>
                     <li nz-menu-item *ngIf="!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.deleted && permission.Inventory.configurations.delete"><a (click)="deletePermanently(node);" translate>inventory.button.delete</a></li>
                     <li nz-menu-item *ngIf="!node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.deleted && permission.Inventory.configurations.delete"><a (click)="restoreObject(node);" translate>inventory.button.undelete</a></li>
+                    <li nz-menu-divider *ngIf="node.origin.type"></li>
+                    <li nz-menu-item
+                        *ngIf="node.origin.type">
+                      <a (click)="editJson(node.origin, false)" translate>inventory.button.showJSON</a>
+                    </li>
+                    <li nz-menu-item
+                        *ngIf="node.origin.type && permission.Inventory.configurations.edit">
+                      <a (click)="editJson(node.origin, true)" translate>inventory.button.editJSON</a>
+                    </li>
                   </ul>
                 </nz-dropdown-menu>
                 <div class="node-content-wrapper" [ngClass]="{'disable-link' : node.origin.deleted, 'node-content-wrapper-active' : (node.origin.name === selectedObj.name &&

@@ -3,6 +3,7 @@ import {forkJoin, Subscription} from 'rxjs';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploader} from 'ng2-file-upload';
 import {ToasterService} from 'angular2-toaster';
+import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import {NzFormatEmitEvent, NzMessageService, NzTreeNode} from 'ng-zorro-antd';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../../services/core.service';
@@ -1369,6 +1370,40 @@ export class ImportWorkflowModalComponent implements OnInit {
 }
 
 @Component({
+  selector: 'app-json-editor',
+  templateUrl: './json-editor-dialog.html'
+})
+export class JsonEditorModalComponent implements OnInit {
+  @Input() name: string;
+  @Input() object: any;
+  @Input() edit: boolean;
+  @Input() schedulerId: any;
+  submitted = false;
+  options = new JsonEditorOptions();
+
+  @ViewChild(JsonEditorComponent, {static: false}) editor: JsonEditorComponent;
+
+  constructor(private coreService: CoreService, public activeModal: NgbActiveModal) {
+   // this.options.modes = ['code']; // set all allowed modes
+    this.options.mode = 'code';
+    this.options.statusBar = false;
+    this.options.onChange = () => console.log(this.editor.get());
+  }
+
+  ngOnInit() {
+/*    if (this.edit) {
+      this.options.modes.push('tree');
+    } else {
+      this.options.modes.push('view');
+    }*/
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+  }
+}
+
+@Component({
   selector: 'app-create-folder-template',
   templateUrl: './create-folder-dialog.html'
 })
@@ -1495,9 +1530,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.releaseObject(res.release);
         } else if (res.restore) {
           this.restoreObject(res.restore);
+        } else if (res.showJson) {
+          this.showJson(res);
         } else if (res.rename) {
           this.rename(res.rename);
-        } else if (res.back) {
+        }else if (res.back) {
           this.backToListView();
         }
       }
@@ -2245,6 +2282,27 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.updateFolders(data.path, () => {
       this.updateTree();
     });
+  }
+
+  showJson(obj) {
+    console.log(obj);
+    this.coreService.post('inventory/read/configuration', {
+      id: obj.showJson.id,
+    }).subscribe((res: any) => {
+      const modalRef = this.modalService.open(JsonEditorModalComponent, {backdrop: 'static', size: 'lg'});
+      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+      modalRef.componentInstance.object = res.configuration;
+      modalRef.componentInstance.name = res.path;
+      modalRef.componentInstance.edit = obj.edit;
+      modalRef.result.then((result) => {
+
+      }, () => {
+      });
+    });
+  }
+
+  editJson(data, isEdit) {
+    this.dataService.reloadTree.next({showJson: data, edit: isEdit});
   }
 
   renameFolder(node) {

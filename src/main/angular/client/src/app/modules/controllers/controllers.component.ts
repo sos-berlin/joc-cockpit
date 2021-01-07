@@ -285,7 +285,9 @@ export class ControllersComponent implements OnInit {
             }
           }
         }
-        this.controllers.push(obj);
+        if(this.currentSecurityLevel === obj.securityLevel) {
+          this.controllers.push(obj);
+        }
       }
     } else if (securityData) {
       this.controllers = securityData.controllers;

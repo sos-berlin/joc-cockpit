@@ -80,6 +80,10 @@ export class TableComponent {
         this.dataService.reloadTree.next({set: data});
     }
 
+   showJson(data, isEdit) {
+      this.dataService.reloadTree.next({showJson: data, edit: isEdit});
+    }
+
     removeObject(object) {
         const _path = object.path + (object.path === '/' ? '' : '/') + object.name;
         const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});

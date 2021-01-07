@@ -1,0 +1,29 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span *ngIf="edit" translate>inventory.label.editJson</span>
+    <span *ngIf="edit" class="test-sm"> (edit is in progress)</span>
+    <span *ngIf="!edit" translate>inventory.label.showJson</span>:
+    {{name}}
+  </h4>
+  <button type="button" class="close" (click)="activeModal.dismiss('Cross click')" aria-label="Close">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
+  <div class="modal-body p-a">
+    <div class="row">
+      <div class="col-md-12">
+        <json-editor [options]="options" [data]="object"></json-editor>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+   <button type="submit" *ngIf="edit" [disabled]="true" class="btn btn-primary btn-sm">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
+      common.button.close
+    </button>
+  </div>
+</form>

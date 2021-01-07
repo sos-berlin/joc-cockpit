@@ -14,6 +14,7 @@ export class TypeComponent implements OnChanges {
   @Input() permission: any;
   @Input() schedulerId: any;
   @Output() update: EventEmitter<any> = new EventEmitter();
+  sideBar: any = {};
 
   constructor(public coreService: CoreService) {
   }
@@ -98,47 +99,58 @@ export class TypeComponent implements OnChanges {
   private updateOrder() {
     const self = this;
     let mapObj = new Map();
-    function recursive(json, count) {
+
+    function recursive(json) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
-          self.checkOrders(json.instructions[x], mapObj, count);
+          self.checkOrders(json.instructions[x], mapObj);
           if (json.instructions[x].TYPE === 'Fork') {
             if (json.instructions[x].branches) {
               for (let i = 0; i < json.instructions[x].branches.length; i++) {
                 if (json.instructions[x].branches[i].instructions) {
-                  self.checkOrders(json.instructions[x].branches[i], mapObj, count);
-                  recursive(json.instructions[x].branches[i], json.instructions[x].branches[i]);
+                  self.checkOrders(json.instructions[x].branches[i], mapObj);
+                  recursive(json.instructions[x].branches[i]);
+                  if (json.instructions[x].branches[i].count) {
+                    json.instructions[x].count = (json.instructions[x].count || 0) + json.instructions[x].branches[i].count;
+                  }
                 }
               }
             }
           }
 
-
           if (json.instructions[x].instructions) {
-            recursive(json.instructions[x], json.instructions[x]);
+            recursive(json.instructions[x]);
           }
           if (json.instructions[x].catch) {
             if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
-              self.checkOrders(json.instructions[x].catch, mapObj, count);
-              recursive(json.instructions[x].catch, json.instructions[x].catch);
+              self.checkOrders(json.instructions[x].catch, mapObj);
+              recursive(json.instructions[x].catch);
             }
+            json.instructions[x].count = (json.instructions[x].count || 0) + json.instructions[x].catch.count;
           }
           if (json.instructions[x].then && json.instructions[x].then.instructions) {
-            self.checkOrders(json.instructions[x].then, mapObj, count);
-            recursive(json.instructions[x].then, json.instructions[x].then);
+            self.checkOrders(json.instructions[x].then, mapObj);
+            recursive(json.instructions[x].then);
+            json.instructions[x].count = (json.instructions[x].count || 0) + json.instructions[x].then.count;
           }
           if (json.instructions[x].else && json.instructions[x].else.instructions) {
-            self.checkOrders(json.instructions[x].else, mapObj, count);
-            recursive(json.instructions[x].else, json.instructions[x].else);
+            self.checkOrders(json.instructions[x].else, mapObj);
+            recursive(json.instructions[x].else);
+            json.instructions[x].count = (json.instructions[x].count || 0) + json.instructions[x].else.count;
           }
-         // console.log(json.instructions[x].position, 'poistion', count);
+          if (json.instructions[x].count) {
+            json.count = (json.count || 0) + json.instructions[x].count;
+          }
         }
       } else {
         if (json.branches) {
           for (let i = 0; i < json.branches.length; i++) {
             if (json.branches[i].instructions) {
-              self.checkOrders(json.branches[i], mapObj, count);
-              recursive(json.branches[i], json.branches[i]);
+              self.checkOrders(json.branches[i], mapObj);
+              recursive(json.branches[i]);
+              if (json.branches[i].count) {
+                json.count = (json.count || 0) + json.branches[i].count;
+              }
             }
           }
         }
@@ -153,25 +165,34 @@ export class TypeComponent implements OnChanges {
         }
         mapObj.set(JSON.stringify(this.orders[j].position), arr);
       }
-      let count = {count : 0};
-      for (let i = 0; i < this.configuration.instructions.length; i++) {
-        this.checkOrders(this.configuration.instructions[i], mapObj, count);
-        recursive(this.configuration.instructions[i], this.configuration.instructions[i]);
-      }
+      recursive(this.configuration);
     }
   }
 
-  private checkOrders(instruction, mapObj, count) {
+  private checkOrders(instruction, mapObj) {
     if (instruction.position) {
       delete instruction['orders'];
       let _order = mapObj.get(JSON.stringify(instruction.position));
       if (_order) {
         instruction.orders = _order;
-        count.count = count.count + _order.length;
+        if (!instruction.count) {
+          instruction.count = 0;
+        }
+        instruction.count = _order.length;
+      } else {
+        instruction.count = 0;
       }
+    } else {
+      instruction.count = 0;
     }
-    
-    instruction.count = count.count;
+  }
+
+  showOrders(orders) {
+    console.log(orders);
+    this.sideBar = {
+      isVisible: true,
+      orders: orders
+    };
   }
 
   expandNode(node) {

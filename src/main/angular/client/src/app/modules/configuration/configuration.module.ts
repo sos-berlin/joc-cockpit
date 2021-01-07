@@ -3,6 +3,7 @@ import {ConfigurationComponent} from './configuration.component';
 import {ConfigurationRoutingModule} from './configuration-routing.module';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { NgJsonEditorModule } from 'ang-jsoneditor'
 import {
   ConfirmationModalComponent,
   ImportModalComponent,
@@ -15,7 +16,7 @@ import {FileUploadModule} from 'ng2-file-upload';
 import {DatePipe} from '@angular/common';
 import {
   InventoryComponent, DeployComponent, SetVersionComponent,
-  CreateFolderModalComponent, ImportWorkflowModalComponent, SingleDeployComponent, ExportComponent
+  CreateFolderModalComponent, ImportWorkflowModalComponent, SingleDeployComponent, ExportComponent, JsonEditorModalComponent
 } from './inventory/inventory.component';
 import {CalendarService} from '../../services/calendar.service';
 import {SharedModule} from '../shared/shared.module';
@@ -39,7 +40,7 @@ import {InventoryService} from './inventory/inventory.service';
 const COMPONENTS = [ImportModalComponent, DiffPatchModalComponent, FrequencyModalComponent, ShowModalComponent,
   ImportComponent, UpdateWorkflowComponent, ShowChildModalComponent, ConfirmationModalComponent, SingleDeployComponent,
   DeployComponent, ExportComponent, SetVersionComponent, CreateFolderModalComponent,
-  ImportWorkflowModalComponent];
+  ImportWorkflowModalComponent, JsonEditorModalComponent];
 
 @NgModule({
   imports: [
@@ -47,7 +48,8 @@ const COMPONENTS = [ImportModalComponent, DiffPatchModalComponent, FrequencyModa
     SharedModule,
     FileUploadModule,
     CKEditorModule,
-    CodemirrorModule
+    CodemirrorModule,
+    NgJsonEditorModule
   ],
   providers: [DatePipe, CalendarService, WorkflowService, InventoryService],
   declarations: [

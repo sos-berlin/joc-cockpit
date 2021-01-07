@@ -97,8 +97,8 @@ export class SearchComponent implements OnInit {
       if (_.isArray(result)) {
         this.filter.paths = result;
       }
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -367,6 +367,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (localStorage.views) {
       this.pageView = JSON.parse(localStorage.views).workflow;
     }
+    /*    let rsHt = JSON.parse(this.saveService.resizerHeight) || {};
+        console.log(rsHt, 'rsHt', this.resizerHeight);
+        if(rsHt.workflow){
+
+        }*/
     if (!this.savedFilter.selected) {
       this.initTree();
     }
@@ -719,8 +724,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         this.saveService.setWorkflow(this.savedFilter);
         this.saveService.save();
       }
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -739,8 +744,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       } else if (obj.type === 'COPY') {
         this.copyFilter(obj);
       }
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 

@@ -110,6 +110,14 @@
                     *ngIf="permission.Inventory.configurations.delete && data.deleted">
                     <a (click)="restoreObject(data)" translate>inventory.button.undelete</a>
                   </li>
+                  <li nz-menu-divider></li>
+                  <li nz-menu-item>
+                    <a (click)="showJson(data, false)" translate>inventory.button.showJSON</a>
+                  </li>
+                  <li nz-menu-item
+                      *ngIf="permission.Inventory.configurations.edit">
+                    <a (click)="showJson(data, true)" translate>inventory.button.editJSON</a>
+                  </li>
                 </ul>
               </nz-dropdown-menu>
             </div>

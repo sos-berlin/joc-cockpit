@@ -942,7 +942,7 @@
               </div>
             </nz-tab>
             <nz-tab [nzTitle]="'profile.label.keyManagement' | translate"
-                    *ngIf="securityLevel !== 'LOW' && permission.Inventory.configurations.publish.showKey">
+                    *ngIf="securityLevel !== 'LOW' && permission.Inventory && permission.Inventory.configurations.publish.showKey">
               <div class="m-l-12">
                 <div class="row m-t-sm">
                   <div class="col-sm-12">
