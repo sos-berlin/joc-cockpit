@@ -6639,10 +6639,11 @@
             let isDone = false;
             vm.importJobstreamObj.jobs = [];
             for (let i = 0; i < vm.importJobstreamObj.jobstreams.length; i++) {
-                if (!vm.importJobstreamObj.merge) {
+                if (!vm.importJobstreamObj.merge && vm.importJobstreamObj.isSame) {
                     let isChange = false;
                     for (let j = 0; j < vm.importJobstreamObj.existingStreams.length; j++) {
-                        if (vm.importJobstreamObj.jobstreams[i].jobStream === vm.importJobstreamObj.existingStreams[j].jobStream) {
+                        if (vm.importJobstreamObj.jobstreams[i].jobStream === vm.importJobstreamObj.existingStreams[j].jobStream &&
+                            vm.importJobstreamObj.path !== vm.importJobstreamObj.existingStreams[j].folder) {
                             vm.importJobstreamObj.jobstreams[i].jobStream = 'copy_of_' + vm.importJobstreamObj.jobstreams[i].jobStream;
                             isChange = true;
                             break;
@@ -8426,7 +8427,6 @@
             if (vm.jobStreamList.length === 0) {
                 return;
             }
-            let flag = false;
             ConditionService.getSessions({
                 jobschedulerId: $scope.schedulerIds.selected,
                 jobStream: vm.selectedJobStreamObj.jobStream ? vm.selectedJobStreamObj.jobStream : vm.jobStreamList[0].jobStream,
@@ -8446,17 +8446,12 @@
                     cb();
                 }
                 vm.getEvents(null);
-                if ((vm.historyTabActive || vm.userPreferences.jobStreamWithColor) && !flag && !vm.isHistoryLoaded) {
-                    flag = true;
+                if ((vm.historyTabActive || vm.userPreferences.jobStreamWithColor) && !vm.isHistoryLoaded) {
                     vm.loadHistory();
                 }
             }, function (err) {
 
             })
-            if ((vm.historyTabActive || vm.userPreferences.jobStreamWithColor) && vm.selectedSession && vm.selectedSession.session && !flag && !vm.isHistoryLoaded) {
-                flag = true;
-                vm.loadHistory();
-            }
         };
 
         vm.selectSession = function (session, isNavToHistory) {
@@ -9367,14 +9362,14 @@
                 }
             }
 
-            if(flag) {
+            if (flag) {
                 style += ';strokeColor=' + (CoreService.getColorBySeverity(job.state.severity) || '#999');
             }
             if (nextPeriod || job.nextPeriod) {
                 style += ';fillColor=none';
             }
             let v1 = createVertex(graph.getDefaultParent(), _node, job.name, style);
-            if(!barColor) {
+            if (!barColor) {
                 barColor = job.state._text === 'RUNNING' ? 'green' : job.state._text === 'PENDING' ? 'yellow' : job.state._text === undefined ? 'grey' : 'red';
             }
             if (barColor !== 'red' && enqueTask) {
@@ -9674,7 +9669,7 @@
                 vm.isWorkflowGenerated = true;
                 vm.isJobStreamLoaded = true;
                 $('[data-toggle="tooltip"]').tooltip();
-               // updateWorkflowDiagram(vm.jobs);
+                // updateWorkflowDiagram(vm.jobs);
                 if (vm.jobs && vm.editor && !interval)
                     startInterval();
             }, 100);
@@ -12704,8 +12699,11 @@
                                 callEvent = true;
                             }
                         }
-                    } else if (vm.events[0].eventSnapshots[m].eventType === "TaskEnded" && (vm.events[0].eventSnapshots[m].state === vm.selectedSession.session)) {
+                    } else if (vm.events[0].eventSnapshots[m].eventType === "TaskEnded" && (vm.events[0].eventSnapshots[m].nodeId && vm.events[0].eventSnapshots[m].nodeId === vm.selectedSession.session)) {
                         isHistoryCall = true;
+                        if(vm.userPreferences.jobStreamWithColor && !vm.historyTabActive){
+                            vm.historyMapObj.set(vm.events[0].eventSnapshots[m].path, {_text: vm.events[0].eventSnapshots[m].state});
+                        }
                     } else if (vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "JOB" && !vm.events[0].eventSnapshots[m].eventId) {
                         isAuditLogCall = true
                     } else if (vm.events[0].eventSnapshots[m].eventType === "VariablesCustomEvent") {
@@ -12726,8 +12724,14 @@
                 if (vm.permission.AuditLog.view.status && vm.auditLogs && isAuditLogCall) {
                     vm.loadAuditLogs();
                 }
-                if ((vm.historyTabActive || vm.userPreferences.jobStreamWithColor) && isHistoryCall && !vm.isHistoryLoaded) {
-                    vm.loadHistory();
+                if(isHistoryCall) {
+                    if (vm.historyTabActive) {
+                        if(!vm.isHistoryLoaded) {
+                            vm.loadHistory();
+                        }
+                    }else{
+                        updateWorkflowDiagram(vm.jobs, null, true)
+                    }
                 }
                 let _arr = [];
                 if (arr.length > 0 && !callEvent) {
