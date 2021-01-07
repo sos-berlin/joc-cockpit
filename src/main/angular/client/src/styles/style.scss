@@ -1,4 +1,5 @@
 @import "./app.scss";
+@import '~jsoneditor/dist/jsoneditor.min.css';
 @import "./mixins";
 
 /***
@@ -6375,7 +6376,7 @@ form .ant-select-selection{
   min-height: 30px;
   height: auto;
 }
-
+div.jsoneditor,
 .ant-tabs-bar,
 .ant-time-picker-panel-select,
 .ant-calendar-header,
@@ -6727,5 +6728,26 @@ span.cm-error {
   font-weight: bold;
   font-size: 10px;
   border-radius: 50%;
+}
+.remaining-order-count{
+  margin-left: 8px;
   cursor: pointer;
+  font-weight: bold;
+  color: #fff !important;
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 6px;
+  background-color: #bbbbbb !important;
+  span{
+    margin-left: 4px;
+  }
+  &:hover {
+    background-color: #aaa !important;
+  }
+}
+div.jsoneditor-outer {
+  height: calc(100vh - 276px);
+}
+div.jsoneditor-menu{
+  display: none;
 }
