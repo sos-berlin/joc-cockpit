@@ -187,12 +187,86 @@ export class TypeComponent implements OnChanges {
     }
   }
 
-  showOrders(orders) {
-    console.log(orders);
-    this.sideBar = {
-      isVisible: true,
-      orders: orders
-    };
+  showOrders(data) {
+    if (data.orders) {
+      this.sideBar = {
+        isVisible: true,
+        orders: data.orders
+      };
+      this.sideBar.orders = [...this.sideBar.orders];
+    } else {
+      const self = this;
+      this.sideBar = {
+        isVisible: true,
+        orders: []
+      };
+      function recursive(json) {
+        if (json.instructions) {
+          for (let x = 0; x < json.instructions.length; x++) {
+            if (json.instructions[x].orders) {
+              self.sideBar.orders = self.sideBar.orders.concat(json.instructions[x].orders);
+            }
+            if (json.instructions[x].TYPE === 'Fork') {
+              if (json.instructions[x].branches) {
+                for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                  if (json.instructions[x].branches[i].instructions) {
+                    recursive(json.instructions[x].branches[i]);
+                    if (json.instructions[x].branches[i].orders) {
+                      self.sideBar.orders = self.sideBar.orders.concat(json.instructions[x].branches[i].orders);
+                    }
+                  }
+                }
+              }
+            }
+
+            if (json.instructions[x].instructions) {
+              recursive(json.instructions[x]);
+            }
+            if (json.instructions[x].catch) {
+              if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+                recursive(json.instructions[x].catch);
+                if (json.instructions[x].catch.orders) {
+                  self.sideBar.orders.orders = self.sideBar.orders.concat(json.instructions[x].catch.orders);
+                }
+              }
+            }
+            if (json.instructions[x].then && json.instructions[x].then.instructions) {
+              recursive(json.instructions[x].then);
+              if (json.instructions[x].then.orders) {
+                self.sideBar.orders = self.sideBar.orders.concat(json.instructions[x].then.orders);
+              }
+            }
+            if (json.instructions[x].else && json.instructions[x].else.instructions) {
+              recursive(json.instructions[x].else);
+              if (json.instructions[x].else.orders) {
+                self.sideBar.orders = self.sideBar.orders.concat(json.instructions[x].else.orders);
+              }
+            }
+          }
+        } else {
+          if (json.branches) {
+            for (let i = 0; i < json.branches.length; i++) {
+              if (json.branches[i].instructions) {
+                recursive(json.branches[i]);
+                if (json.branches[i].orders) {
+                  self.sideBar.orders = self.sideBar.orders.concat(json.branches[i].orders);
+                }
+              }
+            }
+          }
+        }
+      }
+      recursive(data);
+    }
+  }
+
+  showPanelFuc(order) {
+    if (order.arguments && !order.arguments[0]) {
+      order.arguments = Object.entries(order.arguments).map(([k, v]) => {
+        return {name: k, value: v};
+      });
+    }
+    order.show = true;
   }
 
   expandNode(node) {

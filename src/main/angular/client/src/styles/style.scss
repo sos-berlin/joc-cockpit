@@ -1,6 +1,6 @@
 @import "./app.scss";
-@import '~jsoneditor/dist/jsoneditor.min.css';
 @import "./mixins";
+@import '~jsoneditor/dist/jsoneditor.min.css';
 
 /***
  Custom icon for Workflow and XMl editor
@@ -6728,6 +6728,7 @@ span.cm-error {
   font-weight: bold;
   font-size: 10px;
   border-radius: 50%;
+  cursor: pointer;
 }
 .remaining-order-count{
   margin-left: 8px;
@@ -6750,4 +6751,9 @@ div.jsoneditor-outer {
 }
 div.jsoneditor-menu{
   display: none;
+}
+.editor-disable{
+  pointer-events: none;
+  cursor: auto;
+  background: 0 0;
 }

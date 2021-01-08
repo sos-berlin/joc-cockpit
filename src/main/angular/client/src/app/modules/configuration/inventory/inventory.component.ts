@@ -12,7 +12,9 @@ import {AuthService} from '../../../components/guard';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {InventoryService} from './inventory.service';
 import * as _ from 'underscore';
-
+import {ClipboardService} from 'ngx-clipboard';
+import {saveAs} from 'file-saver';
+import * as Ajv from 'ajv';
 declare const $;
 
 @Component({
@@ -1375,31 +1377,173 @@ export class ImportWorkflowModalComponent implements OnInit {
 })
 export class JsonEditorModalComponent implements OnInit {
   @Input() name: string;
+  @Input() objectType: string;
   @Input() object: any;
   @Input() edit: boolean;
   @Input() schedulerId: any;
   submitted = false;
+  isError = false;
+  data: any;
+  errorMsg: any = [];
   options = new JsonEditorOptions();
+  schema: any;
+  ajv = new Ajv({allErrors: true});
 
-  @ViewChild(JsonEditorComponent, {static: false}) editor: JsonEditorComponent;
+  @ViewChild('editor', {static: false}) editor: JsonEditorComponent;
 
-  constructor(private coreService: CoreService, public activeModal: NgbActiveModal) {
-   // this.options.modes = ['code']; // set all allowed modes
+  constructor(public coreService: CoreService, private clipboardService: ClipboardService, public activeModal: NgbActiveModal,
+              private translate: TranslateService, private message: NzMessageService) {
     this.options.mode = 'code';
     this.options.statusBar = false;
-    this.options.onChange = () => console.log(this.editor.get());
+    this.options.onChange = () => {
+      try {
+        let data = this.editor.get();
+        this.validate(data);
+      } catch (err) {
+        this.isError = true;
+      }
+    };
+  }
+
+  private validate(data) {
+    const validate = this.ajv.compile(this.schema);
+    const valid = validate(data);
+    console.log(validate.errors) // processed errors
+    if (!valid) {
+      this.isError = true;
+      this.errorMsg = validate.errors;
+    } else {
+      this.isError = false;
+    }
   }
 
   ngOnInit() {
-/*    if (this.edit) {
-      this.options.modes.push('tree');
-    } else {
-      this.options.modes.push('view');
-    }*/
+    console.log(this.objectType, 'objectType');
+    this.data = this.coreService.clone(this.object);
+    this.coreService.get('assets/schemas/' + (!this.objectType.match(/CALENDAR/) ? this.objectType.toLowerCase() : 'calendar') + '.json').subscribe((res: any) => {
+      this.schema = res;
+    });
+    delete this.data['type'];
+    delete this.data['TYPE'];
+    delete this.data['versionId'];
+  }
+
+  copyToClipboard() {
+    this.showMsg();
+    this.clipboardService.copyFromContent(this.editor.getText());
+  }
+
+  private showMsg() {
+    let msg;
+    this.translate.get('common.message.copied').subscribe(translatedValue => {
+      msg = translatedValue;
+    });
+    this.message.success(msg);
   }
 
   onSubmit(): void {
+    this.activeModal.close(this.editor.get());
+  }
+}
+
+@Component({
+  selector: 'app-upload-json',
+  templateUrl: './upload-json-dialog.html'
+})
+export class UploadModalComponent implements OnInit {
+  @Input() object: any;
+  @Input() name: string;
+  @Input() objectType: string;
+  submitted = false;
+  uploader: FileUploader;
+  data: any;
+
+  constructor(public coreService: CoreService, public activeModal: NgbActiveModal, public translate: TranslateService, public toasterService: ToasterService) {
+    this.uploader = new FileUploader({
+      url: '',
+      queueLimit: 1
+    });
+  }
+
+  ngOnInit() {
+    this.uploader.onCompleteItem = (fileItem: any, response, status, headers) => {
+      if (status === 200) {
+        this.activeModal.close('success');
+      }
+    };
+
+    this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
+      const res = typeof response === 'string' ? JSON.parse(response) : response;
+      if (res.error) {
+        this.toasterService.pop('error', res.error.code, res.error.message);
+      }
+    };
+  }
+
+  private validateByURL(json, cb) {
+    this.coreService.post('inventory/' + this.objectType + '/validate', json).subscribe((res: any) => {
+      cb(res);
+    }, (err) => {
+      cb(err);
+    });
+  }
+
+  // CALLBACKS
+  onFileSelected(event: any): void {
+    const self = this;
+    let item = event['0'];
+    const fileExt = item.name.slice(item.name.lastIndexOf('.') + 1).toUpperCase();
+    if (fileExt != 'JSON') {
+      let msg = '';
+      this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
+        msg = translatedValue;
+      });
+      this.toasterService.pop('error', '', fileExt + ' ' + msg);
+      this.uploader.clearQueue();
+    } else {
+      let reader = new FileReader();
+      reader.readAsText(item, 'UTF-8');
+      reader.onload = onLoadFile;
+    }
+
+    function onLoadFile(_event) {
+      let data;
+      try {
+        data = JSON.parse(_event.target.result);
+      } catch (e) {
+
+      }
+      console.log(data);
+      if (data) {
+        self.validateByURL(data, (res) => {
+          if (!res.valid) {
+            self.showErrorMsg(res.invalidMsg);
+          }else{
+            self.data = data;
+          }
+        });
+      } else {
+        self.showErrorMsg(null);
+      }
+    }
+  }
+
+  private showErrorMsg(errorMsg) {
+    let msg = errorMsg;
+    if (!errorMsg) {
+      this.translate.get('inventory.message.invalidFile', {objectType: this.object.objectType}).subscribe(translatedValue => {
+        msg = translatedValue;
+      });
+    }
+    this.toasterService.pop('error', '', msg);
+    this.uploader.queue[0].remove();
+  }
+
+  onSubmit() {
     this.submitted = true;
+    setTimeout(() => {
+      this.activeModal.close(this.data);
+    }, 100);
   }
 }
 
@@ -1532,9 +1676,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.restoreObject(res.restore);
         } else if (res.showJson) {
           this.showJson(res);
+        } else if (res.exportJSON) {
+          this.exportJSON(res.exportJSON);
+        } else if (res.importJSON) {
+          this.importJSON(res.importJSON);
         } else if (res.rename) {
           this.rename(res.rename);
-        }else if (res.back) {
+        } else if (res.back) {
           this.backToListView();
         }
       }
@@ -1570,6 +1718,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.subscription3.unsubscribe();
+    this.dataService.reloadTree.next(null);
     this.coreService.tabs._configuration.state = 'inventory';
     this.inventoryConfig.expand_to = this.tree;
     this.inventoryConfig.selectedObj = this.selectedObj;
@@ -2285,17 +2434,18 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   showJson(obj) {
-    console.log(obj);
+    
     this.coreService.post('inventory/read/configuration', {
       id: obj.showJson.id,
     }).subscribe((res: any) => {
       const modalRef = this.modalService.open(JsonEditorModalComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
       modalRef.componentInstance.object = res.configuration;
+      modalRef.componentInstance.objectType = res.objectType;
       modalRef.componentInstance.name = res.path;
       modalRef.componentInstance.edit = obj.edit;
       modalRef.result.then((result) => {
-
+        this.storeData(obj.showJson, result);
       }, () => {
       });
     });
@@ -2303,6 +2453,54 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   editJson(data, isEdit) {
     this.dataService.reloadTree.next({showJson: data, edit: isEdit});
+  }
+
+  importJSON(obj) {
+    const modalRef = this.modalService.open(UploadModalComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.componentInstance.object = obj;
+    modalRef.componentInstance.objectType = obj.objectType || obj.type;
+    modalRef.result.then((result) => {
+      if (result) {
+        this.storeData(obj, result);
+      }
+    }, () => {
+    });
+  }
+
+  exportJSON(obj) {
+    this.coreService.post('inventory/read/configuration', {
+      id: obj.id,
+    }).subscribe((res: any) => {
+      const name = obj.name + '.json';
+      const fileType = 'application/octet-stream';
+      delete res.configuration['TYPE'];
+      let data = JSON.stringify(res.configuration, undefined, 2);
+      const blob = new Blob([data], {type: fileType});
+      saveAs(blob, name);
+    });
+  }
+
+  private storeData(obj, result) {
+    this.coreService.post('inventory/store', {
+      configuration: result,
+      path: obj.path,
+      valid: true,
+      id: obj.id,
+      objectType: obj.objectType || obj.type
+    }).subscribe((res: any) => {
+      obj.valid = res.valid;
+      if (obj.id === this.selectedObj.id) {
+        this.type = null;
+        console.log(res);
+        console.log(this.selectedData);
+        this.selectedData.valid = res.valid;
+        setTimeout(() => {
+          this.type = obj.objectType || obj.type;
+        }, 5);
+      }
+    }, (err) => {
+      console.log(err);
+    });
   }
 
   renameFolder(node) {

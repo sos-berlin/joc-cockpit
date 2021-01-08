@@ -5,7 +5,7 @@
       <span class="_600"> {{order.state._text |  translate}}</span>
     </div>
     <div class="p-l-sm" *ngIf="order.lastOutcome">
-        <span translate> order.label.lastOutCome </span>:
+        <span translate> order.label.lastOutcome </span>:
         <span class="_600" >{{order.lastOutcome.TYPE}}</span>
 <!--      <div class="p-l-sm">
         <span class="_600" >{{order.lastOutcome.namedValues |  json}}</span>
@@ -34,12 +34,12 @@
           <ng-template ngFor let-order [ngForOf]="instruction.orders | slice:0:3">
             <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>
           </ng-template>
-          <span class="remaining-order-count" (click)="showOrders(instruction.orders)" *ngIf="instruction.orders.length > 3">
+          <span class="remaining-order-count" (click)="showOrders(instruction)" *ngIf="instruction.orders.length > 3">
             <i>Show other</i>
             <span class="">{{instruction.orders.length - 3}}</span>
           </span>
         </span>
-        <span class="order-count" *ngIf="instruction.count > 0 && (!instruction.show && !expandAll)">{{instruction.count}}</span>
+        <span class="order-count" (click)="showOrders(instruction)" *ngIf="instruction.count > 0 && (!instruction.show && !expandAll)">{{instruction.count}}</span>
       </a>
       <div *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'Publish' || instruction.TYPE === 'Await'">
         {{instruction.jobName || instruction.TYPE}}
@@ -47,7 +47,7 @@
          <ng-template ngFor let-order [ngForOf]="instruction.orders | slice:0:3">
             <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>
           </ng-template>
-          <span class="remaining-order-count" (click)="showOrders(instruction.orders)" *ngIf="instruction.orders.length > 3">
+          <span class="remaining-order-count" (click)="showOrders(instruction)" *ngIf="instruction.orders.length > 3">
             <i>Show other</i>
             <span class="">{{instruction.orders.length - 3}}</span>
           </span>
@@ -64,12 +64,12 @@
               <ng-template ngFor let-order [ngForOf]="branch.orders | slice:0:3">
                   <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>
               </ng-template>
-              <span class="remaining-order-count" (click)="showOrders(branch.orders)" *ngIf="branch.orders.length > 3">
+              <span class="remaining-order-count" (click)="showOrders(branch)" *ngIf="branch.orders.length > 3">
                 <i>Show other</i>
                 <span class="">{{branch.orders.length - 3}}</span>
               </span>
             </span>
-            <span class="order-count" *ngIf="branch.count > 0 && (!branch.show && !expandAll)"> {{branch.count}}</span>
+            <span class="order-count" (click)="showOrders(branch)" *ngIf="branch.count > 0 && (!branch.show && !expandAll)"> {{branch.count}}</span>
             <div class="p-l" *ngIf="branch.instructions && (branch.show || expandAll)">
               <app-type [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
                         [configuration]="branch" [expandAll]="expandAll"></app-type>
@@ -90,12 +90,12 @@
               <ng-template ngFor let-order [ngForOf]="instruction.else.orders | slice:0:3">
                   <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order }"></ng-container>
               </ng-template>
-              <span class="remaining-order-count" (click)="showOrders(instruction.else.orders)" *ngIf="instruction.else.orders.length > 3">
+              <span class="remaining-order-count" (click)="showOrders(instruction.else)" *ngIf="instruction.else.orders.length > 3">
                 <i>Show other</i>
                 <span class="">{{instruction.else.orders.length - 3}}</span>
               </span>
             </span>
-            <span class="order-count" *ngIf="instruction.else.count > 0 && (!instruction.else.show && !expandAll)">{{instruction.else.count}}</span>
+            <span class="order-count" (click)="showOrders(instruction.else)" *ngIf="instruction.else.count > 0 && (!instruction.else.show && !expandAll)">{{instruction.else.count}}</span>
             <div class="p-l" *ngIf="instruction.else && (instruction.else.show || expandAll)">
               <app-type [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
                         [configuration]="instruction.else" [expandAll]="expandAll" *ngIf="instruction.else.instructions"></app-type>
@@ -115,12 +115,12 @@
               <ng-template ngFor let-order [ngForOf]="instruction.catch.orders | slice:0:3">
                   <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>
               </ng-template>
-              <span class="remaining-order-count" (click)="showOrders(instruction.catch.orders)" *ngIf="instruction.catch.orders.length > 3">
+              <span class="remaining-order-count" (click)="showOrders(instruction.catch)" *ngIf="instruction.catch.orders.length > 3">
                 <i>Show other</i>
                 <span class="">{{instruction.catch.orders.length - 3}}</span>
               </span>
             </span>
-            <span class="order-count" *ngIf="instruction.catch.count > 0 && (!instruction.catch.show && !expandAll)">{{instruction.catch.count}}</span>
+            <span class="order-count" (click)="showOrders(instruction.catch)" *ngIf="instruction.catch.count > 0 && (!instruction.catch.show && !expandAll)">{{instruction.catch.count}}</span>
             <div class="m-l" *ngIf="instruction.catch && (instruction.catch.show || expandAll)">
               <app-type [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
                         [configuration]="instruction.catch" [expandAll]="expandAll" *ngIf="instruction.catch.instructions"></app-type>
@@ -138,20 +138,70 @@
 </div>
 <div id="rightSideBar" *ngIf="sideBar.isVisible" class="slideInRight">
   <div class="close-btn" (click)="sideBar.isVisible = false"></div>
-    <div class="text-center m-b text" ><i class="tree-icon icon-orders-icon"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm" translate>order.label.orders</span></div>
-    <div *ngFor="let order of sideBar.orders">
-      <app-order-action [order]="order" [schedulerId]="schedulerId" [permission]="permission"
-                        [preferences]="preferences"></app-order-action>
-      <span>
-        {{order.orderId}}
-      </span>
-      <span class="p-l-sm">
-        <span translate> order.label.state </span>:
-        <span class="label" [ngClass]="coreService.getColor(order.state.severity, 'bg')"> {{order.state._text |  translate}}</span>
-      </span>
-      <span class="p-l-sm" *ngIf="order.lastOutcome">
-        <span translate> order.label.lastOutCome </span>:
-        <span class="_600" >{{order.lastOutcome.TYPE}}</span>
-      </span>
-    </div>
+  <div class="text-center m-b text"><i class="tree-icon icon-orders-icon"></i>&nbsp;
+    <span class="_600 b-b p-b-sm m-l-sm" translate>order.label.orders</span>
+  </div>
+  <div class="p-a-sm">
+    <nz-table
+      #ajaxTable
+      [nzSize]="'small'"
+      [nzBordered]="true"
+      [nzShowPagination]="false"
+      [nzData]="sideBar.orders"
+    >
+      <thead>
+      <tr>
+        <th class="menu" rowspan="2"><span translate>common.label.action</span></th>
+        <th><span class="p-r-xs" translate>order.label.orderId</span></th>
+        <th><span class="p-r-xs" translate>order.label.state</span></th>
+        <th><span class="p-r-xs" translate>order.label.scheduledFor</span></th>
+        <th><span class="p-r-xs" translate>order.label.lastOutcome</span></th>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-template ngFor let-order
+                   [ngForOf]="ajaxTable.data">
+        <tr>
+          <td>
+            <app-order-action [order]="order" [schedulerId]="schedulerId" [permission]="permission"
+                              [preferences]="preferences"></app-order-action>
+          </td>
+          <td>
+            <span class="show-in-single-line">
+              <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs" *ngIf="!order.show"
+                 (click)="showPanelFuc(order)"></i>
+              <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" *ngIf="order.show" (click)="order.show = false"></i>
+              <a class="text-dark">{{order.orderId}}</a>
+              <span *ngIf="order.title">-</span>
+              <i class="text-muted">{{order.title}}</i>
+            </span>
+          </td>
+          <td>
+            <a class="label" *ngIf="order.state" [ngClass]="coreService.getColor(order.state.severity, 'bg')"
+               [innerHtml]="order.state._text | translate"></a>
+          </td>
+          <td>{{order.scheduledFor | stringToDate}}</td>
+          <td>
+            <span *ngIf="order.lastOutcome">
+              {{order.lastOutcome.TYPE | translate}}
+            </span>
+          </td>
+        </tr>
+        <tr *ngIf="order.show">
+          <td colspan="7">
+            <div *ngIf="order.arguments && order.arguments.length > 0">
+              <div *ngFor="let argu of order.arguments"
+                   class="plan-varibales pt-1 pb-1">
+                <span>{{argu.name}} : {{argu.value}}</span>
+              </div>
+            </div>
+            <div class="p-l" *ngIf="!order.arguments || (order.arguments && order.arguments.length === 0)">
+              <span translate>common.message.noDataAvailable</span>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      </tbody>
+    </nz-table>
+  </div>
 </div>

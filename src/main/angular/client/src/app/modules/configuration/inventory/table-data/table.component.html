@@ -118,6 +118,13 @@
                       *ngIf="permission.Inventory.configurations.edit">
                     <a (click)="showJson(data, true)" translate>inventory.button.editJSON</a>
                   </li>
+                  <li nz-menu-divider></li>
+                  <li nz-menu-item>
+                    <a (click)="exportJSON(data)" translate>inventory.button.downloadJSON</a>
+                  </li>
+                  <li nz-menu-item *ngIf="permission.Inventory.configurations.edit">
+                    <a (click)="importJSON(data)" translate>inventory.button.uploadJSON</a>
+                  </li>
                 </ul>
               </nz-dropdown-menu>
             </div>

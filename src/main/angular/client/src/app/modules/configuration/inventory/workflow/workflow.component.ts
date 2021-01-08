@@ -956,10 +956,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   checkGraphHeight() {
     if (this.editor) {
       const dom = $('.graph-container');
-      let top = (dom.position().top + $('#rightPanel').position().top);
-      let ht = 'calc(100vh - ' + top + 'px)';
-      dom.css({'height': ht, 'scroll-top': '0'});
-      $('#graph').slimscroll({height: ht, scrollTo: '0'});
+      if (dom && dom.position()) {
+        let top = (dom.position().top + $('#rightPanel').position().top);
+        let ht = 'calc(100vh - ' + top + 'px)';
+        dom.css({'height': ht, 'scroll-top': '0'});
+        $('#graph').slimscroll({height: ht, scrollTo: '0'});
+      }
     }
   }
 

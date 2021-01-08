@@ -1,0 +1,1143 @@
+{
+  "title": "schedule",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "calendar",
+  "type": "object",
+  "description": "The order template for scheduling orders to JobScheduler",
+  "required": [
+    "path",
+    "workflowPath",
+    "calendars"
+  ],
+  "properties": {
+    "path": {
+      "description": "absolute path of an object.",
+      "type": "string",
+      "pattern": "^(/|(/[^/\\<>?:\"|*]+)+)$",
+      "maxLength": 255,
+      "minLength": 1
+    },
+    "workflowPath": {
+      "description": "absolute path of an object.",
+      "type": "string",
+      "pattern": "^(/|(/[^/\\<>?:\"|*]+)+)$",
+      "maxLength": 255,
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "pattern": "^[^<>]*$",
+      "maxLength": 255
+    },
+    "submitOrderToControllerWhenPlanned": {
+      "type": "boolean"
+    },
+    "planOrderAutomatically": {
+      "type": "boolean"
+    },
+    "calendars": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "javaType": "com.sos.webservices.order.initiator.model.AssignedCalendars",
+        "type": "object",
+        "required": [
+          "calendarPath",
+          "periods"
+        ],
+        "properties": {
+          "calendarPath": {
+            "description": "absolute path of a JobScheduler object.",
+            "type": "string",
+            "pattern": "^(/|(/[^/\\<>?:\"|*]+)+)$",
+            "maxLength": 255,
+            "minLength": 1
+          },
+          "timeZone": {
+            "type": "string",
+            "default": "Etc/UTC"
+          },
+          "includes": {
+            "javaType": "com.sos.joc.model.calendar.Frequencies",
+            "type": "object",
+            "anyOf": [
+              {
+                "required": [
+                  "dates"
+                ]
+              },
+              {
+                "required": [
+                  "weekdays"
+                ]
+              },
+              {
+                "required": [
+                  "monthdays"
+                ]
+              },
+              {
+                "required": [
+                  "ultimos"
+                ]
+              },
+              {
+                "required": [
+                  "months"
+                ]
+              },
+              {
+                "required": [
+                  "holidays"
+                ]
+              },
+              {
+                "required": [
+                  "repetitions"
+                ]
+              }
+            ],
+            "properties": {
+              "dates": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "description": "ISO date YYYY-MM-DD",
+                  "type": "string",
+                  "format": "date"
+                }
+              },
+              "weekdays": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "javaType": "com.sos.joc.model.calendar.WeekDays",
+                  "type": "object",
+                  "required": [
+                    "days"
+                  ],
+                  "properties": {
+                    "from": {
+                      "description": "ISO date YYYY-MM-DD",
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "to": {
+                      "description": "ISO date YYYY-MM-DD",
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "days": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "description": "digit from 0-6, 0=Sunday, 1=Monday, ..., 6=Saturday",
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 6
+                      }
+                    }
+                  }
+                }
+              },
+              "monthdays": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "javaType": "com.sos.joc.model.calendar.MonthDays",
+                  "type": "object",
+                  "anyOf": [
+                    {
+                      "required": [
+                        "days"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "weeklyDays"
+                      ]
+                    }
+                  ],
+                  "properties": {
+                    "from": {
+                      "description": "ISO date YYYY-MM-DD",
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "to": {
+                      "description": "ISO date YYYY-MM-DD",
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "days": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "description": "digit from 1-31",
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 31
+                      }
+                    },
+                    "weeklyDays": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "javaType": "com.sos.joc.model.calendar.WeeklyDay",
+                        "type": "object",
+                        "required": [
+                          "day",
+                          "weekOfMonth"
+                        ],
+                        "properties": {
+                          "day": {
+                            "description": "digit from 0-6, 0=Sunday, 1=Monday, ..., 6=Saturday",
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 6
+                          },
+                          "weekOfMonth": {
+                            "type": "number",
+                            "minimum": 1,
+                            "maximum": 5
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "ultimos": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "javaType": "com.sos.joc.model.calendar.MonthDays",
+                  "type": "object",
+                  "anyOf": [
+                    {
+                      "required": [
+                        "days"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "weeklyDays"
+                      ]
+                    }
+                  ],
+                  "properties": {
+                    "from": {
+                      "description": "ISO date YYYY-MM-DD",
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "to": {
+                      "description": "ISO date YYYY-MM-DD",
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "days": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "description": "digit from 1-31",
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 31
+                      }
+                    },
+                    "weeklyDays": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "javaType": "com.sos.joc.model.calendar.WeeklyDay",
+                        "type": "object",
+                        "required": [
+                          "day",
+                          "weekOfMonth"
+                        ],
+                        "properties": {
+                          "day": {
+                            "description": "digit from 0-6, 0=Sunday, 1=Monday, ..., 6=Saturday",
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 6
+                          },
+                          "weekOfMonth": {
+                            "type": "number",
+                            "minimum": 1,
+                            "maximum": 5
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "months": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "javaType": "com.sos.joc.model.calendar.Months",
+                  "type": "object",
+                  "anyOf": [
+                    {
+                      "required": [
+                        "months",
+                        "weekdays"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "months",
+                        "monthdays"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "months",
+                        "ultimos"
+                      ]
+                    }
+                  ],
+                  "properties": {
+                    "months": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 12
+                      }
+                    },
+                    "from": {
+                      "description": "ISO date YYYY-MM-DD",
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "to": {
+                      "description": "ISO date YYYY-MM-DD",
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "weekdays": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "javaType": "com.sos.joc.model.calendar.WeekDays",
+                        "type": "object",
+                        "required": [
+                          "days"
+                        ],
+                        "properties": {
+                          "from": {
+                            "description": "ISO date YYYY-MM-DD",
+                            "type": "string",
+                            "format": "date"
+                          },
+                          "to": {
+                            "description": "ISO date YYYY-MM-DD",
+                            "type": "string",
+                            "format": "date"
+                          },
+                          "days": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                              "description": "digit from 0-6, 0=Sunday, 1=Monday, ..., 6=Saturday",
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 6
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "monthdays": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "javaType": "com.sos.joc.model.calendar.MonthDays",
+                        "type": "object",
+                        "anyOf": [
+                          {
+                            "required": [
+                              "days"
+                            ]
+                          },
+                          {
+                            "required": [
+                              "weeklyDays"
+                            ]
+                          }
+                        ],
+                        "properties": {
+                          "from": {
+                            "description": "ISO date YYYY-MM-DD",
+                            "type": "string",
+                            "format": "date"
+                          },
+                          "to": {
+                            "description": "ISO date YYYY-MM-DD",
+                            "type": "string",
+                            "format": "date"
+                          },
+                          "days": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                              "description": "digit from 1-31",
+                              "type": "number",
+                              "minimum": 1,
+                              "maximum": 31
+                            }
+                          },
+                          "weeklyDays": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                              "javaType": "com.sos.joc.model.calendar.WeeklyDay",
+                              "type": "object",
+                              "required": [
+                                "day",
+                                "weekOfMonth"
+                              ],
+                              "properties": {
+                                "day": {
+                                  "description": "digit from 0-6, 0=Sunday, 1=Monday, ..., 6=Saturday",
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 6
+                                },
+                                "weekOfMonth": {
+                                  "type": "number",
+                                  "minimum": 1,
+                                  "maximum": 5
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "ultimos": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "javaType": "com.sos.joc.model.calendar.MonthDays",
+                        "type": "object",
+                        "anyOf": [
+                          {
+                            "required": [
+                              "days"
+                            ]
+                          },
+                          {
+                            "required": [
+                              "weeklyDays"
+                            ]
+                          }
+                        ],
+                        "properties": {
+                          "from": {
+                            "description": "ISO date YYYY-MM-DD",
+                            "type": "string",
+                            "format": "date"
+                          },
+                          "to": {
+                            "description": "ISO date YYYY-MM-DD",
+                            "type": "string",
+                            "format": "date"
+                          },
+                          "days": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                              "description": "digit from 1-31",
+                              "type": "number",
+                              "minimum": 1,
+                              "maximum": 31
+                            }
+                          },
+                          "weeklyDays": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                              "javaType": "com.sos.joc.model.calendar.WeeklyDay",
+                              "type": "object",
+                              "required": [
+                                "day",
+                                "weekOfMonth"
+                              ],
+                              "properties": {
+                                "day": {
+                                  "description": "digit from 0-6, 0=Sunday, 1=Monday, ..., 6=Saturday",
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 6
+                                },
+                                "weekOfMonth": {
+                                  "type": "number",
+                                  "minimum": 1,
+                                  "maximum": 5
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "holidays": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "javaType": "com.sos.joc.model.calendar.Holidays",
+                  "type": "object",
+                  "required": [
+                    "dates"
+                  ],
+                  "properties": {
+                    "nationalCalendar": {
+                      "type": "string",
+                      "pattern": "^[^<>]*$",
+                      "maxLength": 255
+                    },
+                    "dates": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "description": "ISO date YYYY-MM-DD",
+                        "type": "string",
+                        "format": "date"
+                      }
+                    }
+                  }
+                }
+              },
+              "repetitions": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "javaType": "com.sos.joc.model.calendar.Repetition",
+                  "type": "object",
+                  "required": [
+                    "repetition",
+                    "step"
+                  ],
+                  "properties": {
+                    "from": {
+                      "description": "ISO date YYYY-MM-DD",
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "to": {
+                      "description": "ISO date YYYY-MM-DD",
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "repetition": {
+                      "javaType": "com.sos.joc.model.calendar.RepetitionText",
+                      "type": "string",
+                      "enum": [
+                        "DAILY",
+                        "WEEKLY",
+                        "MONTHLY",
+                        "YEARLY"
+                      ]
+                    },
+                    "step": {
+                      "type": "number",
+                      "minimum": 1,
+                      "default": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "excludes": {
+            "javaType": "com.sos.joc.model.calendar.Frequencies",
+            "type": "object",
+            "anyOf": [
+              {
+                "required": [
+                  "dates"
+                ]
+              },
+              {
+                "required": [
+                  "weekdays"
+                ]
+              },
+              {
+                "required": [
+                  "monthdays"
+                ]
+              },
+              {
+                "required": [
+                  "ultimos"
+                ]
+              },
+              {
+                "required": [
+                  "months"
+                ]
+              },
+              {
+                "required": [
+                  "holidays"
+                ]
+              },
+              {
+                "required": [
+                  "repetitions"
+                ]
+              }
+            ],
+            "properties": {
+              "dates": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "description": "ISO date YYYY-MM-DD",
+                  "type": "string",
+                  "format": "date"
+                }
+              },
+              "weekdays": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "javaType": "com.sos.joc.model.calendar.WeekDays",
+                  "type": "object",
+                  "required": [
+                    "days"
+                  ],
+                  "properties": {
+                    "from": {
+                      "description": "ISO date YYYY-MM-DD",
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "to": {
+                      "description": "ISO date YYYY-MM-DD",
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "days": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "description": "digit from 0-6, 0=Sunday, 1=Monday, ..., 6=Saturday",
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 6
+                      }
+                    }
+                  }
+                }
+              },
+              "monthdays": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "javaType": "com.sos.joc.model.calendar.MonthDays",
+                  "type": "object",
+                  "anyOf": [
+                    {
+                      "required": [
+                        "days"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "weeklyDays"
+                      ]
+                    }
+                  ],
+                  "properties": {
+                    "from": {
+                      "description": "ISO date YYYY-MM-DD",
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "to": {
+                      "description": "ISO date YYYY-MM-DD",
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "days": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "description": "digit from 1-31",
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 31
+                      }
+                    },
+                    "weeklyDays": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "javaType": "com.sos.joc.model.calendar.WeeklyDay",
+                        "type": "object",
+                        "required": [
+                          "day",
+                          "weekOfMonth"
+                        ],
+                        "properties": {
+                          "day": {
+                            "description": "digit from 0-6, 0=Sunday, 1=Monday, ..., 6=Saturday",
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 6
+                          },
+                          "weekOfMonth": {
+                            "type": "number",
+                            "minimum": 1,
+                            "maximum": 5
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "ultimos": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "javaType": "com.sos.joc.model.calendar.MonthDays",
+                  "type": "object",
+                  "anyOf": [
+                    {
+                      "required": [
+                        "days"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "weeklyDays"
+                      ]
+                    }
+                  ],
+                  "properties": {
+                    "from": {
+                      "description": "ISO date YYYY-MM-DD",
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "to": {
+                      "description": "ISO date YYYY-MM-DD",
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "days": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "description": "digit from 1-31",
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 31
+                      }
+                    },
+                    "weeklyDays": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "javaType": "com.sos.joc.model.calendar.WeeklyDay",
+                        "type": "object",
+                        "required": [
+                          "day",
+                          "weekOfMonth"
+                        ],
+                        "properties": {
+                          "day": {
+                            "description": "digit from 0-6, 0=Sunday, 1=Monday, ..., 6=Saturday",
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 6
+                          },
+                          "weekOfMonth": {
+                            "type": "number",
+                            "minimum": 1,
+                            "maximum": 5
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "months": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "javaType": "com.sos.joc.model.calendar.Months",
+                  "type": "object",
+                  "anyOf": [
+                    {
+                      "required": [
+                        "months",
+                        "weekdays"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "months",
+                        "monthdays"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "months",
+                        "ultimos"
+                      ]
+                    }
+                  ],
+                  "properties": {
+                    "months": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 12
+                      }
+                    },
+                    "from": {
+                      "description": "ISO date YYYY-MM-DD",
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "to": {
+                      "description": "ISO date YYYY-MM-DD",
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "weekdays": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "javaType": "com.sos.joc.model.calendar.WeekDays",
+                        "type": "object",
+                        "required": [
+                          "days"
+                        ],
+                        "properties": {
+                          "from": {
+                            "description": "ISO date YYYY-MM-DD",
+                            "type": "string",
+                            "format": "date"
+                          },
+                          "to": {
+                            "description": "ISO date YYYY-MM-DD",
+                            "type": "string",
+                            "format": "date"
+                          },
+                          "days": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                              "description": "digit from 0-6, 0=Sunday, 1=Monday, ..., 6=Saturday",
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 6
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "monthdays": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "javaType": "com.sos.joc.model.calendar.MonthDays",
+                        "type": "object",
+                        "anyOf": [
+                          {
+                            "required": [
+                              "days"
+                            ]
+                          },
+                          {
+                            "required": [
+                              "weeklyDays"
+                            ]
+                          }
+                        ],
+                        "properties": {
+                          "from": {
+                            "description": "ISO date YYYY-MM-DD",
+                            "type": "string",
+                            "format": "date"
+                          },
+                          "to": {
+                            "description": "ISO date YYYY-MM-DD",
+                            "type": "string",
+                            "format": "date"
+                          },
+                          "days": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                              "description": "digit from 1-31",
+                              "type": "number",
+                              "minimum": 1,
+                              "maximum": 31
+                            }
+                          },
+                          "weeklyDays": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                              "javaType": "com.sos.joc.model.calendar.WeeklyDay",
+                              "type": "object",
+                              "required": [
+                                "day",
+                                "weekOfMonth"
+                              ],
+                              "properties": {
+                                "day": {
+                                  "description": "digit from 0-6, 0=Sunday, 1=Monday, ..., 6=Saturday",
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 6
+                                },
+                                "weekOfMonth": {
+                                  "type": "number",
+                                  "minimum": 1,
+                                  "maximum": 5
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "ultimos": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "javaType": "com.sos.joc.model.calendar.MonthDays",
+                        "type": "object",
+                        "anyOf": [
+                          {
+                            "required": [
+                              "days"
+                            ]
+                          },
+                          {
+                            "required": [
+                              "weeklyDays"
+                            ]
+                          }
+                        ],
+                        "properties": {
+                          "from": {
+                            "description": "ISO date YYYY-MM-DD",
+                            "type": "string",
+                            "format": "date"
+                          },
+                          "to": {
+                            "description": "ISO date YYYY-MM-DD",
+                            "type": "string",
+                            "format": "date"
+                          },
+                          "days": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                              "description": "digit from 1-31",
+                              "type": "number",
+                              "minimum": 1,
+                              "maximum": 31
+                            }
+                          },
+                          "weeklyDays": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                              "javaType": "com.sos.joc.model.calendar.WeeklyDay",
+                              "type": "object",
+                              "required": [
+                                "day",
+                                "weekOfMonth"
+                              ],
+                              "properties": {
+                                "day": {
+                                  "description": "digit from 0-6, 0=Sunday, 1=Monday, ..., 6=Saturday",
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 6
+                                },
+                                "weekOfMonth": {
+                                  "type": "number",
+                                  "minimum": 1,
+                                  "maximum": 5
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "holidays": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "javaType": "com.sos.joc.model.calendar.Holidays",
+                  "type": "object",
+                  "required": [
+                    "dates"
+                  ],
+                  "properties": {
+                    "nationalCalendar": {
+                      "type": "string",
+                      "pattern": "^[^<>]*$",
+                      "maxLength": 255
+                    },
+                    "dates": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "description": "ISO date YYYY-MM-DD",
+                        "type": "string",
+                        "format": "date"
+                      }
+                    }
+                  }
+                }
+              },
+              "repetitions": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "javaType": "com.sos.joc.model.calendar.Repetition",
+                  "type": "object",
+                  "required": [
+                    "repetition",
+                    "step"
+                  ],
+                  "properties": {
+                    "from": {
+                      "description": "ISO date YYYY-MM-DD",
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "to": {
+                      "description": "ISO date YYYY-MM-DD",
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "repetition": {
+                      "javaType": "com.sos.joc.model.calendar.RepetitionText",
+                      "type": "string",
+                      "enum": [
+                        "DAILY",
+                        "WEEKLY",
+                        "MONTHLY",
+                        "YEARLY"
+                      ]
+                    },
+                    "step": {
+                      "type": "number",
+                      "minimum": 1,
+                      "default": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "periods": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "javaType": "com.sos.joc.model.calendar.Period",
+              "type": "object",
+              "properties": {
+                "singleStart": {
+                  "type": "string",
+                  "pattern": "^[0-9:]*$"
+                },
+                "begin": {
+                  "type": "string",
+                  "pattern": "^[0-9:]*$"
+                },
+                "end": {
+                  "type": "string",
+                  "pattern": "^[0-9:]*$"
+                },
+                "repeat": {
+                  "type": "string",
+                  "pattern": "^[0-9:]*$"
+                },
+                "whenHoliday": {
+                  "javaType": "com.sos.joc.model.calendar.WhenHolidayType",
+                  "description": "default: SUPPRESS",
+                  "type": "string",
+                  "enum": [
+                    "SUPPRESS",
+                    "IGNORE",
+                    "PREVIOUSNONWORKINGDAY",
+                    "NEXTNONWORKINGDAY"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "nonWorkingCalendars": {
+      "type": "array",
+      "items": {
+        "javaType": "com.sos.webservices.order.initiator.model.AssignedNonWorkingCalendars",
+        "type": "object",
+        "required": [
+          "calendarPath"
+        ],
+        "properties": {
+          "calendarPath": {
+            "description": "absolute path of a JobScheduler object.",
+            "type": "string",
+            "pattern": "^(/|(/[^/\\<>?:\"|*]+)+)$",
+            "maxLength": 255,
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "variables": {
+      "type": "array",
+      "items": {
+        "javaType": "com.sos.webservices.order.initiator.model.NameValuePair",
+        "type": "object",
+        "required": [
+          "name",
+          "value"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

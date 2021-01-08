@@ -290,7 +290,11 @@ export class ControllersComponent implements OnInit {
         }
       }
     } else if (securityData) {
-      this.controllers = securityData.controllers;
+      for (let j = 0; j < securityData.controllers.length; j++) {
+        if (this.currentSecurityLevel === securityData.controllers[j].securityLevel) {
+          this.controllers.push(securityData.controllers[j]);
+        }
+      }
     }
     if (this.controllers.length > 0) {
       for (let i = 0; i < this.showPanel.length; i++) {
