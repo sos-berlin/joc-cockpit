@@ -1860,10 +1860,10 @@
   "button.startJobStreamStarterParameterized": "Job-Folge parametrisiert starten",
   "button.setInstanceToRunning" : "Instanz auf 'Laufend' setzen",
   "button.setInstanceToComplete" : "Instanz auf 'Abgeschlossen' setzen",
-  "button.editEvents": "Edit Events",
-  "label.updateEvents": "Update Events",
-  "label.showJobInJobStreamWithColor": "Show Jobs in Job Stream with color",
-  "label.mergeJobStreamWithOtherFolder": "Merge Job Stream with other folder",
-  "tab.addMissingEvents": "Add Missing Events",
-  "tab.deleteExistingEvents": "Delete Existing Events"
+  "button.editEvents": "Erginisse editieren",
+  "label.updateEvents": "Ereignisse aktualisieren",
+  "label.showJobInJobStreamWithColor": "Jobs in Job-Folgen mit Farben anzeigen",
+  "label.mergeJobStreamWithOtherFolder": "Job-Folge mit anderem Ordner zusammenführen",
+  "tab.addMissingEvents": "Fehlende Ereignisse hinzufügen",
+  "tab.deleteExistingEvents": "Events löschen"
 }
