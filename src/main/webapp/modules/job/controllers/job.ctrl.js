@@ -4112,7 +4112,7 @@
                     obj.states.push(vm.jobFilters.filter.state);
                 }
             }
-            if(!vm.isConditionTab) {
+            if (!vm.isConditionTab) {
                 delete obj ['folders'];
                 obj.jobs = [];
                 for (let i = 0; i < vm.filtered.length; i++) {
@@ -8486,7 +8486,7 @@
                     cb();
                 }
                 vm.getEvents(null);
-                if ((vm.historyTabActive || vm.userPreferences.jobStreamWithColor) && !vm.isHistoryLoaded) {
+                if (!vm.isHistoryLoaded) {
                     vm.loadHistory();
                 }
             }, function (err) {
@@ -12755,11 +12755,11 @@
                     if (vm.selectedSession.jobStreamStarter.requiredJob) {
                         vm.taskHistory.forEach(function (history) {
                             history.requiredJob = vm.selectedSession.jobStreamStarter.requiredJob;
-                            if (vm.userPreferences.jobStreamWithColor && history.state && (history.state._text === 'SUCCESSFUL' || history.state._text === 'FAILED')) {
+                            if (history.state && (history.state._text === 'SUCCESSFUL' || history.state._text === 'FAILED')) {
                                 vm.historyMapObj.set(history.job, history.state);
                             }
                         });
-                    } else if (vm.userPreferences.jobStreamWithColor) {
+                    } else {
                         for (let i = 0; i < vm.taskHistory.length; i++) {
                             if (vm.taskHistory[i].state && (vm.taskHistory[i].state._text === 'SUCCESSFUL' || vm.taskHistory[i].state._text === 'FAILED')) {
                                 vm.historyMapObj.set(vm.taskHistory[i].job, vm.taskHistory[i].state);
@@ -12795,20 +12795,20 @@
             if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
                 let callEvent = false, arr = [], checkStreamList = false, isHistoryCall = false, isAuditLogCall = false;
                 for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
-                    if ((vm.events[0].eventSnapshots[m].eventType === "EventCreated" || vm.events[0].eventSnapshots[m].eventType === "EventRemoved" || vm.events[0].eventSnapshots[m].eventType === "InconditionValidated") && !vm.events[0].eventSnapshots[m].eventId) {
+                    if ((vm.events[0].eventSnapshots[m].eventType === "EventCreated" || vm.events[0].eventSnapshots[m].eventType === "EventRemoved" || vm.events[0].eventSnapshots[m].eventType === "InconditionValidated") && !vm.events[0].eventSnapshots[m].eventId
+                    && ((vm.events[0].eventSnapshots[m].nodeId === vm.selectedSession.session && vm.selectedSession.session) ||
+                        (vm.jobs[0] && (vm.jobs[0].path1 && vm.jobs[0].path1.match(vm.events[0].eventSnapshots[m].path))))) {
                         if (vm.events[0].eventSnapshots[m].eventType === "InconditionValidated" && vm.events[0].eventSnapshots[m].path) {
                             checkStreamList = true;
                             arr.push(vm.events[0].eventSnapshots[m].path);
                         } else {
-                            if (vm.jobs.length > 0 && ((vm.events[0].eventSnapshots[m].state === vm.selectedSession.session) ||
-                                (!vm.jobs[0].path1 || (vm.jobs[0].path1 && vm.jobs[0].path1.match(vm.events[0].eventSnapshots[m].path))))) {
+                            if (vm.jobs.length > 0) {
                                 callEvent = true;
                             }
                         }
                     } else if (vm.events[0].eventSnapshots[m].eventType === "TaskEnded" && (vm.events[0].eventSnapshots[m].nodeId && vm.events[0].eventSnapshots[m].nodeId === vm.selectedSession.session)) {
                         isHistoryCall = true;
-                        if(vm.userPreferences.jobStreamWithColor && !vm.historyTabActive){
-                            ++vm.historyCount;
+                        if(!vm.historyTabActive){
                             vm.historyMapObj.set(vm.events[0].eventSnapshots[m].path, {_text: vm.events[0].eventSnapshots[m].state});
                         }
                     } else if (vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "JOB" && !vm.events[0].eventSnapshots[m].eventId) {
@@ -12819,7 +12819,7 @@
                     } else if ((vm.events[0].eventSnapshots[m].eventType === "JobStreamStarted" ||
                         vm.events[0].eventSnapshots[m].eventType === "JobStreamCompleted") &&
                         ((vm.events[0].eventSnapshots[m].path && vm.events[0].eventSnapshots[m].path.match(vm.selectedJobStreamObj.jobStream))
-                            || (vm.selectedSession && vm.events[0].eventSnapshots[m].state === vm.selectedSession.session))) {
+                            || (vm.selectedSession && vm.events[0].eventSnapshots[m].nodeId === vm.selectedSession.session))) {
                         vm.getSessions();
                         callEvent = true;
                     } else if (vm.events[0].eventSnapshots[m].eventType === "IsAlive") {
@@ -12832,11 +12832,12 @@
                     vm.loadAuditLogs();
                 }
                 if(isHistoryCall) {
-                    if (vm.historyTabActive || vm.historyCount > 5) {
-                        if(!vm.isHistoryLoaded) {
+                    ++vm.historyCount;
+                    if (vm.historyTabActive || vm.historyCount > 8) {
+                        if (!vm.isHistoryLoaded) {
                             vm.loadHistory();
                         }
-                    }else{
+                    } else {
                         updateWorkflowDiagram(vm.jobs, null, true)
                     }
                 }
