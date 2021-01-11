@@ -576,7 +576,7 @@
     "label.all": "All",
     "label.ignoreList": "Ignore List",
     "label.deploymentDate": "Deployment Date",
-    "label.deleteDate": "Deletion Date",
+    "label.date": "Date",
     "label.operation": "Operation",
     "label.version": "Version",
     "label.job": "Job",

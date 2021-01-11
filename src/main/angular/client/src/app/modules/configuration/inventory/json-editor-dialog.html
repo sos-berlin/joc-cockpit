@@ -1,9 +1,8 @@
 <div class="modal-header">
   <h4 class="modal-title">
     <span *ngIf="edit" translate>inventory.label.editJson</span>
-    <span *ngIf="edit" class="test-sm"> (edit is in progress)</span>
     <span *ngIf="!edit" translate>inventory.label.showJson</span>:
-    {{name}}
+    <span class="text-muted">{{name}}</span>
   </h4>
   <button type="button" class="close" (click)="activeModal.dismiss('Cross click')" aria-label="Close">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -12,18 +11,27 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
     <div class="row">
-      <div class="col-md-12">
-        <json-editor [options]="options" [data]="object"></json-editor>
+      <div class="col-md-12" [ngClass]="{'editor-disable': !edit}">
+        <json-editor [options]="options" [data]="data" #editor></json-editor>
+      </div>
+      <div class="col-md-12" *ngIf="isError">
+        <div class="help-block text-danger" *ngFor="let error of errorMsg">
+          {{error.dataPath}} - {{error.message}}
+        </div>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-   <button type="submit" *ngIf="edit" [disabled]="true" class="btn btn-primary btn-sm">
+   <button type="submit" *ngIf="edit" [disabled]="submitted || isError" class="btn btn-primary btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
-      common.button.close
+    <button type="button" class="btn orange btn-sm" [disabled]="isError"
+            (click)="copyToClipboard()" translate>log.button.copyToClipboard
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')">
+      <span *ngIf="edit" translate>common.button.cancel</span>
+      <span *ngIf="!edit" translate>common.button.close</span>
     </button>
   </div>
 </form>

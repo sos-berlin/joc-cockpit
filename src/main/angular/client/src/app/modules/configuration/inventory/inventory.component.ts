@@ -772,12 +772,20 @@ export class ExportComponent implements OnInit {
         return false;
       }
       if (this.exportObj.forSigning) {
-        return !(value.objectType === 'SCHEDULE' || value.objectType.match(/CALENDAR/));
+        if (!(value.objectType === 'SCHEDULE' || value.objectType.match(/CALENDAR/))) {
+          if (this.filter.draft && (value.deployed === false || value.released === false)) {
+            return !(this.filter.valid && !value.valid);
+          }
+          return !!(this.filter.deploy && (value.deployed || value.released));
+        } else {
+          return false;
+        }
+      } else {
+        if (this.filter.draft && (value.deployed === false || value.released === false)) {
+          return !(this.filter.valid && !value.valid);
+        }
+        return !!(this.filter.deploy && (value.deployed || value.released));
       }
-      if (this.filter.draft && (value.deployed === false || value.released === false)) {
-        return !(this.filter.valid && !value.valid);
-      }
-      return !!(this.filter.deploy && (value.deployed || value.released));
     });
     this.buildDeployablesTree(arr);
     if (this.nodes.length > 0) {
@@ -1266,7 +1274,6 @@ export class ImportWorkflowModalComponent implements OnInit {
   required = false;
   submitted = false;
   signatureAlgorithm: string;
-  selectedSchedulerIds = [];
   comments: any = {};
   requestObj: any = {
     overwrite: false,
@@ -1287,9 +1294,6 @@ export class ImportWorkflowModalComponent implements OnInit {
         value: this.authService.accessTokenId
       }]
     });
-    if (this.schedulerIds) {
-      this.selectedSchedulerIds.push(this.schedulerIds.selected);
-    }
     this.comments.radio = 'predefined';
     if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
@@ -1316,19 +1320,13 @@ export class ImportWorkflowModalComponent implements OnInit {
           }
           obj.targetFolder = this.requestObj.targetFolder;
         }
-        obj.format = this.requestObj.format;
         obj.overwrite = this.requestObj.overwrite;
       }
-      if (this.selectedSchedulerIds && this.selectedSchedulerIds.length > 0) {
-        const importDeployFilter = {controllers: []};
-        for (let i = 0; i < this.selectedSchedulerIds.length; i++) {
-          importDeployFilter.controllers.push({controller: this.selectedSchedulerIds[i]});
-        }
-        if (this.isDeploy) {
-          obj.signatureAlgorithm = this.signatureAlgorithm;
-        }
-        obj.importDeployFilter = JSON.stringify(importDeployFilter);
+      if (this.isDeploy) {
+        obj.signatureAlgorithm = this.signatureAlgorithm;
+        obj.controllerId = this.schedulerIds.selected;
       }
+      obj.format = this.requestObj.format;
       item.file.name = encodeURIComponent(item.file.name);
       this.uploader.options.additionalParameter = obj;
     };
@@ -1688,29 +1686,31 @@ export class InventoryComponent implements OnInit, OnDestroy {
       }
     });
     this.subscription3 = dataService.refreshAnnounced$.subscribe(() => {
-      this.initConf();
+      this.initConf(false);
     });
   }
 
   ngOnInit() {
-    this.initConf();
+    this.initConf(true);
   }
 
-  private initConf() {
+  private initConf(isReload) {
     if (this.authService.permission) {
       this.permission = JSON.parse(this.authService.permission) || {};
     }
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
-    this.sideView = this.coreService.getSideView();
-    if (this.sideView.inventory && !this.sideView.inventory.show) {
-      this.hidePanel();
-    }
-    this.securityLevel = sessionStorage.securityLevel;
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.inventoryConfig = this.coreService.getConfigurationTab().inventory;
-    this.initTree(null, null);
+    this.securityLevel = sessionStorage.securityLevel;
+    if (isReload) {
+      this.sideView = this.coreService.getSideView();
+      if (this.sideView.inventory && !this.sideView.inventory.show) {
+        this.hidePanel();
+      }
+      this.inventoryConfig = this.coreService.getConfigurationTab().inventory;
+      this.initTree(null, null);
+    }
   }
 
   ngOnDestroy() {
@@ -1744,7 +1744,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.isLoading = true;
     }
     this.coreService.post('tree', {
-      controllerId: this.schedulerIds.selected,
       forInventory: true,
       types: ['INVENTORY']
     }).subscribe((res: any) => {

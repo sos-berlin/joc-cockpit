@@ -973,7 +973,7 @@
                     <th width="24.95%"><span translate>history.label.deployType</span></th>
                     <th width="24.97%"><span translate>common.label.path</span></th>
                     <th width="24.95%"><span translate>history.label.operation</span></th>
-                    <th width="24.95%"><span translate>history.label.deleteDate</span></th>
+                    <th width="24.95%"><span translate>history.label.date</span></th>
                   </tr>
                   </thead>
                   <tbody>
@@ -991,7 +991,7 @@
                       </span>
                     </td>
                     <td><span [innerHtml]="child.operation | translate"></span></td>
-                    <td [innerHtml]="child.deleteDate | stringToDate"></td>
+                    <td [innerHtml]="child.deploymentDate | stringToDate"></td>
                   </tr>
                   </tbody>
                 </nz-table>
