@@ -1843,7 +1843,7 @@
   "profile.label.configurationViewYade" : "vue de configuration YADE",
   "profile.label.configurationViewNotification" : "vue de configuration des Notifications",
   "profile.label.configurationViewOthers" : "vue de configuration pour Autres",
-  "message.jobStreamPluginNotActivate": "Job Stream Plugin inactif",
+  "message.jobStreamPluginNotActivate": "Plugin Flot de Travaux inactif",
   "message.noJobstreamHistoryFound": "aucun Flot de Travaux trouvé dans l'Historique",
   "label.enqueuedTasks": "Processus en attente",
   "label.maxJobstreamHistory": "Nombre max. d'entrées dans l'Historique par Flot de Travaux",
@@ -1860,10 +1860,10 @@
   "button.startJobStreamStarterParameterized": "Lancer le Flot de Travaux avec paramètres",
   "button.setInstanceToRunning" : "Régler l'instance sur 'en cours'",
   "button.setInstanceToComplete" : "Régler l'instance sur 'terminé'",
-  "button.editEvents": "Edit Events",
-  "label.updateEvents": "Update Events",
-  "label.showJobInJobStreamWithColor": "Show Jobs in Job Stream with color",
-  "label.mergeJobStreamWithOtherFolder": "Merge Job Stream with other folder",
-  "tab.addMissingEvents": "Add Missing Events",
-  "tab.deleteExistingEvents": "Delete Existing Events"
+  "button.editEvents": "Modifier les Événements",
+  "label.updateEvents": "Mettre à jour les Événements",
+  "label.showJobInJobStreamWithColor": "Visualiser les Tâches des Flots de Travaux avec de la couleur",
+  "label.mergeJobStreamWithOtherFolder": "Fusionner le Flot de Travaux avec un autre dossier",
+  "tab.addMissingEvents": "Ajouter les Événements",
+  "tab.deleteExistingEvents": "Supprimer les Événements"
 }
