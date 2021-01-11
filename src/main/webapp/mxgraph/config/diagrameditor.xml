@@ -76,6 +76,9 @@
       <add as="condition2">
         <add as="shape" value="Parallelogram"/>
       </add>
+      <add as="connector">
+        <add as="shape" value="offPageConnector"/>
+      </add>
       <add as="order">
         <add as="shape" value="ellipse"/>
         <add as="perimeter" value="ellipsePerimeter"/>
