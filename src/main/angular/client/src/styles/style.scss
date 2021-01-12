@@ -6752,8 +6752,26 @@ div.jsoneditor-outer {
 div.jsoneditor-menu{
   display: none;
 }
-.editor-disable{
-  pointer-events: none;
-  cursor: auto;
-  background: 0 0;
+.editor-disable {
+  .ace_scroller {
+    pointer-events: none;
+    cursor: auto;
+    background: 0 0;
+  }
+}
+.error-input {
+  div.jsoneditor {
+    border-color: #a94442 !important;
+  }
+}
+div.ace_tooltip {
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  background: black !important;
+  font-size: 12px;
+  padding: 6px 8px;
+  color: $white !important;
+  background-image: none;
+  border: none;
+  left: 74px !important;
+  margin-top: -88px;
 }

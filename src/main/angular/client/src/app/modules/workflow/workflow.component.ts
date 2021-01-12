@@ -283,6 +283,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
   resizerHeight: any = 200;
+  currentPath: string = '/';
   pageView: any;
   workflows: any = [];
   selectedPath: string;
@@ -367,11 +368,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (localStorage.views) {
       this.pageView = JSON.parse(localStorage.views).workflow;
     }
-    /*    let rsHt = JSON.parse(this.saveService.resizerHeight) || {};
-        console.log(rsHt, 'rsHt', this.resizerHeight);
-        if(rsHt.workflow){
-
-        }*/
     if (!this.savedFilter.selected) {
       this.initTree();
     }
@@ -475,6 +471,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   private getWorkflowList(obj) {
+    if(obj.folders.length === 1) {
+      this.currentPath = obj.folders[0].folder;
+    }
     this.coreService.post('workflows', obj).subscribe((res: any) => {
       this.loading = false;
       const request = {
@@ -938,8 +937,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   resetPanel() {
     const rsHt = this.saveService.resizerHeight ? JSON.parse(this.saveService.resizerHeight) || {} : {};
     if (rsHt.workflow && typeof rsHt.workflow === 'object') {
-      if (rsHt.workflow[this.workflowFilters.selectedkeys[0]]) {
-        delete rsHt.workflow[this.workflowFilters.selectedkeys[0]];
+      if (rsHt.workflow[this.currentPath]) {
+        delete rsHt.workflow[this.currentPath];
         this.saveService.setResizerHeight(rsHt);
         this.saveService.save();
         this._updatePanelHeight();
@@ -950,8 +949,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   updatePanelHeight() {
     let rsHt = this.saveService.resizerHeight ? JSON.parse(this.saveService.resizerHeight) || {} : {};
     if (rsHt.workflow && !_.isEmpty(rsHt.workflow)) {
-      if (rsHt.workflow[this.workflowFilters.selectedkeys[0]]) {
-        this.resizerHeight = rsHt.workflow[this.workflowFilters.selectedkeys[0]];
+      if (rsHt.workflow[this.currentPath]) {
+        this.resizerHeight = rsHt.workflow[this.currentPath];
         $('#workflowTableId').css('height', this.resizerHeight);
       } else {
         this._updatePanelHeight();

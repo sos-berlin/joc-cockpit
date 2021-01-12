@@ -46,7 +46,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   worflowFilters: any = {};
   nodeMap = new Map();
   configXml = './assets/mxgraph/config/diagrameditor.xml';
-
+  mapObj = new Map();
   subscription: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private route: ActivatedRoute,
@@ -101,7 +101,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow.path == this.path) {
-          this.getOrders(this.workflow);
+          this.getOrders(this.workflow, false);
           break;
         }
       }
@@ -140,21 +140,63 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  backClicked(){
+  backClicked() {
     window.history.back();
   }
 
   /** ---------------------------- Broadcast messages ----------------------------------*/
 
-  isWorkflowStored(_json): void {
+  isWorkflowStored(_json, isFirst): void {
     this.workFlowJson = _json;
-    this.workFlowJson.name = _json.path.substring(_json.path.lastIndexOf('/') + 1);
-    if (_json && !_.isEmpty(_json)) {
+    if (isFirst) {
+      this.workFlowJson.name = _json.path.substring(_json.path.lastIndexOf('/') + 1);
       if (_json && !_.isEmpty(_json)) {
-        this.initEditorConf(this.editor, true);
-        setTimeout(() => {
-          this.actual();
-        }, 0);
+        if (_json && !_.isEmpty(_json)) {
+          this.initEditorConf(this.editor, true);
+          setTimeout(() => {
+            this.actual();
+          }, 0);
+        }
+      }
+    } else {
+      if(this.pageView === 'grid'){
+        this.updateGraph();
+        console.log('???????... do something', this.pageView)
+      }
+
+    }
+  }
+
+  private updateGraph() {
+    let element = document.getElementById('graph');
+    let scrollValue = {
+      scrollTop: element.scrollTop,
+      scrollLeft: element.scrollLeft,
+      scale: this.editor.graph.getView().getScale()
+    };
+    const graph = this.editor.graph;
+    if (graph) {
+      graph.getModel().beginUpdate();
+      const vertices = graph.getChildVertices(graph.getDefaultParent());
+      if (vertices) {
+        if (vertices.length > 2) {
+          graph.removeCells(vertices);
+        }
+      }
+      try {
+        this.createWorkflow(this.workFlowJson);
+      } finally {
+        // Updates the display
+        graph.getModel().endUpdate();
+        WorkflowService.executeLayout(graph);
+        if (scrollValue && (scrollValue.scrollTop || scrollValue.scrollTop === 0)) {
+          const _element = document.getElementById('graph');
+          _element.scrollTop = scrollValue.scrollTop;
+          _element.scrollLeft = scrollValue.scrollLeft;
+          if (scrollValue.scale) {
+            graph.getView().setScale(scrollValue.scale);
+          }
+        }
       }
     }
   }
@@ -269,25 +311,35 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }).subscribe((res: any) => {
       this.workflow = res.workflow;
       this.createEditor(this.configXml);
-      this.getOrders(res.workflow);
+      this.getOrders(res.workflow, true);
     }, () => {
       this.loading = true;
     });
 
   }
 
-  private getOrders(workflow) {
+  private getOrders(workflow, isFirst) {
     const obj = {
       compact: true,
       controllerId: this.schedulerIds.selected,
       workflowIds: [{path: workflow.path, versionId: workflow.versionId}]
     };
     this.coreService.post('orders', obj).subscribe((res: any) => {
+      this.mapObj =  new Map();
       this.workflow.orders = res.orders;
-      this.isWorkflowStored(workflow);
+      if (res.orders) {
+        for (let j = 0; j < res.orders.length; j++) {
+          let arr = [res.orders[j]];
+          if (this.mapObj.has(JSON.stringify(res.orders[j].position))) {
+            arr = arr.concat(this.mapObj.get(JSON.stringify(res.orders[j].position)));
+          }
+          this.mapObj.set(JSON.stringify(res.orders[j].position), arr);
+        }
+      }
+      this.isWorkflowStored(workflow, isFirst);
       this.loading = true;
     }, () => {
-      this.isWorkflowStored(workflow);
+      this.isWorkflowStored(workflow, isFirst);
       this.loading = true;
     });
   }
@@ -428,9 +480,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         let v1, endNode;
         for (let x = 0; x < json.instructions.length; x++) {
           let v2;
-          let _node = doc.createElement(json.instructions[x].TYPE);
-          if (!json.instructions[x].uuid)
+          const _node = doc.createElement(json.instructions[x].TYPE);
+          _node.setAttribute('position', JSON.stringify(json.instructions[x].position));
+          if (!json.instructions[x].uuid) {
             json.instructions[x].uuid = self.workflowService.create_UUID();
+          }
           if (json.instructions[x].TYPE === 'Job') {
             _node.setAttribute('jobName', json.instructions[x].jobName);
             _node.setAttribute('label', json.instructions[x].label || '');
@@ -441,6 +495,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
               _node.setAttribute('defaultArguments', '');
             }
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 180, 40, 'job');
+            self.createOrder(graph, doc, parent, v1);
 
           } else if (json.instructions[x].TYPE === 'Finish') {
             _node.setAttribute('label', 'finish');
@@ -448,6 +503,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             _node.setAttribute('outcome', JSON.stringify(outcome));
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.workflowService.finish);
+            self.createOrder(graph, doc, parent, v1);
 
           } else if (json.instructions[x].TYPE === 'Fail') {
             _node.setAttribute('label', 'fail');
@@ -455,12 +511,14 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             _node.setAttribute('outcome', JSON.stringify(outcome));
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.workflowService.fail);
+            self.createOrder(graph, doc, parent, v1);
 
           } else if (json.instructions[x].TYPE === 'Publish') {
             _node.setAttribute('label', 'publish');
             _node.setAttribute('junctionPath', json.instructions[x].junctionPath || '');
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.workflowService.publish);
+            self.createOrder(graph, doc, parent, v1);
 
           } else if (json.instructions[x].TYPE === 'Await') {
             _node.setAttribute('label', 'await');
@@ -477,6 +535,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             _node.setAttribute('joinVariables', json.instructions[x].joinVariables || '');
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.workflowService.fork);
+            self.createOrder(graph, doc, parent, v1);
 
             if (json.instructions[x].branches) {
               for (let i = 0; i < json.instructions[x].branches.length; i++) {
@@ -494,6 +553,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             _node.setAttribute('predicate', json.instructions[x].predicate);
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, 'if');
+            self.createOrder(graph, doc, parent, v1);
             if (json.instructions[x].then && json.instructions[x].then.instructions && json.instructions[x].then.instructions.length > 0) {
               recursive(json.instructions[x].then, 'endIf', v1);
               connectInstruction(v1, vertexMap.get(json.instructions[x].then.instructions[0].uuid), 'then', 'then', v1);
@@ -509,6 +569,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             _node.setAttribute('retryDelays', json.instructions[x].retryDelays ? json.instructions[x].retryDelays.toString() : '');
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, 'retry');
+            self.createOrder(graph, doc, parent, v1);
             if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
               recursive(json.instructions[x], '', v1);
               connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'retry', 'retry', v1);
@@ -520,12 +581,15 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             _node.setAttribute('label', 'try');
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, 'try');
+            self.createOrder(graph, doc, parent, v1);
+           
             const node = doc.createElement('Catch');
             node.setAttribute('label', 'catch');
             node.setAttribute('targetId', v1.id);
             node.setAttribute('uuid', json.instructions[x].uuid);
             let cv1 = graph.insertVertex(parent, null, node, 0, 0, 110, 40, (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) ?
               'catch' : 'dashRectangle');
+            self.createOrder(graph, doc, parent, cv1);
             let _id = v1;
             if (json.instructions[x].catch && json.instructions[x].catch.instructions) {
               if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
@@ -584,7 +648,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             }
           }
         }
-        self.createOrder(graph, v1);
       }
     }
 
@@ -729,9 +792,20 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     connectWithDummyNodes(_json);
   }
 
-  private createOrder(graph, node) {
-    console.log(this.workFlowJson.orders);
-    console.log(node)
+  private createOrder(graph, doc, parent, node) {
+    if (node.getAttribute('position')) {
+      if (this.mapObj.get(node.getAttribute('position'))) {
+        let orders = this.mapObj.get(node.getAttribute('position'));
+        for (let i = 0; i < orders.length; i++) {
+          console.log(orders[i])
+          const _node = doc.createElement('ORDER');
+          _node.setAttribute('order', orders[i]);
+          const v1 = graph.insertVertex(parent, null, _node, 0, 0, 100, 40, 'order');
+          // Create new Connection object
+          graph.insertEdge(parent, null, doc.createElement('Connection'), v1, node, 'dashed=1;');
+        }
+      }
+    }
   }
 
   private updateXMLJSON() {

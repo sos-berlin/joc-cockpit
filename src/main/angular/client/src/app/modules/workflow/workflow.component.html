@@ -211,7 +211,7 @@
             </div>
             <div class="box p-a m-t-xs m-b-0" *ngIf="pageView!=='grid' && tree.length > 0">
               <div appResizable class="table-responsive resizable" style="position: initial" [height]="resizerHeight"
-                   [type]="'workflow'" [path]="'/'" id="workflowTableId">
+                   [type]="'workflow'" [path]="currentPath" id="workflowTableId">
                 <nz-table
                   #ajaxTable
                   [nzSize]="'small'"

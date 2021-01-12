@@ -8,15 +8,15 @@
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
-<form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
+<form (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
     <div class="row">
-      <div class="col-md-12" [ngClass]="{'editor-disable': !edit}">
+      <div class="col-md-12" [ngClass]="{'editor-disable': !edit, 'error-input': isError}">
         <json-editor [options]="options" [data]="data" #editor></json-editor>
       </div>
       <div class="col-md-12" *ngIf="isError">
-        <div class="help-block text-danger" *ngFor="let error of errorMsg">
-          {{error.dataPath}} - {{error.message}}
+        <div class="help-block text-danger">
+          {{errorMsg}}
         </div>
       </div>
     </div>

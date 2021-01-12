@@ -14,7 +14,6 @@ import {InventoryService} from './inventory.service';
 import * as _ from 'underscore';
 import {ClipboardService} from 'ngx-clipboard';
 import {saveAs} from 'file-saver';
-import * as Ajv from 'ajv';
 declare const $;
 
 @Component({
@@ -1382,10 +1381,8 @@ export class JsonEditorModalComponent implements OnInit {
   submitted = false;
   isError = false;
   data: any;
-  errorMsg: any = [];
+  errorMsg: string;
   options = new JsonEditorOptions();
-  schema: any;
-  ajv = new Ajv({allErrors: true});
 
   @ViewChild('editor', {static: false}) editor: JsonEditorComponent;
 
@@ -1395,40 +1392,52 @@ export class JsonEditorModalComponent implements OnInit {
     this.options.statusBar = false;
     this.options.onChange = () => {
       try {
-        let data = this.editor.get();
-        this.validate(data);
+        this.isError = false;
+        this.editor.get();
       } catch (err) {
         this.isError = true;
+        this.errorMsg = '';
       }
     };
   }
 
-  private validate(data) {
-    const validate = this.ajv.compile(this.schema);
-    const valid = validate(data);
-    console.log(validate.errors) // processed errors
-    if (!valid) {
-      this.isError = true;
-      this.errorMsg = validate.errors;
-    } else {
-      this.isError = false;
+  private parseErrorMsg(res, cb) {
+    let flag = true;
+    if (!res.valid) {
+      flag = false;
+      if (res.invalidMsg.match(/label/)) {
+        flag = true;
+      }
+      this.errorMsg = res.invalidMsg;
     }
+    this.isError = !flag;
+    cb(flag);
+  }
+
+  private validateByURL(json, cb) {
+    this.coreService.post('inventory/' + this.objectType + '/validate', json).subscribe((res: any) => {
+      this.parseErrorMsg(res, (flag)=>{
+        cb(flag);
+      });
+    }, (err) => {
+      cb(err);
+    });
   }
 
   ngOnInit() {
-    console.log(this.objectType, 'objectType');
     this.data = this.coreService.clone(this.object);
-    this.coreService.get('assets/schemas/' + (!this.objectType.match(/CALENDAR/) ? this.objectType.toLowerCase() : 'calendar') + '.json').subscribe((res: any) => {
-      this.schema = res;
-    });
     delete this.data['type'];
     delete this.data['TYPE'];
     delete this.data['versionId'];
   }
 
   copyToClipboard() {
-    this.showMsg();
-    this.clipboardService.copyFromContent(this.editor.getText());
+    this.validateByURL(this.editor.get(), (isValid) => {
+      if (isValid) {
+        this.showMsg();
+        this.clipboardService.copyFromContent(this.editor.getText());
+      }
+    });
   }
 
   private showMsg() {
@@ -1440,7 +1449,14 @@ export class JsonEditorModalComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.activeModal.close(this.editor.get());
+    this.submitted = true;
+    this.validateByURL(this.editor.get(), (isValid) => {
+      if (isValid) {
+        this.activeModal.close(this.editor.get());
+      }
+      this.submitted = false;
+    });
+
   }
 }
 
@@ -1511,7 +1527,6 @@ export class UploadModalComponent implements OnInit {
       } catch (e) {
 
       }
-      console.log(data);
       if (data) {
         self.validateByURL(data, (res) => {
           if (!res.valid) {
@@ -2433,7 +2448,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   showJson(obj) {
-    
     this.coreService.post('inventory/read/configuration', {
       id: obj.showJson.id,
     }).subscribe((res: any) => {
@@ -2490,8 +2504,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
       obj.valid = res.valid;
       if (obj.id === this.selectedObj.id) {
         this.type = null;
-        console.log(res);
-        console.log(this.selectedData);
         this.selectedData.valid = res.valid;
         setTimeout(() => {
           this.type = obj.objectType || obj.type;
