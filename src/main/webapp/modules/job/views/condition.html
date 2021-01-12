@@ -1306,7 +1306,7 @@
                                                          </div>
                                                      </div>
                                                      <div class="m-t-xs m-b-0" ng-repeat="starter in jobStream.jobstreamStarters | orderBy: 'title'">
-                                                         <a class="text-hover-primary" ng-class="{'text-primary _600' : selectedStarterId == starter.jobStreamStarterId}"  ng-click="selectStarter(starter, jobStream)"> <i class="fa fa-circle text-sm m-l-sm"></i> {{starter.title || starter.jobStreamStarterId}} <i class="text-muted">({{starter.state}})</i></a>
+                                                         <a class="text-hover-primary" ng-class="{'text-primary _600' : selectedStarterId == starter.jobStreamStarterId}" ng-click="selectStarter(starter, jobStream)"> <i class="fa fa-circle text-sm m-l-sm"></i> {{starter.title || '-'}} <i class="text-muted">({{starter.state}})</i></a>
                                                          <div class="pos-abt show-inline" style="right: 10px">
                                                              <a type="button" class="btn-drop more-option-h" data-toggle="dropdown" ><i
                                                                      class="fa fa-ellipsis-h"></i></a>

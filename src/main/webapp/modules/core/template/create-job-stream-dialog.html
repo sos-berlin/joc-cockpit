@@ -181,7 +181,7 @@
             </div>
         </div>
         <div class="modal-footer text-left">
-            <button type="submit" class="btn btn-primary btn-sm" translate ng-disabled="form.$invalid || !isUnique">
+            <button type="submit" class="btn btn-primary btn-sm" translate ng-disabled="form.$invalid || !isUnique || (_jobStream.newStarter && !_jobStream.jobstreamStarters[0].jobs[0].job)">
                 button.submit
             </button>
             <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.cancel</button>
