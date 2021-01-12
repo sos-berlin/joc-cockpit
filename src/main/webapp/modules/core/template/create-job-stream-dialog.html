@@ -87,12 +87,8 @@
             <div ng-repeat="starter in _jobStream.jobstreamStarters track by $index">
                 <div class="form-group row">
                     <label class="col-sm-4 form-control-label" translate>label.title</label>
-                    <div class="col-sm-6" ng-class="{ 'has-error' : (form.title.$invalid && form.title.$dirty)}">
+                    <div class="col-sm-6">
                         <input type="text" class="form-control" name="title" ng-model="starter.title" autofocus autocomplete="off">
-                        <div class="help-block text-danger" ng-if="form.title.$dirty"
-                             ng-messages="form.title.$error">
-                            <div ng-message="required" translate>message.requiredError</div>
-                        </div>
                     </div>
                 </div>
 
@@ -102,7 +98,7 @@
                             <label class="col-sm-4 form-control-label" translate>label.jobName</label>
                             <div class="col-sm-6"
                                  ng-class="{ 'has-error' : (form['job'+$index].$invalid && form['job'+$index].$dirty)}">
-                                <ui-select required name="job{{$index}}" ng-model="_job.job" ng-change="checkJobName(starter.jobs, _job)" theme="selectize" ng-disabled="job.selected" >
+                                <ui-select ng-required="starter.title" name="job{{$index}}" ng-model="_job.job" ng-change="checkJobName(starter.jobs, _job)" theme="selectize" ng-disabled="job.selected" >
                                     <ui-select-match>{{$select.selected.name}}</ui-select-match>
                                     <ui-select-choices repeat="job.path as job in jobList | orderBy:'name' | filter: $select.search">
                                         <span ng-class="{'disable-link':job.selected}" ng-bind-html="job.name | highlight: $select.search"></span>
@@ -120,7 +116,7 @@
                             <label class="col-sm-4 form-control-label" translate>label.delay</label>
                             <div class="col-sm-6"
                                  ng-class="{ 'has-error' : form['startDelay'+$index].$invalid && form['startDelay'+$index].$dirty }">
-                                <input type="number" required class="form-control" name="startDelay{{$index}}" ng-model="_job.startDelay">
+                                <input type="number" ng-required="starter.title" class="form-control" name="startDelay{{$index}}" ng-model="_job.startDelay">
                                 <div class="help-block text-danger" ng-if="form['startDelay'+$index].$dirty" ng-messages="form['startDelay'+$index].$error">
                                     <div ng-message="required" translate>message.requiredError</div>
                                 </div>

@@ -902,7 +902,7 @@
                                         <a class="dropdown-item" ng-click="setRuntimeJobstream(selectedNode);closeMenu()"
                                            ng-if="permission.Job.change.runTime && permission.JobStream.change.jobStream && selectedNode.type === 'Jobstream'"><span
                                                 translate>button.setRunTime</span></a>
-                                        <a class="dropdown-item" ng-class="{'disable-link': selectedNode.len < 2}" ng-click="deleteJobstreamStarter(selectedNode);closeMenu()"
+                                        <a class="dropdown-item" ng-click="deleteJobstreamStarter(selectedNode);closeMenu()"
                                            ng-if="permission.JobStream.change.jobStream && selectedNode.type === 'Jobstream'"><span
                                                 translate>button.delete</span></a>
                                         <a class="dropdown-item" ng-click="deactivateStarter(selectedNode);closeMenu()"
@@ -1323,7 +1323,7 @@
                                                                  <a class="dropdown-item" ng-click="setRuntimeJobstream(null, starter, jobStream);"
                                                                     ng-if="permission.Job.change.runTime && permission.JobStream.change.jobStream"><span
                                                                          translate>button.setRunTime</span></a>
-                                                                 <a class="dropdown-item" ng-class="{'disable-link': jobStream.jobstreamStarters.length < 2}" ng-click="deleteJobstreamStarter(null, starter, jobStream);"
+                                                                 <a class="dropdown-item" ng-click="deleteJobstreamStarter(null, starter, jobStream);"
                                                                     ng-if="permission.JobStream.change.jobStream"><span
                                                                          translate>button.delete</span></a>
                                                                  <a class="dropdown-item" ng-click="deactivateStarter(null, starter, jobStream);"
