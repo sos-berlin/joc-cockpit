@@ -1860,10 +1860,10 @@
   "button.startJobStreamStarterParameterized": "ジョブストリーム開始パラメータ設定",
   "button.setInstanceToRunning" : "インスタンスを実行中に設定",
   "button.setInstanceToComplete" : "インスタンスを完了に設定",
-  "button.editEvents": "Edit Events",
-  "label.updateEvents": "Update Events",
-  "label.showJobInJobStreamWithColor": "Show Jobs in Job Stream with color",
-  "label.mergeJobStreamWithOtherFolder": "Merge Job Stream with other folder",
-  "tab.addMissingEvents": "Add Missing Events",
-  "tab.deleteExistingEvents": "Delete Existing Events"
+  "button.editEvents": "イベント編集",
+  "label.updateEvents": "イベント更新",
+  "label.showJobInJobStreamWithColor": "ジョブストリームジョブをカラー表示",
+  "label.mergeJobStreamWithOtherFolder": "ジョブストリームを他フォルダーとマージ",
+  "tab.addMissingEvents": "欠落イベントを追加",
+  "tab.deleteExistingEvents": "既存イベントを削除"
 }
