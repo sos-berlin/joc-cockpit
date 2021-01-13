@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import * as _ from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
+import {CoreService} from './core.service';
 
 declare const mxHierarchicalLayout;
 declare const mxTooltipHandler;
@@ -17,7 +18,7 @@ export class WorkflowService {
   public publish;
   public fork;
 
-  constructor(public translate: TranslateService) {
+  constructor(public translate: TranslateService, public coreService: CoreService) {
     mxHierarchicalLayout.prototype.interRankCellSpacing = 45;
     mxTooltipHandler.prototype.delay = 0;
   }
@@ -258,6 +259,7 @@ export class WorkflowService {
 
   convertTryToRetry(_json, cb) {
     let count = 1;
+
     function recursive(json) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -358,16 +360,15 @@ export class WorkflowService {
             edge.setAttribute('label', lb);
           }
         }
-
         return '<div class="workflow-title">' + truncate(cell.getAttribute('jobName')) + '</div>';
-      } else if (cell.value.tagName === 'FileOrder') {
-        this.translate.get('workflow.label.fileOrder').subscribe(translatedValue => {
-          str = translatedValue;
-        });
-        if (cell.getAttribute('directory')) {
-          str = str + ' - ' + cell.getAttribute('directory');
+      } else if (cell.value.tagName === 'Order') {
+        let data = cell.getAttribute('order');
+        data = JSON.parse(data);
+        let color = '';
+        if (data.state) {
+          color = this.coreService.getColor(data.state.severity, 'text');
         }
-        return str;
+        return '<div class="vertex-text"><div class="block-ellipsis-job"><i class="fa fa-circle text-xs p-r-xs ' + color + '"></i>' + data.orderId + '</div></div>';
       } else {
         let x = cell.getAttribute('label');
         if (x) {
@@ -440,7 +441,7 @@ export class WorkflowService {
         });
         return '<b>' + msg + '</b> : ' + (cell.getAttribute('predicate') || '-');
       } else if (cell.value.tagName === 'Finish' && cell.value.tagName === 'Fail') {
-        let msg = '', returnCode;
+        let msg = '', returnCode = '';
         this.translate.get('workflow.label.message').subscribe(translatedValue => {
           msg = translatedValue;
         });
@@ -451,6 +452,21 @@ export class WorkflowService {
         const result = typeof outcome.result === 'object' ? outcome.result : {};
         return '<b>' + msg + '</b> : ' + (result.message || '-') + '</br>' +
           '<b>' + returnCode + '</b> : ' + (result.returnCode || '-');
+      } else if (cell.value.tagName === 'Order') {
+        let data = cell.getAttribute('order');
+        data = JSON.parse(data);
+        let state = '', orderId = '', _text = '';
+        this.translate.get('workflow.label.orderId').subscribe(translatedValue => {
+          orderId = translatedValue;
+        });
+        this.translate.get('order.label.state').subscribe(translatedValue => {
+          state = translatedValue;
+        });
+        this.translate.get(data.state._text).subscribe(translatedValue => {
+          _text = translatedValue;
+        });
+        return '<b>' + orderId + '</b> : ' + (data.orderId || '-') + '</br>' +
+          '<b>' + state + '</b> : ' + _text;
       } else {
         const x = cell.getAttribute('label');
         if (x) {

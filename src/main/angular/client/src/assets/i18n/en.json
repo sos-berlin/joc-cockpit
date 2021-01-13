@@ -505,6 +505,7 @@
     "button.removePlans": "Remove Daily Plans",
     "button.generatePlan": "Generate Daily Plan",
     "button.createPlan": "Create Daily Plan",
+    "button.cancelOrder": "Cancel Order",
     "button.submitOrder": "Submit Order",
     "button.cancelSelectedOrder": "Cancel selected Orders",
     "button.removeSelectedOrder": "Remove selected Orders",
