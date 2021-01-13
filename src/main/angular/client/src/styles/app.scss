@@ -366,3 +366,16 @@ $trans: cubic-bezier(0.3, 0, 0.7, 1);
     opacity: 1;
   }
 }
+.flow {
+  stroke-dasharray: 8;
+  stroke-width: 2;
+  stroke: green;
+  animation: dash .5s linear;
+  animation-iteration-count: infinite
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -16
+  }
+}

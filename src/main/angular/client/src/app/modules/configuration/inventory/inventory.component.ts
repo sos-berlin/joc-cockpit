@@ -720,7 +720,7 @@ export class ExportComponent implements OnInit {
         }
       });
       this.actualResult = this.inventoryService.sortList(this.actualResult);
-      this.filterTree();
+      this.filterList();
     }, (err) => {
       this.loading = false;
       this.nodes = [];
@@ -728,7 +728,10 @@ export class ExportComponent implements OnInit {
   }
 
   onchangeSigning() {
-    this.filterTree();
+    if (this.exportObj.forSigning) {
+      this.filter.valid = true;
+    }
+    this.filterList();
   }
 
   expandAll(): void {
@@ -799,24 +802,6 @@ export class ExportComponent implements OnInit {
     }, 0);
   }
 
-  private filterTree() {
-    this.nodes = [{path: '/', key: '/', name: '/', children: [], isFolder: true}];
-    const arr = this.exportObj.forSigning ? this.actualResult.filter((value) => {
-      return !(value.objectType === 'SCHEDULE' || value.objectType.match(/CALENDAR/));
-    }) : this.actualResult;
-    this.buildDeployablesTree(arr);
-    if (this.nodes.length > 0) {
-      this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
-    }
-    setTimeout(() => {
-      this.loading = false;
-      if (this.path) {
-        this.getChildTree();
-      }
-      this.updateTree();
-    }, 0);
-  }
-
   handleCheckbox(node): void {
     node.recursivelyDeploy = !node.recursivelyDeploy;
     if (!node.type) {
@@ -873,10 +858,9 @@ export class ExportComponent implements OnInit {
   getJSObject() {
     const self = this;
     let selectFolder = true;
-    if (this.exportType && this.exportType !== 'CONTROLLER' && this.exportType !== 'DAILYPLAN') {
+    if (this.exportType && this.exportType !== 'CONTROLLER' && this.exportType !== 'DAILYPLAN' && this.exportType !== 'BOTH') {
       selectFolder = false;
     }
-
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if ((nodes[i].type || nodes[i].isFolder) && nodes[i].recursivelyDeploy) {
@@ -898,7 +882,7 @@ export class ExportComponent implements OnInit {
           if (objDep.configuration) {
             if (nodes[i].deployablesVersions) {
               for (let j = 0; j < nodes[i].deployablesVersions.length; j++) {
-                if (nodes[i].deployablesVersions[j].deploymentId === nodes[i].deploymentId) {
+                if (nodes[i].deployablesVersions[j].deploymentId === nodes[i].deploymentId || nodes[i].deployablesVersions[j].deploymentId === nodes[i].deployId) {
                   objDep.configuration.commitId = nodes[i].deployablesVersions[j].commitId;
                   break;
                 }
@@ -1028,7 +1012,7 @@ export class ExportComponent implements OnInit {
         param = param + '&ticketLink=' + encodeURIComponent(this.comments.ticketLink);
       }
       //console.log('http://jstest.zehntech.net:7446/joc/api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
-      this.submitted = false;
+      
       try {
         $('#tmpFrame').attr('src', './api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
         setTimeout(() => {

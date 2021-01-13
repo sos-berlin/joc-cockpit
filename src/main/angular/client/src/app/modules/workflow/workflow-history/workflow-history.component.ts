@@ -93,11 +93,19 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType.match(/Order/) && this.index === 0) {
-          this.loadOrderHistory();
+          if (!this.workflow || !this.workflow.path) {
+            this.loadOrderHistory();
+            break;
+          } else if (args.eventSnapshots[j].workflow && args.eventSnapshots[j].workflow.path === this.workflow.path) {
+            this.loadOrderHistory();
+            break;
+          }
         } else if (args.eventSnapshots[j].eventType === 'JobStateChanged' && this.index === 1) {
           this.loadTaskHistory();
+          break;
         } else if (args.eventSnapshots[j].eventType === 'AuditLogChanged' && this.index === 2) {
           this.loadAuditLogs();
+          break;
         }
       }
     }

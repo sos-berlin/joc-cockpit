@@ -154,7 +154,7 @@
         </div>
         <div class="col-md-9">
           <label class="md-check w">
-            <input type="checkbox" name="valid" [(ngModel)]="filter.valid" (ngModelChange)="filterList()">
+            <input type="checkbox" name="valid" [disabled]="exportObj.forSigning" [(ngModel)]="filter.valid" (ngModelChange)="filterList()">
             <i class="primary"></i>
             {{'inventory.export.label.validOnly'| translate}}
           </label>

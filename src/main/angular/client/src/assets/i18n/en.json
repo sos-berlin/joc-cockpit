@@ -819,6 +819,7 @@
     "label.variables": "Variables",
     "label.scheduledFor": "Scheduled For",
     "label.startOrder": "Start order",
+    "label.resumeOrder": "Resume order",
     "label.orderFound": "Order found",
     "label.ordersFound": "Orders found",
     "label.lastOutcome": "Last Outcome",

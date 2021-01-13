@@ -3393,12 +3393,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               }
             } else {
               isVertexDrop = true;
-              if (cells && cells.length > 0) {
-                if (cells[0] && cells[0].value && (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry'
-                  || cells[0].value.tagName === 'Try')) {
-                  // cells[0].collapsed = true;
-                }
-              }
+              /* if (cells && cells.length > 0) {
+                    if (cells[0] && cells[0].value && (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry'
+                       || cells[0].value.tagName === 'Try')) {
+                 }
+              }*/
               if (cell.value && cell.value.tagName === 'Connection') {
                 graph.clearSelection();
                 if (cells && cells.length > 0) {
