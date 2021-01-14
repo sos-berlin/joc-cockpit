@@ -110,8 +110,8 @@
                 <nz-dropdown-menu #menu="nzDropdownMenu" >
                   <ul nz-menu>
                     <li nz-menu-item *ngIf="node.origin.object && permission.Inventory.configurations.edit" [nzDisabled]="node.origin.deleted">
-                      <a (click)="addObject(node, node.origin.object == 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : null);" translate>inventory.button.new</a></li>
-
+                      <a (click)="addObject(node, node.origin.object == 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : null);" translate>inventory.button.new</a>
+                    </li>
                     <li nz-submenu [nzTitle]="'inventory.button.new' | translate" *ngIf="!node.origin.object && !node.origin.type && permission.Inventory.configurations.edit" [nzDisabled]="node.origin.deleted">
                       <ul>
                         <li nz-menu-item *ngIf="!node.origin.controller && !node.origin.dailyPlan" ><a (click)="createFolder(node);" translate>inventory.button.newFolder</a></li>
@@ -126,6 +126,7 @@
                       </ul>
                     </li>
                     <li nz-menu-divider *ngIf="((!node.origin.object && !node.origin.type) || node.origin.object) && permission.Inventory.configurations.edit"></li>
+                    <li nz-menu-item *ngIf="!node.origin.controller && !node.origin.dailyPlan && !node.origin.object && !node.origin.deleted && permission.Inventory.configurations.edit"><a (click)="cut(node)" translate>inventory.button.cut</a></li>
                     <li nz-menu-item *ngIf="node.origin.type && !node.origin.deleted && permission.Inventory.configurations.edit"><a (click)="copy(node)" translate>inventory.button.copy</a></li>
                     <li nz-menu-item [nzDisabled]="!copyObj || (node.origin.object && copyObj.type !== node.origin.object)" *ngIf="!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.deleted && permission.Inventory.configurations.edit">
                       <a (click)="paste(node)" translate>inventory.button.paste</a></li>
@@ -177,7 +178,7 @@
                     </li>
                   </ul>
                 </nz-dropdown-menu>
-                <div class="node-content-wrapper" [ngClass]="{'disable-link' : node.origin.deleted, 'node-content-wrapper-active' : (node.origin.name === selectedObj.name &&
+                <div class="node-content-wrapper" [ngClass]="{'disable-link' : node.origin.deleted, 'cut-row' : (copyObj && copyObj.operation === 'CUT' && copyObj.path === node.origin.path && copyObj.name === node.origin.name && copyObj.type === node.origin.type), 'node-content-wrapper-active' : (node.origin.name === selectedObj.name &&
                 node.origin.type === selectedObj.type && node.origin.path === selectedObj.path) ||
                 (!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.path === selectedObj.path) ||
                 (node.origin.object && node.origin.object === selectedObj.type && node.origin.path === selectedObj.path)}" (click)="selectNode(node)">

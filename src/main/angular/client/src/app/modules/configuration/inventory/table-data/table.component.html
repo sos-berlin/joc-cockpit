@@ -72,7 +72,7 @@
     </thead>
     <tbody>
       <ng-template ngFor let-data [ngForOf]="ajaxTable.data | orderBy: filter.sortBy:filter.reverse">
-        <tr [ngClass]="{'disabled-row'  : data.deleted}">
+        <tr [ngClass]="{'disabled-row'  : data.deleted, 'cut-row' : (copyObj && copyObj.operation === 'CUT' && copyObj.path === data.path && copyObj.name === data.name && copyObj.type === data.type)}">
           <td class="menu">
             <div class="btn-group dropdown">
               <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="exportMenu"
@@ -81,6 +81,9 @@
               </button>
               <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu">
                 <ul nz-menu>
+                  <li nz-menu-item *ngIf="!data.deleted && permission.Inventory.configurations.edit">
+                    <a (click)="cutObject(data)" translate>inventory.button.cut</a>
+                  </li>
                   <li nz-menu-item *ngIf="!data.deleted && permission.Inventory.configurations.edit">
                     <a (click)="copyObject(data)" translate>inventory.button.copy</a>
                   </li>

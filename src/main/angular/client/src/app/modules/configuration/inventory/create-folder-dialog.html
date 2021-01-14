@@ -10,7 +10,7 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
-    <div class="row">
+    <div class="row" *ngIf="!rename">
       <label class="col-md-3 form-control-label" translate>
         inventory.label.folderName
       </label>
@@ -26,6 +26,21 @@
         </div>
         <div class="help-block text-danger" *ngIf="!isUnique">
           <div translate>common.message.uniqueError</div>
+        </div>
+      </div>
+    </div>
+    <div class="row"  *ngIf="rename">
+      <label class="col-md-3 form-control-label" translate>
+        inventory.label.newPath
+      </label>
+      <div class="col-md-6" [ngClass]="{'has-error' :  ((name.dirty || name.touched) && name.invalid)}">
+        <input type="text" placeholder="{{'inventory.placeholder.enterNewPath' | translate}}" class="form-control" name="name" required
+               #name="ngModel" [(ngModel)]="folder.name" [appAutofocus]="true" autocomplete="off">
+        <div *ngIf="name.invalid && (name.dirty || name.touched)"
+             class="text-danger help-block">
+          <div *ngIf="(name.errors && name.errors.required)">
+            <div translate>common.message.requiredError</div>
+          </div>
         </div>
       </div>
     </div>

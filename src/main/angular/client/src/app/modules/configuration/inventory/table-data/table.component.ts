@@ -72,6 +72,10 @@ export class TableComponent {
     this.dataService.reloadTree.next({paste: this.dataObj});
   }
 
+  cutObject(data) {
+    this.dataService.reloadTree.next({cut: data});
+  }
+
   copyObject(data) {
     this.dataService.reloadTree.next({copy: data});
   }

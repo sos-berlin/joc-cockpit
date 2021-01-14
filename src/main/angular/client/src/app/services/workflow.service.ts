@@ -369,6 +369,9 @@ export class WorkflowService {
           color = this.coreService.getColor(data.state.severity, 'text');
         }
         return '<div class="vertex-text"><div class="block-ellipsis-job"><i class="fa fa-circle text-xs p-r-xs ' + color + '"></i>' + data.orderId + '</div></div>';
+      } else if (cell.value.tagName === 'Count') {
+        let count = cell.getAttribute('count');
+        return '<i class="text-white text-xs cursor">' + count + '</i>';
       } else {
         let x = cell.getAttribute('label');
         if (x) {

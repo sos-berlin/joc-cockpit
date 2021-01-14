@@ -55,7 +55,7 @@ export class JunctionComponent implements OnChanges {
         const name = this.junction.name;
         this.coreService.post('inventory/rename', {
           id: data.id,
-          name: name
+          newPath: name
         }).subscribe((res) => {
           if (data.id === this.data.id) {
             this.data.name = name;

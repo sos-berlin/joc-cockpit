@@ -5,8 +5,6 @@ import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {CalendarService} from '../../../../services/calendar.service';
 
-declare const $;
-
 @Component({
   selector: 'app-schedule',
   templateUrl: './schedule.component.html',
@@ -176,7 +174,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         const name = this.schedule.name;
         this.coreService.post('inventory/rename', {
           id: data.id,
-          name: name
+          newPath: name
         }).subscribe((res) => {
           if (data.id === this.data.id) {
             this.data.name = name;
@@ -353,8 +351,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       if (!res.valid) {
         if (!this.schedule.configuration.workflowPath) {
           this.invalidMsg = 'inventory.message.workflowIsMissing';
-        } else if (this.schedule.configuration.calendars.length === 0) {
-          this.invalidMsg = 'inventory.message.calendarIsMissing';
         } else {
           this.validateJSON(res.configuration);
         }
@@ -400,8 +396,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.invalidMsg = 'inventory.message.workflowIsMissing';
       } else if (res.invalidMsg.match('periods')) {
         this.invalidMsg = 'inventory.message.startTimeIsMissing';
-      } else if (res.invalidMsg.match('calendars')) {
-        this.invalidMsg = 'inventory.message.calendarIsMissing';
       }
       if (!this.invalidMsg) {
         this.invalidMsg = res.invalidMsg;

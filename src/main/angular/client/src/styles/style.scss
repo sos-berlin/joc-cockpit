@@ -3582,7 +3582,9 @@ pre.cdata {
   box-shadow: 0 2px 4px 3px rgba(0, 0, 0, 0.2);
   color: $primary;
 }
-
+.cut-row{
+  text-decoration: line-through;
+}
 .disable-link {
   pointer-events: none;
   cursor: auto;

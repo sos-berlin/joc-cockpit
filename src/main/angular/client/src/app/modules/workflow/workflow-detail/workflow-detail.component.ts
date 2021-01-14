@@ -49,6 +49,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   nodeMap = new Map();
   configXml = './assets/mxgraph/config/diagrameditor.xml';
   mapObj = new Map();
+  countArr = [];
+  sideBar: any = {};
   subscription: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private route: ActivatedRoute,
@@ -128,6 +130,21 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     this.showAndHideBtn();
   }
 
+  @HostListener('window:click', ['$event'])
+  clickHandler(event) {
+    if (event.target && event.target.tagName !== 'svg') {
+      if (event.target && event.target.className && (event.target.className.match(/cursor/) ||
+        event.target.className.match(/slide/) || event.target.className.match(/order/) ||
+        event.target.className.match(/backdrop/))) {
+
+      } else {
+        this.sideBar = {};
+      }
+    } else {
+      this.sideBar = {};
+    }
+  }
+
   backClicked() {
     window.history.back();
   }
@@ -148,7 +165,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       }
     } else {
       if (this.pageView === 'grid') {
-        this.updateOrdersInGraph();
+        this.updateOrdersInGraph(false);
       }
     }
   }
@@ -242,7 +259,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     this.pageView = $event;
     this.showAndHideBtn();
     if (this.pageView === 'grid') {
-      this.updateOrdersInGraph();
+      this.updateOrdersInGraph(false);
       setTimeout(() => {
         this.actual();
       }, 10);
@@ -432,28 +449,49 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
        */
       mxGraph.prototype.foldCells = function (collapse, recurse, cells, checkFoldable, evt) {
         recurse = (recurse != null) ? recurse : true;
-
         if (cells == null) {
           cells = this.getFoldableCells(this.getSelectionCells(), collapse);
         }
+        self.updateOrdersInGraph(true);
+
         this.stopEditing(false);
         this.model.beginUpdate();
         try {
           this.cellsFolded(cells, collapse, recurse, checkFoldable);
           this.fireEvent(new mxEventObject(mxEvent.FOLD_CELLS,
             'collapse', collapse, 'recurse', recurse, 'cells', cells));
+
         } finally {
           this.model.endUpdate();
         }
         WorkflowService.executeLayout(graph);
+        self.updateOrdersInGraph(false);
         return cells;
       };
+
+      /**
+       * Function: handle a click event
+       */
+      graph.addListener(mxEvent.CLICK, function (sender, evt) {
+        let cell = evt.getProperty('cell'); // cell may be null
+        if (cell != null) {
+          if (cell.value.tagName === 'Count') {
+            let orders = cell.getAttribute('orders');
+            self.sideBar = {
+              isVisible: true,
+              orders: JSON.parse(orders)
+            };
+          }
+          evt.consume();
+        }
+      });
 
       /**
        * Overrides method to provide a cell collapse/expandable on double click
        */
       graph.addListener(mxEvent.DOUBLE_CLICK, function (sender, evt) {
         let cell = evt.getProperty('cell');
+        self.sideBar = {};
         if (cell != null && cell.vertex == 1) {
           if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try'
             || cell.value.tagName === 'Catch' || cell.value.tagName === 'Retry') {
@@ -661,7 +699,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             node.setAttribute('label', 'catch');
             node.setAttribute('targetId', v1.id);
             node.setAttribute('uuid', json.instructions[x].uuid);
-            let cv1 = graph.insertVertex(parent, null, node, 0, 0, 110, 40, (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) ?
+            let cv1 = graph.insertVertex(v1, null, node, 0, 0, 110, 40, (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) ?
               'catch' : 'dashRectangle');
             if (json.instructions[x].position) {
               self.vertixMap.set(json.instructions[x].position, cv1);
@@ -881,21 +919,30 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     this.order = null;
   }
 
-  private updateOrdersInGraph() {
+  private updateOrdersInGraph(isCollapse) {
     this.closeMenu();
     const graph = this.editor.graph;
     if (graph) {
       graph.getModel().beginUpdate();
-      const doc = mxUtils.createXmlDocument();
+      let doc = null;
+      if (!isCollapse) {
+        doc = mxUtils.createXmlDocument();
+      }
       let edges = [];
       try {
+        if (this.countArr.length > 0) {
+          graph.removeCells(this.countArr, true);
+          this.countArr = [];
+        }
         if (this.vertixMap.size > 0) {
           this.vertixMap.forEach((node) => {
             const parent = node.getParent() || graph.getDefaultParent();
             this.deleteOrder(graph, node);
-            let edge = this.createOrder(graph, doc, parent, node);
-            if(edge){
-              edges.push(edge);
+            if (!isCollapse) {
+              const edge = this.createOrder(graph, doc, parent, node);
+              if (edge) {
+                edges.push(edge);
+              }
             }
           });
         }
@@ -903,20 +950,25 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         // Updates the display
         graph.getModel().endUpdate();
       }
-      for (let i = 0; i < edges.length; i++) {
-        const state = graph.view.getState(edges[i]);
-        console.log(state);
-        state.shape.node.getElementsByTagName('path')[1].setAttribute('class', 'flow');
+      if (edges.length > 0) {
+        for (let i = 0; i < edges.length; i++) {
+          const state = graph.view.getState(edges[i]);
+          state.shape.node.getElementsByTagName('path')[1].setAttribute('class', 'flow');
+        }
       }
     }
   }
 
   private deleteOrder(graph, cell) {
     if (cell.edges) {
+      let orderCells = [];
       for (let i = 0; i < cell.edges.length; i++) {
         if (cell.edges[i].source && cell.edges[i].source.value && cell.edges[i].source.value.tagName === 'Order') {
-          graph.removeCells([cell.edges[i].source], true);
+          orderCells.push(cell.edges[i].source);
         }
+      }
+      if (orderCells.length > 0) {
+        graph.removeCells(orderCells, true);
       }
     }
   }
@@ -927,13 +979,21 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     if (position) {
       if (this.mapObj.get(position)) {
         let orders = this.mapObj.get(position);
-        for (let i = 0; i < orders.length; i++) {
+        const len = orders.length < 4 ? orders.length : 3;
+        for (let i = 0; i < len; i++) {
           const _node = doc.createElement('Order');
           _node.setAttribute('order', JSON.stringify(orders[i]));
-          let x = node.geometry.x + node.geometry.width + 50;
-          let y = node.geometry.y - 40;
+          let x = node.geometry.x + node.geometry.width + 50 + (i * 5);
+          let y = node.geometry.y - 40 + (i * 5);
           const v1 = graph.insertVertex(parent, null, _node, x, y, 120, 40, 'order');
-          // Create new Connection object
+          // Create badge to show total orders count
+          if (orders.length > 3 && i === 2) {
+            const _nodeCount = doc.createElement('Count');
+            _nodeCount.setAttribute('count', orders.length);
+            _nodeCount.setAttribute('orders', JSON.stringify(orders));
+            let countV = graph.insertVertex(parent, null, _nodeCount, x + 105, y, 16, 16, 'order;fillColor=#007da6;strokeColor=#007da6;shadow=1');
+            this.countArr.push(countV);
+          }
           const _edge = graph.insertEdge(parent, null, doc.createElement('Connection'), v1, node, 'dashed=1;');
           if (orders[i].state && orders[i].state._text === 'RUNNING') {
             edge = _edge;
@@ -944,6 +1004,15 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     return edge;
   }
 
+  showPanelFuc(order) {
+    if (order.arguments && !order.arguments[0]) {
+      order.arguments = Object.entries(order.arguments).map(([k, v]) => {
+        return {name: k, value: v};
+      });
+    }
+    order.show = true;
+  }
+
   private updateWorkflow(graph) {
     graph.getModel().beginUpdate();
     try {
@@ -952,7 +1021,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       // Updates the display
       graph.getModel().endUpdate();
       WorkflowService.executeLayout(graph);
-      this.updateOrdersInGraph();
+      this.updateOrdersInGraph(false);
     }
   }
 }

@@ -26,7 +26,7 @@
                [ngClass]="{ 'has-error' : (startTime.dirty || startTime.touched) && startTime.invalid }">
             <label class="col-sm-4 form-control-label" translate>runtime.label.startTime</label>
             <div class="col-sm-3" [ngClass]="{ 'has-error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}">
-              <input timevalidator maxlength="8" class="form-control" name="startTime" #startTime="ngModel"
+              <input timevalidator [appAutofocus]="true" maxlength="8" class="form-control" name="startTime" #startTime="ngModel"
                      [(ngModel)]="period.period.singleStart"
                      placeholder="HH:MM:SS" type="text">
             </div>

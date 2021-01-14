@@ -61,7 +61,7 @@ export class UpdateWorkflowComponent implements OnInit {
     if (this.workflowName !== this.data.name) {
       this.coreService.post('inventory/rename', {
         id: this.data.id,
-        name: this.workflowName
+        newPath: this.workflowName
       }).subscribe((res) => {
         this.activeModal.close({name: this.workflowName, title: this.title});
       }, (err) => {
@@ -1103,7 +1103,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             node.setAttribute('label', 'catch');
             node.setAttribute('targetId', v1.id);
             node.setAttribute('uuid', json.instructions[x].uuid);
-            let cv1 = graph.insertVertex(parent, null, node, 0, 0, 110, 40, (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) ?
+            let cv1 = graph.insertVertex(v1, null, node, 0, 0, 110, 40, (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) ?
               'catch' : 'dashRectangle');
             let _id = v1;
             if (json.instructions[x].catch) {
@@ -3495,7 +3495,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 }
               }
             }
-
             if (this.isCellCollapsed(cell)) {
               return true;
             }

@@ -449,18 +449,39 @@
                                 <a (click)="removeOrder(plan, null, true )" translate>dailyPlan.button.removeOrder</a>
                               </li>
                               <li nz-menu-item>
-                                <a (click)="cancelOrder(plan, null, true )" translate>order.button.cancelOrder</a>
+                                <a (click)="cancelOrder(plan, null, true )" translate>order.button.cancel</a>
+                              </li>
+                              <li nz-menu-item>
+                                <a (click)="cancelOrderWithKill(plan, null, true )" translate>order.button.cancelAndKillTask</a>
                               </li>
                             </ul>
                           </nz-dropdown-menu>
                         </div>
                       </td>
-                      <td colspan="11">
+                      <td>
                         <i class="fa fa-angle-down cursor fa-lg p-r-xs" *ngIf="plan.show"
                            (click)="expandCollapseTable(plan)" aria-hidden="true"></i>
                         <i class="fa fa-angle-right cursor fa-lg p-r-xs" *ngIf="!plan.show"
                            (click)="expandCollapseTable(plan)" aria-hidden="true"></i>
                         <span [innerHtml]="plan.key"></span>
+                      </td>
+                      <td *ngIf="plan.value && plan.value.length > 0 && plan.value[0]">
+                        <span class="label"
+                              [ngClass]="coreService.getColor(plan.value[0].state.severity,'bg')"
+                              [innerHtml]="plan.value[0].status"> </span>
+                      </td>
+                      <td *ngIf="plan.value && plan.value.length > 0 && plan.value[0]"><span *ngIf="plan.value[0].late==true" translate>dailyPlan.label.late</span></td>
+                      <td *ngIf="plan.value && plan.value.length > 0 && plan.value[0]"><span [innerHtml]="plan.value[0].plannedStartTime"></span></td>
+                      <td *ngIf="plan.value && plan.value.length > 0 && plan.value[0]"><span [innerHtml]="plan.value[0].expectedEndTime"></span></td>
+                      <td *ngIf="plan.value && plan.value.length > 0 && plan.value[0]"><span
+                        [innerHtml]="plan.value[0].expectedDuration"></span>
+                      </td>
+                      <td *ngIf="plan.value && plan.value.length > 0 && plan.value[0]"><span [innerHtml]="plan.value[0].startTime"></span></td>
+                      <td *ngIf="plan.value && plan.value.length > 0 && plan.value[0]"><span [innerHtml]="plan.value[0].endTime"></span></td>
+                      <td *ngIf="plan.value && plan.value.length > 0 && plan.value[0]"><span [innerHtml]="plan.value[0].duration"></span>
+                      </td>
+                      <td *ngIf="plan.value && plan.value.length > 0 && plan.value[0]"><span *ngIf="plan.value[0].period.repeat">Repeat every
+                        {{plan.value[0].period.repeat}}s</span>
                       </td>
                     </tr>
                     <ng-container *ngIf="plan.show">
@@ -488,7 +509,10 @@
                                     <a (click)="removeOrder(value, null, false)" translate>dailyPlan.button.removeOrder</a>
                                   </li>
                                   <li nz-menu-item *ngIf="value.state && value.state._text !== 'PLANNED' && value.state._text !== 'FINISHED'">
-                                    <a (click)="cancelOrder(value, null, false )" translate>order.button.cancelOrder</a>
+                                    <a (click)="cancelOrder(value, null, false )" translate>order.button.cancel</a>
+                                  </li>
+                                  <li nz-menu-item *ngIf="value.state && value.state._text !== 'PLANNED' && value.state._text !== 'FINISHED'">
+                                    <a (click)="cancelOrderWithKill(value, null, true )" translate>order.button.cancelAndKillTask</a>
                                   </li>
                                   <li nz-menu-item>
                                     <a (click)="modifyOrder(value, null)"
@@ -592,7 +616,10 @@
                                 <a (click)="removeOrder(value, plan, false)" translate>dailyPlan.button.removeOrder</a>
                               </li>
                               <li nz-menu-item>
-                                <a (click)="cancelOrder(value, plan, false )" translate>order.button.cancelOrder</a>
+                                <a (click)="cancelOrder(value, plan, false )" translate>order.button.cancel</a>
+                              </li>
+                              <li nz-menu-item>
+                                <a (click)="cancelOrderWithKill(value, plan, false )" translate>order.button.cancelAndKillTask</a>
                               </li>
                             </ul>
                           </nz-dropdown-menu>
@@ -652,7 +679,10 @@
                                     <a (click)="removeOrder(value, null, false)" translate>dailyPlan.button.removeOrder</a>
                                   </li>
                                   <li nz-menu-item *ngIf="value.state && value.state._text !== 'PLANNED' && value.state._text !== 'FINISHED'">
-                                    <a (click)="cancelOrder(value, null, false )" translate>order.button.cancelOrder</a>
+                                    <a (click)="cancelOrder(value, null, false )" translate>order.button.cancel</a>
+                                  </li>
+                                  <li nz-menu-item *ngIf="value.state && value.state._text !== 'PLANNED' && value.state._text !== 'FINISHED'">
+                                    <a (click)="cancelOrderWithKill(value, plan, false )" translate>order.button.cancelAndKillTask</a>
                                   </li>
                                   <li nz-menu-item>
                                     <a (click)="modifyOrder(value, null)" translate>dailyPlan.button.setStartTime</a>

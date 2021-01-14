@@ -1555,16 +1555,14 @@ export class CreateFolderModalComponent implements OnInit {
   @Input() oldName: any;
   submitted = false;
   isUnique = true;
-  folder = {error: false, name: ''};
+  folder = {error: false, name: '', overwrite: false};
 
   constructor(private coreService: CoreService, public activeModal: NgbActiveModal) {
 
   }
 
   ngOnInit() {
-    if (this.rename) {
-      this.folder.name = this.folders.name;
-    }
+
   }
 
   onSubmit(): void {
@@ -1591,7 +1589,8 @@ export class CreateFolderModalComponent implements OnInit {
         this.coreService.post('inventory/rename', {
           path: this.folders.path,
           objectType: 'FOLDER',
-          name: this.folder.name
+          newPath: this.folder.name,
+          overwrite: this.folder.overwrite,
         }).subscribe((res) => {
           this.activeModal.close('DONE');
         }, (err) => {
@@ -1648,6 +1647,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     private inventoryService: InventoryService,
     public modalService: NgbModal,
     private translate: TranslateService,
+    private toasterService: ToasterService,
     private message: NzMessageService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -1661,6 +1661,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
             this.selectedData = res.set;
             this.setSelectedObj(this.selectedObj.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
           }
+        } else if (res.cut) {
+          this.cut(res);
         } else if (res.copy) {
           this.copy(res);
         } else if (res.paste) {
@@ -2513,9 +2515,15 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
+  cut(node){
+    this.copyObj = node.cut || node.origin;
+    this.copyObj.operation = 'CUT';
+  }
+
   copy(node) {
     this.copyObj = node.copy || node.origin;
-    let msg;
+    this.copyObj.operation = 'COPY';
+    let msg = '';
     this.translate.get('common.message.copied').subscribe(translatedValue => {
       msg = translatedValue;
     });
@@ -2525,57 +2533,107 @@ export class InventoryComponent implements OnInit, OnDestroy {
   paste(node) {
     let object = node;
     if (this.copyObj) {
-      if (node instanceof NzTreeNode) {
-        object = node.origin;
-        if (!object.controller && !object.dailyPlan && !object.object) {
-          let data = object.children;
-          if (!data[0] || !data[0].controller || data.length === 0) {
-            this.updateObjects(node.origin, (children) => {
-              if ((this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'SCHEDULE')) {
-                children[1].expanded = true;
-              } else {
-                children[0].expanded = true;
-              }
-              node.origin.children = children;
-              if (data.length > 0) {
-                node.origin.children = node.origin.children.concat(data);
-              }
-              node.origin.expanded = true;
-              this.updateTree();
-              this.paste(node);
-            }, true);
-            return;
-          }
-          if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'SCHEDULE') {
-            data = object.children[1];
-          } else {
-            data = object.children[0];
-          }
-          data.expanded = true;
-          if (data && data.children) {
-            for (let i = 0; i < data.children.length; i++) {
-              if (data.children[i].object === this.copyObj.type) {
-                object = data.children[i];
-                break;
+      if (this.copyObj.operation === 'COPY') {
+        if (node instanceof NzTreeNode) {
+          object = node.origin;
+          if (!object.controller && !object.dailyPlan && !object.object) {
+            let data = object.children;
+            if (!data[0] || !data[0].controller || data.length === 0) {
+              this.updateObjects(node.origin, (children) => {
+                if ((this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'SCHEDULE')) {
+                  children[1].expanded = true;
+                } else {
+                  children[0].expanded = true;
+                }
+                node.origin.children = children;
+                if (data.length > 0) {
+                  node.origin.children = node.origin.children.concat(data);
+                }
+                node.origin.expanded = true;
+                this.updateTree();
+                this.paste(node);
+              }, true);
+              return;
+            }
+            if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'SCHEDULE') {
+              data = object.children[1];
+            } else {
+              data = object.children[0];
+            }
+            data.expanded = true;
+            if (data && data.children) {
+              for (let i = 0; i < data.children.length; i++) {
+                if (data.children[i].object === this.copyObj.type) {
+                  object = data.children[i];
+                  break;
+                }
               }
             }
           }
         }
-      }
-      this.coreService.post('inventory/read/configuration', {
-        id: this.copyObj.id,
-      }).subscribe((res: any) => {
-        let obj: any = {
-          type: this.copyObj.type === 'CALENDAR' ? res.configuration.type : this.copyObj.type,
-          path: object.path,
-          name: this.coreService.getCopyName(this.copyObj.name, object.children),
-          valid: res.valid
-        };
-        object.expanded = true;
-        this.storeObject(obj, object.children, res.configuration);
-      }, () => {
+        this.coreService.post('inventory/read/configuration', {
+          id: this.copyObj.id,
+        }).subscribe((res: any) => {
+          let obj: any = {
+            type: this.copyObj.type === 'CALENDAR' ? res.configuration.type : this.copyObj.type,
+            path: object.path,
+            name: this.coreService.getCopyName(this.copyObj.name, object.children),
+            valid: res.valid
+          };
+          object.expanded = true;
+          this.storeObject(obj, object.children, res.configuration);
+        }, () => {
 
-      });
+        });
+      } else if (this.copyObj.operation === 'CUT') {
+
+        if (node instanceof NzTreeNode) {
+          object = node.origin;
+        }
+        let obj: any = {newPath: object.path};
+        if (this.copyObj.id) {
+          obj.id = this.copyObj.id;
+        } else {
+          obj.objectType = 'FOLDER';
+          obj.path = this.copyObj.path;
+        }
+        if (this.copyObj.path === obj.newPath) {
+          this.copyObj = null;
+          return;
+        } else {
+          let pathArr = [];
+          let arr = obj.newPath.split('/');
+          let len = arr.length;
+          if (len > 1) {
+            for (let i = 0; i < len; i++) {
+              if (arr[i]) {
+                if (i > 0 && pathArr[i - 1]) {
+                  pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + arr[i]);
+                } else {
+                  pathArr.push('/' + arr[i]);
+                }
+              } else {
+                pathArr.push('/');
+              }
+            }
+          }
+          if (pathArr.length > 0 && pathArr.indexOf(this.copyObj.path) > -1) {
+            let msg = '';
+            this.translate.get('error.message.pasteInSubFolderNotAllowed').subscribe(translatedValue => {
+              msg = translatedValue;
+            });
+            this.toasterService.pop('warning', '', msg);
+            return;
+          }
+        }
+        obj.newPath = obj.newPath + '/' + this.copyObj.name;
+        this.coreService.post('inventory/rename', obj).subscribe((res) => {
+          this.copyObj = null;
+          this.initTree(obj.newPath, null);
+        }, (err) => {
+
+        });
+      }
     }
   }
 
