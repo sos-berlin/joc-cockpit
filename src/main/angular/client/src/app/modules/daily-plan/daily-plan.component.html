@@ -454,6 +454,9 @@
                               <li nz-menu-item>
                                 <a (click)="cancelOrderWithKill(plan, null, true )" translate>order.button.cancelAndKillTask</a>
                               </li>
+                              <li nz-menu-item>
+                                <a (click)="modifyOrder({}, plan)" translate>dailyPlan.button.setStartTime</a>
+                              </li>
                             </ul>
                           </nz-dropdown-menu>
                         </div>
@@ -553,7 +556,7 @@
                           <td></td>
                           <td></td>
                           <td colspan="10">
-                            <div *ngFor="let order of value.variables"
+                            <div *ngFor="let variable of value.variables"
                                  class="plan-varibales pt-1 pb-1">
                               <span class="btn-group dropdown">
                                 <button class="btn-drop more-option-h" nz-dropdown
@@ -564,17 +567,17 @@
                                 <nz-dropdown-menu #export3="nzDropdownMenu" role="menu">
                                   <ul nz-menu>
                                     <li nz-menu-item>
-                                      <a (click)="changeParameter(value, order)"
-                                         translate>dailyPlan.button.setParameters</a>
+                                      <a (click)="changeParameter(value, variable)"
+                                         translate>dailyPlan.button.setParameter</a>
                                     </li>
                                     <li nz-menu-item>
-                                      <a (click)="removeParameter(value, order)"
+                                      <a (click)="removeParameter(value, variable)"
                                          translate>dailyPlan.button.removeParameter</a>
                                     </li>
                                   </ul>
                                 </nz-dropdown-menu>
                               </span>
-                              <span>{{order.name}} : {{order.value}}</span>
+                              <span>{{variable.name}} : {{variable.value}}</span>
                             </div>
                             <div class="p-l" *ngIf="value.variables && value.variables.length === 0">
                               <span translate>common.message.noDataAvailable</span>
@@ -620,6 +623,9 @@
                               </li>
                               <li nz-menu-item>
                                 <a (click)="cancelOrderWithKill(value, plan, false )" translate>order.button.cancelAndKillTask</a>
+                              </li>
+                              <li nz-menu-item>
+                                <a (click)="modifyOrder(value, plan)" translate>dailyPlan.button.setStartTime</a>
                               </li>
                             </ul>
                           </nz-dropdown-menu>
@@ -727,7 +733,7 @@
                           <td></td>
                           <td></td>
                           <td colspan="11">
-                            <div *ngFor="let order of value.variables"
+                            <div *ngFor="let variable of value.variables"
                                  class="plan-varibales pt-1 pb-1">
                               <span class="btn-group dropdown">
                                 <button class="btn-drop more-option-h" nz-dropdown
@@ -738,17 +744,17 @@
                                 <nz-dropdown-menu #export3="nzDropdownMenu" role="menu">
                                   <ul nz-menu>
                                     <li nz-menu-item>
-                                      <a (click)="changeParameter(value, order)"
-                                         translate>dailyPlan.button.setParameters</a>
+                                      <a (click)="changeParameter(value, variable)"
+                                         translate>dailyPlan.button.setParameter</a>
                                     </li>
                                     <li nz-menu-item>
-                                      <a (click)="removeParameter(value, order)"
+                                      <a (click)="removeParameter(value, variable)"
                                          translate>dailyPlan.button.removeParameter</a>
                                     </li>
                                   </ul>
                                 </nz-dropdown-menu>
                               </span>
-                              <span>{{order.name}} : {{order.value}}</span>
+                              <span>{{variable.name}} : {{variable.value}}</span>
                             </div>
                             <div class="p-l" *ngIf="value.variables && value.variables.length === 0">
                               <span translate>common.message.noDataAvailable</span>

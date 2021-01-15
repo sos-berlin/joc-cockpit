@@ -1,6 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>dailyPlan.label.setParameters</span>
+    <span *ngIf="updateOnly" translate>dailyPlan.label.setParameter</span>
+    <span *ngIf="!updateOnly" translate>dailyPlan.label.setParameters</span>
     <i *ngIf="order" class="text-muted p-l-xs text">{{order.orderId}}</i>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">

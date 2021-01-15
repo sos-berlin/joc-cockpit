@@ -11,6 +11,10 @@
         <span class="_600" >{{order.lastOutcome.namedValues |  json}}</span>
       </div>-->
     </div>
+    <div *ngIf="order.scheduledFor">
+      <span translate> order.label.scheduledFor </span>:
+      <span class="_600" >{{order.scheduledFor | stringToDate}}</span>
+    </div>
   </ng-template>
   <app-order-action [order]="order" [schedulerId]="schedulerId" [permission]="permission"
                     [preferences]="preferences"></app-order-action>
@@ -35,8 +39,8 @@
             <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>
           </ng-template>
           <span class="remaining-order-count" (click)="showOrders(instruction)" *ngIf="instruction.orders.length > 3">
-            <i>Show other</i>
-            <span class="">{{instruction.orders.length - 3}}</span>
+            <i class="remaining-order-count-i">Show other</i>
+            <span class="remaining-order-count-span">{{instruction.orders.length - 3}}</span>
           </span>
         </span>
         <span class="order-count" (click)="showOrders(instruction)" *ngIf="instruction.count > 0 && (!instruction.show && !expandAll)">{{instruction.count}}</span>
@@ -48,8 +52,8 @@
             <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>
           </ng-template>
           <span class="remaining-order-count" (click)="showOrders(instruction)" *ngIf="instruction.orders.length > 3">
-            <i>Show other</i>
-            <span class="">{{instruction.orders.length - 3}}</span>
+            <i class="remaining-order-count-i">Show other</i>
+            <span class="remaining-order-count-span">{{instruction.orders.length - 3}}</span>
           </span>
         </span>
       </div>
@@ -65,8 +69,8 @@
                   <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>
               </ng-template>
               <span class="remaining-order-count" (click)="showOrders(branch)" *ngIf="branch.orders.length > 3">
-                <i>Show other</i>
-                <span class="">{{branch.orders.length - 3}}</span>
+                <i class="remaining-order-count-i">Show other</i>
+                <span class="remaining-order-count-span">{{branch.orders.length - 3}}</span>
               </span>
             </span>
             <span class="order-count" (click)="showOrders(branch)" *ngIf="branch.count > 0 && (!branch.show && !expandAll)"> {{branch.count}}</span>
@@ -91,8 +95,8 @@
                   <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order }"></ng-container>
               </ng-template>
               <span class="remaining-order-count" (click)="showOrders(instruction.else)" *ngIf="instruction.else.orders.length > 3">
-                <i>Show other</i>
-                <span class="">{{instruction.else.orders.length - 3}}</span>
+                <i class="remaining-order-count-i">Show other</i>
+                <span class="remaining-order-count-span">{{instruction.else.orders.length - 3}}</span>
               </span>
             </span>
             <span class="order-count" (click)="showOrders(instruction.else)" *ngIf="instruction.else.count > 0 && (!instruction.else.show && !expandAll)">{{instruction.else.count}}</span>
@@ -116,8 +120,8 @@
                   <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>
               </ng-template>
               <span class="remaining-order-count" (click)="showOrders(instruction.catch)" *ngIf="instruction.catch.orders.length > 3">
-                <i>Show other</i>
-                <span class="">{{instruction.catch.orders.length - 3}}</span>
+                <i class="remaining-order-count-i">Show other</i>
+                <span class="remaining-order-count-span">{{instruction.catch.orders.length - 3}}</span>
               </span>
             </span>
             <span class="order-count" (click)="showOrders(instruction.catch)" *ngIf="instruction.catch.count > 0 && (!instruction.catch.show && !expandAll)">{{instruction.catch.count}}</span>
@@ -148,6 +152,7 @@
       [nzBordered]="true"
       [nzShowPagination]="false"
       [nzData]="sideBar.orders"
+      [nzPageSize]="sideBar.orders.length"
     >
       <thead>
       <tr>

@@ -131,11 +131,11 @@
             <button class="hide btn btn-grey btn-sm m-l-12"
                     [ngClass]="{'show-block':permission.Order.execute.suspend}"
                     [disabled]="object.suspendSelected" (click)="suspendAllOrder()"><i class="fa fa-stop p-r-xs"></i>
-              <span class="hidden-sm-down" translate>order.button.suspendOrder</span></button>
+              <span class="hidden-sm-down" translate>order.button.suspend</span></button>
             <button class="hide btn btn-grey btn-sm m-l-12"
                     [ngClass]="{'show-block':permission.Order.execute.resume}"
                     [disabled]="object.resumeSelected" (click)="resumeAllOrder()"><i
-              class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.resumeOrder</span>
+              class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.resume</span>
             </button>
 
           </div>

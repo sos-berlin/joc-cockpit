@@ -8,13 +8,12 @@ import {
   SimpleChanges,
   Output, ElementRef,
   ViewEncapsulation,
-  OnChanges, AfterViewInit
+  OnChanges
 } from '@angular/core';
 import {Subscription} from 'rxjs';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {TranslateService} from '@ngx-translate/core';
 import {OrderPipe} from 'ngx-order-pipe';
-import {ToasterService} from 'angular2-toaster';
 import * as moment from 'moment';
 import * as _ from 'underscore';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
@@ -35,13 +34,14 @@ declare const $;
   templateUrl: './changeParameter-dialog.html'
 })
 export class ChangeParameterModalComponent implements OnInit {
+  @Input() schedulerId: any;
   @Input() variable: any;
   @Input() updateOnly: any;
   @Input() order: any;
   variables: any = [];
   submitted = false;
 
-  constructor(public activeModal: NgbActiveModal) {
+  constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
   }
 
   ngOnInit() {
@@ -65,24 +65,42 @@ export class ChangeParameterModalComponent implements OnInit {
       value: ''
     };
     if (this.variables) {
-      this.variables.push(param);
+      if (!this.coreService.isLastEntryEmpty(this.variables, 'name', '')) {
+        this.variables.push(param);
+      }
     }
   }
 
   onKeyPress($event) {
     if ($event.which === '13' || $event.which === 13) {
+      $event.preventDefault();
       this.addVariable();
     }
   }
 
   onSubmit(): void {
-    // TODO
     this.submitted = true;
-    console.log(this.variables);
-    setTimeout(() => {
+    let varArr = [];
+    if (this.updateOnly) {
+      for (let i = 0; i < this.order.variables.length; i++) {
+        if (!_.isEqual(this.order.variables[i], this.updateOnly)) {
+          varArr.push(this.order.variables[i]);
+        }
+      }
+      varArr = varArr.concat(this.variables);
+    } else {
+      varArr = this.variables;
+    }
+    this.coreService.post('daily_plan/orders/modify', {
+      controllerId: this.schedulerId,
+      orderIds: [this.order.orderId],
+      variables: varArr
+    }).subscribe((result) => {
       this.submitted = false;
-      this.activeModal.close(this.variables);
-    }, 800);
+      this.activeModal.close('Done');
+    }, () => {
+      this.submitted = false;
+    });
   }
 
   cancel() {
@@ -342,8 +360,12 @@ export class ScheduleTemplateModalComponent implements OnInit {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
   }
 
+  disabledDate = (current: Date): boolean => {
+    // Can not select days before today and today
+    return moment(current).diff(new Date()) < 0;
+  };
+
   onSubmit(): void {
-    console.log(this.order.form , this.order.time)
     if (this.order.from && this.order.time) {
       this.order.from.setHours(moment(this.order.time).hours());
       this.order.from.setMinutes(moment(this.order.time).minutes());
@@ -351,11 +373,19 @@ export class ScheduleTemplateModalComponent implements OnInit {
       this.order.from.setMilliseconds(0);
     }
     this.submitted = true;
-    this.coreService.post('daily_plan/orders/starttime', {
+    let obj = {
       controllerId: this.schedulerId,
-      orderIds: [this.order.orderId],
-      startTime: moment(this.order.from).format('YYYY-MM-DD HH:mm:ss')
-    }).subscribe((result) => {
+      orderIds: [],
+      startTime: moment.utc(this.order.from)
+    };
+    if (this.plan && this.plan.value) {
+      this.plan.value.forEach((order) => {
+        obj.orderIds.push(order.orderId)
+      })
+    } else {
+      obj.orderIds.push(this.order.orderId)
+    }
+    this.coreService.post('daily_plan/orders/modify', obj).subscribe((result) => {
       this.submitted = false;
       this.activeModal.close('Done');
     }, () => {
@@ -1015,7 +1045,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.result.then((res) => {
       this.load(this.selectedDate);
       this.resetCheckBox();
-      this.loadOrderPlan();
     }, (reason) => {
       console.log('close...', reason);
     });
@@ -1030,7 +1059,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.result.then((res) => {
       this.load(this.selectedDate);
       this.resetCheckBox();
-      this.loadOrderPlan();
     }, () => {
 
     });
@@ -1097,7 +1125,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     } else {
       this.coreService.post('orders/cancel', obj).subscribe(() => {
         this.resetCheckBox();
-        this.loadOrderPlan();
       });
     }
   }
@@ -1111,7 +1138,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.result.then((res) => {
       this.load(this.selectedDate);
       this.resetCheckBox();
-      this.loadOrderPlan();
     }, () => {
 
     });
@@ -1128,7 +1154,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.result.then((res) => {
       this.load(this.selectedDate);
       this.resetCheckBox();
-      this.loadOrderPlan();
     }, () => {
 
     });
@@ -1396,6 +1421,36 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         break;
       }
     }
+    this.coreService.post('daily_plan/orders/modify', {
+      controllerId: this.schedulerIds.selected,
+      orderIds: [plan.orderId],
+      variables: plan.variables
+    }).subscribe((result) => {
+
+    }, () => {
+
+    });
+  }
+
+  private openModel(plan, updateOnly) {
+    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.variable = plan.variables;
+    modalRef.componentInstance.order = plan;
+    modalRef.componentInstance.updateOnly = updateOnly;
+    modalRef.result.then((res) => {
+      if (!updateOnly) {
+        plan.variables = res;
+      } else {
+        for (let i = 0; i < plan.variables.length; i++) {
+          if (_.isEqual(plan.variables[i], updateOnly)) {
+            plan.variables[i] = res[0];
+            break;
+          }
+        }
+      }
+    }, () => {
+    });
   }
 
   /* ---- Customization ------ */
@@ -1648,30 +1703,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  private openModel(plan, updateOnly) {
-    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.variable = plan.variables;
-    modalRef.componentInstance.order = plan;
-    modalRef.componentInstance.updateOnly = updateOnly;
-    modalRef.result.then((res) => {
-      if (!updateOnly) {
-        plan.variables = res;
-      } else {
-        for (let i = 0; i < plan.variables.length; i++) {
-          if (_.isEqual(plan.variables[i], updateOnly)) {
-            plan.variables[i] = res[0];
-            break;
-          }
-        }
-      }
-    }, () => {
-    });
-  }
-
   private refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'DailyPlanChanged') {
+        if (args.eventSnapshots[j].eventType.match('ORDER')) {
           this.load(this.selectedDate);
           this.loadOrderPlan();
           break;

@@ -261,6 +261,9 @@ export class DeployComponent implements OnInit {
       this.loading = false;
       if (this.path) {
         this.getChildTree();
+        if(this.nodes.length > 0) {
+          this.nodes[0].expanded = true;
+        }
       }
       this.updateTree();
     }, 0);
@@ -359,7 +362,6 @@ export class DeployComponent implements OnInit {
     if (this.data && this.data.object) {
       selectFolder = false;
     }
-
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if ((nodes[i].type || nodes[i].isFolder) && nodes[i].recursivelyDeploy) {
@@ -405,20 +407,27 @@ export class DeployComponent implements OnInit {
             } else {
               if (objDep.configuration) {
                 if (nodes[i].isFolder) {
-                  let check1 = false, check2 = false;
-                  for (let j = 0; j < nodes[i].children.length; j++) {
-                    if (nodes[i].children[j].type) {
-                      if ((nodes[i].children[j].deployId || nodes[i].children[j].deploymentId) && !check1) {
-                        check1 = true;
-                        self.object.store.deployConfigurations.push(objDep);
-                      } else if (!check2) {
-                        check2 = true;
-                        self.object.store.draftConfigurations.push(objDep);
-                      }
-                      if (check1 && check2) {
-                        break;
+                  let check1 = false, check2 = false, isEmpty = false;
+                  if (nodes[i].children && nodes[i].children.length > 0) {
+                    for (let j = 0; j < nodes[i].children.length; j++) {
+                      if (nodes[i].children[j].type) {
+                        isEmpty = true;
+                        if ((nodes[i].children[j].deployId || nodes[i].children[j].deploymentId) && !check1) {
+                          check1 = true;
+                          self.object.store.deployConfigurations.push(objDep);
+                        } else if (!check2) {
+                          check2 = true;
+                          self.object.store.draftConfigurations.push(objDep);
+                        }
+                        if (check1 && check2) {
+                          break;
+                        }
                       }
                     }
+                  }
+                  if (!isEmpty) {
+                    self.object.store.deployConfigurations.push(objDep);
+                    self.object.store.draftConfigurations.push(objDep);
                   }
                 } else {
                   if (objDep.configuration.commitId) {
@@ -797,6 +806,9 @@ export class ExportComponent implements OnInit {
       this.loading = false;
       if (this.path) {
         this.getChildTree();
+        if(this.nodes.length > 0) {
+          this.nodes[0].expanded = true;
+        }
       }
       this.updateTree();
     }, 0);
@@ -903,9 +915,10 @@ export class ExportComponent implements OnInit {
                 }
               }
             } else {
-              let check1 = false, check2 = false, check3 = false, check4 = false;
+              let check1 = false, check2 = false, check3 = false, check4 = false, isEmpty = false;
               for (let j = 0; j < nodes[i].children.length; j++) {
                 if (nodes[i].children[j].type) {
+                  isEmpty = true;
                   if (self.inventoryService.isControllerObject(nodes[i].children[j].type)) {
                     if ((nodes[i].children[j].deployId || nodes[i].children[j].deploymentId) && !check1) {
                       check1 = true;
@@ -926,6 +939,14 @@ export class ExportComponent implements OnInit {
                   if (check1 && check2 && check3 && check4) {
                     break;
                   }
+                }
+              }
+              if (!isEmpty) {
+                if (self.filter.deploy) {
+                  self.object.deployConfigurations.push(objDep);
+                }
+                if (self.filter.draft) {
+                  self.object.draftConfigurations.push(objDep);
                 }
               }
             }

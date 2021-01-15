@@ -1,7 +1,8 @@
 <div class="modal-header">
   <h4 class="modal-title">
     <span translate>dailyPlan.label.setStartTime</span>:
-    {{order.orderId}}
+    <span *ngIf="!plan"> {{order.orderId}}</span>
+    <span *ngIf="plan"> {{plan.key}}</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
@@ -11,7 +12,7 @@
   <div class="modal-body p-a">
     <div class="row">
       <div class="col-sm-12">
-        <div class="form-group row">
+        <div class="form-group row" *ngIf="!plan">
           <label class="col-sm-3 form-control-label" translate>dailyPlan.label.plannedStart</label>
           <div class="col-sm-9">
             {{order.plannedStartTime}}
@@ -20,7 +21,7 @@
         <div class="form-group row">
           <label class="col-sm-3 form-control-label" translate>workflow.label.enterDateAndTime</label>
           <div class="col-sm-9">
-            <nz-date-picker [required]="true" [nzPlaceHolder]="dateFormat | uppercase" [nzFormat]="dateFormat" [(ngModel)]="order.from"
+            <nz-date-picker [nzDisabledDate]="disabledDate" [required]="true" [nzPlaceHolder]="dateFormat | uppercase" [nzFormat]="dateFormat" [(ngModel)]="order.from"
                             name="from"></nz-date-picker>
             <nz-time-picker [nzDisabled]="!order.from" [nzFormat]="'HH:mm:ss'"
                             class="input-time m-l time-picker" [(ngModel)]="order.time" name="fromTime"
