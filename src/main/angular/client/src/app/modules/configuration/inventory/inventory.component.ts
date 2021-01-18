@@ -2396,16 +2396,20 @@ export class InventoryComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.type = 'Delete';
     modalRef.componentInstance.objectName = object.path;
     modalRef.result.then((res: any) => {
-      this.coreService.post('inventory/deployment/deploy', {
-        controllerIds: this.schedulerIds.controllerIds,
-        delete: {deployConfigurations: [{configuration: {objectType: 'FOLDER', recursive: true, path: object.path}}]}
-      }).subscribe(() => {
-        this.initTree(object.path, null);
-      });
-      this.coreService.post('inventory/release', {
-        delete: [{objectType: 'FOLDER', path: object.path}]
-      }).subscribe(() => {
+      this.coreService.post('inventory/delete_draft', {objectType: 'FOLDER', path: object.path}).subscribe((res) => {
+        forkJoin([
+          this.coreService.post('inventory/deployment/deploy', {
+            controllerIds: this.schedulerIds.controllerIds,
+            delete: {deployConfigurations: [{configuration: {objectType: 'FOLDER', recursive: true, path: object.path}}]}
+          }),
+          this.coreService.post('inventory/release', {
+            delete: [{objectType: 'FOLDER', path: object.path}]
+          })
+        ]).subscribe((result) => {
+          this.initTree(object.path, null);
+        }, (err) => {
 
+        });
       });
     }, () => {
     });

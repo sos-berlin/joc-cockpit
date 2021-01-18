@@ -5,6 +5,7 @@ import { LoginRoutingModule } from './login-routing.module';
 import { LoginComponent } from './login.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
     ReactiveFormsModule,
     FormsModule,
     TranslateModule,
-    NzDropDownModule
+    NzDropDownModule,
+    NzCheckboxModule
   ],
   declarations: [LoginComponent]
 })

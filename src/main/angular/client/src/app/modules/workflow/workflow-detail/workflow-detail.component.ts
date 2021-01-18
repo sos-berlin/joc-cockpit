@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, HostListener} from '@angular/core';
+import {Component, OnInit, OnDestroy, HostListener, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import * as _ from 'underscore';
@@ -9,6 +9,9 @@ import {AddOrderModalComponent} from '../workflow-action/workflow-action.compone
 import {CalendarModalComponent} from '../../../components/calendar-modal/calendar.component';
 import {DataService} from '../../../services/data.service';
 import {Subscription} from 'rxjs';
+import {ResumeOrderModalComponent} from '../../order-overview/order-action/order-action.component';
+import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
+import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd';
 
 declare const mxEditor;
 declare const mxUtils;
@@ -54,8 +57,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   sideBar: any = {};
   subscription: Subscription;
 
+  @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
+
   constructor(private authService: AuthService, public coreService: CoreService, private route: ActivatedRoute,
-              private workflowService: WorkflowService, public modalService: NgbModal, private dataService: DataService) {
+              private workflowService: WorkflowService, public modalService: NgbModal,
+              private dataService: DataService, private nzContextMenuService: NzContextMenuService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -134,7 +140,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   @HostListener('window:click', ['$event'])
   clickHandler(event) {
     if (event.target && event.target.tagName !== 'svg') {
-      console.log(event.target.className, 'className');
+
       if (event.target && event.target.className && typeof event.target.className === 'string' && (event.target.className.match(/cursor/) ||
         event.target.className.match(/slide/) || event.target.className.match(/order/) ||
         event.target.className.match(/backdrop/))) {
@@ -277,7 +283,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     modalRef.result.then((result) => {
       console.log(result);
     }, () => {
-
     });
   }
 
@@ -287,7 +292,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     modalRef.result.then((result) => {
       console.log(result);
     }, () => {
-
     });
   }
 
@@ -338,6 +342,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       this.mapObj = new Map();
       this.workflow.orders = res.orders;
       if (res.orders) {
+        res.orders = _.sortBy(res.orders, 'scheduledFor');
         for (let j = 0; j < res.orders.length; j++) {
           let arr = [res.orders[j]];
           if (this.mapObj.has(JSON.stringify(res.orders[j].position))) {
@@ -505,24 +510,54 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
       // Defines a new class for all icons
       function mxIconSet(state) {
+        this.images = [];
+        let img;
         if (state.cell && (state.cell.value.tagName === 'Order')) {
-          let data = state.cell.getAttribute('order');
-          try {
-            data = JSON.parse(data);
-            self.order = data;
-          } catch (e) {
+          img = mxUtils.createImage('./assets/images/menu.svg');
+          let x = state.x - (20 * state.shape.scale), y = state.y - (8 * state.shape.scale);
+          if (state.cell.value.tagName !== 'Job') {
+            y = y + (state.cell.geometry.height / 2 * state.shape.scale) - 4;
+            x = x + 2;
           }
-          if (self.order) {
-            const $menu = document.getElementById('actionMenu');
-            let x = state.x - (20 * state.shape.scale) + 6, y = state.y - (8 * state.shape.scale);
-            y = y + (state.cell.geometry.height / 2 * state.shape.scale) - 7;
-            $menu.style.left = x + 'px';
-            $menu.style.top = y + 'px';
+          img.style.left = (x + 5) + 'px';
+          img.style.top = y + 'px';
+          mxEvent.addListener(img, 'click',
+            mxUtils.bind(this, function (evt) {
+              let data = state.cell.getAttribute('order');
+              try {
+                data = JSON.parse(data);
+                if (self.menu) {
+                  self.menu.open = true;
+                  setTimeout(() => {
+                    self.order = data;
+                    self.nzContextMenuService.create(evt, self.menu);
+                  }, 0);
+                }
+              } catch (e) {
+              }
+              this.destroy();
+            })
+          );
+          if (img) {
+            img.style.position = 'absolute';
+            img.style.cursor = 'pointer';
+            img.style.width = (18 * state.shape.scale) + 'px';
+            img.style.height = (18 * state.shape.scale) + 'px';
+            state.view.graph.container.appendChild(img);
+            this.images.push(img);
           }
         }
       }
 
       mxIconSet.prototype.destroy = function () {
+        if (this.images != null) {
+          for (var i = 0; i < this.images.length; i++) {
+            var img = this.images[i];
+            img.parentNode.removeChild(img);
+          }
+        }
+
+        this.images = null;
         if (self.order) {
           self.order = null;
         }
@@ -913,6 +948,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   private updatePositions(_json) {
     const self = this;
     this.orderCountMap = new Map();
+
     function recursive(json) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -1058,7 +1094,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       if (edges.length > 0) {
         for (let i = 0; i < edges.length; i++) {
           const state = graph.view.getState(edges[i]);
-          if(state) {
+          if (state) {
             state.shape.node.getElementsByTagName('path')[1].setAttribute('class', 'flow');
           }
         }
@@ -1111,7 +1147,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
           _node.setAttribute('order', JSON.stringify(orders[i]));
           let x = node.geometry.x + node.geometry.width + 50 + (i * 5);
           let y = node.geometry.y - 40 + (i * 5);
-          const v1 = graph.insertVertex(parent, null, _node, x, y, 120, 40, 'order');
+          const v1 = graph.insertVertex(parent, null, _node, x, y, 120, 36, 'order');
           // Create badge to show total orders count
           if (orders.length > 1 && (i === 2 || i === orders.length - 1)) {
             const _nodeCount = doc.createElement('Count');
@@ -1148,6 +1184,61 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       graph.getModel().endUpdate();
       WorkflowService.executeLayout(graph);
       this.updateOrdersInGraph(false);
+    }
+  }
+
+  resumeOrder() {
+    const modalRef = this.modalService.open(ResumeOrderModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.preferences = this.preferences;
+    modalRef.componentInstance.permission = this.permission;
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.order = this.coreService.clone(this.order);
+    modalRef.result.then((result) => {
+      console.log(result);
+    }, () => {
+
+    });
+
+  }
+
+  suspendOrder() {
+    this.restCall(true, 'Suspend', this.order);
+  }
+
+  suspendOrderWithKill() {
+    this.restCall(true, 'Suspend', this.order);
+  }
+
+  cancelOrder() {
+    this.restCall(false, 'Cancel', this.order);
+  }
+
+  cancelOrderWithKill() {
+    this.restCall(true, 'Cancel', this.order);
+  }
+  private restCall(isKill, type, order) {
+    const obj: any = {
+      controllerId: this.schedulerIds.selected, orderIds: [order.orderId], kill: isKill
+    };
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Order',
+        operation: type,
+        name: order.orderId
+      };
+      const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
+      modalRef.componentInstance.comments = comments;
+      modalRef.componentInstance.obj = obj;
+      modalRef.componentInstance.url = 'orders/' + type.toLowerCase();
+      modalRef.result.then((result) => {
+        console.log(result);
+      }, (reason) => {
+        console.log('close...', reason);
+      });
+    } else {
+      this.coreService.post('orders/' + type.toLowerCase(), obj).subscribe(() => {
+      });
     }
   }
 }

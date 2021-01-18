@@ -52,7 +52,7 @@ export class ToggleComponent implements OnInit {
     } else if (this.router.url === '/configuration/inventory') {
       // this.pageView = this.views.inventory;
       this.pageView = 'grid';
-    }  else if (this.router.url === '/workflow') {
+    }  else if (this.router.url === '/workflows') {
       this.pageView = this.views.workflow;
     } else if (this.router.url.match(/workflow_detail/)) {
       this.pageView = this.views.workflowDetail;
@@ -77,7 +77,7 @@ export class ToggleComponent implements OnInit {
       this.views.dailyPlan = view;
     } else if (this.router.url === '/inventory') {
       this.views.joe = view;
-    } else if (this.router.url === '/workflow') {
+    } else if (this.router.url === '/workflows') {
       this.views.workflow = view;
     } else if (this.router.url.match(/workflow_detail/)) {
       this.views.workflowDetail = view;

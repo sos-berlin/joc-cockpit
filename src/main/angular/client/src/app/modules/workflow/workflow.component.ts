@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, OnDestroy, Input, Output, EventEmitter} from '@angular/core';
+import {Component, OnInit, ViewChild, OnDestroy, Input, Output, EventEmitter, HostListener} from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
@@ -168,6 +168,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
   workflows: any = [];
   path: any;
   showPanel: any;
+  sideBar: any = {};
   subscription1: Subscription;
 
   @ViewChild(WorkflowActionComponent, {static: false}) actionChild;
@@ -265,7 +266,8 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
     delete workflow['configuration'];
   }
 
-  viewOrders(workflow, state) {
+  viewOrders(workflow) {
+    this.sideBar = {isVisible: true, orders: workflow.orders};
   }
 }
 
@@ -283,7 +285,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
   resizerHeight: any = 200;
-  currentPath: string = '/';
+  currentPath = '/';
   pageView: any;
   workflows: any = [];
   selectedPath: string;
@@ -297,6 +299,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   filterList: any = [];
   data = [];
   currentData = [];
+  sideBar: any = {};
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -371,7 +374,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (!this.savedFilter.selected) {
       this.initTree();
     }
-    this.checkSharedFilters();
+    //this.checkSharedFilters();
   }
 
   private initTree() {
@@ -979,7 +982,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }, 5);
   }
 
-  viewOrders(workflow, state) {
+  viewOrders(workflow) {
+    this.sideBar = {isVisible: true, orders: workflow.orders};
   }
 
   toggleCompactView() {

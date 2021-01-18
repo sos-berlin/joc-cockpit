@@ -1,5 +1,7 @@
 import {Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, HostListener} from '@angular/core';
-import {CoreService} from '../../services/core.service';
+import {CoreService} from '../../../services/core.service';
+import * as _ from 'underscore';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-type',
@@ -16,12 +18,14 @@ export class TypeComponent implements OnChanges {
   @Output() update: EventEmitter<any> = new EventEmitter();
   sideBar: any = {};
 
-  constructor(public coreService: CoreService) {
+  constructor(public coreService: CoreService, public modalService: NgbModal) {
   }
 
   @HostListener('window:click', ['$event'])
   clickHandler(event) {
-    if (event.target && event.target.className && (event.target.className.match(/slide/) || event.target.className.match(/order/) || event.target.className.match(/backdrop/))) {
+    if (event.target && event.target.className &&
+      (event.target.className.match(/slide/) || event.target.className.match(/cursor/) || event.target.className.match(/ant/)
+        || event.target.className.match(/order/) || event.target.className.match(/backdrop/))) {
     } else {
       this.sideBar = {};
     }
@@ -172,15 +176,6 @@ export class TypeComponent implements OnChanges {
     }
 
     recursive(data);
-  }
-
-  showPanelFuc(order) {
-    if (order.arguments && !order.arguments[0]) {
-      order.arguments = Object.entries(order.arguments).map(([k, v]) => {
-        return {name: k, value: v};
-      });
-    }
-    order.show = true;
   }
 
   expandNode(node) {

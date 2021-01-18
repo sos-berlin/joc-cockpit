@@ -3,7 +3,7 @@ import {TranslateModule} from '@ngx-translate/core';
 import {RouterModule} from '@angular/router';
 import {EmptyDataComponent} from '../../components/empty-data/empty-data.component';
 import {NgbModalModule} from '@ng-bootstrap/ng-bootstrap';
-import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
 import {NzEmptyModule} from 'ng-zorro-antd/empty';
 import {CommonModule} from '@angular/common';
 import {NzResultModule} from 'ng-zorro-antd/result';
@@ -14,17 +14,17 @@ import {
   SearchPipe,
   HighlightSearch,
   StringDatePipe,
-  StringTimePipe
+  StringTimePipe,
+  TimeInStringFormatPipe
 } from '../../filters/filter.pipe';
 import {SubLinkComponent} from '../resource/sub-link/sub-link.component';
 import {BreadcrumbsComponent} from '../../components/breadcrumbs/breadcrumbs.component';
-import {TypeComponent} from '../../components/workflow-type/type.component';
 import {OrderActionComponent} from '../order-overview/order-action/order-action.component';
 import {NgZorroAntdModule} from 'ng-zorro-antd';
 
 const MODULES = [CommonModule, FormsModule, NgbModalModule, NzDropDownModule, NzResultModule, TranslateModule, NzEmptyModule];
-const PIPES = [StringDatePipe, StringTimePipe, DecodeSpacePipe, SafeHtmlPipe, SearchPipe, HighlightSearch];
-const EXPORTS = [...PIPES,  EmptyDataComponent, SubLinkComponent, BreadcrumbsComponent, TypeComponent, OrderActionComponent];
+const PIPES = [StringDatePipe, TimeInStringFormatPipe, StringTimePipe, DecodeSpacePipe, SafeHtmlPipe, SearchPipe, HighlightSearch];
+const EXPORTS = [...PIPES, EmptyDataComponent, SubLinkComponent, BreadcrumbsComponent, OrderActionComponent];
 
 @NgModule({
   imports: [
@@ -35,6 +35,7 @@ const EXPORTS = [...PIPES,  EmptyDataComponent, SubLinkComponent, BreadcrumbsCom
   declarations: [
     ...EXPORTS
   ],
+  providers: [TimeInStringFormatPipe, StringDatePipe],
   exports: [...MODULES, ...EXPORTS]
 })
 export class Shared2Module {

@@ -228,34 +228,34 @@
     <div class="hide p-t-sm" [ngClass]="{'show': isLoaded }">
       <div class="d-flex w-full">
         <div style="width: 336px" [hidden]="pageView == 'grid'">
-          <div class="box m-b-0" style="height: calc(100vh - 155px)">
-            <div class="p-b b-b">
-              <div class="calendar-sm m-t-0" id="full-calendar"></div>
-            </div>
-            <div>
-              <div class="text-center m-t">
-                <button [disabled]="isPastDate" class="btn btn-grey btn-sm" (click)="createPlan()">
-                  <i class="fa fa-plus"></i>&nbsp;
-                  <span translate>dailyPlan.button.createPlan</span>
-                </button>
-                <div class="box-shadow m-t p-a-sm p-l-0" *ngIf="submissionHistory.length > 0">
-                  <div class="_600 m-b-sm text-left p-l" style="font-size: 14px" translate>
-                    dailyPlan.label.submissionHistory
+            <div class="box m-b-0" style="height: calc(100vh - 155px)">
+              <div class="p-b b-b">
+                <div class="calendar-sm m-t-0" id="full-calendar"></div>
+              </div>
+              <div>
+                <div class="text-center m-t">
+                  <button [disabled]="isPastDate" class="btn btn-grey btn-sm" (click)="createPlan()">
+                    <i class="fa fa-plus"></i>&nbsp;
+                    <span translate>dailyPlan.button.createPlan</span>
+                  </button>
+                  <div class="m-t p-a-sm p-l-0" *ngIf="submissionHistory.length > 0">
+                    <div class="_600 m-b-sm text-left p-l" style="font-size: 14px" translate>
+                      dailyPlan.label.submissionHistory
+                    </div>
+                    <ul class="text-left p-l" style="max-height: 250px; overflow: auto">
+                      <li *ngFor="let history of submissionHistory">
+                        <a [ngClass]="{ 'text-primary' : selectedSubmissionId === history.submissionHistoryId }"
+                           (click)="selectSubmissionHistory(history.submissionHistoryId)">
+                          <i class="fa fa-circle p-r-xs"></i>
+                          <span translate>dailyPlan.label.submission</span> -
+                          <i class="text-muted">({{history.submissionTime | stringToTime}})</i>
+                        </a>
+                      </li>
+                    </ul>
                   </div>
-                  <ul class="text-left p-l" style="max-height: 250px; overflow: auto">
-                    <li *ngFor="let history of submissionHistory">
-                      <a [ngClass]="{ 'text-primary' : selectedSubmissionId === history.submissionHistoryId }"
-                         (click)="selectSubmissionHistory(history.submissionHistoryId)">
-                        <i class="fa fa-circle p-r-xs"></i>
-                        <span translate>dailyPlan.label.submission</span> -
-                        <i class="text-muted">({{history.submissionTime | stringToTime}})</i>
-                      </a>
-                    </li>
-                  </ul>
                 </div>
               </div>
             </div>
-          </div>
         </div>
         <div class="w-full p-l">
           <div class="row m-b">
@@ -461,29 +461,29 @@
                           </nz-dropdown-menu>
                         </div>
                       </td>
-                      <td>
+                      <td [colSpan]="(plan.value.length === 1 && !plan.show) ? 1 : 10">
                         <i class="fa fa-angle-down cursor fa-lg p-r-xs" *ngIf="plan.show"
                            (click)="expandCollapseTable(plan)" aria-hidden="true"></i>
                         <i class="fa fa-angle-right cursor fa-lg p-r-xs" *ngIf="!plan.show"
                            (click)="expandCollapseTable(plan)" aria-hidden="true"></i>
                         <span [innerHtml]="plan.key"></span>
                       </td>
-                      <td *ngIf="plan.value && plan.value.length > 0 && plan.value[0]">
+                      <td *ngIf="!plan.show && plan.value.length === 1 && plan.value[0]">
                         <span class="label"
                               [ngClass]="coreService.getColor(plan.value[0].state.severity,'bg')"
                               [innerHtml]="plan.value[0].status"> </span>
                       </td>
-                      <td *ngIf="plan.value && plan.value.length > 0 && plan.value[0]"><span *ngIf="plan.value[0].late==true" translate>dailyPlan.label.late</span></td>
-                      <td *ngIf="plan.value && plan.value.length > 0 && plan.value[0]"><span [innerHtml]="plan.value[0].plannedStartTime"></span></td>
-                      <td *ngIf="plan.value && plan.value.length > 0 && plan.value[0]"><span [innerHtml]="plan.value[0].expectedEndTime"></span></td>
-                      <td *ngIf="plan.value && plan.value.length > 0 && plan.value[0]"><span
+                      <td *ngIf="!plan.show && plan.value.length === 1 && plan.value[0]"><span *ngIf="plan.value[0].late==true" translate>dailyPlan.label.late</span></td>
+                      <td *ngIf="!plan.show && plan.value.length === 1 && plan.value[0]"><span [innerHtml]="plan.value[0].plannedStartTime"></span></td>
+                      <td *ngIf="!plan.show && plan.value.length === 1 && plan.value[0]"><span [innerHtml]="plan.value[0].expectedEndTime"></span></td>
+                      <td *ngIf="!plan.show && plan.value.length === 1 && plan.value[0]"><span
                         [innerHtml]="plan.value[0].expectedDuration"></span>
                       </td>
-                      <td *ngIf="plan.value && plan.value.length > 0 && plan.value[0]"><span [innerHtml]="plan.value[0].startTime"></span></td>
-                      <td *ngIf="plan.value && plan.value.length > 0 && plan.value[0]"><span [innerHtml]="plan.value[0].endTime"></span></td>
-                      <td *ngIf="plan.value && plan.value.length > 0 && plan.value[0]"><span [innerHtml]="plan.value[0].duration"></span>
+                      <td *ngIf="!plan.show && plan.value.length === 1 && plan.value[0]"><span [innerHtml]="plan.value[0].startTime"></span></td>
+                      <td *ngIf="!plan.show && plan.value.length === 1 && plan.value[0]"><span [innerHtml]="plan.value[0].endTime"></span></td>
+                      <td *ngIf="!plan.show && plan.value.length === 1 && plan.value[0]"><span [innerHtml]="plan.value[0].duration"></span>
                       </td>
-                      <td *ngIf="plan.value && plan.value.length > 0 && plan.value[0]"><span *ngIf="plan.value[0].period.repeat">Repeat every
+                      <td *ngIf="!plan.show && plan.value.length === 1 && plan.value[0]"><span *ngIf="plan.value[0].period.repeat">Repeat every
                         {{plan.value[0].period.repeat}}s</span>
                       </td>
                     </tr>
@@ -499,7 +499,7 @@
                           </td>
                           <td class="tableexport-ignore">
                             <div class="btn-group dropdown">
-                              <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                              <button class="btn-drop more-option-h" [ngClass]="{'disable-link': value.state && value.state._text === 'FINISHED'}" nz-dropdown nzTrigger="click"
                                       [nzDropdownMenu]="export2" type="button">
                                 <i class="fa fa-ellipsis-h"></i>
                               </button>
@@ -517,11 +517,11 @@
                                   <li nz-menu-item *ngIf="value.state && value.state._text !== 'PLANNED' && value.state._text !== 'FINISHED'">
                                     <a (click)="cancelOrderWithKill(value, null, true )" translate>order.button.cancelAndKillTask</a>
                                   </li>
-                                  <li nz-menu-item>
+                                  <li nz-menu-item *ngIf="value.state && value.state._text !== 'FINISHED'">
                                     <a (click)="modifyOrder(value, null)"
                                        translate>dailyPlan.button.setStartTime</a>
                                   </li>
-                                  <li nz-menu-item>
+                                  <li nz-menu-item *ngIf="value.state && value.state._text !== 'FINISHED'">
                                     <a (click)="changeParameter(value, null)"
                                        translate>dailyPlan.button.setParameters</a>
                                   </li>
@@ -558,7 +558,7 @@
                           <td colspan="10">
                             <div *ngFor="let variable of value.variables"
                                  class="plan-varibales pt-1 pb-1">
-                              <span class="btn-group dropdown">
+                              <span class="btn-group dropdown" *ngIf="value.state && value.state._text !== 'FINISHED'">
                                 <button class="btn-drop more-option-h" nz-dropdown
                                         nzTrigger="click" [nzDropdownMenu]="export3"
                                         type="button">
@@ -672,11 +672,11 @@
                           </td>
                           <td class="tableexport-ignore">
                             <div class="btn-group dropdown">
-                              <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                              <button class="btn-drop more-option-h" [ngClass]="{'disable-link': value.state && value.state._text === 'FINISHED'}" nz-dropdown nzTrigger="click"
                                       [nzDropdownMenu]="export5" type="button">
                                 <i class="fa fa-ellipsis-h"></i>
                               </button>
-                              <nz-dropdown-menu #export5="nzDropdownMenu" role="menu">
+                              <nz-dropdown-menu #export5="nzDropdownMenu" role="menu" >
                                 <ul nz-menu>
                                   <li nz-menu-item *ngIf="value.state && value.state._text === 'PLANNED'">
                                     <a (click)="submitOrder(value, null, false)" translate>dailyPlan.button.submitOrder</a>
@@ -690,10 +690,10 @@
                                   <li nz-menu-item *ngIf="value.state && value.state._text !== 'PLANNED' && value.state._text !== 'FINISHED'">
                                     <a (click)="cancelOrderWithKill(value, plan, false )" translate>order.button.cancelAndKillTask</a>
                                   </li>
-                                  <li nz-menu-item>
+                                  <li nz-menu-item *ngIf="value.state && value.state._text !== 'FINISHED'">
                                     <a (click)="modifyOrder(value, null)" translate>dailyPlan.button.setStartTime</a>
                                   </li>
-                                  <li nz-menu-item>
+                                  <li nz-menu-item  *ngIf="value.state && value.state._text !== 'FINISHED'">
                                     <a (click)="changeParameter(value, null)" translate>dailyPlan.button.setParameters</a>
                                   </li>
                                 </ul>
@@ -735,7 +735,7 @@
                           <td colspan="11">
                             <div *ngFor="let variable of value.variables"
                                  class="plan-varibales pt-1 pb-1">
-                              <span class="btn-group dropdown">
+                              <span class="btn-group dropdown" *ngIf="value.state && value.state._text !== 'FINISHED'">
                                 <button class="btn-drop more-option-h" nz-dropdown
                                         nzTrigger="click" [nzDropdownMenu]="export3"
                                         type="button">

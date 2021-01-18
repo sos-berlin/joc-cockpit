@@ -6,6 +6,8 @@ import {WorkflowService} from '../../services/workflow.service';
 import {AddOrderModalComponent, WorkflowActionComponent} from './workflow-action/workflow-action.component';
 import {WorkflowDetailComponent} from './workflow-detail/workflow-detail.component';
 import {WorkflowHistoryComponent, WorkflowTemplateComponent} from './workflow-history/workflow-history.component';
+import {OrderListSidebarComponent} from './order-list-sidebar/order-list-sidebar.component';
+import {TypeComponent} from './workflow-type/type.component';
 
 @NgModule({
   imports: [
@@ -22,7 +24,13 @@ import {WorkflowHistoryComponent, WorkflowTemplateComponent} from './workflow-hi
     FilterModalComponent,
     AddOrderModalComponent,
     SearchComponent,
-    WorkflowActionComponent
+    WorkflowActionComponent,
+    OrderListSidebarComponent,
+    TypeComponent
+  ],
+  exports: [
+    OrderListSidebarComponent,
+    TypeComponent
   ],
   entryComponents: [
     FilterModalComponent,

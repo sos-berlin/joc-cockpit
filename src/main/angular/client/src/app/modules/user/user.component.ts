@@ -410,12 +410,12 @@ export class UserComponent implements OnInit, OnDestroy {
   changeView() {
     let views = {
       dailyPlan: this.preferences.pageView,
-      job: this.preferences.pageView,
-      order: this.preferences.pageView,
-      agent: this.preferences.pageView,
+      workflow: this.preferences.pageView,
+      workflowDetail: this.preferences.pageView,
+      orderOverview: this.preferences.pageView,
       lock: this.preferences.pageView,
-      processClass: this.preferences.pageView,
-      orderOverView: this.preferences.pageView,
+      documentation: this.preferences.pageView,
+      calendar: this.preferences.pageView,
       permission: this.preferences.pageView
     };
     localStorage.views = JSON.stringify(views);

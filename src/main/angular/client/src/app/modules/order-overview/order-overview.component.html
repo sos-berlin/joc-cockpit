@@ -331,7 +331,10 @@
                         <a class="label" *ngIf="order.state" [ngClass]="coreService.getColor(order.state.severity, 'bg')"
                            [innerHtml]="order.state._text | translate"></a>
                       </td>
-                      <td>{{order.scheduledFor | stringToDate}}</td>
+                      <td>
+                        {{order.scheduledFor | stringToDate}}
+                        <span class="text-success p-l-xs text-xs" *ngIf="order.scheduledFor">({{order.scheduledFor | timeInString}})</span>
+                      </td>
                     </tr>
                     <tr *ngIf="order.show">
                       <td colspan="7">

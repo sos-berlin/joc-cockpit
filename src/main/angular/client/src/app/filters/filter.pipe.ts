@@ -75,6 +75,60 @@ export class StringDateFormatePipe implements PipeTransform {
 }
 
 @Pipe({
+  name: 'timeInString',
+  pure: false
+})
+export class TimeInStringFormatPipe implements PipeTransform {
+  transform(t: any): string {
+    if (sessionStorage.preferences) {
+      if (!t) return '-';
+      const r = JSON.parse(sessionStorage.preferences);
+      if (!r.zone) {
+        return;
+      }
+      let n = moment(new Date()).tz(r.zone);
+      t = moment(t).tz(r.zone);
+
+      let o = moment(t).diff(n);
+      let minius = false;
+      if (o < 0) {
+        minius = true;
+      }
+      o = Math.abs(o);
+      if (o >= 1e3) {
+        const i = parseInt(((o / 1e3) % 60).toString(), 10),
+          a = parseInt(((o / 6e4) % 60).toString(), 10), s = parseInt(((o / 36e5) % 24).toString(), 10),
+          f = parseInt((o / 864e5).toString(), 10);
+        let i1 = i > 9 ? i : '0' + i;
+        let a1 = a > 9 ? a : '0' + a;
+        let s1 = s > 9 ? s : '0' + s;
+        if (f === 0 && s !== 0) {
+          return (minius ? '-' : '') + s1 + ':' + a1 + 'h';
+        } else if (s === 0 && a !== 0) {
+          if (f === 1) {
+            return (minius ? '-' : '') + (f * 24) + ':' + a1 + 'h';
+          }
+          if (f > 1) {
+            return (minius ? '-' : '') + f + 'days';
+          } else {
+            return (minius ? '-' : '') + a1 + ':' + i1 + 'min';
+          }
+        } else if (f === 0 && s === 0 && a === 0) {
+          return (minius ? '-' : '') + i1 + 'sec';
+        } else {
+          if (f > 1) {
+            return (minius ? '-' : '') + f + 'days';
+          } else {
+          }
+          return (minius ? '-' : '') + f + 'day';
+        }
+      }
+      return '1sec';
+    }
+  }
+}
+
+@Pipe({
   name: 'duration'
 })
 export class DurationPipe implements PipeTransform {
@@ -189,17 +243,6 @@ export class SafeHtmlPipe implements PipeTransform {
 export class SearchPipe implements PipeTransform {
 
   /**
-   * @param items object from array
-   * @param term term's search
-   * @param excludes array of strings which will ignored during search
-   */
-  transform(items: any, term: string, excludes: any = []): any {
-    if (!term || !items) return items;
-
-    return SearchPipe.filter(items, term, excludes);
-  }
-
-  /**
    *
    * @param items List of items to filter
    * @param term  a string term to compare with every property of the list
@@ -212,7 +255,7 @@ export class SearchPipe implements PipeTransform {
 
     function checkInside(item: any, term: string) {
 
-      if (typeof item === "string" && item.toString().toLowerCase().includes(toCompare)) {
+      if (typeof item === 'string' && item.toString().toLowerCase().includes(toCompare)) {
         return true;
       }
 
@@ -224,8 +267,7 @@ export class SearchPipe implements PipeTransform {
           if (checkInside(item[property], term)) {
             return true;
           }
-        }
-        else if (item[property].toString().toLowerCase().includes(toCompare)) {
+        } else if (item[property].toString().toLowerCase().includes(toCompare)) {
           return true;
         }
       }
@@ -235,6 +277,17 @@ export class SearchPipe implements PipeTransform {
     return items.filter(function (item) {
       return checkInside(item, term);
     });
+  }
+
+  /**
+   * @param items object from array
+   * @param term term's search
+   * @param excludes array of strings which will ignored during search
+   */
+  transform(items: any, term: string, excludes: any = []): any {
+    if (!term || !items) return items;
+
+    return SearchPipe.filter(items, term, excludes);
   }
 }
 

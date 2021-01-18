@@ -599,7 +599,7 @@ export class PeriodComponent implements OnInit {
   ngOnInit(): void {
     if (this.isNew) {
       this.period.frequency = 'singleStart';
-      this.period.period.singleStart = '00:00:00';
+      this.period.period.singleStart = '';
       this.period.period.whenHoliday = 'SUPPRESS';
     } else {
       if (_.isArray(this.data)) {

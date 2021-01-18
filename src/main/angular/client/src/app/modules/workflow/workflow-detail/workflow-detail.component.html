@@ -101,12 +101,25 @@
                   <!-- Creates a container for the outline -->
                   <div id="outlineContainer"></div>
                 </div>
-                <div id="actionMenu" class="pos-abt">
-                  <div *ngIf="order">
-                    <app-order-action [order]="order" [schedulerId]="schedulerIds.selected" [permission]="permission"
-                                      [preferences]="preferences"></app-order-action>
-                  </div>
-                </div>
+                <nz-dropdown-menu #menu="nzDropdownMenu">
+                  <ul nz-menu *ngIf="order">
+                    <li nz-menu-item *ngIf="permission && permission.Order.execute">
+                      <a (click)="cancelOrder()" translate>order.button.cancel</a>
+                    </li>
+                    <li nz-menu-item *ngIf="permission && permission.Order.execute">
+                      <a (click)="cancelOrderWithKill()" translate>order.button.cancelAndKillTask</a>
+                    </li>
+                    <li nz-menu-item *ngIf="permission && permission.Order.execute.suspend && (order.state._text === 'RUNNING' || order.state._text === 'INPROGRESS')">
+                      <a (click)="suspendOrder()" translate>order.button.suspend</a>
+                    </li>
+                    <li nz-menu-item *ngIf="permission && permission.Order.execute && (order.state._text === 'RUNNING' || order.state._text === 'INPROGRESS')">
+                      <a (click)="suspendOrderWithKill()" translate>order.button.suspendAndKillTask</a>
+                    </li>
+                    <li nz-menu-item *ngIf="permission && permission.Order.execute.resume && order.state._text === 'FAILED'">
+                      <a (click)="resumeOrder()" translate>order.button.resume</a>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
                 <div class="rg-bottom"><span></span></div>
               </div>
             </div>
@@ -161,71 +174,5 @@
 </div>
 <div id="rightSideBar" *ngIf="sideBar.isVisible" class="slideInRight">
   <div class="close-btn" (click)="sideBar.isVisible = false"></div>
-  <div class="text-center m-b text"><i class="tree-icon icon-orders-icon"></i>&nbsp;
-    <span class="_600 b-b p-b-sm m-l-sm" translate>order.label.orders</span>
-  </div>
-  <div class="p-a-sm">
-    <nz-table
-      #ajaxTable
-      [nzSize]="'small'"
-      [nzBordered]="true"
-      [nzShowPagination]="false"
-      [nzData]="sideBar.orders"
-      [nzPageSize]="sideBar.orders.length"
-    >
-      <thead>
-      <tr>
-        <th class="menu" rowspan="2"><span translate>common.label.action</span></th>
-        <th><span class="p-r-xs" translate>order.label.orderId</span></th>
-        <th><span class="p-r-xs" translate>order.label.state</span></th>
-        <th><span class="p-r-xs" translate>order.label.scheduledFor</span></th>
-        <th><span class="p-r-xs" translate>order.label.lastOutcome</span></th>
-      </tr>
-      </thead>
-      <tbody>
-      <ng-template ngFor let-order
-                   [ngForOf]="ajaxTable.data">
-        <tr>
-          <td>
-            <app-order-action [order]="order" [schedulerId]="schedulerIds.selected" [permission]="permission"
-                              [preferences]="preferences"></app-order-action>
-          </td>
-          <td>
-            <span class="show-in-single-line">
-              <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs" *ngIf="!order.show"
-                 (click)="showPanelFuc(order)"></i>
-              <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" *ngIf="order.show" (click)="order.show = false"></i>
-              <a class="text-dark">{{order.orderId}}</a>
-              <span *ngIf="order.title">-</span>
-              <i class="text-muted">{{order.title}}</i>
-            </span>
-          </td>
-          <td>
-            <a class="label" *ngIf="order.state" [ngClass]="coreService.getColor(order.state.severity, 'bg')"
-               [innerHtml]="order.state._text | translate"></a>
-          </td>
-          <td>{{order.scheduledFor | stringToDate}}</td>
-          <td>
-            <span *ngIf="order.lastOutcome">
-              {{order.lastOutcome.TYPE | translate}}
-            </span>
-          </td>
-        </tr>
-        <tr *ngIf="order.show">
-          <td colspan="7">
-            <div *ngIf="order.arguments && order.arguments.length > 0">
-              <div *ngFor="let argu of order.arguments"
-                   class="plan-varibales pt-1 pb-1">
-                <span>{{argu.name}} : {{argu.value}}</span>
-              </div>
-            </div>
-            <div class="p-l" *ngIf="!order.arguments || (order.arguments && order.arguments.length === 0)">
-              <span translate>common.message.noDataAvailable</span>
-            </div>
-          </td>
-        </tr>
-      </ng-template>
-      </tbody>
-    </nz-table>
-  </div>
+  <app-order-list-sidebar [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerIds.selected" [orders]="sideBar.orders"></app-order-list-sidebar>
 </div>

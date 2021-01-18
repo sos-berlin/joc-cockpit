@@ -7,11 +7,18 @@ import {NzToolTipModule} from 'ng-zorro-antd/tooltip';
 import {NzIconModule} from 'ng-zorro-antd/icon';
 import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
 import {NzSelectModule} from 'ng-zorro-antd/select';
-import { NzTreeModule } from 'ng-zorro-antd/tree';
-import { NzSpinModule } from 'ng-zorro-antd/spin';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzMessageModule } from 'ng-zorro-antd/message';
-import {NzDatePickerModule, NzTimePickerModule, NzNoAnimationModule, NzTreeSelectModule} from 'ng-zorro-antd';
+import {NzTreeModule} from 'ng-zorro-antd/tree';
+import {NzSpinModule} from 'ng-zorro-antd/spin';
+import {NzInputModule} from 'ng-zorro-antd/input';
+import {NzMessageModule} from 'ng-zorro-antd/message';
+import {
+  NzDatePickerModule,
+  NzTimePickerModule,
+  NzNoAnimationModule,
+  NzTreeSelectModule,
+  NzCheckboxModule,
+  NzRadioModule
+} from 'ng-zorro-antd';
 import {ClipboardModule} from 'ngx-clipboard';
 import {ToggleComponent} from '../../components/toggle/toggle.component';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
@@ -44,12 +51,11 @@ import {ResumeOrderModalComponent} from '../order-overview/order-action/order-ac
 
 const MODULES = [Shared2Module, NzTableModule, NzTabsModule,
   NzToolTipModule, NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule,
-  ChecklistModule, NzSelectModule, NzInputModule, NzMessageModule, NzTreeSelectModule, ClipboardModule,
+  ChecklistModule, NzSelectModule, NzInputModule, NzMessageModule, NzCheckboxModule, NzRadioModule, NzTreeSelectModule, ClipboardModule,
   NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, OrderModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, TreeModalComponent, PeriodComponent, AddRestrictionComponent, ResumeOrderModalComponent];
-const PIPES = [DurationPipe, StringDateFormatePipe,
-  ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
+const PIPES = [DurationPipe, StringDateFormatePipe, ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, ResizableDirective, LabelValidator,
   NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent,

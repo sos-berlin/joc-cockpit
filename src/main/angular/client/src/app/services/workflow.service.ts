@@ -1,7 +1,9 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnInit} from '@angular/core';
 import * as _ from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from './core.service';
+import * as moment from 'moment-timezone';
+import {StringDatePipe, TimeInStringFormatPipe} from '../filters/filter.pipe';
 
 declare const mxHierarchicalLayout;
 declare const mxTooltipHandler;
@@ -17,10 +19,15 @@ export class WorkflowService {
   public await;
   public publish;
   public fork;
+  preferences: any = {};
 
-  constructor(public translate: TranslateService, public coreService: CoreService) {
+  constructor(public translate: TranslateService, public coreService: CoreService,
+              private timeInStringFormatPipe: TimeInStringFormatPipe, private stringDatePipe: StringDatePipe) {
     mxHierarchicalLayout.prototype.interRankCellSpacing = 45;
     mxTooltipHandler.prototype.delay = 0;
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences);
+    }
   }
 
   /**
@@ -368,7 +375,12 @@ export class WorkflowService {
         if (data.state) {
           color = this.coreService.getColor(data.state.severity, 'text');
         }
-        return '<div class="vertex-text"><div class="block-ellipsis-job"><i class="fa fa-circle text-xs p-r-xs ' + color + '"></i>' + data.orderId + '</div></div>';
+        str = '<div class="vertex-text"><div class="block-ellipsis-job"><i class="fa fa-circle text-xs p-r-xs ' + color + '"></i>' + data.orderId + '</div>';
+        if (data.scheduledFor) {
+          str = str + ' <span class="text-success text-xs" >(' + this.timeInStringFormatPipe.transform(data.scheduledFor) + ')</span>';
+        }
+        str = str + '</div>';
+        return str;
       } else if (cell.value.tagName === 'Count') {
         let count = cell.getAttribute('count');
         return '<i class="text-white text-xs cursor">' + count + '</i>';
@@ -458,18 +470,22 @@ export class WorkflowService {
       } else if (cell.value.tagName === 'Order') {
         let data = cell.getAttribute('order');
         data = JSON.parse(data);
-        let state = '', orderId = '', _text = '';
+        let state = '', orderId = '', _text = '', scheduledFor = '';
         this.translate.get('workflow.label.orderId').subscribe(translatedValue => {
           orderId = translatedValue;
         });
         this.translate.get('order.label.state').subscribe(translatedValue => {
           state = translatedValue;
         });
+        this.translate.get('order.label.scheduledFor').subscribe(translatedValue => {
+          scheduledFor = translatedValue;
+        });
         this.translate.get(data.state._text).subscribe(translatedValue => {
           _text = translatedValue;
         });
         return '<b>' + orderId + '</b> : ' + (data.orderId || '-') + '</br>' +
-          '<b>' + state + '</b> : ' + _text;
+          '<b>' + state + '</b> : ' + _text + '</br>' +
+          '<b>' + scheduledFor + '</b> : ' + this.stringDatePipe.transform(data.scheduledFor);
       } else {
         const x = cell.getAttribute('label');
         if (x) {

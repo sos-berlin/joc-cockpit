@@ -65,38 +65,32 @@
                     </span>
                   </td>
                   <td [innerHtml]="workflow.path"></td>
-                  <td [innerHtml]="workflow.numOfOrders || 0"></td>
                   <td>
-                    <a class="text-hover-primary" (click)="viewOrders(workflow,'PENDING')"
-                       [innerHtml]="workflow.ordersSummary.pending || 0"></a>
+                    <a class="text-hover-primary" (click)="viewOrders(workflow)" [innerHtml]="workflow.numOfOrders || 0"></a>
                   </td>
-                  <td>
-                    <a class="text-hover-primary" (click)="viewOrders(workflow,'inprogress')"
-                       [innerHtml]="workflow.ordersSummary.inprogress || 0"></a>
+                  <td >
+                    <span [innerHtml]="workflow.ordersSummary.pending || 0"></span>
                   </td>
-                  <td>
-                    <a class="text-hover-primary" (click)="viewOrders(workflow,'RUNNING')"
-                       [innerHtml]="workflow.ordersSummary.running || 0"></a>
+                  <td >
+                    <span [innerHtml]="workflow.ordersSummary.inprogress || 0"></span>
                   </td>
-                  <td>
-                    <a class="text-hover-primary" (click)="viewOrders(workflow,'SUSPENDED')"
-                       [innerHtml]="workflow.ordersSummary.suspended || 0"></a>
+                  <td >
+                    <span [innerHtml]="workflow.ordersSummary.running || 0"></span>
                   </td>
-                  <td>
-                    <a class="text-hover-primary" (click)="viewOrders(workflow,'CALLING')"
-                       [innerHtml]="workflow.ordersSummary.calling || 0"></a>
+                  <td >
+                    <span [innerHtml]="workflow.ordersSummary.suspended || 0"></span>
                   </td>
-                  <td>
-                    <a class="text-hover-primary" (click)="viewOrders(workflow,'WAITING')"
-                       [innerHtml]="workflow.ordersSummary.waiting || 0"></a>
+                  <td >
+                    <span [innerHtml]="workflow.ordersSummary.calling || 0"></span>
                   </td>
-                  <td>
-                    <a class="text-hover-primary" (click)="viewOrders(workflow,'BLOCKED')"
-                       [innerHtml]="workflow.ordersSummary.blocked || 0"></a>
+                  <td >
+                    <span [innerHtml]="workflow.ordersSummary.waiting || 0"></span>
                   </td>
-                  <td>
-                    <a class="text-hover-primary" (click)="viewOrders(workflow,'FAILED')"
-                       [innerHtml]="workflow.ordersSummary.failed || 0"></a>
+                  <td >
+                    <span [innerHtml]="workflow.ordersSummary.blocked || 0"></span>
+                  </td>
+                  <td >
+                    <span [innerHtml]="workflow.ordersSummary.failed || 0"></span>
                   </td>
                 </tr>
                 <tr *ngIf="workflow.show">

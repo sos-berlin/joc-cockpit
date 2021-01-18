@@ -315,136 +315,68 @@
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showLogs</div>
                   <div class="col-sm-6">
-                    <label class="md-check w">
-                      <input type="radio" name="log" [(ngModel)]="preferences.isNewWindow" value="newWindow"
-                             (change)="changeConfiguration()">
-                      <i class="primary"></i> <span translate>profile.label.newWindow</span>
-                    </label>
-                    <label class="md-check w">
-                      <input type="radio" name="log" [(ngModel)]="preferences.isNewWindow" value="newTab"
-                             (change)="changeConfiguration()">
-                      <i class="primary"></i> <span translate>profile.label.newTab</span>
-                    </label>
-                    <label class="md-check w w-md">
-                      <input type="radio" name="log" [(ngModel)]="preferences.isNewWindow" value="download"
-                             (change)="changeConfiguration()">
-                      <i class="primary"></i> <span translate>profile.label.download</span>
-                    </label>
+                    <nz-radio-group [(ngModel)]="preferences.isNewWindow" (ngModelChange)="changeConfiguration()">
+                      <label nz-radio nzValue="newWindow"><span translate>profile.label.newWindow</span></label>
+                      <label nz-radio nzValue="newTab"><span translate>profile.label.newTab</span></label>
+                      <label nz-radio nzValue="download"><span translate>profile.label.download</span></label>
+                    </nz-radio-group>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showDocumentations</div>
                   <div class="col-sm-6">
-                    <label class="md-check w">
-                      <input type="radio" name="doc" [(ngModel)]="preferences.isDocNewWindow" value="newWindow"
-                             (change)="changeConfiguration()">
-                      <i class="primary"></i> <span translate>profile.label.newWindow</span>
-                    </label>
-                    <label class="md-check w">
-                      <input type="radio" name="doc" [(ngModel)]="preferences.isDocNewWindow" value="newTab"
-                             (change)="changeConfiguration()">
-                      <i class="primary"></i> <span translate>profile.label.newTab</span>
-                    </label>
+                    <nz-radio-group [(ngModel)]="preferences.isDocNewWindow" (ngModelChange)="changeConfiguration()">
+                      <label nz-radio nzValue="newWindow"><span translate>profile.label.newWindow</span></label>
+                      <label nz-radio nzValue="newTab"><span translate>profile.label.newTab</span></label>
+                    </nz-radio-group>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showSubFolderAndFolderContents</div>
                   <div class="col-sm-6">
-                    <label class="md-check w">
-                      <input type="radio" name="tree" [(ngModel)]="preferences.expandOption" value="single"
-                             (change)="changeConfiguration()">
-                      <i class="primary"></i> <span translate>profile.label.folderContents</span>
-                    </label>
-                    <label class="md-check w w-lg">
-                      <input type="radio" name="tree" [(ngModel)]="preferences.expandOption" value="both"
-                             (change)="changeConfiguration()">
-                      <i class="primary"></i> <span translate>profile.label.subFolderAndFolderContents</span>
-                    </label>
+                    <nz-radio-group [(ngModel)]="preferences.expandOption" (ngModelChange)="changeConfiguration()">
+                      <label nz-radio nzValue="single"><span translate>profile.label.folderContents</span></label>
+                      <label nz-radio nzValue="both"><span translate>profile.label.subFolderAndFolderContents</span></label>
+                    </nz-radio-group>
                   </div>
                 </div>
-<!--            <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showOrders</div>
-                  <div class="col-sm-6">
-                    <label class="md-check">
-                      <input type="checkbox" [(ngModel)]="preferences.showOrders"
-                             (change)="changeConfiguration()">
-                      <i class="primary"></i>
-                    </label>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showFilesImmediately</div>
-                  <div class="col-sm-6">
-                    <label class="md-check">
-                      <input type="checkbox" [(ngModel)]="preferences.showFiles"
-                             (change)="changeConfiguration()">
-                      <i class="primary"></i>
-                    </label>
-                  </div>
-                </div>-->
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.enableCommentsForAuditLog</div>
                   <div class="col-sm-6">
-                    <label class="md-check">
-                      <input type="checkbox" [disabled]="forceLoging" [(ngModel)]="preferences.auditLog"
-                             (change)="changeConfiguration()">
-                      <i class="primary"></i>
-                    </label>
+                    <label nz-checkbox [(ngModel)]="preferences.auditLog" [disabled]="forceLoging" (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.useTimezoneForLog</div>
                   <div class="col-sm-6">
-                    <label class="md-check">
-                      <input type="checkbox" [(ngModel)]="preferences.logTimezone"
-                             (change)="changeConfiguration()">
-                      <i class="primary"></i>
-                    </label>
+                    <label nz-checkbox [(ngModel)]="preferences.logTimezone" (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showView</div>
                   <div class="col-sm-6">
-                    <label class="md-check w">
-                      <input type="radio" name="view" [(ngModel)]="preferences.pageView" value="grid"
-                             (change)="changeConfiguration();changeView()">
-                      <i class="primary"></i> <span translate>profile.label.asCard</span>
-                    </label>
-                    <label class="md-check w">
-                      <input type="radio" name="view" [(ngModel)]="preferences.pageView" value="list"
-                             (change)="changeConfiguration();changeView()">
-                      <i class="primary"></i> <span translate>profile.label.asList</span>
-                    </label>
+                    <nz-radio-group [(ngModel)]="preferences.pageView" (ngModelChange)="changeConfiguration();changeView()">
+                      <label nz-radio nzValue="grid"><span translate>profile.label.asCard</span></label>
+                      <label nz-radio nzValue="list"><span translate>profile.label.asList</span></label>
+                    </nz-radio-group>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showHistoryForController</div>
                   <div class="col-sm-6">
-                    <label class="md-check w">
-                      <input type="radio" name="history" [(ngModel)]="preferences.historyView" value="all"
-                             (change)="changeConfiguration();">
-                      <i class="primary"></i> <span translate>profile.label.all</span>
-                    </label>
-                    <label class="md-check w">
-                      <input type="radio" name="history" [(ngModel)]="preferences.historyView" value="current"
-                             (change)="changeConfiguration();">
-                      <i class="primary"></i> <span translate>profile.label.current</span>
-                    </label>
+                    <nz-radio-group [(ngModel)]="preferences.historyView" (ngModelChange)="changeConfiguration()">
+                      <label nz-radio nzValue="all"><span translate>profile.label.all</span></label>
+                      <label nz-radio nzValue="current"><span translate>profile.label.current</span></label>
+                    </nz-radio-group>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showAuditLogForController</div>
                   <div class="col-sm-6">
-                    <label class="md-check w">
-                      <input type="radio" name="auditLog" [(ngModel)]="preferences.adtLog" value="all"
-                             (change)="changeConfiguration();">
-                      <i class="primary"></i> <span translate>profile.label.all</span>
-                    </label>
-                    <label class="md-check w">
-                      <input type="radio" name="auditLog" [(ngModel)]="preferences.adtLog" value="current"
-                             (change)="changeConfiguration();">
-                      <i class="primary"></i> <span translate>profile.label.current</span>
-                    </label>
+                    <nz-radio-group [(ngModel)]="preferences.adtLog" (ngModelChange)="changeConfiguration()">
+                      <label nz-radio nzValue="all"><span translate>profile.label.all</span></label>
+                      <label nz-radio nzValue="current"><span translate>profile.label.current</span></label>
+                    </nz-radio-group>
                   </div>
                 </div>
                 <div class="row m-t">
@@ -452,16 +384,10 @@
                     profile.label.showAgentJobExecutionForController
                   </div>
                   <div class="col-sm-6">
-                    <label class="md-check w">
-                      <input type="radio" name="agentTask" [(ngModel)]="preferences.agentTask" value="all"
-                             (change)="changeConfiguration();">
-                      <i class="primary"></i> <span translate>profile.label.all</span>
-                    </label>
-                    <label class="md-check w">
-                      <input type="radio" name="agentTask" [(ngModel)]="preferences.agentTask" value="current"
-                             (change)="changeConfiguration();">
-                      <i class="primary"></i> <span translate>profile.label.current</span>
-                    </label>
+                    <nz-radio-group [(ngModel)]="preferences.agentTask" (ngModelChange)="changeConfiguration()">
+                      <label nz-radio nzValue="all"><span translate>profile.label.all</span></label>
+                      <label nz-radio nzValue="current"><span translate>profile.label.current</span></label>
+                    </nz-radio-group>
                   </div>
                 </div>
                 <!--<div class="row m-t">

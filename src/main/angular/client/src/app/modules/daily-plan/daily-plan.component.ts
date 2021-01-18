@@ -10,7 +10,7 @@ import {
   ViewEncapsulation,
   OnChanges
 } from '@angular/core';
-import {Subscription} from 'rxjs';
+import {forkJoin, Subscription} from 'rxjs';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {TranslateService} from '@ngx-translate/core';
 import {OrderPipe} from 'ngx-order-pipe';
@@ -164,7 +164,6 @@ export class SelectOrderTemplatesComponent implements OnInit {
         };
         treeObj.push(obj);
       }
-
       const arr = _.groupBy(_.sortBy(treeObj, 'path'), (result) => {
         return result.path;
       });
@@ -324,7 +323,7 @@ export class CreatePlanModalComponent implements OnInit {
       controllerId: this.schedulerId
     };
     if (this.object.at === 'template' && this.selectedTemplates.schedules.length > 0) {
-      obj.selector = {schedulePaths : this.selectedTemplates.schedules};
+      obj.selector = {schedulePaths: this.selectedTemplates.schedules};
     }
 
     obj.dailyPlanDate = moment(this.selectedDate).format('YYYY-MM-DD');
@@ -362,8 +361,8 @@ export class ScheduleTemplateModalComponent implements OnInit {
 
   disabledDate = (current: Date): boolean => {
     // Can not select days before today and today
-    return moment(current).diff(new Date()) < 0;
-  };
+    return moment(current.setHours(0, 0, 0, 0)).diff(new Date().setHours(0, 0, 0, 0)) < 0;
+  }
 
   onSubmit(): void {
     if (this.order.from && this.order.time) {
@@ -559,13 +558,11 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit() {
     this.toggle = true;
-    console.log('ngOnInit', this.toggle);
     this.initConfig();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     JSGantt();
-    console.log('ngOnChanges', this.toggle);
     this.init();
   }
 
@@ -605,7 +602,6 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
     const len = plans.length;
     if (len > 0) {
       let count = 0;
-      console.log(this.toggle, 'this.toggle');
       for (let i = 0; i < len; i++) {
         const _obj = {
           id: ++count,
@@ -1032,7 +1028,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.load(this.selectedDate);
       this.loadOrderPlan();
     }, (reason) => {
-      console.log('close...', reason);
+
     });
   }
 
@@ -1046,7 +1042,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.load(this.selectedDate);
       this.resetCheckBox();
     }, (reason) => {
-      console.log('close...', reason);
+
     });
   }
 
@@ -1309,19 +1305,26 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       controllerId: this.schedulerIds.selected,
       filter: {}
     };
-
+    this.applySearchFilter(obj.filter, this.searchFilter);
+    let apiArr = [];
     if (this.searchFilter.radio === 'current') {
       let dates = this.getDates(this.searchFilter.from, this.searchFilter.to);
-      dates.forEach(function (date) {
-        console.log(date);
+      dates.forEach((date) => {
+        obj.filter.dailyPlanDate = moment(date).format('YYYY-MM-DD');
+        apiArr.push(this.coreService.post('daily_plan/orders', this.coreService.clone(obj)));
       });
+    } else {
+      apiArr.push(this.coreService.post('daily_plan/orders', this.coreService.clone(obj)));
     }
 
-    this.applySearchFilter(obj.filter, this.searchFilter);
-    this.coreService.post('daily_plan/orders', obj).subscribe((res: any) => {
-      this.filterData(res.plannedOrderItems);
+    forkJoin(apiArr).subscribe((result) => {
+      let plannedOrderItems = [];
+      for (let i = 0; i < result.length; i++) {
+        plannedOrderItems = plannedOrderItems.concat(result[i].plannedOrderItems);
+      }
+      this.filterData(plannedOrderItems);
       this.isLoaded = true;
-    }, () => {
+    }, (err) => {
       this.isLoaded = true;
     });
   }
@@ -1384,8 +1387,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   modifyOrder(order, plan) {
-    console.log(plan);
-    console.log(order);
     const modalRef = this.modalService.open(ScheduleTemplateModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.preferences = this.preferences;
@@ -1471,8 +1472,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         this.saveService.setDailyPlan(this.savedFilter);
         this.saveService.save();
       }
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 

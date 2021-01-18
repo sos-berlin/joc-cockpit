@@ -79,19 +79,20 @@
   </ul>
 </div>
 <div class="bg-color bg-auto w-full">
-  <div class="smooth pos-rlt">
+  <img src="./assets/images/diamond_img.png">
+  <div class="smooth pos-rlt donut-water-mark">
     <div id="logo-top"></div>
     <div class="center-block w-xxxl w-auto-xs p-y-md">
-      <div class="padding box text-color m-a-md">
-        <div class="navbar m-t">
+      <div class="padding text-color m-a-md m-t">
+        <div class="navbar">
           <div class="pull-center">
             <a class="navbar-brand">
               <img src="./assets/images/JobScheduler_logo.png" alt="JS7" style="max-height: 90px">
             </a>
           </div>
         </div>
-        <div style="margin-top: 65px"></div>
-        <div class="hide alert alert-danger" [ngClass]="{'show':errorMsg}">
+        <div style="margin-top: 72px"></div>
+        <div class="hide b-a p-a-sm m-t-sm error-input" [ngClass]="{'show':errorMsg}">
           <span translate>login.message.loginError</span>
         </div>
         <form #myForm="ngForm" (ngSubmit)="onSubmit(user)" class="p-t-sm p-b-sm p-l-xs p-r-xs">
@@ -105,15 +106,13 @@
             <label class="font14" for="password"> {{'login.label.password' | translate}}</label>
           </div>
           <div class="m-b-md">
-            <label class="md-check" for="rememberMe">
-              <input type="checkbox" id="rememberMe" [(ngModel)]="rememberMe" name="rememberMe">
-              <i class="primary"></i>
-
+            <label name="rememberMe" nz-checkbox [(ngModel)]="rememberMe">
               {{'login.label.rememberMe' | translate}}
             </label>
           </div>
           <button [disabled]="!myForm.form.valid || submitted" type="submit" class="btn btn-primary btn-block p-x-md">
             <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+            <i *ngIf="!submitted" class="fa fa-sign-in p-r-xs"></i>
             {{'login.button.logIn' | translate}}
           </button>
         </form>
