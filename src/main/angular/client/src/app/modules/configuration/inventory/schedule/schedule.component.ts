@@ -17,8 +17,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   @Input() copyObj: any;
 
   schedule: any = {};
-  workingDayCalendar: any;
-  nonWorkingDayCalendar: any;
   isVisible: boolean;
   dateFormat: any;
   isUnique = true;
@@ -351,6 +349,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       if (!res.valid) {
         if (!this.schedule.configuration.workflowPath) {
           this.invalidMsg = 'inventory.message.workflowIsMissing';
+        } else if (this.schedule.configuration.calendars.length === 0) {
+          this.invalidMsg = 'inventory.message.calendarIsMissing';
         } else {
           this.validateJSON(res.configuration);
         }
@@ -396,6 +396,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.invalidMsg = 'inventory.message.workflowIsMissing';
       } else if (res.invalidMsg.match('periods')) {
         this.invalidMsg = 'inventory.message.startTimeIsMissing';
+      } else if (res.invalidMsg.match('calendars')) {
+        this.invalidMsg = 'inventory.message.calendarIsMissing';
       }
       if (!this.invalidMsg) {
         this.invalidMsg = res.invalidMsg;

@@ -2847,6 +2847,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       configuration = {controllerId: this.schedulerIds.selected};
     } else if (type === 'LOCK') {
       obj.name = this.coreService.getName(list, 'lock1', 'name', 'lock');
+      configuration = {limit: 1};
     } else if (type === 'WORKINGDAYSCALENDAR' || type === 'NONWORKINGDAYSCALENDAR') {
       configuration = {type: type};
       obj.name = this.coreService.getName(list, 'calendar1', 'name', 'calendar');

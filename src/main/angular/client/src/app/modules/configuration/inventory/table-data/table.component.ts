@@ -36,6 +36,7 @@ export class TableComponent {
       configuration = {controllerId: this.schedulerId};
     } else if (this.objectType === 'LOCK') {
       name_type = 'lock';
+      configuration = {limit: 1};
     } else if (this.objectType === 'CALENDAR') {
       name_type = 'calendar';
       configuration = {type: 'WORKINGDAYSCALENDAR'};
