@@ -1,9 +1,8 @@
-import {Injectable, OnInit} from '@angular/core';
+import {Injectable} from '@angular/core';
 import * as _ from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from './core.service';
-import * as moment from 'moment-timezone';
-import {StringDatePipe, TimeInStringFormatPipe} from '../filters/filter.pipe';
+import {StringDatePipe} from '../filters/filter.pipe';
 
 declare const mxHierarchicalLayout;
 declare const mxTooltipHandler;
@@ -22,7 +21,7 @@ export class WorkflowService {
   preferences: any = {};
 
   constructor(public translate: TranslateService, public coreService: CoreService,
-              private timeInStringFormatPipe: TimeInStringFormatPipe, private stringDatePipe: StringDatePipe) {
+              private stringDatePipe: StringDatePipe) {
     mxHierarchicalLayout.prototype.interRankCellSpacing = 45;
     mxTooltipHandler.prototype.delay = 0;
     if (sessionStorage.preferences) {
@@ -377,7 +376,7 @@ export class WorkflowService {
         }
         str = '<div class="vertex-text"><div class="block-ellipsis-job"><i class="fa fa-circle text-xs p-r-xs ' + color + '"></i>' + data.orderId + '</div>';
         if (data.scheduledFor) {
-          str = str + ' <span class="text-success text-xs" >(' + this.timeInStringFormatPipe.transform(data.scheduledFor) + ')</span>';
+          str = str + ' <span class="text-xs" >' + this.stringDatePipe.transform(data.scheduledFor) + '</span>';
         }
         str = str + '</div>';
         return str;

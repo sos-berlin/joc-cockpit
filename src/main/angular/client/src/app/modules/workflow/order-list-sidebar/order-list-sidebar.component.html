@@ -1,6 +1,10 @@
 <div class="pos-abt" style="top:16px;right:20px" *ngIf="setOfCheckedId.size > 0">
   <button class="hide btn btn-grey btn-sm m-l-12"
           [ngClass]="{'show-block':permission.Order.execute}"
+          (click)="modifyAllOrder()"><i class="fa fa-edit p-r-xs"></i>
+    <span class="hidden-sm-down" translate>dailyPlan.button.setParameters</span></button>
+  <button class="hide btn btn-grey btn-sm m-l-12"
+          [ngClass]="{'show-block':permission.Order.execute}"
           (click)="cancelAllOrder()"><i class="fa fa-times p-r-xs"></i>
     <span class="hidden-sm-down" translate>order.button.cancel</span></button>
   <button class="hide btn btn-grey btn-sm m-l-12" *ngIf="object.isSuspend"
@@ -65,7 +69,7 @@
         </td>
         <td>
           {{order.scheduledFor | stringToDate}}
-          <span class="text-success p-l-xs text-xs" *ngIf="order.scheduledFor">({{order.scheduledFor | timeInString}})</span>
+          <!--<span class="text-success p-l-xs text-xs" *ngIf="order.scheduledFor">({{order.scheduledFor | timeInString}})</span>-->
         </td>
         <td>
             <span *ngIf="order.lastOutcome">

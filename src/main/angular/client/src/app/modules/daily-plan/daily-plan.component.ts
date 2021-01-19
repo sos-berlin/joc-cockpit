@@ -24,90 +24,12 @@ import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {ExcelService} from '../../services/excel.service';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
+import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../../components/modify-modal/modify.component';
+import {ResumeOrderModalComponent} from '../../components/resume-modal/resume.component';
 
 declare const JSGantt;
 declare let jsgantt;
 declare const $;
-
-@Component({
-  selector: 'app-ngbd-modal-content',
-  templateUrl: './changeParameter-dialog.html'
-})
-export class ChangeParameterModalComponent implements OnInit {
-  @Input() schedulerId: any;
-  @Input() variable: any;
-  @Input() updateOnly: any;
-  @Input() order: any;
-  variables: any = [];
-  submitted = false;
-
-  constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
-  }
-
-  ngOnInit() {
-    if (!this.updateOnly) {
-      this.variables = Object.assign(this.variables, this.variable);
-    } else {
-      this.variables.push(_.clone(this.updateOnly));
-    }
-    if (this.variables.length === 0) {
-      this.addVariable();
-    }
-  }
-
-  removeVariable(index): void {
-    this.variables.splice(index, 1);
-  }
-
-  addVariable(): void {
-    const param = {
-      name: '',
-      value: ''
-    };
-    if (this.variables) {
-      if (!this.coreService.isLastEntryEmpty(this.variables, 'name', '')) {
-        this.variables.push(param);
-      }
-    }
-  }
-
-  onKeyPress($event) {
-    if ($event.which === '13' || $event.which === 13) {
-      $event.preventDefault();
-      this.addVariable();
-    }
-  }
-
-  onSubmit(): void {
-    this.submitted = true;
-    let varArr = [];
-    if (this.updateOnly) {
-      for (let i = 0; i < this.order.variables.length; i++) {
-        if (!_.isEqual(this.order.variables[i], this.updateOnly)) {
-          varArr.push(this.order.variables[i]);
-        }
-      }
-      varArr = varArr.concat(this.variables);
-    } else {
-      varArr = this.variables;
-    }
-    this.coreService.post('daily_plan/orders/modify', {
-      controllerId: this.schedulerId,
-      orderIds: [this.order.orderId],
-      variables: varArr
-    }).subscribe((result) => {
-      this.submitted = false;
-      this.activeModal.close('Done');
-    }, () => {
-      this.submitted = false;
-    });
-  }
-
-  cancel() {
-    this.activeModal.dismiss('');
-  }
-
-}
 
 @Component({
   selector: 'app-select-schedule-template',
@@ -328,63 +250,6 @@ export class CreatePlanModalComponent implements OnInit {
 
     obj.dailyPlanDate = moment(this.selectedDate).format('YYYY-MM-DD');
     this.coreService.post('daily_plan/orders/generate', obj).subscribe((result) => {
-      this.submitted = false;
-      this.activeModal.close('Done');
-    }, () => {
-      this.submitted = false;
-    });
-  }
-
-  cancel() {
-    this.activeModal.dismiss('');
-  }
-}
-
-@Component({
-  selector: 'app-schedule-template',
-  templateUrl: './schedule-template-dialog.html'
-})
-export class ScheduleTemplateModalComponent implements OnInit {
-  @Input() schedulerId;
-  @Input() plan: any;
-  @Input() order: any;
-  @Input() preferences: any;
-  submitted = false;
-  dateFormat: any;
-
-  constructor(public activeModal: NgbActiveModal, public  coreService: CoreService) {
-  }
-
-  ngOnInit() {
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-  }
-
-  disabledDate = (current: Date): boolean => {
-    // Can not select days before today and today
-    return moment(current.setHours(0, 0, 0, 0)).diff(new Date().setHours(0, 0, 0, 0)) < 0;
-  }
-
-  onSubmit(): void {
-    if (this.order.from && this.order.time) {
-      this.order.from.setHours(moment(this.order.time).hours());
-      this.order.from.setMinutes(moment(this.order.time).minutes());
-      this.order.from.setSeconds(moment(this.order.time).seconds());
-      this.order.from.setMilliseconds(0);
-    }
-    this.submitted = true;
-    let obj = {
-      controllerId: this.schedulerId,
-      orderIds: [],
-      startTime: moment.utc(this.order.from)
-    };
-    if (this.plan && this.plan.value) {
-      this.plan.value.forEach((order) => {
-        obj.orderIds.push(order.orderId)
-      })
-    } else {
-      obj.orderIds.push(this.order.orderId)
-    }
-    this.coreService.post('daily_plan/orders/modify', obj).subscribe((result) => {
       this.submitted = false;
       this.activeModal.close('Done');
     }, () => {
@@ -689,7 +554,6 @@ export class FilterModalComponent implements OnInit {
   templateUrl: './form-template.html',
 })
 export class SearchComponent implements OnInit {
-
   @Input() schedulerIds: any;
   @Input() filter: any;
   @Input() preferences: any;
@@ -881,7 +745,17 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   isToggle = false;
   selectedDate: Date;
   submissionHistory: any = [];
-  object: any = {templates: [], checkbox: false};
+  object: any = {
+    templates: [],
+    checkbox: false,
+    isCancel : false,
+    isSuspend : false,
+    isResume : false,
+    isModify : false,
+    isRunning : false,
+    isPlanned : false,
+    isFinished : false
+  };
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -1018,6 +892,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.dailyPlanFilters.filter.groupBy = type;
       this.planOrders = this.groupBy.transform(this.plans, type === 'WORKFLOW' ? 'workflowPath' : 'schedulePath');
     }
+    this.setStateToParentObject();
   }
 
   createPlan() {
@@ -1033,6 +908,19 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   /* ------------- Action ------------------- */
+
+  modifySelectedOrder(){
+    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.preferences = this.preferences;
+    modalRef.componentInstance.orders = this.object.templates;
+    modalRef.result.then((res) => {
+      this.load(this.selectedDate);
+      this.resetCheckBox();
+    }, (reason) => {
+
+    });
+  }
 
   submitSelectedOrder() {
     const modalRef = this.modalService.open(SubmitOrderModalComponent, {backdrop: 'static'});
@@ -1060,27 +948,74 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
+  resumeSelectedOrder(){
+    // this.restCall(false, null, this.object.templates, 'Cancel');
+    const modalRef = this.modalService.open(ResumeOrderModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.preferences = this.preferences;
+    modalRef.componentInstance.permission = this.permission;
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.orders = this.object.templates;
+    modalRef.result.then((result) => {
+      console.log(result);
+    }, () => {
+
+    });
+  }
+
   cancelSelectedOrder() {
-    this.restCall(false, null, this.object.templates);
+    this.restCall(false, null, this.object.templates, 'Cancel');
   }
 
-  cancelOrderWithKill(order, plan, workflow) {
+  suspendSelectedOrder(){
+    this.restCall(false, null, this.object.templates, 'Suspend');
+  }
+
+  cancelOrderWithKill(order, plan) {
     if (plan && plan.value) {
-      this.restCall(true, null, plan.value);
+      this.restCall(true, null, plan.value, 'Cancel');
     } else {
-      this.restCall(true, order, null);
+      this.restCall(true, order, null, 'Cancel');
     }
   }
 
-  cancelOrder(order, plan, workflow) {
+  cancelOrder(order, plan) {
     if (plan && plan.value) {
-      this.restCall(false, null, plan.value);
+      this.restCall(false, null, plan.value, 'Cancel');
     } else {
-      this.restCall(false, order, null);
+      this.restCall(false, order, null, 'Cancel');
     }
   }
 
-  private restCall(isKill, order, multiple) {
+  suspendOrderWithKill(order, plan) {
+    if (plan && plan.value) {
+      this.restCall(true, null, plan.value, 'Suspend');
+    } else {
+      this.restCall(true, order, null, 'Suspend');
+    }
+  }
+
+  suspendOrder(order, plan) {
+    if (plan && plan.value) {
+      this.restCall(false, null, plan.value, 'Suspend');
+    } else {
+      this.restCall(false, order, null, 'Suspend');
+    }
+  }
+
+  resumeOrder(order, plan) {
+    const modalRef = this.modalService.open(ResumeOrderModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.preferences = this.preferences;
+    modalRef.componentInstance.permission = this.permission;
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.order = this.coreService.clone(order);
+    modalRef.result.then((result) => {
+      console.log(result);
+    }, () => {
+
+    });
+  }
+
+  private restCall(isKill, order, multiple, type) {
     const obj: any = {
       controllerId: this.schedulerIds.selected, orderIds: [], kill: isKill
     };
@@ -1095,7 +1030,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       let comments = {
         radio: 'predefined',
         type: 'Order',
-        operation: 'Cancel',
+        operation: type,
         name: ''
       };
       if (order) {
@@ -1112,14 +1047,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.comments = comments;
       modalRef.componentInstance.obj = obj;
-      modalRef.componentInstance.url = 'orders/cancel';
+      modalRef.componentInstance.url = 'orders/'+ type.toLowerCase();
       modalRef.result.then((result) => {
         this.resetCheckBox();
       }, () => {
 
       });
     } else {
-      this.coreService.post('orders/cancel', obj).subscribe(() => {
+      this.coreService.post('orders/'+ type.toLowerCase(), obj).subscribe(() => {
         this.resetCheckBox();
       });
     }
@@ -1351,7 +1286,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         }
       }
     }
+    this.setStateToParentObject();
     this.planOrders = [...this.planOrders];
+  }
+
+  private setStateToParentObject() {
+    this.planOrders.forEach((plan) => {
+      this.checkState(plan, plan.value);
+    });
   }
 
   sortBy() {
@@ -1386,12 +1328,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     return date;
   }
 
-  modifyOrder(order, plan) {
-    const modalRef = this.modalService.open(ScheduleTemplateModalComponent, {backdrop: 'static'});
+  modifyOrder(order) {
+    const modalRef = this.modalService.open(ModifyStartTimeModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.preferences = this.preferences;
     modalRef.componentInstance.order = order;
-    modalRef.componentInstance.plan = plan;
     modalRef.result.then((res) => {
 
     }, () => {
@@ -1399,19 +1340,19 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  changeParameter(plan, order) {
-    if (!order) {
+  changeParameter(plan, order, variable) {
+    if (order) {
       this.coreService.post('orders/variables', {
-        orderId: plan.orderId,
+        orderId: order.orderId,
         controllerId: this.schedulerIds.selected
       }).subscribe((res: any) => {
-        plan.variables = res.variables;
-        this.openModel(plan, null);
+        order.variables = res.variables;
+        this.openModel(plan, order, variable);
       }, err => {
 
       });
     } else {
-      this.openModel(plan, order);
+      this.openModel(plan, order, variable);
     }
   }
 
@@ -1433,22 +1374,22 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  private openModel(plan, updateOnly) {
+  private openModel(plan, order, variable) {
     const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.variable = plan.variables;
-    modalRef.componentInstance.order = plan;
-    modalRef.componentInstance.updateOnly = updateOnly;
-    modalRef.result.then((res) => {
-      if (!updateOnly) {
-        plan.variables = res;
-      } else {
-        for (let i = 0; i < plan.variables.length; i++) {
-          if (_.isEqual(plan.variables[i], updateOnly)) {
-            plan.variables[i] = res[0];
-            break;
-          }
-        }
+    modalRef.componentInstance.variable = variable;
+    modalRef.componentInstance.order = order;
+    modalRef.componentInstance.plan = plan;
+    modalRef.result.then((result) => {
+      if (order && order.show) {
+        console.log('>>>>', order);
+        this.coreService.post('orders/variables', {
+          orderId: order.orderId,
+          controllerId: this.schedulerIds.selected
+        }).subscribe((res: any) => {
+          order.variables = res.variables;
+
+        });
       }
     }, () => {
     });
@@ -1560,6 +1501,38 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.resetCheckBox();
   }
 
+  private checkState(object, list) {
+    object.isPlanned = true;
+    object.isFinished = false;
+    object.isRunning = false;
+    object.isCancel = false;
+    object.isModify = true;
+    object.isSuspend = true;
+    object.isResume = true;
+    list.forEach((order) => {
+      if (order.state._text !== 'PLANNED') {
+        object.isPlanned = false;
+      }
+      if (order.state._text !== 'SUSPENDED' && order.state._text !== 'FAILED') {
+        object.isResume = false;
+      }
+      if (order.state._text === 'FINISHED') {
+        object.isFinished = true;
+      } else if (order.state._text === 'RUNNING') {
+        object.isRunning = true;
+      }
+      if (order.state._text === 'FINISHED' || order.state._text === 'PLANNED') {
+        object.isCancel = true;
+      }
+      if (order.state._text !== 'PLANNED' && order.state._text !== 'PENDING') {
+        object.isModify = false;
+      }
+      if (order.state._text === 'PLANNED' || order.state._text === 'PENDING' || order.state._text === 'FAILED' || order.state._text === 'FINISHED') {
+        object.isSuspend = false;
+      }
+    });
+  }
+
   checkAll() {
     if (this.planOrders.length > 0) {
       let orders = this.planOrders.slice((this.preferences.entryPerPage * (this.dailyPlanFilters.currentPage - 1)), (this.preferences.entryPerPage * this.dailyPlanFilters.currentPage));
@@ -1578,6 +1551,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     } else {
       this.object.checkbox = false;
     }
+    this.checkState(this.object, this.object.templates)
   }
 
   checkOrderTemplate(template) {
@@ -1629,6 +1603,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       }
     }
     this.object.checkbox = flag;
+    this.checkState(this.object, this.object.templates);
   }
 
   sort(key) {
@@ -1821,7 +1796,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private filterData(planItems): void {
-
+    this.resetCheckBox();
     if (planItems && planItems.length) {
       for (let i = 0; i < planItems.length; i++) {
         planItems[i].plannedDate = planItems[i].plannedStartTime;
@@ -1848,8 +1823,17 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private resetCheckBox() {
-    this.object.templates = [];
-    this.object.checkbox = false;
+    this.object = {
+      templates: [],
+      checkbox: false,
+      isCancel : false,
+      isSuspend : false,
+      isResume : false,
+      isModify : false,
+      isRunning : false,
+      isPlanned : false,
+      isFinished : false
+    };
   }
 
   private editFilter(filter) {

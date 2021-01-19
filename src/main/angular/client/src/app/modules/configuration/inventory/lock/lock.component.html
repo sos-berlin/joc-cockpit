@@ -43,17 +43,10 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.maxNonExclusive</label>
+          <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.limit</label>
           <div class="col-md-8 col-lg-6">
-            <nz-input-number [nzMin]="0" [nzStep]="1" [nzPlaceHolder]="'inventory.placeholder.enterNonExclusive' | translate"
-                   name="maxNonExclusive" [(ngModel)]="lock.configuration.maxNonExclusive" ></nz-input-number>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.capacity</label>
-          <div class="col-md-8 col-lg-6">
-            <nz-input-number [nzMin]="0" [nzStep]="1" [nzPlaceHolder]="'inventory.placeholder.enterCapacity' | translate"
-                             name="capacity" [(ngModel)]="lock.configuration.capacity" ></nz-input-number>
+            <nz-input-number [nzMin]="0" [nzStep]="1" [nzPlaceHolder]="'inventory.placeholder.enterLimit' | translate"
+                             name="limit" [(ngModel)]="lock.configuration.limit" (nzBlur)="saveJSON()"></nz-input-number>
           </div>
         </div>
       </form>

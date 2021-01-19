@@ -87,7 +87,7 @@
                         </nz-dropdown-menu>
                       </div>
                       <div class="text-sm  text-left text-muted p-t-sm">
-                        <span class="text-black _600" [innerHtml]="lock.maxNonExclusive || '0'"></span>
+                        <span class="text-black _600" [innerHtml]="lock.limit || '0'"></span>
                         {{'resource.label.maxTask' | translate}}
                       </div>
                       <div class="text-sm  text-left text-muted p-t-xs">
@@ -137,10 +137,10 @@
                       <i *ngIf="locksFilters.filter.sortBy == 'path' && locksFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('maxNonExclusive')"><a><span class="p-r-xs" translate>resource.label.maxNonExclusive</span>
-                      <i *ngIf="locksFilters.filter.sortBy == 'maxNonExclusive' && !locksFilters.reverse"
+                    <th (click)="sort('limit')"><a><span class="p-r-xs" translate>resource.label.limit</span>
+                      <i *ngIf="locksFilters.filter.sortBy == 'limit' && !locksFilters.reverse"
                          class="fa fa-caret-up "></i>
-                      <i *ngIf="locksFilters.filter.sortBy == 'maxNonExclusive' && locksFilters.reverse"
+                      <i *ngIf="locksFilters.filter.sortBy == 'limit' && locksFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
                     <th (click)="sort('holders.tasks.length')"><a><span class="p-r-xs" translate>resource.label.runningTasks</span>
@@ -175,7 +175,7 @@
                     <td [innerHtml]="lock.name || '-'"></td>
                     <td>{{lock.path}}</td>
                     <td [innerHtml]="lock.status || '-'"></td>
-                    <td [innerHtml]="lock.maxNonExclusive || '0'"></td>
+                    <td [innerHtml]="lock.limit || '0'"></td>
                     <td>
                       <span *ngIf="lock.holders && lock.holders.tasks">{{lock.holders.tasks.length}}</span>
                       <span *ngIf="!lock.holders || !lock.holders.tasks">0</span>

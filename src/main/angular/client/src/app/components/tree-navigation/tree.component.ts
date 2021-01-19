@@ -34,7 +34,7 @@ export class TreeComponent implements OnInit, OnChanges {
         if (top < 152 && top > 140) {
           top = 151;
         }
-        $('.sticky').css('top', top);
+        $('.sticky').css('top', top + 4);
         const ht = window.innerHeight - top;
         if (ht > 400) {
           $('.tree-block').height((ht - 20 + $(window).scrollTop()) + 'px');

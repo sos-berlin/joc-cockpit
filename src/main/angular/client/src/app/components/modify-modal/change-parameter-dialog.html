@@ -1,8 +1,9 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="updateOnly" translate>dailyPlan.label.setParameter</span>
-    <span *ngIf="!updateOnly" translate>dailyPlan.label.setParameters</span>
+    <span *ngIf="order" translate>dailyPlan.label.setParameter</span>
+    <span *ngIf="!order" translate>dailyPlan.label.setParameters</span>
     <i *ngIf="order" class="text-muted p-l-xs text">{{order.orderId}}</i>
+    <span *ngIf="plan"> {{plan.key}}</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
@@ -12,20 +13,20 @@
   <div class="modal-body p-a">
       <div class="row">
         <div class="col-sm-12 text m-b">
-          <div class="form-group row m-b-0" *ngFor="let variable of variables; let i = index">
+          <div class="form-group row m-b-0" *ngFor="let item of variables; let i = index">
             <div class="col-md-5 col-sm-5 m-b-sm text-left" *ngIf="i==0" translate>common.label.name</div>
             <div class="col-md-6 col-sm-6 m-b-sm text-left" *ngIf="i==0" translate>common.label.value</div>
             <div class="col-md-5 col-sm-6 m-b-sm">
               <input autocomplete="off" type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == variables.length -1"
-                     [(ngModel)]="variable.name" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
+                     [(ngModel)]="item.name" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
             </div>
             <div class="col-md-6 col-sm-4 m-b-sm">
               <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event)"
-                     [(ngModel)]="variable.value" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
+                     [(ngModel)]="item.value" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
             </div>
-            <a *ngIf="!updateOnly" class="p-l-0"><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+            <a *ngIf="!variable" class="p-l-0"><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
           </div>
-          <div class="form-group row m-b-0 m-t-sm" *ngIf="!updateOnly">
+          <div class="form-group row m-b-0 m-t-sm" *ngIf="!variable">
             <div class="col-sm-12 col-md-12">
               <a class="text-u-l" *ngIf="variables.length>0" (click)="addVariable()"
                  translate>order.button.addAnotherVariable</a>

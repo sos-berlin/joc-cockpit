@@ -22,7 +22,7 @@
     <i class="fa fa-circle p-r-s" [ngClass]="coreService.getColor(order.state.severity, 'text')"></i>
     {{order.orderId}}
     <i class="text-sm text-muted" *ngIf="order.scheduledFor">{{order.scheduledFor | stringToDate}}</i>
-    <span class="text-success p-l-xs text-xs" *ngIf="order.scheduledFor">({{order.scheduledFor | timeInString}})</span>
+   <!-- <span class="text-success p-l-xs text-xs" *ngIf="order.scheduledFor">({{order.scheduledFor | timeInString}})</span>-->
   </span>
 </ng-template>
 <div *ngFor="let instruction of configuration.instructions">

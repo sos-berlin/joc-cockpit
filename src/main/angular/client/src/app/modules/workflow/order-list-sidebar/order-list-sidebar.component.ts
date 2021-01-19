@@ -68,6 +68,10 @@ export class OrderListSidebarComponent implements OnChanges {
     order.show = true;
   }
 
+  modifyAllOrder(){
+
+  }
+
   suspendAllOrder() {
     this._bulkOperation('suspend');
   }

@@ -1,8 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title">
     <span translate>dailyPlan.label.setStartTime</span>:
-    <span *ngIf="!plan"> {{order.orderId}}</span>
-    <span *ngIf="plan"> {{plan.key}}</span>
+    <span> {{order.orderId}}</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
@@ -12,10 +11,11 @@
   <div class="modal-body p-a">
     <div class="row">
       <div class="col-sm-12">
-        <div class="form-group row" *ngIf="!plan">
+        <div class="form-group row">
           <label class="col-sm-3 form-control-label" translate>dailyPlan.label.plannedStart</label>
           <div class="col-sm-9">
-            {{order.plannedStartTime}}
+            <span *ngIf="order.plannedStartTime">{{order.plannedStartTime}}</span>
+            <span *ngIf="!order.plannedStartTime">{{order.scheduledFor | stringToDate}}</span>
           </div>
         </div>
         <div class="form-group row">

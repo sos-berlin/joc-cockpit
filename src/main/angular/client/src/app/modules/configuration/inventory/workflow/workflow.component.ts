@@ -832,7 +832,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.copyId = cell.getAttribute('uuid');
         if (this.copyId) {
           $('#toolbar').find('img').each(function (index) {
-            if (index === 11) {
+            if (index === 12) {
               $(this).removeClass('disable-link');
               $(this).attr('title', 'Copy of ' + cell.value.tagName);
             }
@@ -859,7 +859,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.changeCellStyle(graph, cell, true);
         this.cutCell = cell;
         $('#toolbar').find('img').each(function (index) {
-          if (index === 11) {
+          if (index === 12) {
             $(this).removeClass('disable-link');
             $(this).attr('title', cell.value.tagName);
           }
@@ -2522,8 +2522,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (!callFun) {
       $('#toolbar').find('img').each(function (index) {
         if (index === 10) {
-          $(this).addClass('disable-link');
+          $(this).addClass('lock-img');
         } else if (index === 11) {
+          $(this).addClass('disable-link');
+        } else if (index === 12) {
           $(this).addClass('disable-link');
         }
       });
@@ -2629,7 +2631,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
           self.cutCell = null;
           $('#toolbar').find('img').each(function (index) {
-            if (index === 11) {
+            if (index === 12) {
               $(this).addClass('disable-link');
             }
           });
@@ -5749,7 +5751,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   private clearCopyObj() {
     this.copyId = null;
     $('#toolbar').find('img').each(function (index) {
-      if (index === 11) {
+      if (index === 12) {
         $(this).addClass('disable-link');
       }
     });

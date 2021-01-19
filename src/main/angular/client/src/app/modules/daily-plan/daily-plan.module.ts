@@ -5,10 +5,8 @@ import {
   RemovePlanModalComponent,
   SearchComponent,
   CreatePlanModalComponent,
-  ScheduleTemplateModalComponent,
   GanttComponent,
   SelectOrderTemplatesComponent,
-  ChangeParameterModalComponent,
   SubmitOrderModalComponent
 } from './daily-plan.component';
 import {SharedModule} from '../shared/shared.module';
@@ -22,15 +20,12 @@ import {GroupByPipe} from '../../filters/filter.pipe';
     DailyPlanRoutingModule
   ],
   declarations: [DailyPlanComponent, GanttComponent, RemovePlanModalComponent, SubmitOrderModalComponent, FilterModalComponent,
-    SearchComponent, DailyPlanRegexValidator, CreatePlanModalComponent, ChangeParameterModalComponent,
-    ScheduleTemplateModalComponent, SelectOrderTemplatesComponent],
+    SearchComponent, DailyPlanRegexValidator, CreatePlanModalComponent, SelectOrderTemplatesComponent],
   entryComponents: [
     FilterModalComponent,
     RemovePlanModalComponent,
     SubmitOrderModalComponent,
-    ScheduleTemplateModalComponent,
-    CreatePlanModalComponent,
-    ChangeParameterModalComponent
+    CreatePlanModalComponent
   ], providers: [GroupByPipe]
 })
 export class DailyPlanModule {

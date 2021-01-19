@@ -4,74 +4,8 @@ import * as moment from 'moment';
 import * as _ from 'underscore';
 import {CoreService} from '../../../services/core.service';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
-
-@Component({
-  selector: 'app-resume-order',
-  templateUrl: './resume-order-dialog.html',
-})
-
-export class ResumeOrderModalComponent implements OnInit {
-  @Input() schedulerId: any;
-  @Input() permission: any;
-  @Input() preferences: any;
-  @Input() order: any;
-  display: any;
-  messageList: any;
-  required = false;
-  submitted = false;
-  comments: any = {};
-  positions: any = [];
-
-  constructor(public coreService: CoreService, public activeModal: NgbActiveModal) {
-  }
-
-  ngOnInit() {
-    this.display = this.preferences.auditLog;
-    this.comments.radio = 'predefined';
-    this.order.timeZone = this.preferences.zone;
-    this.order.fromTime = new Date();
-
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
-    }
-    if (sessionStorage.$SOS$FORCELOGING == 'true') {
-      this.required = true;
-    }
-    this.order.position = JSON.stringify(this.order.position);
-    this.positions.push(this.order.position);
-  }
-
-  onSubmit() {
-    this.submitted = true;
-    const obj: any = {
-      controllerId: this.schedulerId, orderIds: [this.order.orderId]
-    };
-    if(this.order.position) {
-      obj.position = JSON.parse(this.order.position);
-    }
-    obj.auditLog = {};
-    if (this.comments.comment) {
-      obj.auditLog.comment = this.comments.comment;
-    }
-    if (this.comments.timeSpent) {
-      obj.auditLog.timeSpent = this.comments.timeSpent;
-    }
-    if (this.comments.ticketLink) {
-      obj.auditLog.ticketLink = this.comments.ticketLink;
-    }
-    this.coreService.post('orders/resume', obj).subscribe((res: any) => {
-      this.submitted = false;
-      this.activeModal.close('Done');
-    }, err => {
-      this.submitted = false;
-    });
-  }
-
-  cancel() {
-    this.activeModal.dismiss('');
-  }
-
-}
+import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume.component';
+import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../../../components/modify-modal/modify.component';
 
 @Component({
   selector: 'app-start-order',
@@ -302,4 +236,45 @@ export class OrderActionComponent {
     }
   }
 
+  modifyOrder(order) {
+    const modalRef = this.modalService.open(ModifyStartTimeModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerId;
+    modalRef.componentInstance.preferences = this.preferences;
+    modalRef.componentInstance.order = order;
+    modalRef.result.then((res) => {
+
+    }, () => {
+
+    });
+  }
+
+  changeParameter(order) {
+    this.coreService.post('orders/variables', {
+      orderId: order.orderId,
+      controllerId: this.schedulerId
+    }).subscribe((res: any) => {
+      order.variables = res.variables;
+      this.openModel(order);
+    }, err => {
+
+    });
+  }
+
+  private openModel(order) {
+    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerId;
+    modalRef.componentInstance.order = order;
+    modalRef.result.then((result) => {
+      if (order && order.show) {
+        this.coreService.post('orders/variables', {
+          orderId: order.orderId,
+          controllerId: this.schedulerId
+        }).subscribe((res: any) => {
+          order.variables = res.variables;
+
+        });
+      }
+    }, () => {
+    });
+  }
 }

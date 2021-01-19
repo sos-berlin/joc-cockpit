@@ -47,14 +47,16 @@ import {StartUpModalComponent} from '../start-up/start-up.component';
 import {Shared2Module} from './shared2.module';
 import {CalendarModalComponent} from '../../components/calendar-modal/calendar.component';
 import {AddRestrictionComponent, PeriodComponent, RunTimeComponent} from '../../components/runtime/runtime.component';
-import {ResumeOrderModalComponent} from '../order-overview/order-action/order-action.component';
+import {ResumeOrderModalComponent} from '../../components/resume-modal/resume.component';
+import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../../components/modify-modal/modify.component';
 
 const MODULES = [Shared2Module, NzTableModule, NzTabsModule,
   NzToolTipModule, NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule,
   ChecklistModule, NzSelectModule, NzInputModule, NzMessageModule, NzCheckboxModule, NzRadioModule, NzTreeSelectModule, ClipboardModule,
   NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, OrderModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
-  CalendarModalComponent, TreeModalComponent, PeriodComponent, AddRestrictionComponent, ResumeOrderModalComponent];
+  CalendarModalComponent, TreeModalComponent, PeriodComponent, AddRestrictionComponent,
+  ResumeOrderModalComponent, ChangeParameterModalComponent, ModifyStartTimeModalComponent];
 const PIPES = [DurationPipe, StringDateFormatePipe, ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, ResizableDirective, LabelValidator,
   NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, AutofocusDirective];

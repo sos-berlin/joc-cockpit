@@ -9,9 +9,10 @@ import {AddOrderModalComponent} from '../workflow-action/workflow-action.compone
 import {CalendarModalComponent} from '../../../components/calendar-modal/calendar.component';
 import {DataService} from '../../../services/data.service';
 import {Subscription} from 'rxjs';
-import {ResumeOrderModalComponent} from '../../order-overview/order-action/order-action.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd';
+import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume.component';
+import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../../../components/modify-modal/modify.component';
 
 declare const mxEditor;
 declare const mxUtils;
@@ -1185,6 +1186,47 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       WorkflowService.executeLayout(graph);
       this.updateOrdersInGraph(false);
     }
+  }
+
+  modifyOrder() {
+    const modalRef = this.modalService.open(ModifyStartTimeModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.preferences = this.preferences;
+    modalRef.componentInstance.order = this.order;
+    modalRef.result.then((res) => {
+
+    }, () => {
+
+    });
+  }
+
+  changeParameter() {
+    this.coreService.post('orders/variables', {
+      orderId: this.order.orderId,
+      controllerId: this.schedulerIds.selected
+    }).subscribe((res: any) => {
+      this.order.variables = res.variables;
+      this.openModel(this.order);
+    }, err => {
+
+    });
+  }
+  private openModel(order) {
+    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.order = order;
+    modalRef.result.then((result) => {
+      if (order && order.show) {
+        this.coreService.post('orders/variables', {
+          orderId: order.orderId,
+          controllerId: this.schedulerIds.selected
+        }).subscribe((res: any) => {
+          order.variables = res.variables;
+
+        });
+      }
+    }, () => {
+    });
   }
 
   resumeOrder() {

@@ -23,8 +23,16 @@
       <li nz-menu-item *ngIf="permission && permission.Order.execute && (order.state._text === 'RUNNING' || order.state._text === 'INPROGRESS')">
         <a (click)="suspendOrderWithKill()" translate>order.button.suspendAndKillTask</a>
       </li>
-      <li nz-menu-item *ngIf="permission && permission.Order.execute.resume && order.state._text === 'FAILED'">
+      <li nz-menu-item *ngIf="permission && permission.Order.execute.resume && (order.state._text === 'SUSPENDED' || order.state._text === 'FAILED')">
         <a (click)="resumeOrder()" translate>order.button.resume</a>
+      </li>
+      <li nz-menu-item *ngIf="permission && permission.Order.execute && order.state && (order.state._text === 'PLANNED' || order.state._text === 'PENDING')">
+        <a (click)="modifyOrder(order)"
+           translate>dailyPlan.button.setStartTime</a>
+      </li>
+      <li nz-menu-item *ngIf="permission && permission.Order.execute && order.state && (order.state._text === 'PLANNED' || order.state._text === 'PENDING')">
+        <a (click)="changeParameter(order)"
+           translate>dailyPlan.button.setParameters</a>
       </li>
 <!--      <li nz-menu-item>
         <a (click)="coreService.copyLink('order',order.orderId)" translate>common.button.copyLinkToObject</a>
