@@ -1566,10 +1566,42 @@ export class UploadModalComponent implements OnInit {
 }
 
 @Component({
+  selector: 'app-create-object-template',
+  templateUrl: './create-object-dialog.html'
+})
+export class CreateObjectModalComponent {
+  @Input() schedulerId: any;
+  @Input() obj: any;
+  submitted = false;
+  object = {name: ''};
+
+  constructor(private coreService: CoreService, public activeModal: NgbActiveModal) {
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    const _path = this.obj.path + (this.obj.path === '/' ? '' : '/') + this.object.name;
+    this.coreService.post('inventory/validate/path', {
+      objectType: this.obj.type,
+      path: _path
+    }).subscribe((res: any) => {
+      this.activeModal.close({
+        name: this.object.name
+      });
+    }, (err) => {
+      this.submitted = false;
+      this.activeModal.close({
+        name: this.object.name
+      });
+    });
+  }
+}
+
+@Component({
   selector: 'app-create-folder-template',
   templateUrl: './create-folder-dialog.html'
 })
-export class CreateFolderModalComponent implements OnInit {
+export class CreateFolderModalComponent{
   @Input() schedulerId: any;
   @Input() folders: any;
   @Input() rename: any;
@@ -1579,10 +1611,6 @@ export class CreateFolderModalComponent implements OnInit {
   folder = {error: false, name: '', overwrite: false};
 
   constructor(private coreService: CoreService, public activeModal: NgbActiveModal) {
-
-  }
-
-  ngOnInit() {
 
   }
 
@@ -2662,6 +2690,17 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
+  private openObjectNameModal(obj, children, configuration) {
+    const modalRef = this.modalService.open(CreateObjectModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.obj = obj;
+    modalRef.result.then((res: any) => {
+      obj.name = res.name;
+      this.storeObject(obj, children, configuration);
+    }, () => {
+    });
+  }
+
   removeObject(node) {
     const object = node.origin;
     if (object.object || object.controller || object.dailyPlan) {
@@ -2834,25 +2873,24 @@ export class InventoryComponent implements OnInit, OnDestroy {
       type: type,
       path: path
     };
-    let configuration = {};
-    if (type === 'WORKFLOW') {
-      obj.name = this.coreService.getName(list, 'workflow1', 'name', 'workflow');
-    } else if (type === 'JUNCTION') {
-      obj.name = this.coreService.getName(list, 'junction1', 'name', 'junction');
-    } else if (type === 'JOBCLASS') {
-      configuration = {maxProcesses: 1};
-      obj.name = this.coreService.getName(list, 'job_class1', 'name', 'job_class');
-    } else if (type === 'SCHEDULE') {
-      obj.name = this.coreService.getName(list, 'schedule1', 'name', 'schedule');
-      configuration = {controllerId: this.schedulerIds.selected};
-    } else if (type === 'LOCK') {
-      obj.name = this.coreService.getName(list, 'lock1', 'name', 'lock');
-      configuration = {limit: 1};
-    } else if (type === 'WORKINGDAYSCALENDAR' || type === 'NONWORKINGDAYSCALENDAR') {
-      configuration = {type: type};
-      obj.name = this.coreService.getName(list, 'calendar1', 'name', 'calendar');
-    }
-    this.storeObject(obj, list, configuration);
+    const modalRef = this.modalService.open(CreateObjectModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.obj = obj;
+    modalRef.result.then((res: any) => {
+      let configuration = {};
+      obj.name = res.name;
+      if (type === 'JOBCLASS') {
+        configuration = {maxProcesses: 1};
+      } else if (type === 'SCHEDULE') {
+        configuration = {controllerId: this.schedulerIds.selected};
+      } else if (type === 'LOCK') {
+        configuration = {limit: 1, id: res.name};
+      } else if (type === 'WORKINGDAYSCALENDAR' || type === 'NONWORKINGDAYSCALENDAR') {
+        configuration = {type: type};
+      }
+      this.storeObject(obj, list, configuration);
+    }, () => {
+    });
   }
 
   private storeObject(obj, list, configuration) {

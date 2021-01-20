@@ -3,6 +3,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from 'src/app/services/core.service';
 import {DataService} from 'src/app/services/data.service';
 import {ConfirmModalComponent} from '../../../../components/comfirm-modal/confirm.component';
+import {CreateObjectModalComponent} from '../inventory.component';
 
 @Component({
   selector: 'app-table',
@@ -23,26 +24,6 @@ export class TableComponent {
   }
 
   add() {
-    let name_type, configuration = {};
-    if (this.objectType === 'WORKFLOW') {
-      name_type = 'workflow';
-    } else if (this.objectType === 'JUNCTION') {
-      name_type = 'junction';
-    } else if (this.objectType === 'JOBCLASS') {
-      name_type = 'job_class';
-      configuration = {maxProcesses: 1};
-    } else if (this.objectType === 'SCHEDULE') {
-      name_type = 'schedule';
-      configuration = {controllerId: this.schedulerId};
-    } else if (this.objectType === 'LOCK') {
-      name_type = 'lock';
-      configuration = {limit: 1};
-    } else if (this.objectType === 'CALENDAR') {
-      name_type = 'calendar';
-      configuration = {type: 'WORKINGDAYSCALENDAR'};
-    }
-    const name = this.coreService.getName(this.dataObj.children, name_type + '1', 'name', name_type);
-    const _path = this.dataObj.path + (this.dataObj.path === '/' ? '' : '/') + name;
     const obj: any = {
       type: this.objectType === 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : this.objectType,
       name: name,
@@ -51,6 +32,29 @@ export class TableComponent {
     if (!this.dataObj.path) {
       return;
     }
+    const modalRef = this.modalService.open(CreateObjectModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerId;
+    modalRef.componentInstance.obj = obj;
+    modalRef.result.then((res: any) => {
+      let configuration = {};
+      obj.name = res.name;
+      if (obj.type === 'JOBCLASS') {
+        configuration = {maxProcesses: 1};
+      } else if (obj.type === 'SCHEDULE') {
+        configuration = {controllerId: this.schedulerId};
+      } else if (obj.type === 'LOCK') {
+        configuration = {limit: 1, id: res.name};
+      } else if (obj.type === 'WORKINGDAYSCALENDAR' || obj.type === 'NONWORKINGDAYSCALENDAR') {
+        configuration = {type: obj.type};
+      }
+      const _path = this.dataObj.path + (this.dataObj.path === '/' ? '' : '/') + res.name;
+
+      this.store(obj, _path, configuration);
+    }, () => {
+    });
+  }
+
+  private store(obj, _path, configuration){
     this.coreService.post('inventory/store', {
       objectType: this.objectType === 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : this.objectType,
       path: _path,

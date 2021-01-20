@@ -269,8 +269,40 @@
           <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.delay</label>
           <div class="col-md-8 col-lg-9">
             <input autocomplete="off"  type="text" class="form-control" validateNumberArrayReqex
-                   placeholder="{{'placeholder.enterPositiveNumber' | translate}}"
+                   placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
                    name="delay" [(ngModel)]="selectedNode.obj.retryDelays">
+          </div>
+        </div>
+      </div>
+      <div class="box-body" *ngIf="selectedNode.type === 'Lock'">
+        <div class="form-group row" [ngClass]="{'has-error' : ((lockId.dirty || lockId.touched) && lockId.invalid)}">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.lockId</label>
+          <div class="col-md-8 col-lg-9">
+            <input autocomplete="off" [appAutofocus]="true" type="text" class="form-control"
+                   placeholder="{{'workflow.placeholder.selectLock' | translate}}" #lockId="ngModel"
+                   name="lockId" [(ngModel)]="selectedNode.obj.lockId">
+            <div *ngIf="lockId.invalid && (lockId.dirty || lockId.touched)"
+                 class="text-danger help-block">
+              <div *ngIf="lockId.errors.required">
+                <div translate>common.message.requiredError</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3" translate>workflow.label.count</label>
+          <div class="col-md-8 col-lg-9">
+            <nz-radio-group [(ngModel)]="selectedNode.obj.countProperty">
+              <label nz-radio nzValue="exclusive"><span translate>workflow.label.exclusive</span></label>
+              <label nz-radio nzValue="shared"><span translate>workflow.label.shared</span></label>
+            </nz-radio-group>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="selectedNode.obj.countProperty === 'shared'">
+          <label class="col-md-4 col-lg-3 form-control-label"></label>
+          <div class="col-md-8 col-lg-9">
+            <nz-input-number [nzMin]="1" [nzStep]="1" name="count"
+                             [(ngModel)]="selectedNode.obj.count"></nz-input-number>
           </div>
         </div>
       </div>

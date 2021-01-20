@@ -204,6 +204,7 @@
                     [disabled]="(planOrders | filter: dailyPlanFilters.searchText).length===0" (click)="exportToExcel()">
               <i class="fa fa-share-square-o"></i>
             </button>
+            <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
           <div class="hide" [ngClass]="{'show-block':object.templates.length>0}">
             <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isModify" (click)="modifySelectedOrder()"><i
@@ -231,7 +232,6 @@
               <span class="hidden-sm-down" translate>dailyPlan.button.resumeSelectedOrder</span>
             </button>
           </div>
-          <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
         </div>
       </div>
     </div>

@@ -38,6 +38,13 @@
         </mxCell>
       </Retry>
     </add>
+    <add as="Lock" >
+      <Lock label="lock" count="" lockId="">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="68" height="68"/>
+        </mxCell>
+      </Lock>
+    </add>
     <add as="Try">
       <Try label="try">
         <mxCell vertex="1">

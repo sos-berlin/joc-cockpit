@@ -14,6 +14,7 @@ export class ChangeParameterModalComponent implements OnInit {
   @Input() order: any;
   @Input() plan: any;
   @Input() orders: any;
+  @Input() orderIds: any;
   variables: any = [];
   submitted = false;
 
@@ -82,6 +83,8 @@ export class ChangeParameterModalComponent implements OnInit {
       this.plan.value.forEach((order) => {
         obj.orderIds.push(order.orderId);
       });
+    } else if (this.orderIds) {
+      obj.orderIds = this.orderIds;
     }
     console.log(obj, '>>>>>');
     this.coreService.post('daily_plan/orders/modify', obj).subscribe((result) => {
@@ -112,14 +115,14 @@ export class ModifyStartTimeModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.order)
+ 
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
   }
 
   disabledDate = (current: Date): boolean => {
     // Can not select days before today and today
     return moment(current.setHours(0, 0, 0, 0)).diff(new Date().setHours(0, 0, 0, 0)) < 0;
-  }
+  };
 
   onSubmit(): void {
     if (this.order.from && this.order.time) {

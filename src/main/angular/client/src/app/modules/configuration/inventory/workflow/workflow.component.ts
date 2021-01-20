@@ -992,7 +992,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         const start = vertexMap.get(json.instructions[0].uuid);
         const last = json.instructions[json.instructions.length - 1];
         let end = vertexMap.get(last.uuid);
-        if (last.TYPE === 'Fork' || last.TYPE === 'If' || last.TYPE === 'Try' || last.TYPE === 'Retry') {
+        if (last.TYPE === 'Fork' || last.TYPE === 'If' || last.TYPE === 'Try' || last.TYPE === 'Retry' || last.TYPE === 'Lock') {
           let targetId = self.nodeMap.get(last.id);
           if (targetId) {
             end = graph.getModel().getCell(targetId);
@@ -1013,8 +1013,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         for (let x = 0; x < json.instructions.length; x++) {
           let v2;
           let _node = doc.createElement(json.instructions[x].TYPE);
-          if (!json.instructions[x].uuid)
+          if (!json.instructions[x].uuid) {
             json.instructions[x].uuid = self.workflowService.create_UUID();
+          }
           if (json.instructions[x].TYPE === 'Job') {
             _node.setAttribute('jobName', json.instructions[x].jobName);
             _node.setAttribute('label', json.instructions[x].label || '');
@@ -1095,6 +1096,19 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             } else {
               v2 = endRetry(v1, v1.id, parent);
             }
+          } else if (json.instructions[x].TYPE === 'Lock') {
+            _node.setAttribute('label', 'lock');
+            _node.setAttribute('lockId', json.instructions[x].lockId || '');
+            _node.setAttribute('count', json.instructions[x].count || '');
+            _node.setAttribute('uuid', json.instructions[x].uuid);
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.workflowService.lock);
+            if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
+              recursive(json.instructions[x], '', v1);
+              connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'lock', 'lock', v1);
+              v2 = endLock(json.instructions[x], v1.id, parent);
+            } else {
+              v2 = endLock(v1, v1.id, parent);
+            }
           } else if (json.instructions[x].TYPE === 'Try') {
             _node.setAttribute('label', 'try');
             _node.setAttribute('uuid', json.instructions[x].uuid);
@@ -1122,7 +1136,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               recursive(json.instructions[x], '', v1);
               connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'try', 'try', v1);
               const _lastNode = json.instructions[x].instructions[json.instructions[x].instructions.length - 1];
-              if (_lastNode.TYPE === 'If' || _lastNode.TYPE === 'Fork' || _lastNode.TYPE === 'Try' || _lastNode.TYPE === 'Retry') {
+              if (_lastNode.TYPE === 'If' || _lastNode.TYPE === 'Fork' || _lastNode.TYPE === 'Try' || _lastNode.TYPE === 'Retry' || _lastNode.TYPE === 'Lock') {
                 const end = graph.getModel().getCell(self.nodeMap.get(_lastNode.id));
                 connectInstruction(end, cv1, 'try', 'try', v1);
               } else {
@@ -1155,14 +1169,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (v1) {
             json.instructions[x].id = v1.id;
             if (json.instructions[x].TYPE === 'Fork' || json.instructions[x].TYPE === 'If' ||
-              json.instructions[x].TYPE === 'Try' && json.instructions[x].TYPE === 'Retry') {
+              json.instructions[x].TYPE === 'Try' || json.instructions[x].TYPE === 'Retry' || json.instructions[x].TYPE === 'Lock') {
               v1.collapsed = json.instructions[x].isCollapsed == '1';
             }
           }
 
           if (x > 0) {
             let prev = json.instructions[x - 1];
-            if (prev.TYPE !== 'Fork' && prev.TYPE !== 'If' && prev.TYPE !== 'Try' && prev.TYPE !== 'Retry' && vertexMap.get(prev.uuid)) {
+            if (prev.TYPE !== 'Fork' && prev.TYPE !== 'If' && prev.TYPE !== 'Try' && prev.TYPE !== 'Retry' && prev.TYPE !== 'Lock' && vertexMap.get(prev.uuid)) {
               connectInstruction(vertexMap.get(prev.uuid), v1, type, type, parent);
             }
           }
@@ -1197,7 +1211,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             const x = branches[i].instructions[branches[i].instructions.length - 1];
             if (x) {
               let endNode;
-              if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry') {
+              if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry' || x.TYPE === 'Lock') {
                 endNode = graph.getModel().getCell(self.nodeMap.get(x.id));
               } else {
                 endNode = vertexMap.get(x.uuid);
@@ -1228,7 +1242,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         const x = branches.then.instructions[branches.then.instructions.length - 1];
         if (x) {
           let endNode;
-          if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry') {
+          if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry' || x.TYPE === 'Lock') {
             endNode = graph.getModel().getCell(self.nodeMap.get(x.id));
           } else {
             endNode = vertexMap.get(x.uuid);
@@ -1240,7 +1254,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         flag = false;
         const x = branches.else.instructions[branches.else.instructions.length - 1];
         let endNode;
-        if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry') {
+        if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry' || x.TYPE === 'Lock') {
           endNode = graph.getModel().getCell(self.nodeMap.get(x.id));
         } else {
           endNode = vertexMap.get(x.uuid);
@@ -1250,6 +1264,32 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
       if (flag) {
         connectInstruction(target, v1, '', '', parent);
+      }
+      return v1;
+    }
+
+    function endLock(branches, targetId, parent) {
+      let _node = doc.createElement('EndLock');
+      _node.setAttribute('label', 'lockEnd');
+      if (targetId) {
+        _node.setAttribute('targetId', targetId);
+      }
+      let v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.workflowService.lock);
+      self.nodeMap.set(targetId.toString(), v1.id.toString());
+
+      if (branches.instructions && branches.instructions.length > 0) {
+        const x = branches.instructions[branches.instructions.length - 1];
+        if (x) {
+          let endNode;
+          if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry' || x.TYPE === 'Lock') {
+            endNode = graph.getModel().getCell(self.nodeMap.get(x.id));
+          } else {
+            endNode = vertexMap.get(x.uuid);
+          }
+          connectInstruction(endNode, v1, 'endLock', 'endLock', parent);
+        }
+      } else {
+        connectInstruction(branches, v1, '', '', parent);
       }
       return v1;
     }
@@ -1267,7 +1307,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         const x = branches.instructions[branches.instructions.length - 1];
         if (x) {
           let endNode;
-          if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry') {
+          if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry' || x.TYPE === 'Lock') {
             endNode = graph.getModel().getCell(self.nodeMap.get(x.id));
           } else {
             endNode = vertexMap.get(x.uuid);
@@ -1300,7 +1340,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
       if (x) {
         let endNode;
-        if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry') {
+        if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry' || x.TYPE === 'Lock') {
           endNode = graph.getModel().getCell(self.nodeMap.get(x.id));
         } else {
           endNode = vertexMap.get(x.uuid);
@@ -1514,6 +1554,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         let _forkInstructions = _.clone(objects.Fork);
         let _tryInstructions = _.clone(objects.Try);
         let _retryInstructions = _.clone(objects.Retry);
+        let _lockInstructions = _.clone(objects.Lock);
         let _awaitInstructions = _.clone(objects.Await);
         let _publishInstructions = _.clone(objects.Publish);
         let _fileWatcherInstructions = _.clone(objects.FileWatcher);
@@ -1569,6 +1610,20 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             } else {
               if (connection[i].mxCell._target === _retryInstructions._id) {
                 _retryInstructions = [];
+              }
+            }
+          }
+          if (_lockInstructions) {
+            if (_.isArray(_lockInstructions)) {
+              for (let j = 0; j < _lockInstructions.length; j++) {
+                if (connection[i].mxCell._target === _lockInstructions[j]._id) {
+                  _lockInstructions.splice(j, 1);
+                  break;
+                }
+              }
+            } else {
+              if (connection[i].mxCell._target === _lockInstructions._id) {
+                _lockInstructions = [];
               }
             }
           }
@@ -1699,6 +1754,20 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
         } else {
+          if (_lockInstructions) {
+            if (_.isArray(_lockInstructions) && _lockInstructions.length > 0) {
+              startNode = _lockInstructions[0];
+            } else {
+              startNode = _lockInstructions;
+            }
+          }
+        }
+
+        if (!_.isEmpty(startNode)) {
+          jsonObj.instructions.push(this.workflowService.createObject('Lock', startNode));
+          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
+          startNode = null;
+        } else {
           if (_retryInstructions) {
             if (_.isArray(_retryInstructions) && _retryInstructions.length > 0) {
               startNode = _retryInstructions[0];
@@ -1802,6 +1871,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         const ifIns = objects.If;
         const fork = objects.Fork;
         const retry = objects.Retry;
+        const lock = objects.Lock;
         const tryIns = objects.Try;
         const awaitIns = objects.Await;
         const publishIns = objects.Publish;
@@ -1833,6 +1903,15 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           } else {
             jsonObj.instructions.push(this.workflowService.createObject('Fork', fork));
+          }
+        }
+        if (lock) {
+          if (_.isArray(lock)) {
+            for (let i = 0; i < lock.length; i++) {
+              jsonObj.instructions.push(this.workflowService.createObject('Lock', lock[i]));
+            }
+          } else {
+            jsonObj.instructions.push(this.workflowService.createObject('Lock', lock));
           }
         }
         if (retry) {
@@ -1963,6 +2042,16 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 break;
               }
             }
+          } else if (connection[i]._type === 'lock') {
+            for (let j = 0; j < instructions.length; j++) {
+              if (instructions[j].TYPE === 'Lock' && instructions[j].id === id) {
+                if (!instructions[j].instructions) {
+                  instructions[j].instructions = [];
+                  instructionArr = instructions[j].instructions;
+                }
+                break;
+              }
+            }
           } else if (connection[i]._type === 'try') {
             for (let j = 0; j < instructions.length; j++) {
               if (instructions[j].TYPE === 'Try' && instructions[j].id === id) {
@@ -2016,6 +2105,29 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               }
             }
 
+            if (_node._targetId) {
+              let arr = this.recursiveFindParentCell(_node._targetId, jsonObj.instructions);
+              if (arr && arr.length > -1) {
+                instructionArr = arr;
+              }
+            }
+          } else if (connection[i]._type === 'endLock') {
+            const endLockInstructions = objects.EndLock;
+            let _node: any = {};
+            if (endLockInstructions) {
+              if (_.isArray(endLockInstructions)) {
+                for (let x = 0; x < endLockInstructions.length; x++) {
+                  if (endLockInstructions[x]._id === _id) {
+                    _node = endLockInstructions[x];
+                    break;
+                  }
+                }
+              } else {
+                if (endLockInstructions._id === _id) {
+                  _node = endLockInstructions;
+                }
+              }
+            }
             if (_node._targetId) {
               let arr = this.recursiveFindParentCell(_node._targetId, jsonObj.instructions);
               if (arr && arr.length > -1) {
@@ -2176,7 +2288,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     const forkInstructions = objects.Fork;
     const joinInstructions = objects.Join;
     const retryInstructions = objects.Retry;
+    const lockInstructions = objects.Lock;
     const endRetryInstructions = objects.EndRetry;
+    const endLockInstructions = objects.EndLock;
     const tryInstructions = objects.Try;
     const catchInstructions = objects.Catch;
     const tryEndInstructions = objects.EndTry;
@@ -2240,6 +2354,47 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         } else {
           if (joinInstructions._id === id) {
             nextNode = joinInstructions;
+          }
+        }
+      }
+    }
+
+    if (nextNode && !_.isEmpty(nextNode)) {
+      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
+      nextNode = null;
+    } else {
+      if (lockInstructions) {
+        if (_.isArray(lockInstructions)) {
+          for (let i = 0; i < lockInstructions.length; i++) {
+            if (lockInstructions[i]._id === id) {
+              nextNode = lockInstructions[i];
+              break;
+            }
+          }
+        } else {
+          if (lockInstructions._id === id) {
+            nextNode = lockInstructions;
+          }
+        }
+      }
+    }
+
+    if (nextNode && !_.isEmpty(nextNode)) {
+      instructionsArr.push(this.workflowService.createObject('Lock', nextNode));
+      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
+      nextNode = null;
+    } else {
+      if (endLockInstructions) {
+        if (_.isArray(endLockInstructions)) {
+          for (let i = 0; i < endLockInstructions.length; i++) {
+            if (endLockInstructions[i]._id === id) {
+              nextNode = endLockInstructions[i];
+              break;
+            }
+          }
+        } else {
+          if (endLockInstructions._id === id) {
+            nextNode = endLockInstructions;
           }
         }
       }
@@ -2643,7 +2798,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           let img;
           if (state.cell && (state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'Finish' || state.cell.value.tagName === 'Fail' ||
             state.cell.value.tagName === 'Await' || state.cell.value.tagName === 'Publish' || state.cell.value.tagName === 'If' || state.cell.value.tagName === 'Fork'
-            || state.cell.value.tagName === 'Try' || state.cell.value.tagName === 'Retry')) {
+            || state.cell.value.tagName === 'Try' || state.cell.value.tagName === 'Retry' || state.cell.value.tagName === 'Lock')) {
             img = mxUtils.createImage('./assets/images/menu.svg');
             let x = state.x - (20 * state.shape.scale), y = state.y - (8 * state.shape.scale);
             if (state.cell.value.tagName !== 'Job') {
@@ -2889,7 +3044,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               graph.setSelectionCell(cell);
             } else {
               if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork'
-                || cell.value.tagName === 'Try' || cell.value.tagName === 'Retry') {
+                || cell.value.tagName === 'Try' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock') {
                 graph.setSelectionCells([cell]);
               }
             }
@@ -2919,7 +3074,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         graph.dblClick = function (evt, cell) {
           if (cell != null && cell.vertex == 1) {
             if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try'
-              || cell.value.tagName === 'Retry') {
+              || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock') {
               const flag = cell.collapsed != true;
               graph.foldCells(flag, false, [cell], null, evt);
             }
@@ -3043,7 +3198,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             });
             if (this.dragElement && this.dragElement.getAttribute('src')) {
               dragElement = this.dragElement.getAttribute('src');
-              if (dragElement.match('fork') || dragElement.match('retry') || dragElement.match('try') || dragElement.match('if')) {
+              if (dragElement.match('fork') || dragElement.match('retry') || dragElement.match('lock') || dragElement.match('try') || dragElement.match('if')) {
                 const selectedCell = graph.getSelectionCell();
                 if (selectedCell) {
                   const cells = graph.getSelectionCells();
@@ -3111,6 +3266,22 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                     self.toasterService.pop('error', title + '!!', msg);
                     return;
                   }
+                } else if (drpTargt.value.tagName === 'Lock') {
+                  let flag1 = false;
+                  if (drpTargt.edges && drpTargt.edges.length) {
+                    for (let i = 0; i < drpTargt.edges.length; i++) {
+                      if (drpTargt.edges[i].source.value.tagName === 'Lock' && drpTargt.edges[i].target.value.tagName === 'EndLock') {
+                        flag1 = true;
+                      }
+                    }
+                  }
+                  if (!flag1) {
+                    self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
+                      msg = translatedValue;
+                    });
+                    self.toasterService.pop('error', title + '!!', msg);
+                    return;
+                  }
                 } else if (drpTargt.value.tagName === 'Try') {
                   let flag1 = false;
                   if (drpTargt.edges && drpTargt.edges.length) {
@@ -3161,6 +3332,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                   if ((drpTargt.source.value.tagName === 'Fork' && drpTargt.target.value.tagName === 'Join') ||
                     (drpTargt.source.value.tagName === 'If' && drpTargt.target.value.tagName === 'EndIf') ||
                     (drpTargt.source.value.tagName === 'Retry' && drpTargt.target.value.tagName === 'EndRetry') ||
+                    (drpTargt.source.value.tagName === 'Lock' && drpTargt.target.value.tagName === 'EndLock') ||
                     (drpTargt.source.value.tagName === 'Try' && drpTargt.target.value.tagName === 'Catch') ||
                     (drpTargt.source.value.tagName === 'Catch' && drpTargt.target.value.tagName === 'EndTry') ||
                     (drpTargt.source.value.tagName === 'Try' && drpTargt.target.value.tagName === 'EndTry')) {
@@ -3365,15 +3537,21 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          * @param evt
          */
         graph.isValidDropTarget = function (cell, cells, evt) {
+          console.log(cells);
           if (cell && cell.value) {
             self.droppedCell = null;
             if (self.isCellDragging && cells && cells.length > 0) {
+              if (!cells[0]) {
+                return;
+              }
               self.movedCell = cells;
               const tagName = cell.value.tagName;
-              if (tagName === 'Connection' || tagName === 'If' || tagName === 'Fork' || tagName === 'Retry' || tagName === 'Try' || tagName === 'Catch') {
+              console.log(tagName, 'tagName');
+              if (tagName === 'Connection' || tagName === 'If' || tagName === 'Fork' || tagName === 'Retry' || tagName === 'Lock' || tagName === 'Try' || tagName === 'Catch') {
                 if (tagName === 'Connection') {
                   let sourceId = cell.source.id;
                   let targetId = cell.target.id;
+                  console.log(cell.source);
                   if (checkClosingCell(cell.source)) {
                     sourceId = cell.source.value.getAttribute('targetId');
                   } else if (cell.source.value.tagName === 'Process' && cell.source.getAttribute('title') === 'start') {
@@ -3395,23 +3573,20 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               }
             } else {
               isVertexDrop = true;
-              /* if (cells && cells.length > 0) {
-                    if (cells[0] && cells[0].value && (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry'
-                       || cells[0].value.tagName === 'Try')) {
-                 }
-              }*/
               if (cell.value && cell.value.tagName === 'Connection') {
                 graph.clearSelection();
                 if (cells && cells.length > 0) {
                   if (cell.source) {
                     if (cell.source.getParent() && cell.source.getParent().id !== '1') {
                       const _type = cell.getAttribute('type');
-                      if (!(_type === 'retry' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
+                      console.log(_type, '_type');
+                      if (!(_type === 'retry' || _type === 'lock' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
                         cell.setParent(cell.source.getParent());
                       }
                     }
                   }
-                  if (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry' || cells[0].value.tagName === 'Try') {
+                  console.log(cells);
+                  if (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry' || cells[0].value.tagName === 'Lock' || cells[0].value.tagName === 'Try') {
                     const parent = cell.getParent() || graph.getDefaultParent();
                     let v1, v2, label = '';
                     const attr = cell.value.attributes;
@@ -3429,6 +3604,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 75, 75, 'if');
                     } else if (cells[0].value.tagName === 'Retry') {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 75, 75, 'retry');
+                    }
+                    if (cells[0].value.tagName === 'Lock') {
+                      v1 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', null), 0, 0, 68, 68, self.workflowService.lock);
                     } else {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 75, 75, 'try');
                       v2 = graph.insertVertex(cells[0], null, getCellNode('Catch', 'catch', null), 0, 0, 100, 40, 'dashRectangle');
@@ -3522,7 +3700,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               if (cells.length > 1) {
                 const secondLastCell = cells[cells.length - 2];
                 const lName = secondLastCell.value.tagName;
-                if (lName === 'If' || lName === 'Fork' || lName === 'Retry' || lName === 'Try' || lName === 'Catch') {
+                if (lName === 'If' || lName === 'Fork' || lName === 'Retry' || lName === 'Lock' || lName === 'Try' || lName === 'Catch') {
                   flag = true;
                 }
               }
@@ -3540,7 +3718,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
           if (cell && cells.length === 1) {
             setTimeout(() => {
-              if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
+              if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock' || cell.value.tagName === 'Try') {
                 const targetId = self.nodeMap.get(cell.id);
                 if (targetId) {
                   graph.addSelectionCell(graph.getModel().getCell(targetId));
@@ -3745,7 +3923,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       const tarName = targ.value.tagName;
       return (sourName === 'Fork' && tarName === 'Join') || (sourName === 'If' && tarName === 'EndIf') ||
         ((sourName === 'Try' && tarName === 'EndTry') || (sourName === 'Try' && tarName === 'Catch') ||
-          (sourName === 'Catch' && tarName === 'EndTry')) || (sourName === 'Retry' && tarName === 'EndRetry');
+          (sourName === 'Catch' && tarName === 'EndTry')) || (sourName === 'Retry' && tarName === 'EndRetry')
+        || (sourName === 'Lock' && tarName === 'EndLock');
     }
 
     /**
@@ -3754,7 +3933,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
      */
     function checkClosingCell(cell) {
       return cell.value.tagName === 'Join' || cell.value.tagName === 'EndIf' ||
-        cell.value.tagName === 'EndTry' || cell.value.tagName === 'EndRetry';
+        cell.value.tagName === 'EndTry' || cell.value.tagName === 'EndRetry' || cell.value.tagName === 'EndLock';
     }
 
     /**
@@ -3784,7 +3963,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 _tar = cell.edges[i];
               }
             }
-            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try' || cell.value.tagName === 'Retry') {
+            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock') {
               _tar = getEndNode(cell);
               _middle = _tar.source;
             } else {
@@ -3800,7 +3979,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           }
           const lastCellName = cells.lastCell.value.tagName;
-          if (lastCellName === 'Fork' || lastCellName === 'If' || lastCellName === 'Try' || lastCellName === 'Retry') {
+          if (lastCellName === 'Fork' || lastCellName === 'If' || lastCellName === 'Try' || lastCellName === 'Retry' || lastCellName === 'Lock') {
             _tar = getEndNode(cells.lastCell);
             _middle = _tar.source;
           } else {
@@ -3831,7 +4010,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 _tar = cell.edges[i];
               }
             }
-            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try' || cell.value.tagName === 'Retry') {
+            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock') {
               _tar = getEndNode(cell);
               _middle = _tar.source;
             } else {
@@ -3848,7 +4027,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           }
           const lastCellName = cells.lastCell.value.tagName;
-          if (lastCellName === 'Fork' || lastCellName === 'If' || lastCellName === 'Try' || lastCellName === 'Retry') {
+          if (lastCellName === 'Fork' || lastCellName === 'If' || lastCellName === 'Try' || lastCellName === 'Retry' || lastCellName === 'Lock') {
             _tar = getEndNode(cells.lastCell);
             _middle = _tar.source;
           } else {
@@ -3878,7 +4057,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 _tar = cell.edges[i];
               }
             }
-            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try' || cell.value.tagName === 'Retry') {
+            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock') {
               _tar = getEndNode(cell);
               _middle = _tar.source;
             } else {
@@ -3895,7 +4074,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           }
           const lastCellName = cells.lastCell.value.tagName;
-          if (lastCellName === 'Fork' || lastCellName === 'If' || lastCellName === 'Try' || lastCellName === 'Retry') {
+          if (lastCellName === 'Fork' || lastCellName === 'If' || lastCellName === 'Try' || lastCellName === 'Retry' || lastCellName === 'Lock') {
             _tar = getEndNode(cells.lastCell);
             _middle = _tar.source;
           } else {
@@ -3925,7 +4104,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 _tar = cell.edges[i];
               }
             }
-            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try' || cell.value.tagName === 'Retry') {
+            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock') {
               _tar = getEndNode(cell);
               _middle = _tar.source;
             } else {
@@ -3942,7 +4121,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           }
           const lastCellName = cells.lastCell.value.tagName;
-          if (lastCellName === 'Fork' || lastCellName === 'If' || lastCellName === 'Try' || lastCellName === 'Retry') {
+          if (lastCellName === 'Fork' || lastCellName === 'If' || lastCellName === 'Try' || lastCellName === 'Retry' || lastCellName === 'Lock') {
             _tar = getEndNode(cells.lastCell);
             _middle = _tar.source;
           } else {
@@ -3959,6 +4138,52 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         connectExtraNodes(parentCell, v2, parent, _sour, _tar);
         graph.insertEdge(parent, null, getConnectionNode('retry'), parentCell, cell);
         graph.insertEdge(parent, null, getConnectionNode('endRetry'), _middle, v2);
+      } else if (cellName === 'Lock') {
+        v2 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', parentCell.id), 0, 0, 68, 68, self.workflowService.lock);
+        if (cell) {
+          if (cell.edges) {
+            for (let i = 0; i < cell.edges.length; i++) {
+              if (cell.edges[i].target.id === cell.id) {
+                _sour = cell.edges[i];
+              }
+              if (cell.edges[i].source.id === cell.id) {
+                _tar = cell.edges[i];
+              }
+            }
+            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock') {
+              _tar = getEndNode(cell);
+              _middle = _tar.source;
+            } else {
+              _middle = cell;
+            }
+
+          }
+        } else {
+          cell = cells.firstCell;
+          for (let i = 0; i < cell.edges.length; i++) {
+            if (cell.edges[i].target.id === cell.id) {
+              _sour = cell.edges[i];
+              break;
+            }
+          }
+          const lastCellName = cells.lastCell.value.tagName;
+          if (lastCellName === 'Fork' || lastCellName === 'If' || lastCellName === 'Try' || lastCellName === 'Retry' || lastCellName === 'Lock') {
+            _tar = getEndNode(cells.lastCell);
+            _middle = _tar.source;
+          } else {
+            for (let i = 0; i < cells.lastCell.edges.length; i++) {
+              if (cells.lastCell.edges[i].source.id === cells.lastCell.id) {
+                _tar = cells.lastCell.edges[i];
+
+                break;
+              }
+            }
+            _middle = cells.lastCell;
+          }
+        }
+        connectExtraNodes(parentCell, v2, parent, _sour, _tar);
+        graph.insertEdge(parent, null, getConnectionNode('lock'), parentCell, cell);
+        graph.insertEdge(parent, null, getConnectionNode('endLock'), _middle, v2);
       }
       if (_sour && _tar) {
         graph.getModel().remove(_sour);
@@ -4006,7 +4231,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
 
     /**
-     * Get end node of If/Fork/Try/Retry
+     * Get end node of If/Fork/Try/Retry/Lock
      * @param cell
      */
     function getEndNode(cell) {
@@ -4157,7 +4382,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (!isChange) {
         const label = _dropTarget.getAttribute('type') || _dropTarget.getAttribute('label');
         if (label && (label === 'join' || label === 'branch' || label === 'endIf'
-          || label === 'endRetry' || label === 'endTry')) {
+          || label === 'endRetry' || label === 'endTry' || label === 'endLock')) {
           let _label1, _label2;
           if (label === 'join') {
             _label1 = 'join';
@@ -4171,6 +4396,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           } else if (label === 'endRetry') {
             _label1 = 'endRetry';
             _label2 = 'endRetry';
+          } else if (label === 'endLock') {
+            _label1 = 'endLock';
+            _label2 = 'endLock';
           } else if (label === 'try') {
             _label1 = 'try';
             _label2 = 'try';
@@ -4178,6 +4406,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             _label1 = 'endTry';
             _label2 = 'endTry';
           }
+          console.log('checkConnectionLabel', label, _label2);
           for (let i = 0; i < cell.edges.length; i++) {
             if (cell.edges[i].target !== cell.id) {
               if (checkClosingCell(cell.edges[i].target)) {
@@ -4190,7 +4419,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                   }
                 }
               } else if (cell.edges[i].target.value.tagName === 'Fork' || cell.edges[i].target.value.tagName === 'If' || cell.edges[i].target.value.tagName === 'Retry'
-                || cell.edges[i].target.value.tagName === 'Try') {
+                || cell.edges[i].target.value.tagName === 'Lock' || cell.edges[i].target.value.tagName === 'Try') {
                 changeLabelOfConnection(cell.edges[i], _label2);
               } else if (cell.edges[i].target.value.tagName === 'Catch') {
                 changeLabelOfConnection(cell.edges[i], 'try');
@@ -4211,6 +4440,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                   changeLabelOfConnection(cell.edges[i], 'endIf');
                 } else if (cell.edges[i].target.value.tagName === 'EndRetry') {
                   changeLabelOfConnection(cell.edges[i], 'endRetry');
+                } else if (cell.edges[i].target.value.tagName === 'EndLock') {
+                  changeLabelOfConnection(cell.edges[i], 'endLock');
                 } else if (cell.edges[i].target.value.tagName === 'EndTry') {
                   changeLabelOfConnection(cell.edges[i], 'endTry');
                 }
@@ -4229,6 +4460,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               } else if (((typeAttr === 'endIf') && cell.edges[i].id !== _dropTarget.id)) {
                 changeLabelOfConnection(cell.edges[i], '');
               } else if (((typeAttr === 'endRetry') && cell.edges[i].id !== _dropTarget.id)) {
+                changeLabelOfConnection(cell.edges[i], '');
+              } else if (((typeAttr === 'endLock') && cell.edges[i].id !== _dropTarget.id)) {
                 changeLabelOfConnection(cell.edges[i], '');
               } else if (((typeAttr === 'endTry') && cell.edges[i].id !== _dropTarget.id)) {
                 changeLabelOfConnection(cell.edges[i], '');
@@ -4309,6 +4542,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             graph.getModel().execute(edit);
             const edit2 = new mxCellAttributeChange(
               obj.cell, 'retryDelays', self.selectedNode.newObj.retryDelays);
+            graph.getModel().execute(edit2);
+          } else if (self.selectedNode.type === 'Lock') {
+            const edit = new mxCellAttributeChange(
+              obj.cell, 'count', self.selectedNode.newObj.count);
+            graph.getModel().execute(edit);
+            const edit2 = new mxCellAttributeChange(
+              obj.cell, 'lockId', self.selectedNode.newObj.lockId);
             graph.getModel().execute(edit2);
           } else if (self.selectedNode.type === 'Finish' || self.selectedNode.type === 'Fail') {
             const edit = new mxCellAttributeChange(
@@ -4474,6 +4714,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         } else if (cell.value.tagName === 'Retry') {
           obj.maxTries = cell.getAttribute('maxTries');
           obj.retryDelays = cell.getAttribute('retryDelays');
+        } else if (cell.value.tagName === 'Lock') {
+          console.log(obj, '>>>>')
+          obj.count = cell.getAttribute('count');
+          if(obj.count){
+            obj.count = parseInt(obj.count, 10);
+          }
+          obj.lockId = cell.getAttribute('lockId');
+          obj.countProperty = obj.count ? 'shared' : 'exclusive';
         } else if (cell.value.tagName === 'Finish' || cell.value.tagName === 'Fail') {
           let outcome = cell.getAttribute('outcome');
           if (!outcome) {
@@ -4594,6 +4842,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           branchId = 'branch' + (targetObj.branches.length + 1);
           targetObj.branches.push({id: branchId, instructions: [copyObject]});
         } else if (target.value.tagName === 'Retry') {
+          if (!targetObj.instructions) {
+            targetObj.instructions = [];
+          }
+          targetObj.instructions.push(copyObject);
+        } else if (target.value.tagName === 'Lock') {
           if (!targetObj.instructions) {
             targetObj.instructions = [];
           }
@@ -4730,6 +4983,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
       } else if (copyObject.TYPE === 'Retry') {
         recursion(copyObject.instructions);
+      } else if (copyObject.TYPE === 'Lock') {
+        recursion(copyObject.instructions);
       } else if (copyObject.TYPE === 'Try') {
         recursion(copyObject.instructions);
       }
@@ -4747,7 +5002,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           pasteInstruction(targetCell);
         } else if (self.cutCell) {
           const tagName = targetCell.value.tagName;
-          if (tagName === 'Connection' || tagName === 'If' || tagName === 'Fork' || tagName === 'Retry' || tagName === 'Try' || tagName === 'Catch') {
+          if (tagName === 'Connection' || tagName === 'If' || tagName === 'Fork' || tagName === 'Retry' || tagName === 'Lock' || tagName === 'Try' || tagName === 'Catch') {
             if (tagName === 'Connection') {
               let sourceId = targetCell.source.id;
               let targetId = targetCell.target.id;
@@ -4825,6 +5080,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           _node.setAttribute('retryDelays', '0');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'retry');
+        } else if (title.match('lock')) {
+          _node = doc.createElement('Lock');
+          _node.setAttribute('label', 'lock');
+          _node.setAttribute('count', '0');
+          _node.setAttribute('lockId', '');
+          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.lock);
         } else if (title.match('try')) {
           _node = doc.createElement('Try');
           _node.setAttribute('label', 'try');
@@ -4873,13 +5135,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (targetCell.source) {
             if (targetCell.source.getParent().id !== '1') {
               const _type = targetCell.getAttribute('type') || targetCell.getAttribute('label');
-              if (!(_type === 'retry' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
+              if (!(_type === 'retry' || _type === 'lock' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
                 targetCell.setParent(targetCell.source.getParent());
               }
             }
           }
           label = targetCell.getAttribute('type') || targetCell.getAttribute('label') || '';
-          if (clickedCell.value.tagName === 'Fork' || clickedCell.value.tagName === 'If' || clickedCell.value.tagName === 'Retry' || clickedCell.value.tagName === 'Try') {
+          if (clickedCell.value.tagName === 'Fork' || clickedCell.value.tagName === 'If' || clickedCell.value.tagName === 'Retry' || clickedCell.value.tagName === 'Lock' || clickedCell.value.tagName === 'Try') {
             const parent = targetCell.getParent() || graph.getDefaultParent();
             if (clickedCell.value.tagName === 'Fork') {
               v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 68, 68, self.workflowService.merge);
@@ -4887,6 +5149,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 75, 75, 'if');
             } else if (clickedCell.value.tagName === 'Retry') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 75, 75, 'retry');
+            }
+            if (clickedCell.value.tagName === 'Lock') {
+              v1 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', null), 0, 0, 68, 68, self.workflowService.lock);
             } else {
               v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 75, 75, 'try');
               v2 = graph.insertVertex(clickedCell, null, getCellNode('Catch', 'catch', null), 0, 0, 100, 40, 'dashRectangle');
@@ -4975,7 +5240,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       let flg = false;
       if (title) {
         title = title.toLowerCase();
-        if (title.match('fork') || title.match('retry') || title.match('try') || title.match('if')) {
+        if (title.match('fork') || title.match('retry') || title.match('lock') || title.match('try') || title.match('if')) {
           const selectedCell = graph.getSelectionCell();
           if (selectedCell) {
             const cells = graph.getSelectionCells();
@@ -5023,6 +5288,18 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             if (!flag1) {
               return 'inValid';
             }
+          } else if (tagName === 'Lock') {
+            let flag1 = false;
+            if (targetCell.edges && targetCell.edges.length) {
+              for (let i = 0; i < targetCell.edges.length; i++) {
+                if (targetCell.edges[i].source.value.tagName === 'Lock' && targetCell.edges[i].target.value.tagName === 'EndLock') {
+                  flag1 = true;
+                }
+              }
+            }
+            if (!flag1) {
+              return 'inValid';
+            }
           } else if (tagName === 'Try') {
             let flag1 = false;
             if (targetCell.edges && targetCell.edges.length) {
@@ -5061,6 +5338,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             if ((targetCell.source.value.tagName === 'Fork' && targetCell.target.value.tagName === 'Join') ||
               (targetCell.source.value.tagName === 'If' && targetCell.target.value.tagName === 'EndIf') ||
               (targetCell.source.value.tagName === 'Retry' && targetCell.target.value.tagName === 'EndRetry') ||
+              (targetCell.source.value.tagName === 'Lock' && targetCell.target.value.tagName === 'EndLock') ||
               (targetCell.source.value.tagName === 'Try' && targetCell.target.value.tagName === 'Catch') ||
               (targetCell.source.value.tagName === 'Catch' && targetCell.target.value.tagName === 'EndTry') ||
               (targetCell.source.value.tagName === 'Try' && targetCell.target.value.tagName === 'EndTry')) {
@@ -5108,6 +5386,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
       } else if (dropTargetName === 'Retry') {
         label = 'retry';
+      } else if (dropTargetName === 'Lock') {
+        label = 'lock';
       } else if (dropTargetName === 'Try') {
         label = 'try';
       } else if (dropTargetName === 'Catch') {
@@ -5123,7 +5403,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
 
       let parent = cell.getParent() || graph.getDefaultParent();
-      if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
+      if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock' || cell.value.tagName === 'Try') {
         let v1, v2, _label;
         if (cell.value.tagName === 'Fork') {
           v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', cell.id), 0, 0, 68, 68, self.workflowService.merge);
@@ -5134,6 +5414,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         } else if (cell.value.tagName === 'Retry') {
           v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', cell.id), 0, 0, 75, 75, 'retry');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
+        } else if (cell.value.tagName === 'Lock') {
+          v1 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', cell.id), 0, 0, 68, 68, self.workflowService.lock);
+          graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'Try') {
           v2 = graph.insertVertex(cell, null, getCellNode('Catch', 'catch', cell.id), 0, 0, 100, 40, 'dashRectangle');
           v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', cell.id), 0, 0, 75, 75, 'try');
@@ -5141,8 +5424,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
           graph.insertEdge(parent, null, getConnectionNode('endTry'), v2, v1);
         }
-        if (dropTargetName === 'Fork' || dropTargetName === 'Retry' || dropTargetName === 'Try' || dropTargetName === 'Catch' || dropTargetName === 'If') {
-          _label = dropTargetName === 'Fork' ? 'join' : dropTargetName === 'Retry' ? 'endRetry' : dropTargetName === 'Catch' ? 'catch' : dropTargetName === 'If' ? 'endIf' : 'try';
+        if (dropTargetName === 'Fork' || dropTargetName === 'Retry' || dropTargetName === 'Lock' || dropTargetName === 'Try' || dropTargetName === 'Catch' || dropTargetName === 'If') {
+          _label = dropTargetName === 'Fork' ? 'join' : dropTargetName === 'Retry' ? 'endRetry' : dropTargetName === 'Lock' ? 'endLock' : dropTargetName === 'Catch' ? 'catch' : dropTargetName === 'If' ? 'endIf' : 'try';
           if (dropTargetName === 'Try') {
             for (let i = 0; i < _dropTarget.edges.length; i++) {
               if (_dropTarget.edges[i].source.id === _dropTarget.id) {
@@ -5176,7 +5459,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         let flag = false;
         for (let i = 0; i < _dropTarget.edges.length; i++) {
           if (_dropTarget.edges[i].source.id !== _dropTarget.id) {
-            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
+            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock' || cell.value.tagName === 'Try') {
               for (let j = 0; j < cell.edges.length; j++) {
                 if (cell.edges[j].target.id !== cell.id) {
                   if (checkClosingCell(cell.edges[j].target)) {
@@ -5194,7 +5477,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               graph.insertEdge(parent, null, getConnectionNode(label), _dropTarget.edges[i].source, cell);
             }
           } else {
-            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
+            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock' || cell.value.tagName === 'Try') {
               for (let j = 0; j < cell.edges.length; j++) {
                 if (cell.edges[j].target.id !== cell.id) {
                   if (checkClosingCell(cell.edges[j].target)) {
@@ -5223,6 +5506,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           checkLabel = 'EndIf';
         } else if (dropTargetName === 'Retry') {
           checkLabel = 'EndRetry';
+        } else if (dropTargetName === 'Lock') {
+          checkLabel = 'EndLock';
         } else if (dropTargetName === 'Try') {
           label = 'try';
           checkLabel = 'EndTry';
@@ -5232,7 +5517,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           graph.getModel().setStyle(_dropTarget, 'catch');
         }
 
-        if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
+        if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock' || cell.value.tagName === 'Try') {
           let target1, target2;
           for (let i = 0; i < _dropTarget.edges.length; i++) {
             if (_dropTarget.edges[i].target.id !== _dropTarget.id) {
@@ -5307,8 +5592,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           for (let i = 0; i < cell.edges.length; i++) {
             if (cell.edges[i].target.value.tagName === checkLabel) {
               const _label = checkLabel === 'Join' ? 'join' : checkLabel === 'EndIf' ? 'endIf' : checkLabel === 'EndRetry'
-                ? 'endRetry' : 'endTry';
-              if (cell.value.tagName !== 'Fork' && cell.value.tagName !== 'If' && cell.value.tagName !== 'Try' && cell.value.tagName !== 'Retry' && cell.value.tagName !== 'Catch') {
+                ? 'endRetry' : checkLabel === 'EndLock' ? 'endLock' : 'endTry';
+              if (cell.value.tagName !== 'Fork' && cell.value.tagName !== 'If' && cell.value.tagName !== 'Try' && cell.value.tagName !== 'Retry' && cell.value.tagName !== 'Lock' && cell.value.tagName !== 'Catch') {
                 cell.edges[i].value.attributes[0].nodeValue = _label;
                 cell.edges[i].value.attributes[1].nodeValue = _label;
               }
@@ -5393,6 +5678,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           targetObj.branches.push({id: branchId, instructions: [sourceObj]});
           isDone = true;
         } else if (targetObj.TYPE === 'Retry') {
+          if (!targetObj.instructions) {
+            targetObj.instructions = [];
+          }
+          targetObj.instructions.push(sourceObj);
+          isDone = true;
+        } else if (targetObj.TYPE === 'Lock') {
           if (!targetObj.instructions) {
             targetObj.instructions = [];
           }
@@ -5605,6 +5896,15 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                   }
                 }
               } else if (targetObj.TYPE === 'Retry') {
+                if (obj.type || isSameObj) {
+                  if (!targetObj.instructions || targetObj.instructions.length === 0) {
+                    targetObj.instructions = [sourceObj];
+                    booleanObj.isMatch = true;
+                  } else if (targetObj.instructions && targetObj.instructions.length > 0) {
+                    dropAndAdd(targetObj.instructions, droppedCell.id, connection.target, sourceObj, booleanObj);
+                  }
+                }
+              } else if (targetObj.TYPE === 'Lock') {
                 if (obj.type || isSameObj) {
                   if (!targetObj.instructions || targetObj.instructions.length === 0) {
                     targetObj.instructions = [sourceObj];
@@ -5874,6 +6174,28 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           }
 
+          if (json.instructions[x].TYPE === 'Lock') {
+            if (!json.instructions[x].id && !json.instructions[x].instructions && !json.instructions[x].lockId) {
+
+            } else {
+              if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0)) {
+                flag = false;
+                checkErr = true;
+                self.invalidMsg = !json.instructions[x].lockId ? 'inventory.message.lockIdIsMissing' : 'inventory.message.invalidLockInstruction';
+                if (isOpen) {
+                  let msg = '';
+                  self.translate.get('inventory.message.invalidLockInstruction').subscribe(translatedValue => {
+                    msg = translatedValue;
+                  });
+                  self.toasterService.pop('error', msg);
+                }
+                if (isValidate) {
+                  return;
+                }
+              }
+            }
+          }
+
           if (json.instructions[x].TYPE === 'Await') {
             flag = self.workflowService.validateFields(json.instructions[x], 'Await');
             if (!flag) {
@@ -5931,6 +6253,16 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (json.instructions[x].TYPE === 'Retry' && (json.instructions[x].retryDelays || json.instructions[x].maxTries)) {
             json.instructions[x].TYPE = 'Try';
             self.workflowService.convertRetryToTryCatch(json.instructions[x]);
+          }
+          if (json.instructions[x].TYPE === 'Lock') {
+            json.instructions[x].lockedWorkflow = {
+              instructions: json.instructions[x].instructions
+            };
+            const countObj = _.clone(json.instructions[x].count);
+            delete json.instructions[x]['instructions'];
+            delete json.instructions[x]['count'];
+            json.instructions[x]['count'] = countObj;
+            console.log(json.instructions[x]);
           }
           if (json.instructions[x].catch) {
             json.instructions[x].catch.id = undefined;
@@ -6055,7 +6387,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     } else {
       data = noValidate;
     }
-
     if (!_.isEqual(this.workflow.actual, JSON.stringify(data)) && !this.isStore) {
       this.isStore = true;
       if (this.history.length === 20) {
@@ -6067,7 +6398,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  private storeData(data){
+  private storeData(data) {
     this.coreService.post('inventory/store', {
       configuration: data,
       path: this.workflow.path,

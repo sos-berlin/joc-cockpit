@@ -10,7 +10,7 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
-    <div class="row"  *ngIf="!rename">
+    <div class="row" *ngIf="!rename">
       <label class="col-md-3 form-control-label" translate>
         inventory.label.folderName
       </label>
@@ -29,7 +29,7 @@
         </div>
       </div>
     </div>
-    <div class="row"  *ngIf="rename">
+    <div class="row" *ngIf="rename">
       <label class="col-md-3 form-control-label" translate>
         inventory.label.newPath
       </label>

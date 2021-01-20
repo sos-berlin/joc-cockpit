@@ -23,7 +23,7 @@ import {
   SingleDeployComponent,
   ExportComponent,
   JsonEditorModalComponent,
-  UploadModalComponent
+  UploadModalComponent, CreateObjectModalComponent
 } from './inventory/inventory.component';
 import {CalendarService} from '../../services/calendar.service';
 import {SharedModule} from '../shared/shared.module';
@@ -46,7 +46,7 @@ import {InventoryService} from './inventory/inventory.service';
 
 const COMPONENTS = [ImportModalComponent, DiffPatchModalComponent, FrequencyModalComponent, ShowModalComponent,
   ImportComponent, UpdateWorkflowComponent, ShowChildModalComponent, ConfirmationModalComponent, SingleDeployComponent,
-  DeployComponent, ExportComponent, SetVersionComponent, CreateFolderModalComponent,
+  DeployComponent, ExportComponent, SetVersionComponent, CreateFolderModalComponent, CreateObjectModalComponent,
   ImportWorkflowModalComponent, JsonEditorModalComponent, UploadModalComponent];
 
 @NgModule({

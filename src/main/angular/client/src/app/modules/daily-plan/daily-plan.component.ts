@@ -949,17 +949,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   resumeSelectedOrder(){
-    // this.restCall(false, null, this.object.templates, 'Cancel');
-    const modalRef = this.modalService.open(ResumeOrderModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.preferences = this.preferences;
-    modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.orders = this.object.templates;
-    modalRef.result.then((result) => {
-      console.log(result);
-    }, () => {
-
-    });
+    this.restCall(false, null, this.object.templates, 'Resume');
   }
 
   cancelSelectedOrder() {
@@ -1003,16 +993,20 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   resumeOrder(order, plan) {
-    const modalRef = this.modalService.open(ResumeOrderModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.preferences = this.preferences;
-    modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.order = this.coreService.clone(order);
-    modalRef.result.then((result) => {
-      console.log(result);
-    }, () => {
+    if (plan && plan.value) {
+      this.restCall(false, null, plan.value, 'Resume');
+    } else {
+      const modalRef = this.modalService.open(ResumeOrderModalComponent, {backdrop: 'static'});
+      modalRef.componentInstance.preferences = this.preferences;
+      modalRef.componentInstance.permission = this.permission;
+      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+      modalRef.componentInstance.order = this.coreService.clone(order);
+      modalRef.result.then((result) => {
+        console.log(result);
+      }, () => {
 
-    });
+      });
+    }
   }
 
   private restCall(isKill, order, multiple, type) {

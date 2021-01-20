@@ -1,7 +1,8 @@
-import {Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, HostListener} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {CoreService} from '../../../services/core.service';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {ChangeParameterModalComponent} from '../../../components/modify-modal/modify.component';
 
 @Component({
   selector: 'app-order-list-sidebar',
@@ -69,7 +70,13 @@ export class OrderListSidebarComponent implements OnChanges {
   }
 
   modifyAllOrder(){
+    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerId;
+    modalRef.componentInstance.orderIds = Array.from(this.setOfCheckedId);
+    modalRef.result.then((result) => {
 
+    }, () => {
+    });
   }
 
   suspendAllOrder() {

@@ -11,13 +11,13 @@ declare const mxUtils;
 @Injectable()
 export class WorkflowService {
   // Declare Map object to store fork and join Ids
-  public nodeMap;
   public merge;
   public finish;
   public fail;
   public await;
   public publish;
   public fork;
+  public lock;
   preferences: any = {};
 
   constructor(public translate: TranslateService, public coreService: CoreService,
@@ -45,6 +45,7 @@ export class WorkflowService {
       this.await = 'symbol;image=./assets/mxgraph/images/symbols/await.svg';
       this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork.svg';
       this.publish = 'symbol;image=./assets/mxgraph/images/symbols/publish.svg';
+      this.lock = 'symbol;image=./assets/mxgraph/images/symbols/lock.svg';
     } else {
       this.merge = 'symbol;image=./assets/mxgraph/images/symbols/merge-white.svg';
       this.finish = 'symbol;image=./assets/mxgraph/images/symbols/finish-white.svg';
@@ -52,6 +53,7 @@ export class WorkflowService {
       this.await = 'symbol;image=./assets/mxgraph/images/symbols/await-white.svg';
       this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork-white.svg';
       this.publish = 'symbol;image=./assets/mxgraph/images/symbols/publish-white.svg';
+      this.lock = 'symbol;image=./assets/mxgraph/images/symbols/lock-white.svg';
     }
   }
 
@@ -80,6 +82,9 @@ export class WorkflowService {
       }
     } else if (type === 'If') {
       obj.predicate = node._predicate;
+    } else if (type === 'Lock') {
+      obj.lockId = node._lockId;
+      obj.count = node._count;
     } else if (type === 'Retry') {
       obj.maxTries = node._maxTries;
       obj.retryDelays = node._retryDelays;
@@ -103,7 +108,7 @@ export class WorkflowService {
     } else if (type === 'Publish') {
       obj.junctionPath = node._junctionPath;
     }
-    if (type === 'Fork' || type === 'If' || type === 'Try' || type === 'Retry') {
+    if (type === 'Fork' || type === 'If' || type === 'Try' || type === 'Retry' || type === 'Lock') {
       obj.isCollapsed = node.mxCell._collapsed;
       if (type === 'Fork') {
         obj.joinVariables = node._joinVariables;
@@ -174,6 +179,11 @@ export class WorkflowService {
           return false;
         }
         if (value.match && !this.isValidObject(value.match)) {
+          return false;
+        }
+      }
+      if (type === 'Lock') {
+        if (!value.lockId) {
           return false;
         }
       }
@@ -299,6 +309,12 @@ export class WorkflowService {
               } else {
                 json.instructions[x].catch = {instructions: []};
               }
+            }
+          }
+          if (json.instructions[x].TYPE === 'Lock') {
+            if (json.instructions[x].lockedWorkflow) {
+              json.instructions[x].instructions = json.instructions[x].lockedWorkflow.instructions;
+              delete json.instructions[x]['lockedWorkflow'];
             }
           }
           if (json.instructions[x].instructions) {
@@ -454,6 +470,16 @@ export class WorkflowService {
           msg = translatedValue;
         });
         return '<b>' + msg + '</b> : ' + (cell.getAttribute('predicate') || '-');
+      } else if (cell.value.tagName === 'Lock') {
+        let msg = '', limit = '';
+        this.translate.get('workflow.label.lockId').subscribe(translatedValue => {
+          msg = translatedValue;
+        });
+        this.translate.get('workflow.label.count').subscribe(translatedValue => {
+          limit = translatedValue;
+        });
+        return '<b>' + msg + '</b> : ' + (cell.getAttribute('lockId') || '-') + '</br>' +
+          '<b>' + limit + '</b> : ' + (cell.getAttribute('count') || '-');
       } else if (cell.value.tagName === 'Finish' && cell.value.tagName === 'Fail') {
         let msg = '', returnCode = '';
         this.translate.get('workflow.label.message').subscribe(translatedValue => {
