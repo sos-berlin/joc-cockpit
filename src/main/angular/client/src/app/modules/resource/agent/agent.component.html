@@ -112,7 +112,7 @@
       <div class="col-sm-12">
           <div class="m-t-xs">
             <div class="row " *ngIf="pageView=='grid' && agentClusters.length>0" [hidden]="loading">
-                <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
                      *ngFor="let cluster of agentClusters | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse">
                   <div class="box card" [ngClass]="coreService.getColor(cluster.state.severity,'border')">
                     <div class="box-body">
@@ -120,16 +120,24 @@
                         <span class="text-left ">
                           <span class="fa fa-stop pos-abt m-t-xs text-xs"
                                 [ngClass]="coreService.getColor(cluster.state.severity,'text')"></span>&nbsp;
-                          <i class="fa fa-server m-l m-r-xs"></i>&nbsp;
+                          <i class="fa fa-server m-l m-r-xs" style="position: relative;top:1px"></i>&nbsp;
                           <span
                             [nz-tooltip]="cluster.path"
                             class="text text-ellipsis1"
-                            [innerHtml]="cluster.agentName"></span>
+                            [innerHtml]="cluster.agentId"></span>
                         </span>
                       </div>
-                      <div class="text-sm  text-left text-muted p-t-xs p-l">
-                        <span class="text-black _600"
-                              [innerHtml]="cluster.runningTasks"></span> {{'label.runningTasks' | translate}}
+                      <div class="text-sm text-left text-muted p-t-sm">
+                        <span translate>agent.label.agentName</span>:
+                        <span [innerHtml]="cluster.agentName"></span>
+                      </div>
+                      <div class="text-sm text-left text-muted p-t-sm">
+                        <span translate>agent.label.url</span>:
+                        <span [innerHtml]="cluster.url"></span>
+                      </div>
+                      <div class="text-sm text-left text-muted p-t-sm">
+                        <span class="text-black _600" [innerHtml]="cluster.runningTasks"></span>
+                        {{'agent.label.runningTasks' | translate}}
                       </div>
                     </div>
                   </div>

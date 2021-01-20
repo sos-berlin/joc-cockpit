@@ -1,11 +1,15 @@
 <div class="modal-header">
-  <h4 class="modal-title" translate>
+  <h4 class="modal-title" *ngIf="!copy">
     <span *ngIf="obj.type === 'WORKFLOW'" translate>inventory.label.createWorkflow</span>
     <span *ngIf="obj.type === 'JOBCLASS'" translate>inventory.label.createJobClass</span>
     <span *ngIf="obj.type === 'JUNCTION'" translate>inventory.label.createJunction</span>
     <span *ngIf="obj.type === 'LOCK'" translate>inventory.label.createLock</span>
     <span *ngIf="obj.type === 'SCHEDULE'" translate>inventory.label.createOrder</span>
     <span *ngIf="obj.type.match('CALENDAR')" translate>inventory.label.createCalendar</span>
+  </h4>
+  <h4 class="modal-title" *ngIf="copy">
+    <span translate>inventory.label.copyOf</span>
+    {{copy}}
   </h4>
   <button type="button" class="close" (click)="activeModal.dismiss('Cross click')" aria-label="Close">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -14,9 +18,8 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
     <div class="row">
-      <label class="col-md-3 form-control-label" translate>
-        inventory.label.objectName
-      </label>
+      <label class="col-md-3 form-control-label" *ngIf="!copy" translate>inventory.label.objectName</label>
+      <label class="col-md-3 form-control-label" *ngIf="copy" translate>inventory.label.newName</label>
       <div class="col-md-6" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
         <input type="text" identifierValidation class="form-control" name="name" required placeholder="{{'inventory.placeholder.enterUniqueName' | translate}}"
                #name="ngModel" [(ngModel)]="object.name" [appAutofocus]="true" autocomplete="off">

@@ -771,7 +771,7 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
 
           this.planItems.push(obj);
         }
-        if(result.withExcludes) {
+        if (result.withExcludes) {
           for (let i = 0; i < result.withExcludes.length; i++) {
             let x = result.withExcludes[i];
             this.planItems.push({
@@ -1161,7 +1161,7 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
       delete this.frequencyObj['excludes'];
     }
     obj.calendar = this.frequencyObj;
-    if(!obj.dateTo){
+    if (!obj.dateTo) {
       obj.dateTo = this.calendarTitle + '-12-31';
     }
     this.toDate = _.clone(obj.dateTo);
@@ -1181,7 +1181,7 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
           color: color
         });
       }
-      if(result.withExcludes) {
+      if (result.withExcludes) {
         for (let m = 0; m < result.withExcludes.length; m++) {
           let x = result.withExcludes[m];
           this.planItems.push({
@@ -1290,7 +1290,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
 
   rename(inValid) {
     if (this.data.id === this.calendar.id && this.data.name !== this.calendar.name) {
-     
+
       if (!inValid) {
         const data = this.coreService.clone(this.data);
         const name = this.calendar.name;
@@ -1428,8 +1428,8 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     }).subscribe((res: any) => {
       if (res.configuration) {
         delete res.configuration['path'];
-      } else{
-        res.configuration ={};
+      } else {
+        res.configuration = {};
       }
       this.calendar = res;
       this.calendar.path1 = this.data.path;
@@ -1654,7 +1654,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   saveJSON() {
-   
+
     let obj: any = this.generateCalendarAllObj();
     obj.title = this.calendar.configuration.title;
     obj.type = this.calendar.configuration.type;

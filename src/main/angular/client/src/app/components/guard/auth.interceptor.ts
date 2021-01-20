@@ -68,7 +68,11 @@ export class AuthInterceptor implements HttpInterceptor {
             return this.router.navigate(['login'], {queryParams: {returnUrl: url}});
           } else if (err.status && err.status !== 434) {
             if (err.error.error) {
-              this.toasterService.pop('error', '', err.error.error.message);
+              if (err.error.error.message && err.error.error.message.match('JocObjectAlreadyExistException')) {
+                this.toasterService.pop('error', '', err.error.error.message.replace(/JocObjectAlreadyExistException:/, ''));
+              } else {
+                this.toasterService.pop('error', '', err.error.error.message);
+              }
             } else if (err.error.message) {
               this.toasterService.pop('error', '', err.error.message);
             } else {

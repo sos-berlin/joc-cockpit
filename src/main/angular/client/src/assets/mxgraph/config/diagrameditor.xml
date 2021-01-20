@@ -136,14 +136,6 @@
         <add as="rounded" value="1"/>
         <add as="gradientColor" value="white"/>
       </add>
-      <add as="fork">
-        <add as="shape" value="rhombus"/>
-        <add as="perimeter" value="rhombusPerimeter"/>
-        <add as="strokeColor" value="#8fb0f2"/>
-				<add as="fillColor" value="#8fb0f2"/>
-        <add as="rounded" value="1"/>
-        <add as="gradientColor" value="white"/>
-      </add>
       <add as="fileWatcher">
         <add as="shape" value="ellipse"/>
         <add as="perimeter" value="ellipsePerimeter"/>

@@ -274,19 +274,33 @@
           </div>
         </div>
       </div>
-      <div class="box-body" *ngIf="selectedNode.type === 'Lock'">
+      <div class="box-body job-property-editor" *ngIf="selectedNode.type === 'Lock'">
         <div class="form-group row" [ngClass]="{'has-error' : ((lockId.dirty || lockId.touched) && lockId.invalid)}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.lockId</label>
           <div class="col-md-8 col-lg-9">
-            <input autocomplete="off" [appAutofocus]="true" type="text" class="form-control"
-                   placeholder="{{'workflow.placeholder.selectLock' | translate}}" #lockId="ngModel"
-                   name="lockId" [(ngModel)]="selectedNode.obj.lockId">
-            <div *ngIf="lockId.invalid && (lockId.dirty || lockId.touched)"
-                 class="text-danger help-block">
-              <div *ngIf="lockId.errors.required">
-                <div translate>common.message.requiredError</div>
-              </div>
-            </div>
+            <nz-tree-select
+              name="lockId"
+              #lockId="ngModel"
+              #treeSelectCtrl2
+              nzNoAnimation
+              [nzNodes]="lockTree"
+              [nzHideUnMatched]="true"
+              [nzDropdownStyle]="{ 'max-height': '260px' }"
+              nzShowSearch
+              [nzPlaceHolder]="'workflow.placeholder.selectLock' | translate"
+              [(ngModel)]="selectedNode.obj.lockId"
+              (nzExpandChange)="onExpand($event, 'LOCK')"
+            >
+              <ng-template #nzTreeTemplate let-node>
+                <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'LOCK', $event);">
+                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == selectedNode.obj.lockId">
+                    <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                    <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                    {{node.origin.name}}
+                  </div>
+                </div>
+              </ng-template>
+            </nz-tree-select>
           </div>
         </div>
         <div class="form-group row">

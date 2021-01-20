@@ -57,21 +57,10 @@ export class ChangeParameterModalComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-    let varArr = [];
-    if (this.order) {
-      for (let i = 0; i < this.order.variables.length; i++) {
-        if (!_.isEqual(this.order.variables[i], this.variable)) {
-          varArr.push(this.order.variables[i]);
-        }
-      }
-      varArr = varArr.concat(this.variables);
-    } else {
-      varArr = this.variables;
-    }
     let obj = {
       controllerId: this.schedulerId,
       orderIds: [],
-      variables: varArr
+      variables: this.variables
     };
     if (this.order) {
       obj.orderIds.push(this.order.orderId);
@@ -86,7 +75,6 @@ export class ChangeParameterModalComponent implements OnInit {
     } else if (this.orderIds) {
       obj.orderIds = this.orderIds;
     }
-    console.log(obj, '>>>>>');
     this.coreService.post('daily_plan/orders/modify', obj).subscribe((result) => {
       this.submitted = false;
       this.activeModal.close('Done');
@@ -115,7 +103,7 @@ export class ModifyStartTimeModalComponent implements OnInit {
   }
 
   ngOnInit() {
- 
+   
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
   }
 

@@ -1033,7 +1033,7 @@ export class ExportComponent implements OnInit {
         param = param + '&ticketLink=' + encodeURIComponent(this.comments.ticketLink);
       }
       //console.log('http://jstest.zehntech.net:7446/joc/api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
-      
+
       try {
         $('#tmpFrame').attr('src', './api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
         setTimeout(() => {
@@ -1572,6 +1572,7 @@ export class UploadModalComponent implements OnInit {
 export class CreateObjectModalComponent {
   @Input() schedulerId: any;
   @Input() obj: any;
+  @Input() copy: any;
   submitted = false;
   object = {name: ''};
 
@@ -1590,9 +1591,6 @@ export class CreateObjectModalComponent {
       });
     }, (err) => {
       this.submitted = false;
-      this.activeModal.close({
-        name: this.object.name
-      });
     });
   }
 }
@@ -2630,16 +2628,14 @@ export class InventoryComponent implements OnInit, OnDestroy {
           let obj: any = {
             type: this.copyObj.type === 'CALENDAR' ? res.configuration.type : this.copyObj.type,
             path: object.path,
-            name: this.coreService.getCopyName(this.copyObj.name, object.children),
             valid: res.valid
           };
           object.expanded = true;
-          this.storeObject(obj, object.children, res.configuration);
+          this.openObjectNameModal(obj, object.children, res.configuration);
         }, () => {
 
         });
       } else if (this.copyObj.operation === 'CUT') {
-
         if (node instanceof NzTreeNode) {
           object = node.origin;
         }
@@ -2694,6 +2690,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     const modalRef = this.modalService.open(CreateObjectModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.obj = obj;
+    modalRef.componentInstance.copy = this.copyObj.name;
     modalRef.result.then((res: any) => {
       obj.name = res.name;
       this.storeObject(obj, children, configuration);

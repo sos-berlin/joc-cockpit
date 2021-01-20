@@ -521,6 +521,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   @Input() copyObj: any;
   agents = [];
   jobClassTree = [];
+  lockTree = [];
   configXml = './assets/mxgraph/config/diagrameditor.xml';
   editor: any;
   dummyXml: any;
@@ -581,6 +582,15 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         types: ['JOBCLASS']
       }).subscribe((res) => {
         this.jobClassTree = this.coreService.prepareTree(res, true);
+      });
+    }
+    if (this.lockTree.length === 0) {
+      this.coreService.post('tree', {
+        controllerId: this.schedulerId,
+        forInventory: true,
+        types: ['LOCK']
+      }).subscribe((res) => {
+        this.lockTree = this.coreService.prepareTree(res, true);
       });
     }
     if (this.agents.length === 0) {
@@ -922,7 +932,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (result.jobs && !_.isEmpty(result.jobs)) {
       for (let x in result.jobs) {
         let v: any = result.jobs[x];
-        const obj = {
+        result.jobs[x] = {
           agentId: v.agentId,
           executable: v.executable,
           returnCodeMeaning: v.returnCodeMeaning,
@@ -935,9 +945,55 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           graceTimeout: v.graceTimeout,
           taskLimit: v.taskLimit
         };
-        result.jobs[x] = obj;
       }
     }
+  }
+
+  loadData(node, type, $event): void {
+    if (!node.origin.type) {
+
+      if ($event) {
+        node.isExpanded = !node.isExpanded;
+        $event.stopPropagation();
+      }
+      let flag = true;
+      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
+        flag = false;
+      }
+      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
+        this.coreService.post('inventory/read/folder', {
+          path: node.key,
+          objectTypes: [type]
+        }).subscribe((res: any) => {
+          let data;
+          if (type === 'LOCK') {
+            data = res.locks;
+          }
+          for (let i = 0; i < data.length; i++) {
+            const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
+            data[i].title = _path;
+            data[i].path = _path;
+            data[i].key = _path;
+            data[i].type = type;
+            data[i].isLeaf = true;
+          }
+          if (node.origin.children && node.origin.children.length > 0) {
+            data = data.concat(node.origin.children);
+          }
+          if (node.origin.isLeaf) {
+            node.origin.expanded = true;
+          }
+          node.origin.isLeaf = false;
+
+          node.origin.children = data;
+          this.lockTree = [...this.lockTree];
+        });
+      }
+    }
+  }
+
+  onExpand(e, type) {
+    this.loadData(e.node, type, null);
   }
 
   @HostListener('window:beforeunload', ['$event'])
@@ -1274,7 +1330,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (targetId) {
         _node.setAttribute('targetId', targetId);
       }
-      let v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.workflowService.lock);
+      let v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.workflowService.closeLock);
       self.nodeMap.set(targetId.toString(), v1.id.toString());
 
       if (branches.instructions && branches.instructions.length > 0) {
@@ -2676,9 +2732,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     const doc = mxUtils.createXmlDocument();
     if (!callFun) {
       $('#toolbar').find('img').each(function (index) {
-        if (index === 10) {
-          $(this).addClass('lock-img');
-        } else if (index === 11) {
+        if (index === 11) {
           $(this).addClass('disable-link');
         } else if (index === 12) {
           $(this).addClass('disable-link');
@@ -3348,17 +3402,19 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               movedTarget = drpTargt;
             }
 
-            if (dragElement.match('paste')) {
-              if (self.copyId) {
-                pasteInstruction(drpTargt);
-              } else if (self.cutCell) {
-                createClickInstruction(dragElement, drpTargt);
+            if(dragElement) {
+              if (dragElement.match('paste')) {
+                if (self.copyId) {
+                  pasteInstruction(drpTargt);
+                } else if (self.cutCell) {
+                  createClickInstruction(dragElement, drpTargt);
+                }
+                return;
               }
-              return;
-            }
-            if (drpTargt.value.tagName !== 'Connection') {
-              createClickInstruction(dragElement, drpTargt);
-              return;
+              if (drpTargt.value.tagName !== 'Connection') {
+                createClickInstruction(dragElement, drpTargt);
+                return;
+              }
             }
 
           } else {
@@ -3537,7 +3593,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          * @param evt
          */
         graph.isValidDropTarget = function (cell, cells, evt) {
-          console.log(cells);
           if (cell && cell.value) {
             self.droppedCell = null;
             if (self.isCellDragging && cells && cells.length > 0) {
@@ -3546,12 +3601,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               }
               self.movedCell = cells;
               const tagName = cell.value.tagName;
-              console.log(tagName, 'tagName');
               if (tagName === 'Connection' || tagName === 'If' || tagName === 'Fork' || tagName === 'Retry' || tagName === 'Lock' || tagName === 'Try' || tagName === 'Catch') {
                 if (tagName === 'Connection') {
                   let sourceId = cell.source.id;
                   let targetId = cell.target.id;
-                  console.log(cell.source);
                   if (checkClosingCell(cell.source)) {
                     sourceId = cell.source.value.getAttribute('targetId');
                   } else if (cell.source.value.tagName === 'Process' && cell.source.getAttribute('title') === 'start') {
@@ -3579,13 +3632,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                   if (cell.source) {
                     if (cell.source.getParent() && cell.source.getParent().id !== '1') {
                       const _type = cell.getAttribute('type');
-                      console.log(_type, '_type');
                       if (!(_type === 'retry' || _type === 'lock' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
                         cell.setParent(cell.source.getParent());
                       }
                     }
                   }
-                  console.log(cells);
                   if (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry' || cells[0].value.tagName === 'Lock' || cells[0].value.tagName === 'Try') {
                     const parent = cell.getParent() || graph.getDefaultParent();
                     let v1, v2, label = '';
@@ -3606,7 +3657,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 75, 75, 'retry');
                     }
                     if (cells[0].value.tagName === 'Lock') {
-                      v1 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', null), 0, 0, 68, 68, self.workflowService.lock);
+                      v1 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', null), 0, 0, 68, 68, self.workflowService.closeLock);
                     } else {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 75, 75, 'try');
                       v2 = graph.insertVertex(cells[0], null, getCellNode('Catch', 'catch', null), 0, 0, 100, 40, 'dashRectangle');
@@ -4406,7 +4457,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             _label1 = 'endTry';
             _label2 = 'endTry';
           }
-          console.log('checkConnectionLabel', label, _label2);
           for (let i = 0; i < cell.edges.length; i++) {
             if (cell.edges[i].target !== cell.id) {
               if (checkClosingCell(cell.edges[i].target)) {
@@ -4544,8 +4594,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               obj.cell, 'retryDelays', self.selectedNode.newObj.retryDelays);
             graph.getModel().execute(edit2);
           } else if (self.selectedNode.type === 'Lock') {
+            let count = '';
+            if (self.selectedNode.newObj.countProperty === 'shared') {
+              count = self.selectedNode.newObj.count;
+            }
             const edit = new mxCellAttributeChange(
-              obj.cell, 'count', self.selectedNode.newObj.count);
+              obj.cell, 'count', count);
             graph.getModel().execute(edit);
             const edit2 = new mxCellAttributeChange(
               obj.cell, 'lockId', self.selectedNode.newObj.lockId);
@@ -4715,9 +4769,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           obj.maxTries = cell.getAttribute('maxTries');
           obj.retryDelays = cell.getAttribute('retryDelays');
         } else if (cell.value.tagName === 'Lock') {
-          console.log(obj, '>>>>')
           obj.count = cell.getAttribute('count');
-          if(obj.count){
+          if (obj.count) {
             obj.count = parseInt(obj.count, 10);
           }
           obj.lockId = cell.getAttribute('lockId');
@@ -5151,7 +5204,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 75, 75, 'retry');
             }
             if (clickedCell.value.tagName === 'Lock') {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', null), 0, 0, 68, 68, self.workflowService.lock);
+              v1 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', null), 0, 0, 68, 68, self.workflowService.closeLock);
             } else {
               v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 75, 75, 'try');
               v2 = graph.insertVertex(clickedCell, null, getCellNode('Catch', 'catch', null), 0, 0, 100, 40, 'dashRectangle');
@@ -5415,7 +5468,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', cell.id), 0, 0, 75, 75, 'retry');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'Lock') {
-          v1 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', cell.id), 0, 0, 68, 68, self.workflowService.lock);
+          v1 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', cell.id), 0, 0, 68, 68, self.workflowService.closeLock);
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'Try') {
           v2 = graph.insertVertex(cell, null, getCellNode('Catch', 'catch', cell.id), 0, 0, 100, 40, 'dashRectangle');
@@ -6262,7 +6315,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             delete json.instructions[x]['instructions'];
             delete json.instructions[x]['count'];
             json.instructions[x]['count'] = countObj;
-            console.log(json.instructions[x]);
           }
           if (json.instructions[x].catch) {
             json.instructions[x].catch.id = undefined;

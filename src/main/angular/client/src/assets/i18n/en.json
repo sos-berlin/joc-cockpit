@@ -669,6 +669,8 @@
     "label.createFolder": "Create Folder",
     "label.folderName": "Folder Name",
     "label.renameFolder": "Rename Folder",
+    "label.copyOf": "Copy of",
+    "label.newName": "New name",
     "label.deploy": "Deploy",
     "label.forSigning": "For Signing",
     "label.overwrite": "Overwrite",

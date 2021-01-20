@@ -12,7 +12,7 @@
         <a (click)="startOrderAt()" translate>order.button.startOrderat</a>
       </li>-->
       <li nz-menu-item *ngIf="permission && permission.Order.execute">
-        <a (click)="cancelOrder()" translate>order.button.cancel</a>
+        <a (click)="cancelOrder(order)" translate>order.button.cancel</a>
       </li>
       <li nz-menu-item *ngIf="permission && permission.Order.execute">
         <a (click)="cancelOrderWithKill()" translate>order.button.cancelAndKillTask</a>
@@ -20,7 +20,7 @@
       <li nz-menu-item *ngIf="permission && permission.Order.execute.suspend && (order.state._text === 'RUNNING' || order.state._text === 'INPROGRESS')">
         <a (click)="suspendOrder(order)" translate>order.button.suspend</a>
       </li>
-      <li nz-menu-item *ngIf="permission && permission.Order.execute && (order.state._text === 'RUNNING' || order.state._text === 'INPROGRESS')">
+      <li nz-menu-item *ngIf="permission && permission.Order.execute.suspend && (order.state._text === 'RUNNING' || order.state._text === 'INPROGRESS')">
         <a (click)="suspendOrderWithKill()" translate>order.button.suspendAndKillTask</a>
       </li>
       <li nz-menu-item *ngIf="permission && permission.Order.execute.resume && (order.state._text === 'SUSPENDED' || order.state._text === 'FAILED')">

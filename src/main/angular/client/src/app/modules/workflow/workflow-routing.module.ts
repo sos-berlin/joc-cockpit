@@ -10,8 +10,7 @@ const routes: Routes = [
     path: 'workflow',
     component: SingleWorkflowComponent,
     data: {breadcrumb: 'breadcrumb.label.workflow'}
-  },
-  {
+  }, {
     path: 'workflow_detail/:path/:versionId', component: WorkflowDetailComponent
   }
 ];

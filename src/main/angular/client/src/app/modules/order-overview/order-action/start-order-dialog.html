@@ -16,18 +16,11 @@
     <div class="form-group row">
       <label class="col-sm-3 " translate>common.label.startTime</label>
       <div class="col-md-8">
-        <label class="md-check w">
-          <input type="radio" name="at" [(ngModel)]="order.at" value="now">
-          <i class="primary"></i><span translate>common.label.now</span>
-        </label>
-        <label class="md-check w">
-          <input type="radio" name="at" [(ngModel)]="order.at" value="date">
-          <i class="primary"></i> <span translate>common.label.specificDate</span>
-        </label>
-        <label class="md-check w">
-          <input type="radio" name="at" [(ngModel)]="order.at" value="later">
-          <i class="primary"></i> <span translate>common.label.relativeDate</span>
-        </label>
+        <nz-radio-group name="at" [(ngModel)]="order.at">
+          <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
+          <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
+          <label nz-radio nzValue="later"><span translate>common.label.relativeDate</span></label>
+        </nz-radio-group>
       </div>
     </div>
     <div class="form-group row" *ngIf="order.at == 'later'">

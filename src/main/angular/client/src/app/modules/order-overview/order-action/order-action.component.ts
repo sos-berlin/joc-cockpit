@@ -202,7 +202,7 @@ export class OrderActionComponent {
     this.restCall(true, 'Suspend', this.order);
   }
 
-  cancelOrder() {
+  cancelOrder(order) {
     this.restCall(false, 'Cancel', this.order);
   }
 

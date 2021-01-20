@@ -1296,8 +1296,3 @@ span.cm-variable {
 .jsgantt-chart .jsgantt-grid-data .jsgantt-row:hover {
   background-color: #65707d;
 }
-.jsgantt-chart .jsgantt-grid-scale .jsgantt-grid-head-cell,
-.jsgantt-chart .jsgantt-task .jsgantt-task-scale .jsgantt-scale-cell {
-  color: rgba(255, 255, 255, 0.87);
-}
-

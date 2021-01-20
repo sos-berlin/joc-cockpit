@@ -19,16 +19,12 @@
       </div>
     </div>
     <div class="form-group m-b-sm row" *ngIf="isSearch">
-      <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.dateRange</label>
+      <label class="col-md-2 col-sm-4" translate>common.label.dateRange</label>
       <div class="col-md-6">
-        <label class="md-check w">
-          <input type="radio" name="radio" [(ngModel)]="filter.radio" value="current">
-          <i class="primary"></i> <span translate>common.label.specificDate</span>
-        </label>
-        <label class="md-check w">
-          <input type="radio" name="radio" [(ngModel)]="filter.radio" value="planned">
-          <i class="primary"></i> <span translate>common.label.relativeDate</span>
-        </label>
+        <nz-radio-group name="radio" [(ngModel)]="filter.radio">
+          <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
+          <label nz-radio nzValue="planned"><span translate>common.label.relativeDate</span></label>
+        </nz-radio-group>
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.radio === 'current'">

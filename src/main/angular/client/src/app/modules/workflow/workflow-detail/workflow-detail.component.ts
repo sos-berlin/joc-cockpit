@@ -141,14 +141,13 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   @HostListener('window:click', ['$event'])
   clickHandler(event) {
     if (event.target && event.target.tagName !== 'svg') {
-
-      if (event.target && event.target.className && typeof event.target.className === 'string' && (event.target.className.match(/cursor/) ||
+      /*if (event.target && event.target.className && typeof event.target.className === 'string' && (event.target.className.match(/cursor/) ||
         event.target.className.match(/slide/) || event.target.className.match(/order/) ||
         event.target.className.match(/backdrop/))) {
 
       } else {
         this.sideBar = {};
-      }
+      }*/
     } else {
       this.sideBar = {};
     }

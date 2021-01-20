@@ -21,7 +21,7 @@ export class TypeComponent implements OnChanges {
   constructor(public coreService: CoreService, public modalService: NgbModal) {
   }
 
-  @HostListener('window:click', ['$event'])
+/*  @HostListener('window:click', ['$event'])
   clickHandler(event) {
     if (event.target && event.target.className &&
       (event.target.className.match(/slide/) || event.target.className.match(/cursor/) || event.target.className.match(/ant/)
@@ -29,7 +29,7 @@ export class TypeComponent implements OnChanges {
     } else {
       this.sideBar = {};
     }
-  }
+  }*/
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.expandAll) {

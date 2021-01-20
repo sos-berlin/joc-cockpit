@@ -18,6 +18,7 @@ export class WorkflowService {
   public publish;
   public fork;
   public lock;
+  public closeLock;
   preferences: any = {};
 
   constructor(public translate: TranslateService, public coreService: CoreService,
@@ -46,6 +47,7 @@ export class WorkflowService {
       this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork.svg';
       this.publish = 'symbol;image=./assets/mxgraph/images/symbols/publish.svg';
       this.lock = 'symbol;image=./assets/mxgraph/images/symbols/lock.svg';
+      this.closeLock = 'symbol;image=./assets/mxgraph/images/symbols/lock-close.svg';
     } else {
       this.merge = 'symbol;image=./assets/mxgraph/images/symbols/merge-white.svg';
       this.finish = 'symbol;image=./assets/mxgraph/images/symbols/finish-white.svg';
@@ -54,6 +56,7 @@ export class WorkflowService {
       this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork-white.svg';
       this.publish = 'symbol;image=./assets/mxgraph/images/symbols/publish-white.svg';
       this.lock = 'symbol;image=./assets/mxgraph/images/symbols/lock-white.svg';
+      this.closeLock = 'symbol;image=./assets/mxgraph/images/symbols/lock-close-white.svg';
     }
   }
 
@@ -183,6 +186,9 @@ export class WorkflowService {
         }
       }
       if (type === 'Lock') {
+        if (!value.count) {
+          delete value['count'];
+        }
         if (!value.lockId) {
           return false;
         }

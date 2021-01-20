@@ -748,13 +748,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   object: any = {
     templates: [],
     checkbox: false,
-    isCancel : false,
-    isSuspend : false,
-    isResume : false,
-    isModify : false,
-    isRunning : false,
-    isPlanned : false,
-    isFinished : false
+    isCancel: false,
+    isSuspend: false,
+    isResume: false,
+    isModify: false,
+    isRunning: false,
+    isPlanned: false,
+    isFinished: false
   };
   subscription1: Subscription;
   subscription2: Subscription;
@@ -909,7 +909,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   /* ------------- Action ------------------- */
 
-  modifySelectedOrder(){
+  modifySelectedOrder() {
     const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.preferences = this.preferences;
@@ -948,7 +948,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  resumeSelectedOrder(){
+  resumeSelectedOrder() {
     this.restCall(false, null, this.object.templates, 'Resume');
   }
 
@@ -956,7 +956,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.restCall(false, null, this.object.templates, 'Cancel');
   }
 
-  suspendSelectedOrder(){
+  suspendSelectedOrder() {
     this.restCall(false, null, this.object.templates, 'Suspend');
   }
 
@@ -1041,14 +1041,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.comments = comments;
       modalRef.componentInstance.obj = obj;
-      modalRef.componentInstance.url = 'orders/'+ type.toLowerCase();
+      modalRef.componentInstance.url = 'orders/' + type.toLowerCase();
       modalRef.result.then((result) => {
         this.resetCheckBox();
       }, () => {
 
       });
     } else {
-      this.coreService.post('orders/'+ type.toLowerCase(), obj).subscribe(() => {
+      this.coreService.post('orders/' + type.toLowerCase(), obj).subscribe(() => {
         this.resetCheckBox();
       });
     }
@@ -1328,7 +1328,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.preferences = this.preferences;
     modalRef.componentInstance.order = order;
     modalRef.result.then((res) => {
-
+      this.loadOrderPlan();
     }, () => {
 
     });
@@ -1376,7 +1376,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.plan = plan;
     modalRef.result.then((result) => {
       if (order && order.show) {
-        console.log('>>>>', order);
         this.coreService.post('orders/variables', {
           orderId: order.orderId,
           controllerId: this.schedulerIds.selected
@@ -1384,6 +1383,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           order.variables = res.variables;
 
         });
+      } else {
+        this.loadOrderPlan();
       }
     }, () => {
     });
@@ -1545,7 +1546,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     } else {
       this.object.checkbox = false;
     }
-    this.checkState(this.object, this.object.templates)
+    this.checkState(this.object, this.object.templates);
   }
 
   checkOrderTemplate(template) {
@@ -1820,13 +1821,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.object = {
       templates: [],
       checkbox: false,
-      isCancel : false,
-      isSuspend : false,
-      isResume : false,
-      isModify : false,
-      isRunning : false,
-      isPlanned : false,
-      isFinished : false
+      isCancel: false,
+      isSuspend: false,
+      isResume: false,
+      isModify: false,
+      isRunning: false,
+      isPlanned: false,
+      isFinished: false
     };
   }
 

@@ -590,7 +590,7 @@
                           <td></td>
                           <td colspan="10">
                             <div *ngFor="let variable of value.variables"
-                                 class="plan-varibales pt-1 pb-1">
+                                 class="plan-variables">
                               <span class="btn-group dropdown" *ngIf="value.state && (value.state._text === 'PLANNED' || value.state._text === 'PENDING')">
                                 <button class="btn-drop more-option-h" nz-dropdown
                                         nzTrigger="click" [nzDropdownMenu]="export3"
@@ -673,32 +673,32 @@
                           </nz-dropdown-menu>
                         </div>
                       </td>
-                      <td *ngIf="plan.value[0]">
+                      <td [colSpan]="(plan.value.length === 1 && !plan.order) ? 1 : 11">
                         <i class="fa fa-angle-down cursor fa-lg p-r-xs" *ngIf="plan.order"
                            (click)="expandCollapseOrder(plan)" aria-hidden="true"></i>
                         <i class="fa fa-angle-right cursor fa-lg p-r-xs" *ngIf="!plan.order"
                            (click)="expandCollapseOrder(plan)" aria-hidden="true"></i>
                         {{plan.value[0].schedulePath}}
                       </td>
-                      <td *ngIf="plan.value[0]">
+                      <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]">
                               <span>{{plan.value[0].workflowPath}} </span>
                       </td>
-                      <td *ngIf="plan.value[0]">
-                              <span class="label"
-                                    [ngClass]="coreService.getColor(plan.value[0].state.severity,'bg')"
-                                    [innerHtml]="plan.value[0].status"> </span>
+                      <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]">
+                        <span class="label"
+                              [ngClass]="coreService.getColor(plan.value[0].state.severity,'bg')"
+                              [innerHtml]="plan.value[0].status"> </span>
                       </td>
-                      <td *ngIf="plan.value[0]"><span *ngIf="plan.value[0].late==true" translate>dailyPlan.label.late</span></td>
-                      <td *ngIf="plan.value[0]"><span [innerHtml]="plan.value[0].plannedStartTime"></span></td>
-                      <td *ngIf="plan.value[0]"><span [innerHtml]="plan.value[0].expectedEndTime"></span></td>
-                      <td *ngIf="plan.value[0]"><span
+                      <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]"><span *ngIf="plan.value[0].late==true" translate>dailyPlan.label.late</span></td>
+                      <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]"><span [innerHtml]="plan.value[0].plannedStartTime"></span></td>
+                      <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]"><span [innerHtml]="plan.value[0].expectedEndTime"></span></td>
+                      <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]"><span
                         [innerHtml]="plan.value[0].expectedDuration"></span>
                       </td>
-                      <td *ngIf="plan.value[0]"><span [innerHtml]="plan.value[0].startTime"></span></td>
-                      <td *ngIf="plan.value[0]"><span [innerHtml]="plan.value[0].endTime"></span></td>
-                      <td *ngIf="plan.value[0]"><span [innerHtml]="plan.value[0].duration"></span>
+                      <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]"><span [innerHtml]="plan.value[0].startTime"></span></td>
+                      <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]"><span [innerHtml]="plan.value[0].endTime"></span></td>
+                      <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]"><span [innerHtml]="plan.value[0].duration"></span>
                       </td>
-                      <td *ngIf="plan.value[0]"><span *ngIf="plan.value[0].period.repeat">Repeat every
+                      <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]"><span *ngIf="plan.value[0].period.repeat">Repeat every
                         {{plan.value[0].period.repeat}}s</span>
                       </td>
                     </tr>
@@ -785,7 +785,7 @@
                           <td></td>
                           <td colspan="11">
                             <div *ngFor="let variable of value.variables"
-                                 class="plan-varibales pt-1 pb-1">
+                                 class="plan-variables">
                               <span class="btn-group dropdown" *ngIf="value.state && (value.state._text === 'PLANNED' || value.state._text === 'PENDING')">
                                 <button class="btn-drop more-option-h" nz-dropdown
                                         nzTrigger="click" [nzDropdownMenu]="export3"

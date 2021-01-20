@@ -23,10 +23,10 @@ export class TreeComponent implements OnInit, OnChanges {
     const dom = $('.scroll-y');
     let count = 0;
     if (dom && dom.position()) {
+
       const recursiveCheck = () => {
         ++count;
         let top = dom.position().top + 12;
-
         top = top - $(window).scrollTop();
         if (top < 70) {
           top = 92;
