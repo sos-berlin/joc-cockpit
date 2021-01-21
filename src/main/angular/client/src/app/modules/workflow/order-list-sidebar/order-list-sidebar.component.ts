@@ -109,14 +109,20 @@ export class OrderListSidebarComponent implements OnChanges {
       modalRef.componentInstance.obj = obj;
       modalRef.componentInstance.url = 'orders/' + operation;
       modalRef.result.then((result) => {
-        this.setOfCheckedId.clear();
+        this.resetCheckBox();
       }, () => {
-        this.setOfCheckedId.clear();
+        this.resetCheckBox();
       });
     } else {
       this.coreService.post('orders/' + operation, obj).subscribe(() => {
-        this.setOfCheckedId.clear();
+        this.resetCheckBox();
       });
     }
+  }
+
+  private resetCheckBox() {
+    this.checked = false;
+    this.indeterminate = false;
+    this.setOfCheckedId.clear();
   }
 }

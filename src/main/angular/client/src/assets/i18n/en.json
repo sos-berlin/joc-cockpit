@@ -48,6 +48,7 @@
   "OrderStepStarted": "Order Step started",
   "OrderSuspended": "Order suspended",
   "FINISHED": "finished",
+  "INPROGRESS": "in progress",
   "RESUMED": "resumed",
   "PAUSED": "paused",
   "BLOCKED": "blocked",

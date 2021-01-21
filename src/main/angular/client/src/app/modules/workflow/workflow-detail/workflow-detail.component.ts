@@ -2,16 +2,16 @@ import {Component, OnInit, OnDestroy, HostListener, ViewChild} from '@angular/co
 import {ActivatedRoute} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import * as _ from 'underscore';
+import {Subscription} from 'rxjs';
+import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd';
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {WorkflowService} from '../../../services/workflow.service';
 import {AddOrderModalComponent} from '../workflow-action/workflow-action.component';
 import {CalendarModalComponent} from '../../../components/calendar-modal/calendar.component';
 import {DataService} from '../../../services/data.service';
-import {Subscription} from 'rxjs';
-import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
-import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd';
 import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume.component';
+import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../../../components/modify-modal/modify.component';
 
 declare const mxEditor;
@@ -140,15 +140,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   @HostListener('window:click', ['$event'])
   clickHandler(event) {
-    if (event.target && event.target.tagName !== 'svg') {
-      /*if (event.target && event.target.className && typeof event.target.className === 'string' && (event.target.className.match(/cursor/) ||
-        event.target.className.match(/slide/) || event.target.className.match(/order/) ||
-        event.target.className.match(/backdrop/))) {
-
-      } else {
-        this.sideBar = {};
-      }*/
-    } else {
+    if (event.target && event.target.tagName === 'svg') {
       this.sideBar = {};
     }
   }
@@ -353,10 +345,20 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       }
       this.isWorkflowStored(workflow, isFirst);
       this.loading = true;
+      this.checkSideBar();
     }, () => {
       this.isWorkflowStored(workflow, isFirst);
       this.loading = true;
     });
+  }
+
+  private checkSideBar() {
+    if (this.sideBar.isVisible) {
+      if (this.sideBar.orders.length > 0) {
+        this.sideBar.orders = this.mapObj.get(JSON.stringify(this.sideBar.orders[0].position));
+      }
+      console.log(this.mapObj, ' >>> ', this.sideBar.orders);
+    }
   }
 
   private initEditorConf(editor, _xml: any) {
@@ -501,7 +503,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         self.sideBar = {};
         if (cell != null && cell.vertex == 1) {
           if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try'
-            || cell.value.tagName === 'Catch' || cell.value.tagName === 'Retry') {
+            || cell.value.tagName === 'Catch' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock') {
             const flag = cell.collapsed != true;
             graph.foldCells(flag, false, null, null, evt);
           }
@@ -597,7 +599,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         const start = vertexMap.get(json.instructions[0].uuid);
         const last = json.instructions[json.instructions.length - 1];
         let end = vertexMap.get(last.uuid);
-        if (last.TYPE === 'Fork' || last.TYPE === 'If' || last.TYPE === 'Try' || last.TYPE === 'Retry') {
+        if (last.TYPE === 'Fork' || last.TYPE === 'If' || last.TYPE === 'Try' || last.TYPE === 'Retry' || last.TYPE === 'Lock') {
           let targetId = self.nodeMap.get(last.id);
           if (targetId) {
             end = graph.getModel().getCell(targetId);
@@ -725,7 +727,20 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             } else {
               v2 = endRetry(v1, v1.id, parent);
             }
-          } else if (json.instructions[x].TYPE === 'Try') {
+          } else if (json.instructions[x].TYPE === 'Lock') {
+            _node.setAttribute('label', 'lock');
+            _node.setAttribute('lockId', json.instructions[x].lockId || '');
+            _node.setAttribute('count', json.instructions[x].count || '');
+            _node.setAttribute('uuid', json.instructions[x].uuid);
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.workflowService.lock);
+            if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
+              recursive(json.instructions[x], '', v1);
+              connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'lock', 'lock', v1);
+              v2 = endLock(json.instructions[x], v1.id, parent);
+            } else {
+              v2 = endLock(v1, v1.id, parent);
+            }
+          }  else if (json.instructions[x].TYPE === 'Try') {
             _node.setAttribute('label', 'try');
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, 'try');
@@ -757,7 +772,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
               recursive(json.instructions[x], '', v1);
               connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'try', 'try', v1);
               const _lastNode = json.instructions[x].instructions[json.instructions[x].instructions.length - 1];
-              if (_lastNode.TYPE === 'If' || _lastNode.TYPE === 'Fork' || _lastNode.TYPE === 'Try' || _lastNode.TYPE === 'Retry') {
+              if (_lastNode.TYPE === 'If' || _lastNode.TYPE === 'Fork' || _lastNode.TYPE === 'Try' || _lastNode.TYPE === 'Retry' || _lastNode.TYPE === 'Lock') {
                 const end = graph.getModel().getCell(self.nodeMap.get(_lastNode.id));
                 connectInstruction(end, cv1, 'try', 'try', v1);
               } else {
@@ -789,13 +804,13 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
           }
           json.instructions[x].id = v1.id;
           if (json.instructions[x].TYPE === 'Fork' || json.instructions[x].TYPE === 'If' ||
-            json.instructions[x].TYPE === 'Try' && json.instructions[x].TYPE === 'Retry') {
+            json.instructions[x].TYPE === 'Try' || json.instructions[x].TYPE === 'Retry' || json.instructions[x].TYPE === 'Lock') {
             v1.collapsed = json.instructions[x].isCollapsed == '1';
           }
 
           if (x > 0) {
             let prev = json.instructions[x - 1];
-            if (prev.TYPE !== 'Fork' && prev.TYPE !== 'If' && prev.TYPE !== 'Try' && prev.TYPE !== 'Retry' && vertexMap.get(prev.uuid)) {
+            if (prev.TYPE !== 'Fork' && prev.TYPE !== 'If' && prev.TYPE !== 'Try' && prev.TYPE !== 'Retry' && prev.TYPE !== 'Lock' && vertexMap.get(prev.uuid)) {
               connectInstruction(vertexMap.get(prev.uuid), v1, type, type, parent);
             }
           }
@@ -830,7 +845,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             const x = branches[i].instructions[branches[i].instructions.length - 1];
             if (x) {
               let endNode;
-              if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry') {
+              if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry' || x.TYPE === 'Lock') {
                 endNode = graph.getModel().getCell(self.nodeMap.get(x.id));
               } else {
                 endNode = vertexMap.get(x.uuid);
@@ -859,7 +874,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         const x = branches.then.instructions[branches.then.instructions.length - 1];
         if (x) {
           let endNode;
-          if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry') {
+          if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry' || x.TYPE === 'Lock') {
             endNode = graph.getModel().getCell(self.nodeMap.get(x.id));
           } else {
             endNode = vertexMap.get(x.uuid);
@@ -871,7 +886,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         flag = false;
         const x = branches.else.instructions[branches.else.instructions.length - 1];
         let endNode;
-        if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry') {
+        if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry' || x.TYPE === 'Lock') {
           endNode = graph.getModel().getCell(self.nodeMap.get(x.id));
         } else {
           endNode = vertexMap.get(x.uuid);
@@ -881,6 +896,32 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
       if (flag) {
         connectInstruction(target, v1, '', '', parent);
+      }
+      return v1;
+    }
+
+    function endLock(branches, targetId, parent) {
+      let _node = doc.createElement('EndLock');
+      _node.setAttribute('label', 'lockEnd');
+      if (targetId) {
+        _node.setAttribute('targetId', targetId);
+      }
+      let v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.workflowService.closeLock);
+      self.nodeMap.set(targetId.toString(), v1.id.toString());
+
+      if (branches.instructions && branches.instructions.length > 0) {
+        const x = branches.instructions[branches.instructions.length - 1];
+        if (x) {
+          let endNode;
+          if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry' || x.TYPE === 'Lock') {
+            endNode = graph.getModel().getCell(self.nodeMap.get(x.id));
+          } else {
+            endNode = vertexMap.get(x.uuid);
+          }
+          connectInstruction(endNode, v1, 'endLock', 'endLock', parent);
+        }
+      } else {
+        connectInstruction(branches, v1, '', '', parent);
       }
       return v1;
     }
@@ -898,7 +939,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         const x = branches.instructions[branches.instructions.length - 1];
         if (x) {
           let endNode;
-          if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry') {
+          if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry' || x.TYPE === 'Lock') {
             endNode = graph.getModel().getCell(self.nodeMap.get(x.id));
           } else {
             endNode = vertexMap.get(x.uuid);
@@ -931,7 +972,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       }
       if (x) {
         let endNode;
-        if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry') {
+        if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry' || x.TYPE === 'Lock') {
           endNode = graph.getModel().getCell(self.nodeMap.get(x.id));
         } else {
           endNode = vertexMap.get(x.uuid);
@@ -1033,7 +1074,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             }
             json.positions.push(JSON.stringify(json.instructions[x].position));
           }
-          if (json.instructions[x].TYPE === 'Try' || json.instructions[x].TYPE === 'Fork' || json.instructions[x].TYPE === 'If' || json.instructions[x].TYPE === 'Retry') {
+          if (json.instructions[x].TYPE === 'Try' || json.instructions[x].TYPE === 'Fork' || json.instructions[x].TYPE === 'If' || json.instructions[x].TYPE === 'Retry' || json.instructions[x].TYPE === 'Lock') {
             self.orderCountMap.set(json.instructions[x].id, JSON.stringify(json.instructions[x].positions));
           }
         }

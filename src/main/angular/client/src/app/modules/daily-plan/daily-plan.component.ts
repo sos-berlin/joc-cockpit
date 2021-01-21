@@ -1677,7 +1677,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   private refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType.match('ORDER')) {
+        if (args.eventSnapshots[j].eventType.match('ORDER') || args.eventSnapshots[j].eventType.match(/WorkflowStateChanged/)) {
           this.load(this.selectedDate);
           this.loadOrderPlan();
           break;

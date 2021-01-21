@@ -237,20 +237,21 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
 
   private getOrders(obj) {
     this.coreService.post('orders', obj).subscribe((res: any) => {
+      this.workflows[0].ordersSummary = {};
+      this.workflows[0].numOfOrders = res.orders.length;
       if (res.orders && res.orders.length > 0) {
-        for (let i = 0; i < this.workflows.length; i++) {
-          for (let j = 0; j < res.orders.length; j++) {
-            if (this.workflows[i].path === res.orders[j].workflowId.path) {
-              this.workflows[i].numOfOrders = (this.workflows[i].numOfOrders || 0) + 1;
-              const state = res.orders[j].state._text.toLowerCase();
-              if (this.workflows[i].ordersSummary[state]) {
-                this.workflows[i].ordersSummary[state] = this.workflows[i].ordersSummary[state] + 1;
-              } else {
-                this.workflows[i].ordersSummary[state] = 1;
-              }
-            }
+        for (let j = 0; j < res.orders.length; j++) {
+          const state = res.orders[j].state._text.toLowerCase();
+          if (this.workflows[0].ordersSummary[state]) {
+            this.workflows[0].ordersSummary[state] = this.workflows[0].ordersSummary[state] + 1;
+          } else {
+            this.workflows[0].ordersSummary[state] = 1;
           }
         }
+        if (this.sideBar.isVisible) {
+          this.sideBar.orders = res.orders;
+        }
+
       }
     });
   }
@@ -556,6 +557,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                 this.workflows[i].ordersSummary[state] = 1;
               }
             }
+          }
+          if (this.sideBar.isVisible && this.workflows[i].path === this.sideBar.workflow) {
+            this.sideBar.orders = this.workflows[i].orders;
           }
         }
       }
@@ -983,7 +987,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   viewOrders(workflow) {
-    this.sideBar = {isVisible: true, orders: workflow.orders};
+    this.sideBar = {isVisible: true, orders: workflow.orders, workflow: workflow.path};
   }
 
   toggleCompactView() {

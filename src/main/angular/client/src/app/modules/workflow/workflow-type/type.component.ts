@@ -1,6 +1,5 @@
-import {Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, HostListener} from '@angular/core';
+import {Component, Input, Output, EventEmitter, OnChanges, SimpleChanges} from '@angular/core';
 import {CoreService} from '../../../services/core.service';
-import * as _ from 'underscore';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -20,16 +19,6 @@ export class TypeComponent implements OnChanges {
 
   constructor(public coreService: CoreService, public modalService: NgbModal) {
   }
-
-/*  @HostListener('window:click', ['$event'])
-  clickHandler(event) {
-    if (event.target && event.target.className &&
-      (event.target.className.match(/slide/) || event.target.className.match(/cursor/) || event.target.className.match(/ant/)
-        || event.target.className.match(/order/) || event.target.className.match(/backdrop/))) {
-    } else {
-      this.sideBar = {};
-    }
-  }*/
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.expandAll) {
@@ -112,7 +101,8 @@ export class TypeComponent implements OnChanges {
     const self = this;
     this.sideBar = {
       isVisible: true,
-      orders: []
+      orders: [],
+      data: data
     };
     if (data.orders) {
       this.sideBar.orders = data.orders;
@@ -144,7 +134,7 @@ export class TypeComponent implements OnChanges {
             if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
               recursive(json.instructions[x].catch);
               if (json.instructions[x].catch.orders) {
-                self.sideBar.orders.orders = self.sideBar.orders.concat(json.instructions[x].catch.orders);
+                self.sideBar.orders = self.sideBar.orders.concat(json.instructions[x].catch.orders);
               }
             }
           }
@@ -258,6 +248,9 @@ export class TypeComponent implements OnChanges {
         mapObj.set(JSON.stringify(this.orders[j].position), arr);
       }
       recursive(this.configuration);
+    }
+    if (this.sideBar.isVisible) {
+      this.showOrders(this.sideBar.data);
     }
   }
 

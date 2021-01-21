@@ -29,7 +29,7 @@
   <ul style="margin-bottom: 0">
     <li >
       <a class="hover"
-        *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry'">
+        *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Lock'">
         <i (click)="collapse(instruction)" class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.show || expandAll)}"></i>
         <i class="_600">{{instruction.TYPE}}</i>
         <span class="expand-collapse-btn">
@@ -134,6 +134,12 @@
           </div>
       </div>
       <div *ngIf="instruction.TYPE === 'Retry' && (instruction.show || expandAll)">
+        <div>
+          <app-type [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
+                    [configuration]="instruction" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
+        </div>
+      </div>
+      <div *ngIf="instruction.TYPE === 'Lock' && (instruction.show || expandAll)">
         <div>
           <app-type [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
                     [configuration]="instruction" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>

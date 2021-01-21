@@ -289,6 +289,7 @@
               [nzHideUnMatched]="true"
               [nzDropdownStyle]="{ 'max-height': '260px' }"
               nzShowSearch
+              [nzAllowClear]="false"
               [(ngModel)]="selectedNode.obj.lockId1"
               (nzExpandChange)="onExpand($event, 'LOCK')"
             >
