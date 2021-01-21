@@ -42,11 +42,16 @@
                    name="title" [(ngModel)]="lock.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
-        <div class="form-group row">
+        <div class="form-group row" [ngClass]="{ 'has-error' : (((limit.dirty || limit.touched) && limit.invalid))}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.limit</label>
           <div class="col-md-8 col-lg-6">
-            <nz-input-number [nzMin]="0" [nzStep]="1" [nzPlaceHolder]="'inventory.placeholder.enterLimit' | translate"
-                             name="limit" [(ngModel)]="lock.configuration.limit" (nzBlur)="saveJSON()"></nz-input-number>
+            <nz-input-number required [nzMin]="0" [nzStep]="1" [nzPlaceHolder]="'inventory.placeholder.enterLimit' | translate"
+                             name="limit" #limit="ngModel" [(ngModel)]="lock.configuration.limit" (nzBlur)="saveJSON()"></nz-input-number>
+            <div *ngIf="limit.invalid && (limit.dirty || limit.touched)" class="text-danger help-block">
+              <div *ngIf="limit.errors.required">
+                <div translate>common.message.requiredError</div>
+              </div>
+            </div>
           </div>
         </div>
       </form>

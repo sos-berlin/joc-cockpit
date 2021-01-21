@@ -86,12 +86,14 @@ export class LockComponent implements OnChanges {
       this.coreService.post('inventory/store', {
         configuration: this.lock.configuration,
         path: _path,
-        valid: true,
+        valid: this.lock.configuration.limit > -1,
         id: this.lock.id,
         objectType: this.objectType
       }).subscribe((res: any) => {
         if (res.id === this.data.id && this.lock.id === this.data.id) {
           this.lock.actual = JSON.stringify(this.lock.configuration);
+          this.data.valid = this.lock.configuration.limit > -1;
+          this.lock.valid = this.lock.configuration.limit > -1;
           this.lock.deployed = false;
           this.data.deployed = false;
         }

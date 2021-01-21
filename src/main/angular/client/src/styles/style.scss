@@ -6148,7 +6148,14 @@ pre#pre {
     width: 100%;
   }
 }
-
+.select-input-both{
+  .ant-select {
+    position: absolute;
+    top: 0;
+    padding-right: 25px;
+    opacity: 0;
+  }
+}
 .ant-select-selection {
   box-shadow: none;
   border-color: $border-color;

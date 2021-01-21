@@ -277,18 +277,19 @@
       <div class="box-body job-property-editor" *ngIf="selectedNode.type === 'Lock'">
         <div class="form-group row" [ngClass]="{'has-error' : ((lockId.dirty || lockId.touched) && lockId.invalid)}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.lockId</label>
-          <div class="col-md-8 col-lg-9">
+          <div class="col-md-8 col-lg-9 select-input-both">
+            <input autocomplete="off"  type="text" class="form-control"
+                   placeholder="'workflow.placeholder.selectLock' | translate"
+                   name="lockId" #lockId="ngModel" [(ngModel)]="selectedNode.obj.lockId">
             <nz-tree-select
-              name="lockId"
-              #lockId="ngModel"
+              name="lockIdSelect"
               #treeSelectCtrl2
               nzNoAnimation
               [nzNodes]="lockTree"
               [nzHideUnMatched]="true"
               [nzDropdownStyle]="{ 'max-height': '260px' }"
               nzShowSearch
-              [nzPlaceHolder]="'workflow.placeholder.selectLock' | translate"
-              [(ngModel)]="selectedNode.obj.lockId"
+              [(ngModel)]="selectedNode.obj.lockId1"
               (nzExpandChange)="onExpand($event, 'LOCK')"
             >
               <ng-template #nzTreeTemplate let-node>
@@ -304,18 +305,18 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3" translate>workflow.label.count</label>
+          <label class="col-md-4 col-lg-3"></label>
           <div class="col-md-8 col-lg-9">
             <nz-radio-group [(ngModel)]="selectedNode.obj.countProperty">
               <label nz-radio nzValue="exclusive"><span translate>workflow.label.exclusive</span></label>
-              <label nz-radio nzValue="shared"><span translate>workflow.label.shared</span></label>
+              <label nz-radio nzValue="shared" (click)="selectedNode.obj.count = 1"><span translate>workflow.label.shared</span></label>
             </nz-radio-group>
           </div>
         </div>
         <div class="form-group row" *ngIf="selectedNode.obj.countProperty === 'shared'">
-          <label class="col-md-4 col-lg-3 form-control-label"></label>
+          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.count</label>
           <div class="col-md-8 col-lg-9">
-            <nz-input-number [nzMin]="1" [nzStep]="1" name="count"
+            <nz-input-number [nzMin]="1" [nzMax]="selectedNode.obj.limit" [nzStep]="1" name="count"
                              [(ngModel)]="selectedNode.obj.count"></nz-input-number>
           </div>
         </div>

@@ -968,28 +968,48 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           let data;
           if (type === 'LOCK') {
             data = res.locks;
+            for (let i = 0; i < data.length; i++) {
+              const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
+              data[i].title = data[i].name;
+              data[i].path = _path;
+              data[i].key = data[i].name;
+              data[i].type = type;
+              data[i].isLeaf = true;
+            }
+            if (node.origin.children && node.origin.children.length > 0) {
+              data = data.concat(node.origin.children);
+            }
+            if (node.origin.isLeaf) {
+              node.origin.expanded = true;
+            }
+            node.origin.isLeaf = false;
+            node.origin.children = data;
           }
-          for (let i = 0; i < data.length; i++) {
-            const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-            data[i].title = _path;
-            data[i].path = _path;
-            data[i].key = _path;
-            data[i].type = type;
-            data[i].isLeaf = true;
-          }
-          if (node.origin.children && node.origin.children.length > 0) {
-            data = data.concat(node.origin.children);
-          }
-          if (node.origin.isLeaf) {
-            node.origin.expanded = true;
-          }
-          node.origin.isLeaf = false;
-
-          node.origin.children = data;
           this.lockTree = [...this.lockTree];
         });
       }
     }
+
+    if (this.selectedNode.obj.lockId1) {
+      if (this.selectedNode.obj.lockId !== this.selectedNode.obj.lockId1) {
+        this.selectedNode.obj.lockId = this.selectedNode.obj.lockId1;
+        this.getLimit();
+      }
+    } else if (node.key && !node.key.match('/')) {
+      if (this.selectedNode.obj.lockId !== node.key) {
+        this.selectedNode.obj.lockId = node.key;
+        this.getLimit();
+      }
+    }
+  }
+
+  private getLimit() {
+    this.coreService.post('inventory/read/configuration', {
+      name: this.selectedNode.obj.lockId,
+      objectType: 'LOCK'
+    }).subscribe((res: any) => {
+      this.selectedNode.obj.limit = res.configuration.limit || 1;
+    });
   }
 
   onExpand(e, type) {
@@ -4819,6 +4839,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           job: job,
           actualValue: self.coreService.clone(obj)
         };
+        if (cell.value.tagName === 'Lock') {
+          self.getLimit();
+        }
       }
     }
 

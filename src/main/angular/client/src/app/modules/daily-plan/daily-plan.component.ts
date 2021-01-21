@@ -887,6 +887,12 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
+  private updateList(){
+    this.load(this.selectedDate);
+    this.loadOrderPlan();
+    this.resetCheckBox();
+  }
+
   groupByWorkflow(type) {
     if (this.dailyPlanFilters.filter.groupBy !== type) {
       this.dailyPlanFilters.filter.groupBy = type;
@@ -900,9 +906,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.selectedDate = this.selectedDate;
     modalRef.result.then((res) => {
-      this.load(this.selectedDate);
-      this.loadOrderPlan();
-    }, (reason) => {
+      this.updateList();
+    }, () => {
 
     });
   }
@@ -915,9 +920,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.preferences = this.preferences;
     modalRef.componentInstance.orders = this.object.templates;
     modalRef.result.then((res) => {
-      this.load(this.selectedDate);
-      this.resetCheckBox();
-    }, (reason) => {
+      this.updateList();
+    }, () => {
 
     });
   }
@@ -927,8 +931,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.orders = this.object.templates;
     modalRef.result.then((res) => {
-      this.load(this.selectedDate);
-      this.resetCheckBox();
+      this.updateList();
     }, (reason) => {
 
     });
@@ -941,8 +944,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.plan = workflow ? null : plan;
     modalRef.componentInstance.workflow = workflow;
     modalRef.result.then((res) => {
-      this.load(this.selectedDate);
-      this.resetCheckBox();
+      this.updateList();
     }, () => {
 
     });
@@ -1002,7 +1004,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
       modalRef.componentInstance.order = this.coreService.clone(order);
       modalRef.result.then((result) => {
-        console.log(result);
+        this.updateList();
       }, () => {
 
       });
@@ -1043,13 +1045,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.obj = obj;
       modalRef.componentInstance.url = 'orders/' + type.toLowerCase();
       modalRef.result.then((result) => {
-        this.resetCheckBox();
+        this.updateList();
       }, () => {
 
       });
     } else {
       this.coreService.post('orders/' + type.toLowerCase(), obj).subscribe(() => {
-        this.resetCheckBox();
+        this.updateList();
       });
     }
   }
@@ -1061,8 +1063,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.timeZone = this.preferences.zone;
     modalRef.componentInstance.selectedDate = this.selectedDate;
     modalRef.result.then((res) => {
-      this.load(this.selectedDate);
-      this.resetCheckBox();
+      this.updateList();
     }, () => {
 
     });
@@ -1077,8 +1078,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.timeZone = this.preferences.zone;
     modalRef.componentInstance.selectedDate = this.selectedDate;
     modalRef.result.then((res) => {
-      this.load(this.selectedDate);
-      this.resetCheckBox();
+      this.updateList();
     }, () => {
 
     });

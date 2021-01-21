@@ -2496,13 +2496,19 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.edit = obj.edit;
       modalRef.result.then((result) => {
         this.storeData(obj.showJson, result);
+        setTimeout(() => {
+          const path = res.path.substring(0, res.path.lastIndexOf('/')) || '/';
+          this.updateFolders(path, () => {
+            this.updateTree();
+          });
+        }, 100);
       }, () => {
       });
     });
   }
 
   editJson(data, isEdit) {
-    this.dataService.reloadTree.next({showJson: data, edit: isEdit});
+    this.showJson({showJson: data, edit: isEdit});
   }
 
   importJSON(obj) {
@@ -2542,6 +2548,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (obj.id === this.selectedObj.id) {
         this.type = null;
         this.selectedData.valid = res.valid;
+        this.selectedData.deployed = res.deployed;
+        this.selectedData.released = res.released;
         setTimeout(() => {
           this.type = obj.objectType || obj.type;
         }, 5);
@@ -2796,17 +2804,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].path) {
           let path = args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/') + 1) || '/';
-          if (args.eventSnapshots[j].eventType.match(/ItemAdded/) || args.eventSnapshots[j].eventType.match(/ItemUpdated/)) {
-            this.initTree(path, null);
+          if (args.eventSnapshots[j].eventType.match(/InventoryAdded/) || args.eventSnapshots[j].eventType.match(/ItemAdded/) || args.eventSnapshots[j].eventType.match(/InventoryUpdated/)) {
+            this.initTree(args.eventSnapshots[j].path, path);
             break;
-          } else if (args.eventSnapshots[j].eventType.match(/ItemChanged/)) {
-            this.updateFolders(path, () => {
-              this.updateTree();
-            });
-            break;
-          } else {
-            console.log(args.eventSnapshots[j]);
           }
+        
         }
       }
     }

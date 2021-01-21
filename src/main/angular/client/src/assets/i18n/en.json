@@ -216,6 +216,7 @@
     "tooltip.urlForPrimary": "URL of the Backup Controller as seen by the Primary Controller"
   },
   "common": {
+    "label.loading": "Loading",
     "label.now": "Now",
     "label.to": "To",
     "label.from": "From",
