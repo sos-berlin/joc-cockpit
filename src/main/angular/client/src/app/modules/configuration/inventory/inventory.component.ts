@@ -1852,7 +1852,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   recursivelyExpandTree() {
     this.coreService.post('inventory/read/configuration', {
       objectType: this.inventoryConfig.selectedObj.type,
-      path: this.inventoryConfig.selectedObj.path + (this.inventoryConfig.selectedObj.path === '/' ? '' : '/') + this.inventoryConfig.selectedObj.name,
+      name: this.inventoryConfig.selectedObj.name
     }).subscribe((res: any) => {
       const pathArr = [];
       const arr = this.inventoryConfig.selectedObj.path.split('/');
@@ -2390,11 +2390,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.data = origin;
       modalRef.componentInstance.releasable = releasable;
       modalRef.result.then((res: any) => {
-        setTimeout(() => {
-          this.updateFolders(path, () => {
-            this.updateTree();
-          });
-        }, 200);
+
       }, () => {
       });
     } else {
@@ -2406,9 +2402,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.data = origin;
       modalRef.componentInstance.releasable = releasable;
       modalRef.result.then((res: any) => {
-        setTimeout(() => {
-          this.initTree(origin.path, null);
-        }, 200);
+
       }, () => {
       });
     }
@@ -2496,12 +2490,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.edit = obj.edit;
       modalRef.result.then((result) => {
         this.storeData(obj.showJson, result);
-        setTimeout(() => {
-          const path = res.path.substring(0, res.path.lastIndexOf('/')) || '/';
-          this.updateFolders(path, () => {
-            this.updateTree();
-          });
-        }, 100);
       }, () => {
       });
     });
@@ -2722,9 +2710,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.isRemove = true;
       modalRef.componentInstance.releasable = releasable;
       modalRef.result.then((res: any) => {
-        setTimeout(() => {
-          this.initTree(object.path, null);
-        }, 100);
+
       }, () => {
       });
     } else {
@@ -2804,11 +2790,17 @@ export class InventoryComponent implements OnInit, OnDestroy {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].path) {
           let path = args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/') + 1) || '/';
-          if (args.eventSnapshots[j].eventType.match(/InventoryAdded/) || args.eventSnapshots[j].eventType.match(/ItemAdded/) || args.eventSnapshots[j].eventType.match(/InventoryUpdated/)) {
-            this.initTree(args.eventSnapshots[j].path, path);
-            break;
+          if (args.eventSnapshots[j].eventType.match(/InventoryAdded/) || args.eventSnapshots[j].eventType.match(/ItemAdded/) || args.eventSnapshots[j].eventType.match(/ItemChanged/) || args.eventSnapshots[j].eventType.match(/InventoryUpdated/)) {
+            if (args.eventSnapshots[j].objectType === 'FOLDER') {
+              this.initTree(args.eventSnapshots[j].path, path);
+              break;
+            } else {
+              console.log(args.eventSnapshots[j].path, 'updated...');
+              this.updateFolders(args.eventSnapshots[j].path, () => {
+                this.updateTree();
+              });
+            }
           }
-        
         }
       }
     }

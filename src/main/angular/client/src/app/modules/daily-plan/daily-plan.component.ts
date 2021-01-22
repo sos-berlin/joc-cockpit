@@ -463,43 +463,64 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
     };
     jsgantt.init(this.editor.nativeElement);
     this.tasks = [];
-    const plans = this.data;
-    const len = plans.length;
-    if (len > 0) {
-      let count = 0;
-      for (let i = 0; i < len; i++) {
-        const _obj = {
-          id: ++count,
-          col1: this.groupBy === 'WORKFLOW' ? '' : plans[i].key,
-          col2: this.groupBy === 'WORKFLOW' ? plans[i].key : plans[i].value[0].workflowPath,
-          value: plans[i].value,
-          open: this.toggle,
-          isWorkflow: this.groupBy === 'WORKFLOW'
-        };
-        this.tasks.push(_obj);
-        const _len = plans[i].value.length;
-        for (let j = 0; j < _len; j++) {
-          const dur = plans[i].value[j].expectedDuration1;
-          const obj: any = {
+    if(this.groupBy === 'WORKFLOW' || this.groupBy === 'ORDER') {
+      const plans = this.data;
+      const len = plans.length;
+      if (len > 0) {
+        let count = 0;
+        for (let i = 0; i < len; i++) {
+          const _obj = {
             id: ++count,
-            col1: plans[i].value[j].orderId,
-            col2: this.groupBy === 'WORKFLOW' ? '' : plans[i].value[j].workflowPath,
-            plannedDate: moment(plans[i].value[j].plannedDate).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss'),
-            begin: plans[i].value[j].period.begin ? moment(plans[i].value[j].period.begin).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
-            end: plans[i].value[j].period.end ? moment(plans[i].value[j].period.end).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
-            repeat: plans[i].value[j].period.repeat,
-            class: this.coreService.getColor(plans[i].value[j].state.severity, 'bg'),
-            duration: dur > 60 ? (dur / (60 * 60)) : 1,
-            progress: dur > 60 ? (dur / (60 * 60)) : 0.1,
-            state: plans[i].value[j].state,
-            parent: _obj.id
+            col1: this.groupBy === 'WORKFLOW' ? '' : plans[i].key,
+            col2: this.groupBy === 'WORKFLOW' ? plans[i].key : plans[i].value[0].workflowPath,
+            value: plans[i].value,
+            open: this.toggle,
+            isWorkflow: this.groupBy === 'WORKFLOW'
           };
-          this.tasks.push(obj);
+          this.tasks.push(_obj);
+          const _len = plans[i].value.length;
+          for (let j = 0; j < _len; j++) {
+            const dur = plans[i].value[j].expectedDuration1;
+            const obj: any = {
+              id: ++count,
+              col1: plans[i].value[j].orderId,
+              col2: this.groupBy === 'WORKFLOW' ? '' : plans[i].value[j].workflowPath,
+              plannedDate: moment(plans[i].value[j].plannedDate).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss'),
+              begin: plans[i].value[j].period.begin ? moment(plans[i].value[j].period.begin).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
+              end: plans[i].value[j].period.end ? moment(plans[i].value[j].period.end).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
+              repeat: plans[i].value[j].period.repeat,
+              class: this.coreService.getColor(plans[i].value[j].state.severity, 'bg'),
+              duration: dur > 60 ? (dur / (60 * 60)) : 1,
+              progress: dur > 60 ? (dur / (60 * 60)) : 0.1,
+              state: plans[i].value[j].state,
+              parent: _obj.id
+            };
+            this.tasks.push(obj);
+          }
         }
+      }
+    } else {
+      for (let j = 0; j < this.data.length; j++) {
+        const dur = this.data[j].expectedDuration1;
+        const obj: any = {
+          id: (j + 1),
+          col1: this.data[j].orderId,
+          col2: this.groupBy === 'WORKFLOW' ? '' : this.data[j].workflowPath,
+          plannedDate: moment(this.data[j].plannedDate).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss'),
+          begin: this.data[j].period.begin ? moment(this.data[j].period.begin).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
+          end: this.data[j].period.end ? moment(this.data[j].period.end).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
+          repeat: this.data[j].period.repeat,
+          class: this.coreService.getColor(this.data[j].state.severity, 'bg'),
+          duration: dur > 60 ? (dur / (60 * 60)) : 1,
+          progress: dur > 60 ? (dur / (60 * 60)) : 0.1,
+          state: this.data[j].state
+        };
+        this.tasks.push(obj);
       }
     }
     jsgantt.parse({data: this.tasks});
   }
+
 }
 
 @Component({
@@ -756,6 +777,21 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     isPlanned: false,
     isFinished: false
   };
+
+  filterBtn: any = [
+    {status: 'ALL', text: 'all'},
+    {status: 'PLANNED', text: 'planned'},
+    {status: 'PENDING', text: 'pending'},
+    {status: 'INPROGRESS', text: 'incomplete'},
+    {status: 'RUNNING', text: 'running'},
+    {status: 'SUSPENDED', text: 'suspended'},
+    {status: 'CALLING', text: 'calling'},
+    {status: 'WAITING', text: 'waiting'},
+    {status: 'BLOCKED', text: 'blocked'},
+    {status: 'FAILED', text: 'failed'},
+    {status: 'FINISHED', text: 'finished'}
+  ];
+
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -850,14 +886,15 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           calendar.setDataSource(this.submissionHistoryItems);
         }
       }
-
-      this.isLoaded = true;
     }, () => {
-      this.isLoaded = true;
+
     });
   }
 
   getPlans(status): void {
+    if (status === 'ALL') {
+      this.dailyPlanFilters.filter.late = false;
+    }
     if (status) {
       this.dailyPlanFilters.filter.status = status;
     }
@@ -880,14 +917,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.planOrders.forEach((order) => {
         if (this.dailyPlanFilters.filter.groupBy === 'WORKFLOW') {
           order.show = flag;
-        } else {
+        } else if (this.dailyPlanFilters.filter.groupBy === 'ORDER'){
           order.order = flag;
         }
       });
     }
   }
 
-  private updateList(){
+  private updateList() {
     this.load(this.selectedDate);
     this.loadOrderPlan();
     this.resetCheckBox();
@@ -896,7 +933,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   groupByWorkflow(type) {
     if (this.dailyPlanFilters.filter.groupBy !== type) {
       this.dailyPlanFilters.filter.groupBy = type;
-      this.planOrders = this.groupBy.transform(this.plans, type === 'WORKFLOW' ? 'workflowPath' : 'schedulePath');
+      if (type) {
+        this.planOrders = this.groupBy.transform(this.plans, type === 'WORKFLOW' ? 'workflowPath' : 'schedulePath');
+      } else {
+        this.planOrders = this.plans.slice();
+      }
     }
     this.setStateToParentObject();
   }
@@ -1196,11 +1237,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (filter.workflowPaths) {
       obj.workflowPaths = filter.workflowPaths;
     }
-    if (filter.radio === 'planned' || !filter.radio) {
-      obj.dailyPlanDate = this.parseProcessExecuted(filter.planned);
-    } else {
-      obj.dailyPlanDate = moment(filter.dailyPlanDate || new Date()).format('YYYY-MM-DD');
-    }
     if (filter.late) {
       obj.late = true;
     }
@@ -1228,6 +1264,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     return dates;
   }
 
+  getDatesByUrl(arr, cb) {
+    this.coreService.post('daily_plan/relativedates', {relativDates: arr}).subscribe((res: any) => {
+      cb(res.absoluteDates);
+    }, () => {
+      cb([]);
+    });
+  }
+
   search() {
     this.isSearchHit = true;
     let obj: any = {
@@ -1235,17 +1279,22 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       filter: {}
     };
     this.applySearchFilter(obj.filter, this.searchFilter);
-    let apiArr = [];
     if (this.searchFilter.radio === 'current') {
       let dates = this.getDates(this.searchFilter.from, this.searchFilter.to);
-      dates.forEach((date) => {
-        obj.filter.dailyPlanDate = moment(date).format('YYYY-MM-DD');
-        apiArr.push(this.coreService.post('daily_plan/orders', this.coreService.clone(obj)));
-      });
+      this.callApi(dates, obj);
     } else {
-      apiArr.push(this.coreService.post('daily_plan/orders', this.coreService.clone(obj)));
+      this.getDatesByUrl([this.searchFilter.from1, this.searchFilter.to1], (dates) => {
+        this.callApi(dates, obj);
+      });
     }
+  }
 
+  private callApi(dates, obj) {
+    let apiArr = [];
+    dates.forEach((date) => {
+      obj.filter.dailyPlanDate = moment(date).format('YYYY-MM-DD');
+      apiArr.push(this.coreService.post('daily_plan/orders', this.coreService.clone(obj)));
+    });
     forkJoin(apiArr).subscribe((result) => {
       let plannedOrderItems = [];
       for (let i = 0; i < result.length; i++) {
@@ -1259,35 +1308,41 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private updateTable(filterData) {
-    let tempArr = [];
-    if (this.planOrders && this.planOrders.length > 0) {
-      tempArr = this.coreService.clone(this.planOrders);
-    }
-    this.planOrders = this.groupBy.transform(filterData, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW' ? 'workflowPath' : 'schedulePath');
-    if (this.dailyPlanFilters.filter.sortBy === 'orderId') {
-      this.planOrders = this.orderPipe.transform(this.planOrders,
-        this.dailyPlanFilters.filter.groupBy === 'ORDER' ? 'schedulePath' : this.dailyPlanFilters.filter.sortBy,
-        this.dailyPlanFilters.reverse);
-    }
-    if (tempArr.length > 0) {
-      for (let i = 0; i < tempArr.length; i++) {
-        for (let j = 0; j < this.planOrders.length; j++) {
-          if (this.planOrders[j].key === tempArr[i].key) {
-            this.planOrders[j].order = tempArr[i].order;
-            this.planOrders[j].show = tempArr[i].show;
-            break;
+    if (this.dailyPlanFilters.filter.groupBy) {
+      let tempArr = [];
+      if (this.planOrders && this.planOrders.length > 0) {
+        tempArr = this.coreService.clone(this.planOrders);
+      }
+      this.planOrders = this.groupBy.transform(filterData, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW' ? 'workflowPath' : 'schedulePath');
+      if (this.dailyPlanFilters.filter.sortBy === 'orderId') {
+        this.planOrders = this.orderPipe.transform(this.planOrders,
+          this.dailyPlanFilters.filter.groupBy === 'ORDER' ? 'schedulePath' : this.dailyPlanFilters.filter.sortBy,
+          this.dailyPlanFilters.reverse);
+      }
+      if (tempArr.length > 0) {
+        for (let i = 0; i < tempArr.length; i++) {
+          for (let j = 0; j < this.planOrders.length; j++) {
+            if (this.planOrders[j].key === tempArr[i].key) {
+              this.planOrders[j].order = tempArr[i].order;
+              this.planOrders[j].show = tempArr[i].show;
+              break;
+            }
           }
         }
       }
+      this.setStateToParentObject();
+    } else {
+      this.planOrders = filterData;
     }
-    this.setStateToParentObject();
     this.planOrders = [...this.planOrders];
   }
 
   private setStateToParentObject() {
-    this.planOrders.forEach((plan) => {
-      this.checkState(plan, plan.value);
-    });
+    if (this.planOrders.length > 0 && this.planOrders[0].value) {
+      this.planOrders.forEach((plan) => {
+        this.checkState(plan, plan.value);
+      });
+    }
   }
 
   sortBy() {
@@ -1308,19 +1363,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  private parseProcessExecuted(regex) {
-    let date;
-    if (/^\s*[-,+](\d+)(d)\s*$/.test(regex) || /^\s*(\d+)(d)\s*$/.test(regex)) {
-      date = regex;
-    } else if (/^\s*(Today)\s*$/i.test(regex)) {
-      date = '0d';
-    } else if (/^\s*(now)\s*$/i.test(regex)) {
-      date = moment.utc(new Date());
-    } else if (/^\s*(\d+)(d)\s*$/.test(regex)) {
-      date = regex;
-    }
-    return date;
-  }
 
   modifyOrder(order) {
     const modalRef = this.modalService.open(ModifyStartTimeModalComponent, {backdrop: 'static'});
@@ -1531,22 +1573,29 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   checkAll() {
     if (this.planOrders.length > 0) {
       let orders = this.planOrders.slice((this.preferences.entryPerPage * (this.dailyPlanFilters.currentPage - 1)), (this.preferences.entryPerPage * this.dailyPlanFilters.currentPage));
-      if (this.object.checkbox) {
-        this.object.templates = [];
-        for (let i = 0; i < orders.length; i++) {
-          orders[i].checkbox = true;
-          this.object.templates = this.object.templates.concat(orders[i].value);
+      if (this.dailyPlanFilters.filter.groupBy) {
+        if (this.object.checkbox) {
+          this.object.templates = [];
+          for (let i = 0; i < orders.length; i++) {
+            orders[i].checkbox = true;
+            this.object.templates = this.object.templates.concat(orders[i].value);
+          }
+        } else {
+          this.object.templates = [];
+          for (let i = 0; i < orders.length; i++) {
+            orders[i].checkbox = false;
+          }
         }
-      } else {
-        this.object.templates = [];
-        for (let i = 0; i < orders.length; i++) {
-          orders[i].checkbox = false;
-        }
+      } else{
+        this.object.templates = this.object.checkbox ? orders : [];
       }
     } else {
       this.object.checkbox = false;
+      this.object.templates = [];
     }
-    this.checkState(this.object, this.object.templates);
+    if (this.dailyPlanFilters.filter.groupBy) {
+      this.checkState(this.object, this.object.templates);
+    }
   }
 
   checkOrderTemplate(template) {
@@ -1578,14 +1627,18 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   checkPlan(plan) {
-    let count = 0;
-    for (let i = 0; i < this.object.templates.length; i++) {
-      if ((this.object.templates[i].workflowPath === plan.key) || (this.object.templates[i].schedulePath === plan.key)) {
-        ++count;
+    if (this.dailyPlanFilters.filter.groupBy) {
+      let count = 0;
+      for (let i = 0; i < this.object.templates.length; i++) {
+        if ((this.object.templates[i].workflowPath === plan.key) || (this.object.templates[i].schedulePath === plan.key)) {
+          ++count;
+        }
       }
+      plan.checkbox = count === plan.value.length;
+      this.updateMainCheckbox();
+    } else {
+      this.object.checkbox = this.object.templates.length === plan.length;
     }
-    plan.checkbox = count === plan.value.length;
-    this.updateMainCheckbox();
   }
 
   private updateMainCheckbox() {

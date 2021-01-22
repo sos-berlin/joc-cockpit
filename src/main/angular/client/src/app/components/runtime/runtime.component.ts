@@ -855,7 +855,7 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
         dateTo: this.calendarTitle + '-12-31'
       };
       if (this.calendar) {
-        obj.path = this.calendar.calendarPath;
+        obj.name = this.calendar.calendarName;
       } else {
         obj.calendars = this.getCalendarObj(this.calendars);
         obj.nonWorkingCalendars = this.nonWorkingCalendars;
@@ -883,7 +883,7 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
       };
 
       if (this.calendar) {
-        obj.path = this.calendar.calendarPath;
+        obj.name = this.calendar.calendarName ;
       } else {
         obj.calendars = this.getCalendarObj(this.calendars);
         obj.nonWorkingCalendars = this.nonWorkingCalendars;
@@ -1099,7 +1099,7 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
   private getCalendarObj(list): any {
     let calendars = [];
     for (let i = 0; i < list.length; i++) {
-      let obj: any = {calendarPath: list[i].calendarPath, periods: list[i].periods};
+      let obj: any = {calendarName: list[i].calendarName, periods: list[i].periods};
       if (list[i].frequencyList && list[i].frequencyList.length > 0) {
         obj.includes = {};
         list[i].frequencyList.forEach((val) => {
@@ -1113,7 +1113,7 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
 
   private saveRestriction(data) {
     for (let i = 0; i < this.calendars.length; i++) {
-      if (data.calendarPath === this.calendars[i].calendarPath) {
+      if (data.calendarName  === this.calendars[i].calendarName ) {
         this.calendars[i].frequencyList = data.frequencyList;
         break;
       }

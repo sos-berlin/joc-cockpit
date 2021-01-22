@@ -28,7 +28,7 @@
           </div>
         </div>
         <div class="m-l-md m-b-xs" style="padding-left: 21px" *ngFor="let cal of node.origin.calendars">
-          <label class="md-check" style="top:2px">
+          <label class="md-check" style="top:4px">
             <input type="checkbox" name="'chk-'+ {{cal.id}}" [(ngModel)]="cal.isChecked" (click)="handleCheckbox(cal)" />
             <i class="primary"></i>
           </label>

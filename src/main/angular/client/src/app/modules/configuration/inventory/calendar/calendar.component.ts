@@ -1671,10 +1671,8 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       delete obj['excludes'];
     }
     if (!_.isEqual(this.calendar.actual, JSON.stringify(this.calendar.configuration))) {
-      const _path = this.calendar.path1 + (this.calendar.path1 === '/' ? '' : '/') + this.calendar.name;
       this.coreService.post('inventory/store', {
         configuration: obj,
-        path: _path,
         id: this.calendar.id,
         valid: !!obj.includes,
         objectType: obj.type

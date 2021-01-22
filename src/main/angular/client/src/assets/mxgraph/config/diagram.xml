@@ -18,7 +18,7 @@
       </Job>
     </add>
     <add as="If">
-      <If label="if" predicate="returnCode > 0">
+      <If label="if" predicate="$returnCode > 0">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="75" height="75"/>
         </mxCell>

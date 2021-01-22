@@ -60,7 +60,7 @@
             <div translate>workflow.label.syntax</div>
             <div class="text-muted">returnCode</div>
             <div class="m-t-sm" translate>workflow.label.example</div>
-            <div class="text-muted">!(returnCode in [7,9])</div>
+            <div class="text-muted">!($returnCode in [7,9])</div>
           </div>
         </div>
         <div *ngIf="expression.type === 'variable'">

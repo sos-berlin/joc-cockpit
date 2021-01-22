@@ -113,13 +113,23 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.updateList(node, type);
       }
     } else {
+      if (this.schedule.configuration.workflowName1) {
+        if (this.schedule.configuration.workflowName !== this.schedule.configuration.workflowName1) {
+          this.schedule.configuration.workflowName = this.schedule.configuration.workflowName1;
+        }
+      } else if (node.key && !node.key.match('/')) {
+        if (this.schedule.configuration.workflowName !== node.key) {
+          this.schedule.configuration.workflowName = node.key;
+        }
+      }
+      console.log(this.schedule.configuration.workflowName);
       setTimeout(() => {
         this.saveJSON();
       }, 10);
     }
   }
 
-  updateList(node, type){
+  updateList(node, type) {
     let obj: any = {
       path: node.key,
       objectTypes: [type]
@@ -134,17 +144,11 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       let flag = false;
       for (let i = 0; i < data.length; i++) {
         const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-        if (this.schedule.configuration.workflowPath === _path) {
-          flag = true;
-        }
-        data[i].title = _path;
+        data[i].title =  data[i].name;
         data[i].path = _path;
-        data[i].key = _path;
+        data[i].key =  data[i].name;
         data[i].type = type;
         data[i].isLeaf = true;
-      }
-      if (!flag) {
-        this.schedule.configuration.workflowPath = null;
       }
       if (node.origin.children && node.origin.children.length > 0) {
         data = data.concat(node.origin.children);
@@ -341,13 +345,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       if (this.schedule.configuration.variables.length === 0) {
         this.addVariable();
       }
-      if (this.schedule.configuration.workflowPath) {
-        const path = this.schedule.configuration.workflowPath.substring(0, this.schedule.configuration.workflowPath.lastIndexOf('/')) || '/';
-        this.loadWorkflowTree(path);
-      }
       this.schedule.actual = JSON.stringify(this.schedule.configuration);
       if (!res.valid) {
-        if (!this.schedule.configuration.workflowPath) {
+        if (!this.schedule.configuration.workflowName) {
           this.invalidMsg = 'inventory.message.workflowIsMissing';
         } else if (this.schedule.configuration.calendars.length === 0) {
           this.invalidMsg = 'inventory.message.calendarIsMissing';
@@ -392,7 +392,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
 
   private setErrorMessage(res) {
     if (res.invalidMsg) {
-      if (res.invalidMsg.match('workflowPath')) {
+      if (res.invalidMsg.match('workflowName')) {
         this.invalidMsg = 'inventory.message.workflowIsMissing';
       } else if (res.invalidMsg.match('periods')) {
         this.invalidMsg = 'inventory.message.startTimeIsMissing';
@@ -409,7 +409,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
 
   saveJSON() {
     if (!_.isEqual(this.schedule.actual, JSON.stringify(this.schedule.configuration))) {
-      const _path = this.schedule.path1 + (this.schedule.path1 === '/' ? '' : '/') + this.schedule.name;
       this.schedule.configuration.controllerId = this.schedulerId;
       // this.schedule.configuration.path = _path;
       let obj = this.coreService.clone(this.schedule.configuration);
@@ -418,7 +417,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           obj.variables.splice(obj.variables.length - 1, 1);
         }
       }
-      obj.path = _path;
+
       if (obj.calendars.length > 0) {
         for (let i = 0; i < obj.calendars.length; i++) {
           if (obj.calendars[i].frequencyList) {
@@ -433,12 +432,11 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         }
       }
       let isValid = false;
-      if (obj.workflowPath && obj.calendars.length > 0) {
+      if (obj.workflowName && obj.calendars.length > 0) {
         isValid = true;
       }
       this.coreService.post('inventory/store', {
         configuration: obj,
-        path: _path,
         valid: isValid,
         id: this.schedule.id,
         objectType: this.objectType

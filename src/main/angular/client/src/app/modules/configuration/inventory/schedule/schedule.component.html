@@ -53,26 +53,25 @@
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((path.dirty || path.touched) && path.invalid))}">
           <label class="col-md-4 col-lg-3  form-control-label" translate>inventory.label.workflowPath</label>
-          <div class="col-md-8 col-lg-6">
+          <div class="col-md-8 col-lg-6 select-input-both">
+            <input autocomplete="off"  type="text" class="form-control"
+                   placeholder="{{'inventory.placeholder.workflowPath' | translate}}"
+                   name="path" #path="ngModel" [(ngModel)]="schedule.configuration.workflowName">
             <nz-tree-select
-              required
-              name="path"
+              name="workflowName"
               nzNoAnimation
               #treeSelectCtrl
-              #path="ngModel"
               [nzAllowClear]="false"
               [nzNodes]="workflowTree"
-              [nzAsyncData]="true"
               [nzHideUnMatched]="true"
               [nzDropdownStyle]="{ 'max-height': '260px' }"
               nzShowSearch
-              [nzPlaceHolder]="'inventory.placeholder.workflowPath' | translate"
-              [(ngModel)]="schedule.configuration.workflowPath"
+              [(ngModel)]="schedule.configuration.workflowName1"
               (nzExpandChange)="onExpand($event, 'WORKFLOW')"
             >
             <ng-template #nzTreeTemplate let-node>
               <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'WORKFLOW', $event);">
-                <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == schedule.configuration.workflowPath">
+                <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == schedule.configuration.workflowName">
                   <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                   <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
                   {{node.origin.name}}

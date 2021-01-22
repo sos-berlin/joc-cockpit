@@ -98,7 +98,7 @@ export class TreeModalComponent implements OnInit, OnDestroy {
         if (nodes[i].calendars) {
           for (let j = 0; j < nodes[i].calendars.length; j++) {
             if (nodes[i].calendars[j].isChecked) {
-              self.objects.push({calendarPath: nodes[i].calendars[j].path, periods: []});
+              self.objects.push({calendarName: nodes[i].calendars[j].name, periods: []});
             }
           }
         }

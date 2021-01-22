@@ -5399,6 +5399,17 @@ General CSS
   }
 }
 
+#dailyPlanTableId {
+  .ant-table-small {
+    border-bottom: none !important;
+  }
+
+  .ant-table-small.ant-table-bordered .ant-table-placeholder {
+    border-bottom: 1px solid $border-color;
+  }
+}
+
+
 .inner-table .equal-6 {
   width: 16.6%;
 }

@@ -146,7 +146,11 @@
   }
   #rightSideBar{min-width:610px}
 }
-
+@media (max-width: 1439px) {
+  .break-line {
+    margin-top: 8px;
+  }
+}
 @media (max-width: 1280px) {
   .hidden-btn-group1 {
     display: none
@@ -163,7 +167,7 @@
 
 @media (max-width: 1010px) {
   body {
-    min-width: 640px;
+    min-width: 768px;
     right: 0;
     left: 0;
     overflow-x: auto

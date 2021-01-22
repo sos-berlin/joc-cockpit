@@ -74,7 +74,7 @@ export class LoggingService {
         values.push(entry);
         localStorage.setItem(this.location, JSON.stringify(values));
         if ((1024 * 1024) - unescape(encodeURIComponent(JSON.stringify(localStorage.getItem(this.location)))).length < 0) {
-          localStorage.clientLogs.splice(1, 100);
+         // localStorage.clientLogs.splice(1, 100);
         }
       } catch (ex) {
         // Display error in console

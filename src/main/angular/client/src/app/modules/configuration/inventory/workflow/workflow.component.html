@@ -278,8 +278,8 @@
         <div class="form-group row" [ngClass]="{'has-error' : ((lockId.dirty || lockId.touched) && lockId.invalid)}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.lockId</label>
           <div class="col-md-8 col-lg-9 select-input-both">
-            <input autocomplete="off"  type="text" class="form-control"
-                   placeholder="'workflow.placeholder.selectLock' | translate"
+            <input autocomplete="off"  type="text" class="form-control" required
+                   placeholder="{{'workflow.placeholder.selectLock' | translate}}"
                    name="lockId" #lockId="ngModel" [(ngModel)]="selectedNode.obj.lockId">
             <nz-tree-select
               name="lockIdSelect"

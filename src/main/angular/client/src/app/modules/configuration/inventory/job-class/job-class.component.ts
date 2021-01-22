@@ -80,10 +80,8 @@ export class JobClassComponent implements OnChanges {
 
   saveJSON() {
     if (this.jobClass.actual !== JSON.stringify(this.jobClass.configuration)) {
-      const _path = this.jobClass.path1 + (this.jobClass.path1 === '/' ? '' : '/') + this.jobClass.name;
       this.coreService.post('inventory/store', {
         configuration: this.jobClass.configuration,
-        path: _path,
         valid: !!this.jobClass.configuration.maxProcesses,
         id: this.jobClass.id,
         objectType: this.objectType

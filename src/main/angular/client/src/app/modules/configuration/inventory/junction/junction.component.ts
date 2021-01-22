@@ -81,10 +81,8 @@ export class JunctionComponent implements OnChanges {
 
   saveJSON() {
     if (this.junction.actual !== JSON.stringify(this.junction.configuration)) {
-      const _path = this.junction.path1 + (this.junction.path1 === '/' ? '' : '/') + this.junction.name;
       this.coreService.post('inventory/store', {
         configuration: this.junction.configuration,
-        path: _path,
         valid: true,
         id: this.junction.id,
         objectType: this.objectType
