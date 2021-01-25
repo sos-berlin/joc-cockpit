@@ -126,6 +126,11 @@
         </div>
       </td>
     </tr>
+    <tr *ngIf="value.seperate">
+      <td colspan="13" class="td-border">
+
+      </td>
+    </tr>
   </ng-container>
 </ng-template>
 <ng-template #planTemplate let-ajaxTable>
@@ -180,11 +185,13 @@
            (click)="expandCollapseOrder(plan)" aria-hidden="true"></i>
         <i class="fa fa-angle-right cursor fa-lg p-r-xs" *ngIf="!plan.order"
            (click)="expandCollapseOrder(plan)" aria-hidden="true"></i>
-        {{plan.value[0].schedulePath}}
+
+        <span *ngIf="dailyPlanFilters.filter.groupBy === 'WORKFLOW'">{{plan.value[0].workflowPath}} </span>
+        <span *ngIf="dailyPlanFilters.filter.groupBy !== 'WORKFLOW'">{{plan.value[0].schedulePath}} </span>
       </td>
       <td
         *ngIf="!plan.order && plan.value.length === 1 && plan.value[0] && dailyPlanFilters.filter.groupBy !== 'WORKFLOW'">
-        <span>{{plan.value[0].workflowPath}} </span>
+        <span>{{plan.value[0].workflowPath}}</span>
       </td>
       <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]">
         <span class="label"
@@ -423,19 +430,22 @@
                         [disabled]="planOrders.length === 0" (click)="expandCollapseDetails(false)">
                   <i class="fa fa-compress text"></i>
                 </button>
-                <button class="btn btn-grey btn-sm"
+                <button class="btn btn-grey btn-sm hidden-btn-text"
                         [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy==='ORDER'}"
-                        (click)="groupByWorkflow('ORDER')">&nbsp;
+                        (click)="groupByWorkflow('ORDER')">
+                  <i class="icon icon-calendar-icon"></i>
                   <span translate>dailyPlan.button.groupByScheduleTemplate</span>
                 </button>
-                <button class="btn btn-grey btn-sm"
+                <button class="btn btn-grey btn-sm hidden-btn-text"
                         [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy==='WORKFLOW'}"
-                        (click)="groupByWorkflow('WORKFLOW')">&nbsp;
+                        (click)="groupByWorkflow('WORKFLOW')">
+                  <i class="icon icon-workflows-icon"></i>
                   <span translate>dailyPlan.button.groupByWorkflow</span>
                 </button>
-                <button class="btn btn-grey btn-sm"
+                <button class="btn btn-grey btn-sm hidden-btn-text"
                         [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy===''}"
-                        (click)="groupByWorkflow('')">&nbsp;
+                        (click)="groupByWorkflow('')">
+                  <i class="icon icon-orders-icon"></i>
                   <span translate>dailyPlan.button.groupByOrder</span>
                 </button>
                 <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="advancedSearch()"
@@ -530,9 +540,8 @@
                     </th>
                     <th (click)="sort('workflowPath')">
                       <a>
-                        <span class="p-r-xs" *ngIf="dailyPlanFilters.filter.groupBy === 'ORDER'" translate>dailyPlan.label.workflow</span>
+                        <span class="p-r-xs" *ngIf="dailyPlanFilters.filter.groupBy !== 'WORKFLOW'" translate>dailyPlan.label.workflow</span>
                         <span class="p-r-xs" *ngIf="dailyPlanFilters.filter.groupBy === 'WORKFLOW'" translate>dailyPlan.label.workflowAndOrder</span>
-                        <span class="p-r-xs" *ngIf="dailyPlanFilters.filter.groupBy === ''" translate>dailyPlan.label.workflow</span>
                         <i *ngIf="dailyPlanFilters.filter.sortBy == 'workflowPath' && !dailyPlanFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="dailyPlanFilters.filter.sortBy == 'workflowPath' && dailyPlanFilters.reverse"
@@ -609,7 +618,6 @@
                                   [ngTemplateOutletContext]="{ $implicit: ajaxTable}"></ng-container>
                     <ng-container *ngIf="!dailyPlanFilters.filter.groupBy" [ngTemplateOutlet]="orderTemplate"
                                   [ngTemplateOutletContext]="{ $implicit: ajaxTable.data}"></ng-container>
-
                     </tbody>
                   </ng-container>
                 </nz-table>

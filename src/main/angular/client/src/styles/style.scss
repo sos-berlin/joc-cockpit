@@ -6888,7 +6888,19 @@ div.ace_tooltip {
   left: 74px !important;
   margin-top: -88px;
 }
+.hidden-btn-text {
+  i {
+    display: none;
+  }
+}
 
 .vertex-text {
   width: 96px;
+}
+table tr > td.td-border {
+  background: #ccc !important;
+  padding: 1px !important;
+  tr:hover {
+    background: #ccc !important;
+  }
 }

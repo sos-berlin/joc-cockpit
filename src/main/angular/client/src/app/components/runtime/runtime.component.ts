@@ -855,7 +855,7 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
         dateTo: this.calendarTitle + '-12-31'
       };
       if (this.calendar) {
-        obj.name = this.calendar.calendarName;
+        obj.path = this.calendar.calendarName;
       } else {
         obj.calendars = this.getCalendarObj(this.calendars);
         obj.nonWorkingCalendars = this.nonWorkingCalendars;
@@ -883,7 +883,7 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
       };
 
       if (this.calendar) {
-        obj.name = this.calendar.calendarName ;
+        obj.path = this.calendar.calendarName ;
       } else {
         obj.calendars = this.getCalendarObj(this.calendars);
         obj.nonWorkingCalendars = this.nonWorkingCalendars;

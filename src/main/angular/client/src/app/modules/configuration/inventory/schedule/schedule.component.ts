@@ -410,7 +410,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   saveJSON() {
     if (!_.isEqual(this.schedule.actual, JSON.stringify(this.schedule.configuration))) {
       this.schedule.configuration.controllerId = this.schedulerId;
-      // this.schedule.configuration.path = _path;
       let obj = this.coreService.clone(this.schedule.configuration);
       if (obj.variables) {
         if (this.coreService.isLastEntryEmpty(obj.variables, 'name', '')) {

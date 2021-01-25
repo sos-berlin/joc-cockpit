@@ -178,8 +178,8 @@
                     </li>
                   </ul>
                 </nz-dropdown-menu>
-                <div class="node-content-wrapper" [ngClass]="{'disable-link' : node.origin.deleted, 'cut-row' : (copyObj && copyObj.operation === 'CUT' && copyObj.path === node.origin.path && copyObj.name === node.origin.name && copyObj.type === node.origin.type), 'node-content-wrapper-active' : (node.origin.name === selectedObj.name &&
-                node.origin.type === selectedObj.type && node.origin.path === selectedObj.path) ||
+                <div class="node-content-wrapper" [ngClass]="{'disable-link' : node.origin.deleted, 'cut-row' : (copyObj && copyObj.operation === 'CUT' && copyObj.name === node.origin.name && copyObj.type === node.origin.type), 'node-content-wrapper-active' : (node.origin.name === selectedObj.name &&
+                node.origin.type === selectedObj.type) ||
                 (!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.path === selectedObj.path) ||
                 (node.origin.object && node.origin.object === selectedObj.type && node.origin.path === selectedObj.path)}" (click)="selectNode(node)">
                   <i *ngIf="node.children && !node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.dailyPlan" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
@@ -194,7 +194,7 @@
                   <span *ngIf="node.origin.type" class="fa fa-check-circle-o text-xs w-11" [ngClass]="{'fa-circle-o': !node.origin.valid , 'fa-circle text-success' : node.origin.deployed || node.origin.released}" style="margin-top: 4px"></span>
                   <span class="p-l-xs">
                     <span *ngIf="node.origin.object || node.origin.controller || node.origin.dailyPlan">{{node.origin.name | translate}}</span>
-                    <span *ngIf="!node.origin.object && !node.origin.controller && !node.origin.dailyPlan">{{node.origin.name || node.origin.path}}</span>
+                    <span *ngIf="!node.origin.object && !node.origin.controller && !node.origin.dailyPlan">{{node.origin.name}}</span>
                     <i class="p-l-xs" *ngIf="node.origin.deleted && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object">({{'inventory.label.deleted' | translate}})</i>
                   </span>
                 </div>

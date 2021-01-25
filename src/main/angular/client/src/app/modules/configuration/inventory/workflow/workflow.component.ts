@@ -647,7 +647,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         if (!res.configuration.instructions || res.configuration.instructions.length === 0) {
           this.invalidMsg = 'inventory.message.emptyWorkflow';
         } else if (!res.valid) {
-          this.validateByURL(res.configuration, this.data.path);
+          setTimeout(() => {
+            this.validateByURL(res.configuration);
+          }, 250);
         }
         this.updateXMLJSON(false);
         this.centered();
@@ -1009,7 +1011,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         name: this.selectedNode.obj.lockId,
         objectType: 'LOCK'
       }).subscribe((res: any) => {
-        this.selectedNode.obj.limit = res.configuration.limit || 1;
+        if (this.selectedNode && this.selectedNode.obj) {
+          this.selectedNode.obj.limit = res.configuration.limit || 1;
+        }
       });
     }
   }
@@ -6046,13 +6050,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.dataService.reloadTree.next({back: this.workflow});
   }
 
-  private validateByURL(json, path) {
+  private validateByURL(json) {
     const obj = _.clone(json);
-    obj.path = path;
     this.coreService.post('inventory/' + this.objectType + '/validate', obj).subscribe((res: any) => {
       if (!this.invalidMsg && res.invalidMsg) {
         this.invalidMsg = res.invalidMsg;
       }
+      this.workflow.valid = res.valid;
+     
     }, () => {
     });
   }
@@ -6101,7 +6106,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   private storeData(data) {
     this.coreService.post('inventory/store', {
       configuration: data,
-      path: this.workflow.path,
       id: this.workflow.id,
       valid: this.workflow.valid,
       objectType: this.objectType

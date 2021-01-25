@@ -121,6 +121,10 @@
     display: inline-block
   }
 
+  .break-line {
+    margin-top: 0 !important;
+  }
+
   .hidden-btn-group {
     display: none
   }
@@ -188,7 +192,7 @@
   }
 
   .hidden-btn-text i {
-    font-size: 13px
+    display: block;
   }
 
   .navbar-brand img {

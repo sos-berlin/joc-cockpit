@@ -2,6 +2,10 @@ import {Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output}
 import {Subscription} from 'rxjs';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {TranslateService} from '@ngx-translate/core';
+import {Router} from '@angular/router';
+import {NzMessageService} from 'ng-zorro-antd';
+import * as _ from 'underscore';
+import * as moment from 'moment';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
@@ -11,10 +15,6 @@ import {TreeModalComponent} from '../../components/tree-modal/tree.component';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component';
 import {SearchPipe} from '../../filters/filter.pipe';
-import * as _ from 'underscore';
-import * as moment from 'moment';
-import {Router} from '@angular/router';
-import {NzMessageService} from 'ng-zorro-antd';
 
 declare const $;
 
@@ -612,15 +612,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
   showSearchPanel = false;
   dateFormat: any;
   dateFormatM: any;
-  notAuthenticate = false;
   historyFilters: any = {};
   selectedFiltered1: any = {};
   selectedFiltered2: any = {};
-  selectedFiltered3: any = {};
   selectedFiltered4: any = {};
   temp_filter1: any = {};
   temp_filter2: any = {};
-  temp_filter3: any = {};
   temp_filter4: any = {};
   historyFilterObj: any = {};
   savedHistoryFilter: any = {};
