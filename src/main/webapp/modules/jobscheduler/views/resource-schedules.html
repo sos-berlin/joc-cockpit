@@ -235,7 +235,7 @@
                             <div class="p-l">
                                 <div ng-repeat="job in schedule.usedByJobs"> <a class="text-hover-primary" ng-click="showJob(job.job);">{{job.job}}</a></div>
                             </div>
-                            <div ng-if="!schedule.usedByOrders && !schedule.usedByJobs && !schedule.substitutedBy" translate>message.noDataFound</div>
+                            <div ng-if="!schedule.usedByOrders && !schedule.usedByJobs" translate>message.noDataFound</div>
                         </td>
                     </tr>
                     <tr ng-if="schedule.show && schedule.substitutedBy">

@@ -136,6 +136,7 @@
             getJobsP: function (filter) {
                 let deferred = $q.defer();
                 let Job = $resource('jobs/p');
+                filter.withoutDuration = true;
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -146,6 +147,7 @@
             getJobP: function (filter) {
                 let deferred = $q.defer();
                 let Job = $resource('job/p');
+                filter.withoutDuration = true;
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
