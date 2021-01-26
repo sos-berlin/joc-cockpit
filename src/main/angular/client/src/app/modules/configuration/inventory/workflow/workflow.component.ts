@@ -647,9 +647,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         if (!res.configuration.instructions || res.configuration.instructions.length === 0) {
           this.invalidMsg = 'inventory.message.emptyWorkflow';
         } else if (!res.valid) {
-          setTimeout(() => {
-            this.validateByURL(res.configuration);
-          }, 250);
+          this.validateByURL(res.configuration);
         }
         this.updateXMLJSON(false);
         this.centered();
