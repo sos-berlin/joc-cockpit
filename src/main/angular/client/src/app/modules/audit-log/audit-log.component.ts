@@ -3,7 +3,6 @@ import {Subscription} from 'rxjs';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import * as _ from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
-
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {ExcelService} from '../../services/excel.service';
 import {CoreService} from '../../services/core.service';
@@ -13,20 +12,18 @@ import {DataService} from '../../services/data.service';
 import {SearchPipe} from '../../filters/filter.pipe';
 
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-filter-content',
   templateUrl: './filter-dialog.html',
 })
-
 export class FilterModalComponent implements OnInit {
-  schedulerIds: any = {};
-  preferences: any = {};
-  permission: any = {};
-
   @Input() allFilter;
   @Input() new;
   @Input() edit;
   @Input() filter;
 
+  schedulerIds: any = {};
+  preferences: any = {};
+  permission: any = {};
   name: string;
 
   constructor(private authService: AuthService, public activeModal: NgbActiveModal) {
@@ -171,7 +168,7 @@ export class SearchComponent implements OnInit {
   templateUrl: './audit-log.component.html'
 })
 export class AuditLogComponent implements OnInit, OnDestroy {
-
+  objectType = 'AUDITLOG';
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
@@ -214,7 +211,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       let obj = {
         controllerId: this.schedulerIds.selected,
         configurationType: 'CUSTOMIZATION',
-        objectType: 'AUDITLOG',
+        objectType: this.objectType,
         shared: true
       };
       this.coreService.post('configurations', obj).subscribe((res: any) => {
@@ -235,7 +232,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'CUSTOMIZATION',
-      objectType: 'AUDITLOG'
+      objectType: this.objectType
     };
     this.coreService.post('configurations', obj).subscribe((res: any) => {
       if (this.filterList && this.filterList.length > 0) {
@@ -281,6 +278,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       }
     }, (err) => {
       this.savedFilter.selected = undefined;
+      this.load(null);
     });
   }
 

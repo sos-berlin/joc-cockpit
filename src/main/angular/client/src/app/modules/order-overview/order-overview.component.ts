@@ -531,6 +531,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       });
     } else {
       this.coreService.post('orders/' + operation, obj).subscribe(() => {
+        this.reset();
       });
     }
   }

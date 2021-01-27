@@ -1006,13 +1006,18 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   private getLimit() {
     this.error = false;
     if (this.selectedNode.obj.lockId) {
-      this.coreService.post('inventory/read/configuration', {
+      this.coreService.post('inventory/path', {
         name: this.selectedNode.obj.lockId,
         objectType: 'LOCK'
       }).subscribe((res: any) => {
-        if (this.selectedNode && this.selectedNode.obj) {
-          this.selectedNode.obj.limit = res.configuration.limit || 1;
-        }
+        this.coreService.post('inventory/read/configuration', {
+          path: res.path,
+          objectType: 'LOCK'
+        }).subscribe((conf: any) => {
+          if (this.selectedNode && this.selectedNode.obj) {
+            this.selectedNode.obj.limit = conf.configuration.limit || 1;
+          }
+        });
       });
     }
   }
