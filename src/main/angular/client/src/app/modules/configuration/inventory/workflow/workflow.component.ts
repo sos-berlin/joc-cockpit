@@ -1004,6 +1004,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private getLimit() {
+    this.error = false;
     if (this.selectedNode.obj.lockId) {
       this.coreService.post('inventory/read/configuration', {
         name: this.selectedNode.obj.lockId,
@@ -2498,8 +2499,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           this.images = [];
           let img;
           if (state.cell && (state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'Finish' || state.cell.value.tagName === 'Fail' ||
-            state.cell.value.tagName === 'Await' || state.cell.value.tagName === 'Publish' || state.cell.value.tagName === 'If' || state.cell.value.tagName === 'Fork'
-            || state.cell.value.tagName === 'Try' || state.cell.value.tagName === 'Retry' || state.cell.value.tagName === 'Lock')) {
+            state.cell.value.tagName === 'Await' || state.cell.value.tagName === 'Publish' || self.workflowService.isInstructionCollapsible(state.cell.value.tagName))) {
             img = mxUtils.createImage('./assets/images/menu.svg');
             let x = state.x - (20 * state.shape.scale), y = state.y - (8 * state.shape.scale);
             if (state.cell.value.tagName !== 'Job') {
@@ -2744,8 +2744,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               cell.value.tagName === 'Await' || cell.value.tagName === 'Publish') {
               graph.setSelectionCell(cell);
             } else {
-              if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork'
-                || cell.value.tagName === 'Try' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock') {
+              if (self.workflowService.isInstructionCollapsible(cell.value.tagName )) {
                 graph.setSelectionCells([cell]);
               }
             }
@@ -3302,8 +3301,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 75, 75, 'if');
                     } else if (cells[0].value.tagName === 'Retry') {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 75, 75, 'retry');
-                    }
-                    if (cells[0].value.tagName === 'Lock') {
+                    } else if (cells[0].value.tagName === 'Lock') {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', null), 0, 0, 68, 68, self.workflowService.closeLock);
                     } else {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 75, 75, 'try');
@@ -3441,30 +3439,32 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (self.cutCell) {
             clearClipboard();
           }
-          setTimeout(() => {
-            if (self.workflow.actual) {
-              self.implicitSave = true;
-              if (self.noSave) {
-                self.noSave = false;
-              } else {
-                if (!self.skipXMLToJSONConversion) {
-                  self.xmlToJsonParser(null);
+          if (!self.isLoading) {
+            setTimeout(() => {
+              if (self.workflow.actual) {
+                self.implicitSave = true;
+                if (self.noSave) {
+                  self.noSave = false;
                 } else {
-                  self.skipXMLToJSONConversion = false;
+                  if (!self.skipXMLToJSONConversion) {
+                    self.xmlToJsonParser(null);
+                  } else {
+                    self.skipXMLToJSONConversion = false;
+                  }
+                  if (self.workflow.configuration && self.workflow.configuration.instructions && self.workflow.configuration.instructions.length > 0) {
+                    graph.setEnabled(true);
+                  } else {
+                    self.reloadDummyXml(graph, self.dummyXml);
+                  }
+                  self.validateJSON(false);
                 }
-                if (self.workflow.configuration && self.workflow.configuration.instructions && self.workflow.configuration.instructions.length > 0) {
-                  graph.setEnabled(true);
-                } else {
-                  self.reloadDummyXml(graph, self.dummyXml);
-                }
-                self.validateJSON(false);
+                setTimeout(() => {
+                  self.implicitSave = false;
+                }, 250);
               }
-              setTimeout(() => {
-                self.implicitSave = false;
-              }, 250);
-            }
 
-          }, 200);
+            }, 200);
+          }
         };
       } else {
         this.updateXMLJSON(false);
@@ -3848,7 +3848,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 _tar = cell.edges[i];
               }
             }
-            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock') {
+            if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
               _tar = getEndNode(cell);
               _middle = _tar.source;
             } else {
@@ -3865,7 +3865,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           }
           const lastCellName = cells.lastCell.value.tagName;
-          if (lastCellName === 'Fork' || lastCellName === 'If' || lastCellName === 'Try' || lastCellName === 'Retry' || lastCellName === 'Lock') {
+          if (self.workflowService.isInstructionCollapsible(lastCellName)) {
             _tar = getEndNode(cells.lastCell);
             _middle = _tar.source;
           } else {
@@ -4115,8 +4115,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                     }
                   }
                 }
-              } else if (cell.edges[i].target.value.tagName === 'Fork' || cell.edges[i].target.value.tagName === 'If' || cell.edges[i].target.value.tagName === 'Retry'
-                || cell.edges[i].target.value.tagName === 'Lock' || cell.edges[i].target.value.tagName === 'Try') {
+              } else if (self.workflowService.isInstructionCollapsible(cell.edges[i].target.value.tagName)) {
                 changeLabelOfConnection(cell.edges[i], _label2);
               } else if (cell.edges[i].target.value.tagName === 'Catch') {
                 changeLabelOfConnection(cell.edges[i], 'try');
@@ -4705,7 +4704,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           pasteInstruction(targetCell);
         } else if (self.cutCell) {
           const tagName = targetCell.value.tagName;
-          if (tagName === 'Connection' || tagName === 'If' || tagName === 'Fork' || tagName === 'Retry' || tagName === 'Lock' || tagName === 'Try' || tagName === 'Catch') {
+          if (tagName === 'Connection' || self.workflowService.isInstructionCollapsible(tagName) || tagName === 'Catch') {
             if (tagName === 'Connection') {
               let sourceId = targetCell.source.id;
               let targetId = targetCell.target.id;
@@ -4844,7 +4843,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           }
           label = targetCell.getAttribute('type') || targetCell.getAttribute('label') || '';
-          if (clickedCell.value.tagName === 'Fork' || clickedCell.value.tagName === 'If' || clickedCell.value.tagName === 'Retry' || clickedCell.value.tagName === 'Lock' || clickedCell.value.tagName === 'Try') {
+          if (self.workflowService.isInstructionCollapsible(clickedCell.value.tagName)) {
             const parent = targetCell.getParent() || graph.getDefaultParent();
             if (clickedCell.value.tagName === 'Fork') {
               v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 68, 68, self.workflowService.merge);
@@ -5106,7 +5105,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
 
       let parent = cell.getParent() || graph.getDefaultParent();
-      if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock' || cell.value.tagName === 'Try') {
+      if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
         let v1, v2, _label;
         if (cell.value.tagName === 'Fork') {
           v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', cell.id), 0, 0, 68, 68, self.workflowService.merge);
@@ -5127,7 +5126,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
           graph.insertEdge(parent, null, getConnectionNode('endTry'), v2, v1);
         }
-        if (dropTargetName === 'Fork' || dropTargetName === 'Retry' || dropTargetName === 'Lock' || dropTargetName === 'Try' || dropTargetName === 'Catch' || dropTargetName === 'If') {
+        if (self.workflowService.isInstructionCollapsible(dropTargetName) || dropTargetName === 'Catch') {
           _label = dropTargetName === 'Fork' ? 'join' : dropTargetName === 'Retry' ? 'endRetry' : dropTargetName === 'Lock' ? 'endLock' : dropTargetName === 'Catch' ? 'catch' : dropTargetName === 'If' ? 'endIf' : 'try';
           if (dropTargetName === 'Try') {
             for (let i = 0; i < _dropTarget.edges.length; i++) {
@@ -5162,7 +5161,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         let flag = false;
         for (let i = 0; i < _dropTarget.edges.length; i++) {
           if (_dropTarget.edges[i].source.id !== _dropTarget.id) {
-            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock' || cell.value.tagName === 'Try') {
+            if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
               for (let j = 0; j < cell.edges.length; j++) {
                 if (cell.edges[j].target.id !== cell.id) {
                   if (checkClosingCell(cell.edges[j].target)) {
@@ -5180,7 +5179,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               graph.insertEdge(parent, null, getConnectionNode(label), _dropTarget.edges[i].source, cell);
             }
           } else {
-            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock' || cell.value.tagName === 'Try') {
+            if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
               for (let j = 0; j < cell.edges.length; j++) {
                 if (cell.edges[j].target.id !== cell.id) {
                   if (checkClosingCell(cell.edges[j].target)) {
@@ -5220,7 +5219,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           graph.getModel().setStyle(_dropTarget, 'catch');
         }
 
-        if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock' || cell.value.tagName === 'Try') {
+        if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
           let target1, target2;
           for (let i = 0; i < _dropTarget.edges.length; i++) {
             if (_dropTarget.edges[i].target.id !== _dropTarget.id) {
@@ -5886,11 +5885,15 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 checkErr = true;
                 self.invalidMsg = !json.instructions[x].lockId ? 'inventory.message.lockIdIsMissing' : 'inventory.message.invalidLockInstruction';
                 if (isOpen) {
-                  let msg = '';
-                  self.translate.get('inventory.message.invalidLockInstruction').subscribe(translatedValue => {
-                    msg = translatedValue;
-                  });
-                  self.toasterService.pop('error', msg);
+                  if (!json.instructions[x].lockId) {
+                    self.openSideBar(json.instructions[x].id);
+                  } else {
+                    let msg = '';
+                    self.translate.get('inventory.message.invalidLockInstruction').subscribe(translatedValue => {
+                      msg = translatedValue;
+                    });
+                    self.toasterService.pop('error', msg);
+                  }
                 }
                 if (isValidate) {
                   return;

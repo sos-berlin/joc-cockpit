@@ -152,10 +152,7 @@
         <div class="form-group row" *ngIf="selectedNode.obj.branches.length > 0">
           <label class="col-md-4 col-lg-3" translate>workflow.label.joinVariables</label>
           <div class="col-md-8 col-lg-9">
-            <label class="md-check w">
-              <input type="checkbox" name="joinVariables" [(ngModel)]="selectedNode.obj.joinVariables">
-              <i class="primary"></i>
-            </label>
+            <label nz-checkbox [(ngModel)]="selectedNode.obj.joinVariables" name="joinVariables"></label>
           </div>
         </div>
         <div class="row">
@@ -165,9 +162,16 @@
           <label class="col-md-4 col-lg-3 form-control-label" >
             <span translate>workflow.label.branchId</span> ({{i + 1}})
           </label>
-          <div class="col-md-8 col-lg-9">
+          <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((branchs.dirty || branchs.touched) && branchs.invalid)}">
             <input type="text" identifierValidation required class="form-control" [maxLength]="10" [appAutofocus]="i == 0"
-                   name="branch{{i}}" [(ngModel)]="branch.label">
+                   name="branchs{{i}}" #branchs="ngModel" [(ngModel)]="branch.label">
+            <div *ngIf="branchs.invalid && branchs.errors && (branchs.dirty || branchs.touched)"
+                 class="text-danger help-block">
+              <div *ngIf="branchs.errors.required">
+                <div translate>common.message.requiredError</div>
+              </div>
+              <div *ngIf="branchs.errors.invalidIdentifier" translate>common.message.invalid</div>
+            </div>
           </div>
         </div>
         <div class="row" *ngIf="selectedNode.obj.branches.length === 0">
@@ -185,7 +189,7 @@
             <div *ngIf="(error && !junction.touched) || junction.invalid && (junction.dirty || junction.touched)"
                  class="text-danger help-block">
               <div *ngIf="error || (junction.errors && junction.errors.required)">
-                <div translate>message.requiredError</div>
+                <div translate>common.message.requiredError</div>
               </div>
             </div>
           </div>
@@ -206,18 +210,19 @@
         </div>
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.match</label>
-          <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : error}">
-            <input type="text" identifierValidation class="form-control" name="match" placeholder="{{'workflow.placeholder.expression' | translate}}"
+          <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : error || ((match.dirty || match.touched) && match.invalid)}">
+            <input type="text" identifierValidation class="form-control" name="match" #match="ngModel" placeholder="{{'workflow.placeholder.expression' | translate}}"
                    [(ngModel)]="selectedNode.obj.match">
+            <div *ngIf="match.invalid && match.errors && (match.dirty || match.touched)"
+                 class="text-danger help-block">
+              <div *ngIf="match.errors.invalidIdentifier" translate>common.message.invalid</div>
+            </div>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-md-4 col-lg-3" translate>workflow.label.joinVariables</label>
           <div class="col-md-8 col-lg-9">
-            <label class="md-check w">
-              <input type="checkbox" name="joinVariables" [(ngModel)]="selectedNode.obj.joinVariables">
-              <i class="primary"></i>
-            </label>
+            <label nz-checkbox [(ngModel)]="selectedNode.obj.joinVariables" name="joinVariables"></label>
           </div>
         </div>
       </div>
@@ -230,7 +235,7 @@
             <div *ngIf="junction.invalid && (junction.dirty || junction.touched)"
                  class="text-danger help-block">
               <div *ngIf="junction.errors.required">
-                <div translate>message.requiredError</div>
+                <div translate>common.message.requiredError</div>
               </div>
             </div>
           </div>
@@ -275,7 +280,7 @@
         </div>
       </div>
       <div class="box-body job-property-editor" *ngIf="selectedNode.type === 'Lock'">
-        <div class="form-group row" [ngClass]="{'has-error' : ((lockId.dirty || lockId.touched) && lockId.invalid)}">
+        <div class="form-group row" [ngClass]="{'has-error' : (error && !lockId.touched) || ((lockId.dirty || lockId.touched) && lockId.invalid)}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.lockId</label>
           <div class="col-md-8 col-lg-9 select-input-both">
             <input autocomplete="off"  type="text" class="form-control" required
@@ -283,7 +288,6 @@
                    name="lockId" #lockId="ngModel" [(ngModel)]="selectedNode.obj.lockId">
             <nz-tree-select
               name="lockIdSelect"
-              #treeSelectCtrl2
               nzNoAnimation
               [nzNodes]="lockTree"
               [nzHideUnMatched]="true"
@@ -303,6 +307,12 @@
                 </div>
               </ng-template>
             </nz-tree-select>
+            <div *ngIf="(error && !lockId.touched) || lockId.invalid && (lockId.dirty || lockId.touched)"
+                 class="text-danger help-block">
+              <div *ngIf="error || (lockId.errors && lockId.errors.required)">
+                <div translate>common.message.requiredError</div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="form-group row">

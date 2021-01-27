@@ -112,8 +112,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        // console.log(args.eventSnapshots[j].eventType , args.eventSnapshots)
-        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow.path == this.path) {
+       //  console.log(args.eventSnapshots[j].eventType , args.eventSnapshots)
+        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && this.path.indexOf(args.eventSnapshots[j].workflow.path) > -1) {
           this.getOrders(this.workflow, false);
           break;
         }

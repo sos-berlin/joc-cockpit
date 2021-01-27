@@ -1310,7 +1310,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   getDatesByUrl(arr, cb) {
-    this.coreService.post('daily_plan/relativedates', {relativDates: arr}).subscribe((res: any) => {
+    this.coreService.post('utilities/convert_relative_dates', {relativDates: arr}).subscribe((res: any) => {
       cb(res.absoluteDates);
     }, () => {
       cb([]);

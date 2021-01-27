@@ -111,7 +111,7 @@ export class WorkflowService {
     } else if (type === 'Publish') {
       obj.junctionPath = node._junctionPath;
     }
-    if (type === 'Fork' || type === 'If' || type === 'Try' || type === 'Retry' || type === 'Lock') {
+    if (this.isInstructionCollapsible(type)) {
       obj.isCollapsed = node.mxCell._collapsed;
       if (type === 'Fork') {
         obj.joinVariables = node._joinVariables;
@@ -362,7 +362,7 @@ export class WorkflowService {
 
   createWorkflow(_json, editor, mapObj) {
     mapObj.nodeMap = new Map();
-    if(mapObj.vertixMap) {
+    if (mapObj.vertixMap) {
       mapObj.vertixMap = new Map();
     }
     let graph = editor.graph;
@@ -380,7 +380,7 @@ export class WorkflowService {
         const start = vertexMap.get(json.instructions[0].uuid);
         const last = json.instructions[json.instructions.length - 1];
         let end = vertexMap.get(last.uuid);
-        if (last.TYPE === 'Fork' || last.TYPE === 'If' || last.TYPE === 'Try' || last.TYPE === 'Retry' || last.TYPE === 'Lock') {
+        if (self.isInstructionCollapsible(last.TYPE)) {
           let targetId = mapObj.nodeMap.get(last.id);
           if (targetId) {
             end = graph.getModel().getCell(targetId);
@@ -401,7 +401,7 @@ export class WorkflowService {
         for (let x = 0; x < json.instructions.length; x++) {
           let v2;
           let _node = doc.createElement(json.instructions[x].TYPE);
-          if(json.instructions[x].position) {
+          if (json.instructions[x].position) {
             _node.setAttribute('position', JSON.stringify(json.instructions[x].position));
           }
           if (!json.instructions[x].uuid) {
@@ -559,7 +559,7 @@ export class WorkflowService {
               recursive(json.instructions[x], '', v1);
               connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'try', 'try', v1);
               const _lastNode = json.instructions[x].instructions[json.instructions[x].instructions.length - 1];
-              if (_lastNode.TYPE === 'If' || _lastNode.TYPE === 'Fork' || _lastNode.TYPE === 'Try' || _lastNode.TYPE === 'Retry' || _lastNode.TYPE === 'Lock') {
+              if (self.isInstructionCollapsible(_lastNode.TYPE)) {
                 const end = graph.getModel().getCell(mapObj.nodeMap.get(_lastNode.id));
                 connectInstruction(end, cv1, 'try', 'try', v1);
               } else {
@@ -591,8 +591,7 @@ export class WorkflowService {
           }
           if (v1) {
             json.instructions[x].id = v1.id;
-            if (json.instructions[x].TYPE === 'Fork' || json.instructions[x].TYPE === 'If' ||
-              json.instructions[x].TYPE === 'Try' || json.instructions[x].TYPE === 'Retry' || json.instructions[x].TYPE === 'Lock') {
+            if (self.isInstructionCollapsible(json.instructions[x].TYPE)) {
               v1.collapsed = json.instructions[x].isCollapsed == '1';
             }
           }
@@ -634,7 +633,7 @@ export class WorkflowService {
             const x = branches[i].instructions[branches[i].instructions.length - 1];
             if (x) {
               let endNode;
-              if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry' || x.TYPE === 'Lock') {
+              if (self.isInstructionCollapsible(x.TYPE)) {
                 endNode = graph.getModel().getCell(mapObj.nodeMap.get(x.id));
               } else {
                 endNode = vertexMap.get(x.uuid);
@@ -665,7 +664,7 @@ export class WorkflowService {
         const x = branches.then.instructions[branches.then.instructions.length - 1];
         if (x) {
           let endNode;
-          if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry' || x.TYPE === 'Lock') {
+          if (self.isInstructionCollapsible(x.TYPE)) {
             endNode = graph.getModel().getCell(mapObj.nodeMap.get(x.id));
           } else {
             endNode = vertexMap.get(x.uuid);
@@ -677,7 +676,7 @@ export class WorkflowService {
         flag = false;
         const x = branches.else.instructions[branches.else.instructions.length - 1];
         let endNode;
-        if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry' || x.TYPE === 'Lock') {
+        if (self.isInstructionCollapsible(x.TYPE)) {
           endNode = graph.getModel().getCell(mapObj.nodeMap.get(x.id));
         } else {
           endNode = vertexMap.get(x.uuid);
@@ -704,7 +703,7 @@ export class WorkflowService {
         const x = branches.instructions[branches.instructions.length - 1];
         if (x) {
           let endNode;
-          if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry' || x.TYPE === 'Lock') {
+          if (self.isInstructionCollapsible(x.TYPE)) {
             endNode = graph.getModel().getCell(mapObj.nodeMap.get(x.id));
           } else {
             endNode = vertexMap.get(x.uuid);
@@ -730,7 +729,7 @@ export class WorkflowService {
         const x = branches.instructions[branches.instructions.length - 1];
         if (x) {
           let endNode;
-          if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry' || x.TYPE === 'Lock') {
+          if (self.isInstructionCollapsible(x.TYPE)) {
             endNode = graph.getModel().getCell(mapObj.nodeMap.get(x.id));
           } else {
             endNode = vertexMap.get(x.uuid);
@@ -763,7 +762,7 @@ export class WorkflowService {
       }
       if (x) {
         let endNode;
-        if (x.TYPE === 'If' || x.TYPE === 'Fork' || x.TYPE === 'Try' || x.TYPE === 'Retry' || x.TYPE === 'Lock') {
+        if (self.isInstructionCollapsible(x.TYPE)) {
           endNode = graph.getModel().getCell(mapObj.nodeMap.get(x.id));
         } else {
           endNode = vertexMap.get(x.uuid);
@@ -1000,5 +999,10 @@ export class WorkflowService {
       const a = string.split(':');
       return (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
     }
+  }
+
+  isInstructionCollapsible(tagName): boolean {
+    return (tagName === 'Fork' || tagName === 'If' || tagName === 'Retry'
+      || tagName === 'Lock' || tagName === 'Try');
   }
 }

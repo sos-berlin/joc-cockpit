@@ -351,10 +351,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       this.searchInResult();
       this.loading = true;
       this.updatePanelHeight();
-      /* this.orders.forEach((order) => {
-           console.log(order);
-           order.path1 = order.path.substring(0, order.path.lastIndexOf('/')) || order.path.substring(0, order.path.lastIndexOf('/') + 1);
-      });*/
     }, (err) => {
       this.loading = true;
     });
