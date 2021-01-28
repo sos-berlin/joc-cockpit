@@ -11,7 +11,6 @@ export class ConfirmModalComponent implements OnInit {
   @Input() message: any;
   @Input() type: any;
   @Input() objectName: any;
-  @Input() importCalendars: any;
   @Input() calendar: any;
   @Input() calendarArr: any;
   @Input() document: any;

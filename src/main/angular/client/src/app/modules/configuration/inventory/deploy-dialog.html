@@ -102,7 +102,7 @@
             </div>
           </div>
         </div>
-        <div class="form-group row" *ngIf="!releasable && !reDeploy && !isRemove">
+        <div class="m-b-sm row" *ngIf="!releasable && !reDeploy && !isRemove">
           <label class="col-md-3 form-control-label">
             <label translate>inventory.label.controllers</label>
           </label>
@@ -123,10 +123,7 @@
             <label translate>inventory.label.handleRecursively</label>
           </div>
           <div class="col-md-6" [ngClass]="{'col-md-8' : reDeploy}">
-            <label class="md-check w">
-              <input type="checkbox" name="isRecursive" [(ngModel)]="object.isRecursive">
-              <i class="primary"></i>
-            </label>
+            <label nz-checkbox [(ngModel)]="object.isRecursive" name="isRecursive"></label>
           </div>
         </div>
         <div class="row m-b-sm" *ngIf="!isDeleted && !isRemove">
@@ -140,21 +137,19 @@
           </div>
         </div>
         <div class="row">
-
           <div class="col-md-12">
             <nz-tree
               #treeCtrl
               nzNoAnimation
+              [nzCheckable]="true"
+              [nzCheckStrictly]="!object.isRecursive"
               [nzData]="nodes"
               [nzExpandAll]="isExpandAll"
               [nzTreeTemplate]="nzTreeTemplate"
               (nzExpandChange)="getDeploymentVersion($event)"
+              (nzCheckBoxChange)="checkBoxChange($event)"
             ></nz-tree>
             <ng-template #nzTreeTemplate let-node>
-              <label class="md-check w-18 m-r-xs" style="top: 2px" *ngIf="!node.origin.object">
-                <input type="checkbox" (click)="handleCheckbox(node.origin)"  name="'chk-' + {{node.key}}" [(ngModel)]="node.origin.recursivelyDeploy"/>
-                <i class="primary"></i>
-              </label>
               <div class="node-wrapper">
                   <div [ngClass]="{'m-t-xs' :node.origin.object}">
                     <i *ngIf="!node.origin.object && !node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>

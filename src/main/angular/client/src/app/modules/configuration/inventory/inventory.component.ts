@@ -261,25 +261,40 @@ export class DeployComponent implements OnInit {
       this.loading = false;
       if (this.path) {
         this.getChildTree();
-        if(this.nodes.length > 0) {
+        if (this.nodes.length > 0) {
           this.nodes[0].expanded = true;
         }
       }
-      this.updateTree();
     }, 0);
   }
 
-  handleCheckbox(node): void {
-    node.recursivelyDeploy = !node.recursivelyDeploy;
-    if (!node.type) {
-      this.inventoryService.toggleObject(node, node.recursivelyDeploy, this.object.isRecursive);
-    }
-    this.inventoryService.getParent(node, node.recursivelyDeploy, this.object.isRecursive, this.treeCtrl);
-    this.updateTree();
-  }
 
-  updateTree() {
-    this.nodes = [...this.nodes];
+  checkBoxChange(e: NzFormatEmitEvent): void {
+    if (!this.object.isRecursive) {
+      const node = e.node;
+      if (node.origin.type && node.parentNode) {
+        node.parentNode.isHalfChecked = true;
+        let flag = true;
+        if (!node.isChecked) {
+          node.parentNode.isChecked = false;
+          flag = this.inventoryService.checkHalfCheckBox(node.parentNode, false);
+        } else {
+          flag = this.inventoryService.checkHalfCheckBox(node.parentNode, true);
+          node.parentNode.isChecked = flag;
+        }
+        node.parentNode.isHalfChecked = !flag;
+      }
+      if (!node.origin.type) {
+        for (let i = 0; i < node.children.length; i++) {
+          if (node.children[i].origin.type) {
+            node.children[i].isChecked = node.isChecked;
+          }
+          if (node.children[i].origin.isFolder) {
+            break;
+          }
+        }
+      }
+    }
   }
 
   private getChildTree() {
@@ -364,7 +379,7 @@ export class DeployComponent implements OnInit {
     }
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
-        if ((nodes[i].type || nodes[i].isFolder) && nodes[i].recursivelyDeploy) {
+        if ((nodes[i].type || nodes[i].isFolder) && nodes[i].checked) {
           let objDep: any = {};
           if (nodes[i].deployId || nodes[i].deploymentId || nodes[i].isFolder) {
             if (nodes[i].isFolder) {
@@ -441,7 +456,7 @@ export class DeployComponent implements OnInit {
           }
         }
         if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
-          if (!nodes[i].recursivelyDeploy || !selectFolder) {
+          if (!nodes[i].checked || !selectFolder) {
             recursive(nodes[i].children);
           } else if (!self.object.isRecursive) {
             for (let j = 0; j < nodes[i].children.length; j++) {
@@ -466,7 +481,7 @@ export class DeployComponent implements OnInit {
 
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
-        if ((nodes[i].type || nodes[i].isFolder) && nodes[i].recursivelyDeploy) {
+        if ((nodes[i].type || nodes[i].isFolder) && nodes[i].checked) {
           if (nodes[i].isFolder && nodes[i].deleted) {
             self.object.delete.push({
               path: nodes[i].path,
@@ -499,7 +514,7 @@ export class DeployComponent implements OnInit {
 
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
-        if ((nodes[i].type || nodes[i].isFolder) && !nodes[i].recursivelyDeploy) {
+        if ((nodes[i].type || nodes[i].isFolder) && !nodes[i].checked) {
           const obj: any = {
             path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
             deployType: nodes[i].type ? nodes[i].type : 'FOLDER'
@@ -593,7 +608,7 @@ export class DeployComponent implements OnInit {
     if (this.nodes.length > 0) {
       this.submitted = true;
       for (let i = 0; i < this.nodes[0].children.length; i++) {
-        if (this.nodes[0].children[i].type && this.nodes[0].children[i].recursivelyDeploy) {
+        if (this.nodes[0].children[i].type && this.nodes[0].children[i].checked) {
           this.coreService.post('inventory/remove', {
             objectType: this.nodes[0].children[i].type,
             path: this.nodes[0].children[i].path + (this.nodes[0].children[i].path === '/' ? '' : '/') + this.nodes[0].children[i].name
@@ -678,15 +693,17 @@ export class ExportComponent implements OnInit {
   }
 
   checkFileName() {
-    const ext = this.exportObj.filename.split('.').pop();
-    if (ext) {
-      if (this.exportObj.fileFormat === 'ZIP' && (ext === 'ZIP' || ext === 'zip')) {
-        this.inValid = false;
+    if (this.exportObj.filename) {
+      const ext = this.exportObj.filename.split('.').pop();
+      if (ext) {
+        if (this.exportObj.fileFormat === 'ZIP' && (ext === 'ZIP' || ext === 'zip')) {
+          this.inValid = false;
+        } else {
+          this.inValid = !(this.exportObj.fileFormat === 'TAR_GZ' && (ext === 'tar' || ext === 'gz'));
+        }
       } else {
-        this.inValid = !(this.exportObj.fileFormat === 'TAR_GZ' && (ext === 'tar' || ext === 'gz'));
+        this.inValid = true;
       }
-    } else {
-      this.inValid = true;
     }
   }
 
@@ -814,15 +831,6 @@ export class ExportComponent implements OnInit {
     }, 0);
   }
 
-  handleCheckbox(node): void {
-    node.recursivelyDeploy = !node.recursivelyDeploy;
-    if (!node.type) {
-      this.inventoryService.toggleObject(node, node.recursivelyDeploy, this.exportObj.isRecursive);
-    }
-    this.inventoryService.getParent(node, node.recursivelyDeploy, this.exportObj.isRecursive, this.treeCtrl);
-    this.updateTree();
-  }
-
   updateTree() {
     this.nodes = [...this.nodes];
   }
@@ -856,6 +864,34 @@ export class ExportComponent implements OnInit {
     }
   }
 
+  checkBoxChange(e: NzFormatEmitEvent): void {
+    if (!this.exportObj.isRecursive) {
+      const node = e.node;
+      if (node.origin.type && node.parentNode) {
+        node.parentNode.isHalfChecked = true;
+        let flag = true;
+        if (!node.isChecked) {
+          node.parentNode.isChecked = false;
+          flag = this.inventoryService.checkHalfCheckBox(node.parentNode, false);
+        } else {
+          flag = this.inventoryService.checkHalfCheckBox(node.parentNode, true);
+          node.parentNode.isChecked = flag;
+        }
+        node.parentNode.isHalfChecked = !flag;
+      }
+      if (!node.origin.type) {
+        for (let i = 0; i < node.children.length; i++) {
+          if (node.children[i].origin.type) {
+            node.children[i].isChecked = node.isChecked;
+          }
+          if (node.children[i].origin.isFolder) {
+            break;
+          }
+        }
+      }
+    }
+  }
+
   private buildDeployablesTree(result) {
     if (result && result.length > 0) {
       const arr = _.groupBy(_.sortBy(result, 'folder'), (res) => {
@@ -875,7 +911,7 @@ export class ExportComponent implements OnInit {
     }
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
-        if ((nodes[i].type || nodes[i].isFolder) && nodes[i].recursivelyDeploy) {
+        if ((nodes[i].type || nodes[i].isFolder) && nodes[i].checked) {
           const objDep: any = {};
           if (nodes[i].isFolder) {
             if (selectFolder) {
@@ -953,7 +989,7 @@ export class ExportComponent implements OnInit {
           }
         }
         if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
-          if (!nodes[i].recursivelyDeploy || !selectFolder) {
+          if (!nodes[i].checked || !selectFolder) {
             recursive(nodes[i].children);
           } else if (!self.exportObj.isRecursive) {
             for (let j = 0; j < nodes[i].children.length; j++) {
@@ -1157,7 +1193,7 @@ export class SetVersionComponent implements OnInit {
 
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
-        if (nodes[i].type && (nodes[i].version || nodes[i].recursivelyDeploy)) {
+        if (nodes[i].type && (nodes[i].version || nodes[i].checked)) {
           if (nodes[i].deployId || nodes[i].deploymentId) {
             const configuration: any = {
               path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
@@ -1250,13 +1286,32 @@ export class SetVersionComponent implements OnInit {
     data.setVersion = true;
   }
 
-  handleCheckbox(node): void {
-    node.recursivelyDeploy = !node.recursivelyDeploy;
-    if (!node.type) {
-      this.inventoryService.toggleObject(node, node.recursivelyDeploy, this.object.isRecursive);
+  checkBoxChange(e: NzFormatEmitEvent): void {
+    if (!this.object.isRecursive) {
+      const node = e.node;
+      if (node.origin.type && node.parentNode) {
+        node.parentNode.isHalfChecked = true;
+        let flag = true;
+        if (!node.isChecked) {
+          node.parentNode.isChecked = false;
+          flag = this.inventoryService.checkHalfCheckBox(node.parentNode, false);
+        } else {
+          flag = this.inventoryService.checkHalfCheckBox(node.parentNode, true);
+          node.parentNode.isChecked = flag;
+        }
+        node.parentNode.isHalfChecked = !flag;
+      }
+      if (!node.origin.type) {
+        for (let i = 0; i < node.children.length; i++) {
+          if (node.children[i].origin.type) {
+            node.children[i].isChecked = node.isChecked;
+          }
+          if (node.children[i].origin.isFolder) {
+            break;
+          }
+        }
+      }
     }
-    this.inventoryService.getParent(node, node.recursivelyDeploy, this.object.isRecursive, this.treeCtrl);
-    this.updateTree();
   }
 
   cancel() {

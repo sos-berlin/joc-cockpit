@@ -17,14 +17,10 @@
           <label class="col-md-3 " translate>common.label.selectComments</label>
           <div class=" col-md-6">
             <div>
-              <label class="md-check w w-md">
-                <input type="radio" name="radio" [(ngModel)]="comments.radio" value="predefined">
-                <i class="primary"></i> <span translate>common.label.predefined</span>
-              </label>
-              <label class="md-check  w">
-                <input type="radio" name="radio" [(ngModel)]="comments.radio" value="new">
-                <i class="primary"></i> <span translate>common.label.individual</span>
-              </label>
+              <nz-radio-group name="radio"  [(ngModel)]="comments.radio">
+                <label nz-radio nzValue="predefined"><span translate>common.label.predefined</span></label>
+                <label nz-radio nzValue="new"><span translate>common.label.individual</span></label>
+              </nz-radio-group>
             </div>
           </div>
         </div>
@@ -154,19 +150,13 @@
           <label translate>inventory.export.label.filter</label>
         </div>
         <div class="col-md-9">
-          <label class="md-check w">
-            <input type="checkbox" name="valid" [disabled]="exportObj.forSigning" [(ngModel)]="filter.valid" (ngModelChange)="filterList()">
-            <i class="primary"></i>
+          <label nz-checkbox name="valid" [disabled]="exportObj.forSigning" [(ngModel)]="filter.valid" (ngModelChange)="filterList()">
             {{'inventory.export.label.validOnly'| translate}}
           </label>
-          <label class="md-check w">
-            <input type="checkbox" name="draft" [(ngModel)]="filter.draft" (ngModelChange)="filterList()">
-            <i class="primary"></i>
+          <label nz-checkbox name="draft" [(ngModel)]="filter.draft" (ngModelChange)="filterList()">
             {{'inventory.export.label.draft'| translate}}
           </label>
-          <label class="md-check w">
-            <input type="checkbox" name="deploy" [(ngModel)]="filter.deploy" (ngModelChange)="filterList()">
-            <i class="primary"></i>
+          <label nz-checkbox name="deploy" [(ngModel)]="filter.deploy" (ngModelChange)="filterList()">
             {{'inventory.export.label.deployed'| translate}}
           </label>
         </div>
@@ -176,10 +166,7 @@
           <label translate>inventory.label.handleRecursively</label>
         </div>
         <div class="col-md-6">
-          <label class="md-check w">
-            <input type="checkbox" name="isRecursive" [(ngModel)]="exportObj.isRecursive">
-            <i class="primary"></i>
-          </label>
+          <label nz-checkbox [(ngModel)]="exportObj.isRecursive" name="isRecursive"></label>
         </div>
       </div>
       <div class="row m-b-sm" *ngIf="nodes.length > 0">
@@ -196,17 +183,16 @@
         <div class="col-md-12">
           <nz-tree
             #treeCtrl
+            [nzCheckable]="true"
+            [nzCheckStrictly]="!exportObj.isRecursive"
             nzNoAnimation
             [nzData]="nodes"
             [nzExpandAll]="isExpandAll"
             [nzTreeTemplate]="nzTreeTemplate"
             (nzExpandChange)="getDeploymentVersion($event)"
+            (nzCheckBoxChange)="checkBoxChange($event)"
           ></nz-tree>
           <ng-template #nzTreeTemplate let-node>
-            <label class="md-check w-18 m-r-xs" style="top: 2px" *ngIf="!node.origin.object">
-              <input type="checkbox" (click)="handleCheckbox(node.origin)"  name="'chk-' + {{node.key}}" [(ngModel)]="node.origin.recursivelyDeploy"/>
-              <i class="primary"></i>
-            </label>
             <div class="node-wrapper">
               <div [ngClass]="{'m-t-xs' :node.origin.object}">
                 <i *ngIf="!node.origin.object && !node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
@@ -255,10 +241,11 @@
                     </nz-option>
                   </ng-container>
                   <ng-container *ngFor="let version of node.origin.releasableVersions">
-                    <nz-option nzCustomContent [nzValue]="version.releaseId" [nzLabel]="(version.versionDate | stringToDate)">
+                    <nz-option nzCustomContent [nzValue]="version.releaseId" [nzLabel]="version.versionDate ? (version.versionDate | stringToDate) : ('workflow.label.draft' | translate)">
                       <div>
                         <span class="fa fa-circle-o text-xs p-r-xs" [ngClass]="version.releaseId ? ' text-success': ''"></span>
-                        {{version.versionDate | stringToDate}} <i *ngIf="version.releasePath" [nz-tooltip]="version.releasePath" class="text-muted p-l-sm">{{version.releasePath}}</i></div>
+                        {{version.versionDate | stringToDate}} <i *ngIf="version.releasePath" [nz-tooltip]="version.releasePath" class="text-muted p-l-sm">{{version.releasePath}}</i>
+                      </div>
                     </nz-option>
                   </ng-container>
                 </nz-select>

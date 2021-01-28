@@ -19,7 +19,6 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
   @Input() preferences: any;
   @Input() data: any = {};
 
-  planItems: any = [];
   Math = Math;
   calObj: any = {};
   selectedMonths: any = [];
@@ -32,8 +31,6 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
   isRuntimeEdit: boolean;
   isCalendarDisplay = false;
   editor: any = {isEnable: false};
-  excludedDates: any = [];
-  includedDates: any = [];
   calendar: any = {};
   updateFrequency: any = {};
   tempList: any = [];
@@ -42,6 +39,7 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
   dateFormatM: any;
   str: string;
   isVisible: boolean;
+  countArr = [0, 1, 2, 3, 4];
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService, public modalService: NgbModal, private datePipe: DatePipe, private calendarService: CalendarService) {
   }
@@ -1028,6 +1026,20 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
 
   private getDates(obj, flag: boolean): void {
     this.planItems = [];
+    if (this.calendar) {
+      this.coreService.post('inventory/path', {
+        name: obj.path,
+        objectType: this.calendar.type
+      }).subscribe((res: any) => {
+        obj.path = res.path;
+        this.callDates(obj, flag);
+      });
+    } else {
+      this.callDates(obj, flag);
+    }
+  }
+
+  private callDates(obj, flag) {
     this.coreService.post(!this.calendar ? 'schedule/runtime' : 'inventory/calendar/dates',
       obj).subscribe((result: any) => {
       this.filterDates(result, flag);

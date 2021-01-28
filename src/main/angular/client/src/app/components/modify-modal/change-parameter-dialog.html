@@ -3,7 +3,7 @@
     <span *ngIf="order" translate>dailyPlan.label.setParameter</span>
     <span *ngIf="!order" translate>dailyPlan.label.setParameters</span>
     <i *ngIf="order" class="text-muted p-l-xs text">{{order.orderId}}</i>
-    <span *ngIf="plan"> {{plan.key}}</span>
+    <i *ngIf="plan" class="text-muted p-l-xs text">{{plan.key}}</i>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>

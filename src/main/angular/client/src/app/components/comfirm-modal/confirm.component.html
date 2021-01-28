@@ -57,29 +57,6 @@
         </div>
       </div>
     </div>
-    <div class="col-sm-12 m-t" *ngIf="importCalendars && importCalendars.length>0">
-      <div *ngFor="let calendar of importCalendars;let x = index" [ngClass]="{'b-t p-t': x !=0}"
-           class="text-left row">
-        <div class="row col-sm-12">
-          <span class="col-md-3" translate="">label.calendar</span>
-          <label class="col-md-9">{{calendar.path}}</label>
-        </div>
-        <div class=" col-sm-12">
-          <div>
-            <div *ngIf="calendar.usedBy.orders" class="row form-group">
-              <label class="col-md-3" translate="">
-                label.orders
-              </label>
-              <div class="col-md-9">
-                <div *ngFor="let order of calendar.usedBy.orders; let i = index">
-                  {{i + 1}} - {{order}}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="col-sm-12 m-t" *ngIf="document">
       <div class="row" *ngFor="let doc of document.usedIn">
         <label class="col-md-2 _600">

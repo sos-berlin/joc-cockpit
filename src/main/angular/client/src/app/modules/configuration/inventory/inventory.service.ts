@@ -147,6 +147,7 @@ export class InventoryService {
           object: value[0].objectType,
           path: value[0].folder,
           key: value[0].folder + (value[0].folder === '/' ? '' : '/') + value[0].objectType,
+          disableCheckbox: true,
           isLeaf: true
         };
         tempArr.push(parentObj);
@@ -186,41 +187,20 @@ export class InventoryService {
     return tempArr.concat(folderArr);
   }
 
-  getParent(node, flag, recursive, treeCtrl) {
-    const parent = treeCtrl.getTreeNodeByKey(node.path);
-    if (parent) {
-      if (!flag) {
-        parent.origin.recursivelyDeploy = flag;
-      } else if (parent.origin.children) {
-        let flg = true;
-        for (let i = 0; i < parent.origin.children.length; i++) {
-          if (parent.origin.children[i].type && !parent.origin.children[i].recursivelyDeploy) {
-            flg = false;
-            break;
-          } else if (!parent.origin.children[i].type && !parent.origin.children[i].object && !parent.origin.children[i].recursivelyDeploy && recursive) {
-            flg = false;
-            break;
-          }
-        }
-        parent.origin.recursivelyDeploy = flg;
-      }
-      if (parent.origin.path !== '/') {
-        if (parent.getParentNode() && recursive) {
-          this.getParent(parent.getParentNode().origin, flag, recursive, treeCtrl);
+  checkHalfCheckBox(parentNode, isCheck) {
+    let flag = true;
+    for (let i = 0; i < parentNode.children.length; i++) {
+      if (parentNode.children[i].origin.type) {
+        if ((isCheck && !parentNode.children[i].isChecked) || (!isCheck && parentNode.children[i].isChecked)) {
+          flag = false;
+          break;
         }
       }
-    }
-  }
-
-  toggleObject(data, flag, recursive) {
-    for (let i = 0; i < data.children.length; i++) {
-      if (data.children[i].type) {
-        data.children[i].recursivelyDeploy = flag;
-      } else if (!data.children[i].object && recursive) {
-        data.children[i].recursivelyDeploy = flag;
-        this.toggleObject(data.children[i], flag, recursive);
+      if (parentNode.children[i].origin.isFolder) {
+        break;
       }
     }
+    return flag;
   }
 
   checkAndUpdateVersionList(data) {

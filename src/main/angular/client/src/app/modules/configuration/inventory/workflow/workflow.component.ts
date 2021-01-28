@@ -1008,7 +1008,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (this.selectedNode.obj.lockId) {
       this.coreService.post('inventory/path', {
         name: this.selectedNode.obj.lockId,
-        objectType: 'LOCK'
+        objectType: 'LOCK',
+        useDrafts : true
       }).subscribe((res: any) => {
         this.coreService.post('inventory/read/configuration', {
           path: res.path,

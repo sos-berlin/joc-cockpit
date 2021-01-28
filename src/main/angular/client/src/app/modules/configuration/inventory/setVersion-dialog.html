@@ -99,17 +99,13 @@
           <label translate>inventory.label.setVersion</label>
         </div>
         <div class="col-md-9">
-          <label class="md-check">
-            <input type="radio" name="version" [(ngModel)]="version.type" value="setOneVersion">
-            <i class="primary"></i> <span translate>inventory.label.setOneVersion</span>
-          </label>
-          <label class="md-check m-l">
-            <input type="radio" name="version" [(ngModel)]="version.type" value="setSeparateVersion">
-            <i class="primary"></i> <span translate>inventory.label.setSeparateVersion</span>
-          </label>
+          <nz-radio-group name="version" [(ngModel)]="version.type">
+            <label nz-radio nzValue="setOneVersion"><span translate>inventory.label.setOneVersion</span></label>
+            <label nz-radio nzValue="setSeparateVersion"><span translate>inventory.label.setSeparateVersion</span></label>
+          </nz-radio-group>
         </div>
       </div>
-      <div class="form-group row" *ngIf="version.type==='setOneVersion'">
+      <div class="m-b-sm row" *ngIf="version.type==='setOneVersion'">
         <div class="col-md-3 form-control-label">
           <label translate>inventory.label.newVersion</label>
         </div>
@@ -122,10 +118,7 @@
           <label translate>inventory.label.handleRecursively</label>
         </div>
         <div class="col-md-6">
-          <label class="md-check w">
-            <input type="checkbox" name="isRecursive" [(ngModel)]="object.isRecursive">
-            <i class="primary"></i>
-          </label>
+          <label nz-checkbox [(ngModel)]="object.isRecursive" name="isRecursive"></label>
         </div>
       </div>
       <div class="form-group row">
@@ -143,19 +136,16 @@
           <nz-tree
             #treeCtrl
             nzNoAnimation
+            [nzCheckable]="version.type==='setOneVersion'"
+            [nzCheckStrictly]="!object.isRecursive"
             [nzData]="nodes"
             [nzExpandAll]="isExpandAll"
             [nzTreeTemplate]="nzTreeTemplate"
             (nzExpandChange)="getDeploymentVersion($event)"
+            (nzCheckBoxChange)="checkBoxChange($event)"
           ></nz-tree>
           <ng-template #nzTreeTemplate let-node>
             <div class="node-wrapper">
-              <label *ngIf="version.type==='setOneVersion'" class="md-check w-18 m-l-xxs m-r-xs"
-                     [hidden]="node.origin.object">
-                <input type="checkbox" (click)="handleCheckbox(node.origin)" name="'deploy' + {{node.key}}"
-                       [(ngModel)]="node.origin.recursivelyDeploy">
-                <i class="primary"></i>
-              </label>
               <div class="btn-group" *ngIf="version.type === 'setSeparateVersion' && node.origin.type"
                    [nz-tooltip]="'inventory.tooltip.setVersion' | translate">
                 <button class="btn-drop" type="button" (click)="setIndividualVersion(node.origin)">
