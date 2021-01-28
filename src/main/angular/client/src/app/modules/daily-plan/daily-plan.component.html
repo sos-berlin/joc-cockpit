@@ -1,12 +1,9 @@
-<ng-template #orderTemplate let-order let-plan>
+<ng-template #orderTemplate let-order let-plan="plan">
   <ng-container *ngFor="let value of order">
     <tr>
-      <td>
-        <label class="md-check">
-          <input type="checkbox" [(checklist)]="object.templates"
-                 [checklistValue]="value" (change)="checkPlan(plan)"><i
-          class="primary"></i>
-        </label>
+      <td [nzShowCheckbox]="true"
+          [nzChecked]="object.mapOfCheckedId.has(value.orderId)"
+          (nzCheckedChange)="onItemChecked(value, plan, $event)">
       </td>
       <td>
         <div class="btn-group dropdown">
@@ -136,11 +133,10 @@
 <ng-template #planTemplate let-ajaxTable>
   <ng-template ngFor let-plan [ngForOf]="ajaxTable.data">
     <tr>
-      <td>
-        <label class="md-check">
-          <input type="checkbox" [(ngModel)]="plan.checkbox" (change)="checkOrderTemplate(plan)"><i
-          class="primary"></i>
-        </label>
+      <td [nzShowCheckbox]="true"
+              [(nzChecked)]="plan.checked"
+              [nzIndeterminate]="plan.indeterminate"
+              (nzCheckedChange)="checkOrderTemplate(plan)">
       </td>
       <td>
         <div class="btn-group dropdown">
@@ -232,7 +228,7 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div class="inline" [ngClass]="{'hide':object.templates.length>0}">
+          <div class="inline" [ngClass]="{'hide':object.mapOfCheckedId.size>0}">
             <div class="btn-group m-l-12 hidden-btn-group">
               <ng-container *ngFor="let btn of filterBtn">
                 <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
@@ -260,7 +256,7 @@
               </nz-dropdown-menu>
             </div>
           </div>
-          <div class="inline break-line" [ngClass]="{'hide':object.templates.length>0}">
+          <div class="inline break-line" [ngClass]="{'hide':object.mapOfCheckedId.size>0}">
             <div class="btn-group m-l-12">
               <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': dailyPlanFilters.filter.late}" (click)="changeLate()">
@@ -350,7 +346,7 @@
             </button>
             <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
-          <div class="hide" [ngClass]="{'show-block':object.templates.length>0}">
+          <div class="hide" [ngClass]="{'show-block':object.mapOfCheckedId.size>0}">
             <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isModify" (click)="modifySelectedOrder()"><i
               class="fa fa-edit"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.modifySelectedOrder</span>
@@ -508,11 +504,10 @@
                 >
                   <thead>
                   <tr>
-                    <th class="chk">
-                      <label class="md-check lg-check">
-                        <input type="checkbox" [(ngModel)]="object.checkbox" (change)="checkAll()"><i
-                        class="primary"></i>
-                      </label>
+                    <th class="chk" [nzShowCheckbox]="true"
+                        [(nzChecked)]="object.checked"
+                        [nzIndeterminate]="object.indeterminate"
+                        (nzCheckedChange)="checkAll()">
                     </th>
                     <th class="menu"><span translate>common.label.action</span></th>
                     <th (click)="sort('orderId')" *ngIf="dailyPlanFilters.filter.groupBy === 'ORDER'">
@@ -617,7 +612,7 @@
                     <ng-container *ngIf="dailyPlanFilters.filter.groupBy" [ngTemplateOutlet]="planTemplate"
                                   [ngTemplateOutletContext]="{ $implicit: ajaxTable}"></ng-container>
                     <ng-container *ngIf="!dailyPlanFilters.filter.groupBy" [ngTemplateOutlet]="orderTemplate"
-                                  [ngTemplateOutletContext]="{ $implicit: ajaxTable.data}"></ng-container>
+                                  [ngTemplateOutletContext]="{ $implicit: ajaxTable.data, plan: null}"></ng-container>
                     </tbody>
                   </ng-container>
                 </nz-table>

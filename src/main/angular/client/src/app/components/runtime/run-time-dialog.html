@@ -1,137 +1,140 @@
 <div class="text-left">
-    <form #myForm="ngForm" novalidate>
-        <div class="modal-body p-a">
-            <div *ngIf="!editor.showPlanned">
-                <div class="row">
-                    <div class="col-md-12" style="margin-top: -8px">
-                        <button *ngIf="permission.Calendar.edit.assign.runtime" type="button" class="btn btn-sm btn-grey m-r-sm m-t-sm"
-                                (click)="assignCalendar()" translate>runtime.button.assignWorkingDayCalendar
-                        </button>
-                        <button *ngIf="permission.Calendar.edit.assign.nonworking" type="button" class="btn btn-sm btn-grey m-r-sm m-t-sm"
-                                (click)="assignHolidayCalendar()" translate>runtime.button.assignNonWorkingDayCalendar
-                        </button>
-                        <button type="button" class="btn btn-sm btn-grey m-t-sm"
-                                (click)="planFromRuntime()"  translate>runtime.button.showYearView
-                        </button>
-                    </div>
-                    <div class="row col-md-12 m-t m-b-sm">
-                      <div class="col-sm-3 form-control-label" translate>runtime.label.timeZone</div>
-                      <div class="col-sm-6">
-                        <nz-select name="timeZone" nzShowSearch nzAllowClear [(ngModel)]="timeZone">
-                          <nz-option *ngFor="let zone of zones" [nzValue]="zone" [nzLabel]="zone"></nz-option>
-                        </nz-select>
-                      </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="form-group row m-t">
-                          <div class="col-sm-12" style="max-height: 600px; overflow: auto">
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-bordered ">
-                                        <thead>
-                                        <tr>
-                                          <th><span translate>runtime.label.listOfCalendars</span></th>
-                                          <th><span translate>runtime.label.period</span></th>
-                                          <th><span translate>runtime.label.restrictions</span></th>
-                                        </tr>
-                                        </thead>
-                                        <tbody >
-                                        <tr *ngFor="let calendar of calendars">
-                                          <td class="cursor">
-                                            <a (click)="previewCalendar(calendar, 'WORKINGDAYSCALENDAR');">
-                                              <i class="fa fa-calendar text-success"></i>&nbsp;
-                                              {{calendar.calendarName}} <i *ngIf="calendar.title">-</i> {{calendar.title}}
-                                            </a>
-                                            <a class="text-xs text-hover-primary m-l-sm"
-                                               (click)="removeWorkingCal(calendar)"><i class="fa fa-times text-hover-color"></i>
-                                            </a>
-                                          </td>
-                                          <td>
-                                            <div *ngFor="let p of calendar.periods; let x = index">
-                                              <a (click)="updatePeriodInCalendar(calendar, x, p)">{{getPeriodStr(p)}}</a>
-                                              <a class="text-xs text-hover-primary m-l-sm" (click)="updatePeriodInCalendar(calendar, x, p)">
-                                                <i class="fa fa-pencil"></i></a>
-                                              <a class="text-xs text-hover-color m-l-sm" (click)="removePeriodInCalendar(calendar, x)">
-                                                <i class="fa fa-times text-hover-color"></i></a>
-                                            </div>
-                                            <div class="text-xs cursor text-hover-primary">
-                                              <i class="fa fa-plus" (click)="addPeriodInCalendar(calendar)"></i>
-                                            </div>
-                                          </td>
-                                          <td>
-                                            <div *ngFor="let list of calendar.frequencyList; let i = index">
-                                              <a (click)="editRestrictionInCalendar(calendar,list);">{{list.str}}</a>
-                                              <a class="text-xs text-hover-primary m-l-sm"
-                                                 (click)="editRestrictionInCalendar(calendar,list)"><i class="fa fa-pencil"></i></a>
-                                              <a class="text-xs text-hover-color m-l-sm"
-                                                 (click)="deleteRestrictionInCalendar(calendar,list)"><i class="fa fa-times"></i></a>
-                                            </div>
-                                            <div  class="text-xs cursor text-hover-primary"><i
-                                              class="fa fa-plus" (click)="addRestrictionInCalendar(calendar)"></i>
-                                            </div>
-                                          </td>
-
-                                        </tr>
-                                        <tr *ngFor="let holiday of nonWorkingCalendars; let i =index">
-                                          <td>
-                                            <a (click)="previewCalendar(holiday, 'NONWORKINGDAYSCALENDAR');">
-                                              <i class="fa fa-calendar text-danger"></i>&nbsp;
-                                              {{holiday.calendarName}}
-                                            </a>&nbsp;
-                                            <a class="text-xs text-hover-primary m-l-sm"
-                                               (click)="removeNonWorkingCal(i)"><i class="fa fa-times text-hover-color"></i>
-                                            </a>
-                                          </td>
-                                            <td style="border-right: none !important;"></td>
-                                            <td></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="text-center" *ngIf="calendars.length==0 && nonWorkingCalendars.length==0">
-                                    <span translate>runtime.message.noFrequencyCalendarFound</span>
-                                </div>
-                            </div>
+  <form>
+    <div class="modal-body p-a">
+      <div *ngIf="!editor.showPlanned">
+        <div class="row">
+          <div class="col-md-12" style="margin-top: -8px">
+            <button (click)="assignCalendar()" *ngIf="permission.Calendar.edit.assign.runtime"
+                    class="btn btn-sm btn-grey m-r-sm m-t-sm"
+                    translate type="button">runtime.button.assignWorkingDayCalendar
+            </button>
+            <button (click)="assignHolidayCalendar()" *ngIf="permission.Calendar.edit.assign.nonworking"
+                    class="btn btn-sm btn-grey m-r-sm m-t-sm"
+                    translate type="button">runtime.button.assignNonWorkingDayCalendar
+            </button>
+            <button (click)="planFromRuntime()" class="btn btn-sm btn-grey m-t-sm"
+                    translate type="button">runtime.button.showYearView
+            </button>
+          </div>
+          <div class="row col-md-12 m-t m-b-sm">
+            <div class="col-sm-3 form-control-label" translate>runtime.label.timeZone</div>
+            <div class="col-sm-6">
+              <nz-select [(ngModel)]="timeZone" name="timeZone" nzAllowClear nzShowSearch>
+                <nz-option *ngFor="let zone of zones" [nzLabel]="zone" [nzValue]="zone"></nz-option>
+              </nz-select>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="form-group row m-t">
+              <div class="col-sm-12" style="max-height: 600px; overflow: auto">
+                <div class="table-responsive">
+                  <table class="table table-hover table-bordered ">
+                    <thead>
+                    <tr>
+                      <th><span translate>runtime.label.listOfCalendars</span></th>
+                      <th><span translate>runtime.label.period</span></th>
+                      <th><span translate>runtime.label.restrictions</span></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let calendar of calendars">
+                      <td class="cursor">
+                        <a (click)="previewCalendar(calendar, 'WORKINGDAYSCALENDAR');">
+                          <i class="fa fa-calendar text-success"></i>&nbsp;
+                          {{calendar.calendarName}} <i *ngIf="calendar.title">-</i> {{calendar.title}}
+                        </a>
+                        <a (click)="removeWorkingCal(calendar)"
+                           class="text-xs text-hover-primary m-l-sm"><i class="fa fa-times text-hover-color"></i>
+                        </a>
+                      </td>
+                      <td>
+                        <div *ngFor="let p of calendar.periods; let x = index">
+                          <a (click)="updatePeriodInCalendar(calendar, x, p)">{{getPeriodStr(p)}}</a>
+                          <a (click)="updatePeriodInCalendar(calendar, x, p)" class="text-xs text-hover-primary m-l-sm">
+                            <i class="fa fa-pencil"></i></a>
+                          <a (click)="removePeriodInCalendar(calendar, x)" class="text-xs text-hover-color m-l-sm">
+                            <i class="fa fa-times text-hover-color"></i></a>
                         </div>
-                    </div>
-                </div>
-            </div>
+                        <div class="text-xs cursor text-hover-primary">
+                          <i (click)="addPeriodInCalendar(calendar)" class="fa fa-plus"></i>
+                        </div>
+                      </td>
+                      <td>
+                        <div *ngFor="let list of calendar.frequencyList; let i = index">
+                          <a (click)="editRestrictionInCalendar(calendar,list);">{{list.str}}</a>
+                          <a (click)="editRestrictionInCalendar(calendar,list)"
+                             class="text-xs text-hover-primary m-l-sm"><i class="fa fa-pencil"></i></a>
+                          <a (click)="deleteRestrictionInCalendar(calendar,list)"
+                             class="text-xs text-hover-color m-l-sm"><i class="fa fa-times"></i></a>
+                        </div>
+                        <div class="text-xs cursor text-hover-primary"><i
+                          (click)="addRestrictionInCalendar(calendar)" class="fa fa-plus"></i>
+                        </div>
+                      </td>
 
-            <div *ngIf="editor.showPlanned" class="min-ht-500">
-                <div class="row">
-                    <div class="col-md-12">
-                        <label *ngIf="calendar" class="pull-left text" >
-                          <i class="p-r-xs fa fa-calendar" [ngClass]="calendar.type === 'WORKINGDAYSCALENDAR' ? 'text-success' : 'text-warning'"></i>
-                          {{calendar.calendarName }}
-                        </label>
-                        <ul class="nav navbar-nav navbar-nav-inline pull-right nav-active-border nav-active-border2 b-primary">
-                            <li class="nav-item">
-                                <a class="nav-link" [ngClass]="{'active' : viewCalObj.calendarView=='month'}"
-                                   (click)="viewCalObj.calendarView = 'month';getPlan()">
-                                    <span class="nav-text text-dark p-b-sm" translate>runtime.label.monthly</span>
-                                </a>
-                            </li>
-                            <li class="nav-item dropdown-separator">
-                                <span class="separator"></span>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" [ngClass]="{'active' : viewCalObj.calendarView=='year'}"
-                                  (click)="viewCalObj.calendarView = 'year';getPlan()">
-                                    <span class="nav-text text-dark p-b-sm" translate>runtime.label.yearly</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                    </tr>
+                    <tr *ngFor="let holiday of nonWorkingCalendars; let i =index">
+                      <td>
+                        <a (click)="previewCalendar(holiday, 'NONWORKINGDAYSCALENDAR');">
+                          <i class="fa fa-calendar text-danger"></i>&nbsp;
+                          {{holiday.calendarName}}
+                        </a>&nbsp;
+                        <a (click)="removeNonWorkingCal(i)"
+                           class="text-xs text-hover-primary m-l-sm"><i class="fa fa-times text-hover-color"></i>
+                        </a>
+                      </td>
+                      <td style="border-right: none !important;"></td>
+                      <td></td>
+                    </tr>
+                    </tbody>
+                  </table>
                 </div>
-                <div class="row">
-                    <div class="col-md-12" style="min-height: 500px;">
-                        <div id="full-calendar" ></div>
-                    </div>
+                <div *ngIf="calendars.length==0 && nonWorkingCalendars.length==0" class="text-center">
+                  <span translate>runtime.message.noFrequencyCalendarFound</span>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
-
-        <div class="modal-footer border-top-0 text-left" *ngIf="editor.showPlanned">
-            <button type="button" class="btn btn-grey btn-sm" (click)="back()" translate>common.button.close</button>
+      </div>
+      <div *ngIf="editor.showPlanned" class="min-ht-500">
+        <div class="row">
+          <div class="col-md-12">
+            <label *ngIf="calendar" class="pull-left text">
+              <i [ngClass]="calendar.type === 'WORKINGDAYSCALENDAR' ? 'text-success' : 'text-warning'"
+                 class="p-r-xs fa fa-calendar"></i>
+              {{calendar.calendarName }}
+            </label>
+            <ul class="nav navbar-nav navbar-nav-inline pull-right nav-active-border nav-active-border2 b-primary">
+              <li class="nav-item">
+                <a (click)="viewCalObj.calendarView = 'month';getPlan()"
+                   [ngClass]="{'active' : viewCalObj.calendarView=='month'}"
+                   class="nav-link">
+                  <span class="nav-text text-dark p-b-sm" translate>runtime.label.monthly</span>
+                </a>
+              </li>
+              <li class="nav-item dropdown-separator">
+                <span class="separator"></span>
+              </li>
+              <li class="nav-item">
+                <a (click)="viewCalObj.calendarView = 'year';getPlan()"
+                   [ngClass]="{'active' : viewCalObj.calendarView=='year'}"
+                   class="nav-link">
+                  <span class="nav-text text-dark p-b-sm" translate>runtime.label.yearly</span>
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
-    </form>
+        <div class="row">
+          <div class="col-md-12" style="min-height: 500px;">
+            <div id="full-calendar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="editor.showPlanned" class="modal-footer border-top-0 text-left">
+      <button (click)="back()" class="btn btn-grey btn-sm" translate type="button">common.button.close</button>
+    </div>
+  </form>
 </div>

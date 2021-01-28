@@ -43,8 +43,6 @@ export class TreeModalComponent implements OnInit, OnDestroy {
   }
 
   handleCheckbox(object): void {
-    object.isChecked = !object.isChecked;
-    this.tree = [...this.tree];
     this.onNodeChecked(object);
   }
 

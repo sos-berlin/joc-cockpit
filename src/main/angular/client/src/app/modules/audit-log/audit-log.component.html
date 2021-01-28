@@ -6,11 +6,11 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <label class="md-check valign">
-            <input type="checkbox" [(ngModel)]="adtLog.current" name="checkbox" (change)="changeController()">
-            <i class="primary"></i><span translate>common.label.currentController</span>
-          </label>
-
+          <div class="inline valign">
+            <label nz-checkbox [(ngModel)]="adtLog.current" name="current" (ngModelChange)="changeController()">
+             {{'common.label.currentController' | translate}}
+            </label>
+          </div>
           <div class="btn-group m-l-12 hidden-btn-group">
             <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm" (click)="load('all')"
                     [ngClass]="{'btn-primary': adtLog.filter.date=='all'}" translate>filters.button.all

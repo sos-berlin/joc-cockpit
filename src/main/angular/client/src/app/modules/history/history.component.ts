@@ -22,7 +22,6 @@ declare const $;
   selector: 'app-order-history-template',
   templateUrl: './order-history-template.html'
 })
-
 export class OrderTemplateComponent {
   @Input() history: any;
   @Input() historyView: any;
@@ -74,7 +73,6 @@ export class OrderTemplateComponent {
   selector: 'app-ngbd-modal-content',
   templateUrl: './filter-dialog.html'
 })
-
 export class FilterModalComponent implements OnInit {
   schedulerIds: any = {};
   preferences: any = {};
@@ -305,7 +303,6 @@ export class OrderSearchComponent implements OnInit {
   templateUrl: './task-form-template.html',
 })
 export class TaskSearchComponent implements OnInit {
-
   @Input() schedulerIds: any;
   @Input() filter: any;
   @Input() preferences: any;
@@ -489,7 +486,6 @@ export class TaskSearchComponent implements OnInit {
   templateUrl: './deployment-form-template.html',
 })
 export class DeploymentSearchComponent implements OnInit {
-
   @Input() schedulerIds: any;
   @Input() filter: any;
   @Input() preferences: any;
@@ -602,7 +598,6 @@ export class DeploymentSearchComponent implements OnInit {
   templateUrl: './history.component.html'
 })
 export class HistoryComponent implements OnInit, OnDestroy {
-  historyView: any = {};
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
@@ -744,7 +739,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   orderHistory(obj, flag) {
     this.historyFilters.type = 'ORDER';
     if (!obj) {
-      obj = {controllerId: this.historyView.current == true ? this.schedulerIds.selected : ''};
+      obj = {controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''};
       this.isLoading = false;
       this.data = [];
     }
@@ -803,7 +798,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   @HostListener('window:resize', ['$event'])
   onResize() {
     if (this.historyFilters.type === 'ORDER') {
-      this.coreService.calRowWidth(this.historyView.current);
+      this.coreService.calRowWidth(this.historyFilters.current);
     }
   }
 
@@ -837,7 +832,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       data.children = res.children;
       data.states = res.states;
       data.loading = false;
-      this.coreService.calRowWidth(this.historyView.current);
+      this.coreService.calRowWidth(this.historyFilters.current);
     }, () => {
       data.loading = false;
     });
@@ -902,7 +897,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   taskHistory(obj) {
     this.historyFilters.type = 'TASK';
     if (!obj) {
-      obj = {controllerId: this.historyView.current == true ? this.schedulerIds.selected : ''};
+      obj = {controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''};
       this.isLoading = false;
       this.data = [];
     }
@@ -972,7 +967,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   deploymentHistory(obj, flag) {
     this.historyFilters.type = 'DEPLOYMENT';
     if (!obj) {
-      if (this.historyView.current == true) {
+      if (this.historyFilters.current == true) {
         obj = {controllerId: this.schedulerIds.selected};
       } else {
         obj = {};
@@ -1040,7 +1035,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   search(obj) {
     let filter: any = {
-      controllerId: this.historyView.current == true ? this.schedulerIds.selected : '',
+      controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : '',
       limit: parseInt(this.preferences.maxRecords, 10)
     };
     let fromDate, toDate;
@@ -1515,7 +1510,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       data.children = res.children;
       data.states = res.states;
       data.loading = false;
-      this.coreService.calRowWidth(this.historyView.current);
+      this.coreService.calRowWidth(this.historyFilters.current);
     }, () => {
       data.loading = false;
     });
@@ -1540,7 +1535,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       data.children = res.children;
       data.states = res.states;
       data.loading = false;
-      this.coreService.calRowWidth(this.historyView.current);
+      this.coreService.calRowWidth(this.historyFilters.current);
     }, () => {
       data.loading = false;
     });
@@ -1933,7 +1928,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     let data = [];
     for (let i = 0; i < this.currentData.length; i++) {
       let obj: any = {};
-      if (!this.historyView.current) {
+      if (!this.historyFilters.current) {
         obj[controllerId] = this.currentData[i].controllerId;
       }
       obj[orderId] = this.currentData[i].orderId;
@@ -1990,7 +1985,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     let data = [];
     for (let i = 0; i < this.currentData.length; i++) {
       let obj: any = {};
-      if (!this.historyView.current) {
+      if (!this.historyFilters.current) {
         obj[controllerId] = this.currentData[i].controllerId;
       }
 
@@ -2027,7 +2022,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     let data = [];
     for (let i = 0; i < this.currentData.length; i++) {
       let obj: any = {};
-      if (!this.historyView.current) {
+      if (!this.historyFilters.current) {
         obj[controllerId] = this.currentData[i].controllerId;
       }
       this.translate.get(this.currentData[i].state._text).subscribe(translatedValue => {
@@ -2087,7 +2082,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (!this.deployment.filter.date) {
       this.deployment.filter.date = 'today';
     }
-    this.historyView.current = this.preferences.historyView == 'current';
+    if (!(this.historyFilters.current || this.historyFilters.current === false)) {
+      this.historyFilters.current = this.preferences.historyFilters == 'current';
+    }
     this.historyFilterObj = JSON.parse(this.saveService.historyFilters) || {};
 
     this.savedHistoryFilter = this.historyFilterObj.order || {};
@@ -2360,7 +2357,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private init(flag) {
     if (this.loadConfig && this.loadIgnoreList) {
       let obj = {
-        controllerId: this.historyView.current == true ? this.schedulerIds.selected : ''
+        controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''
       };
       if (!flag) {
         this.isLoading = false;

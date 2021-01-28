@@ -52,6 +52,8 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
   excludeFrequencyList: any = [];
   isVisible: boolean;
   str: string;
+  countArr = [0, 1, 2, 3, 4];
+  countArrU = [1, 2, 3, 4];
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService, public modalService: NgbModal,
               private datePipe: DatePipe, private calendarService: CalendarService) {

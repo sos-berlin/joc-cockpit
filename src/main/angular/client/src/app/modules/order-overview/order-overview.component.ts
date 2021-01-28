@@ -11,6 +11,7 @@ import {ExcelService} from '../../services/excel.service';
 import {TranslateService} from '@ngx-translate/core';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {ChangeParameterModalComponent} from '../../components/modify-modal/modify.component';
 
 declare const $;
 
@@ -103,7 +104,6 @@ export class OrderPieChartComponent implements OnInit, OnDestroy {
   setFilter(state) {
     this.state = state;
     this.setState.emit(this.state);
-    console.log('state', state);
   }
 
   onSelect(data): void {
@@ -200,7 +200,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
-  object: any = {orders: []};
   orderFilters: any = {};
   isSizeChange: boolean;
   resizerHeight: any = 200;
@@ -213,6 +212,27 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   auditLogs = [];
   data = [];
   currentData = [];
+  object = {
+    mapOfCheckedId: new Map(),
+    checked: false,
+    indeterminate: false,
+    isModify: false,
+    isCancel: false,
+    isSuspend: false,
+    isResume: false,
+  };
+
+  filterBtn: any = [
+    {status: 'ALL', text: 'all'},
+    {status: 'PENDING', text: 'pending'},
+    {status: 'INPROGRESS', text: 'incomplete'},
+    {status: 'RUNNING', text: 'running'},
+    {status: 'SUSPENDED', text: 'suspended'},
+    {status: 'CALLING', text: 'calling'},
+    {status: 'WAITING', text: 'waiting'},
+    {status: 'BLOCKED', text: 'blocked'},
+    {status: 'FAILED', text: 'failed'}
+  ];
 
   @ViewChild(OrderActionComponent, {static: false}) actionChild;
 
@@ -241,7 +261,10 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     if (this.sideView.orderOverview && !this.sideView.orderOverview.show) {
       this.hidePanel();
     }
-    this.getOrders({controllerId: this.schedulerIds.selected, states: this.orderFilters.filter.state !== 'ALL' ? [this.orderFilters.filter.state] : undefined});
+    this.getOrders({
+      controllerId: this.schedulerIds.selected,
+      states: this.orderFilters.filter.state !== 'ALL' ? [this.orderFilters.filter.state] : undefined
+    });
   }
 
   ngOnDestroy() {
@@ -323,7 +346,10 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType.match(/Order/) || args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
-          this.getOrders({controllerId: this.schedulerIds.selected, states: this.orderFilters.filter.state !== 'ALL' ? [this.orderFilters.filter.state] : undefined });
+          this.getOrders({
+            controllerId: this.schedulerIds.selected,
+            states: this.orderFilters.filter.state !== 'ALL' ? [this.orderFilters.filter.state] : undefined
+          });
           break;
         }
       }
@@ -366,14 +392,17 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   sort(key): void {
     this.orderFilters.reverse = !this.orderFilters.reverse;
     this.orderFilters.filter.sortBy = key;
+    this.object.checked = false;
   }
 
   pageIndexChange($event) {
     this.orderFilters.currentPage = $event;
+    this.object.checked = false;
   }
 
   pageSizeChange($event) {
     this.orderFilters.entryPerPage = $event;
+    this.object.checked = false;
   }
 
   currentPageDataChange($event) {
@@ -465,20 +494,58 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.coreService.showLeftPanel();
   }
 
-  checkAll() {
-    if (this.object.checkbox && this.orders.length > 0) {
-      this.object.orders = this.currentData;
+  checkAll(value: boolean): void {
+    if (value && this.orders.length > 0) {
+      this.currentData.forEach(item => {
+        this.object.mapOfCheckedId.set(item.orderId, item);
+      });
     } else {
-      this.object.orders = [];
+      this.object.mapOfCheckedId.clear();
     }
+    this.refreshCheckedStatus();
   }
 
-  checkMainCheckbox() {
-    if (this.object.orders && this.object.orders.length > 0) {
-      this.object.checkbox = this.object.orders.length === this.currentData.length;
+  onItemChecked(order: any, checked: boolean): void {
+    if (checked) {
+      this.object.mapOfCheckedId.set(order.orderId, order);
     } else {
-      this.object.checkbox = false;
+      this.object.mapOfCheckedId.delete(order.orderId);
     }
+    this.object.checked = this.object.mapOfCheckedId.size === this.currentData.length;
+    this.refreshCheckedStatus();
+  }
+
+  refreshCheckedStatus(): void {
+    this.object.isCancel = false;
+    this.object.isModify = true;
+    this.object.isSuspend = true;
+    this.object.isResume = true;
+    this.object.mapOfCheckedId.forEach(order => {
+      if (order.state) {
+        if (order.state._text !== 'SUSPENDED' && order.state._text !== 'FAILED') {
+          this.object.isResume = false;
+        }
+        if (order.state._text !== 'PENDING') {
+          this.object.isModify = false;
+        }
+        if (order.state._text === 'PENDING' || order.state._text === 'FAILED') {
+          this.object.isSuspend = false;
+        }
+      }
+    });
+    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
+  }
+
+  modifyAllOrder() {
+    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.preferences = this.preferences;
+    modalRef.componentInstance.orders = this.object.mapOfCheckedId;
+    modalRef.result.then((res) => {
+      this.reset();
+    }, () => {
+
+    });
   }
 
   suspendAllOrder() {
@@ -506,11 +573,11 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     } else {
       obj.orderIds = [];
     }
-    this.object.orders.forEach((order) => {
-      if(obj.orderIds) {
+    this.object.mapOfCheckedId.forEach((order) => {
+      if (obj.orderIds) {
         obj.orderIds.push(order.orderId);
-      }else{
-        obj.orders.push({workflowPath: order.workflowId.path, orderId: order.orderId, scheduledFor : 'now'});
+      } else {
+        obj.orders.push({workflowPath: order.workflowId.path, orderId: order.orderId, scheduledFor: 'now'});
       }
     });
     if (this.preferences.auditLog) {
@@ -536,9 +603,10 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  reset(){
-    this.object.orders = [];
-    this.object.checkbox = false;
+  reset() {
+    this.object.mapOfCheckedId.clear();
+    this.object.checked = false;
+    this.object.indeterminate = false;
   }
 
   /** ================================= End Action ============================*/

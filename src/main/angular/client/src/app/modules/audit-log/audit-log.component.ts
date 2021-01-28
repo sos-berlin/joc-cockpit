@@ -287,10 +287,12 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       this.temp_filter = _.clone(this.adtLog.filter.date);
       this.adtLog.filter.date = '';
     } else {
-      if (this.temp_filter)
+      if (this.temp_filter) {
         this.adtLog.filter.date = _.clone(this.temp_filter);
-      else
+      }
+      else {
         this.adtLog.filter.date = 'today';
+      }
     }
   }
 
@@ -585,7 +587,9 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     }
 
     this.adtLog = this.coreService.getAuditLogTab();
-    this.adtLog.current =  this.preferences.adtLog == 'current';
+    if (!(this.adtLog.current || this.adtLog.current === false)) {
+      this.adtLog.current = this.preferences.adtLog == 'current';
+    }
     this.savedFilter = JSON.parse(this.saveService.auditLogFilters) || {};
     if (!this.savedFilter.selected) {
       this.load(null);

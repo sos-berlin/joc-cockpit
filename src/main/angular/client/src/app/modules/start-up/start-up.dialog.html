@@ -14,16 +14,10 @@
       <div class="form-group row">
         <label class="col-sm-4" translate>common.label.selectComments</label>
         <div class=" col-sm-8">
-          <div>
-            <label class="md-check">
-              <input type="radio" name="option" [(ngModel)]="comments.radio" value="predefined">
-              <i class="primary"></i> <span translate>common.label.predefined</span>
-            </label>
-            <label class="md-check m-l-md">
-              <input type="radio" name="option" [(ngModel)]="comments.radio" value="new">
-              <i class="primary"></i> <span translate>common.label.individual</span>
-            </label>
-          </div>
+          <nz-radio-group name="radio"  [(ngModel)]="comments.radio">
+            <label nz-radio nzValue="predefined"><span translate>common.label.predefined</span></label>
+            <label nz-radio nzValue="new"><span translate>common.label.individual</span></label>
+          </nz-radio-group>
         </div>
       </div>
       <div class="form-group row" *ngIf="comments.radio=='predefined'"
@@ -99,14 +93,10 @@
     <div class="form-group row">
       <label class="col-sm-4" translate>common.label.type</label>
       <div class="col-sm-8">
-        <label class="md-check w">
-          <input type="radio" name="type" [(ngModel)]="controller.type" value="STANDALONE">
-          <i class="primary"></i> <span translate>controller.label.standalone</span>
-        </label>
-        <label class="md-check w">
-          <input type="radio" name="type" [(ngModel)]="controller.type" value="CLUSTER">
-          <i class="primary"></i> <span translate>controller.label.cluster</span>
-        </label>
+        <nz-radio-group name="type" [(ngModel)]="controller.type">
+          <label nz-radio nzValue="STANDALONE"><span translate>controller.label.standalone</span></label>
+          <label nz-radio nzValue="CLUSTER"><span translate>controller.label.cluster</span></label>
+        </nz-radio-group>
       </div>
     </div>
     <div class="p-a b-a" *ngIf="controller.type === 'STANDALONE'">

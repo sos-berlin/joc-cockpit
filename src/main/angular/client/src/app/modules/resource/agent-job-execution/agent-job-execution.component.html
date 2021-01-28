@@ -8,10 +8,11 @@
                     </div>
                     <div class="inline">
                         <div class="show-block">
-                            <label class="md-check  valign">
-                                <input type="checkbox" [(ngModel)]="agentJobExecutionFilters.current" (change)="changeController()">
-                                <i class="primary"></i><span translate>common.label.currentController</span>
-                            </label>
+                            <div class="inline valign">
+                              <label nz-checkbox [(ngModel)]="agentJobExecutionFilters.current" name="current" (ngModelChange)="changeController()">
+                                {{'common.label.currentController' | translate}}
+                              </label>
+                            </div>
                             <div class="inline">
                                 <div class="btn-group m-l-12 hidden-btn-group">
                                     <button class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadAgentTasks('all')"

@@ -767,9 +767,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   submissionHistory: any = [];
   expandedPaths = new Set();
 
-  object: any = {
-    templates: [],
-    checkbox: false,
+  object = {
+    mapOfCheckedId: new Map(),
+    checked: false,
+    indeterminate: false,
     isCancel: false,
     isSuspend: false,
     isResume: false,
@@ -970,7 +971,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.preferences = this.preferences;
-    modalRef.componentInstance.orders = this.object.templates;
+    modalRef.componentInstance.orders = this.object.mapOfCheckedId;
     modalRef.result.then((res) => {
       this.updateList();
     }, () => {
@@ -981,7 +982,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   submitSelectedOrder() {
     const modalRef = this.modalService.open(SubmitOrderModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.orders = this.object.templates;
+    modalRef.componentInstance.orders = this.object.mapOfCheckedId;
     modalRef.result.then((res) => {
       this.updateList();
     }, (reason) => {
@@ -1003,15 +1004,15 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   resumeSelectedOrder() {
-    this.restCall(false, null, this.object.templates, 'Resume');
+    this.restCall(false, null, this.object.mapOfCheckedId, 'Resume');
   }
 
   cancelSelectedOrder() {
-    this.restCall(false, null, this.object.templates, 'Cancel');
+    this.restCall(false, null, this.object.mapOfCheckedId, 'Cancel');
   }
 
   suspendSelectedOrder() {
-    this.restCall(false, null, this.object.templates, 'Suspend');
+    this.restCall(false, null, this.object.mapOfCheckedId, 'Suspend');
   }
 
   cancelOrderWithKill(order, plan) {
@@ -1111,7 +1112,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   removeSelectedOrder() {
     const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.orders = this.object.templates;
+    modalRef.componentInstance.orders = this.object.mapOfCheckedId;
     modalRef.componentInstance.timeZone = this.preferences.zone;
     modalRef.componentInstance.selectedDate = this.selectedDate;
     modalRef.result.then((res) => {
@@ -1638,86 +1639,85 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   checkAll() {
     if (this.planOrders.length > 0) {
+      this.object.mapOfCheckedId.clear();
       let orders = this.planOrders.slice((this.preferences.entryPerPage * (this.dailyPlanFilters.currentPage - 1)), (this.preferences.entryPerPage * this.dailyPlanFilters.currentPage));
       if (this.dailyPlanFilters.filter.groupBy) {
-        if (this.object.checkbox) {
-          this.object.templates = [];
+        if (this.object.checked) {
           for (let i = 0; i < orders.length; i++) {
-            orders[i].checkbox = true;
-            this.object.templates = this.object.templates.concat(orders[i].value);
+            orders[i].checked = true;
+            orders[i].value.forEach(item => {
+              this.object.mapOfCheckedId.set(item.orderId, item);
+            });
           }
         } else {
-          this.object.templates = [];
           for (let i = 0; i < orders.length; i++) {
-            orders[i].checkbox = false;
+            orders[i].checked = false;
           }
         }
       } else {
-        this.object.templates = this.object.checkbox ? orders : [];
+        if (this.object.checked) {
+          orders.forEach(item => {
+            this.object.mapOfCheckedId.set(item.orderId, item);
+          });
+        }
       }
     } else {
-      this.object.checkbox = false;
-      this.object.templates = [];
+      this.object.checked = false;
     }
+    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
     if (this.dailyPlanFilters.filter.groupBy) {
-      this.checkState(this.object, this.object.templates);
+      this.checkState(this.object, this.object.mapOfCheckedId);
     }
   }
 
   checkOrderTemplate(template) {
-    if (template.checkbox) {
+    template.indeterminate = false;
+    if (template.checked) {
       for (let i = 0; i < template.value.length; i++) {
-        let flag = true;
-        for (let j = 0; j < this.object.templates.length; j++) {
-          if ((this.object.templates[j].orderId === template.value[i].orderId) && ((this.object.templates[j].workflowPath === template.key) || (this.object.templates[j].schedulePath === template.key))) {
-            flag = false;
-            break;
-          }
-        }
-        if (flag) {
-          this.object.templates.push(template.value[i]);
+        if (!this.object.mapOfCheckedId.has(template.value[i].orderId)) {
+          this.object.mapOfCheckedId.set(template.value[i].orderId, template.value[i]);
         }
       }
     } else {
       for (let i = 0; i < template.value.length; i++) {
-        for (let j = 0; j < this.object.templates.length; j++) {
-          if (this.object.templates[j].orderId === template.value[i].orderId) {
-            this.object.templates.splice(j, 1);
-            break;
-          }
+        if (this.object.mapOfCheckedId.has(template.value[i].orderId)) {
+          this.object.mapOfCheckedId.delete(template.value[i].orderId);
         }
       }
     }
-    this.object.templates = [...this.object.templates];
     this.updateMainCheckbox();
   }
 
-  checkPlan(plan) {
+  onItemChecked(order: any, plan: any, checked: boolean): void {
+    if (checked) {
+      this.object.mapOfCheckedId.set(order.orderId, order);
+    } else {
+      this.object.mapOfCheckedId.delete(order.orderId);
+    }
+    this.checkPlan(plan);
+  }
+
+  private checkPlan(plan) {
     if (this.dailyPlanFilters.filter.groupBy) {
       let count = 0;
-      for (let i = 0; i < this.object.templates.length; i++) {
-        if ((this.object.templates[i].workflowPath === plan.key) || (this.object.templates[i].schedulePath === plan.key)) {
+      this.object.mapOfCheckedId.forEach((item) => {
+        if ((item.workflowPath === plan.key) || (item.schedulePath === plan.key)) {
           ++count;
         }
-      }
-      plan.checkbox = count === plan.value.length;
+      });
+      plan.checked = count === plan.value.length;
+      plan.indeterminate = count > 0 && !plan.checked;
       this.updateMainCheckbox();
     } else {
-      this.object.checkbox = this.object.templates.length === plan.length;
+      this.object.checked = this.object.mapOfCheckedId.size === plan.length;
     }
   }
 
   private updateMainCheckbox() {
     let data = this.planOrders.slice((this.preferences.entryPerPage * (this.dailyPlanFilters.currentPage - 1)), (this.preferences.entryPerPage * this.dailyPlanFilters.currentPage));
-    let flag = true;
-    for (let i = 0; i < data.length; i++) {
-      if (!data[i].checkbox) {
-        flag = false;
-        break;
-      }
-    }
-    this.object.checkbox = flag;
-    this.checkState(this.object, this.object.templates);
+    this.object.checked = data.every(item => item.checked);
+    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
+    this.checkState(this.object, this.object.mapOfCheckedId);
   }
 
   sort(key) {
@@ -1729,14 +1729,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   pageIndexChange($event) {
     this.dailyPlanFilters.currentPage = $event;
-    if (this.object.checkbox) {
+    if (this.object.checked) {
       this.checkAll();
     }
   }
 
   pageSizeChange($event) {
     this.dailyPlanFilters.entryPerPage = $event;
-    if (this.object.checkbox) {
+    if (this.object.checked) {
       this.checkAll();
     } else {
       this.resetCheckBox();
@@ -1940,8 +1940,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   private resetCheckBox() {
     this.object = {
-      templates: [],
-      checkbox: false,
+      mapOfCheckedId: new Map(),
+      indeterminate: false,
+      checked: false,
       isCancel: false,
       isSuspend: false,
       isResume: false,
