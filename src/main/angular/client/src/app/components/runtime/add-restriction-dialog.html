@@ -34,8 +34,10 @@
           <label class="col-sm-3" translate>runtime.label.weekDays</label>
 
           <div class="col-sm-9">
-            <label nz-checkbox [(ngModel)]="frequency.all" name="week" (ngModelChange)="selectAllWeek()">
-              {{'runtime.label.everyDay' | translate}}
+            <label class="md-check w">
+              <input type="checkbox" [(ngModel)]="frequency.all" name="week"
+                     (change)="selectAllWeek()">
+              <i class="primary"></i> <span translate>runtime.label.everyDay</span>
             </label><br>
             <label class="md-check w">
               <input type="checkbox" [(checklist)]="frequency.days" name="sun"

@@ -621,6 +621,9 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
               }
               json.instructions[x].positions.push(JSON.stringify(json.instructions[x].catch.position));
             } else {
+              if (!json.instructions[x].positions) {
+                json.instructions[x].positions = [];
+              }
               if (json.instructions[x].catch.positions) {
                 json.instructions[x].positions = json.instructions[x].positions.concat(json.instructions[x].catch.positions);
               }
@@ -632,11 +635,14 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
               if (!json.instructions[x].positions) {
                 json.instructions[x].positions = [];
                 if (json.instructions[x].position) {
-                  json.instructions[x].positions.push(JSON.stringify(json.instructions[x].position))
+                  json.instructions[x].positions.push(JSON.stringify(json.instructions[x].position));
                 }
               }
               json.instructions[x].positions.push(JSON.stringify(json.instructions[x].then.position));
             } else {
+              if (!json.instructions[x].positions) {
+                json.instructions[x].positions = [];
+              }
               if (json.instructions[x].then.positions) {
                 json.instructions[x].positions = json.instructions[x].positions.concat(json.instructions[x].then.positions);
               }
@@ -648,13 +654,16 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
               if (!json.instructions[x].positions) {
                 json.instructions[x].positions = [];
                 if (json.instructions[x].position) {
-                  json.instructions[x].positions.push(JSON.stringify(json.instructions[x].position))
+                  json.instructions[x].positions.push(JSON.stringify(json.instructions[x].position));
                 }
               }
               json.instructions[x].positions.push(JSON.stringify(json.instructions[x].else.position));
             } else {
-              if (json.instructions[x].catch.positions) {
-                json.instructions[x].positions = json.instructions[x].positions.concat(json.instructions[x].catch.positions);
+              if (!json.instructions[x].positions) {
+                json.instructions[x].positions = [];
+              }
+              if (json.instructions[x].else.positions) {
+                json.instructions[x].positions = json.instructions[x].positions.concat(json.instructions[x].else.positions);
               }
             }
           }

@@ -262,7 +262,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     const dt = json.logEvents;
     let col = '';
     this.isInfoLevel = true;
-    for (let i = 0, j = 0; i < dt.length; i++) {
+    for (let i = 0; i < dt.length; i++) {
       const div = window.document.createElement('div');
       if (dt[i].logLevel === 'INFO') {
         div.className = 'log_info';
@@ -345,9 +345,9 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       const datetime = this.preferences.logTimezone ? moment(dt[i].masterDatetime).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss.SSSZ') : dt[i].masterDatetime;
       col = (datetime + ' <span style="width: 64px;display: inline-block;">[' + dt[i].logLevel + ']</span> ' +
-        '[' + dt[i].logEvent + '] ' + (dt[i].orderId ? ('id=' + dt[i].orderId) + ', ' : '') + 'pos=' + dt[i].position + '');
+        '[' + dt[i].logEvent + '] ' + (dt[i].orderId ? ('id=' + dt[i].orderId) : '') + ( dt[i].position ? ', pos=' + dt[i].position : '') + '');
       if (dt[i].job) {
-        col += ', job=' + dt[i].job;
+        col += ', Job=' + dt[i].job;
       }
       if (dt[i].agentDatetime) {
         col += ', Agent' + '(';
@@ -364,15 +364,41 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
         col += ')';
       }
       if (dt[i].error && !_.isEmpty(dt[i].error)) {
-        col += ', Error ( status=' + dt[i].error.errorState;
-        col += ', code=' + dt[i].error.errorCode;
+        col += ', Error (status=' + dt[i].error.errorState;
+        if (dt[i].error.errorCode) {
+          col += ', code=' + dt[i].error.errorCode;
+        }
         if (dt[i].error.errorReason) {
           col += ', reason=' + dt[i].error.errorReason;
         }
-        col += ', msg=' + dt[i].error.errorText + ')';
+        if (dt[i].error.errorText) {
+          col += ', msg=' + dt[i].error.errorText;
+        }
+        col += ')';
       }
       if (dt[i].returnCode != null && dt[i].returnCode != undefined) {
         col += ', returnCode=' + dt[i].returnCode;
+      }
+      if (dt[i].logEvent && dt[i].logEvent.match(/Lock/)){
+        if (dt[i].lock) {
+          col += ', Lock' + '(';
+          if (dt[i].lock.lockId) {
+            col += 'id=' + dt[i].lock.lockId;
+          }
+          if (dt[i].lock.limit) {
+            col += ', limit=' + dt[i].lock.limit;
+          }
+          if (dt[i].lock.count) {
+            col += ', count=' + dt[i].lock.count;
+          }
+          if (dt[i].lock.orderIds) {
+            col += ', orderIds=' + dt[i].lock.orderIds;
+          }
+          if (dt[i].lock.queuedOrderIds) {
+            col += ', queuedOrderIds=' + dt[i].lock.queuedOrderIds;
+          }
+          col += ')';
+        }
       }
 
       if (dt[i].logEvent === 'OrderProcessingStarted') {
