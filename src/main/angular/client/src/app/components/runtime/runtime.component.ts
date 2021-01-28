@@ -40,6 +40,7 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
   str: string;
   isVisible: boolean;
   countArr = [0, 1, 2, 3, 4];
+  countArrU = [1, 2, 3, 4];
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService, public modalService: NgbModal, private datePipe: DatePipe, private calendarService: CalendarService) {
   }

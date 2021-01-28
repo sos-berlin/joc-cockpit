@@ -34,10 +34,8 @@
           <label class="col-sm-3" translate>runtime.label.weekDays</label>
 
           <div class="col-sm-9">
-            <label class="md-check w">
-              <input type="checkbox" [(ngModel)]="frequency.all" name="week"
-                     (change)="selectAllWeek()">
-              <i class="primary"></i> <span translate>runtime.label.everyDay</span>
+            <label nz-checkbox [(ngModel)]="frequency.all" name="week" (ngModelChange)="selectAllWeek()">
+              {{'runtime.label.everyDay' | translate}}
             </label><br>
             <label class="md-check w">
               <input type="checkbox" [(checklist)]="frequency.days" name="sun"
@@ -197,64 +195,21 @@
                 <td [ngClass]="{'primary': getSelectedMonthDaysU('6')}"><a
                   (click)="selectMonthDaysUFunc('6')">-5</a></td>
               </tr>
-              <tr>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('7')}"><a
-                  (click)="selectMonthDaysUFunc('7')">-6</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('8')}"><a
-                  (click)="selectMonthDaysUFunc('8')">-7</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('9')}"><a
-                  (click)="selectMonthDaysUFunc('9')">-8</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('10')}"><a
-                  (click)="selectMonthDaysUFunc('10')">-9</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('11')}"><a
-                  (click)="selectMonthDaysUFunc('11')">-10</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('12')}"><a
-                  (click)="selectMonthDaysUFunc('12')">-11</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('13')}"><a
-                  (click)="selectMonthDaysUFunc('13')">-12</a></td>
-              </tr>
-              <tr>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('14')}"><a
-                  (click)="selectMonthDaysUFunc('14')">-13</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('15')}"><a
-                  (click)="selectMonthDaysUFunc('15')">-14</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('16')}"><a
-                  (click)="selectMonthDaysUFunc('16')">-15</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('17')}"><a
-                  (click)="selectMonthDaysUFunc('17')">-16</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('18')}"><a
-                  (click)="selectMonthDaysUFunc('18')">-17</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('19')}"><a
-                  (click)="selectMonthDaysUFunc('19')">-18</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('20')}"><a
-                  (click)="selectMonthDaysUFunc('20')">-19</a></td>
-              </tr>
-              <tr>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('21')}"><a
-                  (click)="selectMonthDaysUFunc('21')">-20</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('22')}"><a
-                  (click)="selectMonthDaysUFunc('22')">-21</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('23')}"><a
-                  (click)="selectMonthDaysUFunc('23')">-22</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('24')}"><a
-                  (click)="selectMonthDaysUFunc('24')">-23</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('25')}"><a
-                  (click)="selectMonthDaysUFunc('25')">-24</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('26')}"><a
-                  (click)="selectMonthDaysUFunc('26')">-25</a></td>
-
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('27')}"><a
-                  (click)="selectMonthDaysUFunc('27')">-26</a></td>
-              </tr>
-              <tr>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('28')}"><a
-                  (click)="selectMonthDaysUFunc('28')">-27</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('29')}"><a
-                  (click)="selectMonthDaysUFunc('29')">-28</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('30')}"><a
-                  (click)="selectMonthDaysUFunc('30')">-29</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('31')}"><a
-                  (click)="selectMonthDaysUFunc('31')">-30</a></td>
+              <tr *ngFor="let count of countArrU;">
+                <td [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) - 1) +'')}"><a
+                  (click)="selectMonthDaysUFunc(((7 * count) - 1) +'')">-{{(7 * count) - 1 }}</a></td>
+                <td [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count)) +'')}"><a
+                  (click)="selectMonthDaysUFunc(((7 * count)) +'')">-{{(7 * count) }}</a></td>
+                <td [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 1) +'')}"><a
+                  (click)="selectMonthDaysUFunc(((7 * count) + 1) +'')">-{{(7 * count) + 1 }}</a></td>
+                <td [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 2) +'')}"><a
+                  (click)="selectMonthDaysUFunc(((7 * count) + 2) +'')">-{{(7 * count) + 2 }}</a></td>
+                <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 3) +'')}"><a
+                  (click)="selectMonthDaysUFunc(((7 * count) + 3) +'')">-{{(7 * count) + 3 }}</a></td>
+                <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 6) +'')}"><a
+                  (click)="selectMonthDaysUFunc(((7 * count) + 4) +'')">-{{(7 * count) + 4 }}</a></td>
+                <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 5) +'')}"><a
+                  (click)="selectMonthDaysUFunc(((7 * count) + 5) +'')">-{{(7 * count) + 5 }}</a></td>
               </tr>
               </tbody>
             </table>

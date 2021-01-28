@@ -2835,7 +2835,7 @@ fieldset[disabled] .md-check input + i:before {
     width: 15px;
     position: absolute;
     height: 100%;
-    border: 1px solid #9e9e9e;
+    border: 1px solid $dark-border-color;
   }
 
   &.no-icon:after {
@@ -2990,13 +2990,13 @@ div.order-panel div {
 }
 
 .green, .healthy, .order-panel .running {
-  color: #228b22;
-  border-left-color: #228b22;
+  color: $green;
+  border-left-color: $green;
 }
 
 .gold, .order-panel .pending, .text-gold {
-  color: #ffc300;
-  border-left-color: #ffc300;
+  color: $gold;
+  border-left-color: $gold;
 }
 
 .text-green {
@@ -3004,23 +3004,23 @@ div.order-panel div {
 }
 
 .crimson, .order-panel .suspended {
-  color: #dc143c !important;
-  border-left-color: #dc143c;
+  color: $crimson !important;
+  border-left-color: $crimson;
 }
 
 .dimgrey {
-  color: #696969;
-  border-left-color: #696969;
+  color: $dimgrey;
+  border-left-color: $dimgrey;
 }
 
 .dark-orange, .order-panel .queue {
-  color: #f60 !important;
-  border-left-color: #f60;
+  color: $dark-orange !important;
+  border-left-color: $dark-orange;
 }
 
 .corn-flower-blue, .order-panel .inprogress {
-  color: #557fc9;
-  border-left-color: #557fc9;
+  color: $corn-flower-blue;
+  border-left-color: $corn-flower-blue;
 }
 
 .order-panel .waiting {
@@ -3030,18 +3030,18 @@ div.order-panel div {
 
 
 .dark-mangenta, .order-panel .blacklist {
-  color: #8b008b;
-  border-left-color: #8b008b;
+  color: $dark-mangenta;
+  border-left-color: $dark-mangenta;
 }
 
 .order-panel .calling {
-  color: #d2691e;
-  border-left-color: #d2691e;
+  color: $chocolate;
+  border-left-color: $chocolate;
 }
 
 .chocolate {
-  color: #d2691e;
-  border-left-color: #d2691e;
+  color: $chocolate;
+  border-left-color: $chocolate;
 }
 
 .border-grey, .border-grey-pending, .order-eclipse, .rect {
@@ -3702,7 +3702,7 @@ li > a > i.remove {
 #contextmenu-node {
   position: absolute;
   font-size: 13px;
-  color: rgba(0, 0, 0, 0.87);
+  color: $black;
   border-radius: 3px;
   border: 1px solid $border-color;
   -webkit-transform-origin: top left;
@@ -3869,7 +3869,7 @@ table.folder-tree-grid {
 }
 
 .expand-collapse:hover {
-  color: #0086b0;
+  color: $primary;
   cursor: pointer;
 }
 
@@ -3974,8 +3974,8 @@ input[type=search] {
 }
 
 .border-dark-orange {
-  border: 1px solid #f60;
-  border-top: 2px solid #f60;
+  border: 1px solid $dark-orange;
+  border-top: 2px solid $dark-orange;
 }
 
 .text-ellipsis1 {
@@ -4020,7 +4020,7 @@ input[type=search] {
 }
 
 .btn-grey, .list-group-item.active > .label, .nav-pills > .active > a > .label {
-  color: rgba(0, 0, 0, 0.87);
+  color: $black;
 }
 
 .block-ellipsis-flow-order {
@@ -4140,7 +4140,7 @@ input[type=search] {
 
 .nav-active-bg {
   .nav-link.active, .nav > li.active > a {
-    color: rgba(0, 0, 0, 0.87) !important;
+    color: $black !important;
   }
 }
 
@@ -4283,12 +4283,12 @@ a {
 }
 
 a.dark:hover {
-  background-color: #293846;
+  background-color: $black-lighten;
 }
 
 .text-dark {
   &:hover {
-    color: #293846;
+    color: $black-lighten;
   }
 
   color: #2e3e4e;
@@ -4323,7 +4323,7 @@ a[href]:hover span.text-white {
 }
 
 .text-black-dk {
-  color: rgba(0, 0, 0, 0.87);
+  color: $black;
 }
 
 .text-muted {
@@ -4336,11 +4336,11 @@ a[href]:hover span.text-white {
 }
 
 .text-orange {
-  color: #eb8814;
+  color: $orange;
 }
 
 .orange {
-  background-color: #eb8814;
+  background-color: $orange;
   color: rgba(255, 255, 255, 0.87);
 
   &:hover {
@@ -4382,16 +4382,7 @@ a[href]:hover span.text-white {
 .md-check1 > i:before {
   position: absolute;
   height: 100%;
-  border: 2px solid #9e9e9e;
-}
-
-.ch-purple {
-  color: rgba(255, 255, 255, 0.87);
-  background-color: $primary;
-}
-
-.purple-color {
-  color: $primary;
+  border: 2px solid $dark-border-color;
 }
 
 .success-color {
@@ -4399,8 +4390,8 @@ a[href]:hover span.text-white {
 }
 
 .order-panel .all {
-  color: #696969;
-  border-left-color: #696969;
+  color: $dimgrey;
+  border-left-color: $dimgrey;
 }
 
 .bg-hover-color:hover {
@@ -4609,7 +4600,7 @@ svg text {
 }
 
 .black-text {
-  color: #293846;
+  color: $black-lighten;
 }
 
 .emtpy-text {
@@ -4670,19 +4661,19 @@ svg text {
 }
 
 .green-box {
-  border: 1px solid #228b22 !important;
+  border: 1px solid $green !important;
 }
 
 .gold-box {
-  border: 1px solid #ffc300 !important;
+  border: 1px solid $gold !important;
 }
 
 .crimson-box {
-  border: 1px solid #dc143c !important;
+  border: 1px solid $crimson !important;
 }
 
 .dimgrey-box {
-  border: 1px solid #696969 !important;
+  border: 1px solid $dimgrey !important;
 }
 
 .dark-orange-box {
@@ -4690,15 +4681,15 @@ svg text {
 }
 
 .corn-flower-blue-box {
-  border: 1px solid #557fc9 !important;
+  border: 1px solid $corn-flower-blue !important;
 }
 
 .dark-magenta-box {
-  border: 1px solid #8b008b !important;
+  border: 1px solid $dark-mangenta !important;
 }
 
 .chocolate-box {
-  border: 1px solid #d2691e !important;
+  border: 1px solid $chocolate !important;
 }
 
 .text-dark-box {
@@ -5348,7 +5339,7 @@ tr.disabled-row td:not(.menu) {
 #property-panel .rg-right {
   left: 0;
   right: auto;
-  background-color: #fff !important;
+  background-color: $white !important;
 
   span {
     top: 50%;
@@ -5998,7 +5989,7 @@ div.mxTooltip {
 }
 
 #innertext span.highlight, #innertext .highlight {
-  color: #ffc300 !important;
+  color: $gold !important;
 }
 
 .plan-variables {
@@ -6280,8 +6271,8 @@ tr.tr-border td {
   padding: 6px 8px !important;
 }
 
-.ant-checkbox-inner, .ant-radio-inner {
-  border: 1px solid #9e9e9e;
+.ant-checkbox-inner, .ant-radio-inner, .ant-tree-checkbox-inner {
+  border: 1px solid $dark-border-color;
 }
 
 .ant-checkbox-inner {
@@ -6290,6 +6281,10 @@ tr.tr-border td {
 
 .ant-checkbox-inner::after {
   left: 20%;
+}
+.ant-tree li span.ant-tree-checkbox{
+  margin-right: 8px;
+  margin-left: 0;
 }
 
 .ant-checkbox-indeterminate .ant-checkbox-inner::after {
@@ -6342,7 +6337,7 @@ tr.tr-border td {
   width: 20px !important;
   overflow-y: auto;
   margin: auto 0;
-  background: #fff;
+  background: $white;
   transition: all .5s;
   -webkit-transition: all .25s
 }
@@ -6557,7 +6552,7 @@ div.jsoneditor,
 }
 
 .CodeMirror-gutters {
-  background: #fff !important
+  background: $white !important
 }
 
 .CodeMirror {
@@ -6687,7 +6682,7 @@ span.cm-error {
 }
 
 .version-inner-list {
-  background: #fff !important;
+  background: $white !important;
   padding-bottom: 4px;
   padding-left: 30px;
   margin: 4px -11px -4px;
@@ -6703,12 +6698,14 @@ span.cm-error {
 
 .ant-tree li {
   padding: 0;
+  .ant-tree-checkbox-disabled{
+    display: none;
+  }
 }
 
 .ant-tree-child-tree {
   width: fit-content !important;
 }
-
 .ant-calendar-header a:hover,
 .ant-time-picker-panel,
 .ant-calendar-picker-container,
@@ -6762,9 +6759,12 @@ span.cm-error {
 
 .ant-tree-checkbox-inner {
   border-radius: 0;
+  top:-1px;
 }
-
-.ant-tree-checkbox-checked .ant-tree-checkbox-inner {
+.ant-checkbox + span{
+  padding-left: 4px;
+}
+.ant-tree-checkbox-checked .ant-tree-checkbox-inner{
   border-color: $primary;
   background-color: $primary;
 }
@@ -6821,7 +6821,7 @@ span.cm-error {
 
 .order-count {
   margin-left: 8px;
-  color: #fff !important;
+  color: $white !important;
   background-color: $primary !important;
   padding: 1px 3px;
   font-weight: bold;
@@ -6834,7 +6834,7 @@ span.cm-error {
   margin-left: 8px;
   cursor: pointer;
   font-weight: bold;
-  color: #fff !important;
+  color: $white !important;
   font-size: 10px;
   padding: 1px 5px;
   border-radius: 6px;

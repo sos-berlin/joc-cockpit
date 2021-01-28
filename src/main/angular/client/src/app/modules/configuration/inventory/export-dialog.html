@@ -139,10 +139,7 @@
           <label translate>inventory.label.forSigning</label>
         </div>
         <div class="col-md-6">
-          <label class="md-check w">
-            <input type="checkbox" name="forSigning" [(ngModel)]="exportObj.forSigning" (ngModelChange)="onchangeSigning()">
-            <i class="primary"></i>
-          </label>
+          <label nz-checkbox [(ngModel)]="exportObj.forSigning" name="forSigning" (ngModelChange)="onchangeSigning()"></label>
         </div>
       </div>
       <div class="m-b-sm row">
