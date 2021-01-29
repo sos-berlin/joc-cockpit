@@ -387,11 +387,13 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
           if (dt[i].lock.count) {
             col += ', count=' + dt[i].lock.count;
           }
-          if (dt[i].lock.orderIds) {
-            col += ', orderIds=' + dt[i].lock.orderIds;
-          }
-          if (dt[i].lock.queuedOrderIds) {
-            col += ', queuedOrderIds=' + dt[i].lock.queuedOrderIds;
+          if (dt[i].lock.lockState) {
+            if (dt[i].lock.lockState.orderIds) {
+              col += ', orderIds=' + dt[i].lock.lockState.orderIds;
+            }
+            if (dt[i].lock.lockState.queuedOrderIds) {
+              col += ', queuedOrderIds=' + dt[i].lock.lockState.queuedOrderIds;
+            }
           }
           col += ')';
         }

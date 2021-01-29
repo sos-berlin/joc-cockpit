@@ -69,6 +69,7 @@
   "SKIPPED": "skipped",
   "STARTING": "starting",
   "STOPPED": "stopped",
+  "BROKEN": "broken",
   "STOPPING": "stopping",
   "SUCCESSFUL": "successful",
   "SUSPENDMARKED": "suspended marked",
@@ -664,9 +665,9 @@
     "button.supportRequests": "Support Requests"
   },
   "inventory": {
-    "label.valid": "Valid",
-    "label.notValid": "Not valid",
-    "label.inProgress": "In Progress",
+    "label.validHeader": "Valid",
+    "label.valid": "valid",
+    "label.notValid": "not valid",
     "label.deployed": "deployed",
     "label.deleted": "removed",
     "label.notDeployed": "not deployed",

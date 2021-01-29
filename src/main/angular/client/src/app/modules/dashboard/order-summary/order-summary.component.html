@@ -58,12 +58,12 @@
             <tr class="text-center">
                 <td width="50%">
                     <a (click)="showOrderSummary('SUCCESSFUL')" class="text-lg _600 "
-                       [ngClass]="{'text-success':orderSummary.orders.successful >0}"
+                       [ngClass]="{'dark-blue':orderSummary.orders.successful >0}"
                        [innerHtml]="orderSummary.orders.successful || 0"></a>
                 </td>
                 <td width="50%">
                     <a (click)="showOrderSummary('FAILED')" class="text-lg _600 "
-                       [ngClass]="{'crimson':orderSummary.orders.failed  >0}" [innerHtml]="orderSummary.orders.failed || 0"></a>
+                       [ngClass]="{'red':orderSummary.orders.failed  >0}" [innerHtml]="orderSummary.orders.failed || 0"></a>
                 </td>
             </tr>
         </table>

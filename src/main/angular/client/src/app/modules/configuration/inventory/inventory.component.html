@@ -191,7 +191,7 @@
                   <i *ngIf="node.origin.object == 'SCHEDULE'" nz-icon nzType="schedule" class="icon-color" nzTheme="outline"></i>
                   <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
                   <i *ngIf="node.origin.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
-                  <span *ngIf="node.origin.type" class="fa fa-check-circle-o text-xs w-11" [ngClass]="{'fa-circle-o': !node.origin.valid , 'fa-circle text-success' : node.origin.deployed || node.origin.released}" style="margin-top: 4px"></span>
+                  <span *ngIf="node.origin.type" class="fa fa-check-circle-o text-xs w-11" [ngClass]="{'fa-circle-o': !node.origin.valid , 'fa-circle dark-blue' : node.origin.deployed || node.origin.released}" style="margin-top: 4px"></span>
                   <span class="p-l-xs">
                     <span *ngIf="node.origin.object || node.origin.controller || node.origin.dailyPlan">{{node.origin.name | translate}}</span>
                     <span *ngIf="!node.origin.object && !node.origin.controller && !node.origin.dailyPlan">{{node.origin.name}}</span>

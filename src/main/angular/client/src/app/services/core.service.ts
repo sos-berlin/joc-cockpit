@@ -426,18 +426,20 @@ export class CoreService {
     } else if (d === 1) {
       return type === 'text' ? 'gold' : type === 'border' ? 'gold-box' : 'bg-gold';
     } else if (d === 2) {
-      return type === 'text' ? 'crimson' : type === 'border' ? 'crimson-box' : 'bg-crimson';
+      return type === 'text' ? 'red' : type === 'border' ? 'red-box' : 'bg-red';
     } else if (d === 3) {
-      return type === 'text' ? 'dimgrey' : type === 'border' ? 'dimgrey-box' : 'bg-dimgrey';
+      return type === 'text' ? 'light-blue' : type === 'border' ? 'light-blue-box' : 'bg-light-blue';
     } else if (d === 4) {
-      return type === 'text' ? 'text-dark' : type === 'border' ? 'text-dark-box' : 'bg-transparent';
+      return type === 'text' ? 'planned' : type === 'border' ? 'planned-box' : 'bg-planned';
     } else if (d === 5) {
-      return type === 'text' ? 'dark-orange' : type === 'border' ? 'dark-orange-box' : 'bg-dark-orange';
+      return type === 'text' ? 'orange' : type === 'border' ? 'orange-box' : 'bg-orange';
     } else if (d === 6) {
-      return type === 'text' ? 'corn-flower-blue' : type === 'border' ? 'corn-flower-blue-box' : 'bg-corn-flower-blue';
+      return type === 'text' ? 'dark-blue' : type === 'border' ? 'dark-blue-box' : 'bg-dark-blue';
     } else if (d === 7) {
-      return type === 'text' ? 'dark-magenta' : type === 'border' ? 'dark-magenta-box' : 'bg-dark-magenta';
+      return type === 'text' ? 'magenta' : type === 'border' ? 'magenta-box' : 'bg-magenta';
     } else if (d === 8) {
+      return type === 'text' ? 'yellow-green' : type === 'border' ? 'yellow-green-box' : 'bg-yellow-green';
+    } else if (d === 9) {
       return type === 'text' ? 'chocolate' : type === 'border' ? 'chocolate-box' : 'bg-chocolate';
     }
   }

@@ -47,7 +47,7 @@
              class="fa fa-caret-up "></i>
           <i *ngIf="filter.sortBy == 'name' && filter.reverse"
              class="fa fa-caret-down "></i></a></th>
-        <th (click)="sort('valid')"><a><span class="p-r-xs" translate>inventory.label.valid</span>
+        <th (click)="sort('valid')"><a><span class="p-r-xs" translate>inventory.label.validHeader</span>
           <i *ngIf="filter.sortBy == 'valid' && !filter.reverse"
              class="fa fa-caret-up "></i>
           <i *ngIf="filter.sortBy == 'valid' && filter.reverse"
@@ -138,23 +138,23 @@
             <span class="text-muted">{{data.title}}</span>
           </td>
           <td class="cursor" (click)="editObject(data)">
-            <span class="label bg-green" *ngIf="data.valid"
+            <span class="label bg-dark-blue" *ngIf="data.valid"
                   translate>inventory.label.valid</span>
-            <span class="label bg-gold" *ngIf="!data.valid"
+            <span class="label bg-orange" *ngIf="!data.valid"
                   translate>inventory.label.notValid</span>
           </td>
           <td class="cursor" (click)="editObject(data)">
-            <span class="label bg-green" *ngIf="data.deployed && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE'" [ngClass]="{'bg-crimson' : data.deleted}"
+            <span class="label bg-dark-blue" *ngIf="data.deployed && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE'" [ngClass]="{'bg-crimson' : data.deleted}"
                   translate>inventory.label.deployed</span>
-            <span class="label bg-gold" *ngIf="!data.deployed && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE'" [ngClass]="{'bg-crimson' : data.deleted}"
+            <span class="label bg-orange" *ngIf="!data.deployed && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE'" [ngClass]="{'bg-crimson' : data.deleted}"
                 translate>inventory.label.notDeployed</span>
-            <span class="label bg-green" *ngIf="data.released && (objectType === 'SCHEDULE' || objectType === 'CALENDAR')" [ngClass]="{'bg-crimson' : data.deleted}"
+            <span class="label bg-dark-blue" *ngIf="data.released && (objectType === 'SCHEDULE' || objectType === 'CALENDAR')" [ngClass]="{'bg-crimson' : data.deleted}"
                   translate>inventory.label.released</span>
-            <span class="label bg-gold" *ngIf="!data.released && (objectType === 'SCHEDULE' || objectType === 'CALENDAR')" [ngClass]="{'bg-crimson' : data.deleted}"
+            <span class="label bg-orange" *ngIf="!data.released && (objectType === 'SCHEDULE' || objectType === 'CALENDAR')" [ngClass]="{'bg-crimson' : data.deleted}"
                   translate>inventory.label.notReleased</span>
           </td>
           <td class="cursor" (click)="editObject(data)" *ngIf="objectType === 'CALENDAR'">
-            <span class="label bg-green"  [ngClass]="data.objectType=='WORKINGDAYSCALENDAR' ? 'bg-green': 'bg-gold'">
+            <span class="label "  [ngClass]="data.objectType=='WORKINGDAYSCALENDAR' ? 'bg-dark-blue': 'bg-orange'">
               {{data.objectType | translate}}</span>
           </td>
         </tr>

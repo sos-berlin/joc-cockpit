@@ -2989,109 +2989,175 @@ div.order-panel div {
   margin-top: 15px;
 }
 
-.green, .healthy, .order-panel .running {
-  color: $green;
-  border-left-color: $green;
-}
-
-.gold, .order-panel .pending, .text-gold {
-  color: $gold;
-  border-left-color: $gold;
-}
-
-.text-green {
-  color: #7ab97a;
-}
-
-.crimson, .order-panel .suspended {
-  color: $crimson !important;
-  border-left-color: $crimson;
-}
-
-.dimgrey {
-  color: $dimgrey;
-  border-left-color: $dimgrey;
-}
-
-.dark-orange, .order-panel .queue {
-  color: $dark-orange !important;
-  border-left-color: $dark-orange;
-}
-
-.corn-flower-blue, .order-panel .inprogress {
-  color: $corn-flower-blue;
-  border-left-color: $corn-flower-blue;
-}
-
-.order-panel .waiting {
-  color: #d6d313;
-  border-left-color: #d6d313;
-}
-
-
-.dark-mangenta, .order-panel .blacklist {
-  color: $dark-mangenta;
-  border-left-color: $dark-mangenta;
-}
-
-.order-panel .calling {
-  color: $chocolate;
-  border-left-color: $chocolate;
-}
-
-.chocolate {
-  color: $chocolate;
-  border-left-color: $chocolate;
-}
-
 .border-grey, .border-grey-pending, .order-eclipse, .rect {
   border: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-.bg-green1 {
-  background: green;
+.planned {
+  color: $dimgrey;
 }
 
-.bg-crimson1 {
-  background: red;
+.planned-box {
+  border-color: $bg-dimgrey !important;
 }
 
-._0, .b-healthy, .bg-green {
-  background: #7ab97a;
+.bg-planned {
+  color: white;
+  background: $bg-dimgrey;
 }
 
-._1, .bg-gold {
-  background: rgba(255, 195, 0, 0.9);
-  color: #4d4d4d;
+.gold {
+  color: $gold
 }
 
-._2, .bg-crimson {
-  background: #e86680;
+.gold-box {
+  border-color: $bg-gold !important;
 }
 
-._3, .bg-dimgrey {
-  background: #a5a5a5;
+.bg-gold {
+  background: $bg-gold;
 }
 
-._4, .bg-transparent {
-  background: #f5f5f5;
-  color: $default;
+.light-blue {
+  color: $light-blue;
 }
 
-._5, .bg-dark-orange {
-  background: #ffa366;
+.in-light-blue {
+  border-color: $bg-light-blue !important;
 }
 
-._6, .bg-corn-flower-blue {
-  background: #99b2df;
+.bg-light-blue {
+  background: $bg-light-blue;
 }
 
-._7, .bg-dark-mangenta {
-  background: #b966b9;
+.green {
+  color: $green
 }
 
-._8, .bg-chocolate {
-  background: #e4a578;
+.green-box {
+  border-color: $bg-green !important;
+}
+
+.bg-green{
+  background: $bg-green;
+}
+
+.calling {
+  color: $pink;
+}
+
+.calling-box {
+  border-color: $bg-pink !important;
+}
+
+.bg-calling {
+  background: $bg-pink;
+}
+.yellow-green {
+  color: $yellow-green
+}
+
+.yellow-green {
+  border-color: $bg-yellow-green !important;
+}
+
+.yellow-green{
+  background: $bg-yellow-green;
+}
+
+.red {
+  color: $red
+}
+
+.red-box {
+  border-color: $bg-red !important;
+}
+
+.bg-red{
+  background: $bg-red;
+}
+.orange{
+  color: $orange
+}
+
+.orange-box {
+  border-color: $bg-orange !important;
+}
+
+.bg-orange{
+  background: $bg-orange;
+}
+.dark-blue {
+  color: $blue
+}
+
+.dark-blue-box {
+  border-color: $bg-blue !important;
+}
+
+.bg-dark-blue {
+  background: $bg-blue;
+}
+
+.mangenta {
+  color: $mangenta
+}
+
+.mangenta-box {
+  border-color: $bg-mangenta !important;
+}
+
+.bg-mangenta{
+  background: $bg-mangenta;
+}
+
+.order-panel{
+  .planned {
+    color: $dimgrey;
+    border-left-color: $dimgrey;
+  }
+  .pending {
+    color: $gold;
+    border-left-color: $gold;
+  }
+  .in-progress {
+    color: $light-blue;
+    border-color: $light-blue;
+  }
+
+  .running {
+    color: $green;
+    border-color: $green;
+  }
+
+  .suspend {
+    color: $orange;
+    border-color: $orange;
+  }
+
+  .calling {
+    color: $pink;
+    border-color: $pink;
+  }
+
+  .waiting {
+    color: $yellow-green;
+    border-color: $yellow-green;
+  }
+
+  .failed {
+    color: $red;
+    border-color: $red;
+  }
+
+  .dark-blue {
+    color: $blue;
+    border-color: $blue;
+  }
+  .blocked {
+    color: $mangenta;
+    border-color: $mangenta !important;
+  }
 }
 
 .text-hover-primary:hover {
@@ -3781,7 +3847,7 @@ li > a > i.remove {
 }
 
 .btn-today {
-  background: #eb8814 !important;
+  background: $secondary !important;
   color: rgba(255, 255, 255, 0.87) !important;
 }
 
@@ -3974,8 +4040,8 @@ input[type=search] {
 }
 
 .border-dark-orange {
-  border: 1px solid $dark-orange;
-  border-top: 2px solid $dark-orange;
+  border: 1px solid $orange;
+  border-top: 2px solid $orange;
 }
 
 .text-ellipsis1 {
@@ -4206,7 +4272,7 @@ input[type=search] {
 }
 
 .b-orange {
-  border-color: #eb8814;
+  border-color: $secondary;
 }
 
 .b-t-primary {
@@ -4328,43 +4394,6 @@ a[href]:hover span.text-white {
 
 .text-muted {
   color: $text;
-}
-
-.red {
-  background-color: #f44336;
-  color: rgba(255, 255, 255, 0.87);
-}
-
-.text-orange {
-  color: $orange;
-}
-
-.orange {
-  background-color: $orange;
-  color: rgba(255, 255, 255, 0.87);
-
-  &:hover {
-    background-color: #e98514 !important;
-    color: rgba(255, 255, 255, 0.97) !important;
-  }
-}
-
-.danger, .danger-bg {
-  background-color: #f44455;
-}
-
-.danger {
-  .lt {
-    background-color: #f55060;
-  }
-
-  .dk {
-    background-color: #f3384a;
-  }
-
-  .bg {
-    background-color: #f44455;
-  }
 }
 
 .md-check input[type=radio]:checked + i:after {
@@ -4658,42 +4687,6 @@ svg text {
     top: 25px;
     font-size: 110px;
   }
-}
-
-.green-box {
-  border: 1px solid $green !important;
-}
-
-.gold-box {
-  border: 1px solid $gold !important;
-}
-
-.crimson-box {
-  border: 1px solid $crimson !important;
-}
-
-.dimgrey-box {
-  border: 1px solid $dimgrey !important;
-}
-
-.dark-orange-box {
-  border: 1px solid #ffa366 !important;
-}
-
-.corn-flower-blue-box {
-  border: 1px solid $corn-flower-blue !important;
-}
-
-.dark-magenta-box {
-  border: 1px solid $dark-mangenta !important;
-}
-
-.chocolate-box {
-  border: 1px solid $chocolate !important;
-}
-
-.text-dark-box {
-  border: 1px solid #bbb !important;
 }
 
 .m-m-p-7 {
@@ -5390,17 +5383,6 @@ General CSS
   }
 }
 
-#dailyPlanTableId {
-  .ant-table-small {
-    border-bottom: none !important;
-  }
-
-  .ant-table-small.ant-table-bordered .ant-table-placeholder {
-    border-bottom: 1px solid $border-color;
-  }
-}
-
-
 .inner-table .equal-6 {
   width: 16.6%;
 }
@@ -6037,13 +6019,13 @@ pre#pre {
 }
 
 .badge-success {
-  background-color: #7ab97a;
+  background-color: $bg-blue;
   color: white;
 }
 
 .badge-danger {
-  background-color: rgb(255, 195, 0);
-  color: $default;
+  background-color: $bg-orange;
+  color: white;
 }
 
 .ck-editor__main .ck-content {
@@ -6470,13 +6452,18 @@ div.jsoneditor,
 .ant-table-small.ant-table-bordered .ant-table-content {
   border-color: $border-color
 }
-
+.ant-table-small{
+  border-bottom: none;
+}
 .ant-table-small.ant-table-bordered .ant-table-content {
   border-right: none;
 }
 
-.ant-table-small.ant-table-bordered {
+.ant-table-small.ant-table-bordered,  {
   border-right: 1px solid $border-color;
+}
+.ant-table-small.ant-table-bordered .ant-table-placeholder, .ant-table-small > .ant-table-content .ant-table-row:last-child td{
+  border-bottom: 1px solid $border-color;
 }
 
 .inner-table .ant-table-small.ant-table-bordered {

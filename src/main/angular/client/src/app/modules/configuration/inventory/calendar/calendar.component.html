@@ -15,7 +15,7 @@
               </span>
           </span>
           <span class="badge" *ngIf="calendar.configuration" [ngClass]="!data.released ? 'badge-danger':'badge-success'">
-              <span *ngIf="!data.released" translate>inventory.label.inProgress</span>
+              <span *ngIf="!data.released" translate>inventory.label.notReleased</span>
               <span *ngIf="data.released" class="text-capitalize" translate>inventory.label.released</span>
             </span>
           <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!calendar.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="release()" >

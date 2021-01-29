@@ -59,12 +59,12 @@
             <tr class="text-center" *ngIf="taskSummary.jobs">
                 <td width="50%">
                     <a (click)="showTaskSummary('SUCCESSFUL')" class="text-lg _600 "
-                       [ngClass]="{'text-success':taskSummary.jobs.successful >0}"
+                       [ngClass]="{'dark-blue':taskSummary.jobs.successful >0}"
                        [innerHtml]="taskSummary.jobs.successful || 0"></a>
                 </td>
                 <td width="50%">
                     <a (click)="showTaskSummary('FAILED')" class="text-lg _600 "
-                       [ngClass]="{'crimson':taskSummary.jobs.failed  >0}"
+                       [ngClass]="{'red':taskSummary.jobs.failed  >0}"
                        [innerHtml]="taskSummary.jobs.failed || 0"></a>
                 </td>
             </tr>

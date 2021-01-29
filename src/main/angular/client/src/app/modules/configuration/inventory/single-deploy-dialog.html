@@ -123,7 +123,7 @@
             <div class="m-l-md node-wrapper" style="width: 90%" *ngFor="let child of deployablesObject">
               <div>
                 <span  class="fa fa-check-circle-o text-xs"
-                       [ngClass]="{'fa-circle-o': !child.valid, 'text-success' :child.deploymentId}" style="margin-top: 4px"></span>
+                       [ngClass]="{'fa-circle-o': !child.valid, 'dark-blue' :child.deploymentId}" style="margin-top: 4px"></span>
                 <span class="p-l-sm">{{child.objectName | translate}}</span>
               </div>
               <div class="m-l"
@@ -142,7 +142,7 @@
                   <ng-container *ngFor="let version of child.deployablesVersions">
                     <nz-option nzCustomContent [nzValue]="version.deploymentId" [nzLabel]="(!version.versions || version.versions.length === 0) ? ('workflow.label.draft' | translate) : (version.versionDate | stringToDate)">
                       <div *ngIf="version.versions && version.versions.length>0">
-                        <span class="fa fa-circle-o text-xs p-r-xs" [ngClass]="version.deploymentId ? ' text-success': ''"></span>
+                        <span class="fa fa-circle-o text-xs p-r-xs" [ngClass]="version.deploymentId ? ' dark-blue': ''"></span>
                         {{version.versionDate | stringToDate}} <span class="p-l-sm" [ngClass]="version.deploymentOperation === 'delete' ? ' text-danger': ''">{{version.deploymentOperation}}</span> <i *ngIf="version.deploymentPath" class="text-muted p-l-sm">{{version.deploymentPath}}</i></div>
                       <div class="version-inner-list" *ngFor="let ver of version.versions">
                         {{ver.controllerId}} <i *ngIf="ver.version">,</i> {{ver.version}}

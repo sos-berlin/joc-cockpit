@@ -159,7 +159,7 @@
                     <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.origin.object == 'SCHEDULE'" nz-icon nzType="schedule" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.origin.object && node.origin.object.match('CALENDAR')" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
-                    <span *ngIf="node.origin.type" class="fa fa-check-circle-o text-xs" [ngClass]="{'fa-circle-o': !node.origin.valid, 'text-success' :node.origin.deploymentId}" style="margin-top: 4px"></span>
+                    <span *ngIf="node.origin.type" class="fa fa-check-circle-o text-xs" [ngClass]="{'fa-circle-o': !node.origin.valid, 'dark-blue' :node.origin.deploymentId}" style="margin-top: 4px"></span>
                     <span class="p-l-sm" >{{node.origin.name | translate}}</span>
                   </div>
                   <div class="m-l" *ngIf="!isRemove && node.origin.type && node.origin.deployablesVersions && node.origin.deployablesVersions.length >0">
@@ -176,7 +176,7 @@
                       <ng-container *ngFor="let version of node.origin.deployablesVersions">
                         <nz-option nzCustomContent [nzValue]="version.deploymentId" [nzLabel]="(!version.versions || version.versions.length === 0) ? ('workflow.label.draft' | translate) : (version.versionDate | stringToDate)">
                             <div *ngIf="version.versions && version.versions.length>0">
-                              <span class="fa fa-circle-o text-xs p-r-xs" [ngClass]="version.deploymentId ? ' text-success': ''"></span>
+                              <span class="fa fa-circle-o text-xs p-r-xs" [ngClass]="version.deploymentId ? ' dark-blue': ''"></span>
                               {{version.versionDate | stringToDate}} <span class="p-l-sm" [ngClass]="version.deploymentOperation === 'delete' ? ' text-danger': ''">{{version.deploymentOperation}}</span> <i *ngIf="version.deploymentPath" [nz-tooltip]="version.deploymentPath" class="text-muted p-l-sm">{{version.deploymentPath}}</i></div>
                             <div class="version-inner-list" *ngFor="let ver of version.versions">
                               {{ver.controllerId}} <i *ngIf="ver.version">,</i> {{ver.version}}

@@ -11,7 +11,7 @@
               <span translate>inventory.label.valid</span>
           </span>
           <span class="badge" [ngClass]="!data.deployed ? 'badge-danger':'badge-success'">
-            <span *ngIf="!data.deployed" translate>inventory.label.inProgress</span>
+            <span *ngIf="!data.deployed" translate>inventory.label.notDeployed</span>
             <span *ngIf="data.deployed" translate>xml.label.deployed</span>
           </span>
           <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!jobClass.valid && !jobClass.hasDeployments" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="deploy()" >

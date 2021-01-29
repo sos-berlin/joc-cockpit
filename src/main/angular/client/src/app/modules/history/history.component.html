@@ -963,7 +963,7 @@
                 </span>
               </td>
               <td><span [innerHtml]="depHistory.account | highlight : deployment.searchText"></span></td>
-              <td><span class="label" [ngClass]="{'bg-green' : depHistory.state=== 'DEPLOYED', 'bg-gold' : depHistory.state=== 'NOT_DEPLOYED'}" [innerHtml]="depHistory.state | translate"></span></td>
+              <td><span class="label" [ngClass]="{'bg-dark-blue' : depHistory.state=== 'DEPLOYED', 'bg-orange' : depHistory.state=== 'NOT_DEPLOYED'}" [innerHtml]="depHistory.state | translate"></span></td>
             </tr>
             <tr *ngIf="depHistory.errorMessage && depHistory.show">
               <td colspan="4"><span class="cm-error">{{depHistory.errorMessage}}</span></td>
