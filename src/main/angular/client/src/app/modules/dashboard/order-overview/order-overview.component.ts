@@ -43,7 +43,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType.match(/Order/)) {
+        if (args.eventSnapshots[j].eventType.match(/WorkflowStateChanged/)) {
           this.getSnapshot();
           break;
         }

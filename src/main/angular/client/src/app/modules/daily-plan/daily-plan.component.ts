@@ -1410,7 +1410,136 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.planOrders.forEach((plan) => {
         this.checkState(plan, plan.value);
       });
+    } else{
+      if(this.object.mapOfCheckedId.size > 0){
+        this.updateMainCheckbox();
+      }
     }
+  }
+
+  private checkState(object, list) {
+    object.isPlanned = true;
+    object.isFinished = false;
+    object.isRunning = false;
+    object.isCancel = false;
+    object.isModify = true;
+    object.isSuspend = true;
+    object.isResume = true;
+    let count = 0;
+    list.forEach((order) => {
+      if (this.object.mapOfCheckedId.size > 0 && this.object.mapOfCheckedId.has(order.orderId) && object.key) {
+        ++count;
+        object.checked = list.length === count;
+        object.indeterminate = !object.checked;
+      }
+      if (order.state._text !== 'PLANNED') {
+        object.isPlanned = false;
+      }
+      if (order.state._text !== 'SUSPENDED' && order.state._text !== 'FAILED') {
+        object.isResume = false;
+      }
+      if (order.state._text === 'FINISHED') {
+        object.isFinished = true;
+      } else if (order.state._text === 'RUNNING') {
+        object.isRunning = true;
+      }
+      if (order.state._text === 'FINISHED' || order.state._text === 'PLANNED') {
+        object.isCancel = true;
+      }
+      if (order.state._text !== 'PLANNED' && order.state._text !== 'PENDING') {
+        object.isModify = false;
+      }
+      if (order.state._text === 'PLANNED' || order.state._text === 'PENDING' || order.state._text === 'FAILED' || order.state._text === 'FINISHED') {
+        object.isSuspend = false;
+      }
+    });
+  }
+
+  checkAll() {
+    if (this.planOrders.length > 0) {
+      this.object.mapOfCheckedId.clear();
+      let orders = this.planOrders.slice((this.preferences.entryPerPage * (this.dailyPlanFilters.currentPage - 1)), (this.preferences.entryPerPage * this.dailyPlanFilters.currentPage));
+      if (this.dailyPlanFilters.filter.groupBy) {
+        if (this.object.checked) {
+          for (let i = 0; i < orders.length; i++) {
+            orders[i].checked = true;
+            orders[i].value.forEach(item => {
+              this.object.mapOfCheckedId.set(item.orderId, item);
+            });
+          }
+        } else {
+          for (let i = 0; i < orders.length; i++) {
+            orders[i].checked = false;
+          }
+        }
+      } else {
+        if (this.object.checked) {
+          orders.forEach(item => {
+            this.object.mapOfCheckedId.set(item.orderId, item);
+          });
+        }
+      }
+    } else {
+      this.object.checked = false;
+    }
+    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
+    if (this.dailyPlanFilters.filter.groupBy) {
+      this.checkState(this.object, this.object.mapOfCheckedId);
+    }
+  }
+
+  checkOrderTemplate(template) {
+    template.indeterminate = false;
+    if (template.checked) {
+      for (let i = 0; i < template.value.length; i++) {
+        if (!this.object.mapOfCheckedId.has(template.value[i].orderId)) {
+          this.object.mapOfCheckedId.set(template.value[i].orderId, template.value[i]);
+        }
+      }
+    } else {
+      for (let i = 0; i < template.value.length; i++) {
+        if (this.object.mapOfCheckedId.has(template.value[i].orderId)) {
+          this.object.mapOfCheckedId.delete(template.value[i].orderId);
+        }
+      }
+    }
+    this.updateMainCheckbox();
+  }
+
+  onItemChecked(order: any, plan: any, checked: boolean): void {
+    if (checked) {
+      this.object.mapOfCheckedId.set(order.orderId, order);
+    } else {
+      this.object.mapOfCheckedId.delete(order.orderId);
+    }
+    this.checkPlan(plan);
+  }
+
+  private checkPlan(plan) {
+    if (this.dailyPlanFilters.filter.groupBy) {
+      let count = 0;
+      this.object.mapOfCheckedId.forEach((item) => {
+        if ((item.workflowPath === plan.key) || (item.schedulePath === plan.key)) {
+          ++count;
+        }
+      });
+      plan.checked = count === plan.value.length;
+      plan.indeterminate = count > 0 && !plan.checked;
+      this.updateMainCheckbox();
+    } else {
+      this.updateMainCheckbox();
+    }
+  }
+
+  private updateMainCheckbox() {
+    let data = this.planOrders.slice((this.preferences.entryPerPage * (this.dailyPlanFilters.currentPage - 1)), (this.preferences.entryPerPage * this.dailyPlanFilters.currentPage));
+    if (this.dailyPlanFilters.filter.groupBy) {
+      this.object.checked = data.every(item => item.checked);
+    } else {
+      this.object.checked = data.every(item => this.object.mapOfCheckedId.has(item.orderId));
+    }
+    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
+    this.checkState(this.object, this.object.mapOfCheckedId);
   }
 
   sortBy() {
@@ -1422,6 +1551,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.updateTable(this.dailyPlanFilters.searchText ? this.searchPipe.transform(this.plans, this.dailyPlanFilters.searchText) : this.plans);
   }
 
+  /* ---- Begin Action ------ */
+
   cancel() {
     this.showSearchPanel = false;
     this.searchFilter = {};
@@ -1430,7 +1561,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.loadOrderPlan();
     }
   }
-
 
   modifyOrder(order) {
     const modalRef = this.modalService.open(ModifyStartTimeModalComponent, {backdrop: 'static'});
@@ -1500,7 +1630,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  /* ---- Customization ------ */
+  /* ---- End Action ------ */
+
+  /* ---- Begin Customization ------ */
 
   createCustomization() {
     const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
@@ -1597,127 +1729,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.saveService.save();
   }
 
+  /* ---- End Customization ------ */
+
   receiveMessage($event) {
     if ($event === 'grid') {
       this.isToggle = true;
     }
     this.pageView = $event;
     this.resetCheckBox();
-  }
-
-  private checkState(object, list) {
-    object.isPlanned = true;
-    object.isFinished = false;
-    object.isRunning = false;
-    object.isCancel = false;
-    object.isModify = true;
-    object.isSuspend = true;
-    object.isResume = true;
-    list.forEach((order) => {
-      if (order.state._text !== 'PLANNED') {
-        object.isPlanned = false;
-      }
-      if (order.state._text !== 'SUSPENDED' && order.state._text !== 'FAILED') {
-        object.isResume = false;
-      }
-      if (order.state._text === 'FINISHED') {
-        object.isFinished = true;
-      } else if (order.state._text === 'RUNNING') {
-        object.isRunning = true;
-      }
-      if (order.state._text === 'FINISHED' || order.state._text === 'PLANNED') {
-        object.isCancel = true;
-      }
-      if (order.state._text !== 'PLANNED' && order.state._text !== 'PENDING') {
-        object.isModify = false;
-      }
-      if (order.state._text === 'PLANNED' || order.state._text === 'PENDING' || order.state._text === 'FAILED' || order.state._text === 'FINISHED') {
-        object.isSuspend = false;
-      }
-    });
-  }
-
-  checkAll() {
-    if (this.planOrders.length > 0) {
-      this.object.mapOfCheckedId.clear();
-      let orders = this.planOrders.slice((this.preferences.entryPerPage * (this.dailyPlanFilters.currentPage - 1)), (this.preferences.entryPerPage * this.dailyPlanFilters.currentPage));
-      if (this.dailyPlanFilters.filter.groupBy) {
-        if (this.object.checked) {
-          for (let i = 0; i < orders.length; i++) {
-            orders[i].checked = true;
-            orders[i].value.forEach(item => {
-              this.object.mapOfCheckedId.set(item.orderId, item);
-            });
-          }
-        } else {
-          for (let i = 0; i < orders.length; i++) {
-            orders[i].checked = false;
-          }
-        }
-      } else {
-        if (this.object.checked) {
-          orders.forEach(item => {
-            this.object.mapOfCheckedId.set(item.orderId, item);
-          });
-        }
-      }
-    } else {
-      this.object.checked = false;
-    }
-    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
-    if (this.dailyPlanFilters.filter.groupBy) {
-      this.checkState(this.object, this.object.mapOfCheckedId);
-    }
-  }
-
-  checkOrderTemplate(template) {
-    template.indeterminate = false;
-    if (template.checked) {
-      for (let i = 0; i < template.value.length; i++) {
-        if (!this.object.mapOfCheckedId.has(template.value[i].orderId)) {
-          this.object.mapOfCheckedId.set(template.value[i].orderId, template.value[i]);
-        }
-      }
-    } else {
-      for (let i = 0; i < template.value.length; i++) {
-        if (this.object.mapOfCheckedId.has(template.value[i].orderId)) {
-          this.object.mapOfCheckedId.delete(template.value[i].orderId);
-        }
-      }
-    }
-    this.updateMainCheckbox();
-  }
-
-  onItemChecked(order: any, plan: any, checked: boolean): void {
-    if (checked) {
-      this.object.mapOfCheckedId.set(order.orderId, order);
-    } else {
-      this.object.mapOfCheckedId.delete(order.orderId);
-    }
-    this.checkPlan(plan);
-  }
-
-  private checkPlan(plan) {
-    if (this.dailyPlanFilters.filter.groupBy) {
-      let count = 0;
-      this.object.mapOfCheckedId.forEach((item) => {
-        if ((item.workflowPath === plan.key) || (item.schedulePath === plan.key)) {
-          ++count;
-        }
-      });
-      plan.checked = count === plan.value.length;
-      plan.indeterminate = count > 0 && !plan.checked;
-      this.updateMainCheckbox();
-    } else {
-      this.object.checked = this.object.mapOfCheckedId.size === plan.length;
-    }
-  }
-
-  private updateMainCheckbox() {
-    let data = this.planOrders.slice((this.preferences.entryPerPage * (this.dailyPlanFilters.currentPage - 1)), (this.preferences.entryPerPage * this.dailyPlanFilters.currentPage));
-    this.object.checked = data.every(item => item.checked);
-    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
-    this.checkState(this.object, this.object.mapOfCheckedId);
   }
 
   sort(key) {
@@ -1729,18 +1748,29 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   pageIndexChange($event) {
     this.dailyPlanFilters.currentPage = $event;
-    if (this.object.checked) {
-      this.checkAll();
-    }
+    this.resetCheckBox();
   }
 
   pageSizeChange($event) {
     this.dailyPlanFilters.entryPerPage = $event;
     if (this.object.checked) {
       this.checkAll();
-    } else {
-      this.resetCheckBox();
     }
+  }
+
+  private resetCheckBox() {
+    this.object = {
+      mapOfCheckedId: new Map(),
+      indeterminate: false,
+      checked: false,
+      isCancel: false,
+      isSuspend: false,
+      isResume: false,
+      isModify: false,
+      isRunning: false,
+      isPlanned: false,
+      isFinished: false
+    };
   }
 
   private initConf() {
@@ -1800,7 +1830,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   private refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType.match('ORDER') || args.eventSnapshots[j].eventType.match(/WorkflowStateChanged/)) {
+        if (args.eventSnapshots[j].eventType.match(/WorkflowStateChanged/)) {
           this.load(this.selectedDate);
           this.loadOrderPlan();
           break;
@@ -1936,21 +1966,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.plans = [];
       this.planOrders = [];
     }
-  }
-
-  private resetCheckBox() {
-    this.object = {
-      mapOfCheckedId: new Map(),
-      indeterminate: false,
-      checked: false,
-      isCancel: false,
-      isSuspend: false,
-      isResume: false,
-      isModify: false,
-      isRunning: false,
-      isPlanned: false,
-      isFinished: false
-    };
   }
 
   private editFilter(filter) {

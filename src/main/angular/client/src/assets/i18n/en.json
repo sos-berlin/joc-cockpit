@@ -636,10 +636,11 @@
     "message.ignoreListIsEmpty": "Ignore List is empty!",
     "message.noOrderHistoryFound": "no Order History entries found",
     "message.addedToIgnoreList": "Added To Ignore List",
-    "tab.order": "Order",
-    "tab.task": "Task",
-    "tab.fileTransfer": "File Transfer",
-    "tab.deployment": "Deployment"
+    "tab.orders": "Orders",
+    "tab.tasks": "Tasks",
+    "tab.fileTransfers": "File Transfers",
+    "tab.deployments": "Deployments",
+    "tab.submissions": "Submissions"
   },
   "info": {
     "button.aboutJS7": "About JS7",
@@ -1160,7 +1161,7 @@
     "label.totalNumberOfJobExecutions": "Total number of Job executions",
     "label.documentation": "Documentation",
     "label.displayDocumentation": "show Documentation",
-    "label.documentations": "Documentation",
+    "label.documentations": "Documentations",
     "label.documentName": "Document Name",
     "label.assignDocumentation": "assign Documentation",
     "label.assignADocumentation": "Assign Documentation",

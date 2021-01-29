@@ -467,7 +467,7 @@
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
           <li class="nav-item" *ngIf="permission.History.view.status">
             <a class="nav-link" [ngClass]="{'active': historyFilters.type=='ORDER'}" (click)="orderHistory(null,false)">
-              <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.order</span></span>
+              <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.orders</span></span>
             </a>
           </li>
           <li class="nav-item dropdown-separator" *ngIf="permission.History.view.status">
@@ -475,7 +475,7 @@
           </li>
           <li class="nav-item" *ngIf="permission.History.view.status">
             <a class="nav-link" [ngClass]="{'active': historyFilters.type=='TASK'}" (click)="taskHistory(null)">
-              <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.task</span></span>
+              <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.tasks</span></span>
             </a>
           </li>
           <li class="nav-item dropdown-separator">
@@ -483,7 +483,7 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" [ngClass]="{'active': historyFilters.type=='DEPLOYMENT'}" (click)="deploymentHistory(null,false)">
-              <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.deployment</span></span>
+              <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.deployments</span></span>
             </a>
           </li>
         </ul>
