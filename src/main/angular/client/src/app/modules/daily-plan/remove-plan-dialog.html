@@ -1,6 +1,9 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="!order" translate>dailyPlan.label.removeOrders</span>
+    <span *ngIf="!order && !submissionsDelete" translate>dailyPlan.label.removeOrders</span>
+    <span *ngIf="submissionsDelete" translate>dailyPlan.label.submissionsDelete
+       <i class="text-muted p-l-xs text">{{selectedDate | stringToDate1}}</i>
+    </span>
     <span *ngIf="order" translate>dailyPlan.label.removeOrder</span>
     <i *ngIf="order" class="text-muted p-l-xs text">{{plan ? order.orderTemplatePath : workflow ? order.key : order.orderId}}</i>
   </h4>
@@ -25,6 +28,11 @@
       <div class="m-t text" *ngIf="orders">
         <p class="m-t">
           <span translate [translateParams]="{count: orders.size}">dailyPlan.popup.removeOrderCount</span>
+        </p>
+      </div>
+      <div class="m-t text" *ngIf="submissionsDelete">
+        <p class="m-t">
+          <span translate>dailyPlan.popup.deleteSubmissions</span>
         </p>
       </div>
     </div>

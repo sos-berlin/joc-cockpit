@@ -11,10 +11,10 @@
       <li nz-menu-item *ngIf="permission && permission.Order.execute.start">
         <a (click)="startOrderAt()" translate>order.button.startOrderat</a>
       </li>-->
-      <li nz-menu-item *ngIf="permission && permission.Order.execute">
+      <li nz-menu-item *ngIf="permission && permission.Order.execute && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')">
         <a (click)="cancelOrder(order)" translate>order.button.cancel</a>
       </li>
-      <li nz-menu-item *ngIf="permission && permission.Order.execute">
+      <li nz-menu-item *ngIf="permission && permission.Order.execute && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')">
         <a (click)="cancelOrderWithKill()" translate>order.button.cancelAndKillTask</a>
       </li>
       <li nz-menu-item *ngIf="permission && permission.Order.execute.suspend && (order.state._text === 'RUNNING' || order.state._text === 'INPROGRESS')">
@@ -33,6 +33,10 @@
       <li nz-menu-item *ngIf="permission && permission.Order.execute && order.state && (order.state._text === 'PLANNED' || order.state._text === 'PENDING')">
         <a (click)="changeParameter(order)"
            translate>dailyPlan.button.setParameters</a>
+      </li>
+      <li nz-menu-item *ngIf="permission && permission.Order.execute && order.state && (order.state._text === 'FINISHED' || order.state._text === 'CANCELLED')">
+        <a (click)="removeWhenTerminated()"
+           translate>common.button.terminate</a>
       </li>
 <!--      <li nz-menu-item>
         <a (click)="coreService.copyLink('order',order.orderId)" translate>common.button.copyLinkToObject</a>

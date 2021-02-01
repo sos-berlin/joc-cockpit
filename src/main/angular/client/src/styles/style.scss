@@ -1974,6 +1974,10 @@ fieldset[disabled] .ui-check input + i {
   margin-left: 8px !important;
 }
 
+.m-t-12 {
+  margin-top: 12px !important;
+}
+
 .m-l-12 {
   margin-left: 12px !important;
 }
@@ -3057,11 +3061,11 @@ div.order-panel div {
   color: $yellow-green
 }
 
-.yellow-green {
+.yellow-green-box {
   border-color: $bg-yellow-green !important;
 }
 
-.yellow-green{
+.bg-yellow-green{
   background: $bg-yellow-green;
 }
 
@@ -3150,7 +3154,7 @@ div.order-panel div {
     border-color: $red;
   }
 
-  .dark-blue {
+  .terminate {
     color: $blue;
     border-color: $blue;
   }

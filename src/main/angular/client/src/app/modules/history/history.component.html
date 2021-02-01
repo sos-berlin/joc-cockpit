@@ -425,6 +425,100 @@
               </nz-dropdown-menu>
             </div>
           </div>
+          <div class="hide" [ngClass]="{'show-block':historyFilters.type == 'SUBMISSION'}">
+            <div class="btn-group m-l-12 hidden-btn-group">
+              <button [disabled]="savedSubmissionHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                      (click)="loadHistory('DATE','ALL')"
+                      [ngClass]="{'btn-primary': submission.filter.date=='ALL'}" translate>filters.button.all
+              </button>
+              <button [disabled]="savedSubmissionHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                      (click)="loadHistory('DATE','today')"
+                      [ngClass]="{'btn-primary': submission.filter.date=='today'}" translate>filters.button.today
+              </button>
+              <button [disabled]="savedSubmissionHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                      (click)="loadHistory('DATE','-1h')"
+                      [ngClass]="{'btn-primary': submission.filter.date=='-1h'}" translate>filters.button.last1
+              </button>
+              <button [disabled]="savedSubmissionHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                      (click)="loadHistory('DATE','-12h')"
+                      [ngClass]="{'btn-primary': submission.filter.date=='-12h'}" translate>filters.button.last12
+              </button>
+              <button [disabled]="savedSubmissionHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                      (click)="loadHistory('DATE','-24h')"
+                      [ngClass]="{'btn-primary': submission.filter.date=='-24h'}" translate>filters.button.last24
+              </button>
+              <button [disabled]="savedSubmissionHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                      (click)="loadHistory('DATE','-7d')"
+                      [ngClass]="{'btn-primary': submission.filter.date=='-7d'}" translate>filters.button.lastWeak
+              </button>
+            </div>
+            <div class="btn-group dropdown hidden-dropdown">
+              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" type="button" translate>
+                common.label.anyDate
+                <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+              </button>
+              <nz-dropdown-menu #anyDate="nzDropdownMenu" >
+                <ul nz-menu>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.date=='ALL', 'disable-link':savedSubmissionHistoryFilter.selected}">
+                    <a (click)="loadHistory('DATE','ALL')"
+                       translate>filters.button.all
+                    </a>
+                  </li>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.date=='today', 'disable-link':savedSubmissionHistoryFilter.selected}">
+                    <a (click)="loadHistory('DATE','today')"
+                       translate>filters.button.today
+                    </a>
+                  </li>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.date=='-1h', 'disable-link':savedSubmissionHistoryFilter.selected}">
+                    <a (click)="loadHistory('DATE','-1h')"
+                       translate>filters.button.last1
+                    </a>
+                  </li>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.date=='-12h', 'disable-link':savedSubmissionHistoryFilter.selected}">
+                    <a (click)="loadHistory('DATE','-12h')"
+                       translate>filters.button.last12
+                    </a>
+                  </li>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.date=='-24h', 'disable-link':savedSubmissionHistoryFilter.selected}">
+                    <a (click)="loadHistory('DATE','-24h')"
+                       translate>filters.button.last24
+                    </a>
+                  </li>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.date=='-7d', 'disable-link':savedSubmissionHistoryFilter.selected}">
+                    <a (click)="loadHistory('DATE','-7d')"
+                       translate>filters.button.lastWeak
+                    </a>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+            <div class="btn-group dropdown">
+              <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered1.account" nz-dropdown nzTrigger="click" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'" type="button" translate>
+                {{'customization.label.customizations' | translate}} <span class="text-primary" [innerHtml]="selectedFiltered1.name"></span>
+                <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+              </button>
+              <nz-dropdown-menu #customization="nzDropdownMenu" >
+                <ul nz-menu>
+                  <li nz-menu-item >
+                    <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
+                  </li>
+                  <li nz-menu-item  *ngIf="submissionHistoryFilterList.length>0">
+                    <a (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
+                  </li>
+                  <li nz-menu-divider *ngIf="submissionHistoryFilterList.length>0"></li>
+                  <li nz-menu-item  *ngFor="let filter of submissionHistoryFilterList | orderBy: 'name'"
+                      [ngClass]="{'ant-select-dropdown-menu-item-active': (savedSubmissionHistoryFilter.selected == filter.id)}">
+                    <a (click)="changeFilter(filter)">
+                      <span [nz-tooltip]="filter.account">{{filter.name}}</span>
+                      <i (click)="changeFilter(null);$event.stopPropagation();"
+                         *ngIf="savedSubmissionHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove"
+                         [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"></i>
+                    </a>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+          </div>
           <div class="btn-group dropdown" *ngIf="historyFilters.type === 'ORDER' || historyFilters.type === 'TASK'">
             <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="ignoreList" [nzPlacement]="'bottomRight'">
               {{'history.label.ignoreList' | translate}}
@@ -486,6 +580,14 @@
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.deployments</span></span>
             </a>
           </li>
+          <li class="nav-item dropdown-separator">
+            <span class="separator"></span>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [ngClass]="{'active': historyFilters.type=='SUBMISSION'}" (click)="submissionHistory(null)">
+              <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.dailyPlans</span></span>
+            </a>
+          </li>
         </ul>
       </div>
       <div class="col-md-6 col-sm-8">
@@ -516,6 +618,12 @@
           </label>
           <i *ngIf="historyFilters.type === 'DEPLOYMENT'" [hidden]="!deployment.searchText" class="fa fa-times search-close"
              (click)="deployment.searchText = '';searchInResult()"></i>
+          <label>
+            <input *ngIf="historyFilters.type === 'SUBMISSION'" type="search" placeholder="{{'common.placeholder.search' | translate}}"
+                   [(ngModel)]="submission.searchText" (keyup)="searchInResult()">
+          </label>
+          <i *ngIf="historyFilters.type === 'SUBMISSION'" [hidden]="!submission.searchText" class="fa fa-times search-close"
+             (click)="submission.searchText = '';searchInResult()"></i>
         </div>
       </div>
     </div>
@@ -539,6 +647,12 @@
                                     [permission]="permission" [allFilter]="deploymentHistoryFilterList"
                                     [isSearch]="true" (onCancel)="cancel()"
                                     (onSearch)="search($event)"></app-deployment-form-template>
+          </div>
+          <div *ngIf="historyFilters.type === 'SUBMISSION'">
+            <app-submission-form-template [filter]="submissionSearch" [preferences]="preferences" [schedulerIds]="schedulerIds"
+                                          [permission]="permission" [allFilter]="submissionHistoryFilterList"
+                                          [isSearch]="true" (onCancel)="cancel()"
+                                          (onSearch)="search($event)"></app-submission-form-template>
           </div>
         </div>
       </div>
@@ -748,7 +862,7 @@
           <tr>
             <th class=" menu"><span translate>common.label.action</span></th>
             <th *ngIf="!historyFilters.current" (click)="sort1('controllerId')">
-              <a><span class="p-r-xs" translate>label.controllerId</span>
+              <a><span class="p-r-xs" translate>common.label.controllerId</span>
                 <i *ngIf="task.filter.sortBy == 'controllerId' && !task.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="task.filter.sortBy == 'controllerId' && task.reverse"
@@ -999,6 +1113,94 @@
                   </tr>
                   </tbody>
                 </nz-table>
+              </td>
+            </tr>
+          </ng-template>
+          </tbody>
+        </nz-table>
+        <div class="w-half label-top" *ngIf="ajaxTable.data.length >0">
+          <span translate>common.label.total</span> {{data.length}}
+          <span *ngIf="ajaxTable.data.length >1" translate>history.label.historiesFound</span>
+          <span *ngIf="ajaxTable.data.length === 1" translate>history.label.historyFound</span>
+        </div>
+      </div>
+    </div>
+    <div class="m-t-sm box p-a" *ngIf="historyFilters.type == 'SUBMISSION'">
+      <div class="table-responsive">
+        <nz-table
+          #ajaxTable
+          [nzSize]="'small'"
+          [nzPageSize]="submission.entryPerPage || preferences.entryPerPage"
+          [nzPageIndex]="submission.currentPage"
+          [nzBordered]="true"
+          [nzShowPagination]="data.length > 0"
+          [nzData]="data"
+          [nzLoading]="!isLoading"
+          [nzShowSizeChanger]="true"
+          (nzPageIndexChange)="pageIndexChange($event)"
+          (nzPageSizeChange)="pageSizeChange($event)"
+          (nzCurrentPageDataChange)="currentPageDataChange($event)"
+          [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+        >
+          <thead>
+          <tr>
+            <th *ngIf="!historyFilters.current" (click)="sort4('controllerId')">
+              <a><span class="p-r-xs" translate>common.label.controllerId</span>
+                <i *ngIf="submission.filter.sortBy == 'controllerId' && !submission.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="submission.filter.sortBy == 'controllerId' && submission.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort4('dailyPlanDate')">
+              <a><span class="p-r-xs" translate>history.label.dailyPlanDate</span>
+                <i *ngIf="submission.filter.sortBy == 'dailyPlanDate' && !submission.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="submission.filter.sortBy == 'dailyPlanDate' && submission.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-template ngFor let-submissionHistory
+                       [ngForOf]="ajaxTable.data | orderBy: submission.filter.sortBy:submission.reverse">
+            <tr [ngClass]="{'light-bg':submissionHistory.show}">
+              <td *ngIf="!historyFilters.current">
+                <span class="show-in-single-line w-full">
+                    <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                       *ngIf="!submissionHistory.show" (click)="submissionHistory.show = true;"></i>
+                    <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+                       *ngIf="submissionHistory.show" (click)="submissionHistory.show = false;"></i>
+                     <span [innerHtml]="submissionHistory.controllerId | highlight : submission.searchText"></span>
+                     <span *ngIf="!submissionHistory.controllerId" [innerHtml]="submission.controllerId | highlight : submission.searchText"></span>
+                  </span>
+              </td>
+              <td>
+                <span class="show-in-single-line w-full">
+                    <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                       *ngIf="!submissionHistory.show && historyFilters.current"
+                       (click)="submissionHistory.show = true"></i>
+                    <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+                       *ngIf="submissionHistory.show && historyFilters.current"
+                       (click)="submissionHistory.show = false;"></i>
+                    <span [innerHtml]="submissionHistory.dailyPlanDate | stringToDate"></span>
+                  </span>
+              </td>
+            </tr>
+            <tr *ngIf="submissionHistory.show">
+              <td colspan="4" style="padding:0 !important" class="order-history-template0">
+                <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small"
+                          [nzData]="submissionHistory.submissions" [nzShowPagination]="false">
+                <thead>
+                <tr>
+                  <th><span translate>history.label.date</span></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let child of innerChildTable.data">
+                  <td [innerHtml]="child.submissionTime | stringToDate"></td>
+                </tr>
+                </tbody>
+              </nz-table>
               </td>
             </tr>
           </ng-template>

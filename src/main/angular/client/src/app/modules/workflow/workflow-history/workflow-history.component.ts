@@ -92,7 +92,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   private refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType.match(/Order/) && this.index === 0) {
+        if (args.eventSnapshots[j].eventType.match(/WorkflowStateChanged/) && this.index === 0) {
           if (!this.workflow || !this.workflow.path) {
             this.loadOrderHistory();
             break;

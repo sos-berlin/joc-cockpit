@@ -333,6 +333,7 @@ export class RemovePlanModalComponent implements OnInit {
   @Input() workflow;
   @Input() timeZone;
   @Input() selectedDate;
+  @Input() submissionsDelete: boolean;
 
   preferences: any;
   display: any;
@@ -382,15 +383,20 @@ export class RemovePlanModalComponent implements OnInit {
         obj.filter.orderIds.push(order.orderId);
       });
     }
-    if (!obj.filter.dailyPlanDate && this.selectedDate) {
+    if (!obj.filter.dailyPlanDate && this.selectedDate && !this.submissionsDelete) {
       obj.filter.dailyPlanDate = moment(this.selectedDate).format('YYYY-MM-DD');
+    } else if (this.submissionsDelete) {
+      obj.filter.dateFrom = new Date(this.selectedDate);
+      let d = new Date(this.selectedDate).setDate(obj.filter.dateFrom.getDate() + 1);
+      obj.filter.dateTo = new Date(d);
+     // obj.filter.timeZone = this.timeZone;
     }
     this.remove(obj);
   }
 
   private remove(obj) {
     this.submitted = true;
-    this.coreService.post('daily_plan/orders/delete', obj).subscribe((res) => {
+    this.coreService.post(this.submissionsDelete ? 'daily_plan/submissions/delete' : 'daily_plan/orders/delete', obj).subscribe((res) => {
       this.submitted = false;
       this.activeModal.close('Done');
     }, () => {
@@ -965,6 +971,19 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
+  deleteSubmission(): void {
+    const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.timeZone = this.preferences.zone;
+    modalRef.componentInstance.selectedDate = this.selectedDate;
+    modalRef.componentInstance.submissionsDelete = true;
+    modalRef.result.then((res) => {
+      this.updateList();
+    }, () => {
+
+    });
+  }
+
   /* ------------- Action ------------------- */
 
   modifySelectedOrder() {
@@ -1462,6 +1481,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       if (this.dailyPlanFilters.filter.groupBy) {
         if (this.object.checked) {
           for (let i = 0; i < orders.length; i++) {
+            orders[i].indeterminate = false;
             orders[i].checked = true;
             orders[i].value.forEach(item => {
               this.object.mapOfCheckedId.set(item.orderId, item);
@@ -1483,9 +1503,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.object.checked = false;
     }
     this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
-    if (this.dailyPlanFilters.filter.groupBy) {
-      this.checkState(this.object, this.object.mapOfCheckedId);
-    }
+    this.checkState(this.object, this.object.mapOfCheckedId);
   }
 
   checkOrderTemplate(template) {

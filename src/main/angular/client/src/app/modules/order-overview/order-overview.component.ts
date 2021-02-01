@@ -70,9 +70,8 @@ export class OrderPieChartComponent implements OnInit, OnDestroy {
     }
   }
 
-
   private preparePieData(res) {
-    let ordersData = [];
+    const ordersData = [];
     this.colorScheme.domain = [];
     for (let prop in res) {
       if (res[prop] > 0) {
@@ -80,22 +79,24 @@ export class OrderPieChartComponent implements OnInit, OnDestroy {
         obj.name = prop;
         obj.value = res[prop];
         ordersData.push(obj);
-        if (prop === 'running') {
+        if (prop === 'pending') {
+          this.colorScheme.domain.push('#ffc91a');
+        } else if (prop === 'inProgress') {
+          this.colorScheme.domain.push('#7c9cd5');
+        } else if (prop === 'running') {
           this.colorScheme.domain.push('#7ab97a');
         } else if (prop === 'suspended') {
           this.colorScheme.domain.push('#FF8d1a');
-        } else if (prop === 'inProgress') {
-          this.colorScheme.domain.push('#7c9cd5');
-        } else if (prop === 'blocked') {
-          this.colorScheme.domain.push('#b966b9');
-        } else if (prop === 'pending') {
-          this.colorScheme.domain.push('#ffc91a');
-        } else if (prop === 'waiting') {
-          this.colorScheme.domain.push('#cccc00');
-        } else if (prop === 'failed') {
-          this.colorScheme.domain.push('#ed365b');
         } else if (prop === 'calling') {
           this.colorScheme.domain.push('#f37891');
+        } else if (prop === 'waiting') {
+          this.colorScheme.domain.push('#cccc00');
+        } else if (prop === 'blocked') {
+          this.colorScheme.domain.push('#b966b9');
+        } else if (prop === 'failed') {
+          this.colorScheme.domain.push('#ed365b');
+        } else if (prop === 'terminate') {
+          this.colorScheme.domain.push('#1591d4');
         }
       }
     }
@@ -232,7 +233,8 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     {status: 'CALLING', text: 'calling'},
     {status: 'WAITING', text: 'waiting'},
     {status: 'BLOCKED', text: 'blocked'},
-    {status: 'FAILED', text: 'failed'}
+    {status: 'FAILED', text: 'failed'},
+    {status: 'TERMINATE', text: 'terminate'}
   ];
 
   @ViewChild(OrderActionComponent, {static: false}) actionChild;
@@ -262,9 +264,10 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     if (this.sideView.orderOverview && !this.sideView.orderOverview.show) {
       this.hidePanel();
     }
+
     this.getOrders({
       controllerId: this.schedulerIds.selected,
-      states: this.orderFilters.filter.state !== 'ALL' ? [this.orderFilters.filter.state] : undefined
+      states: this.getState()
     });
   }
 
@@ -296,6 +299,19 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.coreService.post('orders/history', obj).subscribe((res: any) => {
       this.history = res.history;
     });
+  }
+
+  private getState() {
+    let state;
+    if (this.orderFilters.filter.state !== 'ALL') {
+      if (this.orderFilters.filter.state === 'TERMINATE') {
+        state = ['FINISHED', 'CANCELLED'];
+      } else {
+        state = [this.orderFilters.filter.state];
+      }
+    }
+
+    return state;
   }
 
   loadAuditLogs() {
@@ -349,7 +365,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         if (args.eventSnapshots[j].eventType.match(/Order/) || args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
           this.getOrders({
             controllerId: this.schedulerIds.selected,
-            states: this.orderFilters.filter.state !== 'ALL' ? [this.orderFilters.filter.state] : undefined
+            states: this.getState()
           });
           break;
         }
@@ -385,7 +401,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   changeStatus(state) {
     this.orderFilters.filter.state = state;
-    this.getOrders({controllerId: this.schedulerIds.selected, states: state !== 'ALL' ? [state] : undefined});
+    this.getOrders({controllerId: this.schedulerIds.selected, states: this.getState()});
   }
 
   /** ----------------------------Begin Action ----------------------------------*/
@@ -485,6 +501,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       if (ht > 450) {
         ht = 450;
       }
+      if (ht < 140) {
+        ht = 142;
+      }
       this.resizerHeight = ht + 'px';
       $('#orderTableId').css('height', this.resizerHeight);
     }, 5);
@@ -523,6 +542,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.object.isResume = true;
     this.object.mapOfCheckedId.forEach(order => {
       if (order.state) {
+        if (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED') {
+          this.object.isCancel = true;
+        }
         if (order.state._text !== 'SUSPENDED' && order.state._text !== 'FAILED') {
           this.object.isResume = false;
         }

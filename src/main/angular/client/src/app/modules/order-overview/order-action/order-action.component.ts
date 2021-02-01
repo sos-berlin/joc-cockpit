@@ -195,22 +195,26 @@ export class OrderActionComponent {
   }
 
   suspendOrder(order) {
-    this.restCall(true, 'Suspend', order);
+    this.restCall(true, 'Suspend', order, 'suspend');
   }
 
   suspendOrderWithKill() {
-    this.restCall(true, 'Suspend', this.order);
+    this.restCall(true, 'Suspend', this.order, 'suspend');
   }
 
   cancelOrder(order) {
-    this.restCall(false, 'Cancel', this.order);
+    this.restCall(false, 'Cancel', this.order, 'cancel');
   }
 
   cancelOrderWithKill() {
-    this.restCall(true, 'Cancel', this.order);
+    this.restCall(true, 'Cancel', this.order, 'cancel');
   }
 
-  private restCall(isKill, type, order) {
+  removeWhenTerminated() {
+    this.restCall(true, 'Terminate', this.order, 'remove_when_terminated');
+  }
+
+  private restCall(isKill, type, order, url) {
     const obj: any = {
       controllerId: this.schedulerId, orderIds: [order.orderId], kill: isKill
     };
@@ -224,14 +228,14 @@ export class OrderActionComponent {
       const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.comments = comments;
       modalRef.componentInstance.obj = obj;
-      modalRef.componentInstance.url = 'orders/' + type.toLowerCase();
+      modalRef.componentInstance.url = 'orders/' + url;
       modalRef.result.then((result) => {
         console.log(result);
       }, (reason) => {
         console.log('close...', reason);
       });
     } else {
-      this.coreService.post('orders/' + type.toLowerCase(), obj).subscribe(() => {
+      this.coreService.post('orders/' + url, obj).subscribe(() => {
       });
     }
   }

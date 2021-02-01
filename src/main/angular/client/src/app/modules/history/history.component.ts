@@ -539,12 +539,113 @@ export class DeploymentSearchComponent implements OnInit {
     let fromDate: any;
     let toDate: any;
     let obj: any = {};
-    obj.regex = result.regex;
-    obj.paths = result.paths;
-    obj.workflow = result.workflow;
-    obj.orderId = result.orderId;
-    obj.job = result.job;
+    obj.deployType = result.deployType;
+    obj.operation = result.operation;
     obj.state = result.state;
+    obj.name = result.name;
+    if (result.radio != 'current') {
+      if (result.from1) {
+        fromDate = this.coreService.parseProcessExecuted(result.from1);
+      }
+      if (result.to1) {
+        toDate = this.coreService.parseProcessExecuted(result.to1);
+      }
+    }
+
+    if (result.radio) {
+      if (fromDate) {
+        obj.from1 = fromDate;
+      } else {
+        obj.from1 = '0d';
+      }
+      if (toDate) {
+        obj.to1 = toDate;
+      } else {
+        obj.to1 = '0d';
+      }
+    } else {
+      obj.planned = result.planned;
+    }
+    configObj.configurationItem = JSON.stringify(obj);
+    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+      configObj.id = res.id;
+      this.allFilter.push(configObj);
+      if (this.isSearch) {
+        this.filter.name = '';
+      } else {
+        this.onCancel.emit(configObj);
+      }
+      this.submitted = false;
+    }, err => {
+      this.submitted = false;
+    });
+  }
+
+  search() {
+    this.onSearch.emit(this.filter);
+  }
+
+  cancel() {
+    this.onCancel.emit();
+  }
+}
+
+@Component({
+  selector: 'app-submission-form-template',
+  templateUrl: './submission-form-template.html',
+})
+export class SubmissionSearchComponent implements OnInit {
+  @Input() schedulerIds: any;
+  @Input() filter: any;
+  @Input() preferences: any;
+  @Input() allFilter: any;
+  @Input() permission: any;
+  @Input() isSearch: boolean;
+
+  @Output() onCancel: EventEmitter<any> = new EventEmitter();
+  @Output() onSearch: EventEmitter<any> = new EventEmitter();
+
+  dateFormat: any;
+  dateFormatM: any;
+  existingName: any;
+  submitted = false;
+  isUnique = true;
+
+  constructor(public coreService: CoreService, private modalService: NgbModal) {
+  }
+
+  ngOnInit() {
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+  }
+
+  remove(path) {
+    this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
+  }
+
+  checkFilterName() {
+    this.isUnique = true;
+    for (let i = 0; i < this.allFilter.length; i++) {
+      if (this.filter.name === this.allFilter[i].name && this.permission.user === this.allFilter[i].account && this.filter.name !== this.existingName) {
+        this.isUnique = false;
+      }
+    }
+  }
+
+  onSubmit(result): void {
+    this.submitted = true;
+    let configObj = {
+      controllerId: this.schedulerIds.selected,
+      account: this.permission.user,
+      configurationType: 'CUSTOMIZATION',
+      objectType: 'SUBMISSION_HISTORY',
+      name: result.name,
+      shared: result.shared,
+      id: result.id || 0,
+      configurationItem: {}
+    };
+    let fromDate: any;
+    let toDate: any;
+    let obj: any = {};
     obj.name = result.name;
     if (result.radio != 'current') {
       if (result.from1) {
@@ -611,29 +712,35 @@ export class HistoryComponent implements OnInit, OnDestroy {
   selectedFiltered1: any = {};
   selectedFiltered2: any = {};
   selectedFiltered4: any = {};
+  selectedFiltered5: any = {};
   temp_filter1: any = {};
   temp_filter2: any = {};
   temp_filter4: any = {};
+  temp_filter5: any = {};
   historyFilterObj: any = {};
   savedHistoryFilter: any = {};
   savedJobHistoryFilter: any = {};
   savedDeploymentHistoryFilter: any = {};
+  savedSubmissionHistoryFilter: any = {};
   savedIgnoreList: any = {workflows: [], jobs: []};
   orderSearch: any = {};
   jobSearch: any = {};
   deploymentSearch: any = {};
+  submissionSearch: any = {};
   data = [];
   currentData = [];
   order: any = {};
   task: any = {};
-
   deployment: any = {};
+  submission: any = {};
   historys: any = [];
   jobHistorys: any = [];
   deploymentHistorys: any = [];
+  submissionHistorys: any = [];
   orderHistoryFilterList: any = [];
   jobHistoryFilterList: any = [];
   deploymentHistoryFilterList: any = [];
+  submissionHistoryFilterList: any = [];
   object: any = {};
   ignoreListConfigId = 0;
   subscription1: Subscription;
@@ -723,6 +830,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   convertRequestBody(obj) {
+    console.log('convertRequestBody', obj)
     obj.limit = parseInt(this.preferences.maxRecords, 10);
     obj.timeZone = this.preferences.zone;
     if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
@@ -956,10 +1064,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   setDeploymentDateRange(filter) {
     if (this.deployment.filter.date == 'today') {
-      filter.from = '0d';
-      filter.to = '0d';
+      filter.dateFrom = '0d';
+      filter.dateTo = '0d';
     } else if (this.deployment.filter.date && this.deployment.filter.date != 'ALL') {
-      filter.from = this.deployment.filter.date;
+      filter.dateFrom = this.deployment.filter.date;
     }
     return filter;
   }
@@ -994,6 +1102,61 @@ export class HistoryComponent implements OnInit, OnDestroy {
       } else {
         this.searchInResult();
       }
+      this.isLoading = true;
+    }, () => {
+      this.data = [];
+      this.isLoading = true;
+    });
+  }
+
+  isCustomizationSelected5(flag) {
+    if (flag) {
+      this.temp_filter5.date = _.clone(this.submission.filter.date);
+      this.submission.filter.date = '';
+    } else {
+      if (this.temp_filter5.state) {
+        this.submission.filter.date = _.clone(this.temp_filter5.date);
+      } else {
+        this.submission.filter.date = 'today';
+      }
+    }
+  }
+
+  setSubmissionDateRange(filter) {
+    if (this.submission.filter.date == 'today') {
+      filter.dateFrom = '0d';
+      filter.dateTo = '0d';
+    } else if (this.submission.filter.date && this.submission.filter.date != 'ALL') {
+      filter.dateFrom = this.submission.filter.date;
+    }
+    return filter;
+  }
+
+  submissionHistory(obj) {
+    this.historyFilters.type = 'SUBMISSION';
+    if (!obj) {
+      if (this.historyFilters.current == true) {
+        obj = {controllerId: this.schedulerIds.selected};
+      } else {
+        obj = {};
+      }
+      this.isLoading = false;
+      this.data = [];
+    } else {
+      if (!obj.controllerId) {
+        delete obj['controllerId'];
+      }
+    }
+    if (this.selectedFiltered5 && !_.isEmpty(this.selectedFiltered5)) {
+      this.isCustomizationSelected5(true);
+      obj = this.coreService.parseProcessExecutedRegex(this.selectedFiltered5.planned, obj);
+    } else {
+      obj = this.setSubmissionDateRange(obj);
+    }
+    this.convertRequestBody(obj);
+    this.coreService.post('daily_plan/history', {filter: obj}).subscribe((res: any) => {
+      this.submissionHistorys = res.dailyPlans;
+      this.searchInResult();
       this.isLoading = true;
     }, () => {
       this.data = [];
@@ -1306,6 +1469,64 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.data = [];
         this.isLoading = true;
       });
+    } else if (this.historyFilters.type === 'SUBMISSION') {
+      this.submission.filter.date = '';
+      console.log('>>>>', obj)
+      if (obj.radio == 'planned') {
+        filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);
+      } else {
+        if (obj.from) {
+          fromDate = new Date(obj.from);
+          if (obj.fromTime) {
+            fromDate.setHours(obj.fromTime.getHours());
+            fromDate.setMinutes(obj.fromTime.getMinutes());
+            fromDate.setSeconds(obj.fromTime.getSeconds());
+          } else {
+            fromDate.setHours(0);
+            fromDate.setMinutes(0);
+            fromDate.setSeconds(0);
+          }
+          fromDate.setMilliseconds(0);
+          filter.dateFrom = moment.utc(fromDate);
+        }
+        if (obj.to) {
+          toDate = new Date(obj.to);
+          if (obj.toTime) {
+            toDate.setHours(obj.toTime.getHours());
+            toDate.setMinutes(obj.toTime.getMinutes());
+            toDate.setSeconds(obj.toTime.getSeconds());
+          } else {
+            toDate.setHours(0);
+            toDate.setMinutes(0);
+            toDate.setSeconds(0);
+          }
+          toDate.setMilliseconds(0);
+          filter.dateTo = moment.utc(toDate);
+        }
+      }
+
+      if (obj.haveMessage) {
+        filter.haveMessage = obj.haveMessage;
+      }
+      if (obj.controllerId) {
+        filter.controllerId = obj.controllerId;
+      }
+
+      filter.timeZone = this.preferences.zone;
+      if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
+        filter.dateFrom = moment(filter.dateFrom).tz(this.preferences.zone);
+      }
+      if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+        filter.dateTo = moment(filter.dateTo).tz(this.preferences.zone);
+      }
+      this.coreService.post('daily_plan/history', {filter: filter}).subscribe((res: any) => {
+        this.submissionHistorys = res.dailyPlans;
+        this.searchInResult();
+        this.isLoading = true;
+      }, () => {
+        this.data = [];
+        this.isLoading = true;
+      });
     }
   }
 
@@ -1341,6 +1562,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
       to: new Date(),
       toTime: new Date()
     };
+
+    this.submissionSearch = {
+      radio: 'current',
+      planned: 'today',
+      from: new Date(),
+      to: new Date(),
+      toTime: new Date()
+    };
   }
 
   cancel() {
@@ -1369,6 +1598,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.deployment.filter.date = 'today';
     }
 
+    if (!this.submission.filter.date) {
+      this.submission.filter.date = 'today';
+    }
+
     if (this.historyFilters.type == 'TASK') {
       this.jobSearch = {};
       this.jobSearch.date = 'date';
@@ -1394,11 +1627,18 @@ export class HistoryComponent implements OnInit, OnDestroy {
       } else if (type === 'DATE') {
         this.deployment.filter.date = value;
       }
+    } else if (this.historyFilters.type === 'SUBMISSION') {
+      this.submissionSearch = {};
+      this.submissionSearch.date = 'date';
+      if (type === 'DATE') {
+        this.submission.filter.date = value;
+      }
     }
     this.init(false);
   }
 
   /**--------------- Navigate to inventory tab -------------------*/
+
   navToWorkflowTab(workflow) {
     this.coreService.getConfigurationTab().inventory.expand_to = [];
     this.coreService.getConfigurationTab().inventory.selectedObj = {
@@ -1437,6 +1677,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.deployment.filter.sortBy = propertyName;
   }
 
+  sort4(propertyName): void {
+    this.submission.reverse = !this.submission.reverse;
+    this.submission.filter.sortBy = propertyName;
+  }
+
   pageIndexChange($event) {
     if (this.historyFilters.type === 'ORDER') {
       this.order.currentPage = $event;
@@ -1444,6 +1689,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.task.currentPage = $event;
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
       this.deployment.currentPage = $event;
+    } else if (this.historyFilters.type === 'SUBMISSION') {
+      this.submission.currentPage = $event;
     }
   }
 
@@ -1454,6 +1701,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.task.entryPerPage = $event;
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
       this.deployment.entryPerPage = $event;
+    } else if (this.historyFilters.type === 'SUBMISSION') {
+      this.submission.entryPerPage = $event;
     }
   }
 
@@ -1468,6 +1717,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.data = this.task.searchText ? this.searchPipe.transform(this.jobHistorys, this.task.searchText) : this.jobHistorys;
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
       this.data = this.deployment.searchText ? this.searchPipe.transform(this.deploymentHistorys, this.deployment.searchText) : this.deploymentHistorys;
+    } else if (this.historyFilters.type === 'SUBMISSION') {
+      this.data = this.submission.searchText ? this.searchPipe.transform(this.submissionHistorys, this.submission.searchText) : this.submissionHistorys;
     }
     this.data = [...this.data];
   }
@@ -1481,6 +1732,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
       data = this.exportToExcelDeployment();
       fileName = 'JS7-deployment-history-report';
+    } else if (this.historyFilters.type === 'SUBMISSION') {
+      data = this.exportToExcelSubmission();
+      fileName = 'JS7-submission-history-report';
     } else {
       data = this.exportToExcelOrder();
     }
@@ -1546,7 +1800,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     data.showAll = false;
   }
 
-  showChildHistory(data){
+  showChildHistory(data) {
     data.loading = true;
     data.show = true;
     data.children = [];
@@ -1676,12 +1930,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
     const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.permission = this.permission;
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    if (this.historyFilters.type == 'ORDER') {
+    if (this.historyFilters.type === 'ORDER') {
       modalRef.componentInstance.allFilter = this.orderHistoryFilterList;
-    } else if (this.historyFilters.type == 'TASK') {
+    } else if (this.historyFilters.type === 'TASK') {
       modalRef.componentInstance.allFilter = this.jobHistoryFilterList;
-    } else if (this.historyFilters.type == 'DEPLOYMENT') {
+    } else if (this.historyFilters.type === 'DEPLOYMENT') {
       modalRef.componentInstance.allFilter = this.deploymentHistoryFilterList;
+    } else if (this.historyFilters.type === 'SUBMISSION') {
+      modalRef.componentInstance.allFilter = this.submissionHistoryFilterList;
     }
     modalRef.componentInstance.new = true;
     modalRef.componentInstance.type = this.historyFilters.type;
@@ -1693,15 +1949,18 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   editFilters() {
     const modalRef = this.modalService.open(EditFilterModalComponent, {backdrop: 'static'});
-    if (this.historyFilters.type == 'ORDER') {
+    if (this.historyFilters.type === 'ORDER') {
       modalRef.componentInstance.filterList = this.orderHistoryFilterList;
       modalRef.componentInstance.favorite = this.savedHistoryFilter.favorite;
-    } else if (this.historyFilters.type == 'TASK') {
+    } else if (this.historyFilters.type === 'TASK') {
       modalRef.componentInstance.filterList = this.jobHistoryFilterList;
       modalRef.componentInstance.favorite = this.savedJobHistoryFilter.favorite;
-    } else if (this.historyFilters.type == 'DEPLOYMENT') {
+    } else if (this.historyFilters.type === 'DEPLOYMENT') {
       modalRef.componentInstance.filterList = this.deploymentHistoryFilterList;
       modalRef.componentInstance.favorite = this.savedDeploymentHistoryFilter.favorite;
+    } else if (this.historyFilters.type === 'SUBMISSION') {
+      modalRef.componentInstance.filterList = this.submissionHistoryFilterList;
+      modalRef.componentInstance.favorite = this.savedSubmissionHistoryFilter.favorite;
     }
     modalRef.componentInstance.permission = this.permission;
     modalRef.componentInstance.username = this.permission.user;
@@ -1739,7 +1998,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           self.savedHistoryFilter.selected = undefined;
           self.isCustomizationSelected1(false);
           self.order.selectedView = false;
-          self.selectedFiltered = undefined;
+          self.selectedFiltered1 = undefined;
           self.setDateRange(null);
           self.load();
         } else {
@@ -1747,7 +2006,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             self.isCustomizationSelected1(false);
             self.savedHistoryFilter.selected = undefined;
             self.order.selectedView = false;
-            self.selectedFiltered = undefined;
+            self.selectedFiltered1 = undefined;
           }
         }
         self.saveService.setHistory(self.savedHistoryFilter);
@@ -1769,7 +2028,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           self.savedJobHistoryFilter.selected = undefined;
           self.isCustomizationSelected2(false);
           self.task.selectedView = false;
-          self.selectedFiltered = undefined;
+          self.selectedFiltered2 = undefined;
           self.setDateRange(null);
           self.load();
         } else {
@@ -1777,7 +2036,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             self.isCustomizationSelected2(false);
             self.savedJobHistoryFilter.selected = undefined;
             self.task.selectedView = false;
-            self.selectedFiltered = undefined;
+            self.selectedFiltered2 = undefined;
           }
         }
         self.saveService.setHistory(self.savedJobHistoryFilter);
@@ -1799,7 +2058,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           self.savedDeploymentHistoryFilter.selected = undefined;
           self.isCustomizationSelected4(false);
           self.deployment.selectedView = false;
-          self.selectedFiltered = undefined;
+          self.selectedFiltered4 = undefined;
           self.setDateRange(null);
           self.load();
         } else {
@@ -1807,7 +2066,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             self.isCustomizationSelected4(false);
             self.savedDeploymentHistoryFilter.selected = undefined;
             self.deployment.selectedView = false;
-            self.selectedFiltered = undefined;
+            self.selectedFiltered4 = undefined;
           }
         }
         self.saveService.setHistory(self.savedDeploymentHistoryFilter);
@@ -1823,11 +2082,41 @@ export class HistoryComponent implements OnInit, OnDestroy {
         self.saveService.setHistory(self.savedDeploymentHistoryFilter);
         self.saveService.save();
       }
+    } else if (self.historyFilters.type === 'SUBMISSION') {
+      if (type === 'DELETE') {
+        if (self.savedSubmissionHistoryFilter.selected == obj.id) {
+          self.savedSubmissionHistoryFilter.selected = undefined;
+          self.isCustomizationSelected5(false);
+          self.submission.selectedView = false;
+          self.selectedFiltered5 = undefined;
+          self.setDateRange(null);
+          self.load();
+        } else {
+          if (self.submissionHistoryFilterList.length == 0) {
+            self.isCustomizationSelected5(false);
+            self.savedSubmissionHistoryFilter.selected = undefined;
+            self.submission.selectedView = false;
+            self.selectedFiltered5 = undefined;
+          }
+        }
+        self.saveService.setHistory(self.savedSubmissionHistoryFilter);
+        self.saveService.save();
+      } else if (type === 'MAKEFAV') {
+        self.savedSubmissionHistoryFilter.favorite = obj.id;
+        self.submission.selectedView = true;
+        self.saveService.setHistory(self.savedSubmissionHistoryFilter);
+        self.saveService.save();
+        self.load();
+      } else if (type === 'REMOVEFAV') {
+        self.savedSubmissionHistoryFilter.favorite = '';
+        self.saveService.setHistory(self.savedSubmissionHistoryFilter);
+        self.saveService.save();
+      }
     }
   }
 
   changeFilter(filter) {
-    if (this.historyFilters.type == 'ORDER') {
+    if (this.historyFilters.type === 'ORDER') {
       if (filter) {
         this.savedHistoryFilter.selected = filter.id;
         this.historyFilters.order.selectedView = true;
@@ -1847,7 +2136,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.init(false);
       }
       this.historyFilterObj.order = this.savedHistoryFilter;
-    } else if (this.historyFilters.type == 'TASK') {
+    } else if (this.historyFilters.type === 'TASK') {
       if (filter) {
         this.savedJobHistoryFilter.selected = filter.id;
         this.historyFilters.task.selectedView = true;
@@ -1867,10 +2156,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.init(false);
       }
       this.historyFilterObj.job = this.savedJobHistoryFilter;
-    } else if (this.historyFilters.type == 'DEPLOYMENT') {
+    } else if (this.historyFilters.type === 'DEPLOYMENT') {
       if (filter) {
         this.savedDeploymentHistoryFilter.selected = filter.id;
-        this.historyFilters.depleyment.selectedView = true;
+        this.historyFilters.deployment.selectedView = true;
         this.coreService.post('configuration', {
           controllerId: filter.controllerId,
           id: filter.id
@@ -1882,12 +2171,31 @@ export class HistoryComponent implements OnInit, OnDestroy {
       } else {
         this.isCustomizationSelected4(false);
         this.savedDeploymentHistoryFilter.selected = filter;
-        this.historyFilters.depleyment.selectedView = false;
+        this.historyFilters.deployment.selectedView = false;
         this.selectedFiltered4 = {};
         this.init(false);
       }
-      this.historyFilterObj.depleyment = this.savedDeploymentHistoryFilter;
-
+      this.historyFilterObj.deployment = this.savedDeploymentHistoryFilter;
+    } else if (this.historyFilters.type === 'SUBMISSION') {
+      if (filter) {
+        this.savedSubmissionHistoryFilter.selected = filter.id;
+        this.historyFilters.submission.selectedView = true;
+        this.coreService.post('configuration', {
+          controllerId: filter.controllerId,
+          id: filter.id
+        }).subscribe((conf: any) => {
+          this.selectedFiltered5 = JSON.parse(conf.configuration.configurationItem);
+          this.selectedFiltered5.account = filter.account;
+          this.init(false);
+        });
+      } else {
+        this.isCustomizationSelected5(false);
+        this.savedSubmissionHistoryFilter.selected = filter;
+        this.historyFilters.submission.selectedView = false;
+        this.selectedFiltered5 = {};
+        this.init(false);
+      }
+      this.historyFilterObj.submission = this.savedSubmissionHistoryFilter;
     }
     this.saveService.setHistory(this.historyFilterObj);
     this.saveService.save();
@@ -2037,16 +2345,26 @@ export class HistoryComponent implements OnInit, OnDestroy {
     return data;
   }
 
+  private exportToExcelSubmission(): any {
+    let data = [];
+    console.log('TDOD........')
+    return data;
+  }
+
+
   private refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType.match(/Order/) && this.isLoading && this.historyFilters.type == 'ORDER') {
+        if (args.eventSnapshots[j].eventType.match(/WorkflowStateChanged/) && this.isLoading && this.historyFilters.type === 'ORDER') {
           this.init(true);
           break;
-        } else if (args.eventSnapshots[j].eventType == 'JobStateChanged' && this.isLoading && this.historyFilters.type == 'TASK') {
+        } else if (args.eventSnapshots[j].eventType === 'JobStateChanged' && this.isLoading && this.historyFilters.type === 'TASK') {
           this.init(true);
           break;
-        } else if (args.eventSnapshots[j].eventType.match(/Deploy/) && this.isLoading && this.historyFilters.type == 'DEPLOYMENT') {
+        } else if (args.eventSnapshots[j].eventType.match(/Deploy/) && this.isLoading && this.historyFilters.type === 'DEPLOYMENT') {
+          this.init(true);
+          break;
+        } else if (this.isLoading && this.historyFilters.type === 'SUBMISSION') {
           this.init(true);
           break;
         }
@@ -2065,6 +2383,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.order = this.historyFilters.order;
     this.task = this.historyFilters.task;
     this.deployment = this.historyFilters.deployment;
+    this.submission = this.historyFilters.submission;
 
     if (!this.order.filter.historyStates) {
       this.order.filter.historyStates = 'ALL';
@@ -2078,15 +2397,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (!this.task.filter.date) {
       this.task.filter.date = 'today';
     }
-
     if (!this.deployment.filter.date) {
       this.deployment.filter.date = 'today';
+    }
+    if (!this.submission.filter.date) {
+      this.submission.filter.date = 'today';
     }
     if (!(this.historyFilters.current || this.historyFilters.current === false)) {
       this.historyFilters.current = this.preferences.historyFilters == 'current';
     }
     this.historyFilterObj = JSON.parse(this.saveService.historyFilters) || {};
-
     this.savedHistoryFilter = this.historyFilterObj.order || {};
 
     if (this.historyFilters.order.selectedView) {
@@ -2109,6 +2429,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.savedDeploymentHistoryFilter.selected = undefined;
     }
 
+    this.savedSubmissionHistoryFilter = this.historyFilterObj.submission || {};
+    if (this.historyFilters.submission.selectedView) {
+      this.savedSubmissionHistoryFilter.selected = this.savedSubmissionHistoryFilter.selected || this.savedSubmissionHistoryFilter.favorite;
+    } else {
+      this.savedSubmissionHistoryFilter.selected = undefined;
+    }
+
     this.checkSharedFilters(this.historyFilters.type);
     this.getIgnoreList();
   }
@@ -2117,7 +2444,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     let obj = {
       controllerId: this.schedulerIds.selected,
       configurationType: 'CUSTOMIZATION',
-      objectType: type === 'ORDER' ? 'ORDER_HISTORY' : type === 'TASK' ? 'TASK_HISTORY' : 'DEPLOYMENT_HISTORY',
+      objectType: type === 'ORDER' ? 'ORDER_HISTORY' : type === 'TASK' ? 'TASK_HISTORY' : type === 'DEPLOYMENT' ? 'DEPLOYMENT_HISTORY' : 'SUBMISSION_HISTORY',
       shared: true
     };
     if (this.permission.JOCConfigurations.share.view) {
@@ -2136,8 +2463,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.orderHistoryFilterList = res ? res.configurations : [];
     } else if (type === 'TASK') {
       this.jobHistoryFilterList = res ? res.configurations : [];
-    } else {
+    } else if (type === 'DEPLOYMENT') {
       this.deploymentHistoryFilterList = res ? res.configurations : [];
+    } else if (type === 'SUBMISSION') {
+      this.submissionHistoryFilterList = res ? res.configurations : [];
     }
     this.getCustomizations(type, obj);
   }
@@ -2154,6 +2483,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.checkTaskCustomization(result);
       } else if (type === 'DEPLOYMENT') {
         this.checkDeploymentCustomization(result);
+      } else if (type === 'SUBMISSION') {
+        this.checkSubmissionCustomization(result);
       }
     }, (err) => {
       this.savedHistoryFilter.selected = undefined;
@@ -2322,6 +2653,59 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
+  private checkSubmissionCustomization(result) {
+    if (this.submissionHistoryFilterList && this.submissionHistoryFilterList.length > 0) {
+      if (result.configurations && result.configurations.length > 0) {
+        let data = [];
+
+        for (let i = 0; i < this.submissionHistoryFilterList.length; i++) {
+          let flag = true;
+          for (let j = 0; j < result.configurations.length; j++) {
+            if (result.configurations[j].id == this.submissionHistoryFilterList[i].id) {
+              flag = false;
+              result.configurations.splice(j, 1);
+              break;
+            }
+          }
+          if (flag) {
+            data.push(this.submissionHistoryFilterList[i]);
+          }
+        }
+        this.submissionHistoryFilterList = data;
+      }
+    } else {
+      this.submissionHistoryFilterList = result.configurations;
+    }
+
+    if (this.savedSubmissionHistoryFilter.selected) {
+      let flag = true;
+      for (let i = 0; i < this.submissionHistoryFilterList.length; i++) {
+        if (this.submissionHistoryFilterList[i].id == this.savedSubmissionHistoryFilter.selected) {
+          flag = false;
+          this.coreService.post('configuration', {
+            controllerId: this.submissionHistoryFilterList[i].controllerId,
+            id: this.submissionHistoryFilterList[i].id
+          }).subscribe((conf: any) => {
+            this.loadConfig = true;
+            this.selectedFiltered5 = JSON.parse(conf.configuration.configurationItem);
+            this.selectedFiltered5.account = this.submissionHistoryFilterList[i].account;
+            this.init(false);
+          });
+          break;
+        }
+      }
+      if (flag) {
+        this.savedSubmissionHistoryFilter.selected = undefined;
+        this.loadConfig = true;
+        this.init(false);
+      }
+    } else {
+      this.loadConfig = true;
+      this.savedSubmissionHistoryFilter.selected = undefined;
+      this.init(false);
+    }
+  }
+
   private getIgnoreList() {
     let configObj = {
       controllerId: this.schedulerIds.selected,
@@ -2363,12 +2747,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         this.data = [];
       }
-      if (this.historyFilters.type == 'ORDER') {
+      if (this.historyFilters.type === 'ORDER') {
         this.orderHistory(obj, flag);
-      } else if (this.historyFilters.type == 'TASK') {
+      } else if (this.historyFilters.type === 'TASK') {
         this.taskHistory(obj);
-      } else if (this.historyFilters.type == 'DEPLOYMENT') {
+      } else if (this.historyFilters.type === 'DEPLOYMENT') {
         this.deploymentHistory(obj, flag);
+      } else if (this.historyFilters.type === 'SUBMISSION') {
+        this.submissionHistory(obj);
       }
     }
   }
@@ -2394,12 +2780,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
       const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.permission = this.permission;
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-      if (this.historyFilters.type == 'ORDER') {
+      if (this.historyFilters.type === 'ORDER') {
         modalRef.componentInstance.allFilter = this.orderHistoryFilterList;
-      } else if (this.historyFilters.type == 'TASK') {
+      } else if (this.historyFilters.type === 'TASK') {
         modalRef.componentInstance.allFilter = this.jobHistoryFilterList;
-      } else if (this.historyFilters.type == 'DEPLOYMENT') {
+      } else if (this.historyFilters.type === 'DEPLOYMENT') {
         modalRef.componentInstance.allFilter = this.deploymentHistoryFilterList;
+      } else if (this.historyFilters.type === 'SUBMISSION') {
+        modalRef.componentInstance.allFilter = this.submissionHistoryFilterList;
       }
       modalRef.componentInstance.filter = filterObj;
       modalRef.componentInstance.edit = true;
@@ -2417,12 +2805,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
       filterObj = JSON.parse(conf.configuration.configurationItem);
       filterObj.shared = filter.shared;
-      if (this.historyFilters.type == 'ORDER') {
+      if (this.historyFilters.type === 'ORDER') {
         filterObj.name = this.coreService.checkCopyName(this.orderHistoryFilterList, filter.name);
-      } else if (this.historyFilters.type == 'TASK') {
+      } else if (this.historyFilters.type === 'TASK') {
         filterObj.name = this.coreService.checkCopyName(this.jobHistoryFilterList, filter.name);
-      } else if (this.historyFilters.type == 'DEPLOYMENT') {
+      } else if (this.historyFilters.type === 'DEPLOYMENT') {
         filterObj.name = this.coreService.checkCopyName(this.deploymentHistoryFilterList, filter.name);
+      } else if (this.historyFilters.type === 'SUBMISSION') {
+        filterObj.name = this.coreService.checkCopyName(this.submissionHistoryFilterList, filter.name);
       }
 
       const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
@@ -2435,6 +2825,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
         modalRef.componentInstance.allFilter = this.jobHistoryFilterList;
       } else if (this.historyFilters.type === 'DEPLOYMENT') {
         modalRef.componentInstance.allFilter = this.deploymentHistoryFilterList;
+      } else if (this.historyFilters.type === 'SUBMISSION') {
+        modalRef.componentInstance.allFilter = this.submissionHistoryFilterList;
       }
       modalRef.componentInstance.filter = filterObj;
       modalRef.result.then(() => {

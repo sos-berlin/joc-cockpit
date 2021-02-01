@@ -259,7 +259,7 @@ export class JobComponent implements OnChanges, OnDestroy {
     }
     if (!this.selectedNode.job.executable || !this.selectedNode.job.executable.script) {
       this.selectedNode.job.executable = {
-        TYPE: 'ExecutableScript',
+        TYPE: 'ScriptExecutable',
         script: ''
       };
     }

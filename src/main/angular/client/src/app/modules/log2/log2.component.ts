@@ -43,7 +43,6 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
 
   constructor(private route: ActivatedRoute, private authService: AuthService, public coreService: CoreService) {
-
   }
 
   static calculateHeight() {
@@ -252,7 +251,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
   }
 
   jsonToString(json) {
-    if(!json){
+    if (!json) {
       return;
     }
     const dt = json.logEvents;
@@ -339,7 +338,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
       if (!this.isDetailLevel && dt[i].logLevel === 'DETAIL') {
         this.isDetailLevel = true;
       }
-      const datetime = this.preferences.logTimezone ? moment(dt[i].masterDatetime).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss.SSSZ') : dt[i].masterDatetime;
+      const datetime = this.preferences.logTimezone ? moment(dt[i].controllerDatetime).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss.SSSZ') : dt[i].controllerDatetime;
       col = (datetime + ' <span style="width: 64px;display: inline-block;">[' + dt[i].logLevel + ']</span> ' +
         '[' + dt[i].logEvent + '] ' + (dt[i].orderId ? ('id=' + dt[i].orderId) : '') + ( dt[i].position ? ', pos=' + dt[i].position : '') + '');
       if (dt[i].job) {

@@ -200,11 +200,11 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
   private refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow.path && this.path.indexOf(args.eventSnapshots[j].workflow.path) > -1) {
+        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow && this.path === args.eventSnapshots[j].workflow.path) {
           this.getOrders({
             compact: true,
             controllerId: this.schedulerId,
-            workflowIds: {path : this.path, versionId:  args.eventSnapshots[j].workflow.versionId}
+            workflowIds: args.eventSnapshots[j].workflow
           });
         }
       }
@@ -347,7 +347,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow) {
           for (let i = 0; i < this.workflows.length; i++) {
-            if (this.workflows[i].path.indexOf(args.eventSnapshots[j].workflow.path) > -1) {
+            if (this.workflows[i].path === args.eventSnapshots[j].workflow.path) {
               workflows.push(args.eventSnapshots[j].workflow);
               break;
             }
