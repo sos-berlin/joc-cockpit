@@ -1168,7 +1168,7 @@
     "label.lock": "Lock",
     "label.unlimited": "Unlimited",
     "label.lockFound": "Lock found",
-    "label.lockId": "Lock Dd",
+    "label.lockId": "Lock Id",
     "label.locks": "Locks",
     "label.locksFound": "Locks found",
     "label.agentView": "Agents",
