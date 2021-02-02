@@ -254,9 +254,6 @@ export class DeployComponent implements OnInit {
   private filterTree() {
     this.nodes = [{path: '/', key: '/', name: '/', children: [], isFolder: true}];
     this.buildDeployablesTree(this.actualResult);
-    if (this.nodes.length > 0) {
-      this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
-    }
     setTimeout(() => {
       this.loading = false;
       if (this.path) {
@@ -265,9 +262,24 @@ export class DeployComponent implements OnInit {
           this.nodes[0].expanded = true;
         }
       }
+      if (this.nodes.length > 0) {
+        this.preselected(this.nodes[0]);
+        this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
+      }
     }, 0);
   }
 
+  private preselected(node) {
+    node.checked = true;
+    for (let i = 0; i < node.children.length; i++) {
+      if (node.children[i].type) {
+        node.children[i].checked = node.checked;
+      }
+      if (node.children[i].isFolder) {
+        break;
+      }
+    }
+  }
 
   checkBoxChange(e: NzFormatEmitEvent): void {
     if (!this.object.isRecursive) {
@@ -816,23 +828,31 @@ export class ExportComponent implements OnInit {
       }
     });
     this.buildDeployablesTree(arr);
-    if (this.nodes.length > 0) {
-      this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
-    }
     setTimeout(() => {
       this.loading = false;
       if (this.path) {
         this.getChildTree();
-        if(this.nodes.length > 0) {
+        if (this.nodes.length > 0) {
           this.nodes[0].expanded = true;
         }
       }
-      this.updateTree();
+      if (this.nodes.length > 0) {
+        this.preselected( this.nodes[0]);
+        this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
+      }
     }, 0);
   }
 
-  updateTree() {
-    this.nodes = [...this.nodes];
+  private preselected(node) {
+    node.checked = true;
+    for (let i = 0; i < node.children.length; i++) {
+      if (node.children[i].type) {
+        node.children[i].checked = node.checked;
+      }
+      if (node.children[i].isFolder) {
+        break;
+      }
+    }
   }
 
   private getChildTree() {

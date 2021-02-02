@@ -122,10 +122,6 @@ export class LockComponent implements OnInit, OnDestroy {
     this.pageView = $event;
   }
 
-  showConfiguration(lock) {
-
-  }
-
   private refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
@@ -169,9 +165,6 @@ export class LockComponent implements OnInit, OnDestroy {
   private getLocksList(obj) {
     this.coreService.post('locks', obj).subscribe((res: any) => {
       this.loading = false;
-      res.locks.forEach((value) => {
-        value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
-      });
       this.locks = res.locks;
     }, () => {
       this.loading = false;

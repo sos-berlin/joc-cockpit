@@ -28,12 +28,12 @@
             >
               <thead>
               <tr>
-                <th class="menu"><span translate>label.action</span></th>
-                <th><span translate>label.calendarName</span></th>
-                <th><span translate>label.path</span></th>
-                <th><span translate>label.type</span></th>
-                <th><span translate>label.validityFrom</span></th>
-                <th><span translate>label.validityTo</span></th>
+                <th class="menu"><span translate>common.label.action</span></th>
+                <th><span translate>common.label.name</span></th>
+                <th><span translate>common.label.path</span></th>
+                <th><span translate>common.label.type</span></th>
+                <th><span translate>resource.label.validityFrom</span></th>
+                <th><span translate>resource.label.validityTo</span></th>
               </tr>
               </thead>
               <tbody>
@@ -66,7 +66,7 @@
                   <i class="text-muted">{{calendar.title}}</i>
                 </td>
                 <td [innerHtml]="calendar.path"></td>
-                <td><span class="label " [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'bg-green': 'bg-gold'"
+                <td><span class="label " [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'bg-dark-blue': 'bg-orange'"
                           [innerHtml]="calendar.type | translate"></span></td>
                 <td [innerHtml]="calendar.from | stringToDate1"></td>
                 <td [innerHtml]="calendar.to | stringToDate1"></td>

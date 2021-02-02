@@ -89,7 +89,7 @@
                 <span class="badge"
                       [ngClass]="!data.deployed ? 'badge-danger':'badge-success'">
                   <span *ngIf="!data.deployed" translate>inventory.label.notDeployed</span>
-                  <span *ngIf="data.deployed" translate>xml.label.deployed</span>
+                  <span *ngIf="data.deployed" translate>inventory.label.deployed</span>
                 </span>
             </span>
             <span *ngIf="isLoading">

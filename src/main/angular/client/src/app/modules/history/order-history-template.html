@@ -1,6 +1,6 @@
 <tr *ngIf="history.states && history.states.length> 0 && !history.loading">
   <td class="menu"></td>
-  <td colspan="11" style="padding:0 !important">
+  <td colspan="11" style="padding:0 !important;border-bottom: none;">
     <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small"
               [nzData]="history.states" [nzShowPagination]="false">
       <thead>
@@ -29,7 +29,7 @@
 <ng-template ngFor let-i="index" let-child [ngForOf]="history.children">
   <tr *ngIf="child.task">
     <td class="menu"></td>
-    <td colspan="11" style="padding:0 !important;">
+    <td colspan="11" style="padding:0 !important;border-bottom: none;">
       <nz-table class="m-a-0 inner-table" #innerChildTaskTable nzSize="small" [nzLoading]="history.loading"
                 [nzData]="[child.task]" [nzShowPagination]="false">
         <thead *ngIf="(i > 0 && !history.children[i-1].task) || i==0">
@@ -68,7 +68,7 @@
     </td>
   </tr>
   <tr *ngIf="child.order">
-    <td colspan="11" style="padding:0 !important">
+    <td colspan="11" style="padding:0 !important;border-bottom: none;">
         <tr class="tr-border cursor" [ngClass]="{'light-bg':child.order.show}">
           <td class="menu"></td>
           <td *ngIf="!historyView.current">
@@ -134,7 +134,7 @@
               [innerHtml]="child.order.startTime | duration:child.order.endTime"></td>
         </tr>
         <tr *ngIf="child.order.show">
-          <td colspan="11" style="padding:0 !important">
+          <td colspan="11" style="padding:0 !important;border-bottom: none;">
             <app-order-history-template class="order-history-template{{history.level}}" style="display: block" [history]="child.order" [schedulerId]="schedulerId"
                                         [historyView]="historyView" [orderSearch]="orderSearch"
             ></app-order-history-template>

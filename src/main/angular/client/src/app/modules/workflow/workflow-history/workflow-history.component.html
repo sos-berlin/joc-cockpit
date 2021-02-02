@@ -56,7 +56,7 @@
           <td [innerHtml]="history.startTime | duration:history.endTime"></td>
         </tr>
         <tr *ngIf="history.show">
-          <td colspan="8" style="padding:0 !important">
+          <td colspan="8" style="padding:0 !important;border-bottom: none;">
             <app-order-history-template class="order-history-template0" style="display: block"
                                         [history]="history" [schedulerId]="schedulerIds.selected"></app-order-history-template>
           </td>

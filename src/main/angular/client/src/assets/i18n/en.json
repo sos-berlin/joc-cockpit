@@ -103,8 +103,8 @@
   "JOBCLASS": "Job Class",
   "JUNCTION": "Junction",
   "LOCK": "Lock",
-  "WORKINGDAYSCALENDAR": "Working days Calendar",
-  "NONWORKINGDAYSCALENDAR": "non-working days",
+  "WORKINGDAYSCALENDAR": "working days calendar",
+  "NONWORKINGDAYSCALENDAR": "non-working days calendar",
   "ORDERTEMPLATE": "Schedule",
   "Workflows": "Workflows",
   "Job Classes": "Job Classes",
@@ -534,6 +534,7 @@
     "placeholder.workflowPath": "Select Workflow",
     "popup.removeSelectedOrder": "Are Are you sure you want to remove this order?",
     "popup.removeAllOrders": "Are you sure you want to remove all orders?",
+    "popup.deleteSubmissions": "Are you sure you want to delete all submissions for select date?",
     "popup.removeOrderCount": "Are you sure you want to remove {{count}} orders?",
     "popup.submitSelectedOrder": "Are Are you sure you want to submit this order?",
     "popup.submitOrderCount": "Are you sure you want to submit {{count}} orders?"

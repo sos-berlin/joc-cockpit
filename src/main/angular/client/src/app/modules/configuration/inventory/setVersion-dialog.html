@@ -160,7 +160,7 @@
                 <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
                 <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
                 <span *ngIf="node.origin.type" class="fa fa-circle-o text-xs " style="margin-top: 4px"></span>
-                <span class="p-l-sm">{{node.origin.name || node.origin.path}}</span>
+                <span class="p-l-sm" [ngClass]="{'text-capitalize': node.origin.object}">{{node.origin.name || node.origin.path}}</span>
               </div>
               <div id="ver_{{node.origin.key}}" *ngIf="version.type === 'setSeparateVersion' && node.origin.type" class="m-l-sm">
                 <span *ngIf="node.origin.version && !node.origin.setVersion">{{node.origin.version}}</span>

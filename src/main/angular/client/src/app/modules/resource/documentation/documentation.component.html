@@ -7,8 +7,8 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
-            <button *ngIf="object.documents.length>0 && permission.Documentation.export" class="btn btn-grey btn-sm m-l-12" (click)="exportDocument(null)"><i class="fa fa-download"></i>&nbsp; {{'button.exportDocument' | translate}}</button>
-            <button *ngIf="object.documents.length>0 && permission.Documentation.delete" class="btn btn-grey btn-sm m-l-12" (click)="deleteDocumentations(null)"><i class="fa fa-trash"></i>&nbsp; {{'button.deleteDocument' | translate}}</button>
+            <button *ngIf="object.documents.length>0 && permission.Documentation.export" class="btn btn-grey btn-sm m-l-12" (click)="exportDocument(null)"><i class="fa fa-download"></i>&nbsp; {{'resource.button.exportDocument' | translate}}</button>
+            <button *ngIf="object.documents.length>0 && permission.Documentation.delete" class="btn btn-grey btn-sm m-l-12" (click)="deleteDocumentations(null)"><i class="fa fa-trash"></i>&nbsp; {{'resource.button.deleteDocument' | translate}}</button>
             <div class="inline" [ngClass]="{'hide':object.documents.length>0}">
               <div class="btn-group dropdown m-l-12">
                 <button class="btn btn-grey btn-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="type" [nzPlacement]="'bottomRight'" >
