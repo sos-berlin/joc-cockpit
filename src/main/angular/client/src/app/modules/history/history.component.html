@@ -60,30 +60,12 @@
               </nz-dropdown-menu>
             </div>
             <div class="btn-group m-l-12 hidden-btn-group">
-              <button [disabled]="savedHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','ALL')"
-                      [ngClass]="{'btn-primary': order.filter.date=='ALL'}" translate>filters.button.all
-              </button>
-              <button [disabled]="savedHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','today')"
-                      [ngClass]="{'btn-primary': order.filter.date=='today'}" translate>filters.button.today
-              </button>
-              <button [disabled]="savedHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','-1h')"
-                      [ngClass]="{'btn-primary': order.filter.date=='-1h'}" translate>filters.button.last1
-              </button>
-              <button [disabled]="savedHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','-12h')"
-                      [ngClass]="{'btn-primary': order.filter.date=='-12h'}" translate>filters.button.last12
-              </button>
-              <button [disabled]="savedHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','-24h')"
-                      [ngClass]="{'btn-primary': order.filter.date=='-24h'}" translate>filters.button.last24
-              </button>
-              <button [disabled]="savedHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','-7d')"
-                      [ngClass]="{'btn-primary': order.filter.date=='-7d'}" translate>filters.button.lastWeak
-              </button>
+              <ng-container *ngFor="let btn of filterBtn">
+                <button [disabled]="savedHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                        [ngClass]="{'btn-primary': order.filter.date===btn.date}"
+                        (click)="loadHistory('DATE', btn.date)" translate>filters.button.{{btn.text}}
+                </button>
+              </ng-container>
             </div>
             <div class="btn-group dropdown hidden-dropdown">
               <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" type="button" translate>
@@ -92,36 +74,13 @@
               </button>
               <nz-dropdown-menu #anyDate="nzDropdownMenu" >
                 <ul nz-menu>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': order.filter.date=='ALL', 'disable-link':savedHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','ALL')"
-                      translate>filters.button.all
-                    </a>
-                  </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': order.filter.date=='today', 'disable-link':savedHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','today')"
-                      translate>filters.button.today
-                    </a>
-                  </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': order.filter.date=='-1h', 'disable-link':savedHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','-1h')"
-                      translate>filters.button.last1
-                    </a>
-                  </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': order.filter.date=='-12h', 'disable-link':savedHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','-12h')"
-                      translate>filters.button.last12
-                    </a>
-                  </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': order.filter.date=='-24h', 'disable-link':savedHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','-24h')"
-                      translate>filters.button.last24
-                    </a>
-                  </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': order.filter.date=='-7d', 'disable-link':savedHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','-7d')"
-                      translate>filters.button.lastWeak
-                    </a>
-                  </li>
+                  <ng-container *ngFor="let btn of filterBtn">
+                    <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': order.filter.date==btn.date, 'disable-link':savedHistoryFilter.selected}">
+                      <a (click)="loadHistory('DATE',btn.date)"
+                         translate>filters.button.{{btn.text}}
+                      </a>
+                    </li>
+                  </ng-container>
                 </ul>
               </nz-dropdown-menu>
             </div>
@@ -201,30 +160,12 @@
               </nz-dropdown-menu>
             </div>
             <div class="btn-group m-l-12 hidden-btn-group">
-              <button [disabled]="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','ALL')"
-                      [ngClass]="{'btn-primary': task.filter.date=='ALL'}" translate>filters.button.all
-              </button>
-              <button [disabled]="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','today')"
-                      [ngClass]="{'btn-primary': task.filter.date=='today'}" translate>filters.button.today
-              </button>
-              <button [disabled]="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','-1h')"
-                      [ngClass]="{'btn-primary': task.filter.date=='-1h'}" translate>filters.button.last1
-              </button>
-              <button [disabled]="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','-12h')"
-                      [ngClass]="{'btn-primary': task.filter.date=='-12h'}" translate>filters.button.last12
-              </button>
-              <button [disabled]="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','-24h')"
-                      [ngClass]="{'btn-primary': task.filter.date=='-24h'}" translate>filters.button.last24
-              </button>
-              <button [disabled]="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','-7d')"
-                      [ngClass]="{'btn-primary': task.filter.date=='-7d'}" translate>filters.button.lastWeak
-              </button>
+              <ng-container *ngFor="let btn of filterBtn">
+                <button [disabled]="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                        [ngClass]="{'btn-primary': task.filter.date===btn.date}"
+                        (click)="loadHistory('DATE', btn.date)" translate>filters.button.{{btn.text}}
+                </button>
+              </ng-container>
             </div>
             <div class="btn-group dropdown hidden-dropdown">
               <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate2" [nzPlacement]="'bottomRight'" type="button" translate>
@@ -233,36 +174,13 @@
               </button>
               <nz-dropdown-menu #anyDate2="nzDropdownMenu" >
                 <ul nz-menu>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': task.filter.date=='ALL', 'disable-link':savedJobHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','ALL')"
-                      translate>filters.button.all
-                    </a>
-                  </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': task.filter.date=='today', 'disable-link':savedJobHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','today')"
-                      translate>filters.button.today
-                    </a>
-                  </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': task.filter.date=='-1h', 'disable-link':savedJobHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','-1h')"
-                      translate>filters.button.last1
-                    </a>
-                  </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': task.filter.date=='-12h', 'disable-link':savedJobHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','-12h')"
-                      translate>filters.button.last12
-                    </a>
-                  </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': task.filter.date=='-24h', 'disable-link':savedJobHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','-24h')"
-                      translate>filters.button.last24
-                    </a>
-                  </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': task.filter.date=='-7d', 'disable-link':savedJobHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','-7d')"
-                      translate>filters.button.lastWeak
-                    </a>
-                  </li>
+                  <ng-container *ngFor="let btn of filterBtn">
+                    <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': task.filter.date==btn.date, 'disable-link':savedJobHistoryFilter.selected}">
+                      <a (click)="loadHistory('DATE',btn.date)"
+                         translate>filters.button.{{btn.text}}
+                      </a>
+                    </li>
+                  </ng-container>
                 </ul>
               </nz-dropdown-menu>
             </div>
@@ -333,30 +251,12 @@
               </nz-dropdown-menu>
             </div>
             <div class="btn-group m-l-12 hidden-btn-group">
-              <button [disabled]="savedDeploymentHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','ALL')"
-                      [ngClass]="{'btn-primary': deployment.filter.date=='ALL'}" translate>filters.button.all
-              </button>
-              <button [disabled]="savedDeploymentHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','today')"
-                      [ngClass]="{'btn-primary': deployment.filter.date=='today'}" translate>filters.button.today
-              </button>
-              <button [disabled]="savedDeploymentHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','-1h')"
-                      [ngClass]="{'btn-primary': deployment.filter.date=='-1h'}" translate>filters.button.last1
-              </button>
-              <button [disabled]="savedDeploymentHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','-12h')"
-                      [ngClass]="{'btn-primary': deployment.filter.date=='-12h'}" translate>filters.button.last12
-              </button>
-              <button [disabled]="savedDeploymentHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','-24h')"
-                      [ngClass]="{'btn-primary': deployment.filter.date=='-24h'}" translate>filters.button.last24
-              </button>
-              <button [disabled]="savedDeploymentHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','-7d')"
-                      [ngClass]="{'btn-primary': deployment.filter.date=='-7d'}" translate>filters.button.lastWeak
-              </button>
+              <ng-container *ngFor="let btn of filterBtn">
+                <button [disabled]="savedDeploymentHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                        [ngClass]="{'btn-primary': deployment.filter.date===btn.date}"
+                        (click)="loadHistory('DATE', btn.date)" translate>filters.button.{{btn.text}}
+                </button>
+              </ng-container>
             </div>
             <div class="btn-group dropdown hidden-dropdown">
               <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" type="button" translate>
@@ -365,36 +265,13 @@
               </button>
               <nz-dropdown-menu #anyDate="nzDropdownMenu" >
                 <ul nz-menu>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.date=='ALL', 'disable-link':savedDeploymentHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','ALL')"
-                       translate>filters.button.all
-                    </a>
-                  </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.date=='today', 'disable-link':savedDeploymentHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','today')"
-                       translate>filters.button.today
-                    </a>
-                  </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.date=='-1h', 'disable-link':savedDeploymentHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','-1h')"
-                       translate>filters.button.last1
-                    </a>
-                  </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.date=='-12h', 'disable-link':savedDeploymentHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','-12h')"
-                       translate>filters.button.last12
-                    </a>
-                  </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.date=='-24h', 'disable-link':savedDeploymentHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','-24h')"
-                       translate>filters.button.last24
-                    </a>
-                  </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.date=='-7d', 'disable-link':savedDeploymentHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','-7d')"
-                       translate>filters.button.lastWeak
-                    </a>
-                  </li>
+                  <ng-container *ngFor="let btn of filterBtn">
+                    <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.date==btn.date, 'disable-link':savedDeploymentHistoryFilter.selected}">
+                      <a (click)="loadHistory('DATE',btn.date)"
+                         translate>filters.button.{{btn.text}}
+                      </a>
+                    </li>
+                  </ng-container>
                 </ul>
               </nz-dropdown-menu>
             </div>
@@ -428,29 +305,67 @@
           <div class="hide" [ngClass]="{'show-block':historyFilters.type == 'SUBMISSION'}">
             <div class="btn-group m-l-12 hidden-btn-group">
               <button [disabled]="savedSubmissionHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','ALL')"
-                      [ngClass]="{'btn-primary': submission.filter.date=='ALL'}" translate>filters.button.all
+                      (click)="loadHistory('CATEGORY','ALL')"
+                      [ngClass]="{'btn-primary': submission.filter.category=='ALL'}" translate>common.button.all
               </button>
               <button [disabled]="savedSubmissionHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','today')"
-                      [ngClass]="{'btn-primary': submission.filter.date=='today'}" translate>filters.button.today
+                      (click)="loadHistory('CATEGORY','HAVE_MESSAGE')"
+                      [ngClass]="{'btn-primary': submission.filter.category=='HAVE_MESSAGE'}" translate>history.button.haveMessage
               </button>
               <button [disabled]="savedSubmissionHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','-1h')"
-                      [ngClass]="{'btn-primary': submission.filter.date=='-1h'}" translate>filters.button.last1
+                      (click)="loadHistory('CATEGORY','SUBMITTED')"
+                      [ngClass]="{'btn-primary': submission.filter.category=='SUBMITTED'}" translate>history.button.submitted
               </button>
               <button [disabled]="savedSubmissionHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','-12h')"
-                      [ngClass]="{'btn-primary': submission.filter.date=='-12h'}" translate>filters.button.last12
+                      (click)="loadHistory('CATEGORY','CANCELLED')"
+                      [ngClass]="{'btn-primary': submission.filter.category=='CANCELLED'}" translate>history.button.cancelled
               </button>
               <button [disabled]="savedSubmissionHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','-24h')"
-                      [ngClass]="{'btn-primary': submission.filter.date=='-24h'}" translate>filters.button.last24
+                      (click)="loadHistory('CATEGORY','NOT_SUBMITTED')"
+                      [ngClass]="{'btn-primary': submission.filter.category=='NOT_SUBMITTED'}" translate>history.button.notSubmitted
               </button>
-              <button [disabled]="savedSubmissionHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('DATE','-7d')"
-                      [ngClass]="{'btn-primary': submission.filter.date=='-7d'}" translate>filters.button.lastWeak
+            </div>
+            <div class="btn-group dropdown hidden-dropdown">
+              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="state2" [nzPlacement]="'bottomRight'" translate>history.button.categories
+                <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
+              <nz-dropdown-menu #state2="nzDropdownMenu" >
+                <ul nz-menu>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.category=='ALL', 'disable-link':savedSubmissionHistoryFilter.selected}">
+                    <a (click)="loadHistory('CATEGORY','ALL')"
+                       translate>common.button.all
+                    </a>
+                  </li>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.category=='HAVE_MESSAGE', 'disable-link':savedSubmissionHistoryFilter.selected}">
+                    <a (click)="loadHistory('CATEGORY','HAVE_MESSAGE')"
+                       translate>history.button.haveMessage
+                    </a>
+                  </li>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.category=='SUBMITTED', 'disable-link':savedSubmissionHistoryFilter.selected}">
+                    <a (click)="loadHistory('CATEGORY','SUBMITTED')"
+                       translate>history.button.submitted
+                    </a>
+                  </li>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.category=='CANCELLED', 'disable-link':savedSubmissionHistoryFilter.selected}">
+                    <a (click)="loadHistory('CATEGORY','CANCELLED')"
+                       translate>history.button.cancelled
+                    </a>
+                  </li>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.category=='NOT_SUBMITTED', 'disable-link':savedSubmissionHistoryFilter.selected}">
+                    <a (click)="loadHistory('CATEGORY','NOT_SUBMITTED')"
+                       translate>history.button.notSubmitted
+                    </a>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+            <div class="btn-group m-l-12 hidden-btn-group">
+              <ng-container *ngFor="let btn of filterBtn">
+                <button [disabled]="savedSubmissionHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                        [ngClass]="{'btn-primary': submission.filter.date===btn.date}"
+                        (click)="loadHistory('DATE', btn.date)" translate>filters.button.{{btn.text}}
+                </button>
+              </ng-container>
             </div>
             <div class="btn-group dropdown hidden-dropdown">
               <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" type="button" translate>
@@ -459,36 +374,13 @@
               </button>
               <nz-dropdown-menu #anyDate="nzDropdownMenu" >
                 <ul nz-menu>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.date=='ALL', 'disable-link':savedSubmissionHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','ALL')"
-                       translate>filters.button.all
-                    </a>
-                  </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.date=='today', 'disable-link':savedSubmissionHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','today')"
-                       translate>filters.button.today
-                    </a>
-                  </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.date=='-1h', 'disable-link':savedSubmissionHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','-1h')"
-                       translate>filters.button.last1
-                    </a>
-                  </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.date=='-12h', 'disable-link':savedSubmissionHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','-12h')"
-                       translate>filters.button.last12
-                    </a>
-                  </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.date=='-24h', 'disable-link':savedSubmissionHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','-24h')"
-                       translate>filters.button.last24
-                    </a>
-                  </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.date=='-7d', 'disable-link':savedSubmissionHistoryFilter.selected}">
-                    <a (click)="loadHistory('DATE','-7d')"
-                       translate>filters.button.lastWeak
-                    </a>
-                  </li>
+                  <ng-container *ngFor="let btn of filterBtn">
+                    <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.date==btn.date, 'disable-link':savedSubmissionHistoryFilter.selected}">
+                      <a (click)="loadHistory('DATE',btn.date)"
+                         translate>filters.button.{{btn.text}}
+                      </a>
+                    </li>
+                  </ng-container>
                 </ul>
               </nz-dropdown-menu>
             </div>
@@ -1187,18 +1079,50 @@
               </td>
             </tr>
             <tr *ngIf="submissionHistory.show">
-              <td colspan="4" style="padding:0 !important;border-bottom: none;" class="order-history-template0">
+              <td colspan="2" style="padding:0 !important;border-bottom: none;">
                 <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small"
                           [nzData]="submissionHistory.submissions" [nzShowPagination]="false">
                 <thead>
                 <tr>
-                  <th><span translate>history.label.date</span></th>
+                  <th><span translate>history.label.submissionTime</span></th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr *ngFor="let child of innerChildTable.data">
-                  <td [innerHtml]="child.submissionTime | stringToDate"></td>
-                </tr>
+                <tbody *ngFor="let child of innerChildTable.data">
+                  <tr>
+                    <td>
+                      <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                         *ngIf="!child.show" (click)="child.show = true"></i>
+                      <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+                         *ngIf="child.show" (click)="child.show = false;"></i>
+                      <span [innerHtml]="child.submissionTime | stringToDate"></span>
+                    </td>
+                  </tr>
+                  <ng-container *ngIf="child.show">
+                    <tr *ngIf="child.submittedOrders && child.submittedOrders.length > 0">
+                      <td class="_600" style="padding: 6px 8px !important;"><span class="p-l" translate>history.label.submittedOrders</span></td>
+                    </tr>
+                    <tr *ngFor="let order of child.submittedOrders">
+                      <td><span class="p-l">{{order}}</span></td>
+                    </tr>
+                    <tr *ngIf="child.canceledOrders && child.canceledOrders.length > 0">
+                      <th><span translate>history.label.canceledOrders</span></th>
+                    </tr>
+                    <tr *ngFor="let order of child.canceledOrders">
+                      <<td><span class="p-l">{{order}}</span></td>
+                    </tr>
+                    <tr *ngIf="child.warnMessages && child.warnMessages.length > 0">
+                      <th><span translate>history.label.warnMessages</span></th>
+                    </tr>
+                    <tr *ngFor="let order of child.warnMessages">
+                      <td><span class="p-l">{{order}}</span></td>
+                    </tr>
+                    <tr *ngIf="child.errorMessages && child.errorMessages.length > 0">
+                      <th><span translate>history.label.errorMessages</span></th>
+                    </tr>
+                    <tr *ngFor="let order of child.errorMessages">
+                      <td><span class="p-l">{{order}}</span></td>
+                    </tr>
+                  </ng-container>
                 </tbody>
               </nz-table>
               </td>

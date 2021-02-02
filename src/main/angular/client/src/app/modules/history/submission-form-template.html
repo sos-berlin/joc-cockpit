@@ -64,12 +64,29 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-md-2 col-sm-4 form-control-label" translate>history.label.message</label>
+      <label class="col-md-2 col-sm-4" translate>history.button.categories</label>
       <div class=" col-sm-6">
-        <textarea rows="3" class="form-control" maxlength="2000" name="haveMessage"
-                  [(ngModel)]="filter.haveMessage"
-                  placeholder="{{'history.placeholder.enterMessage' | translate}}"
-        ></textarea>
+        <label class="md-check w">
+          <input type="checkbox"  [(checklist)]="filter.categories"  [checklistValue]="'SUBMITTED'" name="submitted">
+          <i class="primary"></i><span translate>history.button.submitted</span>
+        </label>
+        <label class="md-check w">
+          <input type="checkbox"  [(checklist)]="filter.categories"  [checklistValue]="'CANCELLED'" name="cancelled">
+          <i class="primary"></i><span translate>history.button.cancelled</span>
+        </label>
+        <label class="md-check w">
+          <input type="checkbox"  [(checklist)]="filter.categories"  [checklistValue]="'NOT_SUBMITTED'" name="not_submitted">
+          <i class="primary"></i><span translate>history.button.notSubmitted</span>
+        </label>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-md-2 col-sm-4" translate>history.button.haveMessage</label>
+      <div class=" col-sm-6">
+        <label class="md-check w">
+          <input type="checkbox"  [(ngModel)]="filter.haveMessage" name="haveMessage">
+          <i class="primary"></i>
+        </label>
       </div>
     </div>
     <div class="form-group row" *ngIf="permission.JOCConfigurations.share.change.sharedStatus.makeShared && !isSearch">

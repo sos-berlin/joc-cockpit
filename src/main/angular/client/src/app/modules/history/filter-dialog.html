@@ -21,3 +21,7 @@
   <app-deployment-form-template [filter]="filter" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="allFilter"
                           (onCancel)="cancel($event)"></app-deployment-form-template>
 </div>
+<div *ngIf="type === 'SUBMISSION'">
+  <app-submission-form-template [filter]="filter" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="allFilter"
+                                (onCancel)="cancel($event)"></app-submission-form-template>
+</div>

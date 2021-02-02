@@ -746,6 +746,15 @@ export class HistoryComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
+  filterBtn: any = [
+    {date: 'ALL', text: 'all'},
+    {date: 'today', text: 'today'},
+    {date: '-1h', text: 'last1'},
+    {date: '-12h', text: 'last12'},
+    {date: '-24h', text: 'last24'},
+    {date: '-7d', text: 'lastWeak'}
+  ];
+
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private modalService: NgbModal, private searchPipe: SearchPipe,
               private message: NzMessageService, private router: Router, private translate: TranslateService, private excelService: ExcelService) {
@@ -1111,12 +1120,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   isCustomizationSelected5(flag) {
     if (flag) {
+      this.temp_filter5.category = _.clone(this.submission.filter.category);
       this.temp_filter5.date = _.clone(this.submission.filter.date);
+      this.submission.filter.category = '';
       this.submission.filter.date = '';
     } else {
-      if (this.temp_filter5.state) {
+      if (this.temp_filter5.category) {
+        this.submission.filter.category = _.clone(this.temp_filter5.category);
         this.submission.filter.date = _.clone(this.temp_filter5.date);
       } else {
+        this.submission.filter.category = 'ALL';
         this.submission.filter.date = 'today';
       }
     }
@@ -1149,8 +1162,20 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     if (this.selectedFiltered5 && !_.isEmpty(this.selectedFiltered5)) {
       this.isCustomizationSelected5(true);
+      console.log(this.selectedFiltered5)
+      if (this.selectedFiltered5.haveMessage) {
+        obj.haveMessage = true;
+      }
+      obj.categories = this.selectedFiltered5.categories;
       obj = this.coreService.parseProcessExecutedRegex(this.selectedFiltered5.planned, obj);
     } else {
+      if (this.submission.filter.category !== 'ALL') {
+        if (this.submission.filter.category === 'HAVE_MESSAGE') {
+          obj.haveMessage = true;
+        } else {
+          obj.categories = [this.submission.filter.category];
+        }
+      }
       obj = this.setSubmissionDateRange(obj);
     }
     this.convertRequestBody(obj);
@@ -1506,8 +1531,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
 
       if (obj.haveMessage) {
-        filter.haveMessage = obj.haveMessage;
+        filter.haveMessage = true;
       }
+      filter.categories = obj.categories;
       if (obj.controllerId) {
         filter.controllerId = obj.controllerId;
       }
@@ -1632,6 +1658,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.submissionSearch.date = 'date';
       if (type === 'DATE') {
         this.submission.filter.date = value;
+      } else if(type === 'CATEGORY') {
+        this.submission.filter.category = value;
       }
     }
     this.init(false);
@@ -2402,6 +2430,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     if (!this.submission.filter.date) {
       this.submission.filter.date = 'today';
+    }
+    if (!this.submission.filter.category) {
+      this.submission.filter.category = 'ALL';
     }
     if (!(this.historyFilters.current || this.historyFilters.current === false)) {
       this.historyFilters.current = this.preferences.historyFilters == 'current';

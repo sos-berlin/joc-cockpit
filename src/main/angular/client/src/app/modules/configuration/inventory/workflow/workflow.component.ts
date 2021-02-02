@@ -5694,6 +5694,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     let flag = true, isChange = true;
     for (let i = 0; i < this.jobs.length; i++) {
+      if (this.jobs[i].value.executable && this.jobs[i].value.executable.TYPE === 'ExecutableScript') {
+        this.jobs[i].value.executable.TYPE = 'ScriptExecutable';
+      }
       if (this.jobs[i].name === job.jobName) {
         flag = false;
         delete job['jobName'];
@@ -5886,6 +5889,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             if (!json.instructions[x].id && !json.instructions[x].instructions && !json.instructions[x].lockId) {
 
             } else {
+              if (json.instructions[x].count === '' || json.instructions[x].count === 'undefined') {
+                delete json.instructions[x]['count'];
+              }
               if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0)) {
                 flag = false;
                 checkErr = true;
