@@ -64,28 +64,15 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-md-2 col-sm-4" translate>history.button.categories</label>
+      <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>common.label.type</label>
       <div class=" col-sm-6">
         <label class="md-check w">
-          <input type="checkbox"  [(checklist)]="filter.categories"  [checklistValue]="'SUBMITTED'" name="submitted">
+          <input type="checkbox"  [(checklist)]="filter.type"  [checklistValue]="'SUBMITTED'" name="submitted">
           <i class="primary"></i><span translate>history.button.submitted</span>
         </label>
         <label class="md-check w">
-          <input type="checkbox"  [(checklist)]="filter.categories"  [checklistValue]="'CANCELLED'" name="cancelled">
-          <i class="primary"></i><span translate>history.button.cancelled</span>
-        </label>
-        <label class="md-check w">
-          <input type="checkbox"  [(checklist)]="filter.categories"  [checklistValue]="'NOT_SUBMITTED'" name="not_submitted">
+          <input type="checkbox"  [(checklist)]="filter.type"  [checklistValue]="'NOT_SUBMITTED'" name="not_submitted">
           <i class="primary"></i><span translate>history.button.notSubmitted</span>
-        </label>
-      </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-md-2 col-sm-4" translate>history.button.haveMessage</label>
-      <div class=" col-sm-6">
-        <label class="md-check w">
-          <input type="checkbox"  [(ngModel)]="filter.haveMessage" name="haveMessage">
-          <i class="primary"></i>
         </label>
       </div>
     </div>

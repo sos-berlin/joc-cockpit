@@ -1926,11 +1926,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   recursivelyExpandTree() {
     this.coreService.post('inventory/read/configuration', {
-      objectType: this.inventoryConfig.selectedObj.type,
-      name: this.inventoryConfig.selectedObj.name
+      objectType: this.selectedObj.type,
+      name: this.selectedObj.name
     }).subscribe((res: any) => {
       const pathArr = [];
-      const arr = this.inventoryConfig.selectedObj.path.split('/');
+      const arr = this.selectedObj.path.split('/');
       const len = arr.length;
       if (len > 1) {
         for (let i = 0; i < len; i++) {
@@ -1961,10 +1961,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
             self.updateObjects(data, (children) => {
               data.children.splice(0, 0, children[0]);
               data.children.splice(1, 0, children[1]);
-              if (self.selectedObj.path === children[0].path) {
-                children[0].expanded = true;
-                for (let j = 0; j < children[0].children.length; j++) {
-                  let x = children[0].children[j];
+              const parentNode = (self.selectedObj.type === 'SCHEDULE' || self.selectedObj.type.match(/CALENDAR/)) ? children[1] : children[0];
+              if (self.selectedObj.path === parentNode.path) {
+                parentNode.expanded = true;
+                for (let j = 0; j < parentNode.children.length; j++) {
+                  let x = parentNode.children[j];
                   if (x.object === self.selectedObj.type) {
                     x.expanded = true;
                     for (let k = 0; k < x.children.length; k++) {
@@ -1977,7 +1978,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
                   }
                 }
 
-                self.type = self.inventoryConfig.selectedObj.type;
+                self.type = self.selectedObj.type;
                 self.isLoading = false;
                 self.updateTree();
               }
@@ -2602,7 +2603,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
   private storeData(obj, result) {
     this.coreService.post('inventory/store', {
       configuration: result,
-      path: obj.path,
       valid: true,
       id: obj.id,
       objectType: obj.objectType || obj.type
@@ -2617,6 +2617,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.type = obj.objectType || obj.type;
         }, 5);
       }
+      this.updateFolders(obj.path, () => {
+        this.updateTree();
+      });
     }, (err) => {
       console.log(err);
     });

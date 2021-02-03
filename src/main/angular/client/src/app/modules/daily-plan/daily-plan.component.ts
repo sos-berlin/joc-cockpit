@@ -26,6 +26,7 @@ import {ExcelService} from '../../services/excel.service';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../../components/modify-modal/modify.component';
 import {ResumeOrderModalComponent} from '../../components/resume-modal/resume.component';
+import {Router} from '@angular/router';
 
 declare const JSGantt;
 declare let jsgantt;
@@ -389,7 +390,7 @@ export class RemovePlanModalComponent implements OnInit {
       obj.filter.dateFrom = new Date(this.selectedDate);
       let d = new Date(this.selectedDate).setDate(obj.filter.dateFrom.getDate() + 1);
       obj.filter.dateTo = new Date(d);
-     // obj.filter.timeZone = this.timeZone;
+      // obj.filter.timeZone = this.timeZone;
     }
     this.remove(obj);
   }
@@ -469,7 +470,7 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
     };
     jsgantt.init(this.editor.nativeElement);
     this.tasks = [];
-    if(this.groupBy === 'WORKFLOW' || this.groupBy === 'ORDER') {
+    if (this.groupBy === 'WORKFLOW' || this.groupBy === 'ORDER') {
       const plans = this.data;
       const len = plans.length;
       if (len > 0) {
@@ -806,7 +807,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private modalService: NgbModal, private groupBy: GroupByPipe,
               private translate: TranslateService, private searchPipe: SearchPipe, private orderPipe: OrderPipe,
-              private excelService: ExcelService) {
+              private excelService: ExcelService, private router: Router) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -970,6 +971,38 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
     });
   }
+
+  /**--------------- Begin Navigate -------------------*/
+
+
+  navToInventoryTab(path, type) {
+    this.coreService.getConfigurationTab().inventory.expand_to = [];
+    this.coreService.getConfigurationTab().inventory.selectedObj = {
+      name: path.substring(path.lastIndexOf('/') + 1),
+      path: path.substring(0, path.lastIndexOf('/')) || '/',
+      type: type
+    };
+    this.router.navigate(['/configuration/inventory']);
+
+  }
+
+  navToHistory() {
+    let filter = this.coreService.getHistoryTab();
+    filter.type = 'SUBMISSION';
+    filter.submission.selectedView = false;
+    filter.task.filter.date = 'today';
+    this.router.navigate(['/history']);
+  }
+
+  navToOrderHistory(orderId) {
+    let filter = this.coreService.getHistoryTab();
+    filter.type = 'ORDER';
+    filter.order.selectedView = false;
+    filter.order.filter.date = 'today';
+    this.router.navigate(['/history']);
+  }
+
+  /**--------------- Navigate End-------------------*/
 
   deleteSubmission(): void {
     const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
@@ -1173,7 +1206,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     plan.show = plan.show === undefined || plan.show === false;
     if (plan.show) {
       this.expandedPaths.add(plan.key);
-    } else{
+    } else {
       this.expandedPaths.delete(plan.key);
     }
   }
@@ -1348,7 +1381,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.callApi(this.searchFilter.from, this.searchFilter.to, obj);
     } else {
       this.getDatesByUrl([this.searchFilter.from1, this.searchFilter.to1], (dates) => {
-        this.callApi(new Date(dates[0]),new Date(dates[1]), obj);
+        this.callApi(new Date(dates[0]), new Date(dates[1]), obj);
       });
     }
   }
@@ -1394,13 +1427,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
             }
           }
         }
-      } else if (this.expandedPaths.size > 0 || this.isToggle) {
-        for (let j = 0; j < this.planOrders.length; j++) {
-          if (this.expandedPaths.has(this.planOrders[j].key) || this.isToggle) {
-            this.planOrders[j].order = true;
-            this.planOrders[j].show = true;
-          }
-        }
       }
       this.setStateToParentObject();
     } else {
@@ -1425,12 +1451,24 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private setStateToParentObject() {
+    if (this.expandedPaths.size > 0 || this.isToggle) {
+      for (let j = 0; j < this.planOrders.length; j++) {
+        if (this.expandedPaths.has(this.planOrders[j].key) || this.isToggle) {
+          this.planOrders[j].order = true;
+          if (!this.dailyPlanFilters.filter.groupBy) {
+            this.addDetailsOfOrder(this.planOrders[j]);
+          } else {
+            this.planOrders[j].show = true;
+          }
+        }
+      }
+    }
     if (this.planOrders.length > 0 && this.planOrders[0].value) {
       this.planOrders.forEach((plan) => {
         this.checkState(plan, plan.value);
       });
-    } else{
-      if(this.object.mapOfCheckedId.size > 0){
+    } else {
+      if (this.object.mapOfCheckedId.size > 0) {
         this.updateMainCheckbox();
       }
     }
@@ -1976,8 +2014,15 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
             planItems[i].status = translatedValue;
           });
         }
-      }
+        for (let j = 0; j < this.plans.length; j++) {
+          if (this.plans[j].show && this.plans[j].orderId === planItems[i].orderId) {
+            planItems[i].show = true;
+            planItems[i].variables = this.plans[j].variables;
+            break;
+          }
 
+        }
+      }
       this.plans = planItems;
       this.sortBy();
     } else {

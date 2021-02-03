@@ -26,7 +26,7 @@
         <a (click)="setFilter('ALL')" class="pull-right text primary-text-hover-color"
            [ngClass]="{'_600': state =='ALL'}"
            [innerHtml]="(snapshot.pending || 0) + (snapshot.inProgress || 0) + (snapshot.running || 0) + (snapshot.suspended || 0) + (snapshot.calling || 0)
-            + (snapshot.waiting || 0) + (snapshot.blocked || 0) + (snapshot.failed || 0)  + (snapshot.terminate || 0)"></a>
+            + (snapshot.waiting || 0) + (snapshot.blocked || 0) + (snapshot.failed || 0)  + (snapshot.terminated || 0)"></a>
       </div>
       <div class="pending">
         <span class="text-black-lt _300" [ngClass]="{'_600': state =='PENDING'}">
@@ -97,7 +97,7 @@
              class="primary-text-hover-color"
              translate>common.label.terminate</a></span>
         <a (click)="setFilter('TERMINATE')" class="pull-right text primary-text-hover-color"
-           [ngClass]="{'_600': state =='TERMINATE'}" [innerHtml]="snapshot.terminate || 0"></a>
+           [ngClass]="{'_600': state =='TERMINATE'}" [innerHtml]="snapshot.terminated || 0"></a>
       </div>
     </div>
 </div>

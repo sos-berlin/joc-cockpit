@@ -58,11 +58,11 @@ export class ToggleComponent implements OnInit {
       this.pageView = this.views.workflowDetail;
     } else if (this.router.url.match(/orders_overview/)) {
       this.pageView = this.views.orderOverview;
-    }  else if (this.router.url === '/resources/lock') {
+    }  else if (this.router.url === '/resources/locks') {
       this.pageView = this.views.lock;
-    } else if (this.router.url === '/resources/calendar') {
+    } else if (this.router.url === '/resources/calendars') {
       this.pageView = this.views.calendar;
-    } else if (this.router.url === '/resources/documentation') {
+    } else if (this.router.url === '/resources/documentations') {
       this.pageView = this.views.documentation;
     } else if (this.router.url.match('/users/')) {
       this.pageView = this.views.permission;
@@ -83,11 +83,11 @@ export class ToggleComponent implements OnInit {
       this.views.workflowDetail = view;
     } else if (this.router.url.match(/orders_overview/)) {
       this.views.orderOverview = this.pageView;
-    } else if (this.router.url === '/resources/lock') {
+    } else if (this.router.url === '/resources/locks') {
       this.views.lock = view;
-    } else if (this.router.url === '/resources/calendar') {
+    } else if (this.router.url === '/resources/calendars') {
       this.views.calendar = view;
-    } else if (this.router.url === '/resources/documentation') {
+    } else if (this.router.url === '/resources/documentations') {
       this.views.documentation = view;
     } else if (this.router.url.match('/users/')) {
       this.views.permission = view;

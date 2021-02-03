@@ -5664,6 +5664,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     let job = this.coreService.clone(data.job);
     if (!job.executable) {
       return;
+    } else{
+      if (job.executable.TYPE === 'ExecutableScript') {
+        job.executable.TYPE = 'ScriptExecutable';
+      }
     }
     if (job.returnCodeMeaning) {
       if (typeof job.returnCodeMeaning.success == 'string') {

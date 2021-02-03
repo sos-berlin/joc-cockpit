@@ -334,7 +334,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
     if (localStorage.views) {
-      this.pageView = JSON.parse(localStorage.views).lock;
+      this.pageView = JSON.parse(localStorage.views).documentation;
     }
     this.initTree();
   }

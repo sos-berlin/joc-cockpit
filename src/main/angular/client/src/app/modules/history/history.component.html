@@ -309,16 +309,8 @@
                       [ngClass]="{'btn-primary': submission.filter.category=='ALL'}" translate>common.button.all
               </button>
               <button [disabled]="savedSubmissionHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('CATEGORY','HAVE_MESSAGE')"
-                      [ngClass]="{'btn-primary': submission.filter.category=='HAVE_MESSAGE'}" translate>history.button.haveMessage
-              </button>
-              <button [disabled]="savedSubmissionHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
                       (click)="loadHistory('CATEGORY','SUBMITTED')"
                       [ngClass]="{'btn-primary': submission.filter.category=='SUBMITTED'}" translate>history.button.submitted
-              </button>
-              <button [disabled]="savedSubmissionHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
-                      (click)="loadHistory('CATEGORY','CANCELLED')"
-                      [ngClass]="{'btn-primary': submission.filter.category=='CANCELLED'}" translate>history.button.cancelled
               </button>
               <button [disabled]="savedSubmissionHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
                       (click)="loadHistory('CATEGORY','NOT_SUBMITTED')"
@@ -326,7 +318,7 @@
               </button>
             </div>
             <div class="btn-group dropdown hidden-dropdown">
-              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="state2" [nzPlacement]="'bottomRight'" translate>history.button.categories
+              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="state2" [nzPlacement]="'bottomRight'" translate>common.label.type
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
               <nz-dropdown-menu #state2="nzDropdownMenu" >
@@ -336,19 +328,9 @@
                        translate>common.button.all
                     </a>
                   </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.category=='HAVE_MESSAGE', 'disable-link':savedSubmissionHistoryFilter.selected}">
-                    <a (click)="loadHistory('CATEGORY','HAVE_MESSAGE')"
-                       translate>history.button.haveMessage
-                    </a>
-                  </li>
                   <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.category=='SUBMITTED', 'disable-link':savedSubmissionHistoryFilter.selected}">
                     <a (click)="loadHistory('CATEGORY','SUBMITTED')"
                        translate>history.button.submitted
-                    </a>
-                  </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.category=='CANCELLED', 'disable-link':savedSubmissionHistoryFilter.selected}">
-                    <a (click)="loadHistory('CATEGORY','CANCELLED')"
-                       translate>history.button.cancelled
                     </a>
                   </li>
                   <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.category=='NOT_SUBMITTED', 'disable-link':savedSubmissionHistoryFilter.selected}">
@@ -1098,17 +1080,11 @@
                     </td>
                   </tr>
                   <ng-container *ngIf="child.show">
-                    <tr *ngIf="child.submittedOrders && child.submittedOrders.length > 0">
-                      <td class="_600" style="padding: 6px 8px !important;"><span class="p-l" translate>history.label.submittedOrders</span></td>
+                    <tr *ngIf="child.orderIds && child.orderIds.length > 0">
+                      <td class="_600" style="padding: 6px 8px !important;"><span class="p-l" translate>history.label.orderIds</span></td>
                     </tr>
-                    <tr *ngFor="let order of child.submittedOrders">
+                    <tr *ngFor="let order of child.orderIds">
                       <td><span class="p-l">{{order}}</span></td>
-                    </tr>
-                    <tr *ngIf="child.canceledOrders && child.canceledOrders.length > 0">
-                      <th><span translate>history.label.canceledOrders</span></th>
-                    </tr>
-                    <tr *ngFor="let order of child.canceledOrders">
-                      <<td><span class="p-l">{{order}}</span></td>
                     </tr>
                     <tr *ngIf="child.warnMessages && child.warnMessages.length > 0">
                       <th><span translate>history.label.warnMessages</span></th>

@@ -1162,19 +1162,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     if (this.selectedFiltered5 && !_.isEmpty(this.selectedFiltered5)) {
       this.isCustomizationSelected5(true);
-      console.log(this.selectedFiltered5)
-      if (this.selectedFiltered5.haveMessage) {
-        obj.haveMessage = true;
+      if (this.selectedFiltered5.type.length === 1) {
+        obj.submitted = this.selectedFiltered5.type[0] === 'SUBMITTED';
       }
-      obj.categories = this.selectedFiltered5.categories;
       obj = this.coreService.parseProcessExecutedRegex(this.selectedFiltered5.planned, obj);
     } else {
       if (this.submission.filter.category !== 'ALL') {
-        if (this.submission.filter.category === 'HAVE_MESSAGE') {
-          obj.haveMessage = true;
-        } else {
-          obj.categories = [this.submission.filter.category];
-        }
+        obj.submitted = this.submission.filter.category === 'SUBMITTED';
       }
       obj = this.setSubmissionDateRange(obj);
     }
@@ -1529,11 +1523,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
           filter.dateTo = moment.utc(toDate);
         }
       }
-
-      if (obj.haveMessage) {
-        filter.haveMessage = true;
+      if (obj.type.length === 1) {
+        filter.submitted = obj.type[0] === 'SUBMITTED';
       }
-      filter.categories = obj.categories;
+
       if (obj.controllerId) {
         filter.controllerId = obj.controllerId;
       }
