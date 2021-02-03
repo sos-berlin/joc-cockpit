@@ -1,12 +1,16 @@
 <div class="pos-abt" style="top:16px;right:20px" *ngIf="setOfCheckedId.size > 0">
   <button class="hide btn btn-grey btn-sm m-l-12"
-          [ngClass]="{'show-block':permission.Order.execute}"
+          [ngClass]="{'show-block':permission.Order.execute, 'disable-link': !object.isModify }"
           (click)="modifyAllOrder()"><i class="fa fa-edit p-r-xs"></i>
     <span class="hidden-sm-down" translate>dailyPlan.button.setParameters</span></button>
-  <button class="hide btn btn-grey btn-sm m-l-12"
+  <button class="hide btn btn-grey btn-sm m-l-12"  *ngIf="!object.isCancel"
           [ngClass]="{'show-block':permission.Order.execute}"
           (click)="cancelAllOrder()"><i class="fa fa-times p-r-xs"></i>
     <span class="hidden-sm-down" translate>order.button.cancel</span></button>
+  <button class="hide btn btn-grey btn-sm m-l-12"  *ngIf="object.isTerminate"
+          [ngClass]="{'show-block':permission.Order.execute}"
+          (click)="terminateAllOrder()"><i class="fa fa-trash p-r-xs"></i>
+    <span class="hidden-sm-down" translate>common.button.delete</span></button>
   <button class="hide btn btn-grey btn-sm m-l-12" *ngIf="object.isSuspend"
           [ngClass]="{'show-block':permission.Order.execute.suspend}"
           (click)="suspendAllOrder()"><i class="fa fa-stop p-r-xs"></i>

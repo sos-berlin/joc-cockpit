@@ -17,10 +17,10 @@
       <li nz-menu-item *ngIf="permission && permission.Order.execute && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')">
         <a (click)="cancelOrderWithKill()" translate>order.button.cancelAndKillTask</a>
       </li>
-      <li nz-menu-item *ngIf="permission && permission.Order.execute.suspend && (order.state._text === 'RUNNING' || order.state._text === 'INPROGRESS')">
+      <li nz-menu-item *ngIf="permission && permission.Order.execute.suspend && (order.state._text === 'RUNNING' || order.state._text === 'INPROGRESS' || order.state._text === 'WAITING')">
         <a (click)="suspendOrder(order)" translate>order.button.suspend</a>
       </li>
-      <li nz-menu-item *ngIf="permission && permission.Order.execute.suspend && (order.state._text === 'RUNNING' || order.state._text === 'INPROGRESS')">
+      <li nz-menu-item *ngIf="permission && permission.Order.execute.suspend && (order.state._text === 'RUNNING' || order.state._text === 'INPROGRESS' || order.state._text === 'WAITING')">
         <a (click)="suspendOrderWithKill()" translate>order.button.suspendAndKillTask</a>
       </li>
       <li nz-menu-item *ngIf="permission && permission.Order.execute.resume && (order.state._text === 'SUSPENDED' || order.state._text === 'FAILED')">
@@ -36,7 +36,7 @@
       </li>
       <li nz-menu-item *ngIf="permission && permission.Order.execute && order.state && (order.state._text === 'FINISHED' || order.state._text === 'CANCELLED')">
         <a (click)="removeWhenTerminated()"
-           translate>common.button.terminate</a>
+           translate>common.button.delete</a>
       </li>
 <!--      <li nz-menu-item>
         <a (click)="coreService.copyLink('order',order.orderId)" translate>common.button.copyLinkToObject</a>

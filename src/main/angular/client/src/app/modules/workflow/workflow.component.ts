@@ -529,8 +529,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   private getOrders(obj) {
+    if (!obj.workflowIds || obj.workflowIds.length === 0) {
+      return;
+    }
+  
     this.coreService.post('orders', obj).subscribe((res: any) => {
-      if (res.orders && res.orders.length > 0) {
+      if (res.orders) {
         for (let i = 0; i < this.workflows.length; i++) {
           if (obj.workflowIds && obj.workflowIds.length > 0 && this.workflows[i].ordersSummary) {
             for (let j = 0; j < obj.workflowIds.length; j++) {

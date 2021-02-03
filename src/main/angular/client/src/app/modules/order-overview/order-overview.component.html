@@ -81,6 +81,10 @@
                     [ngClass]="{'show-block':permission.Order.execute}"
                     [disabled]="object.isCancel" (click)="cancelAllOrder()"><i class="fa fa-times p-r-xs"></i>
               <span class="hidden-sm-down" translate>dailyPlan.button.cancelSelectedOrder</span></button>
+            <button class="hide btn btn-grey btn-sm m-l-12"  *ngIf="object.isTerminate"
+                    [ngClass]="{'show-block':permission.Order.execute}"
+                    (click)="terminateAllOrder()"><i class="fa fa-trash p-r-xs"></i>
+              <span class="hidden-sm-down" translate>dailyPlan.button.deleteSelectedOrder</span></button>
             <button class="hide btn btn-grey btn-sm m-l-12"
                     [ngClass]="{'show-block':permission.Order.execute.suspend}"
                     [disabled]="!object.isSuspend" (click)="suspendAllOrder()"><i class="fa fa-stop p-r-xs"></i>

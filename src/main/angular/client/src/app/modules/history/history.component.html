@@ -1079,24 +1079,24 @@
                       <span [innerHtml]="child.submissionTime | stringToDate"></span>
                     </td>
                   </tr>
-                  <ng-container *ngIf="child.show">
+                  <ng-container *ngIf="child.show" class="order-history-template0">
                     <tr *ngIf="child.orderIds && child.orderIds.length > 0">
                       <td class="_600" style="padding: 6px 8px !important;"><span class="p-l" translate>history.label.orderIds</span></td>
                     </tr>
                     <tr *ngFor="let order of child.orderIds">
-                      <td><span class="p-l">{{order}}</span></td>
+                      <td><span class="p-l-md">{{order}}</span></td>
                     </tr>
                     <tr *ngIf="child.warnMessages && child.warnMessages.length > 0">
-                      <th><span translate>history.label.warnMessages</span></th>
+                      <th class="_600" style="padding: 6px 8px !important;"><span class="p-l" translate>history.label.warnMessages</span></th>
                     </tr>
                     <tr *ngFor="let order of child.warnMessages">
-                      <td><span class="p-l">{{order}}</span></td>
+                      <td><span class="p-l-md">{{order}}</span></td>
                     </tr>
                     <tr *ngIf="child.errorMessages && child.errorMessages.length > 0">
-                      <th><span translate>history.label.errorMessages</span></th>
+                      <th class="_600" style="padding: 6px 8px !important;"><span class="p-l" translate>history.label.errorMessages</span></th>
                     </tr>
                     <tr *ngFor="let order of child.errorMessages">
-                      <td><span class="p-l">{{order}}</span></td>
+                      <td><span class="p-l-md">{{order}}</span></td>
                     </tr>
                   </ng-container>
                 </tbody>

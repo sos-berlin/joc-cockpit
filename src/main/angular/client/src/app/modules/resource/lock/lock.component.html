@@ -11,8 +11,8 @@
               <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'">
                 <span translate>common.label.sortBy</span>
                 <span class="text-primary">
-                  <span *ngIf="locksFilters.filter.sortBy =='name'">
-                    {{'common.label.name' | translate}}
+                  <span *ngIf="locksFilters.filter.sortBy =='id'">
+                    {{'resource.label.lockId' | translate}}
                     <i *ngIf="!locksFilters.reverse" class="fa fa-caret-up"></i>
                     <i *ngIf="locksFilters.reverse" class="fa fa-caret-down"></i>
                   </span>
@@ -26,7 +26,7 @@
               <nz-dropdown-menu #sortBy="nzDropdownMenu" >
                 <ul nz-menu>
                   <li nz-menu-item  >
-                    <a (click)="sort('name')" translate>common.label.name</a>
+                    <a (click)="sort('id')" translate>resource.label.lockId</a>
                   </li>
                   <li nz-menu-item  >
                     <a (click)="sort('path')" translate>common.label.path</a>
@@ -76,21 +76,22 @@
                         </span>
                       </div>
                       <div class="text-sm  text-left text-muted p-t-sm">
+                        <span class="text-black _600" [innerHtml]="lock.acquiredLockCount || '0'"></span>
+                        {{'resource.label.acquiredLockCount' | translate}}
+                      </div>
+                      <div class="text-sm  text-left text-muted p-t-sm">
+                        <span class="text-black _600" [innerHtml]="lock.ordersHoldingLocks || '0'"></span>
+                        {{'resource.label.ordersHoldingLocks' | translate}}
+                      </div>
+                      <div class="text-sm  text-left text-muted p-t-sm">
+                        <span class="text-black _600" [innerHtml]="lock.ordersWaitingForLocks || '0'"></span>
+                        {{'resource.label.ordersWaitingForLocks' | translate}}
+                      </div>
+                      <div class="text-sm  text-left text-muted p-t-sm">
                         <span class="text-black _600" [innerHtml]="lock.limit || '0'"></span>
                         {{'resource.label.limit' | translate}}
                       </div>
-      <!--                <div class="text-sm  text-left text-muted p-t-xs">
-                       <span class="text-black _600" *ngIf="lock.holders && lock.holders.tasks" [innerHtml]="lock.holders.tasks.length"></span>
-                       <span class="text-black _600" *ngIf="!lock.holders || !lock.holders.tasks">0</span>
-                        {{'resource.label.runningTask' | translate}}
-                      </div>
-                      <div class="text-sm  text-left text-muted p-t-xs">
-                        <span class="text-black _600" *ngIf="lock.queue" [innerHtml]="lock.queue.length"></span>
-                        <span class="text-black _600" *ngIf="!lock.queue">0</span>
-                        {{'resource.label.waitingTask' | translate}}
-                      </div>-->
                     </div>
-
                   </div>
                 </div>
               </div>
@@ -113,10 +114,10 @@
                 >
                   <thead>
                   <tr>
-                    <th (click)="sort('name')"><a><span class="p-r-xs" translate>resource.label.lockId</span>
-                      <i *ngIf="locksFilters.filter.sortBy == 'name' && !locksFilters.reverse"
+                    <th (click)="sort('id')"><a><span class="p-r-xs" translate>resource.label.lockId</span>
+                      <i *ngIf="locksFilters.filter.sortBy == 'id' && !locksFilters.reverse"
                          class="fa fa-caret-up "></i>
-                      <i *ngIf="locksFilters.filter.sortBy == 'name' && locksFilters.reverse"
+                      <i *ngIf="locksFilters.filter.sortBy == 'id' && locksFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
                     <th (click)="sort('path')"><a><span class="p-r-xs" translate>common.label.path</span>
@@ -125,36 +126,92 @@
                       <i *ngIf="locksFilters.filter.sortBy == 'path' && locksFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
+                    <th (click)="sort('acquiredLockCount')"><a><span class="p-r-xs" translate>resource.label.acquiredLockCount</span>
+                      <i *ngIf="locksFilters.filter.sortBy == 'acquiredLockCount' && !locksFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="locksFilters.filter.sortBy == 'acquiredLockCount' && locksFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th (click)="sort('ordersHoldingLocks')"><a><span class="p-r-xs" translate>resource.label.ordersHoldingLocks</span>
+                      <i *ngIf="locksFilters.filter.sortBy == 'ordersHoldingLocks' && !locksFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="locksFilters.filter.sortBy == 'ordersHoldingLocks' && locksFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th (click)="sort('ordersWaitingForLocks')"><a><span class="p-r-xs" translate>resource.label.ordersWaitingForLocks</span>
+                      <i *ngIf="locksFilters.filter.sortBy == 'ordersWaitingForLocks' && !locksFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="locksFilters.filter.sortBy == 'ordersWaitingForLocks' && locksFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
                     <th (click)="sort('limit')"><a><span class="p-r-xs" translate>resource.label.limit</span>
                       <i *ngIf="locksFilters.filter.sortBy == 'limit' && !locksFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="locksFilters.filter.sortBy == 'limit' && locksFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-<!--                    <th (click)="sort('holders.tasks.length')"><a><span class="p-r-xs" translate>resource.label.runningTasks</span>
-                      <i *ngIf="locksFilters.filter.sortBy == 'holders.tasks.length' && !locksFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="locksFilters.filter.sortBy == 'holders.tasks.length' && locksFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th (click)="sort('queue.length')"><a><span class="p-r-xs" translate>resource.label.waitingTask</span>
-                      <i *ngIf="locksFilters.filter.sortBy == 'queue.length' && !locksFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="locksFilters.filter.sortBy == 'queue.length' && locksFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>-->
                   </tr>
                   </thead>
                   <tbody>
-                  <tr *ngFor="let lock of ajaxTable.data | orderBy: locksFilters.filter.sortBy:locksFilters.reverse">
-                    <td>
-                      <span [innerHtml]="lock.id || '-'"></span>
-                      <span *ngIf="lock.title"> - </span>
-                      <i class="text-muted" [innerHtml]="lock.title"></i>
-                    </td>
-                    <td>{{lock.path}}</td>
-                    <td [innerHtml]="lock.limit || '0'"></td>
-                  </tr>
+                  <ng-template ngFor let-lock
+                               [ngForOf]="ajaxTable.data | orderBy: locksFilters.filter.sortBy:locksFilters.reverse">
+                    <tr [ngClass]="{'light-bg':lock.show}">
+                      <td>
+                        <span [innerHtml]="lock.id || '-'"></span>
+                        <span *ngIf="lock.title"> - </span>
+                        <i class="text-muted" [innerHtml]="lock.title"></i>
+                      </td>
+                      <td>{{lock.path}}</td>
+                      <td>{{lock.acquiredLockCount || '0'}}</td>
+                      <td>{{lock.ordersHoldingLocks || '0'}}</td>
+                      <td>{{lock.ordersWaitingForLocks || '0'}}</td>
+                      <td [innerHtml]="lock.limit || '0'"></td>
+                    </tr>
+                    <tr *ngIf="lock.show">
+                      <td colspan="6" style="padding:0 !important;border-bottom: none;">
+                        <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small"
+                                  [nzData]="locks.workflows" [nzShowPagination]="false">
+                          <thead>
+                          <tr>
+                            <th><span translate>history.label.submissionTime</span></th>
+                          </tr>
+                          </thead>
+                          <tbody *ngFor="let child of innerChildTable.data">
+                          <tr>
+                            <td>
+                              <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                                 *ngIf="!child.show" (click)="child.show = true"></i>
+                              <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+                                 *ngIf="child.show" (click)="child.show = false;"></i>
+                              <span [innerHtml]="child.submissionTime | stringToDate"></span>
+                            </td>
+                          </tr>
+                          <ng-container *ngIf="child.show">
+                            <tr *ngIf="child.orderIds && child.orderIds.length > 0">
+                              <td class="_600" style="padding: 6px 8px !important;"><span class="p-l" translate>history.label.orderIds</span></td>
+                            </tr>
+                            <tr *ngFor="let order of child.orderIds">
+                              <td><span class="p-l">{{order}}</span></td>
+                            </tr>
+                            <tr *ngIf="child.warnMessages && child.warnMessages.length > 0">
+                              <th><span translate>history.label.warnMessages</span></th>
+                            </tr>
+                            <tr *ngFor="let order of child.warnMessages">
+                              <td><span class="p-l">{{order}}</span></td>
+                            </tr>
+                            <tr *ngIf="child.errorMessages && child.errorMessages.length > 0">
+                              <th><span translate>history.label.errorMessages</span></th>
+                            </tr>
+                            <tr *ngFor="let order of child.errorMessages">
+                              <td><span class="p-l">{{order}}</span></td>
+                            </tr>
+                          </ng-container>
+                          </tbody>
+                        </nz-table>
+
+                      </td>
+                    </tr>
+                  </ng-template>
                   </tbody>
                 </nz-table>
                 <div class="w-half label-top"

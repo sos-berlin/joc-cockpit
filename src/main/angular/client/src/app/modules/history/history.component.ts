@@ -1162,7 +1162,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     if (this.selectedFiltered5 && !_.isEmpty(this.selectedFiltered5)) {
       this.isCustomizationSelected5(true);
-      if (this.selectedFiltered5.type.length === 1) {
+      if (this.selectedFiltered5.type && this.selectedFiltered5.type.length === 1) {
         obj.submitted = this.selectedFiltered5.type[0] === 'SUBMITTED';
       }
       obj = this.coreService.parseProcessExecutedRegex(this.selectedFiltered5.planned, obj);
@@ -1523,7 +1523,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           filter.dateTo = moment.utc(toDate);
         }
       }
-      if (obj.type.length === 1) {
+      if (obj.type && obj.type.length === 1) {
         filter.submitted = obj.type[0] === 'SUBMITTED';
       }
 

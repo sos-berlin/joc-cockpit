@@ -17,8 +17,11 @@ export class OrderListSidebarComponent implements OnChanges {
   indeterminate = false;
   setOfCheckedId = new Set<string>();
   object = {
-    isSuspend : false,
-    isResume : false
+    isModify: false,
+    isCancel: false,
+    isSuspend: false,
+    isResume: false,
+    isTerminate: false
   };
 
   constructor(public coreService: CoreService, public modalService: NgbModal) {
@@ -47,14 +50,33 @@ export class OrderListSidebarComponent implements OnChanges {
   }
 
   refreshCheckedStatus(): void {
-    this.checked = this.orders.every(item => {
-      if (item.state) {
-        if (item.state._text === 'FAILED') {
-          this.object.isResume = true;
-        } else if (item.state._text === 'RUNNING' || item.state._text === 'INPROGRESS') {
-          this.object.isSuspend = true;
+    this.object.isCancel = false;
+    this.object.isModify = true;
+    this.object.isSuspend = true;
+    this.object.isResume = true;
+    this.object.isTerminate = true;
+    this.orders.forEach(item => {
+      if (this.setOfCheckedId.has(item.orderId)) {
+        if (item.state) {
+          if (item.state._text !== 'SUSPENDED' && item.state._text !== 'FAILED') {
+            this.object.isResume = false;
+          }
+          if (item.state._text !== 'FINISHED' && item.state._text !== 'CANCELLED') {
+            this.object.isTerminate = false;
+          }
+          if (item.state._text !== 'RUNNING' && item.state._text !== 'INPROGRESS' && item.state._text !== 'WAITING') {
+            this.object.isSuspend = false;
+          }
+          if (item.state._text === 'FINISHED' || item.state._text === 'CANCELLED') {
+            this.object.isCancel = true;
+          }
+          if (item.state._text !== 'PLANNED' && item.state._text !== 'PENDING') {
+            this.object.isModify = false;
+          }
         }
       }
+    });
+    this.checked = this.orders.every(item => {
       return this.setOfCheckedId.has(item.orderId);
     });
     this.indeterminate = this.orders.some(item => this.setOfCheckedId.has(item.orderId)) && !this.checked;
@@ -69,7 +91,7 @@ export class OrderListSidebarComponent implements OnChanges {
     order.show = true;
   }
 
-  modifyAllOrder(){
+  modifyAllOrder() {
     const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerId;
     modalRef.componentInstance.orderIds = Array.from(this.setOfCheckedId);
@@ -79,19 +101,23 @@ export class OrderListSidebarComponent implements OnChanges {
     });
   }
 
+  terminateAllOrder() {
+    this._bulkOperation('Terminate', 'remove_when_terminated');
+  }
+
   suspendAllOrder() {
-    this._bulkOperation('suspend');
+    this._bulkOperation('Suspend', 'suspend');
   }
 
   resumeAllOrder() {
-    this._bulkOperation('resume');
+    this._bulkOperation('Resume', 'resume');
   }
 
   cancelAllOrder() {
-    this._bulkOperation('cancel');
+    this._bulkOperation('Cancel', 'cancel');
   }
 
-  _bulkOperation(operation) {
+  _bulkOperation(operation, url) {
     const obj: any = {
       controllerId: this.schedulerId,
       orderIds: Array.from(this.setOfCheckedId)
@@ -107,14 +133,14 @@ export class OrderListSidebarComponent implements OnChanges {
       const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.comments = comments;
       modalRef.componentInstance.obj = obj;
-      modalRef.componentInstance.url = 'orders/' + operation;
+      modalRef.componentInstance.url = 'orders/' + url;
       modalRef.result.then((result) => {
         this.resetCheckBox();
       }, () => {
         this.resetCheckBox();
       });
     } else {
-      this.coreService.post('orders/' + operation, obj).subscribe(() => {
+      this.coreService.post('orders/' + url, obj).subscribe(() => {
         this.resetCheckBox();
       });
     }

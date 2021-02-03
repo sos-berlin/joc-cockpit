@@ -219,6 +219,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     checked: false,
     indeterminate: false,
     isModify: false,
+    isTerminate: false,
     isCancel: false,
     isSuspend: false,
     isResume: false,
@@ -539,20 +540,25 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.object.isCancel = false;
     this.object.isModify = true;
     this.object.isSuspend = true;
+    this.object.isTerminate = true;
     this.object.isResume = true;
     this.object.mapOfCheckedId.forEach(order => {
       if (order.state) {
-        if (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED') {
-          this.object.isCancel = true;
-        }
+       
         if (order.state._text !== 'SUSPENDED' && order.state._text !== 'FAILED') {
           this.object.isResume = false;
         }
-        if (order.state._text !== 'PENDING') {
-          this.object.isModify = false;
+        if (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED') {
+          this.object.isTerminate = false;
         }
-        if (order.state._text === 'PENDING' || order.state._text === 'FAILED') {
+        if (order.state._text !== 'RUNNING' && order.state._text !== 'INPROGRESS' && order.state._text !== 'WAITING') {
           this.object.isSuspend = false;
+        }
+        if (order.state._text === 'FINISHED' || order.state._text === 'CANCELLED') {
+          this.object.isCancel = true;
+        }
+        if (order.state._text !== 'PLANNED' && order.state._text !== 'PENDING') {
+          this.object.isModify = false;
         }
       }
     });
@@ -571,23 +577,27 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     });
   }
 
+  terminateAllOrder(){
+    this._bulkOperation('Terminate', 'remove_when_terminated');
+  }
+
   suspendAllOrder() {
-    this._bulkOperation('suspend');
+    this._bulkOperation('Suspend', 'suspend');
   }
 
   resumeAllOrder() {
-    this._bulkOperation('resume');
+    this._bulkOperation('Resume', 'resume');
   }
 
   startAllOrder() {
-    this._bulkOperation('add');
+    this._bulkOperation('Start', 'add');
   }
 
   cancelAllOrder() {
-    this._bulkOperation('cancel');
+    this._bulkOperation('Cancel', 'cancel');
   }
 
-  _bulkOperation(operation) {
+  _bulkOperation(operation, url) {
     const obj: any = {
       controllerId: this.schedulerIds.selected
     };
@@ -613,14 +623,14 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.comments = comments;
       modalRef.componentInstance.obj = obj;
-      modalRef.componentInstance.url = 'orders/' + operation;
+      modalRef.componentInstance.url = 'orders/' + url;
       modalRef.result.then((result) => {
         this.reset();
       }, (reason) => {
         this.reset();
       });
     } else {
-      this.coreService.post('orders/' + operation, obj).subscribe(() => {
+      this.coreService.post('orders/' + url, obj).subscribe(() => {
         this.reset();
       });
     }
