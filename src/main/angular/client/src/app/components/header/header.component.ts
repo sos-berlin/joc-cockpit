@@ -20,10 +20,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   eventId: string;
   eventLoading = false;
   switchScheduler = false;
-  eventsRequest: any = [];
   events: any = [];
   isLogout = false;
-  showEvent = false;
   selectedController: any;
   subscription: Subscription;
 
@@ -45,8 +43,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.username = this.authService.currentUserData;
     this.reloadSettings();
     this.getSelectedSchedulerInfo();
-    if (this.schedulerIds && this.schedulerIds.controllerIds && this.schedulerIds.controllerIds.length > 0) {
-      this.getEvents(this.schedulerIds.controllerIds);
+    if (this.schedulerIds && this.schedulerIds.selected) {
+      this.getEvents();
     }
   }
 
@@ -164,53 +162,31 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-  filterEventResult(res): void {
-    for (let i = 0; i < res.events.length; i++) {
-      if (res.events[i].controllerId === this.schedulerIds.selected) {
-        this.eventsRequest.push({
-          controllerId: res.events[i].controllerId,
-          eventId: res.events[i].eventId
-        });
-        this.dataService.announceEvent(res.events[i]);
-        break;
-      }
-    }
-  }
-
-  getEvents(controller): void {
-    if (!controller || this.isLogout) {
+  getEvents(): void {
+    if (!this.schedulerIds.selected || this.isLogout) {
       return;
     }
     if (!this.eventLoading) {
       this.eventLoading = true;
       let obj = {
-        controllers: []
+        controllerId: this.schedulerIds.selected,
+        eventId: this.eventId
       };
-      if (!this.eventsRequest || (this.eventsRequest && this.eventsRequest.length === 0)) {
-        for (let i = 0; i < controller.length; i++) {
-          if (this.schedulerIds.selected === controller[i]) {
-            obj.controllers.push({'controllerId': controller[i], 'eventId': this.eventId});
-            break;
-          }
-        }
-      } else {
-        obj.controllers = this.eventsRequest;
-      }
-      this.coreService.post('events', obj).subscribe(res => {
+      this.coreService.post('events', obj).subscribe((res: any) => {
         if (!this.switchScheduler && !this.isLogout) {
-          this.eventsRequest = [];
-          this.filterEventResult(res);
+          this.eventId = res.eventId;
+          this.dataService.announceEvent(res);
         }
         if (!this.isLogout) {
           this.eventLoading = false;
-          this.getEvents(this.schedulerIds.controllerIds);
+          this.getEvents();
         }
         this.switchScheduler = false;
       }, (err) => {
         if (!this.isLogout && err && (err.status == 420 || err.status == 434 || err.status == 504)) {
           this.timeout = setTimeout(() => {
             this.eventLoading = false;
-            this.getEvents(this.schedulerIds.controllerIds);
+            this.getEvents();
             clearTimeout(this.timeout);
           }, 1000);
         }

@@ -65,12 +65,12 @@
         (click)="navToOrderHistory(value.orderId)">{{value.orderId}}</a>
       </td>
       <td *ngIf="dailyPlanFilters.filter.groupBy === ''">
+        <i (click)="navToInventoryTab(value.schedulePath, 'SCHEDULE');" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
         <span>{{value.schedulePath}} </span>
-        <i (click)="navToInventoryTab(value.schedulePath, 'SCHEDULE');" class="cursor fa fa-pencil text-hover-primary p-l-xs"></i>
       </td>
       <td *ngIf="dailyPlanFilters.filter.groupBy !== 'WORKFLOW'">
+        <i (click)="navToInventoryTab(value.workflowPath, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
         <a class="text-hover-primary" (click)="coreService.showWorkflow(value.workflowPath);">{{value.workflowPath}} </a>
-        <i (click)="navToInventoryTab(value.workflowPath, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary p-l-xs"></i>
       </td>
       <td>
         <span class="label" [ngClass]="coreService.getColor(value.state.severity,'bg')"
@@ -185,18 +185,18 @@
            (click)="expandCollapseOrder(plan)" aria-hidden="true"></i>
 
         <span *ngIf="dailyPlanFilters.filter.groupBy === 'WORKFLOW'">
+           <i (click)="navToInventoryTab(plan.value[0].workflowPath, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
           <a class="text-hover-primary" (click)="coreService.showWorkflow(plan.value[0].workflowPath);">{{plan.value[0].workflowPath}} </a>
-          <i (click)="navToInventoryTab(plan.value[0].workflowPath, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary p-l-xs"></i>
         </span>
         <span *ngIf="dailyPlanFilters.filter.groupBy !== 'WORKFLOW'">
+          <i (click)="navToInventoryTab(plan.value[0].schedulePath, 'SCHEDULE');" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
           {{plan.value[0].schedulePath}}
-          <i (click)="navToInventoryTab(plan.value[0].schedulePath, 'SCHEDULE');" class="cursor fa fa-pencil text-hover-primary p-l-xs"></i>
         </span>
       </td>
       <td
         *ngIf="!plan.order && plan.value.length === 1 && plan.value[0] && dailyPlanFilters.filter.groupBy !== 'WORKFLOW'">
+        <i (click)="navToInventoryTab(plan.value[0].workflowPath, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
         <a class="text-hover-primary" (click)="coreService.showWorkflow(plan.value[0].workflowPath);">{{plan.value[0].workflowPath}} </a>
-          <i (click)="navToInventoryTab(plan.value[0].workflowPath, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary p-l-xs"></i>
       </td>
       <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]">
         <span class="label"

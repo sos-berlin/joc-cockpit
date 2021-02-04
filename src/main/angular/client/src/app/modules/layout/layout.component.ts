@@ -297,8 +297,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
       if (sessionStorage.$SOS$FORCELOGING === 'true' || sessionStorage.$SOS$FORCELOGING === true) {
         preferences.auditLog = true;
       }
-      preferences.events = {};
-      preferences.events.filter = [];
       configObj.configurationItem = JSON.stringify(preferences);
       configObj.id = 0;
       sessionStorage.preferences = configObj.configurationItem;

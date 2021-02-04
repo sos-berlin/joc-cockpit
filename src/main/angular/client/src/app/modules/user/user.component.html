@@ -390,88 +390,6 @@
                     </nz-radio-group>
                   </div>
                 </div>
-                <!--<div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showFileTransferForController</div>
-                  <div class="col-sm-6">
-                    <label class="md-check w">
-                      <input type="radio" name="fileTransfer" [(ngModel)]="preferences.fileTransfer" value="all"
-                             (change)="changeConfiguration();">
-                      <i class="primary"></i> <span translate>profile.label.all</span>
-                    </label>
-                    <label class="md-check w">
-                      <input type="radio" name="fileTransfer" [(ngModel)]="preferences.fileTransfer"
-                             value="current" (change)="changeConfiguration();">
-                      <i class="primary"></i> <span translate>profile.label.current</span>
-                    </label>
-                  </div>
-                </div>-->
-<!--                <hr>
-                <h5 translate>profile.label.eventFilters</h5>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark " translate>profile.label.job</span></div>
-                  <div class="col-md-8 col-lg-9">
-                    <span class="md-check w-md">
-                      <input type="checkbox" [(ngModel)]="selectAllJobModel"
-                             (change)="selectAllJobFunction()"/> <i class="primary"></i> <span
-                      translate>profile.label.selectAll</span>
-                    </span>
-                    <span class="md-check w-md" *ngFor="let job of jobs">
-                      <input type="checkbox" [(checklist)]="object.jobs" [checklistValue]="job.value"
-                             (change)="selectJobFunction()"/> <i class="primary"></i> <span>{{job.label | translate}}</span>
-                    </span>
-                  </div>
-                </div>-->
-                <!-- <div class="row m-t">
-                   <div class="col-md-4 col-lg-3"><span class="text-dark " translate>label.jobChain</span></div>
-                   <div class="col-md-8 col-lg-9">
-                     <span class="md-check  w-md">
-                       <input type="checkbox" [(ngModel)]="selectAllJobChainModel"
-                              (change)="selectAllJobChainFunction()"/> <i class="primary"></i> <span translate>label.selectAll</span></span>
-                     <span class="md-check  w-md" *ngFor="let jobChain of jobChains">
-                       <input type="checkbox" [(checklist)]="object.jobChains" [checklistValue]="jobChain.value"
-                              (change)="selectJobChainFunction()"/> <i class="primary"></i> <span>{{jobChain.label  | translate}}</span>
-                     </span>
-                   </div>
-                 </div>-->
-                <!-- <div class="row m-t">
-                                  <div class="col-sm-12 m-b-sm">
-                                    <span class="text-dark" translate>profile.label.successfulOrders</span>
-                                  </div>
-                                  <div class="col-md-4 col-lg-3"><span class="text-dark p-l-md" translate>profile.label.onProcessing </span>
-                                  </div>
-                                  <div class="col-md-8 col-lg-9">
-                              <span class="md-check w-md">
-                                <input type="checkbox" [(ngModel)]="selectAllPositiveOrderModel"
-                                       (change)="selectAllPositiveOrderFunction()"/> <i class="primary"></i>
-                                <span translate>profile.label.selectAll</span>
-                              </span>
-                                    <span class="md-check w-md" *ngFor="let positiveOrder of positiveOrders; let i = index"
-                                          [ngClass]="{'m-t-sm' : i == positiveOrders.length-1}">
-                                <input type="checkbox" [(checklist)]="object.positiveOrders"
-                                       [checklistValue]="positiveOrder.value"
-                                       (change)="selectPositiveOrderFunction()"/> <i
-                                      class="primary"></i>  <span>{{positiveOrder.label  | translate}}</span>
-                              </span>
-                                  </div>
-                                </div>
-                                <div class="row m-t">
-                                  <div class="col-sm-12 m-b-sm"><span class="text-dark" translate>profile.label.failedOrders</span></div>
-                                  <div class="col-md-4 col-lg-3 "><span class="text-dark p-l-md" translate>profile.label.onProcessing</span>
-                                  </div>
-                                  <div class="col-md-8 col-lg-9">
-                              <span class="md-check w-md">
-                                <input type="checkbox" [(ngModel)]="selectAllNegativeOrderModel"
-                                       (change)="selectAllNegativeOrdersFunction()"/> <i class="primary"></i>
-                                <span translate>profile.label.selectAll</span>
-                              </span>
-                                    <span class="md-check w-md" *ngFor="let negativeOrder of negativeOrders">
-                                <input type="checkbox" [(checklist)]="object.negativeOrders"
-                                       [checklistValue]="negativeOrder.value" (change)="selectNegativeOrderFunction()"/>
-                                <i class="primary"></i>
-                                <span>{{negativeOrder.label  | translate}}</span>
-                              </span>
-                                  </div>
-                                </div>-->
               </div>
             </nz-tab>
             <nz-tab [nzTitle]="'profile.label.permissions' | translate" *ngIf="permission.JS7Controller">
@@ -628,51 +546,6 @@
                       translate>permission.label.reset</span></span>
                   </div>
                 </div>
-                <!--<div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.job</span></div>
-                  <div class="row col-md-8 col-lg-9">
-                     <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
-                       class="fa fa-check text-success"
-                       [ngClass]="{'fa-times text-black-lt': !permission.Job.view.configuration}"></i>&nbsp; <span
-                       translate>permission.label.viewConfiguration</span></span>
-                    <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
-                      class="fa fa-check text-success"
-                      [ngClass]="{'fa-times text-black-lt': !permission.Job.view.history}"></i>&nbsp; <span translate>permission.label.viewHistory</span></span>
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.Job.view.taskLog}"></i>&nbsp; <span
-                      translate>permission.label.viewTaskLog</span></span>
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.Job.view.status}"></i>&nbsp; <span
-                      translate>permission.label.viewStatus</span></span>
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.start}"></i>&nbsp; <span
-                      translate>permission.label.startTask</span></span>
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.stop}"></i>&nbsp; <span
-                      translate>permission.label.stop</span></span>
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.unstop}"></i>&nbsp; <span
-                      translate>permission.label.unstop</span></span>
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.terminate}"></i>&nbsp; <span
-                      translate>permission.label.terminate</span></span>
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.kill}"></i>&nbsp; <span
-                      translate>permission.label.kill</span></span>
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.Job.change.runTime}"></i>&nbsp; <span
-                      translate>permission.label.setRunTime</span></span>
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.endAllTasks}"></i>&nbsp; <span
-                      translate>permission.label.endAllTasks</span></span>
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.suspendAllTasks}"></i>&nbsp; <span
-                      translate>permission.label.suspendAllTasks</span></span>
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.continueAllTasks}"></i>&nbsp; <span
-                      translate>permission.label.continueAllTasks</span></span>
-                  </div>
-                </div>-->
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.workflow</span></div>
                   <div class="row col-md-8 col-lg-9">
@@ -812,33 +685,6 @@
                       translate>permission.label.generateKey</span></span>
                   </div>
                 </div>
-                <!--<div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.yade</span></div>
-                  <div class="row col-md-8 col-lg-9">
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.YADE.configurations.view}"></i>&nbsp; <span
-                      translate>permission.label.configurationView</span></span>
-
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.YADE.configurations.edit}"></i>&nbsp; <span
-                      translate>permission.label.edit</span></span>
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.YADE.configurations.delete}"></i>&nbsp; <span
-                      translate>permission.label.delete</span></span>
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.YADE.configurations.deploy}"></i>&nbsp; <span
-                      translate>permission.label.deploy</span></span>
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.YADE.view.status}"></i>&nbsp; <span
-                      translate>permission.label.viewStatus</span></span>
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.YADE.view.files}"></i>&nbsp; <span
-                      translate>permission.label.viewFiles</span></span>
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.YADE.execute.transferStart}"></i>&nbsp; <span
-                      translate>permission.label.start</span></span>
-                  </div>
-                </div>-->
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.documentation</span>
                   </div>

@@ -4472,6 +4472,7 @@ input[type=text][disabled] {
 
 .btn-primary {
   background-color: $primary !important;
+  border-color: $primary !important;
   color: $white !important;
   &:hover {
     background-color: $hover-primary !important;

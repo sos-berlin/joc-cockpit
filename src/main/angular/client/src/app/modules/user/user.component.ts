@@ -231,10 +231,6 @@ export class UserComponent implements OnInit, OnDestroy {
   object: any = {};
   schedulerIds: any = {};
   selectedController: any = {};
-  selectAllJobModel;
-  selectAllPositiveOrderModel;
-  selectAllNegativeOrderModel;
-  eventFilter: any;
   keys: any;
   configObj: any = {};
   timeZone: any = {};
@@ -245,22 +241,6 @@ export class UserComponent implements OnInit, OnDestroy {
   subsVar: Subscription;
   securityLevel: string;
 
-  jobs: any = [
-    {value: 'JobStopped', label: 'label.jobStopped'},
-    {value: 'JobPending', label: 'label.jobPending'}
-  ];
-  positiveOrders: any = [
-    {value: 'OrderStarted', label: 'label.orderStarted'},
-    {value: 'OrderStepStarted', label: 'label.orderStepStarted'},
-    {value: 'OrderStepEnded', label: 'label.orderStepEnded'},
-    {value: 'OrderNodeChanged', label: 'label.orderNodeChanged'},
-    {value: 'OrderResumed', label: 'label.orderResumed'},
-    {value: 'OrderFinished', label: 'label.orderFinished'}
-  ];
-  negativeOrders: any = [
-    {value: 'OrderSetback', label: 'label.orderSetback'},
-    {value: 'OrderSuspended', label: 'label.orderSuspended'}
-  ];
 
   constructor(public coreService: CoreService, private dataService: DataService, private authService: AuthService, private router: Router,
               private modalService: NgbModal, private translate: TranslateService, private toasterService: ToasterService) {
@@ -309,11 +289,6 @@ export class UserComponent implements OnInit, OnDestroy {
       {lang: 'de', country: 'DE', name: 'German'},
       {lang: 'ja', country: 'JA', name: 'Japanese'}];
 
-    this.object = {
-      jobs: [],
-      positiveOrders: [],
-      negativeOrders: []
-    };
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.forceLoging = true;
       this.preferences.auditLog = true;
@@ -333,31 +308,6 @@ export class UserComponent implements OnInit, OnDestroy {
     this.configObj.account = this.permission.user;
     this.configObj.configurationType = 'PROFILE';
     this.configObj.id = parseInt(sessionStorage.preferenceId, 10);
-    if (this.preferences.events && this.preferences.events.filter) {
-      this.eventFilter = this.preferences.events.filter;
-    } else {
-      if (this.preferences.events) {
-        if (this.preferences.events.filter) {
-          this.eventFilter = JSON.parse(this.preferences.events.filter);
-        }
-      } else {
-        this.preferences.events = {};
-      }
-    }
-
-    if (this.eventFilter) {
-      this.eventFilter.forEach((name) => {
-        if (name) {
-          if (name.match('Job')) {
-            this.object.jobs.push(name);
-          } else if (name.match('OrderSetback') || name.match('OrderSuspended')) {
-            this.object.negativeOrders.push(name);
-          } else {
-            this.object.positiveOrders.push(name);
-          }
-        }
-      });
-    }
   }
 
   ngOnDestroy() {
@@ -393,12 +343,6 @@ export class UserComponent implements OnInit, OnDestroy {
       this.preferences.maxAuditLogPerObject = parseInt(Object.assign({}, this.preferences).maxAuditLogPerObject, 10);
     }
 
-    if (isNaN(parseInt(this.preferences.maxOrderPerJobchain, 10))) {
-      this.preferences.maxOrderPerJobchain = parseInt(Object.assign({}, this.preferences).maxOrderPerJobchain, 10);
-    }
-    if (isNaN(parseInt(this.preferences.maxHistoryPerJobchain, 10))) {
-      this.preferences.maxHistoryPerJobchain = parseInt(Object.assign({}, this.preferences).maxHistoryPerJobchain, 10);
-    }
     if (this.preferences.entryPerPage > 100) {
       this.preferences.entryPerPage = this.preferences.maxEntryPerPage;
     }
@@ -495,72 +439,6 @@ export class UserComponent implements OnInit, OnDestroy {
     this.savePreferences();
   }
 
-  selectAllJobFunction() {
-    if (this.selectAllJobModel) {
-      this.object.jobs = [];
-      this.jobs.forEach((job) => {
-        this.object.jobs.push(job.value);
-      });
-    } else {
-      this.object.jobs = [];
-    }
-    this.updateChecks();
-  }
-
-  selectJobFunction() {
-    this.selectAllJobModel = this.object.jobs.length === this.jobs.length;
-    this.updateChecks();
-  }
-
-  selectAllPositiveOrderFunction() {
-    if (this.selectAllPositiveOrderModel) {
-      this.object.positiveOrders = [];
-
-      this.positiveOrders.forEach((job) => {
-        this.object.positiveOrders.push(job.value);
-      });
-    } else {
-      this.object.positiveOrders = [];
-    }
-    this.updateChecks();
-  }
-
-  selectPositiveOrderFunction() {
-    this.selectAllPositiveOrderModel = this.object.positiveOrders.length === this.positiveOrders.length;
-    this.updateChecks();
-  }
-
-  selectAllNegativeOrdersFunction() {
-    if (this.selectAllNegativeOrderModel) {
-      this.object.negativeOrders = [];
-      this.negativeOrders.forEach((job) => {
-        this.object.negativeOrders.push(job.value);
-      });
-    } else {
-      this.object.negativeOrders = [];
-    }
-    this.updateChecks();
-  }
-
-  selectNegativeOrderFunction() {
-    this.selectAllNegativeOrderModel = this.object.negativeOrders.length === this.negativeOrders.length;
-    this.updateChecks();
-  }
-
-  updateChecks() {
-    this.eventFilter = [];
-    this.object.jobs.forEach((val) => {
-      this.eventFilter.push(val.value);
-    });
-    this.object.positiveOrders.forEach((val) => {
-      this.eventFilter.push(val.value);
-    });
-    this.object.negativeOrders.forEach((val) => {
-      this.eventFilter.push(val.value);
-    });
-    this.preferences.events.filter = this.eventFilter;
-    this.savePreferences();
-  }
 
   pasteKey() {
     const modalRef = this.modalService.open(UpdateKeyModalComponent, {backdrop: 'static'});

@@ -248,10 +248,9 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
             this.workflows[0].ordersSummary[state] = 1;
           }
         }
-        if (this.sideBar.isVisible) {
-          this.sideBar.orders = res.orders;
-        }
-
+      }
+      if (this.sideBar.isVisible) {
+        this.sideBar.orders = res.orders;
       }
     });
   }
