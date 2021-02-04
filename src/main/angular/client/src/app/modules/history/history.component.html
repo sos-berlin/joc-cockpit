@@ -397,22 +397,25 @@
           </div>
           <div class="inline break-line" *ngIf="historyFilters.type == 'SUBMISSION'">
             <div class="btn-group m-l-12 hidden-btn-group">
-              <ng-container *ngFor="let btn of filterBtn">
-                <button [disabled]="savedSubmissionHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+              <ng-container *ngFor="let btn of subMissionFilterBtn">
+                <button [disabled]="savedSubmissionHistoryFilter.selected"
+                        class="btn btn-grey btn-sm button-group-ellipsis"
                         [ngClass]="{'btn-primary': submission.filter.date===btn.date}"
                         (click)="loadHistory('DATE', btn.date)" translate>filters.button.{{btn.text}}
                 </button>
               </ng-container>
             </div>
             <div class="btn-group dropdown hidden-dropdown">
-              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" type="button" translate>
+              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate"
+                      [nzPlacement]="'bottomRight'" type="button" translate>
                 common.label.anyDate
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
-              <nz-dropdown-menu #anyDate="nzDropdownMenu" >
+              <nz-dropdown-menu #anyDate="nzDropdownMenu">
                 <ul nz-menu>
-                  <ng-container *ngFor="let btn of filterBtn">
-                    <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.date==btn.date, 'disable-link':savedSubmissionHistoryFilter.selected}">
+                  <ng-container *ngFor="let btn of subMissionFilterBtn">
+                    <li nz-menu-item
+                        [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.date==btn.date, 'disable-link':savedSubmissionHistoryFilter.selected}">
                       <a (click)="loadHistory('DATE',btn.date)"
                          translate>filters.button.{{btn.text}}
                       </a>
@@ -422,20 +425,23 @@
               </nz-dropdown-menu>
             </div>
             <div class="btn-group dropdown">
-              <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered1.account" nz-dropdown nzTrigger="click" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'" type="button" translate>
-                {{'customization.label.customizations' | translate}} <span class="text-primary" [innerHtml]="selectedFiltered1.name"></span>
+              <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered1.account" nz-dropdown
+                      nzTrigger="click" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'" type="button"
+                      translate>
+                {{'customization.label.customizations' | translate}} <span class="text-primary"
+                                                                           [innerHtml]="selectedFiltered1.name"></span>
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
-              <nz-dropdown-menu #customization="nzDropdownMenu" >
+              <nz-dropdown-menu #customization="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item >
+                  <li nz-menu-item>
                     <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
                   </li>
-                  <li nz-menu-item  *ngIf="submissionHistoryFilterList.length>0">
+                  <li nz-menu-item *ngIf="submissionHistoryFilterList.length>0">
                     <a (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
                   </li>
                   <li nz-menu-divider *ngIf="submissionHistoryFilterList.length>0"></li>
-                  <li nz-menu-item  *ngFor="let filter of submissionHistoryFilterList | orderBy: 'name'"
+                  <li nz-menu-item *ngFor="let filter of submissionHistoryFilterList | orderBy: 'name'"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': (savedSubmissionHistoryFilter.selected == filter.id)}">
                     <a (click)="changeFilter(filter)">
                       <span [nz-tooltip]="filter.account">{{filter.name}}</span>
@@ -449,34 +455,36 @@
             </div>
           </div>
           <div class="btn-group dropdown" *ngIf="historyFilters.type === 'ORDER' || historyFilters.type === 'TASK'">
-            <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="ignoreList" [nzPlacement]="'bottomRight'">
+            <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="ignoreList"
+                    [nzPlacement]="'bottomRight'">
               {{'history.label.ignoreList' | translate}}
               <span class="text-primary"
                     *ngIf="savedIgnoreList.isEnable"
                     [innerHtml]="'history.label.active' | translate"></span>
               <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
             </button>
-            <nz-dropdown-menu #ignoreList="nzDropdownMenu" >
+            <nz-dropdown-menu #ignoreList="nzDropdownMenu">
               <ul nz-menu>
-                <li nz-menu-item  *ngIf="savedIgnoreList.workflows.length > 0 && historyFilters.type == 'ORDER'">
+                <li nz-menu-item *ngIf="savedIgnoreList.workflows.length > 0 && historyFilters.type == 'ORDER'">
                   <a (click)="editIgnoreList()" translate>history.button.editIgnoreList</a>
                 </li>
-                <li nz-menu-item  *ngIf="savedIgnoreList.jobs.length > 0 && historyFilters.type == 'TASK'">
+                <li nz-menu-item *ngIf="savedIgnoreList.jobs.length > 0 && historyFilters.type == 'TASK'">
                   <a (click)="editIgnoreList()" translate>history.button.editIgnoreList</a>
                 </li>
-                <li nz-menu-item  *ngIf="!savedIgnoreList.isEnable">
+                <li nz-menu-item *ngIf="!savedIgnoreList.isEnable">
                   <a (click)="enableDisableIgnoreList()" translate>history.button.enableIgnoreList</a>
                 </li>
-                <li nz-menu-item  *ngIf="savedIgnoreList.isEnable">
+                <li nz-menu-item *ngIf="savedIgnoreList.isEnable">
                   <a (click)="enableDisableIgnoreList()" translate>history.button.disableIgnoreList</a>
                 </li>
-                <li nz-menu-item >
+                <li nz-menu-item>
                   <a (click)="resetIgnoreList()" translate>history.button.resetIgnoreList</a>
                 </li>
               </ul>
             </nz-dropdown-menu>
           </div>
-          <button class="btn btn-grey btn-sm m-l-12" [disabled]="data.length === 0" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
+          <button class="btn btn-grey btn-sm m-l-12" [disabled]="data.length === 0"
+                  [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
                   (click)="exportToExcel()"><i class="fa fa fa-share-square-o"></i></button>
         </div>
       </div>
@@ -1118,29 +1126,37 @@
             </tr>
             <tr *ngIf="submissionHistory.show">
               <td colspan="2" style="padding:0 !important;border-bottom: none;">
-                <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small"
+                <nz-table class="m-a-0 inner-table" nzSize="small" #innerChildTable
                           [nzData]="submissionHistory.submissions" [nzShowPagination]="false">
                 <thead>
                 <tr>
-                  <th><span translate>history.label.submission</span></th>
+                  <th style="border-right: none"><span translate>history.label.submission</span></th>
+                  <th style="border-left: none" colspan="3"></th>
                 </tr>
                 </thead>
                 <tbody *ngFor="let child of innerChildTable.data">
                   <tr>
-                    <td>
+                    <td style="border-right: none">
                       <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
                          *ngIf="!child.show" (click)="child.show = true"></i>
                       <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
                          *ngIf="child.show" (click)="child.show = false;"></i>
                       <span [innerHtml]="child.submissionTime | stringToDate"></span>
                     </td>
+                    <td style="border-left: none" colspan="3"></td>
                   </tr>
                   <ng-container *ngIf="child.show" class="order-history-template0">
                     <tr *ngIf="child.orderIds && child.orderIds.length > 0">
-                      <td class="_600" style="padding: 6px 8px !important;"><span class="p-l" translate>history.label.orderIds</span></td>
+                      <td class="_600" style="padding: 6px 8px !important;"><span translate>history.label.orderId</span></td>
+                      <td class="_600" style="padding: 6px 8px !important;"><span translate>order.label.workflow</span></td>
+                      <td class="_600" style="padding: 6px 8px !important;"><span translate>order.label.scheduledFor</span></td>
+                      <td class="_600" style="padding: 6px 8px !important;"><span translate>history.label.submitted</span></td>
                     </tr>
                     <tr *ngFor="let order of child.orderIds">
-                      <td><span class="p-l-md">{{order}}</span></td>
+                      <td><span>{{order.orderId}}</span></td>
+                      <td><span>{{order.workflowPath}}</span></td>
+                      <td><span>{{order.scheduledFor | stringToDate}}</span></td>
+                      <td><span>{{order.submitted ? 'submitted' : 'not submitted'}}</span></td>
                     </tr>
                     <tr *ngIf="child.warnMessages && child.warnMessages.length > 0">
                       <th class="_600" style="padding: 6px 8px !important;"><span class="p-l" translate>history.label.warnMessages</span></th>

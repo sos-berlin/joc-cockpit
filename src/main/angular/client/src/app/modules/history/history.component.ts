@@ -755,6 +755,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
     {date: '-7d', text: 'lastWeak'}
   ];
 
+  subMissionFilterBtn: any = [
+    {date: 'ALL', text: 'all'},
+    {date: '-30d', text: 'last30'},
+    {date: '-7d', text: 'lastWeak'},
+    {date: '-1d', text: 'yesterday'},
+    {date: 'today', text: 'today'},
+    {date: '7d', text: 'nextWeak'},
+    {date: '30d', text: 'next30'}
+  ];
+
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private modalService: NgbModal, private searchPipe: SearchPipe,
               private message: NzMessageService, private router: Router, private translate: TranslateService, private excelService: ExcelService) {
@@ -1149,7 +1159,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
       filter.dateFrom = '0d';
       filter.dateTo = '0d';
     } else if (this.submission.filter.date && this.submission.filter.date != 'ALL') {
-      filter.dateFrom = this.submission.filter.date;
+      if (this.submission.filter.date == '7d' || this.submission.filter.date == '30d') {
+        filter.dateFrom = '0d';
+        filter.dateTo = this.submission.filter.date;
+      } else {
+        filter.dateFrom = this.submission.filter.date;
+      }
     }
     return filter;
   }
@@ -1493,7 +1508,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
       });
     } else if (this.historyFilters.type === 'SUBMISSION') {
       this.submission.filter.date = '';
-      console.log('>>>>', obj)
       if (obj.radio == 'planned') {
         filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);
       } else {

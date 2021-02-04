@@ -1095,4 +1095,34 @@ export class CoreService {
   clone(json): any {
     return JSON.parse(JSON.stringify(json));
   }
+
+  convertObjectToArray(obj, type): Array<object> {
+    let arrObject = [];
+    if (!obj[type] || _.isEmpty(obj[type])) {
+      obj[type] = [];
+    }
+    if (obj[type] && !_.isEmpty(obj[type])) {
+      arrObject = Object.entries(obj[type]).map(([k, v]) => {
+        return {name: k, value: v};
+      });
+    }
+    return arrObject;
+  }
+
+  convertArrayToObject(obj, type, isDelete) {
+    console.log(obj)
+    console.log(type)
+    if (obj[type].length > 0 && this.isLastEntryEmpty(obj[type], 'name', '')) {
+      obj[type].splice(obj[type].length - 1, 1);
+    }
+    if (obj[type].length > 0) {
+      obj[type] = _.object(_.map(obj[type], _.values));
+    } else {
+      if (isDelete) {
+        delete obj[type];
+      } else {
+        obj[type] = {};
+      }
+    }
+  }
 }

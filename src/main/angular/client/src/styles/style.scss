@@ -6720,6 +6720,9 @@ span.cm-error {
 .ant-dropdown-menu-submenu-title:hover > a {
   color: $default !important;
 }
+.ant-select-dropdown-menu-item-disabled{
+  opacity: .7;
+}
 
 .ant-calendar-year-panel-selected-cell .ant-calendar-year-panel-year:hover,
 .ant-calendar-today .ant-calendar-date {

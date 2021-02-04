@@ -141,7 +141,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       } else {
         data = res.calendars;
       }
-      let flag = false;
       for (let i = 0; i < data.length; i++) {
         const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
         data[i].title =  data[i].name;
@@ -339,8 +338,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       if (!this.schedule.configuration.nonWorkingCalendars) {
         this.schedule.configuration.nonWorkingCalendars = [];
       }
-      if (!this.schedule.configuration.variables) {
-        this.schedule.configuration.variables = [];
+      if (this.schedule.configuration.variables) {
+        this.schedule.configuration.variables = this.coreService.convertObjectToArray(this.schedule.configuration, 'variables');
       }
       if (this.schedule.configuration.variables.length === 0) {
         this.addVariable();
@@ -358,27 +357,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.invalidMsg = '';
       }
     });
-  }
-
-  private loadWorkflowTree(path) {
-    const self = this;
-    let count = 0;
-
-    function interval() {
-      ++count;
-      setTimeout(() => {
-        if (self.workflowTree.length === 0 && count < 5) {
-          interval();
-        }
-        const node = self.treeSelectCtrl.getTreeNodeByKey(path);
-        if (node) {
-          node.isExpanded = true;
-          self.loadData(node, 'WORKFLOW', null);
-        }
-      }, 10 * count);
-    }
-
-    interval();
   }
 
   private validateJSON(json) {
@@ -411,12 +389,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     if (!_.isEqual(this.schedule.actual, JSON.stringify(this.schedule.configuration))) {
       this.schedule.configuration.controllerId = this.schedulerId;
       let obj = this.coreService.clone(this.schedule.configuration);
-      if (obj.variables) {
-        if (this.coreService.isLastEntryEmpty(obj.variables, 'name', '')) {
-          obj.variables.splice(obj.variables.length - 1, 1);
-        }
+      if (obj.variables && _.isArray(obj.variables)) {
+        this.coreService.convertArrayToObject(obj, 'variables', true);
       }
-
       if (obj.calendars.length > 0) {
         for (let i = 0; i < obj.calendars.length; i++) {
           if (obj.calendars[i].frequencyList) {

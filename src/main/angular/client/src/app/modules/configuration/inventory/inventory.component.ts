@@ -1081,15 +1081,14 @@ export class ExportComponent implements OnInit {
       param = param + '&exportFilter=' + JSON.stringify(obj);
       if (this.comments.comment) {
         param = param + '&comment=' + this.comments.comment;
+        if (this.comments.timeSpent) {
+          param = param + '&timeSpent=' + this.comments.timeSpent;
+        }
+        if (this.comments.ticketLink) {
+          param = param + '&ticketLink=' + encodeURIComponent(this.comments.ticketLink);
+        }
       }
-      if (this.comments.timeSpent) {
-        param = param + '&timeSpent=' + this.comments.timeSpent;
-      }
-      if (this.comments.ticketLink) {
-        param = param + '&ticketLink=' + encodeURIComponent(this.comments.ticketLink);
-      }
-      //console.log('http://jstest.zehntech.net:7446/joc/api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
-
+     // console.log('http://jstest.zehntech.net:7446/joc/api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
       try {
         $('#tmpFrame').attr('src', './api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
         setTimeout(() => {
@@ -1165,10 +1164,6 @@ export class SetVersionComponent implements OnInit {
     }
   }
 
-  updateTree() {
-    this.nodes = [...this.nodes];
-  }
-
   buildTree() {
     this.coreService.post('inventory/deployables', {
       folder: '/',
@@ -1183,7 +1178,6 @@ export class SetVersionComponent implements OnInit {
       }
       setTimeout(() => {
         this.loading = false;
-        this.updateTree();
       }, 0);
     }, (err) => {
       this.nodes = [];

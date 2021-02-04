@@ -1,6 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>workflow.label.updateWorkflow</span>
+    <span *ngIf="!isVariableOnly" translate>workflow.label.updateWorkflow</span>
+    <span *ngIf="isVariableOnly" translate>workflow.label.declareVariables</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
@@ -8,9 +9,9 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a" style="overflow: visible">
-    <div class="form-group row" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+    <div class="form-group row" *ngIf="!isVariableOnly" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
       <label class="col-sm-4 form-control-label" translate>common.label.name</label>
-      <div class="col-sm-6">
+      <div class="col-sm-7">
         <input type="text" class="form-control" identifierValidation name="name"
                [(ngModel)]="workflowName" required #name="ngModel" [appAutofocus]="true" autocomplete="off"
                />
@@ -22,10 +23,51 @@
         </div>
       </div>
     </div>
-    <div class="form-group row">
+    <div class="form-group row" *ngIf="!isVariableOnly">
       <label class="col-sm-4 form-control-label" translate>common.label.title</label>
-      <div class="col-sm-6">
+      <div class="col-sm-7">
         <input type="text" class="form-control" name="title" placeholder="{{'common.placeholder.title' | translate}}" [(ngModel)]="title" autocomplete="off"/>
+      </div>
+    </div>
+    <div>
+      <div class="form-group row" *ngIf="!isVariableOnly">
+        <label class="col-sm-12 _600" translate>workflow.label.variableDeclaration</label>
+      </div>
+      <div class="form-group row m-b-0" *ngFor="let variable of variableDeclarations.parameters; let i = index">
+        <div class="col-md-4 col-lg-4 m-b-sm" *ngIf="i==0" translate>common.label.name</div>
+        <div class="col-md-3 col-lg-3 m-b-sm" *ngIf="i==0" translate>common.label.type</div>
+        <div class="col-md-4 col-lg-4 m-b-sm" *ngIf="i==0" translate>common.label.value</div>
+        <div class="col-md-4 col-lg-4 m-b-sm" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+          <input identifierValidation #name="ngModel" autocomplete="off" type="text" class="form-control" name="name{{i}}"
+                 [(ngModel)]="variable.name" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" (blur)="checkDuplicateEntries(variable, i)">
+          <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)"
+               class="text-danger help-block">
+            <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-lg-3 m-b-sm">
+          <nz-select name="type{{i}}" [(ngModel)]="variable.value.type" (ngModelChange)="variable.value.default = ''">
+            <nz-option *ngFor="let dataType of allowedDatatype" [nzLabel]="dataType" [nzValue]="dataType"></nz-option>
+          </nz-select>
+        </div>
+        <div class="col-md-4 col-lg-4 m-b-sm" [ngSwitch]="variable.value.type">
+          <nz-input-number *ngSwitchCase="'Number'" [nzMin]="0" [nzStep]="1" name="value{{i}}" [(ngModel)]="variable.value.default"></nz-input-number>
+          <nz-select *ngSwitchCase="'Boolean'" name="value{{i}}" [(ngModel)]="variable.value.default">
+            <nz-option [nzLabel]="'true'" [nzValue]="'true'"></nz-option>
+            <nz-option [nzLabel]="'false'" [nzValue]="'false'"></nz-option>
+          </nz-select>
+          <input *ngSwitchDefault autocomplete="off" type="text" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event)"
+                 [(ngModel)]="variable.value.default" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
+        </div>
+        <div class="col-md-1 col-lg-1 p-l-0" *ngIf="variableDeclarations.parameters.length>1">
+          <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-sm-12">
+          <a class="text-u-l" *ngIf="variableDeclarations.parameters.length>0" (click)="addVariable()" translate>order.button.addAnotherVariable</a>
+          <a class="text-u-l" *ngIf="variableDeclarations.parameters.length==0" (click)="addVariable()" translate>order.button.addVariable</a>
+        </div>
       </div>
     </div>
   </div>
