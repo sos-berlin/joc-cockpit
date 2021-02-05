@@ -340,6 +340,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       }
       if (this.schedule.configuration.variables) {
         this.schedule.configuration.variables = this.coreService.convertObjectToArray(this.schedule.configuration, 'variables');
+      } else{
+        this.schedule.configuration.variables = [];
       }
       if (this.schedule.configuration.variables.length === 0) {
         this.addVariable();

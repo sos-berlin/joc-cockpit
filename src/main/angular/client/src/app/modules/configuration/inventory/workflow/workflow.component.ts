@@ -58,7 +58,9 @@ export class UpdateWorkflowComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.workflowName = this.data.name;
+    if (this.data) {
+      this.workflowName = this.data.name;
+    }
     if (this.orderRequirements && this.orderRequirements.parameters && !_.isEmpty(this.orderRequirements.parameters)) {
       this.variableDeclarations.parameters = Object.entries(this.orderRequirements.parameters).map(([k, v]) => {
         return {name: k, value: v};
@@ -70,17 +72,24 @@ export class UpdateWorkflowComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.workflowName !== this.data.name) {
+    if (this.data && this.workflowName !== this.data.name) {
       this.coreService.post('inventory/rename', {
         id: this.data.id,
         newPath: this.workflowName
       }).subscribe((res) => {
-        this.activeModal.close({name: this.workflowName, title: this.title, orderRequirements: this.variableDeclarations});
+        this.activeModal.close({name: this.workflowName, title: this.title});
       }, (err) => {
 
       });
     } else {
-      this.activeModal.close({title: this.title, orderRequirements: this.variableDeclarations});
+      if (this.variableDeclarations.parameters && this.variableDeclarations.parameters.length > 0) {
+        this.variableDeclarations.parameters.map((value) => {
+          if (value.value && value.value.default == '') {
+            delete value.value['default'];
+          }
+        });
+      }
+      this.activeModal.close({title: this.title, variableDeclarations: this.variableDeclarations});
     }
   }
 
@@ -88,8 +97,7 @@ export class UpdateWorkflowComponent implements OnInit {
     const param = {
       name: '',
       value: {
-        type: 'String',
-        default: ''
+        type: 'String'
       }
     };
     if (this.variableDeclarations.parameters) {
@@ -190,7 +198,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   updateSelectItems() {
     let type = this.index === 2 ? 'obj' : 'job';
-    console.log(type, this.index)
     if (this.selectedNode[type].defaultArguments.length > 0) {
       for (let i = 0; i < this.variableList.length; i++) {
         this.variableList[i].isSelected = false;
@@ -210,7 +217,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.isDisplay = true;
     }, 5);
   }
-
 
   updateVariableList() {
     if (this.orderRequirements && this.orderRequirements.parameters && !_.isEmpty(this.orderRequirements.parameters)) {
@@ -293,6 +299,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   removeArgument(index): void {
     this.selectedNode.obj.defaultArguments.splice(index, 1);
+    this.updateSelectItems();
   }
 
   addVariable(): void {
@@ -309,6 +316,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   removeVariable(index): void {
     this.selectedNode.job.defaultArguments.splice(index, 1);
+    this.updateSelectItems();
   }
 
   addEnv(): void {
@@ -317,8 +325,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       value: ''
     };
     if (this.selectedNode.job.env) {
-      console.log(this.selectedNode.job.env);
-      if (!this.coreService.isLastEntryEmpty(this.selectedNode.job.env, 'name', '')) {
+      if (!this.coreService.isLastEntryEmpty(this.selectedNode.job.env, 'name', 'isRequired')) {
         this.selectedNode.job.env.push(param);
       }
     }
@@ -331,7 +338,25 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   upperCase(env) {
     if (env.name) {
       env.name = env.name.toUpperCase();
-      env.value =  '$' + env.name.toLowerCase();
+      if (!env.value) {
+        env.value = '$' + env.name.toLowerCase();
+      }
+    }
+  }
+
+  setValue(env) {
+    if (env.name1) {
+      env.name = env.name1.toUpperCase();
+      env.value = '$' + env.name.toLowerCase();
+    } else {
+      env.name = env.name1;
+      env.value = null;
+    }
+  }
+
+  nzOnSearch(obj) {
+    if (obj.text) {
+      obj.data.name = obj.text;
     }
   }
 
@@ -347,10 +372,10 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.selectedNode.obj.defaultArguments = this.coreService.convertObjectToArray(this.selectedNode.obj, 'defaultArguments');
     if (this.selectedNode.obj.defaultArguments && this.selectedNode.obj.defaultArguments.length == 0) {
       this.addArgument();
-    }
-
-    if (this.selectedNode.obj.env && this.selectedNode.obj.env.length == 0) {
-      this.addArgument();
+    } else {
+      this.selectedNode.obj.defaultArguments.forEach((value) => {
+        this.checkVariableType(value);
+      });
     }
 
     if (this.selectedNode.job.jobClass) {
@@ -400,6 +425,11 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       if (!_.isArray(this.selectedNode.job.defaultArguments)) {
         this.selectedNode.job.defaultArguments = this.coreService.convertObjectToArray(this.selectedNode.job, 'defaultArguments');
       }
+      if (this.selectedNode.job.defaultArguments && this.selectedNode.job.defaultArguments.length > 0) {
+        this.selectedNode.job.defaultArguments.forEach((value) => {
+          this.checkVariableType(value);
+        });
+      }
     }
 
     if (!this.selectedNode.job.env || _.isEmpty(this.selectedNode.job.env)) {
@@ -409,7 +439,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         this.selectedNode.job.env = this.coreService.convertObjectToArray(this.selectedNode.job, 'env');
       }
     }
-    console.log(this.selectedNode.job.env, 'env')
 
     if (this.selectedNode.job.timeout) {
       this.selectedNode.job.timeout1 = this.workflowService.convertDurationToString(this.selectedNode.job.timeout);
@@ -829,16 +858,29 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   openDeclarationModal() {
-    this.addWorkflow(true);
+    const modalRef = this.modalService.open(UpdateWorkflowComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.componentInstance.schedulerId = this.schedulerId;
+    modalRef.componentInstance.orderRequirements = this.coreService.clone(this.orderRequirements);
+    modalRef.componentInstance.isVariableOnly = true;
+    modalRef.result.then((result) => {
+      result.variableDeclarations.parameters = _.object(_.map(result.variableDeclarations.parameters, _.values));
+      if (result.variableDeclarations.parameters && _.isEmpty(result.variableDeclarations.parameters)) {
+        delete result.variableDeclarations['parameters'];
+      }
+      if (JSON.stringify(this.orderRequirements) !== JSON.stringify(result.variableDeclarations)) {
+        this.orderRequirements = result.variableDeclarations;
+        this.updateOtherProperties();
+      }
+    }, () => {
+    });
   }
 
-  addWorkflow(isVariableOnly) {
+  addWorkflow() {
     const modalRef = this.modalService.open(UpdateWorkflowComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.schedulerId = this.schedulerId;
     modalRef.componentInstance.data = this.workflow;
     modalRef.componentInstance.orderRequirements = this.orderRequirements;
     modalRef.componentInstance.title = this.title;
-    modalRef.componentInstance.isVariableOnly = isVariableOnly;
     modalRef.result.then((result) => {
       if (result.name) {
         this.data.name = result.name;
@@ -847,13 +889,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.workflow.deployed = false;
         this.data.deployed = false;
       }
-      result.orderRequirements.parameters = _.object(_.map(result.orderRequirements.parameters, _.values));
-      if (result.orderRequirements.parameters && _.isEmpty(result.orderRequirements.parameters)) {
-        delete result.orderRequirements['parameters'];
-      }
-      if (this.title !== result.title || JSON.stringify(this.orderRequirements) !== JSON.stringify(result.orderRequirements)) {
+      if (this.title !== result.title) {
         this.title = result.title;
-        this.orderRequirements = result.orderRequirements;
         this.updateOtherProperties();
       }
     }, () => {
@@ -1020,9 +1057,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   validate() {
-    if (!this.workflow.valid) {
-      let data = this.coreService.clone(this.workflow.configuration);
-      this.modifyJSON(data, true, true);
+    if (this.invalidMsg && this.invalidMsg.match(/orderRequirements/)) {
+      this.openDeclarationModal();
+    } else {
+      if (!this.workflow.valid) {
+        let data = this.coreService.clone(this.workflow.configuration);
+        this.modifyJSON(data, true, true);
+      }
     }
   }
 
@@ -5793,7 +5834,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         job.executable.TYPE = 'ScriptExecutable';
       }
     }
-    console.log(job)
     if (job.returnCodeMeaning) {
       if (typeof job.returnCodeMeaning.success == 'string') {
         job.returnCodeMeaning.success = job.returnCodeMeaning.success.split(',').map(Number);
@@ -5807,9 +5847,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (job.env) {
       this.coreService.convertArrayToObject(job, 'env', true);
     }
-    console.log(job.defaultArguments);
-    console.log(job.env);
-
     if (!job.taskLimit) {
       job.taskLimit = 0;
     }
@@ -6232,7 +6269,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     } else {
       data = noValidate;
     }
-    let newObj : any = {};
+    let newObj: any = {};
     if (!data.orderRequirements && this.orderRequirements && this.orderRequirements.parameters) {
       newObj.orderRequirements = this.orderRequirements;
     }
@@ -6259,7 +6296,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private storeData(data) {
-   
     this.coreService.post('inventory/store', {
       configuration: data,
       id: this.workflow.id,
@@ -6273,6 +6309,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.workflow.valid = res.valid;
         this.data.valid = res.valid;
         this.data.deployed = false;
+        if (this.invalidMsg && this.invalidMsg.match(/inventory/)) {
+          this.invalidMsg = '';
+        }
         if (!this.invalidMsg && res.invalidMsg) {
           this.invalidMsg = res.invalidMsg;
         }

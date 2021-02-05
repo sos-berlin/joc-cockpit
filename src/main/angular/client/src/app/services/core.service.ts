@@ -852,6 +852,9 @@ export class CoreService {
       if ((x[key1] !== undefined && x[key1] === '') || (x[key2] !== undefined && x[key2] === '')) {
         flag = true;
       }
+      if (!flag && x.isRequired && !x.value) {
+        flag = true;
+      }
     }
     return flag;
   }

@@ -39,7 +39,7 @@
       </Retry>
     </add>
     <add as="Lock" >
-      <Lock label="lock" count="" lockId="">
+      <Lock label="lock" lockId="">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>

@@ -70,7 +70,7 @@
             <span class="text-dark p-l-sm" translate>workflow.label.workflowName</span>:
             <span class="_600 p-l-xs" [nz-tooltip]="workflow.path">{{workflow.name}}
               <span class="text-muted _400"
-                    *ngIf="workflow.configuration && workflow.configuration.title"> - {{workflow.configuration.title}}</span>
+                    *ngIf="title"> - {{title}}</span>
               </span>
             <a class="p-l-xs" (click)="addWorkflow()">
               <i nz-icon nzType="edit" nzTheme="outline"></i>
@@ -140,10 +140,11 @@
           <span translate>workflow.label.properties</span>
           <span *ngIf="selectedNode" class="font14 text-primary p-l-xs">({{selectedNode.type | translate}})</span>
       </h5>
+      <button class="btn btn-sm pos-abt" style="top:10px; right: 28px" (click)="openDeclarationModal()" nz-tooltip="{{'workflow.label.declareVariables' | translate}}"><i class="fa fa-tasks"></i></button>
     </div>
     <div class="m-l-xs text-left" *ngIf="selectedNode">
       <div class="box-body p-t-0" *ngIf="selectedNode.type === 'Job'">
-        <app-job-content [selectedNode]="selectedNode" [jobs]="jobs" [agents]="agents" [jobClassTree]="jobClassTree" [schedulerId]="schedulerId"></app-job-content>
+        <app-job-content [selectedNode]="selectedNode" [orderRequirements]="orderRequirements" [jobs]="jobs" [agents]="agents" [jobClassTree]="jobClassTree" [schedulerId]="schedulerId"></app-job-content>
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'If'">
         <app-expression-content [selectedNode]="selectedNode" [error]="error"></app-expression-content>

@@ -164,8 +164,8 @@
                       <input autocomplete="off" type="text" *ngSwitchDefault class="form-control"
                              name="value{{i}}" (keypress)="onKeyPress($event, 'default')"
                              [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
-                      <div *ngIf="argument.isRequired && !argument.value" class="text-danger help-block"
-                           translate>common.message.requiredError</div>
+                      <!--<div *ngIf="argument.isRequired && !argument.value" class="text-danger help-block"
+                           translate>common.message.requiredError</div>-->
                     </div>
                     <div class="col-md-1 col-lg-1 p-l-0">
                       <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
@@ -186,9 +186,13 @@
                   <div class="form-group row m-b-0" *ngFor="let env of selectedNode.job.env; let i = index">
                     <div class="col-md-4 col-lg-5 m-b-sm" *ngIf="i==0" translate>common.label.name</div>
                     <div class="col-md-8 col-lg-6 m-b-sm" *ngIf="i==0" translate>common.label.value</div>
-                    <div class="col-md-5 col-lg-5 m-b-sm">
-                      <input autocomplete="off" type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == selectedNode.job.env.length -1"
-                             [(ngModel)]="env.name" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" (blur)="upperCase(env)">
+                    <div class="col-md-5 col-lg-5 m-b-sm select-input-both-without-border">
+                      <input autocomplete="off" type="text" class="form-control" name="name{{i}}"
+                             [(ngModel)]="env.name" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
+                      <nz-select nzShowSearch nzAllowClear name="select{{i}}" [(ngModel)]="env.name1" (ngModelChange)="setValue(env)"
+                                 (nzOnSearch)="nzOnSearch({text :$event, data: env})" (nzBlur)="upperCase(env)">
+                        <nz-option *ngFor="let list of selectedNode.job.defaultArguments" [nzLabel]="list.name" [nzValue]="list.name"></nz-option>
+                      </nz-select>
                     </div>
                     <div class="col-md-6 col-lg-6 m-b-sm">
                       <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event, 'env')"
@@ -267,7 +271,7 @@
     <div class="job-property-editor">
       <div class="form-group row">
         <label class="col-md-12 _600">{{'workflow.label.arguments' | translate}}</label>
-        <div class="col-md-12" style="max-height: '80hv'; overflow: auto">
+        <div class="col-md-12" style="max-height: calc(100vh - 312px); overflow: auto;">
           <div class="form-group row m-b-0" *ngFor="let argument of selectedNode.obj.defaultArguments; let i = index">
             <div class="col-md-4 col-lg-5 m-b-sm" *ngIf="i==0" translate>common.label.name</div>
             <div class="col-md-8 col-lg-6 m-b-sm" *ngIf="i==0" translate>common.label.value</div>
@@ -287,8 +291,8 @@
               <input autocomplete="off" type="text" *ngSwitchDefault class="form-control"
                      name="value{{i}}" (keypress)="onKeyPress($event, 'default')"
                      [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
-              <div *ngIf="argument.isRequired && !argument.value" class="text-danger help-block"
-                   translate>common.message.requiredError</div>
+      <!--        <div *ngIf="argument.isRequired && !argument.value" class="text-danger help-block"
+                   translate>common.message.requiredError</div>-->
             </div>
             <div class="col-md-1 col-lg-1 p-l-0">
               <a><i (click)="removeArgument(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
