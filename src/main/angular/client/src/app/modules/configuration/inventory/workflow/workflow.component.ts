@@ -84,7 +84,7 @@ export class UpdateWorkflowComponent implements OnInit {
     } else {
       if (this.variableDeclarations.parameters && this.variableDeclarations.parameters.length > 0) {
         this.variableDeclarations.parameters.forEach((value) => {
-          if (value.value && value.value.default == '') {
+          if (value.value && value.value.default === '') {
             delete value.value['default'];
           }
         });
@@ -188,12 +188,16 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   checkVariableType(argument) {
-    let obj = this.orderRequirements.parameters[argument.name];
-    if (obj) {
-      argument.type = obj.type;
-      argument.isRequired = !obj.default;
+    if(this.orderRequirements.parameters) {
+      let obj = this.orderRequirements.parameters[argument.name];
+      if (obj) {
+        argument.type = obj.type;
+        if (!obj.default && obj.default !== false && obj.default !== 0) {
+          argument.isRequired = true;
+        }
+      }
+      this.updateSelectItems();
     }
-    this.updateSelectItems();
   }
 
   updateSelectItems() {
@@ -324,15 +328,15 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       name: '',
       value: ''
     };
-    if (this.selectedNode.job.env) {
-      if (!this.coreService.isLastEntryEmpty(this.selectedNode.job.env, 'name', 'isRequired')) {
-        this.selectedNode.job.env.push(param);
+    if (this.selectedNode.job.executable.env) {
+      if (!this.coreService.isLastEntryEmpty(this.selectedNode.job.executable.env, 'name', 'isRequired')) {
+        this.selectedNode.job.executable.env.push(param);
       }
     }
   }
 
   removeEnv(index): void {
-    this.selectedNode.job.env.splice(index, 1);
+    this.selectedNode.job.executable.env.splice(index, 1);
   }
 
   upperCase(env) {
@@ -401,7 +405,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.selectedNode.job.executable || !this.selectedNode.job.executable.script) {
       this.selectedNode.job.executable = {
         TYPE: 'ScriptExecutable',
-        script: ''
+        script: '',
+        env : []
       };
     }
     if (!this.selectedNode.job.returnCodeMeaning) {
@@ -432,11 +437,11 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
 
-    if (!this.selectedNode.job.env || _.isEmpty(this.selectedNode.job.env)) {
-      this.selectedNode.job.env = [];
+    if (!this.selectedNode.job.executable.env || _.isEmpty(this.selectedNode.job.executable.env)) {
+      this.selectedNode.job.executable.env = [];
     } else {
-      if (!_.isArray(this.selectedNode.job.env)) {
-        this.selectedNode.job.env = this.coreService.convertObjectToArray(this.selectedNode.job, 'env');
+      if (!_.isArray(this.selectedNode.job.executable.env)) {
+        this.selectedNode.job.executable.env = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'env');
       }
     }
 
@@ -449,7 +454,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     if (this.selectedNode.job.defaultArguments && this.selectedNode.job.defaultArguments.length === 0) {
       this.addVariable();
     }
-    if (this.selectedNode.job.env && this.selectedNode.job.env.length === 0) {
+    if (this.selectedNode.job.executable.env && this.selectedNode.job.executable.env.length === 0) {
       this.addEnv();
     }
   }
@@ -866,7 +871,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       result.variableDeclarations.parameters = result.variableDeclarations.parameters.filter((value) => {
         return !!value.name;
       });
-      result.variableDeclarations.parameters = _.object(_.map(result.variableDeclarations.parameters, _.values));
+      result.variableDeclarations.parameters = this.coreService.keyValuePair(result.variableDeclarations.parameters);
       if (result.variableDeclarations.parameters && _.isEmpty(result.variableDeclarations.parameters)) {
         delete result.variableDeclarations['parameters'];
       }
@@ -1120,7 +1125,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           executable: v.executable,
           returnCodeMeaning: v.returnCodeMeaning,
           defaultArguments: v.defaultArguments,
-          env: v.env,
           v1Compatible: v.v1Compatible,
           jobClass: v.jobClass,
           title: v.title,
@@ -5849,8 +5853,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (job.defaultArguments) {
       this.coreService.convertArrayToObject(job, 'defaultArguments', true);
     }
-    if (job.env) {
-      this.coreService.convertArrayToObject(job, 'env', true);
+    if (job.executable.env) {
+      this.coreService.convertArrayToObject(job.executable, 'env', true);
     }
     if (!job.taskLimit) {
       job.taskLimit = 0;
@@ -6199,7 +6203,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     if (_json.instructions && (!this.error || !isValidate)) {
       delete _json['id'];
-      _json.jobs = _.object(_.map(this.jobs, _.values));
+      _json.jobs = this.coreService.keyValuePair(this.jobs);
     }
     if (this.error || checkErr) {
       flag = false;

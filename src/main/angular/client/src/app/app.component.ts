@@ -15,7 +15,7 @@ declare const $;
 export class AppComponent {
   public config: ToasterConfig = new ToasterConfig({
     positionClass: 'toast-top-center',
-    limit: 2
+    limit: 1
   });
 
   constructor(public translate: TranslateService, private router: Router, private dataService: DataService) {

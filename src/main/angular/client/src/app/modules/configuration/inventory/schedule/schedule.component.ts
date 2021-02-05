@@ -25,7 +25,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   invalidMsg: string;
   workflow: any = {};
   variableList = [];
-  variables = [];
 
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
@@ -81,11 +80,12 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       name: '',
       value: ''
     };
-    if (this.variables) {
-      if (!this.coreService.isLastEntryEmpty(this.variables, 'name', '')) {
-        this.variables.push(param);
+    if (this.schedule.configuration.variables) {
+      if (!this.coreService.isLastEntryEmpty(this.schedule.configuration.variables, 'name', '')) {
+        this.schedule.configuration.variables.push(param);
       }
     }
+    this.saveJSON();
   }
 
   onKeyPress($event) {
@@ -95,7 +95,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   removeVariable(index): void {
-    this.variables.splice(index, 1);
+    this.schedule.configuration.variables.splice(index, 1);
     this.saveJSON();
   }
 
@@ -173,23 +173,17 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private getWorkflowInfo(name) {
-    this.coreService.post('inventory/path', {
-      name: name,
+    this.coreService.post('inventory/read/configuration', {
+      path: name,
       objectType: 'WORKFLOW'
-    }).subscribe((res: any) => {
-      this.coreService.post('inventory/read/configuration', {
-        path: res.path,
-        objectType: 'WORKFLOW'
-      }).subscribe((conf: any) => {
-
-        this.workflow = conf.configuration;
-        console.log(this.workflow)
-        this.updateVariableList();
-      });
+    }).subscribe((conf: any) => {
+      this.workflow = conf.configuration;
+      this.updateVariableList();
     });
   }
 
   updateVariableList() {
+    this.variableList = [];
     if (this.workflow.orderRequirements && this.workflow.orderRequirements.parameters && !_.isEmpty(this.workflow.orderRequirements.parameters)) {
       this.variableList = Object.entries(this.workflow.orderRequirements.parameters).map(([k, v]) => {
         return {name: k, value: v};
@@ -208,11 +202,12 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   updateSelectItems() {
-    if (this.variables.length > 0) {
+    if (this.schedule.configuration.variables.length > 0) {
       for (let i = 0; i < this.variableList.length; i++) {
         this.variableList[i].isSelected = false;
-        for (let j = 0; j < this.variables.length; j++) {
-          if (this.variableList[i].name === this.variables[j].name) {
+        for (let j = 0; j < this.schedule.configuration.variables.length; j++) {
+          if (this.variableList[i].name === this.schedule.configuration.variables[j].name) {
+           
             this.variableList[i].isSelected = true;
             break;
           }
@@ -396,9 +391,11 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.getWorkflowInfo(this.schedule.configuration.workflowName);
       }
       if (this.schedule.configuration.variables) {
-        this.variables = this.coreService.convertObjectToArray(this.schedule.configuration, 'variables');
+        this.schedule.configuration.variables = this.coreService.convertObjectToArray(this.schedule.configuration, 'variables');
+      } else {
+        this.schedule.configuration.variables = [];
       }
-      if (this.variables.length === 0) {
+      if (this.schedule.configuration.variables.length === 0) {
         this.addVariable();
       }
       this.schedule.actual = JSON.stringify(this.schedule.configuration);

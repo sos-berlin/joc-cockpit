@@ -64,7 +64,9 @@ export class AddOrderModalComponent implements OnInit {
     let obj = this.workflow.orderRequirements.parameters[argument.name];
     if (obj) {
       argument.type = obj.type;
-      argument.isRequired = !obj.default;
+      if (!obj.default && obj.default !== false && obj.default !== 0) {
+        argument.isRequired = true;
+      }
     }
     this.updateSelectItems();
   }
@@ -112,9 +114,7 @@ export class AddOrderModalComponent implements OnInit {
         argu.splice(argu.length - 1, 1);
       }
       if (argu.length > 0) {
-        order.arguments = _.object(argu.map((val) => {
-          return [val.name, val.value];
-        }));
+        order.arguments = this.coreService.keyValuePair(argu);
       }
     }
     obj.orders.push(order);

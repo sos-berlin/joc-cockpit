@@ -1117,7 +1117,7 @@ export class CoreService {
       obj[type].splice(obj[type].length - 1, 1);
     }
     if (obj[type].length > 0) {
-      obj[type] = _.object(_.map(obj[type], _.values));
+      obj[type] = this.keyValuePair(obj[type]);
     } else {
       if (isDelete) {
         delete obj[type];
@@ -1126,4 +1126,11 @@ export class CoreService {
       }
     }
   }
+
+  keyValuePair(argu) {
+    return _.object(argu.map((val) => {
+      return [val.name, val.value];
+    }));
+  }
+
 }

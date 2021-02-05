@@ -1147,14 +1147,18 @@
                   </tr>
                   <ng-container *ngIf="child.show" class="order-history-template0">
                     <tr *ngIf="child.orderIds && child.orderIds.length > 0">
-                      <td class="_600" style="padding: 6px 8px !important;"><span translate>history.label.orderId</span></td>
+                      <td class="_600" style="padding: 6px 8px !important;"><span class="p-l" translate>history.label.orderId</span></td>
                       <td class="_600" style="padding: 6px 8px !important;"><span translate>order.label.workflow</span></td>
                       <td class="_600" style="padding: 6px 8px !important;"><span translate>order.label.scheduledFor</span></td>
                       <td class="_600" style="padding: 6px 8px !important;"><span translate>history.label.submitted</span></td>
                     </tr>
                     <tr *ngFor="let order of child.orderIds">
-                      <td><span>{{order.orderId}}</span></td>
-                      <td><span>{{order.workflowPath}}</span></td>
+                      <td><span class="p-l">{{order.orderId}}</span></td>
+                      <td>
+                        <i (click)="navToWorkflowTab(order.workflowPath);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                        <span (click)="coreService.showWorkflow(order.workflowPath);$event.stopPropagation()"
+                              class="text-hover-primary" [innerHtml]="order.workflowPath | highlight : submission.searchText"></span>
+                      </td>
                       <td><span>{{order.scheduledFor | stringToDate}}</span></td>
                       <td><span>{{order.submitted ? 'submitted' : 'not submitted'}}</span></td>
                     </tr>

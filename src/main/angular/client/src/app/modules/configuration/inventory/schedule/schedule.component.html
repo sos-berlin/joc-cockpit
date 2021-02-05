@@ -101,7 +101,7 @@
         <div class="form-group row">
           <label class="col-md-12 _600" translate>order.label.variables</label>
         </div>
-        <div class="form-group row m-b-0" *ngFor="let variable of variables; let i = index">
+        <div class="form-group row m-b-0" *ngFor="let variable of schedule.configuration.variables; let i = index">
           <div class="col-md-4 col-lg-3 m-b-sm" *ngIf="i==0" translate>common.label.name</div>
           <div class="col-md-8 col-lg-9 m-b-sm" *ngIf="i==0" translate>common.label.value</div>
           <div class="col-md-4 col-lg-3 m-b-sm">
@@ -130,9 +130,9 @@
           </div>
         </div>
         <div class="form-group row">
-          <div class="col-sm-12" *ngIf="variableList.length > variables.length">
-            <a class="text-u-l" *ngIf="variables.length>0" (click)="addVariable()" translate>order.button.addAnotherVariable</a>
-            <a class="text-u-l" *ngIf="variables.length==0" (click)="addVariable()" translate>order.button.addVariable</a>
+          <div class="col-sm-12" *ngIf="variableList.length > schedule.configuration.variables.length">
+            <a class="text-u-l" *ngIf="schedule.configuration.variables.length>0" (click)="addVariable()" translate>order.button.addAnotherVariable</a>
+            <a class="text-u-l" *ngIf="schedule.configuration.variables.length==0" (click)="addVariable()" translate>order.button.addVariable</a>
           </div>
         </div>
       </form>
