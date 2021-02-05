@@ -25,6 +25,7 @@ export class AddOrderModalComponent implements OnInit {
   submitted = false;
   comments: any = {};
   zones = moment.tz.names();
+  variableList = [];
 
   constructor(public coreService: CoreService, public activeModal: NgbActiveModal) {
   }
@@ -43,6 +44,43 @@ export class AddOrderModalComponent implements OnInit {
       this.required = true;
     }
     this.order.at = 'now';
+    this.updateVariableList();
+  }
+
+  updateVariableList() {
+    if (this.workflow.orderRequirements && this.workflow.orderRequirements.parameters && !_.isEmpty(this.workflow.orderRequirements.parameters)) {
+      this.variableList = Object.entries(this.workflow.orderRequirements.parameters).map(([k, v]) => {
+        const val: any = v;
+        if (!val.default) {
+          this.arguments.push({name: k, type: val.type});
+        }
+        return {name: k, value: v};
+      });
+    }
+    this.updateSelectItems();
+  }
+
+  checkVariableType(argument) {
+    let obj = this.workflow.orderRequirements.parameters[argument.name];
+    if (obj) {
+      argument.type = obj.type;
+      argument.isRequired = !obj.default;
+    }
+    this.updateSelectItems();
+  }
+
+  updateSelectItems() {
+    if (this.arguments.length > 0) {
+      for (let i = 0; i < this.variableList.length; i++) {
+        this.variableList[i].isSelected = false;
+        for (let j = 0; j < this.arguments.length; j++) {
+          if (this.variableList[i].name === this.arguments[j].name) {
+            this.variableList[i].isSelected = true;
+            break;
+          }
+        }
+      }
+    }
   }
 
   onSubmit() {
@@ -69,7 +107,15 @@ export class AddOrderModalComponent implements OnInit {
       }
     }
     if (this.arguments.length > 0) {
-      order.arguments = _.object(_.map(this.arguments, _.values));
+      let argu = [...this.arguments];
+      if (this.coreService.isLastEntryEmpty(argu, 'name', '')) {
+        argu.splice(argu.length - 1, 1);
+      }
+      if (argu.length > 0) {
+        order.arguments = _.object(argu.map((val) => {
+          return [val.name, val.value];
+        }));
+      }
     }
     obj.orders.push(order);
     obj.auditLog = {};
@@ -105,6 +151,7 @@ export class AddOrderModalComponent implements OnInit {
 
   removeArgument(index): void {
     this.arguments.splice(index, 1);
+    this.updateSelectItems();
   }
 
   onKeyPress($event) {

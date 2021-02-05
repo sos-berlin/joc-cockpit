@@ -1113,8 +1113,6 @@ export class CoreService {
   }
 
   convertArrayToObject(obj, type, isDelete) {
-    console.log(obj)
-    console.log(type)
     if (obj[type].length > 0 && this.isLastEntryEmpty(obj[type], 'name', '')) {
       obj[type].splice(obj[type].length - 1, 1);
     }

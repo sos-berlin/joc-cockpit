@@ -23,6 +23,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   objectType = 'SCHEDULE';
   workflowTree = [];
   invalidMsg: string;
+  workflow: any = {};
+  variableList = [];
+  variables = [];
 
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
@@ -78,9 +81,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       name: '',
       value: ''
     };
-    if (this.schedule.configuration.variables) {
-      if (!this.coreService.isLastEntryEmpty(this.schedule.configuration.variables, 'name', '')) {
-        this.schedule.configuration.variables.push(param);
+    if (this.variables) {
+      if (!this.coreService.isLastEntryEmpty(this.variables, 'name', '')) {
+        this.variables.push(param);
       }
     }
   }
@@ -92,7 +95,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   removeVariable(index): void {
-    this.schedule.configuration.variables.splice(index, 1);
+    this.variables.splice(index, 1);
     this.saveJSON();
   }
 
@@ -122,7 +125,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           this.schedule.configuration.workflowName = node.key;
         }
       }
-      console.log(this.schedule.configuration.workflowName);
+      if(this.schedule.configuration.workflowName) {
+        this.getWorkflowInfo(this.schedule.configuration.workflowName);
+      }
       setTimeout(() => {
         this.saveJSON();
       }, 10);
@@ -165,6 +170,55 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
 
   onExpand(e, type) {
     this.loadData(e.node, type, null);
+  }
+
+  private getWorkflowInfo(name) {
+    this.coreService.post('inventory/path', {
+      name: name,
+      objectType: 'WORKFLOW'
+    }).subscribe((res: any) => {
+      this.coreService.post('inventory/read/configuration', {
+        path: res.path,
+        objectType: 'WORKFLOW'
+      }).subscribe((conf: any) => {
+
+        this.workflow = conf.configuration;
+        console.log(this.workflow)
+        this.updateVariableList();
+      });
+    });
+  }
+
+  updateVariableList() {
+    if (this.workflow.orderRequirements && this.workflow.orderRequirements.parameters && !_.isEmpty(this.workflow.orderRequirements.parameters)) {
+      this.variableList = Object.entries(this.workflow.orderRequirements.parameters).map(([k, v]) => {
+        return {name: k, value: v};
+      });
+    }
+    this.updateSelectItems();
+  }
+
+  checkVariableType(argument) {
+    let obj = this.workflow.orderRequirements.parameters[argument.name];
+    if (obj) {
+      argument.type = obj.type;
+      argument.isRequired = !obj.default;
+    }
+    this.updateSelectItems();
+  }
+
+  updateSelectItems() {
+    if (this.variables.length > 0) {
+      for (let i = 0; i < this.variableList.length; i++) {
+        this.variableList[i].isSelected = false;
+        for (let j = 0; j < this.variables.length; j++) {
+          if (this.variableList[i].name === this.variables[j].name) {
+            this.variableList[i].isSelected = true;
+            break;
+          }
+        }
+      }
+    }
   }
 
   rename(inValid) {
@@ -338,12 +392,13 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       if (!this.schedule.configuration.nonWorkingCalendars) {
         this.schedule.configuration.nonWorkingCalendars = [];
       }
-      if (this.schedule.configuration.variables) {
-        this.schedule.configuration.variables = this.coreService.convertObjectToArray(this.schedule.configuration, 'variables');
-      } else{
-        this.schedule.configuration.variables = [];
+      if(this.schedule.configuration.workflowName) {
+        this.getWorkflowInfo(this.schedule.configuration.workflowName);
       }
-      if (this.schedule.configuration.variables.length === 0) {
+      if (this.schedule.configuration.variables) {
+        this.variables = this.coreService.convertObjectToArray(this.schedule.configuration, 'variables');
+      }
+      if (this.variables.length === 0) {
         this.addVariable();
       }
       this.schedule.actual = JSON.stringify(this.schedule.configuration);

@@ -336,9 +336,10 @@
                              *ngIf="!workflow.show" (click)="showPanelFuc(workflow)"></i>
                           <i class="cursor fa fa-caret-up tableexport-ignore fa-lg p-l-xs p-r-xs" *ngIf="workflow.show"
                              (click)="hidePanelFuc(workflow)"></i>
-                          <a class="text-dark" (click)="showPanelFunc(workflow)">{{workflow.name}}</a>
-                          <span *ngIf="workflow.title">-</span>
-                          <i class="text-muted">{{workflow.title}}</i>
+                          <a class="text-dark" (click)="showPanelFunc(workflow)">{{workflow.name}}
+                            <i *ngIf="workflow.title"> - </i>
+                            <i class="text-muted">{{workflow.title}}</i>
+                          </a>
                         </span>
                       </td>
                       <td [innerHtml]="workflow.path"></td>

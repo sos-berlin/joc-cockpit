@@ -51,7 +51,6 @@
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.language</div>
                   <div class="col-md-8 col-lg-9">
                     <nz-select name="language" class="w-xl"
-                               nzPlaceHolder="{{'placeholder.selectRoles' | translate}}"
                                [(ngModel)]="preferences.locale" (ngModelChange)="setLocale()">
                       <nz-option *ngFor="let option of locales" [nzLabel]="option.name"
                                  [nzValue]="option.lang"></nz-option>

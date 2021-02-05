@@ -195,7 +195,7 @@ export class OrderActionComponent {
   }
 
   suspendOrder(order) {
-    this.restCall(true, 'Suspend', order, 'suspend');
+    this.restCall(false, 'Suspend', order, 'suspend');
   }
 
   suspendOrderWithKill() {

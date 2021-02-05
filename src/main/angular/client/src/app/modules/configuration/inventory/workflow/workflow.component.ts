@@ -83,7 +83,7 @@ export class UpdateWorkflowComponent implements OnInit {
       });
     } else {
       if (this.variableDeclarations.parameters && this.variableDeclarations.parameters.length > 0) {
-        this.variableDeclarations.parameters.map((value) => {
+        this.variableDeclarations.parameters.forEach((value) => {
           if (value.value && value.value.default == '') {
             delete value.value['default'];
           }
@@ -863,6 +863,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     modalRef.componentInstance.orderRequirements = this.coreService.clone(this.orderRequirements);
     modalRef.componentInstance.isVariableOnly = true;
     modalRef.result.then((result) => {
+      result.variableDeclarations.parameters = result.variableDeclarations.parameters.filter((value) => {
+        return !!value.name;
+      });
       result.variableDeclarations.parameters = _.object(_.map(result.variableDeclarations.parameters, _.values));
       if (result.variableDeclarations.parameters && _.isEmpty(result.variableDeclarations.parameters)) {
         delete result.variableDeclarations['parameters'];
@@ -876,10 +879,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   addWorkflow() {
-    const modalRef = this.modalService.open(UpdateWorkflowComponent, {backdrop: 'static', size: 'lg'});
+    const modalRef = this.modalService.open(UpdateWorkflowComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerId;
     modalRef.componentInstance.data = this.workflow;
-    modalRef.componentInstance.orderRequirements = this.orderRequirements;
     modalRef.componentInstance.title = this.title;
     modalRef.result.then((result) => {
       if (result.name) {
@@ -1095,6 +1097,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
           return {name: k, value: v};
         });
+      }
+      if (this.workflow.configuration.orderRequirements) {
+        this.orderRequirements = this.coreService.clone(this.workflow.configuration.orderRequirements);
       }
 
       this.history = [];
@@ -6270,13 +6275,15 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       data = noValidate;
     }
     let newObj: any = {};
-    if (!data.orderRequirements && this.orderRequirements && this.orderRequirements.parameters) {
-      newObj.orderRequirements = this.orderRequirements;
+    let actualData = JSON.parse(this.workflow.actual);
+    if (actualData.orderRequirements && actualData.orderRequirements.parameters) {
+      newObj.orderRequirements = actualData.orderRequirements;
     }
-    if (!data.title && this.title) {
-      newObj.title = this.title;
+    if (actualData.title) {
+      newObj.title = actualData.title;
     }
     newObj = _.extend(newObj, data);
+
     if (!_.isEqual(this.workflow.actual, JSON.stringify(newObj)) && !this.isStore) {
       this.isStore = true;
       if (this.history.length === 20) {

@@ -10,8 +10,8 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a" style="overflow: visible">
     <div class="form-group row" *ngIf="!isVariableOnly" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-      <label class="col-sm-4 form-control-label" translate>common.label.name</label>
-      <div class="col-sm-7">
+      <label class="col-sm-3 form-control-label" translate>common.label.name</label>
+      <div class="col-sm-6">
         <input type="text" class="form-control" identifierValidation name="name"
                [(ngModel)]="workflowName" required #name="ngModel" [appAutofocus]="true" autocomplete="off"
                />
@@ -24,8 +24,8 @@
       </div>
     </div>
     <div class="form-group row" *ngIf="!isVariableOnly">
-      <label class="col-sm-4 form-control-label" translate>common.label.title</label>
-      <div class="col-sm-7">
+      <label class="col-sm-3 form-control-label" translate>common.label.title</label>
+      <div class="col-sm-6">
         <input type="text" class="form-control" name="title" placeholder="{{'common.placeholder.title' | translate}}" [(ngModel)]="title" autocomplete="off"/>
       </div>
     </div>
@@ -36,7 +36,7 @@
         <div class="col-md-4 col-lg-4 m-b-sm" *ngIf="i==0" translate>common.label.value</div>
         <div class="col-md-4 col-lg-4 m-b-sm" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
           <input identifierValidation #name="ngModel" autocomplete="off" type="text" class="form-control" name="name{{i}}"
-                 [(ngModel)]="variable.name" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" (blur)="checkDuplicateEntries(variable, i)">
+                 [(ngModel)]="variable.name" placeholder="{{'common.placeholder.name' | translate}}" (blur)="checkDuplicateEntries(variable, i)">
           <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)"
                class="text-danger help-block">
             <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
@@ -48,13 +48,15 @@
           </nz-select>
         </div>
         <div class="col-md-4 col-lg-4 m-b-sm" [ngSwitch]="variable.value.type">
-          <nz-input-number *ngSwitchCase="'Number'" [nzMin]="0" [nzStep]="1" name="value{{i}}" [(ngModel)]="variable.value.default"></nz-input-number>
+          <nz-input-number *ngSwitchCase="'Number'" [nzMin]="0" [nzStep]="1" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"
+                           name="value{{i}}" [(ngModel)]="variable.value.default"></nz-input-number>
           <nz-select *ngSwitchCase="'Boolean'" name="value{{i}}" [(ngModel)]="variable.value.default">
-            <nz-option [nzLabel]="'true'" [nzValue]="'true'"></nz-option>
-            <nz-option [nzLabel]="'false'" [nzValue]="'false'"></nz-option>
+            <nz-option [nzValue]="" [nzLabel]="'common.placeholder.selectValue' | translate"></nz-option>
+            <nz-option [nzLabel]="'true'" [nzValue]="true"></nz-option>
+            <nz-option [nzLabel]="'false'" [nzValue]="false"></nz-option>
           </nz-select>
           <input *ngSwitchDefault autocomplete="off" type="text" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event)"
-                 [(ngModel)]="variable.value.default" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
+                 [(ngModel)]="variable.value.default" placeholder="{{'common.placeholder.value' | translate}}">
         </div>
         <div class="col-md-1 col-lg-1 p-l-0" *ngIf="variableDeclarations.parameters.length>1">
           <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>

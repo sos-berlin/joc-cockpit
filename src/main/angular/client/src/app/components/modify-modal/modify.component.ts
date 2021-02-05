@@ -57,11 +57,21 @@ export class ChangeParameterModalComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-    let obj = {
+    let obj: any = {
       controllerId: this.schedulerId,
-      orderIds: [],
-      variables: this.variables
+      orderIds: []
     };
+    if (this.variables.length > 0) {
+      let argu = [...this.variables];
+      if (this.coreService.isLastEntryEmpty(argu, 'name', '')) {
+        argu.splice(argu.length - 1, 1);
+      }
+      if (argu.length > 0) {
+        obj.variables = _.object(argu.map((val) => {
+          return [val.name, val.value];
+        }));
+      }
+    }
     if (this.order) {
       obj.orderIds.push(this.order.orderId);
     } else if (this.orders) {

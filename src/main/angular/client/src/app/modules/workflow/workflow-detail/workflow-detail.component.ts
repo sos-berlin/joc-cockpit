@@ -890,7 +890,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   }
 
   suspendOrder() {
-    this.restCall(true, 'Suspend', this.order);
+    this.restCall(false, 'Suspend', this.order);
   }
 
   suspendOrderWithKill() {
