@@ -267,7 +267,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
   }
 
   viewOrders(workflow) {
-    this.sideBar = {isVisible: true, orders: workflow.orders};
+    this.sideBar = {isVisible: true, orders: workflow.orders, workflow: workflow.path, orderRequirements: workflow.orderRequirements};
   }
 }
 
@@ -531,7 +531,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (!obj.workflowIds || obj.workflowIds.length === 0) {
       return;
     }
-  
+
     this.coreService.post('orders', obj).subscribe((res: any) => {
       if (res.orders) {
         for (let i = 0; i < this.workflows.length; i++) {
@@ -990,7 +990,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   viewOrders(workflow) {
-    this.sideBar = {isVisible: true, orders: workflow.orders, workflow: workflow.path};
+    this.sideBar = {isVisible: true, orders: workflow.orders, workflow: workflow.path, orderRequirements: workflow.orderRequirements};
   }
 
   toggleCompactView() {

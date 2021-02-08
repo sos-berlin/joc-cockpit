@@ -253,30 +253,14 @@ export class OrderActionComponent {
   }
 
   changeParameter(order) {
-    this.coreService.post('orders/variables', {
-      orderId: order.orderId,
-      controllerId: this.schedulerId
-    }).subscribe((res: any) => {
-      order.variables = res.variables;
-      this.openModel(order);
-    }, err => {
-
-    });
-  }
-
-  private openModel(order) {
+    console.log(order)
     const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.order = order;
+    modalRef.componentInstance.order = this.coreService.clone(order);
+    modalRef.componentInstance.orderRequirements = order.requirements;
     modalRef.result.then((result) => {
       if (order && order.show) {
-        this.coreService.post('orders/variables', {
-          orderId: order.orderId,
-          controllerId: this.schedulerId
-        }).subscribe((res: any) => {
-          order.variables = res.variables;
-
-        });
+        console.log(result);
       }
     }, () => {
     });

@@ -78,7 +78,7 @@
             <span class="order-count" (click)="showOrders(branch)" *ngIf="branch.count > 0 && (!branch.show && !expandAll)"> {{branch.count}}</span>
             <div class="p-l" *ngIf="branch.instructions && (branch.show || expandAll)">
               <app-type [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
-                        [configuration]="branch" [expandAll]="expandAll"></app-type>
+                        [configuration]="branch" [orderRequirements]="orderRequirements" [expandAll]="expandAll"></app-type>
             </div>
           </div>
         </div>
@@ -86,7 +86,7 @@
       <div *ngIf="instruction.TYPE === 'If' && (instruction.show || expandAll)">
         <div *ngIf="instruction.then && instruction.then.instructions">
           <app-type [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
-                    [configuration]="instruction.then" [expandAll]="expandAll"></app-type>
+                    [configuration]="instruction.then" [orderRequirements]="orderRequirements" [expandAll]="expandAll"></app-type>
           <div class="p-l-md">
             <a class="m-l" *ngIf="instruction.else" (click)="collapse(instruction.else)">
               <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.else.show || expandAll)}"></i>
@@ -103,14 +103,14 @@
             </span>
             <span class="order-count" (click)="showOrders(instruction.else)" *ngIf="instruction.else.count > 0 && (!instruction.else.show && !expandAll)">{{instruction.else.count}}</span>
             <div class="p-l" *ngIf="instruction.else && (instruction.else.show || expandAll)">
-              <app-type [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
+              <app-type [permission]="permission" [orderRequirements]="orderRequirements" [preferences]="preferences" [schedulerId]="schedulerId"
                         [configuration]="instruction.else" [expandAll]="expandAll" *ngIf="instruction.else.instructions"></app-type>
             </div>
           </div>
         </div>
       </div>
       <div *ngIf="instruction.TYPE === 'Try' && (instruction.show || expandAll)">
-          <app-type [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
+          <app-type [permission]="permission" [orderRequirements]="orderRequirements" [preferences]="preferences" [schedulerId]="schedulerId"
                     [configuration]="instruction" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
           <div class="p-l-md">
             <a class="m-l" *ngIf="instruction.catch" (click)="collapse(instruction.catch)">
@@ -128,20 +128,20 @@
             </span>
             <span class="order-count" (click)="showOrders(instruction.catch)" *ngIf="instruction.catch.count > 0 && (!instruction.catch.show && !expandAll)">{{instruction.catch.count}}</span>
             <div class="m-l" *ngIf="instruction.catch && (instruction.catch.show || expandAll)">
-              <app-type [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
+              <app-type [permission]="permission" [orderRequirements]="orderRequirements" [preferences]="preferences" [schedulerId]="schedulerId"
                         [configuration]="instruction.catch" [expandAll]="expandAll" *ngIf="instruction.catch.instructions"></app-type>
             </div>
           </div>
       </div>
       <div *ngIf="instruction.TYPE === 'Retry' && (instruction.show || expandAll)">
         <div>
-          <app-type [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
+          <app-type [permission]="permission" [orderRequirements]="orderRequirements" [preferences]="preferences" [schedulerId]="schedulerId"
                     [configuration]="instruction" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
         </div>
       </div>
       <div *ngIf="instruction.TYPE === 'Lock' && (instruction.show || expandAll)">
         <div>
-          <app-type [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
+          <app-type [permission]="permission" [orderRequirements]="orderRequirements" [preferences]="preferences" [schedulerId]="schedulerId"
                     [configuration]="instruction" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
         </div>
       </div>

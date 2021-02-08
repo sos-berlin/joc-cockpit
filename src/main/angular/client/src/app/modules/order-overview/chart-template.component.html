@@ -92,12 +92,12 @@
            [ngClass]="{'_600': state =='FAILED'}" [innerHtml]="snapshot.failed || 0"></a>
       </div>
       <div class="terminate">
-        <span class="text-black-lt _300" [ngClass]="{'_600': state =='TERMINATE'}">
-          <a (click)="setFilter('TERMINATE')"
+        <span class="text-black-lt _300" [ngClass]="{'_600': state =='COMPLETED'}">
+          <a (click)="setFilter('COMPLETED')"
              class="primary-text-hover-color"
-             translate>common.label.terminate</a></span>
-        <a (click)="setFilter('TERMINATE')" class="pull-right text primary-text-hover-color"
-           [ngClass]="{'_600': state =='TERMINATE'}" [innerHtml]="snapshot.terminated || 0"></a>
+             translate>common.label.completed</a></span>
+        <a (click)="setFilter('COMPLETED')" class="pull-right text primary-text-hover-color"
+           [ngClass]="{'_600': state =='COMPLETED'}" [innerHtml]="snapshot.terminated || 0"></a>
       </div>
     </div>
 </div>

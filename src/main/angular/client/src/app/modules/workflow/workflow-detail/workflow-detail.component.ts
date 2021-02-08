@@ -38,6 +38,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   path: string;
   versionId: string;
   workFlowJson: any = {};
+  orderRequirements: any = {};
   loading: boolean;
   schedulerIds: any = {};
   preferences: any = {};
@@ -314,7 +315,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       controllerId: this.schedulerIds.selected,
       workflowId: {path: this.path, versionId: this.versionId}
     }).subscribe((res: any) => {
-      this.workflow = res.workflow;
+      this.workflow = this.coreService.clone(res.workflow);
+      this.orderRequirements = res.workflow.orderRequirements;
       this.createEditor(this.configXml);
       this.getOrders(res.workflow, true);
     }, () => {
@@ -861,6 +863,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.order = order;
+    modalRef.componentInstance.orderRequirements = this.orderRequirements;
     modalRef.result.then((result) => {
       if (order && order.show) {
         this.coreService.post('orders/variables', {

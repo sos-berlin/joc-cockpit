@@ -406,11 +406,14 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.selectedNode.job.executable = {
         TYPE: 'ScriptExecutable',
         script: '',
-        env : []
+        v1Compatible: true,
+        env: []
       };
     }
     if (!this.selectedNode.job.returnCodeMeaning) {
-      this.selectedNode.job.returnCodeMeaning = {};
+      this.selectedNode.job.returnCodeMeaning = {
+        success: 0
+      };
     } else {
       if (this.selectedNode.job.returnCodeMeaning.success) {
         this.selectedNode.job.returnCodeMeaning.success = this.selectedNode.job.returnCodeMeaning.success.toString();
@@ -1125,7 +1128,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           executable: v.executable,
           returnCodeMeaning: v.returnCodeMeaning,
           defaultArguments: v.defaultArguments,
-          v1Compatible: v.v1Compatible,
           jobClass: v.jobClass,
           title: v.title,
           logLevel: v.logLevel,
@@ -1194,19 +1196,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   private getLimit() {
     this.error = false;
     if (this.selectedNode.obj.lockId) {
-      this.coreService.post('inventory/path', {
-        name: this.selectedNode.obj.lockId,
-        objectType: 'LOCK',
-        useDrafts: true
-      }).subscribe((res: any) => {
-        this.coreService.post('inventory/read/configuration', {
-          path: res.path,
-          objectType: 'LOCK'
-        }).subscribe((conf: any) => {
-          if (this.selectedNode && this.selectedNode.obj) {
-            this.selectedNode.obj.limit = conf.configuration.limit || 1;
-          }
-        });
+      this.coreService.post('inventory/read/configuration', {
+        path: this.selectedNode.obj.lockId,
+        objectType: 'LOCK'
+      }).subscribe((conf: any) => {
+        if (this.selectedNode && this.selectedNode.obj) {
+          this.selectedNode.obj.limit = conf.configuration.limit || 1;
+        }
       });
     }
   }
@@ -3656,8 +3652,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                   self.implicitSave = false;
                 }, 250);
               }
-
             }, 200);
+          } else {
+            if (self.workflow.configuration && self.workflow.configuration.instructions && self.workflow.configuration.instructions.length > 0) {
+              graph.setEnabled(true);
+            }
           }
         };
       } else {
@@ -5234,6 +5233,26 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       return 'valid';
     }
 
+    function getBranchLabel(cell): number {
+      const branchs = graph.getOutgoingEdges(cell);
+      let num = branchs.length;
+      if (num === 1 && branchs[0].target.value.tagName === 'Join') {
+        num = 0;
+      } else {
+        for (let i = 0; i < branchs.length; i++) {
+          let _label = branchs[i].getAttribute('label');
+          if (_label) {
+            let count = _label.match(/\d+/)[0];
+            if (num < count) {
+              num = count;
+            }
+          }
+        }
+      }
+
+      return parseInt(num, 10);
+    }
+
     function addInstructionToCell(cell, _dropTarget) {
       let label = '';
       const dropTargetName = _dropTarget.value.tagName;
@@ -5276,12 +5295,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         label = 'catch';
         // cell.setParent(_dropTarget);
       } else if (dropTargetName === 'Fork') {
-        const branchs = graph.getOutgoingEdges(_dropTarget);
-        let num = branchs.length;
-        if (num === 1 && branchs[0].target.value.tagName === 'Join') {
-          num = 0;
-        }
-        label = '$TYPE$' + 'branch' + (num + 1);
+        label = '$TYPE$' + 'branch' + (getBranchLabel(_dropTarget) + 1);
       }
 
       let parent = cell.getParent() || graph.getDefaultParent();
@@ -5377,12 +5391,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       } else {
         let checkLabel = '';
         if (dropTargetName === 'Fork') {
-          const branchs = graph.getOutgoingEdges(_dropTarget);
-          let num = branchs.length;
-          if (num === 1 && branchs[0].target.value.tagName === 'Join') {
-            num = 0;
-          }
-          label = '$TYPE$' + 'branch' + (num + 1);
+          label = '$TYPE$' + 'branch' + (getBranchLabel(_dropTarget) + 1);
           checkLabel = 'Join';
         } else if (dropTargetName === 'If') {
           checkLabel = 'EndIf';
@@ -5851,11 +5860,20 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
     }
     if (job.defaultArguments) {
-      this.coreService.convertArrayToObject(job, 'defaultArguments', true);
+      if (job.executable.TYPE === 'Java') {
+        this.coreService.convertArrayToObject(job, 'defaultArguments', true);
+      } else {
+        delete job['defaultArguments'];
+      }
     }
     if (job.executable.env) {
-      this.coreService.convertArrayToObject(job.executable, 'env', true);
+      if (job.executable.TYPE === 'ScriptExecutable') {
+        this.coreService.convertArrayToObject(job.executable, 'env', true);
+      } else {
+        delete job.executable['env'];
+      }
     }
+
     if (!job.taskLimit) {
       job.taskLimit = 0;
     }
@@ -5870,6 +5888,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (this.jobs[i].value.executable && this.jobs[i].value.executable.TYPE === 'ExecutableScript') {
         this.jobs[i].value.executable.TYPE = 'ScriptExecutable';
       }
+      if (this.jobs[i].value.executable && this.jobs[i].value.executable.env && _.isArray(this.jobs[i].value.executable.env)) {
+        this.coreService.convertArrayToObject(this.jobs[i].value.executable, 'env', true);
+      }
+   
       if (this.jobs[i].name === job.jobName) {
         flag = false;
         delete job['jobName'];
@@ -6121,14 +6143,17 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               return;
             }
             if (json.instructions[x].branches) {
-              for (let i = 0; i < json.instructions[x].branches.length; i++) {
-                if (json.instructions[x].branches[i].instructions) {
-                  recursive(json.instructions[x].branches[i]);
-                }
-                json.instructions[x].branches[i].workflow = {
-                  instructions: json.instructions[x].branches[i].instructions
+              json.instructions[x].branches = json.instructions[x].branches.filter((branch) => {
+                branch.workflow = {
+                  instructions: branch.instructions
                 };
-                delete json.instructions[x].branches[i]['instructions'];
+                delete branch['instructions'];
+                return (branch.workflow.instructions && branch.workflow.instructions.length > 0);
+              });
+              for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                if (json.instructions[x].branches[i].workflow) {
+                  recursive(json.instructions[x].branches[i].workflow);
+                }
               }
             }
           }
@@ -6280,14 +6305,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     let newObj: any = {};
     let actualData = JSON.parse(this.workflow.actual);
+    newObj = _.extend(newObj, data);
     if (actualData.orderRequirements && actualData.orderRequirements.parameters) {
       newObj.orderRequirements = actualData.orderRequirements;
     }
     if (actualData.title) {
       newObj.title = actualData.title;
     }
-    newObj = _.extend(newObj, data);
-
     if (!_.isEqual(this.workflow.actual, JSON.stringify(newObj)) && !this.isStore) {
       this.isStore = true;
       if (this.history.length === 20) {

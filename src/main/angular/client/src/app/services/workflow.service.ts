@@ -338,15 +338,14 @@ export class WorkflowService {
             recursive(json.instructions[x].else);
           }
           if (json.instructions[x].branches) {
+            json.instructions[x].branches = json.instructions[x].branches.filter((branch) => {
+              branch.instructions = branch.workflow.instructions;
+              delete branch['workflow'];
+              return (branch.instructions && branch.instructions.length > 0);
+            });
             for (let i = 0; i < json.instructions[x].branches.length; i++) {
-              if (json.instructions[x].branches[i].workflow) {
-                json.instructions[x].branches[i].instructions = json.instructions[x].branches[i].workflow.instructions;
-                delete json.instructions[x].branches[i]['workflow'];
-              }
-              if (json.instructions[x].branches[i].instructions) {
+              if (json.instructions[x].branches[i]) {
                 recursive(json.instructions[x].branches[i]);
-              } else if (!json.instructions[x].branches[i].instructions && !json.instructions[x].branches[i].workflow) {
-                json.instructions[x].branches.splice(i, 1);
               }
             }
           }
@@ -467,11 +466,12 @@ export class WorkflowService {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
             if (json.instructions[x].branches) {
+              json.instructions[x].branches = json.instructions[x].branches.filter((branch) => {
+                return (branch.instructions && branch.instructions.length > 0);
+              });
               for (let i = 0; i < json.instructions[x].branches.length; i++) {
-                if (json.instructions[x].branches[i].instructions && json.instructions[x].branches[i].instructions.length > 0) {
-                  recursive(json.instructions[x].branches[i], 'branch', v1);
-                  connectInstruction(v1, vertexMap.get(json.instructions[x].branches[i].instructions[0].uuid), json.instructions[x].branches[i].id, 'branch', v1);
-                }
+                recursive(json.instructions[x].branches[i], 'branch', v1);
+                connectInstruction(v1, vertexMap.get(json.instructions[x].branches[i].instructions[0].uuid), json.instructions[x].branches[i].id, 'branch', v1);
               }
               v2 = joinFork(json.instructions[x].branches, v1, parent);
             } else {

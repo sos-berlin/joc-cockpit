@@ -235,7 +235,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     {status: 'WAITING', text: 'waiting'},
     {status: 'BLOCKED', text: 'blocked'},
     {status: 'FAILED', text: 'failed'},
-    {status: 'TERMINATE', text: 'terminate'}
+    {status: 'COMPLETED', text: 'completed'}
   ];
 
   @ViewChild(OrderActionComponent, {static: false}) actionChild;
@@ -305,7 +305,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   private getState() {
     let state;
     if (this.orderFilters.filter.state !== 'ALL') {
-      if (this.orderFilters.filter.state === 'TERMINATE') {
+      if (this.orderFilters.filter.state === 'COMPLETED') {
         state = ['FINISHED', 'CANCELLED'];
       } else {
         state = [this.orderFilters.filter.state];
@@ -376,8 +376,25 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   private getOrders(obj) {
     this.reset();
+    let tempOrder = this.orders.filter((order) => {
+      return order.show;
+    });
     this.coreService.post('orders', obj).subscribe((res: any) => {
       this.orders = res.orders;
+      if (tempOrder.length > 0) {
+        for (let i = 0; i < this.orders.length; i++) {
+          for (let j = 0; j < tempOrder.length; j++) {
+            if (this.orders[i].orderId === tempOrder[j].orderId) {
+              this.orders[i].show = true;
+              tempOrder.slice(j, 1);
+              break;
+            }
+          }
+          if (tempOrder.length === 0) {
+            break;
+          }
+        }
+      }
       if (this.showPanelObj && this.showPanelObj.orderId) {
         let flag = true;
         if (this.orders.length > 0) {
@@ -542,9 +559,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.object.isSuspend = true;
     this.object.isTerminate = true;
     this.object.isResume = true;
+    let workflow = null;
     this.object.mapOfCheckedId.forEach(order => {
       if (order.state) {
-       
         if (order.state._text !== 'SUSPENDED' && order.state._text !== 'FAILED') {
           this.object.isResume = false;
         }
@@ -560,16 +577,23 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         if (order.state._text !== 'PLANNED' && order.state._text !== 'PENDING') {
           this.object.isModify = false;
         }
+        if (!workflow) {
+          workflow = order.workflowId.path;
+        } else if (workflow !== order.workflowId.path) {
+          this.object.isModify = false;
+        }
       }
     });
     this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
   }
 
   modifyAllOrder() {
+    let order = this.object.mapOfCheckedId.values().next().value;
     const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.preferences = this.preferences;
     modalRef.componentInstance.orders = this.object.mapOfCheckedId;
+    modalRef.componentInstance.orderRequirements = order.requirements;
     modalRef.result.then((res) => {
       this.reset();
     }, () => {

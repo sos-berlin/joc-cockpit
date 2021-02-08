@@ -1157,7 +1157,7 @@
                       <td>
                         <i (click)="navToWorkflowTab(order.workflowPath);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                         <span (click)="coreService.showWorkflow(order.workflowPath);$event.stopPropagation()"
-                              class="text-hover-primary" [innerHtml]="order.workflowPath | highlight : submission.searchText"></span>
+                              class="text-hover-primary" [innerHtml]="order.workflowPath"></span>
                       </td>
                       <td><span>{{order.scheduledFor | stringToDate}}</span></td>
                       <td><span>{{order.submitted ? 'submitted' : 'not submitted'}}</span></td>

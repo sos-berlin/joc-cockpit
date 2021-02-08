@@ -13,6 +13,7 @@ export class OrderListSidebarComponent implements OnChanges {
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
+  @Input() orderRequirements: any;
   checked = false;
   indeterminate = false;
   setOfCheckedId = new Set<string>();
@@ -94,6 +95,7 @@ export class OrderListSidebarComponent implements OnChanges {
   modifyAllOrder() {
     const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerId;
+    modalRef.componentInstance.orderRequirements = this.coreService.clone(this.orderRequirements);
     modalRef.componentInstance.orderIds = Array.from(this.setOfCheckedId);
     modalRef.result.then((result) => {
 

@@ -1196,7 +1196,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         orderId: plan.orderId,
         controllerId: this.schedulerIds.selected
       }).subscribe((res: any) => {
-        plan.variables = res.variables;
+        plan.variables = this.coreService.convertObjectToArray(res, 'variables');
       }, err => {
       });
     }
@@ -1636,7 +1636,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         orderId: order.orderId,
         controllerId: this.schedulerIds.selected
       }).subscribe((res: any) => {
-        order.variables = res.variables;
+        order.variables = this.coreService.convertObjectToArray(res, 'variables');
         this.openModel(plan, order, variable);
       }, err => {
 
@@ -1676,8 +1676,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           orderId: order.orderId,
           controllerId: this.schedulerIds.selected
         }).subscribe((res: any) => {
-          order.variables = res.variables;
-
+          order.variables = this.coreService.convertObjectToArray(res, 'variables');
         });
       } else {
         this.loadOrderPlan();

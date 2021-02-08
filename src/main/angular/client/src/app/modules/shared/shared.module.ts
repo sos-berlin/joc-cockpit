@@ -41,7 +41,7 @@ import {
   IdentifierValidator,
   ResizableDirective,
   AutofocusDirective,
-  TimeValidatorDirective, TimeRegexValidator, LabelValidator
+  TimeValidatorDirective, TimeRegexValidator, LabelValidator, EnvVariableValidator
 } from '../../directives/core.directive';
 import {StartUpModalComponent} from '../start-up/start-up.component';
 import {Shared2Module} from './shared2.module';
@@ -59,7 +59,7 @@ const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModa
   ResumeOrderModalComponent, ChangeParameterModalComponent, ModifyStartTimeModalComponent];
 const PIPES = [DurationPipe, StringDateFormatePipe, ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, ResizableDirective, LabelValidator,
-  NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, AutofocusDirective];
+  NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, EnvVariableValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent,
   StartUpModalComponent, TreeComponent, RunTimeComponent];
 

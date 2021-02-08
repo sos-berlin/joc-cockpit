@@ -105,7 +105,8 @@
                         <i class="fa fa-angle-double-up fa-lg"></i>
                       </a>
                       <div class="text-primary m-t-xs" translate>workflow.label.start</div>
-                      <app-type [configuration]="workflow.configuration" [permission]="permission" [preferences]="preferences"
+                      <app-type [configuration]="workflow.configuration" [orderRequirements]="workflow.configuration.orderRequirements"
+                                [permission]="permission" [preferences]="preferences"
                                 [schedulerId]="schedulerId" [expandAll]="workflow.isExpand"
                                 [orders]="workflow.orders"></app-type>
                       <div class="text-primary" translate>workflow.label.end</div>
@@ -134,4 +135,8 @@
       </div>
     </div>
   </div>
+</div>
+<div id="rightSideBar" *ngIf="sideBar.isVisible" class="slideInRight">
+  <div class="close-btn" (click)="sideBar.isVisible = false"></div>
+  <app-order-list-sidebar [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId" [orderRequirements]="sideBar.orderRequirements" [orders]="sideBar.orders"></app-order-list-sidebar>
 </div>

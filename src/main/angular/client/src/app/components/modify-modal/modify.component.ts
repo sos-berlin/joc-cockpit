@@ -15,20 +15,72 @@ export class ChangeParameterModalComponent implements OnInit {
   @Input() plan: any;
   @Input() orders: any;
   @Input() orderIds: any;
+  @Input() orderRequirements: any;
   variables: any = [];
+  variableList = [];
   submitted = false;
 
   constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
   }
 
   ngOnInit() {
+    console.log(this.orderRequirements);
+    console.log(this.order);
+    console.log(this.orders);
+    console.log(this.variable);
     if (this.variable) {
       this.variables = Object.assign(this.variables, [this.coreService.clone(this.variable)]);
     } else if (this.order && (this.order.variables)) {
-      this.variables = this.coreService.clone(this.order.variables);
+      if (!_.isArray(this.order.variables)) {
+        this.order.variables = this.coreService.convertObjectToArray(this.order, 'variables');
+      } else {
+        this.variables = this.coreService.clone(this.order.variables);
+      }
+    } else if (this.order && (this.order.arguments)) {
+      if (!_.isArray(this.order.arguments)) {
+        this.order.arguments = this.coreService.convertObjectToArray(this.order, 'variables');
+      } else {
+        this.variables = this.coreService.clone(this.order.arguments);
+      }
     }
     if (this.variables.length === 0) {
       this.addVariable();
+    }
+    this.updateVariableList();
+  }
+
+  updateVariableList() {
+    if (this.orderRequirements && this.orderRequirements.parameters && !_.isEmpty(this.orderRequirements.parameters)) {
+      this.variableList = Object.entries(this.orderRequirements.parameters).map(([k, v]) => {
+        const val: any = v;
+        return {name: k, value: v};
+      });
+    }
+    this.updateSelectItems();
+  }
+
+  checkVariableType(variable) {
+    let obj = this.orderRequirements.parameters[variable.name];
+    if (obj) {
+      variable.type = obj.type;
+      if (!obj.default && obj.default !== false && obj.default !== 0) {
+        variable.isRequired = true;
+      }
+    }
+    this.updateSelectItems();
+  }
+
+  updateSelectItems() {
+    if (this.variables.length > 0) {
+      for (let i = 0; i < this.variableList.length; i++) {
+        this.variableList[i].isSelected = false;
+        for (let j = 0; j < this.variables.length; j++) {
+          if (this.variableList[i].name === this.variables[j].name) {
+            this.variableList[i].isSelected = true;
+            break;
+          }
+        }
+      }
     }
   }
 
@@ -85,12 +137,16 @@ export class ChangeParameterModalComponent implements OnInit {
     } else if (this.orderIds) {
       obj.orderIds = this.orderIds;
     }
-    this.coreService.post('daily_plan/orders/modify', obj).subscribe((result) => {
+    if (obj.variables) {
+      this.coreService.post('daily_plan/orders/modify', obj).subscribe((result) => {
+        this.submitted = false;
+        this.activeModal.close('Done');
+      }, () => {
+        this.submitted = false;
+      });
+    } else{
       this.submitted = false;
-      this.activeModal.close('Done');
-    }, () => {
-      this.submitted = false;
-    });
+    }
   }
 
   cancel() {
@@ -113,7 +169,6 @@ export class ModifyStartTimeModalComponent implements OnInit {
   }
 
   ngOnInit() {
-   
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
   }
 

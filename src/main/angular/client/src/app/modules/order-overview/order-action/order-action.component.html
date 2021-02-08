@@ -36,7 +36,7 @@
       </li>
       <li nz-menu-item *ngIf="permission && permission.Order.execute && order.state && (order.state._text === 'FINISHED' || order.state._text === 'CANCELLED')">
         <a (click)="removeWhenTerminated()"
-           translate>common.button.delete</a>
+           translate>order.button.leaveWorkflow</a>
       </li>
 <!--      <li nz-menu-item>
         <a (click)="coreService.copyLink('order',order.orderId)" translate>common.button.copyLinkToObject</a>

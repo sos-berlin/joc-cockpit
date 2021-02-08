@@ -1,7 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="order" translate>dailyPlan.label.setParameter</span>
-    <span *ngIf="!order" translate>dailyPlan.label.setParameters</span>
+    <span *ngIf="variable" translate>dailyPlan.label.setParameter</span>
+    <span *ngIf="!variable" translate>dailyPlan.label.setParameters</span>
     <i *ngIf="order" class="text-muted p-l-xs text">{{order.orderId}}</i>
     <i *ngIf="plan" class="text-muted p-l-xs text">{{plan.key}}</i>
   </h4>
@@ -12,22 +12,31 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
       <div class="row">
-        <div class="col-sm-12 text m-b">
+        <div class="col-sm-12 text m-b" *ngIf="variableList.length > 0">
           <div class="form-group row m-b-0" *ngFor="let item of variables; let i = index">
             <div class="col-md-5 col-sm-5 m-b-sm text-left" *ngIf="i==0" translate>common.label.name</div>
             <div class="col-md-6 col-sm-6 m-b-sm text-left" *ngIf="i==0" translate>common.label.value</div>
             <div class="col-md-5 col-sm-6 m-b-sm">
-              <input autocomplete="off" type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == variables.length -1"
-                     [(ngModel)]="item.name" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
+              <nz-select nzShowSearch name="name{{i}}" [(ngModel)]="item.name" (ngModelChange)="checkVariableType(item)">
+                <nz-option *ngFor="let list of variableList" [nzDisabled]="list.isSelected" [nzLabel]="list.name" [nzValue]="list.name"></nz-option>
+              </nz-select>
             </div>
-            <div class="col-md-6 col-sm-4 m-b-sm">
-              <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event)"
-                     [(ngModel)]="item.value" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
+            <div class="col-md-6 col-lg-6 m-b-sm" [ngSwitch]="item.type" [ngClass]="{'has-error' : item.isRequired && (!item.value && item.value !== false)}">
+              <nz-input-number *ngSwitchCase="'Number'" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}" [nzMin]="0" [nzStep]="1" name="value{{i}}"
+                               [(ngModel)]="item.value"></nz-input-number>
+              <nz-select *ngSwitchCase="'Boolean'" name="value{{i}}" [(ngModel)]="item.value">
+                <nz-option [nzValue]="" [nzLabel]="'common.placeholder.selectValue' | translate"></nz-option>
+                <nz-option [nzLabel]="'true'" [nzValue]="true"></nz-option>
+                <nz-option [nzLabel]="'false'" [nzValue]="false"></nz-option>
+              </nz-select>
+              <input autocomplete="off" type="text" *ngSwitchDefault class="form-control"
+                     name="value{{i}}" (keypress)="onKeyPress($event)"
+                     [(ngModel)]="item.value" placeholder="{{'common.placeholder.value' | translate}}">
             </div>
             <a *ngIf="!variable" class="p-l-0"><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
           </div>
           <div class="form-group row m-b-0 m-t-sm" *ngIf="!variable">
-            <div class="col-sm-12 col-md-12">
+            <div class="col-sm-12 col-md-12"  *ngIf="variableList.length > variables.length">
               <a class="text-u-l" *ngIf="variables.length>0" (click)="addVariable()"
                  translate>order.button.addAnotherVariable</a>
               <a class="text-u-l" *ngIf="variables.length==0" (click)="addVariable()"
@@ -35,15 +44,19 @@
             </div>
           </div>
         </div>
+        <div class="col-sm-12 text" *ngIf="variableList.length === 0" >
+          <div class="text-center m-t m-b" translate>common.message.noVariableDeclarationFound</div>
+        </div>
       </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
+    <button type="submit" [disabled]="!myForm.form.valid || submitted" *ngIf="variableList.length > 0" class="btn btn-primary btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
-      common.button.cancel
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')">
+      <span *ngIf="variableList.length > 0" translate>common.button.cancel</span>
+      <span *ngIf="variableList.length === 0" translate>common.button.close</span>
     </button>
   </div>
 </form>
