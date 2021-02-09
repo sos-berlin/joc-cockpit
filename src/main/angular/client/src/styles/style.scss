@@ -6118,7 +6118,7 @@ pre#pre {
     width: 100%;
   }
 }
-.select-input-both, .select-input-both-without-border{
+.select-input-both{
   .ant-select {
     position: absolute;
     top: 0;
@@ -6141,16 +6141,8 @@ pre#pre {
     width: 97%;
   }
 }
-.select-input-both-without-border {
-  .ant-select-open {
-    box-shadow: none;
-    border: none;
-    background: transparent !important;
-    padding-right: 25px;
-  }
-  .ant-select-open .ant-select-selection{
-    color: transparent !important;
-  }
+.ant-mention-dropdown-notfound{
+  display: none !important;
 }
 
 .ant-select-selection {

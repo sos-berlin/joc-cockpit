@@ -17,7 +17,7 @@
             <div class="col-md-5 col-sm-5 m-b-sm text-left" *ngIf="i==0" translate>common.label.name</div>
             <div class="col-md-6 col-sm-6 m-b-sm text-left" *ngIf="i==0" translate>common.label.value</div>
             <div class="col-md-5 col-sm-6 m-b-sm">
-              <nz-select nzShowSearch name="name{{i}}" [(ngModel)]="item.name" (ngModelChange)="checkVariableType(item)">
+              <nz-select nzShowSearch name="name{{i}}" [nzDisabled]="variable" [(ngModel)]="item.name" (ngModelChange)="checkVariableType(item)">
                 <nz-option *ngFor="let list of variableList" [nzDisabled]="list.isSelected" [nzLabel]="list.name" [nzValue]="list.name"></nz-option>
               </nz-select>
             </div>

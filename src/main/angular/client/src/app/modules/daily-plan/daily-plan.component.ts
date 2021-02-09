@@ -974,18 +974,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   /**--------------- Begin Navigate -------------------*/
 
-
-  navToInventoryTab(path, type) {
-    this.coreService.getConfigurationTab().inventory.expand_to = [];
-    this.coreService.getConfigurationTab().inventory.selectedObj = {
-      name: path.substring(path.lastIndexOf('/') + 1),
-      path: path.substring(0, path.lastIndexOf('/')) || '/',
-      type: type
-    };
-    this.router.navigate(['/configuration/inventory']);
-
-  }
-
   navToHistory() {
     let filter = this.coreService.getHistoryTab();
     filter.type = 'SUBMISSION';
@@ -1020,15 +1008,32 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   /* ------------- Action ------------------- */
 
   modifySelectedOrder() {
-    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.preferences = this.preferences;
-    modalRef.componentInstance.orders = this.object.mapOfCheckedId;
-    modalRef.result.then((res) => {
-      this.updateList();
-    }, () => {
+    let order = this.object.mapOfCheckedId.values().next().value;
+    if (order.requirements) {
+      openModal(order.requirements);
+    } else {
+      this.coreService.post('workflow', {
+        controllerId: this.schedulerIds.selected,
+        workflowId: {path: order.workflowPath}
+      }).subscribe((res: any) => {
+        order.requirements = res.workflow.orderRequirements;
+        openModal(order.requirements);
+      });
+    }
+    const self = this;
 
-    });
+    function openModal(requirements) {
+      const modalRef = self.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
+      modalRef.componentInstance.schedulerId = self.schedulerIds.selected;
+      modalRef.componentInstance.preferences = self.preferences;
+      modalRef.componentInstance.orders = self.object.mapOfCheckedId;
+      modalRef.componentInstance.orderRequirements = requirements;
+      modalRef.result.then((res) => {
+        self.updateList();
+      }, () => {
+
+      });
+    }
   }
 
   submitSelectedOrder() {
@@ -1196,7 +1201,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         orderId: plan.orderId,
         controllerId: this.schedulerIds.selected
       }).subscribe((res: any) => {
-        plan.variables = this.coreService.convertObjectToArray(res, 'variables');
+        this.convertObjectToArray(res, plan)
       }, err => {
       });
     }
@@ -1483,6 +1488,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     object.isSuspend = true;
     object.isResume = true;
     let count = 0;
+    let workflow = null;
     list.forEach((order) => {
       if (this.object.mapOfCheckedId.size > 0 && this.object.mapOfCheckedId.has(order.orderId) && object.key) {
         ++count;
@@ -1508,6 +1514,12 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       }
       if (order.state._text === 'PLANNED' || order.state._text === 'PENDING' || order.state._text === 'FAILED' || order.state._text === 'FINISHED') {
         object.isSuspend = false;
+      }
+     
+      if (!workflow) {
+        workflow = order.workflowPath;
+      } else if (workflow !== order.workflowPath) {
+        object.isModify = false;
       }
     });
   }
@@ -1630,16 +1642,24 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
+  private convertObjectToArray(res, order) {
+    if (_.isEmpty(res)) {
+      order.variables = [];
+    } else {
+      order.variables = Object.entries(res).map(([k, v]) => {
+        return {name: k, value: v};
+      });
+    }
+  }
+
   changeParameter(plan, order, variable) {
     if (order) {
       this.coreService.post('orders/variables', {
         orderId: order.orderId,
         controllerId: this.schedulerIds.selected
       }).subscribe((res: any) => {
-        order.variables = this.coreService.convertObjectToArray(res, 'variables');
+        this.convertObjectToArray(res, order);
         this.openModel(plan, order, variable);
-      }, err => {
-
       });
     } else {
       this.openModel(plan, order, variable);
@@ -1656,7 +1676,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.coreService.post('daily_plan/orders/modify', {
       controllerId: this.schedulerIds.selected,
       orderIds: [plan.orderId],
-      variables: plan.variables
+      variables: plan.variables.length > 0 ? _.object(plan.variables.map((val) => {
+        return [val.name, val.value];
+      })) : {}
     }).subscribe((result) => {
 
     }, () => {
@@ -1665,18 +1687,62 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private openModel(plan, order, variable) {
+    if (order) {
+      if (!order.requirements) {
+        this.coreService.post('workflow', {
+          controllerId: this.schedulerIds.selected,
+          workflowId: {path: order.workflowPath}
+        }).subscribe((res: any) => {
+          order.requirements = res.workflow.orderRequirements;
+          this._openModel(plan, order, variable, order.requirements);
+        });
+      } else {
+        this._openModel(plan, order, variable, order.requirements);
+      }
+    } else {
+      if (plan && plan.value && plan.value.length > 0) {
+        let requirements: any, workflowPath = '';
+        plan.value.filter((value) => {
+          if (requirements) {
+            value.requirements = requirements;
+          } else {
+            if (value.requirements) {
+              requirements = value.requirements;
+            } else {
+              workflowPath = value.workflowPath;
+            }
+          }
+        });
+        if (requirements) {
+          this._openModel(plan, order, variable, requirements);
+        } else {
+          this.coreService.post('workflow', {
+            controllerId: this.schedulerIds.selected,
+            workflowId: {path: workflowPath}
+          }).subscribe((res: any) => {
+            this._openModel(plan, order, variable, res.workflow.orderRequirements);
+          });
+        }
+      } else {
+        this._openModel(plan, order, variable, []);
+      }
+    }
+  }
+
+  private _openModel(plan, order, variable, orderRequirements) {
     const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.variable = variable;
     modalRef.componentInstance.order = order;
     modalRef.componentInstance.plan = plan;
+    modalRef.componentInstance.orderRequirements = orderRequirements;
     modalRef.result.then((result) => {
       if (order && order.show) {
         this.coreService.post('orders/variables', {
           orderId: order.orderId,
           controllerId: this.schedulerIds.selected
         }).subscribe((res: any) => {
-          order.variables = this.coreService.convertObjectToArray(res, 'variables');
+          this.convertObjectToArray(res, order);
         });
       } else {
         this.loadOrderPlan();

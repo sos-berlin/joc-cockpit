@@ -117,7 +117,7 @@
           </div>
         </div>
       </div>
-      <div class="form-group row">
+      <div class="form-group row" *ngIf="selectedNode.job.executable">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.executableType</label>
         <div class="col-md-8 col-lg-9">
           <nz-select nzShowSearch name="agentId" nzPlaceHolder="{{'workflow.placeholder.selectAgentName' | translate}}"
@@ -125,15 +125,9 @@
             <nz-option [nzLabel]="'workflow.label.shell' | translate" [nzValue]="'ScriptExecutable'"></nz-option>
             <nz-option [nzLabel]="'workflow.label.java' | translate" [nzValue]="'Java'"></nz-option>
           </nz-select>
-          <div *ngIf="obj.agent || agentId.invalid && (agentId.dirty || agentId.touched)"
-               class="text-danger help-block">
-            <div *ngIf="(agentId.errors && agentId.errors.required) || obj.agent">
-              <div translate>common.message.requiredError</div>
-            </div>
-          </div>
         </div>
       </div>
-      <div class="form-group row" *ngIf="selectedNode.job.executable.TYPE === 'ScriptExecutable'">
+      <div class="form-group row" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ScriptExecutable'">
         <label class="col-md-4 col-lg-3" translate>workflow.label.compatibleMode</label>
         <div class="col-md-8 col-lg-9">
           <label nz-checkbox [(ngModel)]="selectedNode.job.executable.v1Compatible" name="v1Compatible"></label>
@@ -159,7 +153,8 @@
                 </div>
               </div>
             </nz-tab>
-            <nz-tab [nzTitle]="'workflow.label.arguments' | translate" *ngIf="selectedNode.job.executable.TYPE === 'Java'">
+            <nz-tab [nzTitle]="'workflow.label.arguments' | translate" *ngIf="selectedNode.job.executable && (selectedNode.job.executable.TYPE === 'Java' ||
+            (selectedNode.job.executable.TYPE === 'ScriptExecutable' && selectedNode.job.executable.v1Compatible))">
               <div class="row">
                 <div class="col-md-12" style="max-height: 450px; overflow: auto">
                   <div class="form-group row m-b-0" *ngFor="let argument of selectedNode.job.defaultArguments; let i = index">
@@ -189,30 +184,37 @@
                 </div>
               </div>
             </nz-tab>
-            <nz-tab [nzTitle]="'workflow.label.environmentVariables' | translate" *ngIf="selectedNode.job.executable.TYPE === 'ScriptExecutable'" [nzDisabled]="selectedNode.job.executable.v1Compatible">
+            <nz-tab [nzTitle]="'workflow.label.environmentVariables' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ScriptExecutable'">
               <div class="row">
-                <div class="col-md-12" style="max-height: 450px; overflow: auto">
+                <div class="col-md-12" style="max-height: 450px; overflow: auto" *ngIf="selectedNode.job.executable.env && isArray (selectedNode.job.executable.env)">
                   <div class="form-group row m-b-0" *ngFor="let env of selectedNode.job.executable.env; let i = index">
                     <div class="col-md-4 col-lg-5 m-b-sm" *ngIf="i==0" translate>common.label.name</div>
                     <div class="col-md-8 col-lg-6 m-b-sm" *ngIf="i==0" translate>common.label.value</div>
-                    <div class="col-md-5 col-lg-5 m-b-sm select-input-both-without-border" [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}">
-                      <input autocomplete="off" envVariableValidation type="text" class="form-control" name="name{{i}}"
-                             [(ngModel)]="env.name" #ename="ngModel" placeholder="{{'common.placeholder.name' | translate}}">
-                      <nz-select nzShowSearch nzAllowClear name="select{{i}}" [(ngModel)]="env.name1" (ngModelChange)="setValue(env)"
-                                 (nzOnSearch)="nzOnSearch({text :$event, data: env})" (nzBlur)="upperCase(env)">
-                        <nz-option *ngFor="let list of variableList" [nzDisabled]="list.isSelected" [nzLabel]="list.name" [nzValue]="list.name"></nz-option>
-                      </nz-select>
+                    <div class="col-md-5 col-lg-5 m-b-sm " [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}">
+                      <input nz-input envVariableValidation name="name{{i}}" class="form-control" [(ngModel)]="env.name" #ename="ngModel" (blur)="upperCase(env)"
+                             placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" [nzAutocomplete]="auto" (ngModelChange)="onChange($event)">
+                      <nz-autocomplete #auto>
+                        <nz-auto-option *ngFor="let list of filteredOptions" [nzValue]="list.name">{{list.name}}</nz-auto-option>
+                      </nz-autocomplete>
+                      <div *ngIf="ename.invalid && ename.errors && (ename.dirty || ename.touched)" class="text-danger help-block">
+                        <div *ngIf="ename.errors.invalidIdentifier" translate>common.message.invalid</div>
+                      </div>
                     </div>
                     <div class="col-md-6 col-lg-6 m-b-sm">
-                      <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event, 'env')"
-                             [(ngModel)]="env.value" placeholder="{{'common.placeholder.value' | translate}}">
+                      <nz-mention [nzSuggestions]="mentionValueList" [nzNotFoundContent]="'No data found'" [nzValueWith]="valueWith" [nzPrefix]="['$']">
+                        <input nz-input nzMentionTrigger class="form-control" [(ngModel)]="env.value" name="value{{i}}"
+                               placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
+                        <ng-container *nzMentionSuggestion="let argu">
+                          <span>{{ argu.name }}</span>
+                        </ng-container>
+                      </nz-mention>
                     </div>
                     <div class="col-md-1 col-lg-1 p-l-0">
                       <a><i (click)="removeEnv(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                     </div>
                   </div>
                   <div class="form-group row">
-                    <div class="col-sm-12" *ngIf="selectedNode.job.executable.env">
+                    <div class="col-sm-12">
                       <a class="text-u-l" *ngIf="selectedNode.job.executable.env.length>0" (click)="addEnv()" translate>order.button.addAnotherVariable</a>
                       <a class="text-u-l" *ngIf="selectedNode.job.executable.env.length==0" (click)="addEnv()" translate>order.button.addVariable</a>
                     </div>
@@ -292,9 +294,13 @@
               </div>
             </div>
             <div class="col-md-6 col-lg-6 m-b-sm">
-              <input autocomplete="off" type="text" class="form-control"
-                     name="value{{i}}" (keypress)="onKeyPress($event, 'argu')"
-                     [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
+              <nz-mention [nzSuggestions]="variableList" [nzNotFoundContent]="'No data found'" [nzValueWith]="valueWith" [nzPrefix]="['$']">
+                <input nz-input nzMentionTrigger class="form-control" [(ngModel)]="argument.value" name="value{{i}}"
+                       placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
+                <ng-container *nzMentionSuggestion="let argu">
+                  <span>{{ argu.name }}</span>
+                </ng-container>
+              </nz-mention>
             </div>
             <div class="col-md-1 col-lg-1 p-l-0">
               <a><i (click)="removeArgument(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>

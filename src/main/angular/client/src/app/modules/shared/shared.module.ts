@@ -52,8 +52,8 @@ import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../.
 
 const MODULES = [Shared2Module, NzTableModule, NzTabsModule,
   NzToolTipModule, NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule,
-  ChecklistModule, NzSelectModule, NzInputModule, NzMessageModule, NzCheckboxModule, NzRadioModule, NzTreeSelectModule, ClipboardModule,
-  NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, OrderModule];
+  ChecklistModule, NzSelectModule, NzInputModule, NzMessageModule, NzCheckboxModule, NzRadioModule,
+  NzTreeSelectModule, ClipboardModule, NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, OrderModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, TreeModalComponent, PeriodComponent, AddRestrictionComponent,
   ResumeOrderModalComponent, ChangeParameterModalComponent, ModifyStartTimeModalComponent];

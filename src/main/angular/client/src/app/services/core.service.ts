@@ -818,6 +818,17 @@ export class CoreService {
     }
   }
 
+  navToInventoryTab(path, type) {
+    this.getConfigurationTab().inventory.expand_to = [];
+    this.getConfigurationTab().inventory.selectedObj = {
+      name: path.substring(path.lastIndexOf('/') + 1),
+      path: path.substring(0, path.lastIndexOf('/')) || '/',
+      type: type
+    };
+    this.router.navigate(['/configuration/inventory']);
+
+  }
+
   showWorkflow(workflow) {
     let pathArr = [];
     let arr = workflow.split('/');
@@ -852,7 +863,7 @@ export class CoreService {
       if ((x[key1] !== undefined && x[key1] === '') || (x[key2] !== undefined && x[key2] === '')) {
         flag = true;
       }
-      if (!flag && x.isRequired && !x.value) {
+      if (!flag && x.isRequired && (!x.value && x.value !== false && x.value !== 0)) {
         flag = true;
       }
     }
@@ -998,10 +1009,11 @@ export class CoreService {
     let str = actual_name;
     for (let i = 0; i < list.length; i++) {
       if (list[i].name == actual_name) {
-        str = str + '_copy_1'
+        str = str + '_copy_1';
         break;
       }
     }
+
     function recursivelyCheck(name) {
       for (let i = 0; i < list.length; i++) {
         if (list[i].name == name) {
@@ -1113,16 +1125,18 @@ export class CoreService {
   }
 
   convertArrayToObject(obj, type, isDelete) {
-    if (obj[type].length > 0 && this.isLastEntryEmpty(obj[type], 'name', '')) {
-      obj[type].splice(obj[type].length - 1, 1);
-    }
-    if (obj[type].length > 0) {
-      obj[type] = this.keyValuePair(obj[type]);
-    } else {
-      if (isDelete) {
-        delete obj[type];
+    if (obj[type]) {
+      if (obj[type].length > 0 && this.isLastEntryEmpty(obj[type], 'name', '')) {
+        obj[type].splice(obj[type].length - 1, 1);
+      }
+      if (obj[type].length > 0) {
+        obj[type] = this.keyValuePair(obj[type]);
       } else {
-        obj[type] = {};
+        if (isDelete) {
+          delete obj[type];
+        } else {
+          obj[type] = {};
+        }
       }
     }
   }

@@ -49,6 +49,12 @@ export class LockComponent implements OnInit, OnDestroy {
       this.locksFilters.expandedKeys = this.child.defaultExpandedKeys;
       this.locksFilters.selectedkeys = this.child.defaultSelectedKeys;
     }
+    this.locksFilters.expandedObjects = this.locks.reduce((ids, obj) => {
+      if (obj.show) {
+        ids.push(obj.id);
+      }
+      return ids;
+    }, []);
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
   }
@@ -125,10 +131,7 @@ export class LockComponent implements OnInit, OnDestroy {
   private refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if ((args.eventSnapshots[j].eventType == 'FileBasedActivated' || args.eventSnapshots[j].eventType == 'FileBasedRemoved') && args.eventSnapshots[j].objectType === 'PROCESSCLASS') {
-          this.initTree();
-          break;
-        } else if (args.eventSnapshots[j].eventType === 'JobStateChanged' && args.eventSnapshots[j].path) {
+        if (args.eventSnapshots[j].eventType === 'JobStateChanged' && args.eventSnapshots[j].path) {
           if (this.locks.length > 0) {
             for (let x = 0; x < this.locks.length; x++) {
               if (this.locks[x].path === args.eventSnapshots[j].path) {
@@ -172,6 +175,13 @@ export class LockComponent implements OnInit, OnDestroy {
         value.title = value.lock.title;
         if (value.path) {
           value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
+        }
+        if (this.locksFilters.expandedObjects && this.locksFilters.expandedObjects.length > 0) {
+          let index = this.locksFilters.expandedObjects.indexOf(value.id);
+          if (index > -1) {
+            value.show = true;
+            this.locksFilters.expandedObjects.slice(index, 1);
+          }
         }
       });
       this.locks = res.locks;

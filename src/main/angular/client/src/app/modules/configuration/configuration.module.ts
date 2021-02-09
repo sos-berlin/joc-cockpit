@@ -3,7 +3,7 @@ import {ConfigurationComponent} from './configuration.component';
 import {ConfigurationRoutingModule} from './configuration-routing.module';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { NgJsonEditorModule } from 'ang-jsoneditor'
+import { NgJsonEditorModule } from 'ang-jsoneditor';
 import {
   ConfirmationModalComponent,
   ImportModalComponent,
@@ -43,6 +43,7 @@ import { XMLAutofocusDirective } from 'src/app/directives/core.directive';
 import {TableComponent} from './inventory/table-data/table.component';
 import {ScheduleComponent} from './inventory/schedule/schedule.component';
 import {InventoryService} from './inventory/inventory.service';
+import {NzAutocompleteModule, NzMentionModule} from 'ng-zorro-antd';
 
 const COMPONENTS = [ImportModalComponent, DiffPatchModalComponent, FrequencyModalComponent, ShowModalComponent,
   ImportComponent, UpdateWorkflowComponent, ShowChildModalComponent, ConfirmationModalComponent, SingleDeployComponent,
@@ -56,6 +57,8 @@ const COMPONENTS = [ImportModalComponent, DiffPatchModalComponent, FrequencyModa
     FileUploadModule,
     CKEditorModule,
     CodemirrorModule,
+    NzMentionModule,
+    NzAutocompleteModule,
     NgJsonEditorModule
   ],
   providers: [DatePipe, CalendarService, WorkflowService, InventoryService],

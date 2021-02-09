@@ -24,10 +24,6 @@ export class ChangeParameterModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.orderRequirements);
-    console.log(this.order);
-    console.log(this.orders);
-    console.log(this.variable);
     if (this.variable) {
       this.variables = Object.assign(this.variables, [this.coreService.clone(this.variable)]);
     } else if (this.order && (this.order.variables)) {
@@ -52,7 +48,6 @@ export class ChangeParameterModalComponent implements OnInit {
   updateVariableList() {
     if (this.orderRequirements && this.orderRequirements.parameters && !_.isEmpty(this.orderRequirements.parameters)) {
       this.variableList = Object.entries(this.orderRequirements.parameters).map(([k, v]) => {
-        const val: any = v;
         return {name: k, value: v};
       });
     }
@@ -77,6 +72,10 @@ export class ChangeParameterModalComponent implements OnInit {
         for (let j = 0; j < this.variables.length; j++) {
           if (this.variableList[i].name === this.variables[j].name) {
             this.variableList[i].isSelected = true;
+            this.variables[j].type = this.variableList[i].value.type;
+            if (!this.variableList[i].default && this.variableList[i].default !== false && this.variableList[i].default !== 0) {
+              this.variables[j].isRequired = true;
+            }
             break;
           }
         }

@@ -155,6 +155,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     mode: 'shell'
   };
   variableList = [];
+  filteredOptions = [];
+  mentionValueList = [];
 
   subscription: Subscription;
 
@@ -180,15 +182,18 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     if (changes.orderRequirements) {
       this.updateVariableList();
     }
-
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
 
+  isArray(arr){
+    return _.isArray(arr)
+  }
+
   checkVariableType(argument) {
-    if(this.orderRequirements.parameters) {
+    if (this.orderRequirements.parameters) {
       let obj = this.orderRequirements.parameters[argument.name];
       if (obj) {
         argument.type = obj.type;
@@ -196,23 +201,12 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
           argument.isRequired = true;
         }
       }
-      this.updateSelectItems();
     }
   }
 
   updateSelectItems() {
-    let type = this.index === 2 ? 'obj' : 'job';
-    if (this.selectedNode[type].defaultArguments.length > 0) {
-      for (let i = 0; i < this.variableList.length; i++) {
-        this.variableList[i].isSelected = false;
-        for (let j = 0; j < this.selectedNode[type].defaultArguments.length; j++) {
-          if (this.variableList[i].name === this.selectedNode[type].defaultArguments[j].name) {
-            this.variableList[i].isSelected = true;
-            break;
-          }
-        }
-      }
-    }
+    this.mentionValueList = [...this.variableList, ...this.selectedNode.obj.defaultArguments];
+    this.filteredOptions = [...this.variableList, ...this.selectedNode.obj.defaultArguments];
   }
 
   reloadScript() {
@@ -239,7 +233,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     } else if ($event.index === 0) {
       this.reloadScript();
     }
-    if ($event.index === 0 || $event.index === 2) {
+    if ($event.index === 0) {
       this.updateSelectItems();
     }
   }
@@ -348,21 +342,12 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  setValue(env) {
-    if (env.name1) {
-      env.name = env.name1.toUpperCase();
-      env.value = '$' + env.name.toLowerCase();
-    } else {
-      env.name = env.name1;
-      env.value = null;
-    }
+  onChange(value: string): void {
+    this.filteredOptions = [...this.variableList.filter(option => option.name.toLowerCase().indexOf(value.toLowerCase()) !== -1),
+      ...this.selectedNode.obj.defaultArguments.filter(option => option.name.toLowerCase().indexOf(value.toLowerCase()) !== -1)];
   }
 
-  nzOnSearch(obj) {
-    if (obj.text) {
-      obj.data.name = obj.text;
-    }
-  }
+  valueWith = (data: { name: string }) => data.name;
 
   onKeyPress($event, type) {
     if ($event.which === '13' || $event.which === 13) {
@@ -406,10 +391,11 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.selectedNode.job.executable = {
         TYPE: 'ScriptExecutable',
         script: '',
-        v1Compatible: true,
+        v1Compatible: false,
         env: []
       };
     }
+
     if (!this.selectedNode.job.returnCodeMeaning) {
       this.selectedNode.job.returnCodeMeaning = {
         success: 0
@@ -445,6 +431,21 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       if (!_.isArray(this.selectedNode.job.executable.env)) {
         this.selectedNode.job.executable.env = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'env');
+        this.selectedNode.job.executable.env.filter((env) => {
+          if (env.value) {
+            if (!(/[$_+]/.test(env.value))) {
+              let startChar = env.value.substring(0, 1),
+                endChar = env.value.substring(env.value.length - 1);
+              if ((startChar === '\'' && endChar === '\'')) {
+                env.value = '"' + env.value.substring(1, env.value.length - 1) + '"';
+              }
+              try {
+                env.value = JSON.parse(env.value);
+              } catch (e) {
+              }
+            }
+          }
+        });
       }
     }
 
@@ -794,9 +795,16 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         } else {
           res.configuration = {};
         }
+
+        if (res.configuration.orderRequirements) {
+          this.orderRequirements = this.coreService.clone(res.configuration.orderRequirements);
+        }
+        this.title = res.configuration.title;
+        delete res.configuration['orderRequirements'];
+        delete res.configuration['title'];
         this.workflow = res;
         this.workflow.actual = JSON.stringify(res.configuration);
-        this.title = res.configuration.title;
+
         this.workflow.name = this.data.name;
         if (this.workflow.configuration.jobs) {
           if (this.workflow.configuration.jobs && !_.isEmpty(this.workflow.configuration.jobs)) {
@@ -805,9 +813,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             });
           }
         }
-        if (this.workflow.configuration.orderRequirements) {
-          this.orderRequirements = this.coreService.clone(this.workflow.configuration.orderRequirements);
-        }
+
         if (!res.configuration.instructions || res.configuration.instructions.length === 0) {
           this.invalidMsg = 'inventory.message.emptyWorkflow';
         } else if (!res.valid) {
@@ -3615,6 +3621,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
 
           if (cells.length < 2) {
+            if (!self.error) {
+              self.dataService.reloadWorkflowError.next({error: self.error, msg: self.invalidMsg});
+            }
             selectionChanged();
           }
         });
@@ -3656,6 +3665,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           } else {
             if (self.workflow.configuration && self.workflow.configuration.instructions && self.workflow.configuration.instructions.length > 0) {
               graph.setEnabled(true);
+            } else {
+              self.reloadDummyXml(graph, self.dummyXml);
             }
           }
         };
@@ -4532,7 +4543,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             if (_job) {
               let job = self.coreService.clone(self.selectedNode.job);
               delete job['jobName'];
-              self.coreService.convertArrayToObject(job, 'defaultArguments', true);
+              if(job.defaultArguments) {
+                self.coreService.convertArrayToObject(job, 'defaultArguments', true);
+              }
               if (job.returnCodeMeaning && !_.isEmpty(job.returnCodeMeaning)) {
                 if (job.returnCodeMeaning.success && typeof job.returnCodeMeaning.success == 'string') {
                   job.returnCodeMeaning.success = job.returnCodeMeaning.success.split(',').map(Number);
@@ -4964,7 +4977,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         } else if (title.match('lock')) {
           _node = doc.createElement('Lock');
           _node.setAttribute('label', 'lock');
-          _node.setAttribute('count', '0');
           _node.setAttribute('lockId', '');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.lock);
@@ -5853,22 +5865,40 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
     }
     if (job.returnCodeMeaning) {
-      if (typeof job.returnCodeMeaning.success == 'string') {
-        job.returnCodeMeaning.success = job.returnCodeMeaning.success.split(',').map(Number);
-      } else if (typeof job.returnCodeMeaning.failure == 'string') {
-        job.returnCodeMeaning.failure = job.returnCodeMeaning.failure.split(',').map(Number);
-      }
-    }
-    if (job.defaultArguments) {
-      if (job.executable.TYPE === 'Java') {
-        this.coreService.convertArrayToObject(job, 'defaultArguments', true);
+      if (job.returnCodeMeaning && job.returnCodeMeaning.success == '0') {
+        delete job['returnCodeMeaning'];
       } else {
-        delete job['defaultArguments'];
+        if (typeof job.returnCodeMeaning.success == 'string') {
+          job.returnCodeMeaning.success = job.returnCodeMeaning.success.split(',').map(Number);
+        } else if (typeof job.returnCodeMeaning.failure == 'string') {
+          job.returnCodeMeaning.failure = job.returnCodeMeaning.failure.split(',').map(Number);
+        }
       }
     }
+
+    if (job.defaultArguments) {
+      this.coreService.convertArrayToObject(job, 'defaultArguments', true);
+    }
+
     if (job.executable.env) {
       if (job.executable.TYPE === 'ScriptExecutable') {
-        this.coreService.convertArrayToObject(job.executable, 'env', true);
+        if (job.executable.env && _.isArray(job.executable.env)) {
+          job.executable.env.filter((env) => {
+            if (env.value) {
+              if (!(/[$_+]/.test(env.value))) {
+                let startChar = env.value.substring(0, 1),
+                  endChar = env.value.substring(env.value.length - 1);
+                if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
+
+                } else {
+                  env.value = JSON.stringify(env.value);
+                  env.value = '\'' + env.value.substring(1, env.value.length - 1) + '\'';
+                }
+              }
+            }
+          });
+          this.coreService.convertArrayToObject(job.executable, 'env', true);
+        }
       } else {
         delete job.executable['env'];
       }
@@ -5891,7 +5921,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (this.jobs[i].value.executable && this.jobs[i].value.executable.env && _.isArray(this.jobs[i].value.executable.env)) {
         this.coreService.convertArrayToObject(this.jobs[i].value.executable, 'env', true);
       }
-   
       if (this.jobs[i].name === job.jobName) {
         flag = false;
         delete job['jobName'];
@@ -6206,6 +6235,16 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           checkErr = true;
         } else {
           for (let n = 0; n < this.jobs.length; n++) {
+            if (this.jobs[n].value.executable && this.jobs[n].value.executable.env) {
+              if (_.isArray(this.jobs[n].value.executable.env)) {
+                this.coreService.convertArrayToObject(this.jobs[n].value.executable, 'env', true);
+              }
+            }
+            if (this.jobs[n].value.defaultArguments) {
+              if (_.isArray(this.jobs[n].value.defaultArguments)) {
+                this.coreService.convertArrayToObject(this.jobs[n].value, 'defaultArguments', true);
+              }
+            }
             flag = self.workflowService.validateFields(this.jobs[n].value, 'Job');
             if (!flag) {
               checkErr = true;
@@ -6303,36 +6342,34 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     } else {
       data = noValidate;
     }
-    let newObj: any = {};
-    let actualData = JSON.parse(this.workflow.actual);
-    newObj = _.extend(newObj, data);
-    if (actualData.orderRequirements && actualData.orderRequirements.parameters) {
-      newObj.orderRequirements = actualData.orderRequirements;
-    }
-    if (actualData.title) {
-      newObj.title = actualData.title;
-    }
-    if (!_.isEqual(this.workflow.actual, JSON.stringify(newObj)) && !this.isStore) {
+    if (!_.isEqual(this.workflow.actual, JSON.stringify(data)) && !this.isStore) {
       this.isStore = true;
       if (this.history.length === 20) {
         this.history.shift();
       }
-      this.history.push(JSON.stringify(newObj));
+      this.history.push(JSON.stringify(data));
       this.indexOfNextAdd = this.history.length;
-      this.storeData(newObj);
+      this.storeData(data);
     }
   }
 
   private updateOtherProperties() {
     let data = JSON.parse(this.workflow.actual);
-    data.orderRequirements = this.orderRequirements;
-    data.title = this.title;
     this.storeData(data);
   }
 
   private storeData(data) {
+    let newObj: any = {};
+    newObj = _.extend(newObj, data);
+    if (this.orderRequirements && this.orderRequirements.parameters) {
+      newObj.orderRequirements = this.orderRequirements;
+    }
+    if (this.title) {
+      newObj.title = this.title;
+    }
+
     this.coreService.post('inventory/store', {
-      configuration: data,
+      configuration: newObj,
       id: this.workflow.id,
       valid: this.workflow.valid,
       objectType: this.objectType

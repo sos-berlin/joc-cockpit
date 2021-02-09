@@ -2355,18 +2355,18 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private exportToExcelDeployment(): any {
-    let controllerId = '', status = '', duration = '', startTime = '', endTime = '';
+    let controllerId = '', state = '', deploymentDate = '', account = '';
     this.translate.get('common.label.controllerId').subscribe(translatedValue => {
       controllerId = translatedValue;
     });
-    this.translate.get('history.label.startTime').subscribe(translatedValue => {
-      startTime = translatedValue;
+    this.translate.get('history.label.deploymentDate').subscribe(translatedValue => {
+      deploymentDate = translatedValue;
     });
-    this.translate.get('history.label.endTime').subscribe(translatedValue => {
-      endTime = translatedValue;
+    this.translate.get('history.label.account').subscribe(translatedValue => {
+      account = translatedValue;
     });
-    this.translate.get('history.label.duration').subscribe(translatedValue => {
-      duration = translatedValue;
+    this.translate.get('history.label.state').subscribe(translatedValue => {
+      state = translatedValue;
     });
     let data = [];
     for (let i = 0; i < this.currentData.length; i++) {
@@ -2374,21 +2374,33 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (!this.historyFilters.current) {
         obj[controllerId] = this.currentData[i].controllerId;
       }
-      this.translate.get(this.currentData[i].state._text).subscribe(translatedValue => {
-        obj[status] = translatedValue;
+      obj[deploymentDate] = this.coreService.stringToDate(this.preferences, this.currentData[i].deploymentDate);
+      obj[account] = this.coreService.stringToDate(this.preferences, this.currentData[i].account);
+      this.translate.get(this.currentData[i].state).subscribe(translatedValue => {
+        obj[state] = translatedValue;
       });
-
-      obj[startTime] = this.coreService.stringToDate(this.preferences, this.currentData[i].startTime);
-      obj[endTime] = this.coreService.stringToDate(this.preferences, this.currentData[i].endTime);
-      obj[duration] = this.coreService.calDuration(this.currentData[i].startTime, this.currentData[i].endTime);
       data.push(obj);
     }
     return data;
   }
 
   private exportToExcelSubmission(): any {
+    let controllerId = '', dailyPlanDate = '';
+    this.translate.get('common.label.controllerId').subscribe(translatedValue => {
+      controllerId = translatedValue;
+    });
+    this.translate.get('history.label.dailyPlanDate').subscribe(translatedValue => {
+      dailyPlanDate = translatedValue;
+    });
     let data = [];
-    console.log('TDOD........')
+    for (let i = 0; i < this.currentData.length; i++) {
+      let obj: any = {};
+      if (!this.historyFilters.current) {
+        obj[controllerId] = this.currentData[i].controllerId;
+      }
+      obj[dailyPlanDate] = this.coreService.stringToDate(this.preferences, this.currentData[i].dailyPlanDate);
+      data.push(obj);
+    }
     return data;
   }
 
