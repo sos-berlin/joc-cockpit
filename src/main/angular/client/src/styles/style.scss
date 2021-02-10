@@ -4877,7 +4877,7 @@ body > .select2-container.open {
 
 .btn-default {
   background: $background-color;
-  border: 1px solid $border-color;
+  border: 1px solid $background-color;
 }
 
 .ui-select-bootstrap .ui-select-toggle {
@@ -6457,14 +6457,18 @@ div.jsoneditor,
 .ant-table-small.ant-table-bordered .ant-table-content {
   border-right: none;
 }
-
-.ant-table-small.ant-table-bordered,  {
+.ant-table-bordered .ant-table-thead > tr:not(:last-child) > th, .ant-table-small.ant-table-bordered .ant-table-thead > tr > th:last-child  {
+  border-color: $border-color;
+}
+.ant-table-small.ant-table-bordered {
   border-right: 1px solid $border-color;
 }
 .ant-table-small.ant-table-bordered .ant-table-placeholder, .ant-table-small > .ant-table-content .ant-table-row:last-child td{
   border-bottom: 1px solid $border-color;
 }
-
+.ant-select-selection__clear{
+  background: transparent;
+}
 .inner-table .ant-table-small.ant-table-bordered {
   border-bottom: none;
 }

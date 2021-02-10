@@ -181,7 +181,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   private refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'CalendarCreated') {
+        if (args.eventSnapshots[j].eventType === 'ItemAdded' && args.eventSnapshots[j].path) {
           const path = args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/')) || '/';
           this.calendarFilters.selectedkeys = [path];
           this.addPathToExpand(path);

@@ -199,13 +199,12 @@
                                   [nzData]="lock.workflows" [nzShowPagination]="false">
                           <thead>
                           <tr>
-                            <th style="border-right: none"><span translate>order.label.workflow</span></th>
-                            <th style="border-left: none" colspan="5"></th>
+                            <th colspan="6" class="text-left"><span translate>order.label.workflow</span></th>
                           </tr>
                           </thead>
                           <tbody *ngFor="let workflow of nestedWorkflowsTable.data">
-                            <tr>
-                              <td style="border-right: none">
+                            <tr >
+                              <td colspan="6">
                                 <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
                                    *ngIf="!workflow.show"
                                    (click)="workflow.show = true;"></i>
@@ -215,7 +214,6 @@
                                 <i (click)="coreService.navToInventoryTab(workflow.path, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
                                 <a class="text-hover-primary" (click)="coreService.showWorkflow(workflow.path);">{{workflow.path}} </a>
                               </td>
-                              <td style="border-left: none" colspan="5"></td>
                             </tr>
                             <ng-container *ngIf="workflow.show">
                               <ng-container *ngIf="workflow.ordersWaitingForLocks && workflow.ordersWaitingForLocks.length > 0">

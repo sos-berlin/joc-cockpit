@@ -17,7 +17,7 @@
     ></nz-tree>
     <ng-template #nzTreeTemplate let-node>
         <div class="node-wrapper">
-          <label nz-checkbox *ngIf="showCheckBox" [(ngModel)]="node.origin.isChecked" name="{{node.key}}" (ngModelChange)="handleCheckbox(node.origin)"></label>
+          <label nz-checkbox *ngIf="showCheckBox" class="p-r-sm" [(ngModel)]="node.origin.isChecked" name="{{node.key}}" (ngModelChange)="handleCheckbox(node.origin)"></label>
           <div class="node-content-wrapper"
                (click)="selectNode(node)">
             <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>

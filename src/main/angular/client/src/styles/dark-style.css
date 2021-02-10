@@ -1,7 +1,9 @@
 :root {
-  --primary: #1395BE;
+  --antd-wave-shadow-color: #fff;
+  --primary-color: #1395be;
   --bar-color: #e6f7ff;
   --secondary: #333332;
+  --box-color: #393937;
   --white: #fff;
   --bg-light: #333332;
   --bg-dark: #1d1d1c;
@@ -64,7 +66,7 @@ pre, .syntax-box {
   top: 5px;
   width: 6px;
   height: 6px;
-  background-color: var(--primary)
+  background-color: var(--primary-color)
 }
 
 .dark-white {
@@ -80,37 +82,37 @@ pre, .syntax-box {
 }
 
 .b-primary {
-  border-color: var(--primary)
+  border-color: var(--primary-color)
 }
 
 .b-t-primary {
-  border-top-color: var(--primary)
+  border-top-color: var(--primary-color)
 }
 
 .b-b-primary {
-  border-bottom-color: var(--primary)
+  border-bottom-color: var(--primary-color)
 }
 
 .b-l-primary {
-  border-left-color: var(--primary)
+  border-left-color: var(--primary-color)
 }
 a.text-primary:hover,
 a.text-primary:focus,
 .text-primary,
 .text-primary-hover a:hover {
-  color: var(--primary) !important
+  color: var(--primary-color) !important
 }
 
 .md-input.focus,
 .md-input:focus {
-  border-color: var(--primary);
+  border-color: var(--primary-color);
   border-bottom-width: 2px;
   padding-bottom: 1px
 }
 
 .md-input.focus ~ label,
 .md-input:focus ~ label {
-  color: var(--primary);
+  color: var(--primary-color);
   opacity: 1;
   top: 0 !important;
   font-size: .85em !important
@@ -122,16 +124,16 @@ a.text-primary:focus,
 
 .ch-purple {
   color: var(--text-color);
-  background-color: var(--primary)
+  background-color: var(--primary-color)
 }
 
 .purple-color {
-  color: var(--primary)
+  color: var(--primary-color)
 }
 
 .text-hover-primary:hover {
   cursor: pointer !important;
-  color: var(--primary) !important
+  color: var(--primary-color) !important
 }
 
 .border-grey {
@@ -173,7 +175,7 @@ pre.log {
 }
 
 .log_detail {
-  color: var(--primary);
+  color: var(--primary-color);
 }
 
 .log_success {
@@ -194,7 +196,7 @@ pre.log {
 }
 
 .rzslider .rz-pointer {
-  background-color: var(--primary)
+  background-color: var(--primary-color)
 }
 
 .search-box {
@@ -205,7 +207,7 @@ pre.log {
 }
 
 .loader1 {
-  color: var(--primary)
+  color: var(--primary-color)
 }
 
 .left-sidebar-btn:hover,
@@ -228,7 +230,7 @@ pre.log {
 }
 
 .cal-year-box .month-name {
-  background-color: var(--primary);
+  background-color: var(--primary-color);
   color: var(--text-color);
   text-align: center;
   margin-top: 8px
@@ -239,7 +241,7 @@ pre.log {
 }
 
 .cal-day-today span[data-cal-date] {
-  color: var(--primary)
+  color: var(--primary-color)
 }
 
 .cal-year-box .cal-day-today span[data-cal-date] {
@@ -261,12 +263,12 @@ pre.log {
 .primary-text-hover-color:hover,
 .primary-text-hover-color:hover i,
 .primary-text-hover-color:hover span {
-  color: var(--primary) !important
+  color: var(--primary-color) !important
 }
 
 .primary,
 .primary .bg {
-  background-color: var(--primary) !important
+  background-color: var(--primary-color) !important
 }
 
 table.folder-tree-grid > tbody > tr,
@@ -280,7 +282,7 @@ table.folder-tree-grid .indented a {
 }
 
 .expand-collapse:hover {
-  color: var(--primary);
+  color: var(--primary-color);
   cursor: pointer
 }
 
@@ -290,7 +292,7 @@ input[readonly] {
 }
 
 .start-on-hover:hover .fa-star-o {
-  color: var(--primary)
+  color: var(--primary-color)
 }
 
 input[type=search] {
@@ -301,7 +303,7 @@ input[type=search] {
 
 input[type=search]:focus {
   color: #3d464d;
-  border-bottom: 1px solid var(--primary)
+  border-bottom: 1px solid var(--primary-color)
 }
 
 .notification {
@@ -316,34 +318,34 @@ input[type=search]:focus {
 }
 
 .table {
-  border-color: #393937 !important
+  border-color: var(--box-color) !important
 }
 
 .table > tbody > tr > td,
 .table > tbody > tr > th,
 .table > tfoot > tr > td,
 .table > tfoot > tr > th {
-  border-color: #393937 !important;
+  border-color: var(--box-color) !important;
 }
 
 .table > tbody > tr {
-  border-bottom: 2px solid #393937;
+  border-bottom: 2px solid var(--box-color);
 }
 
 .table-bordered > tbody > tr {
-  border-bottom: 1px solid #393937
+  border-bottom: 1px solid var(--box-color)
 }
 
 .table-bordered,
 .table > thead > tr > th {
-  border-color: #393937
+  border-color: var(--box-color)
 }
 
 .table-hover .table-active:hover,
 .table-hover .table-active:hover > td,
 .table-hover .table-active:hover > th,
 .table-hover tbody tr:hover {
-  background-color: #393937 !important
+  background-color: var(--box-color) !important
 }
 
 .text-black-lt {
@@ -357,7 +359,7 @@ input[type=search]:focus {
 .btn-default,
 .btn-grey {
   color: var(--text-color);
-  background-color: #393937;
+  background-color: var(--box-color);
   border-color: var(--bg-dark)
 }
 
@@ -424,12 +426,12 @@ a.text-dark:hover {
 
 .cssload-loading::after,
 .cssload-loading::before {
-  background: var(--primary)
+  background: var(--primary-color)
 }
 
 .more-option i,
 .more-option-h i {
-  background-color: #393937
+  background-color: var(--box-color)
 }
 
 .more-option i:hover,
@@ -439,14 +441,14 @@ a.text-dark:hover {
 
 .rg-bottom,
 .rg-right {
-  background: #393937
+  background: var(--box-color)
 }
 
 .cluster-rect,
 .rect, .cluster, .joint  {
-  background: #393937;
-  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #393937), color-stop(1, var(--bg-dark)));
-  background-image: -moz-linear-gradient(center bottom, #393937 37%, var(--bg-dark) 69%);
+  background: var(--box-color);
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, var(--box-color)), color-stop(1, var(--bg-dark)));
+  background-image: -moz-linear-gradient(center bottom, var(--box-color) 37%, var(--bg-dark) 69%);
   -webkit-box-shadow: inset 0 2px 9px var(--border-color), inset 0 -2px 6px rgba(0, 0, 0, .2);
   -moz-box-shadow: inset 0 2px 9px var(--border-color), inset 0 -2px 6px rgba(0, 0, 0, .2);
   box-shadow: inset 0 2px 9px var(--border-color), inset 0 -2px 6px rgba(0, 0, 0, .2)
@@ -516,7 +518,7 @@ textarea {
 }
 
 .popover {
-  background-color: #393937;
+  background-color: var(--box-color);
   -webkit-box-shadow: 1px 1px 8px 4px rgba(0, 0, 0, .2);
   box-shadow: 2px 2px 8px 4px rgba(0, 0, 0, .2);
   color: rgba(255, 255, 255, 0.87) !important;
@@ -524,22 +526,22 @@ textarea {
 
 .popover.bs-tether-element-attached-left .popover-arrow::after,
 .popover.popover-right .popover-arrow::after {
-  border-right-color: #393937
+  border-right-color: var(--box-color)
 }
 
 .popover.bs-tether-element-attached-right .popover-arrow::after,
 .popover.popover-left .popover-arrow::after {
-  border-left-color: #393937
+  border-left-color: var(--box-color)
 }
 
 .popover.bs-tether-element-attached-top .popover-arrow::after,
 .popover.popover-bottom .popover-arrow::after {
-  border-bottom-color: #393937
+  border-bottom-color: var(--box-color)
 }
 
 .popover.bs-tether-element-attached-bottom .popover-arrow::after,
 .popover.popover-top .popover-arrow::after {
-  border-top-color: #393937
+  border-top-color: var(--box-color)
 }
 
 .popover-title {
@@ -551,11 +553,11 @@ textarea {
 }
 
 .gantt-row-even > .gantt-row-background {
-  background-color: #393937
+  background-color: var(--box-color)
 }
 
 div.order-panel div {
-  background: #393937;
+  background: var(--box-color);
   color: var(--white)
 }
 
@@ -613,7 +615,7 @@ div.order-panel div {
 .pagination > .active > a,
 .pagination > .active > span {
   color: var(--white) !important;
-  background-color: var(--primary) !important;
+  background-color: var(--primary-color) !important;
   border-color: #327aa3
 }
 
@@ -747,11 +749,11 @@ pre.cdata {
 }
 
 .table-striped tbody tr:nth-of-type(2n+1) {
-  background-color: #393937;
+  background-color: var(--box-color);
 }
 
 .btn-primary {
-  background-color: var(--primary) !important;
+  background-color: var(--primary-color) !important;
   color: var(--white)
 }
 
@@ -760,11 +762,11 @@ pre.cdata {
 }
 
 .tree-grid .tree-icon:hover {
-  color: var(--primary)
+  color: var(--primary-color)
 }
 
 .form-control:focus {
-  border-color: var(--primary)
+  border-color: var(--primary-color)
 }
 
 .dropdown-list {
@@ -773,7 +775,7 @@ pre.cdata {
 
 .dropdown-list a:hover {
   color: var(--white);
-  background: var(--primary)
+  background: var(--primary-color)
 }
 
 .backup {
@@ -878,11 +880,11 @@ pre#pre {
 }
 
 .avatar[_ngcontent-c2] {
-  background: var(--primary) !important;
+  background: var(--primary-color) !important;
 }
 
 span ul li a {
-  color: var(--primary) !important;
+  color: var(--primary-color) !important;
 }
 
 .row.open {
@@ -904,7 +906,7 @@ span ul li a {
 }
 
 .ui-select-match-item {
-  color: var(--primary);
+  color: var(--primary-color);
 }
 
 #rightSideBar {
@@ -954,7 +956,7 @@ span ul li a {
 }
 
 .predicate-edit {
-  background: #393937;
+  background: var(--box-color);
 }
 
 .ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable, .ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners {
@@ -999,16 +1001,16 @@ span ul li a {
 }
 
 .ck.ck-list__item .ck-button.ck-on {
-  background-color: var(--primary);
+  background-color: var(--primary-color);
   color: white;
 }
 
 .ck.ck-button.ck-on, a.ck.ck-button.ck-on {
-  background-color: var(--primary);
+  background-color: var(--primary-color);
 }
 
 .documents a[href*="http:"], .documents a[href*="https:"] {
-  color: var(--primary) !important;
+  color: var(--primary-color) !important;
 }
 
 .arrow-down-ac:last-child:after, .arrow-down:last-child:after {
@@ -1016,7 +1018,7 @@ span ul li a {
 }
 
 .ck-content a {
-  color: var(--primary);
+  color: var(--primary-color);
   text-decoration: underline;
 }
 
@@ -1101,11 +1103,20 @@ span ul li a {
 .ant-select-selection:active,
 .ant-input-number:focus,
 .ant-input-number-focused {
-  border-color: var(--primary) !important;
+  border-color: var(--primary-color) !important;
+}
+.ant-table-bordered .ant-table-thead > tr:not(:last-child) > th, .ant-table-small.ant-table-bordered .ant-table-thead > tr > th:last-child{
+  border-color: var(--border-color);
+}
+.ant-table-small.ant-table-bordered  {
+  border-right: 1px solid var(--border-color);
+}
+.ant-table-small.ant-table-bordered .ant-table-placeholder, .ant-table-small > .ant-table-content .ant-table-row:last-child td{
+  border-bottom: 1px solid var(--border-color);
 }
 
 .ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td{
-  background: #393937 !important
+  background: var(--box-color) !important
 }
 .ant-calendar-header .ant-calendar-prev-century-btn:hover,
 .ant-calendar-header .ant-calendar-prev-decade-btn:hover,
@@ -1117,7 +1128,7 @@ span ul li a {
 .ant-tabs-nav .ant-tabs-tab-active:hover,
 .ant-tabs-nav .ant-tabs-tab:hover,
 .ant-pagination-item-active a {
-  color: var(--primary);
+  color: var(--primary-color);
 }
 .ant-calendar-month-panel-month:hover,
 .ant-calendar-year-panel-year:hover,
@@ -1126,7 +1137,7 @@ span ul li a {
 .ant-calendar-today .ant-calendar-date,
 .ant-calendar-month-panel-selected-cell .ant-calendar-month-panel-month, .ant-time-picker-panel-select li:hover, li.ant-time-picker-panel-select-option-selected, .ant-calendar-date:hover, .ant-tabs-ink-bar,
 .ant-calendar-month-panel-selected-cell .ant-calendar-month-panel-month:hover {
-  color: var(--primary);
+  color: var(--primary-color);
   background: var(--bar-color);
 }
 
@@ -1176,23 +1187,25 @@ span ul li a {
    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3) !important;
  }
 .ant-checkbox-indeterminate .ant-checkbox-inner::after {
-  background-color: var(--primary);
+  background-color: var(--primary-color);
 }
-.ant-radio, .ant-checkbox, .ant-radio-group, .ant-radio-wrapper{
+.anticon, .ant-radio, .ant-checkbox, .ant-radio-group, .ant-radio-wrapper, .ant-checkbox-wrapper{
   color: var(--text-color);
 }
 
 .ant-checkbox-checked .ant-checkbox-inner {
-  background-color: var(--primary);
-  border-color: var(--primary);
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
 .ant-radio-inner::after {
-  background-color: var(--primary);
+  background-color: var(--primary-color);
 }
-
+.ant-checkbox-inner, .ant-radio-inner, .ant-tree-checkbox-inner {
+  border: 1px solid var(--border-color);
+}
 .ant-radio-wrapper:hover .ant-radio, .ant-radio:hover .ant-radio-inner, .ant-radio-input:focus + .ant-radio-inner {
-  border-color: var(--primary);
+  border-color: var(--primary-color);
 }
 /*
 Code Mirror
@@ -1215,7 +1228,7 @@ Code Mirror
 }
 
 .vertex-text.job span a {
-  color: var(--primary)
+  color: var(--primary-color)
 }
 
 div.CodeMirror-selected {
@@ -1345,7 +1358,10 @@ span.cm-link {
   background: #333
 }
 .calendar .calendar-header table th:hover, .calendar-sm .selected {
-  background: #393937;
+  background: var(--box-color);
+}
+.ngx-charts text {
+  fill: var(--text-color);
 }
 
 .jsgantt-chart .jsgantt-task-row:nth-child(even) {
@@ -1358,7 +1374,7 @@ span.cm-link {
 
 .jsgantt-chart .jsgantt-grid-data .jsgantt-row.odd:hover,
 .jsgantt-chart .jsgantt-grid-data .jsgantt-row:hover {
-  background-color: #393937;
+  background-color: var(--box-color);
 }
 
 .jsgantt-chart .jsgantt-grid-scale .jsgantt-grid-head-cell,
@@ -1409,4 +1425,19 @@ span.cm-link {
 }
 .order-history-template13 {
   background: #444444 !important;
+}
+.bg-gold {
+  background : #ffc91a -webkit-gradient(linear, left bottom, left top, color-stop(0, #e6b000), color-stop(1, #ffc91a));
+}
+.ant-pagination-jump-prev .ant-pagination-item-container .ant-pagination-item-ellipsis, .ant-pagination-jump-next .ant-pagination-item-container .ant-pagination-item-ellipsis{
+  color : var(--text-color)
+}
+.calendar .selected-blue{
+  background: rgba(21, 167, 213, .5) !important;
+}
+.calendar-sm .selected{
+  background: var(--primary-color) !important;
+}
+.calendar .cal-day-plan:hover{
+  background: rgba(21, 167, 213, .7) !important;
 }

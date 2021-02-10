@@ -134,21 +134,29 @@ export class LockComponent implements OnInit, OnDestroy {
   private refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'JobStateChanged' && args.eventSnapshots[j].path) {
+        if (args.eventSnapshots[j].eventType === 'LockStateChanged' && args.eventSnapshots[j].path) {
           if (this.locks.length > 0) {
             for (let x = 0; x < this.locks.length; x++) {
               if (this.locks[x].path === args.eventSnapshots[j].path) {
                 let obj = {
                   controllerId: this.schedulerIds.selected,
-                  folders: [{folder: this.locks[x].path, recursive: false}]
+                  lockPath: this.locks[x].path
                 };
-                this.coreService.post('locks', obj).subscribe(res => {
-                  //TODO merge
-                  console.log(res);
+                this.coreService.post('lock', obj).subscribe((res: any) => {
+                  const lock = res.lock;
+                  if (lock) {
+                    this.locks[x].acquiredLockCount = lock.acquiredLockCount;
+                    this.locks[x].ordersHoldingLocksCount = lock.ordersHoldingLocksCount;
+                    this.locks[x].ordersWaitingForLocksCount = lock.ordersWaitingForLocksCount;
+                    this.locks[x].workflows = lock.workflows;
+                  }
                 });
               }
             }
           }
+        } else if (args.eventSnapshots[j].eventType.match(/Item/) && args.eventSnapshots[j].objectType === 'LOCK') {
+         
+          this.initTree();
         }
       }
     }

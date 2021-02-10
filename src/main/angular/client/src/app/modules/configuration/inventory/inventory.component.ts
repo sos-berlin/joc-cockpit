@@ -2824,7 +2824,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       }
       this.coreService.post('inventory/delete_draft', obj).subscribe((res) => {
         this.clearCopyObject(object);
-        if (node.parentNode && node.parentNode.origin && node.parentNode.origin.children) {
+        if (node.parentNode && node.parentNode.origin && node.parentNode.origin.children && obj.objectType !== 'FOLDER') {
           for (let i = 0; i < node.parentNode.origin.children.length; i++) {
             if (node.parentNode.origin.children[i].name === object.name && node.parentNode.origin.children[i].path === object.path) {
               node.parentNode.origin.children.splice(i, 1);
