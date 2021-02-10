@@ -186,7 +186,7 @@
             </nz-tab>
             <nz-tab [nzTitle]="'workflow.label.environmentVariables' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ScriptExecutable'">
               <div class="row">
-                <div class="col-md-12" style="max-height: 450px; overflow: auto" *ngIf="selectedNode.job.executable.env && isArray (selectedNode.job.executable.env)">
+                <div class="col-md-12" style="max-height: 450px; overflow: auto" *ngIf="selectedNode.job.executable.env">
                   <div class="form-group row m-b-0" *ngFor="let env of selectedNode.job.executable.env; let i = index">
                     <div class="col-md-4 col-lg-5 m-b-sm" *ngIf="i==0" translate>common.label.name</div>
                     <div class="col-md-8 col-lg-6 m-b-sm" *ngIf="i==0" translate>common.label.value</div>

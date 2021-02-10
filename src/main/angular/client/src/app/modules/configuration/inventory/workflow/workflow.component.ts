@@ -188,22 +188,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  isArray(arr){
-    return _.isArray(arr)
-  }
-
-  checkVariableType(argument) {
-    if (this.orderRequirements.parameters) {
-      let obj = this.orderRequirements.parameters[argument.name];
-      if (obj) {
-        argument.type = obj.type;
-        if (!obj.default && obj.default !== false && obj.default !== 0) {
-          argument.isRequired = true;
-        }
-      }
-    }
-  }
-
   updateSelectItems() {
     this.mentionValueList = [...this.variableList, ...this.selectedNode.obj.defaultArguments];
     this.filteredOptions = [...this.variableList, ...this.selectedNode.obj.defaultArguments];
@@ -297,7 +281,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   removeArgument(index): void {
     this.selectedNode.obj.defaultArguments.splice(index, 1);
-    this.updateSelectItems();
   }
 
   addVariable(): void {
@@ -314,7 +297,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   removeVariable(index): void {
     this.selectedNode.job.defaultArguments.splice(index, 1);
-    this.updateSelectItems();
   }
 
   addEnv(): void {
@@ -361,12 +343,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.selectedNode.obj.defaultArguments = this.coreService.convertObjectToArray(this.selectedNode.obj, 'defaultArguments');
     if (this.selectedNode.obj.defaultArguments && this.selectedNode.obj.defaultArguments.length == 0) {
       this.addArgument();
-    } else {
-      this.selectedNode.obj.defaultArguments.forEach((value) => {
-        this.checkVariableType(value);
-      });
     }
-
     if (this.selectedNode.job.jobClass) {
       const path = this.selectedNode.job.jobClass.substring(0, this.selectedNode.job.jobClass.lastIndexOf('/')) || '/';
       setTimeout(() => {
@@ -387,7 +364,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.selectedNode.job.taskLimit) {
       this.selectedNode.job.taskLimit = 1;
     }
-    if (!this.selectedNode.job.executable || !this.selectedNode.job.executable.script) {
+    if (!this.selectedNode.job.executable || !this.selectedNode.job.executable.TYPE) {
       this.selectedNode.job.executable = {
         TYPE: 'ScriptExecutable',
         script: '',
@@ -418,11 +395,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       if (!_.isArray(this.selectedNode.job.defaultArguments)) {
         this.selectedNode.job.defaultArguments = this.coreService.convertObjectToArray(this.selectedNode.job, 'defaultArguments');
-      }
-      if (this.selectedNode.job.defaultArguments && this.selectedNode.job.defaultArguments.length > 0) {
-        this.selectedNode.job.defaultArguments.forEach((value) => {
-          this.checkVariableType(value);
-        });
       }
     }
 
@@ -3622,7 +3594,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
           if (cells.length < 2) {
             if (!self.error) {
-              self.dataService.reloadWorkflowError.next({error: self.error, msg: self.invalidMsg});
+              self.dataService.reloadWorkflowError.next({error: false});
             }
             selectionChanged();
           }
@@ -4546,6 +4518,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               if(job.defaultArguments) {
                 self.coreService.convertArrayToObject(job, 'defaultArguments', true);
               }
+              if(job.executable.env) {
+                self.coreService.convertArrayToObject(job.executable, 'env', true);
+              }
               if (job.returnCodeMeaning && !_.isEmpty(job.returnCodeMeaning)) {
                 if (job.returnCodeMeaning.success && typeof job.returnCodeMeaning.success == 'string') {
                   job.returnCodeMeaning.success = job.returnCodeMeaning.success.split(',').map(Number);
@@ -4561,8 +4536,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                   job.returnCodeMeaning = {};
                 }
               }
-              if (!_job.defaultArguments || typeof _job.defaultArguments === 'string' || _job.defaultArguments.length == 0) {
+              if (!_job.defaultArguments || typeof _job.defaultArguments === 'string' || _job.defaultArguments.length === 0) {
                 delete _job['defaultArguments'];
+              }
+
+              if (!_job.executable.env || typeof _job.executable.env === 'string' || _job.executable.env.length === 0) {
+                delete _job.executable['env'];
               }
               if (!_.isEqual(_job, job)) {
                 isChange = true;
@@ -5876,8 +5855,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
     }
 
+
     if (job.defaultArguments) {
-      this.coreService.convertArrayToObject(job, 'defaultArguments', true);
+      if (job.executable.v1Compatible) {
+        this.coreService.convertArrayToObject(job, 'defaultArguments', true);
+      } else {
+        delete job['defaultArguments'];
+      }
     }
 
     if (job.executable.env) {
@@ -5917,9 +5901,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     for (let i = 0; i < this.jobs.length; i++) {
       if (this.jobs[i].value.executable && this.jobs[i].value.executable.TYPE === 'ExecutableScript') {
         this.jobs[i].value.executable.TYPE = 'ScriptExecutable';
-      }
-      if (this.jobs[i].value.executable && this.jobs[i].value.executable.env && _.isArray(this.jobs[i].value.executable.env)) {
-        this.coreService.convertArrayToObject(this.jobs[i].value.executable, 'env', true);
       }
       if (this.jobs[i].name === job.jobName) {
         flag = false;
@@ -6235,16 +6216,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           checkErr = true;
         } else {
           for (let n = 0; n < this.jobs.length; n++) {
-            if (this.jobs[n].value.executable && this.jobs[n].value.executable.env) {
-              if (_.isArray(this.jobs[n].value.executable.env)) {
-                this.coreService.convertArrayToObject(this.jobs[n].value.executable, 'env', true);
-              }
-            }
-            if (this.jobs[n].value.defaultArguments) {
-              if (_.isArray(this.jobs[n].value.defaultArguments)) {
-                this.coreService.convertArrayToObject(this.jobs[n].value, 'defaultArguments', true);
-              }
-            }
             flag = self.workflowService.validateFields(this.jobs[n].value, 'Job');
             if (!flag) {
               checkErr = true;

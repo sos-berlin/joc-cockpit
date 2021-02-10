@@ -69,13 +69,12 @@ export class LoggingService {
       try {
         // Get previous values from local storage
         values = localStorage.getItem(this.location) ? JSON.parse(localStorage.getItem(this.location)) || [] : [];
-
         // Add new log entry to array
         values.push(entry);
-        localStorage.setItem(this.location, JSON.stringify(values));
-        if ((1024 * 1024) - unescape(encodeURIComponent(JSON.stringify(localStorage.getItem(this.location)))).length < 0) {
-         // localStorage.clientLogs.splice(1, 100);
+        if ((1024 * 200) - unescape(encodeURIComponent(JSON.stringify(values))).length < 0) {
+          values.splice(1, 100);
         }
+        localStorage.setItem(this.location, JSON.stringify(values));
       } catch (ex) {
         // Display error in console
         console.log(ex);

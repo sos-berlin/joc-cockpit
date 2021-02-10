@@ -92,9 +92,9 @@ export class AuthInterceptor implements HttpInterceptor {
           } else {
             // server-side error
             if (err.error && err.error.error) {
-              errorMessage = `Status Code: ${err.status}\nMessage: ${err.message}\nError: ${err.error.error}`;
+              errorMessage = JSON.stringify(err.error.error);
             } else {
-              errorMessage = `Status Code: ${err.status}\nMessage: ${err.message}`;
+              errorMessage = JSON.stringify(err.error);
             }
           }
           this.logService.error(errorMessage);
