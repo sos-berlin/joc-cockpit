@@ -4,6 +4,7 @@ import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
+import {SearchPipe} from '../../../filters/filter.pipe';
 
 // Main Component
 @Component({
@@ -22,6 +23,7 @@ export class LockComponent implements OnInit, OnDestroy {
   permission: any = {};
   pageView: any;
   locks: any = [];
+  data: any = [];
   locksFilters: any = {};
   sideView: any = {};
   subscription1: Subscription;
@@ -29,7 +31,8 @@ export class LockComponent implements OnInit, OnDestroy {
 
   @ViewChild(TreeComponent, {static: false}) child;
 
-  constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService) {
+  constructor(private authService: AuthService, public coreService: CoreService,
+              private searchPipe: SearchPipe, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -185,8 +188,29 @@ export class LockComponent implements OnInit, OnDestroy {
         }
       });
       this.locks = res.locks;
+      this.searchInResult();
     }, () => {
       this.loading = false;
+    });
+  }
+
+  searchInResult() {
+    this.data = this.locksFilters.searchText ? this.searchPipe.transform(this.locks, this.locksFilters.searchText) : this.locks;
+    this.data = [...this.data];
+  }
+
+  expandDetails() {
+    this.data.forEach((value) => {
+      value.show = true;
+      value.workflows.forEach((item) => {
+        item.show = true;
+      })
+    });
+  }
+
+  collapseDetails() {
+    this.data.forEach((value) => {
+      value.show = false;
     });
   }
 }

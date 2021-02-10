@@ -8,6 +8,7 @@ import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 import {CalendarModalComponent} from '../../../components/calendar-modal/calendar.component';
+import {SearchPipe} from '../../../filters/filter.pipe';
 
 @Component({
   selector: 'app-ngbd-modal-content',
@@ -122,6 +123,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   permission: any = {};
   pageView: any;
   calendars: any = [];
+  data: any = [];
   auditLogs: any = [];
   calendarFilters: any = {};
   sideView: any = {};
@@ -133,7 +135,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   public options = {};
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
-              private modalService: NgbModal, private dataService: DataService) {
+              private modalService: NgbModal, private searchPipe: SearchPipe, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -216,6 +218,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
         }
       }
       this.calendars = res.calendars || [];
+      this.searchInResult();
     }, () => {
       this.loading = false;
     });
@@ -289,6 +292,11 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.calendarFilters.filter.sortBy = propertyName;
   }
 
+  searchInResult() {
+    this.data = this.calendarFilters.searchText ? this.searchPipe.transform(this.calendars, this.calendarFilters.searchText) : this.calendars;
+    this.data = [...this.data];
+  }
+
   showUsage(calendar) {
     let cal = _.clone(calendar);
     this.coreService.post('calendar/used', {
@@ -319,5 +327,4 @@ export class CalendarComponent implements OnInit, OnDestroy {
   showDocumentation(calendar) {
 
   }
-
 }

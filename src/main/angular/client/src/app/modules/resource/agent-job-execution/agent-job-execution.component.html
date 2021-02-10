@@ -78,14 +78,22 @@
       <app-links></app-links>
     </div>
     <div class="col-md-4 text-right">
-      <button class="btn btn-sm btn-grey" (click)="advancedSearch()" *ngIf="!showSearchPanel">
-        <span translate>common.button.advancedSearch</span>&nbsp;
+      <button class="btn btn-sm btn-grey pull-right m-l-12" (click)="advancedSearch()" *ngIf="!showSearchPanel">
+        <span translate>common.button.advancedSearch</span>
         <i class="fa fa-caret-down p-l-xs"></i>
       </button>
-      <button class="btn btn-sm btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
-        <span translate>common.button.advancedSearch</span>&nbsp;
+      <button class="btn btn-sm btn-grey pull-right m-l-12" (click)="cancel()" *ngIf="showSearchPanel">
+        <span translate>common.button.advancedSearch</span>
         <i class="fa fa-caret-down p-l-xs"></i>
       </button>
+      <div class="search-box-field pull-right">
+        <label>
+          <input type="search" placeholder="{{'common.placeholder.search' | translate}}" (keyup)="searchInResult()"
+                 [(ngModel)]="agentJobExecutionFilters.searchText">
+        </label>
+        <i [hidden]="!agentJobExecutionFilters.searchText" class="fa fa-times search-close"
+           (click)="agentJobExecutionFilters.searchText = '';searchInResult()"></i>
+      </div>
     </div>
   </div>
 </div>
@@ -151,8 +159,8 @@
                               [nzPageSize]="agentJobExecutionFilters.entryPerPage ||  preferences.entryPerPage"
                               [nzPageIndex]="agentJobExecutionFilters.currentPage"
                               [nzBordered]="true"
-                              [nzShowPagination]="agentTasks.length > 0"
-                              [nzData]="agentTasks"
+                              [nzShowPagination]="data.length > 0"
+                              [nzData]="data"
                               [nzLoading]="!isLoading"
                               [nzShowSizeChanger]="true"
                               (nzPageIndexChange)="pageIndexChange($event)"
@@ -194,7 +202,7 @@
                               </tr>
                               </thead>
                               <tbody >
-                                <ng-template  ngFor let-agentTask [ngForOf]="ajaxTable.data | orderBy:agentJobExecutionFilters.filter.sortBy:agentJobExecutionFilters.reverse">
+                                <ng-template ngFor let-agentTask [ngForOf]="ajaxTable.data | orderBy:agentJobExecutionFilters.filter.sortBy:agentJobExecutionFilters.reverse">
                                     <tr>
                                         <td *ngIf="!agentJobExecutionFilters.current"><span [innerHtml]="agentTask.controllerId"></span></td>
                                         <td><a target="_blank" href="{{agentTask.agent}}" class="text-hover-primary" [innerHtml]="agentTask.agent"></a></td>
@@ -205,7 +213,7 @@
                                 </ng-template>
                                   </tbody>
                               </nz-table>
-                              <div class="w-half label-top" *ngIf="ajaxTable.data.length >0"> {{agentTasks.length}}
+                              <div class="w-half label-top" *ngIf="ajaxTable.data.length >0"> {{data.length}}
                                   <span translate *ngIf="ajaxTable.data.length >1">resource.label.agentTasksFound</span>
                                   <span translate *ngIf="ajaxTable.data.length ==1">resource.label.agentTaskFound</span>.
                                   <span translate>resource.label.totalNumberOfExecutions</span>: {{totalJobExecution}}

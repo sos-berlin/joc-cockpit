@@ -96,6 +96,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
 
   removeVariable(index): void {
     this.schedule.configuration.variables.splice(index, 1);
+    this.updateSelectItems();
     this.saveJSON();
   }
 
@@ -186,8 +187,21 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     this.variableList = [];
     if (this.workflow.orderRequirements && this.workflow.orderRequirements.parameters && !_.isEmpty(this.workflow.orderRequirements.parameters)) {
       this.variableList = Object.entries(this.workflow.orderRequirements.parameters).map(([k, v]) => {
+        const val: any = v;
+        let isExist = false;
+        for (let i = 0; i < this.schedule.configuration.variables.length; i++) {
+          if (this.schedule.configuration.variables[i].name === k) {
+            isExist = true;
+            break;
+          }
+        }
+        if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
+          this.schedule.configuration.variables.push({name: k, type: val.type, isRequired: true});
+        }
         return {name: k, value: v};
       });
+    } else {
+      this.schedule.configuration.variables = [];
     }
     this.updateSelectItems();
   }
@@ -196,7 +210,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     let obj = this.workflow.orderRequirements.parameters[argument.name];
     if (obj) {
       argument.type = obj.type;
-      argument.isRequired = !obj.default;
+      if (!obj.default && obj.default !== false && obj.default !== 0) {
+        argument.isRequired = !obj.default;
+      }
     }
     this.updateSelectItems();
   }
@@ -207,7 +223,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.variableList[i].isSelected = false;
         for (let j = 0; j < this.schedule.configuration.variables.length; j++) {
           if (this.variableList[i].name === this.schedule.configuration.variables[j].name) {
-           
             this.variableList[i].isSelected = true;
             break;
           }
@@ -395,9 +410,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       } else {
         this.schedule.configuration.variables = [];
       }
-      if (this.schedule.configuration.variables.length === 0) {
+/*      if (this.schedule.configuration.variables.length === 0) {
         this.addVariable();
-      }
+      }*/
       this.schedule.actual = JSON.stringify(this.schedule.configuration);
       if (!res.valid) {
         if (!this.schedule.configuration.workflowName) {

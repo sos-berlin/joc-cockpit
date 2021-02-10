@@ -16,6 +16,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {OrderPipe} from 'ngx-order-pipe';
 import * as moment from 'moment';
 import * as _ from 'underscore';
+import {Router} from '@angular/router';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {GroupByPipe, SearchPipe} from '../../filters/filter.pipe';
 import {CoreService} from '../../services/core.service';
@@ -26,7 +27,7 @@ import {ExcelService} from '../../services/excel.service';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../../components/modify-modal/modify.component';
 import {ResumeOrderModalComponent} from '../../components/resume-modal/resume.component';
-import {Router} from '@angular/router';
+import {ToasterService} from 'angular2-toaster';
 
 declare const JSGantt;
 declare let jsgantt;
@@ -807,7 +808,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private modalService: NgbModal, private groupBy: GroupByPipe,
               private translate: TranslateService, private searchPipe: SearchPipe, private orderPipe: OrderPipe,
-              private excelService: ExcelService, private router: Router) {
+              public toasterService: ToasterService, private excelService: ExcelService, private router: Router) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -1666,24 +1667,45 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  removeParameter(plan, order) {
-    for (let i = 0; i < plan.variables.length; i++) {
-      if (_.isEqual(plan.variables[i], order)) {
-        plan.variables.splice(i, 1);
-        break;
+  removeParameter(order, variable) {
+    let canDelete = true;
+    this.getRequirements(order, () => {
+      if (order.requirements && order.requirements.parameters) {
+        let x = order.requirements.parameters[variable.name];
+        if (x && !x.default && x.default !== false && x.default !== 0) {
+          canDelete = false;
+        }
       }
-    }
-    this.coreService.post('daily_plan/orders/modify', {
-      controllerId: this.schedulerIds.selected,
-      orderIds: [plan.orderId],
-      variables: plan.variables.length > 0 ? _.object(plan.variables.map((val) => {
-        return [val.name, val.value];
-      })) : {}
-    }).subscribe((result) => {
+      if (canDelete) {
+        this.coreService.post('daily_plan/orders/modify', {
+          controllerId: this.schedulerIds.selected,
+          orderIds: [order.orderId],
+          removeVariables: variable
+        }).subscribe((result) => {
 
-    }, () => {
+        }, () => {
 
+        });
+      } else {
+        this.translate.get('common.message.requiredVariableCannotRemoved').subscribe(translatedValue => {
+          this.toasterService.pop('warning', translatedValue);
+        });
+      }
     });
+  }
+
+  private getRequirements(order, cb) {
+    if (order.requirements && order.requirements.parameters) {
+      cb();
+    } else {
+      this.coreService.post('workflow', {
+        controllerId: this.schedulerIds.selected,
+        workflowId: {path: order.workflowPath}
+      }).subscribe((res: any) => {
+        order.requirements = res.workflow.orderRequirements;
+        cb();
+      });
+    }
   }
 
   private openModel(plan, order, variable) {

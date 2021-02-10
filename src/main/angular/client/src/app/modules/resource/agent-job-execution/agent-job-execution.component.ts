@@ -5,6 +5,7 @@ import {AuthService} from '../../../components/guard';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from '../../../services/data.service';
 import * as moment from 'moment';
+import {SearchPipe} from '../../../filters/filter.pipe';
 
 @Component({
   selector: 'app-agent-job-execution',
@@ -20,6 +21,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
   agentTasks: any = [];
+  data: any = [];
   agentJobSearch: any = {};
   agentJobExecutionFilters: any = {};
   subscription1: Subscription;
@@ -29,7 +31,8 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
   dateFormat: any;
   dateFormatM: any;
 
-  constructor(private authService: AuthService, public coreService: CoreService, private modalService: NgbModal, private dataService: DataService) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modalService: NgbModal,
+              private searchPipe: SearchPipe, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -133,6 +136,11 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
   sort(propertyName) {
     this.agentJobExecutionFilters.reverse = !this.agentJobExecutionFilters.reverse;
     this.agentJobExecutionFilters.filter.sortBy = propertyName;
+  }
+
+  searchInResult() {
+    this.data = this.agentJobExecutionFilters.searchText ? this.searchPipe.transform(this.agentTasks, this.agentJobExecutionFilters.searchText) : this.agentTasks;
+    this.data = [...this.data];
   }
 
   changeController() {

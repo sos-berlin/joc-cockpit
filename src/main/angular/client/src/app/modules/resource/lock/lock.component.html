@@ -43,8 +43,24 @@
 </div>
 <div class="sub-link">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-8">
         <app-links></app-links>
+      </div>
+      <div class="col-md-4 text-right">
+        <button class="hide btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}" [ngClass]="{'show-block':locks.length>0 && pageView!='grid'}" (click)="collapseDetails()">
+          <i class="fa fa-compress text"></i>
+        </button>
+        <button class="hide btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}" [ngClass]="{'show-block':locks.length>0 && pageView!='grid'}" (click)="expandDetails()" >
+          <i class="fa fa-expand text" ></i>
+        </button>
+        <div class="search-box-field pull-right">
+          <label>
+            <input type="search" placeholder="{{'common.placeholder.search' | translate}}" (keyup)="searchInResult()"
+                   [(ngModel)]="locksFilters.searchText">
+          </label>
+          <i [hidden]="!locksFilters.searchText" class="fa fa-times search-close"
+             (click)="locksFilters.searchText = '';searchInResult()"></i>
+        </div>
       </div>
     </div>
 </div>
@@ -59,9 +75,9 @@
            </div>
         </div>
         <div id="rightPanel">
-          <div class="hide m-t-xs" [ngClass]="{'show': isLoading}">
-            <div class="row " *ngIf="pageView=='grid' && locks.length > 0" [hidden]="loading">
-              <div class="w-full" *ngFor="let item of locks  | groupBy: 'path1'">
+          <div class="hide" [ngClass]="{'show': isLoading}">
+            <div class="row " *ngIf="pageView=='grid' && data.length > 0" [hidden]="loading">
+              <div class="w-full" *ngFor="let item of data  | groupBy: 'path1'">
                 <div class="col-sm-12" style="margin-bottom: 10px">
                   <span class="text inline"><i class="fa fa-folder-o"></i>&nbsp; {{item.key}}</span>
                 </div>
@@ -96,7 +112,7 @@
                 </div>
               </div>
             </div>
-            <div class=" box p-a" *ngIf="pageView=='list' && tree.length > 0">
+            <div class="box p-a" *ngIf="pageView=='list' && tree.length > 0">
               <div class="table-responsive">
                 <nz-table
                   #ajaxTable
@@ -104,8 +120,8 @@
                   [nzPageSize]="locksFilters.entryPerPage ||  preferences.entryPerPage"
                   [nzPageIndex]="locksFilters.currentPage"
                   [nzBordered]="true"
-                  [nzShowPagination]="locks.length > 0"
-                  [nzData]="locks"
+                  [nzShowPagination]="data.length > 0"
+                  [nzData]="data"
                   [nzLoading]="loading"
                   [nzShowSizeChanger]="true"
                   (nzPageIndexChange)="pageIndexChange($event)"
@@ -257,13 +273,13 @@
                   </tbody>
                 </nz-table>
                 <div class="w-half label-top"
-                     *ngIf="ajaxTable.data.length >0"><span translate>common.label.total</span> {{locks.length}}
+                     *ngIf="ajaxTable.data.length >0"><span translate>common.label.total</span> {{data.length}}
                   <span translate *ngIf="ajaxTable.data.length >1">resource.label.locksFound</span>
                   <span translate *ngIf="ajaxTable.data.length ==1">resource.label.lockFound</span>
                 </div>
               </div>
             </div>
-            <div *ngIf="pageView=='grid' &&  isLoading && !loading  && locks.length==0 && tree.length>0"
+            <div *ngIf="pageView=='grid' &&  isLoading && !loading  && data.length==0 && tree.length>0"
                  class="text-center m-t h6">
               <app-empty-data></app-empty-data>
             </div>

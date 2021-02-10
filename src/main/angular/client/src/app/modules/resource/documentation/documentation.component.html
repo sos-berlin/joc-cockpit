@@ -74,8 +74,18 @@
 </div>
 <div class="sub-link">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-8">
         <app-links></app-links>
+      </div>
+      <div class="col-md-4 text-right">
+        <div class="search-box-field pull-right">
+          <label>
+            <input type="search" placeholder="{{'common.placeholder.search' | translate}}" (keyup)="searchInResult()"
+                   [(ngModel)]="documentFilters.searchText">
+          </label>
+          <i [hidden]="!documentFilters.searchText" class="fa fa-times search-close"
+             (click)="documentFilters.searchText = '';searchInResult()"></i>
+        </div>
       </div>
     </div>
 </div>
@@ -91,8 +101,8 @@
         </div>
         <div id="rightPanel">
           <div class="hide" [ngClass]="{'show': isLoading}">
-            <div class="row" *ngIf="pageView=='grid' && documents.length>0" [hidden]="loading">
-              <div class="w-full" *ngFor="let item of documents  | groupBy: 'path1'">
+            <div class="row" *ngIf="pageView=='grid' && data.length>0" [hidden]="loading">
+              <div class="w-full" *ngFor="let item of data  | groupBy: 'path1'">
                 <div class="col-sm-12" style="margin-bottom: 10px">
                   <span class="text inline"><i class="fa fa-folder-o"></i> {{item.key}}</span>
                 </div>
@@ -156,7 +166,7 @@
                 </div>
               </div>
             </div>
-            <div class=" box p-a m-t-xs" *ngIf="pageView=='list' && tree.length > 0">
+            <div class="box p-a" *ngIf="pageView=='list' && tree.length > 0">
               <div class="table-responsive" id="documentDivId">
                 <nz-table
                   #ajaxTable
@@ -164,8 +174,8 @@
                   [nzPageSize]="documentFilters.entryPerPage || preferences.entryPerPage"
                   [nzPageIndex]="documentFilters.currentPage"
                   [nzBordered]="true"
-                  [nzShowPagination]="documents.length > 0"
-                  [nzData]="documents"
+                  [nzShowPagination]="data.length > 0"
+                  [nzData]="data"
                   [nzLoading]="loading"
                   [nzShowSizeChanger]="true"
                   (nzPageIndexChange)="pageIndexChange($event)"
@@ -248,13 +258,13 @@
                   </tbody>
                 </nz-table>
                 <div class="w-half label-top"
-                     *ngIf="ajaxTable.data.length >0"><span translate>common.label.total</span> {{documents.length}}
+                     *ngIf="ajaxTable.data.length >0"><span translate>common.label.total</span> {{data.length}}
                   <span translate *ngIf="ajaxTable.data.length >1">resource.label.documentationsFound</span>
                   <span translate *ngIf="ajaxTable.data.length ==1">resource.label.documentationFound</span>
                 </div>
               </div>
             </div>
-            <div *ngIf="pageView=='grid' && isLoading && !loading  && documents.length==0 && tree.length>0"
+            <div *ngIf="pageView=='grid' && isLoading && !loading  && data.length==0 && tree.length>0"
                  class="text-center m-t h6">
               <app-empty-data></app-empty-data>
             </div>

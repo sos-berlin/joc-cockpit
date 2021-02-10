@@ -72,8 +72,18 @@
 </div>
 <div class="sub-link">
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-8">
       <app-links></app-links>
+    </div>
+    <div class="col-md-4 text-right">
+      <div class="search-box-field pull-right">
+        <label>
+          <input type="search" placeholder="{{'common.placeholder.search' | translate}}" (keyup)="searchInResult()"
+                 [(ngModel)]="calendarFilters.searchText">
+        </label>
+        <i [hidden]="!calendarFilters.searchText" class="fa fa-times search-close"
+           (click)="calendarFilters.searchText = '';searchInResult()"></i>
+      </div>
     </div>
   </div>
 </div>
@@ -89,8 +99,8 @@
         </div>
         <div id="rightPanel">
            <div class="hide" [ngClass]="{'show': isLoading}" >
-            <div class="row" *ngIf="pageView=='grid' && calendars.length>0" [hidden]="loading">
-              <div class="w-full" *ngFor="let item of calendars  | groupBy: 'path1'">
+            <div class="row" *ngIf="pageView=='grid' && data.length>0" [hidden]="loading">
+              <div class="w-full" *ngFor="let item of data  | groupBy: 'path1'">
                 <div class="col-sm-12" style="margin-bottom: 10px">
                   <span class="text inline"><i class="fa fa-folder-o"></i> {{item.key}}</span>
                 </div>
@@ -153,7 +163,7 @@
                 </div>
               </div>
             </div>
-            <div class="box p-a m-t-xs" *ngIf="pageView==='list' && tree.length > 0">
+            <div class="box p-a" *ngIf="pageView==='list' && tree.length > 0">
               <div class="table-responsive">
                 <nz-table
                   #ajaxTable
@@ -161,8 +171,8 @@
                   [nzPageSize]="calendarFilters.entryPerPage || preferences.entryPerPage"
                   [nzPageIndex]="calendarFilters.currentPage"
                   [nzBordered]="true"
-                  [nzShowPagination]="calendars.length > 0"
-                  [nzData]="calendars"
+                  [nzShowPagination]="data.length > 0"
+                  [nzData]="data"
                   [nzLoading]="loading"
                   [nzShowSizeChanger]="true"
                   (nzPageIndexChange)="pageIndexChange($event)"
@@ -243,13 +253,13 @@
                   </tbody>
                 </nz-table>
                 <div class="w-half label-top"
-                     *ngIf="ajaxTable.data.length >0"><span translate>common.label.total</span> {{calendars.length}}
+                     *ngIf="ajaxTable.data.length >0"><span translate>common.label.total</span> {{data.length}}
                   <span translate *ngIf="ajaxTable.data.length >1">resource.label.calendarsFound</span>
                   <span translate *ngIf="ajaxTable.data.length ==1">resource.label.calendarFound</span>
                 </div>
               </div>
             </div>
-            <div *ngIf="pageView=='grid' && isLoading && !loading && calendars.length==0 && tree.length>0" class="text-center m-t h6">
+            <div *ngIf="pageView=='grid' && isLoading && !loading && data.length==0 && tree.length>0" class="text-center m-t h6">
               <app-empty-data></app-empty-data>
             </div>
           </div>

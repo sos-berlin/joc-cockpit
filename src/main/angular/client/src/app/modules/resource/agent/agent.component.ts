@@ -4,6 +4,7 @@ import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from '../../../services/data.service';
+import {SearchPipe} from '../../../filters/filter.pipe';
 
 // Main Component
 @Component({
@@ -19,11 +20,13 @@ export class AgentComponent implements OnInit, OnDestroy {
   permission: any = {};
   pageView: any;
   agentClusters: any = [];
+  data: any = [];
   agentsFilters: any = {};
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(private authService: AuthService, public coreService: CoreService, public modalService: NgbModal, private dataService: DataService) {
+  constructor(private authService: AuthService, public coreService: CoreService, public modalService: NgbModal,
+              private searchPipe: SearchPipe, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -55,12 +58,17 @@ export class AgentComponent implements OnInit, OnDestroy {
     this.loadAgents(null);
   }
 
+  searchInResult() {
+    this.data = this.agentsFilters.searchText ? this.searchPipe.transform(this.agentClusters, this.agentsFilters.searchText) : this.agentClusters;
+    this.data = [...this.data];
+  }
 
   private getAgentClassList(obj) {
-    this.loading = false;
+   // this.loading = false;
     this.coreService.post('agents', obj).subscribe((result: any) => {
       this.loading = false;
       this.agentClusters = result.agents;
+      this.searchInResult();
     }, () => {
       this.loading = false;
     });
@@ -121,13 +129,13 @@ export class AgentComponent implements OnInit, OnDestroy {
 
   expandDetails() {
     const ids = [];
-    this.agentClusters.forEach((value) => {
+    this.data.forEach((value) => {
       value.show = true;
       value.loading = true;
       ids.push(value.agentId);
     });
     this.coreService.post('agents', {controllerId: this.schedulerIds.selected, agents: ids}).subscribe((result: any) => {
-      this.agentClusters.forEach((value) => {
+      this.data.forEach((value) => {
         for (let i = 0; i < result.agents.length; i++) {
           if (value.agentId === result.agents[i].agentId) {
             value.orders = result.agents[i].orders;
@@ -143,7 +151,7 @@ export class AgentComponent implements OnInit, OnDestroy {
   }
 
   collapseDetails() {
-    this.agentClusters.forEach((value) => {
+    this.data.forEach((value) => {
       value.show = false;
     });
   }

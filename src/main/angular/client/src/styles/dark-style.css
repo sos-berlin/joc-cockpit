@@ -1,14 +1,27 @@
+:root {
+  --primary: #1395BE;
+  --bar-color: #e6f7ff;
+  --secondary: #333332;
+  --white: #fff;
+  --bg-light: #333332;
+  --bg-dark: #1d1d1c;
+  --bg-footer: #2b2b2b;
+  --text-color: rgba(255, 255, 255, .87);
+  --box-shadow: rgba(255, 255, 255, .1);
+  --border-color: rgba(255, 255, 255, .3);
+}
+
 body {
-  color: rgba(255, 255, 255, .87);
-  background: #333332
+  color: var(--text-color);
+  background: var(--bg-light)
 }
 
 .bg-blue-color {
-  background-color: #333332 !important
+  background-color: var(--bg-light) !important
 }
 
 pre, .syntax-box {
-  background-color: #1d1d1c
+  background-color: var(--bg-dark)
 }
 
 .list-group-item.active > .label,
@@ -18,7 +31,7 @@ pre, .syntax-box {
 
 .form-control,
 .input-group-addon {
-  border-color: rgba(255, 255, 255, .3)
+  border-color: var(--border-color)
 }
 
 .nav-active-border2 > li.dropdown-separator .separator {
@@ -27,23 +40,23 @@ pre, .syntax-box {
 
 .box,
 .box-color {
-  background-color: #1d1d1c;
+  background-color: var(--bg-dark);
   position: relative;
   margin-bottom: 20px;
-  -webkit-box-shadow: 0 1px 3px 1px rgba(255, 255, 255, .1) !important;
-  box-shadow: 0 1px 3px 1px rgba(255, 255, 255, .1) !important
+  -webkit-box-shadow: 0 1px 3px 1px var(--box-shadow) !important;
+  box-shadow: 0 1px 3px 1px var(--box-shadow) !important
 }
 
 .box-footer {
-  background: #2b2b2b
+  background: var(--bg-footer)
 }
 
 .white {
-  background: #1d1d1c
+  background: var(--bg-dark)
 }
 
 .bg-white {
-  background-color: #1d1d1c !important;;
+  background-color: var(--bg-dark) !important;;
 }
 
 .ui-check input:checked + i:before {
@@ -51,11 +64,11 @@ pre, .syntax-box {
   top: 5px;
   width: 6px;
   height: 6px;
-  background-color: #1395BE
+  background-color: var(--primary)
 }
 
 .dark-white {
-  background-color: #333332
+  background-color: var(--bg-light)
 }
 
 .white-overlay {
@@ -67,37 +80,37 @@ pre, .syntax-box {
 }
 
 .b-primary {
-  border-color: #1395BE
+  border-color: var(--primary)
 }
 
 .b-t-primary {
-  border-top-color: #1395BE
+  border-top-color: var(--primary)
 }
 
 .b-b-primary {
-  border-bottom-color: #1395BE
+  border-bottom-color: var(--primary)
 }
 
 .b-l-primary {
-  border-left-color: #1395BE
+  border-left-color: var(--primary)
 }
 a.text-primary:hover,
 a.text-primary:focus,
 .text-primary,
 .text-primary-hover a:hover {
-  color: #1395BE !important
+  color: var(--primary) !important
 }
 
 .md-input.focus,
 .md-input:focus {
-  border-color: #1395BE;
+  border-color: var(--primary);
   border-bottom-width: 2px;
   padding-bottom: 1px
 }
 
 .md-input.focus ~ label,
 .md-input:focus ~ label {
-  color: #1395BE;
+  color: var(--primary);
   opacity: 1;
   top: 0 !important;
   font-size: .85em !important
@@ -108,17 +121,17 @@ a.text-primary:focus,
 }
 
 .ch-purple {
-  color: rgba(255, 255, 255, .87);
-  background-color: #1395BE
+  color: var(--text-color);
+  background-color: var(--primary)
 }
 
 .purple-color {
-  color: #1395BE
+  color: var(--primary)
 }
 
 .text-hover-primary:hover {
   cursor: pointer !important;
-  color: #1395BE !important
+  color: var(--primary) !important
 }
 
 .border-grey {
@@ -126,19 +139,19 @@ a.text-primary:focus,
 }
 
 .order-eclipse {
-  background: #fff;
+  background: var(--white);
   border: 1px solid rgba(0, 0, 0, .12)
 }
 
 .order-detail-rect {
-  background-color: #fff;
+  background-color: var(--white);
   border: 1px solid rgba(0, 0, 0, .2);
   border-top: 4px solid rgba(0, 0, 0, .2)
 }
 
 .error-link {
   height: 1px;
-  background: #1d1d1c
+  background: var(--bg-dark)
 }
 
 #mainContainer .h-line {
@@ -152,7 +165,7 @@ pre.log {
 
 .log_info,
 .log_stdout {
-  color: #fff
+  color: var(--white)
 }
 
 .log_debug {
@@ -160,7 +173,7 @@ pre.log {
 }
 
 .log_detail {
-  color: #1395BE;
+  color: var(--primary);
 }
 
 .log_success {
@@ -181,7 +194,7 @@ pre.log {
 }
 
 .rzslider .rz-pointer {
-  background-color: #1395BE
+  background-color: var(--primary)
 }
 
 .search-box {
@@ -192,12 +205,12 @@ pre.log {
 }
 
 .loader1 {
-  color: #1395BE
+  color: var(--primary)
 }
 
 .left-sidebar-btn:hover,
 .sidebar-btn {
-  background: #fff;
+  background: var(--white);
   color: #3a3a3a
 }
 
@@ -210,13 +223,13 @@ pre.log {
 }
 
 .fa-angle-circle {
-  color: #fff;
+  color: var(--white);
   background: rgba(58, 58, 58, .7)
 }
 
 .cal-year-box .month-name {
-  background-color: #1395BE;
-  color: rgba(255, 255, 255, .87);
+  background-color: var(--primary);
+  color: var(--text-color);
   text-align: center;
   margin-top: 8px
 }
@@ -226,11 +239,11 @@ pre.log {
 }
 
 .cal-day-today span[data-cal-date] {
-  color: #1395BE
+  color: var(--primary)
 }
 
 .cal-year-box .cal-day-today span[data-cal-date] {
-  color: #fff
+  color: var(--white)
 }
 
 .black,
@@ -242,18 +255,18 @@ pre.log {
 .primary,
 .warn,
 .warning {
-  color: rgba(255, 255, 255, .87)
+  color: var(--text-color)
 }
 
 .primary-text-hover-color:hover,
 .primary-text-hover-color:hover i,
 .primary-text-hover-color:hover span {
-  color: #1395BE !important
+  color: var(--primary) !important
 }
 
 .primary,
 .primary .bg {
-  background-color: #1395BE !important
+  background-color: var(--primary) !important
 }
 
 table.folder-tree-grid > tbody > tr,
@@ -267,7 +280,7 @@ table.folder-tree-grid .indented a {
 }
 
 .expand-collapse:hover {
-  color: #1395BE;
+  color: var(--primary);
   cursor: pointer
 }
 
@@ -277,29 +290,29 @@ input[readonly] {
 }
 
 .start-on-hover:hover .fa-star-o {
-  color: #1395BE
+  color: var(--primary)
 }
 
 input[type=search] {
   background: url(../assets/images/Search.png) 6px center no-repeat;
   color: #3d464d;
-  border-bottom: 1px solid rgba(255, 255, 255, .3);
+  border-bottom: 1px solid var(--border-color);
 }
 
 input[type=search]:focus {
   color: #3d464d;
-  border-bottom: 1px solid #1395BE
+  border-bottom: 1px solid var(--primary)
 }
 
 .notification {
-  background-color: #fff;
+  background-color: var(--white);
   color: #000;
   border-radius: 8px
 }
 
 .table .table,
 .table > thead > tr > th {
-  background-color: #1d1d1c
+  background-color: var(--bg-dark)
 }
 
 .table {
@@ -338,21 +351,21 @@ input[type=search]:focus {
 }
 
 .text-black-dk {
-  color: #fff
+  color: var(--white)
 }
 
 .btn-default,
 .btn-grey {
-  color: rgba(255, 255, 255, .87);
+  color: var(--text-color);
   background-color: #393937;
-  border-color: #1d1d1c
+  border-color: var(--bg-dark)
 }
 
 .btn-grey.active.focus,
 .btn-grey:hover {
-  color: #fff;
-  background-color: #2b2b2b;
-  border-color: #333332
+  color: var(--white);
+  background-color: var(--bg-footer);
+  border-color: var(--bg-light)
 }
 
 .btn:hover {
@@ -375,7 +388,7 @@ input[type=search]:focus {
 .open > .btn-primary.dropdown-toggle.focus,
 .open > .btn-primary.dropdown-toggle:focus,
 .open > .btn-primary.dropdown-toggle:hover {
-  color: #fff;
+  color: var(--white);
   background-color: #138db4;
   border-color: #327aa3
 }
@@ -383,7 +396,7 @@ input[type=search]:focus {
 .btn-primary.active,
 .btn-primary:active,
 .open > .btn-primary.dropdown-toggle {
-  color: #fff;
+  color: var(--white);
   background-color: #138db4;
   background-image: none;
   border-color: #327aa3
@@ -402,16 +415,16 @@ input[type=search]:focus {
 .text-dark,
 .text-dark-hover a:hover,
 a.text-dark:hover {
-  color: #fff !important;
+  color: var(--white) !important;
 }
 
 .cssload-loading {
-  color: rgba(255, 255, 255, .87)
+  color: var(--text-color)
 }
 
 .cssload-loading::after,
 .cssload-loading::before {
-  background: #1395BE
+  background: var(--primary)
 }
 
 .more-option i,
@@ -432,15 +445,15 @@ a.text-dark:hover {
 .cluster-rect,
 .rect, .cluster, .joint  {
   background: #393937;
-  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #393937), color-stop(1, #1d1d1c));
-  background-image: -moz-linear-gradient(center bottom, #393937 37%, #1d1d1c 69%);
-  -webkit-box-shadow: inset 0 2px 9px rgba(255, 255, 255, .3), inset 0 -2px 6px rgba(0, 0, 0, .2);
-  -moz-box-shadow: inset 0 2px 9px rgba(255, 255, 255, .3), inset 0 -2px 6px rgba(0, 0, 0, .2);
-  box-shadow: inset 0 2px 9px rgba(255, 255, 255, .3), inset 0 -2px 6px rgba(0, 0, 0, .2)
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #393937), color-stop(1, var(--bg-dark)));
+  background-image: -moz-linear-gradient(center bottom, #393937 37%, var(--bg-dark) 69%);
+  -webkit-box-shadow: inset 0 2px 9px var(--border-color), inset 0 -2px 6px rgba(0, 0, 0, .2);
+  -moz-box-shadow: inset 0 2px 9px var(--border-color), inset 0 -2px 6px rgba(0, 0, 0, .2);
+  box-shadow: inset 0 2px 9px var(--border-color), inset 0 -2px 6px rgba(0, 0, 0, .2)
 }
 
 .light {
-  background-color: #1d1d1c !important
+  background-color: var(--bg-dark) !important
 }
 
 .breadcrumb > .active {
@@ -455,16 +468,16 @@ a.text-dark:hover {
 .modal-content,
 .modal-footer,
 .modal-header {
-  border-color: rgba(255, 255, 255, .3)
+  border-color: var(--border-color)
 }
 
 .modal-content {
-  background-color: #2b2b2b
+  background-color: var(--bg-footer)
 }
 
 .modal-header {
-  background: #1d1d1c;
-  color: rgba(255, 255, 255, .87)
+  background: var(--bg-dark);
+  color: var(--text-color)
 }
 
 .nvd3 .nv-discretebar .nv-groups rect,
@@ -474,23 +487,23 @@ a.text-dark:hover {
 input,
 select,
 textarea {
-  color: rgba(255, 255, 255, .87) !important
+  color: var(--text-color) !important
 }
 
 .modal-footer {
-  border-top: 1px solid rgba(255, 255, 255, .3)
+  border-top: 1px solid var(--border-color)
 }
 
 select {
-  background-color: #2b2b2b !important
+  background-color: var(--bg-footer) !important
 }
 
 .box select {
-  background-color: #1d1d1c !important
+  background-color: var(--bg-dark) !important
 }
 
 .input-dropdown {
-  background: #2b2b2b;
+  background: var(--bg-footer);
 }
 
 .box .input-dropdown {
@@ -543,20 +556,20 @@ textarea {
 
 div.order-panel div {
   background: #393937;
-  color: #fff
+  color: var(--white)
 }
 
 .order-panel .all {
-  color: rgba(255, 255, 255, .87);
-  border-left-color: rgba(255, 255, 255, .87)
+  color: var(--text-color);
+  border-left-color: var(--text-color)
 }
 
 .nvd3 text {
-  fill: #fff
+  fill: var(--white)
 }
 
 .nvd3 .nv-axis path {
-  stroke: #fff
+  stroke: var(--white)
 }
 .ant-select-selection__placeholder, .ant-select-search__field__placeholder{
   color: rgba(255, 255, 255, 0.6) !important;
@@ -599,8 +612,8 @@ div.order-panel div {
 
 .pagination > .active > a,
 .pagination > .active > span {
-  color: #fff !important;
-  background-color: #1395BE !important;
+  color: var(--white) !important;
+  background-color: var(--primary) !important;
   border-color: #327aa3
 }
 
@@ -611,8 +624,8 @@ div.order-panel div {
 
 .card {
   border-radius: 0;
-  -webkit-box-shadow: 0 2px 4px rgba(255, 255, 255, .1), 0 -1px 0 rgba(255, 255, 255, .02) !important;
-  box-shadow: 0 2px 4px rgba(255, 255, 255, .1), 0 -1px 0 rgba(255, 255, 255, .02) !important;
+  -webkit-box-shadow: 0 2px 4px var(--box-shadow), 0 -1px 0 rgba(255, 255, 255, .02) !important;
+  box-shadow: 0 2px 4px var(--box-shadow), 0 -1px 0 rgba(255, 255, 255, .02) !important;
   border: none
 }
 
@@ -628,8 +641,8 @@ div.order-panel div {
 
 .box,
 .box-shadow-z1 {
-  -webkit-box-shadow: 0 1px 2px rgba(255, 255, 255, .1), 0 -1px 0 rgba(255, 255, 255, .02);
-  box-shadow: 0 1px 2px rgba(255, 255, 255, .1), 0 -1px 0 rgba(255, 255, 255, .02)
+  -webkit-box-shadow: 0 1px 2px var(--box-shadow), 0 -1px 0 rgba(255, 255, 255, .02);
+  box-shadow: 0 1px 2px var(--box-shadow), 0 -1px 0 rgba(255, 255, 255, .02)
 }
 
 .box-shadow-z2,
@@ -641,11 +654,11 @@ div.order-panel div {
 .box-shadow-z3,
 .box-shadow-z3 .box,
 .box-shadow-z3 .box-color {
-  box-shadow: 0 2px 4px rgba(255, 255, 255, .1), 0 -1px 0 rgba(255, 255, 255, .02)
+  box-shadow: 0 2px 4px var(--box-shadow), 0 -1px 0 rgba(255, 255, 255, .02)
 }
 
 hr {
-  border-top: 1px solid rgba(255, 255, 255, .3)
+  border-top: 1px solid var(--border-color)
 }
 
 .nav-tabs .nav-link.active,
@@ -653,47 +666,47 @@ hr {
 .nav-tabs .nav-link.active:hover,
 .nav-tabs .nav-link:focus,
 .nav-tabs .nav-link:hover {
-  border-color: rgba(255, 255, 255, .3);
-  border-bottom: 1px solid #2b2b2b
+  border-color: var(--border-color);
+  border-bottom: 1px solid var(--bg-footer)
 }
 
 .b {
-  border-color: rgba(255, 255, 255, .3)
+  border-color: var(--border-color)
 }
 
 .b-a {
-  border: 1px solid rgba(255, 255, 255, .3)
+  border: 1px solid var(--border-color)
 }
 
 .b-t {
-  border-top: 1px solid rgba(255, 255, 255, .3)
+  border-top: 1px solid var(--border-color)
 }
 
 .b-r {
-  border-right: 1px solid rgba(255, 255, 255, .3)
+  border-right: 1px solid var(--border-color)
 }
 
 .b-b {
-  border-bottom: 1px solid rgba(255, 255, 255, .3)
+  border-bottom: 1px solid var(--border-color)
 }
 
 .b-l {
-  border-left: 1px solid rgba(255, 255, 255, .3)
+  border-left: 1px solid var(--border-color)
 }
 
 .gantt-task-info {
-  background: #1d1d1c
+  background: var(--bg-dark)
 }
 
 .gantt-task-infoArrow:after,
 .gantt-task-infoArrowR:after {
-  border-top: 7px solid #1d1d1c
+  border-top: 7px solid var(--bg-dark)
 }
 
 span.attribute_name,
 span.bracket,
 span.namespace_name {
-  color: #fff
+  color: var(--white)
 }
 
 span.attribute_val {
@@ -717,20 +730,20 @@ pre.cdata {
 }
 
 #cal-week-box {
-  background-color: #2b2b2b
+  background-color: var(--bg-footer)
 }
 
 
 .dropdown-divider {
-  background-color: rgba(255, 255, 255, .3)
+  background-color: var(--border-color)
 }
 
 .text-dark {
-  color: rgba(255, 255, 255, .87)
+  color: var(--text-color)
 }
 
 .nvd3.nv-noData {
-  fill: rgba(255, 255, 255, .87)
+  fill: var(--text-color)
 }
 
 .table-striped tbody tr:nth-of-type(2n+1) {
@@ -738,46 +751,46 @@ pre.cdata {
 }
 
 .btn-primary {
-  background-color: #1395BE !important;
-  color: #fff
+  background-color: var(--primary) !important;
+  color: var(--white)
 }
 
 .tree-grid .tree-icon {
-  color: #fff
+  color: var(--white)
 }
 
 .tree-grid .tree-icon:hover {
-  color: #1395BE
+  color: var(--primary)
 }
 
 .form-control:focus {
-  border-color: #1395BE
+  border-color: var(--primary)
 }
 
 .dropdown-list {
-  border: 1px solid #1d1d1c
+  border: 1px solid var(--bg-dark)
 }
 
 .dropdown-list a:hover {
-  color: #fff;
-  background: #1395BE
+  color: var(--white);
+  background: var(--primary)
 }
 
 .backup {
-  background: #333332;
-  background: -webkit-linear-gradient(left, rgba(255, 255, 255, .51), #333332);
-  background: -o-linear-gradient(right, rgba(255, 255, 255, .51), #333332);
-  background: -moz-linear-gradient(right, rgba(255, 255, 255, .51), #333332);
-  background: linear-gradient(to right, rgba(255, 255, 255, .51), #333332)
+  background: var(--bg-light);
+  background: -webkit-linear-gradient(left, rgba(255, 255, 255, .51), var(--bg-light));
+  background: -o-linear-gradient(right, rgba(255, 255, 255, .51), var(--bg-light));
+  background: -moz-linear-gradient(right, rgba(255, 255, 255, .51), var(--bg-light));
+  background: linear-gradient(to right, rgba(255, 255, 255, .51), var(--bg-light))
 }
 .calendar {
-  color: rgba(255, 255, 255, .87);
+  color: var(--text-color);
 }
 .calendar .calendar-header table th:hover{
   background: rgba(51, 51, 50, 1);
 }
 .calendar .calendar-header .year-title{
-  color: #fff
+  color: var(--white)
 }
 .calendar .calendar-header .year-neighbor{
   color: rgba(255, 255, 255, 0.75);
@@ -787,7 +800,7 @@ pre.cdata {
 }
 
 .calendar table.month tr td .day-content{
-  color: rgba(255, 255, 255, .87)
+  color: var(--text-color)
 }
 .calendar table.month tr td .cal-day-weekend .date {
   color: #bbb;
@@ -797,19 +810,19 @@ pre.cdata {
 }
 
 .calendar table.month tr td {
-  border: 1px solid #2b2b2b;
+  border: 1px solid var(--bg-footer);
 }
 #rightSideBar .calendar table.month tr td {
   border-color: #1d1d1b !important
 }
 
 select {
-  background-color: #1d1d1c !important
+  background-color: var(--bg-dark) !important
 }
 
 .status-table table > tbody > tr {
-  background: #333332;
-  border-color: #1d1d1c;
+  background: var(--bg-light);
+  border-color: var(--bg-dark);
 }
 
 input[readonly=readonly],
@@ -820,7 +833,7 @@ input[readonly] {
 gridster-item {
   overflow: visible !important;
   z-index: unset !important;
-  background-color: #1d1d1c !important;
+  background-color: var(--bg-dark) !important;
   box-sizing: border-box;
   position: absolute;
   transition: .3s;
@@ -853,7 +866,7 @@ button.close {
 input:-webkit-autofill, input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
   -webkit-text-fill-color: rgba(255, 255, 255, 0.87);
-  -webkit-box-shadow: 0 0 0 100px #1d1d1c inset;
+  -webkit-box-shadow: 0 0 0 100px var(--bg-dark) inset;
 }
 
 .ngx-pagination a, .ngx-pagination button {
@@ -861,15 +874,15 @@ input:-webkit-autofill:focus {
 }
 
 pre#pre {
-  background-color: #1d1d1c;
+  background-color: var(--bg-dark);
 }
 
 .avatar[_ngcontent-c2] {
-  background: #1395BE !important;
+  background: var(--primary) !important;
 }
 
 span ul li a {
-  color: #1395BE !important;
+  color: var(--primary) !important;
 }
 
 .row.open {
@@ -891,15 +904,15 @@ span ul li a {
 }
 
 .ui-select-match-item {
-  color: #1395BE;
+  color: var(--primary);
 }
 
 #rightSideBar {
-  background: #1d1d1c;
+  background: var(--bg-dark);
   box-shadow: 0 0 15px 0 rgba(255, 255, 255, 0.1);
 }
 .sidebar-hover-effect {
-  background: #1d1d1c
+  background: var(--bg-dark)
 }
 
 .sidebar-hover-effect:hover {
@@ -907,14 +920,14 @@ span ul li a {
 }
 
 .close-btn:before, .close-btn:after {
-  background-color: #fff;
+  background-color: var(--white);
 }
 
 .property-panel .sidebar-open, .property-panel .sidebar-close {
   background: url(../assets/images/left-tips-dark.svg) center no-repeat;
 }
 #property-panel .rg-right {
-  background-color: #1d1d1c !important;
+  background-color: var(--bg-dark) !important;
 }
 .nav-active-border3 li.dropdown-separator .separator {
   background-color: rgba(255, 255, 255, 0.5);
@@ -929,7 +942,7 @@ span ul li a {
 }
 
 .nav-active-border4 .active .nav-text {
-  color: #fff;
+  color: var(--white);
 }
 
 #toolbar {
@@ -945,24 +958,24 @@ span ul li a {
 }
 
 .ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable, .ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners {
-  background-color: #333332;
+  background-color: var(--bg-light);
   border-color: #65707d;
   color: white;
 }
 #property-panel .ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable, #property-panel .ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners {
-  background-color: #1d1d1c !important;
-  border-color: rgba(255, 255, 255, .3);
+  background-color: var(--bg-dark) !important;
+  border-color: var(--border-color);
   color: rgba(255, 255, 255, 0.89);
 }
 
 .ck-rounded-corners .ck.ck-editor__top .ck-sticky-panel .ck-toolbar, .ck.ck-editor__top .ck-sticky-panel .ck-toolbar.ck-rounded-corners {
   background-color: rgba(189, 189, 189, 0.1);
   border-color: #65707d;
-  color: #fff;
+  color: var(--white);
 }
 
 .ck.ck-reset_all, .ck.ck-reset_all * {
-  color: #fff;
+  color: var(--white);
 }
 
 .ck.ck-button:not(.ck-disabled):active, a.ck.ck-button:not(.ck-disabled):active,
@@ -972,12 +985,12 @@ span ul li a {
 }
 
 .ck-rounded-corners .ck.ck-dropdown .ck-dropdown__panel .ck-list, .ck.ck-dropdown .ck-dropdown__panel .ck-list.ck-rounded-corners {
-  background-color: #333332;
-  border-color: #333332;
+  background-color: var(--bg-light);
+  border-color: var(--bg-light);
 }
 
 .ck.ck-dropdown__panel {
-  border: 1px solid #333332;
+  border: 1px solid var(--bg-light);
 }
 
 .ck.ck-list__item .ck-button:hover:not(.ck-disabled),
@@ -986,46 +999,46 @@ span ul li a {
 }
 
 .ck.ck-list__item .ck-button.ck-on {
-  background-color: #1395BE;
+  background-color: var(--primary);
   color: white;
 }
 
 .ck.ck-button.ck-on, a.ck.ck-button.ck-on {
-  background-color: #1395BE;
+  background-color: var(--primary);
 }
 
 .documents a[href*="http:"], .documents a[href*="https:"] {
-  color: #1395BE !important;
+  color: var(--primary) !important;
 }
 
 .arrow-down-ac:last-child:after, .arrow-down:last-child:after {
-  color: #1d1d1c;
+  color: var(--bg-dark);
 }
 
 .ck-content a {
-  color: #1395BE;
+  color: var(--primary);
   text-decoration: underline;
 }
 
 .ck.ck-link-form, .ck.ck-link-actions {
-  background: #333332;
+  background: var(--bg-light);
 }
 
 .ck.ck-link-actions .ck-button.ck-link-actions__preview .ck-button__label {
-  color: #fff !important;
+  color: var(--white) !important;
 }
 .ant-dropdown-menu{
   color: rgba(255, 255, 255, 0.87);
-  background-color: #1d1d1c;
-  border: 1px solid #1d1d1c !important;
+  background-color: var(--bg-dark);
+  border: 1px solid var(--bg-dark) !important;
   border-bottom-color: rgba(0, 0, 0, .95);
-  -webkit-box-shadow: 0 2px 4px rgba(255, 255, 255, .3);
-  box-shadow: 0 2px 4px rgba(255, 255, 255, .3)
+  -webkit-box-shadow: 0 2px 4px var(--border-color);
+  box-shadow: 0 2px 4px var(--border-color)
 }
 
 .ant-select-dropdown {
-  background-color: #1d1d1c !important;
-  color: rgba(255, 255, 255, .87);
+  background-color: var(--bg-dark) !important;
+  color: var(--text-color);
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.15);
 }
 .ant-calendar-year-panel-header .ant-calendar-year-panel-century-select, .ant-calendar-year-panel-header .ant-calendar-year-panel-decade-select, .ant-calendar-year-panel-header .ant-calendar-year-panel-year-select, .ant-calendar-year-panel-header .ant-calendar-year-panel-month-select,
@@ -1035,30 +1048,30 @@ span ul li a {
 }
 
 .ant-input-number, .ant-select-selection {
-  color: rgba(255, 255, 255, .87);
-  background-color: #1d1d1c !important;
-  border: 1px solid rgba(255, 255, 255, .3)
+  color: var(--text-color);
+  background-color: var(--bg-dark) !important;
+  border: 1px solid var(--border-color)
 }
 .ant-time-picker-clear,
 .ant-calendar-picker-clear,
 .ant-calendar-picker-clear:hover,
 .ant-time-picker-clear:hover{
-  background-color: #1d1d1c !important;
-  color: rgba(255, 255, 255, .87);
+  background-color: var(--bg-dark) !important;
+  color: var(--text-color);
 }
 .ant-time-picker-panel-input-wrap,
 .ant-calendar-input-wrap {
-  border-bottom: 1px solid rgba(255, 255, 255, .3);
+  border-bottom: 1px solid var(--border-color);
 }
 .ant-calendar {
-  background-color: #1d1d1c;
-  border: 1px solid #1d1d1c;
+  background-color: var(--bg-dark);
+  border: 1px solid var(--bg-dark);
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
 }
 .modal .ant-select-dropdown,
 .modal .ant-input-number,
 .modal .ant-select-selection {
-  background-color: #2b2b2b !important
+  background-color: var(--bg-footer) !important
 }
 
 .ant-time-picker-panel-select,
@@ -1078,7 +1091,7 @@ span ul li a {
 .ant-time-picker-input:hover,
 .ant-table-bordered .ant-table-thead > tr > th, .ant-table-bordered .ant-table-tbody > tr > td,
 .ant-table-small.ant-table-bordered .ant-table-content {
-  border-color: rgba(255, 255, 255, .3)
+  border-color: var(--border-color)
 }
 .ant-input:focus, .ant-input:active .ant-input-focused,
 .ant-select-focused .ant-select-selection,
@@ -1088,7 +1101,7 @@ span ul li a {
 .ant-select-selection:active,
 .ant-input-number:focus,
 .ant-input-number-focused {
-  border-color: #1395BE !important;
+  border-color: var(--primary) !important;
 }
 
 .ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td{
@@ -1104,7 +1117,7 @@ span ul li a {
 .ant-tabs-nav .ant-tabs-tab-active:hover,
 .ant-tabs-nav .ant-tabs-tab:hover,
 .ant-pagination-item-active a {
-  color: #1395BE;
+  color: var(--primary);
 }
 .ant-calendar-month-panel-month:hover,
 .ant-calendar-year-panel-year:hover,
@@ -1113,8 +1126,8 @@ span ul li a {
 .ant-calendar-today .ant-calendar-date,
 .ant-calendar-month-panel-selected-cell .ant-calendar-month-panel-month, .ant-time-picker-panel-select li:hover, li.ant-time-picker-panel-select-option-selected, .ant-calendar-date:hover, .ant-tabs-ink-bar,
 .ant-calendar-month-panel-selected-cell .ant-calendar-month-panel-month:hover {
-  color: #1395BE;
-  background: #e6f7ff;
+  color: var(--primary);
+  background: var(--bar-color);
 }
 
 .ant-tabs-bar,
@@ -1129,18 +1142,18 @@ span ul li a {
 .ant-time-picker-input,
 .ant-table-bordered .ant-table-thead > tr > th, .ant-table-bordered .ant-table-tbody > tr > td,
 .ant-table-small.ant-table-bordered .ant-table-content {
-  border-color: rgba(255, 255, 255, .3)
+  border-color: var(--border-color)
 }
 .ant-dropdown-menu-item-divider, .ant-dropdown-menu-submenu-title-divider {
-  background-color: rgba(255, 255, 255, .3)
+  background-color: var(--border-color)
 }
 .ant-calendar-year-panel,
 .ant-calendar-month-panel,
 .ant-time-picker-panel-inner{
-  background-color: #1d1d1c;
-  color: rgba(255, 255, 255, .87);
-  -webkit-box-shadow: 0 2px 4px rgba(255, 255, 255, .3);
-  box-shadow: 0 2px 4px rgba(255, 255, 255, .3)
+  background-color: var(--bg-dark);
+  color: var(--text-color);
+  -webkit-box-shadow: 0 2px 4px var(--border-color);
+  box-shadow: 0 2px 4px var(--border-color)
 }
 
 .ant-calendar-year-panel-last-decade-cell .ant-calendar-year-panel-year, .ant-calendar-year-panel-next-decade-cell .ant-calendar-year-panel-year,
@@ -1153,8 +1166,8 @@ span ul li a {
 .ant-calendar-header a.ant-calendar-next-month-btn:hover,
 .ant-calendar-header a.ant-calendar-year-panel-next-decade-btn:hover,
 .ant-calendar-header a.ant-calendar-year-panel-prev-decade-btn:hover {
-  border-color: #fff !important;
-  color: #fff !important;
+  border-color: var(--white) !important;
+  color: var(--white) !important;
 }
 .btn {
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.3) !important;
@@ -1162,20 +1175,39 @@ span ul li a {
 .btn:hover {
    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3) !important;
  }
+.ant-checkbox-indeterminate .ant-checkbox-inner::after {
+  background-color: var(--primary);
+}
+.ant-radio, .ant-checkbox, .ant-radio-group, .ant-radio-wrapper{
+  color: var(--text-color);
+}
+
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.ant-radio-inner::after {
+  background-color: var(--primary);
+}
+
+.ant-radio-wrapper:hover .ant-radio, .ant-radio:hover .ant-radio-inner, .ant-radio-input:focus + .ant-radio-inner {
+  border-color: var(--primary);
+}
 /*
 Code Mirror
 **/
 .CodeMirror {
-  color: rgba(255, 255, 255, .87) !important
+  color: var(--text-color) !important
 }
 
 .CodeMirror-gutters {
-  background: #2b2b2b !important;
-  border-color: rgba(255, 255, 255, .3)
+  background: var(--bg-footer) !important;
+  border-color: var(--border-color)
 }
 
 .CodeMirror-linenumber {
-  color: #fff !important
+  color: var(--white) !important
 }
 
 .table tr.active {
@@ -1183,7 +1215,7 @@ Code Mirror
 }
 
 .vertex-text.job span a {
-  color: #1395be
+  color: var(--primary)
 }
 
 div.CodeMirror-selected {
@@ -1212,7 +1244,7 @@ div.CodeMirror-selected {
 }
 
 .CodeMirror-linenumber {
-  color: #fff
+  color: var(--white)
 }
 
 .CodeMirror-cursor {
@@ -1317,11 +1349,11 @@ span.cm-link {
 }
 
 .jsgantt-chart .jsgantt-task-row:nth-child(even) {
-  background-color: #333332;
+  background-color: var(--bg-light);
 }
 
 .jsgantt-chart .jsgantt-row-task:nth-child(even) {
-  background-color: #333332;
+  background-color: var(--bg-light);
 }
 
 .jsgantt-chart .jsgantt-grid-data .jsgantt-row.odd:hover,

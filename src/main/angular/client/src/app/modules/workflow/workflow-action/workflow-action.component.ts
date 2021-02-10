@@ -51,8 +51,8 @@ export class AddOrderModalComponent implements OnInit {
     if (this.workflow.orderRequirements && this.workflow.orderRequirements.parameters && !_.isEmpty(this.workflow.orderRequirements.parameters)) {
       this.variableList = Object.entries(this.workflow.orderRequirements.parameters).map(([k, v]) => {
         const val: any = v;
-        if (!val.default) {
-          this.arguments.push({name: k, type: val.type});
+        if (!val.default && val.default !== false && val.default !== 0) {
+          this.arguments.push({name: k, type: val.type, isRequired: true});
         }
         return {name: k, value: v};
       });

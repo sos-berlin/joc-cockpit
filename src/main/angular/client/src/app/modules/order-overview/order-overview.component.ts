@@ -3,14 +3,16 @@ import {CoreService} from '../../services/core.service';
 import {DataService} from '../../services/data.service';
 import {Subscription} from 'rxjs';
 import {AuthService} from '../../components/guard';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {ToasterService} from 'angular2-toaster';
+import * as _ from 'underscore';
 import {OrderActionComponent} from './order-action/order-action.component';
 import {SaveService} from '../../services/save.service';
 import {SearchPipe} from '../../filters/filter.pipe';
 import {ExcelService} from '../../services/excel.service';
-import {TranslateService} from '@ngx-translate/core';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ChangeParameterModalComponent} from '../../components/modify-modal/modify.component';
 
 declare const $;
@@ -82,7 +84,7 @@ export class OrderPieChartComponent implements OnInit, OnDestroy {
         if (prop === 'pending') {
           this.colorScheme.domain.push('#ffc91a');
         } else if (prop === 'inProgress') {
-          this.colorScheme.domain.push('#c3d9f1');
+          this.colorScheme.domain.push('#a3c6ea');
         } else if (prop === 'running') {
           this.colorScheme.domain.push('#7ab97a');
         } else if (prop === 'suspended') {
@@ -242,7 +244,8 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private route: ActivatedRoute, private dataService: DataService, private searchPipe: SearchPipe,
-              private translate: TranslateService, private excelService: ExcelService, public modalService: NgbModal) {
+              public toasterService: ToasterService, private translate: TranslateService, private excelService: ExcelService,
+              public modalService: NgbModal) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -386,6 +389,11 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
           for (let j = 0; j < tempOrder.length; j++) {
             if (this.orders[i].orderId === tempOrder[j].orderId) {
               this.orders[i].show = true;
+              if (this.orders[i].arguments && !this.orders[i].arguments[0]) {
+                this.orders[i].arguments = Object.entries(this.orders[i].arguments).map(([k, v]) => {
+                  return {name: k, value: v};
+                });
+              }
               tempOrder.slice(j, 1);
               break;
             }
@@ -451,19 +459,19 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   exportToExcel() {
     let workflow = '', order = '', status = '', position = '', scheduledFor = '';
-    this.translate.get('label.workflow').subscribe(translatedValue => {
+    this.translate.get('order.label.workflow').subscribe(translatedValue => {
       workflow = translatedValue;
     });
-    this.translate.get('label.orderId').subscribe(translatedValue => {
+    this.translate.get('order.label.orderId').subscribe(translatedValue => {
       order = translatedValue;
     });
-    this.translate.get('label.state').subscribe(translatedValue => {
+    this.translate.get('order.label.state').subscribe(translatedValue => {
       status = translatedValue;
     });
-    this.translate.get('label.position').subscribe(translatedValue => {
+    this.translate.get('order.label.position').subscribe(translatedValue => {
       position = translatedValue;
     });
-    this.translate.get('label.scheduledFor').subscribe(translatedValue => {
+    this.translate.get('order.label.scheduledFor').subscribe(translatedValue => {
       scheduledFor = translatedValue;
     });
 
@@ -530,6 +538,43 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   showPanel() {
     this.sideView.orderOverview.show = true;
     this.coreService.showLeftPanel();
+  }
+
+  changeParameter(order, variable) {
+    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.variable = variable;
+    modalRef.componentInstance.order = order;
+    modalRef.componentInstance.orderRequirements = order.requirements;
+    modalRef.result.then(() => {
+
+    }, () => {
+    });
+  }
+
+  removeParameter(order, variable) {
+    let canDelete = true;
+    if (order.requirements && order.requirements.parameters) {
+      let x = order.requirements.parameters[variable.name];
+      if (x && !x.default && x.default !== false && x.default !== 0) {
+        canDelete = false;
+      }
+    }
+    if (canDelete) {
+      this.coreService.post('daily_plan/orders/modify', {
+        controllerId: this.schedulerIds.selected,
+        orderIds: [order.orderId],
+        removeVariables: variable
+      }).subscribe((result) => {
+
+      }, () => {
+
+      });
+    } else {
+      this.translate.get('common.message.requiredVariableCannotRemoved').subscribe(translatedValue => {
+        this.toasterService.pop('warning', translatedValue);
+      });
+    }
   }
 
   checkAll(value: boolean): void {

@@ -1764,6 +1764,26 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.data = [...this.data];
   }
 
+  expandDetails() {
+    this.currentData.forEach((value) => {
+      value.show = true;
+      if (this.historyFilters.type === 'DEPLOYMENT') {
+        this.showChildHistory(value);
+      } else {
+        console.log(value);
+        value.submissions.forEach((sub) => {
+          sub.show = true;
+        });
+      }
+    });
+  }
+
+  collapseDetails() {
+    this.currentData.forEach((value) => {
+      value.show = false;
+    });
+  }
+
   exportToExcel() {
     let data = [];
     let fileName = 'JS7-order-history-report';

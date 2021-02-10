@@ -119,10 +119,10 @@
               <button class="hide btn btn-sm btn-grey" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="expandDetails()" >
                 <i class="fa fa-expand text" ></i>
               </button>
-              <button class="hide btn btn-sm btn-grey m-l-sm" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="collapseDetails()">
+              <button class="hide btn btn-sm btn-grey m-l-12" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="collapseDetails()">
                 <i class="fa fa-compress text"></i>
               </button>
-              <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm" nz-tooltip="{{'common.button.resetPanel' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="resetPanel()">
+              <button class="hide btn btn-sm btn-grey m-l-12 m-r-12" nz-tooltip="{{'common.button.resetPanel' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="resetPanel()">
                 <i class="fa fa-repeat text"></i>
               </button>
               <div class="search-box-field pull-right">
@@ -296,6 +296,26 @@
                         <div *ngIf="order.arguments && order.arguments.length > 0">
                           <div *ngFor="let argu of order.arguments"
                                class="plan-variables">
+                            <span class="btn-group dropdown"
+                                  *ngIf="order.state && (order.state._text === 'PENDING')">
+                              <button class="btn-drop more-option-h" nz-dropdown
+                                      nzTrigger="click" [nzDropdownMenu]="export3"
+                                      type="button">
+                                <i class="fa fa-ellipsis-h"></i>
+                              </button>
+                              <nz-dropdown-menu #export3="nzDropdownMenu" role="menu">
+                                <ul nz-menu>
+                                  <li nz-menu-item>
+                                    <a (click)="changeParameter(order, argu)"
+                                       translate>dailyPlan.button.setParameter</a>
+                                  </li>
+                                  <li nz-menu-item>
+                                    <a (click)="removeParameter(order, argu)"
+                                       translate>dailyPlan.button.removeParameter</a>
+                                  </li>
+                                </ul>
+                              </nz-dropdown-menu>
+                            </span>
                             <span>{{argu.name}} : {{argu.value}}</span>
                           </div>
                         </div>

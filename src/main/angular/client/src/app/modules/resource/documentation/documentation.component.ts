@@ -12,6 +12,7 @@ import {TreeComponent} from '../../../components/tree-navigation/tree.component'
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import * as _ from 'underscore';
+import {SearchPipe} from '../../../filters/filter.pipe';
 
 declare const $;
 const API_URL = './api/';
@@ -262,6 +263,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   permission: any = {};
   pageView: any;
   documents: any = [];
+  data: any = [];
   documentFilters: any = {};
   sideView: any = {};
   documentTypes = ['ALL', 'HTML', 'XML', 'XSL', 'XSD', 'JAVASCRIPT', 'JSON', 'CSS', 'MARKDOWN', 'GIF', 'JPEG', 'PNG'];
@@ -270,7 +272,8 @@ export class DocumentationComponent implements OnInit, OnDestroy {
 
   @ViewChild(TreeComponent, {static: false}) child;
 
-  constructor(private router: Router, private authService: AuthService, public coreService: CoreService, private modalService: NgbModal, private dataService: DataService) {
+  constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
+              private searchPipe: SearchPipe, private modalService: NgbModal, private dataService: DataService) {
     this.subscription = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
     });
@@ -346,6 +349,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
         value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
       });
       this.documents = res.documentations;
+      this.searchInResult();
     }, () => {
       this.loading = false;
     });
@@ -381,6 +385,11 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   sort(propertyName) {
     this.documentFilters.reverse = !this.documentFilters.reverse;
     this.documentFilters.filter.sortBy = propertyName;
+  }
+
+  searchInResult() {
+    this.data = this.documentFilters.searchText ? this.searchPipe.transform(this.documents, this.documentFilters.searchText) : this.documents;
+    this.data = [...this.data];
   }
 
   receiveMessage($event) {

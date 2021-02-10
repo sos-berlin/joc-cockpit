@@ -359,6 +359,7 @@ export class UserComponent implements OnInit, OnDestroy {
       orderOverview: this.preferences.pageView,
       lock: this.preferences.pageView,
       documentation: this.preferences.pageView,
+      agent: this.preferences.pageView,
       calendar: this.preferences.pageView,
       permission: this.preferences.pageView
     };

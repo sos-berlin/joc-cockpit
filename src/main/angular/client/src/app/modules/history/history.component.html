@@ -528,11 +528,17 @@
         </ul>
       </div>
       <div class="col-md-6 col-sm-8">
-        <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="advancedSearch()" *ngIf="!showSearchPanel">
+        <button *ngIf="historyFilters.type === 'DEPLOYMENT' || historyFilters.type === 'SUBMISSION'" class="btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}" (click)="collapseDetails()">
+          <i class="fa fa-compress text"></i>
+        </button>
+        <button *ngIf="historyFilters.type === 'DEPLOYMENT' || historyFilters.type === 'SUBMISSION'" class="btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}" (click)="expandDetails()" >
+          <i class="fa fa-expand text" ></i>
+        </button>
+        <button class="btn btn-sm inline pull-right m-l-12 btn-grey" (click)="advancedSearch()" *ngIf="!showSearchPanel">
           <span translate>common.button.advancedSearch</span>
           <i class="fa fa-caret-down p-l-xs"></i>
         </button>
-        <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
+        <button class="btn btn-sm inline pull-right m-l-12 btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
           <span translate>common.button.advancedSearch</span>
           <i class="fa fa-caret-down p-l-xs"></i>
         </button>
@@ -1160,7 +1166,10 @@
                               class="text-hover-primary" [innerHtml]="order.workflowPath"></span>
                       </td>
                       <td><span>{{order.scheduledFor | stringToDate}}</span></td>
-                      <td><span>{{order.submitted ? 'submitted' : 'not submitted'}}</span></td>
+                      <td>
+                         <span class="label bg-dark-blue" *ngIf="order.submitted" translate>{{'submitted' | translate}}</span>
+                         <span class="label bg-orange" *ngIf="!order.submitted" translate>{{'notSubmitted' | translate}}</span>
+                      </td>
                     </tr>
                     <tr *ngIf="child.warnMessages && child.warnMessages.length > 0">
                       <th class="_600" style="padding: 6px 8px !important;"><span class="p-l" translate>history.label.warnMessages</span></th>
