@@ -1680,9 +1680,16 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         this.coreService.post('daily_plan/orders/modify', {
           controllerId: this.schedulerIds.selected,
           orderIds: [order.orderId],
-          removeVariables: variable
+          removeVariables: _.object([variable].map((val) => {
+            return [val.name, val.value];
+          }))
         }).subscribe((result) => {
-
+          for (let i = 0; i < order.variables.length; i++) {
+            if (_.isEqual(order.variables[i], variable)) {
+              order.variables.splice(i, 1);
+              break;
+            }
+          }
         }, () => {
 
         });

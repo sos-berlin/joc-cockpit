@@ -1208,6 +1208,86 @@ span ul li a {
   border-color: var(--primary-color);
 }
 /*
+JSON editor
+**/
+.ace-jsoneditor.ace_editor{
+  background: var(--bg-footer) !important;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.2);
+}
+.ace-jsoneditor .ace_gutter{
+  background: var(--box-color) !important;
+  color: var(--text-color) !important
+}
+.ace-jsoneditor .ace_scroller{
+  background-color: var(--bg-footer) !important;
+}
+div.jsoneditor{
+  border-color: var(--border-color);
+  color: var(--text-color) !important;
+}
+.ace-jsoneditor .ace_gutter-active-line {
+  background-color: #3F3F3F !important;
+}
+.ace-jsoneditor .ace_dragging .ace_scroller:before {
+  background: var(--bg-dark);
+}
+.ace-jsoneditor .ace_print-margin {
+  border-left: 1px dotted #2D2D2D;
+  right: 0;
+  background: #262626;
+}
+.ace-jsoneditor .ace_scroller.ace_scroll-left {
+  box-shadow: 17px 0 16px -16px rgba(255, 255, 255, 0.4) inset;
+}
+.ace-jsoneditor .ace_cursor {
+  border-left: 2px solid var(--border-color);
+}
+.ace-jsoneditor .ace_text-input.ace_composition {
+  background: var(--bg-dark);
+  color: var(--text-color);
+}
+.ace-jsoneditor .ace_overwrite-cursors .ace_cursor {
+  border-bottom: 1px solid var(--border-color);
+}
+.ace-jsoneditor .ace_line .ace_fold {
+  border: 1px solid var(--border-color);
+}
+.ace-jsoneditor .ace_variable{
+  color: var(--text-color);
+}
+.ace-jsoneditor .ace_text-layer{
+  color: #ccc;
+}
+.ace-jsoneditor .ace_tooltip {
+  background-color: var(--box-color);
+  background-image: -webkit-linear-gradient(top, transparent, rgba(0, 0, 0, 0.1));
+  background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.1));
+  border: 1px solid var(--border-color);
+  box-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+  color: var(--text-color);
+}
+.ace-jsoneditor .ace_fold-widget:hover {
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  background-color: var(--box-shadow);
+  box-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
+}
+.ace-jsoneditor .ace_fold-widget:active {
+  border: 1px solid var(--border-color);
+  background-color: rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+.ace-jsoneditor .ace_dark .ace_fold-widget:hover {
+  box-shadow: 0 1px 1px var(--box-shadow);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.ace-jsoneditor .ace_dark .ace_fold-widget:active {
+  box-shadow: 0 1px 1px var(--box-shadow);
+}
+.ace-jsoneditor .ace_marker-layer .ace_active-line {
+  background-color: #999;
+}
+
+/*
 Code Mirror
 **/
 .CodeMirror {
@@ -1427,7 +1507,7 @@ span.cm-link {
   background: #444444 !important;
 }
 .bg-gold {
-  background : #ffc91a -webkit-gradient(linear, left bottom, left top, color-stop(0, #e6b000), color-stop(1, #ffc91a));
+  background : #e6b000;
 }
 .ant-pagination-jump-prev .ant-pagination-item-container .ant-pagination-item-ellipsis, .ant-pagination-jump-next .ant-pagination-item-container .ant-pagination-item-ellipsis{
   color : var(--text-color)

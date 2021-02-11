@@ -1638,7 +1638,7 @@ export class UploadModalComponent implements OnInit {
   selector: 'app-create-object-template',
   templateUrl: './create-object-dialog.html'
 })
-export class CreateObjectModalComponent {
+export class CreateObjectModalComponent implements OnInit{
   @Input() schedulerId: any;
   @Input() obj: any;
   @Input() copy: any;
@@ -1646,6 +1646,12 @@ export class CreateObjectModalComponent {
   object = {name: ''};
 
   constructor(private coreService: CoreService, public activeModal: NgbActiveModal) {
+  }
+
+  ngOnInit() {
+    if(this.copy){
+      this.object.name = this.copy + '-Copy';
+    }
   }
 
   onSubmit(): void {

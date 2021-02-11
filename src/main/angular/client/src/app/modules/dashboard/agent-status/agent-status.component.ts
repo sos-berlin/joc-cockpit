@@ -25,6 +25,9 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
     maintainAspectRatio: false,
     legend: {
       position: 'right',
+      labels: {
+        fontColor: 'rgba(255, 255, 255, 0.7)'
+      },
       onHover: function (e: any) {
         e.target.style.cursor = 'pointer';
       },
@@ -59,7 +62,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
   pieChartPlugins = [pluginDataLabels];
   pieChartColors = [
     {
-      borderWidth: 1,
+      borderWidth: 0,
       hoverBackgroundColor: [],
       backgroundColor: []
     }
@@ -78,6 +81,9 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
       this.getStatus();
     } else {
       this.isLoaded = true;
+    }
+    if(!localStorage.$SOS$THEME || localStorage.$SOS$THEME.match(/light/)){
+      this.pieChartOptions.legend.labels.fontColor = '#3d464d';
     }
   }
 

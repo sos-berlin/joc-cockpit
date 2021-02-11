@@ -172,6 +172,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit() {
+    this.index = 0;
     this.updateVariableList();
   }
 
@@ -338,7 +339,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private init() {
-    this.index = 0;
     this.getJobInfo();
     this.selectedNode.obj.defaultArguments = this.coreService.convertObjectToArray(this.selectedNode.obj, 'defaultArguments');
     if (this.selectedNode.obj.defaultArguments && this.selectedNode.obj.defaultArguments.length == 0) {
@@ -1067,6 +1067,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         return;
       }
       if (typeof data === 'object') {
+        if (this.orderRequirements && this.orderRequirements.parameters) {
+          data.orderRequirements = this.orderRequirements;
+        }
+        if (this.title) {
+          data.title = this.title;
+        }
         data = JSON.stringify(data, undefined, 2);
       }
       const blob = new Blob([data], {type: fileType});
@@ -1078,16 +1084,20 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     const modalRef = this.modalService.open(ImportComponent, {backdrop: 'static', size: 'lg'});
     modalRef.result.then((result) => {
       this.parseWorkflowJSON(result);
+      if (result.orderRequirements) {
+        this.orderRequirements = this.coreService.clone(result.orderRequirements);
+      }
+      if (result.title) {
+        this.title = this.coreService.clone(result.title);
+      }
       this.workflow.configuration = this.coreService.clone(result);
       if (result.jobs && !_.isEmpty(result.jobs)) {
         this.jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
           return {name: k, value: v};
         });
       }
-      if (this.workflow.configuration.orderRequirements) {
-        this.orderRequirements = this.coreService.clone(this.workflow.configuration.orderRequirements);
-      }
-
+      delete this.workflow.configuration['orderRequirements'];
+      delete this.workflow.configuration['title'];
       this.history = [];
       this.indexOfNextAdd = 0;
       this.updateXMLJSON(false);
@@ -5917,7 +5927,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             isChange = false;
           }
         }
-
       }
     }
     if (flag) {

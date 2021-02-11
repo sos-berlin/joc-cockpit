@@ -6435,7 +6435,9 @@ form .ant-select-selection {
   min-height: 30px;
   height: auto;
 }
-
+.ace_editor {
+  font-family: $base__font-family;
+}
 div.jsoneditor,
 .ant-tabs-bar,
 .ant-time-picker-panel-select,
