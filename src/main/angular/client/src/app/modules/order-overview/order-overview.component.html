@@ -293,35 +293,7 @@
                     <tr *ngIf="order.show">
                       <td colspan="2"></td>
                       <td colspan="5">
-                        <div *ngIf="order.arguments && order.arguments.length > 0">
-                          <div *ngFor="let argu of order.arguments"
-                               class="plan-variables">
-                            <span class="btn-group dropdown"
-                                  *ngIf="order.state && (order.state._text === 'PENDING')">
-                              <button class="btn-drop more-option-h" nz-dropdown
-                                      nzTrigger="click" [nzDropdownMenu]="export3"
-                                      type="button">
-                                <i class="fa fa-ellipsis-h"></i>
-                              </button>
-                              <nz-dropdown-menu #export3="nzDropdownMenu" role="menu">
-                                <ul nz-menu>
-                                  <li nz-menu-item>
-                                    <a (click)="changeParameter(order, argu)"
-                                       translate>dailyPlan.button.setParameter</a>
-                                  </li>
-                                  <li nz-menu-item>
-                                    <a (click)="removeParameter(order, argu)"
-                                       translate>dailyPlan.button.removeParameter</a>
-                                  </li>
-                                </ul>
-                              </nz-dropdown-menu>
-                            </span>
-                            <span>{{argu.name}} : {{argu.value}}</span>
-                          </div>
-                        </div>
-                        <div class="p-l" *ngIf="!order.arguments || (order.arguments && order.arguments.length === 0)">
-                          <span translate>common.message.noDataAvailable</span>
-                        </div>
+                        <app-order-variable [order]="order" [type]="'arguments'" [schedulerId]="schedulerIds.selected"></app-order-variable>
                       </td>
                     </tr>
                   </ng-template>

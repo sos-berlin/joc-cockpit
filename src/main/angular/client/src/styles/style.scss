@@ -6139,12 +6139,15 @@ pre#pre {
     background: $white !important;
     padding-right: 0;
     width: 97%;
+    height: 29px;
   }
 }
 .ant-mention-dropdown-notfound{
   display: none !important;
 }
-
+.ant-select-selection--multiple .ant-select-selection__choice{
+  border-radius: 5px;
+}
 .ant-select-selection {
   box-shadow: none;
   border-color: $border-color;

@@ -1105,6 +1105,10 @@ span ul li a {
 .ant-input-number-focused {
   border-color: var(--primary-color) !important;
 }
+.ant-input-number-handler-wrap{
+  background-color: var(--bg-footer);
+  border-color: var(--bg-footer) !important;
+}
 .ant-table-bordered .ant-table-thead > tr:not(:last-child) > th, .ant-table-small.ant-table-bordered .ant-table-thead > tr > th:last-child{
   border-color: var(--border-color);
 }
@@ -1206,6 +1210,18 @@ span ul li a {
 }
 .ant-radio-wrapper:hover .ant-radio, .ant-radio:hover .ant-radio-inner, .ant-radio-input:focus + .ant-radio-inner {
   border-color: var(--primary-color);
+}
+.select-input-both .ant-select-open .ant-select-selection{
+  color: var(--text-color) !important;
+}
+.select-input-both .ant-select-open{
+  border: 1px solid var(--primary-color);
+  background: var(--bg-dark) !important;
+}
+.ant-select-selection--multiple .ant-select-selection__choice{
+  background: var(--bg-dark);
+  border-color: var(--bg-dark);
+  color: var(--text-color);
 }
 /*
 JSON editor

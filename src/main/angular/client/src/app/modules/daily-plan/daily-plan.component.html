@@ -102,37 +102,7 @@
     <tr *ngIf="value.show">
       <td colspan="2"></td>
       <td colspan="12">
-        <div *ngFor="let variable of value.variables"
-             class="plan-variables">
-          <span class="btn-group dropdown"
-                *ngIf="value.state && (value.state._text === 'PLANNED' || value.state._text === 'PENDING')">
-            <button class="btn-drop more-option-h" nz-dropdown
-                    nzTrigger="click" [nzDropdownMenu]="export3"
-                    type="button">
-              <i class="fa fa-ellipsis-h"></i>
-            </button>
-            <nz-dropdown-menu #export3="nzDropdownMenu" role="menu">
-              <ul nz-menu>
-                <li nz-menu-item>
-                  <a (click)="changeParameter(null, value, variable)"
-                     translate>dailyPlan.button.setParameter</a>
-                </li>
-                <li nz-menu-item>
-                  <a (click)="removeParameter(value, variable)"
-                     translate>dailyPlan.button.removeParameter</a>
-                </li>
-              </ul>
-            </nz-dropdown-menu>
-          </span>
-          <span>{{variable.name}} : {{variable.value}}</span>
-        </div>
-        <div class="p-l" *ngIf="value.variables && value.variables.length === 0">
-          <span translate>common.message.noDataAvailable</span>
-        </div>
-        <div class="p-l p-t-xs" *ngIf="!value.variables">
-          <i class="fa fa-spin fa-spinner"></i>
-          <span class="p-l-xs" translate>common.label.loading</span>
-        </div>
+        <app-order-variable [order]="value" [type]="'variables'" [schedulerId]="schedulerIds.selected"></app-order-variable>
       </td>
     </tr>
     <tr *ngIf="value.seperate">

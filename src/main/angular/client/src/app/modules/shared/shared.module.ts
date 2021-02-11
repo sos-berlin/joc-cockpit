@@ -49,6 +49,7 @@ import {CalendarModalComponent} from '../../components/calendar-modal/calendar.c
 import {AddRestrictionComponent, PeriodComponent, RunTimeComponent} from '../../components/runtime/runtime.component';
 import {ResumeOrderModalComponent} from '../../components/resume-modal/resume.component';
 import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../../components/modify-modal/modify.component';
+import {OrderVariableComponent} from '../../components/order-variable/order-variable.component';
 
 const MODULES = [Shared2Module, NzTableModule, NzTabsModule,
   NzToolTipModule, NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule,
@@ -56,7 +57,7 @@ const MODULES = [Shared2Module, NzTableModule, NzTabsModule,
   NzTreeSelectModule, ClipboardModule, NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, OrderModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, TreeModalComponent, PeriodComponent, AddRestrictionComponent,
-  ResumeOrderModalComponent, ChangeParameterModalComponent, ModifyStartTimeModalComponent];
+  ResumeOrderModalComponent, ChangeParameterModalComponent, OrderVariableComponent, ModifyStartTimeModalComponent];
 const PIPES = [DurationPipe, StringDateFormatePipe, ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, ResizableDirective, LabelValidator,
   NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, EnvVariableValidator, AutofocusDirective];
@@ -71,7 +72,7 @@ const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent,
     ...COMPONENTS,
     ...EXPORTS
   ],
-  exports: [...MODULES, ...EXPORTS],
+  exports: [...MODULES, ...EXPORTS, OrderVariableComponent],
   entryComponents: [...COMPONENTS]
 })
 export class SharedModule {

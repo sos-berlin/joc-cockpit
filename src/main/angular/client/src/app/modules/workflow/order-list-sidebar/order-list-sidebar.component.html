@@ -82,16 +82,9 @@
         </td>
       </tr>
       <tr *ngIf="order.show">
-        <td colspan="7">
-          <div *ngIf="order.arguments && order.arguments.length > 0">
-            <div *ngFor="let argu of order.arguments"
-                 class="plan-variables">
-              <span>{{argu.name}} : {{argu.value}}</span>
-            </div>
-          </div>
-          <div class="p-l" *ngIf="!order.arguments || (order.arguments && order.arguments.length === 0)">
-            <span translate>common.message.noDataAvailable</span>
-          </div>
+        <td colspan="2"></td>
+        <td colspan="5">
+          <app-order-variable [order]="order" [type]="'arguments'" [schedulerId]="schedulerId"></app-order-variable>
         </td>
       </tr>
     </ng-template>

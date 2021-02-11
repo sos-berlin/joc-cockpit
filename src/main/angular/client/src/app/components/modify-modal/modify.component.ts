@@ -16,6 +16,7 @@ export class ChangeParameterModalComponent implements OnInit {
   @Input() orders: any;
   @Input() orderIds: any;
   @Input() orderRequirements: any;
+  removeVariables = [];
   variables: any = [];
   variableList = [];
   submitted = false;
@@ -48,6 +49,21 @@ export class ChangeParameterModalComponent implements OnInit {
   updateVariableList() {
     if (this.orderRequirements && this.orderRequirements.parameters && !_.isEmpty(this.orderRequirements.parameters)) {
       this.variableList = Object.entries(this.orderRequirements.parameters).map(([k, v]) => {
+        const val: any = v;
+        let isExist = false;
+        for (let i = 0; i < this.variables.length; i++) {
+          if (this.variables[i].name === k) {
+            this.variables[i].type = val.type;
+            if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
+              this.variables[i].isRequired = true;
+            }
+            isExist = true;
+            break;
+          }
+        }
+        if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
+          this.variables.push({name: k, type: val.type, isRequired: true});
+        }
         return {name: k, value: v};
       });
     }
@@ -83,8 +99,11 @@ export class ChangeParameterModalComponent implements OnInit {
     }
   }
 
-  removeVariable(index): void {
-    this.variables.splice(index, 1);
+  removeVariable(argu): void {
+    this.removeVariables.push({name: argu.name, value: argu.value});
+    this.variables = this.variables.filter((item) => {
+      return argu.name !== item.name;
+    });
   }
 
   addVariable(): void {
@@ -119,7 +138,10 @@ export class ChangeParameterModalComponent implements OnInit {
       }
       if (argu.length > 0) {
         obj.variables = _.object(argu.map((val) => {
-          return [val.name, val.value];
+          if (!val.value && val.value !== false && val.value !== 0) {
+            this.removeVariables.push({name: val.name, value: val.value});
+          }
+          return val.name ? [val.name, val.value] :  null;
         }));
       }
     }
@@ -136,14 +158,17 @@ export class ChangeParameterModalComponent implements OnInit {
     } else if (this.orderIds) {
       obj.orderIds = this.orderIds;
     }
-    if (obj.variables) {
+    if (this.removeVariables.length > 0) {
+      obj.removeVariables = this.coreService.keyValuePair(this.removeVariables);
+    }
+    if (obj.variables || obj.removeVariables) {
       this.coreService.post('daily_plan/orders/modify', obj).subscribe((result) => {
         this.submitted = false;
         this.activeModal.close('Done');
       }, () => {
         this.submitted = false;
       });
-    } else{
+    } else {
       this.submitted = false;
     }
   }

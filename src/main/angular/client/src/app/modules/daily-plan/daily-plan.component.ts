@@ -27,7 +27,6 @@ import {ExcelService} from '../../services/excel.service';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../../components/modify-modal/modify.component';
 import {ResumeOrderModalComponent} from '../../components/resume-modal/resume.component';
-import {ToasterService} from 'angular2-toaster';
 
 declare const JSGantt;
 declare let jsgantt;
@@ -221,7 +220,7 @@ export class SelectOrderTemplatesComponent implements OnInit {
   selector: 'app-ngbd-modal-content',
   templateUrl: './create-plan-dialog.html'
 })
-export class CreatePlanModalComponent implements OnInit {
+export class CreatePlanModalComponent{
   @Input() schedulerId;
   @Input() selectedDate;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
@@ -233,10 +232,6 @@ export class CreatePlanModalComponent implements OnInit {
   selectedTemplates: any = {schedules: []};
 
   constructor(public activeModal: NgbActiveModal, public  coreService: CoreService) {
-  }
-
-  ngOnInit() {
-
   }
 
   onSubmit(): void {
@@ -808,7 +803,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private modalService: NgbModal, private groupBy: GroupByPipe,
               private translate: TranslateService, private searchPipe: SearchPipe, private orderPipe: OrderPipe,
-              public toasterService: ToasterService, private excelService: ExcelService, private router: Router) {
+              private excelService: ExcelService, private router: Router) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -1653,69 +1648,21 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  changeParameter(plan, order, variable) {
+  changeParameter(plan, order) {
     if (order) {
       this.coreService.post('orders/variables', {
         orderId: order.orderId,
         controllerId: this.schedulerIds.selected
       }).subscribe((res: any) => {
         this.convertObjectToArray(res, order);
-        this.openModel(plan, order, variable);
+        this.openModel(plan, order);
       });
     } else {
-      this.openModel(plan, order, variable);
+      this.openModel(plan, order);
     }
   }
 
-  removeParameter(order, variable) {
-    let canDelete = true;
-    this.getRequirements(order, () => {
-      if (order.requirements && order.requirements.parameters) {
-        let x = order.requirements.parameters[variable.name];
-        if (x && !x.default && x.default !== false && x.default !== 0) {
-          canDelete = false;
-        }
-      }
-      if (canDelete) {
-        this.coreService.post('daily_plan/orders/modify', {
-          controllerId: this.schedulerIds.selected,
-          orderIds: [order.orderId],
-          removeVariables: _.object([variable].map((val) => {
-            return [val.name, val.value];
-          }))
-        }).subscribe((result) => {
-          for (let i = 0; i < order.variables.length; i++) {
-            if (_.isEqual(order.variables[i], variable)) {
-              order.variables.splice(i, 1);
-              break;
-            }
-          }
-        }, () => {
-
-        });
-      } else {
-        this.translate.get('common.message.requiredVariableCannotRemoved').subscribe(translatedValue => {
-          this.toasterService.pop('warning', translatedValue);
-        });
-      }
-    });
-  }
-
-  private getRequirements(order, cb) {
-    if (order.requirements && order.requirements.parameters) {
-      cb();
-    } else {
-      this.coreService.post('workflow', {
-        controllerId: this.schedulerIds.selected,
-        workflowId: {path: order.workflowPath}
-      }).subscribe((res: any) => {
-        order.requirements = res.workflow.orderRequirements;
-        cb();
-      });
-    }
-  }
-
-  private openModel(plan, order, variable) {
+  private openModel(plan, order) {
     if (order) {
       if (!order.requirements) {
         this.coreService.post('workflow', {
@@ -1723,10 +1670,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           workflowId: {path: order.workflowPath}
         }).subscribe((res: any) => {
           order.requirements = res.workflow.orderRequirements;
-          this._openModel(plan, order, variable, order.requirements);
+          this._openModel(plan, order, order.requirements);
         });
       } else {
-        this._openModel(plan, order, variable, order.requirements);
+        this._openModel(plan, order, order.requirements);
       }
     } else {
       if (plan && plan.value && plan.value.length > 0) {
@@ -1743,25 +1690,24 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           }
         });
         if (requirements) {
-          this._openModel(plan, order, variable, requirements);
+          this._openModel(plan, order, requirements);
         } else {
           this.coreService.post('workflow', {
             controllerId: this.schedulerIds.selected,
             workflowId: {path: workflowPath}
           }).subscribe((res: any) => {
-            this._openModel(plan, order, variable, res.workflow.orderRequirements);
+            this._openModel(plan, order, res.workflow.orderRequirements);
           });
         }
       } else {
-        this._openModel(plan, order, variable, []);
+        this._openModel(plan, order, []);
       }
     }
   }
 
-  private _openModel(plan, order, variable, orderRequirements) {
+  private _openModel(plan, order, orderRequirements) {
     const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.variable = variable;
     modalRef.componentInstance.order = order;
     modalRef.componentInstance.plan = plan;
     modalRef.componentInstance.orderRequirements = orderRequirements;

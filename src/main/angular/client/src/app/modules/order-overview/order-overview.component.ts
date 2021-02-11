@@ -6,8 +6,6 @@ import {AuthService} from '../../components/guard';
 import {ActivatedRoute} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {ToasterService} from 'angular2-toaster';
-import * as _ from 'underscore';
 import {OrderActionComponent} from './order-action/order-action.component';
 import {SaveService} from '../../services/save.service';
 import {SearchPipe} from '../../filters/filter.pipe';
@@ -244,7 +242,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private route: ActivatedRoute, private dataService: DataService, private searchPipe: SearchPipe,
-              public toasterService: ToasterService, private translate: TranslateService, private excelService: ExcelService,
+              private translate: TranslateService, private excelService: ExcelService,
               public modalService: NgbModal) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -540,42 +538,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.coreService.showLeftPanel();
   }
 
-  changeParameter(order, variable) {
-    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.variable = variable;
-    modalRef.componentInstance.order = order;
-    modalRef.componentInstance.orderRequirements = order.requirements;
-    modalRef.result.then(() => {
-
-    }, () => {
-    });
-  }
-
-  removeParameter(order, variable) {
-    let canDelete = true;
-    if (order.requirements && order.requirements.parameters) {
-      let x = order.requirements.parameters[variable.name];
-      if (x && !x.default && x.default !== false && x.default !== 0) {
-        canDelete = false;
-      }
-    }
-    if (canDelete) {
-      this.coreService.post('daily_plan/orders/modify', {
-        controllerId: this.schedulerIds.selected,
-        orderIds: [order.orderId],
-        removeVariables: variable
-      }).subscribe((result) => {
-
-      }, () => {
-
-      });
-    } else {
-      this.translate.get('common.message.requiredVariableCannotRemoved').subscribe(translatedValue => {
-        this.toasterService.pop('warning', translatedValue);
-      });
-    }
-  }
 
   checkAll(value: boolean): void {
     if (value && this.orders.length > 0) {
