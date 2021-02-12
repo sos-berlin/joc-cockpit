@@ -7,16 +7,7 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline valign">
-            <label *ngIf="historyFilters.type == 'ORDER'" nz-checkbox [(ngModel)]="order.current" name="orderCurrent" (ngModelChange)="changeController()">
-              {{'common.label.currentController' | translate}}
-            </label>
-            <label *ngIf="historyFilters.type == 'TASK'" nz-checkbox [(ngModel)]="task.current" name="taskCurrent" (ngModelChange)="changeController()">
-              {{'common.label.currentController' | translate}}
-            </label>
-            <label *ngIf="historyFilters.type == 'DEPLOYMENT'" nz-checkbox [(ngModel)]="deployment.current" name="deploymentCurrent" (ngModelChange)="changeController()">
-              {{'common.label.currentController' | translate}}
-            </label>
-            <label *ngIf="historyFilters.type == 'SUBMISSION'" nz-checkbox [(ngModel)]="submission.current" name="submissionCurrent" (ngModelChange)="changeController()">
+            <label nz-checkbox [(ngModel)]="historyFilters.current" name="current" (ngModelChange)="changeController()">
               {{'common.label.currentController' | translate}}
             </label>
           </div>
@@ -629,7 +620,7 @@
           <thead>
           <tr>
             <th class=" menu"><span translate>common.label.action</span></th>
-            <th class="dynamic-thead-o" *ngIf="!order.current" (click)="sort('controllerId')">
+            <th class="dynamic-thead-o" *ngIf="!historyFilters.current" (click)="sort('controllerId')">
               <a><span class="p-r-xs" translate>common.label.controllerId</span>
                 <i *ngIf="order.filter.sortBy == 'controllerId' && !order.reverse"
                    class="fa fa-caret-up "></i>
@@ -721,7 +712,7 @@
                   </nz-dropdown-menu>
                 </div>
               </td>
-              <td *ngIf="!order.current">
+              <td *ngIf="!historyFilters.current">
                 <span class="show-in-single-line w-full"
                       (click)="coreService.showLogWindow(history,null,null,history.controllerId, null)">
                   <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
@@ -738,12 +729,12 @@
                 <span class="show-in-single-line w-full"
                       (click)="coreService.showLogWindow(history,null,null,null,null)">
                   <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
-                     *ngIf="!history.show && order.current"
+                     *ngIf="!history.show && historyFilters.current"
                      (click)="showPanelFuc(history);$event.stopPropagation()"></i>
                   <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
-                     *ngIf="history.show && order.current"
+                     *ngIf="history.show && historyFilters.current"
                      (click)="hidePanelFuc(history);$event.stopPropagation()"></i>
-                  <i *ngIf="order.current"
+                  <i *ngIf="historyFilters.current"
                      class="cursor fa fa-download text-hover-primary p-r-xs"
                      (click)="downloadLog(history,history.controllerId);$event.stopPropagation()"></i>
                   <span [innerHtml]="history.orderId | highlight : order.searchText"></span>
@@ -813,7 +804,7 @@
           <thead>
           <tr>
             <th class=" menu"><span translate>common.label.action</span></th>
-            <th *ngIf="!task.current" (click)="sort1('controllerId')">
+            <th *ngIf="!historyFilters.current" (click)="sort1('controllerId')">
               <a><span class="p-r-xs" translate>common.label.controllerId</span>
                 <i *ngIf="task.filter.sortBy == 'controllerId' && !task.reverse"
                    class="fa fa-caret-up "></i>
@@ -908,14 +899,14 @@
                 </nz-dropdown-menu>
               </div>
             </td>
-            <td *ngIf="!task.current"
+            <td *ngIf="!historyFilters.current"
                 (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId, null)">
               <i class="cursor fa fa-download  text-hover-primary p-r-xs"
                  (click)="downloadLog(jobHistory,jobHistory.controllerId);$event.stopPropagation()"></i>
               <span [innerHtml]="jobHistory.controllerId | highlight : task.searchText"></span>
             </td>
             <td (click)="coreService.showLogWindow(null,jobHistory, null, null, null)">
-              <i *ngIf="task.current" class="cursor fa fa-download  text-hover-primary p-r-xs"
+              <i *ngIf="historyFilters.current" class="cursor fa fa-download  text-hover-primary p-r-xs"
                  (click)="downloadLog(jobHistory,jobHistory.controllerId);$event.stopPropagation()"></i>
               <span [innerHtml]="jobHistory.job | highlight : task.searchText"></span>
             </td>
@@ -973,14 +964,14 @@
         >
           <thead>
           <tr>
-            <th width="25%" *ngIf="!deployment.current" (click)="sort3('controllerId')">
+            <th width="25%" *ngIf="!historyFilters.current" (click)="sort3('controllerId')">
               <a><span class="p-r-xs" translate>common.label.controllerId</span>
                 <i *ngIf="deployment.filter.sortBy == 'controllerId' && !deployment.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="deployment.filter.sortBy == 'controllerId' && deployment.reverse"
                    class="fa fa-caret-down "></i></a>
             </th>
-            <th [width]="deployment.current ? '50%' : '25%'" (click)="sort3('deploymentDate')">
+            <th [width]="historyFilters.current ? '50%' : '25%'" (click)="sort3('deploymentDate')">
               <a><span class="p-r-xs" translate>history.label.deploymentDate</span>
                 <i *ngIf="deployment.filter.sortBy == 'deploymentDate' && !deployment.reverse"
                    class="fa fa-caret-up "></i>
@@ -1007,7 +998,7 @@
           <ng-template ngFor let-depHistory
                        [ngForOf]="ajaxTable.data | orderBy: deployment.filter.sortBy:deployment.reverse">
             <tr [ngClass]="{'light-bg':depHistory.show}">
-              <td *ngIf="!deployment.current">
+              <td *ngIf="!historyFilters.current">
                 <span class="show-in-single-line w-full">
                   <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
                      *ngIf="!depHistory.show" (click)="showChildHistory(depHistory);"></i>
@@ -1020,10 +1011,10 @@
               <td>
                 <span class="show-in-single-line w-full">
                   <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
-                     *ngIf="!depHistory.show && deployment.current"
+                     *ngIf="!depHistory.show && historyFilters.current"
                      (click)="showChildHistory(depHistory);"></i>
                   <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
-                     *ngIf="depHistory.show && deployment.current"
+                     *ngIf="depHistory.show && historyFilters.current"
                      (click)="depHistory.show = false;"></i>
                   <span [innerHtml]="depHistory.deploymentDate | stringToDate"></span>
                 </span>
@@ -1097,7 +1088,7 @@
         >
           <thead>
           <tr>
-            <th *ngIf="!submission.current" (click)="sort4('controllerId')">
+            <th *ngIf="!historyFilters.current" (click)="sort4('controllerId')">
               <a><span class="p-r-xs" translate>common.label.controllerId</span>
                 <i *ngIf="submission.filter.sortBy == 'controllerId' && !submission.reverse"
                    class="fa fa-caret-up "></i>
@@ -1117,7 +1108,7 @@
           <ng-template ngFor let-submissionHistory
                        [ngForOf]="ajaxTable.data | orderBy: submission.filter.sortBy:submission.reverse">
             <tr [ngClass]="{'light-bg':submissionHistory.show}">
-              <td *ngIf="!submission.current">
+              <td *ngIf="!historyFilters.current">
                 <span class="show-in-single-line w-full">
                     <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
                        *ngIf="!submissionHistory.show" (click)="submissionHistory.show = true;"></i>
@@ -1130,10 +1121,10 @@
               <td>
                 <span class="show-in-single-line w-full">
                     <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
-                       *ngIf="!submissionHistory.show && submission.current"
+                       *ngIf="!submissionHistory.show && historyFilters.current"
                        (click)="submissionHistory.show = true"></i>
                     <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
-                       *ngIf="submissionHistory.show && submission.current"
+                       *ngIf="submissionHistory.show && historyFilters.current"
                        (click)="submissionHistory.show = false;"></i>
                     <span [innerHtml]="submissionHistory.dailyPlanDate | stringToDate1"></span>
                   </span>

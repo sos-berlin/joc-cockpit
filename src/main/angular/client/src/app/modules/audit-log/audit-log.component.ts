@@ -588,7 +588,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
     this.adtLog = this.coreService.getAuditLogTab();
     if (!(this.adtLog.current || this.adtLog.current === false)) {
-      this.adtLog.current = this.preferences.adtLog == 'current';
+      this.adtLog.current = this.preferences.currentController;
     }
     this.savedFilter = JSON.parse(this.saveService.auditLogFilters) || {};
     if (!this.savedFilter.selected) {

@@ -206,12 +206,17 @@ export class LayoutComponent implements OnInit, OnDestroy {
   private _logout(timeout) {
     this.authService.clearUser();
     this.authService.clearStorage();
-    localStorage.setItem('logging', null);
     if (timeout) {
       sessionStorage.setItem('$SOS$CONTROLLER', null);
-      sessionStorage.setItem('$SOS$ALLEVENT', null);
-      this.router.navigate(['login'], {queryParams: {returnUrl: this.router.url}});
+      let returnUrl = this.router.url, queryParams = {queryParams: {returnUrl: returnUrl}};
+      if (!returnUrl || returnUrl.match(/login/)) {
+        queryParams = undefined;
+      } else {
+        queryParams.queryParams.returnUrl = returnUrl;
+      }
+      this.router.navigate(['login'], queryParams);
     } else {
+      localStorage.setItem('logging', null);
       this.coreService.setDefaultTab();
       sessionStorage.clear();
       this.router.navigate(['login']);
@@ -288,10 +293,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       preferences.theme = 'light';
       preferences.historyTab = 'order';
       preferences.expandOption = 'single';
-      preferences.historyView = 'current';
-      preferences.adtLog = 'current';
-      preferences.fileTransfer = 'current';
-      preferences.agentTask = 'current';
+      preferences.currentController = true;
       preferences.logTimezone = true;
       preferences.showOrders = false;
       if (sessionStorage.$SOS$FORCELOGING === 'true' || sessionStorage.$SOS$FORCELOGING === true) {

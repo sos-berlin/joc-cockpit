@@ -168,7 +168,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     }
     this.agentJobExecutionFilters = this.coreService.getResourceTab().agentJobExecution;
     if (!(this.agentJobExecutionFilters.current || this.agentJobExecutionFilters.current === false)) {
-      this.agentJobExecutionFilters.current = this.preferences.agentTask == 'current';
+      this.agentJobExecutionFilters.current = this.preferences.currentController;
     }
     this.coreService.getResourceTab().state = 'agentJobExecutions';
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};

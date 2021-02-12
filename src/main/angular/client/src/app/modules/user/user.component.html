@@ -352,67 +352,19 @@
                   </div>
                 </div>
                 <div class="row m-t">
+                  <div class="col-md-4 col-lg-3 text-dark" translate>
+                    profile.label.currentController
+                  </div>
+                  <div class="col-sm-6">
+                    <label nz-checkbox [(ngModel)]="preferences.currentController" (ngModelChange)="changeConfiguration()"></label>
+                  </div>
+                </div>
+                <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showView</div>
                   <div class="col-sm-6">
                     <nz-radio-group [(ngModel)]="preferences.pageView" (ngModelChange)="changeConfiguration();changeView()">
                       <label nz-radio nzValue="grid"><span translate>profile.label.asCard</span></label>
                       <label nz-radio nzValue="list"><span translate>profile.label.asList</span></label>
-                    </nz-radio-group>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showOrderHistoryForController</div>
-                  <div class="col-sm-6">
-                    <nz-radio-group [(ngModel)]="preferences.orderHistoryView" (ngModelChange)="changeConfiguration()">
-                      <label nz-radio nzValue="all"><span translate>profile.label.all</span></label>
-                      <label nz-radio nzValue="current"><span translate>profile.label.current</span></label>
-                    </nz-radio-group>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showTaskHistoryForController</div>
-                  <div class="col-sm-6">
-                    <nz-radio-group [(ngModel)]="preferences.taskHistoryView" (ngModelChange)="changeConfiguration()">
-                      <label nz-radio nzValue="all"><span translate>profile.label.all</span></label>
-                      <label nz-radio nzValue="current"><span translate>profile.label.current</span></label>
-                    </nz-radio-group>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showDeploymentHistoryForController</div>
-                  <div class="col-sm-6">
-                    <nz-radio-group [(ngModel)]="preferences.deploymentHistoryView" (ngModelChange)="changeConfiguration()">
-                      <label nz-radio nzValue="all"><span translate>profile.label.all</span></label>
-                      <label nz-radio nzValue="current"><span translate>profile.label.current</span></label>
-                    </nz-radio-group>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showDailyPlanHistoryForController</div>
-                  <div class="col-sm-6">
-                    <nz-radio-group [(ngModel)]="preferences.dailyPlanHistoryView" (ngModelChange)="changeConfiguration()">
-                      <label nz-radio nzValue="all"><span translate>profile.label.all</span></label>
-                      <label nz-radio nzValue="current"><span translate>profile.label.current</span></label>
-                    </nz-radio-group>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showAuditLogForController</div>
-                  <div class="col-sm-6">
-                    <nz-radio-group [(ngModel)]="preferences.adtLog" (ngModelChange)="changeConfiguration()">
-                      <label nz-radio nzValue="all"><span translate>profile.label.all</span></label>
-                      <label nz-radio nzValue="current"><span translate>profile.label.current</span></label>
-                    </nz-radio-group>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>
-                    profile.label.showAgentJobExecutionForController
-                  </div>
-                  <div class="col-sm-6">
-                    <nz-radio-group [(ngModel)]="preferences.agentTask" (ngModelChange)="changeConfiguration()">
-                      <label nz-radio nzValue="all"><span translate>profile.label.all</span></label>
-                      <label nz-radio nzValue="current"><span translate>profile.label.current</span></label>
                     </nz-radio-group>
                   </div>
                 </div>
