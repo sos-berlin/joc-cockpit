@@ -1,32 +1,35 @@
 :root {
   --antd-wave-shadow-color: #fff;
-  --primary-color: #1395be;
+  --primary: #1395be;
   --primary-disable-color: rgba(19, 149, 190, .8);
   --primary-light-color: rgba(21, 167, 213, .5);
-  --primary-hover: #138db4;
+  --hover-primary: #138db4;
   --primary-light-hover: rgba(21, 167, 213, .7);
   --bar-color: #e6f7ff;
   --box-color: #393937;
-  --bg-light: #333332;
-  --bg-dark: #1d1d1c;
+  --background-color: #333332;
+  --bg-box: #1d1d1c;
   --bg-footer: #2b2b2b;
   --text-color: rgba(255, 255, 255, .87);
+  --text-hover: rgba(0, 0, 0, .87);
+  --text-muted: rgba(255, 255, 255, .67);
   --box-shadow: rgba(255, 255, 255, .1);
   --border-color: rgba(255, 255, 255, .3);
   --dark-border-color: rgba(0, 0, 0, .2);
+  --bg-dimgrey: #999;
 }
 
 body {
   color: var(--text-color);
-  background: var(--bg-light)
+  background: var(--background-color)
 }
 
 .bg-blue-color {
-  background-color: var(--bg-light) !important
+  background-color: var(--background-color) !important
 }
 
 pre, .syntax-box {
-  background-color: var(--bg-dark)
+  background-color: var(--bg-box)
 }
 
 .list-group-item.active > .label,
@@ -45,7 +48,7 @@ pre, .syntax-box {
 
 .box,
 .box-color {
-  background-color: var(--bg-dark);
+  background-color: var(--bg-box);
   position: relative;
   margin-bottom: 20px;
   -webkit-box-shadow: 0 1px 3px 1px var(--box-shadow) !important;
@@ -57,11 +60,11 @@ pre, .syntax-box {
 }
 
 .white {
-  background: var(--bg-dark)
+  background: var(--bg-box)
 }
 
 .bg-white {
-  background-color: var(--bg-dark) !important;;
+  background-color: var(--bg-box) !important;;
 }
 
 .ui-check input:checked + i:before {
@@ -69,11 +72,11 @@ pre, .syntax-box {
   top: 5px;
   width: 6px;
   height: 6px;
-  background-color: var(--primary-color)
+  background-color: var(--primary)
 }
 
 .dark-white {
-  background-color: var(--bg-light)
+  background-color: var(--background-color)
 }
 
 .white-overlay {
@@ -85,37 +88,37 @@ pre, .syntax-box {
 }
 
 .b-primary {
-  border-color: var(--primary-color)
+  border-color: var(--primary)
 }
 
 .b-t-primary {
-  border-top-color: var(--primary-color)
+  border-top-color: var(--primary)
 }
 
 .b-b-primary {
-  border-bottom-color: var(--primary-color)
+  border-bottom-color: var(--primary)
 }
 
 .b-l-primary {
-  border-left-color: var(--primary-color)
+  border-left-color: var(--primary)
 }
 a.text-primary:hover,
 a.text-primary:focus,
 .text-primary,
-.text-primary-hover a:hover {
-  color: var(--primary-color) !important
+.text-hover-primary a:hover {
+  color: var(--primary) !important
 }
 
 .md-input.focus,
 .md-input:focus {
-  border-color: var(--primary-color);
+  border-color: var(--primary);
   border-bottom-width: 2px;
   padding-bottom: 1px
 }
 
 .md-input.focus ~ label,
 .md-input:focus ~ label {
-  color: var(--primary-color);
+  color: var(--primary);
   opacity: 1;
   top: 0 !important;
   font-size: .85em !important
@@ -127,16 +130,16 @@ a.text-primary:focus,
 
 .ch-purple {
   color: var(--text-color);
-  background-color: var(--primary-color)
+  background-color: var(--primary)
 }
 
 .purple-color {
-  color: var(--primary-color)
+  color: var(--primary)
 }
 
 .text-hover-primary:hover {
   cursor: pointer !important;
-  color: var(--primary-color) !important
+  color: var(--primary) !important
 }
 
 .border-grey {
@@ -156,7 +159,7 @@ a.text-primary:focus,
 
 .error-link {
   height: 1px;
-  background: var(--bg-dark)
+  background: var(--bg-box)
 }
 
 #mainContainer .h-line {
@@ -178,7 +181,7 @@ pre.log {
 }
 
 .log_detail {
-  color: var(--primary-color);
+  color: var(--primary);
 }
 
 .log_success {
@@ -199,7 +202,7 @@ pre.log {
 }
 
 .rzslider .rz-pointer {
-  background-color: var(--primary-color)
+  background-color: var(--primary)
 }
 
 .search-box {
@@ -210,7 +213,7 @@ pre.log {
 }
 
 .loader1 {
-  color: var(--primary-color)
+  color: var(--primary)
 }
 
 .left-sidebar-btn:hover,
@@ -233,7 +236,7 @@ pre.log {
 }
 
 .cal-year-box .month-name {
-  background-color: var(--primary-color);
+  background-color: var(--primary);
   color: var(--text-color);
   text-align: center;
   margin-top: 8px
@@ -244,7 +247,7 @@ pre.log {
 }
 
 .cal-day-today span[data-cal-date] {
-  color: var(--primary-color)
+  color: var(--primary)
 }
 
 .cal-year-box .cal-day-today span[data-cal-date] {
@@ -266,12 +269,12 @@ pre.log {
 .primary-text-hover-color:hover,
 .primary-text-hover-color:hover i,
 .primary-text-hover-color:hover span {
-  color: var(--primary-color) !important
+  color: var(--primary) !important
 }
 
 .primary,
 .primary .bg {
-  background-color: var(--primary-color) !important
+  background-color: var(--primary) !important
 }
 
 table.folder-tree-grid > tbody > tr,
@@ -285,7 +288,7 @@ table.folder-tree-grid .indented a {
 }
 
 .expand-collapse:hover {
-  color: var(--primary-color);
+  color: var(--primary);
   cursor: pointer
 }
 
@@ -295,7 +298,7 @@ input[readonly] {
 }
 
 .start-on-hover:hover .fa-star-o {
-  color: var(--primary-color)
+  color: var(--primary)
 }
 
 input[type=search] {
@@ -306,12 +309,12 @@ input[type=search] {
 
 input[type=search]:focus {
   color: var(--text-color);
-  border-bottom: 1px solid var(--primary-color)
+  border-bottom: 1px solid var(--primary)
 }
 
 .table .table,
 .table > thead > tr > th {
-  background-color: var(--bg-dark)
+  background-color: var(--bg-box)
 }
 
 .table {
@@ -357,14 +360,14 @@ input[type=search]:focus {
 .btn-grey {
   color: var(--text-color);
   background-color: var(--box-color);
-  border-color: var(--bg-dark)
+  border-color: var(--bg-box)
 }
 
 .btn-grey.active.focus,
 .btn-grey:hover {
   color: var(--white);
   background-color: var(--bg-footer);
-  border-color: var(--bg-light)
+  border-color: var(--background-color)
 }
 
 .btn:hover {
@@ -372,7 +375,7 @@ input[type=search]:focus {
 }
 
 .btn-primary {
-  border-color: var(--primary-color)
+  border-color: var(--primary)
 }
 
 .btn-primary.active.focus,
@@ -388,17 +391,17 @@ input[type=search]:focus {
 .open > .btn-primary.dropdown-toggle:focus,
 .open > .btn-primary.dropdown-toggle:hover {
   color: var(--white);
-  background-color: var(--primary-hover);
-  border-color: var(--primary-hover)
+  background-color: var(--hover-primary);
+  border-color: var(--hover-primary)
 }
 
 .btn-primary.active,
 .btn-primary:active,
 .open > .btn-primary.dropdown-toggle {
   color: var(--white);
-  background-color:var(--primary-hover);
+  background-color:var(--hover-primary);
   background-image: none;
-  border-color: var(--primary-hover)
+  border-color: var(--hover-primary)
 }
 
 .btn-primary.disabled.focus,
@@ -435,15 +438,15 @@ a.text-dark:hover {
 .cluster-rect,
 .rect, .cluster, .joint  {
   background: var(--box-color);
-  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, var(--box-color)), color-stop(1, var(--bg-dark)));
-  background-image: -moz-linear-gradient(center bottom, var(--box-color) 37%, var(--bg-dark) 69%);
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, var(--box-color)), color-stop(1, var(--bg-box)));
+  background-image: -moz-linear-gradient(center bottom, var(--box-color) 37%, var(--bg-box) 69%);
   -webkit-box-shadow: inset 0 2px 9px var(--border-color), inset 0 -2px 6px var(--dark-border-color);
   -moz-box-shadow: inset 0 2px 9px var(--border-color), inset 0 -2px 6px var(--dark-border-color);
   box-shadow: inset 0 2px 9px var(--border-color), inset 0 -2px 6px var(--dark-border-color)
 }
 
 .light {
-  background-color: var(--bg-dark) !important
+  background-color: var(--bg-box) !important
 }
 
 .breadcrumb > .active {
@@ -466,7 +469,7 @@ a.text-dark:hover {
 }
 
 .modal-header {
-  background: var(--bg-dark);
+  background: var(--bg-box);
   color: var(--text-color)
 }
 
@@ -489,7 +492,7 @@ select {
 }
 
 .box select {
-  background-color: var(--bg-dark) !important
+  background-color: var(--bg-box) !important
 }
 
 .input-dropdown {
@@ -603,7 +606,7 @@ div.order-panel div {
 .pagination > .active > a,
 .pagination > .active > span {
   color: var(--white) !important;
-  background-color: var(--primary-color) !important;
+  background-color: var(--primary) !important;
   border-color: #327aa3
 }
 
@@ -685,12 +688,12 @@ hr {
 }
 
 .gantt-task-info {
-  background: var(--bg-dark)
+  background: var(--bg-box)
 }
 
 .gantt-task-infoArrow:after,
 .gantt-task-infoArrowR:after {
-  border-top: 7px solid var(--bg-dark)
+  border-top: 7px solid var(--bg-box)
 }
 
 span.attribute_name,
@@ -741,7 +744,7 @@ pre.cdata {
 }
 
 .btn-primary {
-  background-color: var(--primary-color) !important;
+  background-color: var(--primary) !important;
   color: var(--white)
 }
 
@@ -750,28 +753,28 @@ pre.cdata {
 }
 
 .tree-grid .tree-icon:hover {
-  color: var(--primary-color)
+  color: var(--primary)
 }
 
 .form-control:focus {
-  border-color: var(--primary-color)
+  border-color: var(--primary)
 }
 
 .dropdown-list {
-  border: 1px solid var(--bg-dark)
+  border: 1px solid var(--bg-box)
 }
 
 .dropdown-list a:hover {
   color: var(--white);
-  background: var(--primary-color)
+  background: var(--primary)
 }
 
 .backup {
-  background: var(--bg-light);
-  background: -webkit-linear-gradient(left, rgba(255, 255, 255, .51), var(--bg-light));
-  background: -o-linear-gradient(right, rgba(255, 255, 255, .51), var(--bg-light));
-  background: -moz-linear-gradient(right, rgba(255, 255, 255, .51), var(--bg-light));
-  background: linear-gradient(to right, rgba(255, 255, 255, .51), var(--bg-light))
+  background: var(--background-color);
+  background: -webkit-linear-gradient(left, rgba(255, 255, 255, .51), var(--background-color));
+  background: -o-linear-gradient(right, rgba(255, 255, 255, .51), var(--background-color));
+  background: -moz-linear-gradient(right, rgba(255, 255, 255, .51), var(--background-color));
+  background: linear-gradient(to right, rgba(255, 255, 255, .51), var(--background-color))
 }
 .calendar {
   color: var(--text-color);
@@ -807,12 +810,12 @@ pre.cdata {
 }
 
 select {
-  background-color: var(--bg-dark) !important
+  background-color: var(--bg-box) !important
 }
 
 .status-table table > tbody > tr {
-  background: var(--bg-light);
-  border-color: var(--bg-dark);
+  background: var(--background-color);
+  border-color: var(--bg-box);
 }
 
 input[readonly=readonly],
@@ -823,7 +826,7 @@ input[readonly] {
 gridster-item {
   overflow: visible !important;
   z-index: unset !important;
-  background-color: var(--bg-dark) !important;
+  background-color: var(--bg-box) !important;
   box-sizing: border-box;
   position: absolute;
   transition: .3s;
@@ -856,7 +859,7 @@ button.close {
 input:-webkit-autofill, input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
   -webkit-text-fill-color: var(--text-color);
-  -webkit-box-shadow: 0 0 0 100px var(--bg-dark) inset;
+  -webkit-box-shadow: 0 0 0 100px var(--bg-box) inset;
 }
 
 .ngx-pagination a, .ngx-pagination button {
@@ -864,15 +867,15 @@ input:-webkit-autofill:focus {
 }
 
 pre#pre {
-  background-color: var(--bg-dark);
+  background-color: var(--bg-box);
 }
 
 .avatar[_ngcontent-c2] {
-  background: var(--primary-color) !important;
+  background: var(--primary) !important;
 }
 
 span ul li a {
-  color: var(--primary-color) !important;
+  color: var(--primary) !important;
 }
 
 .row.open {
@@ -894,15 +897,15 @@ span ul li a {
 }
 
 .ui-select-match-item {
-  color: var(--primary-color);
+  color: var(--primary);
 }
 
 #rightSideBar {
-  background: var(--bg-dark);
+  background: var(--bg-box);
   box-shadow: 0 0 15px 0 rgba(255, 255, 255, 0.1);
 }
 .sidebar-hover-effect {
-  background: var(--bg-dark)
+  background: var(--bg-box)
 }
 
 .sidebar-hover-effect:hover {
@@ -917,7 +920,7 @@ span ul li a {
   background: url(../assets/images/left-tips-dark.svg) center no-repeat;
 }
 #property-panel .rg-right {
-  background-color: var(--bg-dark) !important;
+  background-color: var(--bg-box) !important;
 }
 .nav-active-border3 li.dropdown-separator .separator {
   background-color: rgba(255, 255, 255, 0.5);
@@ -948,12 +951,12 @@ span ul li a {
 }
 
 .ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable, .ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners {
-  background-color: var(--bg-light);
+  background-color: var(--background-color);
   border-color: #65707d;
   color: white;
 }
 #property-panel .ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable, #property-panel .ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners {
-  background-color: var(--bg-dark) !important;
+  background-color: var(--bg-box) !important;
   border-color: var(--border-color);
   color: rgba(255, 255, 255, 0.89);
 }
@@ -975,43 +978,43 @@ span ul li a {
 }
 
 .ck-rounded-corners .ck.ck-dropdown .ck-dropdown__panel .ck-list, .ck.ck-dropdown .ck-dropdown__panel .ck-list.ck-rounded-corners {
-  background-color: var(--bg-light);
-  border-color: var(--bg-light);
+  background-color: var(--background-color);
+  border-color: var(--background-color);
 }
 
 .ck.ck-dropdown__panel {
-  border: 1px solid var(--bg-light);
+  border: 1px solid var(--background-color);
 }
 
 .ck.ck-list__item .ck-button:hover:not(.ck-disabled),
 .ck.ck-button:not(.ck-disabled):active, a.ck.ck-button:not(.ck-disabled):active {
-  color: var(--bg-light);
+  color: var(--background-color);
 }
 
 .ck.ck-list__item .ck-button.ck-on {
-  background-color: var(--primary-color);
+  background-color: var(--primary);
   color: var(--white);
 }
 
 .ck.ck-button.ck-on, a.ck.ck-button.ck-on {
-  background-color: var(--primary-color);
+  background-color: var(--primary);
 }
 
 .documents a[href*="http:"], .documents a[href*="https:"] {
-  color: var(--primary-color) !important;
+  color: var(--primary) !important;
 }
 
 .arrow-down-ac:last-child:after, .arrow-down:last-child:after {
-  color: var(--bg-dark);
+  color: var(--bg-box);
 }
 
 .ck-content a {
-  color: var(--primary-color);
+  color: var(--primary);
   text-decoration: underline;
 }
 
 .ck.ck-link-form, .ck.ck-link-actions {
-  background: var(--bg-light);
+  background: var(--background-color);
 }
 
 .ck.ck-link-actions .ck-button.ck-link-actions__preview .ck-button__label {
@@ -1019,15 +1022,15 @@ span ul li a {
 }
 .ant-dropdown-menu{
   color: var(--text-color);
-  background-color: var(--bg-dark);
-  border: 1px solid var(--bg-dark) !important;
+  background-color: var(--bg-box);
+  border: 1px solid var(--bg-box) !important;
   border-bottom-color: rgba(0, 0, 0, .95);
   -webkit-box-shadow: 0 2px 4px var(--border-color);
   box-shadow: 0 2px 4px var(--border-color)
 }
 
 .ant-select-dropdown {
-  background-color: var(--bg-dark) !important;
+  background-color: var(--bg-box) !important;
   color: var(--text-color);
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.15);
 }
@@ -1039,14 +1042,14 @@ span ul li a {
 
 .ant-input-number, .ant-select-selection {
   color: var(--text-color);
-  background-color: var(--bg-dark) !important;
+  background-color: var(--bg-box) !important;
   border: 1px solid var(--border-color)
 }
 .ant-time-picker-clear,
 .ant-calendar-picker-clear,
 .ant-calendar-picker-clear:hover,
 .ant-time-picker-clear:hover{
-  background-color: var(--bg-dark) !important;
+  background-color: var(--bg-box) !important;
   color: var(--text-color);
 }
 .ant-time-picker-panel-input-wrap,
@@ -1054,8 +1057,8 @@ span ul li a {
   border-bottom: 1px solid var(--border-color);
 }
 .ant-calendar {
-  background-color: var(--bg-dark);
-  border: 1px solid var(--bg-dark);
+  background-color: var(--bg-box);
+  border: 1px solid var(--bg-box);
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
 }
 .modal-open .ant-select-dropdown,
@@ -1091,7 +1094,7 @@ span ul li a {
 .ant-select-selection:active,
 .ant-input-number:focus,
 .ant-input-number-focused {
-  border-color: var(--primary-color) !important;
+  border-color: var(--primary) !important;
 }
 .ant-input-number-handler-wrap{
   background-color: var(--bg-footer);
@@ -1128,7 +1131,7 @@ span ul li a {
 .ant-calendar-today .ant-calendar-date,
 .ant-calendar-month-panel-selected-cell .ant-calendar-month-panel-month, .ant-time-picker-panel-select li:hover, li.ant-time-picker-panel-select-option-selected, .ant-calendar-date:hover, .ant-tabs-ink-bar,
 .ant-calendar-month-panel-selected-cell .ant-calendar-month-panel-month:hover {
-  color: var(--primary-color);
+  color: var(--primary);
   background: var(--bar-color);
 }
 
@@ -1152,7 +1155,7 @@ span ul li a {
 .ant-calendar-year-panel,
 .ant-calendar-month-panel,
 .ant-time-picker-panel-inner{
-  background-color: var(--bg-dark);
+  background-color: var(--bg-box);
   color: var(--text-color);
   -webkit-box-shadow: 0 2px 4px var(--border-color);
   box-shadow: 0 2px 4px var(--border-color)
@@ -1178,34 +1181,34 @@ span ul li a {
    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3) !important;
  }
 .ant-checkbox-indeterminate .ant-checkbox-inner::after {
-  background-color: var(--primary-color);
+  background-color: var(--primary);
 }
 .anticon, .ant-radio, .ant-checkbox, .ant-radio-group, .ant-radio-wrapper, .ant-checkbox-wrapper{
   color: var(--text-color);
 }
 .ant-checkbox-checked .ant-checkbox-inner {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
+  background-color: var(--primary);
+  border-color: var(--primary);
 }
 .ant-radio-inner::after {
-  background-color: var(--primary-color);
+  background-color: var(--primary);
 }
 .ant-checkbox-inner, .ant-radio-inner, .ant-tree-checkbox-inner {
   border: 1px solid var(--border-color);
 }
 .ant-radio-wrapper:hover .ant-radio, .ant-radio:hover .ant-radio-inner, .ant-radio-input:focus + .ant-radio-inner {
-  border-color: var(--primary-color);
+  border-color: var(--primary);
 }
 .select-input-both .ant-select-open .ant-select-selection{
   color: var(--text-color) !important;
 }
 .select-input-both .ant-select-open{
-  border: 1px solid var(--primary-color);
-  background: var(--bg-dark) !important;
+  border: 1px solid var(--primary);
+  background: var(--bg-box) !important;
 }
 .ant-select-selection--multiple .ant-select-selection__choice{
-  background: var(--bg-dark);
-  border-color: var(--bg-dark);
+  background: var(--bg-box);
+  border-color: var(--bg-box);
   color: var(--text-color);
 }
 /*
@@ -1238,7 +1241,7 @@ div.jsoneditor{
   border-left: 2px solid var(--border-color);
 }
 .ace-jsoneditor .ace_text-input.ace_composition {
-  background: var(--bg-dark);
+  background: var(--bg-box);
   color: var(--text-color);
 }
 .ace-jsoneditor .ace_overwrite-cursors .ace_cursor {
@@ -1287,7 +1290,7 @@ Code Mirror
 }
 
 .vertex-text.job span a {
-  color: var(--primary-color)
+  color: var(--primary)
 }
 
 div.CodeMirror-selected {
@@ -1414,7 +1417,7 @@ span.cm-link {
 }
 
 .light-yellow-bg {
-  background: var(--bg-light)
+  background: var(--background-color)
 }
 .calendar .calendar-header table th:hover, .calendar-sm .selected {
   background: var(--box-color);
@@ -1424,11 +1427,11 @@ span.cm-link {
 }
 
 .jsgantt-chart .jsgantt-task-row:nth-child(even) {
-  background-color: var(--bg-light);
+  background-color: var(--background-color);
 }
 
 .jsgantt-chart .jsgantt-row-task:nth-child(even) {
-  background-color: var(--bg-light);
+  background-color: var(--background-color);
 }
 
 .jsgantt-chart .jsgantt-grid-data .jsgantt-row.odd:hover,
@@ -1444,7 +1447,7 @@ span.cm-link {
   background: #222222 !important;
 }
 .order-history-template1 {
-  background: var(--bg-light) !important;
+  background: var(--background-color) !important;
 }
 .order-history-template2 {
   background: #444444 !important;
@@ -1453,7 +1456,7 @@ span.cm-link {
   background: #222222 !important;
 }
 .order-history-template3 {
-  background: var(--bg-light) !important;
+  background: var(--background-color) !important;
 }
 .order-history-template4 {
   background: #444444 !important;
@@ -1462,7 +1465,7 @@ span.cm-link {
   background: #222222 !important;
 }
 .order-history-template6 {
-  background: var(--bg-light) !important;
+  background: var(--background-color) !important;
 }
 .order-history-template7 {
   background: #444444 !important;
@@ -1471,7 +1474,7 @@ span.cm-link {
   background: #222222 !important;
 }
 .order-history-template9 {
-  background: var(--bg-light) !important;
+  background: var(--background-color) !important;
 }
 .order-history-template10 {
   background: #444444 !important;
@@ -1480,7 +1483,7 @@ span.cm-link {
   background: #222222 !important;
 }
 .order-history-template12 {
-  background: var(--bg-light) !important;
+  background: var(--background-color) !important;
 }
 .order-history-template13 {
   background: #444444 !important;
@@ -1495,7 +1498,7 @@ span.cm-link {
   background: var(--primary-light-color) !important;
 }
 .calendar-sm .selected{
-  background: var(--primary-color) !important;
+  background: var(--primary) !important;
 }
 .calendar .cal-day-plan:hover{
   background: var(--primary-light-hover) !important;

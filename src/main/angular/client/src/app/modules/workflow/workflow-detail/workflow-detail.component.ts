@@ -677,7 +677,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             }
             json.positions.push(JSON.stringify(json.instructions[x].position));
           }
-          if (json.instructions[x].TYPE === 'Try' || json.instructions[x].TYPE === 'Fork' || json.instructions[x].TYPE === 'If' || json.instructions[x].TYPE === 'Retry' || json.instructions[x].TYPE === 'Lock') {
+          if (self.workflowService.isInstructionCollapsible(json.instructions[x].TYPE)) {
             self.orderCountMap.set(json.instructions[x].id, JSON.stringify(json.instructions[x].positions));
           }
         }
@@ -893,21 +893,26 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   }
 
   suspendOrder() {
-    this.restCall(false, 'Suspend', this.order);
+    this.restCall(false, 'Suspend', this.order, 'suspend');
   }
 
   suspendOrderWithKill() {
-    this.restCall(true, 'Suspend', this.order);
+    this.restCall(true, 'Suspend', this.order, 'suspend');
   }
 
   cancelOrder() {
-    this.restCall(false, 'Cancel', this.order);
+    this.restCall(false, 'Cancel', this.order, 'cancel');
   }
 
   cancelOrderWithKill() {
-    this.restCall(true, 'Cancel', this.order);
+    this.restCall(true, 'Cancel', this.order, 'cancel');
   }
-  private restCall(isKill, type, order) {
+
+  removeWhenTerminated() {
+    this.restCall(true, 'Terminate', this.order, 'remove_when_terminated');
+  }
+
+  private restCall(isKill, type, order, url) {
     const obj: any = {
       controllerId: this.schedulerIds.selected, orderIds: [order.orderId], kill: isKill
     };
@@ -921,14 +926,14 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.comments = comments;
       modalRef.componentInstance.obj = obj;
-      modalRef.componentInstance.url = 'orders/' + type.toLowerCase();
+      modalRef.componentInstance.url = 'orders/' + url;
       modalRef.result.then((result) => {
         console.log(result);
-      }, () => {
-
+      }, (reason) => {
+        console.log('close...', reason);
       });
     } else {
-      this.coreService.post('orders/' + type.toLowerCase(), obj).subscribe(() => {
+      this.coreService.post('orders/' + url, obj).subscribe(() => {
       });
     }
   }

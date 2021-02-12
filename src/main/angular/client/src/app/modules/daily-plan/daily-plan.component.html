@@ -42,13 +42,13 @@
                   *ngIf="value.state && (value.state._text === 'SUSPENDED' || value.state._text === 'FAILED')">
                 <a (click)="resumeOrder(value, null )" translate>order.button.resume</a>
               </li>
-              <li nz-menu-item
+              <li nz-menu-item [nzDisabled]="value.period && !value.period.repeat"
                   *ngIf="value.state && (value.state._text === 'PLANNED' || value.state._text === 'PENDING')">
                 <a (click)="modifyOrder(value)" translate>dailyPlan.button.setStartTime</a>
               </li>
               <li nz-menu-item
                   *ngIf="value.state && (value.state._text === 'PLANNED' || value.state._text === 'PENDING')">
-                <a (click)="changeParameter(null, value, null)" translate>dailyPlan.button.setParameters</a>
+                <a (click)="changeParameter(null, value)" translate>dailyPlan.button.setParameters</a>
               </li>
             </ul>
           </nz-dropdown-menu>
@@ -95,9 +95,13 @@
       <td><span [innerHtml]="value.endTime"></span></td>
       <td><span [innerHtml]="value.duration"></span>
       </td>
-      <td><span *ngIf="value.period.repeat">
-        {{'dailyPlan.label.repeatEvery' | translate}}
-        {{value.period.repeat}}s</span></td>
+      <td>
+        <div *ngIf="value.period.repeat">
+          <span nz-tooltip="{{value.period.begin | stringToDate}} - {{value.period.end | stringToDate}}">
+            {{'dailyPlan.label.repeatEvery' | translate}}
+            {{value.period.repeat}}s</span>
+        </div>
+      </td>
     </tr>
     <tr *ngIf="value.show">
       <td colspan="2"></td>
@@ -149,7 +153,7 @@
                 <a (click)="resumeOrder(null, plan )" translate>order.button.resume</a>
               </li>
               <li nz-menu-item [nzDisabled]="!plan.isModify">
-                <a (click)="changeParameter(plan, null, null)" translate>dailyPlan.button.setParameters</a>
+                <a (click)="changeParameter(plan, null)" translate>dailyPlan.button.setParameters</a>
               </li>
             </ul>
           </nz-dropdown-menu>
@@ -206,10 +210,12 @@
       <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]"><span
         [innerHtml]="plan.value[0].duration"></span>
       </td>
-      <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]"><span
-        *ngIf="plan.value[0].period.repeat">
-        {{'dailyPlan.label.repeatEvery' | translate}}
-        {{plan.value[0].period.repeat}}s</span>
+      <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]">
+        <div *ngIf="plan.value[0].period.repeat">
+          <span nz-tooltip="{{plan.value[0].period.begin | stringToDate}} - {{plan.value[0].period.end | stringToDate}}">
+            {{'dailyPlan.label.repeatEvery' | translate}}
+            {{plan.value[0].period.repeat}}s</span>
+        </div>
       </td>
     </tr>
     <ng-container *ngIf="plan.order" [ngTemplateOutlet]="orderTemplate"

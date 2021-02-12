@@ -2868,7 +2868,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].path) {
           let path = args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/') + 1) || '/';
-          if (args.eventSnapshots[j].eventType.match(/InventoryAdded/) || args.eventSnapshots[j].eventType.match(/ItemAdded/) || args.eventSnapshots[j].eventType.match(/ItemChanged/) || args.eventSnapshots[j].eventType.match(/InventoryUpdated/)) {
+          if (args.eventSnapshots[j].eventType.match(/Inventory/) || args.eventSnapshots[j].eventType.match(/Item/)) {
             if (args.eventSnapshots[j].objectType === 'FOLDER') {
               this.initTree(args.eventSnapshots[j].path, path);
               break;

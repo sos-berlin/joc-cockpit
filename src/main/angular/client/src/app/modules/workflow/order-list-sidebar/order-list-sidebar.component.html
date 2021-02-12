@@ -10,7 +10,7 @@
   <button class="hide btn btn-grey btn-sm m-l-12"  *ngIf="object.isTerminate"
           [ngClass]="{'show-block':permission.Order.execute}"
           (click)="terminateAllOrder()"><i class="fa fa-trash p-r-xs"></i>
-    <span class="hidden-sm-down" translate>common.button.leaveWorkflow</span></button>
+    <span class="hidden-sm-down" translate>order.button.leaveWorkflow</span></button>
   <button class="hide btn btn-grey btn-sm m-l-12" *ngIf="object.isSuspend"
           [ngClass]="{'show-block':permission.Order.execute.suspend}"
           (click)="suspendAllOrder()"><i class="fa fa-stop p-r-xs"></i>

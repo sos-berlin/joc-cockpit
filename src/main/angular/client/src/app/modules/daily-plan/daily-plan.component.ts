@@ -18,7 +18,7 @@ import * as moment from 'moment';
 import * as _ from 'underscore';
 import {Router} from '@angular/router';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
-import {GroupByPipe, SearchPipe} from '../../filters/filter.pipe';
+import {GroupByPipe, SearchPipe, StringDatePipe} from '../../filters/filter.pipe';
 import {CoreService} from '../../services/core.service';
 import {SaveService} from '../../services/save.service';
 import {AuthService} from '../../components/guard';
@@ -421,7 +421,7 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
   @Input() toggle: boolean;
   tasks = [];
 
-  constructor(public coreService: CoreService, public translate: TranslateService) {
+  constructor(public coreService: CoreService, public translate: TranslateService, private stringDatePipe: StringDatePipe) {
   }
 
   ngOnInit() {
@@ -488,9 +488,9 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
               id: ++count,
               col1: plans[i].value[j].orderId,
               col2: this.groupBy === 'WORKFLOW' ? '' : plans[i].value[j].workflowPath,
-              plannedDate: moment(plans[i].value[j].plannedDate).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss'),
-              begin: plans[i].value[j].period.begin ? moment(plans[i].value[j].period.begin).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
-              end: plans[i].value[j].period.end ? moment(plans[i].value[j].period.end).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
+              plannedDate: this.stringDatePipe.transform(plans[i].value[j].plannedDate),
+              begin: plans[i].value[j].period.begin ? this.stringDatePipe.transform(plans[i].value[j].period.begin) : '',
+              end: plans[i].value[j].period.end ? this.stringDatePipe.transform(plans[i].value[j].period.end) : '',
               repeat: plans[i].value[j].period.repeat,
               class: this.coreService.getColor(plans[i].value[j].state.severity, 'bg'),
               duration: dur > 60 ? (dur / (60 * 60)) : 1,
@@ -509,9 +509,9 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
           id: (j + 1),
           col1: this.data[j].orderId,
           col2: this.groupBy === 'WORKFLOW' ? '' : this.data[j].workflowPath,
-          plannedDate: moment(this.data[j].plannedDate).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss'),
-          begin: this.data[j].period.begin ? moment(this.data[j].period.begin).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
-          end: this.data[j].period.end ? moment(this.data[j].period.end).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
+          plannedDate: this.stringDatePipe.transform(this.data[j].plannedDate),
+          begin: this.data[j].period.begin ? this.stringDatePipe.transform(this.data[j].period.begin) : '',
+          end: this.data[j].period.end ? this.stringDatePipe.transform(this.data[j].period.end) : '',
           repeat: this.data[j].period.repeat,
           class: this.coreService.getColor(this.data[j].state.severity, 'bg'),
           duration: dur > 60 ? (dur / (60 * 60)) : 1,
@@ -925,7 +925,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (this.pageView !== 'grid') {
       if (!this.dailyPlanFilters.filter.groupBy) {
         this.planOrders.forEach((order) => {
-          this.addDetailsOfOrder(order);
+          if(!order.show && flag) {
+            this.addDetailsOfOrder(order);
+          } else{
+            order.show = flag;
+          }
         });
       } else {
         this.planOrders.forEach((order) => {
@@ -1197,7 +1201,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         orderId: plan.orderId,
         controllerId: this.schedulerIds.selected
       }).subscribe((res: any) => {
-        this.convertObjectToArray(res, plan)
+        this.convertObjectToArray(res, plan);
       }, err => {
       });
     }

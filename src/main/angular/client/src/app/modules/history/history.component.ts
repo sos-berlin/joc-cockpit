@@ -865,10 +865,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
   orderHistory(obj, flag) {
     this.historyFilters.type = 'ORDER';
     if (!obj) {
-      obj = {controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''};
       this.isLoading = false;
       this.data = [];
     }
+    obj = {controllerId: this.order.current == true ? this.schedulerIds.selected : ''};
 
     if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true') && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0))) {
       obj.excludeOrders = [];
@@ -924,7 +924,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   @HostListener('window:resize', ['$event'])
   onResize() {
     if (this.historyFilters.type === 'ORDER') {
-      this.coreService.calRowWidth(this.historyFilters.current);
+      this.coreService.calRowWidth(this.order.current);
     }
   }
 
@@ -958,7 +958,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       data.children = res.children;
       data.states = res.states;
       data.loading = false;
-      this.coreService.calRowWidth(this.historyFilters.current);
+      this.coreService.calRowWidth(this.order.current);
     }, () => {
       data.loading = false;
     });
@@ -1023,10 +1023,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
   taskHistory(obj) {
     this.historyFilters.type = 'TASK';
     if (!obj) {
-      obj = {controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''};
       this.isLoading = false;
       this.data = [];
     }
+    obj = {controllerId: this.task.current == true ? this.schedulerIds.selected : ''};
     if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true')
       && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
       obj.excludeJobs = [];
@@ -1103,11 +1103,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   deploymentHistory(obj, flag) {
     this.historyFilters.type = 'DEPLOYMENT';
     if (!obj) {
-      if (this.historyFilters.current == true) {
-        obj = {controllerId: this.schedulerIds.selected};
-      } else {
-        obj = {};
-      }
       this.isLoading = false;
       this.data = [];
     } else {
@@ -1115,6 +1110,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         delete obj['controllerId'];
       }
     }
+    obj = {controllerId: this.deployment.current == true ? this.schedulerIds.selected : undefined};
     if (this.selectedFiltered4 && !_.isEmpty(this.selectedFiltered4)) {
       this.isCustomizationSelected4(true);
       obj = this.deploymentParseDate(obj, this.selectedFiltered4, true);
@@ -1172,18 +1168,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
   submissionHistory(obj) {
     this.historyFilters.type = 'SUBMISSION';
     if (!obj) {
-      if (this.historyFilters.current == true) {
-        obj = {controllerId: this.schedulerIds.selected};
-      } else {
-        obj = {};
-      }
       this.isLoading = false;
       this.data = [];
-    } else {
-      if (!obj.controllerId) {
-        delete obj['controllerId'];
-      }
     }
+    obj = {controllerId: this.submission.current == true ? this.schedulerIds.selected : ''};
     if (this.selectedFiltered5 && !_.isEmpty(this.selectedFiltered5)) {
       this.isCustomizationSelected5(true);
       if (this.selectedFiltered5.type && this.selectedFiltered5.type.length === 1) {
@@ -1825,7 +1813,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       data.children = res.children;
       data.states = res.states;
       data.loading = false;
-      this.coreService.calRowWidth(this.historyFilters.current);
+      this.coreService.calRowWidth(this.order.current);
     }, () => {
       data.loading = false;
     });
@@ -1850,7 +1838,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       data.children = res.children;
       data.states = res.states;
       data.loading = false;
-      this.coreService.calRowWidth(this.historyFilters.current);
+      this.coreService.calRowWidth(this.order.current);
     }, () => {
       data.loading = false;
     });
@@ -2297,7 +2285,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     let data = [];
     for (let i = 0; i < this.currentData.length; i++) {
       let obj: any = {};
-      if (!this.historyFilters.current) {
+      if (!this.order.current) {
         obj[controllerId] = this.currentData[i].controllerId;
       }
       obj[orderId] = this.currentData[i].orderId;
@@ -2354,7 +2342,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     let data = [];
     for (let i = 0; i < this.currentData.length; i++) {
       let obj: any = {};
-      if (!this.historyFilters.current) {
+      if (!this.task.current) {
         obj[controllerId] = this.currentData[i].controllerId;
       }
 
@@ -2391,7 +2379,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     let data = [];
     for (let i = 0; i < this.currentData.length; i++) {
       let obj: any = {};
-      if (!this.historyFilters.current) {
+      if (!this.deployment.current) {
         obj[controllerId] = this.currentData[i].controllerId;
       }
       obj[deploymentDate] = this.coreService.stringToDate(this.preferences, this.currentData[i].deploymentDate);
@@ -2415,7 +2403,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     let data = [];
     for (let i = 0; i < this.currentData.length; i++) {
       let obj: any = {};
-      if (!this.historyFilters.current) {
+      if (!this.submission.current) {
         obj[controllerId] = this.currentData[i].controllerId;
       }
       obj[dailyPlanDate] = this.coreService.stringToDate(this.preferences, this.currentData[i].dailyPlanDate);
@@ -2428,10 +2416,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType.match(/WorkflowStateChanged/) && this.isLoading && this.historyFilters.type === 'ORDER') {
+        if (args.eventSnapshots[j].eventType === 'HistoryOrderTerminated' && this.isLoading && this.historyFilters.type === 'ORDER') {
           this.init(true);
           break;
-        } else if (args.eventSnapshots[j].eventType === 'JobStateChanged' && this.isLoading && this.historyFilters.type === 'TASK') {
+        } else if (args.eventSnapshots[j].eventType === 'HistoryTaskTerminated' && this.isLoading && this.historyFilters.type === 'TASK') {
           this.init(true);
           break;
         } else if (args.eventSnapshots[j].eventType.match(/Deploy/) && this.isLoading && this.historyFilters.type === 'DEPLOYMENT') {
@@ -2479,8 +2467,18 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (!this.submission.filter.category) {
       this.submission.filter.category = 'ALL';
     }
-    if (!(this.historyFilters.current || this.historyFilters.current === false)) {
-      this.historyFilters.current = this.preferences.historyFilters == 'current';
+
+    if (!(this.order.current || this.order.current === false)) {
+      this.order.current = this.preferences.orderHistoryView == 'current';
+    }
+    if (!(this.task.current || this.task.current === false)) {
+      this.task.current = this.preferences.taskHistoryView == 'current';
+    }
+    if (!(this.deployment.current || this.deployment.current === false)) {
+      this.deployment.current = this.preferences.deploymentHistoryView == 'current';
+    }
+    if (!(this.submission.current || this.submission.current === false)) {
+      this.submission.current = this.preferences.dailyPlanHistoryView == 'current';
     }
     this.historyFilterObj = JSON.parse(this.saveService.historyFilters) || {};
     this.savedHistoryFilter = this.historyFilterObj.order || {};
@@ -2816,21 +2814,18 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   private init(flag) {
     if (this.loadConfig && this.loadIgnoreList) {
-      let obj = {
-        controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''
-      };
       if (!flag) {
         this.isLoading = false;
         this.data = [];
       }
       if (this.historyFilters.type === 'ORDER') {
-        this.orderHistory(obj, flag);
+        this.orderHistory({}, flag);
       } else if (this.historyFilters.type === 'TASK') {
-        this.taskHistory(obj);
+        this.taskHistory({});
       } else if (this.historyFilters.type === 'DEPLOYMENT') {
-        this.deploymentHistory(obj, flag);
+        this.deploymentHistory({}, flag);
       } else if (this.historyFilters.type === 'SUBMISSION') {
-        this.submissionHistory(obj);
+        this.submissionHistory({});
       }
     }
   }

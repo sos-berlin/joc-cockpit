@@ -1,68 +1,87 @@
-.bg-blue-color{background-color:#fff!important}.text-white,.text-white:hover,a[href]:hover span.text-white{color:#4d4d4d!important}.box-footer,.fa-fa-color,body{background:#fafafa}.fa-fa-color{border-bottom:1px solid #ccc}.b-b-transparent{border-bottom:1px solid transparent}.cluster-rect,.rect{background-image:-webkit-gradient(linear,left bottom,left top,color-stop(0,#fff),color-stop(1,#fafafa));background-image:-moz-linear-gradient(center bottom,#fff 37%,#fafafa 69%);-webkit-box-shadow:inset 0 2px 9px rgba(255,255,255,.3),inset 0 -2px 6px rgba(0,0,0,.2);-moz-box-shadow:inset 0 2px 9px rgba(255,255,255,.3),inset 0 -2px 6px rgba(0,0,0,.2);box-shadow:inset 0 2px 9px rgba(255,255,255,.3),inset 0 -2px 6px rgba(0,0,0,.2)}.b-b,.b-l,.b-r,.b-t{border-bottom:1px solid rgba(204,204,204,.5)}.btn-default,.btn-grey{color:#3d464d;background-color:#fafafa;border-color:#f5f5f5}.btn-grey.active.focus,.btn-grey:hover{color:#333;background-color:#f5f5f5;border-color:#f2f2f2}.btn:hover{box-shadow:0 1px 3px rgba(0,0,0,.3)!important}.rg-bottom,.rg-right{background:#f2f2f2!important}.label.up{background:grey;color:#fff}.modal-header{background:#f5f5f5;color:#3d464d}.more-option i,.more-option-h i{background-color:#fafafa}.more-option i:hover,.more-option-h i:hover{background:#f5f5f5}.table>tbody>tr{border-bottom:2px solid #f5f5f5}.table-bordered>tbody>tr{border-bottom:1px solid #f5f5f5;border-color:#f5f5f5}.table-bordered,.table>thead>tr>th{border-color:#f5f5f5}button.primary{color:#fff}.close{color:#3d464d}.backup{background:#fff;background:-webkit-linear-gradient(left,rgba(233,233,233,1),#e8e8e8);background:-o-linear-gradient(right,rgba(233,233,233,1),rgba(232,232,232,1));background:-moz-linear-gradient(right,rgba(233,233,233,1),rgba(232,232,232,1));background:linear-gradient(to right,rgba(233,233,233,1),rgba(232,232,232,1))}.backup-top-header{background:#000}.backup-top-header .backup-text,.backup-top-header .m-r-sm{color:#FFF}
-button.close {
-  color: #3a3a3a;
-}
-#outlineContainer{
-  background: #fff !important;
-}
-.avatar[_ngcontent-c2] {
-	background: #1395BE !important;
-}
-span ul li a {
-	color: #1395BE !important;
-}
-
-.bg-white{
-  background-color: #fff !important;
-}
-.navbar .nav-text {
-  line-height: 16px;
-}
-.property-panel .sidebar-close i {
-  color: darkcyan;
-}
-.documents a[href*="http:"] {
-  color: #1395BE !important;
-}
-.documents a[href*="https:"] {
-  color: #1395BE !important;
+:root{
+  --background-color: #fafafa;
+  --bg-box: #fff;
+  --text-color: #333;
+  --text-hover: rgba(0, 0, 0, 0.87);
+  --text-muted: rgba(0, 0, 0, 0.6);
+  --border-color: #e3e3e3;
+  --menu-color: #f2f2f2;
+  --menu-hover: #e9e9e9;
+  --dark-border-color: #ccc;
+  --primary: #2986CE;
+  --hover-primary: #2578b9;
+  --default-btn: #f5f5f5;
+  --default-btn-hover: #f9f9f9;
 }
 
-.ck .ck-link_selected {
-  color: #1395BE;
-  text-decoration: underline;
+.bg-blue-color {
+  background-color: #fff !important
 }
 
-.ck-content a {
-  color: #1395BE;
-  text-decoration: underline;
+.text-white, .text-white:hover, a[href]:hover span.text-white {
+  color: #4d4d4d !important
 }
-.ant-dropdown-menu-item .ant-dropdown-menu-submenu-arrow-icon, .ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-arrow-icon,
-.cluster-rect, .connection, .cluster, .icon-color, .ant-tree li,
-.ant-time-picker-input,
-.ant-calendar-header a:hover,
-.ant-time-picker-panel,
-.ant-calendar-picker-container,
-.ant-calendar-year-panel-year,
-.ant-calendar-month-panel-month,
-.ant-calendar-date,
-.ant-tabs,
-.ant-pagination-item a, .ant-pagination-prev a, .ant-pagination-next a,
-.ant-table-thead > tr > th, .ant-table-tbody > tr > td, .ant-table, .ant-table-placeholder,
-.ant-pagination-disabled a,
-.ant-pagination-disabled:hover a,
-.ant-pagination-disabled:focus a,
-.ant-pagination-disabled .ant-pagination-item-link,
-.ant-pagination-disabled:hover .ant-pagination-item-link,
-.ant-pagination-disabled:focus .ant-pagination-item-link,
-.ant-select-arrow .ant-select-arrow-icon, .ant-result-title, .ant-result-subtitle,
-.ant-select-dropdown-menu-item,
-.ant-calendar-picker-icon,
-.ant-time-picker-icon,
-.ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled),
-.ant-select-dropdown-menu-item-selected, .ant-select-dropdown-menu-item:hover,
-.ant-dropdown-menu-submenu-title,
-.ant-dropdown-menu-item > a, .ant-dropdown-menu-submenu-title > a,
-.anticon-calendar, .anticon-clock-circle {
-  color: #3d464d;
+
+.fa-fa-color {
+  border-bottom: 1px solid #ccc
+}
+
+.b-b-transparent {
+  border-bottom: 1px solid transparent
+}
+
+.cluster-rect, .rect {
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #fff), color-stop(1, #fafafa));
+  background-image: -moz-linear-gradient(center bottom, #fff 37%, #fafafa 69%);
+  -webkit-box-shadow: inset 0 2px 9px rgba(255, 255, 255, .3), inset 0 -2px 6px rgba(0, 0, 0, .2);
+  -moz-box-shadow: inset 0 2px 9px rgba(255, 255, 255, .3), inset 0 -2px 6px rgba(0, 0, 0, .2);
+  box-shadow: inset 0 2px 9px rgba(255, 255, 255, .3), inset 0 -2px 6px rgba(0, 0, 0, .2)
+}
+
+.b-b, .b-l, .b-r, .b-t {
+  border-bottom: 1px solid rgba(204, 204, 204, .5)
+}
+
+.btn-grey.active.focus, .btn-grey:hover {
+  color: #333;
+  background-color: #f5f5f5;
+  border-color: #f2f2f2
+}
+
+.btn:hover {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .3) !important
+}
+
+.rg-bottom, .rg-right {
+  background: #f2f2f2 !important
+}
+
+.label.up {
+  background: grey;
+  color: #fff
+}
+
+.table > tbody > tr {
+  border-bottom: 2px solid #f5f5f5
+}
+
+.table-bordered > tbody > tr {
+  border-bottom: 1px solid #f5f5f5;
+  border-color: #f5f5f5;
+}
+
+.table-bordered, .table > thead > tr > th {
+  border-color: #f5f5f5
+}
+
+.backup {
+  background: #fff;
+  background: -webkit-linear-gradient(left, rgba(233, 233, 233, 1), #e8e8e8);
+  background: -o-linear-gradient(right, rgba(233, 233, 233, 1), rgba(232, 232, 232, 1));
+  background: -moz-linear-gradient(right, rgba(233, 233, 233, 1), rgba(232, 232, 232, 1));
+  background: linear-gradient(to right, rgba(233, 233, 233, 1), rgba(232, 232, 232, 1))
+}
+
+.backup-top-header {
+  background: #000
 }

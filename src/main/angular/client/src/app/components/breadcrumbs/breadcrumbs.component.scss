@@ -1,9 +1,5 @@
-@import 'src/styles/mixins.scss';
-
-
-
 .path {
-  color: $text
+  color: var(--text-muted)
 }
 
 .arrow {

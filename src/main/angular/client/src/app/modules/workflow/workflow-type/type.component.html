@@ -47,7 +47,8 @@
         </span>
         <span class="order-count" (click)="showOrders(instruction)" *ngIf="instruction.count > 0 && (!instruction.show && !expandAll)">{{instruction.count}}</span>
       </a>
-      <div *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'Publish' || instruction.TYPE === 'Await'">
+      <div *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'ImplicitEnd'
+       || instruction.TYPE === 'Publish' || instruction.TYPE === 'Await'">
         {{instruction.jobName || instruction.TYPE}}
         <span class="m-l-md" *ngIf="instruction.orders && instruction.orders.length> 0">
          <ng-template ngFor let-order [ngForOf]="instruction.orders | orderBy : 'scheduledFor': true | slice:0:3">

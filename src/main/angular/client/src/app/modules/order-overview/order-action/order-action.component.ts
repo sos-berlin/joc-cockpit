@@ -253,7 +253,6 @@ export class OrderActionComponent {
   }
 
   changeParameter(order) {
-    console.log(order)
     const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerId;
     modalRef.componentInstance.order = this.coreService.clone(order);

@@ -22,14 +22,24 @@ export class OrderVariableComponent {
   }
 
   changeParameter(order, variable) {
-    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.variable = variable;
-    modalRef.componentInstance.order = order;
-    modalRef.componentInstance.orderRequirements = order.requirements;
-    modalRef.result.then(() => {
-
-    }, () => {
+    this.getRequirements(order, () => {
+      const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
+      modalRef.componentInstance.schedulerId = this.schedulerId;
+      modalRef.componentInstance.variable = variable;
+      modalRef.componentInstance.order = order;
+      modalRef.componentInstance.orderRequirements = order.requirements;
+      modalRef.result.then(() => {
+        
+        this.coreService.post('orders/variables', {
+          orderId: order.orderId,
+          controllerId: this.schedulerId
+        }).subscribe((res: any) => {
+          order.variables = Object.entries(res).map(([k, v]) => {
+            return {name: k, value: v};
+          });
+        });
+      }, () => {
+      });
     });
   }
 

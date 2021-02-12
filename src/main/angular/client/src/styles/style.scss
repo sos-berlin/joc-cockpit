@@ -2,6 +2,47 @@
 @import "./mixins";
 @import '~jsoneditor/dist/jsoneditor.min.css';
 
+:root{
+  --background-color: #f9f8f6;
+  --bg-box: #fff;
+  --menu-color: #eee;
+  --menu-hover: #e0e2e6;
+  --text-color: #3d464d;
+  --text-hover: #333;
+  --text-muted: #7D90A8;
+  --border-color: #e3e3e3;
+  --dark-border-color: #ccc;
+  --primary: #2494bf;
+  --hover-primary: #2d90b6;
+  --default-btn: #ddd;
+  --default-btn-hover: #d0d0d0;
+  --black: rgba(0, 0, 0, .9);
+  --green: #228b22;
+  --blue: #1171a6;
+  --gold: #ffc300;
+  --red: #dc143c;
+  --dimgrey: #696969;
+  --light-blue: #a3c6ea;
+  --mangenta: #a500a5;
+  --pink: #f37891;
+  --orange: #FF8000;
+  --yellow-green: #b3b300;
+  --bg-green: #7ab97a;
+  --bg-blue: #1591d4;
+  --bg-gold: #ffc91a;
+  --bg-red: #ed365b;
+  --bg-dimgrey: #bbb;
+  --bg-light-blue: #a3c6ea;
+  --bg-mangenta: #b966b9;
+  --bg-orange: #FF8d1a;
+  --bg-pink: #f37891;
+  --bg-yellow-green: #cccc00;
+  --row-selected: rgba(36, 148, 191, 0.18);
+  --date-selected: rgba(36, 148, 191, .4);
+  --date-selected-hover: rgb(36, 148, 191, 0.55);
+  --date-selected-exclude: rgba(255, 163, 102, 0.56);
+  --date-selected-exclude-hover: rgba(255, 163, 102, 0.66);
+}
 /***
  Custom icon for Workflow and XMl editor
 ***/
@@ -248,7 +289,7 @@ a {
 }
 
 blockquote, pre {
-  border-color: $border-color;
+  border-color: var(--border-color);
 }
 
 .btn-icon, .nav-center, .nav-icon, .progress-bar, .ui-icon {
@@ -276,8 +317,8 @@ body {
   overflow-x: hidden;
   min-height: 100%;
   text-rendering: optimizeLegibility;
-  color: $default;
-  background: $background-color;
+  color: var(--text-color);
+  background: var(--background-color);
 }
 
 .avatar {
@@ -435,7 +476,7 @@ small {
 
 .ant-dropdown-menu {
   border-radius: 1px;
-  border: 1px solid $border-color !important;
+  border: 1px solid var(--border-color) !important;
   font-size: 12px;
 
   a:first-child, .ant-dropdown-submenu-item {
@@ -506,7 +547,7 @@ small {
 }
 
 .form-control, .input-group-addon {
-  border-color: $border-color;
+  border-color: var(--border-color);
 }
 
 .form-control {
@@ -546,7 +587,7 @@ small {
 
 .list-group {
   border-radius: 3px;
-  background: $white;
+  background: var(--bg-box);
 
   &.no-radius .list-group-item {
     border-radius: 0 !important;
@@ -578,7 +619,7 @@ small {
 }
 
 .list-group-item {
-  border-color: $border-color;
+  border-color: var(--border-color);
   background: 0 0;
   padding: 12px 16px;
   background-clip: padding-box;
@@ -590,12 +631,12 @@ small {
   &.active {
     color: inherit;
     background-color: rgba(0, 0, 0, 0.065);
-    border-color: $border-color;
+    border-color: var(--border-color);
 
     &:focus, &:hover {
       color: inherit;
       background-color: rgba(0, 0, 0, 0.065);
-      border-color: $border-color;
+      border-color: var(--border-color);
     }
 
     a, &:focus a, &:hover a {
@@ -604,11 +645,11 @@ small {
   }
 
   &:first-child {
-    border-top-color: $border-color;
+    border-top-color: var(--border-color);
   }
 
   &:last-child {
-    border-bottom-color: $border-color;
+    border-bottom-color: var(--border-color);
   }
 }
 
@@ -640,11 +681,11 @@ small {
   border-radius: 3px;
 
   &:first-child {
-    border-top-color: $border-color;
+    border-top-color: var(--border-color);
   }
 
   &:last-child {
-    border-bottom-color: $border-color;
+    border-bottom-color: var(--border-color);
   }
 }
 
@@ -667,7 +708,7 @@ button.close {
 }
 
 .modal-content, .modal-footer, .modal-header {
-  border-color: $border-color;
+  border-color: var(--border-color);
 }
 
 .modal-content {
@@ -684,7 +725,7 @@ button.close {
 }
 
 .modal-footer {
-  border-top: 1px solid $border-color;
+  border-top: 1px solid var(--border-color);
 }
 
 .nav, .nav-item, .nav-link {
@@ -943,14 +984,14 @@ button.close {
 }
 
 .table {
-  border-color: $border-color !important;
+  border-color: var(--border-color) !important;
   font-size: 12px !important;
 
   > {
     tbody > tr > {
       td, th {
         padding: 1px 8px !important;
-        border-color: $border-color;
+        border-color: var(--border-color);
       }
     }
 
@@ -975,11 +1016,11 @@ button.close {
 }
 
 .table > thead > tr > th {
-  border-color: $border-color;
+  border-color: var(--border-color);
 }
 
 .table-bordered {
-  border-color: $border-color;
+  border-color: var(--border-color);
 }
 
 .table {
@@ -1028,7 +1069,7 @@ button.close {
 }
 
 .box, .box-color {
-  background-color: $white;
+  background-color: var(--bg-box);
   position: relative;
   margin-bottom: 20px;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
@@ -1062,11 +1103,11 @@ button.close {
 
 .box-footer {
   padding: 7px 14px;
-  background: $background-color;
+  background: var(--background-color);
 }
 
 .box-divider {
-  border-bottom: 1px solid $border-color;
+  border-bottom: 1px solid var(--border-color);
   margin: 0 16px;
   height: 0;
 }
@@ -1164,7 +1205,7 @@ button.close {
       top: 5px;
       width: 6px;
       height: 6px;
-      background-color: $primary;
+      background-color: var(--primary);
     }
 
     &[type=radio] + i {
@@ -1425,7 +1466,7 @@ fieldset[disabled] .ui-check input + i {
   left: 0;
   right: 0;
   bottom: 0;
-  border-bottom: 1px solid $border-color;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .nav-icon i {
@@ -2679,13 +2720,13 @@ pre.log {
   color: inherit;
 
   &.focus, &:focus {
-    border-color: $primary;
+    border-color: var(--primary);
     border-bottom-width: 2px;
     padding-bottom: 1px;
   }
 
   &.focus ~ label, &:focus ~ label {
-    color: $primary;
+    color: var(--primary);
     opacity: 1;
     top: 0 !important;
     font-size: 14px !important;
@@ -2739,7 +2780,7 @@ textarea.md-input {
 
 .md-input-white {
   &.focus, &:focus {
-    border-color: $border-color;
+    border-color: var(--border-color);
   }
 
   &.focus ~ label, &:focus ~ label {
@@ -2839,7 +2880,7 @@ fieldset[disabled] .md-check input + i:before {
     width: 15px;
     position: absolute;
     height: 100%;
-    border: 1px solid $dark-border-color;
+    border: 1px solid var(--dark-border-color);
   }
 
   &.no-icon:after {
@@ -2881,7 +2922,7 @@ input[type=search] {
 body div.mxPopupMenu {
   top: 57px;
   border-radius: 1px;
-  border: 1px solid $border-color;
+  border: 1px solid var(--border-color);
   font-size: 12px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -2932,7 +2973,7 @@ body div.mxPopupMenu {
     &:hover {
       color: $white;
       text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
-      background: $primary;
+      background: var(--primary);
     }
   }
 }
@@ -2957,13 +2998,13 @@ body div.mxPopupMenu {
 }
 
 .more-option i, .more-option-h i {
-  background-color: #eee;
+  background-color: var(--menu-color);
   padding: 3px 5px;
   border-radius: 50%;
 }
 
 .more-option i:hover, .more-option-h i:hover {
-  background: #e0e2e6;
+  background: var(--menu-hover);;
 }
 
 div.order-panel {
@@ -2971,9 +3012,9 @@ div.order-panel {
 }
 
 div.order-panel div {
-  background: $white;
+  background: var(--bg-box);
   margin-bottom: 3px;
-  color: $default;
+  color: var(--text-color);
   font-size: 13px;
   padding: 10px 16px;
   margin-right: 8px;
@@ -2998,180 +3039,180 @@ div.order-panel div {
 }
 
 .planned {
-  color: $dimgrey;
+  color: var(--dimgrey);
 }
 
 .planned-box {
-  border-color: $bg-dimgrey !important;
+  border-color: var(--bg-dimgrey) !important;
 }
 
 .bg-planned {
   color: white;
-  background: $bg-dimgrey;
+  background: var(--bg-dimgrey);
 }
 
 .gold {
-  color: $gold
+  color: var(--gold)
 }
 
 .gold-box {
-  border-color: $bg-gold !important;
+  border-color: var(--bg-gold) !important;
 }
 
 .bg-gold {
-  background: $bg-gold;
+  background: var(--bg-gold);
 }
 
 .light-blue {
-  color: $light-blue;
+  color: var(--light-blue);
 }
 
 .in-light-blue {
-  border-color: $bg-light-blue !important;
+  border-color: var(--bg-light-blue) !important;
 }
 
 .bg-light-blue {
-  background: $bg-light-blue;
+  background: var(--bg-light-blue);
 }
 
 .green {
-  color: $green
+  color: var(--green)
 }
 
 .green-box {
-  border-color: $bg-green !important;
+  border-color: var(--bg-green) !important;
 }
 
 .bg-green{
-  background: $bg-green;
+  background: var(--bg-green);
 }
 
 .calling {
-  color: $pink;
+  color: var(--pink);
 }
 
 .calling-box {
-  border-color: $bg-pink !important;
+  border-color: var(--bg-pink) !important;
 }
 
 .bg-calling {
-  background: $bg-pink;
+  background: var(--bg-pink);
 }
 .yellow-green {
-  color: $yellow-green
+  color: var(--yellow-green)
 }
 
 .yellow-green-box {
-  border-color: $bg-yellow-green !important;
+  border-color: var(--bg-yellow-green) !important;
 }
 
 .bg-yellow-green{
-  background: $bg-yellow-green;
+  background: var(--bg-yellow-green);
 }
 
 .red {
-  color: $red
+  color: var(--red)
 }
 
 .red-box {
-  border-color: $bg-red !important;
+  border-color: var(--bg-red) !important;
 }
 
 .bg-red{
-  background: $bg-red;
+  background: var(--bg-red);
 }
 .orange{
-  color: $orange
+  color: var(--orange)
 }
 
 .orange-box {
-  border-color: $bg-orange !important;
+  border-color: var(--bg-orange) !important;
 }
 
 .bg-orange{
-  background: $bg-orange;
+  background: var(--bg-orange);
 }
 .dark-blue {
-  color: $blue
+  color: var(--blue)
 }
 
 .dark-blue-box {
-  border-color: $bg-blue !important;
+  border-color: var(--bg-blue) !important;
 }
 
 .bg-dark-blue {
-  background: $bg-blue;
+  background: var(--bg-blue);
 }
 
 .mangenta {
-  color: $mangenta
+  color: var(--mangenta)
 }
 
 .mangenta-box {
-  border-color: $bg-mangenta !important;
+  border-color: var(--bg-mangenta) !important;
 }
 
 .bg-mangenta{
-  background: $bg-mangenta;
+  background: var(--bg-mangenta);
 }
 
 .order-panel{
   .planned {
-    color: $dimgrey;
-    border-left-color: $dimgrey;
+    color: var(--dimgrey);
+    border-left-color: var(--dimgrey);
   }
   .pending {
-    color: $gold;
-    border-left-color: $gold;
+    color: var(--gold);
+    border-left-color: var(--gold);
   }
   .in-progress {
-    color: $light-blue;
-    border-color: $light-blue;
+    color: var(--light-blue);
+    border-color: var(--light-blue);
   }
 
   .running {
-    color: $green;
-    border-color: $green;
+    color: var(--green);
+    border-color: var(--green);
   }
 
   .suspend {
-    color: $orange;
-    border-color: $orange;
+    color: var(--orange);
+    border-color: var(--orange);
   }
 
   .calling {
-    color: $pink;
-    border-color: $pink;
+    color: var(--pink);
+    border-color: var(--pink);
   }
 
   .waiting {
-    color: $yellow-green;
-    border-color: $yellow-green;
+    color: var(--yellow-green);
+    border-color: var(--yellow-green);
   }
 
   .failed {
-    color: $red;
-    border-color: $red;
+    color: var(--red);
+    border-color: var(--red);
   }
 
   .terminate {
-    color: $blue;
-    border-color: $blue;
+    color: var(--blue);
+    border-color: var(--blue);
   }
   .blocked {
-    color: $mangenta;
-    border-color: $mangenta !important;
+    color: var(--mangenta);
+    border-color: var(--mangenta) !important;
   }
 }
 
 .text-hover-primary:hover {
   cursor: pointer !important;
-  color: $primary !important;
+  color: var(--primary) !important;
   text-decoration: underline;
 }
 
 .cluster-rect, .rect {
-  background: $white -webkit-gradient(linear, left bottom, left top, color-stop(0, $white), color-stop(1, $background-color));
+  background: var(--bg-box) -webkit-gradient(linear, left bottom, left top, color-stop(0, var(--bg-box)), color-stop(1, var(--background-color)));
   -webkit-box-shadow: inset 0 2px 9px rgba(255, 255, 255, 0.3), inset 0 -2px 6px rgba(0, 0, 0, 0.2);
   -moz-box-shadow: inset 0 2px 9px rgba(255, 255, 255, 0.3), inset 0 -2px 6px rgba(0, 0, 0, 0.2);
   box-shadow: inset 0 2px 9px rgba(255, 255, 255, 0.3), inset 0 -2px 6px rgba(0, 0, 0, 0.2);
@@ -3182,7 +3223,7 @@ div.order-panel div {
 }
 
 .order-eclipse {
-  background: $white;
+  background: var(--bg-box);
   min-height: 80px;
   height: auto;
   border-radius: 50%;
@@ -3232,7 +3273,7 @@ div.order-panel div {
   width: 210px;
   height: 40px;
   border: 1px solid rgba(0, 0, 0, 0.12);
-  background: $white -webkit-gradient(linear, left bottom, left top, color-stop(0, $white), color-stop(1, $background-color));
+  background: var(--bg-box) -webkit-gradient(linear, left bottom, left top, color-stop(0, var(--bg-box)), color-stop(1, var(--background-color)));
   padding: 5px;
   border-radius: 12px;
   position: relative;
@@ -3243,7 +3284,7 @@ div.order-panel div {
 }
 
 .order-detail-rect {
-  background-color: $white;
+  background-color: var(--bg-box);
   position: absolute;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-top: 4px solid rgba(0, 0, 0, 0.2);
@@ -3259,7 +3300,7 @@ div.order-panel div {
 
 .error-link {
   height: 1px;
-  background: $white;
+  background: var(--bg-box);
 }
 
 #mainContainer .h-line {
@@ -3283,7 +3324,7 @@ div.order-panel div {
 }
 
 pre.log {
-  color: $default;
+  color: var(--text-color);
   margin-bottom: 0;
   font-family: Lucida Console, monospace;
   font-size: 12px;
@@ -3382,7 +3423,7 @@ pre.cdata {
 
 .rzslider {
   .rz-pointer {
-    background-color: $primary;
+    background-color: var(--primary);
     height: 14px;
     top: -6px;
     width: 14px;
@@ -3595,7 +3636,7 @@ pre.cdata {
 .popover {
   font-size: 12px !important;
   font-family: "Open Sans", "lucida grande", "Segoe UI", arial, verdana, "lucida sans unicode", tahoma, serif;
-  color: $default !important;
+  color: var(--text-color) !important;
   font-weight: 200;
   text-align: left;
   background-color: $white;
@@ -3608,7 +3649,7 @@ pre.cdata {
 }
 
 .left-sidebar-btn:hover, .sidebar-btn {
-  background: $white;
+  background: var(--bg-box);
 }
 
 .full-panel {
@@ -3652,7 +3693,7 @@ pre.cdata {
 
 .left-sidebar-btn:hover, .sidebar-btn:hover {
   box-shadow: 0 2px 4px 3px rgba(0, 0, 0, 0.2);
-  color: $primary;
+  color: var(--primary);
 }
 
 .cut-row {
@@ -3703,10 +3744,10 @@ pre.cdata {
 }
 
 .light-bg {
-  background: #eff !important;
+  background: var(--row-selected) !important;
 
   tr:hover {
-    background: #eff !important;
+    background: var(--row-selected) !important;
   }
 }
 
@@ -3770,7 +3811,7 @@ li > a > i.remove {
   font-size: 13px;
   color: $black;
   border-radius: 3px;
-  border: 1px solid $border-color;
+  border: 1px solid var(--border-color);
   -webkit-transform-origin: top left;
   -moz-transform-origin: top left;
   -ms-transform-origin: top left;
@@ -3827,18 +3868,18 @@ li > a > i.remove {
 }
 
 .primary-text-hover-color:hover, .ant-calendar-today .ant-calendar-date {
-  color: $primary !important;
+  color: var(--primary) !important;
 
   i, span {
-    color: $primary !important;
+    color: var(--primary) !important;
   }
 }
 
 .primary {
-  background-color: $primary !important;
+  background-color: var(--primary) !important;
 
   .bg {
-    background-color: $primary !important;
+    background-color: var(--primary) !important;
   }
 }
 
@@ -3935,7 +3976,7 @@ table.folder-tree-grid {
 }
 
 .expand-collapse:hover {
-  color: $primary;
+  color: var(--primary);
   cursor: pointer;
 }
 
@@ -3985,12 +4026,12 @@ input {
 input[type=search] {
   box-shadow: none;
   transition: all .3s ease 0s;
-  color: $default;
+  color: var(--text-color);
 
   &:focus {
     box-shadow: none;
     transition: all .3s ease 0s;
-    color: $default;
+    color: var(--text-color);
   }
 }
 
@@ -4015,7 +4056,7 @@ input[type=search] {
 
   &.nv-noData {
     font-size: 16px !important;
-    fill: $default;
+    fill: var(--text-color);
   }
 }
 
@@ -4058,7 +4099,7 @@ input[type=search] {
   &:focus {
     font-weight: 300;
     width: 100%;
-    border-bottom: 1px solid $primary;
+    border-bottom: 1px solid var(--primary);
   }
 }
 
@@ -4118,12 +4159,12 @@ input[type=search] {
 }
 
 .btn-grey {
-  background-color: $default-btn;
-
+  background-color: var(--default-btn);
+  border-color: var(--default-btn);
   &:hover {
-    color: rgba(0, 0, 0, 0.9);
-    background-color: #d0d0d0;
-    border-color: #d0d0d0;
+    color: var(--black);
+    background-color: var(--default-btn-hover);
+    border-color: var(--default-btn-hover);
   }
 }
 
@@ -4138,7 +4179,7 @@ input[type=search] {
 }
 
 .nav-lists .nav-item {
-  border-bottom: 1px solid $border-color;
+  border-bottom: 1px solid var(--border-color);
   background-clip: padding-box;
 }
 
@@ -4227,7 +4268,7 @@ input[type=search] {
 }
 
 .bg-white {
-  background-color: $white !important;
+  background-color: var(--bg-box) !important;
 }
 
 .white-overlay {
@@ -4239,31 +4280,31 @@ input[type=search] {
 }
 
 .b {
-  border-color: $border-color;
+  border-color: var(--border-color);
 }
 
 .b-a {
-  border: 1px solid $border-color;
+  border: 1px solid var(--border-color);
 }
 
 .b-t {
-  border-top: 1px solid $border-color;
+  border-top: 1px solid var(--border-color);
 }
 
 .b-r {
-  border-right: 1px solid $border-color;
+  border-right: 1px solid var(--border-color);
 }
 
 .b-b {
-  border-bottom: 1px solid $border-color;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .b-l {
-  border-left: 1px solid $border-color;
+  border-left: 1px solid var(--border-color);
 }
 
 .b-primary {
-  border-color: $primary;
+  border-color: var(--primary);
 }
 .text-orange {
   color: $secondary;
@@ -4274,21 +4315,21 @@ input[type=search] {
 }
 
 .b-t-primary {
-  border-top-color: $primary;
+  border-top-color: var(--primary);
 }
 
 .b-b-primary {
-  border-bottom-color: $primary;
+  border-bottom-color: var(--primary);
 }
 
 .b-l-primary {
-  border-left-color: $primary;
+  border-left-color: var(--primary);
 }
 
 a.text-primary:hover,
 a.text-primary:focus,
 .text-primary, .text-primary-hover a:hover {
-  color: $primary !important;
+  color: var(--primary) !important;
 }
 
 a {
@@ -4391,7 +4432,7 @@ a[href]:hover span.text-white {
 }
 
 .text-muted {
-  color: $text;
+  color: var(--text-muted);
 }
 
 .md-check input[type=radio]:checked + i:after {
@@ -4401,7 +4442,7 @@ a[href]:hover span.text-white {
   display: table;
   width: 5px;
   height: 5px;
-  background: $white;
+  background: var(--bg-box);
   content: ' ';
   border-radius: 50%;
 }
@@ -4409,7 +4450,7 @@ a[href]:hover span.text-white {
 .md-check1 > i:before {
   position: absolute;
   height: 100%;
-  border: 2px solid $dark-border-color;
+  border: 2px solid var(--dark-border-color);
 }
 
 .success-color {
@@ -4417,8 +4458,8 @@ a[href]:hover span.text-white {
 }
 
 .order-panel .all {
-  color: $dimgrey;
-  border-left-color: $dimgrey;
+  color: var(--dimgrey);
+  border-left-color: var(--dimgrey);
 }
 
 .bg-hover-color:hover {
@@ -4471,17 +4512,17 @@ input[type=text][disabled] {
 }
 
 .btn-primary {
-  background-color: $primary !important;
-  border-color: $primary !important;
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
   color: $white !important;
   &:hover {
-    background-color: $hover-primary !important;
-    border-color: $hover-primary !important;
+    background-color: var(--hover-primary) !important;
+    border-color: var(--hover-primary) !important;
   }
 }
 
 .form-control:focus {
-  border-color: $hover-primary;
+  border-color: var(--hover-primary);
 }
 
 .backdrop {
@@ -4619,7 +4660,7 @@ svg text {
 }
 
 .emtpy-text {
-  background: $white;
+  background: var(--bg-box);
   border: 2px dashed #ccc;
   -moz-border-radius: 1px;
   border-radius: 1px;
@@ -4876,8 +4917,8 @@ body > .select2-container.open {
 }
 
 .btn-default {
-  background: $background-color;
-  border: 1px solid $background-color;
+  background: var(--background-color);
+  border: 1px solid var(--background-color);
 }
 
 .ui-select-bootstrap .ui-select-toggle {
@@ -5073,7 +5114,7 @@ tr.disabled-row td:not(.menu) {
 }
 
 .node-name {
-  color: $default !important;
+  color: var(--text-color) !important;
   font-family: "Open Sans", "lucida grande", "Segoe UI", arial, verdana, "lucida sans unicode", tahoma, serif !important;
   margin-left: 5px !important;
   font-size: 13px;
@@ -5164,7 +5205,7 @@ tr.disabled-row td:not(.menu) {
   &:after {
     display: block;
     content: '';
-    border-bottom: solid 2px $primary;
+    border-bottom: solid 2px var(--primary);
     transform: scaleX(0);
     transition: transform 250ms ease-in-out;
   }
@@ -5532,7 +5573,7 @@ General CSS
   padding-left: 12px;
   padding-right: 12px;
   text-align: center;
-  background: $white;
+  background: var(--bg-box);
   box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -5585,7 +5626,7 @@ input:-webkit-autofill {
 
 .center-block {
   input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 100px $background-color inset;
+    -webkit-box-shadow: 0 0 0 100px var(--background-color) inset;
   }
 }
 
@@ -5820,7 +5861,7 @@ button, html [type="button"], [type="reset"], [type="submit"] {
 }
 
 body div.mxPopupMenu {
-  background: $white;
+  background: var(--bg-box);
 }
 
 body table.mxPopupMenu {
@@ -5852,7 +5893,7 @@ body td.mxPopupMenuIcon {
 body tr.mxPopupMenuItemHover {
   color: $white;
   text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
-  background: $primary;
+  background: var(--primary);
 }
 
 .date-center {
@@ -5866,7 +5907,13 @@ body tr.mxPopupMenuItemHover {
 .date-right {
   text-align: right;
 }
+button.close {
+  color: var(--text-color);
+}
 
+#outlineContainer{
+  background: var(--bg-box) !important;
+}
 .property-panel {
   position: fixed;
   top: 128px;
@@ -5882,6 +5929,9 @@ body tr.mxPopupMenuItemHover {
   position: absolute;
   background: url(../assets/images/left-tips.svg) center no-repeat;
   z-index: 999;
+}
+.property-panel .sidebar-close i {
+  color: var(--text-color);
 }
 
 .property-panel .sidebar-open i, .property-panel .sidebar-close i {
@@ -5957,7 +6007,7 @@ div.mxTooltip {
 }
 
 #innertext span.highlight, #innertext .highlight {
-  color: $gold !important;
+  color: var(--gold) !important;
 }
 
 .plan-variables {
@@ -6005,18 +6055,18 @@ pre#pre {
 }
 
 .badge-success {
-  background-color: $bg-blue;
+  background-color: var(--bg-blue);
   color: white;
 }
 
 .badge-danger {
-  background-color: $bg-orange;
+  background-color: var(--bg-orange);
   color: white;
 }
 
 .ck-editor__main .ck-content {
   height: 250px;
-  color: $default;
+  color: var(--text-color);
 }
 
 .ck-file-dialog-button, .ck-dropdown {
@@ -6044,7 +6094,7 @@ pre#pre {
 
 .jsgantt-chart .jsgantt-grid-scale .jsgantt-grid-head-cell,
 .jsgantt-chart .jsgantt-task .jsgantt-task-scale .jsgantt-scale-cell {
-  color: $default;
+  color: var(--text-color);
 }
 
 .jsgantt-chart .jsgantt-grid-scale .jsgantt-grid-head-cell {
@@ -6071,13 +6121,13 @@ pre#pre {
 .jsgantt-chart .jsgantt-grid-data .jsgantt-row.jsgantt-selected,
 .jsgantt-chart .jsgantt-grid-data .jsgantt-row.odd.jsgantt-selected,
 .jsgantt-chart .jsgantt-task-row.jsgantt-selected {
-  background-color: #eff;
+  background-color: var(--row-selected);
 }
 
 .jsgantt-chart .jsgantt-resizer-x .jsgantt-resizer-x {
   width: 6px;
   margin-left: -6px;
-  background: $white;
+  background: var(--bg-box);
   border-left: 1px solid rgba(0, 0, 0, 0.2);
   border-right: 1px solid rgba(0, 0, 0, 0.2);
 }
@@ -6108,7 +6158,7 @@ pre#pre {
 }
 
 .ant-select {
-  color: $default;
+  color: var(--text-color);
   font-size: $base__font-size;
   font-family: $base__font-family;
 }
@@ -6131,12 +6181,12 @@ pre#pre {
   }
   .ant-select-open .ant-select-selection{
     box-shadow: none;
-    color: $default !important;
+    color: var(--text-color) !important;
   }
   .ant-select-open{
     box-shadow: none;
-    border: 1px solid $hover-primary;
-    background: $white !important;
+    border: 1px solid var(--hover-primary);
+    background: var(--bg-box) !important;
     padding-right: 0;
     width: 97%;
     height: 29px;
@@ -6150,11 +6200,11 @@ pre#pre {
 }
 .ant-select-selection {
   box-shadow: none;
-  border-color: $border-color;
+  border-color: var(--border-color);
 }
 
 .ant-select-open .ant-select-selection {
-  border-color: $primary;
+  border-color: var(--primary);
 }
 
 .cdk-overlay-container {
@@ -6162,24 +6212,24 @@ pre#pre {
 }
 
 .ant-select-selection:hover {
-  border-color: $border-color;
+  border-color: var(--border-color);
 }
 
 .ant-table {
   font-size: 12px;
-  border-color: $border-color;
+  border-color: var(--border-color);
 }
 
 .ant-table-thead > tr > th, .ant-table-tbody > tr > td, tr.tr-border td {
   padding: 2px 8px !important;
-  border-color: $border-color;
+  border-color: var(--border-color);
   border-width: 1px;
   background: transparent;
-  color: $default;
+  color: var(--text-color);
 }
 
 tr.tr-border td {
-  border: 1px solid $border-color !important;
+  border: 1px solid var(--border-color) !important;
   border-bottom-color: transparent !important;
   border-right-color: transparent !important;
   word-break: break-all !important;
@@ -6255,7 +6305,7 @@ tr.tr-border td {
 }
 
 .ant-checkbox-inner, .ant-radio-inner, .ant-tree-checkbox-inner {
-  border: 1px solid $dark-border-color;
+  border: 1px solid var(--dark-border-color);
   background: transparent;
 }
 
@@ -6272,20 +6322,20 @@ tr.tr-border td {
 }
 
 .ant-checkbox-indeterminate .ant-checkbox-inner::after {
-  background-color: $primary;
+  background-color: var(--primary);
 }
 
 .ant-checkbox-checked .ant-checkbox-inner {
-  background-color: $primary;
-  border-color: $primary;
+  background-color: var(--primary);
+  border-color: var(--primary);
 }
 
 .ant-radio-inner::after {
-  background-color: $primary;
+  background-color: var(--primary);
 }
 
 .ant-radio-wrapper:hover .ant-radio, .ant-radio:hover .ant-radio-inner, .ant-radio-input:focus + .ant-radio-inner {
-  border-color: $primary;
+  border-color: var(--primary);
 }
 
 .ant-empty-image {
@@ -6294,7 +6344,7 @@ tr.tr-border td {
 
 .ant-empty-normal {
   margin: 8px;
-  color: $default;
+  color: var(--text-color);
 }
 
 .vert-middle {
@@ -6321,7 +6371,7 @@ tr.tr-border td {
   width: 20px !important;
   overflow-y: auto;
   margin: auto 0;
-  background: $white;
+  background: var(--bg-box);
   transition: all .5s;
   -webkit-transition: all .25s
 }
@@ -6430,7 +6480,7 @@ aside.sidebar-hover-effect {
 }
 
 .ant-input-number, .ant-select-selection, .ant-input {
-  color: $default;
+  color: var(--text-color);
   height: 30px;
 }
 
@@ -6454,7 +6504,7 @@ div.jsoneditor,
 .ant-time-picker-input,
 .ant-table-bordered .ant-table-thead > tr > th, .ant-table-bordered .ant-table-tbody > tr > td,
 .ant-table-small.ant-table-bordered .ant-table-content {
-  border-color: $border-color
+  border-color: var(--border-color)
 }
 .ant-table-small{
   border-bottom: none;
@@ -6463,13 +6513,13 @@ div.jsoneditor,
   border-right: none;
 }
 .ant-table-bordered .ant-table-thead > tr:not(:last-child) > th, .ant-table-small.ant-table-bordered .ant-table-thead > tr > th:last-child  {
-  border-color: $border-color;
+  border-color: var(--border-color);
 }
 .ant-table-small.ant-table-bordered {
-  border-right: 1px solid $border-color;
+  border-right: 1px solid var(--border-color);
 }
 .ant-table-small.ant-table-bordered .ant-table-placeholder, .ant-table-small > .ant-table-content .ant-table-row:last-child td{
-  border-bottom: 1px solid $border-color;
+  border-bottom: 1px solid var(--border-color);
 }
 .ant-select-selection__clear{
   background: transparent;
@@ -6482,7 +6532,7 @@ div.jsoneditor,
 .ant-time-picker-input:focus,
 .ant-input:focus, .ant-input:active .ant-input-focused,
 .ant-select-focused .ant-select-selection, .ant-select-selection:focus, .ant-select-selection:active, .ant-input-number:focus, .ant-input-number-focused {
-  border-color: $primary !important;
+  border-color: var(--primary) !important;
   box-shadow: none;
 }
 
@@ -6547,7 +6597,7 @@ div.jsoneditor,
 }
 
 .CodeMirror-gutters {
-  background: $white !important
+  background: var(--bg-box) !important
 }
 
 .CodeMirror {
@@ -6611,7 +6661,7 @@ span.cm-comment {
 }
 
 span.cm-string {
-  color: $primary
+  color: var(--primary)
 }
 
 span.cm-string-2 {
@@ -6677,7 +6727,7 @@ span.cm-error {
 }
 
 .version-inner-list {
-  background: $white !important;
+  background: var(--bg-box) !important;
   padding-bottom: 4px;
   padding-left: 30px;
   margin: 4px -11px -4px;
@@ -6701,6 +6751,9 @@ span.cm-error {
 .ant-tree-child-tree {
   width: fit-content !important;
 }
+.ant-dropdown-menu-item .ant-dropdown-menu-submenu-arrow-icon, .ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-arrow-icon,
+.cluster-rect, .connection, .cluster, .icon-color,.ant-tree li,
+.ant-time-picker-input,
 .ant-calendar-header a:hover,
 .ant-time-picker-panel,
 .ant-calendar-picker-container,
@@ -6720,14 +6773,12 @@ span.cm-error {
 .ant-select-dropdown-menu-item,
 .ant-calendar-picker-icon,
 .ant-time-picker-icon,
-.ant-time-picker-input,
-.anticon-calendar,
-.ant-dropdown-menu-item,
-.ant-dropdown-menu-submenu-title,
+.ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled),
+.ant-select-dropdown-menu-item-selected, .ant-select-dropdown-menu-item:hover,
 .ant-dropdown-menu-submenu-title,
 .ant-dropdown-menu-item > a, .ant-dropdown-menu-submenu-title > a,
-.anticon-clock-circle {
-  color: rgba(255, 255, 255, .87);
+.anticon-calendar, .anticon-clock-circle {
+  color: var(--text-color);
 }
 
 .ant-calendar-header a:hover,
@@ -6740,7 +6791,7 @@ span.cm-error {
 .ant-dropdown-menu-item:hover > a,
 .ant-dropdown-menu-submenu-title:hover,
 .ant-dropdown-menu-submenu-title:hover > a {
-  color: $default !important;
+  color: var(--text-hover) !important;
 }
 .ant-select-dropdown-menu-item-disabled{
   opacity: .7;
@@ -6763,19 +6814,19 @@ span.cm-error {
   padding-left: 4px;
 }
 .ant-tree-checkbox-checked .ant-tree-checkbox-inner{
-  border-color: $primary;
-  background-color: $primary;
+  border-color: var(--primary);
+  background-color: var(--primary);
 }
 .ant-checkbox-wrapper{
-  color: $default;
+  color: var(--text-color);
 }
 
 .ant-tree-checkbox-wrapper:hover .ant-tree-checkbox-inner, .ant-tree-checkbox:hover .ant-tree-checkbox-inner, .ant-tree-checkbox-input:focus + .ant-tree-checkbox-inner {
-  border-color: $primary;
+  border-color: var(--primary);
 }
 
 .ant-tree-checkbox-indeterminate .ant-tree-checkbox-inner::after {
-  background-color: $primary;
+  background-color: var(--primary);
 }
 
 .node-wrapper {
@@ -6823,7 +6874,7 @@ span.cm-error {
 .order-count {
   margin-left: 8px;
   color: $white !important;
-  background-color: $primary !important;
+  background-color: var(--primary) !important;
   padding: 1px 3px;
   font-weight: bold;
   font-size: 10px;
@@ -6904,4 +6955,18 @@ table tr > td.td-border {
   tr:hover {
     background: #ccc !important;
   }
+}
+.documents a[href*="http:"] {
+  color: var(--primary) !important;
+}
+.documents a[href*="https:"] {
+  color: var(--primary) !important;
+}
+.ck .ck-link_selected {
+  color: var(--primary);
+  text-decoration: underline;
+}
+.ck-content a {
+  color: var(--primary);
+  text-decoration: underline;
 }
