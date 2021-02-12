@@ -40,10 +40,10 @@ export class ChangeParameterModalComponent implements OnInit {
         this.variables = this.coreService.clone(this.order.arguments);
       }
     }
+    this.updateVariableList();
     if (this.variables.length === 0) {
       this.addVariable();
     }
-    this.updateVariableList();
   }
 
   updateVariableList() {

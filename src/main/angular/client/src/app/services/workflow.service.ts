@@ -152,7 +152,7 @@ export class WorkflowService {
     delete instruction['retryDelays'];
     delete instruction['maxTries'];
     instruction['catch'] = catchObj;
-    instruction['maxTries'] = maxTries;
+    instruction['maxTries'] = parseInt(maxTries, 10);
     instruction['retryDelays'] = retryDelays;
   }
 
@@ -162,6 +162,10 @@ export class WorkflowService {
     } else {
       return false;
     }
+  }
+
+  isValidLabel(str) {
+    return /^([A-Z]|[a-z]|[0-9]|_|\$)([A-Z]|[a-z]|[0-9]|\$|_|,|-|#|:|!|)*$/.test(str);
   }
 
   validateFields(value, type): boolean {
@@ -196,7 +200,7 @@ export class WorkflowService {
       if (type === 'Node') {
         if (!value.label || value.label === '' || value.label == 'null' || value.label == 'undefined') {
           return false;
-        } else if (value.label && !this.isValidObject(value.label)) {
+        } else if (value.label && !this.isValidLabel(value.label)) {
           value.label = '';
           return false;
         }

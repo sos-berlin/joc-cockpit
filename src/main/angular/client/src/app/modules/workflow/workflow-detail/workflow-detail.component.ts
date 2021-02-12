@@ -73,12 +73,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     this.path = this.route.snapshot.paramMap.get('path');
     this.versionId = this.route.snapshot.paramMap.get('versionId');
     this.worflowFilters = this.coreService.getWorkflowDetailTab();
-    if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
-      this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
-      this.workflowService.init('dark');
-    } else {
-      this.workflowService.init('light');
-    }
     this.init();
 
     const dom = $('#graph');
@@ -308,6 +302,12 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
     if (localStorage.views) {
       this.pageView = JSON.parse(localStorage.views).workflowDetail;
+    }
+    if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
+      this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
+      this.workflowService.init('dark');
+    } else {
+      this.workflowService.init('light');
     }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};

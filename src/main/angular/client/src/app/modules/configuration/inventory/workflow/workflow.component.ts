@@ -2898,24 +2898,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (me.isConsumed()) {
             mxe.consume();
           }
-          this.fireEvent(mxe);
 
-          // Handles the event if it has not been consumed
-          if (this.isEnabled() && !mxEvent.isConsumed(evt) && !mxe.isConsumed()) {
-            if (cell != null) {
-              if (this.isTransparentClickEvent(evt)) {
-                let tmp = this.getCellAt(me.graphX, me.graphY, null, null, null, mxUtils.bind(this, function (state) {
-                  return false;
-                }));
-
-                if (tmp != null) {
-                  cell = tmp;
-                }
-              }
-              // this.selectCellForEvent(cell, evt);
-            }
+          if (!cell || (cell && cell.value.tagName !== 'Connection')) {
+            graph.clearSelection();
           }
-          graph.clearSelection();
+
           // Handles the event if it has not been consumed
           if (cell) {
             if (cell.value.tagName === 'Job' || cell.value.tagName === 'Finish' || cell.value.tagName === 'Fail' ||
@@ -2927,6 +2914,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               }
             }
           }
+          customizedChangeEvent();
           self.closeMenu();
         };
 
@@ -2951,8 +2939,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          */
         graph.dblClick = function (evt, cell) {
           if (cell != null && cell.vertex == 1) {
-            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try'
-              || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock') {
+            if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
               const flag = cell.collapsed != true;
               graph.foldCells(flag, false, [cell], null, evt);
             }
@@ -3406,6 +3393,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             this.graph.setSelectionCell(vertex);
             this.graph.scrollCellToVisible(vertex);
             this.fireEvent(new mxEventObject(mxEvent.AFTER_ADD_VERTEX, 'vertex', vertex));
+            customizedChangeEvent();
           }
           return vertex;
         };
@@ -3425,7 +3413,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               }
               self.movedCell = cells;
               const tagName = cell.value.tagName;
-              if (tagName === 'Connection' || tagName === 'If' || tagName === 'Fork' || tagName === 'Retry' || tagName === 'Lock' || tagName === 'Try' || tagName === 'Catch') {
+              if (tagName === 'Connection' || self.workflowService.isInstructionCollapsible(tagName) || tagName === 'Catch') {
                 if (tagName === 'Connection') {
                   let sourceId = cell.source.id;
                   let targetId = cell.target.id;
@@ -3461,7 +3449,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                       }
                     }
                   }
-                  if (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry' || cells[0].value.tagName === 'Lock' || cells[0].value.tagName === 'Try') {
+                  if (self.workflowService.isInstructionCollapsible(cells[0].value.tagName)) {
                     const parent = cell.getParent() || graph.getDefaultParent();
                     let v1, v2, label = '';
                     const attr = cell.value.attributes;
@@ -3536,6 +3524,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                   return false;
                 }
                 graph.setSelectionCells(cells);
+                customizedChangeEvent();
                 setTimeout(() => {
                   checkConnectionLabel(cells[0], cell, true);
                   isVertexDrop = false;
@@ -3562,51 +3551,19 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          */
         graph.getSelectionModel().addListener(mxEvent.CHANGE, function () {
           let cell = graph.getSelectionCell();
-          let cells = graph.getSelectionCells();
-
-          if (cells.length > 0) {
-            let lastCell = cells[cells.length - 1];
-            let targetId = self.nodeMap.get(lastCell.id);
-            if (targetId) {
-              graph.addSelectionCell(graph.getModel().getCell(targetId));
-            } else if (lastCell) {
-              let flag = false;
-              if (cells.length > 1) {
-                const secondLastCell = cells[cells.length - 2];
-                const lName = secondLastCell.value.tagName;
-                if (lName === 'If' || lName === 'Fork' || lName === 'Retry' || lName === 'Lock' || lName === 'Try' || lName === 'Catch') {
-                  flag = true;
-                }
-              }
-              if (!flag && (checkClosingCell(lastCell))) {
-                graph.removeSelectionCell(lastCell);
-              }
-            }
-          }
-
           if (cell && (checkClosingCell(cell) ||
             cell.value.tagName === 'Connection' || cell.value.tagName === 'Process' || cell.value.tagName === 'Catch')) {
             graph.clearSelection();
             return;
           }
-
-          if (cell && cells.length === 1) {
-            setTimeout(() => {
-              if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock' || cell.value.tagName === 'Try') {
-                const targetId = self.nodeMap.get(cell.id);
-                if (targetId) {
-                  graph.addSelectionCell(graph.getModel().getCell(targetId));
-                }
-
+          if (cell && self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
+            const targetId = self.nodeMap.get(cell.id);
+            if (targetId) {
+              const lastCell = graph.getModel().getCell(targetId);
+              if (lastCell) {
+                graph.addSelectionCell(graph.getModel().getCell(targetId));
               }
-            }, 0);
-          }
-
-          if (cells.length < 2) {
-            if (!self.error) {
-              self.dataService.reloadWorkflowError.next({error: false});
             }
-            selectionChanged();
           }
         });
 
@@ -3847,7 +3804,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 _tar = cell.edges[i];
               }
             }
-            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock') {
+            if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
               _tar = getEndNode(cell);
               _middle = _tar.source;
             } else {
@@ -3863,7 +3820,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           }
           const lastCellName = cells.lastCell.value.tagName;
-          if (lastCellName === 'Fork' || lastCellName === 'If' || lastCellName === 'Try' || lastCellName === 'Retry' || lastCellName === 'Lock') {
+          if (self.workflowService.isInstructionCollapsible(lastCellName)) {
             _tar = getEndNode(cells.lastCell);
             _middle = _tar.source;
           } else {
@@ -3894,7 +3851,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 _tar = cell.edges[i];
               }
             }
-            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock') {
+            if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
               _tar = getEndNode(cell);
               _middle = _tar.source;
             } else {
@@ -3911,7 +3868,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           }
           const lastCellName = cells.lastCell.value.tagName;
-          if (lastCellName === 'Fork' || lastCellName === 'If' || lastCellName === 'Try' || lastCellName === 'Retry' || lastCellName === 'Lock') {
+          if (self.workflowService.isInstructionCollapsible(lastCellName)) {
             _tar = getEndNode(cells.lastCell);
             _middle = _tar.source;
           } else {
@@ -3941,7 +3898,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 _tar = cell.edges[i];
               }
             }
-            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock') {
+            if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
               _tar = getEndNode(cell);
               _middle = _tar.source;
             } else {
@@ -3958,7 +3915,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           }
           const lastCellName = cells.lastCell.value.tagName;
-          if (lastCellName === 'Fork' || lastCellName === 'If' || lastCellName === 'Try' || lastCellName === 'Retry' || lastCellName === 'Lock') {
+          if (self.workflowService.isInstructionCollapsible(lastCellName)) {
             _tar = getEndNode(cells.lastCell);
             _middle = _tar.source;
           } else {
@@ -3988,7 +3945,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 _tar = cell.edges[i];
               }
             }
-            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Lock') {
+            if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
               _tar = getEndNode(cell);
               _middle = _tar.source;
             } else {
@@ -4005,7 +3962,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           }
           const lastCellName = cells.lastCell.value.tagName;
-          if (lastCellName === 'Fork' || lastCellName === 'If' || lastCellName === 'Try' || lastCellName === 'Retry' || lastCellName === 'Lock') {
+          if (self.workflowService.isInstructionCollapsible(lastCellName)) {
             _tar = getEndNode(cells.lastCell);
             _middle = _tar.source;
           } else {
@@ -4502,6 +4459,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     function selectionChanged() {
       if (self.selectedNode) {
         self.error = false;
+        self.dataService.reloadWorkflowError.next({error: self.error});
         self.selectedNode.newObj = self.coreService.clone(self.selectedNode.obj);
         if (self.selectedNode && self.selectedNode.type === 'Job') {
           self.coreService.convertArrayToObject(self.selectedNode.newObj, 'defaultArguments', false);
@@ -4525,10 +4483,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             if (_job) {
               let job = self.coreService.clone(self.selectedNode.job);
               delete job['jobName'];
-              if(job.defaultArguments) {
+              if (job.defaultArguments) {
                 self.coreService.convertArrayToObject(job, 'defaultArguments', true);
               }
-              if(job.executable.env) {
+              if (job.executable.env) {
                 self.coreService.convertArrayToObject(job.executable, 'env', true);
               }
               if (job.returnCodeMeaning && !_.isEmpty(job.returnCodeMeaning)) {
@@ -4873,6 +4831,61 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
     }
 
+    function customizedChangeEvent() {
+      let cell = graph.getSelectionCell();
+      let cells = graph.getSelectionCells();
+      if (cells.length > 0) {
+        let lastCell = cells[cells.length - 1];
+        let targetId = self.nodeMap.get(lastCell.id);
+        if (targetId) {
+          graph.addSelectionCell(graph.getModel().getCell(targetId));
+        } else if (lastCell) {
+          let flag = false;
+          if (cells.length > 1) {
+            const secondLastCell = cells[cells.length - 2];
+            const lName = secondLastCell.value.tagName;
+            if (self.workflowService.isInstructionCollapsible(lName) || lName === 'Catch') {
+              flag = true;
+            }
+          }
+          if (!flag && (checkClosingCell(lastCell))) {
+            graph.removeSelectionCell(lastCell);
+          }
+        }
+      }
+
+      if (cell && (checkClosingCell(cell) ||
+        cell.value.tagName === 'Connection' || cell.value.tagName === 'Process' || cell.value.tagName === 'Catch')) {
+        graph.clearSelection();
+        return;
+      }
+      if (cell && cells.length === 1) {
+        setTimeout(() => {
+          if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
+            const targetId = self.nodeMap.get(cell.id);
+            if (targetId) {
+              graph.addSelectionCell(graph.getModel().getCell(targetId));
+            }
+
+          }
+        }, 0);
+      }
+
+      if (cells.length < 2) {
+        selectionChanged();
+      } else if (cells.length === 2) {
+        if ((cells[0].value.tagName === 'Fork' && cells[1].value.tagName === 'Join') ||
+          (cells[0].value.tagName === 'If' && cells[1].value.tagName === 'EndIf') ||
+          (cells[0].value.tagName === 'Retry' && cells[1].value.tagName === 'EndRetry') ||
+          (cells[0].value.tagName === 'Lock' && cells[1].value.tagName === 'EndLock') ||
+          (cells[0].value.tagName === 'Try' && cells[1].value.tagName === 'EndTry')) {
+          selectionChanged();
+        }
+
+      }
+    }
+
+
     /**
      * Function: Check and create clicked instructions
      * @param title
@@ -5011,6 +5024,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             } else {
               graph.setSelectionCells([clickedCell]);
             }
+            customizedChangeEvent();
           }, 0);
         } else {
           graph.clearSelection();
@@ -5031,8 +5045,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 75, 75, 'if');
             } else if (clickedCell.value.tagName === 'Retry') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 75, 75, 'retry');
-            }
-            if (clickedCell.value.tagName === 'Lock') {
+            } else if (clickedCell.value.tagName === 'Lock') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', null), 0, 0, 68, 68, self.workflowService.closeLock);
             } else {
               v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 75, 75, 'try');
@@ -5099,6 +5112,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           } else {
             graph.setSelectionCells([clickedCell]);
           }
+          customizedChangeEvent();
         }
         WorkflowService.executeLayout(graph);
       }
@@ -5997,7 +6011,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   private openSideBar(id) {
     this.error = true;
-    if (this.editor && this.editor.graph && id) {
+    if (this.editor.graph && id) {
       this.dataService.reloadWorkflowError.next({error: this.error, msg: this.invalidMsg});
       this.editor.graph.setSelectionCells([this.editor.graph.getModel().getCell(id)]);
     }
