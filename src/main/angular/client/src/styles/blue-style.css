@@ -1,13 +1,30 @@
+:root {
+  --antd-wave-shadow-color: #fff;
+  --primary: #ff9505;
+  --primary-light-hover: #eb8700;
+  --primary-disable-color: rgba(255, 113, 5, .7);
+  --bar-color: #e6f7ff;
+  --secondary: #333332;
+  --box-color: #3f5669;
+  --white: #fff;
+  --background-color: #233446;
+  --bg-box: #32465a;
+  --bg-footer: #3f5669;
+  --text-color: rgba(255, 255, 255, .87);
+  --box-shadow: rgba(255, 255, 255, .1);
+  --border-color: rgba(255, 255, 255, .3);
+}
+
 body {
-	color: rgba(255, 255, 255, .87);
-	background: #233446
+  color: var(--text-color);
+  background: var(--background-color)
 }
 
 .bg-blue-color {
-	background-color: #233446!important
+  background-color: var(--background-color) !important
 }
 
-.ant-dropdown-menu,
+
 pre, .syntax-box {
 	background-color: #32465a
 }
@@ -1053,28 +1070,56 @@ pre#pre {
   border: 1px solid #32465a;
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
 }
-.modal .ant-select-dropdown,
-.modal .ant-input-number,
-.modal .ant-select-selection {
-  background-color: #3f5669 !important
+.modal-open .ant-select-dropdown,
+.modal-open .ant-input-number,
+.modal-open .ant-select-selection {
+  background-color: var(--bg-footer) !important
 }
 
 .ant-time-picker-panel-select,
 .ant-calendar-header,
 .ant-calendar-footer,
 .ant-input, .ant-input:hover,
-.ant-input-number, .ant-select-selection,
-.ant-input-number:hover, .ant-select-selection:hover,
+.ant-input-number,
+.ant-input-number:hover,
+.ant-select-selection,
+.ant-select-selection:hover,
 .ant-pagination-item, .ant-pagination-item-active,
 .ant-table-small,
+.ant-calendar-picker,
+.ant-calendar-picker:hover,
+.ant-calendar-picker:hover .ant-calendar-picker-input:not(.ant-input-disabled),
 .ant-time-picker-input,
+.ant-time-picker-input:hover,
 .ant-table-bordered .ant-table-thead > tr > th, .ant-table-bordered .ant-table-tbody > tr > td,
 .ant-table-small.ant-table-bordered .ant-table-content {
-  border-color: rgba(255, 255, 255, .3)
+  border-color: var(--border-color)
 }
-
+.ant-input:focus, .ant-input:active .ant-input-focused,
+.ant-select-focused .ant-select-selection,
+.ant-calendar-picker-input:focus,
+.ant-time-picker-input:focus,
+.ant-select-selection:focus,
+.ant-select-selection:active,
+.ant-input-number:focus,
+.ant-input-number-focused {
+  border-color: var(--primary) !important;
+}
+.ant-input-number-handler-wrap{
+  background-color: var(--bg-footer);
+  border-color: var(--bg-footer) !important;
+}
+.ant-table-bordered .ant-table-thead > tr:not(:last-child) > th, .ant-table-small.ant-table-bordered .ant-table-thead > tr > th:last-child{
+  border-color: var(--border-color);
+}
+.ant-table-small.ant-table-bordered  {
+  border-right: 1px solid var(--border-color);
+}
+.ant-table-small.ant-table-bordered .ant-table-placeholder, .ant-table-small > .ant-table-content .ant-table-row:last-child td{
+  border-bottom: 1px solid var(--border-color);
+}
 .ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td{
-  background: #65707d !important
+  background: var(--box-color) !important
 }
 .ant-calendar-header .ant-calendar-prev-century-btn:hover,
 .ant-calendar-header .ant-calendar-prev-decade-btn:hover,
@@ -1086,7 +1131,7 @@ pre#pre {
 .ant-tabs-nav .ant-tabs-tab-active:hover,
 .ant-tabs-nav .ant-tabs-tab:hover,
 .ant-pagination-item-active a {
-  color: #ff9505;
+  color: var(--white);
 }
 .ant-calendar-month-panel-month:hover,
 .ant-calendar-year-panel-year:hover,
@@ -1095,8 +1140,8 @@ pre#pre {
 .ant-calendar-today .ant-calendar-date,
 .ant-calendar-month-panel-selected-cell .ant-calendar-month-panel-month, .ant-time-picker-panel-select li:hover, li.ant-time-picker-panel-select-option-selected, .ant-calendar-date:hover, .ant-tabs-ink-bar,
 .ant-calendar-month-panel-selected-cell .ant-calendar-month-panel-month:hover {
-  color: #ff9505;
-  background: #e6f7ff;
+  color: var(--primary);
+  background: var(--bar-color);
 }
 
 .ant-tabs-bar,
@@ -1111,16 +1156,18 @@ pre#pre {
 .ant-time-picker-input,
 .ant-table-bordered .ant-table-thead > tr > th, .ant-table-bordered .ant-table-tbody > tr > td,
 .ant-table-small.ant-table-bordered .ant-table-content {
-  border-color: rgba(255, 255, 255, .3)
+  border-color: var(--border-color)
 }
 .ant-dropdown-menu-item-divider, .ant-dropdown-menu-submenu-title-divider {
-  background-color: rgba(255, 255, 255, .3)
+  background-color: var(--border-color)
 }
 .ant-calendar-year-panel,
 .ant-calendar-month-panel,
 .ant-time-picker-panel-inner{
-  background-color: #32465a;
-  color: rgba(255, 255, 255, .87);
+  background-color: var(--bg-box);
+  color: var(--text-color);
+  -webkit-box-shadow: 0 2px 4px var(--border-color);
+  box-shadow: 0 2px 4px var(--border-color)
 }
 
 .ant-calendar-year-panel-last-decade-cell .ant-calendar-year-panel-year, .ant-calendar-year-panel-next-decade-cell .ant-calendar-year-panel-year,
@@ -1133,16 +1180,104 @@ pre#pre {
 .ant-calendar-header a.ant-calendar-next-month-btn:hover,
 .ant-calendar-header a.ant-calendar-year-panel-next-decade-btn:hover,
 .ant-calendar-header a.ant-calendar-year-panel-prev-decade-btn:hover {
-  border-color: #fff !important;
-  color: #fff !important;
+  border-color: var(--white) !important;
+  color: var(--white) !important;
 }
+
 .btn {
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.3) !important;
 }
 .btn:hover {
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3) !important;
 }
+.ant-checkbox-indeterminate .ant-checkbox-inner::after {
+  background-color: var(--primary);
+}
+.anticon, .ant-radio, .ant-checkbox, .ant-radio-group, .ant-radio-wrapper, .ant-checkbox-wrapper{
+  color: var(--text-color);
+}
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+.ant-radio-inner::after {
+  background-color: var(--primary);
+}
+.ant-checkbox-inner, .ant-radio-inner, .ant-tree-checkbox-inner {
+  border: 1px solid var(--border-color);
+}
+.ant-radio-wrapper:hover .ant-radio, .ant-radio:hover .ant-radio-inner, .ant-radio-input:focus + .ant-radio-inner {
+  border-color: var(--primary);
+}
+.select-input-both .ant-select-open .ant-select-selection{
+  color: var(--text-color) !important;
+}
+.select-input-both .ant-select-open{
+  border: 1px solid var(--primary);
+  background: var(--bg-box) !important;
+}
+.ant-select-selection--multiple .ant-select-selection__choice{
+  background: var(--bg-box);
+  border-color: var(--bg-box);
+  color: var(--text-color);
+}
+/*
+JSON editor
+**/
+.ace-jsoneditor.ace_editor{
+  background: var(--bg-footer) !important;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.2);
+}
+.ace-jsoneditor .ace_gutter{
+  background: var(--box-color) !important;
+  color: var(--text-color) !important
+}
+.ace-jsoneditor .ace_scroller{
+  background-color: var(--bg-footer) !important;
+}
+div.jsoneditor{
+  border-color: var(--border-color);
+  color: var(--text-color) !important;
+}
 
+.ace-jsoneditor .ace_indent-guide{
+  filter: opacity(12%);
+}
+
+.ace-jsoneditor .ace_scroller.ace_scroll-left {
+  box-shadow: 17px 0 16px -16px rgba(0, 0, 0, 0.4) inset;
+}
+.ace-jsoneditor .ace_cursor {
+  border-left: 2px solid var(--border-color);
+}
+.ace-jsoneditor .ace_text-input.ace_composition {
+  background: var(--bg-box);
+  color: var(--text-color);
+}
+.ace-jsoneditor .ace_overwrite-cursors .ace_cursor {
+  border-bottom: 1px solid var(--border-color);
+}
+.ace-jsoneditor .ace_line .ace_fold {
+  border: 1px solid var(--border-color);
+}
+.ace-jsoneditor .ace_variable{
+  color: var(--text-color);
+}
+.ace-jsoneditor .ace_text-layer{
+  color: #ccc;
+}
+.ace-jsoneditor .ace_tooltip {
+  background-color: var(--box-color);
+  background-image: -webkit-linear-gradient(top, transparent, rgba(0, 0, 0, 0.1));
+  background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.1));
+  border: 1px solid var(--border-color);
+  box-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+  color: var(--text-color);
+}
+
+.ace-jsoneditor .ace_marker-layer .ace_active-line {
+  background-color: #999;
+}
 /**
 Code mirror
  */
@@ -1283,6 +1418,13 @@ span.cm-variable {
 .bg-highlight {
   background-color: rgba(253, 70, 71, .58) !important
 }
+.calendar .calendar-header table th:hover, .calendar-sm .selected {
+  background: var(--box-color);
+}
+
+.ngx-charts text {
+  fill: var(--text-color);
+}
 
 .jsgantt-chart .jsgantt-task-row:nth-child(even) {
     background-color: #233446;
@@ -1295,4 +1437,64 @@ span.cm-variable {
 .jsgantt-chart .jsgantt-grid-data .jsgantt-row.odd:hover,
 .jsgantt-chart .jsgantt-grid-data .jsgantt-row:hover {
   background-color: #65707d;
+}
+.order-history-template0 {
+  background: #222222 !important;
+}
+.order-history-template1 {
+  background: var(--background-color) !important;
+}
+.order-history-template2 {
+  background: #444444 !important;
+}
+.order-history-template2 {
+  background: #222222 !important;
+}
+.order-history-template3 {
+  background: var(--background-color) !important;
+}
+.order-history-template4 {
+  background: #444444 !important;
+}
+.order-history-template5 {
+  background: #222222 !important;
+}
+.order-history-template6 {
+  background: var(--background-color) !important;
+}
+.order-history-template7 {
+  background: #444444 !important;
+}
+.order-history-template8 {
+  background: #222222 !important;
+}
+.order-history-template9 {
+  background: var(--background-color) !important;
+}
+.order-history-template10 {
+  background: #444444 !important;
+}
+.order-history-template11 {
+  background: #222222 !important;
+}
+.order-history-template12 {
+  background: var(--background-color) !important;
+}
+.order-history-template13 {
+  background: #444444 !important;
+}
+.bg-gold {
+  background : #e6b000;
+}
+.ant-pagination-jump-prev .ant-pagination-item-container .ant-pagination-item-ellipsis, .ant-pagination-jump-next .ant-pagination-item-container .ant-pagination-item-ellipsis{
+  color : var(--text-color)
+}
+.calendar .selected-blue{
+  background: var(--primary-light-color) !important;
+}
+.calendar-sm .selected{
+  background: var(--primary) !important;
+}
+.calendar .cal-day-plan:hover{
+  background: var(--primary-light-hover) !important;
 }

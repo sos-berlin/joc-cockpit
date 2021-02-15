@@ -407,9 +407,10 @@
                               </td>
                             </tr>
                             <tr *ngIf="auditLog.show">
-                              <td colspan="7">
+                              <td></td>
+                              <td colspan="6">
                                 <div class="m-a-0">
-                                  <span translate>auditLog.label.parameters</span>
+                                  <span translate>auditLog.label.requestBody</span>
                                   :
                                   <span [innerHtml]="auditLog.parameters"></span>
                                 </div>

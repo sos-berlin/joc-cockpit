@@ -33,32 +33,28 @@
         </tr>
         <tr class="text-center">
           <td [width]="(xbody > 7 && ybody == 2) ? '12.5%' : '25%'">
-            <a (click)="navigate('PENDING')" class="text-lg _600" [innerHtml]="snapshot.orders.pending || 0"></a>
+            <a (click)="navigate('PENDING')" class="text-lg _600 gold" [innerHtml]="snapshot.orders.pending || 0"></a>
           </td>
           <td [width]="(xbody > 7 && ybody == 2) ? '12.5%' : '25%'">
-            <a (click)="navigate('INPROGRESS')" class="text-lg _600" [innerHtml]="snapshot.orders.inProgress || 0"></a>
+            <a (click)="navigate('INPROGRESS')" class="text-lg _600 light-blue" [innerHtml]="snapshot.orders.inProgress || 0"></a>
           </td>
           <td [width]="(xbody > 7 && ybody == 2) ? '12.5%' : '25%'">
-            <a (click)="navigate('RUNNING')" class="text-lg _600" [innerHtml]="snapshot.orders.running || 0"></a>
+            <a (click)="navigate('RUNNING')" class="text-lg _600 green" [innerHtml]="snapshot.orders.running || 0"></a>
           </td>
           <td [width]="(xbody > 7 && ybody == 2) ? '12.5%' : '25%'">
-            <a (click)="navigate('SUSPENDED')" class="text-lg _600 "
-               [ngClass]="{'orange':snapshot.orders.suspended >0}"
-               [innerHtml]="snapshot.orders.suspended || 0"></a>
+            <a (click)="navigate('SUSPENDED')" class="text-lg _600 orange" [innerHtml]="snapshot.orders.suspended || 0"></a>
           </td>
           <td width="12.5%"  *ngIf="xbody > 7 && ybody == 2">
-            <a (click)="navigate('CALLING')" class="text-lg _600 "
-                          [innerHtml]="snapshot.orders.calling || 0"></a>
+            <a (click)="navigate('CALLING')" class="text-lg _600 pink" [innerHtml]="snapshot.orders.calling || 0"></a>
           </td>
           <td width="12.5%"  *ngIf="xbody > 7 && ybody == 2">
-            <a (click)="navigate('WAITING')" class="text-lg _600" [innerHtml]="snapshot.orders.waiting || 0"></a>
+            <a (click)="navigate('WAITING')" class="text-lg _600 yellow-green" [innerHtml]="snapshot.orders.waiting || 0"></a>
           </td>
           <td width="12.5%"  *ngIf="xbody > 7 && ybody == 2">
-            <a (click)="navigate('BLOCKED')" class="text-lg _600" [innerHtml]="snapshot.orders.blocked || 0"></a>
+            <a (click)="navigate('BLOCKED')" class="text-lg _600 mangenta" [innerHtml]="snapshot.orders.blocked || 0"></a>
           </td>
           <td width="12.5%"  *ngIf="xbody > 7 && ybody == 2">
-            <a [ngClass]="{'red':snapshot.orders.failed >0}" (click)="navigate('FAILED')" class="text-lg _600"
-               [innerHtml]="snapshot.orders.failed || 0"></a>
+            <a (click)="navigate('FAILED')" class="text-lg _600 red" [innerHtml]="snapshot.orders.failed || 0"></a>
           </td>
         </tr>
         <tr class="text-center" style="border-top: 16px solid transparent"  *ngIf="xbody < 8 || ybody !== 2">
@@ -77,18 +73,16 @@
         </tr>
         <tr class="text-center" *ngIf="xbody < 8 || ybody !== 2">
           <td width="25%">
-            <a (click)="navigate('CALLING')" class="text-lg _600 "
-                          [innerHtml]="snapshot.orders.calling || 0"></a>
+            <a (click)="navigate('CALLING')" class="text-lg _600 pink" [innerHtml]="snapshot.orders.calling || 0"></a>
           </td>
           <td width="25%">
-            <a (click)="navigate('WAITING')" class="text-lg _600" [innerHtml]="snapshot.orders.waiting || 0"></a>
+            <a (click)="navigate('WAITING')" class="yellow-green text-lg _600" [innerHtml]="snapshot.orders.waiting || 0"></a>
           </td>
           <td width="25%">
-            <a (click)="navigate('BLOCKED')" class="text-lg _600" [innerHtml]="snapshot.orders.blocked || 0"></a>
+            <a (click)="navigate('BLOCKED')" class="mangenta text-lg _600" [innerHtml]="snapshot.orders.blocked || 0"></a>
           </td>
           <td width="25%">
-            <a [ngClass]="{'red':snapshot.orders.failed >0}" (click)="navigate('FAILED')" class="text-lg _600"
-               [innerHtml]="snapshot.orders.failed || 0"></a>
+            <a (click)="navigate('FAILED')" class="red text-lg _600" [innerHtml]="snapshot.orders.failed || 0"></a>
           </td>
         </tr>
       </table>

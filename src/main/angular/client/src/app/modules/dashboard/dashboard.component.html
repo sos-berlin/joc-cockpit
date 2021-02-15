@@ -62,14 +62,14 @@
               <div *ngIf="item.name === 'ordersOverview'">
                   <app-order-overview [sizeX]="item.cols" [sizeY]="item.rows"></app-order-overview>
               </div>
-              <div *ngIf="item.name === 'ordersSummary'">
-                  <app-order-summary></app-order-summary>
+              <div *ngIf="item.name === 'history'">
+                  <app-history-summary></app-history-summary>
               </div>
-              <div *ngIf="item.name === 'inventoryStatistics'">
-                  <app-inventory-statistics></app-inventory-statistics>
+              <div *ngIf="item.name === 'inventory'">
+                  <app-inventory-statistics [sizeX]="item.cols" [sizeY]="item.rows"></app-inventory-statistics>
               </div>
-              <div *ngIf="item.name === 'tasksSummary'">
-                   <app-task-summary></app-task-summary>
+              <div *ngIf="item.name === 'dailyPlanOverview'">
+                <app-daily-plan></app-daily-plan>
               </div>
           </gridster-item>
       </gridster>

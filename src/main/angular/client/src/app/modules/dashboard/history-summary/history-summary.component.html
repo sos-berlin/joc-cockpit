@@ -1,6 +1,6 @@
 <div id="ordersSummary1">
     <div class="box-header b-b remove">
-        <h3 translate>dashboard.label.ordersSummary</h3>
+        <h3 translate>dashboard.label.history</h3>
     </div>
     <div class="row m-b-sm box-tool" style="top:10px">
         <div class="col-md-12 container-fluid">
@@ -48,23 +48,38 @@
     <div class="box-body">
         <table class="w-full" *ngIf="!notAuthenticate && isLoaded">
             <tr class="text-center">
-                <td width="50%">
-                    <div translate>common.label.successful</div>
+                <td width="25%">
+                    <div translate>dashboard.label.successfulOrders</div>
                 </td>
-                <td width="50%">
-                    <div translate>common.label.failed</div>
+                <td width="25%">
+                    <div translate>dashboard.label.failedOrders</div>
+                </td>
+                <td width="25%">
+                  <div translate>dashboard.label.successfulJobs</div>
+                </td>
+                <td width="25%">
+                  <div translate>dashboard.label.failedJobs</div>
                 </td>
             </tr>
             <tr class="text-center">
-                <td width="50%">
+                <td width="25%">
                     <a (click)="showOrderSummary('SUCCESSFUL')" class="text-lg _600 "
-                       [ngClass]="{'dark-blue':orderSummary.orders.successful >0}"
-                       [innerHtml]="orderSummary.orders.successful || 0"></a>
+                       [ngClass]="{'dark-blue':orderSummary.successful >0}"
+                       [innerHtml]="orderSummary.successful || 0"></a>
                 </td>
-                <td width="50%">
+                <td width="25%">
                     <a (click)="showOrderSummary('FAILED')" class="text-lg _600 "
-                       [ngClass]="{'red':orderSummary.orders.failed  >0}" [innerHtml]="orderSummary.orders.failed || 0"></a>
+                       [ngClass]="{'red':orderSummary.failed  >0}" [innerHtml]="orderSummary.failed || 0"></a>
                 </td>
+              <td width="25%">
+                <a (click)="showTaskSummary('SUCCESSFUL')" class="text-lg _600 "
+                   [ngClass]="{'dark-blue':taskSummary.successful >0}"
+                   [innerHtml]="taskSummary.successful || 0"></a>
+              </td>
+              <td width="25%">
+                <a (click)="showTaskSummary('FAILED')" class="text-lg _600 "
+                   [ngClass]="{'red':taskSummary.failed  >0}" [innerHtml]="taskSummary.failed || 0"></a>
+              </td>
             </tr>
         </table>
         <div *ngIf="notAuthenticate">

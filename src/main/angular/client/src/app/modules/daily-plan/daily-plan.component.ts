@@ -933,11 +933,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         });
       } else {
         this.planOrders.forEach((order) => {
-          if (this.dailyPlanFilters.filter.groupBy === 'WORKFLOW') {
-            order.show = flag;
-          } else if (this.dailyPlanFilters.filter.groupBy === 'ORDER') {
-            order.order = flag;
-          }
+          order.show = flag;
+          order.order = flag;
         });
       }
     }

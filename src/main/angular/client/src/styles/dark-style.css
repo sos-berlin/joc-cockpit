@@ -75,6 +75,10 @@ pre, .syntax-box {
   background-color: var(--primary)
 }
 
+.md-check > i:before {
+  border: 1px solid var(--border-color);
+}
+
 .dark-white {
   background-color: var(--background-color)
 }
@@ -839,7 +843,6 @@ gridster-item {
   direction: ltr;
 }
 
-
 .text-muted {
   color: rgba(255, 255, 255, 0.83) !important;
 }
@@ -860,6 +863,7 @@ input:-webkit-autofill, input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
   -webkit-text-fill-color: var(--text-color);
   -webkit-box-shadow: 0 0 0 100px var(--bg-box) inset;
+  border-color: var(--border-color);
 }
 
 .ngx-pagination a, .ngx-pagination button {
@@ -1066,6 +1070,11 @@ span ul li a {
 .modal-open .ant-select-selection {
   background-color: var(--bg-footer) !important
 }
+.modal-open input:-webkit-autofill, .modal-open input:-webkit-autofill:hover,
+.modal-open input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 100px var(--bg-footer) inset;
+}
+
 
 .ant-time-picker-panel-select,
 .ant-calendar-header,

@@ -1,15 +1,15 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {AuthService} from '../../components/guard';
-import {CoreService} from '../../services/core.service';
 import {
   CompactType,
   DisplayGrid,
   GridsterConfig,
   GridType
 } from 'angular-gridster2';
-import {DataService} from '../../services/data.service';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
+import {AuthService} from '../../components/guard';
+import {DataService} from '../../services/data.service';
+import {CoreService} from '../../services/core.service';
 
 declare const $;
 
@@ -287,19 +287,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }, {'cols': 4, 'rows': 3, 'y': 0, 'x': 0, 'name': 'ordersOverview', 'visible': true, 'message': 'message.ordersOverview'}, {
         'cols': 4,
         'rows': 2,
-        'y': 3,
+        'y': 6,
         'x': 0,
-        'name': 'ordersSummary',
+        'name': 'history',
         'visible': true,
-        'message': 'message.ordersSummary'
-      }, {'cols': 4, 'rows': 2, 'y': 7, 'x': 0, 'name': 'inventoryStatistics', 'visible': true, 'message': 'message.inventoryStatistics'}, {
-        'cols': 4,
-        'rows': 2,
-        'y': 5,
-        'x': 0,
-        'name': 'tasksSummary',
+        'message': 'message.historySummary'
+      }, {'cols': 4, 'rows': 3, 'y': 3, 'x': 0, 'name': 'inventory', 'visible': true, 'message': 'message.inventoryStatistics'}, {
+        'cols': 12, 'rows': 2, 'y': 8, 'x': 0,
+        'name': 'dailyPlanOverview',
         'visible': true,
-        'message': 'message.tasksSummary'
+        'message': 'message.dailyPlanOverview'
       }];
     }
 
@@ -315,11 +312,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'ordersOverview' && this.permission.Order.view.status) {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'ordersSummary' && this.permission.Order.view.status) {
+        } else if (this.dashboardLayout[i].name === 'historySummary' && (this.permission.Order.view.status || this.permission.Job.view.status)) {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'tasksOverview' && this.permission.Job.view.status) {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'tasksSummary' && this.permission.Job.view.status) {
+        } else if (this.dashboardLayout[i].name === 'dailyPlanOverview' && this.permission.DailyPlan.view.status) {
           this.widgets.push(this.dashboardLayout[i]);
         }
       }

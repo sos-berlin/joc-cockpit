@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
@@ -9,6 +9,8 @@ import {Subscription} from 'rxjs';
   templateUrl: './inventory-statistics.component.html'
 })
 export class InventoryStatisticsComponent implements OnInit, OnDestroy {
+  @Input('sizeX') xbody: number;
+  @Input('sizeY') ybody: number;
   statistics: any = {};
   schedulerIds: any = {};
   isLoaded = false;

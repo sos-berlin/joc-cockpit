@@ -12,14 +12,10 @@
     <div class="form-group row">
       <label class="col-md-4 col-lg-3" translate>dailyPlan.label.chooseTemplates</label>
       <div class="col-md-8 col-lg-9">
-          <label class="md-check w">
-            <input type="radio" name="at" [(ngModel)]="object.at" value="all">
-            <i class="primary"></i><span translate>dailyPlan.label.all</span>
-          </label>
-          <label class="md-check w">
-            <input type="radio" name="at" [(ngModel)]="object.at" value="template">
-            <i class="primary"></i><span translate>dailyPlan.label.select</span>
-          </label>
+        <nz-radio-group name="at"  [(ngModel)]="object.at">
+          <label nz-radio nzValue="all"><span translate>dailyPlan.label.all</span></label>
+          <label nz-radio nzValue="template"><span translate>dailyPlan.label.select</span></label>
+        </nz-radio-group>
       </div>
     </div>
     <div class="form-group row" *ngIf="object.at === 'template'">
@@ -32,19 +28,13 @@
     <div class="form-group row">
       <label class="col-md-4 col-lg-3" translate>dailyPlan.label.overwrite</label>
       <div class="col-md-8 col-lg-9">
-        <label class="md-check">
-          <input type="checkbox" name="overwrite" [(ngModel)]="object.overwrite"/>
-          <i class="primary"></i>
-        </label>
+        <label nz-checkbox [(ngModel)]="object.overwrite" name="overwrite"></label>
       </div>
     </div>
     <div class="form-group row">
       <label class="col-md-4 col-lg-3" translate>dailyPlan.label.submitWith</label>
       <div class="col-md-8 col-lg-9">
-        <label class="md-check">
-          <input type="checkbox" name="overwrite" [(ngModel)]="object.submitWith"/>
-          <i class="primary"></i>
-        </label>
+        <label nz-checkbox [(ngModel)]="object.submitWith" name="submitWith"></label>
       </div>
     </div>
   </div>

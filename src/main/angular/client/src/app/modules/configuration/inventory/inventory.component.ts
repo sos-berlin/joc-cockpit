@@ -671,8 +671,11 @@ export class ExportComponent implements OnInit {
     fileFormat: 'ZIP'
   };
   filter = {
+    controller: true,
+    dailyPlan: true,
     draft: true,
     deploy: true,
+    release: true,
     valid: false,
   };
   object: any = {draftConfigurations: [], releaseDraftConfigurations: [], deployConfigurations: [], releasedConfigurations: []};
@@ -734,6 +737,13 @@ export class ExportComponent implements OnInit {
       APIs.push(this.coreService.post('inventory/deployables', obj));
       APIs.push(this.coreService.post('inventory/releasables', obj));
     } else {
+      if (this.exportType === 'DAILYPLAN' || this.exportType === 'SCHEDULE' || this.exportType.match('CALENDAR')) {
+        this.filter.controller = false;
+        this.filter.deploy = false;
+      } else if (this.exportType === 'CONTROLLER') {
+        this.filter.dailyPlan = false;
+        this.filter.release = false;
+      }
       if (this.exportType === 'CONTROLLER' || this.exportType === 'DAILYPLAN') {
         obj.recursive = true;
       } else {
@@ -811,6 +821,14 @@ export class ExportComponent implements OnInit {
       if (value.objectType === 'FOLDER') {
         return false;
       }
+
+      if (!this.filter.controller && value.objectType !== 'SCHEDULE' && !value.objectType.match(/CALENDAR/)) {
+        return false;
+      }
+      if (!this.filter.dailyPlan && (value.objectType === 'SCHEDULE' || value.objectType.match(/CALENDAR/))) {
+        return false;
+      }
+
       if (this.exportObj.forSigning) {
         if (!(value.objectType === 'SCHEDULE' || value.objectType.match(/CALENDAR/))) {
           if (this.filter.draft && (value.deployed === false || value.released === false)) {
@@ -821,10 +839,25 @@ export class ExportComponent implements OnInit {
           return false;
         }
       } else {
-        if (this.filter.draft && (value.deployed === false || value.released === false)) {
-          return !(this.filter.valid && !value.valid);
+        if (this.filter.draft) {
+          let flag = !(this.filter.valid && !value.valid);
+          if (this.filter.deploy && this.filter.release) {
+
+          } else {
+            if (flag && !this.filter.deploy && value.deployed) {
+              flag = false;
+            } else if (flag && !this.filter.release && value.released) {
+              flag = false;
+            }
+          }
+          return flag;
+        } else if (this.filter.deploy && this.filter.release) {
+          return !!(value.deployed || value.released);
+        } else if (this.filter.deploy && !this.filter.release) {
+          return value.deployed;
+        } else if (!this.filter.deploy && this.filter.release) {
+          return value.released;
         }
-        return !!(this.filter.deploy && (value.deployed || value.released));
       }
     });
     this.buildDeployablesTree(arr);
@@ -837,7 +870,7 @@ export class ExportComponent implements OnInit {
         }
       }
       if (this.nodes.length > 0) {
-        this.preselected( this.nodes[0]);
+        this.preselected(this.nodes[0]);
         this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
       }
     }, 0);
@@ -925,6 +958,7 @@ export class ExportComponent implements OnInit {
 
   getJSObject() {
     const self = this;
+    this.object = {draftConfigurations: [], releaseDraftConfigurations: [], deployConfigurations: [], releasedConfigurations: []};
     let selectFolder = true;
     if (this.exportType && this.exportType !== 'CONTROLLER' && this.exportType !== 'DAILYPLAN' && this.exportType !== 'BOTH') {
       selectFolder = false;
@@ -971,38 +1005,21 @@ export class ExportComponent implements OnInit {
                 }
               }
             } else {
-              let check1 = false, check2 = false, check3 = false, check4 = false, isEmpty = false;
-              for (let j = 0; j < nodes[i].children.length; j++) {
-                if (nodes[i].children[j].type) {
-                  isEmpty = true;
-                  if (self.inventoryService.isControllerObject(nodes[i].children[j].type)) {
-                    if ((nodes[i].children[j].deployId || nodes[i].children[j].deploymentId) && !check1) {
-                      check1 = true;
-                      self.object.deployConfigurations.push(objDep);
-                    } else if (!check2) {
-                      check2 = true;
-                      self.object.draftConfigurations.push(objDep);
-                    }
-                  } else {
-                    if (nodes[i].children[j].release && !check3) {
-                      check3 = true;
-                      self.object.releasedConfigurations.push(objDep);
-                    } else if (!check4) {
-                      check4 = true;
-                      self.object.releaseDraftConfigurations.push(objDep);
-                    }
-                  }
-                  if (check1 && check2 && check3 && check4) {
-                    break;
-                  }
-                }
-              }
-              if (!isEmpty) {
+             
+              if (self.filter.controller) {
                 if (self.filter.deploy) {
                   self.object.deployConfigurations.push(objDep);
                 }
                 if (self.filter.draft) {
                   self.object.draftConfigurations.push(objDep);
+                }
+              }
+              if (self.filter.dailyPlan) {
+                if (self.filter.release) {
+                  self.object.releasedConfigurations.push(objDep);
+                }
+                if (self.filter.draft) {
+                  self.object.releaseDraftConfigurations.push(objDep);
                 }
               }
             }

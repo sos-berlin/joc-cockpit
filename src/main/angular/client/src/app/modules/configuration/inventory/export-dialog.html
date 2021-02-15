@@ -142,6 +142,19 @@
           <label nz-checkbox [(ngModel)]="exportObj.forSigning" name="forSigning" (ngModelChange)="onchangeSigning()"></label>
         </div>
       </div>
+      <div class="m-b-sm row" *ngIf="exportType === 'BOTH'">
+        <div class="col-md-3">
+          <label translate>inventory.export.label.filterType</label>
+        </div>
+        <div class="col-md-9">
+          <label nz-checkbox name="controller"  [(ngModel)]="filter.controller" (ngModelChange)="filterList()">
+            {{'inventory.export.label.controller'| translate}}
+          </label>
+          <label nz-checkbox name="dailyPlan" [disabled]="exportObj.forSigning" [(ngModel)]="filter.dailyPlan" (ngModelChange)="filterList()">
+            {{'inventory.export.label.dailyPlan'| translate}}
+          </label>
+        </div>
+      </div>
       <div class="m-b-sm row">
         <div class="col-md-3">
           <label translate>inventory.export.label.filter</label>
@@ -153,8 +166,13 @@
           <label nz-checkbox name="draft" [(ngModel)]="filter.draft" (ngModelChange)="filterList()">
             {{'inventory.export.label.draft'| translate}}
           </label>
-          <label nz-checkbox name="deploy" [(ngModel)]="filter.deploy" (ngModelChange)="filterList()">
+          <label nz-checkbox name="deploy" [(ngModel)]="filter.deploy" (ngModelChange)="filterList()"
+            *ngIf="!(exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType.match('CALENDAR'))">
             {{'inventory.export.label.deployed'| translate}}
+          </label>
+          <label nz-checkbox name="release" [disabled]="exportObj.forSigning" [(ngModel)]="filter.release" (ngModelChange)="filterList()"
+                 *ngIf="exportType === 'BOTH' || exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType.match('CALENDAR')">
+            {{'inventory.export.label.released'| translate}}
           </label>
         </div>
       </div>

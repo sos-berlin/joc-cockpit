@@ -340,15 +340,11 @@ export class CoreService {
     this.tempTabs._configuration.inventory.deployedMessages = [];
 
     this.dashboard._dashboard = {};
-    this.dashboard._dashboard.order = {};
-    this.dashboard._dashboard.task = {};
+    this.dashboard._dashboard.history = {};
     this.dashboard._dashboard.file = {};
-
     this.dashboard._dashboard.dailyplan = '0d';
-    this.dashboard._dashboard.order.date = '0d';
-    this.dashboard._dashboard.order.label = 'filters.button.today';
-    this.dashboard._dashboard.task.date = '0d';
-    this.dashboard._dashboard.task.label = 'filters.button.today';
+    this.dashboard._dashboard.history.date = '0d';
+    this.dashboard._dashboard.history.label = 'filters.button.today';
     this.dashboard._dashboard.file.date = '0d';
     this.dashboard._dashboard.file.label = 'filters.button.today';
 

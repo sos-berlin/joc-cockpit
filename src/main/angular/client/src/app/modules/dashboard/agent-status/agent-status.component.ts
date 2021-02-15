@@ -23,6 +23,13 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
   pieChartOptions: ChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    tooltips: {
+      callbacks: {
+        label: function (tooltipItem, data) {
+          return ' ' + data.labels[tooltipItem.index];
+        }
+      }
+    },
     legend: {
       position: 'right',
       labels: {
@@ -149,7 +156,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
       this.pieChartData.push(value.count);
       this.pieChartColors[0].backgroundColor.push(value.color);
       this.pieChartColors[0].hoverBackgroundColor.push(value.hoverColor);
-      this.pieChartLabels.push(value._text);
+      this.pieChartLabels.push(value.count + ' ' + value._text);
     });
   }
 

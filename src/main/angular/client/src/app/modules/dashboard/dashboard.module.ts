@@ -3,8 +3,8 @@ import {GridsterModule} from 'angular-gridster2';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
 import {DashboardRoutingModule} from './dashboard-routing.module';
 import {DashboardComponent, AddWidgetModalComponent} from './dashboard.component';
-import {TaskSummaryComponent} from './task-summary/task-summary.component';
-import {OrderSummaryComponent} from './order-summary/order-summary.component';
+import {DailyPlanComponent} from './daily-plan/daily-plan.component';
+import {HistorySummaryComponent} from './history-summary/history-summary.component';
 import {OrderOverviewComponent} from './order-overview/order-overview.component';
 import {AgentStatusComponent} from './agent-status/agent-status.component';
 import {AgentRunningTaskComponent} from './agent-running-task/agent-running-task.component';
@@ -29,8 +29,8 @@ const ENTRYCOMPONENTS = [CommentModalComponent, AddWidgetModalComponent];
     ...ENTRYCOMPONENTS,
     DashboardComponent,
     InventoryStatisticsComponent,
-    TaskSummaryComponent,
-    OrderSummaryComponent,
+    DailyPlanComponent,
+    HistorySummaryComponent,
     OrderOverviewComponent,
     AgentStatusComponent,
     AgentRunningTaskComponent,
@@ -39,7 +39,7 @@ const ENTRYCOMPONENTS = [CommentModalComponent, AddWidgetModalComponent];
     ActionComponent
   ],
   entryComponents: [...ENTRYCOMPONENTS],
-  providers:[ThemeService]
+  providers: [ThemeService]
 })
 export class DashboardModule {
 

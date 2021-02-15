@@ -342,7 +342,13 @@
                           </a>
                         </span>
                       </td>
-                      <td [innerHtml]="workflow.path"></td>
+                      <td>
+                        <span class="show-in-single-line">
+                        <i (click)="coreService.navToInventoryTab(workflow.path, 'WORKFLOW');"
+                           class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                        <span>{{workflow.path}} </span>
+                       </span>
+                      </td>
                       <td>
                         <a class="text-hover-primary" (click)="viewOrders(workflow)" [innerHtml]="workflow.numOfOrders || 0"></a>
                       </td>

@@ -237,9 +237,10 @@
                      [innerHtml]="auditLog.ticketLink | highlight : adtLog.searchText"></a></td>
             </tr>
             <tr class="tableexport-ignore" *ngIf="auditLog.show">
-              <td colspan="11">
+              <td></td>
+              <td colspan="10">
                 <div class="m-a-0">
-                  <span translate>auditLog.label.parameters</span>
+                  <span translate>auditLog.label.requestBody</span>
                   :
                   <span [innerHtml]="auditLog.parameters"></span>
                 </div>

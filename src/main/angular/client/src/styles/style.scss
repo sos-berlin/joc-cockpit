@@ -39,7 +39,7 @@
   --bg-yellow-green: #cccc00;
   --row-selected: rgba(36, 148, 191, 0.18);
   --date-selected: rgba(36, 148, 191, .4);
-  --date-selected-hover: rgb(36, 148, 191, 0.55);
+  --date-selected-hover: rgba(36, 148, 191, 0.55);
   --date-selected-exclude: rgba(255, 163, 102, 0.56);
   --date-selected-exclude-hover: rgba(255, 163, 102, 0.66);
 }
@@ -4537,11 +4537,12 @@ input[type=text][disabled] {
   z-index: 9999;
   cursor: wait;
 }
-
-.plan-status {
-  color: $white !important;
+.plan-overview {
+  opacity: .7;
 }
-
+.plan-overview.plan-status {
+    opacity: 1;
+}
 .frequency-table tr > td {
   &:first-child, &:last-child > div {
     > a.text-hover-primary {
@@ -6337,11 +6338,15 @@ tr.tr-border td {
 .ant-radio-wrapper:hover .ant-radio, .ant-radio:hover .ant-radio-inner, .ant-radio-input:focus + .ant-radio-inner {
   border-color: var(--primary);
 }
-
+.ant-radio-wrapper{
+  margin-right: 16px;
+}
 .ant-empty-image {
   max-height: 40px;
 }
-
+.ant-radio-checked .ant-radio-inner, .ant-radio-checked::after{
+  border-color: var(--primary);
+}
 .ant-empty-normal {
   margin: 8px;
   color: var(--text-color);
@@ -6751,9 +6756,6 @@ span.cm-error {
 .ant-tree-child-tree {
   width: fit-content !important;
 }
-.ant-dropdown-menu-item .ant-dropdown-menu-submenu-arrow-icon, .ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-arrow-icon,
-.cluster-rect, .connection, .cluster, .icon-color,.ant-tree li,
-.ant-time-picker-input,
 .ant-calendar-header a:hover,
 .ant-time-picker-panel,
 .ant-calendar-picker-container,
@@ -6773,11 +6775,13 @@ span.cm-error {
 .ant-select-dropdown-menu-item,
 .ant-calendar-picker-icon,
 .ant-time-picker-icon,
-.ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled),
-.ant-select-dropdown-menu-item-selected, .ant-select-dropdown-menu-item:hover,
+.ant-time-picker-input,
+.anticon-calendar,
+.ant-dropdown-menu-item,
+.ant-dropdown-menu-submenu-title,
 .ant-dropdown-menu-submenu-title,
 .ant-dropdown-menu-item > a, .ant-dropdown-menu-submenu-title > a,
-.anticon-calendar, .anticon-clock-circle {
+.anticon-clock-circle {
   color: var(--text-color);
 }
 
@@ -6799,7 +6803,7 @@ span.cm-error {
 
 .ant-calendar-year-panel-selected-cell .ant-calendar-year-panel-year:hover,
 .ant-calendar-today .ant-calendar-date {
-  border-color: #e6f7ff;
+  border-color: var(--row-selected);
 }
 
 .ant-select-tree li {

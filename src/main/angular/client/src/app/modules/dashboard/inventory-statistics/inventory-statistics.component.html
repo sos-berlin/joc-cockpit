@@ -1,38 +1,91 @@
 <div id="tasksOverview1">
-    <div class="box-header b-b remove">
-        <h3 translate>dashboard.label.inventoryStatistics</h3>
+  <div class="box-header b-b remove">
+    <h3 translate>dashboard.label.inventory</h3>
+  </div>
+  <div class="box-body" style="overflow: auto" [ngStyle]="{'max-height':(ybody * 55 +((ybody -1) *20 -50)) +'px'}">
+    <div class="table-responsive" *ngIf="!notAuthenticate && isLoaded">
+      <table class="w-full" >
+        <tr class="text-center">
+          <td [width]="(xbody > 7 && ybody == 2) ? '14.28%' : '25%'">
+            <div translate>dashboard.label.workflows</div>
+          </td>
+          <td [width]="(xbody > 7 && ybody == 2) ? '14.28%' : '25%'">
+            <div translate>dashboard.label.jobs</div>
+          </td>
+          <td [width]="(xbody > 7 && ybody == 2) ? '14.28%' : '25%'">
+            <div translate>dashboard.label.locks</div>
+          </td>
+          <td [width]="(xbody > 7 && ybody == 2) ? '14.28%' : '25%'">
+            <div translate>dashboard.label.junctions</div>
+          </td>
+          <td width="14.28%" *ngIf="xbody > 7 && ybody == 2">
+            <div translate>dashboard.label.fileWatches</div>
+          </td>
+          <td width="14.28%" *ngIf="xbody > 7 && ybody == 2">
+            <div translate>dashboard.label.calendars</div>
+          </td>
+          <td width="14.28%" *ngIf="xbody > 7 && ybody == 2">
+            <div translate>dashboard.label.schedules</div>
+          </td>
+        </tr>
+        <tr class="text-center">
+          <td [width]="(xbody > 7 && ybody == 2) ? '14.28%' : '25%'">
+            <span class="text-lg _600 " [innerHtml]="statistics.numOfWorkflows || 0"></span>
+          </td>
+          <td [width]="(xbody > 7 && ybody == 2) ? '14.28%' : '25%'">
+            <span class="text-lg _600 " [innerHtml]="statistics.numOfJobs || 0"></span>
+          </td>
+          <td [width]="(xbody > 7 && ybody == 2) ? '14.28%' : '25%'">
+            <span class="text-lg _600 " [innerHtml]="statistics.numOfLocks || 0"></span>
+          </td>
+          <td [width]="(xbody > 7 && ybody == 2) ? '14.28%' : '25%'">
+            <span class="text-lg _600 " [innerHtml]="statistics.numOfJunctions || 0"></span>
+          </td>
+          <td width="14.28%" *ngIf="xbody > 7 && ybody == 2">
+            <span class="text-lg _600 " [innerHtml]="statistics.numOfFilewatchers || 0"></span>
+          </td>
+          <td width="14.28%" *ngIf="xbody > 7 && ybody == 2">
+            <span class="text-lg _600 " [innerHtml]="statistics.numOfCalendars || 0"></span>
+          </td>
+          <td width="14.28%" *ngIf="xbody > 7 && ybody == 2">
+            <span class="text-lg _600 " [innerHtml]="statistics.numOfSchedules || 0"></span>
+          </td>
+        </tr>
+      </table>
+      <table class="w-full" *ngIf="xbody < 8 || ybody !== 2">
+        <tr class="text-center" style="border-top: 16px solid transparent">
+          <td width="25%">
+            <div translate>dashboard.label.fileWatches</div>
+          </td>
+          <td width="25%">
+            <div translate>dashboard.label.calendars</div>
+          </td>
+          <td width="25%">
+            <div translate>dashboard.label.schedules</div>
+          </td>
+        </tr>
+        <tr class="text-center">
+          <td width="25%">
+            <span class="text-lg _600 " [innerHtml]="statistics.numOfFileWatches || 0"></span>
+          </td>
+          <td width="25%">
+            <span class="text-lg _600 " [innerHtml]="statistics.numOfCalendars || 0"></span>
+          </td>
+          <td width="25%">
+            <span class="text-lg _600 " [innerHtml]="statistics.numOfSchedules || 0"></span>
+          </td>
+        </tr>
+      </table>
     </div>
-    <div class="box-body">
-        <div class="table-responsive">
-            <table class="w-full" *ngIf="!notAuthenticate && isLoaded">
-                <tr class="text-center">
-                    <td width="50%">
-                        <div translate>dashboard.label.jobs</div>
-                    </td>
-                    <td width="50%">
-                        <div translate>dashboard.label.workflows</div>
-                    </td>
-                </tr>
-                <tr class="text-center">
-                    <td width="50%">
-                        <span class="text-lg _600 "
-                           [innerHtml]="statistics.numOfJobs || 0"></span>
-                    </td>
-                    <td width="50%">
-                        <span  class="text-lg _600 "
-                           [innerHtml]="statistics.numOfWorkflows || 0"></span>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div *ngIf="notAuthenticate">
-          <div>
-            <app-empty-data></app-empty-data>
-          </div>
-        </div>
-        <div [hidden]="notAuthenticate" class="hide text-center text-primary text m-t-md m-b"
-             [ngClass]="{'show': !isLoaded}">
-            <div><i class="fa fa-refresh fa-lg fa-spin"></i> </div>
-        </div>
+    <div *ngIf="notAuthenticate" class="vert-middle"
+         [ngStyle]="{'height':(ybody * 55 + ((ybody -1) *20 -50) - 25) +'px'}">
+      <div>
+        <app-empty-data></app-empty-data>
+      </div>
     </div>
+    <div [hidden]="notAuthenticate" class="hide text-center text-primary text m-t-md m-b"
+         [ngClass]="{'show': !isLoaded}">
+      <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+    </div>
+  </div>
 </div>

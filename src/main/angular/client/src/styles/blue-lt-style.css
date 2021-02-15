@@ -1,3 +1,14 @@
+:root {
+  --primary: #eb8814;
+  --primary-light-hover: #d47a12;
+  --primary-disable-color: rgba(235, 136, 20, .7);
+  --background-color: #4e5c6a;
+  --bg-box: #46525f;
+  --bg-footer: #65707d;
+  --text-color: rgba(255, 255, 255, .87);
+  --border-color: rgba(218, 239, 255, .13);
+}
+
 body {
 	color: rgba(255, 255, 255, .87);
 	background: #4e5c6a
@@ -37,15 +48,7 @@ pre, .syntax-box {
 }
 
 gridster-item {
-    overflow: visible !important;
-    z-index: unset !important;
     background-color: #46525f !important;
-    box-sizing: border-box;
-    position: absolute;
-    overflow: hidden;
-    transition: .3s;
-    display: none;
-    user-select: text;
 }
 
 .box,
@@ -573,7 +576,9 @@ div.order-panel div {
 .nvd3 .nv-axis path {
 	stroke: #fff
 }
-
+.ant-select-selection__placeholder, .ant-select-search__field__placeholder{
+  color: #fafafa !important;
+}
 ::placeholder {
 	color: #fafafa
 }
@@ -590,10 +595,6 @@ div.order-panel div {
 	color: #fafafa
 }
 
-.notification {
-	color: #fff;
-	border-radius: 8px
-}
 
 .pagination>li>a,
 .pagination>li>span {
@@ -753,16 +754,6 @@ pre.cdata {
 
 .tree-grid .tree-icon:hover {
 	color: #eb8814
-}
-
-.orange {
-	background-color: #007da6;
-	color: rgba(255, 255, 255, .87)
-}
-
-.orange:hover {
-	background-color: #00779f!important;
-	color: rgba(255, 255, 255, .97)!important
 }
 
 .btn-today {
@@ -1034,6 +1025,7 @@ pre#pre {
 }
 
 .ant-dropdown-menu{
+  color: var(--text-color);
   background-color: #46525f;
   border: 1px solid #46525f !important;
   border-bottom: 1px solid rgba(0, 0, 0, .95);
@@ -1049,12 +1041,11 @@ pre#pre {
 .ant-calendar-year-panel-header .ant-calendar-year-panel-century-select, .ant-calendar-year-panel-header .ant-calendar-year-panel-decade-select, .ant-calendar-year-panel-header .ant-calendar-year-panel-year-select, .ant-calendar-year-panel-header .ant-calendar-year-panel-month-select,
 .ant-calendar-month-panel-header .ant-calendar-month-panel-century-select, .ant-calendar-month-panel-header .ant-calendar-month-panel-decade-select, .ant-calendar-month-panel-header .ant-calendar-month-panel-year-select, .ant-calendar-month-panel-header .ant-calendar-month-panel-month-select,
 .ant-calendar-header .ant-calendar-century-select, .ant-calendar-header .ant-calendar-decade-select, .ant-calendar-header .ant-calendar-year-select, .ant-calendar-header .ant-calendar-month-select{
-  color: rgba(255, 255, 255, .97);
+  color: var(--text-color);
 }
-
 .ant-input-number, .ant-select-selection {
-  color: rgba(255, 255, 255, .87);
-  background-color: #46525f !important;
+  color: var(--text-color);
+  background-color: var(--bg-box) !important;
   border: 1px solid rgba(221, 221, 221, .2)
 }
 .ant-time-picker-clear,
@@ -1069,29 +1060,45 @@ pre#pre {
   border-bottom: 1px solid rgba(221, 221, 221, .2);
 }
 .ant-calendar {
-  background-color: #46525f;
-  border: 1px solid #46525f;
+  background-color: var(--bg-box);
+  border: 1px solid var(--bg-box);
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
 }
-.modal .ant-select-dropdown,
-.modal .ant-input-number,
-.modal .ant-select-selection {
-  background-color: #65707d !important
+.modal-open .ant-select-dropdown,
+.modal-open .ant-input-number,
+.modal-open .ant-select-selection {
+  background-color: var(--bg-footer) !important
 }
+
 .ant-time-picker-panel-select,
 .ant-calendar-header,
 .ant-calendar-footer,
 .ant-input, .ant-input:hover,
-.ant-input-number, .ant-select-selection,
-.ant-input-number:hover, .ant-select-selection:hover,
+.ant-input-number,
+.ant-input-number:hover,
+.ant-select-selection,
+.ant-select-selection:hover,
 .ant-pagination-item, .ant-pagination-item-active,
 .ant-table-small,
+.ant-calendar-picker,
+.ant-calendar-picker:hover,
+.ant-calendar-picker:hover .ant-calendar-picker-input:not(.ant-input-disabled),
 .ant-time-picker-input,
+.ant-time-picker-input:hover,
 .ant-table-bordered .ant-table-thead > tr > th, .ant-table-bordered .ant-table-tbody > tr > td,
 .ant-table-small.ant-table-bordered .ant-table-content {
   border-color: rgba(255, 255, 255, .3)
 }
-
+.ant-input:focus, .ant-input:active .ant-input-focused,
+.ant-select-focused .ant-select-selection,
+.ant-calendar-picker-input:focus,
+.ant-time-picker-input:focus,
+.ant-select-selection:focus,
+.ant-select-selection:active,
+.ant-input-number:focus,
+.ant-input-number-focused {
+  border-color: var(--primary) !important;
+}
 .ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td{
   background: #65707d !important
 }
@@ -1160,6 +1167,94 @@ pre#pre {
 }
 .btn:hover {
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3) !important;
+}
+.ant-checkbox-indeterminate .ant-checkbox-inner::after {
+  background-color: var(--primary);
+}
+.anticon, .ant-radio, .ant-checkbox, .ant-radio-group, .ant-radio-wrapper, .ant-checkbox-wrapper{
+  color: var(--text-color);
+}
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+.ant-radio-inner::after {
+  background-color: var(--primary);
+}
+.ant-checkbox-inner, .ant-radio-inner, .ant-tree-checkbox-inner {
+  border: 1px solid var(--border-color);
+}
+.ant-radio-wrapper:hover .ant-radio, .ant-radio:hover .ant-radio-inner, .ant-radio-input:focus + .ant-radio-inner {
+  border-color: var(--primary);
+}
+.select-input-both .ant-select-open .ant-select-selection{
+  color: var(--text-color) !important;
+}
+.select-input-both .ant-select-open{
+  border: 1px solid var(--primary);
+  background: var(--bg-box) !important;
+}
+.ant-select-selection--multiple .ant-select-selection__choice{
+  background: var(--bg-box);
+  border-color: var(--bg-box);
+  color: var(--text-color);
+}
+/*
+JSON editor
+**/
+.ace-jsoneditor.ace_editor{
+  background: var(--bg-footer) !important;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.2);
+}
+.ace-jsoneditor .ace_gutter{
+  background: var(--box-color) !important;
+  color: var(--text-color) !important
+}
+.ace-jsoneditor .ace_scroller{
+  background-color: var(--bg-footer) !important;
+}
+div.jsoneditor{
+  border-color: var(--border-color);
+  color: var(--text-color) !important;
+}
+
+.ace-jsoneditor .ace_indent-guide{
+  filter: opacity(12%);
+}
+
+.ace-jsoneditor .ace_scroller.ace_scroll-left {
+  box-shadow: 17px 0 16px -16px rgba(0, 0, 0, 0.4) inset;
+}
+.ace-jsoneditor .ace_cursor {
+  border-left: 2px solid var(--border-color);
+}
+.ace-jsoneditor .ace_text-input.ace_composition {
+  background: var(--bg-box);
+  color: var(--text-color);
+}
+.ace-jsoneditor .ace_overwrite-cursors .ace_cursor {
+  border-bottom: 1px solid var(--border-color);
+}
+.ace-jsoneditor .ace_line .ace_fold {
+  border: 1px solid var(--border-color);
+}
+.ace-jsoneditor .ace_variable{
+  color: var(--text-color);
+}
+.ace-jsoneditor .ace_text-layer{
+  color: #ccc;
+}
+.ace-jsoneditor .ace_tooltip {
+  background-color: var(--box-color);
+  background-image: -webkit-linear-gradient(top, transparent, rgba(0, 0, 0, 0.1));
+  background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.1));
+  border: 1px solid var(--border-color);
+  box-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+  color: var(--text-color);
+}
+
+.ace-jsoneditor .ace_marker-layer .ace_active-line {
+  background-color: #999;
 }
 
 /**
