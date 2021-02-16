@@ -31,7 +31,7 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
   calendars: any = [];
-  subscription1: Subscription;
+  subscription: Subscription;
   path: string;
   schedulerId: string;
 
@@ -39,7 +39,7 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
               private modalService: NgbModal, private dataService: DataService, private route: ActivatedRoute) {
-    this.subscription1 = dataService.refreshAnnounced$.subscribe(() => {
+    this.subscription = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
     });
   }
@@ -49,7 +49,7 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription1.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   private init() {
@@ -150,13 +150,13 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
     this.coreService.setSideView(this.sideView);
     if (this.child) {
       this.calendarFilters.expandedKeys = this.child.defaultExpandedKeys;
       this.calendarFilters.selectedkeys = this.child.defaultSelectedKeys;
     }
-    this.subscription1.unsubscribe();
-    this.subscription2.unsubscribe();
   }
 
   initTree() {

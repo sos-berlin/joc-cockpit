@@ -63,21 +63,21 @@
             </tr>
             <tr class="text-center">
                 <td width="25%">
-                    <a (click)="showOrderSummary('SUCCESSFUL')" class="text-lg _600 "
+                    <a (click)="showOrderSummary('SUCCESSFUL')" class="text-lg _600"
                        [ngClass]="{'dark-blue':orderSummary.successful >0}"
                        [innerHtml]="orderSummary.successful || 0"></a>
                 </td>
                 <td width="25%">
-                    <a (click)="showOrderSummary('FAILED')" class="text-lg _600 "
+                    <a (click)="showOrderSummary('FAILED')" class="text-lg _600"
                        [ngClass]="{'red':orderSummary.failed  >0}" [innerHtml]="orderSummary.failed || 0"></a>
                 </td>
               <td width="25%">
-                <a (click)="showTaskSummary('SUCCESSFUL')" class="text-lg _600 "
+                <a (click)="showTaskSummary('SUCCESSFUL')" class="text-lg _600"
                    [ngClass]="{'dark-blue':taskSummary.successful >0}"
                    [innerHtml]="taskSummary.successful || 0"></a>
               </td>
               <td width="25%">
-                <a (click)="showTaskSummary('FAILED')" class="text-lg _600 "
+                <a (click)="showTaskSummary('FAILED')" class="text-lg _600"
                    [ngClass]="{'red':taskSummary.failed  >0}" [innerHtml]="taskSummary.failed || 0"></a>
               </td>
             </tr>

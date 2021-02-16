@@ -285,12 +285,12 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.subscription.unsubscribe();
     this.coreService.setSideView(this.sideView);
     if (this.child) {
       this.documentFilters.expandedKeys = this.child.defaultExpandedKeys;
       this.documentFilters.selectedkeys = this.child.defaultSelectedKeys;
     }
-    this.subscription.unsubscribe();
   }
 
   initTree() {

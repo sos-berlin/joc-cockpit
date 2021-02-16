@@ -20,7 +20,7 @@
         </nz-select>
         <div class="input-dropdown ">
           <input class="form-control" required="" autocomplete="off" type="text"
-                 placeholder="{{'placeholder.enterOrSelectPermission' | translate}}"
+                 placeholder="{{'user.placeholder.enterOrSelectPermission' | translate}}"
                  [(ngModel)]="currentPermission.path" name="path" (blur)="checkCovered(currentPermission)">
         </div>
         <div class="help-block text-danger" [ngClass]="{'m-b-sm':isCovered}" *ngIf="isCovered">
@@ -45,7 +45,7 @@
       {{'common.button.submit' | translate}}
     </button>
     <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
-      commonbutton.cancel
+      common.button.cancel
     </button>
   </div>
 </form>

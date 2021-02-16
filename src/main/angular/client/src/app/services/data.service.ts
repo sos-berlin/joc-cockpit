@@ -1,10 +1,10 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {Subject, BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DataService {
+export class DataService implements OnDestroy{
   // Observable string sources
   private eventAnnouncedSource = new Subject<any>();
   private refreshUISource = new Subject<any>();
@@ -43,6 +43,23 @@ export class DataService {
 
   refreshWidget(event: any) {
     this.refreshWidgetSource.next(event);
+  }
+
+  ngOnDestroy() {
+    this.eventAnnouncedSource.next();
+    this.eventAnnouncedSource.complete();
+    this.refreshUISource.next();
+    this.refreshUISource.complete();
+    this.switchSchedulerSource.next();
+    this.switchSchedulerSource.complete();
+    this.functionSource.next();
+    this.functionSource.complete();
+    this.refreshWidgetSource.next();
+    this.refreshWidgetSource.complete();
+
+    this.isCalendarReload.complete();
+    this.isProfileReload.complete();
+    this.resetProfileSetting.complete();
   }
 }
 

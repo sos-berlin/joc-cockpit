@@ -767,7 +767,9 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'ControllerStateChanged' ||
-          args.eventSnapshots[j].eventType === 'JOCStateChanged') {
+          args.eventSnapshots[j].eventType === 'JOCStateChanged' ||
+          args.eventSnapshots[j].eventType === 'ProxyCoupled' ||
+          args.eventSnapshots[j].eventType === 'ProxyDecoupled') {
           this.isDataLoaded = false;
           this.reloadGraph();
           break;

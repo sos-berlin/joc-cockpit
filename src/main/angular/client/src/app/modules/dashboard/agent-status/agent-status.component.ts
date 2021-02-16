@@ -64,7 +64,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
     }
   };
   pieChartLabels: Label[] = [];
-  pieChartData: number[] = [];
+  pieChartData = [];
   pieChartLegend = true;
   pieChartPlugins = [pluginDataLabels];
   pieChartColors = [
@@ -89,7 +89,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
     } else {
       this.isLoaded = true;
     }
-    if(!localStorage.$SOS$THEME || localStorage.$SOS$THEME.match(/light/)){
+    if (!localStorage.$SOS$THEME || localStorage.$SOS$THEME.match(/light/)) {
       this.pieChartOptions.legend.labels.fontColor = '#3d464d';
     }
   }
@@ -101,7 +101,11 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
   refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'AgentAdded' || args.eventSnapshots[j].eventType === 'AgentUpdated' || args.eventSnapshots[j].eventType === 'AgentStateChanged') {
+        if (((args.eventSnapshots[j].eventType === 'ItemAdded' || args.eventSnapshots[j].eventType === 'ItemDeleted'
+          || args.eventSnapshots[j].eventType === 'ItemChanged') && args.eventSnapshots[j].objectType === 'AGENT')
+          || args.eventSnapshots[j].eventType === 'AgentStateChanged'
+          || args.eventSnapshots[j].eventType === 'ProxyCoupled'
+          || args.eventSnapshots[j].eventType === 'ProxyDecoupled') {
           this.getStatus();
           break;
         }
@@ -117,17 +121,15 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
       let label: string;
       if (value.state._text === 'COUPLED') {
         label = 'agent.label.coupled';
-        result.color = '#7ab97a';
-        result.hoverColor = 'rgba(122, 185, 122, .8)';
       } else if (value.state._text === 'DECOUPLED') {
         label = 'agent.label.decoupled';
-        result.color = 'rgba(255,195,0,0.9)';
-        result.hoverColor = 'rgba(255, 195, 0, .7)';
+      } else if (value.state._text === 'UNKNOWN') {
+        label = 'agent.label.unknown';
       } else {
         label = 'agent.label.couplingFailed';
-        result.color = '#e86680';
-        result.hoverColor = 'rgba(232, 102, 128, .8)';
       }
+      result.color = this.coreService.getColorBySeverity(value.state.severity, false);
+      result.hoverColor = this.coreService.getColorBySeverity(value.state.severity, true);
       this.translate.get(label).subscribe(translatedValue => {
         result._text = translatedValue;
       });
@@ -180,16 +182,14 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
   }
 
   navToAgentView(color) {
-    let state = '';
+    let state = 'DECOUPLED';
     if (color === '#7ab97a') {
       state = 'COUPLED';
-    } else if (color === '#e86680') {
+    } else if (color === '#ef486a') {
       state = 'COUPLINGFAILED';
-    } else {
-      state = 'DECOUPLED';
+      // state = 'UNKNOWN';
     }
     this.coreService.getResourceTab().agents.filter.state = state;
     this.router.navigate(['/resources/agents']);
   }
-
 }

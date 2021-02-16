@@ -41,7 +41,7 @@ export class InventoryStatisticsComponent implements OnInit, OnDestroy {
   refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'ItemAdded' || args.eventSnapshots[j].eventType === 'ItemUpdated') {
+        if (args.eventSnapshots[j].eventType === 'InventoryUpdated') {
           if (!this.notAuthenticate) {
             this.getStatistics();
           }

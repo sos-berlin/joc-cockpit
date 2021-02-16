@@ -1,24 +1,30 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {isNullOrUndefined} from 'util';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {filter} from 'rxjs/operators';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-breadcrumbs',
   templateUrl: './breadcrumbs.component.html',
   styleUrls: ['./breadcrumbs.component.scss']
 })
-export class BreadcrumbsComponent implements OnInit {
+export class BreadcrumbsComponent implements OnInit, OnDestroy {
   static readonly ROUTE_DATA_BREADCRUMB = 'breadcrumb';
   breadcrumbs: any;
+  subscription: Subscription;
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.breadcrumbs = this.createBreadcrumbs(this.activatedRoute.root);
-    this.router.events
+    this.subscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => this.breadcrumbs = this.createBreadcrumbs(this.activatedRoute.root));
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   private createBreadcrumbs(route: ActivatedRoute, url: string = '', breadcrumbs: any = []): any {

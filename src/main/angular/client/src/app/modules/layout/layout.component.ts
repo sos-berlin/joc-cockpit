@@ -1,5 +1,5 @@
 import {Component, HostListener, OnInit, OnDestroy, ViewChild} from '@angular/core';
-import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, Router, RouterEvent} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToasterService} from 'angular2-toaster';
@@ -10,6 +10,7 @@ import {CoreService} from '../../services/core.service';
 import {DataService} from '../../services/data.service';
 import {AuthService} from '../../components/guard';
 import {HeaderComponent} from '../../components/header/header.component';
+import {filter} from 'rxjs/operators';
 
 declare const $;
 
@@ -32,6 +33,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   subscription2: any = Subscription;
   subscription3: any = Subscription;
   subscription4: any = Subscription;
+  subscription5: any = Subscription;
   isLogout = false;
   isTouch = false;
   count = 0;
@@ -61,14 +63,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
         this.preferences = JSON.parse(sessionStorage.preferences) || {};
       }
     });
-
-    router.events.subscribe((e: any) => {
-      if (e instanceof NavigationEnd) {
+    this.subscription5 = router.events
+      .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd)).subscribe((e: any) => {
         LayoutComponent.calculateHeight();
         // close all open modals
         this.modalService.dismissAll();
-      }
-    });
+      });
   }
 
   static calculateHeight() {
@@ -125,6 +125,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.subscription2.unsubscribe();
     this.subscription3.unsubscribe();
     this.subscription4.unsubscribe();
+    this.subscription5.unsubscribe();
   }
 
 

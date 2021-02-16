@@ -238,13 +238,13 @@ export class UserComponent implements OnInit, OnDestroy {
   forceLoging = false;
   prevMenuTheme: string;
   prevMenuAvatorColor: string;
-  subsVar: Subscription;
+  subscription: Subscription;
   securityLevel: string;
 
 
   constructor(public coreService: CoreService, private dataService: DataService, private authService: AuthService, private router: Router,
               private modalService: NgbModal, private translate: TranslateService, private toasterService: ToasterService) {
-    this.subsVar = dataService.resetProfileSetting.subscribe(res => {
+    this.subscription = dataService.resetProfileSetting.subscribe(res => {
       if (res) {
         this.configObj.id = parseInt(sessionStorage.preferenceId, 10);
         this.setPreferences();
@@ -311,7 +311,7 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subsVar.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   getKeys() {

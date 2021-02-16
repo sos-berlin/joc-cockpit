@@ -342,7 +342,9 @@ export class CoreService {
     this.dashboard._dashboard = {};
     this.dashboard._dashboard.history = {};
     this.dashboard._dashboard.file = {};
-    this.dashboard._dashboard.dailyplan = '0d';
+    this.dashboard._dashboard.dailyplan = {};
+    this.dashboard._dashboard.dailyplan.date = '0d';
+    this.dashboard._dashboard.dailyplan.label = 'filters.button.today';
     this.dashboard._dashboard.history.date = '0d';
     this.dashboard._dashboard.history.label = 'filters.button.today';
     this.dashboard._dashboard.file.date = '0d';
@@ -455,6 +457,30 @@ export class CoreService {
       return type === 'text' ? 'yellow-green' : type === 'border' ? 'yellow-green-box' : 'bg-yellow-green';
     } else if (d === 9) {
       return type === 'text' ? 'chocolate' : type === 'border' ? 'chocolate-box' : 'bg-chocolate';
+    }
+  }
+
+  getColorBySeverity(d: number, isHover: boolean): string {
+    if (d === 0) {
+      return isHover ? 'rgba(122,185,122, .7)' : '#7ab97a';
+    } else if (d === 1) {
+      return isHover ? 'rgba(255,201,26, .7)' : '#ffc91a';
+    } else if (d === 2) {
+      return isHover ? 'rgba(239,72,106,.7)' : '#ef486a';
+    } else if (d === 3) {
+      return isHover ? 'rgba(163,198,234, .7)' : '#a3c6ea';
+    } else if (d === 4) {
+      return isHover ? '#ccc' : '#bbb';
+    } else if (d === 5) {
+      return isHover ? 'rgba(255,141,26,.7)' : '#FF8d1a';
+    } else if (d === 6) {
+      return isHover ? 'rgba(21,145,212, .7)' : '#1591d4';
+    } else if (d === 7) {
+      return isHover ? 'rgba(185,102,185, .7)' : '#b966b9';
+    } else if (d === 8) {
+      return isHover ? 'rgba(204,204,0, .7)' : '#cccc00';
+    } else if (d === 9) {
+      return isHover ? 'rgba(243,120,145, .7)' : '#f37891';
     }
   }
 

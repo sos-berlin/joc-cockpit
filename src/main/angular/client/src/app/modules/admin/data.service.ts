@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {Subject} from 'rxjs';
 
 @Injectable()
-export class DataService {
+export class DataService implements OnDestroy{
   // Observable string sources
   private dataAnnouncedSource = new Subject<any>();
   private searchKeySource = new Subject<string>();
@@ -22,6 +22,12 @@ export class DataService {
 
   announceFunction(data: string) {
     this.functionSource.next(data);
+  }
+
+  ngOnDestroy() {
+    this.dataAnnouncedSource.complete();
+    this.searchKeySource.complete();
+    this.functionSource.complete();
   }
 }
 

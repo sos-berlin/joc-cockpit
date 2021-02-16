@@ -1,61 +1,69 @@
 <div id="dailyPlanOverview1">
   <div class="box-header b-b remove">
-    <h3 class="m-t-xs" translate>dashboard.label.dailyPlanOverview</h3>
+    <h3 translate>dashboard.label.dailyPlan</h3>
   </div>
-  <div class="box-tool">
-    <div class="btn-group m-l-sm">
-      <button class="btn btn-grey btn-sm"
-              [ngClass]="{'btn-primary': filters.date=='0d'}" (click)="getDailyPlans('0d')"
-              translate>filters.button.today
-      </button>
-      <button class="btn btn-grey btn-sm"
-              [ngClass]="{'btn-primary': filters.date=='1d'}"
-              (click)="getDailyPlans('1d')"
-              translate>filters.button.next24
-      </button>
+  <div class="row m-b-sm box-tool" style="top:10px">
+    <div class="col-md-12 container-fluid">
+      <div class="pull-right">
+        <div class="btn-group">
+          <div class="btn-group dropdown ">
+            <button class="btn btn-grey btn-sm m-l-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"  nzPlacement="bottomRight">
+              <span> {{filters.label | translate}} </span>
+              <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+            </button>
+            <nz-dropdown-menu #menu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='0d'}">
+                  <a (click)="getDailyPlans('0d');filters.label='filters.button.today'"
+                     translate>filters.button.today
+                  </a>
+                </li>
+                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='1d'}">
+                  <a (click)="getDailyPlans('1d');filters.label='filters.button.nextDay'"
+                     translate>filters.button.nextDay
+                  </a>
+                </li>
+              </ul>
+            </nz-dropdown-menu>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="box-body p-a" [ngClass]="{'p-t-sm': totalPlanData == 0 && isLoaded}">
     <div class="hide m-t-sm" [ngClass]="{'show': totalPlanData > 0}">
-      <div class="plan-overview plan-status bg-planned hide" [ngStyle]="{'width': arrayWidth[0]+'%'}" [ngClass]="{'show-block': planned > 0}">
+      <div class="plan-overview bg-planned hide" [ngStyle]="{'width': arrayWidth[0]+'%'}" [ngClass]="{'show-block': planned > 0}">
         <label [nz-tooltip]="(planned*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
-          <a class="nav-link" (click)="navigate(1)">
+          <a class="nav-link">
             <span class="block-ellipsis-job" translate>dashboard.label.planned</span> - {{planned | number : '1.1-1'}} %
           </a>
         </label>
       </div>
-      <div class="plan-overview bg-planned hide" [ngStyle]="{width: arrayWidth[1]+'%'}" [ngClass]="{'show-block': plannedLate > 0}">
+      <div class="plan-overview bg-orange hide" [ngStyle]="{width: arrayWidth[1]+'%'}" [ngClass]="{'show-block': plannedLate > 0}">
         <label [nz-tooltip]="(plannedLate*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
-          <a class="nav-link" (click)="navigate(2)">
+          <a class="nav-link" >
             <span class="block-ellipsis-job" translate>dashboard.label.plannedLate</span> - {{plannedLate | number : '1.1-1' }} %
           </a>
         </label>
       </div>
-      <div class="plan-overview plan-status bg-gold hide" [ngStyle]="{width: arrayWidth[3]+'%'}" [ngClass]="{'show-block': pending > 0}">
+      <div class="plan-overview bg-gold hide" [ngStyle]="{width: arrayWidth[2]+'%'}" [ngClass]="{'show-block': pending > 0}">
         <label [nz-tooltip]="(pending*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
-          <a class="nav-link" (click)="navigate(3)">
+          <a class="nav-link">
             <span class="block-ellipsis-job" translate>dashboard.label.pending</span> - {{pending | number : '1.1-1' }} %
           </a>
         </label>
       </div>
-      <div class="plan-overview bg-gold hide" [ngStyle]="{width: arrayWidth[5]+'%'}" [ngClass]="{'show-block': pendingLate > 0}">
+      <div class="plan-overview bg-mangenta hide" [ngStyle]="{width: arrayWidth[3]+'%'}" [ngClass]="{'show-block': pendingLate > 0}">
         <label [nz-tooltip]="(pendingLate*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
-          <a class="nav-link" (click)="navigate(4)">
-            <span class="block-ellipsis-job" translate>dashboard.label.pendingLate</span> - {{pendingLate | number : '1.1-1' }} %
+          <a class="nav-link">
+            <span class="block-ellipsis-job" translate>dashboard.label.blocked</span> - {{pendingLate | number : '1.1-1' }} %
           </a>
         </label>
       </div>
-      <div class="plan-overview plan-status bg-dark-blue hide" [ngStyle]="{width: arrayWidth[2]+'%'}" [ngClass]="{'show-block': finished > 0}">
+      <div class="plan-overview bg-dark-blue hide" [ngStyle]="{width: arrayWidth[4]+'%'}" [ngClass]="{'show-block': finished > 0}">
         <label [nz-tooltip]="(finished*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
-          <a class="nav-link" (click)="navigate(5)">
+          <a class="nav-link">
             <span class="block-ellipsis-job" translate>dashboard.label.finished</span> - {{finished | number : '1.1-1'}} %
-          </a>
-        </label>
-      </div>
-      <div class="plan-overview bg-dark-blue hide" [ngStyle]="{width: arrayWidth[4]+'%'}" [ngClass]="{'show-block': finishedLate > 0}">
-        <label [nz-tooltip]="(finishedLate*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
-          <a class="nav-link" (click)="navigate(6)">
-            <span class="block-ellipsis-job" translate>dashboard.label.finishedLate</span> - {{finishedLate | number : '1.1-1'}} %
           </a>
         </label>
       </div>

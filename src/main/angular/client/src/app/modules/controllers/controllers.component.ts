@@ -53,10 +53,7 @@ export class AgentModalComponent implements OnInit {
   }
 
   addAlise() {
-    console.log(this.agentNameAliases[0], 'this.agent.agentNameAliases[0]');
-    console.log(this.agentNameAliases, 'this.agent.agentNameAliases');
     if (this.agentNameAliases[this.agentNameAliases.length - 1].name) {
-      console.log('??if<<');
       this.agentNameAliases.push({name: ''});
     }
   }

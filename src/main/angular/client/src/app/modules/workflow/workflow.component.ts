@@ -352,6 +352,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             }
           }
         }
+        if (args.eventSnapshots[j].objectType === 'WORKFLOW' && (args.eventSnapshots[j].eventType.match(/Item/))) {
+          this.initTree();
+        }
       }
       this.updateWorkflow(workflows);
     }

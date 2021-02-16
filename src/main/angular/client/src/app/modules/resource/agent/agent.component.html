@@ -8,7 +8,7 @@
           </div>
           <div class="inline">
             <div class="show-block">
-              <div class="btn-group hidden-btn-group">
+              <div class="btn-group">
                 <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': agentsFilters.filter.state=='ALL'}"
                         (click)="loadAgents('ALL')" translate>agent.button.allAgent
                 </button>
@@ -21,37 +21,9 @@
                 <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': agentsFilters.filter.state=='COUPLINGFAILED'}"
                         (click)="loadAgents('COUPLINGFAILED')" translate>agent.button.couplingFailed
                 </button>
-              </div>
-              <div class="btn-group dropdown hidden-dropdown">
-                <button class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
-                        [nzDropdownMenu]="status" [nzPlacement]="'bottomRight'" type="button" translate>
-                  agent.label.status
-                  <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+                <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': agentsFilters.filter.state=='UNKNOWN'}"
+                        (click)="loadAgents('UNKNOWN')" translate>agent.button.unknown
                 </button>
-                <nz-dropdown-menu #status="nzDropdownMenu">
-                  <ul nz-menu>
-                    <li nz-menu-item
-                        [ngClass]="{'ant-select-dropdown-menu-item-active': agentsFilters.filter.state=='ALL'}">
-                      <a (click)="loadAgents('ALL')"
-                         translate>agent.button.allAgent</a>
-                    </li>
-                    <li nz-menu-item
-                        [ngClass]="{'ant-select-dropdown-menu-item-active': agentsFilters.filter.state=='COUPLED'}">
-                      <a (click)="loadAgents('COUPLED')"
-                         translate>agent.button.coupled</a>
-                    </li>
-                    <li nz-menu-item
-                        [ngClass]="{'ant-select-dropdown-menu-item-active': agentsFilters.filter.state=='DECOUPLED'}">
-                      <a (click)="loadAgents('DECOUPLED')"
-                         translate>agent.button.decoupled</a>
-                    </li>
-                    <li nz-menu-item
-                        [ngClass]="{'ant-select-dropdown-menu-item-active': agentsFilters.filter.state=='COUPLINGFAILED'}">
-                      <a (click)="loadAgents('COUPLINGFAILED')"
-                         translate>agent.button.couplingFailed</a>
-                    </li>
-                  </ul>
-                </nz-dropdown-menu>
               </div>
               <div class="btn-group dropdown">
                 <button class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"

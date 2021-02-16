@@ -56,10 +56,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  eventStop = () => {
-
-  };
-
   ngOnInit() {
     this.init();
     $('.gridster').height(window.innerHeight - 150 + 'px');
@@ -106,7 +102,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         ignoreContentClass: 'gridster-item-content',
         ignoreContent: false,
         dragHandleClass: 'drag-handler',
-        stop: this.eventStop
       },
       pushItems: true,
       disablePushOnDrag: false,
@@ -118,9 +113,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         west: true
       },
       resizable: {
-        delayStart: 0,
+        delayStart: 100,
         enabled: flag,
-        stop: this.eventStop,
         handles: {
           s: true,
           e: true,
@@ -212,7 +206,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'PROFILE',
-      id : parseInt(sessionStorage.preferenceId, 10),
+      id: parseInt(sessionStorage.preferenceId, 10),
       configurationItem: JSON.stringify(this.preferences)
     };
     if (configObj.id && configObj.id > 0) {
@@ -248,7 +242,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboardLayout = [];
     this.widgets = [];
     this.dashboard = [];
-
     if (this.preferences.dashboardLayout) {
       this.dashboardLayout = this.preferences.dashboardLayout;
     } else {
@@ -284,17 +277,36 @@ export class DashboardComponent implements OnInit, OnDestroy {
         'name': 'js7Status',
         'visible': true,
         'message': 'message.js7Status'
-      }, {'cols': 4, 'rows': 3, 'y': 0, 'x': 0, 'name': 'ordersOverview', 'visible': true, 'message': 'message.ordersOverview'}, {
+      }, {
+        'cols': 4,
+        'rows': 3,
+        'y': 0,
+        'x': 0,
+        'name': 'orders',
+        'visible': true,
+        'message': 'message.ordersOverview'
+      }, {
         'cols': 4,
         'rows': 2,
-        'y': 6,
+        'y': 3,
         'x': 0,
         'name': 'history',
         'visible': true,
         'message': 'message.historySummary'
-      }, {'cols': 4, 'rows': 3, 'y': 3, 'x': 0, 'name': 'inventory', 'visible': true, 'message': 'message.inventoryStatistics'}, {
-        'cols': 12, 'rows': 2, 'y': 8, 'x': 0,
-        'name': 'dailyPlanOverview',
+      }, {
+        'cols': 4,
+        'rows': 2,
+        'y': 7,
+        'x': 0,
+        'name': 'inventory',
+        'visible': true,
+        'message': 'message.inventoryStatistics'
+      }, {
+        'cols': 4,
+        'rows': 2,
+        'y': 5,
+        'x': 0,
+        'name': 'dailyPlan',
         'visible': true,
         'message': 'message.dailyPlanOverview'
       }];
@@ -304,19 +316,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
       for (let i = 0; i < this.dashboardLayout.length; i++) {
         if (this.dashboardLayout[i].name === 'agentClusterStatus' && this.permission.JS7UniversalAgent.view.status) {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'agentClusterRunningTasks' && this.permission.ProcessClass.view.status) {
+        } else if (this.dashboardLayout[i].name === 'agentClusterRunningTasks') {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'js7Status') {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'js7ClusterStatus') {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'ordersOverview' && this.permission.Order.view.status) {
+        } else if (this.dashboardLayout[i].name === 'orders' && this.permission.Order.view.status) {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'historySummary' && (this.permission.Order.view.status || this.permission.Job.view.status)) {
+        } else if (this.dashboardLayout[i].name === 'history' && (this.permission.Order.view.status || this.permission.Job.view.status)) {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'tasksOverview' && this.permission.Job.view.status) {
+        } else if (this.dashboardLayout[i].name === 'inventory') {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'dailyPlanOverview' && this.permission.DailyPlan.view.status) {
+        } else if (this.dashboardLayout[i].name === 'dailyPlan' && this.permission.DailyPlan.view.status) {
           this.widgets.push(this.dashboardLayout[i]);
         }
       }

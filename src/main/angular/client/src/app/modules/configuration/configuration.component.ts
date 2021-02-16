@@ -1,5 +1,7 @@
-import {Component, HostListener} from '@angular/core';
-import {Router} from '@angular/router';
+import {Component, HostListener, OnDestroy} from '@angular/core';
+import {NavigationEnd, Router, RouterEvent} from '@angular/router';
+import {Subscribable, Subscription} from 'rxjs';
+import {filter} from 'rxjs/operators';
 
 declare const $;
 
@@ -7,16 +9,20 @@ declare const $;
   selector: 'app-configuration',
   templateUrl: './configuration.component.html'
 })
-export class ConfigurationComponent {
+export class ConfigurationComponent implements OnDestroy{
+  subscription:  Subscription;
 
   constructor(private router: Router) {
-    router.events.subscribe((e: any) => {
-      if (e.url && e.url.match('configuration')) {
+    this.subscription = router.events
+      .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd)).subscribe((e: any) => {
         setTimeout(() => {
           this.calcHeight();
         }, 5);
-      }
     });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   calcHeight() {

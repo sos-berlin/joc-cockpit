@@ -4,7 +4,7 @@
     </div>
     <div class="row" [hidden]="!isLoaded">
       <div class="col-md-12">
-        <div class="p-a" [ngStyle]="{'height':(layout.rows * 55 +((layout.rows -1) *20 -50)) + 4 +'px', 'width': '90%'}" [ngClass]="{'hide': pieChartData.length==0}">
+        <div class="p-a" [ngStyle]="{'height':(layout.rows * 55 +((layout.rows -1) *20 -50)) + 4 +'px', 'width': '90%'}" *ngIf="pieChartData.length > 0">
           <canvas baseChart
                   [data]="pieChartData"
                   [labels]="pieChartLabels"

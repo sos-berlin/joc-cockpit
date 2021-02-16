@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
@@ -47,7 +47,7 @@ export class StartUpModalComponent implements OnInit {
       backupTitle: 'BACKUP',
     };
 
-    if(this.agents && this.agents.length > 0) {
+    if (this.agents && this.agents.length > 0) {
       for (let i = 0; i < this.agents.length; i++) {
         if (this.agents[i].isClusterWatcher) {
           this.agent = this.agents[i];
@@ -204,7 +204,7 @@ export class StartUpModalComponent implements OnInit {
   selector: 'app-start-up-component',
   templateUrl: './start-up.component.html'
 })
-export class StartUpComponent implements OnInit {
+export class StartUpComponent implements OnInit, OnDestroy {
   controller: any = {};
   schedulerIds: any = {};
   currentTime: any;
@@ -224,6 +224,12 @@ export class StartUpComponent implements OnInit {
     this.calculateTime();
     const headerHt = $('.fixed-top').height() || 70;
     $('.app-body').css('margin-top', headerHt + 'px');
+  }
+
+  ngOnDestroy() {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
   }
 
   private calculateTime() {

@@ -36,7 +36,7 @@
                         </span>
                     </div>
                     <div class="col-md-12 text-center" *ngIf="folderArr.length == 0">
-                        <span translate>message.noFolderFound</span>
+                        <span translate>user.message.noFolderFound</span>
                     </div>
                 </div>
             </div>
@@ -47,7 +47,7 @@
     <!-- Permission Container Start -->
     <div class="row m-t hide" [ngClass]="{'show':pageView =='list'}">
         <div class="col-md-12">
-            <span class="text _600" translate>label.permissions</span>&nbsp;
+            <span class="text _600" translate>user.label.permissions</span>&nbsp;
             <i class="cursor fa fa-caret-down m-l-xs" [hidden]="showPanel1" (click)="showPanel1=true"></i>
             <i class="cursor fa fa-caret-up m-l-xs" *ngIf="showPanel1" (click)="showPanel1=false"></i>
         </div>
@@ -73,7 +73,7 @@
 <!-- tree start -->
 <div [hidden]="pageView =='list'">
     <div class="m-t">
-        <span class="text _600" [innerHtml]="'label.permissions' | translate"></span>&nbsp;
+        <span class="text _600" [innerHtml]="'user.label.permissions' | translate"></span>&nbsp;
         <i class="cursor fa fa-caret-down m-l-xs" [hidden]="showPanel1" (click)="showPanel1=true"></i>
         <i class="cursor fa fa-caret-up m-l-xs" [hidden]="!showPanel1" (click)="showPanel1=false"></i>
     </div>
@@ -81,19 +81,19 @@
         <div>
             <button class="btn btn-sm btn-grey show-block m-t m-l-sm" (click)="expandAll()">
                 <i class="fa fa fa-caret-down"></i>&nbsp;
-                <span translate>tooltip.expandAll</span>
+                <span translate>user.button.expandAll</span>
             </button>
             <button class="btn btn-sm btn-grey show-block m-t m-l-sm" (click)="collapseAll()">
                 <i class="fa fa fa-caret-up"></i>&nbsp;
-                <span translate>tooltip.collapseAll</span>
+                <span translate>user.button.collapseAll</span>
             </button>
             <button class="btn btn-sm btn-grey show-block m-t m-l-sm" (click)="expandSelected()">
                 <i class="fa fa fa-caret-down"></i>&nbsp;
-                <span translate>button.expandSelected</span>
+                <span translate>user.button.expandSelected</span>
             </button>
             <button class="btn btn-sm btn-grey show-block m-t m-l-sm" (click)="collapseUnselected()">
                 <i class="fa fa fa-caret-up"></i>&nbsp;
-                <span translate>button.collapseUnselected</span>
+                <span translate>user.button.collapseUnselected</span>
             </button>
         </div>
         <div id="mainTree" style="overflow: auto; margin-top: 12px"></div>

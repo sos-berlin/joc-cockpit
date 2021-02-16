@@ -1,6 +1,6 @@
 import {Component, OnInit, Input, OnDestroy} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {Router, ActivatedRoute} from '@angular/router';
+import {Router, ActivatedRoute, RouterEvent, NavigationEnd} from '@angular/router';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToasterService} from 'angular2-toaster';
 import {TranslateService} from '@ngx-translate/core';
@@ -8,6 +8,7 @@ import {DataService} from '../data.service';
 import {CoreService} from '../../../services/core.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import * as _ from 'underscore';
+import {filter} from 'rxjs/operators';
 
 // Role Actions
 @Component({
@@ -213,6 +214,7 @@ export class RolesComponent implements OnInit, OnDestroy {
   showPanel = [true];
   subscription1: Subscription;
   subscription2: Subscription;
+  subscription3: Subscription;
 
   constructor(private coreService: CoreService, private router: Router, private activeRoute: ActivatedRoute, private modalService: NgbModal,
               private translate: TranslateService, private toasterService: ToasterService, private dataService: DataService) {
@@ -228,8 +230,9 @@ export class RolesComponent implements OnInit, OnDestroy {
         this.addMaster();
       }
     });
-    router.events.subscribe((val) => {
-      this.checkUrl(val);
+    this.subscription3 = router.events
+      .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd)).subscribe((e: any) => {
+      this.checkUrl(e);
     });
   }
 
@@ -240,6 +243,7 @@ export class RolesComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.subscription3.unsubscribe();
   }
 
   setUsersData(res) {

@@ -59,7 +59,7 @@
               <div *ngIf="item.name === 'js7Status'">
                   <app-scheduler-instance [sizeY]="item.rows"></app-scheduler-instance>
               </div>
-              <div *ngIf="item.name === 'ordersOverview'">
+              <div *ngIf="item.name === 'orders'">
                   <app-order-overview [sizeX]="item.cols" [sizeY]="item.rows"></app-order-overview>
               </div>
               <div *ngIf="item.name === 'history'">
@@ -68,7 +68,7 @@
               <div *ngIf="item.name === 'inventory'">
                   <app-inventory-statistics [sizeX]="item.cols" [sizeY]="item.rows"></app-inventory-statistics>
               </div>
-              <div *ngIf="item.name === 'dailyPlanOverview'">
+              <div *ngIf="item.name === 'dailyPlan'">
                 <app-daily-plan></app-daily-plan>
               </div>
           </gridster-item>

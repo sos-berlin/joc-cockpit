@@ -1,3 +1,6 @@
+:root {
+  --border-color: #e3e3e3;
+}
 .backup {
 	background: #2c3e50;
 	background: -webkit-linear-gradient(left, rgba(255, 255, 255, .51), #2c3e50);

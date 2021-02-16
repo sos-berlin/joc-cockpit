@@ -28,10 +28,10 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
   refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'ReportingChangedOrder') {
+        if (args.eventSnapshots[j].eventType === 'HistoryOrderTerminated') {
           this.getSummary();
         }
-        if (args.eventSnapshots[j].eventType === 'JobStateChanged') {
+        if (args.eventSnapshots[j].eventType === 'HistoryTaskTerminated') {
           this.getTaskSummary();
         }
       }

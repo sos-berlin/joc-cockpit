@@ -1,9 +1,10 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Router, ActivatedRoute} from '@angular/router';
+import {Router, ActivatedRoute, RouterEvent, NavigationEnd} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from './data.service';
+import {filter} from 'rxjs/operators';
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html'
@@ -21,13 +22,15 @@ export class AdminComponent implements OnInit, OnDestroy {
   users: any;
   pageView: string;
   searchKey: string;
-  subscription: Subscription;
+  subscription1: Subscription;
+  subscription2: Subscription;
 
   constructor(private authService: AuthService, private router: Router, private activeRoute: ActivatedRoute, public coreService: CoreService, private dataService: DataService) {
-    router.events.subscribe((val) => {
-      this.checkUrl(val);
+    this.subscription1 = router.events
+      .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd)).subscribe((e: any) => {
+      this.checkUrl(e);
     });
-    this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
+    this.subscription2 = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'IS_RESET_PROFILES_TRUE') {
         this.isButtonShow = true;
       } else if (res === 'IS_RESET_PROFILES_FALSE') {
@@ -46,7 +49,8 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
   }
 
   selectUser(user) {

@@ -797,6 +797,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.isLoading = false;
         this.history.push(this.workflow.actual);
         this.indexOfNextAdd = this.history.length;
+        this.updateJobs(this.editor.graph, true);
       }
     }, () => {
       this.isLoading = false;
@@ -3623,7 +3624,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         setTimeout(() => {
           if (self.editor && self.editor.graph) {
             self.updateXMLJSON(true);
-            self.updateJobs(graph);
+            self.updateJobs(graph, false);
           }
         }, 1);
       });
@@ -4447,7 +4448,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         } finally {
           graph.getModel().endUpdate();
           if (flag) {
-            self.updateJobs(graph);
+            self.updateJobs(graph, false);
           }
         }
       }
@@ -5950,7 +5951,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     return isChange;
   }
 
-  private updateJobs(_graph) {
+  private updateJobs(_graph, isFirst) {
+    if (!_graph) {
+      return;
+    }
     const enc = new mxCodec();
     const node = enc.encode(_graph.getModel());
     const xml = mxUtils.getXml(node);
@@ -5984,7 +5988,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
       this.jobs = tempJobs;
     }
-    this.storeJSON();
+    if (isFirst) {
+      const _temp = JSON.parse(this.workflow.actual);
+      _temp.jobs = this.coreService.keyValuePair(this.jobs);
+      this.workflow.actual = JSON.stringify(_temp);
+    } else {
+      this.storeJSON();
+    }
   }
 
   private clearCopyObj() {

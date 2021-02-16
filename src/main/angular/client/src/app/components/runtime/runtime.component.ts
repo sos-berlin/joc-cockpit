@@ -13,7 +13,7 @@ declare const $;
   selector: 'app-restriction',
   templateUrl: './add-restriction-dialog.html'
 })
-export class AddRestrictionComponent implements OnInit, OnDestroy {
+export class AddRestrictionComponent implements OnInit {
 
   @Input() schedulerId: any;
   @Input() preferences: any;
@@ -98,9 +98,6 @@ export class AddRestrictionComponent implements OnInit, OnDestroy {
     if (this.frequency.days && this.frequency.days.length > 0) {
       this.editor.isEnable = true;
     }
-  }
-
-  ngOnDestroy() {
   }
 
   updateFrequencyObj(i) {
@@ -666,7 +663,7 @@ export class PeriodComponent implements OnInit {
   selector: 'app-run-time',
   templateUrl: './run-time-dialog.html',
 })
-export class RunTimeComponent implements OnDestroy, OnChanges {
+export class RunTimeComponent implements OnChanges, OnDestroy {
   @Input() schedule: any;
   @Input() preferences: any;
   @Input() permission: any;
@@ -907,42 +904,6 @@ export class RunTimeComponent implements OnDestroy, OnChanges {
 
   removeNonWorkingCal(index): void {
     this.nonWorkingCalendars.splice(index, 1);
-  }
-
-  frequencyToString(period) {
-    let str;
-    if (period.months && _.isArray(period.months)) {
-      str = this.calendarService.getMonths(period.months);
-    }
-    if (period.tab === 'weekDays') {
-      if (str) {
-        return this.calendarService.getWeekDays(period.days) + ' on ' + str;
-      } else {
-        return this.calendarService.getWeekDays(period.days);
-      }
-    } else if (period.tab === 'specificWeekDays') {
-      if (str) {
-        return this.calendarService.getSpecificDay(period.which) + ' ' + period.specificWeekDay + ' of ' + str;
-      } else {
-        return this.calendarService.getSpecificDay(period.which) + ' ' + period.specificWeekDay + ' of month';
-      }
-    } else if (period.tab === 'specificDays') {
-      return 'On ' + moment(period.date).format('YYYY-MM-DD');
-    } else if (period.tab === 'monthDays') {
-      if (period.isUltimos === 'ultimos') {
-        if (str) {
-          return '- ' + this.calendarService.getMonthDays(period.selectedMonthsU, true) + ' of ' + str;
-        } else {
-          return this.calendarService.getMonthDays(period.selectedMonthsU, true) + ' of ultimos';
-        }
-      } else {
-        if (str) {
-          return this.calendarService.getMonthDays(period.selectedMonths, false) + ' of ' + str;
-        } else {
-          return this.calendarService.getMonthDays(period.selectedMonths, false) + ' of month';
-        }
-      }
-    }
   }
 
   /** --------- Begin Restriction  ----------------*/

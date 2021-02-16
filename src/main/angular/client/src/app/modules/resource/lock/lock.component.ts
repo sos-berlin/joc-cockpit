@@ -47,6 +47,8 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
     this.coreService.setSideView(this.sideView);
     if (this.child) {
       this.locksFilters.expandedKeys = this.child.defaultExpandedKeys;
@@ -58,8 +60,6 @@ export class LockComponent implements OnInit, OnDestroy {
       }
       return ids;
     }, []);
-    this.subscription1.unsubscribe();
-    this.subscription2.unsubscribe();
   }
 
   initTree() {

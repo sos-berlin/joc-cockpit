@@ -3912,11 +3912,10 @@ li > a > i.remove {
 }
 
 .plan-overview {
+  vertical-align: middle;
   display: inline-block;
   height: 26px;
   color: $white !important;
-  margin-left: -4px;
-
   label {
     margin: 5px;
     font-size: 11px;
@@ -4537,12 +4536,7 @@ input[type=text][disabled] {
   z-index: 9999;
   cursor: wait;
 }
-.plan-overview {
-  opacity: .7;
-}
-.plan-overview.plan-status {
-    opacity: 1;
-}
+
 .frequency-table tr > td {
   &:first-child, &:last-child > div {
     > a.text-hover-primary {
@@ -6973,4 +6967,27 @@ table tr > td.td-border {
 .ck-content a {
   color: var(--primary);
   text-decoration: underline;
+}
+.icon-bg{
+  vertical-align: middle;
+  i {
+    background: var(--background-color);
+    font-size: 18px;
+    border-radius: 50%;
+    padding: 10px;
+  }
+  .text{
+    display: inline-block;
+    position: relative;
+    top: 7px;
+    margin-left: 8px;
+    color: var(--text-muted);
+    .count{
+      font-weight: 600;
+      text-align: left;
+      font-size: 14px;
+      opacity: 1;
+      color: var(--text-color);
+    }
+  }
 }

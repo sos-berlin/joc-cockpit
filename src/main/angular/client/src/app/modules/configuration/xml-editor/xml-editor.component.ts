@@ -1034,6 +1034,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+    this.coreService.setSideView(this.sideView);
+    clearInterval(this.intervalId);
+    this.coreService.tabs._configuration.state = this.objectType.toLowerCase();
+  }
+
+
   deleteAllConf() {
     this.deleteAll = true;
     this.delete = false;
@@ -5300,12 +5308,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         });
       }
     }
-  }
-
-  ngOnDestroy(): void {
-    this.coreService.setSideView(this.sideView);
-    clearInterval(this.intervalId);
-    this.coreService.tabs._configuration.state = this.objectType.toLowerCase();
   }
 
   @HostListener('window:beforeunload', ['$event'])

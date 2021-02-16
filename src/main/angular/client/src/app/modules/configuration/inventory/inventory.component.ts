@@ -1507,7 +1507,7 @@ export class JsonEditorModalComponent implements OnInit {
 
   private validateByURL(json, cb) {
     this.coreService.post('inventory/' + this.objectType + '/validate', json).subscribe((res: any) => {
-      this.parseErrorMsg(res, (flag)=>{
+      this.parseErrorMsg(res, (flag) => {
         cb(flag);
       });
     }, (err) => {
@@ -1854,10 +1854,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.coreService.setSideView(this.sideView);
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.subscription3.unsubscribe();
+    this.coreService.setSideView(this.sideView);
     this.dataService.reloadTree.next(null);
     this.coreService.tabs._configuration.state = 'inventory';
     this.inventoryConfig.expand_to = this.tree;
@@ -2890,7 +2890,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
               this.initTree(args.eventSnapshots[j].path, path);
               break;
             } else {
-              console.log(args.eventSnapshots[j].path, 'updated...');
+              //console.log(args.eventSnapshots[j].path, 'updated...');
               this.updateFolders(args.eventSnapshots[j].path, () => {
                 this.updateTree();
               });

@@ -1,5 +1,4 @@
 import {Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
-import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -15,7 +14,7 @@ export class WorkflowTemplateComponent {
   @Input() history: any;
   @Input() schedulerId: any;
 
-  constructor(public coreService: CoreService, private authService: AuthService, private router: Router) {
+  constructor(public coreService: CoreService, private authService: AuthService) {
   }
 
   showPanelFuc(data, count) {
@@ -57,10 +56,10 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   auditLogs: any = [];
   orderHistory: any = [];
   taskHistory: any = [];
-  subscription1: Subscription;
+  subscription: Subscription;
 
   constructor(public coreService: CoreService, private authService: AuthService, private dataService: DataService) {
-    this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
+    this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
   }
@@ -81,7 +80,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription1.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   @HostListener('window:resize', ['$event'])

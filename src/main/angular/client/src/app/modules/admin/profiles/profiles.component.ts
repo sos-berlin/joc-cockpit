@@ -53,7 +53,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
       this.profiles = res.profiles;
       setTimeout(() => {
         this.loading = false;
-      }, 400);
+      }, 300);
     }
   }
 

@@ -8,7 +8,7 @@ import {ChangeParameterModalComponent} from '../../../components/modify-modal/mo
   selector: 'app-order-list-sidebar',
   templateUrl: './order-list-sidebar.component.html'
 })
-export class OrderListSidebarComponent implements OnChanges {
+export class OrderListSidebarComponent {
   @Input() orders;
   @Input() preferences: any;
   @Input() permission: any;
@@ -28,9 +28,6 @@ export class OrderListSidebarComponent implements OnChanges {
   constructor(public coreService: CoreService, public modalService: NgbModal) {
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-
-  }
 
   updateCheckedSet(orderId: string, checked: boolean): void {
     if (checked) {

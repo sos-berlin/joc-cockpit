@@ -12,7 +12,7 @@ import {Router} from '@angular/router';
 export class OrderOverviewComponent implements OnInit, OnDestroy {
   @Input('sizeX') xbody: number;
   @Input('sizeY') ybody: number;
-  snapshot: any = {};
+  orders: any = {};
   schedulerIds: any = {};
   notAuthenticate = false;
   isLoaded = false;
@@ -26,7 +26,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.snapshot = {orders: {}};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     if (this.schedulerIds.selected) {
       this.getSnapshot();
@@ -52,8 +51,8 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   getSnapshot(): void {
-    this.coreService.post('orders/overview/snapshot', {controllerId: this.schedulerIds.selected}).subscribe(res => {
-      this.snapshot = res;
+    this.coreService.post('orders/overview/snapshot', {controllerId: this.schedulerIds.selected}).subscribe((res: any) => {
+      this.orders = res.orders;
       this.isLoaded = true;
     }, (err) => {
       this.notAuthenticate = !err.isPermitted;

@@ -4,8 +4,6 @@ import { CoreService } from '../../services/core.service';
 import { AuthService } from '../../components/guard';
 import * as crypto from 'crypto-js';
 
-declare const $;
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -38,7 +36,7 @@ export class LoginComponent implements OnInit {
     // this.getDefaultConfiguration();
   }
 
-  getDefaultConfiguration() {
+/*  getDefaultConfiguration() {
     this.coreService.get('configuration/login').subscribe((res: any) => {
       if (res.customLogo && res.customLogo.name) {
         const imgUrl = '../ext/images/' + res.customLogo.name;
@@ -49,7 +47,7 @@ export class LoginComponent implements OnInit {
         }
       }
     });
-  }
+  }*/
 
   private getComments(): void {
     this.coreService.post('joc/properties', {}).subscribe((result: any) => {

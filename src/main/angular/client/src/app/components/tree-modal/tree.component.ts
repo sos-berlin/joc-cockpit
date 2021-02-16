@@ -1,13 +1,12 @@
-import {Component, OnInit, OnDestroy, Input, ViewChild} from '@angular/core';
+import {Component, OnInit, Input} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../services/core.service';
-declare const $;
 
 @Component({
   selector: 'app-ngbd-modal-content',
   templateUrl: './tree.component.html'
 })
-export class TreeModalComponent implements OnInit, OnDestroy {
+export class TreeModalComponent implements OnInit {
   tree: any = [];
 
   @Input() schedulerId;
@@ -23,7 +22,6 @@ export class TreeModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-   // $('.modal').css('opacity', 0.65);
     this.init();
   }
 
@@ -114,9 +112,5 @@ export class TreeModalComponent implements OnInit, OnDestroy {
       this.getJSObject();
       this.activeModal.close(this.objects);
     }
-  }
-
-  ngOnDestroy() {
-    //$('.modal').css('opacity', 1);
   }
 }
