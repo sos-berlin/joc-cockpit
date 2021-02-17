@@ -292,8 +292,8 @@ export class SubmitOrderModalComponent implements OnInit {
       obj.filter.workflowPaths = [this.order.key];
     } else {
       if (this.order) {
-        if (this.plan) {
-          obj.filter.schedulePaths = [this.order.schedulePath];
+        if (this.plan || this.order.key) {
+          obj.filter.schedulePaths = [this.order.schedulePath || this.order.key];
         } else {
           obj.filter.orderIds = [this.order.orderId];
         }
@@ -366,8 +366,8 @@ export class RemovePlanModalComponent implements OnInit {
       obj.filter.workflowPaths = [this.order.key];
     } else {
       if (this.order) {
-        if (this.plan) {
-          obj.filter.schedulePaths = [this.order.schedulePath];
+        if (this.plan || this.order.key) {
+          obj.filter.schedulePaths = [this.order.schedulePath || this.order.key];
         } else {
           obj.filter.orderIds = [this.order.orderId];
         }
@@ -383,10 +383,7 @@ export class RemovePlanModalComponent implements OnInit {
     if (!obj.filter.dailyPlanDate && this.selectedDate && !this.submissionsDelete) {
       obj.filter.dailyPlanDate = moment(this.selectedDate).format('YYYY-MM-DD');
     } else if (this.submissionsDelete) {
-      obj.filter.dateFrom = new Date(this.selectedDate);
-      let d = new Date(this.selectedDate).setDate(obj.filter.dateFrom.getDate() + 1);
-      obj.filter.dateTo = new Date(d);
-      // obj.filter.timeZone = this.timeZone;
+      obj.filter.dateFor = new Date(this.selectedDate);
     }
     this.remove(obj);
   }
@@ -989,6 +986,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   /**--------------- Navigate End-------------------*/
 
+
+
+  /* ------------- Action ------------------- */
+
   deleteSubmission(): void {
     const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
@@ -1001,8 +1002,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
     });
   }
-
-  /* ------------- Action ------------------- */
 
   modifySelectedOrder() {
     let order = this.object.mapOfCheckedId.values().next().value;
@@ -1049,7 +1048,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.order = order;
     modalRef.componentInstance.plan = workflow ? null : plan;
-    modalRef.componentInstance.workflow = workflow;
+    modalRef.componentInstance.workflow = this.dailyPlanFilters.filter.groupBy === 'WORKFLOW';
     modalRef.result.then((res) => {
       this.updateList();
     }, () => {
@@ -1062,7 +1061,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   cancelSelectedOrder() {
-    this.restCall(false, null, this.object.mapOfCheckedId, 'Cancel');
+    const orderIds = [];
+    this.object.mapOfCheckedId.forEach((value) => {
+      orderIds.push(value.orderId);
+    });
+    this.cancelCyclicOrder(orderIds, false, true);
   }
 
   suspendSelectedOrder() {
@@ -1071,18 +1074,57 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   cancelOrderWithKill(order, plan) {
     if (plan && plan.value) {
-      this.restCall(true, null, plan.value, 'Cancel');
+      this.cancelCyclicOrder(plan.value, true, false);
     } else {
-      this.restCall(true, order, null, 'Cancel');
+      this.cancelCyclicOrder(order, true, false);
     }
   }
 
   cancelOrder(order, plan) {
     if (plan && plan.value) {
-      this.restCall(false, null, plan.value, 'Cancel');
+      this.cancelCyclicOrder(plan.value, false, false);
     } else {
-      this.restCall(false, order, null, 'Cancel');
+      this.cancelCyclicOrder(order, false, false);
     }
+  }
+
+  cancelCyclicOrder(orders, isKill, isMultiple) {
+    this.getOrderIds(orders, isMultiple, (orderIds) => {
+      console.log(orderIds);
+      const obj: any = {
+        controllerId: this.schedulerIds.selected, orderIds: orderIds, kill: isKill
+      };
+      if (this.preferences.auditLog) {
+        let comments = {
+          radio: 'predefined',
+          type: 'Order',
+          operation: 'Cancel',
+          name: ''
+        };
+
+        orderIds.forEach((id, index) => {
+            if (index == orderIds.length - 1) {
+              comments.name = comments.name + ' ' + id;
+            } else {
+              comments.name = id + ', ' + comments.name;
+            }
+          });
+
+        const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
+        modalRef.componentInstance.comments = comments;
+        modalRef.componentInstance.obj = obj;
+        modalRef.componentInstance.url = 'orders/cancel';
+        modalRef.result.then((result) => {
+          this.updateList();
+        }, () => {
+
+        });
+      } else {
+        this.coreService.post('orders/cancel', obj).subscribe(() => {
+          this.updateList();
+        });
+      }
+    });
   }
 
   suspendOrderWithKill(order, plan) {
@@ -1181,7 +1223,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.order = order;
     modalRef.componentInstance.plan = workflow ? null : plan;
-    modalRef.componentInstance.workflow = workflow;
+    modalRef.componentInstance.workflow = this.dailyPlanFilters.filter.groupBy === 'WORKFLOW';
     modalRef.componentInstance.timeZone = this.preferences.zone;
     modalRef.componentInstance.selectedDate = this.selectedDate;
     modalRef.result.then((res) => {
@@ -1319,7 +1361,44 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.excelService.exportAsExcelFile(data, 'JS7-dailyplan');
   }
 
-  /* ------------- Advance search ------------------- */
+  /* ------------- Utility Function Begin ------------------- */
+  getDates(startDate, endDate) {
+    let dates = [],
+      currentDate = startDate,
+      addDays = function (days) {
+        const date = new Date(this.valueOf());
+        date.setDate(date.getDate() + days);
+        return date;
+      };
+    while (currentDate <= endDate) {
+      dates.push(currentDate);
+      currentDate = addDays.call(currentDate, 1);
+    }
+    return dates;
+  }
+
+  getOrderIds(orders, isMultiple, cb) {
+    console.log(orders)
+    this.coreService.post('utilities/cyclic_orders', {
+      orderIds: isMultiple ? orders : orders.map((order) => order.orderId)
+    }).subscribe((res: any) => {
+      console.log(res);
+      cb(res.orderIds);
+    }, () => {
+      cb([]);
+    });
+  }
+
+  getDatesByUrl(arr, cb) {
+    this.coreService.post('utilities/convert_relative_dates', {relativDates: arr}).subscribe((res: any) => {
+      cb(res.absoluteDates);
+    }, () => {
+      cb([]);
+    });
+  }
+  /* ------------- Utility Function End ------------------- */
+
+  /* ------------- Advance search Begin------------------- */
   advancedSearch() {
     this.showSearchPanel = true;
     this.searchFilter = {
@@ -1349,28 +1428,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     return obj;
   }
 
-  getDates(startDate, endDate) {
-    let dates = [],
-      currentDate = startDate,
-      addDays = function (days) {
-        const date = new Date(this.valueOf());
-        date.setDate(date.getDate() + days);
-        return date;
-      };
-    while (currentDate <= endDate) {
-      dates.push(currentDate);
-      currentDate = addDays.call(currentDate, 1);
-    }
-    return dates;
-  }
-
-  getDatesByUrl(arr, cb) {
-    this.coreService.post('utilities/convert_relative_dates', {relativDates: arr}).subscribe((res: any) => {
-      cb(res.absoluteDates);
-    }, () => {
-      cb([]);
-    });
-  }
+  /* ------------- Advance search End------------------- */
 
   search() {
     this.isSearchHit = true;
@@ -1512,7 +1570,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       if (order.state._text === 'PLANNED' || order.state._text === 'PENDING' || order.state._text === 'FAILED' || order.state._text === 'FINISHED') {
         object.isSuspend = false;
       }
-     
+
       if (!workflow) {
         workflow = order.workflowPath;
       } else if (workflow !== order.workflowPath) {

@@ -98,9 +98,8 @@
             <div class="btn-group dropdown">
               <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered1.account" nz-dropdown
                       nzTrigger="click" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'" type="button"
-                      translate>
-                {{'customization.label.customizations' | translate}} <span class="text-primary"
-                                                                           [innerHtml]="selectedFiltered1.name"></span>
+                      translate>{{'customization.label.customizations' | translate}}
+                <span class="text-primary" [innerHtml]="selectedFiltered1.name"></span>
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
               <nz-dropdown-menu #customization="nzDropdownMenu">
@@ -521,7 +520,7 @@
             <span class="separator"></span>
           </li>
           <li class="nav-item">
-            <a class="nav-link" [ngClass]="{'active': historyFilters.type=='SUBMISSION'}" (click)="submissionHistory(null)">
+            <a class="nav-link" [ngClass]="{'active': historyFilters.type=='SUBMISSION'}" (click)="submissionHistory(null, false)">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.dailyPlan</span></span>
             </a>
           </li>
@@ -1158,7 +1157,7 @@
                       <td class="_600" style="padding: 6px 8px !important;"><span translate>order.label.scheduledFor</span></td>
                       <td class="_600" style="padding: 6px 8px !important;"><span translate>history.label.submitted</span></td>
                     </tr>
-                    <tr *ngFor="let order of child.orderIds">
+                    <tr *ngFor="let order of child.orderIds | orderBy: 'scheduledFor': true">
                       <td><span class="p-l">{{order.orderId}}</span></td>
                       <td>
                         <i (click)="navToWorkflowTab(order.workflowPath);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>

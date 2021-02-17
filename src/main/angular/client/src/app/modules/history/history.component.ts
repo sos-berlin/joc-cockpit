@@ -1169,7 +1169,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
     return filter;
   }
 
-  submissionHistory(obj) {
+  submissionHistory(obj, flag) {
+    let isAutoExpand = true;
+    if (this.currentData.length > 0) {
+      if (this.currentData[0].show === false) {
+        isAutoExpand = false;
+      }
+    }
     this.historyFilters.type = 'SUBMISSION';
     if (!obj) {
       if (this.historyFilters.current == true) {
@@ -1199,12 +1205,41 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.convertRequestBody(obj);
     this.coreService.post('daily_plan/history', {filter: obj}).subscribe((res: any) => {
       this.submissionHistorys = res.dailyPlans;
-      this.searchInResult();
+      if (flag) {
+        this.mergeSubData();
+      } else {
+        this.searchInResult();
+        if (this.data.length > 0 && isAutoExpand) {
+          if (this.data[0].show === undefined) {
+            this.data[0].show = true;
+            if (this.data[0].submissions && this.data[0].submissions.length > 0) {
+              this.data[0].submissions[0].show = true;
+            }
+          }
+        }
+      }
       this.isLoading = true;
     }, () => {
       this.data = [];
       this.isLoading = true;
     });
+  }
+
+  private mergeSubData() {
+    let oldEntires = _.clone(this.data);
+    let arr = this.submission.searchText ? this.searchPipe.transform(this.submissionHistorys, this.submission.searchText) : this.submissionHistorys;
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0; j < oldEntires.length; j++) {
+        if (arr[i].dailyPlanDate === oldEntires[j].dailyPlanDate) {
+          if (oldEntires[j].show) {
+            arr[i].show = true;
+          }
+          oldEntires.splice(j, 1);
+          break;
+        }
+      }
+    }
+    this.data = arr;
   }
 
   private mergeDepData() {
@@ -2830,7 +2865,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       } else if (this.historyFilters.type === 'DEPLOYMENT') {
         this.deploymentHistory(obj, flag);
       } else if (this.historyFilters.type === 'SUBMISSION') {
-        this.submissionHistory(obj);
+        this.submissionHistory(obj, flag);
       }
     }
   }

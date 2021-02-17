@@ -7,6 +7,14 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline pull-right">
+            <div class="btn-group m-l-12">
+              <ng-container *ngFor="let btn of filterBtn">
+                <button class="btn btn-grey btn-sm button-group-ellipsis"
+                        [ngClass]="{'btn-primary': workflowFilters.filter.date===btn.date}"
+                        (click)="loadOrders(btn.date)" translate>filters.button.{{btn.text}}
+                </button>
+              </ng-container>
+            </div>
             <div class="btn-group dropdown">
               <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy"
                       [nzPlacement]="'bottomRight'">

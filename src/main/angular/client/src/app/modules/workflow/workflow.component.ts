@@ -169,7 +169,15 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
   path: any;
   showPanel: any;
   sideBar: any = {};
+  date = '0d';
   subscription1: Subscription;
+
+  filterBtn: any = [
+    {date: '0d', text: 'today'},
+    {date: '1h', text: 'next1'},
+    {date: '12h', text: 'next12'},
+    {date: '24h', text: 'next24'}
+  ];
 
   @ViewChild(WorkflowActionComponent, {static: false}) actionChild;
 
@@ -236,6 +244,8 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
   }
 
   private getOrders(obj) {
+    obj.dateTo = this.date;
+    obj.timeZone = this.preferences.zone;
     this.coreService.post('orders', obj).subscribe((res: any) => {
       this.workflows[0].ordersSummary = {};
       this.workflows[0].numOfOrders = res.orders.length;
@@ -253,6 +263,20 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
         this.sideBar.orders = res.orders;
       }
     });
+  }
+
+  loadOrders(date) {
+    this.date = date;
+    const request = {
+      compact: true,
+      controllerId: this.schedulerId,
+      workflowIds: []
+    };
+    const path = this.workflows[0].path;
+    request.workflowIds.push({path: path, versionId: this.workflows[0].versionId});
+    if (request.workflowIds.length > 0) {
+      this.getOrders(request);
+    }
   }
 
   showPanelFuc(workflow) {
@@ -302,6 +326,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   sideBar: any = {};
   subscription1: Subscription;
   subscription2: Subscription;
+
+  filterBtn: any = [
+    {date: '0d', text: 'today'},
+    {date: '1h', text: 'next1'},
+    {date: '12h', text: 'next12'},
+    {date: '24h', text: 'next24'}
+  ];
 
   @ViewChild(TreeComponent, {static: false}) child;
   @ViewChild(WorkflowActionComponent, {static: false}) actionChild;
@@ -534,17 +565,20 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (!obj.workflowIds || obj.workflowIds.length === 0) {
       return;
     }
+    obj.dateTo = this.workflowFilters.filter.date;
+    obj.timeZone = this.preferences.zone;
 
     this.coreService.post('orders', obj).subscribe((res: any) => {
       if (res.orders) {
+
         for (let i = 0; i < this.workflows.length; i++) {
-          if (obj.workflowIds && obj.workflowIds.length > 0 && this.workflows[i].ordersSummary) {
+          if (obj.workflowIds && obj.workflowIds.length > 0 && !_.isEmpty(this.workflows[i].ordersSummary)) {
             for (let j = 0; j < obj.workflowIds.length; j++) {
               if (this.workflows[i].path === obj.workflowIds[j].path) {
                 this.workflows[i].numOfOrders = 0;
                 this.workflows[i].orders = [];
                 this.workflows[i].ordersSummary = {};
-                obj.workflowIds.splice(i, 1);
+                obj.workflowIds.splice(j, 1);
                 break;
               }
             }
@@ -570,6 +604,22 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  loadOrders(date) {
+    this.workflowFilters.filter.date = date;
+    const request = {
+      compact: true,
+      controllerId: this.schedulerIds.selected,
+      workflowIds: []
+    };
+    for (let i = 0; i < this.workflows.length; i++) {
+      const path = this.workflows[i].path;
+      request.workflowIds.push({path: path, versionId: this.workflows[i].versionId});
+    }
+    if (request.workflowIds.length > 0) {
+      this.getOrders(request);
+    }
   }
 
   loadWorkflow() {
@@ -986,6 +1036,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
       if (ht > 450) {
         ht = 450;
+      }
+      if (ht < 140) {
+        ht = 142;
       }
       this.resizerHeight = ht + 'px';
       $('#workflowTableId').css('height', this.resizerHeight);

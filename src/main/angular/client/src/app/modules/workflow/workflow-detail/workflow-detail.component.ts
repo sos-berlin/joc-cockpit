@@ -49,7 +49,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   editor: any;
   order: any;
   selectedPath: string;
-  worflowFilters: any = {};
+  workflowFilters: any = {};
   vertixMap = new Map();
   nodeMap = new Map();
   configXml = './assets/mxgraph/config/diagrameditor.xml';
@@ -58,6 +58,13 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   countArr = [];
   sideBar: any = {};
   subscription: Subscription;
+
+  filterBtn: any = [
+    {date: '0d', text: 'today'},
+    {date: '1h', text: 'next1'},
+    {date: '12h', text: 'next12'},
+    {date: '24h', text: 'next24'}
+  ];
 
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
@@ -72,13 +79,13 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.path = this.route.snapshot.paramMap.get('path');
     this.versionId = this.route.snapshot.paramMap.get('versionId');
-    this.worflowFilters = this.coreService.getWorkflowDetailTab();
+    this.workflowFilters = this.coreService.getWorkflowDetailTab();
     this.init();
 
     const dom = $('#graph');
     let ht = 'calc(100vh - 172px)';
-    if (this.worflowFilters.panelSize > 0) {
-      ht = this.worflowFilters.panelSize + 'px';
+    if (this.workflowFilters.panelSize > 0) {
+      ht = this.workflowFilters.panelSize + 'px';
     }
     dom.slimscroll({height: ht});
     /**
@@ -108,7 +115,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow && this.path === args.eventSnapshots[j].workflow.path) {
-          this.getOrders(this.workflow, false);
+          this.getOrders(this.coreService.clone(this.workflow), false);
           break;
         }
       }
@@ -146,8 +153,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   /** ---------------------------- Broadcast messages ----------------------------------*/
 
   isWorkflowStored(_json, isFirst): void {
-    this.workFlowJson = _json;
     if (isFirst) {
+      this.workFlowJson = _json;
       this.workFlowJson.name = _json.path.substring(_json.path.lastIndexOf('/') + 1);
       if (_json && !_.isEmpty(_json)) {
         if (_json && !_.isEmpty(_json)) {
@@ -329,7 +336,9 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     const obj = {
       compact: true,
       controllerId: this.schedulerIds.selected,
-      workflowIds: [{path: workflow.path, versionId: workflow.versionId}]
+      workflowIds: [{path: workflow.path, versionId: workflow.versionId}],
+      dateTo : this.workflowFilters.date,
+      timeZone : this.preferences.zone
     };
     this.coreService.post('orders', obj).subscribe((res: any) => {
       this.mapObj = new Map();
@@ -351,6 +360,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       this.isWorkflowStored(workflow, isFirst);
       this.loading = true;
     });
+  }
+
+  loadOrders(date) {
+    this.workflowFilters.date = date;
+    this.getOrders(this.coreService.clone(this.workflow), false);
   }
 
   private checkSideBar() {
@@ -930,7 +944,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       modalRef.result.then((result) => {
         console.log(result);
       }, (reason) => {
-        console.log('close...', reason);
+
       });
     } else {
       this.coreService.post('orders/' + url, obj).subscribe(() => {

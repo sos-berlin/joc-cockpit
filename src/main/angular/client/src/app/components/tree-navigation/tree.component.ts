@@ -23,7 +23,6 @@ export class TreeComponent implements OnInit, OnChanges {
     const dom = $('.scroll-y');
     let count = 0;
     if (dom && dom.position()) {
-
       const recursiveCheck = () => {
         ++count;
         let top = dom.position().top + 12;
@@ -31,8 +30,8 @@ export class TreeComponent implements OnInit, OnChanges {
         if (top < 70) {
           top = 92;
         }
-        if (top < 152 && top > 140) {
-          top = 151;
+        if (top < 155 && top > 140) {
+          top = 155;
         }
         $('.sticky').css('top', top + 2);
         const ht = window.innerHeight - top;

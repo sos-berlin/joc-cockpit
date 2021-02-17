@@ -41,15 +41,16 @@ export class CoreService {
 
     this.tabs._workflow = {};
     this.tabs._workflow.filter = {};
+    this.tabs._workflow.filter.date = '0d';
     this.tabs._workflow.filter.sortBy = 'name';
     this.tabs._workflow.reverse = false;
-    this.tabs._workflow.searchText = '';
     this.tabs._workflow.currentPage = '1';
     this.tabs._workflow.expandedKeys = ['/'];
     this.tabs._workflow.selectedkeys = ['/'];
     this.tabs._workflow.selectedView = true;
 
     this.tabs._workflowDetail = {};
+    this.tabs._workflowDetail.date = '0d';
     this.tabs._workflowDetail.panelSize = 0;
     this.tabs._workflowDetail.panelSize2 = 450;
 
@@ -62,7 +63,6 @@ export class CoreService {
     this.tabs._daliyPlan.reverse = true;
     this.tabs._daliyPlan.currentPage = '1';
     this.tabs._daliyPlan.selectedView = true;
-    this.tabs._daliyPlan.searchText = '';
 
     this.tabs._orderOverview = {};
     this.tabs._orderOverview.overview = true;
@@ -84,7 +84,6 @@ export class CoreService {
     this.tabs._history.order.filter.date = 'today';
     this.tabs._history.order.filter.sortBy = 'startTime';
     this.tabs._history.order.reverse = true;
-    this.tabs._history.order.searchText = '';
     this.tabs._history.order.currentPage = '1';
     this.tabs._history.order.selectedView = true;
     this.tabs._history.task = {};
@@ -93,7 +92,6 @@ export class CoreService {
     this.tabs._history.task.filter.date = 'today';
     this.tabs._history.task.filter.sortBy = 'startTime';
     this.tabs._history.task.reverse = true;
-    this.tabs._history.task.searchText = '';
     this.tabs._history.task.currentPage = '1';
     this.tabs._history.task.selectedView = true;
     this.tabs._history.yade = {};
@@ -102,7 +100,6 @@ export class CoreService {
     this.tabs._history.yade.filter.date = 'today';
     this.tabs._history.yade.filter.sortBy = 'start';
     this.tabs._history.yade.reverse = true;
-    this.tabs._history.yade.searchText = '';
     this.tabs._history.yade.currentPage = '1';
     this.tabs._history.yade.selectedView = true;
     this.tabs._history.deployment = {};
@@ -111,7 +108,6 @@ export class CoreService {
     this.tabs._history.deployment.filter.date = 'today';
     this.tabs._history.deployment.filter.sortBy = 'deploymentDate';
     this.tabs._history.deployment.reverse = true;
-    this.tabs._history.deployment.searchText = '';
     this.tabs._history.deployment.currentPage = '1';
     this.tabs._history.deployment.selectedView = true;
     this.tabs._history.submission = {};
@@ -120,7 +116,6 @@ export class CoreService {
     this.tabs._history.submission.filter.date = 'today';
     this.tabs._history.submission.filter.sortBy = 'dailyPlanDate';
     this.tabs._history.submission.reverse = true;
-    this.tabs._history.submission.searchText = '';
     this.tabs._history.submission.currentPage = '1';
     this.tabs._history.submission.selectedView = true;
 
@@ -130,7 +125,6 @@ export class CoreService {
     this.tabs._yade.filter.date = 'today';
     this.tabs._yade.filter.sortBy = 'start';
     this.tabs._yade.reverse = true;
-    this.tabs._yade.searchText = '';
     this.tabs._yade.currentPage = '1';
     this.tabs._yade.selectedView = true;
 
@@ -140,7 +134,6 @@ export class CoreService {
     this.tabs._auditLog.filter.date = 'today';
     this.tabs._auditLog.filter.sortBy = 'created';
     this.tabs._auditLog.reverse = true;
-    this.tabs._auditLog.searchText = '';
     this.tabs._auditLog.currentPage = '1';
 
     this.tabs._resource = {};
@@ -149,21 +142,18 @@ export class CoreService {
     this.tabs._resource.agents.filter.state = 'ALL';
     this.tabs._resource.agents.filter.sortBy = 'path';
     this.tabs._resource.agents.reverse = false;
-    this.tabs._resource.agents.searchText = '';
     this.tabs._resource.agents.currentPage = '1';
     this.tabs._resource.agentJobExecution = {};
     this.tabs._resource.agentJobExecution.filter = {};
     this.tabs._resource.agentJobExecution.filter.date = 'today';
     this.tabs._resource.agentJobExecution.filter.sortBy = 'agent';
     this.tabs._resource.agentJobExecution.reverse = false;
-    this.tabs._resource.agentJobExecution.searchText = '';
     this.tabs._resource.agentJobExecution.currentPage = '1';
     this.tabs._resource.locks = {};
     this.tabs._resource.locks.filter = {};
     this.tabs._resource.locks.filter.state = 'ALL';
     this.tabs._resource.locks.filter.sortBy = 'id';
     this.tabs._resource.locks.reverse = false;
-    this.tabs._resource.locks.searchText = '';
     this.tabs._resource.locks.currentPage = '1';
     this.tabs._resource.locks.expandedKeys = ['/'];
     this.tabs._resource.locks.selectedkeys = ['/'];
@@ -172,16 +162,14 @@ export class CoreService {
     this.tabs._resource.calendars.filter.type = 'ALL';
     this.tabs._resource.calendars.filter.sortBy = 'name';
     this.tabs._resource.calendars.reverse = false;
-    this.tabs._resource.calendars.searchText = '';
     this.tabs._resource.calendars.currentPage = '1';
     this.tabs._resource.calendars.expandedKeys = ['/'];
     this.tabs._resource.calendars.selectedkeys = ['/'];
     this.tabs._resource.documents = {};
     this.tabs._resource.documents.filter = {};
     this.tabs._resource.documents.filter.type = 'ALL';
-    this.tabs._resource.documents.filter.sortBy = 'path';
+    this.tabs._resource.documents.filter.sortBy = 'name';
     this.tabs._resource.documents.reverse = false;
-    this.tabs._resource.documents.searchText = '';
     this.tabs._resource.documents.currentPage = '1';
     this.tabs._resource.documents.expandedKeys = ['/'];
     this.tabs._resource.documents.selectedkeys = ['/'];
@@ -195,6 +183,7 @@ export class CoreService {
 
     this.tempTabs._workflow = {};
     this.tempTabs._workflow.filter = {};
+    this.tempTabs._workflow.filter.date = '0d';
     this.tempTabs._workflow.filter.sortBy = 'name';
     this.tempTabs._workflow.reverse = false;
     this.tempTabs._workflow.currentPage = '1';
@@ -204,6 +193,7 @@ export class CoreService {
     this.tempTabs._workflow.showTaskPanel = undefined;
 
     this.tempTabs._workflowDetail = {};
+    this.tempTabs._workflowDetail.date = '0d';
     this.tempTabs._workflowDetail.panelSize = 0;
     this.tempTabs._workflowDetail.panelSize2 = 450;
 
@@ -212,11 +202,10 @@ export class CoreService {
     this.tempTabs._daliyPlan.filter.status = 'ALL';
     this.tempTabs._daliyPlan.filter.groupBy = 'ORDER';
     this.tempTabs._daliyPlan.filter.late = false;
-    this.tempTabs._daliyPlan.filter.sortBy = 'processedPlanned';
+    this.tempTabs._daliyPlan.filter.sortBy = 'plannedStartTime';
     this.tempTabs._daliyPlan.reverse = true;
     this.tempTabs._daliyPlan.currentPage = '1';
     this.tempTabs._daliyPlan.selectedView = true;
-    this.tempTabs._daliyPlan.searchText = '';
 
     this.tempTabs._orderOverview = {};
     this.tempTabs._orderOverview.overview = true;
@@ -262,7 +251,6 @@ export class CoreService {
     this.tempTabs._history.deployment.filter.date = 'today';
     this.tempTabs._history.deployment.filter.sortBy = 'deploymentDate';
     this.tempTabs._history.deployment.reverse = true;
-    this.tempTabs._history.deployment.searchText = '';
     this.tempTabs._history.deployment.currentPage = '1';
     this.tempTabs._history.deployment.selectedView = true;
     this.tempTabs._history.submission = {};
@@ -271,7 +259,6 @@ export class CoreService {
     this.tempTabs._history.submission.filter.date = 'today';
     this.tempTabs._history.submission.filter.sortBy = 'dailyPlanDate';
     this.tempTabs._history.submission.reverse = true;
-    this.tempTabs._history.submission.searchText = '';
     this.tempTabs._history.submission.currentPage = '1';
     this.tempTabs._history.submission.selectedView = true;
 
@@ -298,7 +285,6 @@ export class CoreService {
     this.tempTabs._resource.agents.filter.state = 'ALL';
     this.tempTabs._resource.agents.filter.sortBy = 'path';
     this.tempTabs._resource.agents.reverse = false;
-    this.tempTabs._resource.agents.searchText = '';
     this.tempTabs._resource.agents.currentPage = '1';
     this.tempTabs._resource.agentJobExecution = {};
     this.tempTabs._resource.agentJobExecution.filter = {};
@@ -325,9 +311,8 @@ export class CoreService {
     this.tempTabs._resource.documents = {};
     this.tempTabs._resource.documents.filter = {};
     this.tempTabs._resource.documents.filter.type = 'ALL';
-    this.tempTabs._resource.documents.filter.sortBy = 'path';
+    this.tempTabs._resource.documents.filter.sortBy = 'name';
     this.tempTabs._resource.documents.reverse = false;
-    this.tempTabs._resource.documents.searchText = '';
     this.tempTabs._resource.documents.currentPage = '1';
     this.tempTabs._resource.documents.expandedKeys = ['/'];
     this.tempTabs._resource.documents.selectedkeys = ['/'];
@@ -452,7 +437,7 @@ export class CoreService {
     } else if (d === 6) {
       return type === 'text' ? 'dark-blue' : type === 'border' ? 'dark-blue-box' : 'bg-dark-blue';
     } else if (d === 7) {
-      return type === 'text' ? 'magenta' : type === 'border' ? 'magenta-box' : 'bg-magenta';
+      return type === 'text' ? 'mangenta' : type === 'border' ? 'mangenta-box' : 'bg-mangenta';
     } else if (d === 8) {
       return type === 'text' ? 'yellow-green' : type === 'border' ? 'yellow-green-box' : 'bg-yellow-green';
     } else if (d === 9) {

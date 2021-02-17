@@ -1005,7 +1005,7 @@ export class ExportComponent implements OnInit {
                 }
               }
             } else {
-             
+
               if (self.filter.controller) {
                 if (self.filter.deploy) {
                   self.object.deployConfigurations.push(objDep);
@@ -1481,6 +1481,9 @@ export class JsonEditorModalComponent implements OnInit {
               private translate: TranslateService, private message: NzMessageService) {
     this.options.mode = 'code';
     this.options.statusBar = false;
+    this.options.onEditable = () => {
+      return this.edit;
+    };
     this.options.onChange = () => {
       try {
         this.isError = false;
@@ -1495,10 +1498,7 @@ export class JsonEditorModalComponent implements OnInit {
   private parseErrorMsg(res, cb) {
     let flag = true;
     if (!res.valid) {
-      flag = false;
-      if (res.invalidMsg.match(/label/)) {
-        flag = true;
-      }
+      flag = !!res.invalidMsg.match(/label/);
       this.errorMsg = res.invalidMsg;
     }
     this.isError = !flag;

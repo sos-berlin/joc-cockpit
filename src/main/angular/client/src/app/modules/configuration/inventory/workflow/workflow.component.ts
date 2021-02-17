@@ -1068,13 +1068,16 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         return;
       }
       if (typeof data === 'object') {
+        let newData: any = {};
         if (this.orderRequirements && this.orderRequirements.parameters) {
-          data.orderRequirements = this.orderRequirements;
+          newData.orderRequirements = this.orderRequirements;
         }
+        newData.instructions = data.instructions;
         if (this.title) {
-          data.title = this.title;
+          newData.title = this.title;
         }
-        data = JSON.stringify(data, undefined, 2);
+        newData.jobs = data.jobs;
+        data = JSON.stringify(newData, undefined, 2);
       }
       const blob = new Blob([data], {type: fileType});
       saveAs(blob, name);
@@ -2713,7 +2716,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         mxIconSet.prototype.destroy = function () {
           if (this.images != null) {
             for (var i = 0; i < this.images.length; i++) {
-              var img = this.images[i];
+              let img = this.images[i];
               img.parentNode.removeChild(img);
             }
           }
@@ -4677,7 +4680,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             targetObj.else = {instructions: [copyObject]};
           }
         } else if (target.value.tagName === 'Fork') {
-          let branchId = 'branch';
+          let branchId = '';
           if (!targetObj.branches) {
             targetObj.branches = [];
           }
@@ -5577,7 +5580,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             self.toasterService.pop('error', title + '!!', msg);
           }
         } else if (targetObj.TYPE === 'Fork') {
-          let branchId = 'branch';
+          let branchId = '';
           if (!targetObj.branches) {
             targetObj.branches = [];
           }
@@ -5750,7 +5753,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               return;
             }
 
-            dropObject.instructions.splice(index, 1);
+            if(dropObject.instructions) {
+              dropObject.instructions.splice(index, 1);
+            }
 
             if ((connection.source === 'start')) {
               targetObject.instructions.splice(0, 0, sourceObj);

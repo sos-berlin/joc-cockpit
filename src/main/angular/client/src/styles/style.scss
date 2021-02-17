@@ -37,7 +37,7 @@
   --bg-orange: #FF8d1a;
   --bg-pink: #f37891;
   --bg-yellow-green: #cccc00;
-  --row-selected: rgba(36, 148, 191, 0.18);
+  --row-selected: #e6f7ff;
   --date-selected: rgba(36, 148, 191, .4);
   --date-selected-hover: rgba(36, 148, 191, 0.55);
   --date-selected-exclude: rgba(255, 163, 102, 0.56);
@@ -3975,7 +3975,7 @@ table.folder-tree-grid {
 }
 
 .expand-collapse:hover {
-  color: var(--primary);
+  color: var(--hover-primary);
   cursor: pointer;
 }
 
@@ -4112,12 +4112,6 @@ input[type=search] {
 
 .block-ellipsis-cluster {
   width: 89%;
-}
-
-.notification {
-  background-color: $white;
-  color: #000;
-  border-radius: 8px;
 }
 
 .btn-grey, .list-group-item.active > .label, .nav-pills > .active > a > .label {
@@ -6389,7 +6383,6 @@ tr.tr-border td {
 .sidebar-hover-effect .rg-right {
   display: none
 }
-
 aside.sidebar-hover-effect {
   max-width: 290px;
   padding-top: 24px !important;
@@ -6487,9 +6480,6 @@ form .ant-select-selection {
   min-height: 30px;
   height: auto;
 }
-.ace_editor {
-  font-family: $base__font-family;
-}
 div.jsoneditor,
 .ant-tabs-bar,
 .ant-time-picker-panel-select,
@@ -6563,6 +6553,7 @@ div.jsoneditor,
 
 .ant-tabs-ink-bar {
   background-color: $secondary;
+  bottom: 2px;
 }
 
 .ant-tabs-nav .ant-tabs-tab {
@@ -6750,6 +6741,7 @@ span.cm-error {
 .ant-tree-child-tree {
   width: fit-content !important;
 }
+
 .ant-calendar-header a:hover,
 .ant-time-picker-panel,
 .ant-calendar-picker-container,
@@ -6906,13 +6898,12 @@ div.jsoneditor-outer {
 div.jsoneditor-menu {
   display: none;
 }
+.ace-jsoneditor .ace_marker-layer .ace_active-line{
+  background: var(--row-selected) !important;
+}
 
-.editor-disable {
-  .ace_scroller {
-    pointer-events: none;
-    cursor: auto;
-    background: 0 0;
-  }
+.ace-jsoneditor .ace_cursor{
+  border-color: var(--text-color) !important;
 }
 
 .error-input {
@@ -6946,13 +6937,6 @@ div.ace_tooltip {
 
 .vertex-text {
   width: 96px;
-}
-table tr > td.td-border {
-  background: #ccc !important;
-  padding: 1px !important;
-  tr:hover {
-    background: #ccc !important;
-  }
 }
 .documents a[href*="http:"] {
   color: var(--primary) !important;

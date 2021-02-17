@@ -74,6 +74,14 @@
             </ul>
           </div>
           <div class="inline" style="position: relative;top:-21px">
+            <div class="btn-group m-l-12">
+              <ng-container *ngFor="let btn of filterBtn">
+                <button class="btn btn-grey btn-sm button-group-ellipsis"
+                        [ngClass]="{'btn-primary': workflowFilters.date===btn.date}"
+                        (click)="loadOrders(btn.date)" translate>filters.button.{{btn.text}}
+                </button>
+              </ng-container>
+            </div>
             <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="addOrder()" *ngIf="permission.Workflow.execute.addOrder"><i class="fa fa-plus-square"></i>
               &nbsp;<span class="hidden-sm-down" translate>workflow.button.addOrder</span>
             </button>
@@ -94,7 +102,7 @@
         <div class="hide" [ngClass]="{'show': loading}">
           <div [hidden]="pageView !== 'grid' || !workFlowJson.instructions">
             <div id="toolbar"></div>
-            <div appResizable class="resizable" [height]="worflowFilters.panelSize" [workflowTab]="worflowFilters" id="workflowGraphId">
+            <div appResizable class="resizable" [height]="workflowFilters.panelSize" [workflowTab]="workflowFilters" id="workflowGraphId">
               <div class="overflow-y" style="height: 100%">
                 <div class="graph-container ">
                   <div id="graph"></div>
@@ -137,7 +145,7 @@
             </div>
           </div>
           <div *ngIf="pageView !== 'grid' && workFlowJson.instructions">
-            <div class="box m-b-0 p-a-0 resizable" appResizable [height]="worflowFilters.panelSize2" [workflowTab]="worflowFilters" id="workflowTextId">
+            <div class="box m-b-0 p-a-0 resizable" appResizable [height]="workflowFilters.panelSize2" [workflowTab]="workflowFilters" id="workflowTextId">
               <div class="p-a overflow-y" style="height: 100%">
                 <div class="text-primary" translate>workflow.label.start</div>
                 <app-type [configuration]="workFlowJson" [orderRequirements]="orderRequirements" [permission]="permission" [preferences]="preferences"

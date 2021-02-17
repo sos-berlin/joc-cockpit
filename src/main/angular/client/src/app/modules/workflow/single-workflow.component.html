@@ -3,10 +3,19 @@
         <div class="col-md-12">
             <div class="padding">
                 <div class="text-right ">
-                    <div class="pull-left">
-                      <app-breadcrumbs></app-breadcrumbs>
+                  <div class="pull-left">
+                    <app-breadcrumbs></app-breadcrumbs>
+                  </div>
+                  <div class="inline pull-right">
+                    <div class="btn-group m-l-12">
+                      <ng-container *ngFor="let btn of filterBtn">
+                        <button class="btn btn-grey btn-sm button-group-ellipsis"
+                                [ngClass]="{'btn-primary': date===btn.date}"
+                                (click)="loadOrders(btn.date)" translate>filters.button.{{btn.text}}
+                        </button>
+                      </ng-container>
                     </div>
-
+                  </div>
                 </div>
             </div>
         </div>
