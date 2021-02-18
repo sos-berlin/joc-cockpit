@@ -30,7 +30,7 @@ export class WorkflowTemplateComponent {
       data.level = count + 1;
       data.states = res.states;
       data.loading = false;
-      this.coreService.calRowWidth(true);
+      this.coreService.calRowWidth(null);
     }, () => {
       data.loading = false;
     });
@@ -85,13 +85,14 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
 
   @HostListener('window:resize', ['$event'])
   onResize() {
-    this.coreService.calRowWidth(true);
+    this.coreService.calRowWidth(null);
   }
 
   private refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType.match(/WorkflowStateChanged/) && this.index === 0) {
+      
+        if (args.eventSnapshots[j].eventType === 'HistoryOrderTerminated' && this.index === 0) {
           if (!this.workflow || !this.workflow.path) {
             this.loadOrderHistory();
             break;
@@ -99,7 +100,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
             this.loadOrderHistory();
             break;
           }
-        } else if (args.eventSnapshots[j].eventType === 'JobStateChanged' && this.index === 1) {
+        } else if (args.eventSnapshots[j].eventType === 'HistoryTaskTerminated' && this.index === 1) {
           this.loadTaskHistory();
           break;
         } else if (args.eventSnapshots[j].eventType === 'AuditLogChanged' && this.index === 2) {
@@ -157,7 +158,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
       data.children = res.children;
       data.states = res.states;
       data.loading = false;
-      this.coreService.calRowWidth(true);
+      this.coreService.calRowWidth(null);
     }, () => {
       data.loading = false;
     });
@@ -182,7 +183,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
       data.children = res.children;
       data.states = res.states;
       data.loading = false;
-      this.coreService.calRowWidth(true);
+      this.coreService.calRowWidth(null);
     }, () => {
       data.loading = false;
     });

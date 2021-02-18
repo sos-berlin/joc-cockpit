@@ -28,13 +28,13 @@
                                        translate>filters.button.last12
                                     </a>
                                 </li>
-                                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-1d'}">
-                                    <a (click)="getSummaryByDate('-1d');filters.label='filters.button.last24'"
+                                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-24h'}">
+                                    <a (click)="getSummaryByDate('-24h');filters.label='filters.button.last24'"
                                        translate>filters.button.last24
                                     </a>
                                 </li>
-                                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-1w'}">
-                                    <a (click)="getSummaryByDate('-1w');filters.label='filters.button.lastWeak'"
+                                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-7d'}">
+                                    <a (click)="getSummaryByDate('-7d');filters.label='filters.button.lastWeak'"
                                        translate>filters.button.lastWeak
                                     </a>
                                 </li>

@@ -1135,20 +1135,20 @@
                           [nzData]="submissionHistory.submissions" [nzShowPagination]="false">
                 <thead>
                 <tr>
-                  <th style="border-right: none"><span translate>history.label.submission</span></th>
-                  <th style="border-left: none" colspan="3"></th>
+                  <td class="_600" style="padding: 6px 8px !important;" colspan="4"><span class="p-l" translate>history.label.submission</span></td>
                 </tr>
                 </thead>
                 <tbody *ngFor="let child of innerChildTable.data">
                   <tr>
-                    <td style="border-right: none">
-                      <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
-                         *ngIf="!child.show" (click)="child.show = true"></i>
-                      <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
-                         *ngIf="child.show" (click)="child.show = false;"></i>
-                      <span [innerHtml]="child.submissionTime | stringToDate"></span>
+                    <td colspan="4">
+                      <span class="p-l">
+                        <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                           *ngIf="!child.show" (click)="child.show = true"></i>
+                        <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+                           *ngIf="child.show" (click)="child.show = false;"></i>
+                        <span [innerHtml]="child.submissionTime | stringToDate"></span>
+                      </span>
                     </td>
-                    <td style="border-left: none" colspan="3"></td>
                   </tr>
                   <ng-container *ngIf="child.show" class="order-history-template0">
                     <tr *ngIf="child.orderIds && child.orderIds.length > 0">
@@ -1171,16 +1171,16 @@
                       </td>
                     </tr>
                     <tr *ngIf="child.warnMessages && child.warnMessages.length > 0">
-                      <th class="_600" style="padding: 6px 8px !important;"><span class="p-l" translate>history.label.warnMessages</span></th>
+                      <td colspan="4" class="_600" style="padding: 6px 8px !important;"><span class="p-l" translate>history.label.warnMessages</span></td>
                     </tr>
-                    <tr *ngFor="let order of child.warnMessages">
-                      <td><span class="p-l-md">{{order}}</span></td>
+                    <tr *ngFor="let msg of child.warnMessages">
+                      <td colspan="4"><span class="p-l-md text-warn">{{msg}}</span></td>
                     </tr>
                     <tr *ngIf="child.errorMessages && child.errorMessages.length > 0">
-                      <th class="_600" style="padding: 6px 8px !important;"><span class="p-l" translate>history.label.errorMessages</span></th>
+                      <td colspan="4" class="_600" style="padding: 6px 8px !important;"><span class="p-l" translate>history.label.errorMessages</span></td>
                     </tr>
-                    <tr *ngFor="let order of child.errorMessages">
-                      <td><span class="p-l-md">{{order}}</span></td>
+                    <tr *ngFor="let msg of child.errorMessages">
+                      <td colspan="4"><span class="p-l-md text-danger">{{msg}}</span></td>
                     </tr>
                   </ng-container>
                 </tbody>

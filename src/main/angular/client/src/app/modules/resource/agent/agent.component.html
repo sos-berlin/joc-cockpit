@@ -187,7 +187,9 @@
                           <span>{{cluster.state._text | translate}}</span>
                         </span>
                       </td>
-                      <td><span [innerHtml]="cluster.url"></span></td>
+                      <td>
+                        <a class="text-hover-primary" [href]="cluster.url+'/agent/api'" target="_blank" [innerHtml]="cluster.url"></a>
+                      </td>
                       <td>{{cluster.runningTasks}}</td>
                     </tr>
                     <tr *ngIf="cluster.show">

@@ -1048,7 +1048,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.order = order;
     modalRef.componentInstance.plan = workflow ? null : plan;
-    modalRef.componentInstance.workflow = this.dailyPlanFilters.filter.groupBy === 'WORKFLOW';
+    modalRef.componentInstance.workflow = workflow;
     modalRef.result.then((res) => {
       this.updateList();
     }, () => {
@@ -1090,7 +1090,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   cancelCyclicOrder(orders, isKill, isMultiple) {
     this.getOrderIds(orders, isMultiple, (orderIds) => {
-      console.log(orderIds);
       const obj: any = {
         controllerId: this.schedulerIds.selected, orderIds: orderIds, kill: isKill
       };
@@ -1223,7 +1222,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.order = order;
     modalRef.componentInstance.plan = workflow ? null : plan;
-    modalRef.componentInstance.workflow = this.dailyPlanFilters.filter.groupBy === 'WORKFLOW';
+    modalRef.componentInstance.workflow = workflow;
     modalRef.componentInstance.timeZone = this.preferences.zone;
     modalRef.componentInstance.selectedDate = this.selectedDate;
     modalRef.result.then((res) => {
@@ -1378,11 +1377,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   getOrderIds(orders, isMultiple, cb) {
-    console.log(orders)
     this.coreService.post('utilities/cyclic_orders', {
-      orderIds: isMultiple ? orders : orders.map((order) => order.orderId)
+      orderIds: isMultiple ? orders : orders.orderId ? [orders.orderId] : orders.map((order) => order.orderId)
     }).subscribe((res: any) => {
-      console.log(res);
       cb(res.orderIds);
     }, () => {
       cb([]);

@@ -131,10 +131,10 @@
           <nz-dropdown-menu #export2="nzDropdownMenu" role="menu">
             <ul nz-menu>
               <li nz-menu-item [nzDisabled]="!plan.isPlanned">
-                <a (click)="submitOrder(plan, null, true)" translate>dailyPlan.button.submitOrder</a>
+                <a (click)="submitOrder(plan, null, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW')" translate>dailyPlan.button.submitOrder</a>
               </li>
               <li nz-menu-item class="bg-hover-color" [nzDisabled]="!plan.isPlanned">
-                <a (click)="removeOrder(plan, null, true )" translate>dailyPlan.button.removeOrder</a>
+                <a (click)="removeOrder(plan, null, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW' )" translate>dailyPlan.button.removeOrder</a>
               </li>
               <li nz-menu-item [nzDisabled]="plan.isCancel">
                 <a (click)="cancelOrder(null, plan )" translate>order.button.cancel</a>
@@ -266,7 +266,7 @@
               </button>
             </div>
             <div class="btn-group dropdown">
-              <button class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
+              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
                       [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" type="button" translate>
                 <span translate>common.label.sortBy</span>
                 <span class="text-primary">
@@ -310,7 +310,7 @@
               </nz-dropdown-menu>
             </div>
             <div class="btn-group dropdown">
-              <button class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
+              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
                       [ngClass]="{'btn-primary': selectedFiltered.name}"
                       [nz-tooltip]="selectedFiltered.account" [nzDropdownMenu]="customization"
                       [nzPlacement]="'bottomRight'" type="button" translate>

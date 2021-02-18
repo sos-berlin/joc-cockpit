@@ -63,13 +63,13 @@
               <div class="col-md-8 col-lg-2">
                 <nz-date-picker name="from" required=true
                           [(ngModel)]="calendar.configuration.from" [nzFormat]="dateFormat"
-                          [nzPlaceHolder]="'common.placeholder.setStartDate' | translate" ></nz-date-picker>
+                          [nzPlaceHolder]="'common.placeholder.setStartDate' | translate" (ngModelChange)="saveJSON()"></nz-date-picker>
               </div>
               <label class="col-md-4 col-lg-2 form-control-label date-center" translate>runtime.label.validTo</label>
               <div class="col-md-8 col-lg-2 date-right" [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}">
                 <nz-date-picker id="to" name="to" #to="ngModel"
                           [(ngModel)]="calendar.configuration.to" [nzFormat]="dateFormat"
-                          [nzPlaceHolder]="'common.placeholder.setEndDate' | translate"></nz-date-picker>
+                          [nzPlaceHolder]="'common.placeholder.setEndDate' | translate" (ngModelChange)="saveJSON()"></nz-date-picker>
               </div>
             </div>
           </div>

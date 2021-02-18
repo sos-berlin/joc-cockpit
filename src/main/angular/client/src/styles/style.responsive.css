@@ -167,6 +167,23 @@
 
 @media (max-width: 1580px) {
   #rightSideBar{width:50%}
+  .icon-bg i{
+    display: none;
+  }
+}
+
+@media (max-width: 1680px) {
+  #rightSideBar{width:50%}
+  .icon-bg i{
+    font-size: 15px;
+    padding: 8px;
+  }
+  .icon-bg .text{
+    margin-left: 4px;
+  }
+  .icon-bg .text .count{
+    font-size: 13px;
+  }
 }
 
 @media (max-width: 1010px) {

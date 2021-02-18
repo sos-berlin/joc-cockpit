@@ -331,7 +331,7 @@ body {
   border-radius: 50%;
   background: plum;
   vertical-align: middle;
-  color: $white;
+  color: var(--white);
   font-weight: 600;
   -webkit-box-shadow: 2px 1px 0 rgba(0, 0, 0, 0.1);
   box-shadow: 2px 1px 0 rgba(0, 0, 0, 0.1);
@@ -476,7 +476,7 @@ small {
 
 .ant-dropdown-menu {
   border-radius: 1px;
-  border: 1px solid var(--border-color) !important;
+  border: 1px solid var(--border-color);
   font-size: 12px;
 
   a:first-child, .ant-dropdown-submenu-item {
@@ -538,7 +538,7 @@ small {
 }
 
 .ant-dropdown-placement-topLeft a:last-child:after {
-  border-bottom: 9px solid $white;
+  border-bottom: 9px solid var(--white);
   bottom: -18px
 }
 
@@ -699,7 +699,7 @@ a.list-group-item {
 }
 
 button.close {
-  color: $white;
+  color: var(--white);
   opacity: 0.7;
 
   &:focus, &:hover {
@@ -742,17 +742,17 @@ button.close {
   .nav-link {
     &.active {
       border-color: rgba(120, 130, 140, 0.18);
-      border-bottom: 1px solid $white;
+      border-bottom: 1px solid var(--white);
 
       &:focus, &:hover {
         border-color: rgba(120, 130, 140, 0.18);
-        border-bottom: 1px solid $white;
+        border-bottom: 1px solid var(--white);
       }
     }
 
     &:focus, &:hover {
       border-color: rgba(120, 130, 140, 0.18);
-      border-bottom: 1px solid $white;
+      border-bottom: 1px solid var(--white);
     }
   }
 }
@@ -1556,7 +1556,7 @@ fieldset[disabled] .ui-check input + i {
 .nav-text {
   line-height: 18px;
   padding: 10px 3px !important;
-  color: $white;
+  color: var(--white);
 }
 
 .dropdown .nav-text {
@@ -2784,7 +2784,7 @@ textarea.md-input {
   }
 
   &.focus ~ label, &:focus ~ label {
-    color: $white;
+    color: var(--white);
   }
 }
 
@@ -2955,13 +2955,13 @@ body div.mxPopupMenu {
   a {
     &:first-child {
       &:before {
-        border-bottom: 9px solid $white;
+        border-bottom: 9px solid var(--white);
         top: -18px;
         right: 4px;
       }
 
       &:after {
-        border-bottom: 9px solid $white;
+        border-bottom: 9px solid var(--white);
         top: -19px;
       }
     }
@@ -2971,7 +2971,7 @@ body div.mxPopupMenu {
     }
 
     &:hover {
-      color: $white;
+      color: var(--white);
       text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
       background: var(--primary);
     }
@@ -3490,7 +3490,7 @@ pre.cdata {
   max-width: 276px;
   padding: 1px;
   text-align: start;
-  background-color: $white;
+  background-color: var(--white);
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   border: 1px solid rgba(0, 0, 0, 0.2);
@@ -3498,7 +3498,7 @@ pre.cdata {
 }
 
 .carousel-caption, .carousel-control {
-  color: $white;
+  color: var(--white);
   text-align: center;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 }
@@ -3520,7 +3520,7 @@ pre.cdata {
     bottom: 1px;
     margin-left: -10px;
     content: "";
-    border-top-color: $white;
+    border-top-color: var(--white);
     border-bottom-width: 0;
   }
 
@@ -3540,7 +3540,7 @@ pre.cdata {
     bottom: -10px;
     left: 1px;
     content: "";
-    border-right-color: $white;
+    border-right-color: var(--white);
     border-left-width: 0;
   }
 
@@ -3561,7 +3561,7 @@ pre.cdata {
     margin-left: -10px;
     content: "";
     border-top-width: 0;
-    border-bottom-color: $white;
+    border-bottom-color: var(--white);
   }
 
   &.bs-tether-element-attached-right, &.popover-left {
@@ -3581,7 +3581,7 @@ pre.cdata {
     bottom: -10px;
     content: "";
     border-right-width: 0;
-    border-left-color: $white;
+    border-left-color: var(--white);
   }
 }
 
@@ -3639,7 +3639,7 @@ pre.cdata {
   color: var(--text-color) !important;
   font-weight: 200;
   text-align: left;
-  background-color: $white;
+  background-color: var(--white);
   -webkit-box-shadow: 1px 1px 8px 4px rgba(0, 0, 0, 0.2);
   box-shadow: 2px 2px 8px 4px rgba(0, 0, 0, 0.2);
 }
@@ -3726,7 +3726,7 @@ pre.cdata {
 .fa-angle-circle {
   font-size: 11px;
   padding: 1px 3px;
-  color: $white;
+  color: var(--white);
   background: rgba(58, 58, 58, 0.7);
   border-radius: 50%;
 }
@@ -3809,7 +3809,7 @@ li > a > i.remove {
 #contextmenu-node {
   position: absolute;
   font-size: 13px;
-  color: $black;
+  color: var(--black);
   border-radius: 3px;
   border: 1px solid var(--border-color);
   -webkit-transform-origin: top left;
@@ -3915,7 +3915,7 @@ li > a > i.remove {
   vertical-align: middle;
   display: inline-block;
   height: 26px;
-  color: $white !important;
+  color: var(--white) !important;
   label {
     margin: 5px;
     font-size: 11px;
@@ -3985,7 +3985,7 @@ table.folder-tree-grid {
 
 input {
   &[readonly=readonly], &[readonly] {
-    background-color: $white !important;
+    background-color: var(--white) !important;
   }
 }
 
@@ -4115,7 +4115,7 @@ input[type=search] {
 }
 
 .btn-grey, .list-group-item.active > .label, .nav-pills > .active > a > .label {
-  color: $black;
+  color: var(--black);
 }
 
 .block-ellipsis-flow-order {
@@ -4177,7 +4177,7 @@ input[type=search] {
 }
 
 .ui-check.ui-check-color input:checked + i:before {
-  background-color: $white;
+  background-color: var(--white);
 }
 
 .navside {
@@ -4235,7 +4235,7 @@ input[type=search] {
 
 .nav-active-bg {
   .nav-link.active, .nav > li.active > a {
-    color: $black !important;
+    color: var(--black) !important;
   }
 }
 
@@ -4257,7 +4257,7 @@ input[type=search] {
 }
 
 .dark-white, .white {
-  background-color: $white;
+  background-color: var(--white);
 }
 
 .bg-white {
@@ -4397,15 +4397,15 @@ a.dark:hover {
 }
 
 .text-white {
-  color: $white !important;
+  color: var(--white) !important;
 
   &:hover {
-    color: $white !important;
+    color: var(--white) !important;
   }
 }
 
 a[href]:hover span.text-white {
-  color: $white !important;
+  color: var(--white) !important;
 }
 
 .text-white-lt {
@@ -4421,7 +4421,7 @@ a[href]:hover span.text-white {
 }
 
 .text-black-dk {
-  color: $black;
+  color: var(--black);;
 }
 
 .text-muted {
@@ -4480,7 +4480,7 @@ a[href]:hover span.text-white {
   line-height: 18px;
   min-width: 2em;
   padding: .1em .6em;
-  text-shadow: 0 1px 0 $white;
+  text-shadow: 0 1px 0 var(--white);
   vertical-align: bottom;
 }
 
@@ -4507,7 +4507,7 @@ input[type=text][disabled] {
 .btn-primary {
   background-color: var(--primary) !important;
   border-color: var(--primary) !important;
-  color: $white !important;
+  color: var(--white) !important;
   &:hover {
     background-color: var(--hover-primary) !important;
     border-color: var(--hover-primary) !important;
@@ -4584,14 +4584,14 @@ input[type=text][disabled] {
 }
 
 .permission-node rect {
-  fill: $white;
+  fill: var(--white);
   stroke: #069;
   stroke-width: 1px;
 }
 
 .permission_node {
   rect {
-    fill: $white;
+    fill: var(--white);
     stroke: #069;
     stroke-width: 1px;
   }
@@ -4740,7 +4740,7 @@ svg text {
 
   table > tbody > tr {
     background: #f1f7fa;
-    border-bottom: 6px solid $white;
+    border-bottom: 6px solid var(--white);
     width: 100%;
 
     td {
@@ -5047,7 +5047,7 @@ body > .ui-select-bootstrap.open {
   }
 
   &.active > a {
-    color: $white;
+    color: var(--white);
     text-decoration: none;
     outline: 0;
     background-color: #428bca;
@@ -5056,7 +5056,7 @@ body > .ui-select-bootstrap.open {
   &.disabled > a, &.active.disabled > a {
     color: #777;
     cursor: not-allowed;
-    background-color: $white;
+    background-color: var(--white);
   }
 }
 
@@ -5348,7 +5348,7 @@ tr.disabled-row td:not(.menu) {
 #property-panel .rg-right {
   left: 0;
   right: auto;
-  background-color: $white !important;
+  background-color: var(--white) !important;
 
   span {
     top: 50%;
@@ -5710,7 +5710,7 @@ button, html [type="button"], [type="reset"], [type="submit"] {
 }
 
 .arrow-down a:last-child:after {
-  border-bottom: 9px solid $white;
+  border-bottom: 9px solid var(--white);
   bottom: -18px
 }
 
@@ -5746,7 +5746,7 @@ button, html [type="button"], [type="reset"], [type="submit"] {
 }
 
 .arrow-down-ac a:last-child:after {
-  border-bottom: 9px solid $white;
+  border-bottom: 9px solid var(--white);
   bottom: -18px
 }
 
@@ -5880,7 +5880,7 @@ body td.mxPopupMenuIcon {
 }
 
 body tr.mxPopupMenuItemHover {
-  color: $white;
+  color: var(--white);
   text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
   background: var(--primary);
 }
@@ -5982,7 +5982,7 @@ div.mxTooltip {
   position: absolute;
   cursor: default;
   padding: 6px 8px;
-  color: $white;
+  color: var(--white);
 }
 
 .z-index {
@@ -6075,6 +6075,10 @@ pre#pre {
 
 .ck-content ul {
   list-style-type: disc !important;
+}
+
+.ngx-charts text {
+  fill: var(--text-color);
 }
 
 .jsgantt-layout-outer-scroll-horizontal {
@@ -6218,12 +6222,14 @@ pre#pre {
 }
 
 tr.tr-border td {
-  border: 1px solid var(--border-color) !important;
+  border: 1px solid var(--border-color);
   border-bottom-color: transparent !important;
   border-right-color: transparent !important;
   word-break: break-all !important;
 }
-
+tr.tr-border td {
+  border-color: var(--border-color) !important;
+}
 .order-history-template0 {
   background: #fafafa !important;
 }
@@ -6328,12 +6334,16 @@ tr.tr-border td {
 }
 .ant-radio-wrapper{
   margin-right: 16px;
+  color: var(--text-color);
+}
+.ant-empty{
+  line-height: 16px;
 }
 .ant-empty-image {
-  max-height: 40px;
+  max-height: 34px;
 }
 .ant-radio-checked .ant-radio-inner, .ant-radio-checked::after{
-  border-color: var(--primary);
+  border-color: var(--primary) !important;
 }
 .ant-empty-normal {
   margin: 8px;
@@ -6515,8 +6525,17 @@ div.jsoneditor,
 }
 .inner-table .ant-table-small.ant-table-bordered {
   border-bottom: none;
+  border-top: none;
 }
-
+tr.tr-border td:first-child{
+  border-left: none !important;
+}
+tr.tr-border td:not(:first-child){
+  border-bottom: none !important;
+}
+.ant-pagination-jump-prev .ant-pagination-item-container .ant-pagination-item-ellipsis, .ant-pagination-jump-next .ant-pagination-item-container .ant-pagination-item-ellipsis{
+  color : var(--text-color)
+}
 .ant-calendar-picker-input:focus,
 .ant-time-picker-input:focus,
 .ant-input:focus, .ant-input:active .ant-input-focused,
@@ -6535,7 +6554,7 @@ div.jsoneditor,
 .ant-tabs-nav .ant-tabs-tab-active:hover,
 .ant-tabs-nav .ant-tabs-tab:hover,
 .ant-pagination-item-active a {
-  color: $black;
+  color: var(--black);
 }
 
 .ant-pagination-disabled {
@@ -6553,7 +6572,6 @@ div.jsoneditor,
 
 .ant-tabs-ink-bar {
   background-color: $secondary;
-  bottom: 2px;
 }
 
 .ant-tabs-nav .ant-tabs-tab {
@@ -6844,10 +6862,11 @@ span.cm-error {
   padding: 8px 16px;
   box-shadow: 0 0 25px 0 rgba(0, 0, 0, .05);
 }
-
+.ant-dropdown-menu {
+  border-color: var(--border-color) !important;
+}
 .ant-dropdown-menu-item-disabled, .ant-dropdown-menu-submenu-title-disabled {
   opacity: .7;
-
   a {
     pointer-events: none;
     cursor: auto;
@@ -6863,7 +6882,7 @@ span.cm-error {
 
 .order-count {
   margin-left: 8px;
-  color: $white !important;
+  color: var(--white) !important;
   background-color: var(--primary) !important;
   padding: 1px 3px;
   font-weight: bold;
@@ -6876,11 +6895,11 @@ span.cm-error {
   margin-left: 8px;
   cursor: pointer;
   font-weight: bold;
-  color: $white !important;
+  color: var(--white) !important;
   font-size: 10px;
-  padding: 1px 5px;
-  border-radius: 6px;
-  background-color: #bbbbbb !important;
+  padding: 1px 6px;
+  border-radius: 5px;
+  background-color: #bbb !important;
 
   span {
     margin-left: 4px;
@@ -6923,7 +6942,7 @@ div.ace_tooltip {
   background: black !important;
   font-size: 12px;
   padding: 6px 8px;
-  color: $white !important;
+  color: var(--white) !important;
   background-image: none;
   border: none;
   left: 74px !important;

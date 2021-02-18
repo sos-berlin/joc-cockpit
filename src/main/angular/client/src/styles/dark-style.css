@@ -17,6 +17,16 @@
   --border-color: rgba(255, 255, 255, .3);
   --dark-border-color: rgba(0, 0, 0, .2);
   --bg-dimgrey: #999;
+  --green: #389638;
+  --bg-gold : #e6b000;
+  --mangenta: #bf00bf;
+  --bg-mangenta: #b966b9;
+  --bg-light-blue: #829ebb;
+  --row-selected: #e6f7ff;
+  --date-selected: rgba(19, 149, 190, .4);
+  --date-selected-hover: rgba(19, 149, 190, 0.55);
+  --date-selected-exclude: rgba(255, 163, 102, 0.56);
+  --date-selected-exclude-hover: rgba(255, 163, 102, 0.66);
 }
 
 body {
@@ -170,7 +180,9 @@ a.text-primary:focus,
   height: 1px;
   background: #a5a5a5
 }
-
+.circle {
+  opacity: 0.6;
+}
 pre.log {
   color: #f5f5f5
 }
@@ -851,10 +863,6 @@ gridster-item {
   background-color: rgba(29, 29, 28, 0.5) !important;
 }
 
-button.close {
-  color: var(--text-color) !important;
-}
-
 #outlineContainer {
   background: rgba(29, 29, 28, 0.91) !important;
 }
@@ -1273,9 +1281,12 @@ div.jsoneditor{
   box-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
   color: var(--text-color);
 }
+.ace-jsoneditor .ace_gutter-active-line{
+  background: #999 !important;
+}
 
-.ace-jsoneditor .ace_marker-layer .ace_active-line {
-  background-color: #999;
+.ace-jsoneditor .ace_marker-layer .ace_active-line{
+  background: #777 !important;
 }
 
 /*
@@ -1431,9 +1442,6 @@ span.cm-link {
 .calendar .calendar-header table th:hover, .calendar-sm .selected {
   background: var(--box-color);
 }
-.ngx-charts text {
-  fill: var(--text-color);
-}
 
 .jsgantt-chart .jsgantt-task-row:nth-child(even) {
   background-color: var(--background-color);
@@ -1496,19 +1504,4 @@ span.cm-link {
 }
 .order-history-template13 {
   background: #444444 !important;
-}
-.bg-gold {
-  background : #e6b000;
-}
-.ant-pagination-jump-prev .ant-pagination-item-container .ant-pagination-item-ellipsis, .ant-pagination-jump-next .ant-pagination-item-container .ant-pagination-item-ellipsis{
-  color : var(--text-color)
-}
-.calendar .selected-blue{
-  background: var(--primary-light-color) !important;
-}
-.calendar-sm .selected{
-  background: var(--primary) !important;
-}
-.calendar .cal-day-plan:hover{
-  background: var(--primary-light-hover) !important;
 }

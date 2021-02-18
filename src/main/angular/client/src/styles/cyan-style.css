@@ -1,6 +1,9 @@
 :root {
   --antd-wave-shadow-color: #fff;
   --primary-color: #eb8814;
+  --hover-primary: #d47a12;
+  --primary-light-hover: #ed942c;
+  --primary-disable-color: rgba(237, 148, 44, .9);
   --bar-color: #e6f7ff;
   --secondary: #333332;
   --box-color: #003040;
@@ -9,6 +12,8 @@
   --bg-dark: #003040;
   --bg-footer: #005773;
   --text-color: rgba(255, 255, 255, .87);
+  --text-hover: rgba(0, 0, 0, .87);
+  --text-muted: rgba(255, 255, 255, .67);
   --box-shadow: rgba(255, 255, 255, .1);
   --border-color: rgba(255, 255, 255, .3);
 }
@@ -39,7 +44,9 @@ pre, .syntax-box {
 .nav-active-border2 > li.dropdown-separator .separator {
   background-color: #f2f2f2
 }
-
+a.text-dark:hover, a.text-dark:focus{
+  color: #fff;
+}
 .box,
 .box-color {
   background-color: var(--bg-dark);
@@ -870,10 +877,6 @@ gridster-item {
   background-color: rgba(29, 29, 28, 0.5) !important;
 }
 
-button.close {
-  color: rgba(255, 255, 255, 0.87) !important;
-}
-
 #outlineContainer {
   background: rgba(29, 29, 28, 0.91) !important;
 }
@@ -1357,8 +1360,8 @@ div.CodeMirror-selected {
   border-left: 1px solid #fff
 }
 
-span.cm-comment {
-  color: #08f
+span.cm-comment, .cm-s-default .cm-builtin {
+  color: #1a94ff !important;
 }
 
 span.cm-atom {
@@ -1373,7 +1376,7 @@ span.cm-keyword {
   color: #ffee80
 }
 
-span.cm-string {
+span.cm-string, .ace-jsoneditor .ace_string {
   color: #3ad900
 }
 
@@ -1381,11 +1384,11 @@ span.cm-meta {
   color: #ff9d00
 }
 
-span.cm-tag, span.cm-variable-2 {
+span.cm-tag, span.cm-variable-2, .cm-s-default span.cm-variable-2  {
   color: #9effff
 }
 
-.cm-type, span.cm-def, span.cm-variable-3 {
+.cm-type, span.cm-def, span.cm-variable-3, .cm-s-default .cm-variable-3, .cm-s-default .cm-type {
   color: #fff
 }
 

@@ -41,7 +41,7 @@ export class CoreService {
 
     this.tabs._workflow = {};
     this.tabs._workflow.filter = {};
-    this.tabs._workflow.filter.date = '0d';
+    this.tabs._workflow.filter.date = '1d';
     this.tabs._workflow.filter.sortBy = 'name';
     this.tabs._workflow.reverse = false;
     this.tabs._workflow.currentPage = '1';
@@ -50,7 +50,7 @@ export class CoreService {
     this.tabs._workflow.selectedView = true;
 
     this.tabs._workflowDetail = {};
-    this.tabs._workflowDetail.date = '0d';
+    this.tabs._workflowDetail.date = '1d';
     this.tabs._workflowDetail.panelSize = 0;
     this.tabs._workflowDetail.panelSize2 = 450;
 
@@ -183,7 +183,7 @@ export class CoreService {
 
     this.tempTabs._workflow = {};
     this.tempTabs._workflow.filter = {};
-    this.tempTabs._workflow.filter.date = '0d';
+    this.tempTabs._workflow.filter.date = '1d';
     this.tempTabs._workflow.filter.sortBy = 'name';
     this.tempTabs._workflow.reverse = false;
     this.tempTabs._workflow.currentPage = '1';
@@ -193,7 +193,7 @@ export class CoreService {
     this.tempTabs._workflow.showTaskPanel = undefined;
 
     this.tempTabs._workflowDetail = {};
-    this.tempTabs._workflowDetail.date = '0d';
+    this.tempTabs._workflowDetail.date = '1d';
     this.tempTabs._workflowDetail.panelSize = 0;
     this.tempTabs._workflowDetail.panelSize2 = 450;
 
@@ -1091,7 +1091,7 @@ export class CoreService {
 
   calRowWidth(currentView) {
     setTimeout(() => {
-      let arr = [53];
+      let arr = currentView != null ? [53] : [];
       if (!currentView) {
         $('#orderTable').find('thead th.dynamic-thead-o').each(function () {
           const w = $(this).outerWidth();
@@ -1108,7 +1108,6 @@ export class CoreService {
         if (arr.length === count) {
           count = 0;
         }
-        const w = $(this).outerWidth();
         $(this).css('width', arr[count] + 'px');
       });
     }, 100);

@@ -1155,15 +1155,19 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   setSubmissionDateRange(filter) {
-    if (this.submission.filter.date == 'today') {
+    if (this.submission.filter.date === 'today') {
       filter.dateFrom = '0d';
       filter.dateTo = '0d';
-    } else if (this.submission.filter.date && this.submission.filter.date != 'ALL') {
-      if (this.submission.filter.date == '7d' || this.submission.filter.date == '30d') {
+    } else if (this.submission.filter.date && this.submission.filter.date !== 'ALL') {
+      if (this.submission.filter.date === '7d' || this.submission.filter.date === '30d') {
         filter.dateFrom = '0d';
+        filter.dateTo = this.submission.filter.date;
+      } else if (this.submission.filter.date === '-1d') {
+        filter.dateFrom = this.submission.filter.date;
         filter.dateTo = this.submission.filter.date;
       } else {
         filter.dateFrom = this.submission.filter.date;
+        filter.dateTo = '0d';
       }
     }
     return filter;
@@ -1638,8 +1642,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       radio: 'current',
       planned: 'today',
       from: new Date(),
-      to: new Date(),
-      toTime: new Date()
+      to: new Date()
     };
   }
 

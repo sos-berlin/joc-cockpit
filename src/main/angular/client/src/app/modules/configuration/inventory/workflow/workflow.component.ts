@@ -266,6 +266,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       }
       this.setJobProperties();
     }
+    if (!this.selectedNode.obj.label) {
+      this.selectedNode.obj.label = this.selectedNode.obj.jobName;
+    }
   }
 
   addArgument(): void {
@@ -2617,6 +2620,16 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' || !this.preferences.theme) {
           let style = graph.getStylesheet().getDefaultEdgeStyle();
           style[mxConstants.STYLE_FONTCOLOR] = '#ffffff';
+          let style2 = graph.getStylesheet().getDefaultEdgeStyle();
+          if (this.preferences.theme === 'blue-lt') {
+            style2[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = 'rgba(70, 82, 95, 0.6)';
+          } else if (this.preferences.theme === 'blue') {
+            style2[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = 'rgba(50, 70, 90, 0.61)';
+          } else if (this.preferences.theme === 'cyan') {
+            style2[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = 'rgba(29, 29, 28, 0.5)';
+          } else if (this.preferences.theme === 'grey') {
+            style2[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = 'rgba(78, 84, 92, 0.62)';
+          }
           mxGraph.prototype.collapsedImage = new mxImage('./assets/mxgraph/images/collapsed-white.png', 12, 12);
           mxGraph.prototype.expandedImage = new mxImage('./assets/mxgraph/images/expanded-white.png', 12, 12);
         } else {

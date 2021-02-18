@@ -60,7 +60,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   filterBtn: any = [
-    {date: '0d', text: 'today'},
+    {date: 'ALL', text: 'all'},
+    {date: '1d', text: 'today'},
     {date: '1h', text: 'next1'},
     {date: '12h', text: 'next12'},
     {date: '24h', text: 'next24'}
@@ -337,7 +338,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       compact: true,
       controllerId: this.schedulerIds.selected,
       workflowIds: [{path: workflow.path, versionId: workflow.versionId}],
-      dateTo : this.workflowFilters.date,
+      dateTo : this.workflowFilters.date !== 'ALL' ? this.workflowFilters.date : undefined,
       timeZone : this.preferences.zone
     };
     this.coreService.post('orders', obj).subscribe((res: any) => {
@@ -392,6 +393,16 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' || !this.preferences.theme) {
         let style = graph.getStylesheet().getDefaultEdgeStyle();
         style[mxConstants.STYLE_FONTCOLOR] = '#ffffff';
+        let style2 = graph.getStylesheet().getDefaultEdgeStyle();
+        if (this.preferences.theme === 'blue-lt') {
+          style2[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = 'rgba(70, 82, 95, 0.6)';
+        } else if (this.preferences.theme === 'blue') {
+          style2[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = 'rgba(50, 70, 90, 0.61)';
+        } else if (this.preferences.theme === 'cyan') {
+          style2[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = 'rgba(29, 29, 28, 0.5)';
+        } else if (this.preferences.theme === 'grey') {
+          style2[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = 'rgba(78, 84, 92, 0.62)';
+        }
         mxGraph.prototype.collapsedImage = new mxImage('./assets/mxgraph/images/collapsed-white.png', 12, 12);
         mxGraph.prototype.expandedImage = new mxImage('./assets/mxgraph/images/expanded-white.png', 12, 12);
       } else {

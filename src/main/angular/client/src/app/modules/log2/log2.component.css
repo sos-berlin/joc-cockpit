@@ -1,10 +1,10 @@
 ::ng-deep body {
   overflow-x: auto !important;
-  background: #fff;
+  background: var(--background-color);
 }
 
 pre.log {
-  color: #3d464d;
+  color: var(--text-color);
   margin-bottom: 8px;
   font-family: Lucida Console, monospace;
   font-size: 12px;
@@ -13,7 +13,7 @@ pre.log {
 
 .loading-img {
   top: 30px;
-  background-color: #fff
+  background-color: var(--background-color)
 }
 
 a:hover {
@@ -25,7 +25,7 @@ a:hover {
   width: 100%;
   z-index: 99;
   padding: 4px 0;
-  background: #fff;
+  background: var(--background-color);
 }
 
 .md-check input {

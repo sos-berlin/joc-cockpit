@@ -104,7 +104,8 @@
         </tr>
         <tr *ngIf="child.order.show">
           <td colspan="8" style="padding:0 !important;border-bottom: none;">
-            <app-order-history-template class="order-history-template{{history.level}}" style="display: block" [history]="child.order" [schedulerId]="schedulerId"
+            <app-order-history-template class="order-history-template{{history.level}}" style="display: block" [history]="child.order"
+                                        [schedulerId]="schedulerId"
             ></app-order-history-template>
           </td>
         </tr>

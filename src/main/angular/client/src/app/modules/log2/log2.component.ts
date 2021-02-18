@@ -4,6 +4,7 @@ import {CoreService} from '../../services/core.service';
 import {ActivatedRoute} from '@angular/router';
 import * as _ from 'underscore';
 import * as moment from 'moment-timezone';
+import {Subscription} from 'rxjs';
 declare const $;
 
 @Component({
@@ -31,7 +32,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
   isStdErrLevel = false;
   isDetailLevel = false;
   isInfoLevel = false;
-  subscriber: any;
+  subscriber: Subscription;
   orderId: any;
   taskId: any;
   workflow: any;

@@ -173,7 +173,8 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
 
   filterBtn: any = [
-    {date: '0d', text: 'today'},
+    {date: 'ALL', text: 'all'},
+    {date: '1d', text: 'today'},
     {date: '1h', text: 'next1'},
     {date: '12h', text: 'next12'},
     {date: '24h', text: 'next24'}
@@ -244,7 +245,9 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
   }
 
   private getOrders(obj) {
-    obj.dateTo = this.date;
+    if (this.date !== 'ALL') {
+      obj.dateTo = this.date;
+    }
     obj.timeZone = this.preferences.zone;
     this.coreService.post('orders', obj).subscribe((res: any) => {
       this.workflows[0].ordersSummary = {};
@@ -328,7 +331,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   filterBtn: any = [
-    {date: '0d', text: 'today'},
+    {date: 'ALL', text: 'all'},
+    {date: '1d', text: 'today'},
     {date: '1h', text: 'next1'},
     {date: '12h', text: 'next12'},
     {date: '24h', text: 'next24'}
@@ -508,7 +512,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   private getWorkflowList(obj) {
-    if(obj.folders.length === 1) {
+    if (obj.folders.length === 1) {
       this.currentPath = obj.folders[0].folder;
     }
     this.coreService.post('workflows', obj).subscribe((res: any) => {
@@ -565,12 +569,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (!obj.workflowIds || obj.workflowIds.length === 0) {
       return;
     }
-    obj.dateTo = this.workflowFilters.filter.date;
+    if (this.workflowFilters.filter.date !== 'ALL') {
+      obj.dateTo = this.workflowFilters.filter.date;
+    }
     obj.timeZone = this.preferences.zone;
 
     this.coreService.post('orders', obj).subscribe((res: any) => {
       if (res.orders) {
-
         for (let i = 0; i < this.workflows.length; i++) {
           if (obj.workflowIds && obj.workflowIds.length > 0 && !_.isEmpty(this.workflows[i].ordersSummary)) {
             for (let j = 0; j < obj.workflowIds.length; j++) {

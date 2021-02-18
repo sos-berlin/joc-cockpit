@@ -97,7 +97,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       scrollSpeed: 20,
       ignoreMarginInRow: false,
       draggable: {
-        delayStart: 0,
+        delayStart: 100,
         enabled: flag,
         ignoreContentClass: 'gridster-item-content',
         ignoreContent: false,
