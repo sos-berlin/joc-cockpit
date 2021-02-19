@@ -4,7 +4,7 @@
     </div>
     <div class="row m-b-sm box-tool" style="top:10px">
         <div class="col-md-12 container-fluid">
-            <div class="pull-right" *ngIf="!notAuthenticate">
+            <div class="pull-right" *ngIf="!notAuthenticate1 && !notAuthenticate2">
                 <div class="btn-group">
                     <div class="btn-group dropdown ">
                         <button class="btn btn-grey btn-sm m-l-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="order"  nzPlacement="bottomRight">
@@ -46,7 +46,7 @@
         </div>
     </div>
     <div class="box-body">
-        <table class="w-full" *ngIf="!notAuthenticate && isLoaded">
+        <table class="w-full" *ngIf="!notAuthenticate1 && !notAuthenticate2 && isLoaded">
             <tr class="text-center">
                 <td width="25%">
                     <div translate>dashboard.label.successfulOrders</div>
@@ -82,12 +82,12 @@
               </td>
             </tr>
         </table>
-        <div *ngIf="notAuthenticate">
+        <div *ngIf="notAuthenticate1 && notAuthenticate2">
           <div>
             <app-empty-data></app-empty-data>
           </div>
         </div>
-        <div [hidden]="notAuthenticate" class="hide text-center text-primary text m-t-md m-b"
+        <div [hidden]="notAuthenticate1" class="hide text-center text-primary text m-t-md m-b"
              [ngClass]="{'show': !isLoaded}">
             <div><i class="fa fa-refresh fa-lg fa-spin"></i> </div>
         </div>

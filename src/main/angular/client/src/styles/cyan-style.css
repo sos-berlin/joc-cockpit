@@ -1,6 +1,6 @@
 :root {
   --antd-wave-shadow-color: #fff;
-  --primary-color: #eb8814;
+  --primary: #eb8814;
   --hover-primary: #d47a12;
   --primary-light-hover: #ed942c;
   --primary-disable-color: rgba(237, 148, 44, .9);
@@ -68,13 +68,6 @@ a.text-dark:hover, a.text-dark:focus{
   background-color: var(--bg-dark) !important;;
 }
 
-.ui-check input:checked + i:before {
-  left: 5px;
-  top: 5px;
-  width: 6px;
-  height: 6px;
-  background-color: var(--primary-color)
-}
 
 .dark-white {
   background-color: var(--bg-light)
@@ -88,60 +81,6 @@ a.text-dark:hover, a.text-dark:focus{
   background-color: rgba(0, 0, 0, .85)
 }
 
-.b-primary {
-  border-color: var(--primary-color)
-}
-
-.b-t-primary {
-  border-top-color: var(--primary-color)
-}
-
-.b-b-primary {
-  border-bottom-color: var(--primary-color)
-}
-
-.b-l-primary {
-  border-left-color: var(--primary-color)
-}
-a.text-primary:hover,
-a.text-primary:focus,
-.text-primary,
-.text-primary-hover a:hover {
-  color: var(--primary-color) !important
-}
-
-.md-input.focus,
-.md-input:focus {
-  border-color: var(--primary-color);
-  border-bottom-width: 2px;
-  padding-bottom: 1px
-}
-
-.md-input.focus ~ label,
-.md-input:focus ~ label {
-  color: var(--primary-color);
-  opacity: 1;
-  top: 0 !important;
-  font-size: .85em !important
-}
-
-.loader {
-  border-left: 1.1em solid #478bca
-}
-
-.ch-purple {
-  color: var(--text-color);
-  background-color: var(--primary-color)
-}
-
-.purple-color {
-  color: var(--primary-color)
-}
-
-.text-hover-primary:hover {
-  cursor: pointer !important;
-  color: var(--primary-color) !important
-}
 
 .border-grey {
   border-top: 1px solid rgba(0, 0, 0, .12)
@@ -182,7 +121,7 @@ pre.log {
 }
 
 .log_detail {
-  color: var(--primary-color);
+  color: var(--primary);
 }
 
 .log_success {
@@ -203,7 +142,7 @@ pre.log {
 }
 
 .rzslider .rz-pointer {
-  background-color: var(--primary-color)
+  background-color: var(--primary)
 }
 
 .search-box {
@@ -214,7 +153,7 @@ pre.log {
 }
 
 .loader1 {
-  color: var(--primary-color)
+  color: var(--primary)
 }
 
 .left-sidebar-btn:hover,
@@ -236,47 +175,6 @@ pre.log {
   background: rgba(58, 58, 58, .7)
 }
 
-.cal-year-box .month-name {
-  background-color: var(--primary-color);
-  color: var(--text-color);
-  text-align: center;
-  margin-top: 8px
-}
-
-.cal-day-plan {
-  background: rgba(0, 125, 166, .7)
-}
-
-.cal-day-today span[data-cal-date] {
-  color: var(--primary-color)
-}
-
-.cal-year-box .cal-day-today span[data-cal-date] {
-  color: var(--white)
-}
-
-.black,
-.danger,
-.danger-bg,
-.dark,
-.grey,
-.info,
-.primary,
-.warn,
-.warning {
-  color: var(--text-color)
-}
-
-.primary-text-hover-color:hover,
-.primary-text-hover-color:hover i,
-.primary-text-hover-color:hover span {
-  color: var(--primary-color) !important
-}
-
-.primary,
-.primary .bg {
-  background-color: var(--primary-color) !important
-}
 
 table.folder-tree-grid > tbody > tr,
 table.folder-tree-grid > tbody > tr > td {
@@ -288,18 +186,9 @@ table.folder-tree-grid .indented a {
   color: #606060
 }
 
-.expand-collapse:hover {
-  color: var(--primary-color);
-  cursor: pointer
-}
-
 input[readonly=readonly],
 input[readonly] {
   background-color: transparent !important
-}
-
-.start-on-hover:hover .fa-star-o {
-  color: var(--primary-color)
 }
 
 input[type=search] {
@@ -310,7 +199,7 @@ input[type=search] {
 
 input[type=search]:focus {
   color: #3d464d;
-  border-bottom: 1px solid var(--primary-color)
+  border-bottom: 1px solid var(--primary)
 }
 
 .notification {
@@ -433,7 +322,7 @@ a.text-dark:hover {
 
 .cssload-loading::after,
 .cssload-loading::before {
-  background: var(--primary-color)
+  background: var(--primary)
 }
 
 .more-option i,
@@ -602,30 +491,6 @@ div.order-panel div {
   color: rgba(255, 255, 255, 0.6) !important;
 }
 
-.pagination > li > a,
-.pagination > li > span {
-  color: inherit !important;
-  background-color: transparent !important;
-  border-color: rgba(216, 239, 255, .13) !important;
-  border-radius: 0 !important
-}
-
-.pagination > li > a:focus,
-.pagination > li > a:hover,
-.pagination > li > span:focus,
-.pagination > li > span:hover {
-  border-color: rgba(218, 239, 255, .13);
-  background-color: rgba(255, 255, 255, .06);
-  color: inherit
-}
-
-.pagination > .active > a,
-.pagination > .active > span {
-  color: var(--white) !important;
-  background-color: var(--primary-color) !important;
-  border-color: #327aa3
-}
-
 .box-shadow {
   -webkit-box-shadow: 0 1px 3px rgba(255, 255, 255, .12) !important;
   box-shadow: 0 1px 3px rgba(255, 255, 255, .12) !important
@@ -759,43 +624,12 @@ pre.cdata {
   background-color: var(--box-color);
 }
 
-.btn-primary {
-  background-color: var(--primary-color) !important;
-  color: var(--white)
-}
-
 .tree-grid .tree-icon {
   color: var(--white)
 }
 
-.orange {
-	background-color: #007da6;
-	color: rgba(255, 255, 255, .87)
-}
-
-.orange:hover {
-	background-color: #00779f!important;
-	color: rgba(255, 255, 255, .97)!important
-}
-.tree-grid .tree-icon:hover {
-  color: var(--primary-color)
-}
-
-.form-control:focus {
-  border-color: var(--primary-color)
-}
-
 .dropdown-list {
   border: 1px solid var(--bg-dark)
-}
-
-.dropdown-list a:hover {
-  color: var(--white);
-  background: var(--primary-color)
-}
-.btn-today {
-	background: #007da6!important;
-	color: rgba(255, 255, 255, .87)!important
 }
 
 .backup {
@@ -896,11 +730,11 @@ pre#pre {
 }
 
 .avatar[_ngcontent-c2] {
-  background: var(--primary-color) !important;
+  background: var(--primary) !important;
 }
 
 span ul li a {
-  color: var(--primary-color) !important;
+  color: var(--primary) !important;
 }
 
 .row.open {
@@ -922,7 +756,7 @@ span ul li a {
 }
 
 .ui-select-match-item {
-  color: var(--primary-color);
+  color: var(--primary);
 }
 
 #rightSideBar {
@@ -1016,26 +850,9 @@ span ul li a {
   color: #333;
 }
 
-.ck.ck-list__item .ck-button.ck-on {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.ck.ck-button.ck-on, a.ck.ck-button.ck-on {
-  background-color: var(--primary-color);
-}
-
-.documents a[href*="http:"], .documents a[href*="https:"] {
-  color: var(--primary-color) !important;
-}
 
 .arrow-down-ac:last-child:after, .arrow-down:last-child:after {
   color: var(--bg-dark);
-}
-
-.ck-content a {
-  color: var(--primary-color);
-  text-decoration: underline;
 }
 
 .ck.ck-link-form, .ck.ck-link-actions {
@@ -1111,16 +928,7 @@ span ul li a {
 .ant-table-small.ant-table-bordered .ant-table-content {
   border-color: var(--border-color)
 }
-.ant-input:focus, .ant-input:active .ant-input-focused,
-.ant-select-focused .ant-select-selection,
-.ant-calendar-picker-input:focus,
-.ant-time-picker-input:focus,
-.ant-select-selection:focus,
-.ant-select-selection:active,
-.ant-input-number:focus,
-.ant-input-number-focused {
-  border-color: var(--primary-color) !important;
-}
+
 .ant-table-bordered .ant-table-thead > tr:not(:last-child) > th, .ant-table-small.ant-table-bordered .ant-table-thead > tr > th:last-child{
   border-color: var(--border-color);
 }
@@ -1133,28 +941,6 @@ span ul li a {
 
 .ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td{
   background: var(--box-color) !important
-}
-.ant-calendar-header .ant-calendar-prev-century-btn:hover,
-.ant-calendar-header .ant-calendar-prev-decade-btn:hover,
-.ant-calendar-header .ant-calendar-prev-year-btn:hover,
-.ant-input, .ant-input:hover,
-.ant-pagination-item:focus a, .ant-pagination-item:hover a,
-.ant-input-number:hover, .ant-select-selection:hover,
-.ant-tabs-nav .ant-tabs-tab-active,
-.ant-tabs-nav .ant-tabs-tab-active:hover,
-.ant-tabs-nav .ant-tabs-tab:hover,
-.ant-pagination-item-active a {
-  color: var(--primary-color);
-}
-.ant-calendar-month-panel-month:hover,
-.ant-calendar-year-panel-year:hover,
-.ant-calendar-year-panel-selected-cell .ant-calendar-year-panel-year,
-.ant-calendar-selected-day .ant-calendar-date,
-.ant-calendar-today .ant-calendar-date,
-.ant-calendar-month-panel-selected-cell .ant-calendar-month-panel-month, .ant-time-picker-panel-select li:hover, li.ant-time-picker-panel-select-option-selected, .ant-calendar-date:hover, .ant-tabs-ink-bar,
-.ant-calendar-month-panel-selected-cell .ant-calendar-month-panel-month:hover {
-  color: var(--primary-color);
-  background: var(--bar-color);
 }
 
 .ant-tabs-bar,
@@ -1202,27 +988,15 @@ span ul li a {
 .btn:hover {
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3) !important;
 }
-.ant-checkbox-indeterminate .ant-checkbox-inner::after {
-  background-color: var(--primary-color);
-}
+
 .anticon, .ant-radio, .ant-checkbox, .ant-radio-group, .ant-radio-wrapper, .ant-checkbox-wrapper{
   color: var(--text-color);
 }
 
-.ant-checkbox-checked .ant-checkbox-inner {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-}
-
-.ant-radio-inner::after {
-  background-color: var(--primary-color);
-}
 .ant-checkbox-inner, .ant-radio-inner, .ant-tree-checkbox-inner {
   border: 1px solid var(--border-color);
 }
-.ant-radio-wrapper:hover .ant-radio, .ant-radio:hover .ant-radio-inner, .ant-radio-input:focus + .ant-radio-inner {
-  border-color: var(--primary-color);
-}
+
 /*
 JSON editor
 **/
@@ -1517,18 +1291,7 @@ span.cm-variable {
 .order-history-template13 {
   background: #444444 !important;
 }
-.bg-gold {
-  background : #e6b000;
-}
 .ant-pagination-jump-prev .ant-pagination-item-container .ant-pagination-item-ellipsis, .ant-pagination-jump-next .ant-pagination-item-container .ant-pagination-item-ellipsis{
   color : var(--text-color)
 }
-.calendar .selected-blue{
-  background: rgba(21, 167, 213, .5) !important;
-}
-.calendar-sm .selected{
-  background: var(--primary-color) !important;
-}
-.calendar .cal-day-plan:hover{
-  background: rgba(21, 167, 213, .7) !important;
-}
+

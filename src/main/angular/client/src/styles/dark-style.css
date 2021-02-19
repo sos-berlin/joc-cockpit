@@ -1082,18 +1082,17 @@ span ul li a {
 .modal-open input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0 100px var(--bg-footer) inset;
 }
-
-
+.ant-tabs-bar,
 .ant-time-picker-panel-select,
 .ant-calendar-header,
 .ant-calendar-footer,
 .ant-input, .ant-input:hover,
 .ant-input-number,
 .ant-input-number:hover,
-.ant-select-selection,
-.ant-select-selection:hover,
 .ant-pagination-item, .ant-pagination-item-active,
 .ant-table-small,
+.ant-select-selection,
+.ant-select-selection:hover,
 .ant-calendar-picker,
 .ant-calendar-picker:hover,
 .ant-calendar-picker:hover .ant-calendar-picker-input:not(.ant-input-disabled),
@@ -1152,20 +1151,6 @@ span ul li a {
   background: var(--bar-color);
 }
 
-.ant-tabs-bar,
-.ant-time-picker-panel-select,
-.ant-calendar-header,
-.ant-calendar-footer,
-.ant-input, .ant-input:hover,
-.ant-input-number, .ant-select-selection,
-.ant-input-number:hover, .ant-select-selection:hover,
-.ant-pagination-item, .ant-pagination-item-active,
-.ant-table-small,
-.ant-time-picker-input,
-.ant-table-bordered .ant-table-thead > tr > th, .ant-table-bordered .ant-table-tbody > tr > td,
-.ant-table-small.ant-table-bordered .ant-table-content {
-  border-color: var(--border-color)
-}
 .ant-dropdown-menu-item-divider, .ant-dropdown-menu-submenu-title-divider {
   background-color: var(--border-color)
 }

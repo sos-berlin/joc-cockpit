@@ -16,7 +16,8 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
   preferences: any = {};
   filters: any = {};
   isLoaded = false;
-  notAuthenticate = false;
+  notAuthenticate1 = false;
+  notAuthenticate2 = false;
   subscription: Subscription;
 
   constructor(private authService: AuthService, private coreService: CoreService, private router: Router, private dataService: DataService) {
@@ -50,7 +51,8 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
       this.getSummary();
       this.getTaskSummary();
     } else {
-      this.notAuthenticate = true;
+      this.notAuthenticate1 = true;
+      this.notAuthenticate2 = true;
       this.isLoaded = true;
     }
   }
@@ -68,7 +70,7 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
       this.orderSummary = res.orders || {};
       this.isLoaded = true;
     }, (err) => {
-      this.notAuthenticate = !err.isPermitted;
+      this.notAuthenticate1 = !err.isPermitted;
       this.isLoaded = true;
     });
   }
@@ -94,6 +96,7 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
       this.taskSummary = res.jobs;
       this.isLoaded = true;
     }, (err) => {
+      this.notAuthenticate2 = !err.isPermitted;
       this.isLoaded = true;
     });
   }

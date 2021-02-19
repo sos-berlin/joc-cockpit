@@ -6223,8 +6223,8 @@ pre#pre {
 
 tr.tr-border td {
   border: 1px solid var(--border-color);
-  border-bottom-color: transparent !important;
-  border-right-color: transparent !important;
+  border-bottom: none !important;
+  border-right: none !important;
   word-break: break-all !important;
 }
 tr.tr-border td {
@@ -6292,62 +6292,6 @@ tr.tr-border td {
 
 .inner-table .ant-table-small {
   border-bottom: none !important;
-}
-
-.ant-table-thead > tr > th {
-  font-weight: 600;
-  padding: 6px 8px !important;
-}
-
-.ant-checkbox-inner, .ant-radio-inner, .ant-tree-checkbox-inner {
-  border: 1px solid var(--dark-border-color);
-  background: transparent;
-}
-
-.ant-checkbox-inner {
-  border-radius: 0;
-}
-
-.ant-checkbox-inner::after {
-  left: 20%;
-}
-.ant-tree li span.ant-tree-checkbox{
-  margin-right: 8px;
-  margin-left: 0;
-}
-
-.ant-checkbox-indeterminate .ant-checkbox-inner::after {
-  background-color: var(--primary);
-}
-
-.ant-checkbox-checked .ant-checkbox-inner {
-  background-color: var(--primary);
-  border-color: var(--primary);
-}
-
-.ant-radio-inner::after {
-  background-color: var(--primary);
-}
-
-.ant-radio-wrapper:hover .ant-radio, .ant-radio:hover .ant-radio-inner, .ant-radio-input:focus + .ant-radio-inner {
-  border-color: var(--primary);
-}
-.ant-radio-wrapper{
-  margin-right: 16px;
-  color: var(--text-color);
-}
-.ant-empty{
-  line-height: 16px;
-}
-.ant-empty-image {
-  max-height: 34px;
-}
-.ant-radio-checked .ant-radio-inner, .ant-radio-checked::after{
-  border-color: var(--primary) !important;
-}
-.ant-empty-normal {
-  margin: 8px;
-  color: var(--text-color);
 }
 
 .vert-middle {
@@ -6527,6 +6471,7 @@ div.jsoneditor,
   border-bottom: none;
   border-top: none;
 }
+
 tr.tr-border td:first-child{
   border-left: none !important;
 }
@@ -6825,16 +6770,82 @@ span.cm-error {
   border-color: var(--primary);
   background-color: var(--primary);
 }
-.ant-checkbox-wrapper{
-  color: var(--text-color);
-}
-
-.ant-tree-checkbox-wrapper:hover .ant-tree-checkbox-inner, .ant-tree-checkbox:hover .ant-tree-checkbox-inner, .ant-tree-checkbox-input:focus + .ant-tree-checkbox-inner {
-  border-color: var(--primary);
+.ant-checkbox-wrapper, .ant-input-number-handler, .ant-input-number-handler-up-inner, .ant-input-number-handler-down-inner{
+  color: var(--text-color)
 }
 
 .ant-tree-checkbox-indeterminate .ant-tree-checkbox-inner::after {
   background-color: var(--primary);
+}
+.ant-tree-checkbox-indeterminate .ant-tree-checkbox-inner{
+  background: transparent;
+  border-color: var(--border-color);
+}
+
+.ant-table-thead > tr > th {
+  font-weight: 600;
+  padding: 6px 8px !important;
+}
+
+.ant-checkbox-inner, .ant-radio-inner, .ant-tree-checkbox-inner {
+  border: 1px solid var(--dark-border-color);
+  background: transparent;
+}
+
+.ant-checkbox-inner {
+  border-radius: 0;
+}
+
+.ant-checkbox-inner::after {
+  left: 20%;
+}
+.ant-tree li span.ant-tree-checkbox{
+  margin-right: 8px;
+  margin-left: 0;
+}
+
+.ant-checkbox-indeterminate .ant-checkbox-inner::after {
+  background-color: var(--primary);
+}
+
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.ant-radio-inner::after {
+  background-color: var(--primary);
+}
+
+.ant-radio-wrapper{
+  margin-right: 16px;
+  color: var(--text-color);
+}
+.ant-empty{
+  line-height: 0;
+  font-size: 12px;
+}
+.ant-empty-image {
+  max-height: 28px;
+  margin-bottom: 16px;
+}
+.ant-pagination-item-active:focus, .ant-pagination-item-active:hover,
+.ant-tree-checkbox-wrapper:hover .ant-tree-checkbox-inner,
+.ant-tree-checkbox:hover .ant-tree-checkbox-inner,
+.ant-tree-checkbox-input:focus + .ant-tree-checkbox-inner,
+.ant-checkbox-wrapper:hover .ant-checkbox-inner,
+.ant-checkbox:hover .ant-checkbox-inner,
+.ant-checkbox-input:focus + .ant-checkbox-inner,
+.ant-tree-checkbox-checked::after,
+.ant-radio-checked .ant-radio-inner,
+.ant-radio-checked::after,
+.ant-checkbox-checked::after,
+.ant-radio-wrapper:hover .ant-radio, .ant-radio:hover .ant-radio-inner, .ant-radio-input:focus + .ant-radio-inner {
+  border-color: var(--primary);
+}
+.ant-empty-normal {
+  margin: 8px;
+  color: var(--text-color);
 }
 
 .node-wrapper {

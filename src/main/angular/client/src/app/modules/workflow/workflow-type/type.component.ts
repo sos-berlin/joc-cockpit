@@ -83,15 +83,28 @@ export class TypeComponent implements OnChanges {
             recursive(json.instructions[x].else);
           }
         }
-      } else {
-        if (json.branches) {
-          for (let i = 0; i < json.branches.length; i++) {
-            json.branches[i].show = flag;
-            if (json.branches[i].instructions) {
-              recursive(json.branches[i]);
-            }
+      }
+      if (json.branches) {
+        for (let i = 0; i < json.branches.length; i++) {
+          json.branches[i].show = flag;
+          if (json.branches[i].instructions) {
+            recursive(json.branches[i]);
           }
         }
+      }
+      if (json.catch) {
+        json.catch.show = flag;
+        if (json.catch.instructions && json.catch.instructions.length > 0) {
+          recursive(json.catch);
+        }
+      }
+      if (json.then && json.then.instructions) {
+        json.then.show = flag;
+        recursive(json.then);
+      }
+      if (json.else && json.else.instructions) {
+        json.else.show = flag;
+        recursive(json.else);
       }
     }
 

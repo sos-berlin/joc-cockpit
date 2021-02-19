@@ -27,9 +27,9 @@
               class="cursor" [ngClass]="{'light-bg':history.show}">
             <td>
             <span class="show-in-single-line w-full">
-               <i class="cursor fa fa-chevron-down p-l-xs p-r-xs"
+               <i class="cursor fa fa-chevron-down p-l-xs p-r-xs" [nz-tooltip]="'history.button.expandAll' | translate"
                   *ngIf="!history.showAll" (click)="showAllPanelFuc(history);$event.stopPropagation()"></i>
-              <i class="cursor fa fa-chevron-up p-l-xs p-r-xs"
+              <i class="cursor fa fa-chevron-up p-l-xs p-r-xs" [nz-tooltip]="'history.button.collapseAll' | translate"
                  *ngIf="history.showAll" (click)="hideAllPanelFuc(history);$event.stopPropagation()"></i>
               <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
                  *ngIf="!history.show"
@@ -37,7 +37,7 @@
               <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
                  *ngIf="history.show"
                  (click)="hidePanelFuc(history);$event.stopPropagation()"></i>
-              <i class="cursor fa fa-download text-hover-primary p-r-xs"
+              <i class="cursor fa fa-download text-hover-primary p-l-xs p-r-xs"
                  (click)="downloadLog(history);$event.stopPropagation()"></i>
               <span [innerHtml]="history.orderId"></span>
             </span>

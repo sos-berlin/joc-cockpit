@@ -97,9 +97,23 @@
       </td>
       <td>
         <div *ngIf="value.period.repeat">
-          <span nz-tooltip="{{value.period.begin | stringToDate}} - {{value.period.end | stringToDate}}">
+          <span nz-tooltip [nzTooltipTitle]="tooltipTemplate" [nzTooltipPlacement]="'left'">
             {{'dailyPlan.label.repeatEvery' | translate}}
-            {{value.period.repeat}}s</span>
+            {{value.period.repeat}}s
+            <ng-template #tooltipTemplate>
+              <div class="m-a-sm" *ngIf="value.cyclicOrder">
+                <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
+                <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
+                {{value.cyclicOrder.firstStart | stringToDate}}
+                <br>
+                <span class="_600 p-l-sm" translate>dailyPlan.label.end</span>:
+                {{value.cyclicOrder.lastStart | stringToDate}}
+                <br>
+                <span class="_600 p-l-sm" translate>order.label.orders</span>:
+                {{value.cyclicOrder.count}}
+              </div>
+            </ng-template>
+          </span>
         </div>
       </td>
     </tr>
@@ -212,9 +226,26 @@
       </td>
       <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]">
         <div *ngIf="plan.value[0].period.repeat">
-          <span nz-tooltip="{{plan.value[0].period.begin | stringToDate}} - {{plan.value[0].period.end | stringToDate}}">
+             <span nz-tooltip [nzTooltipTitle]="tooltipTemplate" [nzTooltipPlacement]="'left'">
             {{'dailyPlan.label.repeatEvery' | translate}}
-            {{plan.value[0].period.repeat}}s</span>
+               {{plan.value[0].period.repeat}}s
+            <ng-template #tooltipTemplate>
+              <div class="m-a-sm" *ngIf="plan.value[0].cyclicOrder">
+                <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
+                <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
+                {{plan.value[0].cyclicOrder.firstStart | stringToDate}}
+                <br>
+                <span class="_600 p-l-sm" translate>dailyPlan.label.end</span>:
+                {{plan.value[0].cyclicOrder.lastStart | stringToDate}}
+                <br>
+                <span class="_600 p-l-sm" translate>order.label.orders</span>:
+                {{plan.value[0].cyclicOrder.count}}
+              </div>
+              <div *ngIf="!plan.value[0].cyclicOrder">
+                {{plan.value[0].period.begin | stringToDate1}} ({{plan.value[0].period.begin | stringToTime}} - {{plan.value[0].period.end | stringToTime}})
+              </div>
+            </ng-template>
+          </span>
         </div>
       </td>
     </tr>

@@ -93,19 +93,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
       keepFixedHeightInMobile: false,
       keepFixedWidthInMobile: false,
       useTransformPositioning: false,
-      scrollSensitivity: 10,
-      scrollSpeed: 20,
-      ignoreMarginInRow: false,
       draggable: {
-        delayStart: 100,
+        delayStart: 10,
         enabled: flag,
         ignoreContentClass: 'gridster-item-content',
-        ignoreContent: false,
         dragHandleClass: 'drag-handler',
       },
       pushItems: true,
       disablePushOnDrag: false,
-      disablePushOnResize: false,
+      disablePushOnResize: true,
       pushDirections: {
         north: true,
         east: true,
@@ -113,7 +109,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         west: true
       },
       resizable: {
-        delayStart: 100,
+        delayStart: 10,
         enabled: flag,
         handles: {
           s: true,
@@ -127,10 +123,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
       },
       swap: true,
-      displayGrid: DisplayGrid.None,
-      disableWindowResize: false,
-      disableWarnings: true,
-      scrollToNewItems: false
+      displayGrid: DisplayGrid.None
     };
   }
 

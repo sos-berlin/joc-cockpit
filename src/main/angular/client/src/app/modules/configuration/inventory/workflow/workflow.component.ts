@@ -5881,10 +5881,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     let job = this.coreService.clone(data.job);
     if (!job.executable) {
       return;
-    } else {
-      if (job.executable.TYPE === 'ExecutableScript') {
-        job.executable.TYPE = 'ScriptExecutable';
-      }
     }
     if (job.returnCodeMeaning) {
       if (job.returnCodeMeaning && job.returnCodeMeaning.success == '0') {
@@ -5942,9 +5938,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     let flag = true, isChange = true;
     for (let i = 0; i < this.jobs.length; i++) {
-      if (this.jobs[i].value.executable && this.jobs[i].value.executable.TYPE === 'ExecutableScript') {
-        this.jobs[i].value.executable.TYPE = 'ScriptExecutable';
-      }
       if (this.jobs[i].name === job.jobName) {
         flag = false;
         delete job['jobName'];

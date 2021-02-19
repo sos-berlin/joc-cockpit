@@ -1,7 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title" >
-    <span *ngIf="!releasable && !reDeploy && !isRemove" translate>inventory.label.deploy</span>
-    <span *ngIf="reDeploy && !isRemove" translate>inventory.label.redeploy</span>
+    <span *ngIf="!releasable && !isRemove" translate>inventory.label.deploy</span>
     <span *ngIf="releasable && !isRemove" translate>inventory.label.release</span>
     <span *ngIf="isRemove" translate>inventory.label.remove</span>
     <span *ngIf="path">:
@@ -18,7 +17,7 @@
         <div class="hide" [ngClass]="{'show': display && !releasable}">
           <div class="form-group row">
             <label class="col-md-3 " translate>common.label.selectComments</label>
-            <div class=" col-md-6" [ngClass]="{'col-md-8' : reDeploy}">
+            <div class=" col-md-6">
               <nz-radio-group name="radio"  [(ngModel)]="comments.radio">
                 <label nz-radio nzValue="predefined"><span translate>common.label.predefined</span></label>
                 <label nz-radio nzValue="new"><span translate>common.label.individual</span></label>
@@ -28,7 +27,7 @@
           <div class="form-group row" *ngIf="comments.radio=='predefined'"
                [ngClass]="{'has-error' : ((comment.dirty || comment.touched) && comment.invalid)}">
             <label class="col-md-3 form-control-label" translate>common.label.selectComment</label>
-            <div class="col-md-6" [ngClass]="{'col-md-8' : reDeploy}">
+            <div class="col-md-6">
               <nz-select nzPlaceHolder="{{'common.label.selectPredefinedReason' | translate}}"
                          [(ngModel)]="comments.comment" name="comment" #comment="ngModel"
                          [required]="required && comments.radio=='predefined'">
@@ -48,7 +47,7 @@
           <div class="form-group row" *ngIf="comments.radio=='new'"
                [ngClass]="{'has-error' : ((textComment.dirty || textComment.touched) && textComment.invalid)}">
             <label class="col-md-3 " translate>common.label.comment</label>
-            <div class=" col-md-6" [ngClass]="{'col-md-8' : reDeploy}">
+            <div class=" col-md-6">
                   <textarea rows="3" class="form-control" maxlength="2000" name="textComment" #textComment="ngModel"
                             [required]="required && comments.radio=='new'"
                             [(ngModel)]="comments.textComment"
@@ -68,7 +67,7 @@
           <div class="form-group row"
                [ngClass]="{'has-error' : ((timeSpent.dirty || timeSpent.touched) && timeSpent.invalid)}">
             <label class="col-md-3 form-control-label" translate>common.label.timeSpend</label>
-            <div class="col-md-6" [ngClass]="{'col-md-8' : reDeploy}">
+            <div class="col-md-6">
               <input type="text" pattern="[1-9[0-9]*" class="form-control" name="timeSpent" #timeSpent="ngModel"
                      placeholder="{{'common.placeholder.timeSpend' | translate}}" [(ngModel)]="comments.timeSpent">
               <div *ngIf="timeSpent.invalid && (timeSpent.dirty || timeSpent.touched)" class="text-danger m-t-xs">
@@ -81,7 +80,7 @@
           <div class="form-group row"
                [ngClass]="{'has-error' : ((ticketLink.dirty || ticketLink.touched) && ticketLink.invalid)}">
             <label class="col-md-3 form-control-label" translate>common.label.ticketLink</label>
-            <div class="col-md-6" [ngClass]="{'col-md-8' : reDeploy}">
+            <div class="col-md-6">
               <input type="text"
                      pattern="(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})"
                      class="form-control" name="ticketLink" #ticketLink="ngModel"
@@ -96,11 +95,11 @@
             </div>
           </div>
         </div>
-        <div class="m-b-sm row" *ngIf="!releasable && !reDeploy && !isRemove">
+        <div class="m-b-sm row" *ngIf="!releasable && !isRemove">
           <label class="col-md-3 form-control-label">
             <label translate>inventory.label.controllers</label>
           </label>
-          <div class="col-md-6" [ngClass]="{'col-md-8' : reDeploy}">
+          <div class="col-md-6">
             <nz-select
               nzMode="multiple"
               nzShowSearch
@@ -116,7 +115,7 @@
           <div class="col-md-3">
             <label translate>inventory.label.handleRecursively</label>
           </div>
-          <div class="col-md-6" [ngClass]="{'col-md-8' : reDeploy}">
+          <div class="col-md-6">
             <label nz-checkbox [(ngModel)]="object.isRecursive" name="isRecursive"></label>
           </div>
         </div>
@@ -182,7 +181,7 @@
                       </ng-container>
                     </nz-select>
                   </div>
-                  <div class="m-l" *ngIf="!isRemove &&  node.origin.type && !reDeploy && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)">
+                  <div class="m-l" *ngIf="!isRemove &&  node.origin.type && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)">
                     <i class="text-muted" *ngIf="!node.origin.deleted" translate>workflow.label.draft</i>
                     <i class="text-danger" *ngIf="node.origin.deleted && node.origin.deploymentId" translate>inventory.label.deployMarkDelete</i>
                     <i class="text-danger" *ngIf="node.origin.deleted && !node.origin.deploymentId" translate>inventory.label.markForDelete</i>

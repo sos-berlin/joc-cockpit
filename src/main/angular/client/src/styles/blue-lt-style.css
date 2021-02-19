@@ -30,7 +30,6 @@
   background-color: var(--background-color) !important
 }
 
-.ant-dropdown-menu,
 pre, .syntax-box {
   background-color: var(--bg-box)
 }
@@ -176,18 +175,6 @@ pre.log {
 }
 
 
-.black,
-.danger,
-.danger-bg,
-.dark,
-.grey,
-.info,
-.primary,
-.warn,
-.warning {
-  color: rgba(255, 255, 255, .87)
-}
-
 table.folder-tree-grid > tbody > tr,
 table.folder-tree-grid > tbody > tr > td {
   border: none !important;
@@ -273,13 +260,6 @@ input[type=search] {
   box-shadow: 0 1px 3px rgba(0, 0, 0, .4) !important
 }
 
-button[disabled].btn-primary,
-button[disabled].btn-primary:active,
-button[disabled].btn-primary:focus,
-button[disabled].btn-primary:hover {
-  background: rgba(235, 136, 20, .7) !important
-}
-
 .text-dark,
 .text-dark-hover a:hover,
 .text-dark:hover {
@@ -302,7 +282,7 @@ button[disabled].btn-primary:hover {
 
 .more-option i:hover,
 .more-option-h i:hover {
-  background: var(--box-color)
+  background: rgba(101, 112, 125, .7);
 }
 
 .rg-bottom,
@@ -966,33 +946,22 @@ pre#pre {
 .modal-open .ant-select-selection {
   background-color: var(--bg-footer) !important
 }
+.modal-open input:-webkit-autofill, .modal-open input:-webkit-autofill:hover,
+.modal-open input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 100px var(--bg-footer) inset;
+}
 
-.ant-table-small.ant-table-bordered,
 .ant-tabs-bar,
-.ant-time-picker-panel-select,
-.ant-calendar-header,
-.ant-calendar-footer,
-.ant-input, .ant-input:hover,
-.ant-input-number, .ant-select-selection,
-.ant-input-number:hover, .ant-select-selection:hover,
-.ant-pagination-item, .ant-pagination-item-active,
-.ant-table-small,
-.ant-time-picker-input,
-.ant-table-bordered .ant-table-thead > tr > th, .ant-table-bordered .ant-table-tbody > tr > td,
-.ant-table-small.ant-table-bordered .ant-table-content,
-.ant-checkbox-inner, .ant-radio-inner, .ant-tree-checkbox-inner,
-.ant-table-small.ant-table-bordered .ant-table-placeholder, .ant-table-small > .ant-table-content .ant-table-row:last-child td,
-.ant-table-small.ant-table-bordered,
 .ant-time-picker-panel-select,
 .ant-calendar-header,
 .ant-calendar-footer,
 .ant-input, .ant-input:hover,
 .ant-input-number,
 .ant-input-number:hover,
-.ant-select-selection,
-.ant-select-selection:hover,
 .ant-pagination-item, .ant-pagination-item-active,
 .ant-table-small,
+.ant-select-selection,
+.ant-select-selection:hover,
 .ant-calendar-picker,
 .ant-calendar-picker:hover,
 .ant-calendar-picker:hover .ant-calendar-picker-input:not(.ant-input-disabled),
@@ -1002,20 +971,43 @@ pre#pre {
 .ant-table-small.ant-table-bordered .ant-table-content {
   border-color: rgba(255, 255, 255, .3);
 }
-
-.ant-input:focus, .ant-input:active .ant-input-focused,
-.ant-select-focused .ant-select-selection,
-.ant-calendar-picker-input:focus,
-.ant-time-picker-input:focus,
-.ant-select-selection:focus,
-.ant-select-selection:active,
-.ant-input-number:focus,
-.ant-input-number-focused {
-  border-color: var(--primary) !important;
+.ant-input-number-handler-wrap{
+  background-color: var(--bg-footer);
+  border-color: var(--bg-footer) !important;
 }
-
-.ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
-  background: var(--bg-footer) !important
+.ant-table-bordered .ant-table-thead > tr:not(:last-child) > th, .ant-table-small.ant-table-bordered .ant-table-thead > tr > th:last-child{
+  border-color: rgba(255, 255, 255, .3);
+}
+.ant-table-small.ant-table-bordered  {
+  border-right: 1px solid rgba(255, 255, 255, .3);
+}
+.ant-table-small.ant-table-bordered .ant-table-placeholder, .ant-table-small > .ant-table-content .ant-table-row:last-child td{
+  border-bottom: 1px solid rgba(255, 255, 255, .3);
+}
+.ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td{
+  background: var(--box-color) !important
+}
+.ant-calendar-header .ant-calendar-prev-century-btn:hover,
+.ant-calendar-header .ant-calendar-prev-decade-btn:hover,
+.ant-calendar-header .ant-calendar-prev-year-btn:hover,
+.ant-input, .ant-input:hover,
+.ant-pagination-item:focus a, .ant-pagination-item:hover a,
+.ant-input-number:hover, .ant-select-selection:hover,
+.ant-tabs-nav .ant-tabs-tab-active,
+.ant-tabs-nav .ant-tabs-tab-active:hover,
+.ant-tabs-nav .ant-tabs-tab:hover,
+.ant-pagination-item-active a {
+  color: var(--white);
+}
+.ant-calendar-month-panel-month:hover,
+.ant-calendar-year-panel-year:hover,
+.ant-calendar-year-panel-selected-cell .ant-calendar-year-panel-year,
+.ant-calendar-selected-day .ant-calendar-date,
+.ant-calendar-today .ant-calendar-date,
+.ant-calendar-month-panel-selected-cell .ant-calendar-month-panel-month, .ant-time-picker-panel-select li:hover, li.ant-time-picker-panel-select-option-selected, .ant-calendar-date:hover, .ant-tabs-ink-bar,
+.ant-calendar-month-panel-selected-cell .ant-calendar-month-panel-month:hover {
+  color: var(--primary);
+  background: var(--bar-color);
 }
 
 .ant-dropdown-menu-item-divider, .ant-dropdown-menu-submenu-title-divider {
@@ -1196,7 +1188,7 @@ div.CodeMirror-selected {
   border-left: 1px solid #fff
 }
 
-span.cm-comment, .cm-s-default .cm-builtin {
+span.cm-comment, .cm-s-default .cm-attribute {
   color: #1a94ff !important;
 }
 
@@ -1213,7 +1205,7 @@ span.cm-keyword {
 }
 
 span.cm-string, .ace-jsoneditor .ace_string {
-  color: #3ad900
+  color: #3ad900 !important;
 }
 
 .ace-jsoneditor .ace_constant.ace_numeric {
@@ -1228,7 +1220,7 @@ span.cm-tag, span.cm-variable-2 , .cm-s-default span.cm-variable-2 {
   color: #9effff !important;
 }
 
-.cm-type, span.cm-def, span.cm-variable-3, .cm-s-default .cm-variable-3, .cm-s-default .cm-type {
+.cm-type, span.cm-def, span.cm-variable-3, .cm-s-default .cm-variable-3 {
   color: #fff !important;
 }
 
