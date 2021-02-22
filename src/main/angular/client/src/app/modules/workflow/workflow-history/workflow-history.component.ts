@@ -91,7 +91,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   private refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-      
+       // console.log(args.eventSnapshots[j])
         if (args.eventSnapshots[j].eventType === 'HistoryOrderTerminated' && this.index === 0) {
           if (!this.workflow || !this.workflow.path) {
             this.loadOrderHistory();

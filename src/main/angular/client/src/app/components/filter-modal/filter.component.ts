@@ -18,17 +18,17 @@ export class EditFilterModalComponent {
   constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
   }
 
-  editFilter(filter) {
+  editFilter(filter): void {
     filter.type = 'EDIT';
     this.activeModal.close(filter);
   }
 
-  copyFilter(filter) {
+  copyFilter(filter): void {
     filter.type = 'COPY';
     this.activeModal.close(filter);
   }
 
-  makeShare(configObj) {
+  makeShare(configObj): void {
     this.coreService.post('configuration/share', {
       controllerId: configObj.controllerId,
       id: configObj.id
@@ -37,7 +37,7 @@ export class EditFilterModalComponent {
     });
   }
 
-  makePrivate(configObj) {
+  makePrivate(configObj): void {
     this.coreService.post('configuration/private', {
       controllerId: configObj.controllerId,
       id: configObj.id
@@ -53,17 +53,17 @@ export class EditFilterModalComponent {
     });
   }
 
-  makeFavorite(filter) {
+  makeFavorite(filter): void {
     this.favorite = filter.id;
     this.action('MAKEFAV', filter, this.self);
   }
 
-  removeFavorite() {
+  removeFavorite(): void {
     this.favorite = '';
     this.action('REMOVEFAV', null, this.self);
   }
 
-  deleteFilter(filter) {
+  deleteFilter(filter): void {
     this.coreService.post('configuration/delete', {
       controllerId: filter.controllerId,
       id: filter.id

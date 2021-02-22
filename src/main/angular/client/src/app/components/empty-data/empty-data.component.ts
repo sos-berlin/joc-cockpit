@@ -18,10 +18,7 @@ import {Component, OnInit, Input} from '@angular/core';
 export class EmptyDataComponent implements OnInit {
   @Input() title: string;
 
-  constructor() {
-  }
-
-  ngOnInit() {
+  ngOnInit(): void {
     if (!this.title) {
       this.title = 'common.message.noDataAvailable';
     }

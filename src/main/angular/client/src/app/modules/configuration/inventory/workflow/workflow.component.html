@@ -261,7 +261,7 @@
         <div class="form-group row" [ngClass]="{'has-error' : ((maxTries.dirty || maxTries.touched) && maxTries.invalid)}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.maxTries</label>
           <div class="col-md-8 col-lg-9">
-            <nz-input-number [nzAutoFocus]="true" required #maxTries="ngModel" [nzMin]="0" [nzStep]="1" name="maxTries"
+            <nz-input-number [appAutofocus]="true" required #maxTries="ngModel" [nzMin]="0" [nzStep]="1" name="maxTries"
                              [(ngModel)]="selectedNode.obj.maxTries"></nz-input-number>
             <div *ngIf="maxTries.invalid && (maxTries.dirty || maxTries.touched)"
                  class="text-danger help-block">

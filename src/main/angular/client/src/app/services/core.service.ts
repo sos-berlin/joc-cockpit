@@ -1,15 +1,14 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {AuthService} from '../components/guard';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {AboutModalComponent} from '../components/about-modal/about.component';
-
-import * as moment from 'moment';
-import * as _ from 'underscore';
 import {Router} from '@angular/router';
 import {ClipboardService} from 'ngx-clipboard';
 import {TranslateService} from '@ngx-translate/core';
-import {NzMessageService} from 'ng-zorro-antd';
+import {Observable} from 'rxjs';
+import {AboutModalComponent} from '../components/about-modal/about.component';
+import {AuthService} from '../components/guard';
+import * as moment from 'moment';
+import * as _ from 'underscore';
 
 declare const diff_match_patch;
 declare var $;
@@ -21,7 +20,7 @@ export class CoreService {
   tabs: any = {};
   tempTabs: any = {};
   dashboard: any = {};
-  _sideView = {
+  sideView = {
     workflow: {width: 270, show: true},
     job: {width: 270, show: true},
     orderOverview: {show: true},
@@ -36,8 +35,7 @@ export class CoreService {
   windowProperties: any = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
 
   constructor(private http: HttpClient, private authService: AuthService, private router: Router,
-              private clipboardService: ClipboardService, public modalService: NgbModal, private translate: TranslateService,
-              private message: NzMessageService) {
+              private clipboardService: ClipboardService, public modalService: NgbModal, private translate: TranslateService) {
 
     this.tabs._workflow = {};
     this.tabs._workflow.filter = {};
@@ -67,6 +65,8 @@ export class CoreService {
     this.tabs._orderOverview = {};
     this.tabs._orderOverview.overview = true;
     this.tabs._orderOverview.filter = {};
+    this.tabs._orderOverview.filter.date = '1d';
+    this.tabs._orderOverview.filter.dateLabel = 'today';
     this.tabs._orderOverview.filter.sortBy = 'orderId';
     this.tabs._orderOverview.reverse = false;
     this.tabs._orderOverview.currentPage = '1';
@@ -210,6 +210,8 @@ export class CoreService {
     this.tempTabs._orderOverview = {};
     this.tempTabs._orderOverview.overview = true;
     this.tempTabs._orderOverview.filter = {};
+    this.tempTabs._orderOverview.filter.date = '1d';
+    this.tempTabs._orderOverview.filter.dateLabel = 'today';
     this.tempTabs._orderOverview.filter.sortBy = 'orderId';
     this.tempTabs._orderOverview.reverse = false;
     this.tempTabs._orderOverview.currentPage = '1';
@@ -337,7 +339,7 @@ export class CoreService {
 
     if (localStorage.$SOS$DASHBOARDTABS) {
       try {
-        let obj = JSON.parse(localStorage.$SOS$DASHBOARDTABS);
+        const obj = JSON.parse(localStorage.$SOS$DASHBOARDTABS);
         if (obj && obj.order) {
           this.dashboard = obj;
         }
@@ -347,77 +349,77 @@ export class CoreService {
     }
 
     if (!sessionStorage.$SOS$SIDEVIEW || typeof JSON.parse(sessionStorage.$SOS$SIDEVIEW) !== 'object') {
-      sessionStorage.$SOS$SIDEVIEW = JSON.stringify(this._sideView);
+      sessionStorage.$SOS$SIDEVIEW = JSON.stringify(this.sideView);
     } else {
-      this._sideView = JSON.parse(sessionStorage.$SOS$SIDEVIEW);
+      this.sideView = JSON.parse(sessionStorage.$SOS$SIDEVIEW);
     }
   }
 
-  setDefaultTab() {
+  setDefaultTab(): void {
     this.tabs = this.tempTabs;
   }
 
-  setTabs(tempTabs) {
+  setTabs(tempTabs): void {
     this.tabs = tempTabs;
   }
 
-  getTabs() {
+  getTabs(): any {
     return this.tabs;
   }
 
-  getDashboard() {
+  getDashboard(): any {
     return this.dashboard;
   }
 
-  getWorkflowTab() {
+  getWorkflowTab(): any {
     return this.tabs._workflow;
   }
 
-  getWorkflowDetailTab() {
+  getWorkflowDetailTab(): any {
     return this.tabs._workflowDetail;
   }
 
-  getDailyPlanTab() {
+  getDailyPlanTab(): any {
     return this.tabs._daliyPlan;
   }
 
-  getHistoryTab() {
+  getHistoryTab(): any {
     return this.tabs._history;
   }
 
-  getOrderOverviewTab() {
+  getOrderOverviewTab(): any {
     return this.tabs._orderOverview;
   }
 
-  getDashboardTab() {
+  getDashboardTab(): any {
     return this.dashboard._dashboard;
   }
 
-  getResourceTab() {
+  getResourceTab(): any {
     return this.tabs._resource;
   }
 
-  getConfigurationTab() {
+  getConfigurationTab(): any {
     return this.tabs._configuration;
   }
 
-  getAuditLogTab() {
+  getAuditLogTab(): any {
     return this.tabs._auditLog;
   }
 
-  getYadeTab() {
+  getYadeTab(): any {
     return this.tabs._yade;
   }
 
-  get(url) {
+  get(url): Observable<any> {
     return this.http.get<any>(url);
   }
 
-  post(url, object) {
+  post(url, object): Observable<any> {
     return this.http.post(url, object);
   }
 
-  log(url, object, headers) {
+  log(url, object, headers): Observable<any> {
     return this.http.post(url, object, headers);
   }
 
@@ -508,8 +510,10 @@ export class CoreService {
     if (!timeFormat) {
       return '';
     }
-    if ((timeFormat.match(/HH:mm:ss/gi) || timeFormat.match(/HH:mm/gi) || timeFormat.match(/hh:mm:ss A/gi) || timeFormat.match(/hh:mm A/gi)) != null) {
-      const result = (timeFormat.match(/HH:mm:ss/gi) || timeFormat.match(/HH:mm/gi) || timeFormat.match(/hh:mm:ss A/gi) || timeFormat.match(/hh:mm A/gi)) + '';
+    if ((timeFormat.match(/HH:mm:ss/gi) || timeFormat.match(/HH:mm/gi) ||
+      timeFormat.match(/hh:mm:ss A/gi) || timeFormat.match(/hh:mm A/gi)) != null) {
+      const result = (timeFormat.match(/HH:mm:ss/gi) || timeFormat.match(/HH:mm/gi) ||
+        timeFormat.match(/hh:mm:ss A/gi) || timeFormat.match(/hh:mm A/gi)) + '';
       if (result.match(/hh/g)) {
         return result + ' a';
       } else {
@@ -518,41 +522,41 @@ export class CoreService {
     }
   }
 
-  setSideView(view) {
+  setSideView(view): void {
     if (view) {
       window.sessionStorage.$SOS$SIDEVIEW = JSON.stringify(view);
-      this._sideView = view;
+      this.sideView = view;
     } else {
-      window.sessionStorage.$SOS$SIDEVIEW = JSON.stringify(this._sideView);
+      window.sessionStorage.$SOS$SIDEVIEW = JSON.stringify(this.sideView);
     }
   }
 
-  getSideView() {
-    return this._sideView;
+  getSideView(): object {
+    return this.sideView;
   }
 
-  hidePanel() {
+  hidePanel(): void {
     const dom = $('#rightPanel');
     dom.addClass('m-l-xs fade-in');
     dom.find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
     $('#leftPanel').addClass('sidebar-hover-effect');
   }
 
-  showLeftPanel() {
+  showLeftPanel(): void {
     const dom = $('#rightPanel');
     dom.removeClass('fade-in m-l-xs');
     dom.find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
     $('#leftPanel').removeClass('sidebar-hover-effect');
   }
 
-  hideConfigPanel() {
+  hideConfigPanel(): void {
     const dom = $('#rightPanel');
     dom.addClass('m-l-xs fade-in');
     dom.find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
     $('#xmlLeftSidePanel').addClass('sidebar-hover-effect');
   }
 
-  showConfigPanel() {
+  showConfigPanel(): void {
     const dom = $('#rightPanel');
     dom.removeClass('fade-in m-l-xs');
     dom.find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
@@ -572,7 +576,7 @@ export class CoreService {
       }];
 
       this.recursive(actualData.folders[0], output[0].children, isLeaf);
-      output[0].children = _.sortBy(output[0].children, function (i) {
+      output[0].children = _.sortBy(output[0].children, (i) => {
         return i.name.toLowerCase();
       });
       return output;
@@ -581,19 +585,19 @@ export class CoreService {
     }
   }
 
-  isIE() {
+  isIE(): boolean {
     return !!navigator.userAgent.match(/MSIE/i) || !!navigator.userAgent.match(/Trident.*rv:11\./);
   }
 
-  isFF() {
+  isFF(): boolean {
     return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
   }
 
-  isChrome() {
+  isChrome(): boolean {
     return navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
   }
 
-  showLogWindow(order, task, job, id, transfer) {
+  showLogWindow(order, task, job, id, transfer): void {
     if (!order && !task) {
       return;
     }
@@ -637,7 +641,7 @@ export class CoreService {
     } else if (preferenceObj.isNewWindow === 'newTab') {
       window.open('#/log' + url, '_blank');
     } else {
-      let data = order || task || job || transfer;
+      const data = order || task || job || transfer;
       this.downloadLog(data, schedulerId);
     }
   }
@@ -645,9 +649,9 @@ export class CoreService {
   parseProcessExecuted(regex): any {
     let date;
     if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(regex)) {
-      let fromDate = new Date();
+      const fromDate = new Date();
       date = new Date();
-      let seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2], 10);
+      const seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2], 10);
       date.setSeconds(fromDate.getSeconds() - seconds);
     } else if (/^\s*[-,+](\d+)([shdwMy])\s*$/.test(regex)) {
       date = regex;
@@ -717,7 +721,7 @@ export class CoreService {
     return obj;
   }
 
-  mergeHostAndProtocol(hosts, protocols) {
+  mergeHostAndProtocol(hosts, protocols): Array<any> {
     let arr = [];
     if (protocols.length < hosts.length) {
       hosts.forEach((value, index) => {
@@ -780,7 +784,7 @@ export class CoreService {
       _temp = name + '(1)';
     }
 
-    function recursion() {
+    function recursion(): void {
       for (let j = 0; j < list.length; j++) {
         if (list[j].name == _temp) {
           _temp = _temp.replace(/\(\d+\)$/, '(' + (parseInt(/\((\d+)\)$/.exec(_temp)[1], 10) + 1) + ')');
@@ -793,7 +797,7 @@ export class CoreService {
     return _temp;
   }
 
-  copyLink(objType, path) {
+  copyLink(objType, path): void {
     let link = '';
     const regEx = /(.+)\/#/;
     if (!regEx.test(window.location.href)) {
@@ -821,11 +825,10 @@ export class CoreService {
       this.translate.get('common.message.copied').subscribe(translatedValue => {
         msg = translatedValue;
       });
-      this.message.success(msg);
     }
   }
 
-  navToInventoryTab(path, type) {
+  navToInventoryTab(path, type): void {
     this.getConfigurationTab().inventory.expand_to = [];
     this.getConfigurationTab().inventory.selectedObj = {
       name: path.substring(path.lastIndexOf('/') + 1),
@@ -836,7 +839,7 @@ export class CoreService {
 
   }
 
-  showWorkflow(workflow) {
+  showWorkflow(workflow): void {
     let pathArr = [];
     let arr = workflow.split('/');
     let workflowFilters = this.getWorkflowTab();
@@ -877,7 +880,7 @@ export class CoreService {
     return flag;
   }
 
-  about() {
+  about(): any {
     this.get('version.json').subscribe((data) => {
       const modalRef = this.modalService.open(AboutModalComponent, {
         backdrop: 'static'
@@ -892,15 +895,15 @@ export class CoreService {
   }
 
   // To convert date string into moment date format
-  toMomentDateFormat(date) {
+  toMomentDateFormat(date): any {
     return moment(date, 'DD.MM.YYYY');
   }
 
-  getProtocols() {
+  getProtocols(): Array<string> {
     return ['LOCAL', 'FTP', 'FTPS', 'SFTP', 'HTTP', 'HTTPS', 'WEBDAV', 'WEBDAVS', 'SMB'];
   }
 
-  refreshParent() {
+  refreshParent(): any {
     try {
       if (typeof this.newWindow != 'undefined' && this.newWindow != null && this.newWindow.closed == false) {
         if (this.newWindow.sessionStorage.changedPreferences) {
@@ -915,7 +918,7 @@ export class CoreService {
     }
   }
 
-  xsdAnyURIValidation(value) {
+  xsdAnyURIValidation(value): boolean {
     return /^((ht|f)tp(s?)\:\/\/)?(www.|[a-zA-Z].)[a-zA-Z0-9\-\.]+\.(com|edu|gov|mil|net|org|biz|info|name|museum|us|ca|uk)(\:[0-9]+)*(\/($|[a-zA-Z0-9\.\,\;\?\'\\\+&amp;%\$#\=~_\-]+))*$/.test(value)
       || /^(?:(<protocol>http(?:s?)|ftp)(?:\:\/\/))(?:(<usrpwd>\w+\:\w+)(?:\@))?(<domain>[^/\r\n\:]+)?(<port>\:\d+)?(<path>(?:\/.*)*\/)?(<filename>.*?\.(<ext>\w{2,4}))?(<qrystr>\??(?:\w+\=[^\#]+)(?:\&?\w+\=\w+)*)*(<bkmrk>\#.{})?$/.test(value)
       || /^([a-zA-Z]\:|\\\\[^\/\\:*?"<>|]+\\[^\/\\:*?"<>|]+)(\\[^\/\\:*?"<>|]+)+(|([a-zA-Z0-9]{0,*}))$/.test(value)
@@ -924,7 +927,7 @@ export class CoreService {
       || /^((mailto:){0,1}([A-Za-z0-9]{0,}(\@){0,1}([a-zA-Z0-9]{0,})(\.{0,1}(com|edu|gov|mil|net|org|biz|info|name|museum|us|ca|uk))))$/.test(value);
   }
 
-  diff(data1, data2) {
+  diff(data1, data2): any {
     const dmp = new diff_match_patch();
     const a = dmp.diff_main(data1, data2, false);
     let b = dmp.diff_prettyHtml(a);
@@ -933,7 +936,7 @@ export class CoreService {
     return b;
   }
 
-  private recursive(data, output, isLeaf) {
+  private recursive(data, output, isLeaf): void {
     if (data.folders && data.folders.length > 0) {
       for (let i = 0; i < data.folders.length; i++) {
         output.push({
@@ -947,7 +950,7 @@ export class CoreService {
         });
         if (data.folders[i].folders && data.folders[i].folders.length > 0) {
           this.recursive(data.folders[i], output[i].children, isLeaf);
-          output[i].children = _.sortBy(output[i].children, function (x) {
+          output[i].children = _.sortBy(output[i].children, (x) => {
             return x.name.toLowerCase();
           });
         }
@@ -955,7 +958,7 @@ export class CoreService {
     }
   }
 
-  private downloadLog(data, id) {
+  private downloadLog(data, id): void {
     if (data.historyId) {
       $('#tmpFrame').attr('src', './api/order/log/download?controllerId=' + id + '&historyId=' + data.historyId +
         '&accessToken=' + this.authService.accessTokenId);
@@ -965,7 +968,7 @@ export class CoreService {
     }
   }
 
-  private calWindowSize() {
+  private calWindowSize(): void {
     if (this.newWindow) {
       try {
         this.newWindow.addEventListener('beforeunload', () => {
@@ -988,12 +991,12 @@ export class CoreService {
     }
   }
 
-  getName(list, name, key, type) {
+  getName(list, name, key, type): string {
     if (list.length === 0) {
       return name;
     } else {
       let arr = [];
-      list.forEach(function (element) {
+      list.forEach((element) => {
         if (element[key] && element[key].split(/(\d+)(?!.*\d)/)[1]) {
           arr.push(element[key].split(/(\d+)(?!.*\d)/)[1]);
         }
@@ -1012,16 +1015,16 @@ export class CoreService {
     }
   }
 
-  getCopyName(actual_name, list): string {
-    let str = actual_name;
+  getCopyName(actualName, list): string {
+    let str = actualName;
     for (let i = 0; i < list.length; i++) {
-      if (list[i].name == actual_name) {
+      if (list[i].name == actualName) {
         str = str + '_copy_1';
         break;
       }
     }
 
-    function recursivelyCheck(name) {
+    function recursivelyCheck(name): void {
       for (let i = 0; i < list.length; i++) {
         if (list[i].name == name) {
           if (name.match(/_copy_[0-9]+/)) {
@@ -1040,7 +1043,7 @@ export class CoreService {
     return str;
   }
 
-  stringToDate(preferences, date) {
+  stringToDate(preferences, date): any {
     if (!date) {
       return '-';
     }
@@ -1052,7 +1055,9 @@ export class CoreService {
   }
 
   calDuration(n: any, r: any): string {
-    if (!n || !r) return '-';
+    if (!n || !r) {
+      return '-';
+    }
     n = moment(n);
     r = moment(r);
     const i = moment(r).diff(n);
@@ -1089,16 +1094,16 @@ export class CoreService {
     return time;
   }
 
-  calRowWidth(currentView) {
+  calRowWidth(currentView): void {
     setTimeout(() => {
       let arr = currentView != null ? [53] : [];
       if (!currentView) {
-        $('#orderTable').find('thead th.dynamic-thead-o').each(function () {
+        $('#orderTable').find('thead th.dynamic-thead-o').each(function() {
           const w = $(this).outerWidth();
           arr.push(w);
         });
       }
-      $('#orderTable').find('thead th.dynamic-thead').each(function () {
+      $('#orderTable').find('thead th.dynamic-thead').each(function() {
         const w = $(this).outerWidth();
         arr.push(w);
       });
@@ -1130,7 +1135,7 @@ export class CoreService {
     return arrObject;
   }
 
-  convertArrayToObject(obj, type, isDelete) {
+  convertArrayToObject(obj, type, isDelete): void {
     if (obj[type]) {
       if (obj[type].length > 0 && this.isLastEntryEmpty(obj[type], 'name', '')) {
         obj[type].splice(obj[type].length - 1, 1);
@@ -1147,7 +1152,7 @@ export class CoreService {
     }
   }
 
-  keyValuePair(argu) {
+  keyValuePair(argu): any {
     return _.object(argu.map((val) => {
       return [val.name, val.value];
     }));

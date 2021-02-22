@@ -1,6 +1,6 @@
 <div class="app-body bg-auto w-full m-t-0 p-t-lg">
   <div class="text-center pos-rlt p-y-md">
-    <nz-result [nzStatus]="code" [nzTitle]="code" [nzSubTitle]="error">
+    <nz-result [nzStatus]="code" [nzTitle]="code" [nzSubTitle]="'error.message.'+code | translate">
       <div nz-result-extra>
         <button type="button" class="btn btn-primary" (click)="backHome()" translate>error.button.backHome</button>
       </div>

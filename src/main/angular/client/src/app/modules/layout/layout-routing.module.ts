@@ -4,7 +4,6 @@ import {LayoutComponent} from './layout.component';
 import {LogComponent} from '../log/log.component';
 import {DashboardComponent} from '../dashboard/dashboard.component';
 import {UserComponent} from '../user/user.component';
-import {ErrorComponent} from '../error/error.component';
 import {AuthGuard} from '../../components/guard';
 
 const routes: Routes = [
@@ -72,7 +71,6 @@ const routes: Routes = [
           breadcrumb: 'breadcrumb.label.userProfile'
         }
       },
-      {path: 'error', component: ErrorComponent},
       {
         path: 'logging',
         loadChildren: () => import('./../logging/logging.module').then(m => m.LoggingModule),
@@ -84,7 +82,8 @@ const routes: Routes = [
         path: 'users',
         loadChildren: () => import('./../admin/admin.module').then(m => m.AdminModule),
         canActivate: [AuthGuard]
-      }
+      },
+      {path: 'error', loadChildren: () => import('./../page-not-found/page-not-found.module').then(m => m.PageNotFoundModule)},
     ]
   }
 ];

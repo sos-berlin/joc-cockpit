@@ -17,7 +17,7 @@ export class CommentModalComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.comments.radio = 'predefined';
     if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
@@ -38,7 +38,7 @@ export class CommentModalComponent implements OnInit {
     this.postCall(this.obj);
   }
 
-  postCall(obj) {
+  postCall(obj): void {
     this.coreService.post(this.url, obj).subscribe(res => {
       this.submitted = false;
       this.activeModal.close();

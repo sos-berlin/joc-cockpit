@@ -6,10 +6,9 @@ import {SaveService} from '../../services/save.service';
 import {LogModule} from '../log/log.module';
 import {DashboardModule} from '../dashboard/dashboard.module';
 import {UserModule} from '../user/user.module';
-import {ErrorComponent} from '../error/error.component';
 import {Shared2Module} from '../shared/shared2.module';
 import {ExcelService} from '../../services/excel.service';
-import {SearchPipe} from '../../filters/filter.pipe';
+import {SearchPipe} from '../../pipes/core.pipe';
 import {LoggingModule} from '../logging/logging.module';
 
 @NgModule({
@@ -23,8 +22,7 @@ import {LoggingModule} from '../logging/logging.module';
   ],
   declarations: [
     LayoutComponent,
-    HeaderComponent,
-    ErrorComponent
+    HeaderComponent
   ],
   providers: [
     SaveService,

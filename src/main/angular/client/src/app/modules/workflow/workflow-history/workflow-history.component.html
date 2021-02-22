@@ -57,8 +57,13 @@
             <td [innerHtml]="history.endTime | stringToDate"></td>
             <td [innerHtml]="history.startTime | duration:history.endTime"></td>
           </tr>
+          <tr *ngIf="history.show && history.arguments">
+            <td colspan="8">
+              <app-order-variable [order]="history" [type]="'arguments'" [schedulerId]="schedulerIds.selected"></app-order-variable>
+            </td>
+          </tr>
           <tr *ngIf="history.show">
-            <td colspan="8" style="padding:0 !important;border-bottom: none;">
+            <td colspan="8" style="padding:0 !important;">
               <app-order-history-template class="order-history-template0" style="display: block" [history]="history"
                                           [schedulerId]="schedulerIds.selected"></app-order-history-template>
             </td>
@@ -91,8 +96,15 @@
         </thead>
         <tbody>
         <ng-template ngFor let-history [ngForOf]="taskHistoryTable.data | orderBy: 'startTime':true">
-          <tr (click)="coreService.showLogWindow(null, history, null, null, null)" class="cursor">
-            <td [innerHtml]="history.job"></td>
+          <tr (click)="coreService.showLogWindow(null, history, null, null, null)" class="cursor" [ngClass]="{'light-bg':history.show}">
+            <td>
+               <span class="show-in-single-line">
+                  <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                     [ngClass]="history.show ? 'fa-caret-up' : 'fa-caret-down'"
+                     (click)="history.show=!history.show;$event.stopPropagation()"></i>
+                  <span [innerHtml]="history.job"></span>
+                </span>
+            </td>
             <td [innerHtml]="history.position"></td>
             <td>
             <span class="label" [ngClass]="coreService.getColor(history.state.severity,'bg')"
@@ -103,6 +115,11 @@
             <td [innerHtml]="history.startTime | duration:history.endTime"></td>
             <td [innerHtml]="history.criticality | translate"></td>
             <td [innerHtml]="history.exitCode"></td>
+          </tr>
+          <tr *ngIf="history.show">
+            <td colspan="8">
+              <app-order-variable [order]="history" [type]="'arguments'" [schedulerId]="schedulerIds.selected"></app-order-variable>
+            </td>
           </tr>
         </ng-template>
         </tbody>

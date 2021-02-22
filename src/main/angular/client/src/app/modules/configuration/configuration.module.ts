@@ -43,7 +43,8 @@ import { XMLAutofocusDirective } from 'src/app/directives/core.directive';
 import {TableComponent} from './inventory/table-data/table.component';
 import {ScheduleComponent} from './inventory/schedule/schedule.component';
 import {InventoryService} from './inventory/inventory.service';
-import {NzAutocompleteModule, NzMentionModule} from 'ng-zorro-antd';
+import {NzMentionModule} from 'ng-zorro-antd/mention';
+import {NzAutocompleteModule} from 'ng-zorro-antd/auto-complete';
 
 const COMPONENTS = [ImportModalComponent, DiffPatchModalComponent, FrequencyModalComponent, ShowModalComponent,
   ImportComponent, UpdateWorkflowComponent, ShowChildModalComponent, ConfirmationModalComponent, SingleDeployComponent,

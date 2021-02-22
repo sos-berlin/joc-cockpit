@@ -12,7 +12,7 @@ import {
 import {SharedModule} from '../shared/shared.module';
 import {DailyPlanRoutingModule} from './daily-plan-routing.module';
 import {DailyPlanRegexValidator} from '../../directives/core.directive';
-import {GroupByPipe} from '../../filters/filter.pipe';
+import {GroupByPipe} from '../../pipes/core.pipe';
 
 @NgModule({
   imports: [

@@ -23,7 +23,7 @@
   <span>{{variable.name}} : {{variable.value}}</span>
 </div>
 <div class="p-l" *ngIf="(order[type] && order[type].length === 0) || (!order[type] && type !== 'variables')">
-  <span translate>common.message.noDataAvailable</span>
+  <span translate>order.message.noVariableAvailable</span>
 </div>
 <div class="p-l p-t-xs" *ngIf="!order[type] && type === 'variables'">
   <i class="fa fa-spin fa-spinner"></i>

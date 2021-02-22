@@ -1,4 +1,4 @@
-<div class="white box-shadow sub-header" style="height: 54px">
+<div class="white box-shadow sub-header">
   <div class="row">
     <div class="col-md-12">
       <div class="padding">
@@ -7,13 +7,30 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline pull-right">
-            <div class="btn-group m-l-12">
+            <div class="btn-group m-l-12 hidden-btn-group">
               <ng-container *ngFor="let btn of filterBtn">
                 <button class="btn btn-grey btn-sm button-group-ellipsis"
                         [ngClass]="{'btn-primary': workflowFilters.filter.date===btn.date}"
                         (click)="loadOrders(btn.date)" translate>filters.button.{{btn.text}}
                 </button>
               </ng-container>
+            </div>
+            <div class="btn-group dropdown hidden-dropdown">
+              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" type="button" translate>
+                common.label.anyDate
+                <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+              </button>
+              <nz-dropdown-menu #anyDate="nzDropdownMenu" >
+                <ul nz-menu>
+                  <ng-container *ngFor="let btn of filterBtn">
+                    <li nz-menu-item
+                        [ngClass]="{'ant-select-dropdown-menu-item-active': workflowFilters.filter.date=== btn.date}">
+                      <a (click)="loadOrders(btn.date)"
+                         translate>filters.button.{{btn.text}}</a>
+                    </li>
+                  </ng-container>
+                </ul>
+              </nz-dropdown-menu>
             </div>
             <div class="btn-group dropdown">
               <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy"
@@ -224,7 +241,7 @@
               </div>
             </div>
             <div class="box p-a m-t-xs m-b-0" *ngIf="pageView!=='grid' && tree.length > 0">
-              <div appResizable class="table-responsive resizable" style="position: initial" [height]="resizerHeight"
+              <perfect-scrollbar appResizable class="resizable" style="position: initial" [height]="resizerHeight"
                    [type]="'workflow'" [path]="currentPath" id="workflowTableId">
                 <nz-table
                   #ajaxTable
@@ -400,7 +417,6 @@
                           <app-type [configuration]="workflow.configuration" [orderRequirements]="workflow.configuration.orderRequirements" [permission]="permission" [preferences]="preferences"
                                     [schedulerId]="schedulerIds.selected" [expandAll]="workflow.isExpand"
                                     (update)="updatePanelHeight()" [orders]="workflow.orders"></app-type>
-                          <div class="text-primary" translate>workflow.label.end</div>
                         </div>
                       </td>
                     </tr>
@@ -412,7 +428,7 @@
                   <span translate *ngIf="ajaxTable.data.length >1">workflow.label.workflowsFound</span>
                   <span translate *ngIf="ajaxTable.data.length ==1">workflow.label.workflowFound</span>
                 </div>
-              </div>
+              </perfect-scrollbar>
               <div class="rg-bottom"><span></span></div>
             </div>
             <div *ngIf="pageView=='grid' && isLoading && !loading && data.length==0 && tree.length>0"

@@ -18,7 +18,7 @@ import * as moment from 'moment';
 import * as _ from 'underscore';
 import {Router} from '@angular/router';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
-import {GroupByPipe, SearchPipe, StringDatePipe} from '../../filters/filter.pipe';
+import {GroupByPipe, SearchPipe, StringDatePipe} from '../../pipes/core.pipe';
 import {CoreService} from '../../services/core.service';
 import {SaveService} from '../../services/save.service';
 import {AuthService} from '../../components/guard';
@@ -1450,7 +1450,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       obj.filter.dailyPlanDate = moment(date).format('YYYY-MM-DD');
       apiArr.push(this.coreService.post('daily_plan/orders', this.coreService.clone(obj)));
     });
-    forkJoin(apiArr).subscribe((result) => {
+    forkJoin(apiArr).subscribe((result: any) => {
       let plannedOrderItems = [];
       for (let i = 0; i < result.length; i++) {
         plannedOrderItems = plannedOrderItems.concat(result[i].plannedOrderItems);

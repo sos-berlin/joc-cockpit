@@ -3,7 +3,7 @@ import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploader} from 'ng2-file-upload';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
-import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd';
+import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {Subscription} from 'rxjs';
 import * as _ from 'underscore';
 import {saveAs} from 'file-saver';
@@ -211,11 +211,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   tabChange($event) {
-    if ($event.index === 1) {
-      setTimeout(() => {
-        $('#taskLimitId input').focus();
-      }, 100);
-    } else if ($event.index === 0) {
+    if ($event.index === 0) {
       this.reloadScript();
     }
     if ($event.index === 0) {

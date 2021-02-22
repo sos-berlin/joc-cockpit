@@ -12,7 +12,7 @@ export class SubLinkComponent implements OnInit {
   constructor(private coreService: CoreService, private authService: AuthService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (this.authService.permission) {
        this.permission = JSON.parse(this.authService.permission);
     }

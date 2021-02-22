@@ -9,7 +9,7 @@ import {CoreService} from '../../services/core.service';
 import {SaveService} from '../../services/save.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
-import {SearchPipe} from '../../filters/filter.pipe';
+import {SearchPipe} from '../../pipes/core.pipe';
 
 @Component({
   selector: 'app-filter-content',

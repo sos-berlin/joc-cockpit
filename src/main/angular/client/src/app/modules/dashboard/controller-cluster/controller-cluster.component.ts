@@ -1,10 +1,10 @@
 import {Component, OnInit, OnDestroy, Input, ElementRef, HostListener, ViewChild} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {Subscription} from 'rxjs';
 import * as _ from 'underscore';
 import * as moment from 'moment';
-import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd';
 import {CommentModalComponent} from '../action/action.component';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -50,7 +50,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     });
   }
 
-  static colorCode(severity) {
+  static colorCode(severity): string {
     if (severity === 0) {
       return 'green';
     } else if (severity === 1) {
@@ -65,13 +65,13 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize() {
+  onResize(): void {
     setTimeout(() => {
       this.alignCenter();
     }, 20);
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     if (this.schedulerIds.selected) {
       this.init();
@@ -81,7 +81,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
     try {
       if (this.editor) {
@@ -94,7 +94,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     }
   }
 
-  init() {
+  init(): void {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
     }
@@ -130,7 +130,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   /**
    * Constructs a new application (returns an mxEditor instance)
    */
-  createEditor() {
+  createEditor(): void {
     let editor = null;
     try {
       if (!mxClient.isBrowserSupported()) {
@@ -150,7 +150,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   /**
    * Function to override Mxgraph properties and functions
    */
-  initEditorConf(editor) {
+  initEditorConf(editor): void {
     const self = this;
     const graph = editor.graph;
     // Alt disables guides
@@ -177,7 +177,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     graph.extendParents = false;
 
     let labelState: any, labelClusterNodeState: any, labelClusterState: any,
-      labelDatabase: any, labelArchitecture: any, labelDistribution: any, labelControllerId:any,
+      labelDatabase: any, labelArchitecture: any, labelDistribution: any, labelControllerId: any,
       labelSurveyDate: any, labelVersion: any, labelStartedAt: any, labelUrl: any, labelSecurity: any;
 
     this.translate.get('dashboard.label.componentState').subscribe(translatedValue => {
@@ -219,7 +219,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     /**
      * Function: handle a click event
      */
-    graph.addListener(mxEvent.CLICK, function (sender, evt) {
+    graph.addListener(mxEvent.CLICK, (sender, evt) => {
       let event = evt.getProperty('event');
       if (event.target.className && /cluster-action-menu/.test(event.target.className)) {
         $('[data-toggle="popover"]').popover('hide');
@@ -246,7 +246,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
       }
     });
 
-    graph.getTooltipForCell = function (cell) {
+    graph.getTooltipForCell = (cell) => {
       return null;
     };
 
@@ -254,7 +254,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
      * Overrides method to provide a cell label in the display
      * @param cell
      */
-    graph.convertValueToString = function (cell) {
+    graph.convertValueToString = (cell) => {
       if (!self.preferences.zone) {
         return;
       }
@@ -419,12 +419,12 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
      *
      * Returns true if the given cell is moveable.
      */
-    graph.isCellMovable = function (cell) {
+    graph.isCellMovable = (cell) => {
       return false;
     };
   }
 
-  reloadGraph() {
+  reloadGraph(): void {
     this.onRefresh().subscribe((res) => {
       this.clusterStatusData = res;
       if (this.editor && this.editor.graph && !this.isDataLoaded) {
@@ -437,7 +437,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     });
   }
 
-  createWorkflowDiagram(graph) {
+  createWorkflowDiagram(graph): void {
     graph.getModel().beginUpdate();
     try {
       this.isLoaded = true;
@@ -602,7 +602,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     }, 0);
   }
 
-  alignCenter() {
+  alignCenter(): void {
     $('[data-toggle="popover"]').popover('dispose');
     if (this.editor && this.editor.graph) {
       if (this.clusterStatusData && this.clusterStatusData.jocs && this.clusterStatusData.jocs.length === 1) {
@@ -619,7 +619,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   /**
    * Function to create dom element
    */
-  getCellNode(name, label, data) {
+  getCellNode(name, label, data): any {
     const doc = mxUtils.createXmlDocument();
     // Create new node object
     const _node = doc.createElement(name);
@@ -628,12 +628,11 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     return _node;
   }
 
-  createVertex(node, label, data, graph, index, len) {
-    const doc = mxUtils.createXmlDocument();
+  createVertex(node, label, data, graph, index, len): any {
     // Create new node object
     const _node = this.getCellNode(node, label, data);
     let style = ';controller';
-    let x = 0, y = 0, wt = 210, ht = 0;
+    let x, y, wt = 210, ht;
     if (node === 'DataBase') {
       wt = 160;
       ht = 60;
@@ -668,7 +667,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
           y = 220;
         }
       }
-      if(y === 286 && len ==3){
+      if (y === 286 && len == 3) {
         y = 278;
       }
 
@@ -687,7 +686,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
           y = 255;
         }
       }
-      if(y === 321 && len ==3){
+      if (y === 321 && len == 3) {
         y = 313;
       }
       x = 125 + (250 * this.clusterStatusData.jocs.length) / 2;
@@ -696,7 +695,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   }
 
   /*  ------------------ Actions -----------------------*/
-  clusterAction(action, controller, isFailOver) {
+  clusterAction(action, controller, isFailOver): void {
     this.controller = null;
     this.cluster = null;
     let obj = {
@@ -755,15 +754,15 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     }
   }
 
-  restartService(type) {
+  restartService(type): void {
     this.postCall('joc/cluster/restart', {type: type});
   }
 
-  switchOver() {
+  switchOver(): void {
     this.postCall('joc/cluster/switch_member', {memberId: this.joc.memberId});
   }
 
-  private refreshEvent(args) {
+  private refreshEvent(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'ControllerStateChanged' ||
@@ -778,7 +777,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     }
   }
 
-  downloadJocLog() {
+  downloadJocLog(): void {
     $('#tmpFrame').attr('src', './api/joc/log?accessToken=' + this.authService.accessTokenId);
   }
 
@@ -786,9 +785,8 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     return this.coreService.post('controller/components', {controllerId: this.schedulerIds.selected});
   }
 
-  private postCall(url, obj) {
+  private postCall(url, obj): void {
     this.coreService.post(url, obj).subscribe(res => {
     });
   }
-
 }

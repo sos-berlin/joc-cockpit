@@ -5,12 +5,12 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToasterService} from 'angular2-toaster';
 import {Subscription} from 'rxjs';
 import * as jstz from 'jstz';
+import {filter} from 'rxjs/operators';
 import {NzConfigService} from 'ng-zorro-antd';
 import {CoreService} from '../../services/core.service';
 import {DataService} from '../../services/data.service';
 import {AuthService} from '../../components/guard';
 import {HeaderComponent} from '../../components/header/header.component';
-import {filter} from 'rxjs/operators';
 
 declare const $;
 

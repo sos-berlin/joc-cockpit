@@ -1,7 +1,15 @@
-import { Directive, HostListener, forwardRef, OnInit, OnDestroy, ElementRef, AfterViewInit, Input, AfterViewChecked, OnChanges } from '@angular/core';
+import {
+  Directive,
+  HostListener,
+  forwardRef,
+  OnInit,
+  ElementRef,
+  AfterViewInit,
+  Input,
+  OnChanges
+} from '@angular/core';
 import {AbstractControl, NgModel, Validator, NG_VALIDATORS} from '@angular/forms';
 import {SaveService} from '../services/save.service';
-import {CoreService} from '../services/core.service';
 
 declare const $;
 
@@ -112,8 +120,7 @@ export class DailyPlanRegexValidator implements Validator {
         || /^\s*(\d+)(d)\s*$/.test(v)
         || /^\s*[-,+](\d+)(d)\s*$/.test(v)
         || /^\s*(now)\s*$/i.test(v)
-        || /^\s*(Today)\s*$/i.test(v))
-      {
+        || /^\s*(Today)\s*$/i.test(v)) {
         return null;
       }
     }
@@ -187,7 +194,7 @@ export class DurationRegexValidator implements Validator {
   validate(c: AbstractControl): { [key: string]: any } {
     let v = c.value;
     if (v != null) {
-      if(v ==''){
+      if (v == '') {
         return null;
       }
       if (/^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(v) ||
@@ -276,7 +283,6 @@ export class EnvVariableValidator implements Validator {
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => LabelValidator), multi: true}
   ]
 })
-
 export class LabelValidator implements Validator {
   validate(c: AbstractControl): { [key: string]: any } {
     let v = c.value;
@@ -285,9 +291,9 @@ export class LabelValidator implements Validator {
         return null;
       }
       if (!/^([A-Z]|[a-z]|[0-9]|_|\$)([A-Z]|[a-z]|[0-9]|\$|_|,|-|#|:|!|)*$/.test(v)) {
-          return {
-            invalidIdentifier: true
-          };
+        return {
+          invalidIdentifier: true
+        };
       } else {
         return null;
       }
@@ -390,12 +396,14 @@ export class AutofocusDirective implements AfterViewInit {
   @Input('appAutofocus') appAutoFocus: boolean;
 
   constructor(private el: ElementRef) {
-
   }
 
   ngAfterViewInit() {
-    if(this.appAutoFocus) {
+    if (this.appAutoFocus) {
       setTimeout(() => {
+        if (this.el.nativeElement.attributes.class.value.match('input-number')) {
+          $('.ant-input-number input').focus();
+        }
         this.el.nativeElement.focus();
       }, 0);
     }
@@ -451,4 +459,3 @@ export class XMLAutofocusDirective implements AfterViewInit, OnChanges {
     }, 0);
   }
 }
-

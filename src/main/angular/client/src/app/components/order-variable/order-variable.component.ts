@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import * as _ from 'underscore';
 import {ToasterService} from 'angular2-toaster';
@@ -10,18 +10,27 @@ import {CoreService} from '../../services/core.service';
   selector: 'app-order-variable',
   templateUrl: './order-variable.component.html'
 })
-export class OrderVariableComponent {
+export class OrderVariableComponent implements OnInit {
   @Input() order;
   @Input() type;
   @Input() permission: any;
   @Input() schedulerId: any;
 
-
   constructor(public coreService: CoreService, public modalService: NgbModal,
               public toasterService: ToasterService, private translate: TranslateService) {
   }
 
-  changeParameter(order, variable) {
+  ngOnInit(): void {
+    if (this.order && this.type) {
+      if (this.order[this.type] && !this.order[this.type][0]) {
+        this.order[this.type] = Object.entries(this.order[this.type]).map(([k, v]) => {
+          return {name: k, value: v};
+        });
+      }
+    }
+  }
+
+  changeParameter(order, variable): void {
     this.getRequirements(order, () => {
       const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
       modalRef.componentInstance.schedulerId = this.schedulerId;
@@ -29,7 +38,7 @@ export class OrderVariableComponent {
       modalRef.componentInstance.order = order;
       modalRef.componentInstance.orderRequirements = order.requirements;
       modalRef.result.then(() => {
-        
+
         this.coreService.post('orders/variables', {
           orderId: order.orderId,
           controllerId: this.schedulerId
@@ -43,7 +52,7 @@ export class OrderVariableComponent {
     });
   }
 
-  removeParameter(order, variable) {
+  removeParameter(order, variable): void {
     let canDelete = true;
     this.getRequirements(order, () => {
       if (order.requirements && order.requirements.parameters) {
@@ -77,7 +86,7 @@ export class OrderVariableComponent {
     });
   }
 
-  private getRequirements(order, cb) {
+  private getRequirements(order, cb): void {
     if (order.requirements && order.requirements.parameters) {
       cb();
     } else {

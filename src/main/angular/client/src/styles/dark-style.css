@@ -1373,7 +1373,10 @@ span.cm-comment {
 }
 
 span.cm-string, .ace-jsoneditor .ace_string {
-  color: #2b4 !important
+  color: #1ac43f !important
+}
+.ace-jsoneditor .ace_constant.ace_numeric {
+  color: orangered;
 }
 
 span.cm-meta {
@@ -1385,7 +1388,7 @@ span.cm-qualifier {
 }
 
 span.cm-builtin {
-  color: #30aabc !important
+  color: #34b8cb !important
 }
 
 span.cm-bracket {
@@ -1424,9 +1427,6 @@ span.cm-link {
 .light-yellow-bg {
   background: var(--background-color)
 }
-.calendar .calendar-header table th:hover, .calendar-sm .selected {
-  background: var(--box-color);
-}
 
 .jsgantt-chart .jsgantt-task-row:nth-child(even) {
   background-color: var(--background-color);
@@ -1444,6 +1444,9 @@ span.cm-link {
 .jsgantt-chart .jsgantt-grid-scale .jsgantt-grid-head-cell,
 .jsgantt-chart .jsgantt-task .jsgantt-task-scale .jsgantt-scale-cell {
   color: var(--text-color);
+}
+.remaining-order-count{
+  background-color: #777;
 }
 .order-history-template0 {
   background: #222222 !important;

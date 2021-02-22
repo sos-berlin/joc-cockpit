@@ -4,7 +4,7 @@ import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
-import {SearchPipe} from '../../../filters/filter.pipe';
+import {SearchPipe} from '../../../pipes/core.pipe';
 
 // Main Component
 @Component({
@@ -155,7 +155,7 @@ export class LockComponent implements OnInit, OnDestroy {
             }
           }
         } else if (args.eventSnapshots[j].eventType.match(/Item/) && args.eventSnapshots[j].objectType === 'LOCK') {
-         
+
           this.initTree();
         }
       }

@@ -81,7 +81,7 @@ export class ShowChildModalComponent implements OnInit {
   checkText(node) {
     const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     let text: any = {};
-    const documentationPath2 = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:annotation/xs:documentation';
+    const documentationPath2 = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:annotation/xs:documentation';
     const element2 = select(documentationPath2, this.doc);
     if (element2.length > 0) {
       text.doc = element2[0].innerHTML;
@@ -210,21 +210,21 @@ export class ShowChildModalComponent implements OnInit {
     const node = showAllChild.ref;
     let parentNode;
     const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const complexTypePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType';
-    const TypePath = '/xs:schema/xs:element[@name=\'' + node + '\']';
+    const complexTypePath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType';
+    const TypePath = '/xs:schemas/xs:element[@name=\'' + node + '\']';
     let nodes: any = {};
     const childArr: any = [];
     const element = select(complexTypePath, this.doc);
     if (element.length > 0) {
-      const sequencePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence';
-      const choicePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice';
-      const childFromBasePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/@base';
+      const sequencePath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence';
+      const choicePath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice';
+      const childFromBasePath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/@base';
       // tslint:disable-next-line: max-line-length
-      const complexContentWithElementPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/xs:sequence/xs:element';
+      const complexContentWithElementPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/xs:sequence/xs:element';
       const childs = select(childFromBasePath, this.doc);
       const element1 = select(sequencePath, this.doc);
       if (element1.length > 0) {
-        const cPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:element';
+        const cPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:element';
         const cElement = select(cPath, this.doc);
         if (cElement.length > 0) {
           for (let i = 0; i < cElement.length; i++) {
@@ -244,7 +244,7 @@ export class ShowChildModalComponent implements OnInit {
             }
           }
         }
-        const dPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:element';
+        const dPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:element';
         const dElement = select(dPath, this.doc);
         if (dElement.length > 0) {
           for (let i = 0; i < dElement.length; i++) {
@@ -265,7 +265,7 @@ export class ShowChildModalComponent implements OnInit {
             }
           }
         }
-        const ePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:sequence/xs:element';
+        const ePath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:sequence/xs:element';
         const eElement = select(ePath, this.doc);
         if (eElement.length > 0) {
           for (let i = 0; i < eElement.length; i++) {
@@ -294,7 +294,7 @@ export class ShowChildModalComponent implements OnInit {
         return childArr;
       }
       if ((select(choicePath, this.doc)).length > 0) {
-        const childPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice/xs:element';
+        const childPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice/xs:element';
         const childs1 = select(childPath, this.doc);
         if (childs1.length > 0) {
           for (let i = 0; i < childs1.length; i++) {
@@ -314,7 +314,7 @@ export class ShowChildModalComponent implements OnInit {
               data.children = childArr;
             }
           }
-          const childPath2 = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice/xs:sequence/xs:element';
+          const childPath2 = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice/xs:sequence/xs:element';
           const child12 = select(childPath2, this.doc);
           if (child12.length > 0) {
             for (let i = 0; i < child12.length; i++) {
@@ -340,7 +340,7 @@ export class ShowChildModalComponent implements OnInit {
       }
       if (childs.length > 0) {
         if (childs[0].nodeValue !== 'NotEmptyType') {
-          const childrenPath = '/xs:schema/xs:complexType[@name=\'' + childs[0].nodeValue + '\']/xs:sequence/xs:element';
+          const childrenPath = '/xs:schemas/xs:complexType[@name=\'' + childs[0].nodeValue + '\']/xs:sequence/xs:element';
           const sElement = select(childrenPath, this.doc);
           if (sElement.length > 0) {
             for (let i = 0; i < sElement.length; i++) {
@@ -360,7 +360,7 @@ export class ShowChildModalComponent implements OnInit {
               }
             }
           } else if ((select(complexContentWithElementPath, this.doc)).length > 0) {
-            const childrenPath1 = '/xs:schema/xs:complexType[@name=\'' + childs[0].nodeValue + '\']/xs:choice/xs:element';
+            const childrenPath1 = '/xs:schemas/xs:complexType[@name=\'' + childs[0].nodeValue + '\']/xs:choice/xs:element';
             const elementx = select(childrenPath1, this.doc);
             if (elementx.length > 0) {
               for (let i = 0; i < elementx.length; i++) {
@@ -435,16 +435,16 @@ export class ShowChildModalComponent implements OnInit {
   addTypeChildNode(node, parent, data) {
     let parentNode;
     const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const complexTypePath = '/xs:schema/xs:complexType[@name=\'' + node + '\']';
-    const TypePath = '/xs:schema/xs:element[@name=\'' + node + '\']';
+    const complexTypePath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']';
+    const TypePath = '/xs:schemas/xs:element[@name=\'' + node + '\']';
     let nodes: any = {};
     const childArr: any = [];
     const element = select(complexTypePath, this.doc);
     if (element.length > 0) {
-      const sequencePath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:sequence';
+      const sequencePath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']/xs:sequence';
       const element1 = select(sequencePath, this.doc);
       if (element1.length > 0) {
-        const childPath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:element';
+        const childPath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:element';
         const childs = select(childPath, this.doc);
         if (childs.length > 0) {
           for (let i = 0; i < childs.length; i++) {
@@ -464,7 +464,7 @@ export class ShowChildModalComponent implements OnInit {
             }
           }
         }
-        const seqChoicePath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:choice/xs:element';
+        const seqChoicePath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:choice/xs:element';
         const getChildChoice = select(seqChoicePath, this.doc);
         if (getChildChoice.length > 0) {
           for (let i = 0; i < getChildChoice.length; i++) {
@@ -485,7 +485,7 @@ export class ShowChildModalComponent implements OnInit {
             }
           }
         }
-        const seqChoiceSeqPath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:choice/xs:sequence/xs:element';
+        const seqChoiceSeqPath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:choice/xs:sequence/xs:element';
         const getChildChoiceSeq = select(seqChoiceSeqPath, this.doc);
         if (getChildChoiceSeq.length > 0) {
           for (let i = 0; i < getChildChoiceSeq.length; i++) {
@@ -510,7 +510,7 @@ export class ShowChildModalComponent implements OnInit {
       }
       const choicePath = '//xs:complexType[@name=\'' + node + '\']/xs:choice';
       if ((select(choicePath, this.doc)).length) {
-        const childPath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:choice/xs:element';
+        const childPath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']/xs:choice/xs:element';
         const childs = select(childPath, this.doc);
         if (childs.length > 0) {
           for (let i = 0; i < childs.length; i++) {
@@ -1720,12 +1720,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   checkAttributes(node) {
     const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const complexTypePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType';
+    const complexTypePath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType';
     let attribute: any = {};
     const attrsArr: any = [];
     const element = select(complexTypePath, this.doc);
     if (element.length > 0) {
-      const attrsPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:attribute';
+      const attrsPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:attribute';
       const attrs = select(attrsPath, this.doc);
       if (attrs.length > 0) {
         for (let i = 0; i < attrs.length; i++) {
@@ -1758,7 +1758,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
     if (element.length > 0) {
-      const attrsPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/xs:attribute';
+      const attrsPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/xs:attribute';
       const attrs = select(attrsPath, this.doc);
       if (attrs.length > 0) {
         for (let i = 0; i < attrs.length; i++) {
@@ -1791,7 +1791,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
     if (element.length > 0) {
-      const attrsPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute';
+      const attrsPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute';
       const attrs = select(attrsPath, this.doc);
       if (attrs.length > 0) {
         for (let i = 0; i < attrs.length; i++) {
@@ -1833,21 +1833,21 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.childNode = [];
     }
     const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const complexTypePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType';
-    const TypePath = '/xs:schema/xs:element[@name=\'' + node + '\']';
+    const complexTypePath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType';
+    const TypePath = '/xs:schemas/xs:element[@name=\'' + node + '\']';
     let nodes: any = {};
     const childArr: any = [];
     const element = select(complexTypePath, this.doc);
     if (element.length > 0) {
-      const sequencePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence';
-      const choicePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice';
-      const childFromBasePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/@base';
+      const sequencePath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence';
+      const choicePath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice';
+      const childFromBasePath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/@base';
       // tslint:disable-next-line: max-line-length
-      const complexContentWithElementPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/xs:sequence/xs:element';
+      const complexContentWithElementPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/xs:sequence/xs:element';
       const childs = select(childFromBasePath, this.doc);
       const element1 = select(sequencePath, this.doc);
       if (element1.length > 0) {
-        const cPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:element';
+        const cPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:element';
         const cElement = select(cPath, this.doc);
         if (cElement.length > 0) {
           for (let i = 0; i < cElement.length; i++) {
@@ -1866,7 +1866,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             }
           }
         }
-        const dPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:element';
+        const dPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:element';
         const dElement = select(dPath, this.doc);
         if (dElement.length > 0) {
           for (let i = 0; i < dElement.length; i++) {
@@ -1886,7 +1886,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             }
           }
         }
-        const ePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:sequence/xs:element';
+        const ePath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:sequence/xs:element';
         const eElement = select(ePath, this.doc);
         if (eElement.length > 0) {
           for (let i = 0; i < eElement.length; i++) {
@@ -1914,7 +1914,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         return childArr;
       }
       if ((select(choicePath, this.doc)).length > 0) {
-        const childPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice/xs:element';
+        const childPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice/xs:element';
         const childs1 = select(childPath, this.doc);
         if (childs1.length > 0) {
           for (let i = 0; i < childs1.length; i++) {
@@ -1933,7 +1933,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
               this.childNode = childArr;
             }
           }
-          const childPath2 = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice/xs:sequence/xs:element';
+          const childPath2 = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice/xs:sequence/xs:element';
           const child12 = select(childPath2, this.doc);
           if (child12.length > 0) {
             for (let i = 0; i < child12.length; i++) {
@@ -1958,7 +1958,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       if (childs.length > 0) {
         if (childs[0].nodeValue !== 'NotEmptyType') {
-          const childrenPath = '/xs:schema/xs:complexType[@name=\'' + childs[0].nodeValue + '\']/xs:sequence/xs:element';
+          const childrenPath = '/xs:schemas/xs:complexType[@name=\'' + childs[0].nodeValue + '\']/xs:sequence/xs:element';
           const sElement = select(childrenPath, this.doc);
           if (sElement.length > 0) {
             for (let i = 0; i < sElement.length; i++) {
@@ -1977,7 +1977,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
               }
             }
           } else if ((select(complexContentWithElementPath, this.doc)).length > 0) {
-            const childrenPath1 = '/xs:schema/xs:complexType[@name=\'' + childs[0].nodeValue + '\']/xs:choice/xs:element';
+            const childrenPath1 = '/xs:schemas/xs:complexType[@name=\'' + childs[0].nodeValue + '\']/xs:choice/xs:element';
             const elementx = select(childrenPath1, this.doc);
             if (elementx.length > 0) {
               for (let i = 0; i < elementx.length; i++) {
@@ -2049,7 +2049,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getAttrFromType(nodeValue, parentNode) {
     const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const attrTypePath = '/xs:schema/xs:element[@name=\'' + nodeValue + '\']/@type';
+    const attrTypePath = '/xs:schemas/xs:element[@name=\'' + nodeValue + '\']/@type';
     const element = select(attrTypePath, this.doc);
     let attribute: any = {};
     if (element.length > 0) {
@@ -2070,7 +2070,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getAttrsFromType(node) {
     const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const attrTypePath = '/xs:schema/xs:complexType[@name=\'' + node.type + '\']/xs:simpleContent/xs:extension/xs:attribute/@*';
+    const attrTypePath = '/xs:schemas/xs:complexType[@name=\'' + node.type + '\']/xs:simpleContent/xs:extension/xs:attribute/@*';
     const element = select(attrTypePath, this.doc);
     const attrArr = [];
     let attribute: any = {};
@@ -2113,7 +2113,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getValFromDefault(node) {
     const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const attrTypePath = '/xs:schema/xs:element[@name=\'' + node.ref + '\']/@default';
+    const attrTypePath = '/xs:schemas/xs:element[@name=\'' + node.ref + '\']/@default';
     const ele = select(attrTypePath, this.doc);
     const valueArr: any = [];
     const value: any = {};
@@ -2131,7 +2131,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getVal(nodeValue) {
     const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const attrTypePath = '/xs:schema/xs:element[@name=\'' + nodeValue.ref + '\']/@type';
+    const attrTypePath = '/xs:schemas/xs:element[@name=\'' + nodeValue.ref + '\']/@type';
     const ele = select(attrTypePath, this.doc);
     const valueArr: any = [];
     const value: any = {};
@@ -2150,7 +2150,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getValueFromType(nodeValue, parentNode) {
     const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const attrTypePath = '/xs:schema/xs:element[@name=\'' + nodeValue + '\']/@type';
+    const attrTypePath = '/xs:schemas/xs:element[@name=\'' + nodeValue + '\']/@type';
     const ele = select(attrTypePath, this.doc);
     let attribute: any = {};
     if (ele.length > 0) {
@@ -2167,7 +2167,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getTypeValue(node) {
     const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const extensionTypePath = '/xs:schema/xs:complexType[@name=\'' + node.type + '\']/xs:simpleContent/xs:extension/@*';
+    const extensionTypePath = '/xs:schemas/xs:complexType[@name=\'' + node.type + '\']/xs:simpleContent/xs:extension/@*';
     let element = select(extensionTypePath, this.doc);
     let value: any = {};
     const valueArr: any = [];
@@ -2177,13 +2177,13 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         let a = element[0].nodeName;
         const x = element[0].nodeValue;
         value = Object.assign(value, {[a]: x});
-        const simpleTypePath = '/xs:schema/xs:simpleType[@name=\'' + value.base + '\']/xs:restriction/@*';
+        const simpleTypePath = '/xs:schemas/xs:simpleType[@name=\'' + value.base + '\']/xs:restriction/@*';
         element = select(simpleTypePath, this.doc);
         if (element.length > 0) {
           a = element[0].nodeName;
           b = element[0].nodeValue;
           value = Object.assign(value, {[a]: b});
-          const minLengthPath = '/xs:schema/xs:simpleType[@name=\'' + x + '\']/xs:restriction/xs:minLength/@*';
+          const minLengthPath = '/xs:schemas/xs:simpleType[@name=\'' + x + '\']/xs:restriction/xs:minLength/@*';
           element = select(minLengthPath, this.doc);
           a = element[0].nodeName;
           b = element[0].nodeValue;
@@ -2203,7 +2203,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   checkText(node) {
     const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     let text: any = {};
-    // const documentationPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:annotation/xs:documentation/@*';
+    // const documentationPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:annotation/xs:documentation/@*';
     // const element = select(documentationPath, this.doc);
     // if (element.length > 0) {
     //   for (let i = 0; i < element.length; i++) {
@@ -2212,7 +2212,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     //     text = Object.assign(text, {[a]: b});
     //   }
     // } else {
-    //   const documentationPath1 = '/xs:schema/xs:element[@ref=\'' + node + '\']/xs:annotation/xs:documentation/@*';
+    //   const documentationPath1 = '/xs:schemas/xs:element[@ref=\'' + node + '\']/xs:annotation/xs:documentation/@*';
     //   const element1 = select(documentationPath1, this.doc);
     //   for (let i = 0; i < element1.length; i++) {
     //     const a = element1[i].nodeName;
@@ -2220,7 +2220,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     //     text = Object.assign(text, {[a]: b});
     //   }
     // }
-    const documentationPath2 = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:annotation/xs:documentation';
+    const documentationPath2 = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:annotation/xs:documentation';
     const element2 = select(documentationPath2, this.doc);
     if (element2.length > 0) {
       text.doc = element2[0].innerHTML;
@@ -2299,7 +2299,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   checkAttrsText(node) {
     const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     // tslint:disable-next-line: max-line-length
-    const textAttrsPath = '/xs:schema/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:attribute[@name=\'' + node.name + '\']/xs:annotation/xs:documentation';
+    const textAttrsPath = '/xs:schemas/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:attribute[@name=\'' + node.name + '\']/xs:annotation/xs:documentation';
     const element = select(textAttrsPath, this.doc);
     const text: any = {};
     if (element.length > 0) {
@@ -2308,12 +2308,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     if (element.length === 0) {
       // tslint:disable-next-line: max-line-length
-      const textAttrsPath2 = '/xs:schema/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name=\'' + node.name + '\']/xs:annotation/xs:documentation';
+      const textAttrsPath2 = '/xs:schemas/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name=\'' + node.name + '\']/xs:annotation/xs:documentation';
       text.doc = select(textAttrsPath2, this.doc);
       node.text = text;
       if (text.length <= 0) {
         // tslint:disable-next-line: max-line-length
-        const textAttrsPath1 = '/xs:schema/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:complexContent/xs:extension/xs:attribute[@name=\'' + node.name + '\']/xs:annotation/xs:documentation';
+        const textAttrsPath1 = '/xs:schemas/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:complexContent/xs:extension/xs:attribute[@name=\'' + node.name + '\']/xs:annotation/xs:documentation';
         text.doc = select(textAttrsPath1, this.doc);
         node.text = text;
       }
@@ -2323,16 +2323,16 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   addTypeChildNode(node, parent, data) {
     let parentNode;
     const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const complexTypePath = '/xs:schema/xs:complexType[@name=\'' + node + '\']';
-    const TypePath = '/xs:schema/xs:element[@name=\'' + node + '\']';
+    const complexTypePath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']';
+    const TypePath = '/xs:schemas/xs:element[@name=\'' + node + '\']';
     let nodes: any = {};
     const childArr: any = [];
     const element = select(complexTypePath, this.doc);
     if (element.length > 0) {
-      const sequencePath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:sequence';
+      const sequencePath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']/xs:sequence';
       const element1 = select(sequencePath, this.doc);
       if (element1.length > 0) {
-        const childPath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:element';
+        const childPath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:element';
         const childs = select(childPath, this.doc);
         if (childs.length > 0) {
           for (let i = 0; i < childs.length; i++) {
@@ -2351,7 +2351,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             }
           }
         }
-        const seqChoicePath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:choice/xs:element';
+        const seqChoicePath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:choice/xs:element';
         const getChildChoice = select(seqChoicePath, this.doc);
         if (getChildChoice.length > 0) {
           for (let i = 0; i < getChildChoice.length; i++) {
@@ -2371,7 +2371,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             }
           }
         }
-        const seqChoiceSeqPath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:choice/xs:sequence/xs:element';
+        const seqChoiceSeqPath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:choice/xs:sequence/xs:element';
         const getChildChoiceSeq = select(seqChoiceSeqPath, this.doc);
         if (getChildChoiceSeq.length > 0) {
           for (let i = 0; i < getChildChoiceSeq.length; i++) {
@@ -2395,7 +2395,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       const choicePath = '//xs:complexType[@name=\'' + node + '\']/xs:choice';
       if ((select(choicePath, this.doc)).length) {
-        const childPath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:choice/xs:element';
+        const childPath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']/xs:choice/xs:element';
         const childs = select(childPath, this.doc);
         if (childs.length > 0) {
           for (let i = 0; i < childs.length; i++) {
@@ -3573,8 +3573,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.nodes[0]) {
       a = this.nodes[0].ref;
     }
-    const keyPath = '/xs:schema/xs:element[@name=\'' + a + '\']/xs:key/@name';
-    const keyRefPath = '/xs:schema/xs:element[@name=\'' + a + '\']/xs:keyref';
+    const keyPath = '/xs:schemas/xs:element[@name=\'' + a + '\']/xs:key/@name';
+    const keyRefPath = '/xs:schemas/xs:element[@name=\'' + a + '\']/xs:keyref';
     let keyattrs: any = {};
 
     if (!this.keyRefNodes || this.keyRefNodes.length === 0) {
@@ -4567,7 +4567,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       objectType: this.objectType,
       uri: this.schemaIdentifier
     };
-    this.coreService.post('xmleditor/schema/assign', obj).subscribe((res: any) => {
+    this.coreService.post('xmleditor/schemas/assign', obj).subscribe((res: any) => {
       if (res.schema) {
         this.path = res.schema;
         this.schemaIdentifier = res.schemaIdentifier;
@@ -4740,7 +4740,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       obj.fileContent = this.uploadData;
     }
     this.path = this.selectedXsd;
-    this.coreService.post('xmleditor/schema/assign', obj).subscribe((res: any) => {
+    this.coreService.post('xmleditor/schemas/assign', obj).subscribe((res: any) => {
       this.schemaIdentifier = res.schemaIdentifier;
       this.loadTree(res.schema, false);
       this.submitXsd = true;
@@ -4776,7 +4776,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         configuration: this._showXml()
       };
     }
-    this.coreService.post('xmleditor/schema/reassign', obj).subscribe((res: any) => {
+    this.coreService.post('xmleditor/schemas/reassign', obj).subscribe((res: any) => {
       this.doc = new DOMParser().parseFromString(res.schema, 'application/xml');
       this.nodes = [];
       this.nodes.push(JSON.parse(res.configurationJson));
@@ -4946,7 +4946,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   downloadSchema(objType, schemaIdentifier) {
-    let link = './api/xmleditor/schema/download?controllerId='
+    let link = './api/xmleditor/schemas/download?controllerId='
       + this.schedulerIds.selected + '&objectType=' + objType +
       '&accessToken=' + this.authService.accessTokenId;
     if (objType === 'OTHER') {
@@ -4958,7 +4958,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   showXSD(objType, schemaIdentifier) {
     const windowProperties = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
-    let link = './api/xmleditor/schema/download?show=true&controllerId='
+    let link = './api/xmleditor/schemas/download?show=true&controllerId='
       + this.schedulerIds.selected + '&objectType=' + objType + '&accessToken='
       + this.authService.accessTokenId;
     if (objType === 'OTHER') {

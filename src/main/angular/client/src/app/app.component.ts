@@ -1,36 +1,32 @@
-import {Component} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
+import { Component } from '@angular/core';
 import {ToasterConfig} from 'angular2-toaster';
-import {Router} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
 import {DataService} from './services/data.service';
-
 declare const $;
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  templateUrl: './app.component.html'
 })
-
 export class AppComponent {
   public config: ToasterConfig = new ToasterConfig({
     positionClass: 'toast-top-center',
     limit: 1
   });
 
-  constructor(public translate: TranslateService, private router: Router, private dataService: DataService) {
+  constructor(public translate: TranslateService, private dataService: DataService) {
     this.getTranslate();
     AppComponent.themeInit();
-/*    Object.getOwnPropertyNames(console).filter(function (property) {
-      return typeof console[property] == 'function';
-    }).forEach(function (verb) {
-      console[verb] = () => {
-        return 'Sorry, for security reasons, the script console is deactivated';
-      };
-    });*/
+    /*    Object.getOwnPropertyNames(console).filter(function (property) {
+          return typeof console[property] == 'function';
+        }).forEach(function (verb) {
+          console[verb] = () => {
+            return 'Sorry, for security reasons, the script console is deactivated';
+          };
+        });*/
   }
 
-  static themeInit() {
+  static themeInit(): void {
     if (localStorage.$SOS$THEME != null && localStorage.$SOS$THEME != 'undefined') {
       $('#style-color').attr('href', './styles/' + window.localStorage.$SOS$THEME + '-style.css');
       if (localStorage.$SOS$MENUTHEME != null) {
@@ -42,7 +38,7 @@ export class AppComponent {
     }
   }
 
-  private getTranslate() {
+  private getTranslate(): void {
     const locales = ['en', 'fr', 'de', 'ja'];
     let lang = localStorage.$SOS$LANG || navigator.language;
     if (locales.indexOf(lang) <= -1) {
@@ -52,7 +48,7 @@ export class AppComponent {
     this.translate.use(lang);
   }
 
-  gotoErrorLocation() {
+  gotoErrorLocation(): void {
     this.dataService.announceFunction('xmlEditor');
   }
 }

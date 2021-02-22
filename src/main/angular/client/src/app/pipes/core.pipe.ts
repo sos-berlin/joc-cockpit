@@ -6,7 +6,7 @@ import {DomSanitizer} from '@angular/platform-browser';
   name: 'stringToDate'
 })
 export class StringDatePipe implements PipeTransform {
-  transform(date) {
+  transform(date): string {
     if (!date) {
       return '-';
     }
@@ -26,7 +26,7 @@ export class StringDatePipe implements PipeTransform {
   name: 'stringToTime'
 })
 export class StringTimePipe implements PipeTransform {
-  transform(date) {
+  transform(date): string {
     if (!date) {
       return '-';
     }
@@ -48,7 +48,9 @@ export class StringTimePipe implements PipeTransform {
 export class StringDateFormatePipe implements PipeTransform {
   transform(t: string): string {
     if (sessionStorage.preferences) {
-      if (!t) return '-';
+      if (!t) {
+        return '-';
+      }
       const n = JSON.parse(sessionStorage.preferences);
       if (!n.zone) {
         return;
@@ -81,7 +83,9 @@ export class StringDateFormatePipe implements PipeTransform {
 export class TimeInStringFormatPipe implements PipeTransform {
   transform(t: any): string {
     if (sessionStorage.preferences) {
-      if (!t) return '-';
+      if (!t) {
+        return '-';
+      }
       const r = JSON.parse(sessionStorage.preferences);
       if (!r.zone) {
         return;
@@ -133,7 +137,9 @@ export class TimeInStringFormatPipe implements PipeTransform {
 })
 export class DurationPipe implements PipeTransform {
   transform(n: any, r: any): string {
-    if (!n || !r) return '-';
+    if (!n || !r) {
+      return '-';
+    }
     n = moment(n);
     r = moment(r);
     const i = moment(r).diff(n);
@@ -205,7 +211,9 @@ export class ByteToSizePipe implements PipeTransform {
   transform(e: any): string {
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
     e = parseInt(e, 10);
-    if (e == 0) return '0 Byte';
+    if (e == 0) {
+      return '0 Byte';
+    }
     const i: number = Math.floor(Math.log(e) / Math.log(1024));
     return parseFloat((e / Math.pow(1024, i)).toString()).toFixed(2) + ' ' + sizes[i];
   }
@@ -274,7 +282,7 @@ export class SearchPipe implements PipeTransform {
       return false;
     }
 
-    return items.filter(function (item) {
+    return items.filter(function(item) {
       return checkInside(item, term);
     });
   }
@@ -285,7 +293,9 @@ export class SearchPipe implements PipeTransform {
    * @param excludes array of strings which will ignored during search
    */
   transform(items: any, term: string, excludes: any = []): any {
-    if (!term || !items) return items;
+    if (!term || !items) {
+      return items;
+    }
 
     return SearchPipe.filter(items, term, excludes);
   }

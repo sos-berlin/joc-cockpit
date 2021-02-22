@@ -5,7 +5,7 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
   selector: 'app-ngbd-modal-content',
   templateUrl: './confirm.component.html'
 })
-export class ConfirmModalComponent implements OnInit {
+export class ConfirmModalComponent {
 
   @Input() title: any;
   @Input() message: any;
@@ -20,11 +20,7 @@ export class ConfirmModalComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal) {
   }
 
-  ngOnInit() {
-
-  }
-
-  showDocument(doc){
+  showDocument(doc): void{
 
   }
 }

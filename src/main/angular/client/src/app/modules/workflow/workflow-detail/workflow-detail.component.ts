@@ -1,9 +1,9 @@
 import {Component, OnInit, OnDestroy, HostListener, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import * as _ from 'underscore';
 import {Subscription} from 'rxjs';
-import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd';
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {WorkflowService} from '../../../services/workflow.service';

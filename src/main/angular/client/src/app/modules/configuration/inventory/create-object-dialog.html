@@ -17,9 +17,8 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
-    <div class="row">
-      <label class="col-md-3 form-control-label" *ngIf="!copy" translate>inventory.label.objectName</label>
-      <label class="col-md-3 form-control-label" *ngIf="copy" translate>inventory.label.newName</label>
+    <div class="form-group row" *ngIf="!copy">
+      <label class="col-md-3 form-control-label" translate>inventory.label.objectName</label>
       <div class="col-md-6" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
         <input type="text" identifierValidation class="form-control" name="name" required placeholder="{{'inventory.placeholder.enterUniqueName' | translate}}"
                #name="ngModel" [(ngModel)]="object.name" [appAutofocus]="true" autocomplete="off">
@@ -30,6 +29,29 @@
           </div>
           <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
         </div>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="copy">
+      <label class="col-md-3" translate>inventory.label.newName</label>
+      <div class="col-md-6">
+        <nz-radio-group name="type" [(ngModel)]="object.type">
+          <label nz-radio nzValue="suffix"><span translate>inventory.label.suffix</span></label>
+          <label nz-radio nzValue="prefix"><span translate>inventory.label.prefix</span></label>
+        </nz-radio-group>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="copy">
+      <label class="col-md-3"></label>
+      <div class="col-md-6" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+        <input type="text" identifierValidation class="form-control" name="name"
+               #name="ngModel" [(ngModel)]="object._name" [appAutofocus]="true" autocomplete="off">
+        <div *ngIf="name.invalid && (name.dirty || name.touched)"
+             class="text-danger help-block">
+          <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
+        </div>
+      </div>
+      <div class="col-md-1 p-l-0" style="top:5px">
+        <i class="fa fa-info-circle" [nz-tooltip]="'inventory.tooltip.newObjectNameInfoMessage' | translate"></i>
       </div>
     </div>
   </div>

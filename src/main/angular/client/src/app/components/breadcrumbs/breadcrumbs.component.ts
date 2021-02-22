@@ -1,5 +1,4 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {isNullOrUndefined} from 'util';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {filter} from 'rxjs/operators';
 import {Subscription} from 'rxjs';
@@ -23,7 +22,7 @@ export class BreadcrumbsComponent implements OnInit, OnDestroy {
       .subscribe(() => this.breadcrumbs = this.createBreadcrumbs(this.activatedRoute.root));
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void{
     this.subscription.unsubscribe();
   }
 
@@ -41,7 +40,7 @@ export class BreadcrumbsComponent implements OnInit, OnDestroy {
       }
 
       const label = child.snapshot.data[BreadcrumbsComponent.ROUTE_DATA_BREADCRUMB];
-      if (!isNullOrUndefined(label)) {
+      if (label !== null && label !== undefined) {
         let flag = true;
         if (breadcrumbs.length > 0) {
           for (const bc of breadcrumbs) {
@@ -59,7 +58,7 @@ export class BreadcrumbsComponent implements OnInit, OnDestroy {
     }
   }
 
-  backClicked() {
+  backClicked(): void {
     window.history.back();
   }
 

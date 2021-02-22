@@ -11,7 +11,7 @@
 <a class="text resize-cursor a-2" style="position: absolute; right: 22px;">
   <i class="fa fa-angle-double-right fa-lg" (click)="showPanel()"></i>
 </a>
-<div class="tree-block">
+<perfect-scrollbar class="tree-block">
   <nz-tree
     [nzExpandedKeys]="defaultExpandedKeys"
     [nzData]="tree"
@@ -32,6 +32,6 @@
           class="expand-collapse fa fa-angle-double-up"></i></span>
       </div>
     </ng-template>
-</div>
+</perfect-scrollbar>
 <div class="rg-right"><span></span></div>
 </div>

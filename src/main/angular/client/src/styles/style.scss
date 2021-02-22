@@ -1,6 +1,7 @@
 @import "./app.scss";
 @import "./mixins";
 @import '~jsoneditor/dist/jsoneditor.min.css';
+@import '~perfect-scrollbar/css/perfect-scrollbar.css';
 
 :root{
   --background-color: #f9f8f6;
@@ -3836,7 +3837,9 @@ li > a > i.remove {
 .m-l-n-15 {
   margin-left: -15px !important;
 }
-
+.m-l-n-40 {
+  margin-left: -40px !important;
+}
 .has-error {
   .form-control {
     border-color: #a94442 !important;
@@ -6224,8 +6227,12 @@ pre#pre {
 tr.tr-border td {
   border: 1px solid var(--border-color);
   border-bottom: none !important;
-  border-right: none !important;
+  border-right: none;
   word-break: break-all !important;
+}
+
+tr.tr-border td:last-child {
+  border-right: 1px solid var(--border-color);
 }
 tr.tr-border td {
   border-color: var(--border-color) !important;
@@ -6291,7 +6298,7 @@ tr.tr-border td {
 }
 
 .inner-table .ant-table-small {
-  border-bottom: none !important;
+  border: none !important;
 }
 
 .vert-middle {
@@ -6464,6 +6471,12 @@ div.jsoneditor,
 .ant-table-small.ant-table-bordered .ant-table-placeholder, .ant-table-small > .ant-table-content .ant-table-row:last-child td{
   border-bottom: 1px solid var(--border-color);
 }
+.inner-table .ant-table-small > .ant-table-content .ant-table-row:last-child td{
+  border-bottom: none;
+}
+.inner-table .ant-table-small > .ant-table-content .ant-table-row:first-child td{
+  border-bottom: 1px solid var(--border-color);
+}
 .ant-select-selection__clear{
   background: transparent;
 }
@@ -6477,6 +6490,13 @@ tr.tr-border td:first-child{
 }
 tr.tr-border td:not(:first-child){
   border-bottom: none !important;
+}
+
+tr.tr-border.light-bg td {
+  border-bottom: 1px solid var(--border-color) !important;
+}
+tr.tr-border.light-bg td {
+  border-bottom-color: var(--border-color) !important;
 }
 .ant-pagination-jump-prev .ant-pagination-item-container .ant-pagination-item-ellipsis, .ant-pagination-jump-next .ant-pagination-item-container .ant-pagination-item-ellipsis{
   color : var(--text-color)

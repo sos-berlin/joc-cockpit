@@ -87,6 +87,9 @@
                   <li nz-menu-item *ngIf="!data.deleted && permission.Inventory.configurations.edit">
                     <a (click)="copyObject(data)" translate>inventory.button.copy</a>
                   </li>
+                  <li nz-menu-item *ngIf="!data.deleted && permission.Inventory.configurations.edit">
+                    <a (click)="shallowCopy(data)" translate>inventory.button.shallowCopy</a>
+                  </li>
                   <li nz-menu-divider *ngIf="!data.deleted && permission.Inventory.configurations.edit">
    <!--               <li nz-menu-item *ngIf="!data.deleted && permission.Inventory.configurations.edit">
                     <a (click)="editObject(data)" translate>inventory.button.edit</a>

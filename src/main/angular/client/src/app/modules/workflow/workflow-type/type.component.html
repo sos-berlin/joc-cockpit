@@ -38,21 +38,21 @@
             <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>
           </ng-template>
           <span class="remaining-order-count" (click)="showOrders(instruction)" *ngIf="instruction.orders.length > 3">
-            <i class="remaining-order-count-i">Show other</i>
+            <i class="remaining-order-count-i" translate>workflow.label.showOther</i>
             <span class="remaining-order-count-span">{{instruction.orders.length - 3}}</span>
           </span>
         </span>
         <span class="order-count" (click)="showOrders(instruction)" *ngIf="instruction.count > 0 && (!instruction.show && !expandAll)">{{instruction.count}}</span>
       </a>
       <div *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'ImplicitEnd'
-       || instruction.TYPE === 'Publish' || instruction.TYPE === 'Await'">
-        {{instruction.jobName || instruction.TYPE}}
+       || instruction.TYPE === 'Publish' || instruction.TYPE === 'Await'" [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction.TYPE === 'ImplicitEnd'}">
+        {{instruction.jobName || (instruction.TYPE | translate)}}
         <span class="m-l-md" *ngIf="instruction.orders && instruction.orders.length> 0">
          <ng-template ngFor let-order [ngForOf]="instruction.orders | orderBy : 'scheduledFor': true | slice:0:3">
             <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>
           </ng-template>
           <span class="remaining-order-count" (click)="showOrders(instruction)" *ngIf="instruction.orders.length > 3">
-            <i class="remaining-order-count-i">Show other</i>
+            <i class="remaining-order-count-i" translate>workflow.label.showOther</i>
             <span class="remaining-order-count-span">{{instruction.orders.length - 3}}</span>
           </span>
         </span>
@@ -69,7 +69,7 @@
                   <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>
               </ng-template>
               <span class="remaining-order-count" (click)="showOrders(branch)" *ngIf="branch.orders.length > 3">
-                <i class="remaining-order-count-i">Show other</i>
+                <i class="remaining-order-count-i" translate>workflow.label.showOther</i>
                 <span class="remaining-order-count-span">{{branch.orders.length - 3}}</span>
               </span>
             </span>
@@ -95,7 +95,7 @@
                   <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order }"></ng-container>
               </ng-template>
               <span class="remaining-order-count" (click)="showOrders(instruction.else)" *ngIf="instruction.else.orders.length > 3">
-                <i class="remaining-order-count-i">Show other</i>
+                <i class="remaining-order-count-i" translate>workflow.label.showOther</i>
                 <span class="remaining-order-count-span">{{instruction.else.orders.length - 3}}</span>
               </span>
             </span>
@@ -120,7 +120,7 @@
                   <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>
               </ng-template>
               <span class="remaining-order-count" (click)="showOrders(instruction.catch)" *ngIf="instruction.catch.orders.length > 3">
-                <i class="remaining-order-count-i">Show other</i>
+                <i class="remaining-order-count-i" translate>workflow.label.showOther</i>
                 <span class="remaining-order-count-span">{{instruction.catch.orders.length - 3}}</span>
               </span>
             </span>

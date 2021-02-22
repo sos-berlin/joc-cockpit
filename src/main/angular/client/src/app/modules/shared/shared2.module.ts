@@ -6,7 +6,7 @@ import {NgbModalModule} from '@ng-bootstrap/ng-bootstrap';
 import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
 import {NzEmptyModule} from 'ng-zorro-antd/empty';
 import {CommonModule} from '@angular/common';
-import {NzResultModule} from 'ng-zorro-antd/result';
+
 import {FormsModule} from '@angular/forms';
 import {
   DecodeSpacePipe,
@@ -16,21 +16,21 @@ import {
   StringDatePipe,
   StringTimePipe,
   TimeInStringFormatPipe
-} from '../../filters/filter.pipe';
+} from '../../pipes/core.pipe';
 import {SubLinkComponent} from '../resource/sub-link/sub-link.component';
 import {BreadcrumbsComponent} from '../../components/breadcrumbs/breadcrumbs.component';
 import {OrderActionComponent} from '../order-overview/order-action/order-action.component';
-import {NgZorroAntdModule} from 'ng-zorro-antd';
+import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 
-const MODULES = [CommonModule, FormsModule, NgbModalModule, NzDropDownModule, NzResultModule, TranslateModule, NzEmptyModule];
+const MODULES = [CommonModule, FormsModule, NgbModalModule, NzDropDownModule, TranslateModule,
+  PerfectScrollbarModule, NzEmptyModule];
 const PIPES = [StringDatePipe, TimeInStringFormatPipe, StringTimePipe, DecodeSpacePipe, SafeHtmlPipe, SearchPipe, HighlightSearch];
 const EXPORTS = [...PIPES, EmptyDataComponent, SubLinkComponent, BreadcrumbsComponent, OrderActionComponent];
 
 @NgModule({
   imports: [
     ...MODULES,
-    RouterModule,
-    NgZorroAntdModule
+    RouterModule
   ],
   declarations: [
     ...EXPORTS

@@ -8,7 +8,7 @@ import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 import {CalendarModalComponent} from '../../../components/calendar-modal/calendar.component';
-import {SearchPipe} from '../../../filters/filter.pipe';
+import {SearchPipe} from '../../../pipes/core.pipe';
 
 @Component({
   selector: 'app-ngbd-modal-content',

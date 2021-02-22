@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnDestroy} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from 'src/app/services/core.service';
 import {DataService} from 'src/app/services/data.service';
@@ -9,7 +9,7 @@ import {CreateObjectModalComponent} from '../inventory.component';
   selector: 'app-table',
   templateUrl: './table.component.html'
 })
-export class TableComponent {
+export class TableComponent implements OnDestroy{
   @Input() schedulerId: any;
   @Input() preferences: any;
   @Input() permission: any;
@@ -21,6 +21,10 @@ export class TableComponent {
 
   constructor(public coreService: CoreService, private modalService: NgbModal,
               private dataService: DataService) {
+  }
+
+  ngOnDestroy() {
+    this.dataService.reloadTree.complete();
   }
 
   add() {
@@ -83,6 +87,10 @@ export class TableComponent {
 
   copyObject(data) {
     this.dataService.reloadTree.next({copy: data});
+  }
+
+  shallowCopy(data) {
+    this.dataService.reloadTree.next({shallowCopy: data});
   }
 
   editObject(data) {

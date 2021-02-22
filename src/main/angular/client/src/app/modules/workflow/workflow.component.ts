@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, OnDestroy, Input, Output, EventEmitter, HostListener} from '@angular/core';
+import {Component, OnInit, ViewChild, OnDestroy, Input, Output, EventEmitter} from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
@@ -15,7 +15,7 @@ import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {WorkflowService} from '../../services/workflow.service';
 import {ExcelService} from '../../services/excel.service';
-import {SearchPipe} from '../../filters/filter.pipe';
+import {SearchPipe} from '../../pipes/core.pipe';
 
 declare const $;
 
@@ -571,9 +571,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
     if (this.workflowFilters.filter.date !== 'ALL') {
       obj.dateTo = this.workflowFilters.filter.date;
+      obj.timeZone = this.preferences.zone;
     }
-    obj.timeZone = this.preferences.zone;
-
     this.coreService.post('orders', obj).subscribe((res: any) => {
       if (res.orders) {
         for (let i = 0; i < this.workflows.length; i++) {

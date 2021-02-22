@@ -1,15 +1,15 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
-import {CoreService} from '../../services/core.service';
-import {DataService} from '../../services/data.service';
 import {Subscription} from 'rxjs';
-import {AuthService} from '../../components/guard';
 import {ActivatedRoute} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {OrderActionComponent} from './order-action/order-action.component';
 import {SaveService} from '../../services/save.service';
-import {SearchPipe} from '../../filters/filter.pipe';
+import {SearchPipe} from '../../pipes/core.pipe';
 import {ExcelService} from '../../services/excel.service';
+import {CoreService} from '../../services/core.service';
+import {DataService} from '../../services/data.service';
+import {AuthService} from '../../components/guard';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 import {ChangeParameterModalComponent} from '../../components/modify-modal/modify.component';
 
@@ -159,6 +159,14 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     {status: 'COMPLETED', text: 'completed'}
   ];
 
+  dateFilterBtn: any = [
+    {date: 'ALL', text: 'all'},
+    {date: '1d', text: 'today'},
+    {date: '1h', text: 'next1'},
+    {date: '12h', text: 'next12'},
+    {date: '7d', text: 'nextWeak'}
+  ];
+
   @ViewChild(OrderActionComponent, {static: false}) actionChild;
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
@@ -170,7 +178,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void{
     this.orderFilters = this.coreService.getOrderOverviewTab();
     this.orderFilters.filter.state = this.route.snapshot.paramMap.get('state');
     if (localStorage.views) {
@@ -194,26 +202,26 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.coreService.setSideView(this.sideView);
     this.subscription1.unsubscribe();
   }
 
   /** ---------------------------- Broadcast messages ----------------------------------*/
-  receiveMessage($event) {
+  receiveMessage($event): void {
     this.pageView = $event;
   }
 
-  showPanelFunc(value) {
+  showPanelFunc(value): void {
     this.showPanelObj = value;
     this.loadOrderHistory();
   }
 
-  hideAuditPanel() {
+  hideAuditPanel(): void {
     this.showPanelObj = '';
   }
 
-  loadOrderHistory() {
+  loadOrderHistory(): void {
     let obj = {
       controllerId: this.schedulerIds.selected,
       orders: [{workflowPath: this.showPanelObj.workflowId.path, orderId: this.showPanelObj.orderId}],
@@ -224,7 +232,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  private getState() {
+  private getState(): string {
     let state;
     if (this.orderFilters.filter.state !== 'ALL') {
       if (this.orderFilters.filter.state === 'COMPLETED') {
@@ -301,6 +309,10 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     let tempOrder = this.orders.filter((order) => {
       return order.show;
     });
+    if (this.orderFilters.filter.date !== 'ALL') {
+      obj.dateTo = this.orderFilters.filter.date;
+      obj.timeZone = this.preferences.zone;
+    }
     this.coreService.post('orders', obj).subscribe((res: any) => {
       this.orders = res.orders;
       if (tempOrder.length > 0) {
@@ -346,6 +358,11 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   changeStatus(state) {
     this.orderFilters.filter.state = state;
+    this.getOrders({controllerId: this.schedulerIds.selected, states: this.getState()});
+  }
+
+  changeDate(date) {
+    this.orderFilters.filter.date = date;
     this.getOrders({controllerId: this.schedulerIds.selected, states: this.getState()});
   }
 

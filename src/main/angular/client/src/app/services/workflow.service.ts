@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import * as _ from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from './core.service';
-import {StringDatePipe} from '../filters/filter.pipe';
+import {StringDatePipe} from '../pipes/core.pipe';
 
 declare const mxHierarchicalLayout;
 declare const mxTooltipHandler;
@@ -382,18 +382,21 @@ export class WorkflowService {
 
         const start = vertexMap.get(json.instructions[0].uuid);
         const last = json.instructions[json.instructions.length - 1];
-        let end = vertexMap.get(last.uuid);
-        if (self.isInstructionCollapsible(last.TYPE)) {
-          let targetId = mapObj.nodeMap.get(last.id);
-          if (targetId) {
-            end = graph.getModel().getCell(targetId);
-          }
-        }
-        let _node2 = doc.createElement('Process');
-        _node2.setAttribute('title', 'end');
-        let v2 = graph.insertVertex(defaultParent, null, _node2, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;');
         connectInstruction(v1, start, '', '', defaultParent);
-        connectInstruction(end, v2, '', '', defaultParent);
+        if (last.TYPE !== 'ImplicitEnd') {
+          let end = vertexMap.get(last.uuid);
+          if (self.isInstructionCollapsible(last.TYPE)) {
+            let targetId = mapObj.nodeMap.get(last.id);
+            if (targetId) {
+              end = graph.getModel().getCell(targetId);
+            }
+          }
+          let _node2 = doc.createElement('Process');
+          _node2.setAttribute('title', 'end');
+          let v2 = graph.insertVertex(defaultParent, null, _node2, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;');
+
+          connectInstruction(end, v2, '', '', defaultParent);
+        }
       }
     }
 
@@ -449,9 +452,9 @@ export class WorkflowService {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
           } else if (json.instructions[x].TYPE === 'ImplicitEnd') {
-            _node.setAttribute('label', 'implicitEnd');
+            _node.setAttribute('label', 'end');
             _node.setAttribute('uuid', json.instructions[x].uuid);
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;shadow=0;');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }

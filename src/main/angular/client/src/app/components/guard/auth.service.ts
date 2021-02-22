@@ -23,28 +23,28 @@ export class AuthService {
     }
   }
 
-  save() {
+  save(): void {
     const self = this;
     for (let i = 0; i < this.props.length; i++) {
       this._save(sessionStorage, this.props[i], self[this.props[i]]);
     }
   }
 
-  setUser(userData) {
+  setUser(userData): void {
     this.accessTokenId = userData.accessToken;
     this.currentUserData = userData.user;
     this.sessionTimeout = userData.sessionTimeout;
   }
 
-  setPermissions(permissions) {
+  setPermissions(permissions): void {
     this.permissions = JSON.stringify(permissions);
   }
 
-  setIds(scheduleIds) {
+  setIds(scheduleIds): void {
     this.scheduleIds = JSON.stringify(scheduleIds);
   }
 
-  clearUser() {
+  clearUser(): void {
     this.accessTokenId = null;
     this.currentUserData = null;
     this.sessionTimeout = null;
@@ -54,14 +54,14 @@ export class AuthService {
     sessionStorage.$SOS$URL = null;
   }
 
-  clearStorage() {
+  clearStorage(): void {
     for (let i = 0; i < this.props.length; i++) {
       this._save(sessionStorage, this.props[i], null);
       this._save(localStorage, this.props[i], null);
     }
   }
 
-  getPermission(id) {
+  getPermission(id): any {
     if (this.permissions) {
       const p = JSON.parse(this.permissions).SOSPermissionJocCockpitController;
       if (p) {
@@ -79,7 +79,7 @@ export class AuthService {
     }
   }
 
-  savePermission(id) {
+  savePermission(id): void {
     if (this.permissions) {
       const p = JSON.parse(this.permissions).SOSPermissionJocCockpitController;
       if (p) {
@@ -99,7 +99,7 @@ export class AuthService {
     }
   }
 
-  permissionCheck(routePath) {
+  permissionCheck(routePath): boolean {
     let showViews: any = {};
     if (window.sessionStorage.showViews) {
       showViews = JSON.parse(window.sessionStorage.showViews);
@@ -218,13 +218,13 @@ export class AuthService {
     return ifPermissionPassed;
   }
 
-  private _save(storage, name, value) {
+  private _save(storage, name, value): void {
     const key = this.propsPrefix + name;
     if (value == null) value = '';
     storage[key] = value;
   }
 
-  private load(name) {
+  private load(name): any {
     const key = this.propsPrefix + name;
     return localStorage[key] || sessionStorage[key] || null;
   }

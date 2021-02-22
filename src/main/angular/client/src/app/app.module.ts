@@ -15,18 +15,19 @@ import {AppComponent} from './app.component';
 import {AuthInterceptor} from './components/guard';
 import {AboutModalComponent} from './components/about-modal/about.component';
 import {LoginModule} from './modules/login/login.module';
-import {ErrorModule} from './modules/error/error.module';
+
 import {LoggingService} from './services/logging.service';
 
 registerLocaleData(en);
 
-export function createTranslateLoader(http: HttpClient) {
+export function createTranslateLoader(http: HttpClient): any {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
 export class MyErrorHandler implements ErrorHandler {
-  constructor( @Inject(LoggingService) private loggingService: LoggingService) {
+  constructor(@Inject(LoggingService) private loggingService: LoggingService) {
   }
+
   handleError(error) {
     console.log(error);
     this.loggingService.error(error.stack || error.message);
@@ -40,14 +41,12 @@ export class MyErrorHandler implements ErrorHandler {
   ],
   imports: [
     BrowserModule,
-    CommonModule,
     FormsModule,
     NgbModule,
     HttpClientModule,
     BrowserAnimationsModule,
     AppRoutingModule,
     LoginModule,
-    ErrorModule,
     ToasterModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
@@ -64,7 +63,7 @@ export class MyErrorHandler implements ErrorHandler {
       useClass: AuthInterceptor,
       multi: true
     },
-    { provide: NZ_I18N, useValue: en_US }],
+    {provide: NZ_I18N, useValue: en_US}],
   bootstrap: [AppComponent],
   entryComponents: [AboutModalComponent]
 })

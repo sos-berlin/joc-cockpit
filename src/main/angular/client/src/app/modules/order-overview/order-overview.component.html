@@ -1,4 +1,4 @@
-<div class="white box-shadow sub-header" style="height: 54px">
+<div class="white box-shadow sub-header">
   <div class="row">
     <div class="col-md-12">
       <div class="padding">
@@ -7,7 +7,34 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline" [ngClass]="{'hide': object.mapOfCheckedId && object.mapOfCheckedId.size>0}">
-            <div class="btn-group hidden-btn-group">
+<!--            <div class="btn-group hidden-btn-group">
+              <ng-container *ngFor="let btn of dateFilterBtn">
+                <button class="btn btn-grey btn-sm button-group-ellipsis"
+                        [ngClass]="{'btn-primary': orderFilters.filter.date===btn.date}"
+                        (click)="changeDate(btn.date)" translate>filters.button.{{btn.text}}
+                </button>
+              </ng-container>
+            </div>-->
+            <div class="btn-group dropdown">
+              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" type="button" translate>
+                <span>  {{ 'filters.button.'+orderFilters.filter.dateLabel | translate}} </span>
+                <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+              </button>
+              <nz-dropdown-menu #anyDate="nzDropdownMenu" >
+                <ul nz-menu>
+                  <ng-container *ngFor="let btn of dateFilterBtn">
+                    <li nz-menu-item
+                        [ngClass]="{'ant-select-dropdown-menu-item-active': orderFilters.filter.date=== btn.date}">
+                      <a (click)="changeDate(btn.date);orderFilters.filter.dateLabel = btn.text;"
+                         translate>filters.button.{{btn.text}}</a>
+                    </li>
+                  </ng-container>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+          </div>
+          <div class="inline" [ngClass]="{'hide': object.mapOfCheckedId && object.mapOfCheckedId.size>0}">
+            <div class="btn-group m-l-12 hidden-btn-group">
               <ng-container *ngFor="let btn of filterBtn">
                 <button class="btn btn-grey btn-sm button-group-ellipsis"
                         [ngClass]="{'btn-primary': orderFilters.filter.state===btn.status}"
@@ -15,12 +42,12 @@
                 </button>
               </ng-container>
             </div>
-            <div class="btn-group dropdown hidden-dropdown">
-              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" type="button" translate>
-                label.anyDate
+            <div class="btn-group m-l-12 dropdown hidden-dropdown">
+              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyState" [nzPlacement]="'bottomRight'" type="button" translate>
+                common.label.state
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
-              <nz-dropdown-menu #anyDate="nzDropdownMenu" >
+              <nz-dropdown-menu #anyState="nzDropdownMenu" >
                 <ul nz-menu>
                   <ng-container *ngFor="let btn of filterBtn">
                     <li nz-menu-item
@@ -347,8 +374,14 @@
                           </thead>
                           <tbody>
                           <ng-template ngFor let-history [ngForOf]="orderHistoryTable.data | orderBy: 'startTime':true">
-                            <tr (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)" class="cursor">
-                              <td [innerHtml]="history.orderId"></td>
+                            <tr (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)" class="cursor" [ngClass]="{'light-bg':history.show}">
+                              <td>
+                                <span class="show-in-single-line">
+                                  <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs" [ngClass]="history.show ? 'fa-caret-up' : 'fa-caret-down'"
+                                     (click)="history.show=!history.show;;$event.stopPropagation()"></i>
+                                  <span>{{history.orderId}}</span>
+                                </span>
+                              </td>
                               <td [innerHtml]="history.position"></td>
                               <td>
                                 <span class="label" [ngClass]="coreService.getColor(history.state.severity,'bg')"
@@ -358,6 +391,11 @@
                               <td [innerHtml]="history.startTime | stringToDate"></td>
                               <td [innerHtml]="history.endTime | stringToDate"></td>
                               <td [innerHtml]="history.startTime | duration:history.endTime"></td>
+                            </tr>
+                            <tr *ngIf="history.show">
+                              <td colspan="7">
+                                <app-order-variable [order]="history" [type]="'arguments'" [schedulerId]="schedulerIds.selected"></app-order-variable>
+                              </td>
                             </tr>
                           </ng-template>
                           </tbody>

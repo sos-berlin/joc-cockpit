@@ -3,7 +3,7 @@ import {Subscription} from 'rxjs';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {TranslateService} from '@ngx-translate/core';
 import {Router} from '@angular/router';
-import {NzMessageService} from 'ng-zorro-antd';
+import {NzMessageService} from 'ng-zorro-antd/message';
 import * as _ from 'underscore';
 import * as moment from 'moment';
 import {DataService} from '../../services/data.service';
@@ -14,7 +14,7 @@ import {ExcelService} from '../../services/excel.service';
 import {TreeModalComponent} from '../../components/tree-modal/tree.component';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component';
-import {SearchPipe} from '../../filters/filter.pipe';
+import {SearchPipe} from '../../pipes/core.pipe';
 
 declare const $;
 
@@ -503,7 +503,7 @@ export class DeploymentSearchComponent implements OnInit {
   isUnique = true;
   deployTypes = [];
 
-  constructor(public coreService: CoreService, private modalService: NgbModal) {
+  constructor(public coreService: CoreService) {
   }
 
   ngOnInit() {
@@ -1020,7 +1020,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     return filter;
   }
 
-  taskHistory(obj) {
+  taskHistory(obj, flag) {
     this.historyFilters.type = 'TASK';
     if (!obj) {
       obj = {controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''};
@@ -1047,12 +1047,33 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.convertRequestBody(obj);
     this.coreService.post('tasks/history', obj).subscribe((res) => {
       this.jobHistorys = this.setDuration(res);
-      this.searchInResult();
+      if (flag) {
+        this.mergeOldTaskData();
+      } else {
+        this.searchInResult();
+      }
       this.isLoading = true;
     }, () => {
       this.data = [];
       this.isLoading = true;
     });
+  }
+
+  private mergeOldTaskData() {
+    let oldEntires = _.clone(this.data);
+    let arr = this.task.searchText ? this.searchPipe.transform(this.jobHistorys, this.task.searchText) : this.jobHistorys;
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0; j < oldEntires.length; j++) {
+        if (arr[i].taskId === oldEntires[j].taskId) {
+          if (oldEntires[j].show) {
+            arr[i].show = true;
+          }
+          oldEntires.splice(j, 1);
+          break;
+        }
+      }
+    }
+    this.data = arr;
   }
 
   isCustomizationSelected4(flag) {
@@ -1216,9 +1237,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
         if (this.data.length > 0 && isAutoExpand) {
           if (this.data[0].show === undefined) {
             this.data[0].show = true;
-            if (this.data[0].submissions && this.data[0].submissions.length > 0) {
-              this.data[0].submissions[0].show = true;
-            }
           }
         }
       }
@@ -1807,9 +1825,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
       value.show = true;
       if (this.historyFilters.type === 'DEPLOYMENT') {
         this.showChildHistory(value);
-      } else {
+      } else if (this.historyFilters.type === 'SUBMISSION') {
         console.log(value);
-        value.submissions.forEach((sub) => {
+        value.controllers.forEach((sub) => {
           sub.show = true;
         });
       }
@@ -2864,7 +2882,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (this.historyFilters.type === 'ORDER') {
         this.orderHistory(obj, flag);
       } else if (this.historyFilters.type === 'TASK') {
-        this.taskHistory(obj);
+        this.taskHistory(obj, flag);
       } else if (this.historyFilters.type === 'DEPLOYMENT') {
         this.deploymentHistory(obj, flag);
       } else if (this.historyFilters.type === 'SUBMISSION') {

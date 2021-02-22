@@ -12,7 +12,7 @@ import {TreeComponent} from '../../../components/tree-navigation/tree.component'
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import * as _ from 'underscore';
-import {SearchPipe} from '../../../filters/filter.pipe';
+import {SearchPipe} from '../../../pipes/core.pipe';
 
 declare const $;
 const API_URL = './api/';
