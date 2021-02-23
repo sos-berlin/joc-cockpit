@@ -6,15 +6,7 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div class="inline" [ngClass]="{'hide': object.mapOfCheckedId && object.mapOfCheckedId.size>0}">
-<!--            <div class="btn-group hidden-btn-group">
-              <ng-container *ngFor="let btn of dateFilterBtn">
-                <button class="btn btn-grey btn-sm button-group-ellipsis"
-                        [ngClass]="{'btn-primary': orderFilters.filter.date===btn.date}"
-                        (click)="changeDate(btn.date)" translate>filters.button.{{btn.text}}
-                </button>
-              </ng-container>
-            </div>-->
+          <div class="inline" *ngIf="orderFilters.filter.state==='PENDING'" [ngClass]="{'hide': object.mapOfCheckedId && object.mapOfCheckedId.size>0}">
             <div class="btn-group dropdown">
               <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" type="button" translate>
                 <span>  {{ 'filters.button.'+orderFilters.filter.dateLabel | translate}} </span>

@@ -353,6 +353,7 @@ export class DeployComponent implements OnInit {
       obj.recursive = false;
       obj.withRemovedObjects = false;
       obj.withoutDrafts = true;
+      obj.latest = true;
     }
     const URL = this.releasable ? 'inventory/releasables' : 'inventory/deployables';
     this.coreService.post(URL, obj).subscribe((res: any) => {
@@ -1641,30 +1642,27 @@ export class UploadModalComponent implements OnInit {
   selector: 'app-create-object-template',
   templateUrl: './create-object-dialog.html'
 })
-export class CreateObjectModalComponent implements OnInit{
+export class CreateObjectModalComponent {
   @Input() schedulerId: any;
   @Input() obj: any;
   @Input() copy: any;
   submitted = false;
-  object = {name: '', type: 'suffix', _name: ''};
+  object = {name: '', type: 'suffix', _name: '', onlyContains: false};
 
   constructor(private coreService: CoreService, public activeModal: NgbActiveModal) {
-  }
-
-  ngOnInit() {
-    if(this.copy){
-      this.object.name = this.copy;
-    }
   }
 
   onSubmit(): void {
     if (this.copy) {
       const obj: any = {};
-      if(this.object._name) {
+      if (this.object._name) {
         if (this.object.type) {
           obj.suffix = this.object._name;
         } else {
           obj.prefix = this.object._name;
+        }
+        if(this.object.onlyContains){
+          obj.noFolder = true;
         }
       }
       this.activeModal.close(obj);
@@ -2785,7 +2783,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
       request.id = this.copyObj.id;
     } else {
       request.objectType = 'FOLDER';
-      request.newPath = obj.path;
+      request.newPath = obj.path + (data.noFolder ? '' : (obj.path === '/' ? '' : '/') + this.copyObj.name);
+
       request.path = this.copyObj.path;
     }
     this.coreService.post('inventory/copy', request).subscribe((res: any) => {

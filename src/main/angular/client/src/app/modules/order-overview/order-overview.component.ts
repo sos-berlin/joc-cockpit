@@ -164,6 +164,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     {date: '1d', text: 'today'},
     {date: '1h', text: 'next1'},
     {date: '12h', text: 'next12'},
+    {date: '24h', text: 'next24'},
     {date: '7d', text: 'nextWeak'}
   ];
 
@@ -178,7 +179,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void{
+  ngOnInit(): void {
     this.orderFilters = this.coreService.getOrderOverviewTab();
     this.orderFilters.filter.state = this.route.snapshot.paramMap.get('state');
     if (localStorage.views) {
@@ -309,7 +310,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     let tempOrder = this.orders.filter((order) => {
       return order.show;
     });
-    if (this.orderFilters.filter.date !== 'ALL') {
+    if (this.orderFilters.filter.date !== 'ALL' && this.orderFilters.filter.state === 'PENDING') {
       obj.dateTo = this.orderFilters.filter.date;
       obj.timeZone = this.preferences.zone;
     }
@@ -546,7 +547,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  terminateAllOrder(){
+  terminateAllOrder() {
     this._bulkOperation('Terminate', 'remove_when_terminated');
   }
 
@@ -610,5 +611,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.object.checked = false;
     this.object.indeterminate = false;
   }
+
   /** ================================= End Action ============================*/
 }

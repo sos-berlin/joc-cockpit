@@ -35,7 +35,7 @@
       </div>
   </div>
 </div>
-<div>
+<div id="gridster-container">
   <div class="m-a hide" [ngClass]="{'show':dashboard.length == 0 && isLoading}">
       <div class="m-a-sm emtpy-text" >
           <a class="cursor" (click)="addWidgetDialog()" translate>dashboard.button.addNewWidget</a>
@@ -45,7 +45,7 @@
       <gridster [options]="options">
           <gridster-item  [item]="item" *ngFor="let item of dashboard"  id = "{{item.name}}" >
               <div class="destroy-button">
-                  <i *ngIf="editLayoutObj" class="fa fa-times-circle" [nz-tooltip]="'common.button.remove' | translate" (click)="removeWidget($event, item)"></i>
+                  <i *ngIf="editLayoutObj" (mousedown)="$event.stopPropagation()" class="fa fa-times-circle" [nz-tooltip]="'common.button.remove' | translate" (click)="removeWidget($event, item)"></i>
               </div>
               <div *ngIf="item.name === 'agentClusterStatus'">
                   <app-agent-status [layout]="item"></app-agent-status>

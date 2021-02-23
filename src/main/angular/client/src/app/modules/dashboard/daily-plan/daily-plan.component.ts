@@ -1,9 +1,10 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import * as moment from 'moment';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
-import {Subscription} from 'rxjs';
-import * as moment from 'moment';
 
 @Component({
   selector: 'app-daily-plan',
@@ -24,7 +25,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   pendingLate = 0;
   subscription: Subscription;
 
-  constructor(private coreService: CoreService, private authService: AuthService, private dataService: DataService) {
+  constructor(private coreService: CoreService, private authService: AuthService,
+              private router: Router, private dataService: DataService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -172,4 +174,15 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     return (status / this.totalPlanData) * 100;
   }
 
+  navigate(obj) {
+    let d = new Date();
+    if (this.filters.date !== '0d') {
+      d.setDate(new Date().getDate() + 1);
+    }
+    let filter = this.coreService.getDailyPlanTab();
+    filter.selectedDate = new Date(d);
+    filter.filter.status = (obj === 1 || obj === 2) ? 'PLANNED' : (obj === 1 || obj === 2) ? 'PENDING' : 'FINISHED';
+    filter.filter.late = (obj === 2 || obj === 4);
+    this.router.navigate(['/daily_plan']);
+  }
 }

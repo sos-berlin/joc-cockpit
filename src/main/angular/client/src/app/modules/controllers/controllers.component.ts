@@ -148,15 +148,18 @@ export class ControllersComponent implements OnInit {
 
   getAgents(controller, cb): void {
     if (controller && !controller.agents) {
+      controller.loading = true;
       this.coreService.post('agents/p', {
         controllerId: controller.controllerId
       }).subscribe((data: any) => {
         controller.agents = data.agents;
+        controller.loading = false;
         if (cb) {
           cb();
         }
       }, () => {
         controller.agents = [];
+        controller.loading = false;
         if (cb) {
           cb();
         }

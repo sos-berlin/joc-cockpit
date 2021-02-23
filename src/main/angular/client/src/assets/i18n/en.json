@@ -411,7 +411,7 @@
     "button.saveCustomization": "Save Customization",
     "button.updateCustomization": "Update Customization",
     "placeholder.enterName": "Enter name",
-    "message.filterDeleteSuccessfully": " Customization successfully deleted",
+    "message.filterDeleteSuccessfully": "Customization successfully deleted",
     "tooltip.deactivateCustomization": "Deactivate Customization",
     "tooltip.useDefault": "Use as default customization"
   },
@@ -581,7 +581,7 @@
     "message.objectNotFound": "Object does not exist any longer",
     "message.pasteInSubFolderNotAllowed": "The destination folder is a subfolder of the source folder."
   },
-  "filters" : {
+  "filters": {
     "button.all": "All",
     "button.today": "Today",
     "button.yesterday": "Yesterday",
@@ -723,8 +723,9 @@
     "label.folderName": "Folder Name",
     "label.renameFolder": "Rename Folder",
     "label.copyOf": "Copy of",
-    "label.suffix" : "Suffix",
-    "label.prefix" : "Prefix ",
+    "label.suffix": "Suffix",
+    "label.prefix": "Prefix",
+    "label.withoutFolder": "Without Folder",
     "label.newName": "New name",
     "label.deploy": "Deploy",
     "label.forSigning": "For Signing",

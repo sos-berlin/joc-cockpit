@@ -6226,7 +6226,6 @@ pre#pre {
 
 tr.tr-border td {
   border: 1px solid var(--border-color);
-  border-bottom: none !important;
   border-right: none;
   word-break: break-all !important;
 }
@@ -6488,16 +6487,7 @@ div.jsoneditor,
 tr.tr-border td:first-child{
   border-left: none !important;
 }
-tr.tr-border td:not(:first-child){
-  border-bottom: none !important;
-}
 
-tr.tr-border.light-bg td {
-  border-bottom: 1px solid var(--border-color) !important;
-}
-tr.tr-border.light-bg td {
-  border-bottom-color: var(--border-color) !important;
-}
 .ant-pagination-jump-prev .ant-pagination-item-container .ant-pagination-item-ellipsis, .ant-pagination-jump-next .ant-pagination-item-container .ant-pagination-item-ellipsis{
   color : var(--text-color)
 }
@@ -6778,7 +6768,13 @@ span.cm-error {
 .ant-select-tree li {
   margin: 2px;
 }
-
+.ant-spin{
+  color: var(--primary);
+}
+.ant-spin-blur{
+  min-height: 75px;
+  opacity: .6;
+}
 .ant-tree-checkbox-inner {
   border-radius: 0;
   top:-1px;

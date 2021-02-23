@@ -56,16 +56,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
-    this.init();
-    $('.gridster').height(window.innerHeight - 150 + 'px');
+  static calculateHeight(): void {
+    const dom = $('#gridster-container');
+    let top = 142;
+    if (dom.position()) {
+      top = dom.position().top;
+    }
+    $('.gridster').height((window.innerHeight - top) + 'px');
   }
 
-  ngOnDestroy() {
+  ngOnInit(): void {
+    this.init();
+  }
+
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  initConfig(flag) {
+  initConfig(flag): void {
     this.options = {
       gridType: GridType.VerticalFixed,
       compactType: CompactType.None,
@@ -101,7 +109,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       },
       pushItems: true,
       disablePushOnDrag: false,
-      disablePushOnResize: true,
+      disablePushOnResize: false,
       pushDirections: {
         north: true,
         east: true,
@@ -127,13 +135,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     };
   }
 
-  editLayout() {
-    this._tempDashboard = Object.assign([], this.dashboard);
+  editLayout(): void {
+    this._tempDashboard = this.coreService.clone(this.dashboard);
     this.editLayoutObj = true;
     this.initConfig(true);
   }
 
-  resetLayout() {
+  resetLayout(): void {
     const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.title = 'resetLayout';
     modalRef.componentInstance.message = 'resetLayout';
@@ -147,32 +155,29 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  saveWidget() {
+  saveWidget(): void {
     this.editLayoutObj = false;
     this.initConfig(false);
     this.setWidgetPreference();
   }
 
-  cancelWidget() {
+  cancelWidget(): void {
     this.editLayoutObj = false;
-    this.dashboard = Object.assign([], this._tempDashboard);
+    this.dashboard = this.coreService.clone(this._tempDashboard);
     this.initConfig(false);
+    this.dataService.refreshWidget(this.widgets);
   }
 
-  removeWidget($event, widget) {
+  removeWidget($event, widget): void {
     $event.preventDefault();
     $event.stopPropagation();
     widget.visible = false;
-    for (let j = 0; j < this.dashboard.length; j++) {
-      if (this.dashboard[j].name === widget.name) {
-        this.dashboard.splice(j, 1);
-        break;
-      }
-    }
-
+    this.dashboard = this.dashboard.filter((item) => {
+      return item.name !== widget.name;
+    })
   }
 
-  addWidgetDialog() {
+  addWidgetDialog(): void {
     const modalRef = this.modalService.open(AddWidgetModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.dashboard = this.dashboard;
     modalRef.componentInstance.widgets = this.widgets;
@@ -181,17 +186,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     modalRef.result.then(() => {
 
     }, (reason) => {
-
     });
   }
 
-  addWidget(widget, self) {
+  addWidget(widget, self): void {
     widget.visible = true;
     self.dashboard.push(widget);
     self.setWidgetPreference();
   }
 
-  setWidgetPreference() {
+  setWidgetPreference(): void {
     this.dataService.refreshWidget(this.widgets);
     this.preferences.dashboardLayout = this.widgets;
     sessionStorage.preferences = JSON.stringify(this.preferences);
@@ -209,7 +213,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  private init() {
+  private init(): void {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     } else {
@@ -228,10 +232,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.initConfig(false);
     this.initWidgets();
-
+    setTimeout(() => {
+      DashboardComponent.calculateHeight();
+    }, 0);
   }
 
-  private initWidgets() {
+  private initWidgets(): void {
     this.dashboardLayout = [];
     this.widgets = [];
     this.dashboard = [];
