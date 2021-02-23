@@ -76,10 +76,8 @@ export class UpdateWorkflowComponent implements OnInit {
       this.coreService.post('inventory/rename', {
         id: this.data.id,
         newPath: this.workflowName
-      }).subscribe((res) => {
+      }).subscribe(() => {
         this.activeModal.close({name: this.workflowName, title: this.title});
-      }, (err) => {
-
       });
     } else {
       if (this.variableDeclarations.parameters && this.variableDeclarations.parameters.length > 0) {
@@ -516,7 +514,7 @@ export class ExpressionComponent implements OnInit {
 
   generateExpression(type, operator) {
     this.lastSelectOperator = operator;
-    let setText = '';
+    let setText;
     if (type == 'function') {
       setText = '.' + operator + ' ';
       if (operator === 'toNumber') {
@@ -802,6 +800,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       this.isLoading = false;
     });
   }
+
 
   /**
    * Constructs a new application (returns an mxEditor instance)
@@ -1105,8 +1104,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       this.indexOfNextAdd = 0;
       this.updateXMLJSON(false);
       this.storeData(result);
-    }, (reason) => {
-
+    }, () => {
     });
   }
 
@@ -2648,27 +2646,27 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         const keyHandler = new mxKeyHandler(graph);
 
         // Handle Delete: delete key
-        keyHandler.bindKey(46, function (evt) {
+        keyHandler.bindKey(46, function () {
           self.delete();
         });
 
         // Handle Undo: Ctrl + z
-        keyHandler.bindControlKey(90, function (evt) {
+        keyHandler.bindControlKey(90, function () {
           self.undo();
         });
 
         // Handle Redo: Ctrl + y
-        keyHandler.bindControlKey(89, function (evt) {
+        keyHandler.bindControlKey(89, function () {
           self.redo();
         });
 
         // Handle Copy: Ctrl + c
-        keyHandler.bindControlKey(67, function (evt) {
+        keyHandler.bindControlKey(67, function () {
           self.copy(null);
         });
 
         // Handle Cut: Ctrl + x
-        keyHandler.bindControlKey(88, function (evt) {
+        keyHandler.bindControlKey(88, function () {
           self.cut(null);
         });
 
@@ -2724,7 +2722,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
         mxIconSet.prototype.destroy = function () {
           if (this.images != null) {
-            for (var i = 0; i < this.images.length; i++) {
+            for (let i = 0; i < this.images.length; i++) {
               let img = this.images[i];
               img.parentNode.removeChild(img);
             }
@@ -2738,7 +2736,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          *
          * Returns <isCellEditable>.
          */
-        graph.isCellEditable = function (cell) {
+        graph.isCellEditable = function () {
           return false;
         };
 
@@ -2880,7 +2878,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
         };
 
-        graph.moveCells = function (cells, dx, dy, clone, target, evt, mapping) {
+        graph.moveCells = function (cells) {
           return cells;
         };
 
@@ -4689,7 +4687,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             targetObj.else = {instructions: [copyObject]};
           }
         } else if (target.value.tagName === 'Fork') {
-          let branchId = '';
+          let branchId ;
           if (!targetObj.branches) {
             targetObj.branches = [];
           }
@@ -4849,7 +4847,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       let cells = graph.getSelectionCells();
       if (cells.length > 0) {
         let lastCell = cells[cells.length - 1];
-        let targetId = self.nodeMap.get(lastCell.id);
+        const targetId = self.nodeMap.get(lastCell.id);
         if (targetId) {
           graph.addSelectionCell(graph.getModel().getCell(targetId));
         } else if (lastCell) {
@@ -5589,7 +5587,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             self.toasterService.pop('error', title + '!!', msg);
           }
         } else if (targetObj.TYPE === 'Fork') {
-          let branchId = '';
+          let branchId;
           if (!targetObj.branches) {
             targetObj.branches = [];
           }
@@ -5762,7 +5760,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               return;
             }
 
-            if(dropObject.instructions) {
+            if(dropObject && dropObject.instructions) {
               dropObject.instructions.splice(index, 1);
             }
 

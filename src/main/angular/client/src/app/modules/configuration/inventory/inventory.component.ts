@@ -71,7 +71,7 @@ export class SingleDeployComponent implements OnInit {
       }
       this.deployablesObject = [result];
       this.loading = false;
-    }, (err) => {
+    }, () => {
       this.loading = false;
     });
   }
@@ -157,9 +157,9 @@ export class SingleDeployComponent implements OnInit {
       this.submitted = false;
       return;
     }
-    this.coreService.post('inventory/deployment/deploy', obj).subscribe((res: any) => {
+    this.coreService.post('inventory/deployment/deploy', obj).subscribe(() => {
       this.activeModal.close('ok');
-    }, (error) => {
+    }, () => {
       this.submitted = false;
     });
   }
@@ -286,7 +286,7 @@ export class DeployComponent implements OnInit {
       const node = e.node;
       if (node.origin.type && node.parentNode) {
         node.parentNode.isHalfChecked = true;
-        let flag = true;
+        let flag;
         if (!node.isChecked) {
           node.parentNode.isChecked = false;
           flag = this.inventoryService.checkHalfCheckBox(node.parentNode, false);
@@ -360,14 +360,14 @@ export class DeployComponent implements OnInit {
       this.actualResult = this.releasable ? res.releasables : res.deployables;
       this.actualResult = this.inventoryService.sortList(this.actualResult);
       this.filterTree();
-    }, (err) => {
+    }, () => {
       this.loading = false;
       this.nodes = [];
     });
   }
 
   getDeploymentVersion(e: NzFormatEmitEvent): void {
-    let node = e.node;
+    const node = e.node;
     if (node && node.origin && node.origin.expanded && !node.origin.isCall) {
       this.inventoryService.checkAndUpdateVersionList(node.origin);
     }
@@ -392,10 +392,11 @@ export class DeployComponent implements OnInit {
     if (this.data && this.data.object) {
       selectFolder = false;
     }
+
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if ((nodes[i].type || nodes[i].isFolder) && nodes[i].checked) {
-          let objDep: any = {};
+          const objDep: any = {};
           if (nodes[i].deployId || nodes[i].deploymentId || nodes[i].isFolder) {
             if (nodes[i].isFolder) {
               if (selectFolder) {
@@ -580,9 +581,9 @@ export class DeployComponent implements OnInit {
     }
 
     const URL = this.releasable ? 'inventory/release' : 'inventory/deployment/deploy';
-    this.coreService.post(URL, obj).subscribe((res: any) => {
+    this.coreService.post(URL, obj).subscribe(() => {
       this.activeModal.close('ok');
-    }, (error) => {
+    }, () => {
       this.submitted = false;
     });
   }
@@ -614,9 +615,9 @@ export class DeployComponent implements OnInit {
       }
       console.log(obj, 'obj');
       const URL = this.releasable ? 'inventory/release' : 'inventory/deployment/deploy';
-      this.coreService.post(URL, obj).subscribe((res: any) => {
+      this.coreService.post(URL, obj).subscribe(() => {
         this.activeModal.close('ok');
-      }, (error) => {
+      }, () => {
         this.submitted = false;
       });
     }
@@ -756,7 +757,7 @@ export class ExportComponent implements OnInit {
       });
       this.actualResult = this.inventoryService.sortList(this.actualResult);
       this.filterList();
-    }, (err) => {
+    }, () => {
       this.loading = false;
       this.nodes = [];
     });
@@ -909,7 +910,7 @@ export class ExportComponent implements OnInit {
       const node = e.node;
       if (node.origin.type && node.parentNode) {
         node.parentNode.isHalfChecked = true;
-        let flag = true;
+        let flag;
         if (!node.isChecked) {
           node.parentNode.isChecked = false;
           flag = this.inventoryService.checkHalfCheckBox(node.parentNode, false);
@@ -1183,7 +1184,7 @@ export class SetVersionComponent implements OnInit {
       setTimeout(() => {
         this.loading = false;
       }, 0);
-    }, (err) => {
+    }, () => {
       this.nodes = [];
       this.loading = false;
     });
@@ -1260,19 +1261,15 @@ export class SetVersionComponent implements OnInit {
     this.getJSObject();
     if (this.version.type === 'setSeparateVersion') {
       obj.deployConfigurations = this.object.deployConfigurations;
-      this.coreService.post('inventory/deployment/set_versions', obj).subscribe((res: any) => {
+      this.coreService.post('inventory/deployment/set_versions', obj).subscribe(() => {
         this.activeModal.close('ok');
-      }, (error) => {
-
       });
     } else {
       if (this.object.deployConfigurations.length > 0) {
         obj.deployConfigurations = this.object.deployConfigurations;
         obj.version = this.version.name;
-        this.coreService.post('inventory/deployment/set_version', obj).subscribe((res: any) => {
+        this.coreService.post('inventory/deployment/set_version', obj).subscribe(() => {
           this.activeModal.close('ok');
-        }, (error) => {
-
         });
       }
     }
@@ -1309,7 +1306,7 @@ export class SetVersionComponent implements OnInit {
       const node = e.node;
       if (node.origin.type && node.parentNode) {
         node.parentNode.isHalfChecked = true;
-        let flag = true;
+        let flag;
         if (!node.isChecked) {
           node.parentNode.isChecked = false;
           flag = this.inventoryService.checkHalfCheckBox(node.parentNode, false);
@@ -1519,7 +1516,7 @@ export class JsonEditorModalComponent implements OnInit {
   }
 
   private showMsg() {
-    let msg;
+    let msg = '';
     this.translate.get('common.message.copied').subscribe(translatedValue => {
       msg = translatedValue;
     });
@@ -1609,7 +1606,7 @@ export class UploadModalComponent implements OnInit {
         self.validateByURL(data, (res) => {
           if (!res.valid) {
             self.showErrorMsg(res.invalidMsg);
-          }else{
+          } else {
             self.data = data;
           }
         });
@@ -1661,7 +1658,7 @@ export class CreateObjectModalComponent {
         } else {
           obj.prefix = this.object._name;
         }
-        if(this.object.onlyContains){
+        if (this.object.onlyContains) {
           obj.noFolder = true;
         }
       }
@@ -1672,11 +1669,11 @@ export class CreateObjectModalComponent {
       this.coreService.post('inventory/validate/path', {
         objectType: this.obj.type,
         path: _path
-      }).subscribe((res: any) => {
+      }).subscribe(() => {
         this.activeModal.close({
           name: this.object.name
         });
-      }, (err) => {
+      }, () => {
         this.submitted = false;
       });
     }
@@ -1687,7 +1684,7 @@ export class CreateObjectModalComponent {
   selector: 'app-create-folder-template',
   templateUrl: './create-folder-dialog.html'
 })
-export class CreateFolderModalComponent{
+export class CreateFolderModalComponent {
   @Input() schedulerId: any;
   @Input() folders: any;
   @Input() rename: any;
@@ -1716,7 +1713,7 @@ export class CreateFolderModalComponent{
           key: res.path,
           children: []
         });
-      }, (err) => {
+      }, () => {
         this.submitted = false;
       });
     } else {
@@ -1726,9 +1723,9 @@ export class CreateFolderModalComponent{
           objectType: 'FOLDER',
           newPath: this.folder.name,
           overwrite: this.folder.overwrite,
-        }).subscribe((res) => {
+        }).subscribe(() => {
           this.activeModal.close('DONE');
-        }, (err) => {
+        }, () => {
           this.submitted = false;
         });
       } else {
@@ -1943,7 +1940,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.coreService.post('inventory/read/configuration', {
       objectType: this.selectedObj.type,
       name: this.selectedObj.name
-    }).subscribe((res: any) => {
+    }).subscribe(() => {
       const pathArr = [];
       const arr = this.selectedObj.path.split('/');
       const len = arr.length;
@@ -1980,7 +1977,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
               if (self.selectedObj.path === parentNode.path) {
                 parentNode.expanded = true;
                 for (let j = 0; j < parentNode.children.length; j++) {
-                  let x = parentNode.children[j];
+                  const x = parentNode.children[j];
                   if (x.object === self.selectedObj.type) {
                     x.expanded = true;
                     for (let k = 0; k < x.children.length; k++) {
@@ -2307,7 +2304,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         conf[1].expanded = true;
       }
       cb(conf);
-    }, (err) => {
+    }, () => {
       cb({
         name: 'Controller',
         controller: 'CONTROLLER',
@@ -2417,7 +2414,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.preferences = this.preferences;
     modalRef.componentInstance.display = this.preferences.auditLog;
     modalRef.componentInstance.origin = origin;
-    modalRef.result.then((result: any) => {
+    modalRef.result.then(() => {
 
     }, () => {
     });
@@ -2426,7 +2423,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   import() {
     const modalRef = this.modalService.open(ImportWorkflowModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.display = this.preferences.auditLog;
-    modalRef.result.then((res: any) => {
+    modalRef.result.then(() => {
     }, () => {
     });
   }
@@ -2436,7 +2433,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.schedulerIds = this.schedulerIds;
     modalRef.componentInstance.display = this.preferences.auditLog;
     modalRef.componentInstance.isDeploy = true;
-    modalRef.result.then((res: any) => {
+    modalRef.result.then(() => {
     }, () => {
     });
   }
@@ -2446,7 +2443,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.schedulerIds = this.schedulerIds;
     modalRef.componentInstance.preferences = this.preferences;
     modalRef.componentInstance.display = this.preferences.auditLog;
-    modalRef.result.then((res: any) => {
+    modalRef.result.then(() => {
     }, () => {
     });
   }
@@ -2456,7 +2453,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       const modalRef = this.modalService.open(CreateFolderModalComponent, {backdrop: 'static'});
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
       modalRef.componentInstance.folders = node.origin;
-      modalRef.result.then((res: any) => {
+      modalRef.result.then(() => {
         this.initTree(node.origin.path, null);
       }, () => {
       });
@@ -2474,13 +2471,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (!node.origin) {
         origin.path = origin.path.substring(0, origin.path.lastIndexOf('/')) || '/';
       }
-      const path = origin.path;
       const modalRef = this.modalService.open(SingleDeployComponent, {backdrop: 'static'});
       modalRef.componentInstance.schedulerIds = this.schedulerIds;
       modalRef.componentInstance.display = this.preferences.auditLog;
       modalRef.componentInstance.data = origin;
       modalRef.componentInstance.releasable = releasable;
-      modalRef.result.then((res: any) => {
+      modalRef.result.then(() => {
 
       }, () => {
       });
@@ -2492,7 +2488,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.path = origin.path;
       modalRef.componentInstance.data = origin;
       modalRef.componentInstance.releasable = releasable;
-      modalRef.result.then((res: any) => {
+      modalRef.result.then(() => {
 
       }, () => {
       });
@@ -2506,8 +2502,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.message = 'deleteDraftObject';
     modalRef.componentInstance.type = 'Delete';
     modalRef.componentInstance.objectName = object.path;
-    modalRef.result.then((res: any) => {
-      this.coreService.post('inventory/delete_draft', {objectType: 'FOLDER', path: object.path}).subscribe((res) => {
+    modalRef.result.then(() => {
+      this.coreService.post('inventory/delete_draft', {objectType: 'FOLDER', path: object.path}).subscribe(() => {
         forkJoin([
           this.coreService.post('inventory/deployment/deploy', {
             controllerIds: this.schedulerIds.controllerIds,
@@ -2516,10 +2512,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.coreService.post('inventory/release', {
             delete: [{objectType: 'FOLDER', path: object.path}]
           })
-        ]).subscribe((result) => {
+        ]).subscribe(() => {
           this.initTree(object.path, null);
-        }, (err) => {
-
         });
       });
     }, () => {
@@ -2537,12 +2531,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
     } else {
       obj.update = [{id: data.id}];
     }
-    this.coreService.post('inventory/release', obj).subscribe((res: any) => {
+    this.coreService.post('inventory/release', obj).subscribe(() => {
       this.updateFolders(data.path1 || data.path, () => {
         this.updateTree();
       });
-    }, (error) => {
-
     });
   }
 
@@ -2595,7 +2587,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       const name = obj.name + '.json';
       const fileType = 'application/octet-stream';
       delete res.configuration['TYPE'];
-      let data = JSON.stringify(res.configuration, undefined, 2);
+      const data = JSON.stringify(res.configuration, undefined, 2);
       const blob = new Blob([data], {type: fileType});
       saveAs(blob, name);
     });
@@ -2641,7 +2633,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  cut(node){
+  cut(node) {
     this.copyObj = node.cut || node.origin;
     this.copyObj.operation = 'CUT';
   }
@@ -2670,19 +2662,24 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (node instanceof NzTreeNode) {
       object = node.origin;
     }
+
     if (this.copyObj) {
       if (this.copyObj.operation === 'COPY') {
         this.openObjectNameModal(object, () => {
           if (node instanceof NzTreeNode) {
-            console.log(object)
+            object.expanded = true;
             if (!object.controller && !object.dailyPlan && !object.object) {
               let data = object.children;
               if (!data[0] || !data[0].controller || data.length === 0) {
                 this.updateObjects(node.origin, (children) => {
-                  if ((this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'SCHEDULE')) {
-                    children[1].expanded = true;
+                  if (this.copyObj.type) {
+                    if ((this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'SCHEDULE')) {
+                      children[1].expanded = true;
+                    } else {
+                      children[0].expanded = true;
+                    }
                   } else {
-                    children[0].expanded = true;
+                    console.log(children, 'else');
                   }
                   node.origin.children = children;
                   if (data.length > 0) {
@@ -2690,15 +2687,16 @@ export class InventoryComponent implements OnInit, OnDestroy {
                   }
                   node.origin.expanded = true;
                   this.updateTree();
-                }, true);
+                }, false);
                 return;
               }
-              if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'SCHEDULE') {
-                data = object.children[1];
-              } else {
-                data = object.children[0];
+              if (this.copyObj.type) {
+                if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'SCHEDULE') {
+                  data = object.children[1];
+                } else {
+                  data = object.children[0];
+                }
               }
-              data.expanded = true;
               if (data && data.children) {
                 for (let i = 0; i < data.children.length; i++) {
                   if (data.children[i].object === this.copyObj.type) {
@@ -2707,8 +2705,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
                   }
                 }
               }
-            } else{
-              console.log('else')
             }
           }
         });
@@ -2750,11 +2746,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
           }
         }
         obj.newPath = obj.newPath + '/' + this.copyObj.name;
-        this.coreService.post('inventory/rename', obj).subscribe((res) => {
+        this.coreService.post('inventory/rename', obj).subscribe(() => {
           this.copyObj = null;
           this.initTree(obj.newPath, null);
-        }, (err) => {
-
         });
       }
     }
@@ -2787,7 +2781,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
       request.path = this.copyObj.path;
     }
-    this.coreService.post('inventory/copy', request).subscribe((res: any) => {
+    this.coreService.post('inventory/copy', request).subscribe(() => {
       cb();
     });
   }
@@ -2807,7 +2801,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.path = object.path;
       modalRef.componentInstance.isRemove = true;
       modalRef.componentInstance.releasable = releasable;
-      modalRef.result.then((res: any) => {
+      modalRef.result.then(() => {
 
       }, () => {
       });
@@ -2823,7 +2817,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.message = 'removeObject';
       modalRef.componentInstance.type = 'Remove';
       modalRef.componentInstance.objectName = _path;
-      modalRef.result.then((res: any) => {
+      modalRef.result.then(() => {
         if (!object.type) {
           this.deleteObject(_path, object, node);
         } else {
@@ -2847,12 +2841,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.message = 'deleteDraftObject';
     modalRef.componentInstance.type = 'Delete';
     modalRef.componentInstance.objectName = _path;
-    modalRef.result.then((res: any) => {
+    modalRef.result.then(() => {
       let obj: any = {id: object.id};
       if (!object.type) {
         obj = {path: _path, objectType: 'FOLDER'};
       }
-      this.coreService.post('inventory/delete_draft', obj).subscribe((res) => {
+      this.coreService.post('inventory/delete_draft', obj).subscribe(() => {
         this.clearCopyObject(object);
       });
     }, () => {
@@ -2868,7 +2862,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (!object.type) {
       obj = {path: object.path, objectType: 'FOLDER'};
     }
-    this.coreService.post('inventory/recover', obj).subscribe((res: any) => {
+    this.coreService.post('inventory/recover', obj).subscribe(() => {
       object.deleted = false;
       this.initTree(obj.path || object.path, null);
     });
@@ -2882,7 +2876,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].path) {
-          let path = args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/') + 1) || '/';
+          const path = args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/') + 1) || '/';
           if (args.eventSnapshots[j].eventType.match(/Inventory/) || args.eventSnapshots[j].eventType.match(/Item/)) {
             console.log(args.eventSnapshots[j], 'updated...', path);
             if (args.eventSnapshots[j].objectType === 'FOLDER') {
@@ -3003,7 +2997,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   private deleteObject(_path, object, node) {
     const obj = {path: _path, objectType: 'FOLDER'};
-    this.coreService.post('inventory/remove', obj).subscribe((res: any) => {
+    this.coreService.post('inventory/remove', obj).subscribe(() => {
       object.deleted = true;
       if (node) {
         object.expanded = false;
@@ -3037,9 +3031,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       obj.delete = [{id: object.id}];
     }
     const URL = !isDeployable ? 'inventory/release' : 'inventory/deployment/deploy';
-    this.coreService.post(URL, obj).subscribe((res: any) => {
-
-    }, (error) => {
+    this.coreService.post(URL, obj).subscribe(() => {
 
     });
   }

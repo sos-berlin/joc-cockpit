@@ -74,7 +74,7 @@
             </ul>
           </div>
           <div class="inline" style="position: relative;top:-21px">
-            <div class="btn-group m-l-12">
+            <div class="btn-group m-l-12 hidden-btn-group">
               <ng-container *ngFor="let btn of filterBtn">
                 <button class="btn btn-grey btn-sm button-group-ellipsis"
                         [ngClass]="{'btn-primary': workflowFilters.date===btn.date}"
@@ -82,10 +82,28 @@
                 </button>
               </ng-container>
             </div>
-            <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="addOrder()" *ngIf="permission.Workflow.execute.addOrder"><i class="fa fa-plus-square"></i>
+            <div class="btn-group dropdown hidden-dropdown">
+              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" type="button" translate>
+                common.label.anyDate
+                <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+              </button>
+              <nz-dropdown-menu #anyDate="nzDropdownMenu" >
+                <ul nz-menu>
+                  <ng-container *ngFor="let btn of filterBtn">
+                    <li nz-menu-item
+                        [ngClass]="{'ant-select-dropdown-menu-item-active': workflowFilters.date=== btn.date}">
+                      <a (click)="loadOrders(btn.date)"
+                         translate>filters.button.{{btn.text}}</a>
+                    </li>
+                  </ng-container>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+            <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="addOrder()" [disabled]="!workflow.isCurrentVersion"
+                    *ngIf="permission.Workflow.execute.addOrder"><i class="fa fa-plus-square"></i>
               &nbsp;<span class="hidden-sm-down" translate>workflow.button.addOrder</span>
             </button>
-            <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="showDailyPlan()" *ngIf="permission.Workflow.execute.addOrder"><i class="fa fa-calendar"></i>
+            <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="showDailyPlan()"><i class="fa fa-calendar"></i>
               &nbsp;<span class="hidden-sm-down" translate>workflow.button.showDailyPlan</span>
             </button>
             <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>

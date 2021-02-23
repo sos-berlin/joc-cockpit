@@ -7,7 +7,7 @@ import * as _ from 'underscore';
 import {CalendarService} from '../../../../services/calendar.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
-// Calendar Objects
+
 declare const Holidays;
 declare const $;
 
@@ -15,7 +15,7 @@ declare const $;
   selector: 'app-ngbd-modal-content',
   templateUrl: './frequency-dialog.html'
 })
-export class FrequencyModalComponent implements OnInit, OnDestroy {
+export class FrequencyModalComponent implements OnInit {
   @Input() schedulerId: any;
   @Input() dateFormat: any;
   @Input() dateFormatM: any;
@@ -60,8 +60,6 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    $('.modal').css('opacity', 0.65);
-    $('#freq-modal').parents('div').addClass('card m-a');
     setTimeout(() => {
       this.isVisible = true;
     }, 0);
@@ -130,10 +128,6 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
     if (this.frequency.days && this.frequency.days.length > 0) {
       this.editor.isEnable = true;
     }
-  }
-
-  ngOnDestroy() {
-    $('.modal').css('opacity', 1);
   }
 
   updateFrequencyObj(i) {
@@ -435,7 +429,6 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
   addFrequency() {
     this.countryField = false;
     this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
-
     this.setEditorEnable();
     let flag = false;
     if (this.isRuntimeEdit) {
@@ -725,6 +718,10 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
           }
         } else if (data.tab == 'weekDays') {
           this.frequency.days = [];
+          this.frequency.all = false;
+        }
+        if(this.frequency.tab === data.tab){
+          this.editor.isEnable = false;
         }
         break;
       }
@@ -1292,7 +1289,6 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
 
   rename(inValid) {
     if (this.data.id === this.calendar.id && this.data.name !== this.calendar.name) {
-
       if (!inValid) {
         const data = this.coreService.clone(this.data);
         const name = this.calendar.name;
@@ -1315,7 +1311,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   createNewFrequency() {
-    const frequency = {
+    let frequency = {
       tab: 'weekDays',
       dateEntity: 'DAILY',
       year: new Date().getFullYear(),
@@ -1343,17 +1339,17 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     modalRef.componentInstance.schedulerId = this.schedulerId;
     modalRef.componentInstance.dateFormat = this.dateFormat;
     modalRef.componentInstance.dateFormatM = this.dateFormatM;
-    modalRef.componentInstance.calendar = this.calendar;
+    modalRef.componentInstance.calendar = this.coreService.clone(this.calendar);
     modalRef.componentInstance.editor = this.editor;
     modalRef.componentInstance.frequency = frequency || _.clone(data);
     modalRef.componentInstance.isRuntimeEdit = !!data;
     if (data) {
       modalRef.componentInstance._temp = _.clone(data);
     }
-    modalRef.result.then(() => {
+    modalRef.result.then((res) => {
+      this.calendar.configuration = res.calendar.configuration;
       this.saveJSON();
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
     });
   }
 
@@ -1386,8 +1382,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     modalRef.componentInstance.flag = true;
     modalRef.result.then(() => {
 
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
     });
   }
 
@@ -1415,8 +1410,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     modalRef.componentInstance.data = data;
     modalRef.result.then(() => {
 
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
     });
   }
 
@@ -1691,8 +1685,8 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
             this.invalidMsg = res.invalidMsg;
           }
         }
-      }, (err) => {
-        console.log(err);
+      }, () => {
+
       });
     }
   }

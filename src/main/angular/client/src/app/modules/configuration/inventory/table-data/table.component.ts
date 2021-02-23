@@ -1,15 +1,16 @@
-import {Component, Input, OnDestroy} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from 'src/app/services/core.service';
 import {DataService} from 'src/app/services/data.service';
 import {ConfirmModalComponent} from '../../../../components/comfirm-modal/confirm.component';
 import {CreateObjectModalComponent} from '../inventory.component';
+import {AuthService} from '../../../../components/guard';
 
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html'
 })
-export class TableComponent implements OnDestroy{
+export class TableComponent {
   @Input() schedulerId: any;
   @Input() preferences: any;
   @Input() permission: any;
@@ -20,17 +21,12 @@ export class TableComponent implements OnDestroy{
   filter: any = {sortBy: 'name', reverse: false};
 
   constructor(public coreService: CoreService, private modalService: NgbModal,
-              private dataService: DataService) {
+              private dataService: DataService, private authService: AuthService) {
   }
 
-  ngOnDestroy() {
-    this.dataService.reloadTree.complete();
-  }
-
-  add() {
+  add(): void {
     const obj: any = {
       type: this.objectType === 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : this.objectType,
-      name: name,
       path: this.dataObj.path
     };
     if (!this.dataObj.path) {
@@ -58,7 +54,7 @@ export class TableComponent implements OnDestroy{
     });
   }
 
-  private store(obj, _path, configuration){
+  private store(obj, _path, configuration): void {
     this.coreService.post('inventory/store', {
       objectType: this.objectType === 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : this.objectType,
       path: _path,
@@ -77,39 +73,39 @@ export class TableComponent implements OnDestroy{
     });
   }
 
-  paste() {
+  paste(): void {
     this.dataService.reloadTree.next({paste: this.dataObj});
   }
 
-  cutObject(data) {
+  cutObject(data): void {
     this.dataService.reloadTree.next({cut: data});
   }
 
-  copyObject(data) {
+  copyObject(data): void {
     this.dataService.reloadTree.next({copy: data});
   }
 
-  shallowCopy(data) {
+  shallowCopy(data): void {
     this.dataService.reloadTree.next({shallowCopy: data});
   }
 
-  editObject(data) {
+  editObject(data): void {
     this.dataService.reloadTree.next({set: data});
   }
 
-  showJson(data, isEdit) {
+  showJson(data, isEdit): void {
     this.dataService.reloadTree.next({showJson: data, edit: isEdit});
   }
 
-  exportJSON(data) {
+  exportJSON(data): void {
     this.dataService.reloadTree.next({exportJSON: data});
   }
 
-  importJSON(data) {
+  importJSON(data): void {
     this.dataService.reloadTree.next({importJSON: data});
   }
 
-  removeObject(object) {
+  removeObject(object): void {
     const _path = object.path + (object.path === '/' ? '' : '/') + object.name;
     const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.title = 'delete';
@@ -166,11 +162,26 @@ export class TableComponent implements OnDestroy{
   }
 
   private deleteObject(_path, object) {
-    this.coreService.post('inventory/delete', {
-      id: object.id
-    }).subscribe(res => {
-      object.deleted = true;
-      this.dataService.reloadTree.next({reload: true});
+    const releasable = (this.objectType === 'SCHEDULE' || this.objectType.match(/calendar/));
+
+    const obj: any = {delete: {deployConfigurations: []}};
+    if (!releasable) {
+      obj.controllerIds = JSON.parse(this.authService.scheduleIds).controllerIds;
+    }
+    if (releasable) {
+      obj.delete = [{id: object.id}];
+    } else {
+      const objDep = {
+        configuration: {
+          path: object.path + (object.path === '/' ? '' : '/') + object.name,
+          objectType: this.objectType
+        }
+      };
+      obj.delete.deployConfigurations.push(objDep);
+    }
+    const URL = releasable ? 'inventory/release' : 'inventory/deployment/deploy';
+    this.coreService.post(URL, obj).subscribe(() => {
+
     });
   }
 

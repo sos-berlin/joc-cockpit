@@ -184,7 +184,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
         if (args.eventSnapshots[j].eventType === 'ItemAdded' && args.eventSnapshots[j].path) {
           const path = args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/')) || '/';
           this.calendarFilters.selectedkeys = [path];
-          this.addPathToExpand(path);
           this.initTree();
           break;
         } else if (args.eventSnapshots[j].eventType.match('Calendar')) {
@@ -262,20 +261,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   receiveAction($event) {
     this.getCalendars($event, $event.action !== 'NODE');
-  }
-
-  private addPathToExpand(path) {
-    const arr = path.split('/');
-    let _path = '';
-    this.child.defaultExpandedKeys = [];
-    arr.forEach((value) => {
-      if (_path !== '/') {
-        _path = _path + '/' + value;
-      } else {
-        _path = _path + value;
-      }
-      this.child.defaultExpandedKeys.push(_path);
-    });
   }
 
   /** ---------------------------- Action ----------------------------------*/

@@ -74,13 +74,13 @@
     <div class="inline w-full" [hidden]="isLoading">
       <div appResizable [sideView]="sideView.inventory" id="leftPanel" class="sticky leftPanel editor">
         <div class="pl-20 editor-tree">
-          <a class="text resize-cursor a-1" style="position: absolute; right: 28px;">
+          <a class="text resize-cursor a-1" style="position: absolute; right: 28px;z-index:99">
             <i class="fa fa-angle-double-left fa-lg" (click)="hidePanel()"></i>
           </a>
-          <a class="text resize-cursor a-3" style="position: absolute; right: 18px;">
+          <a class="text resize-cursor a-3" style="position: absolute; right: 18px;;z-index:99">
             <i class="fa fa-angle-double-right fa-lg" (click)="showPanel()"></i>
           </a>
-          <perfect-scrollbar class="scroll-container tree-block">
+          <perfect-scrollbar class="tree-block">
               <nz-tree
                 #treeCtrl
                 nzNoAnimation

@@ -173,7 +173,7 @@
                           <app-order-action [order]="order" [schedulerId]="schedulerIds.selected" [permission]="permission" [preferences]="preferences"></app-order-action>
                         </div>
                         <div class="text-sm text-left text-muted p-t-sm">
-                          <span translate>common.label.status </span>:
+                          <span translate>order.label.state </span>:
                           <span [ngClass]="coreService.getColor(order.state.severity, 'text')" [innerHtml]="order.state._text | translate"></span>
                         </div>
                         <div class="text-sm text-left text-muted p-t-xs">

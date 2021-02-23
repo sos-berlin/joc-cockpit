@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild, OnDestroy, Input, Output, EventEmitter} from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Subscription} from 'rxjs';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import * as _ from 'underscore';
@@ -344,7 +344,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private modalService: NgbModal, private workflowService: WorkflowService,
               private translate: TranslateService, private searchPipe: SearchPipe, private excelService: ExcelService,
-              private toasterService: ToasterService) {
+              private toasterService: ToasterService, private router: Router) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -381,7 +381,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow) {
           for (let i = 0; i < this.workflows.length; i++) {
-            if (this.workflows[i].path === args.eventSnapshots[j].workflow.path) {
+            if (this.workflows[i].path === args.eventSnapshots[j].workflow.path && this.workflows[i].versionId === args.eventSnapshots[j].workflow.versionId) {
               workflows.push(args.eventSnapshots[j].workflow);
               break;
             }
@@ -578,7 +578,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         for (let i = 0; i < this.workflows.length; i++) {
           if (obj.workflowIds && obj.workflowIds.length > 0 && !_.isEmpty(this.workflows[i].ordersSummary)) {
             for (let j = 0; j < obj.workflowIds.length; j++) {
-              if (this.workflows[i].path === obj.workflowIds[j].path) {
+              if (this.workflows[i].path === obj.workflowIds[j].path && this.workflows[i].versionId === obj.workflowIds[j].versionId) {
                 this.workflows[i].numOfOrders = 0;
                 this.workflows[i].orders = [];
                 this.workflows[i].ordersSummary = {};
@@ -588,7 +588,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             }
           }
           for (let j = 0; j < res.orders.length; j++) {
-            if (this.workflows[i].path === res.orders[j].workflowId.path) {
+            if (this.workflows[i].path === res.orders[j].workflowId.path && this.workflows[i].versionId === res.orders[j].workflowId.versionId) {
               this.workflows[i].numOfOrders = (this.workflows[i].numOfOrders || 0) + 1;
               if (!this.workflows[i].orders) {
                 this.workflows[i].orders = [];
@@ -602,7 +602,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               }
             }
           }
-          if (this.sideBar.isVisible && this.workflows[i].path === this.sideBar.workflow) {
+          if (this.sideBar.isVisible && this.workflows[i].path === this.sideBar.workflow &&
+            this.sideBar.isVisible && this.workflows[i].versionId === this.sideBar.versionId) {
             this.sideBar.orders = this.workflows[i].orders;
           }
         }
@@ -984,6 +985,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.showPanel = '';
   }
 
+  navToDetailView(workflow) {
+    this.router.navigate(['/workflows/workflow_detail', workflow.path, workflow.versionId]);
+  }
+
   expandDetails() {
     this.currentData.forEach((workflow) => {
       workflow.show = true;
@@ -1050,7 +1055,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   viewOrders(workflow) {
-    this.sideBar = {isVisible: true, orders: workflow.orders, workflow: workflow.path, orderRequirements: workflow.orderRequirements};
+    this.sideBar = {isVisible: true, orders: workflow.orders, workflow: workflow.path, versionId : workflow.versionId, orderRequirements: workflow.orderRequirements};
   }
 
   toggleCompactView() {

@@ -172,12 +172,21 @@
                       <div>
                         <div class="text-left block-ellipsis">
                           <span class="text-sm fa fa-sitemap"></span>&nbsp;
-                          <span [nz-tooltip]="workflow.title" [innerHtml]="workflow.name"></span>
+                          <a class="text-hover-primary" (click)="navToDetailView(workflow)" [nz-tooltip]="workflow.title" [innerHtml]="workflow.name"></a>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
                           <app-workflow-action [schedulerId]="schedulerIds.selected" [permission]="permission"
                                                [preferences]="preferences" [workflow]="workflow"></app-workflow-action>
                         </div>
+                      </div>
+                      <div class="text-sm text-left text-muted p-t-sm block-ellipsis">
+                        <span translate>inventory.label.version </span>:
+                        <span class="text-black-dk" translate>{{workflow.versionId}}</span>
+                        <div></div>
+                      </div>
+                      <div class="text-sm text-left text-muted p-t-xs">
+                        <span translate>common.label.status </span>:
+                        <span [ngClass]="coreService.getColor(workflow.state.severity, 'text')" [innerHtml]="workflow.state._text | translate"></span>
                       </div>
                       <div class="text-sm text-left text-muted p-t-xs" *ngIf="!workflowFilters.isCompact">
                         <span>
@@ -273,6 +282,20 @@
                         <i *ngIf="workflowFilters.filter.sortBy == 'path' && !workflowFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="workflowFilters.filter.sortBy == 'path' && workflowFilters.reverse"
+                           class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th (click)="sort('isCurrentVersion')" rowspan="2">
+                      <a><span class="p-r-xs" translate>inventory.label.version</span>
+                        <i *ngIf="workflowFilters.filter.sortBy == 'isCurrentVersion' && !workflowFilters.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i *ngIf="workflowFilters.filter.sortBy == 'isCurrentVersion' && workflowFilters.reverse"
+                           class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th (click)="sort('state._text')" rowspan="2">
+                      <a><span class="p-r-xs" translate>common.label.status</span>
+                        <i *ngIf="workflowFilters.filter.sortBy == 'state._text' && !workflowFilters.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i *ngIf="workflowFilters.filter.sortBy == 'state._text' && workflowFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
                     <th (click)="sort('numOfOrders')" rowspan="2">
@@ -373,6 +396,14 @@
                            class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                         <span>{{workflow.path}} </span>
                        </span>
+                      </td>
+                      <td>
+                        <span>{{workflow.versionId}}</span>
+                        <div class="text-muted text-sm" *ngIf="workflow.versionDate">{{workflow.versionDate | stringToDate}}</div>
+                      </td>
+                      <td>
+                        <a class="label" *ngIf="workflow.state" [ngClass]="coreService.getColor(workflow.state.severity, 'bg')"
+                           [innerHtml]="workflow.state._text | translate"></a>
                       </td>
                       <td>
                         <a class="text-hover-primary" (click)="viewOrders(workflow)" [innerHtml]="workflow.numOfOrders || 0"></a>
