@@ -824,7 +824,14 @@ export class WorkflowService {
         if (data.state) {
           color = this.coreService.getColor(data.state.severity, 'text');
         }
-        str = '<div class="vertex-text"><div class="block-ellipsis-job"><i class="fa fa-circle text-xs p-r-xs ' + color + '"></i>' + data.orderId + '</div>';
+        let className = 'hide';
+        if (data.cyclicOrder) {
+          className = 'show';
+        }
+        str = '<div class="vertex-text"><div class="block-ellipsis-job">' +
+          '<i style="position: absolute;margin-top: -2px;margin-left: -10px;" class="fa fa-repeat ' + className + '" aria-hidden="true"></i>' +
+          '<i class="fa fa-circle text-xs p-r-xs ' + color + '"></i>' + data.orderId
+          + '</div>';
         if (data.scheduledFor) {
           str = str + ' <span class="text-xs" >' + this.stringDatePipe.transform(data.scheduledFor) + '</span>';
         }
@@ -894,7 +901,6 @@ export class WorkflowService {
         this.translate.get('workflow.label.directory').subscribe(translatedValue => {
           directory = translatedValue;
         });
-
         return '<b>' + agent + '</b> : ' + (cell.getAttribute('agent') || '-') + '</br>' +
           '<b>' + regex + '</b> : ' + (cell.getAttribute('regex') || '-') + '</br>' +
           '<b>' + directory + '</b> : ' + (cell.getAttribute('directory') || '-');
@@ -929,7 +935,8 @@ export class WorkflowService {
       } else if (cell.value.tagName === 'Order') {
         let data = cell.getAttribute('order');
         data = JSON.parse(data);
-        let state = '', orderId = '', _text = '', scheduledFor = '';
+        let state = '', orderId = '', _text = '', scheduledFor = '',
+          cyclicOrder = '', begin = '', end = '', orders = '';
         this.translate.get('workflow.label.orderId').subscribe(translatedValue => {
           orderId = translatedValue;
         });
@@ -942,9 +949,33 @@ export class WorkflowService {
         this.translate.get(data.state._text).subscribe(translatedValue => {
           _text = translatedValue;
         });
-        return '<b>' + orderId + '</b> : ' + (data.orderId || '-') + '</br>' +
-          '<b>' + state + '</b> : ' + _text + '</br>' +
-          '<b>' + scheduledFor + '</b> : ' + this.stringDatePipe.transform(data.scheduledFor);
+        if (data.cyclicOrder) {
+          this.translate.get('dailyPlan.label.cyclicOrder').subscribe(translatedValue => {
+            cyclicOrder = translatedValue;
+          });
+          this.translate.get('dailyPlan.label.begin').subscribe(translatedValue => {
+            begin = translatedValue;
+          });
+          this.translate.get('dailyPlan.label.end').subscribe(translatedValue => {
+            end = translatedValue;
+          });
+          this.translate.get('order.label.orders').subscribe(translatedValue => {
+            orders = translatedValue;
+          });
+        }
+        let div = '<div><b>' + orderId + '</b> : ' + (data.orderId || '-') + '</br>' +
+          '<b>' + state + '</b> : ' + _text + '</br>';
+        if (data.cyclicOrder) {
+          div = div + '<b class="m-b-xs">' + cyclicOrder + '</b></br>';
+          div = div + '<b class="p-l-sm">' + begin + '</b> : ' + this.stringDatePipe.transform(data.cyclicOrder.firstStart) + '</br>';
+          div = div + '<b class="p-l-sm">' + end + '</b> : ' + this.stringDatePipe.transform(data.cyclicOrder.lastStart) + '</br>';
+          div = div + '<b class="p-l-sm">' + orders + '</b> : ' + data.cyclicOrder.count;
+        } else {
+          div = div + '<b>' + scheduledFor + '</b> : ' + this.stringDatePipe.transform(data.scheduledFor);
+        }
+        div = div + '</div>';
+
+        return div;
       } else {
         const x = cell.getAttribute('label');
         if (x) {

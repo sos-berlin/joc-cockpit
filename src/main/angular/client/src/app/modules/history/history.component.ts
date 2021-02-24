@@ -611,7 +611,7 @@ export class SubmissionSearchComponent implements OnInit {
   submitted = false;
   isUnique = true;
 
-  constructor(public coreService: CoreService, private modalService: NgbModal) {
+  constructor(public coreService: CoreService) {
   }
 
   ngOnInit() {
@@ -741,6 +741,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
   jobHistoryFilterList: any = [];
   deploymentHistoryFilterList: any = [];
   submissionHistoryFilterList: any = [];
+
+  orderSearchableProperties = ['controllerId', 'orderId', 'workflow', 'state', '_text', 'orderState', 'plannedTime', 'position'];
+  taskSearchableProperties = ['controllerId', 'job', 'criticality', 'request', 'workflow', 'orderId', 'position'];
+  deploymentSearchableProperties = ['controllerId', 'deploymentDate', 'account', 'operation', 'state', 'deleteDate'];
+  submissionSearchableProperties = ['controllerId', 'dailyPlanDate', 'controllers'];
+
   object: any = {};
   ignoreListConfigId = 0;
   subscription1: Subscription;
@@ -904,7 +910,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   private mergeOldData() {
     let oldEntires = _.clone(this.data);
-    let arr = this.order.searchText ? this.searchPipe.transform(this.historys, this.order.searchText) : this.historys;
+    let arr = this.order.searchText ? this.searchPipe.transform(this.historys, this.order.searchText, this.orderSearchableProperties) : this.historys;
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < oldEntires.length; j++) {
         if (arr[i].orderId === oldEntires[j].orderId) {
@@ -1061,7 +1067,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   private mergeOldTaskData() {
     let oldEntires = _.clone(this.data);
-    let arr = this.task.searchText ? this.searchPipe.transform(this.jobHistorys, this.task.searchText) : this.jobHistorys;
+    let arr = this.task.searchText ? this.searchPipe.transform(this.jobHistorys, this.task.searchText, this.taskSearchableProperties) : this.jobHistorys;
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < oldEntires.length; j++) {
         if (arr[i].taskId === oldEntires[j].taskId) {
@@ -1158,6 +1164,38 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
+  private mergeDepData() {
+    let oldEntires = _.clone(this.data);
+    let arr = this.deployment.searchText ? this.searchPipe.transform(this.deploymentHistorys, this.deployment.searchText, this.deploymentSearchableProperties) : this.deploymentHistorys;
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0; j < oldEntires.length; j++) {
+        if (arr[i].commitId === oldEntires[j].commitId) {
+          if (oldEntires[j].show) {
+            arr[i].show = true;
+            arr[i].children = oldEntires[j].children;
+          }
+          oldEntires.splice(j, 1);
+          break;
+        }
+      }
+    }
+    this.data = arr;
+  }
+
+  private convertDeployRequestBody(obj) {
+    obj.limit = parseInt(this.preferences.maxRecords, 10);
+    obj.timeZone = this.preferences.zone;
+    if ((obj.from && typeof obj.from.getMonth === 'function') || (obj.to && typeof obj.to.getMonth === 'function')) {
+      delete obj['timeZone'];
+    }
+    if ((obj.from && typeof obj.from.getMonth === 'function')) {
+      obj.from = moment(obj.from).tz(this.preferences.zone);
+    }
+    if ((obj.to && typeof obj.to.getMonth === 'function')) {
+      obj.to = moment(obj.to).tz(this.preferences.zone);
+    }
+  }
+
   isCustomizationSelected5(flag) {
     if (flag) {
       this.temp_filter5.category = _.clone(this.submission.filter.category);
@@ -1195,12 +1233,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   submissionHistory(obj, flag) {
-    let isAutoExpand = true;
-    if (this.currentData.length > 0) {
-      if (this.currentData[0].show === false) {
-        isAutoExpand = false;
-      }
-    }
     this.historyFilters.type = 'SUBMISSION';
     if (!obj) {
       if (this.historyFilters.current == true) {
@@ -1234,11 +1266,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.mergeSubData();
       } else {
         this.searchInResult();
-        if (this.data.length > 0 && isAutoExpand) {
-          if (this.data[0].show === undefined) {
-            this.data[0].show = true;
-          }
-        }
       }
       this.isLoading = true;
     }, () => {
@@ -1249,7 +1276,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   private mergeSubData() {
     let oldEntires = _.clone(this.data);
-    let arr = this.submission.searchText ? this.searchPipe.transform(this.submissionHistorys, this.submission.searchText) : this.submissionHistorys;
+    let arr = this.submission.searchText ? this.searchPipe.transform(this.submissionHistorys, this.submission.searchText, this.submissionSearchableProperties) : this.submissionHistorys;
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < oldEntires.length; j++) {
         if (arr[i].dailyPlanDate === oldEntires[j].dailyPlanDate) {
@@ -1264,35 +1291,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.data = arr;
   }
 
-  private mergeDepData() {
-    let oldEntires = _.clone(this.data);
-    let arr = this.deployment.searchText ? this.searchPipe.transform(this.deploymentHistorys, this.deployment.searchText) : this.deploymentHistorys;
-    for (let i = 0; i < arr.length; i++) {
-      for (let j = 0; j < oldEntires.length; j++) {
-        if (arr[i].commitId === oldEntires[j].commitId) {
-          if (oldEntires[j].show) {
-            arr[i].show = true;
-            arr[i].children = oldEntires[j].children;
+  expandDailyPlan(history) {
+    history.show = true;
+    if (history.controllers && history.controllers.length > 0) {
+      history.controllers.forEach((controller) => {
+        controller.submissions.forEach((sub) => {
+          if (sub.show === undefined) {
+            sub.show = true;
           }
-          oldEntires.splice(j, 1);
-          break;
-        }
-      }
-    }
-    this.data = arr;
-  }
-
-  private convertDeployRequestBody(obj) {
-    obj.limit = parseInt(this.preferences.maxRecords, 10);
-    obj.timeZone = this.preferences.zone;
-    if ((obj.from && typeof obj.from.getMonth === 'function') || (obj.to && typeof obj.to.getMonth === 'function')) {
-      delete obj['timeZone'];
-    }
-    if ((obj.from && typeof obj.from.getMonth === 'function')) {
-      obj.from = moment(obj.from).tz(this.preferences.zone);
-    }
-    if ((obj.to && typeof obj.to.getMonth === 'function')) {
-      obj.to = moment(obj.to).tz(this.preferences.zone);
+        });
+      });
     }
   }
 
@@ -1809,13 +1817,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   searchInResult() {
     if (this.historyFilters.type === 'ORDER') {
-      this.data = this.order.searchText ? this.searchPipe.transform(this.historys, this.order.searchText) : this.historys;
+      this.data = this.order.searchText ? this.searchPipe.transform(this.historys, this.order.searchText, this.orderSearchableProperties) : this.historys;
     } else if (this.historyFilters.type === 'TASK') {
-      this.data = this.task.searchText ? this.searchPipe.transform(this.jobHistorys, this.task.searchText) : this.jobHistorys;
+      this.data = this.task.searchText ? this.searchPipe.transform(this.jobHistorys, this.task.searchText, this.taskSearchableProperties) : this.jobHistorys;
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
-      this.data = this.deployment.searchText ? this.searchPipe.transform(this.deploymentHistorys, this.deployment.searchText) : this.deploymentHistorys;
+      this.data = this.deployment.searchText ? this.searchPipe.transform(this.deploymentHistorys, this.deployment.searchText, this.deploymentSearchableProperties) : this.deploymentHistorys;
     } else if (this.historyFilters.type === 'SUBMISSION') {
-      this.data = this.submission.searchText ? this.searchPipe.transform(this.submissionHistorys, this.submission.searchText) : this.submissionHistorys;
+      this.data = this.submission.searchText ? this.searchPipe.transform(this.submissionHistorys, this.submission.searchText, this.submissionSearchableProperties) : this.submissionHistorys;
     }
     this.data = [...this.data];
   }
@@ -1826,9 +1834,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (this.historyFilters.type === 'DEPLOYMENT') {
         this.showChildHistory(value);
       } else if (this.historyFilters.type === 'SUBMISSION') {
-        console.log(value);
-        value.controllers.forEach((sub) => {
-          sub.show = true;
+        value.controllers.forEach((controller) => {
+          controller.submissions.forEach((sub) => {
+            sub.show = true;
+          });
         });
       }
     });

@@ -20,6 +20,7 @@ export class ShowModalComponent {
   constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
   }
 }
+
 // Main Component
 @Component({
   selector: 'app-single-calendar',
@@ -87,8 +88,8 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
       const modalRef = this.modalService.open(ShowModalComponent, {backdrop: 'static'});
       modalRef.componentInstance.calendar = cal;
       modalRef.result.then(() => {
-      }, (reason) => {
-        console.log('close...', reason);
+      }, () => {
+
       });
     });
   }
@@ -97,10 +98,10 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
     const modalRef = this.modalService.open(CalendarModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.path = calendar.path;
     modalRef.componentInstance.calendar = true;
-    modalRef.result.then((result) => {
-      console.log(result);
-    }, (reason) => {
-      console.log('close...', reason);
+    modalRef.result.then(() => {
+
+    }, () => {
+
     });
   }
 
@@ -127,6 +128,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   auditLogs: any = [];
   calendarFilters: any = {};
   sideView: any = {};
+  searchableProperties = ['name', 'path', 'title', 'type', 'from', 'to'];
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -211,7 +213,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   private getCalendarsList(obj) {
     this.coreService.post('calendars', obj).subscribe((res: any) => {
       this.loading = false;
-      if(res.calendars) {
+      if (res.calendars) {
         for (let i = 0; i < res.calendars.length; i++) {
           res.calendars[i].path1 = res.calendars[i].path.substring(0, res.calendars[i].path.lastIndexOf('/')) || res.calendars[i].path.substring(0, res.calendars[i].path.lastIndexOf('/') + 1);
         }
@@ -278,7 +280,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   searchInResult() {
-    this.data = this.calendarFilters.searchText ? this.searchPipe.transform(this.calendars, this.calendarFilters.searchText) : this.calendars;
+    this.data = this.calendarFilters.searchText ? this.searchPipe.transform(this.calendars, this.calendarFilters.searchText, this.searchableProperties) : this.calendars;
     this.data = [...this.data];
   }
 
@@ -292,8 +294,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
       const modalRef = this.modalService.open(ShowModalComponent, {backdrop: 'static'});
       modalRef.componentInstance.calendar = cal;
       modalRef.result.then(() => {
-      }, (reason) => {
-        console.log('close...', reason);
+      }, () => {
+
       });
     });
   }
@@ -302,10 +304,10 @@ export class CalendarComponent implements OnInit, OnDestroy {
     const modalRef = this.modalService.open(CalendarModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.path = calendar.path;
     modalRef.componentInstance.calendar = true;
-    modalRef.result.then((result) => {
-      console.log(result);
-    }, (reason) => {
-      console.log('close...', reason);
+    modalRef.result.then(() => {
+
+    }, () => {
+
     });
   }
 

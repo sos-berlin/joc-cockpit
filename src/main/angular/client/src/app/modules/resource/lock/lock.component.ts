@@ -26,6 +26,7 @@ export class LockComponent implements OnInit, OnDestroy {
   data: any = [];
   locksFilters: any = {};
   sideView: any = {};
+  searchableProperties = ['id', 'path', 'limit', 'title'];
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -203,7 +204,7 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   searchInResult() {
-    this.data = this.locksFilters.searchText ? this.searchPipe.transform(this.locks, this.locksFilters.searchText) : this.locks;
+    this.data = this.locksFilters.searchText ? this.searchPipe.transform(this.locks, this.locksFilters.searchText, this.searchableProperties) : this.locks;
     this.data = [...this.data];
   }
 

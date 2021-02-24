@@ -173,8 +173,6 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
   adtLog: any = {};
-  subscription1: Subscription;
-  subscription2: Subscription;
   auditLogs: any = [];
   isLoaded = false;
   showSearchPanel = false;
@@ -185,6 +183,10 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   filterList: any = [];
   data = [];
   currentData = [];
+  searchableProperties = ['controllerId', 'orderId', 'account', 'request', 'workflow', 'created', 'comment', 'ticketLink'];
+
+  subscription1: Subscription;
+  subscription2: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private modalService: NgbModal, private searchPipe: SearchPipe,
@@ -342,7 +344,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   searchInResult() {
-    this.data = this.adtLog.searchText ? this.searchPipe.transform(this.auditLogs, this.adtLog.searchText) : this.auditLogs;
+    this.data = this.adtLog.searchText ? this.searchPipe.transform(this.auditLogs, this.adtLog.searchText, this.searchableProperties) : this.auditLogs;
     this.data = [...this.data];
   }
 

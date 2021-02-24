@@ -260,77 +260,21 @@ export class CreatePlanModalComponent{
 }
 
 @Component({
-  selector: 'app-submit-order-modal',
-  templateUrl: './submit-order-dialog.html',
-})
-export class SubmitOrderModalComponent implements OnInit {
-  submitted = false;
-  @Input() schedulerId: string;
-  @Input() orders;
-  @Input() order;
-  @Input() plan;
-  @Input() workflow;
-  @Input() selectedDate;
-
-  constructor(public activeModal: NgbActiveModal, public  coreService: CoreService) {
-  }
-
-  ngOnInit() {
-    if (this.workflow && !this.order.key) {
-      this.order.key = this.order.workflow;
-    }
-  }
-
-  onSubmit() {
-    this.submitted = true;
-    const obj: any = {
-      controllerId: this.schedulerId,
-      filter: {}
-    };
-
-    if (this.workflow) {
-      obj.filter.workflowPaths = [this.order.key];
-    } else {
-      if (this.order) {
-        if (this.plan || this.order.key) {
-          obj.filter.schedulePaths = [this.order.schedulePath || this.order.key];
-        } else {
-          obj.filter.orderIds = [this.order.orderId];
-        }
-      } else if (this.orders) {
-        obj.filter.orderIds = [];
-        this.orders.forEach((order) => {
-          obj.filter.orderIds.push(order.orderId);
-        });
-      }
-    }
-    this.coreService.post('daily_plan/orders/submit', obj).subscribe((res) => {
-      this.submitted = false;
-      this.activeModal.close('');
-    }, () => {
-      this.submitted = false;
-    });
-  }
-
-  cancel() {
-    this.activeModal.dismiss('');
-  }
-}
-
-@Component({
   selector: 'app-remove-plan-modal',
   templateUrl: './remove-plan-dialog.html',
 })
 export class RemovePlanModalComponent implements OnInit {
-  submitted = false;
   @Input() schedulerId: string;
   @Input() orders;
   @Input() order;
-  @Input() plan;
   @Input() workflow;
   @Input() timeZone;
   @Input() selectedDate;
   @Input() submissionsDelete: boolean;
+  @Input() isSubmit: boolean;
+
+  submitted = false;
+  count = 0;
 
   preferences: any;
   display: any;
@@ -354,9 +298,25 @@ export class RemovePlanModalComponent implements OnInit {
     if (this.workflow && !this.order.key) {
       this.order.key = this.order.workflow;
     }
+    if (this.order) {
+      if (this.order.value) {
+        if (this.order.value.length > 1) {
+          this.count = this.order.value.reduce((acc, value) => {
+            return (acc + (value.cyclicOrder ? value.cyclicOrder.count : 1));
+          });
+        } else {
+          this.count = (this.order.value[0].cyclicOrder ? this.order.value[0].cyclicOrder.count : 1);
+        }
+      }
+    } else if (this.orders) {
+      this.orders.forEach((order) => {
+        this.count = this.count + (order.cyclicOrder ? order.cyclicOrder.count : 1);
+      });
+    }
   }
 
-  onSubmit() {
+  onSubmit(): void {
+    this.submitted = true;
     const obj: any = {
       controllerId: this.schedulerId,
       filter: {}
@@ -366,7 +326,37 @@ export class RemovePlanModalComponent implements OnInit {
       obj.filter.workflowPaths = [this.order.key];
     } else {
       if (this.order) {
-        if (this.plan || this.order.key) {
+        if (this.order.key) {
+          obj.filter.schedulePaths = [this.order.schedulePath || this.order.key];
+        } else {
+          obj.filter.orderIds = [this.order.orderId];
+        }
+      } else if (this.orders) {
+        obj.filter.orderIds = [];
+        this.orders.forEach((order) => {
+          obj.filter.orderIds.push(order.orderId);
+        });
+      }
+    }
+    this.coreService.post('daily_plan/orders/submit', obj).subscribe(() => {
+      this.submitted = false;
+      this.activeModal.close('');
+    }, () => {
+      this.submitted = false;
+    });
+  }
+
+  onRemove(): void {
+    const obj: any = {
+      controllerId: this.schedulerId,
+      filter: {}
+    };
+
+    if (this.workflow) {
+      obj.filter.workflowPaths = [this.order.key];
+    } else {
+      if (this.order) {
+        if (this.order.key) {
           obj.filter.schedulePaths = [this.order.schedulePath || this.order.key];
         } else {
           obj.filter.orderIds = [this.order.orderId];
@@ -765,6 +755,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   isToggle = false;
   selectedDate: Date;
   submissionHistory: any = [];
+  searchableProperties = ['orderId', 'schedulePath', 'workflowPath', 'status', 'plannedStartTime', 'expectedEndTime', 'expectedDuration'];
   expandedPaths = new Set();
 
   object = {
@@ -922,9 +913,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (this.pageView !== 'grid') {
       if (!this.dailyPlanFilters.filter.groupBy) {
         this.planOrders.forEach((order) => {
-          if(!order.show && flag) {
+          if (!order.show && flag) {
             this.addDetailsOfOrder(order);
-          } else{
+          } else {
             order.show = flag;
           }
         });
@@ -987,7 +978,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   /**--------------- Navigate End-------------------*/
 
 
-
   /* ------------- Action ------------------- */
 
   deleteSubmission(): void {
@@ -1033,9 +1023,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   submitSelectedOrder() {
-    const modalRef = this.modalService.open(SubmitOrderModalComponent, {backdrop: 'static'});
+    const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.orders = this.object.mapOfCheckedId;
+    modalRef.componentInstance.isSubmit = true;
     modalRef.result.then((res) => {
       this.updateList();
     }, (reason) => {
@@ -1043,13 +1034,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  submitOrder(order, plan, workflow) {
-    const modalRef = this.modalService.open(SubmitOrderModalComponent, {backdrop: 'static'});
+  submitOrder(order, workflow) {
+    const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.order = order;
-    modalRef.componentInstance.plan = workflow ? null : plan;
     modalRef.componentInstance.workflow = workflow;
-    modalRef.result.then((res) => {
+    modalRef.componentInstance.isSubmit = true;
+    modalRef.result.then(() => {
       this.updateList();
     }, () => {
 
@@ -1102,12 +1093,12 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         };
 
         orderIds.forEach((id, index) => {
-            if (index == orderIds.length - 1) {
-              comments.name = comments.name + ' ' + id;
-            } else {
-              comments.name = id + ', ' + comments.name;
-            }
-          });
+          if (index == orderIds.length - 1) {
+            comments.name = comments.name + ' ' + id;
+          } else {
+            comments.name = id + ', ' + comments.name;
+          }
+        });
 
         const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
         modalRef.componentInstance.comments = comments;
@@ -1217,11 +1208,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  removeOrder(order, plan, workflow) {
+  removeOrder(order, workflow) {
     const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.order = order;
-    modalRef.componentInstance.plan = workflow ? null : plan;
     modalRef.componentInstance.workflow = workflow;
     modalRef.componentInstance.timeZone = this.preferences.zone;
     modalRef.componentInstance.selectedDate = this.selectedDate;
@@ -1393,6 +1383,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       cb([]);
     });
   }
+
   /* ------------- Utility Function End ------------------- */
 
   /* ------------- Advance search Begin------------------- */
@@ -1668,7 +1659,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   searchInResult() {
-    this.updateTable(this.dailyPlanFilters.searchText ? this.searchPipe.transform(this.plans, this.dailyPlanFilters.searchText) : this.plans);
+   
+    this.updateTable(this.dailyPlanFilters.searchText ? this.searchPipe.transform(this.plans, this.dailyPlanFilters.searchText, this.searchableProperties) : this.plans);
   }
 
   /* ---- Begin Action ------ */

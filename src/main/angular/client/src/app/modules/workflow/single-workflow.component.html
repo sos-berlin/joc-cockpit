@@ -84,7 +84,7 @@
                   </td>
                   <td>
                     <span>{{workflow.versionId}}</span>
-                    <span class="text-muted" *ngIf="workflow.versionDate">{{workflow.versionDate | stringToDate}}</span>
+                    <div class="text-muted text-sm" *ngIf="workflow.versionDate"><i>({{workflow.versionDate | stringToDate}})</i></div>
                   </td>
                   <td>
                     <a class="label" *ngIf="workflow.state" [ngClass]="coreService.getColor(workflow.state.severity, 'bg')"
@@ -119,7 +119,7 @@
                   </td>
                 </tr>
                 <tr *ngIf="workflow.show">
-                  <td colspan="12">
+                  <td colspan="14">
                     <div class="m-a-sm">
                       <a class="text" (click)="workflow.isExpand = true;"
                          [nz-tooltip]="'common.tooltip.expandAll' | translate">

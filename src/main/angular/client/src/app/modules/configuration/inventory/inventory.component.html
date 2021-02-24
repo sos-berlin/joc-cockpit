@@ -80,7 +80,11 @@
           <a class="text resize-cursor a-3" style="position: absolute; right: 18px;;z-index:99">
             <i class="fa fa-angle-double-right fa-lg" (click)="showPanel()"></i>
           </a>
+          <a class="trash notify" (click)="switchToTrash()">
+            <i nz-icon [nzType]="isTrash ? 'rollback' : 'delete'" nzTheme="outline"></i>
+          </a>
           <perfect-scrollbar class="tree-block">
+            <div class="fade-in" *ngIf="!isTrash">
               <nz-tree
                 #treeCtrl
                 nzNoAnimation
@@ -156,9 +160,6 @@
                       <li nz-menu-item *ngIf="!node.origin.deleted && permission.Inventory.configurations.delete"
                           [nzDisabled]="node.origin.deployed || node.origin.released || (node.origin.object && node.origin.children.length === 0) || (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object && node.origin.path === '/')">
                         <a (click)="deleteDraft(node);" translate>inventory.button.deleteDraft</a></li>
-                      <li nz-menu-divider *ngIf="!node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.deleted && permission.Inventory.configurations.delete"></li>
-                      <li nz-menu-item *ngIf="!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.deleted && permission.Inventory.configurations.delete"><a (click)="deletePermanently(node);" translate>inventory.button.delete</a></li>
-                      <li nz-menu-item *ngIf="!node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.deleted && permission.Inventory.configurations.delete"><a (click)="restoreObject(node);" translate>inventory.button.undelete</a></li>
                       <li nz-menu-divider *ngIf="node.origin.type"></li>
                       <li nz-menu-item
                           *ngIf="node.origin.type">
@@ -201,6 +202,68 @@
                   </div>
                 </div>
               </ng-template>
+            </div>
+            <div class="fade-in" *ngIf="isTrash">
+              <nz-tree
+                #treeCtrl2
+                nzNoAnimation
+                [nzShowExpand]="false"
+                [nzData]="trashTree"
+                [nzTreeTemplate]="nzTreeTemplate"
+              ></nz-tree>
+              <ng-template #nzTreeTemplate let-node>
+                <div class="node-wrapper">
+                   <span *ngIf="node.origin.loading || (node.origin.children && node.origin.children.length > 0 && (((node.origin.children.length > 2 || !node.origin.children[0].controller)) || node.origin.controller || node.origin.dailyPlan || node.origin.object ))"
+                         [class.toggle-children-wrapper-expanded]="node.isExpanded"
+                         [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
+                         (click)="openFolder(node)" class="cursor w-14 m-l-xxs" [ngClass]="{'m-l-0': node.origin.path === '/'}" style="margin-top: -1px;">
+                     <i *ngIf="!node.isExpanded && !node.origin.loading" nz-icon nzType="caret-right" nzTheme="outline"></i>
+                     <i *ngIf="node.isExpanded && !node.origin.loading" nz-icon nzType="caret-down" nzTheme="outline"></i>
+                     <i *ngIf="node.origin.loading"><nz-spin nzSimple [nzSize]="'small'"></nz-spin></i>
+                  </span>
+                  <span *ngIf="(!node.origin.children || node.origin.children.length === 0 || ((node.origin.children.length===2 && node.origin.children[0].controller))) && !node.origin.type" class="w-16">
+                    <span class="fa fa-lg p-r-sm"></span>
+                  </span>
+                  <span *ngIf="(!node.children || node.children.length === 0) && node.origin.type">
+                    <span class="p-r-xs"></span>
+                  </span>
+                  <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" type="button">
+                    <i class="fa fa-ellipsis-h"></i>
+                  </button>
+                  <nz-dropdown-menu #menu="nzDropdownMenu" >
+                    <ul nz-menu>
+                      <li nz-menu-item class="bg-hover-color"><a (click)="deletePermanently(node);" translate>inventory.button.delete</a></li>
+                      <li nz-menu-item><a (click)="restoreObject(node);" translate>inventory.button.restore</a></li>
+                    </ul>
+                  </nz-dropdown-menu>
+                  <div class="node-content-wrapper disable-link">
+                    <i *ngIf="node.children && !node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.dailyPlan" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                    <i *ngIf="node.origin.controller" nz-icon nzType="container" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.origin.dailyPlan" class="icon-daily-plan-icon icon-color tree-icon" style="opacity: .8"></i>
+                    <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object == 'SCHEDULE'" nz-icon nzType="schedule" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
+                    <span *ngIf="node.origin.type" class="fa fa-check-circle-o text-xs w-11" style="margin-top: 4px"></span>
+                    <span class="p-l-xs">
+                      <span *ngIf="node.origin.object || node.origin.controller || node.origin.dailyPlan">{{node.origin.name | translate}}</span>
+                      <span *ngIf="!node.origin.object && !node.origin.controller && !node.origin.dailyPlan">{{node.origin.name}}</span>
+                    </span>
+                  </div>
+                </div>
+              </ng-template>
+            </div>
+            <div *ngIf="isTrash">
+              <div class="m-t-lg" *ngIf="isTreeLoaded && trashTree.length === 0">
+                <app-empty-data></app-empty-data>
+              </div>
+              <div class="hide text-center m-t-lg"
+                   [ngClass]="{'show': !isTreeLoaded}">
+                <nz-spin></nz-spin>
+              </div>
+            </div>
           </perfect-scrollbar>
           <div class="rg-right"><span></span></div>
         </div>

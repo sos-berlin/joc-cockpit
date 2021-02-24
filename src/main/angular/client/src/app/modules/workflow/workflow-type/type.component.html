@@ -8,18 +8,28 @@
       <span translate> order.label.lastOutcome </span>:
       <span class="_600" >{{order.lastOutcome.TYPE}}</span>
     </div>
-    <div class="p-l-sm">
+    <div class="p-l-sm" *ngIf="!order.cyclicOrder">
       <span translate> order.label.scheduledFor </span>:
       <span class="_600" >{{order.scheduledFor | stringToDate}}</span>
+    </div>
+    <div class="m-a-sm m-t-0" *ngIf="order.cyclicOrder">
+      <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
+      <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
+      {{order.cyclicOrder.firstStart | stringToDate}}
+      <br>
+      <span class="_600 p-l-sm" translate>dailyPlan.label.end</span>:
+      {{order.cyclicOrder.lastStart | stringToDate}}
+      <br>
+      <span class="_600 p-l-sm" translate>order.label.orders</span>:
+      {{order.cyclicOrder.count}}
     </div>
   </ng-template>
   <app-order-action [order]="order" [schedulerId]="schedulerId" [permission]="permission"
                     [preferences]="preferences"></app-order-action>
   <span [nz-tooltip]="contentTemplate">
     <i class="fa fa-circle p-r-s" [ngClass]="coreService.getColor(order.state.severity, 'text')"></i>
-    {{order.orderId}}
+    {{order.orderId}} <i *ngIf="order.cyclicOrder" class="fa fa-repeat p-l-xs p-r-xs" aria-hidden="true"></i>
     <i class="text-sm text-muted" *ngIf="order.scheduledFor">{{order.scheduledFor | stringToDate}}</i>
-   <!-- <span class="text-success p-l-xs text-xs" *ngIf="order.scheduledFor">({{order.scheduledFor | timeInString}})</span>-->
   </span>
 </ng-template>
 <div *ngFor="let instruction of configuration.instructions">

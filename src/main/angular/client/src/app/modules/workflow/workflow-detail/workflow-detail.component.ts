@@ -305,7 +305,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  private init() {
+  private init(): void {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
     }
@@ -334,7 +334,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   }
 
-  private getOrders(workflow, isFirst) {
+  private getOrders(workflow, isFirst): void {
     const obj = {
       compact: true,
       controllerId: this.schedulerIds.selected,
@@ -364,12 +364,12 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadOrders(date) {
+  loadOrders(date): void {
     this.workflowFilters.date = date;
     this.getOrders(this.coreService.clone(this.workflow), false);
   }
 
-  private checkSideBar() {
+  private checkSideBar(): void {
     if (this.sideBar.isVisible) {
       if (this.sideBar.orders.length > 0) {
         this.sideBar.orders = this.mapObj.get(JSON.stringify(this.sideBar.orders[0].position));
@@ -377,7 +377,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  private initEditorConf(editor, _xml: any) {
+  private initEditorConf(editor, _xml: any): void {
     const self = this;
     const graph = editor.graph;
     if (!_xml) {
@@ -598,7 +598,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  private makeCenter() {
+  private makeCenter(): void {
     setTimeout(() => {
       if (this.editor && this.editor.graph) {
         this.editor.graph.zoomActual();
@@ -607,7 +607,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }, 50);
   }
 
-  private updatePositions(_json) {
+  private updatePositions(_json): void {
     const self = this;
     this.orderCountMap = new Map();
     function recursive(json) {
@@ -713,7 +713,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     recursive(_json);
   }
 
-  private updateXMLJSON() {
+  private updateXMLJSON(): void {
     let graph = this.editor.graph;
     if (!_.isEmpty(this.workFlowJson)) {
       this.workflowService.convertTryToRetry(this.workFlowJson, () => {
@@ -722,11 +722,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  closeMenu() {
+  closeMenu(): void {
     this.order = null;
   }
 
-  private updateOrdersInGraph(isCollapse) {
+  private updateOrdersInGraph(isCollapse): void {
     this.closeMenu();
     const graph = this.editor.graph;
     if (graph) {
@@ -772,7 +772,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  private deleteOrder(graph, cell) {
+  private deleteOrder(graph, cell): void {
     if (cell.edges) {
       let orderCells = [];
       for (let i = 0; i < cell.edges.length; i++) {
@@ -786,7 +786,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setCount(graph, doc, parent, positions, cell) {
+  private setCount(graph, doc, parent, positions, cell): void {
     let orderArr = [];
     for (let i = 0; i < positions.length; i++) {
       let orders = this.mapObj.get(positions[i]);
@@ -805,7 +805,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  private createOrder(graph, doc, parent, node) {
+  private createOrder(graph, doc, parent, node): any {
     const position = node.getAttribute('position');
     let edge = null;
     if (position) {
@@ -836,7 +836,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     return edge;
   }
 
-  showPanelFuc(order) {
+  showPanelFuc(order): void {
     if (order.arguments && !order.arguments[0]) {
       order.arguments = Object.entries(order.arguments).map(([k, v]) => {
         return {name: k, value: v};
@@ -845,7 +845,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     order.show = true;
   }
 
-  private updateWorkflow(graph) {
+  private updateWorkflow(graph): void {
     graph.getModel().beginUpdate();
     try {
       let mapObj = {nodeMap: this.nodeMap, vertixMap: this.vertixMap};
@@ -861,36 +861,36 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  modifyOrder() {
+  modifyOrder(): void {
     const modalRef = this.modalService.open(ModifyStartTimeModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.preferences = this.preferences;
     modalRef.componentInstance.order = this.order;
-    modalRef.result.then((res) => {
+    modalRef.result.then(() => {
 
     }, () => {
 
     });
   }
 
-  changeParameter() {
+  changeParameter(): void {
     this.coreService.post('orders/variables', {
       orderId: this.order.orderId,
       controllerId: this.schedulerIds.selected
     }).subscribe((res: any) => {
       this.order.variables = res.variables;
       this.openModel(this.order);
-    }, err => {
+    }, () => {
 
     });
   }
 
-  private openModel(order) {
+  private openModel(order): void {
     const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.order = order;
     modalRef.componentInstance.orderRequirements = this.orderRequirements;
-    modalRef.result.then((result) => {
+    modalRef.result.then(() => {
       if (order && order.show) {
         this.coreService.post('orders/variables', {
           orderId: order.orderId,
@@ -904,7 +904,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  resumeOrder() {
+  resumeOrder(): void {
     const modalRef = this.modalService.open(ResumeOrderModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.preferences = this.preferences;
     modalRef.componentInstance.permission = this.permission;
@@ -918,27 +918,27 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   }
 
-  suspendOrder() {
+  suspendOrder(): void {
     this.restCall(false, 'Suspend', this.order, 'suspend');
   }
 
-  suspendOrderWithKill() {
+  suspendOrderWithKill(): void {
     this.restCall(true, 'Suspend', this.order, 'suspend');
   }
 
-  cancelOrder() {
+  cancelOrder(): void {
     this.restCall(false, 'Cancel', this.order, 'cancel');
   }
 
-  cancelOrderWithKill() {
+  cancelOrderWithKill(): void {
     this.restCall(true, 'Cancel', this.order, 'cancel');
   }
 
-  removeWhenTerminated() {
+  removeWhenTerminated(): void {
     this.restCall(true, 'Terminate', this.order, 'remove_when_terminated');
   }
 
-  private restCall(isKill, type, order, url) {
+  private restCall(isKill, type, order, url): void {
     const obj: any = {
       controllerId: this.schedulerIds.selected, orderIds: [order.orderId], kill: isKill
     };
@@ -955,7 +955,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.url = 'orders/' + url;
       modalRef.result.then((result) => {
         console.log(result);
-      }, (reason) => {
+      }, () => {
 
       });
     } else {

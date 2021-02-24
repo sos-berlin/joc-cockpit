@@ -7,7 +7,6 @@ import {
   CreatePlanModalComponent,
   GanttComponent,
   SelectOrderTemplatesComponent,
-  SubmitOrderModalComponent
 } from './daily-plan.component';
 import {SharedModule} from '../shared/shared.module';
 import {DailyPlanRoutingModule} from './daily-plan-routing.module';
@@ -19,12 +18,11 @@ import {GroupByPipe} from '../../pipes/core.pipe';
     SharedModule,
     DailyPlanRoutingModule
   ],
-  declarations: [DailyPlanComponent, GanttComponent, RemovePlanModalComponent, SubmitOrderModalComponent, FilterModalComponent,
+  declarations: [DailyPlanComponent, GanttComponent, RemovePlanModalComponent, FilterModalComponent,
     SearchComponent, DailyPlanRegexValidator, CreatePlanModalComponent, SelectOrderTemplatesComponent],
   entryComponents: [
     FilterModalComponent,
     RemovePlanModalComponent,
-    SubmitOrderModalComponent,
     CreatePlanModalComponent
   ], providers: [GroupByPipe]
 })

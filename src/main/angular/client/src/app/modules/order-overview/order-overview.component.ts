@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
@@ -19,7 +19,7 @@ declare const $;
   selector: 'app-pie-chart',
   templateUrl: './chart-template.component.html',
 })
-export class OrderPieChartComponent implements OnInit, OnDestroy {
+export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
   @Input() schedulerId: any;
   @Input() state: any;
   @Output() setState: EventEmitter<any> = new EventEmitter();
@@ -42,24 +42,31 @@ export class OrderPieChartComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.init();
   }
-  ngOnDestroy() {
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.schedulerId && !this.loading) {
+      this.init();
+    }
+  }
+
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  private init() {
+  private init(): void {
     this.coreService.post('orders/overview/snapshot', {controllerId: this.schedulerId}).subscribe((res: any) => {
       this.snapshot = res.orders;
       this.preparePieData(this.snapshot);
       this.loading = false;
-    }, (err) => {
+    }, () => {
       this.loading = false;
     });
   }
 
-  refresh(args) {
+  refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
@@ -70,7 +77,7 @@ export class OrderPieChartComponent implements OnInit, OnDestroy {
     }
   }
 
-  private preparePieData(res) {
+  private preparePieData(res): void {
     const ordersData = [];
     this.colorScheme.domain = [];
     for (let prop in res) {
@@ -103,7 +110,7 @@ export class OrderPieChartComponent implements OnInit, OnDestroy {
     this.ordersData = ordersData;
   }
 
-  setFilter(state) {
+  setFilter(state): void {
     this.state = state;
     this.setState.emit(this.state);
   }
@@ -130,11 +137,13 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   showPanelObj: any;
   pageView: any;
   subscription1: Subscription;
+  subscription2: Subscription;
   orders = [];
   history = [];
   auditLogs = [];
   data = [];
   currentData = [];
+  searchableProperties = ['orderId', 'workflowId', 'path', 'state', '_text', 'scheduledFor', 'position'];
   object = {
     mapOfCheckedId: new Map(),
     checked: false,
@@ -177,9 +186,23 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
+    this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
+      this.init();
+    });
+
   }
 
   ngOnInit(): void {
+    this.init();
+  }
+
+  ngOnDestroy(): void {
+    this.coreService.setSideView(this.sideView);
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
+  }
+
+  private init(): void {
     this.orderFilters = this.coreService.getOrderOverviewTab();
     this.orderFilters.filter.state = this.route.snapshot.paramMap.get('state');
     if (localStorage.views) {
@@ -203,11 +226,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    this.coreService.setSideView(this.sideView);
-    this.subscription1.unsubscribe();
-  }
-
   /** ---------------------------- Broadcast messages ----------------------------------*/
   receiveMessage($event): void {
     this.pageView = $event;
@@ -223,7 +241,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   loadOrderHistory(): void {
-    let obj = {
+    const obj = {
       controllerId: this.schedulerIds.selected,
       orders: [{workflowPath: this.showPanelObj.workflowId.path, orderId: this.showPanelObj.orderId}],
       limit: this.preferences.maxAuditLogPerObject
@@ -246,7 +264,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     return state;
   }
 
-  loadAuditLogs() {
+  loadAuditLogs(): void {
     let obj = {
       controllerId: this.schedulerIds.selected,
       orders: [{workflowPath: this.showPanelObj.workflowId.path, orderId: this.showPanelObj.orderId}],
@@ -257,7 +275,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  showPanelFuc(order) {
+  showPanelFuc(order): void {
     if (order.arguments && !order.arguments[0]) {
       order.arguments = Object.entries(order.arguments).map(([k, v]) => {
         return {name: k, value: v};
@@ -267,12 +285,12 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.updatePanelHeight();
   }
 
-  hidePanelFuc(order) {
+  hidePanelFuc(order): void {
     order.show = false;
     this.updatePanelHeight();
   }
 
-  expandDetails() {
+  expandDetails(): void {
     for (let i = 0; i < this.currentData.length; i++) {
       if (this.currentData[i].arguments && !this.currentData[i].arguments[0]) {
         this.currentData[i].arguments = Object.entries(this.currentData[i].arguments).map(([k, v]) => {
@@ -284,14 +302,14 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.updatePanelHeight();
   }
 
-  collapseDetails() {
+  collapseDetails(): void {
     this.currentData.forEach((order) => {
       order.show = false;
     });
     this.updatePanelHeight();
   }
 
-  private refresh(args) {
+  private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType.match(/Order/) || args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
@@ -305,7 +323,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getOrders(obj) {
+  private getOrders(obj): void {
     this.reset();
     let tempOrder = this.orders.filter((order) => {
       return order.show;
@@ -352,17 +370,17 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       this.searchInResult();
       this.loading = true;
       this.updatePanelHeight();
-    }, (err) => {
+    }, () => {
       this.loading = true;
     });
   }
 
-  changeStatus(state) {
+  changeStatus(state): void {
     this.orderFilters.filter.state = state;
     this.getOrders({controllerId: this.schedulerIds.selected, states: this.getState()});
   }
 
-  changeDate(date) {
+  changeDate(date): void {
     this.orderFilters.filter.date = date;
     this.getOrders({controllerId: this.schedulerIds.selected, states: this.getState()});
   }
@@ -375,26 +393,26 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.object.checked = false;
   }
 
-  pageIndexChange($event) {
+  pageIndexChange($event): void {
     this.orderFilters.currentPage = $event;
     this.object.checked = false;
   }
 
-  pageSizeChange($event) {
+  pageSizeChange($event): void {
     this.orderFilters.entryPerPage = $event;
     this.object.checked = false;
   }
 
-  currentPageDataChange($event) {
+  currentPageDataChange($event): void {
     this.currentData = $event;
   }
 
-  searchInResult() {
-    this.data = this.orderFilters.searchText ? this.searchPipe.transform(this.orders, this.orderFilters.searchText) : this.orders;
+  searchInResult(): void {
+    this.data = this.orderFilters.searchText ? this.searchPipe.transform(this.orders, this.orderFilters.searchText, this.searchableProperties) : this.orders;
     this.data = [...this.data];
   }
 
-  exportToExcel() {
+  exportToExcel(): void {
     let workflow = '', order = '', status = '', position = '', scheduledFor = '';
     this.translate.get('order.label.workflow').subscribe(translatedValue => {
       workflow = translatedValue;
@@ -443,7 +461,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   updatePanelHeight() {
-    let rsHt = this.saveService.resizerHeight ? JSON.parse(this.saveService.resizerHeight) || {} : {};
+    const rsHt = this.saveService.resizerHeight ? JSON.parse(this.saveService.resizerHeight) || {} : {};
     if (rsHt.orderOverview) {
       $('#orderTableId').css('height', this.resizerHeight);
     } else {
@@ -457,7 +475,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       if (ht > 140 && ht < 150) {
         ht += 40;
       }
-      let el = document.getElementById('orderTableId');
+      const el = document.getElementById('orderTableId');
       if (el && el.scrollWidth > el.clientWidth) {
         ht = ht + 11;
       }
@@ -534,13 +552,13 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   modifyAllOrder() {
-    let order = this.object.mapOfCheckedId.values().next().value;
+    const order = this.object.mapOfCheckedId.values().next().value;
     const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.preferences = this.preferences;
     modalRef.componentInstance.orders = this.object.mapOfCheckedId;
     modalRef.componentInstance.orderRequirements = order.requirements;
-    modalRef.result.then((res) => {
+    modalRef.result.then(() => {
       this.reset();
     }, () => {
 
@@ -594,9 +612,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.comments = comments;
       modalRef.componentInstance.obj = obj;
       modalRef.componentInstance.url = 'orders/' + url;
-      modalRef.result.then((result) => {
+      modalRef.result.then(() => {
         this.reset();
-      }, (reason) => {
+      }, () => {
         this.reset();
       });
     } else {

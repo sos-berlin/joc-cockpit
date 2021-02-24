@@ -59,14 +59,28 @@
                               [preferences]="preferences"></app-order-action>
           </td>
           <td>
-              <span class="show-in-single-line">
-                <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs" *ngIf="!order.show"
-                   (click)="showPanelFuc(order)"></i>
-                <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" *ngIf="order.show" (click)="order.show = false"></i>
-                <a class="text-dark">{{order.orderId}}</a>
-                <span *ngIf="order.title">-</span>
-                <i class="text-muted">{{order.title}}</i>
-              </span>
+            <span class="show-in-single-line">
+              <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs" *ngIf="!order.show"
+                 (click)="showPanelFuc(order)"></i>
+              <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" *ngIf="order.show" (click)="order.show = false"></i>
+              <a class="text-dark">{{order.orderId}}</a>
+              <span *ngIf="order.title">-</span>
+              <i class="text-muted">{{order.title}}</i>
+              <i *ngIf="order.cyclicOrder" nz-tooltip [nzTooltipTitle]="tooltipTemplate" [nzTooltipPlacement]="'left'" class="fa fa-repeat p-l-xs" aria-hidden="true"></i>
+            </span>
+            <ng-template #tooltipTemplate>
+              <div class="m-a-sm" *ngIf="order.cyclicOrder">
+                <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
+                <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
+                {{order.cyclicOrder.firstStart | stringToDate}}
+                <br>
+                <span class="_600 p-l-sm" translate>dailyPlan.label.end</span>:
+                {{order.cyclicOrder.lastStart | stringToDate}}
+                <br>
+                <span class="_600 p-l-sm" translate>order.label.orders</span>:
+                {{order.cyclicOrder.count}}
+              </div>
+            </ng-template>
           </td>
           <td>
             <a class="label" *ngIf="order.state" [ngClass]="coreService.getColor(order.state.severity, 'bg')"

@@ -16,11 +16,11 @@
           <nz-dropdown-menu #export5="nzDropdownMenu" role="menu">
             <ul nz-menu>
               <li nz-menu-item *ngIf="value.state && value.state._text === 'PLANNED'">
-                <a (click)="submitOrder(value, null, false)" translate>dailyPlan.button.submitOrder</a>
+                <a (click)="submitOrder(value, false)" translate>dailyPlan.button.submitOrder</a>
               </li>
               <li nz-menu-item class="bg-hover-color"
                   *ngIf="value.state && value.state._text === 'PLANNED'">
-                <a (click)="removeOrder(value, null, false)" translate>dailyPlan.button.removeOrder</a>
+                <a (click)="removeOrder(value, false)" translate>dailyPlan.button.removeOrder</a>
               </li>
               <li nz-menu-item
                   *ngIf="value.state && value.state._text !== 'PLANNED' && value.state._text !== 'FINISHED'">
@@ -145,10 +145,10 @@
           <nz-dropdown-menu #export2="nzDropdownMenu" role="menu">
             <ul nz-menu>
               <li nz-menu-item [nzDisabled]="!plan.isPlanned">
-                <a (click)="submitOrder(plan, null, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW')" translate>dailyPlan.button.submitOrder</a>
+                <a (click)="submitOrder(plan, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW')" translate>dailyPlan.button.submitOrder</a>
               </li>
               <li nz-menu-item class="bg-hover-color" [nzDisabled]="!plan.isPlanned">
-                <a (click)="removeOrder(plan, null, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW' )" translate>dailyPlan.button.removeOrder</a>
+                <a (click)="removeOrder(plan, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW' )" translate>dailyPlan.button.removeOrder</a>
               </li>
               <li nz-menu-item [nzDisabled]="plan.isCancel">
                 <a (click)="cancelOrder(null, plan )" translate>order.button.cancel</a>
@@ -240,9 +240,6 @@
                 <br>
                 <span class="_600 p-l-sm" translate>order.label.orders</span>:
                 {{plan.value[0].cyclicOrder.count}}
-              </div>
-              <div *ngIf="!plan.value[0].cyclicOrder">
-                {{plan.value[0].period.begin | stringToDate1}} ({{plan.value[0].period.begin | stringToTime}} - {{plan.value[0].period.end | stringToTime}})
               </div>
             </ng-template>
           </span>

@@ -1,46 +1,52 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="!order && !submissionsDelete" translate>dailyPlan.label.removeOrders</span>
+    <span *ngIf="!order && !submissionsDelete" translate>
+      <span *ngIf="isSubmit" translate>dailyPlan.label.submitOrders</span>
+      <span *ngIf="!isSubmit" translate>dailyPlan.label.removeOrders</span>
+    </span>
     <span *ngIf="submissionsDelete" translate>dailyPlan.label.submissionsDelete
        <i class="text-muted p-l-xs text">{{selectedDate | stringToDate1}}</i>
     </span>
-    <span *ngIf="order" translate>dailyPlan.label.removeOrder</span>
-    <i *ngIf="order" class="text-muted p-l-xs text">{{plan ? order.orderTemplatePath : order.key ? order.key : order.orderId}}</i>
+    <span *ngIf="order">
+      <span *ngIf="isSubmit" translate>dailyPlan.label.submitOrder</span>
+      <span *ngIf="!isSubmit" translate>dailyPlan.label.removeOrder</span>
+    </span>
+    <i *ngIf="order" class="text-muted p-l-xs text">{{order.orderTemplatePath ? order.orderTemplatePath : order.key ? order.key : order.orderId}}</i>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<form #myForm="ngForm" (ngSubmit)="onSubmit()">
+<form>
   <div class="modal-body p-a text-center">
-    <div>
-      <div class="m-t text" *ngIf="order">
-        <p class="m-t" *ngIf="plan">
-          <span translate [translateParams]="{count: plan.value ? plan.value.length : 0}">dailyPlan.popup.removeOrderCount</span>
-        </p>
-        <p class="m-t" *ngIf="!plan && (!workflow && !order.value)">
-          <span translate>dailyPlan.popup.removeSelectedOrder</span>
-        </p>
-        <p class="m-t" *ngIf="workflow || order.value">
-          <span translate [translateParams]="{count: order.value ? order.value.length : 0}">dailyPlan.popup.removeOrderCount</span>
+    <div *ngIf="!submissionsDelete">
+      <div class="m-t text" *ngIf="count === 0">
+        <p class="m-t">
+          <span *ngIf="isSubmit" translate>dailyPlan.popup.submitSelectedOrder</span>
+          <span *ngIf="!isSubmit" translate>dailyPlan.popup.removeSelectedOrder</span>
         </p>
       </div>
-      <div class="m-t text" *ngIf="orders">
+      <div class="m-t text" *ngIf="count">
         <p class="m-t">
-          <span translate [translateParams]="{count: orders.size}">dailyPlan.popup.removeOrderCount</span>
-        </p>
-      </div>
-      <div class="m-t text" *ngIf="submissionsDelete">
-        <p class="m-t">
-          <span translate>dailyPlan.popup.deleteSubmissions</span>
+          <span *ngIf="isSubmit" translate [translateParams]="{count: count}">dailyPlan.popup.submitOrderCount</span>
+          <span *ngIf="!isSubmit" translate [translateParams]="{count: count}">dailyPlan.popup.removeOrderCount</span>
         </p>
       </div>
     </div>
+    <div class="m-t text" *ngIf="submissionsDelete">
+      <p class="m-t">
+        <span translate>dailyPlan.popup.deleteSubmissions</span>
+      </p>
+    </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="submitted" class="btn btn-danger btn-sm">
+    <button *ngIf="!isSubmit" type="button" [disabled]="submitted" class="btn btn-danger btn-sm" (click)="onRemove()">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.remove' | translate}}
+    </button>
+    <button *ngIf="isSubmit" type="button" [disabled]="submitted" class="btn btn-primary btn-sm" (click)="onSubmit()">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
     </button>
     <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
       common.button.cancel

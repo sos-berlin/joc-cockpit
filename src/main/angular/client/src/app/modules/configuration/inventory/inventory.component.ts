@@ -3,7 +3,7 @@ import {forkJoin, Subscription} from 'rxjs';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploader} from 'ng2-file-upload';
 import {ToasterService} from 'angular2-toaster';
-import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
+import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
 import {TranslateService} from '@ngx-translate/core';
 import * as _ from 'underscore';
 import {ClipboardService} from 'ngx-clipboard';
@@ -54,7 +54,7 @@ export class SingleDeployComponent implements OnInit {
   }
 
   init() {
-    let obj: any = {onlyValidObjects: true, withVersions: true, id: this.data.id};
+    const obj: any = {onlyValidObjects: true, withVersions: true, id: this.data.id};
     this.getSingleObject(obj);
   }
 
@@ -591,7 +591,7 @@ export class DeployComponent implements OnInit {
   remove() {
     if (this.nodes.length > 0) {
       this.submitted = true;
-      let obj: any = {delete: {deployConfigurations: []}};
+      const obj: any = {delete: {deployConfigurations: []}};
       if (!this.releasable) {
         obj.controllerIds = this.selectedSchedulerIds;
       }
@@ -899,7 +899,7 @@ export class ExportComponent implements OnInit {
   }
 
   getDeploymentVersion(e: NzFormatEmitEvent): void {
-    let node = e.node;
+    const node = e.node;
     if (node && node.origin && node.origin.expanded && !node.origin.isCall) {
       this.inventoryService.checkAndUpdateVersionList(node.origin);
     }
@@ -951,6 +951,7 @@ export class ExportComponent implements OnInit {
     if (this.exportType && this.exportType !== 'CONTROLLER' && this.exportType !== 'DAILYPLAN' && this.exportType !== 'BOTH') {
       selectFolder = false;
     }
+
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if ((nodes[i].type || nodes[i].isFolder) && nodes[i].checked) {
@@ -1054,7 +1055,7 @@ export class ExportComponent implements OnInit {
       if (this.object.releaseDraftConfigurations && this.object.releaseDraftConfigurations.length === 0) {
         delete this.object['releaseDraftConfigurations'];
       }
-      let obj: any = {
+      const obj: any = {
         exportFile: {filename: this.exportObj.filename, format: this.exportObj.fileFormat}
       };
       if (this.exportObj.forSigning) {
@@ -1093,7 +1094,7 @@ export class ExportComponent implements OnInit {
           param = param + '&ticketLink=' + encodeURIComponent(this.comments.ticketLink);
         }
       }
-     // console.log('http://jstest.zehntech.net:7446/joc/api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
+      // console.log('http://jstest.zehntech.net:7446/joc/api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
       try {
         $('#tmpFrame').attr('src', './api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
         setTimeout(() => {
@@ -1191,7 +1192,7 @@ export class SetVersionComponent implements OnInit {
   }
 
   getDeploymentVersion(e: NzFormatEmitEvent): void {
-    let node = e.node;
+    const node = e.node;
     if (node && node.origin && node.origin.expanded && !node.origin.isCall) {
       this.inventoryService.checkAndUpdateVersionList(node.origin);
     }
@@ -1694,7 +1695,6 @@ export class CreateFolderModalComponent {
   folder = {error: false, name: '', overwrite: false};
 
   constructor(private coreService: CoreService, public activeModal: NgbActiveModal) {
-
   }
 
   onSubmit(): void {
@@ -1755,6 +1755,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
   tree: any = [];
+  trashTree: any = [];
   isLoading = true;
   pageView = 'grid';
   options: any = {};
@@ -1766,6 +1767,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
   securityLevel: string;
   type: string;
   inventoryConfig: any;
+  isTreeLoaded =  false;
+  isTrash =  false;
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
@@ -1858,6 +1861,18 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.inventoryConfig.expand_to = this.tree;
     this.inventoryConfig.selectedObj = this.selectedObj;
     this.inventoryConfig.copyObj = this.copyObj;
+  }
+
+  switchToTrash() {
+    this.trashTree = [];
+    this.isTrash = !this.isTrash;
+    if (this.isTrash) {
+      this.isTreeLoaded = false;
+      setTimeout(() => {
+        this.isTreeLoaded = true;
+       // this.trashTree = [...this.tree];
+      }, 200);
+    }
   }
 
   private backToListView() {
@@ -2766,7 +2781,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private _paste(obj, data, cb) {
-   
+
     const request: any = {
       shallowCopy: this.copyObj.shallowCopy,
       suffix: data.suffix,

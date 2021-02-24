@@ -329,6 +329,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   sideBar: any = {};
   subscription1: Subscription;
   subscription2: Subscription;
+  searchableProperties = ['name', 'path', 'versionId', 'state', '_text'];
 
   filterBtn: any = [
     {date: 'ALL', text: 'all'},
@@ -530,7 +531,16 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         if (!res.workflows[i].ordersSummary) {
           res.workflows[i].ordersSummary = {};
         }
-        request.workflowIds.push({path: path, versionId: res.workflows[i].versionId});
+        let flag = true;
+        for (let j = 0; j < request.workflowIds.length; j++) {
+          if (request.workflowIds[j].path === path && request.workflowIds[j].versionId === res.workflows[i].versionId) {
+            flag = false;
+            break;
+          }
+        }
+        if (flag) {
+          request.workflowIds.push({path: path, versionId: res.workflows[i].versionId});
+        }
         if (this.workflowFilters.expandedObjects && this.workflowFilters.expandedObjects.length > 0 &&
           this.workflowFilters.expandedObjects.indexOf(path) > -1) {
           this.showPanelFuc(res.workflows[i]);
@@ -620,7 +630,16 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     };
     for (let i = 0; i < this.workflows.length; i++) {
       const path = this.workflows[i].path;
-      request.workflowIds.push({path: path, versionId: this.workflows[i].versionId});
+      let flag = true;
+      for (let j = 0; j < request.workflowIds.length; j++) {
+        if (request.workflowIds[j].path === path && request.workflowIds[j].versionId === this.workflows[i].versionId) {
+          flag = false;
+          break;
+        }
+      }
+      if (flag) {
+        request.workflowIds.push({path: path, versionId: this.workflows[i].versionId});
+      }
     }
     if (request.workflowIds.length > 0) {
       this.getOrders(request);
@@ -921,7 +940,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   searchInResult() {
-    this.data = this.workflowFilters.searchText ? this.searchPipe.transform(this.workflows, this.workflowFilters.searchText) : this.workflows;
+    this.data = this.workflowFilters.searchText ? this.searchPipe.transform(this.workflows, this.workflowFilters.searchText, this.searchableProperties) : this.workflows;
     this.data = [...this.data];
   }
 
@@ -1055,7 +1074,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   viewOrders(workflow) {
-    this.sideBar = {isVisible: true, orders: workflow.orders, workflow: workflow.path, versionId : workflow.versionId, orderRequirements: workflow.orderRequirements};
+    this.sideBar = {
+      isVisible: true,
+      orders: workflow.orders,
+      workflow: workflow.path,
+      versionId: workflow.versionId,
+      orderRequirements: workflow.orderRequirements
+    };
   }
 
   toggleCompactView() {

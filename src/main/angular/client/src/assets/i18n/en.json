@@ -779,7 +779,7 @@
     "button.newCalendar": "New Calendar",
     "button.workingDay": "Working Day",
     "button.nonWorkingDay": "Non-working Day",
-    "button.undelete": "Restore",
+    "button.restore": "Restore",
     "button.deleteDraft": "Revert Draft",
     "button.deploy": "Deploy",
     "button.redeploy": "Redeploy",

@@ -250,14 +250,7 @@ export class SafeHtmlPipe implements PipeTransform {
 })
 export class SearchPipe implements PipeTransform {
 
-  /**
-   *
-   * @param items List of items to filter
-   * @param term  a string term to compare with every property of the list
-   * @param excludes List of keys which will be ignored during search
-   *
-   */
-  static filter(items: Array<{ [key: string]: any }>, term: string, excludes: any): Array<{ [key: string]: any }> {
+  static filter(items: Array<{ [key: string]: any }>, term: string, includes: any): Array<{ [key: string]: any }> {
 
     const toCompare = term.toLowerCase();
 
@@ -268,7 +261,7 @@ export class SearchPipe implements PipeTransform {
       }
 
       for (let property in item) {
-        if (item[property] === null || item[property] == undefined || excludes.includes(property)) {
+        if (item[property] === null || item[property] == undefined || !includes.includes(property)) {
           continue;
         }
         if (typeof item[property] === 'object') {
@@ -282,7 +275,7 @@ export class SearchPipe implements PipeTransform {
       return false;
     }
 
-    return items.filter(function(item) {
+    return items.filter(function (item) {
       return checkInside(item, term);
     });
   }
@@ -290,14 +283,14 @@ export class SearchPipe implements PipeTransform {
   /**
    * @param items object from array
    * @param term term's search
-   * @param excludes array of strings which will ignored during search
+   * @param includes array of strings which will ignored during search
    */
-  transform(items: any, term: string, excludes: any = []): any {
+  transform(items: any, term: string, includes: any = []): any {
     if (!term || !items) {
       return items;
     }
 
-    return SearchPipe.filter(items, term, excludes);
+    return SearchPipe.filter(items, term, includes);
   }
 }
 
