@@ -3014,21 +3014,17 @@ export class InventoryComponent implements OnInit, OnDestroy {
     const obj = {path: _path, objectType: 'FOLDER'};
     this.coreService.post('inventory/remove', obj).subscribe(() => {
       object.deleted = true;
-      if (node) {
-        object.expanded = false;
-        object.isExpanded = false;
+      if (node && node.parentNode && node.parentNode.origin) {
+        node.parentNode.origin.children = node.parentNode.origin.children.filter((child) => {
+          return child.path !== _path;
+        });
       }
-      if (obj.path) {
-        if (this.selectedObj && obj.path === this.selectedObj.path) {
-          this.type = null;
-          this.selectedData = {};
-          this.selectedObj = {};
-        }
-        this.initTree(obj.path, null);
-      } else {
-        this.clearCopyObject(object);
-        this.updateTree();
+      if (this.selectedObj && _path === this.selectedObj.path) {
+        this.type = null;
+        this.selectedData = {};
+        this.selectedObj = {};
       }
+      this.updateTree();
     });
   }
 
@@ -3047,8 +3043,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
     const URL = !isDeployable ? 'inventory/release' : 'inventory/deployment/deploy';
     this.coreService.post(URL, obj).subscribe(() => {
-
-    });
+      this.clearCopyObject(object);
+    })
   }
 
   private updateTree() {

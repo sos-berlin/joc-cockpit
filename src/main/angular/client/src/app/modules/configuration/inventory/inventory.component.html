@@ -97,7 +97,7 @@
                    <span *ngIf="node.origin.loading || (node.origin.children && node.origin.children.length > 0 && (((node.origin.children.length > 2 || !node.origin.children[0].controller)) || node.origin.controller || node.origin.dailyPlan || node.origin.object ))"
                          [class.toggle-children-wrapper-expanded]="node.isExpanded"
                          [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
-                         (click)="openFolder(node)" class="cursor w-14 m-l-xxs" [ngClass]="{'m-l-0': node.origin.path === '/' , 'disable-link' : node.origin.deleted}" style="margin-top: -1px;">
+                         (click)="openFolder(node)" class="cursor w-14 m-l-xxs" [ngClass]="{'m-l-0': node.origin.path === '/'}" style="margin-top: -1px;">
                      <i *ngIf="!node.isExpanded && !node.origin.loading" nz-icon nzType="caret-right" nzTheme="outline"></i>
                      <i *ngIf="node.isExpanded && !node.origin.loading" nz-icon nzType="caret-down" nzTheme="outline"></i>
                      <i *ngIf="node.origin.loading"><nz-spin nzSimple [nzSize]="'small'"></nz-spin></i>
@@ -180,7 +180,7 @@
                       </li>
                     </ul>
                   </nz-dropdown-menu>
-                  <div class="node-content-wrapper" [ngClass]="{'disable-link' : node.origin.deleted, 'cut-row' : (copyObj && copyObj.operation === 'CUT' && copyObj.name === node.origin.name && copyObj.type === node.origin.type), 'node-content-wrapper-active' : (node.origin.name === selectedObj.name &&
+                  <div class="node-content-wrapper" [ngClass]="{'cut-row' : (copyObj && copyObj.operation === 'CUT' && copyObj.name === node.origin.name && copyObj.type === node.origin.type), 'node-content-wrapper-active' : (node.origin.name === selectedObj.name &&
                   node.origin.type === selectedObj.type) ||
                   (!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.path === selectedObj.path) ||
                   (node.origin.object && node.origin.object === selectedObj.type && node.origin.path === selectedObj.path)}" (click)="selectNode(node)">
@@ -197,7 +197,6 @@
                     <span class="p-l-xs">
                       <span *ngIf="node.origin.object || node.origin.controller || node.origin.dailyPlan">{{node.origin.name | translate}}</span>
                       <span *ngIf="!node.origin.object && !node.origin.controller && !node.origin.dailyPlan">{{node.origin.name}}</span>
-                      <i class="p-l-xs" *ngIf="node.origin.deleted && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object">({{'inventory.label.deleted' | translate}})</i>
                     </span>
                   </div>
                 </div>
