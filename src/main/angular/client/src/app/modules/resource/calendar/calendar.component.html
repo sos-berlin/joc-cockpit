@@ -111,7 +111,7 @@
                       <div>
                         <div class="text-left block-ellipsis">
                           <span class="text-sm fa" [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'fa-calendar-check-o': 'fa-calendar-times-o'"></span>&nbsp;
-                          <a class="text-primary-hover" (click)="previewCalendar(calendar)" [nz-tooltip]="calendar.title" [innerHtml]="calendar.name"></a>
+                          <a class="text-primary-hover" (click)="previewCalendar(calendar)" [nz-tooltip]="calendar.title" [innerHtml]="calendar.name | highlight : calendarFilters.searchText"></a>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
                           <a class=" more-option text-black-lt" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option2" nzPlacement="bottomRight">
@@ -138,7 +138,7 @@
                         <span translate>common.label.type </span>:
                         <span
                           [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'text-success':'text-gold'"
-                          [innerHtml]="calendar.type | translate"></span>
+                          [innerHtml]="calendar.type | translate | highlight : calendarFilters.searchText"></span>
                       </div>
                       <div class="text-sm text-left p-t-xs">
                         <span *ngIf="calendar.from && calendar.to"><span translate>resource.label.validity</span> :</span>
@@ -240,13 +240,17 @@
                       </div>
                     </td>
                     <td>
-                        <a (click)="previewCalendar(calendar)" class="text-primary-hover text-dark">{{calendar.name}}</a>
+                        <a (click)="previewCalendar(calendar)" class="text-primary-hover text-dark">
+                          <span [innerHTML]="calendar.name | highlight : calendarFilters.searchText"></span>
+                        </a>
                         <span *ngIf="calendar.title">-</span>
-                        <i class="text-muted">{{calendar.title}}</i>
+                        <i class="text-muted">
+                          <span [innerHTML]="calendar.title | highlight : calendarFilters.searchText"></span>
+                        </i>
                     </td>
-                    <td [innerHtml]="calendar.path"></td>
+                    <td [innerHtml]="calendar.path | highlight : calendarFilters.searchText"></td>
                     <td><span class="label " [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'bg-dark-blue': 'bg-orange'"
-                              [innerHtml]="calendar.type | translate"></span></td>
+                              [innerHtml]="calendar.type | translate | highlight : calendarFilters.searchText"></span></td>
                     <td [innerHtml]="calendar.from | stringToDate1"></td>
                     <td [innerHtml]="calendar.to | stringToDate1"></td>
                   </tr>

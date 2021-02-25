@@ -13,6 +13,7 @@
   --text-color: rgba(255, 255, 255, .87);
   --text-hover: rgba(0, 0, 0, .87);
   --text-muted: rgba(255, 255, 255, .67);
+  --menu-hover: rgba(50, 70, 90, .7);
   --box-shadow: rgba(255, 255, 255, .1);
   --border-color: rgba(255, 255, 255, .3);
   --mangenta: #d900d9;
@@ -1317,4 +1318,7 @@ span.cm-variable {
 }
 .order-history-template13 {
   background: #2c4157 !important;
+}
+.highlighted {
+  color: yellow;
 }

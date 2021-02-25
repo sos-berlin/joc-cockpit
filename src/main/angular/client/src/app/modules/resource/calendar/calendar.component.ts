@@ -128,7 +128,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   auditLogs: any = [];
   calendarFilters: any = {};
   sideView: any = {};
-  searchableProperties = ['name', 'path', 'title', 'type', 'from', 'to'];
+  searchableProperties = ['name', 'path', 'title', 'type'];
   subscription1: Subscription;
   subscription2: Subscription;
 

@@ -24,12 +24,14 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
   data: any = [];
   agentJobSearch: any = {};
   agentJobExecutionFilters: any = {};
-  subscription1: Subscription;
-  subscription2: Subscription;
   totalJobExecution: any;
   totalNumOfJobs: any;
   dateFormat: any;
   dateFormatM: any;
+  searchableProperties = ['controllerId', 'url'];
+
+  subscription1: Subscription;
+  subscription2: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private modalService: NgbModal,
               private searchPipe: SearchPipe, private dataService: DataService) {
@@ -139,7 +141,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
   }
 
   searchInResult() {
-    this.data = this.agentJobExecutionFilters.searchText ? this.searchPipe.transform(this.agentTasks, this.agentJobExecutionFilters.searchText) : this.agentTasks;
+    this.data = this.agentJobExecutionFilters.searchText ? this.searchPipe.transform(this.agentTasks, this.agentJobExecutionFilters.searchText, this.searchableProperties) : this.agentTasks;
     this.data = [...this.data];
   }
 

@@ -583,6 +583,16 @@ export class SearchComponent implements OnInit {
   nodes = [];
   schedules = [];
   workflowTree = [];
+  checkOptions = [
+    { label: 'planned', value: 'PLANNED'},
+    { label: 'pending', value: 'PENDING' },
+    { label: 'incomplete', value: 'INPROGRESS' },
+    { label: 'running', value: 'RUNNING' },
+    { label: 'suspended', value: 'SUSPENDED' },
+    { label: 'calling', value: 'CALLING' },
+    { label: 'waiting', value: 'WAITING' },
+    { label: 'blocked', value: 'BLOCKED' }
+  ];
 
   constructor(public coreService: CoreService) {
   }
@@ -590,6 +600,14 @@ export class SearchComponent implements OnInit {
   ngOnInit() {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.getFolderTree();
+    if (this.filter.state && this.filter.state.length > 0) {
+      this.checkOptions = this.checkOptions.map(item => {
+        return {
+          ...item,
+          checked: this.filter.state.indexOf(item.value) > -1
+        };
+      });
+    }
   }
 
   getFolderTree() {
@@ -618,6 +636,10 @@ export class SearchComponent implements OnInit {
 
   remove(path) {
     this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
+  }
+
+  stateChange(value: string[]): void {
+    this.filter.state = value;
   }
 
   loadData(node, $event) {
@@ -1659,7 +1681,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   searchInResult() {
-   
+
     this.updateTable(this.dailyPlanFilters.searchText ? this.searchPipe.transform(this.plans, this.dailyPlanFilters.searchText, this.searchableProperties) : this.plans);
   }
 

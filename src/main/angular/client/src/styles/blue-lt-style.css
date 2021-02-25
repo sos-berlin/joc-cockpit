@@ -10,6 +10,7 @@
   --text-color: rgba(255, 255, 255, .87);
   --text-hover: rgba(0, 0, 0, .87);
   --text-muted: rgba(255, 255, 255, .67);
+  --menu-hover: rgba(70, 82, 95, .7);
   --blue: #1690d4;
   --green: #3fa93f;
   --black: #ffffff;
@@ -1349,4 +1350,7 @@ span.cm-variable {
 
 .order-history-template13 {
   background: #596979 !important;
+}
+.highlighted {
+  color: yellow;
 }

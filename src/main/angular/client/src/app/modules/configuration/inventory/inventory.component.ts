@@ -1868,12 +1868,38 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.isTrash = !this.isTrash;
     if (this.isTrash) {
       this.isTreeLoaded = false;
-      setTimeout(() => {
-        this.isTreeLoaded = true;
-       // this.trashTree = [...this.tree];
-      }, 200);
+      this.initTrashTree(null);
     }
   }
+
+  initTrashTree(path) {
+    this.coreService.post('tree', {
+      forInventoryTrash: true,
+      types: ['INVENTORY']
+    }).subscribe((res: any) => {
+      if (res.folders.length > 0) {
+        const tree = this.coreService.prepareTree(res, false);
+        if (path) {
+          this.trashTree = this.recursiveTreeUpdate(tree, this.trashTree);
+          this.updateFolders(path, () => {
+            this.updateTree();
+          });
+        } else {
+          this.trashTree = tree;
+          if (this.trashTree.length > 0) {
+            this.trashTree[0].expanded = true;
+            this.updateObjects(this.trashTree[0], (children) => {
+              this.isTreeLoaded = false;
+              this.trashTree[0].children.splice(0, 0, children[0]);
+              this.trashTree[0].children.splice(1, 0, children[1]);
+              this.updateTree();
+            }, false);
+          }
+        }
+      }
+    }, () => this.isTreeLoaded = false);
+  }
+
 
   private backToListView() {
     const parent = this.treeCtrl.getTreeNodeByKey(this.selectedObj.path);
@@ -2241,7 +2267,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
         {name: 'Calendars', object: 'CALENDAR', children: [], path: data.path, key: (_key + 'Calendars$')}];
     }
 
-    this.coreService.post('inventory/read/folder', {
+    const URL = this.isTrash ? 'inventory/trash/read/folder' : 'inventory/read/folder';
+    this.coreService.post(URL, {
       path: data.path
     }).subscribe((res: any) => {
       for (let i = 0; i < controllerObj.controllerArr.length; i++) {
@@ -2320,7 +2347,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       }
       cb(conf);
     }, () => {
-      cb({
+      cb([{
         name: 'Controller',
         controller: 'CONTROLLER',
         key: (_key + 'Controller$'),
@@ -2334,7 +2361,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         children: dailyPlanObj.dailyPlanArr,
         path: data.path,
         deleted: data.deleted
-      });
+      }]);
     });
   }
 
@@ -2514,24 +2541,28 @@ export class InventoryComponent implements OnInit, OnDestroy {
     const object = node.origin;
     const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.title = 'delete';
-    modalRef.componentInstance.message = 'deleteDraftObject';
+    modalRef.componentInstance.message = 'deleteObject';
     modalRef.componentInstance.type = 'Delete';
-    modalRef.componentInstance.objectName = object.path;
+    modalRef.componentInstance.objectName = object.type ? object.path + (object.path === '/' ? '' : '/') + object.name : object.path;
     modalRef.result.then(() => {
-      this.coreService.post('inventory/delete_draft', {objectType: 'FOLDER', path: object.path}).subscribe(() => {
-        forkJoin([
-          this.coreService.post('inventory/deployment/deploy', {
-            controllerIds: this.schedulerIds.controllerIds,
-            delete: {deployConfigurations: [{configuration: {objectType: 'FOLDER', recursive: true, path: object.path}}]}
-          }),
-          this.coreService.post('inventory/release', {
-            delete: [{objectType: 'FOLDER', path: object.path}]
-          })
-        ]).subscribe(() => {
-          this.initTree(object.path, null);
-        });
-      });
+      console.log(object)
+      /*this.coreService.post('inventory/delete', {objectType: 'FOLDER', path: object.path}).subscribe(() => {
+
+      });*/
     }, () => {
+    });
+  }
+
+  reDeployObject(node) {
+    const origin = node.origin ? node.origin : node;
+    console.log(origin)
+    let obj = {
+      controllerId: this.schedulerIds.selected,
+      folder: origin.path,
+      recursive: false
+    };
+    this.coreService.post('inventory/deployment/redeploy', obj).subscribe((res: any) => {
+
     });
   }
 
@@ -2878,8 +2909,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       obj = {path: object.path, objectType: 'FOLDER'};
     }
     this.coreService.post('inventory/recover', obj).subscribe(() => {
-      object.deleted = false;
-      this.initTree(obj.path || object.path, null);
+      this.initTrashTree(obj.path || object.path);
     });
   }
 
@@ -3044,13 +3074,17 @@ export class InventoryComponent implements OnInit, OnDestroy {
     const URL = !isDeployable ? 'inventory/release' : 'inventory/deployment/deploy';
     this.coreService.post(URL, obj).subscribe(() => {
       this.clearCopyObject(object);
-    })
+    });
   }
 
   private updateTree() {
-    this.tree = [...this.tree];
-    if (this.selectedData && this.selectedData.children) {
-      this.selectedData.children = [...this.selectedData.children];
+    if (this.isTrash) {
+      this.trashTree = [...this.trashTree];
+    } else {
+      this.tree = [...this.tree];
+      if (this.selectedData && this.selectedData.children) {
+        this.selectedData.children = [...this.selectedData.children];
+      }
     }
   }
 

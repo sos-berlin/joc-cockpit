@@ -117,7 +117,7 @@
                       <div class="text-left block-ellipsis m-l-md">
                         <span class="text-left">
                           <i class="fa fa-document text-sm "></i>
-                          <span [innerHtml]="document.name"></span>
+                          <span [innerHtml]="document.name | highlight : documentFilters.searchText"></span>
                         </span>
                       </div>
                       <div class="btn-group dropdown pull-right abt-dropdown">
@@ -145,7 +145,7 @@
                       </div>
                       <div class="text-sm  text-left text-muted p-t-sm">
                         <span translate>common.label.type </span>:
-                        <span [innerHtml]="document.type"></span>
+                        <span [innerHtml]="document.type | highlight : documentFilters.searchText"></span>
                       </div>
                      <div class="text-sm text-left text-muted p-t-sm">
                        <span translate>resource.label.lastUpdateTime </span>:
@@ -250,9 +250,9 @@
                         </nz-dropdown-menu>
                       </div>
                     </td>
-                    <td [innerHtml]="document.name || '-'"></td>
-                    <td>{{document.path}}</td>
-                    <td [innerHtml]="document.type"></td>
+                    <td [innerHtml]="document.name | highlight : documentFilters.searchText"></td>
+                    <td [innerHtml]="document.path | highlight : documentFilters.searchText"></td>
+                    <td [innerHtml]="document.type | highlight : documentFilters.searchText"></td>
                     <td [innerHtml]="document.modified | stringToDate"></td>
                   </tr>
                   </tbody>

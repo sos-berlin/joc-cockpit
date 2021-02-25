@@ -102,16 +102,16 @@
                           <span
                             [nz-tooltip]="cluster.path"
                             class="text text-ellipsis1"
-                            [innerHtml]="cluster.agentId"></span>
+                            [innerHtml]="cluster.agentId | highlight : agentsFilters.searchText"></span>
                         </span>
                       </div>
                       <div class="text-sm text-left text-muted p-t-sm">
                         <span translate>agent.label.agentName</span>:
-                        <span [innerHtml]="cluster.agentName"></span>
+                        <span [innerHtml]="cluster.agentName | highlight : agentsFilters.searchText"></span>
                       </div>
                       <div class="text-sm text-left text-muted p-t-sm">
                         <span translate>agent.label.url</span>:
-                        <span [innerHtml]="cluster.url"></span>
+                        <span [innerHtml]="cluster.url | highlight : agentsFilters.searchText"></span>
                       </div>
                       <div class="text-sm text-left text-muted p-t-sm">
                         <span class="text-black _600" [innerHtml]="cluster.runningTasks"></span>
@@ -179,16 +179,16 @@
                         <i class="cursor fa fa-caret-down fa-lg p-r-xs p-l-xs" *ngIf="!cluster.show"
                            (click)="showAgents(cluster)"></i>
                         <i class="cursor fa fa-caret-up fa-lg p-r-xs p-l-xs" *ngIf="cluster.show" (click)="hideAgents(cluster)"></i>
-                        <span [innerHtml]="cluster.agentId"></span>
+                        <span [innerHtml]="cluster.agentId | highlight : agentsFilters.searchText"></span>
                       </td>
-                      <td><span [innerHtml]="cluster.agentName"></span></td>
+                      <td><span [innerHtml]="cluster.agentName | highlight : agentsFilters.searchText"></span></td>
                       <td>
                         <span [nz-tooltip]="cluster.errorMessage" class="label" [ngClass]="coreService.getColor(cluster.state.severity,'bg')">
-                          <span>{{cluster.state._text | translate}}</span>
+                          <span [innerHtml]="cluster.state._text | translate | highlight : agentsFilters.searchText"></span>
                         </span>
                       </td>
                       <td>
-                        <a class="text-hover-primary" [href]="cluster.url+'/agent/api'" target="_blank" [innerHtml]="cluster.url"></a>
+                        <a class="text-hover-primary" [href]="cluster.url+'/agent/api'" target="_blank" [innerHtml]="cluster.url | highlight : agentsFilters.searchText"></a>
                       </td>
                       <td>{{cluster.runningTasks}}</td>
                     </tr>

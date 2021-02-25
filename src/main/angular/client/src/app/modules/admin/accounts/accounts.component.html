@@ -6,8 +6,8 @@
       [nzPageSize]="preferences.entryPerPage"
       [nzPageIndex]="usr.currentPage"
       [nzBordered]="true"
-      [nzShowPagination]="(users | filter: searchKey).length > 0"
-      [nzData]="(users | filter: searchKey)"
+      [nzShowPagination]="(users | filter: searchKey : ['user', 'roles']).length > 0"
+      [nzData]="(users | filter: searchKey: ['user', 'roles'])"
       [nzLoading]="loading"
       [nzShowSizeChanger]="true"
       [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
@@ -54,17 +54,17 @@
             </nz-dropdown-menu>
           </div>
         </td>
-        <td><a (click)="showMaster(user.user)" class="text-hover-primary" [innerHtml]="user.user  | decodeSpace"></a></td>
+        <td><a (click)="showMaster(user.user)" class="text-hover-primary" [innerHtml]="user.user  | decodeSpace | highlight: searchKey"></a></td>
         <td><span>********</span></td>
         <td>
-          <div *ngFor="let role of user.roles"><span [innerHtml] = "role"></span></div>
+          <div *ngFor="let role of user.roles"><span [innerHtml]= "role | highlight: searchKey"></span></div>
         </td>
       </tr>
       </tbody>
     </nz-table>
   </div>
   <div class="w-half label-top" *ngIf="ajaxTable.data.length >0">
-    <span translate>common.label.total</span> <span> {{(users | filter: searchKey).length}} </span>
+    <span translate>common.label.total</span> <span> {{(users | filter: searchKey: ['user', 'roles']).length}} </span>
     <span translate *ngIf="ajaxTable.data.length >1">user.label.usersFound</span>
     <span translate *ngIf="ajaxTable.data.length ===1">user.label.userFound</span>
   </div>

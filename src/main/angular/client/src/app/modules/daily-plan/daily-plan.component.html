@@ -1,5 +1,18 @@
 <ng-template #orderTemplate let-order let-plan="plan">
   <ng-container *ngFor="let value of order">
+    <ng-template #tooltipTemplate>
+      <div class="m-a-sm" *ngIf="value.cyclicOrder">
+        <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
+        <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
+        {{value.cyclicOrder.firstStart | stringToDate}}
+        <br>
+        <span class="_600 p-l-sm" translate>dailyPlan.label.end</span>:
+        {{value.cyclicOrder.lastStart | stringToDate}}
+        <br>
+        <span class="_600 p-l-sm" translate>order.label.orders</span>:
+        {{value.cyclicOrder.count}}
+      </div>
+    </ng-template>
     <tr>
       <td [nzShowCheckbox]="true"
           [nzChecked]="object.mapOfCheckedId.has(value.orderId)"
@@ -55,39 +68,44 @@
         </div>
       </td>
       <td [ngStyle]="{'padding-left' : dailyPlanFilters.filter.groupBy === '' ? 'inherit' :  '20px !important'}">
-        <i class="fa fa-caret-down cursor p-r-xs" *ngIf="!value.show"
-           (click)="addDetailsOfOrder(value)"
-           aria-hidden="true"></i>
-        <i class="fa fa-caret-up cursor p-r-xs" *ngIf="value.show"
-           (click)="addDetailsOfOrder(value)" aria-hidden="true"></i>
-        <span *ngIf="value.state && (value.state._text === 'PLANNED' || value.state._text === 'PENDING')"
-              [innerHtml]="value.orderId"></span>
-        <a class="text-hover-primary"
-           *ngIf="value.state && (value.state._text !== 'PLANNED' && value.state._text !== 'PENDING')"
-           (click)="navToOrderHistory(value.orderId)">{{value.orderId}}</a>
+        <span class="show-in-single-line">
+          <i class="fa fa-caret-down cursor p-r-xs" *ngIf="!value.show"
+             (click)="addDetailsOfOrder(value)"
+             aria-hidden="true"></i>
+          <i class="fa fa-caret-up cursor p-r-xs" *ngIf="value.show"
+             (click)="addDetailsOfOrder(value)" aria-hidden="true"></i>
+          <span *ngIf="value.state && (value.state._text === 'PLANNED' || value.state._text === 'PENDING')"
+                [innerHtml]="value.orderId | highlight : dailyPlanFilters.searchText"></span>
+          <a class="text-hover-primary"
+             *ngIf="value.state && (value.state._text !== 'PLANNED' && value.state._text !== 'PENDING')"
+             (click)="navToOrderHistory(value.orderId)"  [innerHtml]="value.orderId | highlight : dailyPlanFilters.searchText">
+          </a>
+          <i *ngIf="value.cyclicOrder" nz-tooltip [nzTooltipTitle]="tooltipTemplate" [nzTooltipPlacement]="'left'"
+             class="fa fa-repeat p-l-xs" aria-hidden="true"></i>
+        </span>
       </td>
       <td *ngIf="dailyPlanFilters.filter.groupBy === ''">
-         <span class="show-in-single-line">
-        <i (click)="coreService.navToInventoryTab(value.schedulePath, 'SCHEDULE');"
-           class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-        <span>{{value.schedulePath}} </span>
-         </span>
+        <span class="show-in-single-line">
+          <i (click)="coreService.navToInventoryTab(value.schedulePath, 'SCHEDULE');"
+             class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+          <span [innerHtml]="value.schedulePath | highlight : dailyPlanFilters.searchText"></span>
+        </span>
       </td>
       <td *ngIf="dailyPlanFilters.filter.groupBy !== 'WORKFLOW'">
          <span class="show-in-single-line">
-        <i (click)="coreService.navToInventoryTab(value.workflowPath, 'WORKFLOW');"
-           class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-        <a class="text-hover-primary"
-           (click)="coreService.showWorkflow(value.workflowPath);">{{value.workflowPath}} </a>
+          <i (click)="coreService.navToInventoryTab(value.workflowPath, 'WORKFLOW');"
+             class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+          <a class="text-hover-primary"
+             (click)="coreService.showWorkflow(value.workflowPath);"  [innerHtml]="value.workflowPath | highlight : dailyPlanFilters.searchText"></a>
          </span>
       </td>
       <td>
         <span class="label" [ngClass]="coreService.getColor(value.state.severity,'bg')"
-              [innerHtml]="value.status"> </span>
+              [innerHtml]="value.status | highlight : dailyPlanFilters.searchText"> </span>
       </td>
       <td><span *ngIf="value.late==true" translate>dailyPlan.label.late</span></td>
-      <td><span [innerHtml]="value.plannedStartTime"></span></td>
-      <td><span [innerHtml]="value.expectedEndTime"></span></td>
+      <td><span [innerHtml]="value.plannedStartTime | highlight : dailyPlanFilters.searchText"></span></td>
+      <td><span [innerHtml]="value.expectedEndTime | highlight : dailyPlanFilters.searchText"></span></td>
       <td><span
         [innerHtml]="value.expectedDuration"></span>
       </td>
@@ -100,19 +118,6 @@
           <span nz-tooltip [nzTooltipTitle]="tooltipTemplate" [nzTooltipPlacement]="'left'">
             {{'dailyPlan.label.repeatEvery' | translate}}
             {{value.period.repeat}}s
-            <ng-template #tooltipTemplate>
-              <div class="m-a-sm" *ngIf="value.cyclicOrder">
-                <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
-                <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
-                {{value.cyclicOrder.firstStart | stringToDate}}
-                <br>
-                <span class="_600 p-l-sm" translate>dailyPlan.label.end</span>:
-                {{value.cyclicOrder.lastStart | stringToDate}}
-                <br>
-                <span class="_600 p-l-sm" translate>order.label.orders</span>:
-                {{value.cyclicOrder.count}}
-              </div>
-            </ng-template>
           </span>
         </div>
       </td>
@@ -130,6 +135,19 @@
 </ng-template>
 <ng-template #planTemplate let-ajaxTable>
   <ng-template ngFor let-plan [ngForOf]="ajaxTable.data">
+    <ng-template #tooltipTemplate>
+      <div class="m-a-sm" *ngIf="plan.value[0].cyclicOrder">
+        <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
+        <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
+        {{plan.value[0].cyclicOrder.firstStart | stringToDate}}
+        <br>
+        <span class="_600 p-l-sm" translate>dailyPlan.label.end</span>:
+        {{plan.value[0].cyclicOrder.lastStart | stringToDate}}
+        <br>
+        <span class="_600 p-l-sm" translate>order.label.orders</span>:
+        {{plan.value[0].cyclicOrder.count}}
+      </div>
+    </ng-template>
     <tr>
       <td [nzShowCheckbox]="true"
           [(nzChecked)]="plan.checked"
@@ -180,18 +198,21 @@
              (click)="expandCollapseOrder(plan)" aria-hidden="true"></i>
           <i class="fa fa-angle-right cursor fa-lg p-r-xs" *ngIf="!plan.order"
              (click)="expandCollapseOrder(plan)" aria-hidden="true"></i>
-
           <span *ngIf="dailyPlanFilters.filter.groupBy === 'WORKFLOW'">
              <i (click)="coreService.navToInventoryTab(plan.value[0].workflowPath, 'WORKFLOW');"
                 class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
             <a class="text-hover-primary"
-               (click)="coreService.showWorkflow(plan.value[0].workflowPath);">{{plan.value[0].workflowPath}} </a>
+               (click)="coreService.showWorkflow(plan.value[0].workflowPath);">
+              <span [innerHtml]="plan.value[0].workflowPath | highlight : dailyPlanFilters.searchText"></span>
+            </a>
           </span>
           <span *ngIf="dailyPlanFilters.filter.groupBy !== 'WORKFLOW'">
             <i (click)="coreService.navToInventoryTab(plan.value[0].schedulePath, 'SCHEDULE');"
                class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-            {{plan.value[0].schedulePath}}
+            <span [innerHtml]="plan.value[0].schedulePath | highlight : dailyPlanFilters.searchText"></span>
           </span>
+          <i *ngIf="!plan.order && plan.value.length === 1 && plan.value[0] && plan.value[0].cyclicOrder" nz-tooltip [nzTooltipTitle]="tooltipTemplate" [nzTooltipPlacement]="'left'"
+             class="fa fa-repeat p-l-xs" aria-hidden="true"></i>
         </span>
       </td>
       <td
@@ -200,20 +221,23 @@
           <i (click)="coreService.navToInventoryTab(plan.value[0].workflowPath, 'WORKFLOW');"
              class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
           <a class="text-hover-primary"
-             (click)="coreService.showWorkflow(plan.value[0].workflowPath);">{{plan.value[0].workflowPath}} </a>
+             (click)="coreService.showWorkflow(plan.value[0].workflowPath);">
+             <span [innerHtml]="plan.value[0].workflowPath | highlight : dailyPlanFilters.searchText"></span>
+          </a>
          </span>
       </td>
       <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]">
         <span class="label"
               [ngClass]="coreService.getColor(plan.value[0].state.severity,'bg')"
-              [innerHtml]="plan.value[0].status"> </span>
+              [innerHtml]="plan.value[0].status | highlight : dailyPlanFilters.searchText">
+        </span>
       </td>
       <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]"><span
         *ngIf="plan.value[0].late==true" translate>dailyPlan.label.late</span></td>
       <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]"><span
-        [innerHtml]="plan.value[0].plannedStartTime"></span></td>
+        [innerHtml]="plan.value[0].plannedStartTime | highlight : dailyPlanFilters.searchText"></span></td>
       <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]"><span
-        [innerHtml]="plan.value[0].expectedEndTime"></span></td>
+        [innerHtml]="plan.value[0].expectedEndTime | highlight : dailyPlanFilters.searchText"></span></td>
       <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]"><span
         [innerHtml]="plan.value[0].expectedDuration"></span>
       </td>
@@ -229,19 +253,6 @@
              <span nz-tooltip [nzTooltipTitle]="tooltipTemplate" [nzTooltipPlacement]="'left'">
             {{'dailyPlan.label.repeatEvery' | translate}}
                {{plan.value[0].period.repeat}}s
-            <ng-template #tooltipTemplate>
-              <div class="m-a-sm" *ngIf="plan.value[0].cyclicOrder">
-                <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
-                <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
-                {{plan.value[0].cyclicOrder.firstStart | stringToDate}}
-                <br>
-                <span class="_600 p-l-sm" translate>dailyPlan.label.end</span>:
-                {{plan.value[0].cyclicOrder.lastStart | stringToDate}}
-                <br>
-                <span class="_600 p-l-sm" translate>order.label.orders</span>:
-                {{plan.value[0].cyclicOrder.count}}
-              </div>
-            </ng-template>
           </span>
         </div>
       </td>

@@ -21,6 +21,7 @@ export class AgentComponent implements OnInit, OnDestroy {
   pageView: any;
   agentClusters: any = [];
   data: any = [];
+  searchableProperties = ['agentId', 'agentName', 'state', 'url', '_text'];
   agentsFilters: any = {};
   subscription1: Subscription;
   subscription2: Subscription;
@@ -59,7 +60,7 @@ export class AgentComponent implements OnInit, OnDestroy {
   }
 
   searchInResult() {
-    this.data = this.agentsFilters.searchText ? this.searchPipe.transform(this.agentClusters, this.agentsFilters.searchText) : this.agentClusters;
+    this.data = this.agentsFilters.searchText ? this.searchPipe.transform(this.agentClusters, this.agentsFilters.searchText, this.searchableProperties) : this.agentClusters;
     this.data = [...this.data];
   }
 

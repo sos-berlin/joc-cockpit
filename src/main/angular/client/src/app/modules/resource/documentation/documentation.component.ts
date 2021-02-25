@@ -249,9 +249,7 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
 // Main Component
 @Component({
   selector: 'app-document',
-  templateUrl: 'documentation.component.html',
-  styleUrls: ['./documentation.component.css'],
-
+  templateUrl: 'documentation.component.html'
 })
 export class DocumentationComponent implements OnInit, OnDestroy {
   isLoading = false;
@@ -267,8 +265,10 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   documentFilters: any = {};
   sideView: any = {};
   documentTypes = ['ALL', 'HTML', 'XML', 'XSL', 'XSD', 'JAVASCRIPT', 'JSON', 'CSS', 'MARKDOWN', 'GIF', 'JPEG', 'PNG'];
-  subscription: Subscription;
   selectedPath: string;
+  searchableProperties = ['name', 'type', 'path'];
+
+  subscription: Subscription;
 
   @ViewChild(TreeComponent, {static: false}) child;
 
@@ -299,7 +299,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       types: ['DOCUMENTATION']
     }).subscribe(res => {
       this.tree = this.coreService.prepareTree(res, true);
-      if(this.tree.length) {
+      if (this.tree.length) {
         this.loadDocument();
       }
       this.isLoading = true;
@@ -388,7 +388,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   searchInResult() {
-    this.data = this.documentFilters.searchText ? this.searchPipe.transform(this.documents, this.documentFilters.searchText) : this.documents;
+    this.data = this.documentFilters.searchText ? this.searchPipe.transform(this.documents, this.documentFilters.searchText, this.searchableProperties) : this.documents;
     this.data = [...this.data];
   }
 

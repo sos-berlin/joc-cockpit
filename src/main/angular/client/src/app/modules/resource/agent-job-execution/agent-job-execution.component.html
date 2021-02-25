@@ -205,7 +205,7 @@
                                 <ng-template ngFor let-agentTask [ngForOf]="ajaxTable.data | orderBy:agentJobExecutionFilters.filter.sortBy:agentJobExecutionFilters.reverse">
                                     <tr>
                                         <td *ngIf="!agentJobExecutionFilters.current"><span [innerHtml]="agentTask.controllerId"></span></td>
-                                        <td><a target="_blank" href="{{agentTask.agent}}" class="text-hover-primary" [innerHtml]="agentTask.agent"></a></td>
+                                        <td><a target="_blank" href="{{agentTask.agent}}" class="text-hover-primary" [innerHtml]="agentTask.agent | highlight : agentJobExecutionFilters.searchText"></a></td>
                                         <td><span [innerHtml]="agentTask.cause"></span></td>
                                         <td><span [innerHtml]="agentTask.numOfSuccessfulTasks"></span></td>
                                         <td><span [innerHtml]="agentTask.numOfJobs"></span></td>

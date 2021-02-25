@@ -167,24 +167,22 @@
                         </label>
                         <div class="text-left block-ellipsis m-l-md">
                           <i nz-icon nzType="unordered-list" class="p-r-xs" nzTheme="outline"></i>
-                          <span [nz-tooltip]="order.title" [innerHtml]="order.orderId"></span>
+                          <span [nz-tooltip]="order.title" [innerHtml]="order.orderId | highlight : orderFilters.searchText"></span>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
                           <app-order-action [order]="order" [schedulerId]="schedulerIds.selected" [permission]="permission" [preferences]="preferences"></app-order-action>
                         </div>
                         <div class="text-sm text-left text-muted p-t-sm">
                           <span translate>order.label.state </span>:
-                          <span [ngClass]="coreService.getColor(order.state.severity, 'text')" [innerHtml]="order.state._text | translate"></span>
+                          <span [ngClass]="coreService.getColor(order.state.severity, 'text')" [innerHtml]="order.state._text | translate | highlight : orderFilters.searchText"></span>
                         </div>
                         <div class="text-sm text-left text-muted p-t-xs">
                           <span translate>order.label.position </span>:
-                          <span class="text-black-dk" *ngIf="order.position && order.position.length>0">
-                            {{order.position | json}}
-                          </span>
+                          <span class="text-black-dk" *ngIf="order.position && order.position.length>0" [innerHtml]="order.position | json | highlight : orderFilters.searchText"></span>
                         </div>
                         <div class="text-sm text-left text-muted p-t-xs block-ellipsis" style="width: 100%">
                           <span translate>order.label.workflow </span>:
-                          <span class="text-black-dk" [innerHtml]="order.workflowId.path"></span>
+                          <span class="text-black-dk" [innerHtml]="order.workflowId.path | highlight : orderFilters.searchText | highlight : orderFilters.searchText"></span>
                         </div>
                         <div class="text-sm text-left text-muted p-t-xs">
                           <span translate>order.label.scheduledFor </span>:
@@ -284,7 +282,7 @@
                         <span class="show-in-single-line">
                           <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs" *ngIf="!order.show" (click)="showPanelFuc(order)"></i>
                           <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" *ngIf="order.show" (click)="hidePanelFuc(order)"></i>
-                          <a class="text-dark" (click)="showPanelFunc(order)">{{order.orderId}}</a>
+                          <a class="text-dark" (click)="showPanelFunc(order)"> <span [innerHtml]="order.orderId | highlight : orderFilters.searchText"></span></a>
                           <span *ngIf="order.title">-</span>
                           <i class="text-muted">{{order.title}}</i>
                           <i *ngIf="order.cyclicOrder" nz-tooltip [nzTooltipTitle]="tooltipTemplate" [nzTooltipPlacement]="'left'"
@@ -307,17 +305,19 @@
                       <td>
                         <span class="show-in-single-line">
                           <i (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-                          <a class="text-hover-primary" (click)="coreService.showWorkflow(order.workflowId.path);">{{order.workflowId.path}} </a>
+                          <a class="text-hover-primary" (click)="coreService.showWorkflow(order.workflowId.path);">
+                            <span [innerHtml]="order.workflowId.path | highlight : orderFilters.searchText"></span>
+                          </a>
                         </span>
                       </td>
                       <td>
                         <span *ngIf="order.position && order.position.length>0">
-                          {{order.position | json}}
+                          <span [innerHtml]="order.position | json | highlight : orderFilters.searchText"></span>
                         </span>
                       </td>
                       <td>
                         <a class="label" *ngIf="order.state" [ngClass]="coreService.getColor(order.state.severity, 'bg')"
-                           [innerHtml]="order.state._text | translate"></a>
+                           [innerHtml]="order.state._text | translate | highlight : orderFilters.searchText"></a>
                       </td>
                       <td>
                         {{order.scheduledFor | stringToDate}}

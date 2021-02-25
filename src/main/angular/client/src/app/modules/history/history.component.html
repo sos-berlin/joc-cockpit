@@ -1024,8 +1024,8 @@
                      *ngIf="!depHistory.show" (click)="showChildHistory(depHistory);"></i>
                   <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
                      *ngIf="depHistory.show" (click)="depHistory.show = false;"></i>
-                   <span [innerHtml]="depHistory.controllerId | highlight : order.searchText"></span>
-                   <span *ngIf="!depHistory.controllerId" [innerHtml]="orderSearch.controllerId"></span>
+                   <span [innerHtml]="depHistory.controllerId | highlight : deployment.searchText"></span>
+                   <span *ngIf="!depHistory.controllerId" [innerHtml]="deploymentSearch.controllerId"></span>
                 </span>
               </td>
               <td>
@@ -1036,11 +1036,11 @@
                   <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
                      *ngIf="depHistory.show && historyFilters.current"
                      (click)="depHistory.show = false;"></i>
-                  <span [innerHtml]="depHistory.deploymentDate | stringToDate"></span>
+                  <span [innerHtml]="depHistory.deploymentDate | stringToDate | highlight : deployment.searchText"></span>
                 </span>
               </td>
               <td><span [innerHtml]="depHistory.account | highlight : deployment.searchText"></span></td>
-              <td><span class="label" [ngClass]="{'bg-dark-blue' : depHistory.state=== 'DEPLOYED', 'bg-orange' : depHistory.state=== 'NOT_DEPLOYED'}" [innerHtml]="depHistory.state | translate"></span></td>
+              <td><span class="label" [ngClass]="{'bg-dark-blue' : depHistory.state=== 'DEPLOYED', 'bg-orange' : depHistory.state=== 'NOT_DEPLOYED'}" [innerHtml]="depHistory.state | translate | highlight : deployment.searchText"></span></td>
             </tr>
             <tr *ngIf="depHistory.errorMessage && depHistory.show">
               <td colspan="4"><span class="cm-error">{{depHistory.errorMessage}}</span></td>
@@ -1129,7 +1129,7 @@
                     <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
                        *ngIf="submissionHistory.show"
                        (click)="submissionHistory.show = false;"></i>
-                    <span [innerHtml]="submissionHistory.dailyPlanDate | stringToDate1"></span>
+                    <span [innerHtml]="submissionHistory.dailyPlanDate | stringToDate1 | highlight: submission.searchText"></span>
                   </span>
               </td>
             </tr>
@@ -1143,7 +1143,7 @@
                   <tr *ngIf="!historyFilters.current">
                     <td class="_600" style="padding: 6px 8px !important;" colspan="6">
                       <span class="p-l" translate>common.label.controllerId</span>:
-                      <span>{{controller.controllerId}}</span>
+                      <span [innerHtml]="controller.controllerId | highlight: submission.searchText"></span>
                     </td>
                   </tr>
                   <tr>

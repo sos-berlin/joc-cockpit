@@ -16,6 +16,7 @@
   --box-shadow: rgba(255, 255, 255, .1);
   --border-color: rgba(255, 255, 255, .3);
   --dark-border-color: rgba(0, 0, 0, .2);
+  --menu-hover: rgba(29, 29, 28, .7);
   --bg-dimgrey: #999;
   --green: #389638;
   --bg-gold : #e6b000;
@@ -1492,4 +1493,7 @@ span.cm-link {
 }
 .order-history-template13 {
   background: #444444 !important;
+}
+.highlighted {
+  color: yellow;
 }

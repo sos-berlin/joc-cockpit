@@ -88,7 +88,7 @@
                       <div class="text-left block-ellipsis">
                         <span class="text-left">
                           <i class="fa fa-lock text-sm "></i>&nbsp;
-                          <span [innerHtml]="lock.id"></span>
+                          <span [innerHtml]="lock.id | highlight : locksFilters.searchText"></span>
                         </span>
                       </div>
                       <div class="text-sm  text-left text-muted p-t-sm">
@@ -104,7 +104,7 @@
                         {{'resource.label.ordersWaitingForLocks' | translate}}
                       </div>
                       <div class="text-sm  text-left text-muted p-t-sm">
-                        <span class="text-black _600" [innerHtml]="lock.limit || '0'"></span>
+                        <span class="text-black _600" [innerHtml]="lock.limit | highlight : locksFilters.searchText"></span>
                         {{'resource.label.limit' | translate}}
                       </div>
                     </div>
@@ -181,17 +181,17 @@
                              *ngIf="lock.show"
                              (click)="lock.show = false;"></i>
                           <a>
-                            <span [innerHtml]="lock.id || '-'"></span>
+                            <span [innerHtml]="lock.id | highlight : locksFilters.searchText"></span>
                             <i *ngIf="lock.title"> - </i>
-                            <i class="text-muted" [innerHtml]="lock.title"></i>
+                            <i class="text-muted" [innerHtml]="lock.title | highlight : locksFilters.searchText"></i>
                           </a>
                         </span>
                       </td>
-                      <td>{{lock.path}}</td>
+                      <td><span [innerHtml]="lock.path | highlight : locksFilters.searchText"></span></td>
                       <td>{{lock.acquiredLockCount || '0'}}</td>
                       <td>{{lock.ordersHoldingLocks || '0'}}</td>
                       <td>{{lock.ordersWaitingForLocks || '0'}}</td>
-                      <td [innerHtml]="lock.limit || '0'"></td>
+                      <td [innerHtml]="lock.limit | highlight : locksFilters.searchText"></td>
                     </tr>
                     <tr *ngIf="lock.show">
                       <td colspan="6" style="padding:0 !important;border-bottom: none;" class="order-history-template0">

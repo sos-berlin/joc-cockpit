@@ -3005,7 +3005,7 @@ body div.mxPopupMenu {
 }
 
 .more-option i:hover, .more-option-h i:hover {
-  background: var(--menu-hover);;
+  background: var(--menu-hover);
 }
 
 div.order-panel {
@@ -5175,7 +5175,7 @@ tr.disabled-row td:not(.menu) {
   padding: 2px 3px 5px 1px;
 }
 
-.node-content-wrapper {
+.node-content-wrapper, .node-content-wrapper2 {
   display: inline-block;
   font-family: "Open Sans", "lucida grande", "Segoe UI", arial, verdana, "lucida sans unicode", tahoma, serif;
   font-size: 13px;
@@ -5193,7 +5193,7 @@ tr.disabled-row td:not(.menu) {
   overflow: scroll !important;
 }
 
-.node-content-wrapper {
+.node-content-wrapper{
   &:after {
     display: block;
     content: '';
@@ -6780,7 +6780,7 @@ span.cm-error {
   top:-1px;
 }
 .ant-checkbox + span{
-  padding-left: 4px;
+  padding-right: 4px;
 }
 .ant-tree-checkbox-checked .ant-tree-checkbox-inner{
   border-color: var(--primary);
@@ -6819,7 +6819,10 @@ span.cm-error {
   margin-right: 8px;
   margin-left: 0;
 }
-
+.ant-checkbox-indeterminate .ant-checkbox-inner{
+  border-color: var(--border-color);
+  background: transparent !important;
+}
 .ant-checkbox-indeterminate .ant-checkbox-inner::after {
   background-color: var(--primary);
 }
@@ -6837,13 +6840,25 @@ span.cm-error {
   margin-right: 16px;
   color: var(--text-color);
 }
+.ant-radio-wrapper{
+  min-width: 132px;
+}
+.ant-checkbox-wrapper + .ant-checkbox-wrapper{
+  margin-left: 0;
+}
+.ant-checkbox-group{
+  .ant-checkbox-wrapper{
+    min-width: 132px;
+    margin-bottom: 4px;
+  }
+}
 .ant-empty{
-  line-height: 0;
+  line-height: unset;
   font-size: 12px;
 }
 .ant-empty-image {
   max-height: 28px;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 .ant-pagination-item-active:focus, .ant-pagination-item-active:hover,
 .ant-tree-checkbox-wrapper:hover .ant-tree-checkbox-inner,

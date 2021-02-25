@@ -250,19 +250,31 @@ export class SafeHtmlPipe implements PipeTransform {
 })
 export class SearchPipe implements PipeTransform {
 
-  static filter(items: Array<{ [key: string]: any }>, term: string, includes: any): Array<{ [key: string]: any }> {
-
-    const toCompare = term.toLowerCase();
+  static filter(items: Array<{ [key: string]: any }>, searchKey: string, includes: any): Array<{ [key: string]: any }> {
+    const n = JSON.parse(sessionStorage.preferences);
+    const toCompare = searchKey.toLowerCase();
 
     function checkInside(item: any, term: string) {
 
       if (typeof item === 'string' && item.toString().toLowerCase().includes(toCompare)) {
         return true;
       }
-
       for (let property in item) {
+        if (Array.isArray(item)) {
+          if (item[property] && item[property].toString().toLowerCase().includes(toCompare)) {
+            return true;
+          }
+        }
         if (item[property] === null || item[property] == undefined || !includes.includes(property)) {
           continue;
+        }
+        if (typeof property === 'string' && (property.match(/date/i) || property.match(/created/i))) {
+          if (n.zone) {
+            const d = moment(item[property]).tz(n.zone).format(n.dateFormat);
+            if (typeof d === 'string' && d.toString().toLowerCase().includes(toCompare)) {
+              return true;
+            }
+          }
         }
         if (typeof item[property] === 'object') {
           if (checkInside(item[property], term)) {
@@ -276,21 +288,21 @@ export class SearchPipe implements PipeTransform {
     }
 
     return items.filter(function (item) {
-      return checkInside(item, term);
+      return checkInside(item, searchKey);
     });
   }
 
   /**
    * @param items object from array
-   * @param term term's search
+   * @param searchKey to match
    * @param includes array of strings which will ignored during search
    */
-  transform(items: any, term: string, includes: any = []): any {
-    if (!term || !items) {
+  transform(items: any, searchKey: string, includes: any = []): any {
+    if (!searchKey || !items) {
       return items;
     }
 
-    return SearchPipe.filter(items, term, includes);
+    return SearchPipe.filter(items, searchKey, includes);
   }
 }
 

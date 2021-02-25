@@ -16,14 +16,15 @@ export class ProfilesComponent implements OnInit, OnDestroy {
   profiles: any = [];
   subscription1: Subscription;
   subscription2: Subscription;
-  checkAll: any = {checkbox: false};
   users: any;
-  object: any = [{profiles: []}];
   searchKey: string;
   prof: any = {currentPage: 1};
   order = 'user';
   loading = true;
   reverse = false;
+  checked = false;
+  indeterminate = false;
+  setOfCheckedId = new Set<string>();
 
   constructor(private dataService: DataService, private modalService: NgbModal, private coreService: CoreService, private router: Router) {
     this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
@@ -36,7 +37,6 @@ export class ProfilesComponent implements OnInit, OnDestroy {
       }
     });
   }
-
 
   ngOnInit() {
     this.preferences = JSON.parse(sessionStorage.preferences);
@@ -57,24 +57,30 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     }
   }
 
-  checkAllProfileFnc() {
-    if (this.checkAll.checkbox && this.profiles.length > 0) {
-      this.object.profiles = this.profiles.slice((this.preferences.entryPerPage * (this.prof.currentPage - 1)), (this.preferences.entryPerPage * this.prof.currentPage));
-      this.dataService.announceFunction('IS_RESET_PROFILES_TRUE');
+  updateCheckedSet(account: string, checked: boolean): void {
+    if (checked) {
+      this.setOfCheckedId.add(account);
     } else {
-      this.object.profiles = [];
-      this.dataService.announceFunction('IS_RESET_PROFILES_FALSE');
+      this.setOfCheckedId.delete(account);
     }
   }
 
-  checkProfileFnc(profile, i, event) {
-    if (event.target.checked) {
-      this.checkAll.checkbox = this.object.profiles.length === this.profiles.slice((this.preferences.entryPerPage * (this.prof.currentPage - 1)), (this.preferences.entryPerPage * this.prof.currentPage)).length;
-    } else {
-      this.object.profiles = [];
-      this.checkAll.checkbox = false;
-    }
-    if (this.object.profiles.length > 0) {
+  onItemChecked(account: string, checked: boolean): void {
+    this.updateCheckedSet(account, checked);
+    this.checkCheckBoxState();
+  }
+
+  onAllChecked(value: boolean): void {
+    this.profiles.forEach(item => this.updateCheckedSet(item.account, value));
+    this.checkCheckBoxState();
+  }
+
+  checkCheckBoxState() {
+    this.checked = this.profiles.every(item => {
+      return this.setOfCheckedId.has(item.account);
+    });
+    this.indeterminate = this.profiles.some(item => this.setOfCheckedId.has(item.account)) && !this.checked;
+    if (this.setOfCheckedId.size > 0) {
       this.dataService.announceFunction('IS_RESET_PROFILES_TRUE');
     } else {
       this.dataService.announceFunction('IS_RESET_PROFILES_FALSE');
@@ -87,10 +93,10 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.message = 'resetSingleProfile';
     modalRef.componentInstance.type = 'Reset';
     modalRef.componentInstance.objectName = profile.account;
-    modalRef.result.then((result) => {
+    modalRef.result.then(() => {
       this.deleteProfile(profile);
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -99,11 +105,11 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.title = 'resetAllProfile';
     modalRef.componentInstance.message = 'resetDefaultProfile';
     modalRef.componentInstance.type = 'Reset';
-    modalRef.componentInstance.resetProfiles = this.object.profiles;
-    modalRef.result.then((result) => {
+    modalRef.componentInstance.resetProfiles = Array.from(this.setOfCheckedId);
+    modalRef.result.then(() => {
       this.deleteProfile(null);
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -112,9 +118,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     if (profile) {
       obj.accounts.push(profile.account);
     } else {
-      for (let i = 0; i < this.object.profiles.length; i++) {
-        obj.accounts.push(this.object.profiles[i].account);
-      }
+      obj.accounts = Array.from(this.setOfCheckedId);
     }
     this.coreService.post('configurations/delete', obj).subscribe(res => {
       if (profile) {
@@ -125,21 +129,16 @@ export class ProfilesComponent implements OnInit, OnDestroy {
           }
         }
       } else {
-        if (this.object && this.object.profiles) {
-          for (let i = 0; i < this.object.profiles.length; i++) {
-            for (let j = 0; j < this.profiles.length; j++) {
-              if (this.profiles[j].account === this.object.profiles[i].account) {
-                this.profiles.splice(j, 1);
-                break;
-              }
-            }
-          }
+        if (this.setOfCheckedId.size > 0) {
+          this.profiles = this.profiles.filter((item) => {
+            return !this.setOfCheckedId.has(item.account);
+          });
         }
       }
-      this.object.profiles = [];
+      this.checked = false;
+      this.indeterminate = false;
+      this.setOfCheckedId.clear();
       this.profiles = [...this.profiles];
-    }, err => {
-
     });
   }
 
@@ -161,9 +160,6 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     };
     this.coreService.post('authentication/shiro/store', obj).subscribe(res => {
       this.profiles = [...this.profiles];
-    }, err => {
-
     });
   }
-
 }

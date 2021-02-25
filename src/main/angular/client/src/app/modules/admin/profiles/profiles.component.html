@@ -12,13 +12,14 @@
   >
     <thead>
     <tr>
-      <th nzWidth="54px" [nzAlign]="'center'">
-        <label class="md-check lg-check">
-          <input type="checkbox" [(ngModel)]="checkAll.checkbox" (change)="checkAllProfileFnc()"><i
-          class="primary"></i>
-        </label>
-      </th>
-      <th nzWidth="62px"><span translate>common.label.action</span></th>
+      <th
+        class="chk"
+        [nzShowCheckbox]="true"
+        [(nzChecked)]="checked"
+        [nzIndeterminate]="indeterminate"
+        (nzCheckedChange)="onAllChecked($event)"
+      ></th>
+      <th class="menu"><span translate>common.label.action</span></th>
       <th (click)="sort('user')">
         <a><span class="p-r-xs" translate>user.label.user</span>
           <i *ngIf="order == 'user' && !reverse"
@@ -26,25 +27,20 @@
           <i *ngIf="order == 'user' && reverse"
              class="fa fa-caret-down "></i></a>
       </th>
-      <th (click)="sort('modified')">
-        <a><span class="p-r-xs" translate>user.label.modified</span>
-          <i *ngIf="order == 'modified' && !reverse"
+      <th (click)="sort('lastLogin')">
+        <a><span class="p-r-xs" translate>user.label.lastLogin</span>
+          <i *ngIf="order == 'lastLogin' && !reverse"
              class="fa fa-caret-up "></i>
-          <i *ngIf="order == 'modified' && reverse"
+          <i *ngIf="order == 'lastLogin' && reverse"
              class="fa fa-caret-down "></i></a>
       </th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let profile of ajaxTable.data  | orderBy: order:reverse:false; let i = index">
-      <td [nzAlign]="'center'">
-        <label class="md-check">
-          <input type="checkbox" [(checklist)]="object.profiles" [checklistValue]="profile"
-                 (change)="checkProfileFnc(profile, i, $event)"><i class="primary"></i>
-        </label>
-      </td>
+      <td [nzShowCheckbox]="true" [nzChecked]="setOfCheckedId.has(profile.account)" (nzCheckedChange)="onItemChecked(profile.account, $event)"></td>
       <td>
-        <div class="btn-group dropdown pull-left m-r-sm">
+        <div class="btn-group dropdown">
           <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option">
             <i class="fa fa-ellipsis-h"></i></button>
           <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
@@ -58,7 +54,7 @@
       </td>
       <td> <a (click)="showMaster(profile.account)" class="text-hover-primary" [innerHTML]="profile.account | decodeSpace"></a></td>
       <td>
-        <span [innerHTML]="profile.modified | stringToDate"></span>
+        <span [innerHTML]="profile.lastLogin | stringToDate"></span>
       </td>
     </tr>
     </tbody>

@@ -71,7 +71,7 @@
     <div class="hide text-center text-primary text m-t-md m-b" [ngClass]="{'show': !isLoaded}">
       <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
     </div>
-    <div class="hide" [ngClass]="{'show': totalPlanData == 0 && isLoaded}">
+    <div class="hide m-t-sm" [ngClass]="{'show': totalPlanData == 0 && isLoaded}">
       <app-empty-data></app-empty-data>
     </div>
   </div>

@@ -172,7 +172,7 @@
                       <div>
                         <div class="text-left block-ellipsis">
                           <span class="text-sm fa fa-sitemap"></span>&nbsp;
-                          <a class="text-hover-primary" (click)="navToDetailView(workflow)" [nz-tooltip]="workflow.title" [innerHtml]="workflow.name"></a>
+                          <a class="text-hover-primary" (click)="navToDetailView(workflow)" [nz-tooltip]="workflow.title" [innerHtml]="workflow.name | highlight : workflowFilters.searchText"></a>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
                           <app-workflow-action [schedulerId]="schedulerIds.selected" [permission]="permission"
@@ -181,7 +181,7 @@
                       </div>
                       <div class="text-sm text-left text-muted p-t-sm block-ellipsis" style="width: 99%">
                         <span translate>inventory.label.version </span>:
-                        <span class="text-black-dk" translate>{{workflow.versionId}}</span>
+                        <span class="text-blak-dk" [innerHtml]="workflow.versionId | highlight : workflowFilters.searchText"></span>
                         <div class="text-muted text-sm" *ngIf="workflow.versionDate"><i>({{workflow.versionDate | stringToDate}})</i></div>
                       </div>
                       <div class="text-sm text-left text-muted p-t-xs">
@@ -384,7 +384,8 @@
                              *ngIf="!workflow.show" (click)="showPanelFuc(workflow)"></i>
                           <i class="cursor fa fa-caret-up tableexport-ignore fa-lg p-l-xs p-r-xs" *ngIf="workflow.show"
                              (click)="hidePanelFuc(workflow)"></i>
-                          <a class="text-dark" (click)="showPanelFunc(workflow)">{{workflow.name}}
+                          <a class="text-dark" (click)="showPanelFunc(workflow)">
+                            <span [innerHtml]="workflow.name | highlight : workflowFilters.searchText"></span>
                             <i *ngIf="workflow.title"> - </i>
                             <i class="text-muted">{{workflow.title}}</i>
                           </a>
@@ -392,18 +393,18 @@
                       </td>
                       <td>
                         <span class="show-in-single-line">
-                        <i (click)="coreService.navToInventoryTab(workflow.path, 'WORKFLOW');"
-                           class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                        <span>{{workflow.path}} </span>
+                          <i (click)="coreService.navToInventoryTab(workflow.path, 'WORKFLOW');"
+                            class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                          <span [innerHtml]="workflow.path | highlight : workflowFilters.searchText"></span>
                        </span>
                       </td>
                       <td>
-                        <span>{{workflow.versionId}}</span>
+                        <span [innerHtml]="workflow.versionId | highlight : workflowFilters.searchText"></span>
                         <div class="text-muted text-sm" *ngIf="workflow.versionDate"><i>({{workflow.versionDate | stringToDate}})</i></div>
                       </td>
                       <td>
                         <a class="label" *ngIf="workflow.state" [ngClass]="coreService.getColor(workflow.state.severity, 'bg')"
-                           [innerHtml]="workflow.state._text | translate"></a>
+                           [innerHtml]="workflow.state._text | translate | highlight : workflowFilters.searchText"></a>
                       </td>
                       <td>
                         <a class="text-hover-primary" (click)="viewOrders(workflow)" [innerHtml]="workflow.numOfOrders || 0"></a>

@@ -744,7 +744,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   orderSearchableProperties = ['controllerId', 'orderId', 'workflow', 'state', '_text', 'orderState', 'plannedTime', 'position'];
   taskSearchableProperties = ['controllerId', 'job', 'criticality', 'request', 'workflow', 'orderId', 'position'];
-  deploymentSearchableProperties = ['controllerId', 'deploymentDate', 'account', 'operation', 'state', 'deleteDate'];
+  deploymentSearchableProperties = ['controllerId', 'deploymentDate', 'account', 'state'];
   submissionSearchableProperties = ['controllerId', 'dailyPlanDate', 'controllers'];
 
   object: any = {};

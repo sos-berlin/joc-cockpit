@@ -12,26 +12,28 @@
   <i class="fa fa-angle-double-right fa-lg" (click)="showPanel()"></i>
 </a>
 <perfect-scrollbar class="tree-block">
-  <nz-tree
-    [nzExpandedKeys]="defaultExpandedKeys"
-    [nzData]="tree"
-    [nzTreeTemplate]="nzTreeTemplate"
-    (nzExpandChange)="expandChange($event)"
-  ></nz-tree>
-  <ng-template #nzTreeTemplate let-node>
-      <div class="node-wrapper">
-        <div class="node-content-wrapper"
-             [class.node-content-wrapper-active]="defaultSelectedKeys && defaultSelectedKeys.indexOf(node.key) > -1"
-             (click)="selectNode(node)">
-          <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-          {{node.origin.name || node.origin.path}}
+  <div class="fade-in">
+    <nz-tree
+      [nzExpandedKeys]="defaultExpandedKeys"
+      [nzData]="tree"
+      [nzTreeTemplate]="nzTreeTemplate"
+      (nzExpandChange)="expandChange($event)"
+    ></nz-tree>
+    <ng-template #nzTreeTemplate let-node>
+        <div class="node-wrapper">
+          <div class="node-content-wrapper"
+               [class.node-content-wrapper-active]="defaultSelectedKeys && defaultSelectedKeys.indexOf(node.key) > -1"
+               (click)="selectNode(node)">
+            <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+            {{node.origin.name || node.origin.path}}
+          </div>
+          <span *ngIf="node.children && node.children.length>0" (click)="expandNode(node.origin);"> <i
+            class="expand-collapse fa fa-angle-double-down"></i> </span>
+          <span *ngIf="node.children && node.children.length>0" (click)="collapseNode(node.origin);"> <i
+            class="expand-collapse fa fa-angle-double-up"></i></span>
         </div>
-        <span *ngIf="node.children && node.children.length>0" (click)="expandNode(node.origin);"> <i
-          class="expand-collapse fa fa-angle-double-down"></i> </span>
-        <span *ngIf="node.children && node.children.length>0" (click)="collapseNode(node.origin);"> <i
-          class="expand-collapse fa fa-angle-double-up"></i></span>
-      </div>
-    </ng-template>
+      </ng-template>
+  </div>
 </perfect-scrollbar>
 <div class="rg-right"><span></span></div>
 </div>
