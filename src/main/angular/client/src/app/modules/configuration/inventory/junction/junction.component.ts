@@ -13,6 +13,8 @@ export class JunctionComponent implements OnChanges {
   @Input() data: any;
   @Input() permission: any;
   @Input() copyObj: any;
+  @Input() reload: any;
+  @Input() isTrash: any;
 
   junction: any = {};
   objectType = 'JUNCTION';
@@ -21,6 +23,13 @@ export class JunctionComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes.reload) {
+      if (this.reload) {
+        this.getObject();
+        this.reload = false;
+        return;
+      }
+    }
     if (changes.data) {
       if (this.data.type) {
         this.getObject();
@@ -31,7 +40,8 @@ export class JunctionComponent implements OnChanges {
   }
 
   private getObject() {
-    this.coreService.post('inventory/read/configuration', {
+    const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
+    this.coreService.post(URL, {
       id: this.data.id
     }).subscribe((res: any) => {
       if(res.configuration) {
@@ -80,6 +90,9 @@ export class JunctionComponent implements OnChanges {
   }
 
   saveJSON() {
+    if(this.isTrash) {
+      return;
+    }
     if (this.junction.actual !== JSON.stringify(this.junction.configuration)) {
       this.coreService.post('inventory/store', {
         configuration: this.junction.configuration,

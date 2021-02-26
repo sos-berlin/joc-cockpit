@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-md-12" *ngIf="data.type">
-    <div id="toolbar" class="bg-white"></div>
-      <div class="row toolbar b-b m-b-12">
+    <div id="toolbar" class="bg-white" [hidden]="isTrash"></div>
+      <div class="row toolbar b-b m-b-12" *ngIf="!isTrash">
         <div class="col-md-12">
           <div class="inline">
             <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
@@ -104,14 +104,14 @@
           </div>
         </div>
     </div>
-    <div class="graph-container">
+    <div class="graph-container" [ngClass]="{'trash-container' : isTrash}">
       <div id="outlineContainer"></div>
       <div id="graph"></div>
       <div id="dropContainer2" class="dropContainer">
         <div class="dropContainer" translate>workflow.message.dropHereToRemoveInstruction</div>
       </div>
       <!-- Creates a container for the outline -->
-      <div class="bottom-btn" (click)="backToListView()">
+      <div class="bottom-btn" (click)="backToListView()" [hidden]="isTrash">
         <i class="fa fa-angle-left"></i>
       </div>
     </div>
@@ -122,12 +122,13 @@
         [preferences]="preferences"
         [permission]="permission"
         [copyObj]="copyObj"
+        [isTrash]="isTrash"
         [objectType]="objectType"
         [dataObj]="data"></app-table>
   </div>
 </div>
 <!-- BEGIN SLIDER -->
-<div class="property-panel hidden-sm" [hidden]="!data.type">
+<div class="property-panel hidden-sm" [hidden]="!data.type || isTrash">
   <div class="sidebar-open">
     <i class="fa fa-caret-left"></i>
   </div>

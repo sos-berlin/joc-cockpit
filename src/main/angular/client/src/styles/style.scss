@@ -5057,14 +5057,6 @@ tr.disabled-row td:not(.menu) {
   }
 }
 
-.node-content-wrapper2 {
-  cursor: default;
-
-  &:after {
-    border-bottom: solid 2px transparent;
-  }
-}
-
 .node-content-wrapper-active:after {
   transform: scaleX(1) !important;
 }
@@ -6659,23 +6651,27 @@ span.cm-error {
 
 .ant-tree-checkbox-inner {
   border-radius: 0;
-  top:-1px;
+  top: -1px;
 }
-.ant-checkbox + span{
+
+.ant-checkbox + span {
   padding-right: 4px;
 }
-.ant-tree-checkbox-checked .ant-tree-checkbox-inner{
+
+.ant-tree-checkbox-checked .ant-tree-checkbox-inner {
   border-color: var(--primary);
   background-color: var(--primary);
 }
-.ant-checkbox-wrapper, .ant-input-number-handler, .ant-input-number-handler-up-inner, .ant-input-number-handler-down-inner{
+
+.ant-checkbox-wrapper, .ant-input-number-handler, .ant-input-number-handler-up-inner, .ant-input-number-handler-down-inner {
   color: var(--text-color)
 }
 
 .ant-tree-checkbox-indeterminate .ant-tree-checkbox-inner::after {
   background-color: var(--primary);
 }
-.ant-tree-checkbox-indeterminate .ant-tree-checkbox-inner{
+
+.ant-tree-checkbox-indeterminate .ant-tree-checkbox-inner {
   background: transparent;
   border-color: var(--border-color);
 }
@@ -6697,14 +6693,17 @@ span.cm-error {
 .ant-checkbox-inner::after {
   left: 20%;
 }
-.ant-tree li span.ant-tree-checkbox{
+
+.ant-tree li span.ant-tree-checkbox {
   margin-right: 8px;
   margin-left: 0;
 }
-.ant-checkbox-indeterminate .ant-checkbox-inner{
+
+.ant-checkbox-indeterminate .ant-checkbox-inner {
   border-color: var(--border-color);
   background: transparent !important;
 }
+
 .ant-checkbox-indeterminate .ant-checkbox-inner::after {
   background-color: var(--primary);
 }
@@ -6718,18 +6717,21 @@ span.cm-error {
   background-color: var(--primary);
 }
 
-.ant-radio-wrapper{
+.ant-radio-wrapper {
   margin-right: 16px;
   color: var(--text-color);
 }
-.ant-radio-wrapper{
+
+.ant-radio-wrapper {
   min-width: 132px;
 }
-.ant-checkbox-wrapper + .ant-checkbox-wrapper{
+
+.ant-checkbox-wrapper + .ant-checkbox-wrapper {
   margin-left: 0;
 }
-.ant-checkbox-group{
-  .ant-checkbox-wrapper{
+
+.ant-checkbox-group {
+  .ant-checkbox-wrapper {
     min-width: 132px;
     margin-bottom: 4px;
   }
@@ -6745,10 +6747,12 @@ span.cm-error {
   line-height: unset;
   font-size: 12px;
 }
+
 .ant-empty-image {
   max-height: 28px;
   margin-bottom: 8px;
 }
+
 .ant-pagination-item-active:focus, .ant-pagination-item-active:hover,
 .ant-tree-checkbox-wrapper:hover .ant-tree-checkbox-inner,
 .ant-tree-checkbox:hover .ant-tree-checkbox-inner,
@@ -6763,6 +6767,7 @@ span.cm-error {
 .ant-radio-wrapper:hover .ant-radio, .ant-radio:hover .ant-radio-inner, .ant-radio-input:focus + .ant-radio-inner {
   border-color: var(--primary);
 }
+
 .ant-empty-normal {
   margin: 8px;
   color: var(--text-color);
@@ -6793,11 +6798,14 @@ span.cm-error {
   padding: 8px 16px;
   box-shadow: 0 0 25px 0 rgba(0, 0, 0, .05);
 }
+
 .ant-dropdown-menu {
   border-color: var(--border-color) !important;
 }
+
 .ant-dropdown-menu-item-disabled, .ant-dropdown-menu-submenu-title-disabled {
   opacity: .7;
+
   a {
     pointer-events: none;
     cursor: auto;
@@ -6848,11 +6856,12 @@ div.jsoneditor-outer {
 div.jsoneditor-menu {
   display: none;
 }
-.ace-jsoneditor .ace_marker-layer .ace_active-line{
+
+.ace-jsoneditor .ace_marker-layer .ace_active-line {
   background: var(--row-selected) !important;
 }
 
-.ace-jsoneditor .ace_cursor{
+.ace-jsoneditor .ace_cursor {
   border-color: var(--text-color) !important;
 }
 
@@ -6879,6 +6888,7 @@ div.ace_tooltip {
   left: 74px !important;
   margin-top: -88px;
 }
+
 .hidden-btn-text {
   i {
     display: none;
@@ -6888,35 +6898,43 @@ div.ace_tooltip {
 .vertex-text {
   width: 96px;
 }
+
 .documents a[href*="http:"] {
   color: var(--primary) !important;
 }
+
 .documents a[href*="https:"] {
   color: var(--primary) !important;
 }
+
 .ck .ck-link_selected {
   color: var(--primary);
   text-decoration: underline;
 }
+
 .ck-content a {
   color: var(--primary);
   text-decoration: underline;
 }
-.icon-bg{
+
+.icon-bg {
   vertical-align: middle;
+
   i {
     background: var(--background-color);
     font-size: 18px;
     border-radius: 50%;
     padding: 10px;
   }
-  .text{
+
+  .text {
     display: inline-block;
     position: relative;
     top: 7px;
     margin-left: 8px;
     color: var(--text-muted);
-    .count{
+
+    .count {
       font-weight: 600;
       text-align: left;
       font-size: 14px;

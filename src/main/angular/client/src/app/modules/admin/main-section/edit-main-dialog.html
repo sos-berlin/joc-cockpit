@@ -3,8 +3,8 @@
         <span translate>user.label.editEntry</span>:
         {{existingEntry}}
     </h4>
-    <span aria-hidden="true">&times;</span>
-        <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true" class="fa fa-times-circle"></span>
     </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit(entry)">

@@ -14,7 +14,7 @@
     <i *ngIf="order" class="text-muted p-l-xs text">{{order.orderTemplatePath ? order.orderTemplatePath : order.key ? order.key : order.orderId}}</i>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
-    <span aria-hidden="true">&times;</span>
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form>

@@ -777,7 +777,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   isToggle = false;
   selectedDate: Date;
   submissionHistory: any = [];
-  searchableProperties = ['orderId', 'schedulePath', 'workflowPath', 'status', 'plannedStartTime', 'expectedEndTime', 'expectedDuration'];
+  searchableProperties = ['orderId', 'schedulePath', 'workflowPath', 'status', 'plannedStartTime', 'expectedEndTime'];
   expandedPaths = new Set();
 
   object = {

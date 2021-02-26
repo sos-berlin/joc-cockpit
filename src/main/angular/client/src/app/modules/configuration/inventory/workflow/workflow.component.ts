@@ -644,6 +644,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   @Input() schedulerId: any;
   @Input() permission: any;
   @Input() copyObj: any;
+  @Input() reload: any;
+  @Input() isTrash: any;
+
   agents = [];
   jobClassTree = [];
   lockTree = [];
@@ -695,39 +698,48 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
       this.handleWindowEvents();
     } else {
-      const outln = document.getElementById('outlineContainer');
-      outln.innerHTML = '';
-      outln.style['border'] = '1px solid lightgray';
-      outln.style['background'] = '#FFFFFF';
-      new mxOutline(this.editor.graph, outln);
+        const outln = document.getElementById('outlineContainer');
+        outln.innerHTML = '';
+        outln.style['border'] = '1px solid lightgray';
+        new mxOutline(this.editor.graph, outln);
       this.getObject();
     }
-    if (this.jobClassTree.length === 0) {
-      this.coreService.post('tree', {
-        controllerId: this.schedulerId,
-        forInventory: true,
-        types: ['JOBCLASS']
-      }).subscribe((res) => {
-        this.jobClassTree = this.coreService.prepareTree(res, true);
-      });
-    }
-    if (this.lockTree.length === 0) {
-      this.coreService.post('tree', {
-        controllerId: this.schedulerId,
-        forInventory: true,
-        types: ['LOCK']
-      }).subscribe((res) => {
-        this.lockTree = this.coreService.prepareTree(res, true);
-      });
-    }
-    if (this.agents.length === 0) {
-      this.coreService.post('agents/names', {controllerId: this.schedulerId}).subscribe((res: any) => {
-        this.agents = res.agentNames ? res.agentNames.sort() : [];
-      });
+    if(!this.isTrash) {
+      if (this.jobClassTree.length === 0) {
+        this.coreService.post('tree', {
+          controllerId: this.schedulerId,
+          forInventory: true,
+          types: ['JOBCLASS']
+        }).subscribe((res) => {
+          this.jobClassTree = this.coreService.prepareTree(res, true);
+        });
+      }
+      if (this.lockTree.length === 0) {
+        this.coreService.post('tree', {
+          controllerId: this.schedulerId,
+          forInventory: true,
+          types: ['LOCK']
+        }).subscribe((res) => {
+          this.lockTree = this.coreService.prepareTree(res, true);
+        });
+      }
+      if (this.agents.length === 0) {
+        this.coreService.post('agents/names', {controllerId: this.schedulerId}).subscribe((res: any) => {
+          this.agents = res.agentNames ? res.agentNames.sort() : [];
+        });
+      }
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes.reload) {
+      if (this.reload) {
+        this.selectedNode = null;
+        this.init();
+        this.reload = false;
+        return;
+      }
+    }
     if (this.workflow.actual) {
       this.saveJSON(false);
       this.selectedNode = null;
@@ -751,7 +763,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.history = [];
     this.indexOfNextAdd = 0;
     this.isLoading = true;
-    this.coreService.post('inventory/read/configuration', {
+    const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
+    this.coreService.post(URL, {
       id: this.data.id
     }).subscribe((res: any) => {
       if (this.data.id === res.id) {
@@ -3301,7 +3314,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          * checked. Default is false.
          * evt - Optional native event that triggered the invocation.
          */
-        mxGraph.prototype.foldCells = function (collapse, recurse, cells, checkFoldable, evt) {
+        mxGraph.prototype.foldCells = function (collapse, recurse, cells, checkFoldable) {
           graph.clearSelection();
           recurse = (recurse != null) ? recurse : true;
           this.stopEditing(false);
@@ -6368,6 +6381,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private storeData(data) {
+    if(this.isTrash) {
+      return;
+    }
     let newObj: any = {};
     newObj = _.extend(newObj, data);
     if (this.orderRequirements && this.orderRequirements.parameters) {

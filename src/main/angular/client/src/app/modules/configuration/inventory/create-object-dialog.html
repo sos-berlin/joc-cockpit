@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title" *ngIf="!copy">
+  <h4 class="modal-title" *ngIf="!copy && !restore">
     <span *ngIf="obj.type === 'WORKFLOW'" translate>inventory.label.createWorkflow</span>
     <span *ngIf="obj.type === 'JOBCLASS'" translate>inventory.label.createJobClass</span>
     <span *ngIf="obj.type === 'JUNCTION'" translate>inventory.label.createJunction</span>
@@ -11,13 +11,17 @@
     <span translate>inventory.label.copyOf</span>
     {{copy}}
   </h4>
+  <h4 class="modal-title" *ngIf="restore">
+    <span translate>inventory.label.restore</span>:
+    {{obj.path}}<i *ngIf="obj.type && obj.path !== '/'">/</i><span *ngIf="obj.type">{{obj.name}}</span>
+  </h4>
   <button type="button" class="close" (click)="activeModal.dismiss('Cross click')" aria-label="Close">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
-    <div class="form-group row" *ngIf="!copy">
+    <div class="form-group row" *ngIf="!copy && !restore">
       <label class="col-md-3 form-control-label" translate>inventory.label.objectName</label>
       <div class="col-md-6" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
         <input type="text" identifierValidation class="form-control" name="name" required placeholder="{{'inventory.placeholder.enterUniqueName' | translate}}"
@@ -31,7 +35,7 @@
         </div>
       </div>
     </div>
-    <div *ngIf="copy">
+    <div *ngIf="copy || restore">
       <div class="m-b-sm row">
         <label class="col-md-3" translate>inventory.label.newName</label>
         <div class="col-md-6">
@@ -55,7 +59,7 @@
           <i class="fa fa-info-circle" [nz-tooltip]="'inventory.tooltip.newObjectNameInfoMessage' | translate"></i>
         </div>
       </div>
-      <div class="form-group row" *ngIf="!obj.object">
+      <div class="form-group row" *ngIf="!obj.object && !restore">
         <div class="col-md-3">
           <label translate>inventory.label.withoutFolder</label>
         </div>

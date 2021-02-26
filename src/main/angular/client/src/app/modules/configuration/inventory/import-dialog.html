@@ -4,7 +4,7 @@
     <span *ngIf="isDeploy" translate>inventory.label.importAndDeploy</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="cancel()">
-    <span aria-hidden="true">&times;</span>
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="import()">

@@ -1644,6 +1644,7 @@ export class CreateObjectModalComponent {
   @Input() schedulerId: any;
   @Input() obj: any;
   @Input() copy: any;
+  @Input() restore: boolean;
   submitted = false;
   object = {name: '', type: 'suffix', _name: '', onlyContains: false};
 
@@ -1651,7 +1652,7 @@ export class CreateObjectModalComponent {
   }
 
   onSubmit(): void {
-    if (this.copy) {
+    if (this.copy || this.restore) {
       const obj: any = {};
       if (this.object._name) {
         if (this.object.type) {
@@ -1808,8 +1809,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.deployObject(res.deploy, false);
         } else if (res.release) {
           this.releaseObject(res.release);
-        } else if (res.restore) {
-          this.restoreObject(res.restore);
         } else if (res.showJson) {
           this.showJson(res);
         } else if (res.exportJSON) {
@@ -1847,6 +1846,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         this.hidePanel();
       }
       this.inventoryConfig = this.coreService.getConfigurationTab().inventory;
+      this.isTrash = this.inventoryConfig.isTrash;
       this.initTree(null, null);
     }
   }
@@ -1861,11 +1861,15 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.inventoryConfig.expand_to = this.tree;
     this.inventoryConfig.selectedObj = this.selectedObj;
     this.inventoryConfig.copyObj = this.copyObj;
+    this.inventoryConfig.isTrash = this.isTrash;
   }
 
   switchToTrash() {
     this.trashTree = [];
     this.isTrash = !this.isTrash;
+    this.type = null;
+    this.selectedData = {};
+    this.selectedObj = {};
     if (this.isTrash) {
       this.isTreeLoaded = false;
       this.initTrashTree(null);
@@ -2555,15 +2559,30 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   reDeployObject(node) {
     const origin = node.origin ? node.origin : node;
-    console.log(origin)
-    let obj = {
-      controllerId: this.schedulerIds.selected,
-      folder: origin.path,
-      recursive: false
-    };
-    this.coreService.post('inventory/deployment/redeploy', obj).subscribe((res: any) => {
+    if (origin.controller) {
+      this.coreService.post('inventory/deployment/redeploy', {
+        controllerId: this.schedulerIds.selected,
+        folder: origin.path,
+        recursive: false
+      }).subscribe(() => {
+      });
+    } else {
+      const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
+      modalRef.componentInstance.title = 'redeploy';
+      modalRef.componentInstance.message = 'redeployFolderRecursively';
+      modalRef.componentInstance.type = 'Redeploy';
+      modalRef.componentInstance.objectName = origin.path;
+      modalRef.result.then(() => {
+        this.coreService.post('inventory/deployment/redeploy', {
+          controllerId: this.schedulerIds.selected,
+          folder: origin.path,
+          recursive: true
+        }).subscribe(() => {
+        });
+      }, () => {
+      });
+    }
 
-    });
   }
 
   releaseObject(data) {
@@ -2893,7 +2912,42 @@ export class InventoryComponent implements OnInit, OnDestroy {
         obj = {path: _path, objectType: 'FOLDER'};
       }
       this.coreService.post('inventory/delete_draft', obj).subscribe(() => {
-        this.clearCopyObject(object);
+        if (obj.id) {
+          let isDraftOnly = true, isDeployObj = true;
+          if (object.type.match(/CALENDAR/) || object.type === 'SCHEDULE') {
+            isDeployObj = false;
+            if (object.hasReleases) {
+              isDraftOnly = false;
+            }
+          } else if (object.hasDeployments) {
+            isDraftOnly = false;
+          }
+          if (isDraftOnly) {
+            if (node.parentNode && node.parentNode.origin && node.parentNode.origin.children && obj.objectType !== 'FOLDER') {
+              for (let i = 0; i < node.parentNode.origin.children.length; i++) {
+                if (node.parentNode.origin.children[i].name === object.name && node.parentNode.origin.children[i].path === object.path) {
+                  node.parentNode.origin.children.splice(i, 1);
+                  break;
+                }
+              }
+            }
+            this.clearCopyObject(object);
+          } else {
+            object.valid = true;
+            if (isDeployObj) {
+              object.deployed = true;
+            } else {
+              object.released = true;
+            }
+            if ((this.selectedData && this.selectedData.type === object.type && this.selectedData.name === object.name
+              && this.selectedData.path === object.path)) {
+              this.selectedData.reload = true;
+            }
+          }
+          this.updateTree();
+        } else {
+          this.clearCopyObject(object);
+        }
       });
     }, () => {
     });
@@ -2904,12 +2958,19 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (node instanceof NzTreeNode) {
       object = node.origin;
     }
-    let obj: any = {id: object.id};
-    if (!object.type) {
-      obj = {path: object.path, objectType: 'FOLDER'};
-    }
-    this.coreService.post('inventory/recover', obj).subscribe(() => {
-      this.initTrashTree(obj.path || object.path);
+    const modalRef = this.modalService.open(CreateObjectModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.obj = object;
+    modalRef.componentInstance.restore = true;
+    modalRef.result.then(() => {
+      let obj: any = {id: object.id};
+      if (!object.type) {
+        obj = {path: object.path, objectType: 'FOLDER'};
+      }
+      this.coreService.post('inventory/trash/restore', obj).subscribe(() => {
+        this.initTrashTree(obj.path || object.path);
+      });
+    }, () => {
     });
   }
 

@@ -15,6 +15,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   @Input() schedulerId: any;
   @Input() data: any;
   @Input() copyObj: any;
+  @Input() reload: any;
+  @Input() isTrash: any;
 
   schedule: any = {};
   isVisible: boolean;
@@ -37,6 +39,13 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes.reload) {
+      if (this.reload) {
+        this.getObject();
+        this.reload = false;
+        return;
+      }
+    }
     if (this.schedule.actual) {
       this.saveJSON();
     }
@@ -382,7 +391,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private getObject() {
-    this.coreService.post('inventory/read/configuration', {
+    const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
+    this.coreService.post(URL, {
       id: this.data.id
     }).subscribe((res: any) => {
       if (res.configuration) {
@@ -456,6 +466,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   saveJSON() {
+    if(this.isTrash) {
+      return;
+    }
     let obj = this.coreService.clone(this.schedule.configuration);
     obj.variables = obj.variables.map(variable => ({name: variable.name, value: variable.value}));
     if (!_.isEqual(this.schedule.actual, JSON.stringify(obj))) {

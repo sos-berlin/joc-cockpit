@@ -266,7 +266,7 @@ export class OrderSearchComponent implements OnInit {
     obj.regex = result.regex;
     obj.paths = result.paths;
     obj.workflowPaths = result.workflowPaths;
-    obj.state = result.state;
+    obj.states = result.states;
     obj.name = result.name;
     if (result.radio != 'current') {
       if (result.from1) {
@@ -812,7 +812,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   deploymentHistoryFilterList: any = [];
   submissionHistoryFilterList: any = [];
 
-  orderSearchableProperties = ['controllerId', 'orderId', 'workflow', 'state', '_text', 'orderState', 'plannedTime', 'position'];
+  orderSearchableProperties = ['controllerId', 'orderId', 'workflow', 'state', '_text', 'orderState', 'position'];
   taskSearchableProperties = ['controllerId', 'job', 'criticality', 'request', 'workflow', 'orderId', 'position'];
   deploymentSearchableProperties = ['controllerId', 'deploymentDate', 'account', 'state'];
   submissionSearchableProperties = ['controllerId', 'dailyPlanDate', 'controllers'];
@@ -1495,8 +1495,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
           filter.jobs.push({workflowPath: value});
         });
       }
-      if (obj.states && obj.states.length > 0) {
-        filter.historyStates = obj.states;
+      if (obj.historyStates && obj.historyStates.length > 0) {
+        filter.historyStates = obj.historyStates;
       }
       if (obj.criticality && obj.criticality.length > 0) {
         filter.criticality = obj.criticality;
@@ -1542,6 +1542,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       if (obj.controllerId) {
         filter.controllerId = obj.controllerId;
+      } else {
+        filter.controllerId = '';
       }
       if (obj.paths && obj.paths.length > 0) {
         filter.folders = [];
@@ -1549,14 +1551,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
           filter.folders.push({folder: value, recursive: true});
         });
       }
-
       if (obj.jobs && obj.jobs.length > 0) {
         filter.jobs = [];
-
         obj.jobs.forEach((value) => {
           filter.jobs.push({job: value});
         });
-
       }
       filter.timeZone = this.preferences.zone;
       if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {

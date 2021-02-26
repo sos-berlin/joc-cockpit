@@ -72,7 +72,7 @@
     </thead>
     <tbody>
       <ng-template ngFor let-data [ngForOf]="ajaxTable.data | orderBy: filter.sortBy:filter.reverse">
-        <tr [ngClass]="{'disabled-row'  : data.deleted, 'cut-row' : (copyObj && copyObj.operation === 'CUT' && copyObj.path === data.path && copyObj.name === data.name && copyObj.type === data.type)}">
+        <tr [ngClass]="{'cut-row' : (copyObj && copyObj.operation === 'CUT' && copyObj.path === data.path && copyObj.name === data.name && copyObj.type === data.type)}">
           <td class="menu">
             <div class="btn-group dropdown">
               <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="exportMenu"
@@ -80,20 +80,17 @@
                 <i class="fa fa-ellipsis-h"></i>
               </button>
               <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu">
-                <ul nz-menu>
-                  <li nz-menu-item *ngIf="!data.deleted && permission.Inventory.configurations.edit">
+                <ul nz-menu *ngIf="!isTrash">
+                  <li nz-menu-item *ngIf="permission.Inventory.configurations.edit">
                     <a (click)="cutObject(data)" translate>inventory.button.cut</a>
                   </li>
-                  <li nz-menu-item *ngIf="!data.deleted && permission.Inventory.configurations.edit">
+                  <li nz-menu-item *ngIf="permission.Inventory.configurations.edit">
                     <a (click)="copyObject(data)" translate>inventory.button.copy</a>
                   </li>
-                  <li nz-menu-item *ngIf="!data.deleted && permission.Inventory.configurations.edit">
+                  <li nz-menu-item *ngIf="permission.Inventory.configurations.edit">
                     <a (click)="shallowCopy(data)" translate>inventory.button.shallowCopy</a>
                   </li>
-                  <li nz-menu-divider *ngIf="!data.deleted && permission.Inventory.configurations.edit">
-   <!--               <li nz-menu-item *ngIf="!data.deleted && permission.Inventory.configurations.edit">
-                    <a (click)="editObject(data)" translate>inventory.button.edit</a>
-                  </li>-->
+                  <li nz-menu-divider *ngIf="permission.Inventory.configurations.edit">
                   <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE'" [nzDisabled]="!data.hasDeployments && !data.valid">
                     <a (click)="deployObject(data)" translate>inventory.button.deploy</a>
                   </li>
@@ -102,19 +99,15 @@
                   </li>
                   <li nz-menu-divider>
                   <li nz-menu-item [nzDisabled]="!data.hasDeployments"
-                    *ngIf="permission.Inventory.configurations.delete && !data.deleted && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE'">
+                    *ngIf="permission.Inventory.configurations.delete && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE'">
                     <a (click)="removeObject(data)" translate>inventory.button.remove</a>
                   </li>
                   <li nz-menu-item [nzDisabled]="!data.hasReleases"
-                      *ngIf="permission.Inventory.configurations.delete && !data.deleted && (objectType === 'CALENDAR' || objectType === 'SCHEDULE')">
+                      *ngIf="permission.Inventory.configurations.delete && (objectType === 'CALENDAR' || objectType === 'SCHEDULE')">
                     <a (click)="removeObject(data)" translate>inventory.button.remove</a>
                   </li>
                   <li nz-menu-item *ngIf="permission.Inventory.configurations.delete" [nzDisabled]="data.deployed || data.released">
                     <a (click)="deleteDraft(data)" translate>inventory.button.deleteDraft</a>
-                  </li>
-                  <li nz-menu-item
-                    *ngIf="permission.Inventory.configurations.delete && data.deleted">
-                    <a (click)="restoreObject(data)" translate>inventory.button.undelete</a>
                   </li>
                   <li nz-menu-divider></li>
                   <li nz-menu-item>
@@ -132,6 +125,12 @@
                     <a (click)="importJSON(data)" translate>inventory.button.uploadJSON</a>
                   </li>
                 </ul>
+                <ul nz-menu *ngIf="isTrash">
+                  <li nz-menu-item *ngIf="permission.Inventory.configurations.delete" class="bg-hover-color"><a
+                    (click)="deletePermanently(data);" translate>inventory.button.delete</a></li>
+                  <li nz-menu-item>
+                    <a (click)="restoreObject(data);" translate>inventory.button.restore</a></li>
+                </ul>
               </nz-dropdown-menu>
             </div>
           </td>
@@ -147,13 +146,13 @@
                   translate>inventory.label.notValid</span>
           </td>
           <td class="cursor" (click)="editObject(data)">
-            <span class="label bg-dark-blue" *ngIf="data.deployed && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE'" [ngClass]="{'bg-crimson' : data.deleted}"
+            <span class="label bg-dark-blue" *ngIf="data.deployed && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE'"
                   translate>inventory.label.deployed</span>
-            <span class="label bg-orange" *ngIf="!data.deployed && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE'" [ngClass]="{'bg-crimson' : data.deleted}"
+            <span class="label bg-orange" *ngIf="!data.deployed && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE'"
                 translate>inventory.label.notDeployed</span>
-            <span class="label bg-dark-blue" *ngIf="data.released && (objectType === 'SCHEDULE' || objectType === 'CALENDAR')" [ngClass]="{'bg-crimson' : data.deleted}"
+            <span class="label bg-dark-blue" *ngIf="data.released && (objectType === 'SCHEDULE' || objectType === 'CALENDAR')"
                   translate>inventory.label.released</span>
-            <span class="label bg-orange" *ngIf="!data.released && (objectType === 'SCHEDULE' || objectType === 'CALENDAR')" [ngClass]="{'bg-crimson' : data.deleted}"
+            <span class="label bg-orange" *ngIf="!data.released && (objectType === 'SCHEDULE' || objectType === 'CALENDAR')"
                   translate>inventory.label.notReleased</span>
           </td>
           <td class="cursor" (click)="editObject(data)" *ngIf="objectType === 'CALENDAR'">

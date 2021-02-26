@@ -189,7 +189,7 @@
                           [nzDisabled]="!node.origin.hasDeployments && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valid))">
                         <a (click)="deployObject(node, false);" translate>inventory.button.deploy</a></li>
                       <li nz-menu-item
-                          *ngIf="permission.Inventory.configurations.publish.deploy && !node.origin.deleted && (node.origin.controller || (!node.origin.object && !node.origin.type && !node.origin.dailyPlan))">
+                          *ngIf="securityLevel !== 'HIGH' && permission.Inventory.configurations.publish.deploy && !node.origin.deleted && (node.origin.controller || (!node.origin.object && !node.origin.type && !node.origin.dailyPlan))">
                         <a (click)="reDeployObject(node);" translate>inventory.button.redeploy</a></li>
                       <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && ((node.origin.object && (node.origin.object === 'CALENDAR' || node.origin.object === 'SCHEDULE')) || (node.origin.type && (node.origin.type === 'CALENDAR' || node.origin.type === 'SCHEDULE'))
                        || (!node.origin.object && !node.origin.type && !node.origin.controller))"
@@ -302,7 +302,11 @@
                         <a (click)="restoreObject(node);" translate>inventory.button.restore</a></li>
                     </ul>
                   </nz-dropdown-menu>
-                  <div class="node-content-wrapper node-content-wrapper2">
+                  <div class="node-content-wrapper"  [ngClass]="{'node-content-wrapper-active' : (node.origin.name === selectedObj.name &&
+                      node.origin.type === selectedObj.type) ||
+                      (!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.path === selectedObj.path) ||
+                      (node.origin.object && node.origin.object === selectedObj.type && node.origin.path === selectedObj.path)}"
+                       (click)="selectNode(node)">
                     <i
                       *ngIf="node.children && !node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.dailyPlan"
                       nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
@@ -344,27 +348,27 @@
       <div id="rightPanel">
         <div *ngIf="type == 'WORKFLOW'">
           <app-workflow [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"
-                        [data]="selectedData" [copyObj]="copyObj"></app-workflow>
+                        [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-workflow>
         </div>
         <div *ngIf="type == 'SCHEDULE'">
           <app-schedule [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"
-                        [data]="selectedData" [copyObj]="copyObj"></app-schedule>
+                        [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-schedule>
         </div>
         <div *ngIf="type == 'JOBCLASS'">
           <app-job-class [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission"
-                         [data]="selectedData" [copyObj]="copyObj"></app-job-class>
+                         [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-job-class>
         </div>
         <div *ngIf="type == 'JUNCTION'">
           <app-junction [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission"
-                        [data]="selectedData" [copyObj]="copyObj"></app-junction>
+                        [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-junction>
         </div>
         <div *ngIf="type == 'LOCK'">
           <app-lock [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission"
-                    [data]="selectedData" [copyObj]="copyObj"></app-lock>
+                    [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-lock>
         </div>
         <div *ngIf="type == 'CALENDAR'">
           <app-calendar [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"
-                        [data]="selectedData" [copyObj]="copyObj"></app-calendar>
+                        [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-calendar>
         </div>
       </div>
     </div>

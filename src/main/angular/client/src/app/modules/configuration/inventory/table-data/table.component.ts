@@ -17,6 +17,8 @@ export class TableComponent {
   @Input() dataObj: any;
   @Input() objectType: any;
   @Input() copyObj: any;
+  @Input() isTrash: any;
+
   searchKey: any;
   filter: any = {sortBy: 'name', reverse: false};
 
@@ -105,6 +107,10 @@ export class TableComponent {
     this.dataService.reloadTree.next({importJSON: data});
   }
 
+  deletePermanently(data){
+
+  }
+
   removeObject(object): void {
     const _path = object.path + (object.path === '/' ? '' : '/') + object.name;
     const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
@@ -126,14 +132,32 @@ export class TableComponent {
     modalRef.componentInstance.message = 'deleteDraftObject';
     modalRef.componentInstance.type = 'Delete';
     modalRef.componentInstance.objectName = _path;
-    modalRef.result.then(res => {
+    modalRef.result.then(() => {
+      let isDraftOnly = true, isDeployObj = true;
+      if (this.objectType.match(/CALENDAR/) || this.objectType === 'SCHEDULE') {
+        isDeployObj = false;
+        if (object.hasReleases) {
+          isDraftOnly = false;
+        }
+      } else if (object.hasDeployments) {
+        isDraftOnly = false;
+      }
       this.coreService.post('inventory/deletedraft', {
         id: object.id
-      }).subscribe(result => {
-        for (let i = 0; i < this.dataObj.children.length; i++) {
-          if (this.dataObj.children[i].id === object.id) {
-            this.dataObj.children.splice(i, 1);
-            break;
+      }).subscribe(() => {
+        if (isDraftOnly) {
+          for (let i = 0; i < this.dataObj.children.length; i++) {
+            if (this.dataObj.children[i].id === object.id) {
+              this.dataObj.children.splice(i, 1);
+              break;
+            }
+          }
+        } else {
+          object.valid = true;
+          if (isDeployObj) {
+            object.deployed = true;
+          } else {
+            object.released = true;
           }
         }
         this.dataObj.children = [...this.dataObj.children];

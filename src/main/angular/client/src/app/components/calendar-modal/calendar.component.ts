@@ -16,7 +16,7 @@ declare const $;
         {{path}}
       </h4>
       <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
-        <span aria-hidden="true">&times;</span>
+        <span aria-hidden="true" class="fa fa-times-circle"></span>
       </button>
     </div>
     <div class="modal-body p-a">

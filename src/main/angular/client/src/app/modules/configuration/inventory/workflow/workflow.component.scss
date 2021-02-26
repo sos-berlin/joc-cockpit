@@ -2,6 +2,10 @@
   margin-left: 66px;
   overflow: auto;
 }
+.trash-container{
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
 .toolbar{
   margin-left: 54px;
   min-width: 330px;
@@ -47,10 +51,6 @@
   width: 120px
 }
 
-:host ::ng-deep .cke_top, :host ::ng-deep .cke_bottom {
-  display: none !important;
-}
-
-.ck-editor__main .ck-content {
-  height: 120px !important;
+.trash-container #outlineContainer{
+  right: 0 !important;
 }
