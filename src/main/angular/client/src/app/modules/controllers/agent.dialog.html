@@ -72,10 +72,7 @@
     <div class="form-group row" *ngIf="!new">
       <label class="col-sm-3" translate>agent.label.disabled</label>
       <div class="col-sm-6">
-        <label class="md-check">
-          <input type="checkbox" [(ngModel)]="agent.disabled" name="disabled">
-          <i class="primary"></i>
-        </label>
+        <label nz-checkbox [(ngModel)]="agent.disabled" name="disabled"></label>
       </div>
     </div>
   </div>

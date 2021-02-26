@@ -5,13 +5,11 @@ import {
 } from './calendar.component';
 import {SharedModule} from '../../shared/shared.module';
 import {CalendarRoutingModule} from './calendar-routing.module';
-import {FileUploadModule} from 'ng2-file-upload';
 
 @NgModule({
   imports: [
     SharedModule,
-    CalendarRoutingModule,
-    FileUploadModule
+    CalendarRoutingModule
   ],
   declarations: [CalendarComponent, SingleCalendarComponent, ShowModalComponent],
   entryComponents: [ShowModalComponent]

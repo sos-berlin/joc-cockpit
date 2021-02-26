@@ -121,12 +121,12 @@
         <app-select-schedule-template [schedulerId]="schedulerIds.selected" [object]="filter"></app-select-schedule-template>
       </div>
     </div>
-    <div class="form-group row ">
+    <div class="m-b-sm row">
       <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>common.label.state</label>
       <div class="col-sm-8" [ngClass]="{'col-md-6': isSearch}">
         <nz-checkbox-wrapper (nzOnChange)="stateChange($event)">
           <ng-container *ngFor="let option of checkOptions">
-            <label nz-checkbox [nzValue]="option.value"><span translate>common.label.{{option.label}}</span></label>
+            <label nz-checkbox [nzValue]="option.value" [ngModel]="option.checked" [name]="option.label"><span translate>common.label.{{option.label}}</span></label>
           </ng-container>
         </nz-checkbox-wrapper>
       </div>
@@ -140,10 +140,7 @@
     <div class="form-group row" *ngIf="permission.JOCConfigurations.share.change.sharedStatus.makeShared && !isSearch">
       <label class="col-sm-4" translate>customization.label.sharedCustomization</label>
       <div class="col-sm-6">
-        <label class="md-check">
-          <input type="checkbox" [(ngModel)]="filter.shared" name="shared">
-          <i class="primary"></i>
-        </label>
+        <label nz-checkbox [(ngModel)]="filter.shared" name="shared"></label>
       </div>
     </div>
     <div class="form-group m-t m-b-xs" *ngIf="isSearch">

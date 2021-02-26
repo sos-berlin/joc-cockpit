@@ -1,6 +1,6 @@
 import {Component, HostListener, OnDestroy} from '@angular/core';
 import {NavigationEnd, Router, RouterEvent} from '@angular/router';
-import {Subscribable, Subscription} from 'rxjs';
+import {Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
 
 declare const $;
@@ -47,10 +47,6 @@ export class ConfigurationComponent implements OnDestroy{
         if (sidebar) {
           sidebar.css('top', (top - 17));
           sidebar.height('calc(100vh - ' + (top - 19) + 'px' + ')');
-        }
-        const graph = $('#graph');
-        if (graph) {
-          graph.slimscroll({height: 'calc(100vh - ' + (top + 58) + 'px' + ')'});
         }
         if (this.router.url.match('inventory')) {
           top = top - 22;

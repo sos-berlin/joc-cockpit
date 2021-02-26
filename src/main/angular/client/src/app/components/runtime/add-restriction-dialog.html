@@ -34,46 +34,10 @@
           <label class="col-sm-3" translate>runtime.label.weekDays</label>
 
           <div class="col-sm-9">
-            <label class="md-check w">
-              <input type="checkbox" [(ngModel)]="frequency.all" name="week"
+            <label class="w" nz-checkbox [(ngModel)]="frequency.all" name="week"
                      (change)="selectAllWeek()">
-              <i class="primary"></i> <span translate>runtime.label.everyDay</span>
+              <span translate>runtime.label.everyDay</span>
             </label><br>
-            <label class="md-check w">
-              <input type="checkbox" [(checklist)]="frequency.days" name="sun"
-                     (change)="onChangeDays()" checklistValue="0">
-              <i class="primary"></i> <span translate>runtime.label.sunday</span>
-            </label>
-            <label class="md-check w">
-              <input type="checkbox" [(checklist)]="frequency.days" name="mon"
-                     (change)="onChangeDays()" checklistValue="1">
-              <i class="primary"></i> <span translate>runtime.label.monday</span>
-            </label>
-            <label class="md-check w">
-              <input type="checkbox" [(checklist)]="frequency.days" name="tue"
-                     (change)="onChangeDays()" checklistValue="2">
-              <i class="primary"></i> <span translate>runtime.label.tuesday</span>
-            </label>
-            <label class="md-check w">
-              <input type="checkbox" [(checklist)]="frequency.days" name="wed"
-                     (change)="onChangeDays()" checklistValue="3">
-              <i class="primary"></i> <span translate>runtime.label.wednesday</span>
-            </label>
-            <label class="md-check w">
-              <input type="checkbox" [(checklist)]="frequency.days" name="thu"
-                     (change)="onChangeDays()" checklistValue="4">
-              <i class="primary"></i> <span translate>runtime.label.thursday</span>
-            </label>
-            <label class="md-check w">
-              <input type="checkbox" [(checklist)]="frequency.days" name="fri"
-                     (change)="onChangeDays()" checklistValue="5">
-              <i class="primary"></i> <span translate>runtime.label.friday</span>
-            </label>
-            <label class="md-check w">
-              <input type="checkbox" [(checklist)]="frequency.days" name="sat"
-                     (change)="onChangeDays()" checklistValue="6">
-              <i class="primary"></i> <span translate>runtime.label.saturday</span>
-            </label>
           </div>
         </div>
         <div class="form-group row">

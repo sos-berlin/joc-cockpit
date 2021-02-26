@@ -1043,7 +1043,7 @@
               <td><span class="label" [ngClass]="{'bg-dark-blue' : depHistory.state=== 'DEPLOYED', 'bg-orange' : depHistory.state=== 'NOT_DEPLOYED'}" [innerHtml]="depHistory.state | translate | highlight : deployment.searchText"></span></td>
             </tr>
             <tr *ngIf="depHistory.errorMessage && depHistory.show">
-              <td colspan="4"><span class="cm-error">{{depHistory.errorMessage}}</span></td>
+              <td colspan="4"><span class="text-danger">{{depHistory.errorMessage}}</span></td>
             </tr>
             <tr *ngIf="depHistory.show">
               <td colspan="4" style="padding:0 !important;" class="order-history-template0">

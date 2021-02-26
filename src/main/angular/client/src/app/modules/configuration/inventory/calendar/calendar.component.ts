@@ -55,6 +55,31 @@ export class FrequencyModalComponent implements OnInit {
   countArr = [0, 1, 2, 3, 4];
   countArrU = [1, 2, 3, 4];
 
+  daysOptions = [
+    { label: 'sunday', value: '0'},
+    { label: 'monday', value: '1' },
+    { label: 'tuesday', value: '2' },
+    { label: 'wednesday', value: '3' },
+    { label: 'thursday', value: '4' },
+    { label: 'friday', value: '5' },
+    { label: 'saturday', value: '6' }
+  ];
+
+  monthsOptions = [
+    { label: 'january', value: '1'},
+    { label: 'february', value: '2' },
+    { label: 'march', value: '3' },
+    { label: 'april', value: '4' },
+    { label: 'may', value: '5' },
+    { label: 'june', value: '6' },
+    { label: 'july', value: '7' },
+    { label: 'august', value: '8' },
+    { label: 'september', value: '9' },
+    { label: 'october', value: '10' },
+    { label: 'november', value: '11' },
+    { label: 'december', value: '12' }
+  ];
+
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService, public modalService: NgbModal,
               private datePipe: DatePipe, private calendarService: CalendarService) {
   }
@@ -122,6 +147,32 @@ export class FrequencyModalComponent implements OnInit {
       });
     }
     this.setEditorEnable();
+    if (this.frequency.days && this.frequency.days.length > 0) {
+      this.daysOptions = this.daysOptions.map(item => {
+        return {
+          ...item,
+          checked: this.frequency.days.indexOf(item.value) > -1
+        };
+      });
+    }
+    if (this.frequency.months && this.frequency.months.length > 0) {
+      this.monthsOptions = this.monthsOptions.map(item => {
+        return {
+          ...item,
+          checked: this.frequency.months.indexOf(item.value) > -1
+        };
+      });
+    }
+  }
+
+  dayChange(value: string[]): void {
+    this.frequency.days = value;
+    this.onChangeDays();
+  }
+
+  monthChange(value: string[]): void {
+    this.frequency.months = value;
+    this.onChangeMonths();
   }
 
   setEditorEnable() {
@@ -1347,8 +1398,10 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       modalRef.componentInstance._temp = _.clone(data);
     }
     modalRef.result.then((res) => {
-      this.calendar.configuration = res.calendar.configuration;
-      this.saveJSON();
+      if(res.calendar) {
+        this.calendar.configuration = res.calendar.configuration;
+        this.saveJSON();
+      }
     }, () => {
     });
   }

@@ -77,16 +77,19 @@
 <div class="scroll-y max-ht2">
   <div class="padding p-b-0">
     <div class="inline w-full" [hidden]="isLoading">
-      <div appResizable [sideView]="sideView.inventory" id="leftPanel" class="sticky leftPanel editor">
+      <div appResizable [sideView]="sideView.inventory" id="leftPanel" class="sticky leftPanel editor " [ngClass]="{'bg-white' : isTrash}">
         <div class="pl-20 editor-tree">
-          <a class="text resize-cursor a-1" style="position: absolute; right: 28px;z-index:99">
+          <a class="text resize-cursor a-1" *ngIf="!isTrash" style="position: absolute; right: 28px;z-index:99">
             <i class="fa fa-angle-double-left fa-lg" (click)="hidePanel()"></i>
           </a>
           <a class="text resize-cursor a-3" style="position: absolute; right: 18px;;z-index:99">
             <i class="fa fa-angle-double-right fa-lg" (click)="showPanel()"></i>
           </a>
-          <a class="trash notify" (click)="switchToTrash()">
-            <i nz-icon [nzType]="isTrash ? 'rollback' : 'delete'" nzTheme="outline"></i>
+          <a class="trash notify" *ngIf="!isTrash" (click)="switchToTrash()">
+            <i nz-icon [nzType]="'delete'" nzTheme="outline"></i>
+          </a>
+          <a class="rollback" *ngIf="isTrash" (click)="switchToTrash()">
+            <i nz-icon [nzType]="'rollback'" nzTheme="outline"></i>
           </a>
           <perfect-scrollbar class="tree-block">
             <div class="fade-in" *ngIf="!isTrash">
@@ -257,7 +260,7 @@
                 </div>
               </ng-template>
             </div>
-            <div class="fade-in" *ngIf="isTrash">
+            <div class="fade-in m-t" *ngIf="isTrash">
               <nz-tree
                 #treeCtrl2
                 nzNoAnimation
@@ -299,7 +302,7 @@
                         <a (click)="restoreObject(node);" translate>inventory.button.restore</a></li>
                     </ul>
                   </nz-dropdown-menu>
-                  <div class="node-content-wrapper2">
+                  <div class="node-content-wrapper node-content-wrapper2">
                     <i
                       *ngIf="node.children && !node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.dailyPlan"
                       nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
@@ -335,7 +338,7 @@
               </div>
             </div>
           </perfect-scrollbar>
-          <div class="rg-right"><span></span></div>
+          <div class="rg-right" [ngClass]="{'bg-white' : isTrash}"><span></span></div>
         </div>
       </div>
       <div id="rightPanel">

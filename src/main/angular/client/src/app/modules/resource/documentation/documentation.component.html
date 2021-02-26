@@ -7,9 +7,9 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
-            <button *ngIf="object.documents.length>0 && permission.Documentation.export" class="btn btn-grey btn-sm m-l-12" (click)="exportDocument(null)"><i class="fa fa-download"></i>&nbsp; {{'resource.button.exportDocument' | translate}}</button>
-            <button *ngIf="object.documents.length>0 && permission.Documentation.delete" class="btn btn-grey btn-sm m-l-12" (click)="deleteDocumentations(null)"><i class="fa fa-trash"></i>&nbsp; {{'resource.button.deleteDocument' | translate}}</button>
-            <div class="inline" [ngClass]="{'hide':object.documents.length>0}">
+            <button *ngIf="object.mapOfCheckedId.size>0 && permission.Documentation.export" class="btn btn-grey btn-sm m-l-12" (click)="exportDocument(null)"><i class="fa fa-download"></i>&nbsp; {{'resource.button.exportDocument' | translate}}</button>
+            <button *ngIf="object.mapOfCheckedId.size>0 && permission.Documentation.delete" class="btn btn-grey btn-sm m-l-12" (click)="deleteDocumentations(null)"><i class="fa fa-trash"></i>&nbsp; {{'resource.button.deleteDocument' | translate}}</button>
+            <div class="inline" [ngClass]="{'hide':object.mapOfCheckedId.size>0}">
               <div class="btn-group dropdown m-l-12">
                 <button class="btn btn-grey btn-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="type" [nzPlacement]="'bottomRight'" >
                   <span translate>common.label.type</span>&nbsp;
@@ -110,9 +110,8 @@
                      *ngFor="let document of item.value | orderBy: documentFilters.filter.sortBy:documentFilters.reverse">
                   <div class="box card">
                     <div class="box-body">
-                      <label class="md-check pos-abt">
-                        <input type="checkbox" [(checklist)]="object.documents" [checklistValue]="document"><i
-                        class="primary"></i>
+                      <label class="pos-abt">
+                        <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(document.path)" (nzCheckedChange)="onItemChecked(document, $event)"></label>
                       </label>
                       <div class="text-left block-ellipsis m-l-md">
                         <span class="text-left">
@@ -184,11 +183,12 @@
                 >
                 <thead>
                   <tr>
-                    <th class="chk">
-                      <label class="md-check lg-check">
-                        <input type="checkbox" [(ngModel)]="object.checkbox" (change)="checkAll()"><i class="primary"></i>
-                      </label>
-                    </th>
+                    <th class="chk"
+                        [nzShowCheckbox]="true"
+                        [(nzChecked)]="object.checked"
+                        [nzIndeterminate]="object.indeterminate"
+                        (nzCheckedChange)="checkAll($event)"
+                    ></th>
                     <th class="menu"><span translate>common.label.action</span></th>
                     <th (click)="sort('name')"><a><span class="p-r-xs" translate>resource.label.documentName</span>
                       <i *ngIf="documentFilters.filter.sortBy == 'name' && !documentFilters.reverse"
@@ -218,12 +218,7 @@
                   </thead>
                   <tbody>
                   <tr *ngFor="let document of ajaxTable.data | orderBy: documentFilters.filter.sortBy:documentFilters.reverse">
-                    <td>
-                      <label class="md-check">
-                        <input type="checkbox" [(checklist)]="object.documents"
-                               [checklistValue]="document" (change)="checkMainCheckbox()"><i class="primary"></i>
-                      </label>
-                    </td>
+                    <td [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(document.path)" (nzCheckedChange)="onItemChecked(document, $event)"></td>
                     <td>
                       <div class="btn-group dropdown">
                         <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option2">

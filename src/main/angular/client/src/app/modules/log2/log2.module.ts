@@ -3,8 +3,9 @@ import {Log2Component} from './log2.component';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {TranslateModule} from '@ngx-translate/core';
+import {NzCheckboxModule} from 'ng-zorro-antd/checkbox';
+import {NzToolTipModule} from 'ng-zorro-antd/tooltip';
 import {Log2RoutingModule} from './log2-routing.module';
-import {NzToolTipModule} from 'ng-zorro-antd';
 
 @NgModule({
   imports: [
@@ -12,7 +13,8 @@ import {NzToolTipModule} from 'ng-zorro-antd';
     FormsModule,
     TranslateModule,
     Log2RoutingModule,
-    NzToolTipModule
+    NzToolTipModule,
+    NzCheckboxModule
   ],
   declarations: [Log2Component]
 })

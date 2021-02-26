@@ -57,6 +57,13 @@ export class LoggingComponent implements OnInit, OnDestroy {
   schedulerIds: any = {};
   permission: any = {};
   subscription: Subscription;
+  checkOptions = [
+    { label: 'info', value: 'info'},
+    { label: 'error', value: 'error' },
+    { label: 'warn', value: 'warn' },
+    { label: 'debug', value: 'debug' },
+    { label: 'suspended', value: 'SUSPENDED' }
+  ];
 
   constructor(private coreService: CoreService, private authService: AuthService,
               private clipboardService: ClipboardService) {
@@ -83,10 +90,23 @@ export class LoggingComponent implements OnInit, OnDestroy {
         this.clientLogs = JSON.parse(localStorage.logging);
       }
     });
+    if (this.clientLogFilter.status && this.clientLogFilter.status.length > 0) {
+      this.checkOptions = this.checkOptions.map(item => {
+        return {
+          ...item,
+          checked: this.clientLogFilter.status.indexOf(item.value) > -1
+        };
+      });
+    }
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+  }
+
+  statusChange(value: string[]): void {
+    this.clientLogFilter.status = value;
+    this.saveSettingConf();
   }
 
   logFilter(log): boolean {

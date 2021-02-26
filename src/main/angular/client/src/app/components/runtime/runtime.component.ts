@@ -41,6 +41,15 @@ export class AddRestrictionComponent implements OnInit {
   isVisible: boolean;
   countArr = [0, 1, 2, 3, 4];
   countArrU = [1, 2, 3, 4];
+  daysOptions = [
+    { label: 'sunday', value: '0'},
+    { label: 'monday', value: '1' },
+    { label: 'tuesday', value: '2' },
+    { label: 'wednesday', value: '3' },
+    { label: 'thursday', value: '4' },
+    { label: 'friday', value: '5' },
+    { label: 'saturday', value: '6' }
+  ];
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService, public modalService: NgbModal, private datePipe: DatePipe, private calendarService: CalendarService) {
   }
@@ -84,6 +93,18 @@ export class AddRestrictionComponent implements OnInit {
       }
     }
     this.setEditorEnable();
+    if (this.frequency.days && this.frequency.days.length > 0) {
+      this.daysOptions = this.daysOptions.map(item => {
+        return {
+          ...item,
+          checked: this.frequency.days.indexOf(item.value) > -1
+        };
+      });
+    }
+  }
+
+  dayChange(value: string[]): void {
+    this.frequency.days = value;
   }
 
   convertStringToDate(date) {

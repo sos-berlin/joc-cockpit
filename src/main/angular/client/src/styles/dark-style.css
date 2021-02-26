@@ -78,18 +78,6 @@ pre, .syntax-box {
   background-color: var(--bg-box) !important;;
 }
 
-.ui-check input:checked + i:before {
-  left: 5px;
-  top: 5px;
-  width: 6px;
-  height: 6px;
-  background-color: var(--primary)
-}
-
-.md-check > i:before {
-  border: 1px solid var(--border-color);
-}
-
 .dark-white {
   background-color: var(--background-color)
 }

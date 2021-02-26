@@ -26,28 +26,12 @@
           <div class="form-group row">
             <label class="col-lg-2 col-sm-3 " translate>log.label.logLevel</label>
             <div class=" col-sm-9" >
-              <div>
-                <label class="md-check w-sm">
-                  <input type="checkbox" [(checklist)]="clientLogFilter.status"
-                         [checklistValue]="'info'" (change)="saveSettingConf()">
-                  <i class="primary"></i><span translate>log.label.info</span>
-                </label>
-                <label class="md-check w-sm">
-                  <input type="checkbox" [(checklist)]="clientLogFilter.status"
-                         [checklistValue]="'error'" (change)="saveSettingConf()">
-                  <i class="primary"></i><span translate>log.label.error</span>
-                </label>
-                <label class="md-check w-sm">
-                  <input type="checkbox" [(checklist)]="clientLogFilter.status"
-                         [checklistValue]="'warn'" (change)="saveSettingConf()">
-                  <i class="primary"></i><span translate>log.label.warn</span>
-                </label>
-                <label class="md-check w-sm">
-                  <input type="checkbox" [(checklist)]="clientLogFilter.status"
-                         [checklistValue]="'debug'" (change)="saveSettingConf()">
-                  <i class="primary"></i><span translate>log.label.debug</span>
-                </label>
-              </div>
+              <nz-checkbox-wrapper (nzOnChange)="statusChange($event)">
+                <ng-container *ngFor="let option of checkOptions">
+                  <label nz-checkbox [nzValue]="option.value" [(ngModel)]="option.checked" name="{{option.value}}">
+                    <span translate>log.label.{{option.label}}</span></label>
+                </ng-container>
+              </nz-checkbox-wrapper>
             </div>
           </div>
           <div class="row">

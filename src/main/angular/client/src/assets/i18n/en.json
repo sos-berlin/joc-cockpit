@@ -365,6 +365,7 @@
     "message.deleteMainSection": "Are you sure you want to delete the selected section?",
     "message.noVariableDeclarationFound": "No variable declaration found",
     "message.requiredVariableCannotRemoved": "This is required variable, can't be remove",
+    "message.uniqueError": "Name is already taken",
     "tooltip.exportInXLS": "Export in xls format",
     "tooltip.expandDetails": "Expand Details",
     "tooltip.collapseDetails": "Collapse Details",
@@ -1087,6 +1088,7 @@
     "tooltip.generate": "Generate"
   },
   "runtime": {
+    "label.selectAll": "Select All",
     "label.runTime": "Run-time",
     "label.calendarViewFor": "Daily Plan View for",
     "label.weekDays": "Weekdays",

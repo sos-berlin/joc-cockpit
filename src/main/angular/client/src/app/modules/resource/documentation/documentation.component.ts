@@ -257,7 +257,11 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   schedulerIds: any = {};
   tree: any = [];
   preferences: any = {};
-  object: any = {documents: []};
+  object = {
+    mapOfCheckedId: new Set(),
+    checked: false,
+    indeterminate: false
+  };
   permission: any = {};
   pageView: any;
   documents: any = [];
@@ -309,7 +313,6 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   loadDocument() {
-    this.object.documents = [];
     let obj = {folders: [], types: [], controllerId: this.schedulerIds.selected};
     this.documents = [];
     this.loading = true;
@@ -396,20 +399,30 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     this.pageView = $event;
   }
 
-  checkAll() {
-    if (this.object.checkbox && this.documents.length > 0) {
-      this.object.documents = this.documents.slice((this.preferences.entryPerPage * (this.documentFilters.currentPage - 1)), (this.preferences.entryPerPage * this.documentFilters.currentPage));
+  checkAll(value: boolean): void {
+    if (value && this.documents.length > 0) {
+      this.documents.slice((this.preferences.entryPerPage * (this.documentFilters.currentPage - 1)), (this.preferences.entryPerPage * this.documentFilters.currentPage))
+      .forEach(item => {
+        this.object.mapOfCheckedId.add(item.path);
+      });
     } else {
-      this.object.documents = [];
+      this.object.mapOfCheckedId.clear();
     }
+    this.refreshCheckedStatus();
   }
 
-  checkMainCheckbox() {
-    if (this.object.documents && this.object.documents.length > 0) {
-      this.object.checkbox = this.object.documents.length === this.documents.slice((this.preferences.entryPerPage * (this.documentFilters.currentPage - 1)), (this.preferences.entryPerPage * this.documentFilters.currentPage)).length;
+  onItemChecked(order: any, checked: boolean): void {
+    if (checked) {
+      this.object.mapOfCheckedId.add(order.path);
     } else {
-      this.object.checkbox = false;
+      this.object.mapOfCheckedId.delete(order.path);
     }
+    this.object.checked = this.object.mapOfCheckedId.size === this.documents.slice((this.preferences.entryPerPage * (this.documentFilters.currentPage - 1)), (this.preferences.entryPerPage * this.documentFilters.currentPage)).length;
+    this.refreshCheckedStatus();
+  }
+
+  refreshCheckedStatus(): void {
+    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
   }
 
   previewDocument(document) {
@@ -444,9 +457,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     if (document) {
       obj.documentations.push(document.path);
     } else {
-      this.object.documents.forEach((value) => {
-        obj.documentations.push(value.path);
-      });
+      obj.documentations = Array.from(this.object.mapOfCheckedId);
     }
     this.coreService.post('documentations/export/info', obj).subscribe((res: any) => {
       $('#tmpFrame').attr('src', API_URL + 'documentations/export?controllerId=' +
@@ -479,9 +490,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     if (document) {
       obj.documentations.push(document.path);
     } else {
-      this.object.documents.forEach((value) => {
-        obj.documentations.push(value.path);
-      });
+      obj.documentations = Array.from(this.object.mapOfCheckedId);
     }
     let documentObj = _.clone(document);
     if (document) {
@@ -494,7 +503,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
         this.deleteDocumentFn(obj, documentObj, null);
       });
     } else {
-      let documentArr = _.clone(this.object.documents);
+      let documentArr = _.clone(this.object.mapOfCheckedId);
       for (let i = 0; i < documentArr.length; i++) {
         this.coreService.post('documentation/used', {
           documentation: documentArr[i].path,
@@ -519,13 +528,10 @@ export class DocumentationComponent implements OnInit, OnDestroy {
           }
         }
       } else {
-        for (let i = 0; i < this.object.documents.length; i++) {
-          for (let j = 0; j < this.documents.length; j++) {
-            if (this.documents[j].path === this.object.documents[i].path) {
-              this.documents.splice(j, 1);
-              break;
-            }
-          }
+        if (this.object.mapOfCheckedId.size > 0) {
+          this.documents = this.documents.filter((item) => {
+            return !this.object.mapOfCheckedId.has(item.path);
+          });
         }
       }
     });
@@ -541,11 +547,11 @@ export class DocumentationComponent implements OnInit, OnDestroy {
         name: document ? document.path : ''
       };
       if (!document) {
-        this.object.documents.forEach((value, index) => {
-          if (index === this.object.documents.length - 1) {
-            comments.name = comments.name + ' ' + value.path;
+        this.object.mapOfCheckedId.forEach((value, index) => {
+          if (index === this.object.mapOfCheckedId.size - 1) {
+            comments.name = comments.name + ' ' + value;
           } else {
-            comments.name = value.path + ', ' + comments.name;
+            comments.name = value + ', ' + comments.name;
           }
         });
       }

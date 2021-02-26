@@ -41,42 +41,15 @@
             <i class="fa fa-angle-double-up fa-lg"></i>
           </a>
         </span>
-        <label class="md-check m-r">
-            <input type="checkbox" [(ngModel)]="object.checkBoxs.stdout" (change)="checkLogLevel('STDOUT')">
-            <i class="primary"></i><span translate>log.label.stdout</span>
-        </label>
-        <label class="md-check m-r" *ngIf="isStdErrLevel">
-            <input type="checkbox" [(ngModel)]="object.checkBoxs.stderr" (change)="checkLogLevel('STDERR')">
-            <i class="primary"></i><span translate>log.label.stderr</span>
-        </label>
-        <label class="md-check m-r" *ngIf="isInfoLevel">
-            <input type="checkbox" [(ngModel)]="object.checkBoxs.info" (change)="checkLogLevel('INFO')">
-            <i class="primary"></i><span translate>log.label.info</span>
-        </label>
-        <label class="md-check m-r" *ngIf="isFatalLevel">
-            <input type="checkbox" [(ngModel)]="object.checkBoxs.fatal" (change)="checkLogLevel('FATAL')">
-            <i class="primary"></i><span translate>log.label.fatal</span>
-        </label>
-        <label class="md-check m-r" *ngIf="isErrorLevel">
-            <input type="checkbox" [(ngModel)]="object.checkBoxs.error" (change)="checkLogLevel('ERROR')">
-            <i class="primary"></i><span translate>log.label.error</span>
-        </label>
-        <label class="md-check m-r" *ngIf="isErrorLevel">
-            <input type="checkbox" [(ngModel)]="object.checkBoxs.warn" (change)="checkLogLevel('WARN')">
-            <i class="primary"></i><span translate>log.label.warn</span>
-        </label>
-        <label class="md-check m-r" *ngIf="isDeBugLevel">
-            <input type="checkbox" [(ngModel)]="object.checkBoxs.debug" (change)="checkLogLevel('DEBUG')">
-            <i class="primary"></i><span translate>log.label.debug</span>
-        </label>
-        <label class="md-check m-r" *ngIf="isTraceLevel">
-            <input type="checkbox" [(ngModel)]="object.checkBoxs.trace" (change)="checkLogLevel('Trace')">
-            <i class="primary"></i><span translate>log.label.trace</span>
-        </label>
-        <label class="md-check m-r" *ngIf="isDetailLevel">
-          <input type="checkbox" [(ngModel)]="object.checkBoxs.detail" (change)="checkLogLevel('DETAIL')">
-          <i class="primary"></i><span translate>log.label.detail</span>
-        </label>
+        <label nz-checkbox class="m-r" [(ngModel)]="object.checkBoxs.stdout" (ngModelChange)="checkLogLevel('STDOUT')"><span translate>log.label.stdout</span></label>
+        <label *ngIf="isStdErrLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.stderr" (ngModelChange)="checkLogLevel('STDERR')"><span translate>log.label.stderr</span></label>
+        <label *ngIf="isInfoLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.info" (ngModelChange)="checkLogLevel('INFO')"><span translate>log.label.info</span></label>
+        <label *ngIf="isFatalLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.fatal" (ngModelChange)="checkLogLevel('FATAL')"><span translate>log.label.fatal</span></label>
+        <label *ngIf="isErrorLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.error" (ngModelChange)="checkLogLevel('ERROR')"><span translate>log.label.error</span></label>
+        <label *ngIf="isWarnLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.warn" (ngModelChange)="checkLogLevel('WARN')"><span translate>log.label.warn</span></label>
+        <label *ngIf="isDeBugLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.debug" (ngModelChange)="checkLogLevel('DEBUG')"><span translate>log.label.debug</span></label>
+        <label *ngIf="isTraceLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.trace" (ngModelChange)="checkLogLevel('Trace')"><span translate>log.label.trace</span></label>
+        <label *ngIf="isDetailLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.detail" (ngModelChange)="checkLogLevel('DETAIL')"><span translate>log.label.detail</span></label>
       </div>
     </div>
     <div class="row m-t-sm">

@@ -115,47 +115,30 @@
         </nz-tree-select>
       </div>
     </div>
-    <div class="form-group row">
+    <div class="m-b-sm row">
       <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>history.label.status</label>
       <div class="col-sm-8">
-        <label class="md-check w">
-          <input type="checkbox" [(checklist)]="filter.states" checklistValue="SUCCESSFUL" name="success">
-          <i class="primary"></i><span translate>common.label.successful</span>
-        </label>
-        <label class="md-check w">
-          <input type="checkbox" [(checklist)]="filter.states" checklistValue="FAILED" name="failed">
-          <i class="primary"></i><span translate>common.label.failed</span>
-        </label>
-        <label class="md-check w">
-          <input type="checkbox" [(checklist)]="filter.states" checklistValue="INCOMPLETE" name="incomplete">
-          <i class="primary"></i><span translate>common.label.incomplete</span>
-        </label>
+        <nz-checkbox-wrapper (nzOnChange)="stateChange($event)">
+          <ng-container *ngFor="let option of checkOptions">
+            <label nz-checkbox [nzValue]="option.value" [ngModel]="option.checked" [name]="option.label"><span translate>common.label.{{option.label}}</span></label>
+          </ng-container>
+        </nz-checkbox-wrapper>
       </div>
     </div>
     <div class="form-group row">
       <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate> history.label.criticality</label>
       <div class="col-sm-8">
-        <label class="md-check w">
-          <input type="checkbox" [(checklist)]="filter.criticality" checklistValue="NORMAL" name="normal">
-          <i class="primary"></i><span translate>common.label.normal</span>
-        </label>
-        <label class="md-check w">
-          <input type="checkbox" [(checklist)]="filter.criticality" checklistValue="MINOR" name="minor">
-          <i class="primary"></i><span translate>common.label.minor</span>
-        </label>
-        <label class="md-check w">
-          <input type="checkbox" [(checklist)]="filter.criticality" checklistValue="MAJOR" name="major">
-          <i class="primary"></i><span translate>common.label.major</span>
-        </label>
+        <nz-checkbox-wrapper (nzOnChange)="criticalityChange($event)">
+          <ng-container *ngFor="let option of criticalities">
+            <label nz-checkbox [nzValue]="option.value" [ngModel]="option.checked" [name]="option.label"><span translate>common.label.{{option.label}}</span></label>
+          </ng-container>
+        </nz-checkbox-wrapper>
       </div>
     </div>
     <div class="form-group row" *ngIf="permission.JOCConfigurations.share.change.sharedStatus.makeShared && !isSearch">
       <label class="col-sm-4" translate>customization.label.sharedCustomization</label>
       <div class="col-sm-6">
-        <label class="md-check">
-          <input type="checkbox" [(ngModel)]="filter.shared" name="shared">
-          <i class="primary"></i>
-        </label>
+        <label nz-checkbox [(ngModel)]="filter.shared" name="shared"></label>
       </div>
     </div>
     <div class="form-group m-t m-b-xs" *ngIf="isSearch">

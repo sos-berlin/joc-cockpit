@@ -5,7 +5,8 @@
 .a-3 {
   top: 62px;
 }
-.trash{
+
+.trash, .rollback{
   padding: 4px 6px;
   border-radius: 50%;
   background: var(--menu-hover);
@@ -21,6 +22,11 @@
   i{
     color: var(--text-color);
   }
+}
+.rollback{
+  top: 16px;
+  right: 16px;
+  display: block;
 }
 .editor{
   &:hover{

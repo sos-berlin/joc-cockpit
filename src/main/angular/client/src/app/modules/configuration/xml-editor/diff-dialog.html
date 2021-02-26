@@ -9,18 +9,14 @@
       <div class="p-l-sm p-r-sm">
           <div class="row">
               <div class="col-sm-6">
-              <span class="md-check lg-check" (click)="checkBoxCheck('draftVersion')">
-                  <input type="checkbox" name="draftVersion" [(ngModel)]="xmlVersionObj.draftVersion">
-                  <i class="primary"></i>
-              </span>
-                  <span class="form-control-label v-t" translate>xml.label.draftVersion</span>
+                <label nz-checkbox [(ngModel)]="xmlVersionObj.draftVersion" (click)="checkBoxCheck('draftVersion')" name="draftVersion">
+                  <span translate>xml.label.draftVersion</span>
+                </label>
               </div>
               <div class="col-sm-6" style="height: auto">
-              <span class="md-check lg-check" (click)="checkBoxCheck('liveVersion')">
-                  <input type="checkbox" name="liveVersion" [(ngModel)]="xmlVersionObj.liveVersion">
-                  <i class="primary"></i>
-              </span>
-                  <span class="form-control-label v-t" translate>xml.label.liveVersion</span>
+                <label nz-checkbox [(ngModel)]="xmlVersionObj.liveVersion" (click)="checkBoxCheck('liveVersion')" name="liveVersion">
+                  <span translate>xml.label.liveVersion</span>
+                </label>
               </div>
               <div class="col-sm-6">
                   <pre class="pre-diff">{{draftXml}}</pre>

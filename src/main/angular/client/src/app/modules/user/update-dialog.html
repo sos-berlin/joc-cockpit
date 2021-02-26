@@ -11,8 +11,8 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
     <div class="form-group row" *ngIf="paste">
-      <div class="col-sm-4" translate>profile.label.keyAlgorithm</div>
-      <div class="col-sm-8">
+      <div class="col-sm-3" translate>profile.label.keyAlgorithm</div>
+      <div class="col-sm-9">
         <nz-radio-group name="alg" [(ngModel)]="algorithm.keyAlg">
           <label nz-radio nzValue="PGP"><span translate>profile.label.pgp</span></label>
           <label nz-radio nzValue="RSA"><span translate>profile.label.rsa</span></label>
@@ -21,8 +21,8 @@
       </div>
     </div>
     <div class="form-group row" *ngIf="!paste">
-      <div class="col-sm-4" translate>Key ID:</div>
-      <div class="col-sm-8">{{data.keyID}}</div>
+      <div class="col-sm-3" translate>Key ID:</div>
+      <div class="col-sm-9">{{data.keyID}}</div>
     </div>
     <div class="form-group row" *ngIf="securityLevel !== 'HIGH' && ((!paste && data.privateKey) || paste)">
       <label class="col-sm-12 form-control-label" translate>profile.label.privateKey</label>

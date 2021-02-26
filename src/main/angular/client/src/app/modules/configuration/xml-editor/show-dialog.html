@@ -6,7 +6,6 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-
 <div class="modal-body">
   <div class="row">
     <div class="col-md-12">
@@ -20,10 +19,10 @@
   <button type="button" class="btn btn-primary btn-sm" (click)="submitXML()" translate>
     common.button.submit
   </button>
-  <button type="button" class="btn orange btn-sm" (click)="validateXML()" translate>
+  <button type="button" class="btn btn-sm" (click)="validateXML()" translate>
       xml.button.validate
   </button>
-  <button type="button" class="btn orange btn-sm" ng-disabled="objectXml.error"
+  <button type="button" class="btn btn-sm" ng-disabled="objectXml.error"
           (click)="copyToClipboard()" translate>common.button.copyToClipboard
   </button>
   <button type="button" class="btn btn-grey btn-sm" (click)="cancel()">

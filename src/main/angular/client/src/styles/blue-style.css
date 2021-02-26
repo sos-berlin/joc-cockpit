@@ -1230,7 +1230,7 @@ span.cm-link {
 }
 
 span.cm-error {
-  color: #9d1e15
+  color: red
 }
 span.cm-property {
   color: #fedcba

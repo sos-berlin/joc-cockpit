@@ -137,6 +137,11 @@ export class OrderSearchComponent implements OnInit {
   submitted = false;
   isUnique = true;
   workflowTree = [];
+  checkOptions = [
+    { label: 'successful', value: 'SUCCESSFUL'},
+    { label: 'failed', value: 'FAILED' },
+    { label: 'incomplete', value: 'INCOMPLETE' }
+  ];
 
   constructor(public coreService: CoreService, private modalService: NgbModal) {
   }
@@ -144,6 +149,14 @@ export class OrderSearchComponent implements OnInit {
   ngOnInit() {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.getWorkflowTree();
+    if (this.filter.states && this.filter.states.length > 0) {
+      this.checkOptions = this.checkOptions.map(item => {
+        return {
+          ...item,
+          checked: this.filter.states.indexOf(item.value) > -1
+        };
+      });
+    }
   }
 
   private getWorkflowTree() {
@@ -154,6 +167,10 @@ export class OrderSearchComponent implements OnInit {
     }).subscribe((res) => {
       this.workflowTree = this.coreService.prepareTree(res, true);
     });
+  }
+
+  stateChange(value: string[]): void {
+    this.filter.states = value;
   }
 
   getFolderTree(flag) {
@@ -319,6 +336,16 @@ export class TaskSearchComponent implements OnInit {
   submitted = false;
   isUnique = true;
   workflowTree = [];
+  checkOptions = [
+    { label: 'successful', value: 'SUCCESSFUL'},
+    { label: 'failed', value: 'FAILED' },
+    { label: 'incomplete', value: 'INCOMPLETE' }
+  ];
+  criticalities = [
+    { label: 'normal', value: 'NORMAL'},
+    { label: 'minor', value: 'MINOR' },
+    { label: 'major', value: 'MAJOR' }
+  ];
 
   constructor(public coreService: CoreService, private modalService: NgbModal) {
   }
@@ -326,6 +353,23 @@ export class TaskSearchComponent implements OnInit {
   ngOnInit() {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.getWorkflowTree();
+    if (this.filter.historyStates && this.filter.historyStates.length > 0) {
+      this.checkOptions = this.checkOptions.map(item => {
+        return {
+          ...item,
+          checked: this.filter.historyStates.indexOf(item.value) > -1
+        };
+      });
+    }
+    if (this.filter.criticality && this.filter.criticality.length > 0) {
+      this.criticalities = this.criticalities.map(item => {
+        return {
+          ...item,
+          checked: this.filter.criticality.indexOf(item.value) > -1
+        };
+      });
+    }
+
   }
 
   private getWorkflowTree() {
@@ -336,6 +380,14 @@ export class TaskSearchComponent implements OnInit {
     }).subscribe((res) => {
       this.workflowTree = this.coreService.prepareTree(res, true);
     });
+  }
+
+  stateChange(value: string[]): void {
+    this.filter.historyStates = value;
+  }
+
+  criticalityChange(value: string[]): void {
+    this.filter.criticality = value;
   }
 
   getFolderTree(flag) {
@@ -434,6 +486,8 @@ export class TaskSearchComponent implements OnInit {
     obj.job = result.job;
     obj.state = result.state;
     obj.name = result.name;
+    obj.criticality = result.criticality;
+    obj.historyStates = result.historyStates;
     if (result.radio != 'current') {
       if (result.from1) {
         fromDate = this.coreService.parseProcessExecuted(result.from1);
@@ -610,16 +664,32 @@ export class SubmissionSearchComponent implements OnInit {
   existingName: any;
   submitted = false;
   isUnique = true;
+  checkOptions = [
+    { label: 'submitted', value: 'SUBMITTED'},
+    { label: 'notSubmitted', value: 'NOT_SUBMITTED' }
+  ];
 
   constructor(public coreService: CoreService) {
   }
 
   ngOnInit() {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    if (this.filter.type && this.filter.type.length > 0) {
+      this.checkOptions = this.checkOptions.map(item => {
+        return {
+          ...item,
+          checked: this.filter.type.indexOf(item.value) > -1
+        };
+      });
+    }
   }
 
   remove(path) {
     this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
+  }
+
+  typeChange(value: string[]): void {
+    this.filter.type = value;
   }
 
   checkFilterName() {

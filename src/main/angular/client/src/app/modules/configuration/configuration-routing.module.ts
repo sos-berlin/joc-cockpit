@@ -1,18 +1,32 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
 import {ConfigurationComponent} from './configuration.component';
-import {XmlEditorComponent} from './xml-editor/xml-editor.component';
-import {InventoryComponent} from './inventory/inventory.component';
 
 const routes: Routes = [
   {
     path: '',
     component: ConfigurationComponent,
     children: [
-      {path: 'inventory', component: InventoryComponent,  data: {breadcrumb: 'configuration.tab.inventory'}},
-      {path: 'yade', component: XmlEditorComponent,  data: {breadcrumb: 'configuration.tab.yade'}},
-      {path: 'notification', component: XmlEditorComponent,  data: {breadcrumb: 'configuration.tab.notification'}},
-      {path: 'other', component: XmlEditorComponent,  data: {breadcrumb: 'configuration.tab.others'}}
+      {
+        path: 'inventory',
+        loadChildren: () => import('./inventory/inventory.module').then(m => m.InventoryModule),
+        data: {breadcrumb: 'configuration.tab.inventory'}
+      },
+      {
+        path: 'yade',
+        loadChildren: () => import('./xml-editor/xml-editor.module').then(m => m.XmlEditorModule),
+        data: {breadcrumb: 'configuration.tab.yade'}
+      },
+      {
+        path: 'notification',
+        loadChildren: () => import('./xml-editor/xml-editor.module').then(m => m.XmlEditorModule),
+        data: {breadcrumb: 'configuration.tab.notification'}
+      },
+      {
+        path: 'other',
+        loadChildren: () => import('./xml-editor/xml-editor.module').then(m => m.XmlEditorModule),
+        data: {breadcrumb: 'configuration.tab.other'}
+      }
     ]
   },
 ];
