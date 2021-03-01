@@ -138,9 +138,9 @@ export class OrderSearchComponent implements OnInit {
   isUnique = true;
   workflowTree = [];
   checkOptions = [
-    { label: 'successful', value: 'SUCCESSFUL'},
-    { label: 'failed', value: 'FAILED' },
-    { label: 'incomplete', value: 'INCOMPLETE' }
+    {label: 'successful', value: 'SUCCESSFUL'},
+    {label: 'failed', value: 'FAILED'},
+    {label: 'incomplete', value: 'INCOMPLETE'}
   ];
 
   constructor(public coreService: CoreService, private modalService: NgbModal) {
@@ -337,14 +337,14 @@ export class TaskSearchComponent implements OnInit {
   isUnique = true;
   workflowTree = [];
   checkOptions = [
-    { label: 'successful', value: 'SUCCESSFUL'},
-    { label: 'failed', value: 'FAILED' },
-    { label: 'incomplete', value: 'INCOMPLETE' }
+    {label: 'successful', value: 'SUCCESSFUL'},
+    {label: 'failed', value: 'FAILED'},
+    {label: 'incomplete', value: 'INCOMPLETE'}
   ];
   criticalities = [
-    { label: 'normal', value: 'NORMAL'},
-    { label: 'minor', value: 'MINOR' },
-    { label: 'major', value: 'MAJOR' }
+    {label: 'normal', value: 'NORMAL'},
+    {label: 'minor', value: 'MINOR'},
+    {label: 'major', value: 'MAJOR'}
   ];
 
   constructor(public coreService: CoreService, private modalService: NgbModal) {
@@ -665,8 +665,8 @@ export class SubmissionSearchComponent implements OnInit {
   submitted = false;
   isUnique = true;
   checkOptions = [
-    { label: 'submitted', value: 'SUBMITTED'},
-    { label: 'notSubmitted', value: 'NOT_SUBMITTED' }
+    {label: 'submitted', value: 'SUBMITTED'},
+    {label: 'notSubmitted', value: 'NOT_SUBMITTED'}
   ];
 
   constructor(public coreService: CoreService) {
@@ -804,7 +804,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   deployment: any = {};
   submission: any = {};
   historys: any = [];
-  jobHistorys: any = [];
+  taskHistorys: any = [];
   deploymentHistorys: any = [];
   submissionHistorys: any = [];
   orderHistoryFilterList: any = [];
@@ -815,7 +815,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   orderSearchableProperties = ['controllerId', 'orderId', 'workflow', 'state', '_text', 'orderState', 'position'];
   taskSearchableProperties = ['controllerId', 'job', 'criticality', 'request', 'workflow', 'orderId', 'position'];
   deploymentSearchableProperties = ['controllerId', 'deploymentDate', 'account', 'state'];
-  submissionSearchableProperties = ['controllerId', 'dailyPlanDate', 'controllers'];
 
   object: any = {};
   ignoreListConfigId = 0;
@@ -1122,7 +1121,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     this.convertRequestBody(obj);
     this.coreService.post('tasks/history', obj).subscribe((res) => {
-      this.jobHistorys = this.setDuration(res);
+      this.taskHistorys = this.setDuration(res);
       if (flag) {
         this.mergeOldTaskData();
       } else {
@@ -1137,7 +1136,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   private mergeOldTaskData() {
     let oldEntires = _.clone(this.data);
-    let arr = this.task.searchText ? this.searchPipe.transform(this.jobHistorys, this.task.searchText, this.taskSearchableProperties) : this.jobHistorys;
+    let arr = this.task.searchText ? this.searchPipe.transform(this.taskHistorys, this.task.searchText, this.taskSearchableProperties) : this.taskHistorys;
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < oldEntires.length; j++) {
         if (arr[i].taskId === oldEntires[j].taskId) {
@@ -1173,7 +1172,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     obj.state = (data.state && data.state !== 'ALL') ? data.state : undefined;
     obj.operation = (data.operation && data.operation !== 'ALL') ? data.operation : undefined;
     obj.deployType = data.deployType ? data.deployType : undefined;
-    if(flag) {
+    if (flag) {
       obj = this.coreService.parseProcessExecutedRegex(data.planned, obj);
       if (obj.dateFrom) {
         obj.from = obj.dateFrom;
@@ -1346,7 +1345,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   private mergeSubData() {
     let oldEntires = _.clone(this.data);
-    let arr = this.submission.searchText ? this.searchPipe.transform(this.submissionHistorys, this.submission.searchText, this.submissionSearchableProperties) : this.submissionHistorys;
+    let arr = this.submissionHistorys;
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < oldEntires.length; j++) {
         if (arr[i].dailyPlanDate === oldEntires[j].dailyPlanDate) {
@@ -1573,7 +1572,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
 
       this.coreService.post('tasks/history', filter).subscribe((res: any) => {
-        this.jobHistorys = this.setDuration(res);
+        this.taskHistorys = this.setDuration(res);
         this.searchInResult();
         this.isLoading = true;
       }, () => {
@@ -1888,11 +1887,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (this.historyFilters.type === 'ORDER') {
       this.data = this.order.searchText ? this.searchPipe.transform(this.historys, this.order.searchText, this.orderSearchableProperties) : this.historys;
     } else if (this.historyFilters.type === 'TASK') {
-      this.data = this.task.searchText ? this.searchPipe.transform(this.jobHistorys, this.task.searchText, this.taskSearchableProperties) : this.jobHistorys;
+      this.data = this.task.searchText ? this.searchPipe.transform(this.taskHistorys, this.task.searchText, this.taskSearchableProperties) : this.taskHistorys;
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
       this.data = this.deployment.searchText ? this.searchPipe.transform(this.deploymentHistorys, this.deployment.searchText, this.deploymentSearchableProperties) : this.deploymentHistorys;
     } else if (this.historyFilters.type === 'SUBMISSION') {
-      this.data = this.submission.searchText ? this.searchPipe.transform(this.submissionHistorys, this.submission.searchText, this.submissionSearchableProperties) : this.submissionHistorys;
+      this.data = this.submissionHistorys;
     }
     this.data = [...this.data];
   }
@@ -2399,7 +2398,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   /* --------------------------Actions -----------------------*/
 
   private exportToExcelOrder(): any {
-    let controllerId = '', workflow = '', orderId = '', status = '', position = '',
+    let controllerId = '', workflow = '', orderId = '', status = '', orderState = '', position = '',
       startTime = '', endTime = '', duration = '', plannedTime = '';
     this.translate.get('common.label.controllerId').subscribe(translatedValue => {
       controllerId = translatedValue;
@@ -2410,8 +2409,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.translate.get('history.label.orderId').subscribe(translatedValue => {
       orderId = translatedValue;
     });
-    this.translate.get('history.label.state').subscribe(translatedValue => {
+    this.translate.get('history.label.status').subscribe(translatedValue => {
       status = translatedValue;
+    });
+    this.translate.get('history.label.orderState').subscribe(translatedValue => {
+      orderState = translatedValue;
     });
     this.translate.get('history.label.position').subscribe(translatedValue => {
       position = translatedValue;
@@ -2429,21 +2431,24 @@ export class HistoryComponent implements OnInit, OnDestroy {
       duration = translatedValue;
     });
     let data = [];
-    for (let i = 0; i < this.currentData.length; i++) {
+    for (let i = 0; i < this.historys.length; i++) {
       let obj: any = {};
       if (!this.historyFilters.current) {
-        obj[controllerId] = this.currentData[i].controllerId;
+        obj[controllerId] = this.historys[i].controllerId;
       }
-      obj[orderId] = this.currentData[i].orderId;
-      obj[workflow] = this.currentData[i].workflow;
-      obj[position] = this.currentData[i].position;
-      this.translate.get(this.currentData[i].state._text).subscribe(translatedValue => {
+      obj[orderId] = this.historys[i].orderId;
+      obj[workflow] = this.historys[i].workflow;
+      obj[position] = this.historys[i].position;
+      this.translate.get(this.historys[i].state._text).subscribe(translatedValue => {
         obj[status] = translatedValue;
       });
-      obj[plannedTime] = this.coreService.stringToDate(this.preferences, this.currentData[i].plannedTime);
-      obj[startTime] = this.coreService.stringToDate(this.preferences, this.currentData[i].startTime);
-      obj[endTime] = this.coreService.stringToDate(this.preferences, this.currentData[i].endTime);
-      obj[duration] = this.coreService.calDuration(this.currentData[i].startTime, this.currentData[i].endTime);
+      this.translate.get(this.historys[i].orderState._text).subscribe(translatedValue => {
+        obj[orderState] = translatedValue;
+      });
+      obj[plannedTime] = this.coreService.stringToDate(this.preferences, this.historys[i].plannedTime);
+      obj[startTime] = this.coreService.stringToDate(this.preferences, this.historys[i].startTime);
+      obj[endTime] = this.coreService.stringToDate(this.preferences, this.historys[i].endTime);
+      obj[duration] = this.coreService.calDuration(this.historys[i].startTime, this.historys[i].endTime);
       data.push(obj);
     }
     return data;
@@ -2461,7 +2466,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.translate.get('history.label.job').subscribe(translatedValue => {
       job = translatedValue;
     });
-    this.translate.get('history.label.state').subscribe(translatedValue => {
+    this.translate.get('history.label.status').subscribe(translatedValue => {
       status = translatedValue;
     });
     this.translate.get('history.label.position').subscribe(translatedValue => {
@@ -2486,23 +2491,22 @@ export class HistoryComponent implements OnInit, OnDestroy {
       returnCode = translatedValue;
     });
     let data = [];
-    for (let i = 0; i < this.currentData.length; i++) {
+    for (let i = 0; i < this.taskHistorys.length; i++) {
       let obj: any = {};
       if (!this.historyFilters.current) {
-        obj[controllerId] = this.currentData[i].controllerId;
+        obj[controllerId] = this.taskHistorys[i].controllerId;
       }
-
-      obj[job] = this.currentData[i].job;
-      obj[workflow] = this.currentData[i].workflow;
-      obj[position] = this.currentData[i].position;
-      this.translate.get(this.currentData[i].state._text).subscribe(translatedValue => {
+      obj[job] = this.taskHistorys[i].job;
+      obj[workflow] = this.taskHistorys[i].workflow;
+      obj[position] = this.taskHistorys[i].position;
+      this.translate.get(this.taskHistorys[i].state._text).subscribe(translatedValue => {
         obj[status] = translatedValue;
       });
-      obj[startTime] = this.coreService.stringToDate(this.preferences, this.currentData[i].startTime);
-      obj[endTime] = this.coreService.stringToDate(this.preferences, this.currentData[i].endTime);
-      obj[duration] = this.coreService.calDuration(this.currentData[i].startTime, this.currentData[i].endTime);
-      obj[criticality] = this.currentData[i].criticality;
-      obj[returnCode] = this.currentData[i].exitCode;
+      obj[startTime] = this.coreService.stringToDate(this.preferences, this.taskHistorys[i].startTime);
+      obj[endTime] = this.coreService.stringToDate(this.preferences, this.taskHistorys[i].endTime);
+      obj[duration] = this.coreService.calDuration(this.taskHistorys[i].startTime, this.taskHistorys[i].endTime);
+      obj[criticality] = this.taskHistorys[i].criticality;
+      obj[returnCode] = this.taskHistorys[i].exitCode;
       data.push(obj);
     }
     return data;
@@ -2523,14 +2527,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
       state = translatedValue;
     });
     let data = [];
-    for (let i = 0; i < this.currentData.length; i++) {
+    for (let i = 0; i < this.deploymentHistorys.length; i++) {
       let obj: any = {};
       if (!this.historyFilters.current) {
-        obj[controllerId] = this.currentData[i].controllerId;
+        obj[controllerId] = this.deploymentHistorys[i].controllerId;
       }
-      obj[deploymentDate] = this.coreService.stringToDate(this.preferences, this.currentData[i].deploymentDate);
-      obj[account] = this.coreService.stringToDate(this.preferences, this.currentData[i].account);
-      this.translate.get(this.currentData[i].state).subscribe(translatedValue => {
+      obj[deploymentDate] = this.coreService.stringToDate(this.preferences, this.deploymentHistorys[i].deploymentDate);
+      obj[account] = this.coreService.stringToDate(this.preferences, this.deploymentHistorys[i].account);
+      this.translate.get(this.deploymentHistorys[i].state).subscribe(translatedValue => {
         obj[state] = translatedValue;
       });
       data.push(obj);
@@ -2539,25 +2543,89 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private exportToExcelSubmission(): any {
-    let controllerId = '', dailyPlanDate = '';
+    let controllerId = '', dailyPlanDate = '', orderId = '', workflow = '', submission = '',
+      scheduledFor = '', status = '', warnMessages = '', errorMessages = '';
     this.translate.get('common.label.controllerId').subscribe(translatedValue => {
       controllerId = translatedValue;
     });
     this.translate.get('history.label.dailyPlanDate').subscribe(translatedValue => {
       dailyPlanDate = translatedValue;
     });
+    this.translate.get('history.label.submission').subscribe(translatedValue => {
+      submission = translatedValue;
+    });
+    this.translate.get('history.label.orderId').subscribe(translatedValue => {
+      orderId = translatedValue;
+    });
+    this.translate.get('order.label.workflow').subscribe(translatedValue => {
+      workflow = translatedValue;
+    });
+    this.translate.get('order.label.scheduledFor').subscribe(translatedValue => {
+      scheduledFor = translatedValue;
+    });
+    this.translate.get('common.label.status').subscribe(translatedValue => {
+      status = translatedValue;
+    });
+    this.translate.get('history.label.warnMessages').subscribe(translatedValue => {
+      warnMessages = translatedValue;
+    });
+    this.translate.get('history.label.errorMessages').subscribe(translatedValue => {
+      errorMessages = translatedValue;
+    });
+    let df = this.preferences.dateFormat;
+    if (df.match('HH:mm')) {
+      df = df.replace('HH:mm', '');
+    } else if (df.match('hh:mm')) {
+      df = df.replace('hh:mm', '');
+    }
+
+    if (df.match(':ss')) {
+      df = df.replace(':ss', '');
+    }
+    if (df.match('A')) {
+      df = df.replace('A', '');
+    }
+    if (df.match('|')) {
+      df = df.replace('|', '');
+    }
+    df = df.trim();
     let data = [];
-    for (let i = 0; i < this.currentData.length; i++) {
+    for (let i = 0; i < this.submissionHistorys.length; i++) {
       let obj: any = {};
-      if (!this.historyFilters.current) {
-        obj[controllerId] = this.currentData[i].controllerId;
-      }
-      obj[dailyPlanDate] = this.coreService.stringToDate(this.preferences, this.currentData[i].dailyPlanDate);
+      obj[dailyPlanDate] = moment(this.submissionHistorys[i].dailyPlanDate).tz(this.preferences.zone).format(df);
       data.push(obj);
+      for (let j = 0; j < this.submissionHistorys[i].controllers.length; j++) {
+        if (!this.historyFilters.current) {
+          let obj1: any = {};
+          obj1[controllerId] = this.submissionHistorys[i].controllers[j].controllerId;
+          data.push(obj1);
+        }
+        for (let k = 0; k < this.submissionHistorys[i].controllers[j].submissions.length; k++) {
+          for (let m = 0; m < this.submissionHistorys[i].controllers[j].submissions[k].warnMessages.length; m++) {
+            let obj1: any = {};
+            obj1[warnMessages] = this.submissionHistorys[i].controllers[j].submissions[k].warnMessages[m];
+            data.push(obj1);
+          }
+          for (let m = 0; m < this.submissionHistorys[i].controllers[j].submissions[k].errorMessages.length; m++) {
+            let obj1: any = {};
+            obj1[errorMessages] = this.submissionHistorys[i].controllers[j].submissions[k].errorMessages[m];
+            data.push(obj1);
+          }
+          for (let m = 0; m < this.submissionHistorys[i].controllers[j].submissions[k].orderIds.length; m++) {
+            let obj1: any = {};
+            obj1[orderId] = this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].orderId;
+            obj1[workflow] = this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].workflowPath;
+            obj1[scheduledFor] = this.coreService.stringToDate(this.preferences, this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].scheduledFor);
+            this.translate.get(this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].submitted ? 'submitted' : 'notSubmitted').subscribe(translatedValue => {
+              obj1[status] = translatedValue;
+            });
+            data.push(obj1);
+          }
+        }
+      }
     }
     return data;
   }
-
 
   private refresh(args) {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {

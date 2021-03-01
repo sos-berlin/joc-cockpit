@@ -7,6 +7,12 @@
           <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
         </span>
         <div class="inline pull-right">
+          <button type="button" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="openRuntimeEditor()" >
+            <i class="fa fa-clock-o p-r-xs"></i>
+            <span translate>inventory.button.runTime</span>
+          </button>
+        </div>
+        <div class="inline pull-right" *ngIf="!isTrash">
           <span class="badge m-r-12" *ngIf="schedule.configuration" [ngClass]="!schedule.valid ? 'badge-danger':'badge-success'">
               <span *ngIf="schedule.valid" translate>inventory.label.valid</span>
               <span *ngIf="!schedule.valid">
@@ -22,10 +28,6 @@
             <i class="fa fa-rocket p-r-xs"></i>
             <span translate>inventory.button.release</span>
           </button>
-          <button type="button" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="openRuntimeEditor()" >
-            <i class="fa fa-clock-o p-r-xs"></i>
-            <span translate>inventory.button.runTime</span>
-          </button>
         </div>
       </div>
       <form *ngIf="schedule.configuration">
@@ -33,7 +35,7 @@
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.orderTemplateName</label>
           <div class="col-md-8 col-lg-6">
-            <input autocomplete="off" identifierValidation required class="form-control" [appAutofocus]="true" placeholder="{{'inventory.placeholder.orderName' | translate}}"
+            <input autocomplete="off" [readOnly]="isTrash" identifierValidation required class="form-control" [appAutofocus]="!isTrash" placeholder="{{'inventory.placeholder.orderName' | translate}}"
                    name="name" [(ngModel)]="schedule.name" #name="ngModel" (blur)="rename(name.invalid)">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
               <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
@@ -46,7 +48,7 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
           <div class="col-md-8 col-lg-6">
-            <input type="text" class="form-control" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
+            <input type="text" [readOnly]="isTrash" class="form-control" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
                    name="title" [(ngModel)]="schedule.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
@@ -54,11 +56,12 @@
              [ngClass]="{ 'has-error' : (((path.dirty || path.touched) && path.invalid))}">
           <label class="col-md-4 col-lg-3  form-control-label" translate>inventory.label.workflowPath</label>
           <div class="col-md-8 col-lg-6 select-input-both">
-            <input autocomplete="off"  type="text" class="form-control"
+            <input autocomplete="off" [readOnly]="isTrash" type="text" class="form-control"
                    placeholder="{{'inventory.placeholder.workflowPath' | translate}}"
                    name="path" #path="ngModel" [(ngModel)]="schedule.configuration.workflowName">
             <nz-tree-select
               name="workflowName"
+              [disabled]="isTrash"
               nzNoAnimation
               #treeSelectCtrl
               [nzAllowClear]="false"
@@ -89,13 +92,13 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3" translate>inventory.label.planOrderAutomatically</label>
           <div class="col-md-8 col-lg-6">
-            <label nz-checkbox [(ngModel)]="schedule.configuration.planOrderAutomatically" (ngModelChange)="saveJSON()" name="planOrderAutomatically"></label>
+            <label nz-checkbox [nzDisabled]="isTrash" [(ngModel)]="schedule.configuration.planOrderAutomatically" (ngModelChange)="saveJSON()" name="planOrderAutomatically"></label>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-md-4 col-lg-3" translate>inventory.label.submitOrderToControllerWhenPlanned</label>
           <div class="col-md-8 col-lg-6">
-            <label nz-checkbox [(ngModel)]="schedule.configuration.submitOrderToControllerWhenPlanned" (ngModelChange)="saveJSON()" name="submitOrderToControllerWhenPlanned"></label>
+            <label nz-checkbox [nzDisabled]="isTrash" [(ngModel)]="schedule.configuration.submitOrderToControllerWhenPlanned" (ngModelChange)="saveJSON()" name="submitOrderToControllerWhenPlanned"></label>
           </div>
         </div>
         <div class="form-group row" *ngIf="variableList.length || schedule.configuration.variables.length">
@@ -153,10 +156,10 @@
             </ng-container>
           </ng-container>
           <div class="col-md-1 col-lg-1 p-l-0" *ngIf="!variable.isRequired">
-            <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+            <a [ngClass]="{'disable-link': isTrash}"><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
           </div>
         </div>
-        <div class="form-group row">
+        <div class="form-group row" [ngClass]="{'disable-link': isTrash}">
           <div class="col-sm-12" *ngIf="variableList.length > schedule.configuration.variables.length">
             <a class="text-u-l" *ngIf="schedule.configuration.variables.length>0" (click)="addVariable()" translate>order.button.addAnotherVariable</a>
             <a class="text-u-l" *ngIf="schedule.configuration.variables.length==0" (click)="addVariable()" translate>order.button.addVariable</a>
@@ -180,6 +183,6 @@
   <div class="close-btn" (click)="closeCalendarView()"></div>
   <div *ngIf="isVisible">
     <div class="text-center m-b text" ><i class="fa fa-clock-o"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm" translate>runtime.label.runTime</span></div>
-    <app-run-time [schedule]="schedule" [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"></app-run-time>
+    <app-run-time [schedule]="schedule" [isTrash]="isTrash" [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"></app-run-time>
   </div>
 </div>

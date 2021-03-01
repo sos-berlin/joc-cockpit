@@ -686,6 +686,7 @@ export class PeriodComponent implements OnInit {
 })
 export class RunTimeComponent implements OnChanges, OnDestroy {
   @Input() schedule: any;
+  @Input() isTrash: any;
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;

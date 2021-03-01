@@ -296,16 +296,17 @@
                   </button>
                   <nz-dropdown-menu #menu="nzDropdownMenu">
                     <ul nz-menu>
-                      <li nz-menu-item *ngIf="permission.Inventory.configurations.delete" class="bg-hover-color"><a
+                      <li nz-menu-item *ngIf="permission.Inventory.configurations.delete" class="bg-hover-color"
+                          [nzDisabled]="node.origin.object || node.origin.controller || node.origin.dailyPlan || (!node.origin.type && node.origin.path === '/')"><a
                         (click)="deletePermanently(node);" translate>inventory.button.delete</a></li>
-                      <li nz-menu-item *ngIf="!node.origin.object && !node.origin.controller && !node.origin.dailyPlan">
+                      <li nz-menu-item [nzDisabled]="node.origin.object || node.origin.controller || node.origin.dailyPlan">
                         <a (click)="restoreObject(node);" translate>inventory.button.restore</a></li>
                     </ul>
                   </nz-dropdown-menu>
-                  <div class="node-content-wrapper"  [ngClass]="{'node-content-wrapper-active' : (node.origin.name === selectedObj.name &&
+                  <div class="node-content-wrapper"  [ngClass]="{'node-content-wrapper-active' : (selectedObj && (node.origin.name === selectedObj.name &&
                       node.origin.type === selectedObj.type) ||
                       (!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.path === selectedObj.path) ||
-                      (node.origin.object && node.origin.object === selectedObj.type && node.origin.path === selectedObj.path)}"
+                      (node.origin.object && node.origin.object === selectedObj.type && node.origin.path === selectedObj.path))}"
                        (click)="selectNode(node)">
                     <i
                       *ngIf="node.children && !node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.dailyPlan"

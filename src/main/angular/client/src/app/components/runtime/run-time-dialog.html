@@ -4,11 +4,11 @@
       <div *ngIf="!editor.showPlanned">
         <div class="row">
           <div class="col-md-12" style="margin-top: -8px">
-            <button (click)="assignCalendar()" *ngIf="permission.Calendar.edit.assign.runtime"
+            <button [disabled]="isTrash" (click)="assignCalendar()" *ngIf="permission.Calendar.edit.assign.runtime"
                     class="btn btn-sm btn-grey m-r-sm m-t-sm"
                     translate type="button">runtime.button.assignWorkingDayCalendar
             </button>
-            <button (click)="assignHolidayCalendar()" *ngIf="permission.Calendar.edit.assign.nonworking"
+            <button [disabled]="isTrash" (click)="assignHolidayCalendar()" *ngIf="permission.Calendar.edit.assign.nonworking"
                     class="btn btn-sm btn-grey m-r-sm m-t-sm"
                     translate type="button">runtime.button.assignNonWorkingDayCalendar
             </button>
@@ -19,7 +19,7 @@
           <div class="row col-md-12 m-t m-b-sm">
             <div class="col-sm-3 form-control-label" translate>runtime.label.timeZone</div>
             <div class="col-sm-6">
-              <nz-select [(ngModel)]="timeZone" name="timeZone" nzAllowClear nzShowSearch>
+              <nz-select [nzDisabled]="isTrash" [(ngModel)]="timeZone" name="timeZone" nzAllowClear nzShowSearch>
                 <nz-option *ngFor="let zone of zones" [nzLabel]="zone" [nzValue]="zone"></nz-option>
               </nz-select>
             </div>
@@ -37,13 +37,13 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr *ngFor="let calendar of calendars">
+                    <tr *ngFor="let calendar of calendars; let i =index" [ngClass]="{'disable-link' : isTrash}">
                       <td class="cursor">
                         <a (click)="previewCalendar(calendar, 'WORKINGDAYSCALENDAR');">
                           <i class="fa fa-calendar text-success"></i>&nbsp;
                           {{calendar.calendarName}} <i *ngIf="calendar.title">-</i> {{calendar.title}}
                         </a>
-                        <a (click)="removeWorkingCal(calendar)"
+                        <a (click)="removeWorkingCal(i)"
                            class="text-xs text-hover-primary m-l-sm"><i class="fa fa-times text-hover-color"></i>
                         </a>
                       </td>
@@ -71,9 +71,8 @@
                           (click)="addRestrictionInCalendar(calendar)" class="fa fa-plus"></i>
                         </div>
                       </td>
-
                     </tr>
-                    <tr *ngFor="let holiday of nonWorkingCalendars; let i =index">
+                    <tr *ngFor="let holiday of nonWorkingCalendars; let i =index" [ngClass]="{'disable-link' : isTrash}">
                       <td>
                         <a (click)="previewCalendar(holiday, 'NONWORKINGDAYSCALENDAR');">
                           <i class="fa fa-calendar text-danger"></i>&nbsp;

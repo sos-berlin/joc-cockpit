@@ -36,8 +36,6 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
   path: string;
   schedulerId: string;
 
-  public options = {};
-
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
               private modalService: NgbModal, private dataService: DataService, private route: ActivatedRoute) {
     this.subscription = dataService.refreshAnnounced$.subscribe(() => {
@@ -125,7 +123,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
   pageView: any;
   calendars: any = [];
   data: any = [];
-  auditLogs: any = [];
   calendarFilters: any = {};
   sideView: any = {};
   searchableProperties = ['name', 'path', 'title', 'type'];
@@ -133,8 +130,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   @ViewChild(TreeComponent, {static: false}) child;
-
-  public options = {};
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
               private modalService: NgbModal, private searchPipe: SearchPipe, private dataService: DataService) {
@@ -174,26 +169,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
     }, () => {
       this.isLoading = true;
     });
-  }
-
-  receiveMessage($event) {
-    this.pageView = $event;
-  }
-
-  private refresh(args) {
-    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
-      for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'ItemAdded' && args.eventSnapshots[j].path) {
-          const path = args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/')) || '/';
-          this.calendarFilters.selectedkeys = [path];
-          this.initTree();
-          break;
-        } else if (args.eventSnapshots[j].eventType.match('Calendar')) {
-          this.initTree();
-          break;
-        }
-      }
-    }
   }
 
   private init() {
@@ -277,6 +252,46 @@ export class CalendarComponent implements OnInit, OnDestroy {
   sort(propertyName) {
     this.calendarFilters.reverse = !this.calendarFilters.reverse;
     this.calendarFilters.filter.sortBy = propertyName;
+  }
+
+  receiveMessage($event) {
+    this.pageView = $event;
+  }
+
+  private refresh(args) {
+    const pathArr = [];
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].eventType === 'CalendarStateChanged' && args.eventSnapshots[j].path) {
+          if (this.calendars.length > 0) {
+            for (let x = 0; x < this.calendars.length; x++) {
+              if (this.calendars[x].path === args.eventSnapshots[j].path) {
+                pathArr.push(args.eventSnapshots[j].path);
+                break;
+              }
+            }
+          }
+        } else if (args.eventSnapshots[j].eventType.match(/Item/) && args.eventSnapshots[j].objectType.match(/CALENDAR/)) {
+          this.initTree();
+          break;
+        }
+      }
+    }
+    if (pathArr.length > 0) {
+      this.coreService.post('calendars', {
+          controllerId: this.schedulerIds.selected,
+          calendarPaths: pathArr
+        }).subscribe((res: any) => {
+        for (let x = 0; x < this.calendars.length; x++) {
+          for (let y = 0; y < res.calendars.length; y++) {
+            if (this.calendars[x].path === res.calendars[y].path) {
+              this.calendars[x] = res.calendars[y];
+              break;
+            }
+          }
+        }
+      });
+    }
   }
 
   searchInResult() {

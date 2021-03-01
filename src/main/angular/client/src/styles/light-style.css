@@ -150,3 +150,39 @@ button.close {
 .anticon-calendar, .anticon-clock-circle {
   color: #3d464d;
 }
+.ant-calendar-header .ant-calendar-prev-century-btn:hover::before,
+.ant-calendar-header .ant-calendar-prev-decade-btn:hover::before,
+.ant-calendar-header .ant-calendar-prev-year-btn:hover::before,
+.ant-calendar-header .ant-calendar-prev-century-btn:hover::after,
+.ant-calendar-header .ant-calendar-prev-decade-btn:hover::after,
+.ant-calendar-header .ant-calendar-prev-year-btn:hover::after,
+.ant-calendar-header .ant-calendar-next-century-btn:hover::before,
+.ant-calendar-header .ant-calendar-next-decade-btn:hover::before,
+.ant-calendar-header .ant-calendar-next-year-btn:hover::before,
+.ant-calendar-header .ant-calendar-next-century-btn:hover::after,
+.ant-calendar-header .ant-calendar-next-decade-btn:hover::after,
+.ant-calendar-header .ant-calendar-next-year-btn:hover::after,
+.ant-calendar-header .ant-calendar-prev-month-btn:hover::before,
+.ant-calendar-header .ant-calendar-prev-month-btn:hover::after,
+.ant-calendar-header .ant-calendar-next-month-btn:hover::before,
+.ant-calendar-header .ant-calendar-next-month-btn:hover::after{
+  border-color: #1d1d1d;
+}
+.ant-calendar-header .ant-calendar-prev-month-btn::before,
+.ant-calendar-header .ant-calendar-prev-month-btn::after,
+.ant-calendar-header .ant-calendar-prev-century-btn::before,
+.ant-calendar-header .ant-calendar-prev-decade-btn::before,
+.ant-calendar-header .ant-calendar-prev-year-btn::before,
+.ant-calendar-header .ant-calendar-prev-century-btn::after,
+.ant-calendar-header .ant-calendar-prev-decade-btn::after,
+.ant-calendar-header .ant-calendar-prev-year-btn::after,
+.ant-calendar-header .ant-calendar-next-month-btn::before,
+.ant-calendar-header .ant-calendar-next-month-btn::after,
+.ant-calendar-header .ant-calendar-next-century-btn::before,
+.ant-calendar-header .ant-calendar-next-decade-btn::before,
+.ant-calendar-header .ant-calendar-next-year-btn::before,
+.ant-calendar-header .ant-calendar-next-century-btn::after,
+.ant-calendar-header .ant-calendar-next-decade-btn::after,
+.ant-calendar-header .ant-calendar-next-year-btn::after {
+  border-color: #777;
+}

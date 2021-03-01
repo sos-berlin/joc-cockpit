@@ -6,7 +6,7 @@
           <a (click)="backToListView()"><i nz-tooltip="{{'common.button.back' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
           <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
         </span>
-        <div class="inline pull-right">
+        <div class="inline pull-right" *ngIf="!isTrash">
           <span class="badge badge-success m-r-12" *ngIf="lock.valid">
               <span translate>inventory.label.valid</span>
           </span>
@@ -25,7 +25,7 @@
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.name</label>
           <div class="col-md-8 col-lg-6">
-            <input type="text" required identifierValidation [appAutofocus]="true" class="form-control" (blur)="rename(name.invalid)"
+            <input type="text" required identifierValidation [readonly]="isTrash" [appAutofocus]="!isTrash" class="form-control" (blur)="rename(name.invalid)"
                    name="name" [(ngModel)]="lock.name" #name="ngModel" autocomplete="off">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
               <div *ngIf="name.errors.required">
@@ -38,14 +38,14 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
           <div class="col-md-8 col-lg-6">
-            <input type="text" class="form-control" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
+            <input type="text" [readonly]="isTrash" class="form-control" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
                    name="title" [(ngModel)]="lock.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
         <div class="form-group row" [ngClass]="{ 'has-error' : (((limit.dirty || limit.touched) && limit.invalid))}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.limit</label>
           <div class="col-md-8 col-lg-6">
-            <nz-input-number required [nzMin]="0" [nzStep]="1" [nzPlaceHolder]="'inventory.placeholder.enterLimit' | translate"
+            <nz-input-number [nzDisabled]="isTrash" required [nzMin]="0" [nzStep]="1" [nzPlaceHolder]="'inventory.placeholder.enterLimit' | translate"
                              name="limit" #limit="ngModel" [(ngModel)]="lock.configuration.limit" (nzBlur)="saveJSON()"></nz-input-number>
             <div *ngIf="limit.invalid && (limit.dirty || limit.touched)" class="text-danger help-block">
               <div *ngIf="limit.errors.required">

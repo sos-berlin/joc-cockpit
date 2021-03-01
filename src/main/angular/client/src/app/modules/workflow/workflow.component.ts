@@ -949,51 +949,69 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   exportToExcel() {
-    let name = '', path = '', numOfOrders = '', pending = '', running = '',
-      suspended = '', failed = '', waiting = '', blocked = '';
-    this.translate.get('label.name').subscribe(translatedValue => {
+    let name = '', path = '', version = '', status = '', numOfOrders = '', pending = '', running = '',
+      suspended = '', failed = '', waiting = '', blocked = '', calling = '', inprogress = '';
+    this.translate.get('common.label.name').subscribe(translatedValue => {
       name = translatedValue;
     });
-    this.translate.get('label.path').subscribe(translatedValue => {
+    this.translate.get('common.label.path').subscribe(translatedValue => {
       path = translatedValue;
     });
-    this.translate.get('label.noOfOrders').subscribe(translatedValue => {
+    this.translate.get('inventory.label.version').subscribe(translatedValue => {
+      version = translatedValue;
+    });
+    this.translate.get('common.label.status').subscribe(translatedValue => {
+      status = translatedValue;
+    });
+    this.translate.get('workflow.label.noOfOrders').subscribe(translatedValue => {
       numOfOrders = translatedValue;
     });
     if (!this.workflowFilters.isCompact) {
-      this.translate.get('label.pending').subscribe(translatedValue => {
+      this.translate.get('common.label.pending').subscribe(translatedValue => {
         pending = translatedValue;
       });
-      this.translate.get('label.running').subscribe(translatedValue => {
+      this.translate.get('common.label.incomplete').subscribe(translatedValue => {
+        inprogress = translatedValue;
+      });
+      this.translate.get('common.label.running').subscribe(translatedValue => {
         running = translatedValue;
       });
-      this.translate.get('label.suspended').subscribe(translatedValue => {
+      this.translate.get('common.label.calling').subscribe(translatedValue => {
+        calling = translatedValue;
+      });
+      this.translate.get('common.label.suspended').subscribe(translatedValue => {
         suspended = translatedValue;
       });
-      this.translate.get('label.failed').subscribe(translatedValue => {
+      this.translate.get('common.label.failed').subscribe(translatedValue => {
         failed = translatedValue;
       });
-      this.translate.get('label.waiting').subscribe(translatedValue => {
+      this.translate.get('common.label.waiting').subscribe(translatedValue => {
         waiting = translatedValue;
       });
-      this.translate.get('label.blocked').subscribe(translatedValue => {
+      this.translate.get('common.label.blocked').subscribe(translatedValue => {
         blocked = translatedValue;
       });
     }
 
     let data = [];
-    for (let i = 0; i < this.currentData.length; i++) {
+    for (let i = 0; i < this.workflows.length; i++) {
       let obj: any = {};
-      obj[name] = this.currentData[i].name;
-      obj[path] = this.currentData[i].path;
-      obj[numOfOrders] = this.currentData[i].numOfOrders;
+      obj[name] = this.workflows[i].name;
+      obj[path] = this.workflows[i].path;
+      obj[version] = this.workflows[i].versionId + ' (' + this.coreService.stringToDate(this.preferences, this.workflows[i].versionDate) + ')';
+      this.translate.get(this.workflows[i].state._text).subscribe(translatedValue => {
+        obj[status] = translatedValue;
+      });
+      obj[numOfOrders] = this.workflows[i].numOfOrders || 0;
       if (!this.workflowFilters.isCompact) {
-        obj[pending] = this.currentData[i].ordersSummary.pending || 0;
-        obj[running] = this.currentData[i].ordersSummary.running || 0;
-        obj[suspended] = this.currentData[i].ordersSummary.suspended || 0;
-        obj[failed] = this.currentData[i].ordersSummary.failed || 0;
-        obj[waiting] = this.currentData[i].ordersSummary.waiting || 0;
-        obj[blocked] = this.currentData[i].ordersSummary.blocked || 0;
+        obj[pending] = this.workflows[i].ordersSummary.pending || 0;
+        obj[inprogress] = this.workflows[i].ordersSummary.inprogress || 0;
+        obj[running] = this.workflows[i].ordersSummary.running || 0;
+        obj[suspended] = this.workflows[i].ordersSummary.suspended || 0;
+        obj[calling] = this.workflows[i].ordersSummary.calling || 0;
+        obj[waiting] = this.workflows[i].ordersSummary.waiting || 0;
+        obj[blocked] = this.workflows[i].ordersSummary.blocked || 0;
+        obj[failed] = this.workflows[i].ordersSummary.failed || 0;
       }
       data.push(obj);
     }

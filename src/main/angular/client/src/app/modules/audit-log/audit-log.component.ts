@@ -182,7 +182,6 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   savedFilter: any = {};
   filterList: any = [];
   data = [];
-  currentData = [];
   searchableProperties = ['controllerId', 'orderId', 'account', 'request', 'workflow', 'created', 'comment', 'ticketLink'];
 
   subscription1: Subscription;
@@ -339,10 +338,6 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.adtLog.entryPerPage = $event;
   }
 
-  currentPageDataChange($event) {
-    this.currentData = $event;
-  }
-
   searchInResult() {
     this.data = this.adtLog.searchText ? this.searchPipe.transform(this.auditLogs, this.adtLog.searchText, this.searchableProperties) : this.auditLogs;
     this.data = [...this.data];
@@ -379,19 +374,19 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       ticketLink = translatedValue;
     });
     let data = [];
-    for (let i = 0; i < this.currentData.length; i++) {
+    for (let i = 0; i < this.auditLogs.length; i++) {
       let obj: any = {};
       if (!this.adtLog.current) {
-        obj[controllerId] = this.currentData[i].orderId;
+        obj[controllerId] = this.auditLogs[i].orderId;
       }
-      obj[created] = this.coreService.stringToDate(this.preferences, this.currentData[i].scheduledFor);
-      obj[account] = this.currentData[i].account;
-      obj[request] = this.currentData[i].request;
-      obj[workflow] = this.currentData[i].workflow;
-      obj[orderId] = this.currentData[i].orderId;
-      obj[comment] = this.currentData[i].comment;
-      obj[timeSpend] = this.currentData[i].timeSpend;
-      obj[ticketLink] = this.currentData[i].ticketLink;
+      obj[created] = this.coreService.stringToDate(this.preferences, this.auditLogs[i].created);
+      obj[account] = this.auditLogs[i].account;
+      obj[request] = this.auditLogs[i].request;
+      obj[workflow] = this.auditLogs[i].workflow;
+      obj[orderId] = this.auditLogs[i].orderId;
+      obj[comment] = this.auditLogs[i].comment;
+      obj[timeSpend] = this.auditLogs[i].timeSpend;
+      obj[ticketLink] = this.auditLogs[i].ticketLink;
 
       data.push(obj);
     }

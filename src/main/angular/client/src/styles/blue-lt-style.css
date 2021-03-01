@@ -4,6 +4,7 @@
   --primary-light-hover: #d47a12;
   --primary-disable-color: rgba(235, 136, 20, .7);
   --background-color: #4e5c6a;
+  --bar-color: #ffe8c9;
   --bg-box: #46525f;
   --bg-footer: #65707d;
   --bg-dimgrey: #7c8d9e;
@@ -14,9 +15,10 @@
   --blue: #1690d4;
   --green: #3fa93f;
   --black: #ffffff;
-  --bg-gold : #e6b000;
+  --bg-gold: #e6b000;
   --mangenta: #d900d9;
   --bg-mangenta: #b966b9;
+  --bg-red: #ff2727;
   --border-color: rgba(233, 244, 255, .18);
   --dark-border-color: rgba(255, 255, 255, .3);
   --box-shadow: rgba(255, 255, 255, 0.1);
@@ -52,9 +54,11 @@ pre, .syntax-box {
 gridster-item {
   background-color: var(--bg-box) !important;
 }
-a.text-dark:hover, a.text-dark:focus{
+
+a.text-dark:hover, a.text-dark:focus {
   color: #fff;
 }
+
 .box,
 .box-color {
   background-color: var(--bg-box);
@@ -155,7 +159,6 @@ pre.log {
   padding: 5px 10px 4px 28px !important
 }
 
-
 .left-sidebar-btn:hover,
 .sidebar-btn {
   background: var(--bg-box);
@@ -175,7 +178,6 @@ pre.log {
   background: rgba(58, 58, 58, .7)
 }
 
-
 table.folder-tree-grid > tbody > tr,
 table.folder-tree-grid > tbody > tr > td {
   border: none !important;
@@ -186,7 +188,6 @@ table.folder-tree-grid .indented a {
   color: #606060
 }
 
-
 input[readonly=readonly],
 input[readonly] {
   background-color: #fff !important
@@ -195,7 +196,6 @@ input[readonly] {
 input[type=search] {
   background: url(../assets/images/search-lt.png) 6px center no-repeat;
   color: #fff;
-  border-bottom: 1px solid #f5f5f5
 }
 
 .table .table,
@@ -614,18 +614,6 @@ pre.cdata {
   background: linear-gradient(to right, rgba(255, 255, 255, .51), var(--background-color))
 }
 
-.calendar {
-  color: rgba(255, 255, 255, .87);
-}
-
-.calendar .calendar-header table th:hover {
-  background: var(--bg-box);
-}
-
-.calendar .calendar-header .year-title {
-  color: #fff
-}
-
 .calendar .calendar-header .year-neighbor {
   color: rgba(255, 255, 255, 0.75);
 }
@@ -634,33 +622,12 @@ pre.cdata {
   color: rgba(255, 255, 255, 0.50);
 }
 
-.calendar .cal-cell1 {
-  color: #FFF
-}
-
-
-.calendar .cal-year-box .cal-day-today span[data-cal-date] {
-  color: #fff
-}
-
-.calendar table.month tr td .day-content {
-  color: rgba(255, 255, 255, .87)
-}
-
-.calendar table.month tr td .cal-day-weekend .date {
-  color: #bbb;
+.calendar .calendar-header table th:hover {
+  background: var(--bg-box);
 }
 
 .calendar table.month th.month-title {
-  background: var(--bg-box)
-}
-
-.calendar table.month tr td {
-  border: 1px solid var(--bg-footer);
-}
-
-#rightSideBar .calendar table.month tr td {
-  border-color: #1d1d1b !important
+  background: #4e5c6a;
 }
 
 select.w-xl {
@@ -694,12 +661,15 @@ input[readonly] {
 .text-muted {
   color: white !important;
 }
+
 .remaining-order-count {
-  background-color: rgba(78, 92, 106,.3) !important;
+  background-color: rgba(78, 92, 106, .3) !important;
 }
+
 .remaining-order-count:hover {
   background-color: rgba(78, 92, 106, .5) !important;
 }
+
 #graph {
   background-color: rgba(70, 82, 95, 0.6) !important;
 }
@@ -947,6 +917,7 @@ pre#pre {
 .modal-open .ant-select-selection {
   background-color: var(--bg-footer) !important
 }
+
 .modal-open input:-webkit-autofill, .modal-open input:-webkit-autofill:hover,
 .modal-open input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0 100px var(--bg-footer) inset;
@@ -972,22 +943,28 @@ pre#pre {
 .ant-table-small.ant-table-bordered .ant-table-content {
   border-color: rgba(255, 255, 255, .3);
 }
-.ant-input-number-handler-wrap{
+
+.ant-input-number-handler-wrap {
   background-color: var(--bg-footer);
   border-color: var(--bg-footer) !important;
 }
-.ant-table-bordered .ant-table-thead > tr:not(:last-child) > th, .ant-table-small.ant-table-bordered .ant-table-thead > tr > th:last-child{
+
+.ant-table-bordered .ant-table-thead > tr:not(:last-child) > th, .ant-table-small.ant-table-bordered .ant-table-thead > tr > th:last-child {
   border-color: rgba(255, 255, 255, .3);
 }
-.ant-table-small.ant-table-bordered  {
+
+.ant-table-small.ant-table-bordered {
   border-right: 1px solid rgba(255, 255, 255, .3);
 }
-.ant-table-small.ant-table-bordered .ant-table-placeholder, .ant-table-small > .ant-table-content .ant-table-row:last-child td{
+
+.ant-table-small.ant-table-bordered .ant-table-placeholder, .ant-table-small > .ant-table-content .ant-table-row:last-child td {
   border-bottom: 1px solid rgba(255, 255, 255, .3);
 }
-.ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td{
-  background: var(--box-color) !important
+
+.ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
+  background: var(--bg-box) !important
 }
+
 .ant-calendar-header .ant-calendar-prev-century-btn:hover,
 .ant-calendar-header .ant-calendar-prev-decade-btn:hover,
 .ant-calendar-header .ant-calendar-prev-year-btn:hover,
@@ -1000,6 +977,7 @@ pre#pre {
 .ant-pagination-item-active a {
   color: var(--white);
 }
+
 .ant-calendar-month-panel-month:hover,
 .ant-calendar-year-panel-year:hover,
 .ant-calendar-year-panel-selected-cell .ant-calendar-year-panel-year,
@@ -1065,7 +1043,7 @@ JSON editor
 }
 
 .ace-jsoneditor .ace_gutter {
-  background: var(--box-color) !important;
+  background: var(--bg-box) !important;
   color: var(--text-color) !important
 }
 
@@ -1112,7 +1090,7 @@ div.jsoneditor {
 }
 
 .ace-jsoneditor .ace_tooltip {
-  background-color: var(--box-color);
+  background-color: var(--bg-box);
   background-image: -webkit-linear-gradient(top, transparent, rgba(0, 0, 0, 0.1));
   background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.1));
   border: 1px solid var(--border-color);
@@ -1217,7 +1195,7 @@ span.cm-meta {
   color: #ff9d00
 }
 
-span.cm-tag, span.cm-variable-2 , .cm-s-default span.cm-variable-2 {
+span.cm-tag, span.cm-variable-2, .cm-s-default span.cm-variable-2 {
   color: #9effff !important;
 }
 
@@ -1351,6 +1329,7 @@ span.cm-variable {
 .order-history-template13 {
   background: #596979 !important;
 }
+
 .highlighted {
   color: yellow;
 }

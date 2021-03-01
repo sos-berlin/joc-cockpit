@@ -3,7 +3,7 @@
 @import '~jsoneditor/dist/jsoneditor.min.css';
 @import '~perfect-scrollbar/css/perfect-scrollbar.css';
 
-:root{
+:root {
   --background-color: #f9f8f6;
   --bg-box: #fff;
   --menu-color: #eee;
@@ -44,6 +44,7 @@
   --date-selected-exclude: rgba(255, 163, 102, 0.56);
   --date-selected-exclude-hover: rgba(255, 163, 102, 0.66);
 }
+
 /***
  Custom icon for Workflow and XMl editor
 ***/
@@ -505,7 +506,9 @@ small {
   }
 }
 
-.ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled .ant-dropdown-menu-submenu-title, .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled .ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-arrow-icon {
+.ant-select-disabled .ant-select-selection,
+.ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled .ant-dropdown-menu-submenu-title,
+.ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled .ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-arrow-icon {
   background: transparent;
 }
 
@@ -1006,14 +1009,6 @@ button.close {
   td, th {
     padding: 5px 8px !important;
   }
-}
-
-.table > tbody > tr {
-  border-bottom: 2px solid #fafafa;
-}
-
-.table-bordered > tbody > tr {
-  border-bottom: 1px solid #fafafa;
 }
 
 .table > thead > tr > th {
@@ -2724,14 +2719,6 @@ textarea.md-input {
       background-color: inherit;
     }
 
-    &[type=radio] + i {
-      border-radius: 50%;
-
-      &:before {
-        border-radius: 50%;
-      }
-    }
-
     &[type=checkbox]:checked + i:after {
       -webkit-transform: rotate(45deg);
       -ms-transform: rotate(45deg);
@@ -2756,10 +2743,6 @@ textarea.md-input {
   }
 }
 
-fieldset[disabled] .md-check input + i:before {
-  opacity: 0.5;
-}
-
 .md-check > i {
   width: 0;
   height: 15px;
@@ -2769,14 +2752,7 @@ fieldset[disabled] .md-check input + i:before {
   float: left;
   display: inline-block;
   position: relative;
-}
 
-.md-check1 > i:before {
-  content: "";
-  width: 15px;
-}
-
-.md-check > i {
   &:before {
     content: "";
     width: 15px;
@@ -3028,6 +3004,7 @@ div.order-panel div {
 .bg-orange {
   background: var(--bg-orange);
 }
+
 .dark-blue {
   color: var(--blue)
 }
@@ -3048,19 +3025,21 @@ div.order-panel div {
   border-color: var(--bg-mangenta) !important;
 }
 
-.bg-mangenta{
+.bg-mangenta {
   background: var(--bg-mangenta);
 }
 
-.order-panel{
+.order-panel {
   .planned {
     color: var(--dimgrey);
     border-left-color: var(--dimgrey);
   }
+
   .pending {
     color: var(--gold);
     border-left-color: var(--gold);
   }
+
   .in-progress {
     color: var(--light-blue);
     border-color: var(--light-blue);
@@ -3095,6 +3074,7 @@ div.order-panel div {
     color: var(--blue);
     border-color: var(--blue);
   }
+
   .blocked {
     color: var(--mangenta);
     border-color: var(--mangenta) !important;
@@ -3732,9 +3712,11 @@ li > a > i.remove {
 .m-l-n-15 {
   margin-left: -15px !important;
 }
+
 .m-l-n-40 {
   margin-left: -40px !important;
 }
+
 .has-error {
   .form-control {
     border-color: #a94442 !important;
@@ -3799,6 +3781,7 @@ li > a > i.remove {
   display: inline-block;
   height: 26px;
   color: var(--white) !important;
+
   label {
     margin: 5px;
     font-size: 11px;
@@ -5300,7 +5283,6 @@ General CSS
   min-width: 80px;
 }
 
-
 .ant-table-small .inner-table table {
   table-layout: fixed;
   word-wrap: break-word;
@@ -5320,7 +5302,7 @@ General CSS
   bottom: 8px;
   transition: all .3s;
   border-radius: 50%;
-  box-shadow: 2px 2px 5px #19490f;
+  box-shadow: 2px 2px 5px var(--text-color);
   cursor: pointer;
   padding: 0 14px;
   font-size: 28px;
@@ -5333,7 +5315,7 @@ General CSS
   bottom: 20px;
   border-radius: 50%;
   transition: all .3s;
-  box-shadow: 2px 2px 5px #19490f;
+  box-shadow: 2px 2px 5px var(--background-color);
   cursor: pointer;
   z-index: 9999;
   padding: 2px 10px;
@@ -6584,7 +6566,51 @@ span.cm-error {
 .ant-tree-child-tree {
   width: fit-content !important;
 }
+.ant-calendar-header .ant-calendar-prev-century-btn:hover::before,
+.ant-calendar-header .ant-calendar-prev-decade-btn:hover::before,
+.ant-calendar-header .ant-calendar-prev-year-btn:hover::before,
+.ant-calendar-header .ant-calendar-prev-century-btn:hover::after,
+.ant-calendar-header .ant-calendar-prev-decade-btn:hover::after,
+.ant-calendar-header .ant-calendar-prev-year-btn:hover::after,
+.ant-calendar-header .ant-calendar-next-century-btn:hover::before,
+.ant-calendar-header .ant-calendar-next-decade-btn:hover::before,
+.ant-calendar-header .ant-calendar-next-year-btn:hover::before,
+.ant-calendar-header .ant-calendar-next-century-btn:hover::after,
+.ant-calendar-header .ant-calendar-next-decade-btn:hover::after,
+.ant-calendar-header .ant-calendar-next-year-btn:hover::after,
+.ant-calendar-header .ant-calendar-prev-month-btn:hover::before,
+.ant-calendar-header .ant-calendar-prev-month-btn:hover::after,
+.ant-calendar-header .ant-calendar-next-month-btn:hover::before,
+.ant-calendar-header .ant-calendar-next-month-btn:hover::after{
+  border-color: #FFFFFF;
+}
+.ant-calendar-header .ant-calendar-prev-month-btn::before,
+.ant-calendar-header .ant-calendar-prev-month-btn::after,
+.ant-calendar-header .ant-calendar-prev-century-btn::before,
+.ant-calendar-header .ant-calendar-prev-decade-btn::before,
+.ant-calendar-header .ant-calendar-prev-year-btn::before,
+.ant-calendar-header .ant-calendar-prev-century-btn::after,
+.ant-calendar-header .ant-calendar-prev-decade-btn::after,
+.ant-calendar-header .ant-calendar-prev-year-btn::after,
+.ant-calendar-header .ant-calendar-next-month-btn::before,
+.ant-calendar-header .ant-calendar-next-month-btn::after,
+.ant-calendar-header .ant-calendar-next-century-btn::before,
+.ant-calendar-header .ant-calendar-next-decade-btn::before,
+.ant-calendar-header .ant-calendar-next-year-btn::before,
+.ant-calendar-header .ant-calendar-next-century-btn::after,
+.ant-calendar-header .ant-calendar-next-decade-btn::after,
+.ant-calendar-header .ant-calendar-next-year-btn::after {
+  border-color: #eee;
+}
 
+.ant-calendar-header .ant-calendar-prev-century-btn,
+.ant-calendar-header .ant-calendar-next-century-btn,
+.ant-calendar-header .ant-calendar-prev-decade-btn,
+.ant-calendar-header .ant-calendar-next-decade-btn,
+.ant-calendar-header .ant-calendar-prev-month-btn,
+.ant-calendar-header .ant-calendar-next-month-btn,
+.ant-calendar-header .ant-calendar-prev-year-btn,
+.ant-calendar-header .ant-calendar-next-year-btn,
 .ant-calendar-header a:hover,
 .ant-time-picker-panel,
 .ant-calendar-picker-container,
@@ -6686,6 +6712,11 @@ span.cm-error {
   background: transparent;
 }
 
+.ant-checkbox-disabled .ant-checkbox-inner {
+  border-color: var(--dark-border-color) !important;
+  background: transparent;
+}
+
 .ant-checkbox-inner {
   border-radius: 0;
 }
@@ -6748,9 +6779,15 @@ span.cm-error {
   font-size: 12px;
 }
 
+.ant-table-placeholder {
+  .ant-empty {
+    height: 40px;
+  }
+}
+
 .ant-empty-image {
   max-height: 28px;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
 }
 
 .ant-pagination-item-active:focus, .ant-pagination-item-active:hover,

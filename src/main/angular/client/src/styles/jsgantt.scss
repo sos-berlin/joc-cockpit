@@ -16,7 +16,6 @@
 
 .jsgantt-grid-data .jsgantt-cell {
   border-right: none;
-  // color: #454545;
 }
 
 .jsgantt-task-link {
@@ -49,7 +48,7 @@
 
 .jsgantt-task .jsgantt-task-scale .jsgantt-scale-cell {
   color: #a6a6a6;
-  border-right: 1px solid #ebebeb;
+  border-right: 1px solid var(--border-color);
 }
 
 .jsgantt-task-scale {
@@ -206,7 +205,7 @@
 .jsgantt-cell {
   display: inline-block;
   vertical-align: top;
-  border-right: 1px solid #ebebeb;
+  border-right: 1px solid var(--border-color);
   padding-left: 6px;
   padding-right: 6px;
   height: 100%;
@@ -239,7 +238,7 @@
 .jsgantt-task-cell {
   display: inline-block;
   height: 100%;
-  border-right: 1px solid #ebebeb;
+  border-right: 1px solid var(--border-color);
 }
 
 .jsgantt-layout-cell.jsgantt-ver-scroll {
@@ -836,7 +835,7 @@
     position: relative;
     padding: 10px 0;
     overflow: hidden;
-    border-bottom: 1px solid #ebebeb;
+    border-bottom: 1px solid var(--border-color);
   }
 
   .jsgantt-section-time {
@@ -974,7 +973,7 @@
 .jsgantt-resource-row {
   display: block;
   padding: 10px 0;
-  border-bottom: 1px solid #ebebeb;
+  border-bottom: 1px solid var(--border-color);
   cursor: pointer;
 
   input[type=checkbox]:not(:checked) {

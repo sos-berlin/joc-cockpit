@@ -190,7 +190,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         mxObjectCodec.allowEval = false;
         const outln = document.getElementById('outlineContainer');
         outln.style['border'] = '1px solid lightgray';
-        outln.style['background'] = '#FFFFFF';
         new mxOutline(editor.graph, outln);
         editor.graph.allowAutoPanning = true;
       }

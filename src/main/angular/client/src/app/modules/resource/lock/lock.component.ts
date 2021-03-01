@@ -213,7 +213,7 @@ export class LockComponent implements OnInit, OnDestroy {
       value.show = true;
       value.workflows.forEach((item) => {
         item.show = true;
-      })
+      });
     });
   }
 

@@ -6,7 +6,7 @@
           <a (click)="backToListView()"><i nz-tooltip="{{'common.button.back' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
           <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
         </span>
-        <div class="inline pull-right">
+        <div class="inline pull-right" *ngIf="!isTrash">
           <span class="badge m-r-12" *ngIf="calendar.configuration" [ngClass]="!calendar.valid ? 'badge-danger':'badge-success'">
               <span *ngIf="calendar.valid" translate>inventory.label.valid</span>
               <span *ngIf="!calendar.valid">
@@ -31,7 +31,7 @@
                  [ngClass]="{'has-error' : ((cname.dirty || cname.touched) && cname.invalid)}">
               <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.name</label>
               <div class="col-md-8 col-lg-6">
-                <input type="text" class="form-control" [appAutofocus]="true" identifierValidation required name="name" #cname="ngModel" autocomplete="off"
+                <input type="text" class="form-control" [readonly]="isTrash" [appAutofocus]="!isTrash" identifierValidation required name="name" #cname="ngModel" autocomplete="off"
                        placeholder="{{'inventory.placeholder.enterCalendarName' | translate}}"
                        [(ngModel)]="calendar.name" (blur)="rename(cname.invalid)">
                 <div *ngIf="cname.invalid && (cname.dirty || cname.touched)" class="text-danger help-block">
@@ -45,14 +45,14 @@
             <div class="form-group row">
               <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
               <div class="col-md-8 col-lg-6">
-                <input type="text" class="form-control" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
+                <input type="text" class="form-control" [readonly]="isTrash" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
                        [(ngModel)]="calendar.configuration.title" name="title" (blur)="saveJSON()">
               </div>
             </div>
             <div class="form-group row">
               <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.type</label>
               <div class="col-md-8 col-lg-6">
-                <nz-select [(ngModel)]="calendar.configuration.type" name="cType" (ngModelChange)="saveJSON()">
+                <nz-select [(ngModel)]="calendar.configuration.type" [nzDisabled]="isTrash" name="cType" (ngModelChange)="saveJSON()">
                   <nz-option nzValue="WORKINGDAYSCALENDAR" [nzLabel]="'runtime.label.workingDay' | translate"></nz-option>
                   <nz-option nzValue="NONWORKINGDAYSCALENDAR" [nzLabel]="'runtime.label.nonWorkingDay' | translate"></nz-option>
                 </nz-select>
@@ -61,13 +61,13 @@
             <div class="form-group row">
               <label class="col-md-4 col-lg-3 form-control-label" translate>runtime.label.validFrom</label>
               <div class="col-md-8 col-lg-2">
-                <nz-date-picker name="from" required=true
+                <nz-date-picker name="from" [nzDisabled]="isTrash"
                           [(ngModel)]="calendar.configuration.from" [nzFormat]="dateFormat"
                           [nzPlaceHolder]="'common.placeholder.setStartDate' | translate" (ngModelChange)="saveJSON()"></nz-date-picker>
               </div>
               <label class="col-md-4 col-lg-2 form-control-label date-center" translate>runtime.label.validTo</label>
               <div class="col-md-8 col-lg-2 date-right" [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}">
-                <nz-date-picker id="to" name="to" #to="ngModel"
+                <nz-date-picker id="to" name="to" #to="ngModel" [nzDisabled]="isTrash"
                           [(ngModel)]="calendar.configuration.to" [nzFormat]="dateFormat"
                           [nzPlaceHolder]="'common.placeholder.setEndDate' | translate" (ngModelChange)="saveJSON()"></nz-date-picker>
               </div>
@@ -87,7 +87,7 @@
               </button>
             </div>
             <button type="button" class="btn btn-sm pull-right btn-grey hidden-btn-text"
-                    (click)="createNewFrequency()" translate>
+                    (click)="createNewFrequency()" [disabled]="isTrash" translate>
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>runtime.button.addNewFrequency</span>
             </button>
@@ -128,11 +128,11 @@
                     <span *ngIf="data.tab=='every'">{{data.endOn | stringToDate1}}</span>
                   </td>
                   <td>
-                    <a class="text-hover-primary ">
+                    <a class="text-hover-primary">
                       <i (click)="showCalendar(data)" class="fa fa-calendar m-r-sm"></i>
                     </a>
-                    <a><i (click)="updateFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
-                    <a class="text-hover-color">
+                    <a [ngClass]="{'disable-link': isTrash}"><i (click)="updateFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
+                    <a [ngClass]="{'disable-link': isTrash}" class="text-hover-color">
                       <i (click)="removeFrequency(i)" class="fa fa-times "></i>
                     </a>
                   </td>
@@ -159,8 +159,8 @@
                     <a class="text-hover-primary ">
                       <i (click)="showCalendar(data)" class="fa fa-calendar m-r-sm"></i>
                     </a>
-                    <a><i (click)="updateFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
-                    <a class="text-hover-color">
+                    <a [ngClass]="{'disable-link': isTrash}"><i (click)="updateFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
+                    <a [ngClass]="{'disable-link': isTrash}" class="text-hover-color">
                       <i (click)="removeFrequency(i)" class="fa fa-times "></i>
                     </a>
                   </td>

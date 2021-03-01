@@ -1231,6 +1231,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       const dom = $('.graph-container');
       if (dom && dom.position()) {
         let top = (dom.position().top + $('#rightPanel').position().top);
+        if(this.isTrash){
+          top = top + 6;
+        }
         let ht = 'calc(100vh - ' + top + 'px)';
         dom.css({'height': ht, 'scroll-top': '0'});
         $('#graph').slimscroll({height: ht, scrollTo: '0'});
@@ -2759,7 +2762,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          * Returns <cellSelectable>.
          */
         graph.isCellSelectable = function (cell) {
-          if (!cell) {
+          if (!cell || self.isTrash) {
             return false;
           }
           return !cell.edge;
@@ -2769,12 +2772,18 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         graph.addMouseListener({
           currentState: null, previousStyle: null, currentHighlight: null, currentIconSet: null,
           mouseDown: function (sender, me) {
+            if (self.isTrash) {
+              return;
+            }
             if (this.currentState != null) {
               this.dragLeave(me.getEvent(), this.currentState);
               this.currentState = null;
             }
           },
           mouseMove: function (sender, me) {
+            if (self.isTrash) {
+              return;
+            }
             if (me.consumed && me.getCell()) {
               self.isCellDragging = true;
               setTimeout(function () {
@@ -2814,6 +2823,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           },
           mouseUp: function (sender, me) {
+            if (self.isTrash) {
+              return;
+            }
             if (self.isCellDragging) {
               self.isCellDragging = false;
               detachedInstruction(me.evt.target, self.movedCell);
@@ -2884,7 +2896,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          * Returns true if the given cell is moveable.
          */
         graph.isCellMovable = function (cell) {
-          if (cell.value) {
+          if (cell.value && !self.isTrash) {
             return !cell.edge && cell.value.tagName !== 'Catch' && cell.value.tagName !== 'Process' && !checkClosingCell(cell);
           } else {
             return false;
@@ -3601,7 +3613,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (self.cutCell) {
             clearClipboard();
           }
-          if (!self.isLoading) {
+          if (!self.isLoading && !self.isTrash) {
             setTimeout(() => {
               if (self.workflow.actual) {
                 self.implicitSave = true;

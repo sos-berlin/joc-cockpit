@@ -2,10 +2,7 @@
   margin-left: 66px;
   overflow: auto;
 }
-.trash-container{
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-}
+
 .toolbar{
   margin-left: 54px;
   min-width: 330px;
@@ -50,7 +47,13 @@
   position: relative;
   width: 120px
 }
-
-.trash-container #outlineContainer{
-  right: 0 !important;
+.trash-container{
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  #outlineContainer {
+    right: 12px !important;
+  }
+  .bottom-btn{
+    right: 22px !important;
+  }
 }

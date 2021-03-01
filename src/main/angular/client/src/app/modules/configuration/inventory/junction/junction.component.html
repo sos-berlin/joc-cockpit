@@ -6,7 +6,7 @@
           <a (click)="backToListView()"><i nz-tooltip="{{'common.button.back' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
           <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
         </span>
-        <div class="inline pull-right">
+        <div class="inline pull-right" *ngIf="!isTrash">
           <span class="badge badge-success m-r-12" *ngIf="junction.valid">
               <span translate>inventory.label.valid</span>
           </span>
@@ -25,7 +25,7 @@
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.name</label>
           <div class="col-md-8 col-lg-6">
-            <input type="text" required identifierValidation class="form-control" [appAutofocus]="true"
+            <input type="text" required identifierValidation class="form-control" [readonly]="isTrash" [appAutofocus]="!isTrash"
                    name="name" [(ngModel)]="junction.name" #name="ngModel" autocomplete="off" (blur)="rename(name.invalid)">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
               <div *ngIf="name.errors.required">
@@ -38,7 +38,7 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
           <div class="col-md-8 col-lg-6">
-            <input type="text" class="form-control" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
+            <input type="text" class="form-control" [readonly]="isTrash" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
                    name="title" [(ngModel)]="junction.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
@@ -46,7 +46,7 @@
              [ngClass]="{ 'has-error' : (((lifetime.dirty || lifetime.touched) && lifetime.invalid))}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.lifetime</label>
           <div class="col-md-8 col-lg-6">
-            <input autocomplete="off" #lifetime="ngModel" required type="text" class="form-control" name="lifetime"
+            <input autocomplete="off" [readonly]="isTrash" #lifetime="ngModel" required type="text" class="form-control" name="lifetime"
                    placeholder="{{'workflow.placeholder.duration' | translate}}" (blur)="saveJSON()"
                    validateDurtionReqex [(ngModel)]="junction.configuration.lifetime">
             <div *ngIf="lifetime.invalid && (lifetime.dirty || lifetime.touched)" class="text-danger help-block">

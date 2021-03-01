@@ -12,11 +12,11 @@
     <div class="inline">
       <input type="search" placeholder="{{'common.placeholder.search' | translate}}"
              [(ngModel)]="searchKey" style="width: 180px" name="search">
-      <button *ngIf="permission.Inventory.configurations.edit" type="button" [disabled]="!copyObj || (objectType !== copyObj.type)" class="btn btn-sm btn-grey m-l-12" (click)="paste()" >
+      <button *ngIf="permission.Inventory.configurations.edit && !isTrash" type="button" [disabled]="!copyObj || (objectType !== copyObj.type)" class="btn btn-sm btn-grey m-l-12" (click)="paste()" >
         <i class="fa fa-paste p-r-xs"></i>
         <span translate>inventory.button.paste</span>
       </button>
-      <button type="button" class="btn btn-sm btn-grey m-l-12" (click)="add()" *ngIf="permission.Inventory.configurations.edit">
+      <button type="button" class="btn btn-sm btn-grey m-l-12" (click)="add()" *ngIf="permission.Inventory.configurations.edit && !isTrash">
         <i class="fa fa-plus p-r-xs"></i>
         <span *ngIf="objectType === 'WORKFLOW'" translate>inventory.button.newWorkflow</span>
         <span *ngIf="objectType === 'JOBCLASS'" translate>inventory.button.newJobClass</span>

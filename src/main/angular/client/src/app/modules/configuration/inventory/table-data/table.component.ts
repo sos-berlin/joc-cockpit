@@ -108,7 +108,7 @@ export class TableComponent {
   }
 
   deletePermanently(data){
-
+    this.dataService.reloadTree.next({delete: data});
   }
 
   removeObject(object): void {
