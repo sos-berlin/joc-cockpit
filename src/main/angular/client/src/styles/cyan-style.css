@@ -9,7 +9,7 @@
   --box-color: #003040;
   --white: #fff;
   --bg-light: #00445a;
-  --bg-dark: #003040;
+  --bg-box: #003040;
   --bg-footer: #005773;
   --bg-red: #ff2727;
   --text-color: rgba(255, 255, 255, .87);
@@ -29,12 +29,7 @@ body {
 }
 
 pre, .syntax-box {
-  background-color: var(--bg-dark)
-}
-
-.list-group-item.active > .label,
-.nav-pills > .active > a > .label {
-  color: rgba(0, 0, 0, .87)
+  background-color: var(--bg-box)
 }
 
 .form-control,
@@ -52,7 +47,7 @@ a.text-dark:hover, a.text-dark:focus {
 
 .box,
 .box-color {
-  background-color: var(--bg-dark);
+  background-color: var(--bg-box);
   position: relative;
   margin-bottom: 20px;
   -webkit-box-shadow: 0 1px 3px 1px var(--box-shadow) !important;
@@ -64,11 +59,11 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 .white {
-  background: var(--bg-dark)
+  background: var(--bg-box)
 }
 
 .bg-white {
-  background-color: var(--bg-dark) !important;;
+  background-color: var(--bg-box) !important;;
 }
 
 
@@ -102,7 +97,7 @@ a.text-dark:hover, a.text-dark:focus {
 
 .error-link {
   height: 1px;
-  background: var(--bg-dark)
+  background: var(--bg-box)
 }
 
 #mainContainer .h-line {
@@ -213,7 +208,7 @@ input[type=search]:focus {
 
 .table .table,
 .table > thead > tr > th {
-  background-color: var(--bg-dark)
+  background-color: var(--bg-box)
 }
 
 .table {
@@ -259,7 +254,7 @@ input[type=search]:focus {
 .btn-grey {
   color: var(--text-color);
   background-color: var(--box-color);
-  border-color: var(--bg-dark)
+  border-color: var(--bg-box)
 }
 
 .btn-grey.active.focus,
@@ -346,15 +341,15 @@ a.text-dark:hover {
 .cluster-rect,
 .rect, .cluster, .joint {
   background: var(--box-color);
-  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, var(--box-color)), color-stop(1, var(--bg-dark)));
-  background-image: -moz-linear-gradient(center bottom, var(--box-color) 37%, var(--bg-dark) 69%);
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, var(--box-color)), color-stop(1, var(--bg-box)));
+  background-image: -moz-linear-gradient(center bottom, var(--box-color) 37%, var(--bg-box) 69%);
   -webkit-box-shadow: inset 0 2px 9px var(--border-color), inset 0 -2px 6px rgba(0, 0, 0, .2);
   -moz-box-shadow: inset 0 2px 9px var(--border-color), inset 0 -2px 6px rgba(0, 0, 0, .2);
   box-shadow: inset 0 2px 9px var(--border-color), inset 0 -2px 6px rgba(0, 0, 0, .2)
 }
 
 .light {
-  background-color: var(--bg-dark) !important
+  background-color: var(--bg-box) !important
 }
 
 .breadcrumb > .active {
@@ -377,7 +372,7 @@ a.text-dark:hover {
 }
 
 .modal-header {
-  background: var(--bg-dark);
+  background: var(--bg-box);
   color: var(--text-color)
 }
 
@@ -400,7 +395,7 @@ select {
 }
 
 .box select {
-  background-color: var(--bg-dark) !important
+  background-color: var(--bg-box) !important
 }
 
 .input-dropdown {
@@ -579,12 +574,12 @@ hr {
 }
 
 .gantt-task-info {
-  background: var(--bg-dark)
+  background: var(--bg-box)
 }
 
 .gantt-task-infoArrow:after,
 .gantt-task-infoArrowR:after {
-  border-top: 7px solid var(--bg-dark)
+  border-top: 7px solid var(--bg-box)
 }
 
 span.attribute_name,
@@ -639,7 +634,7 @@ pre.cdata {
 }
 
 .dropdown-list {
-  border: 1px solid var(--bg-dark)
+  border: 1px solid var(--bg-box)
 }
 
 .backup {
@@ -667,12 +662,12 @@ pre.cdata {
 }
 
 select {
-  background-color: var(--bg-dark) !important
+  background-color: var(--bg-box) !important
 }
 
 .status-table table > tbody > tr {
   background: var(--bg-light);
-  border-color: var(--bg-dark);
+  border-color: var(--bg-box);
 }
 
 input[readonly=readonly],
@@ -683,7 +678,7 @@ input[readonly] {
 gridster-item {
   overflow: visible !important;
   z-index: unset !important;
-  background-color: var(--bg-dark) !important;
+  background-color: var(--bg-box) !important;
   box-sizing: border-box;
   position: absolute;
   transition: .3s;
@@ -712,7 +707,7 @@ gridster-item {
 input:-webkit-autofill, input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
   -webkit-text-fill-color: rgba(255, 255, 255, 0.87);
-  -webkit-box-shadow: 0 0 0 100px var(--bg-dark) inset;
+  -webkit-box-shadow: 0 0 0 100px var(--bg-box) inset;
 }
 
 .ngx-pagination a, .ngx-pagination button {
@@ -720,7 +715,7 @@ input:-webkit-autofill:focus {
 }
 
 pre#pre {
-  background-color: var(--bg-dark);
+  background-color: var(--bg-box);
 }
 
 .avatar[_ngcontent-c2] {
@@ -754,12 +749,12 @@ span ul li a {
 }
 
 #rightSideBar {
-  background: var(--bg-dark);
+  background: var(--bg-box);
   box-shadow: 0 0 15px 0 rgba(255, 255, 255, 0.1);
 }
 
 .sidebar-hover-effect {
-  background: var(--bg-dark)
+  background: var(--bg-box)
 }
 
 .sidebar-hover-effect:hover {
@@ -775,7 +770,7 @@ span ul li a {
 }
 
 #property-panel .rg-right {
-  background-color: var(--bg-dark) !important;
+  background-color: var(--bg-box) !important;
 }
 
 .nav-active-border3 li.dropdown-separator .separator {
@@ -813,7 +808,7 @@ span ul li a {
 }
 
 #property-panel .ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable, #property-panel .ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners {
-  background-color: var(--bg-dark) !important;
+  background-color: var(--bg-box) !important;
   border-color: var(--border-color);
   color: rgba(255, 255, 255, 0.89);
 }
@@ -850,7 +845,7 @@ span ul li a {
 
 
 .arrow-down-ac:last-child:after, .arrow-down:last-child:after {
-  color: var(--bg-dark);
+  color: var(--bg-box);
 }
 
 .ck.ck-link-form, .ck.ck-link-actions {
@@ -863,15 +858,15 @@ span ul li a {
 
 .ant-dropdown-menu {
   color: rgba(255, 255, 255, 0.87);
-  background-color: var(--bg-dark);
-  border: 1px solid var(--bg-dark) !important;
+  background-color: var(--bg-box);
+  border: 1px solid var(--bg-box) !important;
   border-bottom-color: rgba(0, 0, 0, .95);
   -webkit-box-shadow: 0 2px 4px var(--border-color);
   box-shadow: 0 2px 4px var(--border-color)
 }
 
 .ant-select-dropdown {
-  background-color: var(--bg-dark) !important;
+  background-color: var(--bg-box) !important;
   color: var(--text-color);
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.15);
 }
@@ -884,7 +879,7 @@ span ul li a {
 
 .ant-input-number, .ant-select-selection {
   color: var(--text-color);
-  background-color: var(--bg-dark) !important;
+  background-color: var(--bg-box) !important;
   border: 1px solid var(--border-color)
 }
 
@@ -892,7 +887,7 @@ span ul li a {
 .ant-calendar-picker-clear,
 .ant-calendar-picker-clear:hover,
 .ant-time-picker-clear:hover {
-  background-color: var(--bg-dark) !important;
+  background-color: var(--bg-box) !important;
   color: var(--text-color);
 }
 
@@ -902,8 +897,8 @@ span ul li a {
 }
 
 .ant-calendar {
-  background-color: var(--bg-dark);
-  border: 1px solid var(--bg-dark);
+  background-color: var(--bg-box);
+  border: 1px solid var(--bg-box);
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
 }
 
@@ -913,16 +908,22 @@ span ul li a {
   background-color: var(--bg-footer) !important
 }
 
+.modal-open input:-webkit-autofill, .modal-open input:-webkit-autofill:hover,
+.modal-open input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 100px var(--bg-footer) inset;
+}
+
+.ant-tabs-bar,
 .ant-time-picker-panel-select,
 .ant-calendar-header,
 .ant-calendar-footer,
 .ant-input, .ant-input:hover,
 .ant-input-number,
 .ant-input-number:hover,
-.ant-select-selection,
-.ant-select-selection:hover,
 .ant-pagination-item, .ant-pagination-item-active,
 .ant-table-small,
+.ant-select-selection,
+.ant-select-selection:hover,
 .ant-calendar-picker,
 .ant-calendar-picker:hover,
 .ant-calendar-picker:hover .ant-calendar-picker-input:not(.ant-input-disabled),
@@ -964,6 +965,62 @@ span ul li a {
   border-color: var(--border-color)
 }
 
+.ant-input:focus, .ant-input:active .ant-input-focused,
+.ant-select-focused .ant-select-selection,
+.ant-calendar-picker-input:focus,
+.ant-time-picker-input:focus,
+.ant-select-selection:focus,
+.ant-select-selection:active,
+.ant-input-number:focus,
+.ant-input-number-focused {
+  border-color: var(--primary) !important;
+}
+
+.ant-input-number-handler-wrap {
+  background-color: var(--bg-footer);
+  border-color: var(--bg-footer) !important;
+}
+
+.ant-table-bordered .ant-table-thead > tr:not(:last-child) > th, .ant-table-small.ant-table-bordered .ant-table-thead > tr > th:last-child {
+  border-color: var(--border-color);
+}
+
+.ant-table-small.ant-table-bordered {
+  border-right: 1px solid var(--border-color);
+}
+
+.ant-table-small.ant-table-bordered .ant-table-placeholder, .ant-table-small > .ant-table-content .ant-table-row:last-child td {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
+  background: var(--box-color) !important
+}
+
+.ant-calendar-header .ant-calendar-prev-century-btn:hover,
+.ant-calendar-header .ant-calendar-prev-decade-btn:hover,
+.ant-calendar-header .ant-calendar-prev-year-btn:hover,
+.ant-input, .ant-input:hover,
+.ant-pagination-item:focus a, .ant-pagination-item:hover a,
+.ant-input-number:hover, .ant-select-selection:hover,
+.ant-tabs-nav .ant-tabs-tab-active,
+.ant-tabs-nav .ant-tabs-tab-active:hover,
+.ant-tabs-nav .ant-tabs-tab:hover,
+.ant-pagination-item-active a {
+  color: var(--white);
+}
+
+.ant-calendar-month-panel-month:hover,
+.ant-calendar-year-panel-year:hover,
+.ant-calendar-year-panel-selected-cell .ant-calendar-year-panel-year,
+.ant-calendar-selected-day .ant-calendar-date,
+.ant-calendar-today .ant-calendar-date,
+.ant-calendar-month-panel-selected-cell .ant-calendar-month-panel-month, .ant-time-picker-panel-select li:hover, li.ant-time-picker-panel-select-option-selected, .ant-calendar-date:hover, .ant-tabs-ink-bar,
+.ant-calendar-month-panel-selected-cell .ant-calendar-month-panel-month:hover {
+  color: var(--primary);
+  background: var(--bar-color);
+}
+
 .ant-dropdown-menu-item-divider, .ant-dropdown-menu-submenu-title-divider {
   background-color: var(--border-color)
 }
@@ -971,7 +1028,7 @@ span ul li a {
 .ant-calendar-year-panel,
 .ant-calendar-month-panel,
 .ant-time-picker-panel-inner {
-  background-color: var(--bg-dark);
+  background-color: var(--bg-box);
   color: var(--text-color);
   -webkit-box-shadow: 0 2px 4px var(--border-color);
   box-shadow: 0 2px 4px var(--border-color)
@@ -1039,13 +1096,7 @@ div.jsoneditor {
 }
 
 .ace-jsoneditor .ace_dragging .ace_scroller:before {
-  background: var(--bg-dark);
-}
-
-.ace-jsoneditor .ace_print-margin {
-  border-left: 1px dotted #2D2D2D;
-  right: 0;
-  background: #262626;
+  background: var(--bg-box);
 }
 
 .ace-jsoneditor .ace_scroller.ace_scroll-left {
@@ -1057,7 +1108,7 @@ div.jsoneditor {
 }
 
 .ace-jsoneditor .ace_text-input.ace_composition {
-  background: var(--bg-dark);
+  background: var(--bg-box);
   color: var(--text-color);
 }
 
@@ -1084,27 +1135,6 @@ div.jsoneditor {
   border: 1px solid var(--border-color);
   box-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
   color: var(--text-color);
-}
-
-.ace-jsoneditor .ace_fold-widget:hover {
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  background-color: var(--box-shadow);
-  box-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
-}
-
-.ace-jsoneditor .ace_fold-widget:active {
-  border: 1px solid var(--border-color);
-  background-color: rgba(0, 0, 0, 0.05);
-  box-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
-}
-
-.ace-jsoneditor .ace_dark .ace_fold-widget:hover {
-  box-shadow: 0 1px 1px var(--box-shadow);
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.ace-jsoneditor .ace_dark .ace_fold-widget:active {
-  box-shadow: 0 1px 1px var(--box-shadow);
 }
 
 .ace-jsoneditor .ace_marker-layer .ace_active-line {
@@ -1347,7 +1377,6 @@ span.cm-variable {
   background: #444444 !important;
 }
 
-.ant-pagination-jump-prev .ant-pagination-item-container .ant-pagination-item-ellipsis, .ant-pagination-jump-next .ant-pagination-item-container .ant-pagination-item-ellipsis {
-  color: var(--text-color)
+.highlighted {
+  color: yellow;
 }
-

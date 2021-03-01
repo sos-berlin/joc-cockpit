@@ -4,16 +4,29 @@
   --primary-light-hover: #d47a12;
   --primary-disable-color: rgba(235, 136, 20, .7);
   --background-color: #717a86;
-  --bar-color: #ffe8c9;
-  --blue: #1589ca;
-  --bg-blue: #1591d4;
-  --bg-box: #4e545c;
-  --bg-footer: #656d78;
-  --bg-dimgrey: #7c8d9e;
-  --bg-red: #ff2727;
   --text-color: rgba(255, 255, 255, .87);
   --text-hover: rgba(0, 0, 0, .87);
   --text-muted: rgba(255, 255, 255, .67);
+  --menu-hover: rgba(78, 84, 92, .7);
+  --box-shadow: rgba(255, 255, 255, .1);
+  --border-color: rgba(255, 255, 255, .3);
+  --dark-border-color: rgba(255, 255, 255, .3);
+  --bar-color: #ffe8c9;
+  --bg-box: #4e545c;
+  --box-color: #656d78;
+  --bg-footer: #656d78;
+  --bg-dimgrey: #7c8d9e;
+  --blue: #1589ca;
+  --bg-blue: #1591d4;
+  --mangenta: #d900d9;
+  --bg-mangenta: #b966b9;
+  --bg-gold: #e6b000;
+  --bg-red: #ff2727;
+  --row-selected: rgba(35, 52, 70, .5);
+  --date-selected: rgba(255, 149, 5, .7);
+  --date-selected-hover: rgba(255, 149, 5, 0.55);
+  --date-selected-exclude: rgba(36, 148, 191, 0.56);
+  --date-selected-exclude-hover: rgba(36, 148, 191, 0.66);
 }
 
 body {
@@ -50,12 +63,7 @@ a.text-dark:hover, a.text-dark:focus {
 
 .b-primary,
 .form-control:focus {
-  border-color: #eb8814
-}
-
-.btn-primary {
-  background-color: #eb8814 !important;
-  color: #fff
+  border-color: var(--primary)
 }
 
 .nav-active-border2 > li.dropdown-separator .separator {
@@ -88,7 +96,7 @@ a.text-dark:hover, a.text-dark:focus {
   top: 5px;
   width: 6px;
   height: 6px;
-  background-color: #eb8814
+  background-color: var(--primary)
 }
 
 .dark-white {
@@ -104,53 +112,53 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 .b-t-primary {
-  border-top-color: #eb8814
+  border-top-color: var(--primary)
 }
 
 .b-b-primary {
-  border-bottom-color: #eb8814
+  border-bottom-color: var(--primary)
 }
 
 .b-l-primary {
-  border-left-color: #eb8814
+  border-left-color: var(--primary)
 }
 
 .text-primary,
 .text-primary-hover a:hover {
-  color: #eb8814 !important
+  color: var(--primary) !important
 }
 
 .md-input.focus,
 .md-input:focus {
-  border-color: #eb8814;
+  border-color: var(--primary);
   border-bottom-width: 2px;
   padding-bottom: 1px
 }
 
 .md-input.focus ~ label,
 .md-input:focus ~ label {
-  color: #eb8814;
+  color: var(--primary);
   opacity: 1;
   top: 0 !important;
   font-size: .85em !important
 }
 
 .loader {
-  border-left: 1.1em solid #eb8814
+  border-left: 1.1em solid var(--primary)
 }
 
 .ch-purple {
   color: rgba(255, 255, 255, .87);
-  background-color: #eb8814
+  background-color: var(--primary)
 }
 
 .purple-color {
-  color: #eb8814
+  color: var(--primary)
 }
 
 .text-hover-primary:hover {
   cursor: pointer !important;
-  color: #eb8814 !important;
+  color: var(--primary) !important;
   text-decoration: underline
 }
 
@@ -214,7 +222,7 @@ pre.log {
 }
 
 .rzslider .rz-pointer {
-  background-color: #eb8814
+  background-color: var(--primary)
 }
 
 .search-box {
@@ -224,17 +232,6 @@ pre.log {
   padding: 5px 10px 4px 28px !important
 }
 
-input.input-date {
-  background-image: url(../assets/images/calendar-lt.png)
-}
-
-input.input-time {
-  background-image: url(../assets/images/clock-lt.png)
-}
-
-.loader1 {
-  color: #eb8814
-}
 
 .left-sidebar-btn:hover,
 .sidebar-btn {
@@ -256,7 +253,7 @@ input.input-time {
 }
 
 .cal-year-box .month-name {
-  background-color: #eb8814;
+  background-color: var(--primary);
   color: rgba(255, 255, 255, .87) !important;
   text-align: center;
   margin-top: 8px
@@ -267,7 +264,7 @@ input.input-time {
 }
 
 .cal-day-today span[data-cal-date] {
-  color: #eb8814
+  color: var(--primary)
 }
 
 .cal-year-box .cal-day-today span[data-cal-date] {
@@ -279,7 +276,7 @@ table.folder-tree-grid .indented a {
 }
 
 .expand-collapse:hover {
-  color: #eb8814;
+  color: var(--primary);
   cursor: pointer
 }
 
@@ -289,18 +286,17 @@ input[readonly] {
 }
 
 .start-on-hover:hover .fa-star-o {
-  color: #eb8814
+  color: var(--primary)
 }
 
 input[type=search] {
   background: url(../assets/images/search-lt.png) 6px center no-repeat;
   color: #fff;
-  border-bottom: 1px solid #f5f5f5
 }
 
 input[type=search]:focus {
   color: #fff;
-  border-bottom: 1px solid #eb8814
+  border-bottom: 1px solid var(--primary)
 }
 
 .table .table,
@@ -366,36 +362,6 @@ input[type=search]:focus {
   box-shadow: 0 1px 3px rgba(0, 0, 0, .4) !important
 }
 
-.btn-primary,
-.btn-primary.active.focus,
-.btn-primary.active:focus,
-.btn-primary.active:hover,
-.btn-primary.focus,
-.btn-primary:active.focus,
-.btn-primary:active:focus,
-.btn-primary:active:hover,
-.btn-primary:focus,
-.btn-primary:hover {
-  color: #fff;
-  background-color: #d47a12;
-  border-color: #d47a12
-}
-
-.btn-primary.active,
-.btn-primary:active {
-  color: #fff;
-  background-color: #eb8814;
-  background-image: none;
-  border-color: #d47a12
-}
-
-button[disabled].btn-primary,
-button[disabled].btn-primary:active,
-button[disabled].btn-primary:focus,
-button[disabled].btn-primary:hover {
-  background: rgba(235, 136, 20, .7) !important
-}
-
 .text-dark,
 .text-dark-hover a:hover,
 .text-dark:hover {
@@ -408,7 +374,7 @@ button[disabled].btn-primary:hover {
 
 .cssload-loading::after,
 .cssload-loading::before {
-  background: #eb8814
+  background: var(--primary)
 }
 
 .more-option i,
@@ -575,11 +541,6 @@ div.order-panel div {
   color: #fafafa
 }
 
-.notification {
-  color: #fff;
-  border-radius: 8px
-}
-
 .pagination > li > a,
 .pagination > li > span {
   color: inherit !important;
@@ -600,7 +561,7 @@ div.order-panel div {
 .pagination > .active > a,
 .pagination > .active > span {
   color: #fff !important;
-  background-color: #eb8814 !important;
+  background-color: var(--primary) !important;
   border-color: #e98514
 }
 
@@ -737,7 +698,7 @@ pre.cdata {
 }
 
 .tree-grid .tree-icon:hover {
-  color: #eb8814
+  color: var(--primary)
 }
 
 .backup {
@@ -1066,6 +1027,11 @@ span ul li a {
   -webkit-box-shadow: 0 0 0 100px var(--bg-footer) inset;
 }
 
+.ant-input-number-handler-wrap {
+  background-color: var(--bg-footer);
+  border-color: var(--bg-footer) !important;
+}
+
 .ant-tabs-bar,
 .ant-time-picker-panel-select,
 .ant-calendar-header,
@@ -1086,11 +1052,26 @@ span ul li a {
 .ant-table-small.ant-table-bordered .ant-table-content {
   border-color: rgba(255, 255, 255, .3)
 }
-
-.ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
-  background: #65707d !important
+.ant-input-number-handler-wrap {
+  background-color: var(--bg-footer);
+  border-color: var(--bg-footer) !important;
 }
 
+.ant-table-bordered .ant-table-thead > tr:not(:last-child) > th, .ant-table-small.ant-table-bordered .ant-table-thead > tr > th:last-child {
+  border-color: rgba(255, 255, 255, .3);
+}
+
+.ant-table-small.ant-table-bordered {
+  border-right: 1px solid rgba(255, 255, 255, .3);
+}
+
+.ant-table-small.ant-table-bordered .ant-table-placeholder, .ant-table-small > .ant-table-content .ant-table-row:last-child td {
+  border-bottom: 1px solid rgba(255, 255, 255, .3);
+}
+
+.ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
+  background: var(--box-color) !important
+}
 .ant-calendar-header .ant-calendar-prev-century-btn:hover,
 .ant-calendar-header .ant-calendar-prev-decade-btn:hover,
 .ant-calendar-header .ant-calendar-prev-year-btn:hover,
@@ -1101,7 +1082,7 @@ span ul li a {
 .ant-tabs-nav .ant-tabs-tab-active:hover,
 .ant-tabs-nav .ant-tabs-tab:hover,
 .ant-pagination-item-active a {
-  color: #eb8814;
+  color: var(--white);
 }
 
 .ant-calendar-month-panel-month:hover,
@@ -1111,8 +1092,8 @@ span ul li a {
 .ant-calendar-today .ant-calendar-date,
 .ant-calendar-month-panel-selected-cell .ant-calendar-month-panel-month, .ant-time-picker-panel-select li:hover, li.ant-time-picker-panel-select-option-selected, .ant-calendar-date:hover, .ant-tabs-ink-bar,
 .ant-calendar-month-panel-selected-cell .ant-calendar-month-panel-month:hover {
-  color: #eb8814;
-  background: #e6f7ff;
+  color: var(--primary);
+  background: var(--bar-color);
 }
 
 .ant-dropdown-menu-item-divider, .ant-dropdown-menu-submenu-title-divider {
@@ -1124,6 +1105,15 @@ span ul li a {
 .ant-time-picker-panel-inner {
   background-color: var(--bg-box);
   color: rgba(255, 255, 255, .87);
+}
+
+.ant-calendar-year-panel,
+.ant-calendar-month-panel,
+.ant-time-picker-panel-inner {
+  background-color: var(--bg-box);
+  color: var(--text-color);
+  -webkit-box-shadow: 0 2px 4px var(--border-color);
+  box-shadow: 0 2px 4px var(--border-color)
 }
 
 .ant-calendar-year-panel-last-decade-cell .ant-calendar-year-panel-year, .ant-calendar-year-panel-next-decade-cell .ant-calendar-year-panel-year,
@@ -1170,7 +1160,7 @@ Code mirror
 }
 
 .vertex-text.job span a {
-  color: #eb8814
+  color: var(--primary)
 }
 
 .modal-body table.table > tbody > tr > td, .modal-body table.table > thead > tr > th {
@@ -1195,7 +1185,7 @@ span.cm-builtin {
 }
 
 span.cm-comment {
-  color: #7f9f7f
+  color: #7f9f7f !important;
 }
 
 span.cm-keyword {
@@ -1219,8 +1209,8 @@ span.cm-variable-2 {
   color: #dcdccc
 }
 
-span.cm-string {
-  color: #cc9393
+span.cm-string, .ace-jsoneditor .ace_string {
+  color: #cc9393 !important;
 }
 
 span.cm-string-2 {
@@ -1252,9 +1242,20 @@ span.cm-header {
 }
 
 span.cm-operator {
-  color: #fff
+  color: #b5b500 !important;
 }
 
+span.cm-builtin, span.cm-special {
+  color: #ff9e59 !important;
+}
+
+span.cm-link {
+  color: #845dc4
+}
+
+span.cm-error {
+  color: red
+}
 span.CodeMirror-matchingbracket {
   box-sizing: border-box;
   background: 0 0;
@@ -1315,39 +1316,74 @@ span.cm-variable {
   background-color: #65707d;
 }
 
+
+/*
+JSON editor
+**/
+.ace-jsoneditor.ace_editor {
+  background: var(--bg-footer) !important;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.2);
+}
+
 .ace-jsoneditor .ace_gutter {
-  background-color: #3d3d3d;
-  background-image: linear-gradient(left, #3D3D3D, #333);
-  background-repeat: repeat-x;
-  border-right: 1px solid #4d4d4d;
-  text-shadow: 0 1px 1px #4d4d4d;
-  color: #222;
+  background: var(--box-color) !important;
+  color: var(--text-color) !important
 }
 
-.ace-jsoneditor .ace_gutter-layer {
-  background: repeat left top;
+.ace-jsoneditor .ace_scroller {
+  background-color: var(--bg-footer) !important;
 }
 
-.ace-jsoneditor .ace_gutter-active-line {
-  background-color: #3F3F3F;
+div.jsoneditor {
+  border-color: var(--border-color);
+  color: var(--text-color) !important;
 }
 
-.ace-jsoneditor .ace_fold-widget {
-  text-align: center;
+.ace-jsoneditor .ace_indent-guide {
+  filter: opacity(12%);
 }
 
-.ace-jsoneditor .ace_fold-widget:hover {
-  color: #777;
+.ace-jsoneditor .ace_scroller.ace_scroll-left {
+  box-shadow: 17px 0 16px -16px rgba(0, 0, 0, 0.4) inset;
 }
 
-.ace-jsoneditor .ace_fold-widget.ace_start,
-.ace-jsoneditor .ace_fold-widget.ace_end,
-.ace-jsoneditor .ace_fold-widget.ace_closed {
-  background: none !important;
-  border: none;
-  box-shadow: none;
+.ace-jsoneditor .ace_cursor {
+  border-left: 2px solid var(--border-color);
 }
 
+.ace-jsoneditor .ace_text-input.ace_composition {
+  background: var(--bg-box);
+  color: var(--text-color);
+}
+
+.ace-jsoneditor .ace_overwrite-cursors .ace_cursor {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.ace-jsoneditor .ace_line .ace_fold {
+  border: 1px solid var(--border-color);
+}
+
+.ace-jsoneditor .ace_variable {
+  color: var(--text-color);
+}
+
+.ace-jsoneditor .ace_text-layer {
+  color: #ccc;
+}
+
+.ace-jsoneditor .ace_tooltip {
+  background-color: var(--box-color);
+  background-image: -webkit-linear-gradient(top, transparent, rgba(0, 0, 0, 0.1));
+  background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.1));
+  border: 1px solid var(--border-color);
+  box-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+  color: var(--text-color);
+}
+
+.ace-jsoneditor .ace_marker-layer .ace_active-line {
+  background-color: #999;
+}
 .ace-jsoneditor .ace_fold-widget.ace_start:after {
   content: '▾'
 }
@@ -1449,16 +1485,8 @@ span.cm-variable {
   color: #CF7EA9;
 }
 
-.ace-jsoneditor .ace_constant.ace_library {
-
-}
-
 .ace-jsoneditor .ace_constant.ace_numeric {
   color: #78CF8A;
-}
-
-.ace-jsoneditor .ace_invalid {
-  text-decoration: underline;
 }
 
 .ace-jsoneditor .ace_invalid.ace_illegal {
@@ -1564,4 +1592,7 @@ div.jsoneditor-value.jsoneditor-null {
 
 div.jsoneditor-value.jsoneditor-invalid {
   color: white;
+}
+.highlighted {
+  color: yellow;
 }
