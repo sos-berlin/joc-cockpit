@@ -2,6 +2,7 @@
   --primary: #eb8814;
   --hover-primary: #d47a12;
   --primary-light-hover: #d47a12;
+  --secondary: rgb(235, 136, 20);
   --primary-disable-color: rgba(235, 136, 20, .7);
   --background-color: #4e5c6a;
   --bar-color: #ffe8c9;
@@ -13,10 +14,11 @@
   --text-muted: rgba(255, 255, 255, .67);
   --menu-hover: rgba(70, 82, 95, .7);
   --blue: #1690d4;
-  --green: #3fa93f;
   --black: #ffffff;
-  --bg-gold: #e6b000;
+  --green: #9ccc65;
+  --red: #ff5252;
   --mangenta: #d900d9;
+  --bg-gold: #ffba57;
   --bg-mangenta: #b966b9;
   --bg-red: #ff2727;
   --border-color: rgba(233, 244, 255, .18);
@@ -63,7 +65,10 @@ a.text-dark:hover, a.text-dark:focus {
   -webkit-box-shadow: 0 1px 3px 1px rgba(255, 255, 255, .05) !important;
   box-shadow: 0 1px 3px 1px rgba(255, 255, 255, .05) !important
 }
-
+gridster-item {
+  -webkit-box-shadow: 0 1px 3px 1px rgba(255, 255, 255, .05) !important;
+  box-shadow: 0 1px 3px 1px rgba(255, 255, 255, .05) !important
+}
 .box-footer {
   background: var(--bg-footer);
 }
@@ -73,7 +78,7 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 .bg-white {
-  background-color: var(--bg-box) !important;;
+  background-color: var(--bg-box) !important;
 }
 
 .dark-white {

@@ -107,7 +107,7 @@ export class TableComponent {
     this.dataService.reloadTree.next({importJSON: data});
   }
 
-  deletePermanently(data){
+  deletePermanently(data) {
     this.dataService.reloadTree.next({delete: data});
   }
 
@@ -118,8 +118,17 @@ export class TableComponent {
     modalRef.componentInstance.message = 'deleteObject';
     modalRef.componentInstance.type = 'Delete';
     modalRef.componentInstance.objectName = _path;
-    modalRef.result.then(res => {
-      this.deleteObject(_path, object);
+    modalRef.result.then(() => {
+      this.coreService.post('inventory/remove', {objects: [{id: object.id}]}).subscribe(() => {
+        for (let i = 0; i < this.dataObj.children.length; i++) {
+          if (this.dataObj.children[i].id === object.id) {
+            this.dataObj.children.splice(i, 1);
+            break;
+          }
+        }
+        this.dataObj.children = [...this.dataObj.children];
+        this.dataService.reloadTree.next({reload: true});
+      });
     }, () => {
 
     });
@@ -142,8 +151,10 @@ export class TableComponent {
       } else if (object.hasDeployments) {
         isDraftOnly = false;
       }
-      this.coreService.post('inventory/deletedraft', {
-        id: object.id
+      this.coreService.post('inventory/delete_draft', {
+        objects: [{
+          id: object.id
+        }]
       }).subscribe(() => {
         if (isDraftOnly) {
           for (let i = 0; i < this.dataObj.children.length; i++) {
@@ -183,30 +194,6 @@ export class TableComponent {
   sort(key): void {
     this.filter.reverse = !this.filter.reverse;
     this.filter.sortBy = key;
-  }
-
-  private deleteObject(_path, object) {
-    const releasable = (this.objectType === 'SCHEDULE' || this.objectType.match(/calendar/));
-
-    const obj: any = {delete: {deployConfigurations: []}};
-    if (!releasable) {
-      obj.controllerIds = JSON.parse(this.authService.scheduleIds).controllerIds;
-    }
-    if (releasable) {
-      obj.delete = [{id: object.id}];
-    } else {
-      const objDep = {
-        configuration: {
-          path: object.path + (object.path === '/' ? '' : '/') + object.name,
-          objectType: this.objectType
-        }
-      };
-      obj.delete.deployConfigurations.push(objDep);
-    }
-    const URL = releasable ? 'inventory/release' : 'inventory/deployment/deploy';
-    this.coreService.post(URL, obj).subscribe(() => {
-
-    });
   }
 
 }

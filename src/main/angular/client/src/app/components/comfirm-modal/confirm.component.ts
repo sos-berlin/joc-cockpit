@@ -9,6 +9,8 @@ export class ConfirmModalComponent {
 
   @Input() title: any;
   @Input() message: any;
+  @Input() countMessage: any;
+  @Input() count: number;
   @Input() type: any;
   @Input() objectName: any;
   @Input() calendar: any;

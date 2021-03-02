@@ -177,6 +177,8 @@
                           *ngIf="!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.dailyPlan && permission.Inventory.configurations.edit"
                           [nzDisabled]="node.origin.path === '/'">
                         <a (click)="renameFolder(node);" translate>inventory.button.rename</a></li>
+                      <li nz-menu-item *ngIf="permission.Inventory.configurations.edit">
+                        <a (click)="deepRename(node);" translate>inventory.button.deepRename</a></li>
                       <li nz-menu-item *ngIf="!node.origin.type"
                           [nzDisabled]="(node.origin.object && node.origin.children.length === 0)">
                         <a (click)="exportObject(node);" translate>inventory.button.export</a></li>
@@ -196,7 +198,7 @@
                       <li nz-menu-divider
                           *ngIf="permission.Inventory.configurations.delete"></li>
                       <li nz-menu-item *ngIf="permission.Inventory.configurations.delete"
-                          [nzDisabled]="(node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.hasDeployments && node.origin.type !== 'SCHEDULE' && node.origin.type !== 'CALENDAR') || (!node.origin.hasReleases && (node.origin.type === 'SCHEDULE' || node.origin.type === 'CALENDAR')) || (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object && node.origin.path === '/')">
+                          [nzDisabled]="(node.origin.object && node.origin.children.length === 0) || (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object && node.origin.path === '/')">
                         <a (click)="removeObject(node);" translate>inventory.button.remove</a></li>
                       <li nz-menu-item *ngIf="permission.Inventory.configurations.delete"
                           [nzDisabled]="node.origin.deployed || node.origin.released || (node.origin.object && node.origin.children.length === 0) || (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object && node.origin.path === '/')">
@@ -295,7 +297,8 @@
                   <nz-dropdown-menu #menu="nzDropdownMenu">
                     <ul nz-menu>
                       <li nz-menu-item *ngIf="permission.Inventory.configurations.delete" class="bg-hover-color"
-                          [nzDisabled]="node.origin.object || node.origin.controller || node.origin.dailyPlan || (!node.origin.type && node.origin.path === '/')"><a
+                          [nzDisabled]="(!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.path === '/')
+                                      || (node.origin.object && node.origin.children.length === 0)"><a
                         (click)="deletePermanently(node);" translate>inventory.button.delete</a></li>
                       <li nz-menu-item [nzDisabled]="node.origin.object || node.origin.controller || node.origin.dailyPlan">
                         <a (click)="restoreObject(node);" translate>inventory.button.restore</a></li>

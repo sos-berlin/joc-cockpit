@@ -280,23 +280,23 @@ export class LayoutComponent implements OnInit, OnDestroy {
       }
       preferences.locale = 'en';
       preferences.dateFormat = 'DD.MM.YYYY HH:mm:ss';
-      preferences.maxRecords = 10000;
-      preferences.maxAuditLogRecords = 10000;
-      preferences.maxHistoryPerOrder = 30;
+      preferences.maxRecords = 5000;
+      preferences.maxAuditLogRecords = 5000;
+      preferences.maxHistoryPerOrder = 10;
       preferences.maxHistoryPerTask = 10;
       preferences.maxAuditLogPerObject = 10;
       preferences.maxEntryPerPage = '1000';
-      preferences.entryPerPage = '10';
+      preferences.entryPerPage = '25';
       preferences.isNewWindow = 'newWindow';
-      preferences.isDocNewWindow = 'newTab';
-      preferences.isXSDNewWindow = 'newTab';
+      preferences.isDocNewWindow = 'newWindow';
+      preferences.isXSDNewWindow = 'newWindow';
       preferences.pageView = 'list';
       preferences.theme = 'light';
+      preferences.headerColor = '';
       preferences.historyTab = 'order';
-      preferences.expandOption = 'single';
+      preferences.expandOption = 'both';
       preferences.currentController = true;
       preferences.logTimezone = true;
-      preferences.showOrders = false;
       if (sessionStorage.$SOS$FORCELOGING === 'true' || sessionStorage.$SOS$FORCELOGING === true) {
         preferences.auditLog = true;
       }

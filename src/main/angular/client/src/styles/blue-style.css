@@ -2,7 +2,7 @@
   --antd-wave-shadow-color: #fff;
   --primary: #ff9505;
   --hover-primary: #eb8700;
-  --primary-light-hover: #eb8700;
+  --secondary: #eb8700;
   --primary-disable-color: rgba(255, 113, 5, .7);
   --bar-color: #ffe8c9;
   --box-color: #3f5669;
@@ -13,12 +13,15 @@
   --text-color: rgba(255, 255, 255, .87);
   --text-hover: rgba(0, 0, 0, .87);
   --text-muted: rgba(255, 255, 255, .67);
-  --menu-hover: rgba(50, 70, 90, .7);
-  --box-shadow: rgba(255, 255, 255, .1);
+  --menu-hover: rgba(50, 70, 90, 0.7);
+  --box-shadow: rgba(0, 0, 0, .2);
   --border-color: rgba(255, 255, 255, .3);
+  --blue: #1591d4;
+  --green: #9ccc65;
+  --red: #ff5252;
   --mangenta: #d900d9;
+  --bg-gold: #ffba57;
   --bg-mangenta: #b966b9;
-  --bg-gold: #e6b000;
   --bg-red: #ff2727;
   --row-selected: rgba(35, 52, 70, .5);
   --date-selected: rgba(255, 149, 5, .7);
@@ -31,6 +34,8 @@ body {
   color: var(--text-color);
   background: var(--background-color)
 }
+
+
 
 .bg-blue-color {
   background-color: var(--background-color) !important
@@ -63,8 +68,12 @@ pre, .syntax-box {
   background-color: var(--bg-box);
   position: relative;
   margin-bottom: 20px;
-  -webkit-box-shadow: 0 1px 3px 1px rgba(255, 255, 255, .05) !important;
-  box-shadow: 0 1px 3px 1px rgba(255, 255, 255, .05) !important
+  -webkit-box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .2) !important;
+  box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .2) !important
+}
+gridster-item {
+  -webkit-box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .12) !important;
+  box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .12) !important;
 }
 
 .box-footer {
@@ -192,6 +201,12 @@ pre.log {
   background: rgba(58, 58, 58, .7)
 }
 
+table.folder-tree-grid > tbody > tr,
+table.folder-tree-grid > tbody > tr > td {
+  border: none !important;
+  background: 0 0 !important
+}
+
 table.folder-tree-grid .indented a {
   color: #606060
 }
@@ -263,17 +278,20 @@ input[type=search]:focus {
 .text-black-dk {
   color: #fff
 }
-.btn-default{
+
+.btn-default {
   color: rgba(255, 255, 255, .87);
   background-color: rgba(56, 77, 94, .7);
   border-color: rgba(56, 77, 94, .7);
 }
+
 .btn-default.active.focus,
 .btn-default:hover {
   color: #fff !important;
   background-color: rgba(56, 77, 94, .9);
   border-color: rgba(56, 77, 94, .9);
 }
+
 .btn-grey {
   color: rgba(255, 255, 255, .87);
   background-color: #384d5e;
@@ -282,9 +300,9 @@ input[type=search]:focus {
 
 .btn-grey.active.focus,
 .btn-grey:hover {
-  color: #fff !important;
-  background-color: var(--bg-box) !important;
-  border-color: #233446 !important;
+  color: #fff;
+  background-color: var(--bg-box);
+  border-color: #233446;
 }
 
 .btn:hover {
@@ -678,17 +696,6 @@ input[readonly] {
   background-color: transparent !important
 }
 
-gridster-item {
-  overflow: visible !important;
-  z-index: unset !important;
-  background-color: var(--bg-box) !important;
-  box-sizing: border-box;
-  position: absolute;
-  transition: .3s;
-  display: none;
-  user-select: text;
-}
-
 .calendar {
   color: white !important;
   direction: ltr;
@@ -738,7 +745,7 @@ input:-webkit-autofill:focus {
 }
 
 span ul li a {
-  color: var(--primary); !important;
+  color: var(--primary) !important;
 }
 
 .input-time + a {
@@ -752,7 +759,7 @@ span ul li a {
 }
 
 .text-orange {
-  color: var(--primary); !important;
+  color: var(--primary) !important;
 }
 
 pre#pre {
@@ -760,7 +767,7 @@ pre#pre {
 }
 
 .avatar[_ngcontent-c2] {
-  background: var(--primary); !important;
+  background: var(--primary) !important;
 }
 
 .ui-select-match-item {
@@ -892,11 +899,11 @@ pre#pre {
 }
 
 .documents a[href*="http:"] {
-  color: var(--primary); !important;
+  color: var(--primary) !important;
 }
 
 .documents a[href*="https:"] {
-  color: var(--primary); !important;
+  color: var(--primary) !important;
 }
 
 .arrow-down-ac:last-child:after {

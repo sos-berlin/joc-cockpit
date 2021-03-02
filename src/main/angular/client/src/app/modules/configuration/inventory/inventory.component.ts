@@ -1407,7 +1407,7 @@ export class ImportWorkflowModalComponent implements OnInit {
 
     this.uploader.onCompleteItem = (fileItem: any, response, status, headers) => {
       if (status === 200) {
-        this.activeModal.close('success');
+        this.activeModal.close(this.requestObj.targetFolder);
       }
     };
 
@@ -1688,6 +1688,7 @@ export class CreateObjectModalComponent {
 export class CreateFolderModalComponent {
   @Input() schedulerId: any;
   @Input() folders: any;
+  @Input() deepRename: any;
   @Input() rename: any;
   @Input() oldName: any;
   submitted = false;
@@ -1792,7 +1793,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.subscription2 = dataService.reloadTree.subscribe(res => {
       if (res) {
         if (res.add || res.reload) {
-          this.updateTree();
+          this.updateTree(this.isTrash);
         } else if (res.set) {
           if (this.treeCtrl && !this.isTrash) {
             this.selectedData = res.set;
@@ -1893,6 +1894,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       }
       this.clearSelection();
     } else {
+      this.clearSelection();
       if (this.tempObjSelection.type) {
         this.type = _.clone(this.tempObjSelection.type);
         this.selectedData = this.coreService.clone(this.tempObjSelection.selectedData);
@@ -1935,18 +1937,18 @@ export class InventoryComponent implements OnInit, OnDestroy {
       }
       const tree = this.coreService.prepareTree(res, false);
       if (path) {
-        this.tree = this.recursiveTreeUpdate(tree, this.tree);
+        this.tree = this.recursiveTreeUpdate(tree, this.tree, false);
         this.updateFolders(path, false, () => {
-          this.updateTree();
+          this.updateTree(false);
         });
         if (mainPath && path !== mainPath) {
           this.updateFolders(mainPath, false, () => {
-            this.updateTree();
+            this.updateTree(false);
           });
         }
       } else {
         if (!_.isEmpty(this.inventoryConfig.expand_to)) {
-          this.tree = this.recursiveTreeUpdate(tree, this.inventoryConfig.expand_to);
+          this.tree = this.recursiveTreeUpdate(tree, this.inventoryConfig.expand_to, false);
           this.selectedObj = this.inventoryConfig.selectedObj || {};
           this.copyObj = this.inventoryConfig.copyObj;
           if (this.inventoryConfig.selectedObj && this.inventoryConfig.selectedObj.path) {
@@ -1956,7 +1958,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
               if (response) {
                 this.selectedData = response.data;
               }
-              this.updateTree();
+              this.updateTree(false);
             });
           } else {
             this.isLoading = false;
@@ -1968,12 +1970,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
         } else {
           this.tree = tree;
           if (this.tree.length > 0) {
-            this.updateObjects(this.tree[0], (children) => {
+            this.updateObjects(this.tree[0], false, (children) => {
               this.isLoading = false;
               this.tree[0].children.splice(0, 0, children[0]);
               this.tree[0].children.splice(1, 0, children[1]);
               this.tree[0].expanded = true;
-              this.updateTree();
+              this.updateTree(false);
             }, false);
           }
           if (this.inventoryConfig.selectedObj) {
@@ -1992,19 +1994,19 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (res.folders.length > 0) {
         const tree = this.coreService.prepareTree(res, false);
         if (path) {
-          this.trashTree = this.recursiveTreeUpdate(tree, this.trashTree);
+          this.trashTree = this.recursiveTreeUpdate(tree, this.trashTree, true);
           this.updateFolders(path, true, () => {
-            this.updateTree();
+            this.updateTree(true);
           });
         } else {
           this.trashTree = tree;
           if (this.trashTree.length > 0) {
             this.trashTree[0].expanded = true;
-            this.updateObjects(this.trashTree[0], (children) => {
+            this.updateObjects(this.trashTree[0], true, (children) => {
               this.isTreeLoaded = false;
               this.trashTree[0].children.splice(0, 0, children[0]);
               this.trashTree[0].children.splice(1, 0, children[1]);
-              this.updateTree();
+              this.updateTree(true);
             }, false);
           }
         }
@@ -2046,7 +2048,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             }
           }
           if (flag) {
-            self.updateObjects(data, (children) => {
+            self.updateObjects(data, self.isTrash, (children) => {
               data.children.splice(0, 0, children[0]);
               data.children.splice(1, 0, children[1]);
               const parentNode = (self.selectedObj.type === 'SCHEDULE' || self.selectedObj.type.match(/CALENDAR/)) ? children[1] : children[0];
@@ -2068,7 +2070,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
                 self.type = self.selectedObj.type;
                 self.isLoading = false;
-                self.updateTree();
+                self.updateTree(self.isTrash);
               }
             }, false);
           }
@@ -2082,20 +2084,28 @@ export class InventoryComponent implements OnInit, OnDestroy {
         traverseTree(this.tree[0]);
       }
     }, () => {
-      this.updateObjects(this.tree[0], (children) => {
+      this.updateObjects(this.tree[0], this.isTrash, (children) => {
         this.isLoading = false;
         this.tree[0].children.splice(0, 0, children[0]);
         this.tree[0].children.splice(1, 0, children[1]);
         this.tree[0].expanded = true;
-        this.updateTree();
+        this.updateTree(this.isTrash);
       }, false);
     });
   }
 
-  recursiveTreeUpdate(scr, dest) {
+  recursiveTreeUpdate(scr, dest, isTrash) {
+    const self = this;
+    let isFound = false;
+
     function recursive(scrTree, destTree) {
       if (scrTree && destTree) {
         for (let j = 0; j < scrTree.length; j++) {
+          if (isTrash === self.isTrash && self.type) {
+            if (scrTree[j].path === self.selectedData.path) {
+              isFound = true;
+            }
+          }
           for (let i = 0; i < destTree.length; i++) {
             if (destTree[i].path && scrTree[j].path && (destTree[i].path === scrTree[j].path)) {
               if (scrTree[j].object && destTree[i].object) {
@@ -2142,6 +2152,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
 
     recursive(scr, dest);
+    if (!isFound && this.type && isTrash === self.isTrash) {
+      this.clearSelection();
+    }
     return scr;
   }
 
@@ -2151,7 +2164,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if ((!isTrash && this.tree.length > 0) || (isTrash && this.trashTree.length > 0)) {
       function traverseTree(data) {
         if (path && data.path && (path === data.path)) {
-          self.updateObjects(data, (children) => {
+          self.updateObjects(data, isTrash, (children) => {
             if (data.children.length > 1 && data.children[0].controller) {
               const index = data.children[0].controller ? 1 : 0;
               const index2 = data.children[1].dailyPlan ? 1 : 0;
@@ -2160,7 +2173,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             } else {
               data.children = children;
             }
-            self.updateTree();
+            self.updateTree(isTrash);
           }, !path);
           matchData = data;
         }
@@ -2214,7 +2227,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         if (!(data.length > 1 && data[0].controller)) {
           node.origin.loading = true;
         }
-        this.updateObjects(node.origin, (children) => {
+        this.updateObjects(node.origin, this.isTrash, (children) => {
           if (data.length > 1 && data[0].controller) {
             node.isExpanded = true;
             node.origin.children[0] = children[0];
@@ -2226,7 +2239,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             }
             node.origin.loading = false;
             node.origin.expanded = true;
-            this.updateTree();
+            this.updateTree(this.isTrash);
           }
         }, false);
       }
@@ -2243,7 +2256,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             if (!(data.length > 1 && data[0].controller)) {
               node.origin.loading = true;
             }
-            this.updateObjects(node.origin, (children) => {
+            this.updateObjects(node.origin, this.isTrash, (children) => {
               if (data.length > 1 && data[0].controller) {
                 node.isExpanded = true;
                 node.origin.children[0] = children[0];
@@ -2255,7 +2268,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
                 }
                 node.origin.loading = false;
                 node.origin.expanded = true;
-                this.updateTree();
+                this.updateTree(this.isTrash);
               }
             }, false);
           }
@@ -2273,7 +2286,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateObjects(data, cb, isExpandConfiguration) {
+  updateObjects(data, isTrash, cb, isExpandConfiguration) {
     let flag = true;
     const controllerObj: any = {controllerArr: []}, dailyPlanObj: any = {dailyPlanArr: []};
     const _key = data.path === '/' ? '/' : (data.path + '/');
@@ -2300,7 +2313,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         {name: 'Calendars', object: 'CALENDAR', children: [], path: data.path, key: (_key + 'Calendars$')}];
     }
 
-    const URL = this.isTrash ? 'inventory/trash/read/folder' : 'inventory/read/folder';
+    const URL = isTrash ? 'inventory/trash/read/folder' : 'inventory/read/folder';
     this.coreService.post(URL, {
       path: data.path
     }).subscribe((res: any) => {
@@ -2440,7 +2453,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.createObject(type, list, node.origin.path);
     } else {
       let data = node.origin.children;
-      this.updateObjects(node.origin, (children) => {
+      this.updateObjects(node.origin, false, (children) => {
         if ((type.match('CALENDAR') || type === 'SCHEDULE')) {
           children[1].expanded = true;
         } else {
@@ -2498,7 +2511,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
   import() {
     const modalRef = this.modalService.open(ImportWorkflowModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.display = this.preferences.auditLog;
-    modalRef.result.then(() => {
+    modalRef.result.then((path) => {
+      this.initTree(path, null);
     }, () => {
     });
   }
@@ -2508,7 +2522,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.schedulerIds = this.schedulerIds;
     modalRef.componentInstance.display = this.preferences.auditLog;
     modalRef.componentInstance.isDeploy = true;
-    modalRef.result.then(() => {
+    modalRef.result.then((path) => {
+      this.initTree(path, null);
     }, () => {
     });
   }
@@ -2610,9 +2625,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
       obj.update = [{id: data.id}];
     }
     this.coreService.post('inventory/release', obj).subscribe(() => {
-      this.updateFolders(data.path1 || data.path, false,() => {
-        this.updateTree();
-      });
     });
   }
 
@@ -2620,8 +2632,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (data.id === this.selectedObj.id) {
       this.selectedObj.name = data.name;
     }
-    this.updateFolders(data.path, false,() => {
-      this.updateTree();
+    this.updateFolders(data.path, false, () => {
+      this.updateTree(false);
     });
   }
 
@@ -2688,8 +2700,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.type = obj.objectType || obj.type;
         }, 5);
       }
-      this.updateFolders(obj.path, false,() => {
-        this.updateTree();
+      this.updateFolders(obj.path, false, () => {
+        this.updateTree(false);
       });
     }, (err) => {
       console.log(err);
@@ -2708,6 +2720,22 @@ export class InventoryComponent implements OnInit, OnDestroy {
         }
       }, () => {
       });
+    }
+  }
+
+  deepRename(node) {
+    if (this.permission && this.permission.Inventory && this.permission.Inventory.configurations.edit) {
+      this.message.info('Not yet implemented');
+      /*      const modalRef = this.modalService.open(CreateFolderModalComponent, {backdrop: 'static'});
+            modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+            modalRef.componentInstance.folders = node.origin;
+            modalRef.componentInstance.deepRename = true;
+            modalRef.result.then((res: any) => {
+              if (res === 'DONE') {
+                this.initTree(node.origin.path, null);
+              }
+            }, () => {
+            });*/
     }
   }
 
@@ -2749,9 +2777,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
             if (!object.controller && !object.dailyPlan && !object.object) {
               let data = object.children;
               if (!data[0] || !data[0].controller || data.length === 0) {
-                this.updateObjects(node.origin, (children) => {
+                this.updateObjects(node.origin, false, (children) => {
                   if (this.copyObj.type) {
-                    if ((this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'SCHEDULE')) {
+                    if ((this.copyObj.type.match(/CALENDAR/) || this.copyObj.type === 'SCHEDULE')) {
                       children[1].expanded = true;
                     } else {
                       children[0].expanded = true;
@@ -2762,7 +2790,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
                     node.origin.children = node.origin.children.concat(data);
                   }
                   node.origin.expanded = true;
-                  this.updateTree();
+                  this.updateTree(false);
                 }, false);
                 return;
               }
@@ -2824,7 +2852,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
         obj.newPath = obj.newPath + '/' + this.copyObj.name;
         this.coreService.post('inventory/rename', obj).subscribe(() => {
           this.copyObj = null;
-          this.initTree(obj.newPath, null);
         });
       }
     }
@@ -2864,44 +2891,33 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   removeObject(node) {
     const object = node.origin;
-    if (object.object || object.controller || object.dailyPlan) {
-      let releasable = false;
-      if (object.dailyPlan || (object.object && (object.object === 'SCHEDULE' || object.object.match('CALENDAR')))) {
-        releasable = true;
-      }
-      const modalRef = this.modalService.open(DeployComponent, {backdrop: 'static'});
-      modalRef.componentInstance.schedulerIds = this.schedulerIds;
-      modalRef.componentInstance.preferences = this.preferences;
-      modalRef.componentInstance.display = this.preferences.auditLog;
-      modalRef.componentInstance.data = object;
-      modalRef.componentInstance.path = object.path;
-      modalRef.componentInstance.isRemove = true;
-      modalRef.componentInstance.releasable = releasable;
-      modalRef.result.then(() => {
-
-      }, () => {
-      });
+    let _path;
+    if (object.type) {
+      _path = object.path + (object.path === '/' ? '' : '/') + object.name;
     } else {
-      let _path;
-      if (object.type) {
-        _path = object.path + (object.path === '/' ? '' : '/') + object.name;
-      } else {
-        _path = object.path;
-      }
-      const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.title = 'remove';
-      modalRef.componentInstance.message = 'removeObject';
-      modalRef.componentInstance.type = 'Remove';
-      modalRef.componentInstance.objectName = _path;
-      modalRef.result.then(() => {
-        if (!object.type) {
-          this.deleteObject(_path, object, node);
-        } else {
-          this.trashIndividualObject(_path, object);
-        }
-      }, () => {
-      });
+      _path = object.path;
     }
+    const obj = this.getObjectArr(object, false);
+    const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.title = 'remove';
+    modalRef.componentInstance.message = 'removeObject';
+    modalRef.componentInstance.type = 'Remove';
+    if (obj.objects || object.type) {
+      modalRef.componentInstance.countMessage = 'removeAllObject';
+      modalRef.componentInstance.count = obj.objects.length;
+    }
+    modalRef.componentInstance.objectName = _path;
+    modalRef.result.then(() => {
+      if (!object.type && !object.object && !object.controller && !object.dailyPlan) {
+        this.deleteObject(_path, object, node);
+      } else {
+        this.coreService.post('inventory/remove', obj).subscribe(() => {
+
+        });
+      }
+    }, () => {
+    });
+
   }
 
   deleteDraft(node) {
@@ -2912,18 +2928,20 @@ export class InventoryComponent implements OnInit, OnDestroy {
     } else {
       _path = object.path;
     }
+    const obj = this.getObjectArr(object, true);
     const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.title = 'delete';
     modalRef.componentInstance.message = 'deleteDraftObject';
+    if (obj.objects || object.type) {
+      modalRef.componentInstance.countMessage = 'deleteAllDraftObject';
+      modalRef.componentInstance.count = obj.objects.length;
+    }
     modalRef.componentInstance.type = 'Delete';
     modalRef.componentInstance.objectName = _path;
     modalRef.result.then(() => {
-      let obj: any = {id: object.id};
-      if (!object.type) {
-        obj = {path: _path, objectType: 'FOLDER'};
-      }
-      this.coreService.post('inventory/delete_draft', obj).subscribe(() => {
-        if (obj.id) {
+      const URL = (object.type || object.object || object.controller || object.dailyPlan) ? 'inventory/delete_draft' : 'inventory/delete_draft/folder';
+      this.coreService.post(URL, obj).subscribe(() => {
+        if (object.id) {
           let isDraftOnly = true, isDeployObj = true;
           if (object.type.match(/CALENDAR/) || object.type === 'SCHEDULE') {
             isDeployObj = false;
@@ -2934,7 +2952,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             isDraftOnly = false;
           }
           if (isDraftOnly) {
-            if (node.parentNode && node.parentNode.origin && node.parentNode.origin.children && obj.objectType !== 'FOLDER') {
+            if (node.parentNode && node.parentNode.origin && node.parentNode.origin.children) {
               for (let i = 0; i < node.parentNode.origin.children.length; i++) {
                 if (node.parentNode.origin.children[i].name === object.name && node.parentNode.origin.children[i].path === object.path) {
                   node.parentNode.origin.children.splice(i, 1);
@@ -2955,7 +2973,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
               this.selectedData.reload = true;
             }
           }
-          this.updateTree();
+          this.updateTree(false);
         } else {
           this.clearCopyObject(object);
         }
@@ -2969,17 +2987,19 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (node instanceof NzTreeNode) {
       object = node.origin;
     }
+    const obj = this.getObjectArr(object, false);
     const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.title = 'delete';
     modalRef.componentInstance.message = 'deleteObject';
     modalRef.componentInstance.type = 'Delete';
+    if (obj.objects || object.type) {
+      modalRef.componentInstance.countMessage = 'deleteAllObject';
+      modalRef.componentInstance.count = obj.objects.length;
+    }
     modalRef.componentInstance.objectName = object.type ? object.path + (object.path === '/' ? '' : '/') + object.name : object.path;
     modalRef.result.then(() => {
-      let obj: any = {id: object.id};
-      if (!object.type) {
-        obj = {path: object.path, objectType: 'FOLDER'};
-      }
-      this.coreService.post('inventory/trash/delete', obj).subscribe(() => {
+      const URL = (object.type || object.object || object.controller || object.dailyPlan) ? 'inventory/trash/delete' : 'inventory/trash/delete/folder';
+      this.coreService.post(URL, obj).subscribe(() => {
 
       });
     }, () => {
@@ -3009,7 +3029,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         }
       }
       this.coreService.post('inventory/trash/restore', obj).subscribe(() => {
-        this.initTrashTree(obj.path || object.path);
+
       });
     }, () => {
     });
@@ -3025,7 +3045,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
         if (args.eventSnapshots[j].path) {
           const path = args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/') + 1) || '/';
           if (args.eventSnapshots[j].eventType.match(/Inventory/) || args.eventSnapshots[j].eventType.match(/Item/)) {
-            console.log(args.eventSnapshots[j], 'updated...', path);
             const isTrash = args.eventSnapshots[j].eventType.match(/Trash/);
             if (args.eventSnapshots[j].objectType === 'FOLDER') {
               if (isTrash) {
@@ -3035,10 +3054,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
               } else {
                 this.initTree(args.eventSnapshots[j].path, path);
               }
-              break;
             } else {
               this.updateFolders(args.eventSnapshots[j].path, isTrash, () => {
-                this.updateTree();
+                this.updateTree(isTrash);
               });
             }
           }
@@ -3148,14 +3166,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
         this.type = obj.type;
         this.selectedData = obj;
         this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
-        this.updateTree();
+        this.updateTree(false);
       });
     }
   }
 
   private deleteObject(_path, object, node) {
-    const obj = {path: _path, objectType: 'FOLDER'};
-    this.coreService.post('inventory/remove', obj).subscribe(() => {
+    this.coreService.post('inventory/remove/folder', {path: _path}).subscribe(() => {
       object.deleted = true;
       if (node && node.parentNode && node.parentNode.origin) {
         node.parentNode.origin.children = node.parentNode.origin.children.filter((child) => {
@@ -3165,31 +3182,37 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (this.selectedObj && _path === this.selectedObj.path) {
         this.clearSelection();
       }
-      this.updateTree();
+      this.updateTree(false);
     });
   }
 
-  private trashIndividualObject(_path, object) {
-    const isDeployable = this.inventoryService.isControllerObject(object.type);
-    let obj: any = {delete: {}};
-    if (isDeployable) {
-      obj.controllerIds = this.schedulerIds.controllerIds;
-      if (object.deployed) {
-        obj.delete.deployConfigurations = [{configuration: {path: _path, objectType: object.type}}];
+
+  private getObjectArr(object, isDraft): any {
+    let obj: any = {objects: []};
+    if (!object.type) {
+      if (object.object || object.controller || object.dailyPlan) {
+        object.children.forEach((item) => {
+          if (item.children) {
+            item.children.forEach((data) => {
+              if (!isDraft || (!data.deployed && !data.released)) {
+                obj.objects.push({id: data.id});
+              }
+            });
+          } else if (!isDraft || (!item.deployed && !item.released)) {
+            obj.objects.push({id: item.id});
+          }
+        });
       } else {
-        obj.delete.draftConfigurations = [{configuration: {path: _path, objectType: object.type}}];
+        obj = {path: object.path};
       }
     } else {
-      obj.delete = [{id: object.id}];
+      obj.objects.push({id: object.id});
     }
-    const URL = !isDeployable ? 'inventory/release' : 'inventory/deployment/deploy';
-    this.coreService.post(URL, obj).subscribe(() => {
-      this.clearCopyObject(object);
-    });
+    return obj;
   }
 
-  private updateTree() {
-    if (this.isTrash) {
+  private updateTree(isTrash) {
+    if (isTrash) {
       this.trashTree = [...this.trashTree];
     } else {
       this.tree = [...this.tree];

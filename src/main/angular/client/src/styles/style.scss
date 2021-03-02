@@ -13,8 +13,9 @@
   --text-muted: #7D90A8;
   --border-color: #e3e3e3;
   --dark-border-color: #ccc;
-  --primary: #2494bf;
-  --hover-primary: #2d90b6;
+  --primary: rgb(14, 138, 139);
+  --hover-primary: rgb(12, 102, 121);
+  --secondary: rgb(67, 149, 166);
   --default-btn: #ddd;
   --default-btn-hover: #d0d0d0;
   --black: rgba(0, 0, 0, .9);
@@ -39,8 +40,8 @@
   --bg-pink: #f37891;
   --bg-yellow-green: #cccc00;
   --row-selected: #e6f7ff;
-  --date-selected: rgba(36, 148, 191, .4);
-  --date-selected-hover: rgba(36, 148, 191, 0.55);
+  --date-selected: rgba(14, 138, 139, .5);
+  --date-selected-hover: rgba(14, 138, 139, 0.65);
   --date-selected-exclude: rgba(255, 163, 102, 0.56);
   --date-selected-exclude-hover: rgba(255, 163, 102, 0.66);
 }
@@ -3768,7 +3769,7 @@ li > a > i.remove {
 }
 
 .btn-today {
-  background: $secondary !important;
+  background: var(--secondary) !important;
   color: rgba(255, 255, 255, 0.87) !important;
 }
 
@@ -4090,7 +4091,7 @@ input[type=search] {
 .nav-active-orange {
   .nav-link.active, .nav > li.active > a {
     color: rgba(255, 255, 255, 0.87) !important;
-    background-color: $secondary !important;
+    background-color: var(--secondary) !important;
   }
 }
 
@@ -4149,7 +4150,7 @@ input[type=search] {
 }
 
 .text-orange {
-  color: $secondary;
+  color: var(--secondary);
 }
 
 .b-orange {
@@ -5969,7 +5970,11 @@ pre#pre {
   height: 20px;
   width: 4px;
 }
-
+.jsgantt-task-background {
+  text-align: center;
+  z-index: 0;
+  background: var(--primary);
+}
 .view-all-agent {
   span {
     display: block;
@@ -6377,7 +6382,7 @@ tr.tr-border td:first-child {
 }
 
 .ant-tabs-ink-bar {
-  background-color: $secondary;
+  background-color: var(--secondary);
 }
 
 .ant-tabs-nav .ant-tabs-tab {

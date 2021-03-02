@@ -62,7 +62,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (dom.position()) {
       top = dom.position().top;
     }
-    $('.gridster').height((window.innerHeight - top) + 'px');
+    const ht = 'calc(100vh - ' + top + 'px)';
+    $('.gridster').css({'height': ht, 'scroll-top': '0'});
   }
 
   ngOnInit(): void {

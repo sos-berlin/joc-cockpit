@@ -1681,7 +1681,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   searchInResult() {
-
     this.updateTable(this.dailyPlanFilters.searchText ? this.searchPipe.transform(this.plans, this.dailyPlanFilters.searchText, this.searchableProperties) : this.plans);
   }
 

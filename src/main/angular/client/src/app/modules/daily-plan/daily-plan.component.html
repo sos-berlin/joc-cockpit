@@ -381,7 +381,7 @@
               </nz-dropdown-menu>
             </div>
             <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
-                    [disabled]="(planOrders | filter: dailyPlanFilters.searchText).length===0"
+                    [disabled]="planOrders.length===0"
                     (click)="exportToExcel()">
               <i class="fa fa-share-square-o"></i>
             </button>
