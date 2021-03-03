@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title" *ngIf="!rename" translate>inventory.label.createFolder</h4>
-  <h4 class="modal-title" *ngIf="rename">
+  <h4 class="modal-title" *ngIf="rename && origin">
     <span translate>inventory.label.rename</span>:
     {{origin.path}}<span *ngIf="origin.type">{{origin.path === '/' ? '' : '/'}}{{origin.name}}</span>
   </h4>
@@ -29,7 +29,7 @@
         </div>
       </div>
     </div>
-    <div *ngIf="rename">
+    <div *ngIf="rename && origin">
       <div class="form-group row" *ngIf="!origin.type && !origin.object && !origin.controller && !origin.dailyPlan">
         <label class="col-md-3" translate>
           inventory.label.rename

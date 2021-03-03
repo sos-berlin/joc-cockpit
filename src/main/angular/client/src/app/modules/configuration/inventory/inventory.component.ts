@@ -1699,10 +1699,12 @@ export class CreateFolderModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.origin.object || this.origin.controller || this.origin.dailyPlan) {
-      this.folder.deepRename = 'replace';
-    } else if (this.origin.type) {
-      this.folder.name = _.clone(this.origin.name);
+    if(this.origin) {
+      if (this.origin.object || this.origin.controller || this.origin.dailyPlan) {
+        this.folder.deepRename = 'replace';
+      } else if (this.origin.type) {
+        this.folder.name = _.clone(this.origin.name);
+      }
     }
   }
 
@@ -2602,7 +2604,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (this.permission && this.permission.Inventory && this.permission.Inventory.configurations.edit) {
       const modalRef = this.modalService.open(CreateFolderModalComponent, {backdrop: 'static'});
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-      modalRef.componentInstance.folders = node.origin;
+      modalRef.componentInstance.origin = node.origin;
       modalRef.result.then(() => {
         this.initTree(node.origin.path, null);
       }, () => {
