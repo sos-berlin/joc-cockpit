@@ -5994,7 +5994,9 @@ pre#pre {
   font-size: $base__font-size;
   font-family: $base__font-family;
 }
-
+.ant-select-tree-dropdown .ant-select-not-found{
+  color: var(--text-color);
+}
 .job-property-editor {
   .ant-select {
     width: 100%;

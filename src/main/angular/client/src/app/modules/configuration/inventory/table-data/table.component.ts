@@ -87,8 +87,8 @@ export class TableComponent {
     this.dataService.reloadTree.next({copy: data});
   }
 
-  shallowCopy(data): void {
-    this.dataService.reloadTree.next({shallowCopy: data});
+  renameObject(data): void {
+    this.dataService.reloadTree.next({renameObject: data});
   }
 
   editObject(data): void {

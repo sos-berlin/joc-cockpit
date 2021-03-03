@@ -13,12 +13,13 @@
   --text-color: rgba(255, 255, 255, .87);
   --text-hover: rgba(0, 0, 0, .87);
   --text-muted: rgba(255, 255, 255, .67);
-  --menu-hover: rgba(50, 70, 90, 0.7);
+  --menu-hover: #4e6d8c;
   --box-shadow: rgba(0, 0, 0, .2);
   --border-color: rgba(255, 255, 255, .3);
   --blue: #1591d4;
   --green: #9ccc65;
   --red: #ff5252;
+  --bg-dimgrey: #999;
   --mangenta: #d900d9;
   --bg-gold: #ffba57;
   --bg-mangenta: #b966b9;
@@ -34,8 +35,6 @@ body {
   color: var(--text-color);
   background: var(--background-color)
 }
-
-
 
 .bg-blue-color {
   background-color: var(--background-color) !important
@@ -649,14 +648,6 @@ pre.cdata {
   color: #fff
 }
 
-.tree-grid .tree-icon:hover {
-  color: #337ab7
-}
-
-.form-control:focus {
-  border-color: #337ab7
-}
-
 .backup {
   background: #233446;
   background: -webkit-linear-gradient(left, rgba(255, 255, 255, .51), #233446);
@@ -936,13 +927,13 @@ pre#pre {
   border: 1px solid var(--bg-box) !important;
   border-bottom: 1px solid rgba(0, 0, 0, .95);
   -webkit-box-shadow: 0 2px 4px rgba(255, 255, 255, .3);
-  box-shadow: 0 2px 4px rgba(255, 255, 255, .3)
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .2)
 }
 
 .ant-select-dropdown {
   background-color: var(--bg-box) !important;
   color: rgba(255, 255, 255, .87);
-  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .ant-calendar-year-panel-header .ant-calendar-year-panel-century-select, .ant-calendar-year-panel-header .ant-calendar-year-panel-decade-select, .ant-calendar-year-panel-header .ant-calendar-year-panel-year-select, .ant-calendar-year-panel-header .ant-calendar-year-panel-month-select,
@@ -1185,24 +1176,123 @@ div.jsoneditor {
   color: var(--text-color);
 }
 
+.ace-jsoneditor .ace_gutter-active-line {
+  background: rgba(35, 52, 70, .4) !important;
+}
+
 .ace-jsoneditor .ace_marker-layer .ace_active-line {
-  background-color: #999;
+  background: rgba(35, 52, 70, .5) !important;
 }
 
 /**
 Code mirror
  */
-.CodeMirror {
-  color: rgba(255, 255, 255, .87) !important
+.CodeMirror, .CodeMirror-gutters {
+  color: rgba(255, 255, 255, .87) !important;
 }
 
 .CodeMirror-gutters {
-  background: var(--bg-footer) !important;
+  background: #2b3e50 !important;
   border-color: rgba(221, 221, 221, .2)
 }
 
+.CodeMirror-cursor {
+  border-left: solid thin #E6C845 !important;
+}
+
 .CodeMirror-linenumber {
-  color: #fff !important
+  color: #f8f8f2 !important;
+}
+
+.CodeMirror-focused div.CodeMirror-selected,
+.ace-jsoneditor .ace_marker-layer .ace_selection,
+.CodeMirror-selected {
+  background: #243443 !important;
+}
+
+.CodeMirror-line::selection,
+.CodeMirror-line > span::selection,
+.CodeMirror-line > span > span::selection {
+  background: #243443 !important;
+}
+
+.CodeMirror-line::-moz-selection,
+.CodeMirror-line > span::-moz-selection,
+.CodeMirror-line > span > span::-moz-selection {
+  background: #243443 !important;
+}
+
+span.cm-comment {
+  color: #5c98cd !important;
+}
+
+span.cm-string, span.cm-string-2 {
+  color: #E6DB74 !important;
+}
+
+span.cm-number {
+  color: yellow !important;
+}
+
+span.cm-variable {
+  color: #f8f8f2 !important;
+}
+
+span.cm-variable-2 {
+  color: #f8f8f2 !important;
+}
+
+span.cm-def {
+  color: #72C05D !important;
+}
+
+span.cm-operator {
+  color: #66D9EF !important;
+}
+
+span.cm-keyword {
+  color: #ff6541 !important;
+}
+
+span.cm-atom {
+  color: #bd93f9 !important;
+}
+
+span.cm-meta {
+  color: #f8f8f2 !important;
+}
+
+span.cm-tag {
+  color: #ff6541 !important;
+}
+
+span.cm-attribute {
+  color: #66D9EF !important;
+}
+
+span.cm-qualifier {
+  color: #72C05D !important;
+}
+
+span.cm-property {
+  color: #f8f8f2 !important;
+}
+
+span.cm-builtin {
+  color: #72C05D !important;
+}
+
+span.cm-variable-3, span.cm-type {
+  color: #ffb86c !important;
+}
+
+.CodeMirror-activeline-background {
+  background: #243443 !important;
+}
+
+.CodeMirror-matchingbracket {
+  text-decoration: underline;
+  color: white !important;
 }
 
 .table tr.active {
@@ -1217,110 +1307,12 @@ Code mirror
   border-color: rgba(233, 244, 255, .18) !important
 }
 
-div.CodeMirror-selected {
-  background: #b36539
-}
-
-.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection {
-  background: rgba(179, 101, 57, .99)
-}
-
-.CodeMirror-line::-moz-selection, .CodeMirror-line > span::-moz-selection, .CodeMirror-line > span > span::-moz-selection {
-  background: rgba(179, 101, 57, .99)
-}
-
-.CodeMirror-gutters {
-  background: #002240;
-  border-right: 1px solid #aaa
-}
-
-.CodeMirror-guttermarker {
-  color: #ffee80
-}
-
-.CodeMirror-guttermarker-subtle {
-  color: #d0d0d0
-}
-
-.CodeMirror-linenumber {
-  color: #d0d0d0
-}
-
-.CodeMirror-cursor {
-  border-left: 1px solid #fff
-}
-
-span.cm-comment {
-  color: #08f !important;
-}
-
-span.cm-atom {
-  color: #aa93dd !important;
-}
-
-span.cm-attribute, span.cm-number {
-  color: #ff80e1 !important;
-}
-
-span.cm-keyword {
-  color: #ffee80 !important;
-}
-
-span.cm-string, .ace-jsoneditor .ace_string {
-  color: #3ad900 !important;
+.ace-jsoneditor .ace_string {
+  color: #E6DB74 !important;
 }
 
 .ace-jsoneditor .ace_constant.ace_numeric {
   color: orangered;
-}
-
-span.cm-meta {
-  color: #ff9d00 !important;
-}
-
-span.cm-tag, span.cm-variable-2 {
-  color: #9effff !important;
-}
-
-.cm-type, span.cm-def, span.cm-variable-3 {
-  color: #fff !important;
-}
-
-span.cm-bracket {
-  color: #d8d8d8 !important;
-}
-
-span.cm-operator {
-  color: #b5b500 !important;
-}
-
-span.cm-builtin, span.cm-special {
-  color: #ff9e59 !important;
-}
-
-span.cm-link {
-  color: #845dc4
-}
-
-span.cm-error {
-  color: red
-}
-
-span.cm-property {
-  color: #fedcba
-}
-
-span.cm-variable {
-  color: #abcdef
-}
-
-.CodeMirror-activeline-background {
-  background: #002d57
-}
-
-.CodeMirror-matchingbracket {
-  outline: 1px solid grey;
-  color: #fff !important
 }
 
 #editor-script {
@@ -1334,7 +1326,6 @@ span.cm-variable {
 .bg-highlight {
   background-color: rgba(253, 70, 71, .58) !important
 }
-
 
 .jsgantt-chart .jsgantt-task-row:nth-child(even) {
   background-color: #233446;

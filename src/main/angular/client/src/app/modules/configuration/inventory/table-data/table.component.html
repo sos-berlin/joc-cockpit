@@ -34,8 +34,8 @@
     [nzPageSize]="preferences.entryPerPage"
     [nzPageIndex]="1"
     [nzBordered]="true"
-    [nzShowPagination]="(dataObj.children | filter: searchKey).length > 0"
-    [nzData]="(dataObj.children | filter: searchKey)"
+    [nzShowPagination]="(dataObj.children | filter: searchKey: ['name']).length > 0"
+    [nzData]="(dataObj.children | filter: searchKey:['name'])"
     [nzShowSizeChanger]="true"
     [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]">
 
@@ -88,8 +88,7 @@
                     <a (click)="copyObject(data)" translate>inventory.button.copy</a>
                   </li>
                   <li nz-menu-item *ngIf="permission.Inventory.configurations.edit">
-                    <a (click)="shallowCopy(data)" translate>inventory.button.shallowCopy</a>
-                  </li>
+                    <a (click)="renameObject(data);" translate>inventory.button.rename</a></li>
                   <li nz-menu-divider *ngIf="permission.Inventory.configurations.edit">
                   <li nz-menu-item *ngIf="permission.Inventory.configurations.publish.deploy && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE'" [nzDisabled]="!data.hasDeployments && !data.valid">
                     <a (click)="deployObject(data)" translate>inventory.button.deploy</a>
@@ -166,7 +165,7 @@
   </div>
   <div class="w-half label-top"
        *ngIf="ajaxTable.data.length >0"><span
-    translate>common.label.total</span> {{(dataObj.children | filter: searchKey).length}}
+    translate>common.label.total</span> {{(dataObj.children | filter: searchKey:['name']).length}}
     <span *ngIf="ajaxTable.data.length >1" translate>inventory.label.entriesFound</span>
     <span *ngIf="ajaxTable.data.length ==1" translate>inventory.label.entryFound</span>
   </div>

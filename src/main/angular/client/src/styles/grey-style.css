@@ -1,8 +1,8 @@
 :root {
   --primary: #eb8814;
   --hover-primary: #d47a12;
-  --primary-light-hover: #d47a12;
   --primary-disable-color: rgba(235, 136, 20, .7);
+  --secondary: #eb8700;
   --background-color: #717a86;
   --text-color: rgba(255, 255, 255, .87);
   --text-hover: rgba(0, 0, 0, .87);
@@ -18,7 +18,6 @@
   --bg-dimgrey: #7c8d9e;
   --green: #9ccc65;
   --red: #ff5252;
-  --blue: #1589ca;
   --bg-blue: #1591d4;
   --mangenta: #d900d9;
   --bg-gold: #ffba57;
@@ -61,11 +60,6 @@ a.text-dark:hover, a.text-dark:focus {
 .form-control,
 .input-group-addon {
   border-color: rgba(221, 221, 221, .2)
-}
-
-.b-primary,
-.form-control:focus {
-  border-color: var(--primary)
 }
 
 .nav-active-border2 > li.dropdown-separator .separator {
@@ -1136,21 +1130,6 @@ span ul li a {
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3) !important;
 }
 
-/**
-Code mirror
- */
-.CodeMirror {
-  color: rgba(255, 255, 255, .87) !important
-}
-
-.CodeMirror-gutters {
-  background: var(--bg-footer) !important;
-  border-color: rgba(221, 221, 221, .2)
-}
-
-.CodeMirror-linenumber {
-  color: #fff !important
-}
 
 .table tr.active {
   background: rgba(113, 122, 134, .65) !important
@@ -1167,9 +1146,25 @@ Code mirror
 .breadcrumb > li + li::before {
   color: #f2f2f2
 }
+/**
+Code mirror
+ */
+.CodeMirror {
+  color: rgba(255, 255, 255, .87) !important
+}
+
+.CodeMirror-gutters {
+  background: rgba(92, 99, 109, 0.7) !important;
+  border-color: rgba(221, 221, 221, .2)
+}
+
+.CodeMirror-linenumber {
+  color: #fff !important
+}
+
 
 .CodeMirror-foldgutter-folded, .CodeMirror-foldgutter-open {
-  color: #999
+  color: #999!important;
 }
 
 .CodeMirror-cursor {
@@ -1177,7 +1172,7 @@ Code mirror
 }
 
 span.cm-builtin {
-  color: #dcdccc;
+  color: #dcdccc!important;
   font-weight: 700
 }
 
@@ -1186,24 +1181,24 @@ span.cm-comment {
 }
 
 span.cm-keyword {
-  color: #f0dfaf;
+  color: #f0dfaf!important;
   font-weight: 700
 }
 
 span.cm-atom {
-  color: #bfebbf
+  color: #bfebbf!important;
 }
 
 span.cm-def {
-  color: #dcdccc
+  color: #dcdccc!important;
 }
 
 span.cm-variable {
-  color: #dfaf8f
+  color: #dfaf8f!important;
 }
 
 span.cm-variable-2 {
-  color: #dcdccc
+  color: #dcdccc!important;
 }
 
 span.cm-string, .ace-jsoneditor .ace_string {
@@ -1211,31 +1206,31 @@ span.cm-string, .ace-jsoneditor .ace_string {
 }
 
 span.cm-string-2 {
-  color: #cc9393
+  color: #cc9393 !important;
 }
 
 span.cm-number {
-  color: #dcdccc
+  color: #dcdccc !important;
 }
 
 span.cm-tag {
-  color: #93e0e3
+  color: #93e0e3!important;
 }
 
 span.cm-attribute {
-  color: #dfaf8f
+  color: #dfaf8f!important;
 }
 
 span.cm-qualifier {
-  color: #7cb8bb
+  color: #7cb8bb!important;
 }
 
 span.cm-meta {
-  color: #f0dfaf
+  color: #f0dfaf!important;
 }
 
 span.cm-header {
-  color: #f0efd0
+  color: #f0efd0!important;
 }
 
 span.cm-operator {
@@ -1247,11 +1242,11 @@ span.cm-builtin, span.cm-special {
 }
 
 span.cm-link {
-  color: #845dc4
+  color: #845dc4!important;
 }
 
 span.cm-error {
-  color: red
+  color: red!important;
 }
 span.CodeMirror-matchingbracket {
   box-sizing: border-box;
@@ -1265,19 +1260,32 @@ span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror-activeline {
-  background: #000
+  background: #000!important;
 }
 
 .CodeMirror-activeline-background {
-  background: #000
+  background: #000!important;
 }
 
 div.CodeMirror-selected {
-  background: #545454
+  background: #3c4147!important;
 }
 
+.ace-jsoneditor .ace_marker-layer .ace_selection,
 .CodeMirror-focused div.CodeMirror-selected {
-  background: #4f4f4f
+  background: #3c4147!important;
+}
+
+.CodeMirror-line::selection,
+.CodeMirror-line > span::selection,
+.CodeMirror-line > span > span::selection {
+  background: rgb(60, 65, 71);
+}
+
+.CodeMirror-line::-moz-selection,
+.CodeMirror-line > span::-moz-selection,
+.CodeMirror-line > span > span::-moz-selection {
+  background: rgb(60, 65, 71);
 }
 
 #editor-script {

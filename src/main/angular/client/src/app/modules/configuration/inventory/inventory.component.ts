@@ -1685,23 +1685,31 @@ export class CreateObjectModalComponent {
   selector: 'app-create-folder-template',
   templateUrl: './create-folder-dialog.html'
 })
-export class CreateFolderModalComponent {
+export class CreateFolderModalComponent implements OnInit {
   @Input() schedulerId: any;
-  @Input() folders: any;
+  @Input() origin: any;
   @Input() deepRename: any;
   @Input() rename: any;
   @Input() oldName: any;
   submitted = false;
   isUnique = true;
-  folder = {error: false, name: '', overwrite: false};
+  folder = {error: false, name: '', deepRename: 'rename', search: '', replace: ''};
 
   constructor(private coreService: CoreService, public activeModal: NgbActiveModal) {
+  }
+
+  ngOnInit() {
+    if (this.origin.object || this.origin.controller || this.origin.dailyPlan) {
+      this.folder.deepRename = 'replace';
+    } else if (this.origin.type) {
+      this.folder.name = _.clone(this.origin.name);
+    }
   }
 
   onSubmit(): void {
     this.submitted = true;
     if (!this.rename) {
-      const _path = this.folders.path + (this.folders.path === '/' ? '' : '/') + this.folder.name;
+      const _path = this.origin.path + (this.origin.path === '/' ? '' : '/') + this.folder.name;
       this.coreService.post('inventory/store', {
         objectType: 'FOLDER',
         path: _path,
@@ -1718,13 +1726,31 @@ export class CreateFolderModalComponent {
         this.submitted = false;
       });
     } else {
-      if (this.folders.name !== this.folder.name) {
-        this.coreService.post('inventory/rename', {
-          path: this.folders.path,
-          objectType: 'FOLDER',
-          newPath: this.folder.name,
-          overwrite: this.folder.overwrite,
-        }).subscribe(() => {
+      if (this.origin.name !== this.folder.name) {
+        let obj: any = {
+          newPath: this.folder.name
+        };
+        if (this.origin.id) {
+          obj.id = this.origin.id;
+        } else {
+          obj.path = this.origin.path;
+          obj.objectType = 'FOLDER';
+        }
+
+        let URL = this.folder.deepRename === 'replace' ? 'inventory/replace' : 'inventory/rename';
+        if (this.folder.deepRename === 'replace') {
+          if (this.origin.object || this.origin.controller || this.origin.dailyPlan) {
+            obj = this.getObjectArr(this.origin);
+          } else {
+            obj = {path: this.origin.path};
+            URL = 'inventory/replace/folder';
+          }
+          obj.search = this.folder.search;
+          obj.replace = this.folder.replace;
+        }
+
+        this.submitted = false;
+        this.coreService.post(URL, obj).subscribe(() => {
           this.activeModal.close('DONE');
         }, () => {
           this.submitted = false;
@@ -1735,10 +1761,24 @@ export class CreateFolderModalComponent {
     }
   }
 
+  private getObjectArr(object): any {
+    let obj: any = {objects: []};
+    object.children.forEach((item) => {
+      if (item.children) {
+        item.children.forEach((data) => {
+          obj.objects.push({id: data.id});
+        });
+      } else {
+        obj.objects.push({id: item.id});
+      }
+    });
+    return obj;
+  }
+
   checkFolderName() {
     this.isUnique = true;
-    for (let i = 0; i < this.folders.children.length; i++) {
-      if (this.folder.name === this.folders.children[i].name) {
+    for (let i = 0; i < this.origin.children.length; i++) {
+      if (this.folder.name === this.origin.children[i].name) {
         this.isUnique = false;
         break;
       }
@@ -1770,6 +1810,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   inventoryConfig: any;
   isTreeLoaded = false;
   isTrash = false;
+  navigateFrom: any = {};
   tempObjSelection: any = {};
   subscription1: Subscription;
   subscription2: Subscription;
@@ -1806,8 +1847,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.cut(res);
         } else if (res.copy) {
           this.copy(res);
-        } else if (res.shallowCopy) {
-          this.shallowCopy(res);
         } else if (res.paste) {
           this.paste(res.paste);
         } else if (res.deploy) {
@@ -1826,8 +1865,15 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.importJSON(res.importJSON);
         } else if (res.rename) {
           this.rename(res.rename);
+        } else if (res.renameObject) {
+          this.renameObject(res);
         } else if (res.back) {
           this.backToListView();
+        } else if (res.navigate) {
+          this.navigateFrom = _.clone(this.selectedObj);
+          this.selectedObj.type = res.navigate.type;
+          this.selectedObj.name = res.navigate.name;
+          this.recursivelyExpandTree();
         }
       }
     });
@@ -1905,6 +1951,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private backToListView() {
+    if(this.navigateFrom && this.navigateFrom.name && this.navigateFrom.type !== this.type ){
+      this.selectedObj = _.clone(this.navigateFrom);
+      this.recursivelyExpandTree();
+      this.navigateFrom = {};
+      return;
+    }
     let parent: any;
     if (this.isTrash) {
       parent = this.treeCtrl2.getTreeNodeByKey(this.selectedObj.path);
@@ -2017,8 +2069,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
   recursivelyExpandTree() {
     this.coreService.post('inventory/read/configuration', {
       objectType: this.selectedObj.type,
-      name: this.selectedObj.name
-    }).subscribe(() => {
+      path: this.selectedObj.name
+    }).subscribe((res) => {
+      this.selectedObj.id = res.id;
+      this.selectedObj.path = res.path.substring(0, res.path.lastIndexOf('/')) || res.path.substring(0, res.path.lastIndexOf('/') + 1);
       const pathArr = [];
       const arr = this.selectedObj.path.split('/');
       const len = arr.length;
@@ -2048,31 +2102,37 @@ export class InventoryComponent implements OnInit, OnDestroy {
             }
           }
           if (flag) {
-            self.updateObjects(data, self.isTrash, (children) => {
-              data.children.splice(0, 0, children[0]);
-              data.children.splice(1, 0, children[1]);
-              const parentNode = (self.selectedObj.type === 'SCHEDULE' || self.selectedObj.type.match(/CALENDAR/)) ? children[1] : children[0];
-              if (self.selectedObj.path === parentNode.path) {
-                parentNode.expanded = true;
-                for (let j = 0; j < parentNode.children.length; j++) {
-                  const x = parentNode.children[j];
-                  if (x.object === self.selectedObj.type) {
-                    x.expanded = true;
-                    for (let k = 0; k < x.children.length; k++) {
-                      if (x.children[k].name === self.selectedObj.name) {
-                        self.selectedData = x.children[k];
-                        break;
-                      }
-                    }
-                    break;
-                  }
+            if (!data.controller && !data.dailyPlan) {
+              self.updateObjects(data, self.isTrash, (children) => {
+                let index = 0;
+                if (data.children[0] && data.children[0].controller) {
+                  index = 1;
                 }
+                data.children.splice(0, index, children[0]);
+                data.children.splice(1, index, children[1]);
+                const parentNode = (self.selectedObj.type === 'SCHEDULE' || self.selectedObj.type.match(/CALENDAR/)) ? children[1] : children[0];
+                if (self.selectedObj.path === parentNode.path) {
+                  parentNode.expanded = true;
+                  for (let j = 0; j < parentNode.children.length; j++) {
+                    const x = parentNode.children[j];
+                    if (x.object === self.selectedObj.type) {
+                      x.expanded = true;
+                      for (let k = 0; k < x.children.length; k++) {
+                        if (x.children[k].name === self.selectedObj.name) {
+                          self.selectedData = x.children[k];
+                          break;
+                        }
+                      }
+                      break;
+                    }
+                  }
 
-                self.type = self.selectedObj.type;
-                self.isLoading = false;
-                self.updateTree(self.isTrash);
-              }
-            }, false);
+                  self.type = self.selectedObj.type;
+                  self.isLoading = false;
+                  self.updateTree(self.isTrash);
+                }
+              }, false);
+            }
           }
           if (data.children && pathArr.length > 0) {
             for (let i = 0; i < data.children.length; i++) {
@@ -2708,34 +2768,16 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  renameFolder(node) {
+  renameObject(node) {
     if (this.permission && this.permission.Inventory && this.permission.Inventory.configurations.edit) {
       const modalRef = this.modalService.open(CreateFolderModalComponent, {backdrop: 'static'});
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-      modalRef.componentInstance.folders = node.origin;
+      modalRef.componentInstance.origin = node.renameObject || node.origin;
       modalRef.componentInstance.rename = true;
       modalRef.result.then((res: any) => {
-        if (res === 'DONE') {
-          this.initTree(node.origin.path, null);
-        }
+
       }, () => {
       });
-    }
-  }
-
-  deepRename(node) {
-    if (this.permission && this.permission.Inventory && this.permission.Inventory.configurations.edit) {
-      this.message.info('Not yet implemented');
-      /*      const modalRef = this.modalService.open(CreateFolderModalComponent, {backdrop: 'static'});
-            modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-            modalRef.componentInstance.folders = node.origin;
-            modalRef.componentInstance.deepRename = true;
-            modalRef.result.then((res: any) => {
-              if (res === 'DONE') {
-                this.initTree(node.origin.path, null);
-              }
-            }, () => {
-            });*/
     }
   }
 
@@ -3066,6 +3108,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private setSelectedObj(type, name, path, id) {
+    this.navigateFrom = {};
     this.selectedObj = {type: type, name: name, path: path, id: id};
   }
 

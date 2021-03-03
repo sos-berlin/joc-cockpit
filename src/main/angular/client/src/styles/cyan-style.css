@@ -66,10 +66,12 @@ pre, .syntax-box {
   -webkit-box-shadow: 0 1px 3px 1px var(--box-shadow) !important;
   box-shadow: 0 1px 3px 1px var(--box-shadow) !important
 }
+
 gridster-item {
   -webkit-box-shadow: 0 1px 3px 1px var(--box-shadow) !important;
   box-shadow: 0 1px 3px 1px var(--box-shadow) !important;
 }
+
 .box-footer {
   background: var(--bg-footer)
 }
@@ -431,7 +433,7 @@ a.text-dark:hover {
 
 .light-bg,
 .light-bg tr:hover {
-  background: rgba(0, 68, 90,0.87) !important;
+  background: rgba(0, 68, 90, 0.87) !important;
 }
 
 .modal-content,
@@ -702,18 +704,6 @@ pre.cdata {
   background-color: var(--box-color);
 }
 
-
-.tree-grid .tree-icon {
-  color: var(--white)
-}
-
-.tree-grid .tree-icon:hover {
-  color: var(--primary)
-}
-
-.form-control:focus {
-  border-color: var(--primary)
-}
 
 .dropdown-list {
   border: 1px solid var(--bg-box)
@@ -1228,27 +1218,11 @@ div.jsoneditor {
 }
 
 .ace-jsoneditor .ace_gutter-active-line {
-  background: rgba(0, 46, 56, .6) !important;
+  background: rgba(0, 46, 56, 0.6) !important;
 }
 
 .ace-jsoneditor .ace_marker-layer .ace_active-line {
   background: rgba(0, 46, 56, .8) !important;
-}
-
-/*
-Code Mirror
-**/
-.CodeMirror {
-  color: var(--text-color) !important
-}
-
-.CodeMirror-gutters {
-  background: var(--bg-footer) !important;
-  border-color: var(--border-color)
-}
-
-.CodeMirror-linenumber {
-  color: var(--white) !important
 }
 
 .table tr.active {
@@ -1259,127 +1233,101 @@ Code Mirror
   color: var(--primary)
 }
 
-div.CodeMirror-selected {
-  background: #515151
-}
-
-.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection {
-  background: rgba(56, 56, 56, .99)
-}
-
-.CodeMirror-line::-moz-selection, .CodeMirror-line > span::-moz-selection, .CodeMirror-line > span > span::-moz-selection {
-  background: rgba(56, 56, 56, .99)
+/*
+Code Mirror
+**/
+.CodeMirror {
+  color: var(--text-color) !important
 }
 
 .CodeMirror-gutters {
-  background: #555;
-  border-right: 2px solid #314151
-}
-
-.CodeMirror-guttermarker {
-  color: #222
-}
-
-.CodeMirror-guttermarker-subtle {
-  color: azure
-}
-
-.CodeMirror-linenumber {
-  color: var(--white)
+  background: rgba(0, 48, 64, .7) !important;
+  border-color: var(--border-color)
 }
 
 .CodeMirror-cursor {
-  border-left: 1px solid #0f0
+  border-left: 1px solid white !important;
 }
 
-span.cm-keyword {
-  color: #b8860b !important
+.CodeMirror-linenumber {
+  color: #f8f8f2 !important;
 }
 
-span.cm-atom {
-  color: #77f !important
+.ace-jsoneditor .ace_marker-layer .ace_selection,
+div.CodeMirror-selected {
+  background: rgba(179, 101, 57, .99) !important;
 }
 
-span.cm-number {
-  color: violet !important
+.CodeMirror-line::selection,
+.CodeMirror-line > span::selection,
+.CodeMirror-line > span > span::selection {
+  background: rgba(179, 101, 57, .99) !important;
 }
 
-span.cm-def {
-  color: #fffabc !important
-}
-
-span.cm-variable {
-  color: #abcdef !important
-}
-
-span.cm-variable-2 {
-  color: #cacbcc !important
-}
-
-span.cm-type, span.cm-variable-3 {
-  color: #def !important
-}
-
-span.cm-property {
-  color: #fedcba !important
-}
-
-span.cm-operator {
-  color: #c0c000 !important
+.CodeMirror-line::-moz-selection,
+.CodeMirror-line > span::-moz-selection,
+.CodeMirror-line > span > span::-moz-selection {
+  background: rgba(179, 101, 57, .99) !important;
 }
 
 span.cm-comment {
-  color: #7a7b7c !important;
-  font-style: italic
+  color: #08f !important;
 }
 
-span.cm-string, .ace-jsoneditor .ace_string {
-  color: #1ac43f !important
+span.cm-atom {
+  color: #845dc4 !important
 }
 
-.ace-jsoneditor .ace_constant.ace_numeric {
-  color: orangered;
+span.cm-number, span.cm-attribute {
+  color: #ff80e1 !important
+}
+
+span.cm-keyword {
+  color: #ffee80 !important
+}
+
+span.cm-string, span.cm-string-2 {
+  color: #3ad900 !important
 }
 
 span.cm-meta {
-  color: #c9f !important
+  color: #ff9d00 !important
 }
 
-span.cm-qualifier {
-  color: #fff700 !important
+span.cm-variable-2,
+span.cm-tag {
+  color: #9effff !important
 }
 
-span.cm-builtin {
-  color: #34b8cb !important
+span.cm-variable-3,
+span.cm-def,
+.cm-type {
+  color: white !important
 }
 
 span.cm-bracket {
-  color: #8a8a8a !important
+  color: #d8d8d8 !important
 }
 
-span.cm-tag {
-  color: #fd4 !important
-}
-
-span.cm-attribute {
-  color: #df0 !important
-}
-
-span.cm-error {
-  color: red !important
-}
-
-span.cm-header {
-  color: #7fffd4 !important;
-  font-weight: 700
+span.cm-builtin,
+span.cm-special {
+  color: #ff9e59 !important
 }
 
 span.cm-link {
-  color: #8a2be2 !important
+  color: #845dc4 !important
 }
 
 .CodeMirror-activeline-background {
   background: #314151
+}
+
+.ace-jsoneditor .ace_string {
+  color: #3ad900 !important
+}
+
+.ace-jsoneditor .ace_constant.ace_numeric {
+  color: #ff80e1;
 }
 
 #editor-script {

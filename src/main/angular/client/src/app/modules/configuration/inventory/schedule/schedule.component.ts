@@ -97,12 +97,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     this.saveJSON();
   }
 
-  onKeyPress($event) {
-    if ($event.which === '13' || $event.which === 13) {
-      this.addVariable();
-    }
-  }
-
   removeVariable(index): void {
     this.schedule.configuration.variables.splice(index, 1);
     this.updateSelectItems();
@@ -190,6 +184,10 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       this.workflow = conf.configuration;
       this.updateVariableList();
     });
+  }
+
+  navToWorkflow() {
+    this.dataService.reloadTree.next({navigate: {name: this.schedule.configuration.workflowName,  type: 'WORKFLOW'}});
   }
 
   updateVariableList() {

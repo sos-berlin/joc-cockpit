@@ -181,7 +181,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
     let filter = this.coreService.getDailyPlanTab();
     filter.selectedDate = new Date(d);
-    filter.filter.status = (obj === 1 || obj === 2) ? 'PLANNED' : (obj === 1 || obj === 2) ? 'PENDING' : 'FINISHED';
+    filter.filter.status = (obj === 1 || obj === 2) ? 'PLANNED' : (obj === 3 || obj === 4) ? 'PENDING' : 'FINISHED';
     filter.filter.late = (obj === 2 || obj === 4);
     this.router.navigate(['/daily_plan']);
   }

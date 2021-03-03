@@ -1259,22 +1259,6 @@ div.jsoneditor {
   background: #777 !important;
 }
 
-/*
-Code Mirror
-**/
-.CodeMirror {
-  color: var(--text-color) !important
-}
-
-.CodeMirror-gutters {
-  background: var(--bg-footer) !important;
-  border-color: var(--border-color)
-}
-
-.CodeMirror-linenumber {
-  color: var(--white) !important
-}
-
 .table tr.active {
   background: rgba(51, 51, 50, .65) !important
 }
@@ -1282,128 +1266,136 @@ Code Mirror
 .vertex-text.job span a {
   color: var(--primary)
 }
+/*
+Code Mirror
+**/
 
-div.CodeMirror-selected {
-  background: #515151
-}
-
-.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection {
-  background: rgba(56, 56, 56, .99)
-}
-
-.CodeMirror-line::-moz-selection, .CodeMirror-line > span::-moz-selection, .CodeMirror-line > span > span::-moz-selection {
-  background: rgba(56, 56, 56, .99)
+.CodeMirror {
+  color: #F8F8F8!important
 }
 
 .CodeMirror-gutters {
-  background: #555;
-  border-right: 2px solid #314151
+  background: var(--bg-footer) !important;
+  border-color: var(--border-color)
+}
+
+.ace-jsoneditor .ace_marker-layer .ace_selection,
+div.CodeMirror-selected {
+  background: rgba(51, 51, 50, .99) !important;
+}
+
+.CodeMirror-line::selection,
+.CodeMirror-line > span::selection,
+.CodeMirror-line > span > span::selection {
+  background: rgba(51, 51, 50, .9) !important;
+}
+
+.CodeMirror-line::-moz-selection,
+.CodeMirror-line > span::-moz-selection,
+.CodeMirror-line > span > span::-moz-selection {
+  background: rgba(51, 51, 50, .99) !important;
 }
 
 .CodeMirror-guttermarker {
-  color: #222
+  color: #FBDE2D !important;
 }
 
 .CodeMirror-guttermarker-subtle {
-  color: azure
+  color: #888 !important;
 }
 
 .CodeMirror-linenumber {
-  color: var(--white)
+  color: #888 !important;
 }
 
 .CodeMirror-cursor {
-  border-left: 1px solid #0f0
+  border-left: 1px solid #A7A7A7 !important;
 }
 
-span.cm-keyword {
-  color: #b8860b !important
+.cm-keyword {
+  color: #FBDE2D !important;
 }
 
-span.cm-atom {
-  color: #77f !important
+.cm-atom {
+  color: #D8FA3C !important;
 }
 
-span.cm-number {
-  color: violet !important
+.cm-number {
+  color: #D8FA3C !important;
 }
 
-span.cm-def {
-  color: #fffabc !important
+.cm-def {
+  color: #66D9EF !important;
 }
 
-span.cm-variable {
-  color: #abcdef !important
+.cm-variable {
+  color: #FF6400 !important;
 }
 
-span.cm-variable-2 {
-  color: #cacbcc !important
+.cm-operator {
+  color: #FBDE2D !important;
 }
 
-span.cm-type, span.cm-variable-3 {
-  color: #def !important
+.cm-comment {
+  color: #AEAEAE !important;
 }
 
-span.cm-property {
-  color: #fedcba !important
+.cm-string {
+  color: #61CE3C !important;
 }
 
-span.cm-operator {
-  color: #c0c000 !important
+.cm-string-2 {
+  color: #61CE30 !important;;
 }
 
-span.cm-comment {
-  color: #7a7b7c !important;
-  font-style: italic
+.cm-meta {
+  color: #D8FA3C !important;
 }
 
-span.cm-string, .ace-jsoneditor .ace_string {
-  color: #1ac43f !important
+.cm-builtin {
+  color: #66D9EF !important;
 }
 
-.ace-jsoneditor .ace_constant.ace_numeric {
-  color: orangered;
+.cm-tag {
+  color: #66D9EF !important;
 }
 
-span.cm-meta {
-  color: #c9f !important
+.cm-attribute {
+  color: #66D9EF !important;
 }
 
-span.cm-qualifier {
-  color: #fff700 !important
+.cm-header {
+  color: #FF6400 !important;
 }
 
-span.cm-builtin {
-  color: #34b8cb !important
+.cm-hr {
+  color: #AEAEAE !important;
 }
 
-span.cm-bracket {
-  color: #8a8a8a !important
+.cm-link {
+  color: #66D9EF !important;
 }
 
-span.cm-tag {
-  color: #fd4 !important
-}
-
-span.cm-attribute {
-  color: #df0 !important
-}
-
-span.cm-error {
-  color: red !important
-}
-
-span.cm-header {
-  color: #7fffd4 !important;
-  font-weight: 700
-}
-
-span.cm-link {
-  color: #8a2be2 !important
+.cm-error {
+  background: #9D1E15;
+  color: #F8F8F8 !important;
 }
 
 .CodeMirror-activeline-background {
-  background: #314151
+  background: #314151 !important;
+}
+
+.CodeMirror-matchingbracket {
+  outline: 1px solid grey;
+  color: white !important;
+}
+
+.ace-jsoneditor .ace_string {
+  color: #61CE3C !important
+}
+
+.ace-jsoneditor .ace_constant.ace_numeric {
+  color: #D8FA3C !important;
 }
 
 #editor-script {

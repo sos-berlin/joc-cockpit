@@ -1162,28 +1162,35 @@
                         </td>
                       </tr>
                       <ng-container *ngIf="child.show" class="order-history-template0">
-                        <tr *ngIf="child.orderIds && child.orderIds.length > 0">
-                          <td colspan="2" class="_600" style="padding: 6px 8px !important;">
-                            <span class="p-l-md" [ngClass]="{'p-l-lg' : !historyFilters.current }" translate>history.label.orderId</span>
-                          </td>
-                          <td colspan="2" class="_600" style="padding: 6px 8px !important;"><span translate>order.label.workflow</span></td>
-                          <td class="_600" style="padding: 6px 8px !important;"><span translate>order.label.scheduledFor</span></td>
-                          <td class="_600" style="padding: 6px 8px !important;"><span translate>common.label.status</span></td>
-                        </tr>
-                        <tr *ngFor="let order of child.orderIds | filter: submission.searchText: ['workflowPath', 'orderId'] | orderBy: 'scheduledFor': true">
-                          <td colspan="2"><span class="p-l-md" [ngClass]="{'p-l-lg' : !historyFilters.current }"
-                                                [innerHtml]="order.orderId | highlight: submission.searchText"></span></td>
-                          <td colspan="2">
-                            <i (click)="navToWorkflowTab(order.workflowPath);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                            <span (click)="coreService.showWorkflow(order.workflowPath);$event.stopPropagation()"
-                                  class="text-hover-primary" [innerHtml]="order.workflowPath | highlight: submission.searchText"></span>
-                          </td>
-                          <td><span>{{order.scheduledFor | stringToDate}}</span></td>
-                          <td>
-                             <span class="label bg-dark-blue" *ngIf="order.submitted" translate>{{'submitted' | translate}}</span>
-                             <span class="label bg-orange" *ngIf="!order.submitted" translate>{{'notSubmitted' | translate}}</span>
-                          </td>
-                        </tr>
+                        <ng-container  *ngIf="child.orderIds && child.orderIds.length > 0">
+                          <tr>
+                            <td colspan="2" class="_600" style="padding: 6px 8px !important;">
+                              <span class="p-l-md" [ngClass]="{'p-l-lg' : !historyFilters.current }" translate>history.label.orderId</span>
+                            </td>
+                            <td colspan="2" class="_600" style="padding: 6px 8px !important;"><span translate>order.label.workflow</span></td>
+                            <td class="_600" style="padding: 6px 8px !important;"><span translate>order.label.scheduledFor</span></td>
+                            <td class="_600" style="padding: 6px 8px !important;"><span translate>common.label.status</span></td>
+                          </tr>
+                          <tr *ngFor="let order of child.orderIds | filter: submission.searchText: ['workflowPath', 'orderId'] | orderBy: 'scheduledFor': true">
+                            <td colspan="2"><span class="p-l-md" [ngClass]="{'p-l-lg' : !historyFilters.current }"
+                                                  [innerHtml]="order.orderId | highlight: submission.searchText"></span></td>
+                            <td colspan="2">
+                              <i (click)="navToWorkflowTab(order.workflowPath);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                              <span (click)="coreService.showWorkflow(order.workflowPath);$event.stopPropagation()"
+                                    class="text-hover-primary" [innerHtml]="order.workflowPath | highlight: submission.searchText"></span>
+                            </td>
+                            <td><span>{{order.scheduledFor | stringToDate}}</span></td>
+                            <td>
+                               <span class="label bg-dark-blue" *ngIf="order.submitted" translate>{{'submitted' | translate}}</span>
+                               <span class="label bg-orange" *ngIf="!order.submitted" translate>{{'notSubmitted' | translate}}</span>
+                            </td>
+                          </tr>
+                          <tr *ngIf="(child.orderIds | filter: submission.searchText : ['workflowPath', 'orderId']).length === 0">
+                            <td colspan="6" class="text-center">
+                              <span class="text-uppercase m-t-sm" translate>common.message.noDataMatched</span>
+                            </td>
+                          </tr>
+                        </ng-container>
                         <tr *ngIf="child.warnMessages && child.warnMessages.length > 0">
                           <td colspan="6" class="_600" style="padding: 6px 8px !important;"><span class="p-l-md" [ngClass]="{'p-l-lg' : !historyFilters.current }" translate>history.label.warnMessages</span></td>
                         </tr>

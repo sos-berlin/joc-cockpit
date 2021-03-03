@@ -167,18 +167,14 @@
                           *ngIf="!node.origin.controller && !node.origin.dailyPlan && !node.origin.object && permission.Inventory.configurations.edit">
                         <a (click)="copy(node)" translate>inventory.button.copy</a></li>
                       <li nz-menu-item
-                          *ngIf="!node.origin.controller && !node.origin.dailyPlan && !node.origin.object && permission.Inventory.configurations.edit">
+                          *ngIf="!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object && permission.Inventory.configurations.edit">
                         <a (click)="shallowCopy(node)" translate>inventory.button.shallowCopy</a></li>
                       <li nz-menu-item
                           [nzDisabled]="!copyObj || (node.origin.object && copyObj.type !== node.origin.object)"
                           *ngIf="!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && permission.Inventory.configurations.edit">
                         <a (click)="paste(node)" translate>inventory.button.paste</a></li>
-                      <li nz-menu-item
-                          *ngIf="!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.dailyPlan && permission.Inventory.configurations.edit"
-                          [nzDisabled]="node.origin.path === '/'">
-                        <a (click)="renameFolder(node);" translate>inventory.button.rename</a></li>
-                      <li nz-menu-item *ngIf="permission.Inventory.configurations.edit">
-                        <a (click)="deepRename(node);" translate>inventory.button.deepRename</a></li>
+                      <li nz-menu-item *ngIf="permission.Inventory.configurations.edit" [nzDisabled]="(node.origin.object && node.origin.children.length === 0)">
+                        <a (click)="renameObject(node);" translate>inventory.button.rename</a></li>
                       <li nz-menu-item *ngIf="!node.origin.type"
                           [nzDisabled]="(node.origin.object && node.origin.children.length === 0)">
                         <a (click)="exportObject(node);" translate>inventory.button.export</a></li>
