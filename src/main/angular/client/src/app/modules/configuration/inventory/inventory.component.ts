@@ -1699,11 +1699,13 @@ export class CreateFolderModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    if(this.origin) {
+    if (this.origin) {
       if (this.origin.object || this.origin.controller || this.origin.dailyPlan) {
         this.folder.deepRename = 'replace';
       } else if (this.origin.type) {
         this.folder.name = _.clone(this.origin.name);
+      } else if (this.origin.path === '/') {
+        this.folder.deepRename = 'replace';
       }
     }
   }

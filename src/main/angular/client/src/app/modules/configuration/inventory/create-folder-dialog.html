@@ -30,7 +30,7 @@
       </div>
     </div>
     <div *ngIf="rename && origin">
-      <div class="form-group row" *ngIf="!origin.type && !origin.object && !origin.controller && !origin.dailyPlan">
+      <div class="form-group row" *ngIf="!origin.type && !origin.object && !origin.controller && !origin.dailyPlan && origin.path !== '/'">
         <label class="col-md-3" translate>
           inventory.label.rename
         </label>
