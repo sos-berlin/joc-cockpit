@@ -327,6 +327,7 @@ export class CoreService {
     this.tempTabs._configuration.inventory.deployedMessages = [];
 
     this.dashboard._dashboard = {};
+    this.dashboard._dashboard.order = {};
     this.dashboard._dashboard.history = {};
     this.dashboard._dashboard.file = {};
     this.dashboard._dashboard.dailyplan = {};
@@ -334,8 +335,10 @@ export class CoreService {
     this.dashboard._dashboard.dailyplan.label = 'filters.button.today';
     this.dashboard._dashboard.history.date = '0d';
     this.dashboard._dashboard.history.label = 'filters.button.today';
+    this.dashboard._dashboard.order.date = '1d';
+    this.dashboard._dashboard.order.label = 'today';
     this.dashboard._dashboard.file.date = '0d';
-    this.dashboard._dashboard.file.label = 'filters.button.today';
+    this.dashboard._dashboard.file.label = 'today';
 
     if (localStorage.$SOS$DASHBOARDTABS) {
       try {

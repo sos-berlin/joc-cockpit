@@ -129,7 +129,8 @@
           <a class="text resize-cursor a-2" style="position: absolute; right: 5px !important; top: 22px">
             <i class="fa fa-angle-double-right fa-lg" (click)="showPanel()"></i>
           </a>
-          <app-pie-chart [schedulerId]="schedulerIds.selected" [state]="orderFilters.filter.state"
+          <app-pie-chart [schedulerId]="schedulerIds.selected" [state]="orderFilters.filter.state" [date]="orderFilters.filter.date"
+                         [timeZone]="preferences.zone"
           (setState)="changeStatus($event)" ></app-pie-chart>
         </aside>
         <div id="rightPanel">

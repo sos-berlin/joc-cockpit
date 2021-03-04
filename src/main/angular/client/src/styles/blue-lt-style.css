@@ -56,7 +56,17 @@ pre, .syntax-box {
 a.text-dark:hover, a.text-dark:focus {
   color: #fff;
 }
+a.danger:hover {
+  background-color: #f55666;
+}
 
+a .text-danger:hover {
+  color: #f55666;
+}
+
+.text-danger, .text-danger-hover a:hover {
+  color: #f55666 !important;
+}
 .box,
 .box-color {
   background-color: var(--bg-box);

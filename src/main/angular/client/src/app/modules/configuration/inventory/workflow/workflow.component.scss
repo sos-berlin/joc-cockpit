@@ -57,3 +57,21 @@
     right: 22px !important;
   }
 }
+#toolbar-icons{
+  position: absolute;
+  padding: 2px 16px 0;
+  text-align: center;
+  background-color: var(--bg-box);
+  z-index: 9;
+  box-shadow: 0 1px 6px 1px rgba(0, 0, 0, 0.12) !important;
+  opacity: 0;
+}
+.graph-container:hover #toolbar-icons{
+  opacity: 1;
+  -webkit-animation: fadeInDown ease-in 1;
+  -moz-animation: fadeInDown ease-in 1;
+  animation: fadeInDown ease-in 1;
+  -webkit-animation-duration: .2s;
+  -moz-animation-duration: .2s;
+  animation-duration: 0.2s;
+}

@@ -75,10 +75,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       }
     };
 
-    this.coreService.post('daily_plan/orders', obj).subscribe((res: any) => {
-      this.filterData(res.plannedOrderItems || []);
+    this.coreService.post('daily_plan/orders/summary', obj).subscribe((res) => {
+      this.filterData(res);
       this.isLoaded = true;
-    }, (err) => {
+    }, () => {
       this.isLoaded = true;
     });
   }
@@ -90,33 +90,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  filterData(plannedOrderItems) {
-    this.planned = 0;
-    this.pending = 0;
-    this.finished = 0;
-    this.plannedLate = 0;
-    this.pendingLate = 0;
-    this.totalPlanData = plannedOrderItems.length;
-    for (let i = 0; i < this.totalPlanData; i++) {
-      if (plannedOrderItems[i].state._text === 'PLANNED') {
-        if (plannedOrderItems[i].late) {
-          this.plannedLate++;
-        }
-        this.planned++;
-      } else if (plannedOrderItems[i].state._text === 'PENDING') {
-        if (plannedOrderItems[i].late) {
-          this.pendingLate++;
-        }
-        this.pending++;
-      } else if (plannedOrderItems[i].state._text === 'FINISHED') {
-        this.finished++;
-      }
-    }
-    this.planned = this.getPlanPercent(this.planned);
-    this.pending = this.getPlanPercent(this.pending);
-    this.finished = this.getPlanPercent(this.finished);
-    this.plannedLate = this.getPlanPercent(this.plannedLate);
-    this.pendingLate = this.getPlanPercent(this.pendingLate);
+  filterData(res) {
+    this.totalPlanData = ((res.planned || 0) + (res.pending || 0) + (res.finished || 0) + (res.plannedLate || 0) + (res.pendingLate || 0));
+    this.planned = this.getPlanPercent(res.planned);
+    this.pending = this.getPlanPercent(res.pending);
+    this.finished = this.getPlanPercent(res.finished);
+    this.plannedLate = this.getPlanPercent(res.plannedLate);
+    this.pendingLate = this.getPlanPercent(res.pendingLate);
     this.arrayWidth = [];
     this.arrayWidth[0] = this.planned;
     this.arrayWidth[1] = this.plannedLate;
@@ -171,7 +151,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   getPlanPercent(status) {
-    return (status / this.totalPlanData) * 100;
+    return ((status || 0) / this.totalPlanData) * 100;
   }
 
   navigate(obj) {

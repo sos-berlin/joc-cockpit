@@ -42,7 +42,8 @@
         enableRangeSelection: opt.enableRangeSelection != null ? opt.enableRangeSelection : false,
         disabledDays: opt.disabledDays instanceof Array ? opt.disabledDays : [],
         dataSource: opt.dataSource instanceof Array != null ? opt.dataSource : [],
-        customDayRenderer : $.isFunction(opt.customDayRenderer) ? opt.customDayRenderer : null
+        customDayRenderer : $.isFunction(opt.customDayRenderer) ? opt.customDayRenderer : null,
+        dateFrom: null
       };
 
     },
@@ -52,6 +53,7 @@
       }
       if(opt.renderEnd) { this.element.bind('renderEnd', opt.renderEnd); }
       if(opt.clickDay) { this.element.bind('clickDay', opt.clickDay); }
+      if(opt.rangeEnd) { this.element.bind('rangeEnd', opt.rangeEnd); }
     },
 
     _render: function() {
@@ -269,6 +271,48 @@
         do {
           let cell = $(document.createElement('td'));
           cell.addClass('day');
+          let moved = false;
+          cell.mousedown(function(){
+            let cells = _this.element.find('.day:not(.old, .new, .disabled)');
+            for (let i = 0; i < cells.length; i++) {
+              $(cells[i]).removeClass('range');
+            }
+            _this.options.dateFrom = $(this).attr('currentDate');
+            moved = false;
+          })
+          cell.mousemove(function(){
+            moved = true;
+            if(_this.options.dateFrom) {
+              let cells = _this.element.find('.day:not(.old, .new, .disabled)');
+              for (let i = 0; i < cells.length; i++) {
+                if(_this._getDate($(cells[i])).getTime() >= _this.options.dateFrom && _this._getDate($(cells[i])).getTime()<= $(this).attr('currentDate')){
+                  $(cells[i]).addClass('range');
+                }else if(_this._getDate($(cells[i])).getTime() !== _this.options.dateFrom || _this._getDate($(cells[i])).getTime() !== $(this).attr('currentDate')){
+                  $(cells[i]).removeClass('range');
+                }
+              }
+            }
+          })
+          cell.mouseup(function() {
+            let rangeDates = [];
+            if (moved && _this.options.dateFrom) {
+              let cells = _this.element.find('.day:not(.old, .new, .disabled)');
+              for (let i = 0; i < cells.length; i++) {
+                let date = _this._getDate($(cells[i])).getTime();
+                if (date >= _this.options.dateFrom && date <= $(this).attr('currentDate')) {
+                  $(cells[i]).addClass('range');
+                  rangeDates.push(date);
+                } else {
+                  $(cells[i]).removeClass('range');
+                }
+              }
+            }
+            _this._triggerEvent('rangeEnd', {
+              element: $(this),
+              rangeDates: rangeDates
+            });
+            _this.options.dateFrom = null;
+          })
           if (currentDate < firstDate) {
             cell.addClass('old');
           } else if (currentDate > lastDate) {
@@ -278,7 +322,7 @@
               cell.addClass('disabled');
             } else if (this.options.disabledDays.length > 0) {
               for (let d in this.options.disabledDays) {
-                if (currentDate.getTime() == this.options.disabledDays[d].getTime()) {
+                if (currentDate.getTime() === this.options.disabledDays[d].getTime()) {
                   cell.addClass('disabled');
                   break;
                 }
@@ -293,7 +337,7 @@
             if([0, 6].indexOf(currentDate.getDay()) > -1){
               className += ' cal-day-weekend'
             }
-            if(this.options.selectedDate && currentDate.getTime() == this.options.selectedDate.getTime()){
+            if(this.options.selectedDate && currentDate.getTime() === this.options.selectedDate.getTime()){
               className  += ' selected';
             }
             cellContent.addClass(className);
@@ -301,6 +345,7 @@
             date.addClass('date');
             date.text(currentDate.getDate());
             cellContent.append(date);
+            cell.attr('currentDate', currentDate.getTime())
             cell.append(cellContent);
             if (this.options.customDayRenderer) {
               this.options.customDayRenderer(cellContent, currentDate);
@@ -656,8 +701,8 @@
   /* Events binding management */
   $.fn.renderEnd = function(fct) { $(this).bind('renderEnd', fct); };
   $.fn.clickDay = function(fct) { $(this).bind('clickDay', fct); };
+  $.fn.rangeEnd = function(fct) { $(this).bind('rangeEnd', fct); };
   $.fn.selectRange = function(fct) { $(this).bind('selectRange', fct); };
-
 
   let dates = $.fn.calendar.dates = {
     en: {

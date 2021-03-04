@@ -36,7 +36,7 @@
 </div>
 <div class="sub-link">
   <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-10">
       <div>
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
           <li class="nav-item">
@@ -70,6 +70,12 @@
           </li>
         </ul>
       </div>
+    </div>
+    <div class="col-md-2">
+      <a class="pull-right text-hover-primary" style="position: relative" id="back-btn" *ngIf="navigateFrom && navigateFrom.name && navigateFrom.type !== this.type" (click)="backToObject()" >
+        <i class="fa fa-arrow-circle-left" ></i>
+        {{'inventory.button.backtoObject' | translate}}
+      </a>
     </div>
   </div>
 </div>
@@ -293,8 +299,7 @@
                   <nz-dropdown-menu #menu="nzDropdownMenu">
                     <ul nz-menu>
                       <li nz-menu-item *ngIf="permission.Inventory.configurations.delete" class="bg-hover-color"
-                          [nzDisabled]="(!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.path === '/')
-                                      || (node.origin.object && node.origin.children.length === 0)"><a
+                          [nzDisabled]="(node.origin.object && node.origin.children.length === 0)"><a
                         (click)="deletePermanently(node);" translate>inventory.button.delete</a></li>
                       <li nz-menu-item [nzDisabled]="node.origin.object || node.origin.controller || node.origin.dailyPlan">
                         <a (click)="restoreObject(node);" translate>inventory.button.restore</a></li>

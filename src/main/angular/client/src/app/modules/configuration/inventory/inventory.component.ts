@@ -1954,13 +1954,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
+  backToObject() {
+    this.selectedObj = _.clone(this.navigateFrom);
+    this.recursivelyExpandTree();
+    this.navigateFrom = {};
+  }
+
   private backToListView() {
-    if(this.navigateFrom && this.navigateFrom.name && this.navigateFrom.type !== this.type ){
-      this.selectedObj = _.clone(this.navigateFrom);
-      this.recursivelyExpandTree();
-      this.navigateFrom = {};
-      return;
-    }
     let parent: any;
     if (this.isTrash) {
       parent = this.treeCtrl2.getTreeNodeByKey(this.selectedObj.path);

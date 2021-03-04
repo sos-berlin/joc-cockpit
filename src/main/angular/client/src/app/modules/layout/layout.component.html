@@ -11,7 +11,7 @@
               <i [innerHtml]="currentTime | stringToDate" class="text-dark _500"></i></span>
       <i class="fa fa-circle-o circle"></i>
       <span class="m-r-sm"><span class="text-muted" translate>common.label.remainingSessionTime</span>:
-              <span [innerHtml]="remainingSessionTime" class="text-danger"></span></span>
+              <span [innerHtml]="remainingSessionTime" class="text-orange"></span></span>
       <i *ngIf="schedulerIds.selected" class="fa fa-circle-o circle"></i>
       <span *ngIf="schedulerIds.selected" class="dropdown">
         <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" nzPlacement="bottomRight">

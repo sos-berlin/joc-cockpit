@@ -14,9 +14,20 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   @Input('sizeY') ybody: number;
   orders: any = {};
   schedulerIds: any = {};
+  preferences: any = {};
   notAuthenticate = false;
   isLoaded = false;
+  filters: any = {};
   subscription: Subscription;
+
+  dateFilterBtn: any = [
+    {date: 'ALL', text: 'all'},
+    {date: '1d', text: 'today'},
+    {date: '1h', text: 'next1'},
+    {date: '12h', text: 'next12'},
+    {date: '24h', text: 'next24'},
+    {date: '7d', text: 'nextWeak'}
+  ];
 
   constructor(public authService: AuthService, public coreService: CoreService,
               private router: Router, private dataService: DataService) {
@@ -25,8 +36,12 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.filters = this.coreService.getDashboardTab().order;
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences);
+    }
     if (this.schedulerIds.selected) {
       this.getSnapshot();
     } else {
@@ -35,11 +50,11 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  refresh(args) {
+  refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType.match(/WorkflowStateChanged/)) {
@@ -51,7 +66,14 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   getSnapshot(): void {
-    this.coreService.post('orders/overview/snapshot', {controllerId: this.schedulerIds.selected}).subscribe((res: any) => {
+    const obj: any = {
+      controllerId: this.schedulerIds.selected
+    };
+    if (this.filters.date !== 'ALL') {
+      obj.dateTo = this.filters.date;
+      obj.timeZone = this.preferences.zone;
+    }
+    this.coreService.post('orders/overview/snapshot', obj).subscribe((res: any) => {
       this.orders = res.orders;
       this.isLoaded = true;
     }, (err) => {
@@ -60,8 +82,15 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  navigate(state) {
-    this.router.navigate(['/orders_overview', state]);
+  changeDate(date): void {
+    this.filters.date = date;
+    this.getSnapshot();
   }
 
+  navigate(state): void {
+    const filter = this.coreService.getOrderOverviewTab();
+    filter.filter.date = this.filters.date;
+    filter.filter.dateLabel = this.filters.label;
+    this.router.navigate(['/orders_overview', state]);
+  }
 }

@@ -779,6 +779,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   submissionHistory: any = [];
   searchableProperties = ['orderId', 'schedulePath', 'workflowPath', 'status', 'plannedStartTime', 'expectedEndTime'];
   expandedPaths = new Set();
+  rangeDates = [];
 
   object = {
     mapOfCheckedId: new Map(),
@@ -1988,6 +1989,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       renderEnd: (e) => {
         const year = e.currentYear || new Date().getFullYear(), month = e.currentMonth || new Date().getMonth();
         this.load(new Date(year, month, 1));
+      },
+      rangeEnd: (e) => {
+        this.rangeDates = e.rangeDates;
       }
     });
   }

@@ -22,6 +22,8 @@ declare const $;
 export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
   @Input() schedulerId: any;
   @Input() state: any;
+  @Input() date: any;
+  @Input() timeZone: any;
   @Output() setState: EventEmitter<any> = new EventEmitter();
   ordersData: any = [];
   loading = true;
@@ -47,9 +49,14 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.schedulerId && !this.loading) {
-      this.init();
+    if (!this.loading) {
+      if (changes.schedulerId) {
+        this.init();
+      } else if (changes.date) {
+          this.init();
+      }
     }
+   
   }
 
   ngOnDestroy(): void {
@@ -57,7 +64,12 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private init(): void {
-    this.coreService.post('orders/overview/snapshot', {controllerId: this.schedulerId}).subscribe((res: any) => {
+    const obj: any = {controllerId: this.schedulerId};
+    if (this.state === 'PENDING' && this.date !== 'ALL') {
+      obj.dateTo = this.date;
+      obj.timeZone = this.timeZone;
+    }
+    this.coreService.post('orders/overview/snapshot', obj).subscribe((res: any) => {
       this.snapshot = res.orders;
       this.preparePieData(this.snapshot);
       this.loading = false;

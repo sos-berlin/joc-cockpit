@@ -4226,7 +4226,7 @@ a {
   }
 }
 
-.text-danger, .text-danger-hover a:hover, .text-danger1 {
+.text-danger, .text-danger-hover a:hover {
   color: #f44455 !important;
 }
 
@@ -5266,24 +5266,6 @@ General CSS
   width: 25%;
 }
 
-#jobChainDivId th {
-  &.num {
-    width: 55px;
-  }
-
-  &.status {
-    width: 80px;
-  }
-}
-
-#orderTableId th.status {
-  width: 80px;
-}
-
-#jobChainDivId th.cluster {
-  min-width: 80px;
-}
-
 .ant-table-small .inner-table table {
   table-layout: fixed;
   word-wrap: break-word;
@@ -5769,6 +5751,10 @@ button.close {
 
 .property-panel .sidebar-close {
   right: -20px;
+}
+
+#property-panel{
+  padding-right: 6px;
 }
 
 .sidebar {
@@ -6709,7 +6695,7 @@ span.cm-error {
   border-color: var(--border-color);
 }
 
-.ant-table-thead > tr > th {
+.ant-table-thead > tr > th, tbody > tr > td.custom-th {
   font-weight: 600;
   padding: 6px 8px !important;
 }

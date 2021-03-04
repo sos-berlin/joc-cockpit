@@ -397,7 +397,17 @@ input[type=search]:focus {
 a.text-dark:hover {
   color: var(--white) !important;
 }
+a.danger:hover {
+  background-color: #f55666;
+}
 
+a .text-danger:hover {
+  color: #f55666;
+}
+
+.text-danger, .text-danger-hover a:hover {
+  color: #f55666 !important;
+}
 .more-option i,
 .more-option-h i {
   background-color: var(--box-color)

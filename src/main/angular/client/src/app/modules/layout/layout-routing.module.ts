@@ -77,6 +77,12 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: {breadcrumb: 'breadcrumb.label.logging'}
       },
+      {
+        path: 'settings',
+        loadChildren: () => import('./../setting/setting.module').then(m => m.SettingModule),
+        canActivate: [AuthGuard],
+        data: {breadcrumb: 'breadcrumb.label.setting'}
+      },
       {path: 'log', component: LogComponent, data: {breadcrumb: 'breadcrumb.label.log'}},
       {
         path: 'users',

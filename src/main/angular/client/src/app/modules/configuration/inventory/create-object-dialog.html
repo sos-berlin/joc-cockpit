@@ -35,7 +35,7 @@
         </div>
       </div>
     </div>
-    <div *ngIf="copy || restore">
+    <div *ngIf="copy">
       <div class="m-b-sm row">
         <label class="col-md-3" translate>inventory.label.newName</label>
         <div class="col-md-6">
@@ -59,12 +59,39 @@
           <i class="fa fa-info-circle" [nz-tooltip]="'inventory.tooltip.newObjectNameInfoMessage' | translate"></i>
         </div>
       </div>
-      <div class="form-group row" *ngIf="!obj.object && !restore">
+      <div class="form-group row" *ngIf="!obj.object">
         <div class="col-md-3">
           <label translate>inventory.label.withoutFolder</label>
         </div>
         <div class="col-md-6">
           <label nz-checkbox [(ngModel)]="object.onlyContains" name="onlyContains"></label>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="restore">
+      <div class="m-b-sm row">
+        <label class="col-md-3" translate>inventory.label.objectName</label>
+        <div class="col-md-6">
+          <nz-radio-group name="type" [(ngModel)]="object.type">
+            <label nz-radio nzValue="existing"><span translate>inventory.label.existingName</span></label>
+            <label nz-radio nzValue="new"><span translate>inventory.label.newName</span></label>
+            <label nz-radio nzValue="suffix"><span translate>inventory.label.suffix</span></label>
+            <label nz-radio nzValue="prefix"><span translate>inventory.label.prefix</span></label>
+          </nz-radio-group>
+        </div>
+      </div>
+      <div class="form-group row" *ngIf="object.type !== 'existing'">
+        <label class="col-md-3"></label>
+        <div class="col-md-6" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+          <input type="text" identifierValidation class="form-control" name="name"
+                 #name="ngModel" [(ngModel)]="object._name" [appAutofocus]="true" autocomplete="off">
+          <div *ngIf="name.invalid && (name.dirty || name.touched)"
+               class="text-danger help-block">
+            <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
+          </div>
+        </div>
+        <div class="col-md-1 p-l-0" style="top:5px" *ngIf="object.type == 'suffix' || object.type == 'prefix'">
+          <i class="fa fa-info-circle" [nz-tooltip]="'inventory.tooltip.newObjectNameInfoMessage' | translate"></i>
         </div>
       </div>
     </div>

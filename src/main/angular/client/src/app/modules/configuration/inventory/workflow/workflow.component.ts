@@ -698,13 +698,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
       this.handleWindowEvents();
     } else {
-        const outln = document.getElementById('outlineContainer');
-        outln.innerHTML = '';
-        outln.style['border'] = '1px solid lightgray';
-        new mxOutline(this.editor.graph, outln);
+      const outln = document.getElementById('outlineContainer');
+      outln.innerHTML = '';
+      outln.style['border'] = '1px solid lightgray';
+      new mxOutline(this.editor.graph, outln);
       this.getObject();
     }
-    if(!this.isTrash) {
+    if (!this.isTrash) {
       if (this.jobClassTree.length === 0) {
         this.coreService.post('tree', {
           controllerId: this.schedulerId,
@@ -1231,10 +1231,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       const dom = $('.graph-container');
       if (dom && dom.position()) {
         let top = (dom.position().top + $('#rightPanel').position().top);
-        if(this.isTrash){
-          top = top + 6;
-        }
-        let ht = 'calc(100vh - ' + top + 'px)';
+        const ht = 'calc(100vh - ' + (top + 12) + 'px)';
         dom.css({'height': ht, 'scroll-top': '0'});
         $('#graph').slimscroll({height: ht, scrollTo: '0'});
       }
@@ -1351,11 +1348,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       self.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 310;
       $('#outlineContainer').css({'right': self.propertyPanelWidth + 10 + 'px'});
       $('.graph-container').css({'margin-right': self.propertyPanelWidth + 'px'});
-      $('.bottom-btn').css({'right': self.propertyPanelWidth + 22 + 'px'});
       $('.toolbar').css({'margin-right': (self.propertyPanelWidth - 12) + 'px'});
       $('.sidebar-close').css({right: self.propertyPanelWidth + 'px'});
       $('#property-panel').css({width: self.propertyPanelWidth + 'px'});
       $('.sidebar-open').css({right: '-20px'});
+      $('#back-btn').css({'right': (self.propertyPanelWidth + 1) + 'px'});
       self.centered();
     });
 
@@ -1363,11 +1360,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       self.propertyPanelWidth = 0;
       $('#outlineContainer').css({'right': '10px'});
       $('.graph-container').css({'margin-right': '0'});
-      $('.bottom-btn').css({'right': '22px'});
       $('.toolbar').css({'margin-right': '-12px'});
       $('.sidebar-open').css({right: '0'});
       $('#property-panel').css({width: '0', left: window.innerWidth + 'px'});
       $('.sidebar-close').css({right: '-20px'});
+      $('#back-btn').css({'right': '1px'});
       self.centered();
     });
     if (window.innerWidth > 1024) {
@@ -2789,6 +2786,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               setTimeout(function () {
                 if (self.movedCell) {
                   $('#dropContainer2').show();
+                  $('#toolbar-icons').hide();
                 }
               }, 10);
             }
@@ -2888,6 +2886,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             self.editor.graph.removeCells(cell, null);
           }
           $('#dropContainer2').hide();
+          $('#toolbar-icons').show();
         }
 
         /**
@@ -4712,7 +4711,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             targetObj.else = {instructions: [copyObject]};
           }
         } else if (target.value.tagName === 'Fork') {
-          let branchId ;
+          let branchId;
           if (!targetObj.branches) {
             targetObj.branches = [];
           }
@@ -5785,7 +5784,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               return;
             }
 
-            if(dropObject && dropObject.instructions) {
+            if (dropObject && dropObject.instructions) {
               dropObject.instructions.splice(index, 1);
             }
 
@@ -6376,7 +6375,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     } else {
       data = noValidate;
     }
-    if (!_.isEqual(this.workflow.actual, JSON.stringify(data)) && !this.isStore) {
+    if (this.workflow.actual && !_.isEqual(this.workflow.actual, JSON.stringify(data)) && !this.isStore) {
       this.isStore = true;
       if (this.history.length === 20) {
         this.history.shift();
@@ -6392,8 +6391,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.storeData(data);
   }
 
+  navToLock(lockId) {
+    this.dataService.reloadTree.next({navigate: {name: lockId,  type: 'LOCK'}});
+  }
+
   private storeData(data) {
-    if(this.isTrash) {
+    if (this.isTrash || !this.workflow || !this.workflow.id) {
       return;
     }
     let newObj: any = {};

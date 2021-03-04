@@ -177,6 +177,7 @@
     "label.manageUser": "Manage Accounts",
     "label.userProfile": "User Profile",
     "label.logging": "Logging",
+    "label.setting": "Setting",
     "label.permissions": "Permissions"
   },
   "configuration": {
@@ -713,8 +714,9 @@
     "label.renameFolder": "Folder",
     "label.renameObjectsRecursively": "Objects Recursively",
     "label.copyOf": "Copy of",
-    "label.suffix": "Suffix",
-    "label.prefix": "Prefix",
+    "label.suffix": "Add Suffix",
+    "label.prefix": "Add Prefix",
+    "label.existingName": "Existing Name",
     "label.withoutFolder": "Without Folder",
     "label.newName": "New name",
     "label.deploy": "Deploy",
@@ -809,6 +811,7 @@
     "button.uploadJSON": "Upload JSON",
     "button.runTime": "Run-time",
     "button.importAndDeploy": "Import And Deploy",
+    "button.backtoObject": "Back To Object",
     "tooltip.setVersion": "Set Version",
     "tooltip.newObjectNameInfoMessage": "If suffix and prefix are empty, then a suffix=\"-copy<integer>\"",
     "placeholder.enterUniqueName": "Enter unique object name",

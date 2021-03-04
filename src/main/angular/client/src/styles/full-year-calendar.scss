@@ -238,7 +238,7 @@
   }
   tr td.range {
     .day-content {
-      background: rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 0.2) !important;
       -webkit-border-radius: 0;
       -moz-border-radius: 0;
       border-radius: 0;
@@ -255,7 +255,7 @@
 }
 .calendar-sm{
   .selected{
-    background: var(--primary);
+    background: var(--primary) !important;
     color: #fff !important;
     .date{
       color: #fff !important;

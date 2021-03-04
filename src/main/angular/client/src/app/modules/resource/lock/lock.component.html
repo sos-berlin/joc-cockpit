@@ -218,15 +218,15 @@
                             <ng-container *ngIf="workflow.show">
                               <ng-container *ngIf="workflow.ordersWaitingForLocks && workflow.ordersWaitingForLocks.length > 0">
                                 <tr >
-                                  <td colspan="6" class="_600" style="padding: 6px 8px !important;">
+                                  <td colspan="6" class="custom-th">
                                     <span class="p-l">{{'resource.label.ordersWaitingForLocks' | translate}}</span>
                                   </td>
                                 </tr>
                                 <tr>
-                                  <td colspan="2" class="_600" style="padding: 6px 8px !important;"><span class="p-l" translate>order.label.orderId</span></td>
-                                  <td colspan="2" class="_600" style="padding: 6px 8px !important;"><span translate>order.label.position</span></td>
-                                  <td class="_600" style="padding: 6px 8px !important;"><span translate>order.label.state</span></td>
-                                  <td class="_600" style="padding: 6px 8px !important;"><span translate>order.label.scheduledFor</span></td>
+                                  <td colspan="2" class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
+                                  <td colspan="2" class="custom-th"><span translate>order.label.position</span></td>
+                                  <td class="custom-th"><span translate>order.label.state</span></td>
+                                  <td class="custom-th"><span translate>order.label.scheduledFor</span></td>
                                 </tr>
                                 <tr *ngFor="let item of workflow.ordersWaitingForLocks">
                                   <td colspan="2"><span class="p-l">{{item.order.orderId}}</span></td>
@@ -241,15 +241,15 @@
                               </ng-container>
                               <ng-container  *ngIf="workflow.ordersHoldingLocks && workflow.ordersHoldingLocks.length > 0">
                                 <tr>
-                                  <td colspan="6"  class="_600" style="padding: 6px 8px !important;">
+                                  <td colspan="6" class="custom-th">
                                     <span class="p-l">{{'resource.label.ordersHoldingLocks' | translate}}</span>
                                   </td>
                                 </tr>
                                 <tr>
-                                  <td colspan="2" class="_600" style="padding: 6px 8px !important;"><span class="p-l" translate>order.label.orderId</span></td>
-                                  <td colspan="2" class="_600" style="padding: 6px 8px !important;"><span translate>order.label.position</span></td>
-                                  <td class="_600" style="padding: 6px 8px !important;"><span translate>order.label.state</span></td>
-                                  <td class="_600" style="padding: 6px 8px !important;"><span translate>order.label.scheduledFor</span></td>
+                                  <td colspan="2" class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
+                                  <td colspan="2" class="custom-th"><span translate>order.label.position</span></td>
+                                  <td class="custom-th"><span translate>order.label.state</span></td>
+                                  <td class="custom-th"><span translate>order.label.scheduledFor</span></td>
                                 </tr>
                                 <tr *ngFor="let item of workflow.ordersHoldingLocks">
                                   <td colspan="2"><span class="p-l">{{item.order.orderId}}</span></td>

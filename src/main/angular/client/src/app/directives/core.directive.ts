@@ -353,6 +353,7 @@ export class ResizableDirective implements OnInit {
       if (dom) {
         dom.resizable({
           minWidth: 22,
+          maxWidth: 768,
           handles: 'w',
           resize: (e, x) => {
             const wt = x.size.width;
@@ -361,6 +362,7 @@ export class ResizableDirective implements OnInit {
             $('.bottom-btn').css({'right': wt + 22 + 'px'});
             $('.toolbar').css({'margin-right': (wt - 12) + 'px'});
             $('.sidebar-close').css({'right': wt + 'px'});
+            $('#back-btn').css({'right': (wt + 1) + 'px'});
             localStorage.propertyPanelWidth = wt;
           }
         });
@@ -376,6 +378,7 @@ export class ResizableDirective implements OnInit {
         dom.resizable({
           handles: 'e',
           minWidth: 22,
+          maxWidth: 1024,
           resize: (e, x) => {
             let wt = dom.width();
             $('#rightPanel').css({'margin-left': wt + 18 + 'px'});
