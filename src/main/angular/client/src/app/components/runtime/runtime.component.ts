@@ -103,10 +103,6 @@ export class AddRestrictionComponent implements OnInit {
     }
   }
 
-  dayChange(value: string[]): void {
-    this.frequency.days = value;
-  }
-
   convertStringToDate(date) {
     if (typeof date === 'string') {
       return moment(date);
@@ -239,6 +235,11 @@ export class AddRestrictionComponent implements OnInit {
         this.editor.isEnable = this.tempItems.length > 0;
       }
     }
+  }
+
+  dayChange(value: string[]): void {
+    this.frequency.days = value;
+    this.onChangeDays();
   }
 
   onChangeDays() {

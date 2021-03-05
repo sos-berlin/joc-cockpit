@@ -70,12 +70,12 @@
           </li>
         </ul>
       </div>
-    </div>
-    <div class="col-md-2">
-      <a class="pull-right text-hover-primary" style="position: relative" id="back-btn" *ngIf="navigateFrom && navigateFrom.name && navigateFrom.type !== this.type" (click)="backToObject()" >
-        <i class="fa fa-arrow-circle-left" ></i>
-        {{'inventory.button.backtoObject' | translate}}
-      </a>
+      <div class="inline">
+        <a class="text-hover-primary m-l-lg" style="position: relative;top:10px" *ngIf="navigateFrom && navigateFrom.name && navigateFrom.type !== this.type" (click)="backToObject()" >
+          <i class="fa fa-arrow-circle-left" ></i>
+          {{'inventory.button.backToObject' | translate}}
+        </a>
+      </div>
     </div>
   </div>
 </div>

@@ -209,7 +209,7 @@
               </div>
             </div>
             <div class="box p-a m-t-xs m-b-0" *ngIf="pageView !== 'grid'">
-              <div appResizable class="table-responsive resizable" style="position: initial" [height]="resizerHeight" [type]="'orderOverview'" id="orderTableId">
+              <perfect-scrollbar appResizable class="table-responsive resizable" style="position: initial" [height]="resizerHeight" [type]="'orderOverview'" id="orderTableId">
                 <nz-table
                   #ajaxTable
                   [nzSize]="'small'"
@@ -339,7 +339,7 @@
                   <span translate *ngIf="ajaxTable.data.length >1">order.label.ordersFound</span>
                   <span translate *ngIf="ajaxTable.data.length ==1">order.label.orderFound</span>
                 </div>
-              </div>
+              </perfect-scrollbar>
               <div class="rg-bottom"><span></span></div>
             </div>
             <div *ngIf="pageView=='grid' && loading && data.length==0" class="text-center m-t h6">

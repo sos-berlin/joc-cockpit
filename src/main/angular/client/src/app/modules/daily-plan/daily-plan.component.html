@@ -441,7 +441,7 @@
               <div class="calendar-sm m-t-0" id="full-calendar"></div>
             </div>
             <div class="text-center m-t">
-              <button [disabled]="isPastDate" class="btn btn-grey btn-sm" (click)="createPlan()">
+              <button [disabled]="isPastDate || rangeDates.length > 0" class="btn btn-grey btn-sm" (click)="createPlan()">
                 <i class="fa fa-plus"></i>&nbsp;
                 <span translate>dailyPlan.button.createPlan</span>
               </button>

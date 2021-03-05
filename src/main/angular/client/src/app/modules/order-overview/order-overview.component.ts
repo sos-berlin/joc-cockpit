@@ -53,10 +53,11 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
       if (changes.schedulerId) {
         this.init();
       } else if (changes.date) {
-          this.init();
+        this.init();
+      } else if (changes.state && changes.state.currentValue === 'PENDING') {
+        this.init();
       }
     }
-   
   }
 
   ngOnDestroy(): void {

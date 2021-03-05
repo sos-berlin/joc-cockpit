@@ -832,8 +832,10 @@ export class CoreService {
   }
 
   navToInventoryTab(path, type): void {
-    this.getConfigurationTab().inventory.expand_to = [];
-    this.getConfigurationTab().inventory.selectedObj = {
+    const config = this.getConfigurationTab();
+    config.inventory.isTrash = false;
+    config.inventory.expand_to = [];
+    config.inventory.selectedObj = {
       name: path.substring(path.lastIndexOf('/') + 1),
       path: path.substring(0, path.lastIndexOf('/')) || '/',
       type: type
@@ -845,7 +847,7 @@ export class CoreService {
   showWorkflow(workflow): void {
     let pathArr = [];
     let arr = workflow.split('/');
-    let workflowFilters = this.getWorkflowTab();
+    const workflowFilters = this.getWorkflowTab();
     workflowFilters.selectedkeys = [];
     let len = arr.length - 1;
     if (len > 1) {

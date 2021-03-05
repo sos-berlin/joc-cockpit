@@ -97,12 +97,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.finished = this.getPlanPercent(res.finished);
     this.plannedLate = this.getPlanPercent(res.plannedLate);
     this.pendingLate = this.getPlanPercent(res.pendingLate);
-    this.arrayWidth = [];
-    this.arrayWidth[0] = this.planned;
-    this.arrayWidth[1] = this.plannedLate;
-    this.arrayWidth[2] = this.pending;
-    this.arrayWidth[3] = this.pendingLate;
-    this.arrayWidth[4] = this.finished;
+    this.arrayWidth = [this.planned, this.plannedLate, this.pending, this.pendingLate, this.finished];
 
     let totalLessWidth = 0, totalGreaterWidth = 0, flag = false;
     for (let i = 0; i <= 5; i++) {
@@ -124,11 +119,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
 
     if (!flag) {
-      this.arrayWidth[0] = this.planned;
-      this.arrayWidth[1] = this.plannedLate;
-      this.arrayWidth[2] = this.pending;
-      this.arrayWidth[3] = this.pendingLate;
-      this.arrayWidth[4] = this.finished;
+      this.arrayWidth = [this.planned, this.plannedLate, this.pending, this.pendingLate, this.finished];
       let totalLessWidth = 0, totalGreaterWidth = 0;
       for (let i = 0; i <= 5; i++) {
         if (this.arrayWidth[i] > 0) {
@@ -159,7 +150,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (this.filters.date !== '0d') {
       d.setDate(new Date().getDate() + 1);
     }
-    let filter = this.coreService.getDailyPlanTab();
+    const filter = this.coreService.getDailyPlanTab();
     filter.selectedDate = new Date(d);
     filter.filter.status = (obj === 1 || obj === 2) ? 'PLANNED' : (obj === 3 || obj === 4) ? 'PENDING' : 'FINISHED';
     filter.filter.late = (obj === 2 || obj === 4);

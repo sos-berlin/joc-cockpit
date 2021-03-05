@@ -18,7 +18,6 @@
   --green: #9ccc65;
   --red: #ff5252;
   --mangenta: #d900d9;
-  --bg-gold: #ffba57;
   --bg-mangenta: #b966b9;
   --bg-red: #ff2727;
   --border-color: rgba(233, 244, 255, .18);
@@ -92,7 +91,9 @@ gridster-item {
 .bg-white {
   background-color: var(--bg-box) !important;
 }
-
+.bg-gold {
+  color: rgba(0, 0, 0, .87);
+}
 .dark-white {
   background-color: var(--background-color)
 }

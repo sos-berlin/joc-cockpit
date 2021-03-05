@@ -1352,7 +1352,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       $('.sidebar-close').css({right: self.propertyPanelWidth + 'px'});
       $('#property-panel').css({width: self.propertyPanelWidth + 'px'});
       $('.sidebar-open').css({right: '-20px'});
-      $('#back-btn').css({'right': (self.propertyPanelWidth + 1) + 'px'});
       self.centered();
     });
 
@@ -1364,7 +1363,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       $('.sidebar-open').css({right: '0'});
       $('#property-panel').css({width: '0', left: window.innerWidth + 'px'});
       $('.sidebar-close').css({right: '-20px'});
-      $('#back-btn').css({'right': '1px'});
       self.centered();
     });
     if (window.innerWidth > 1024) {

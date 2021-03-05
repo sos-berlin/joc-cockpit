@@ -18,7 +18,6 @@
   --menu-hover: rgba(29, 29, 28, .7);
   --bg-dimgrey: #999;
   --green: #9ccc65;
-  --bg-gold: #e6b000;
   --red: #ff2727;
   --mangenta: #bf00bf;
   --bg-mangenta: #b966b9;
@@ -81,7 +80,9 @@ gridster-item {
 .bg-white {
   background-color: var(--bg-box) !important;;
 }
-
+.bg-gold {
+  color: rgba(0, 0, 0, .87);
+}
 .dark-white {
   background-color: var(--background-color)
 }
@@ -97,6 +98,12 @@ gridster-item {
 .b-primary {
   border-color: var(--primary)
 }
+
+.calendar table.month td.day .day-content:hover,
+.calendar table.month tr td.range .day-content {
+  background: rgba(42, 159, 196, .2) !important;
+}
+
 
 .b-t-primary {
   border-top-color: var(--primary)

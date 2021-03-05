@@ -204,7 +204,7 @@
                   </tr>
                   <ng-container *ngIf="cluster.show">
                     <tr>
-                      <td class="custom-th"><span translate>order.label.orderId</span></td>
+                      <td class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
                       <td class="custom-th"><span translate>order.label.workflow</span></td>
                       <td class="custom-th"><span translate>order.label.position</span></td>
                       <td class="custom-th"><span translate>order.label.state</span></td>
@@ -212,7 +212,7 @@
                     </tr>
                     <ng-container *ngIf="!cluster.loading">
                       <tr *ngFor="let order of cluster.orders">
-                        <td> {{order.orderId}}</td>
+                        <td> <span class="p-l">{{order.orderId}}</span> </td>
                         <td [innerHtml]="order.workflowId.path"></td>
                         <td>
                             <span *ngIf="order.position && order.position.length>0">

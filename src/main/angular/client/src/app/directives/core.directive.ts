@@ -207,7 +207,7 @@ export class DurationRegexValidator implements Validator {
     }
 
     return {
-      validateDurtionReqex: true
+      invalidDuration: true
     };
   }
 }
@@ -362,7 +362,6 @@ export class ResizableDirective implements OnInit {
             $('.bottom-btn').css({'right': wt + 22 + 'px'});
             $('.toolbar').css({'margin-right': (wt - 12) + 'px'});
             $('.sidebar-close').css({'right': wt + 'px'});
-            $('#back-btn').css({'right': (wt + 1) + 'px'});
             localStorage.propertyPanelWidth = wt;
           }
         });

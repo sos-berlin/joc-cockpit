@@ -509,8 +509,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       }).subscribe((res: any) => {
         if (res.id === this.data.id && this.schedule.id === this.data.id) {
           this.schedule.actual = JSON.stringify(this.schedule.configuration);
-          this.schedule.valid = isValid;
-          this.data.valid = isValid;
+          this.schedule.valid = res.valid;
+          this.data.valid = res.valid;
           this.schedule.released = false;
           this.data.released = false;
           this.setErrorMessage(res);

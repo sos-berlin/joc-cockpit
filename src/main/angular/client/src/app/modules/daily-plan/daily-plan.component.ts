@@ -272,6 +272,7 @@ export class RemovePlanModalComponent implements OnInit {
   @Input() selectedDate;
   @Input() submissionsDelete: boolean;
   @Input() isSubmit: boolean;
+  @Input() dateRange: any = [];
 
   submitted = false;
   count = 0;
@@ -584,14 +585,14 @@ export class SearchComponent implements OnInit {
   schedules = [];
   workflowTree = [];
   checkOptions = [
-    { label: 'planned', value: 'PLANNED'},
-    { label: 'pending', value: 'PENDING' },
-    { label: 'incomplete', value: 'INPROGRESS' },
-    { label: 'running', value: 'RUNNING' },
-    { label: 'suspended', value: 'SUSPENDED' },
-    { label: 'calling', value: 'CALLING' },
-    { label: 'waiting', value: 'WAITING' },
-    { label: 'blocked', value: 'BLOCKED' }
+    {label: 'planned', value: 'PLANNED'},
+    {label: 'pending', value: 'PENDING'},
+    {label: 'incomplete', value: 'INPROGRESS'},
+    {label: 'running', value: 'RUNNING'},
+    {label: 'suspended', value: 'SUSPENDED'},
+    {label: 'calling', value: 'CALLING'},
+    {label: 'waiting', value: 'WAITING'},
+    {label: 'blocked', value: 'BLOCKED'}
   ];
 
   constructor(public coreService: CoreService) {
@@ -664,7 +665,7 @@ export class SearchComponent implements OnInit {
         flag = false;
       }
       if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        let obj: any = {
+        const obj: any = {
           path: node.key,
           objectTypes: ['WORKFLOW']
         };
@@ -695,7 +696,8 @@ export class SearchComponent implements OnInit {
   checkFilterName() {
     this.isUnique = true;
     for (let i = 0; i < this.allFilter.length; i++) {
-      if (this.filter.name === this.allFilter[i].name && this.permission.user === this.allFilter[i].account && this.filter.name !== this.existingName) {
+      if (this.filter.name === this.allFilter[i].name &&
+        this.permission.user === this.allFilter[i].account && this.filter.name !== this.existingName) {
         this.isUnique = false;
       }
     }
@@ -838,7 +840,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   loadOrderPlan() {
-    let obj: any = {
+    const obj: any = {
       controllerId: this.schedulerIds.selected,
       filter: {}
     };
@@ -863,7 +865,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.coreService.post('daily_plan/orders', obj).subscribe((res: any) => {
         this.filterData(res.plannedOrderItems);
         this.isLoaded = true;
-      }, (err) => {
+      }, () => {
         this.isLoaded = true;
       });
     }
@@ -1009,6 +1011,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.timeZone = this.preferences.zone;
     modalRef.componentInstance.selectedDate = this.selectedDate;
     modalRef.componentInstance.submissionsDelete = true;
+    modalRef.componentInstance.dateRange = this.rangeDates;
     modalRef.result.then((res) => {
       this.updateList();
     }, () => {
@@ -1127,7 +1130,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         modalRef.componentInstance.comments = comments;
         modalRef.componentInstance.obj = obj;
         modalRef.componentInstance.url = 'orders/cancel';
-        modalRef.result.then((result) => {
+        modalRef.result.then(() => {
           this.updateList();
         }, () => {
 

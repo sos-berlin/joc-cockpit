@@ -21,7 +21,6 @@
   --red: #ff5252;
   --bg-dimgrey: #999;
   --mangenta: #d900d9;
-  --bg-gold: #ffba57;
   --bg-mangenta: #b966b9;
   --bg-red: #ff2727;
   --row-selected: rgba(35, 52, 70, .5);
@@ -86,7 +85,9 @@ gridster-item {
 .bg-white {
   background-color: var(--bg-box) !important;
 }
-
+.bg-gold {
+  color: rgba(0, 0, 0, .87);
+}
 .ui-check input:checked + i:before {
   left: 5px;
   top: 5px;
@@ -1118,9 +1119,9 @@ pre#pre {
 }
 
 .ant-select-selection--multiple .ant-select-selection__choice {
-  background: var(--bg-box);
-  border-color: var(--bg-box);
-  color: var(--text-color);
+  background: #4e6d8c;
+  border-color: #4e6d8c;
+  color: #fafafa;
 }
 
 /*

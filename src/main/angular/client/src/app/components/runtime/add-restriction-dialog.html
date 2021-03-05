@@ -38,6 +38,12 @@
                      (change)="selectAllWeek()">
               <span translate>runtime.label.everyDay</span>
             </label><br>
+            <nz-checkbox-wrapper (nzOnChange)="dayChange($event)">
+              <ng-container *ngFor="let option of daysOptions">
+                <label nz-checkbox [nzValue]="option.value" [(ngModel)]="option.checked"
+                       name="{{option.label}}"><span translate>runtime.label.{{option.label}}</span></label>
+              </ng-container>
+            </nz-checkbox-wrapper>
           </div>
         </div>
         <div class="form-group row">
@@ -234,7 +240,7 @@
     <div class="row" style="margin-bottom:15px;">
       <div class="col-sm-12" style="max-height: 260px; overflow: auto">
         <div class="table-responsive">
-          <table class="table table-hover">
+          <table class="table table-hover table-bordered">
             <thead>
             <tr>
               <th><span translate>runtime.label.srNo</span></th>
@@ -278,8 +284,8 @@
           </table>
         </div>
       </div>
-      <div class="col-md-12 text-center" *ngIf="calendar.frequencyList.length==0" translate>
-        runtime.message.noFrequencyFound
+      <div class="col-md-12 text-center" *ngIf="calendar.frequencyList.length==0">
+        <app-empty-data title="runtime.message.noFrequencyFound"></app-empty-data>
       </div>
     </div>
     <button type="button" class="btn btn-primary btn-sm" style="position:absolute; bottom: 10px;"
@@ -298,3 +304,6 @@
     </button>
   </div>
 </form>
+
+
+

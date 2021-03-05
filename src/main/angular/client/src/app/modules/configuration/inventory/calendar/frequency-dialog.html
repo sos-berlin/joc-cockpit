@@ -331,7 +331,7 @@
       <div class="row" style="margin-bottom:27px;">
         <div class="col-sm-12" style="max-height: 260px; overflow: auto">
           <div class="table-responsive">
-            <table class="table table-hover">
+            <table class="table table-hover table-bordered">
               <thead>
               <tr>
                 <th><span translate>runtime.label.srNo</span></th>
@@ -376,7 +376,7 @@
           </div>
 
         </div>
-        <div class="col-md-12 text-center" *ngIf="frequencyList.length==0" translate>
+        <div class="col-md-12 text-center" *ngIf="frequencyList.length==0">
           <app-empty-data title="runtime.message.noFrequencyFound"></app-empty-data>
         </div>
       </div>

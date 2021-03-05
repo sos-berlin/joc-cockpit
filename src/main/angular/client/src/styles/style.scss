@@ -2431,7 +2431,7 @@ pre.log {
 }
 
 .w-xxxl {
-  width: 380px;
+  width: 380px !important;
 }
 
 .w-full {
@@ -3781,7 +3781,7 @@ li > a > i.remove {
   vertical-align: middle;
   display: inline-block;
   height: 26px;
-  color: var(--white) !important;
+  color: var(--white);
 
   label {
     margin: 5px;
@@ -6644,6 +6644,9 @@ span.cm-error {
 .ant-dropdown-menu-submenu-title:hover,
 .ant-dropdown-menu-submenu-title:hover > a {
   color: var(--text-hover) !important;
+}
+.ant-select-dropdown-menu-item-selected{
+  background-color: #e6f7ff ;
 }
 
 .ant-select-dropdown-menu-item-disabled {
