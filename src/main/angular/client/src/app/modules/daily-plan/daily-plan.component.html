@@ -269,7 +269,7 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div class="inline" [ngClass]="{'hide':object.mapOfCheckedId.size>0 || rangeDates.length > 0}">
+          <div class="inline" [ngClass]="{'hide':object.mapOfCheckedId.size>0 || dateRanges.length > 0}">
             <div class="btn-group m-l-12 hidden-btn-group">
               <ng-container *ngFor="let btn of filterBtn">
                 <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
@@ -297,7 +297,7 @@
               </nz-dropdown-menu>
             </div>
           </div>
-          <div class="inline break-line" [ngClass]="{'hide':object.mapOfCheckedId.size>0 || rangeDates.length > 0}">
+          <div class="inline break-line" [ngClass]="{'hide':object.mapOfCheckedId.size>0 || dateRanges.length > 0}">
             <div class="btn-group m-l-12">
               <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': dailyPlanFilters.filter.late}" (click)="changeLate()">
@@ -415,7 +415,7 @@
               <span class="hidden-sm-down" translate>dailyPlan.button.resumeSelectedOrder</span>
             </button>
           </div>
-          <div class="hide" [ngClass]="{'show-block':rangeDates.length > 0}">
+          <div class="hide" [ngClass]="{'show-block':dateRanges.length > 0}">
             <button class="btn btn-grey btn-sm m-l-12 bg-hover-color"
                     (click)="removeSelectedOrder()"><i
               class="fa fa-trash"></i>&nbsp;
@@ -441,7 +441,7 @@
               <div class="calendar-sm m-t-0" id="full-calendar"></div>
             </div>
             <div class="text-center m-t">
-              <button [disabled]="isPastDate || rangeDates.length > 0" class="btn btn-grey btn-sm" (click)="createPlan()">
+              <button [disabled]="isPastDate || dateRanges.length > 0" class="btn btn-grey btn-sm" (click)="createPlan()">
                 <i class="fa fa-plus"></i>&nbsp;
                 <span translate>dailyPlan.button.createPlan</span>
               </button>

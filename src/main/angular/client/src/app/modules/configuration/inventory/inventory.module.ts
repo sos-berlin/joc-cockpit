@@ -20,8 +20,10 @@ import {
   SingleDeployComponent, UploadModalComponent
 } from './inventory.component';
 import {TableComponent} from './table-data/table.component';
-import {ExpressionComponent, ImportComponent, JobComponent, UpdateWorkflowComponent,
-  WorkflowComponent} from './workflow/workflow.component';
+import {
+  ExpressionComponent, ImportComponent, JobComponent, ScriptEditorComponent, UpdateWorkflowComponent,
+  WorkflowComponent
+} from './workflow/workflow.component';
 import {ScheduleComponent} from './schedule/schedule.component';
 import {LockComponent} from './lock/lock.component';
 import {JunctionComponent} from './junction/junction.component';
@@ -30,7 +32,7 @@ import {CalendarComponent, FrequencyModalComponent} from './calendar/calendar.co
 
 const COMPONENTS = [FrequencyModalComponent, ImportComponent, UpdateWorkflowComponent, SingleDeployComponent,
   DeployComponent, ExportComponent, SetVersionComponent, CreateFolderModalComponent, CreateObjectModalComponent,
-  ImportWorkflowModalComponent, JsonEditorModalComponent, UploadModalComponent];
+  ImportWorkflowModalComponent, JsonEditorModalComponent, UploadModalComponent, ScriptEditorComponent];
 
 @NgModule({
   imports: [

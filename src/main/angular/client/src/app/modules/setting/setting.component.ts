@@ -3,7 +3,6 @@ import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import * as moment from 'moment-timezone';
 
-
 @Component({
   selector: 'app-user',
   templateUrl: './setting.component.html'
@@ -31,14 +30,14 @@ export class SettingComponent implements OnInit {
 
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
     this.zones = moment.tz.names();
     this.loadSetting();
   }
 
-  private loadSetting() {
+  private loadSetting(): void {
     if (this.permission.user) {
       const configObj = {
         controllerId: this.schedulerIds.selected,
@@ -68,28 +67,47 @@ export class SettingComponent implements OnInit {
             this.settingArr.push(obj);
           }
         } else {
-          this.savePreferences(res.defaultGlobals);
+          this.savePreferences(this.generateStoreObject(res.defaultGlobals, true));
         }
       });
     }
   }
 
-  changeConfiguration() {
+  changeConfiguration(): void {
     const tempSetting = this.coreService.clone(this.settings);
-    for (let prop in tempSetting) {
-      for (let x in tempSetting[prop]) {
-        if (tempSetting[prop][x].type === 'WEEKDAYS') {
-          if (typeof tempSetting[prop][x].value === 'object') {
-            tempSetting[prop][x].value = typeof tempSetting[prop][x].value.toString();
+    this.savePreferences(this.generateStoreObject(tempSetting, false));
+  }
+
+  private generateStoreObject(setting, isDefault): any {
+    let tempSetting: any = {};
+    for (let prop in setting) {
+      tempSetting[prop] = {};
+      for (let x in setting[prop]) {
+        tempSetting[prop][x] = {};
+        if (x !== 'ordering') {
+          tempSetting[prop][x].ordering = setting[prop][x].ordering;
+          let value;
+          if (isDefault) {
+            value = setting[prop][x].default;
+          } else {
+            value = setting[prop][x].value;
+            if (setting[prop][x].type === 'WEEKDAYS') {
+              if (setting[prop][x].value && Array.isArray(setting[prop][x].value)) {
+                value = typeof setting[prop][x].value.toString();
+              }
+            }
           }
+          tempSetting[prop][x].value = value;
+        } else {
+          tempSetting[prop][x] = setting[prop].ordering;
         }
       }
     }
-    console.log(tempSetting);
-    this.savePreferences(tempSetting);
+
+    return tempSetting;
   }
 
-  private savePreferences(tempSetting) {
+  private savePreferences(tempSetting): void {
     if (this.schedulerIds.selected) {
       this.coreService.post('configuration/save', {
         controllerId: this.schedulerIds.selected,
@@ -97,9 +115,7 @@ export class SettingComponent implements OnInit {
         id: this.configId || 0,
         configurationType: 'GLOBALS',
         configurationItem: JSON.stringify(tempSetting)
-      }).subscribe(res => {
-      }, (err) => {
-        console.error(err);
+      }).subscribe(() => {
       });
     }
   }

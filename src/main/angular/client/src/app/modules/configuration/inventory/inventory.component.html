@@ -71,7 +71,7 @@
         </ul>
       </div>
       <div class="inline">
-        <a class="text-hover-primary m-l-lg" style="position: relative;top:10px" *ngIf="navigateFrom && navigateFrom.name && navigateFrom.type !== this.type" (click)="backToObject()" >
+        <a class="text-hover-primary m-l-lg" style="position: relative;top:10px" *ngIf="indexOfNextAdd > 0" (click)="backToObject()" >
           <i class="fa fa-arrow-circle-left" ></i>
           {{'inventory.button.backToObject' | translate}}
         </a>

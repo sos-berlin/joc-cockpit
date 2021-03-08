@@ -158,7 +158,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   subscription: Subscription;
 
-  constructor(private coreService: CoreService, private workflowService: WorkflowService, private dataService: DataService) {
+  constructor(private coreService: CoreService, private modalService: NgbModal,
+              private workflowService: WorkflowService, private dataService: DataService) {
     this.subscription = dataService.reloadWorkflowError.subscribe(res => {
       this.error = res.error;
       if (res.msg && res.msg.match('duplicateLabel')) {
@@ -219,6 +220,15 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   focusChange() {
     this.obj.script = false;
+  }
+
+  fullScreen() {
+    const modalRef = this.modalService.open(ScriptEditorComponent, {backdrop: 'static', size: 'lg', windowClass: 'script-editor'});
+    modalRef.componentInstance.executable = this.selectedNode.job.executable;
+    modalRef.result.then((result) => {
+
+    }, () => {
+    });
   }
 
   onBlur() {
@@ -480,6 +490,32 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   onExpand(e, type) {
     this.loadData(e.node, type, null);
+  }
+}
+
+@Component({
+  selector: 'app-script-content',
+  templateUrl: './script-editor.html'
+})
+export class ScriptEditorComponent implements OnInit{
+  @Input() executable: any;
+  @ViewChild('codeMirror', {static: true}) cm;
+
+  cmOption: any = {
+    lineNumbers: true,
+    viewportMargin: Infinity,
+    autofocus: true,
+    autoRefresh: true,
+    foldGutter: true,
+    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+    mode: 'shell'
+  };
+
+  constructor(public activeModal: NgbActiveModal) {
+  }
+
+  ngOnInit(): void {
+    console.log(this.cm)
   }
 }
 
@@ -6356,6 +6392,36 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     });
   }
 
+  private checkJobInstruction(data) {
+    for (let prop in data.jobs) {
+      if (data.jobs[prop] && data.jobs[prop].executable) {
+        if (data.jobs[prop].executable.env && _.isArray(data.jobs[prop].executable.env)) {
+          data.jobs[prop].executable.env = data.jobs[prop].executable.env.filter((env) => {
+            if (env.value) {
+              if (!(/[$_+]/.test(env.value))) {
+                let startChar = env.value.substring(0, 1),
+                  endChar = env.value.substring(env.value.length - 1);
+                if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
+
+                } else {
+                  env.value = JSON.stringify(env.value);
+                  env.value = '\'' + env.value.substring(1, env.value.length - 1) + '\'';
+                }
+              }
+              return true;
+            }
+            return false;
+          });
+          if (data.jobs[prop].executable.env && data.jobs[prop].executable.env.length > 0) {
+            this.coreService.convertArrayToObject(data.jobs[prop].executable.env, 'env', true);
+          } else {
+            delete data.jobs[prop].executable['env'];
+          }
+        }
+      }
+    }
+  }
+
   private saveJSON(noValidate) {
     if (this.selectedNode && noValidate) {
       return;
@@ -6373,6 +6439,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     } else {
       data = noValidate;
     }
+
+    this.checkJobInstruction(data);
+
     if (this.workflow.actual && !_.isEqual(this.workflow.actual, JSON.stringify(data)) && !this.isStore) {
       this.isStore = true;
       if (this.history.length === 20) {
@@ -6390,7 +6459,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   navToLock(lockId) {
-    this.dataService.reloadTree.next({navigate: {name: lockId,  type: 'LOCK'}});
+    this.dataService.reloadTree.next({navigate: {name: lockId, type: 'LOCK'}});
   }
 
   private storeData(data) {

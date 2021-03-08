@@ -138,8 +138,9 @@
           <nz-tabset>
             <nz-tab [nzTitle]="'workflow.label.script' | translate" (nzClick)="reloadScript()">
               <div class="row" *ngIf="isDisplay">
-                <div class="col-md-12">
-                  <div class="b-a p-a-xs" [ngClass]="{'invalid': obj.script || (script.invalid && (script.dirty && script.touched))}">
+                <div class="col-md-12 role">
+                  <i class="pos-abt fa fa-arrows-alt cursor" (click)="fullScreen()" style="right: 15px;top:1px;font-size: 16px;z-index: 999"></i>
+                  <div class="b-a" [ngClass]="{'invalid': obj.script || (script.invalid && (script.dirty && script.touched))}">
                     <ngx-codemirror required #script="ngModel" [(ngModel)]="selectedNode.job.executable.script"
                                     [options]="cmOption" (focusChange)="focusChange()"
                     ></ngx-codemirror>

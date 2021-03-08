@@ -551,11 +551,13 @@
     "placeholder.selectSubmissionHistory": "Select Submission History",
     "placeholder.timeRange": "now, (+/-)(d), today",
     "placeholder.workflowPath": "Select Workflow",
-    "popup.removeSelectedOrder": "Are Are you sure you want to remove this order?",
+    "popup.removeSelectedOrder": "Are you sure you want to remove this order?",
+    "popup.removeSelectedOrderForDateRange": "Are you sure you want to remove for select date range?",
     "popup.removeAllOrders": "Are you sure you want to remove all orders?",
     "popup.deleteSubmissions": "Are you sure you want to delete all submissions for select date?",
+    "popup.deleteSubmissionsForDateRange": "Are you sure you want to delete all submissions for select date range?",
     "popup.removeOrderCount": "Are you sure you want to remove {{count}} orders?",
-    "popup.submitSelectedOrder": "Are Are you sure you want to submit this order?",
+    "popup.submitSelectedOrder": "Are you sure you want to submit this order?",
     "popup.submitOrderCount": "Are you sure you want to submit {{count}} orders?"
   },
   "error": {
@@ -1410,6 +1412,7 @@
     "label.else": "false",
     "label.fileWatcher": "File Watcher",
     "label.expressionEditor": "Expression Editor",
+    "label.scriptEditor": "Script Editor",
     "label.functions": "Functions",
     "label.description": "Description",
     "label.syntax": "Syntax",

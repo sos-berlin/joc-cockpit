@@ -4,14 +4,20 @@
       <span *ngIf="isSubmit" translate>dailyPlan.label.submitOrders</span>
       <span *ngIf="!isSubmit" translate>dailyPlan.label.removeOrders</span>
     </span>
-    <span *ngIf="submissionsDelete" translate>dailyPlan.label.submissionsDelete
-       <i class="text-muted p-l-xs text">{{selectedDate | stringToDate1}}</i>
+    <span *ngIf="submissionsDelete">
+       {{'dailyPlan.label.submissionsDelete' | translate}} :
+       <i class="text-muted p-l-xs text" *ngIf="!(dateRange && dateRange.length > 0)">{{selectedDate | stringToDate1}}</i>
+    </span>
+    <span *ngIf="dateRange && dateRange.length > 0">
+      :
+      <i class="text-muted">{{dateRange[0] | stringToDate1}}</i> -
+      <i class="text-muted">{{dateRange[1] | stringToDate1}}</i>
     </span>
     <span *ngIf="order">
       <span *ngIf="isSubmit" translate>dailyPlan.label.submitOrder</span>
       <span *ngIf="!isSubmit" translate>dailyPlan.label.removeOrder</span>
     </span>
-    <i *ngIf="order" class="text-muted p-l-xs text">{{order.orderTemplatePath ? order.orderTemplatePath : order.key ? order.key : order.orderId}}</i>
+    <i *ngIf="order" class="text-muted p-l-xs text">: {{order.orderTemplatePath ? order.orderTemplatePath : order.key ? order.key : order.orderId}}</i>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -23,7 +29,8 @@
       <div class="m-t text" *ngIf="count === 0">
         <p class="m-t">
           <span *ngIf="isSubmit" translate>dailyPlan.popup.submitSelectedOrder</span>
-          <span *ngIf="!isSubmit" translate>dailyPlan.popup.removeSelectedOrder</span>
+          <span *ngIf="!isSubmit && !(dateRange && dateRange.length > 0)" translate>dailyPlan.popup.removeSelectedOrder</span>
+           <span *ngIf="dateRange && dateRange.length > 0" translate>dailyPlan.popup.removeSelectedOrderForDateRange</span>
         </p>
       </div>
       <div class="m-t text" *ngIf="count">
@@ -35,7 +42,8 @@
     </div>
     <div class="m-t text" *ngIf="submissionsDelete">
       <p class="m-t">
-        <span translate>dailyPlan.popup.deleteSubmissions</span>
+        <span *ngIf="!(dateRange && dateRange.length > 0)" translate>dailyPlan.popup.deleteSubmissions</span>
+        <span *ngIf="dateRange && dateRange.length > 0" translate>dailyPlan.popup.deleteSubmissionsForDateRange</span>
       </p>
     </div>
   </div>

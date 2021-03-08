@@ -1,0 +1,32 @@
+
+  <div class="modal-header">
+    <h4 class="modal-title">
+      <span translate>workflow.label.scriptEditor</span>
+    </h4>
+    <button type="button" [disabled]="!executable.script" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true" class="fa fa-times-circle"></span>
+    </button>
+  </div>
+  <div class="modal-body p-a">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="b-a" [ngClass]="{'invalid': (cm.invalid && (cm.dirty || cm.touched))}">
+          <ngx-codemirror required #codeMirror #cm="ngModel" [(ngModel)]="executable.script"
+                          [options]="cmOption"
+          ></ngx-codemirror>
+        </div>
+        <div *ngIf="(cm.invalid && (cm.dirty || cm.touched))"
+             class="text-danger help-block">
+          <div *ngIf="(cm.errors && cm.errors.required)">
+            <div translate>common.message.requiredError</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" [disabled]="!executable.script" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
+      common.button.close
+    </button>
+  </div>
+

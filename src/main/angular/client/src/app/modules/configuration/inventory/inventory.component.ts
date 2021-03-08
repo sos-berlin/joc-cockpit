@@ -1814,11 +1814,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
   inventoryConfig: any;
   isTreeLoaded = false;
   isTrash = false;
-  navigateFrom: any = {};
   tempObjSelection: any = {};
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
+
+  indexOfNextAdd = 0;
+  objectHistory = [];
 
   @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
   @ViewChild('treeCtrl2', {static: false}) treeCtrl2: any;
@@ -1874,7 +1876,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         } else if (res.back) {
           this.backToListView();
         } else if (res.navigate) {
-          this.navigateFrom = _.clone(this.selectedObj);
+          this.pushObjectInHistory();
           this.selectedObj.type = res.navigate.type;
           this.selectedObj.name = res.navigate.name;
           this.recursivelyExpandTree();
@@ -1927,57 +1929,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
     this.inventoryConfig.copyObj = this.copyObj;
     this.inventoryConfig.isTrash = this.isTrash;
-  }
-
-  switchToTrash() {
-    this.trashTree = [];
-    this.isTrash = !this.isTrash;
-    if (this.isTrash) {
-      this.isTreeLoaded = false;
-      this.initTrashTree(null);
-      if (this.type) {
-        this.tempObjSelection = {
-          type: _.clone(this.type),
-          selectedData: this.coreService.clone(this.selectedData),
-          selectedObj: _.clone(this.selectedObj)
-        };
-      }
-      this.clearSelection();
-    } else {
-      this.clearSelection();
-      if (this.tempObjSelection.type) {
-        this.type = _.clone(this.tempObjSelection.type);
-        this.selectedData = this.coreService.clone(this.tempObjSelection.selectedData);
-        this.selectedObj = _.clone(this.tempObjSelection.selectedObj);
-        this.tempObjSelection = {};
-      }
-    }
-  }
-
-  backToObject() {
-    this.selectedObj = _.clone(this.navigateFrom);
-    this.recursivelyExpandTree();
-    this.navigateFrom = {};
-  }
-
-  private backToListView() {
-    let parent: any;
-    if (this.isTrash) {
-      parent = this.treeCtrl2.getTreeNodeByKey(this.selectedObj.path);
-    } else {
-      parent = this.treeCtrl.getTreeNodeByKey(this.selectedObj.path);
-    }
-    if (parent && parent.origin.children) {
-      const index = (this.selectedObj.type === 'CALENDAR' || this.selectedObj.type === 'SCHEDULE') ? 1 : 0;
-      let child = parent.origin.children[index];
-      for (let i = 0; i < child.children.length; i++) {
-        if (child.children[i].object === this.selectedObj.type) {
-          this.selectedData = child.children[i];
-          this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
-          break;
-        }
-      }
-    }
   }
 
   initTree(path, mainPath) {
@@ -2473,6 +2424,60 @@ export class InventoryComponent implements OnInit, OnDestroy {
         deleted: data.deleted
       }]);
     });
+  }
+
+  switchToTrash() {
+    this.trashTree = [];
+    this.isTrash = !this.isTrash;
+    if (this.isTrash) {
+      this.isTreeLoaded = false;
+      this.initTrashTree(null);
+      if (this.type) {
+        this.tempObjSelection = {
+          type: _.clone(this.type),
+          selectedData: this.coreService.clone(this.selectedData),
+          selectedObj: _.clone(this.selectedObj)
+        };
+      }
+      this.clearSelection();
+    } else {
+      this.clearSelection();
+      if (this.tempObjSelection.type) {
+        this.type = _.clone(this.tempObjSelection.type);
+        this.selectedData = this.coreService.clone(this.tempObjSelection.selectedData);
+        this.selectedObj = _.clone(this.tempObjSelection.selectedObj);
+        this.tempObjSelection = {};
+      }
+    }
+  }
+
+  backToObject() {
+    if (this.indexOfNextAdd > 0) {
+      --this.indexOfNextAdd;
+      this.selectedObj = _.clone(this.objectHistory[this.indexOfNextAdd]);
+      this.objectHistory.splice(this.indexOfNextAdd, 1);
+      this.recursivelyExpandTree();
+    }
+  }
+
+  private backToListView() {
+    let parent: any;
+    if (this.isTrash) {
+      parent = this.treeCtrl2.getTreeNodeByKey(this.selectedObj.path);
+    } else {
+      parent = this.treeCtrl.getTreeNodeByKey(this.selectedObj.path);
+    }
+    if (parent && parent.origin.children) {
+      const index = (this.selectedObj.type === 'CALENDAR' || this.selectedObj.type === 'SCHEDULE') ? 1 : 0;
+      let child = parent.origin.children[index];
+      for (let i = 0; i < child.children.length; i++) {
+        if (child.children[i].object === this.selectedObj.type) {
+          this.selectedData = child.children[i];
+          this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
+          break;
+        }
+      }
+    }
   }
 
   addObject(data, type) {
@@ -3111,8 +3116,27 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
+  private pushObjectInHistory() {
+    let flag = true;
+    if (this.objectHistory.length > 0) {
+      let x = this.objectHistory[this.objectHistory.length - 1];
+      if (_.isEqual(JSON.stringify(this.selectedObj), JSON.stringify(x))) {
+        flag = false;
+      }
+    }
+    if (flag) {
+      if (this.objectHistory.length === 20) {
+        this.objectHistory.shift();
+      }
+      this.objectHistory.push(this.coreService.clone(this.selectedObj));
+      ++this.indexOfNextAdd;
+    }
+  }
+
   private setSelectedObj(type, name, path, id) {
-    this.navigateFrom = {};
+    if (this.selectedObj.id) {
+      this.pushObjectInHistory();
+    }
     this.selectedObj = {type: type, name: name, path: path, id: id};
   }
 

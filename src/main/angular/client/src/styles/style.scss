@@ -704,7 +704,7 @@ a.list-group-item {
 }
 
 button.close {
-  color: var(--white);
+  color: var(--text-color);
   opacity: 0.7;
 
   &:focus, &:hover {
@@ -5711,10 +5711,6 @@ body tr.mxPopupMenuItemHover {
   text-align: right;
 }
 
-button.close {
-  color: var(--text-color);
-}
-
 #outlineContainer {
   background: var(--bg-box) !important;
 }
@@ -5753,7 +5749,7 @@ button.close {
   right: -20px;
 }
 
-#property-panel{
+#property-panel {
   padding-right: 6px;
 }
 
@@ -5956,11 +5952,13 @@ pre#pre {
   height: 20px;
   width: 4px;
 }
+
 .jsgantt-task-background {
   text-align: center;
   z-index: 0;
   background: var(--primary);
 }
+
 .view-all-agent {
   span {
     display: block;
@@ -5980,9 +5978,11 @@ pre#pre {
   font-size: $base__font-size;
   font-family: $base__font-family;
 }
-.ant-select-tree-dropdown .ant-select-not-found{
+
+.ant-select-tree-dropdown .ant-select-not-found {
   color: var(--text-color);
 }
+
 .job-property-editor {
   .ant-select {
     width: 100%;
@@ -6399,15 +6399,13 @@ tr.tr-border td:first-child {
 }
 
 /** ----- Code Mirror ----------- ****/
-.CodeMirror {
-  background: 0 0 !important
-}
 
 .CodeMirror-gutters {
   background: var(--bg-box) !important
 }
 
 .CodeMirror {
+  background: 0 0 !important;
   height: auto !important
 }
 
@@ -6512,6 +6510,226 @@ span.cm-error {
   color: #1d1d1d !important
 }
 
+.script-editor {
+  .CodeMirror-foldmarker {
+    color: blue;
+    text-shadow: #b9f 1px 1px 2px, #b9f -1px -1px 2px, #b9f 1px -1px 2px, #b9f -1px 1px 2px;
+    font-family: arial;
+    line-height: .3;
+    cursor: pointer;
+  }
+
+  .CodeMirror-foldgutter {
+    width: .7em;
+  }
+
+  .CodeMirror-foldgutter-open,
+  .CodeMirror-foldgutter-folded {
+    cursor: pointer;
+  }
+
+  .CodeMirror-foldgutter-open:after {
+    content: "\25BE";
+  }
+
+  .CodeMirror-foldgutter-folded:after {
+    content: "\25B8";
+  }
+
+  .CodeMirror-dialog {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background: inherit;
+    z-index: 15;
+    padding: .1em .8em;
+    overflow: hidden;
+    color: inherit;
+  }
+
+  .CodeMirror-dialog-top {
+    border-bottom: 1px solid #eee;
+    top: 0;
+  }
+
+  .CodeMirror-dialog-bottom {
+    border-top: 1px solid #eee;
+    bottom: 0;
+  }
+
+  .CodeMirror-dialog input {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 20em;
+    color: inherit;
+    font-family: monospace;
+  }
+
+  .CodeMirror-dialog button {
+    font-size: 70%;
+  }
+
+  .CodeMirror-search-match {
+    background: gold;
+    border-top: 1px solid orange;
+    border-bottom: 1px solid orange;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    opacity: .5;
+  }
+
+  .b-a,
+  .modal-content,
+  .modal-footer,
+  .modal-header {
+    border-color: #e3e3e3;
+  }
+
+  .modal-content {
+    background-color: #fff;
+  }
+
+  .modal-header {
+    background: #f5f5f5;
+    color: #3d464d;
+  }
+
+  button.close {
+    color: #3d464d;
+  }
+
+  .btn-grey {
+    color: #3d464d;
+    background-color: #ddd;
+    border-color: #ddd;
+
+    &:hover {
+      color: #333;
+      background-color: #d0d0d0;
+      border-color: #d0d0d0;
+    }
+  }
+
+  .CodeMirror {
+    background: #fff !important;
+    color: #3d464d !important;
+    height: auto;
+  }
+
+  .CodeMirror-gutters {
+    border-right: 1px solid #ddd;
+    background-color: #f7f7f7 !important;
+  }
+
+  .CodeMirror-linenumber {
+    color: #999;
+  }
+
+  .cm-s-default .cm-keyword {
+    color: #7f0055 !important;
+  }
+
+  .cm-s-default .cm-atom {
+    color: #219 !important;
+  }
+
+  .cm-s-default .cm-number {
+    color: #164 !important;
+  }
+
+  .cm-s-default .cm-def {
+    color: #00f !important;
+  }
+
+  .cm-s-default .cm-variable,
+  .cm-s-default .cm-punctuation,
+  .cm-s-default .cm-property,
+  .cm-s-default .cm-operator {
+  }
+
+  .cm-s-default .cm-variable-2 {
+    color: #05a !important;
+  }
+
+  .cm-s-default .cm-variable-3, .cm-s-default .cm-type {
+    color: #085 !important;
+  }
+
+  .cm-s-default .cm-comment {
+    color: #a50 !important;
+  }
+
+  .cm-s-default .cm-string {
+    color: #a11 !important;
+  }
+
+  .cm-s-default .cm-string-2 {
+    color: #f50 !important;
+  }
+
+  .cm-s-default .cm-meta {
+    color: gray !important;
+  }
+
+  .cm-s-default .cm-qualifier {
+    color: #555 !important;
+  }
+
+  .cm-s-default .cm-builtin {
+    color: #30a !important;
+  }
+
+  .cm-s-default .cm-bracket {
+    color: #cc7 !important;
+  }
+
+  .cm-s-default .cm-tag {
+    color: #170 !important;
+  }
+
+  .cm-s-default .cm-attribute {
+    color: #c4008a !important;
+  }
+
+  .cm-s-default .cm-link {
+    color: #219 !important;
+  }
+
+  .cm-s-default .cm-error {
+    color: red !important;
+  }
+
+
+  .CodeMirror-activeline-background {
+    background: #e8f2ff !important;
+  }
+
+  .CodeMirror-scroll {
+    max-height: calc(100vh - 210px) !important;
+  }
+
+  .CodeMirror-selected {
+    background: #d9d9d9 !important;
+  }
+
+  .CodeMirror-focused .CodeMirror-selected {
+    background: #d7d4f0 !important;
+  }
+
+  .CodeMirror-line::selection,
+  .CodeMirror-line > span::selection,
+  .CodeMirror-line > span > span::selection {
+    background: #d7d4f0 !important;
+  }
+
+  .CodeMirror-line::-moz-selection,
+  .CodeMirror-line > span::-moz-selection,
+  .CodeMirror-line > span > span::-moz-selection {
+    background: #d7d4f0 !important;
+  }
+}
+
 .inner-log-m {
   margin: 6px 13px
 }
@@ -6559,6 +6777,7 @@ span.cm-error {
 .ant-tree-child-tree {
   width: fit-content !important;
 }
+
 .ant-calendar-header .ant-calendar-prev-century-btn:hover::before,
 .ant-calendar-header .ant-calendar-prev-decade-btn:hover::before,
 .ant-calendar-header .ant-calendar-prev-year-btn:hover::before,
@@ -6574,9 +6793,10 @@ span.cm-error {
 .ant-calendar-header .ant-calendar-prev-month-btn:hover::before,
 .ant-calendar-header .ant-calendar-prev-month-btn:hover::after,
 .ant-calendar-header .ant-calendar-next-month-btn:hover::before,
-.ant-calendar-header .ant-calendar-next-month-btn:hover::after{
+.ant-calendar-header .ant-calendar-next-month-btn:hover::after {
   border-color: #FFFFFF;
 }
+
 .ant-calendar-header .ant-calendar-prev-month-btn::before,
 .ant-calendar-header .ant-calendar-prev-month-btn::after,
 .ant-calendar-header .ant-calendar-prev-century-btn::before,
@@ -6645,8 +6865,9 @@ span.cm-error {
 .ant-dropdown-menu-submenu-title:hover > a {
   color: var(--text-hover) !important;
 }
-.ant-select-dropdown-menu-item-selected{
-  background-color: #e6f7ff ;
+
+.ant-select-dropdown-menu-item-selected {
+  background-color: #e6f7ff;
 }
 
 .ant-select-dropdown-menu-item-disabled {

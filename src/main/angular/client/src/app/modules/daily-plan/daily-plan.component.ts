@@ -220,7 +220,7 @@ export class SelectOrderTemplatesComponent implements OnInit {
   selector: 'app-ngbd-modal-content',
   templateUrl: './create-plan-dialog.html'
 })
-export class CreatePlanModalComponent{
+export class CreatePlanModalComponent {
   @Input() schedulerId;
   @Input() selectedDate;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
@@ -317,6 +317,10 @@ export class RemovePlanModalComponent implements OnInit {
   }
 
   onSubmit(): void {
+    if (this.dateRange && this.dateRange.length > 0) {
+      alert('API not yet implemented!');
+      return;
+    }
     this.submitted = true;
     const obj: any = {
       controllerId: this.schedulerId,
@@ -348,6 +352,10 @@ export class RemovePlanModalComponent implements OnInit {
   }
 
   onRemove(): void {
+    if (this.dateRange && this.dateRange.length > 0) {
+      alert('API not yet implemented!');
+      return;
+    }
     const obj: any = {
       controllerId: this.schedulerId,
       filter: {}
@@ -781,7 +789,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   submissionHistory: any = [];
   searchableProperties = ['orderId', 'schedulePath', 'workflowPath', 'status', 'plannedStartTime', 'expectedEndTime'];
   expandedPaths = new Set();
-  rangeDates = [];
+  dateRanges = [];
 
   object = {
     mapOfCheckedId: new Map(),
@@ -1011,7 +1019,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.timeZone = this.preferences.zone;
     modalRef.componentInstance.selectedDate = this.selectedDate;
     modalRef.componentInstance.submissionsDelete = true;
-    modalRef.componentInstance.dateRange = this.rangeDates;
+    modalRef.componentInstance.dateRange = this.dateRanges;
     modalRef.result.then((res) => {
       this.updateList();
     }, () => {
@@ -1078,11 +1086,15 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   cancelSelectedOrder() {
-    const orderIds = [];
-    this.object.mapOfCheckedId.forEach((value) => {
-      orderIds.push(value.orderId);
-    });
-    this.cancelCyclicOrder(orderIds, false, true);
+    if (this.dateRanges && this.dateRanges.length > 0) {
+      alert('API not yet implemented!');
+    } else {
+      const orderIds = [];
+      this.object.mapOfCheckedId.forEach((value) => {
+        orderIds.push(value.orderId);
+      });
+      this.cancelCyclicOrder(orderIds, false, true);
+    }
   }
 
   suspendSelectedOrder() {
@@ -1227,6 +1239,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.orders = this.object.mapOfCheckedId;
     modalRef.componentInstance.timeZone = this.preferences.zone;
     modalRef.componentInstance.selectedDate = this.selectedDate;
+    modalRef.componentInstance.dateRange = this.dateRanges;
     modalRef.result.then((res) => {
       this.updateList();
     }, () => {
@@ -1994,7 +2007,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         this.load(new Date(year, month, 1));
       },
       rangeEnd: (e) => {
-        this.rangeDates = e.rangeDates;
+        this.dateRanges = e.dateRanges;
       }
     });
   }
