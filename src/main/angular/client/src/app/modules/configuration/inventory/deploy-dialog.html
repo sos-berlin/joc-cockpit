@@ -202,7 +202,7 @@
       <nz-spin nzSimple></nz-spin>
     </div>
   </div>
-  <div class="modal-footer text-left" >
+  <div class="modal-footer" >
       <button *ngIf="nodes.length > 0 && !isRemove" type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || selectedSchedulerIds.length === 0 || submitted">
         <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
         {{'common.button.submit' | translate}}

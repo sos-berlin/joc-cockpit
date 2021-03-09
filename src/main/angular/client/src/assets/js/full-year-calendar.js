@@ -33,6 +33,7 @@
         startYear: !isNaN(parseInt(opt.startYear)) ? parseInt(opt.startYear) : new Date().getFullYear(),
         startMonth: !isNaN(parseInt(opt.startMonth)) ? parseInt(opt.startMonth) : opt.selectedDate ? new Date(opt.selectedDate).getMonth() : new Date().getMonth(),
         view: opt.view ? opt.view : 'year',
+        rangeSelection: !!opt.rangeSelection,
         selectedDate: opt.selectedDate ? new Date(opt.selectedDate) : null,
         minDate: opt.minDate instanceof Date ? opt.minDate : null,
         maxDate: opt.maxDate instanceof Date ? opt.maxDate : null,
@@ -301,69 +302,71 @@
         do {
           let cell = $(document.createElement('td'));
           cell.addClass('day');
-          let moved = false;
-          cell.mousedown(function (evt) {
-            if (!evt.ctrlKey) {
-              _this.options.dateFrom = $(this).attr('currentDate');
-              _this.options.dateTo = null;
-            }
-            moved = false;
-          })
-          cell.mousemove(function () {
-            if (_this.options.dateFrom && !_this.options.dateTo) {
-              moved = true;
-              const date = $(this).attr('currentDate');
-              if (date) {
-                let cells = _this.element.find('.day:not(.old, .new, .disabled)');
-                for (let i = 0; i < cells.length; i++) {
-                  let _date = _this._getDate($(cells[i])).getTime();
-                  if (_date >= _this.options.dateFrom && _date <= date) {
-                    $(cells[i]).addClass('range');
-                    if (_date == _this.options.dateFrom) {
-                      $(cells[i]).addClass('range-start');
+          if(_this.options.rangeSelection) {
+            let moved = false;
+            cell.mousedown(function (evt) {
+              if (!evt.ctrlKey) {
+                _this.options.dateFrom = $(this).attr('currentDate');
+                _this.options.dateTo = null;
+              }
+              moved = false;
+            })
+            cell.mousemove(function () {
+              if (_this.options.dateFrom && !_this.options.dateTo) {
+                moved = true;
+                const date = $(this).attr('currentDate');
+                if (date) {
+                  let cells = _this.element.find('.day:not(.old, .new, .disabled)');
+                  for (let i = 0; i < cells.length; i++) {
+                    let _date = _this._getDate($(cells[i])).getTime();
+                    if (_date >= _this.options.dateFrom && _date <= date) {
+                      $(cells[i]).addClass('range');
+                      if (_date == _this.options.dateFrom) {
+                        $(cells[i]).addClass('range-start');
+                      }
+                    } else if (_date !== _this.options.dateFrom || _date !== date) {
+                      $(cells[i]).removeClass('range');
                     }
-                  } else if (_date !== _this.options.dateFrom || _date !== date) {
-                    $(cells[i]).removeClass('range');
                   }
                 }
               }
-            }
-          })
-          cell.mouseup(function (evt) {
-            let flag = false;
-            if (moved && _this.options.dateFrom) {
-              let cells = _this.element.find('.day:not(.old, .new, .disabled)');
-              for (let i = 0; i < cells.length; i++) {
-                let date = _this._getDate($(cells[i])).getTime();
-                if (date >= _this.options.dateFrom && date <= $(this).attr('currentDate')) {
-                  $(cells[i]).addClass('range');
-                } else {
-                  $(cells[i]).removeClass('range');
+            })
+            cell.mouseup(function (evt) {
+              let flag = false;
+              if (moved && _this.options.dateFrom) {
+                let cells = _this.element.find('.day:not(.old, .new, .disabled)');
+                for (let i = 0; i < cells.length; i++) {
+                  let date = _this._getDate($(cells[i])).getTime();
+                  if (date >= _this.options.dateFrom && date <= $(this).attr('currentDate')) {
+                    $(cells[i]).addClass('range');
+                  } else {
+                    $(cells[i]).removeClass('range');
+                  }
+                  if (!_this.options.dateTo) {
+                    _this.options.dateTo = $(this).attr('currentDate')
+                  }
+                  if (date == _this.options.dateTo) {
+                    $(cells[i]).addClass('range-end');
+                  }
                 }
-                if (!_this.options.dateTo) {
-                  _this.options.dateTo = $(this).attr('currentDate')
-                }
-                if (date == _this.options.dateTo) {
-                  $(cells[i]).addClass('range-end');
-                }
+              } else if (!evt.ctrlKey) {
+                flag = true;
               }
-            } else if (!evt.ctrlKey) {
-              flag = true;
-            }
-            let cells = _this.element.find('.range');
-            if (cells.length === 1 || flag) {
-              _this._clearRange();
-            } else if (cells.length > 1) {
-              $(cells[cells.length - 1]).addClass('range-end');
-            }
-            if (_this.options.dateFrom && _this.options.dateTo) {
-              _this._triggerEvent('rangeEnd', {
-                element: $(this),
-                dateRanges: [parseInt(_this.options.dateFrom), parseInt(_this.options.dateTo)]
-              });
-              _this.options.dateFrom = null;
-            }
-          })
+              let cells = _this.element.find('.range');
+              if (cells.length === 1 || flag) {
+                _this._clearRange();
+              } else if (cells.length > 1) {
+                $(cells[cells.length - 1]).addClass('range-end');
+              }
+              if (_this.options.dateFrom && _this.options.dateTo) {
+                _this._triggerEvent('rangeEnd', {
+                  element: $(this),
+                  dateRanges: [parseInt(_this.options.dateFrom), parseInt(_this.options.dateTo)]
+                });
+                _this.options.dateFrom = null;
+              }
+            })
+          }
           if (currentDate < firstDate) {
             cell.addClass('old');
           } else if (currentDate > lastDate) {
@@ -544,7 +547,7 @@
       cells.click(function (e) {
         e.stopPropagation();
         let date = _this._getDate($(this));
-        if (e.ctrlKey) {
+        if (e.ctrlKey && _this.options.rangeSelection) {
           if (_this.options.dateFrom) {
             _this.options.dateTo = date.getTime();
             if (_this.options.dateFrom != _this.options.dateTo) {
@@ -557,7 +560,9 @@
             _this.options.dateFrom = date.getTime();
           }
         } else {
-          _this._clearRange();
+          if(_this.options.rangeSelection) {
+            _this._clearRange();
+          }
           if (_this.options.selectedDate) {
             for (let i = 0; i < cells.length; i++) {
               if (_this._getDate($(cells[i])).getTime() === date.getTime()) {

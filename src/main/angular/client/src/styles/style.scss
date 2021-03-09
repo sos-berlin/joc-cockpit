@@ -44,6 +44,8 @@
   --date-selected-hover: rgba(14, 138, 139, 0.65);
   --date-selected-exclude: rgba(255, 163, 102, 0.56);
   --date-selected-exclude-hover: rgba(255, 163, 102, 0.66);
+  --range-hover: rgba(255, 140, 0, .55);
+  --range-start: rgba(255, 140, 0, .85);
 }
 
 /***
@@ -6537,7 +6539,7 @@ span.cm-error {
   }
 
   .CodeMirror-dialog {
-    position: absolute;
+    position: fixed;
     left: 0;
     right: 0;
     background: inherit;
@@ -6545,11 +6547,12 @@ span.cm-error {
     padding: .1em .8em;
     overflow: hidden;
     color: inherit;
+    margin: 16px;
+    top: 44px
   }
 
   .CodeMirror-dialog-top {
     border-bottom: 1px solid #eee;
-    top: 0;
   }
 
   .CodeMirror-dialog-bottom {
@@ -6619,11 +6622,11 @@ span.cm-error {
 
   .CodeMirror-gutters {
     border-right: 1px solid #ddd;
-    background-color: #f7f7f7 !important;
+    background-color: #f9f9f9 !important;
   }
 
   .CodeMirror-linenumber {
-    color: #999;
+    color: #8c8c8c !important
   }
 
   .cm-s-default .cm-keyword {
@@ -6706,7 +6709,7 @@ span.cm-error {
   }
 
   .CodeMirror-scroll {
-    max-height: calc(100vh - 210px) !important;
+    max-height: calc(100vh - 214px) !important;
   }
 
   .CodeMirror-selected {

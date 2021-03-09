@@ -28,6 +28,8 @@
   --date-selected-hover: rgba(235, 136, 20, 0.55);
   --date-selected-exclude: rgba(36, 148, 191, 0.56);
   --date-selected-exclude-hover: rgba(36, 148, 191, 0.66);
+  --range-hover: rgba(36, 148, 191, .55);
+  --range-start: rgba(36, 148, 191, .95);
 }
 
 .bg-blue-color {
@@ -91,9 +93,7 @@ gridster-item {
 .bg-white {
   background-color: var(--bg-box) !important;
 }
-.bg-gold {
-  color: rgba(0, 0, 0, .87);
-}
+
 .dark-white {
   background-color: var(--background-color)
 }

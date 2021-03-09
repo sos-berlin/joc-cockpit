@@ -21,13 +21,13 @@
   --red: #ff2727;
   --mangenta: #bf00bf;
   --bg-mangenta: #b966b9;
-  --bg-red: #ff5252;
-  --bg-light-blue: #829ebb;
   --row-selected: #e6f7ff;
   --date-selected: rgba(19, 149, 190, .4);
   --date-selected-hover: rgba(19, 149, 190, 0.55);
   --date-selected-exclude: rgba(255, 163, 102, 0.56);
   --date-selected-exclude-hover: rgba(255, 163, 102, 0.66);
+  --range-hover: rgba(255, 140, 0, .55);
+  --range-start: rgba(255, 140, 0, .85);
 }
 
 body {
@@ -80,9 +80,7 @@ gridster-item {
 .bg-white {
   background-color: var(--bg-box) !important;;
 }
-.bg-gold {
-  color: rgba(0, 0, 0, .87);
-}
+
 .dark-white {
   background-color: var(--background-color)
 }
@@ -99,11 +97,13 @@ gridster-item {
   border-color: var(--primary)
 }
 
-.calendar table.month td.day .day-content:hover,
-.calendar table.month tr td.range .day-content {
-  background: rgba(42, 159, 196, .2) !important;
+.calendar table.month td.day .day-content:hover{
+  background: rgba(42, 159, 196, .1) !important;
 }
 
+#toolbar-icons{
+  box-shadow: 0 1px 6px 1px var(--box-shadow) !important;
+}
 
 .b-t-primary {
   border-top-color: var(--primary)

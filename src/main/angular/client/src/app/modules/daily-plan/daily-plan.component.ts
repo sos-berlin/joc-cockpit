@@ -1989,6 +1989,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.checkSharedFilters();
     $('#full-calendar').calendar({
       view: 'month',
+      rangeSelection: true,
       language: localStorage.$SOS$LANG,
       selectedDate: this.selectedDate,
       clickDay: (e) => {

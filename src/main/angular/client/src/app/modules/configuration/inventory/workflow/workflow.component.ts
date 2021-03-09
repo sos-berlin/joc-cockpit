@@ -224,9 +224,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   fullScreen() {
     const modalRef = this.modalService.open(ScriptEditorComponent, {backdrop: 'static', size: 'lg', windowClass: 'script-editor'});
-    modalRef.componentInstance.executable = this.selectedNode.job.executable;
+    modalRef.componentInstance.script = this.selectedNode.job.executable.script;
     modalRef.result.then((result) => {
-
+      this.selectedNode.job.executable.script = result;
     }, () => {
     });
   }
@@ -497,8 +497,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   selector: 'app-script-content',
   templateUrl: './script-editor.html'
 })
-export class ScriptEditorComponent implements OnInit{
-  @Input() executable: any;
+export class ScriptEditorComponent implements OnInit {
+  @Input() script: any;
   @ViewChild('codeMirror', {static: true}) cm;
 
   cmOption: any = {
@@ -506,8 +506,6 @@ export class ScriptEditorComponent implements OnInit{
     viewportMargin: Infinity,
     autofocus: true,
     autoRefresh: true,
-    foldGutter: true,
-    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
     mode: 'shell'
   };
 
@@ -515,7 +513,10 @@ export class ScriptEditorComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    console.log(this.cm)
+  }
+
+  onSubmit() {
+    this.activeModal.close(this.script);
   }
 }
 

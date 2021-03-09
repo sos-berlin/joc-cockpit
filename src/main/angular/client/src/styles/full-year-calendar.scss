@@ -238,21 +238,13 @@
   }
   tr td.range {
     .day-content {
-      background: rgba(0, 0, 0, 0.2) !important;
+      background: var(--range-hover) !important;
     }
-  }
-  tr td.day {
     &.range-start .day-content {
-      background: lightcyan !important;
-      .date {
-        color: #333 !important;
-      }
+      background: var(--range-start) !important;
     }
     &.range-end .day-content {
-      background: lightcyan !important;
-      .date {
-        color: #333 !important;
-      }
+      background: var(--range-start) !important;
     }
   }
 
