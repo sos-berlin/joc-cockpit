@@ -170,7 +170,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.index = 0;
     this.updateVariableList();
   }
@@ -184,23 +184,23 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  updateSelectItems() {
+  updateSelectItems(): void {
     this.mentionValueList = [...this.variableList, ...this.selectedNode.obj.defaultArguments];
     this.filteredOptions = [...this.variableList, ...this.selectedNode.obj.defaultArguments];
   }
 
-  reloadScript() {
+  reloadScript(): void {
     this.isDisplay = false;
     setTimeout(() => {
       this.isDisplay = true;
     }, 5);
   }
 
-  updateVariableList() {
+  updateVariableList(): void {
     if (this.orderRequirements && this.orderRequirements.parameters && !_.isEmpty(this.orderRequirements.parameters)) {
       this.variableList = Object.entries(this.orderRequirements.parameters).map(([k, v]) => {
         return {name: k, value: v};
@@ -209,7 +209,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.updateSelectItems();
   }
 
-  tabChange($event) {
+  tabChange($event): void {
     if ($event.index === 0) {
       this.reloadScript();
     }
@@ -218,11 +218,11 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  focusChange() {
+  focusChange(): void {
     this.obj.script = false;
   }
 
-  fullScreen() {
+  fullScreen(): void {
     const modalRef = this.modalService.open(ScriptEditorComponent, {backdrop: 'static', size: 'lg', windowClass: 'script-editor'});
     modalRef.componentInstance.script = this.selectedNode.job.executable.script;
     modalRef.result.then((result) => {
@@ -231,7 +231,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  onBlur() {
+  onBlur(): void {
     if (this.error && this.selectedNode && this.selectedNode.obj) {
       this.obj.label = !this.selectedNode.obj.label;
       this.obj.agent = !this.selectedNode.job.agentId;
@@ -241,7 +241,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  getJobInfo() {
+  getJobInfo(): void {
     let flag = false;
     for (let i = 0; i < this.jobs.length; i++) {
       if (this.jobs[i].name === this.selectedNode.obj.jobName) {
@@ -256,7 +256,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.setJobProperties();
   }
 
-  checkJobInfo() {
+  checkJobInfo(): void {
     if (!this.selectedNode.obj.jobName) {
       this.selectedNode.obj.jobName = 'job';
     }
@@ -339,13 +339,13 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   valueWith = (data: { name: string }) => data.name;
 
-  onKeyPress($event, type) {
+  onKeyPress($event, type): void {
     if ($event.which === '13' || $event.which === 13) {
       type === 'default' ? this.addVariable() : this.addArgument();
     }
   }
 
-  private init() {
+  private init(): void {
     this.getJobInfo();
     this.selectedNode.obj.defaultArguments = this.coreService.convertObjectToArray(this.selectedNode.obj, 'defaultArguments');
     if (this.selectedNode.obj.defaultArguments && this.selectedNode.obj.defaultArguments.length == 0) {
@@ -367,7 +367,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  private setJobProperties() {
+  private setJobProperties(): void {
     if (!this.selectedNode.job.taskLimit) {
       this.selectedNode.job.taskLimit = 1;
     }
@@ -421,6 +421,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
               try {
                 env.value = JSON.parse(env.value);
               } catch (e) {
+                console.error(e);
               }
             }
           }
@@ -497,7 +498,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   selector: 'app-script-content',
   templateUrl: './script-editor.html'
 })
-export class ScriptEditorComponent implements OnInit {
+export class ScriptEditorComponent {
   @Input() script: any;
   @ViewChild('codeMirror', {static: true}) cm;
 
@@ -512,11 +513,12 @@ export class ScriptEditorComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal) {
   }
 
-  ngOnInit(): void {
-  }
-
   onSubmit() {
     this.activeModal.close(this.script);
+  }
+
+  execCommand(type) {
+    this.cm.codeMirror.execCommand(type);
   }
 }
 
@@ -6393,7 +6395,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     });
   }
 
-  private checkJobInstruction(data) {
+  private checkJobInstruction(data): any {
     for (let prop in data.jobs) {
       if (data.jobs[prop] && data.jobs[prop].executable) {
         if (data.jobs[prop].executable.env && _.isArray(data.jobs[prop].executable.env)) {
@@ -6414,7 +6416,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             return false;
           });
           if (data.jobs[prop].executable.env && data.jobs[prop].executable.env.length > 0) {
-            this.coreService.convertArrayToObject(data.jobs[prop].executable.env, 'env', true);
+            this.coreService.convertArrayToObject(data.jobs[prop].executable, 'env', true);
           } else {
             delete data.jobs[prop].executable['env'];
           }

@@ -1010,38 +1010,42 @@ export class WorkflowService {
   }
 
   convertStringToDuration(string): number {
-    if (/^((\d+)y[ ]?)?((\d+)m[ ]?)?((\d+)w[ ]?)?((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)M[ ]?)?((\d+)s[ ]?)?|(\d{2}:\d{2}:\d{2})\s*$/.test(string)) {
+    if (/^((\d+)y[ ]?)?((\d+)m[ ]?)?((\d+)w[ ]?)?((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)M[ ]?)?((\d+)s[ ]?)?\s*$/.test(string)) {
       let seconds = 0;
       let a = string.split(' ');
       for (let i = 0; i < a.length; i++) {
         let frmt = a[i].charAt(a[i].length - 1);
         let val = a[i].slice(0, a[i].length - 1);
-        if (frmt === 'y') {
-          seconds += val * 365 * 24 * 3600;
-        }
-        if (frmt === 'm') {
-          seconds += val * 30 * 24 * 3600;
-        }
-        if (frmt === 'w') {
-          seconds += val * 7 * 24 * 3600;
-        }
-        if (frmt === 'd') {
-          seconds = val * 24 * 3600;
-        }
-        if (frmt === 'h') {
-          seconds += val * 3600;
-        }
-        if (frmt === 'M') {
-          seconds += val * 60;
-        }
-        if (frmt === 's') {
-          seconds += Number(val);
+        if (frmt && val) {
+          if (frmt === 'y') {
+            seconds += val * 365 * 24 * 3600;
+          }
+          if (frmt === 'm') {
+            seconds += val * 30 * 24 * 3600;
+          }
+          if (frmt === 'w') {
+            seconds += val * 7 * 24 * 3600;
+          }
+          if (frmt === 'd') {
+            seconds += val * 24 * 3600;
+          }
+          if (frmt === 'h') {
+            seconds += val * 3600;
+          }
+          if (frmt === 'M') {
+            seconds += val * 60;
+          }
+          if (frmt === 's') {
+            seconds += Number(val);
+          }
         }
       }
       return seconds;
     } else if (/^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(string)) {
       const a = string.split(':');
       return (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
+    } else {
+      return parseInt(string, 10);
     }
   }
 

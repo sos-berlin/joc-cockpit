@@ -156,7 +156,9 @@
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'Fork'">
         <div class="form-group row" *ngIf="selectedNode.obj.branches.length > 0">
-          <label class="col-md-4 col-lg-3" translate>workflow.label.joinVariables</label>
+          <label class="col-md-4 col-lg-3">
+            <span translate>workflow.label.joinVariables</span>
+          </label>
           <div class="col-md-8 col-lg-9">
             <label nz-checkbox [(ngModel)]="selectedNode.obj.joinVariables" name="joinVariables"></label>
           </div>
