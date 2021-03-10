@@ -1265,22 +1265,23 @@
   },
   "settings": {
     "cleanup": {
-      "time_zone": "time zone",
-      "period": "period",
-      "period_begin": "period",
-      "period_end": "period",
-      "batch_size": "batch size ",
-      "order_history_age": "order history age",
-      "order_history_logs_age": "order history logs age",
-      "daily_plan_history_age": "daily plan history age",
-      "deployment_history_versions": "deployment history versions"
+      "time_zone": "Specifies the time zone that is applied to the start time and period of the Cleanup Service",
+      "period": "Specifies weekdays on which the Cleanup Service is performed. The first day of week is considered being Monday. When initially installing JS7 then the distribution specifies the full week. Without this setting the Cleanup Service will not start.",
+      "period_begin": "Specifies the start time of the Cleanup Service for the given period, e.g. on a daily basis.",
+      "period_end": "Specifies the end of the period for which the Cleanup Service is allowed to run. If the Cleanup Service is earlier to complete its task then it will stop before the indicated time. However, it will not continue to run beyond the indicated time.",
+      "batch_size": "Specifies the number of records that are purged within a single transaction. Increasing this value can improve performance, at the same time it will increase the risk of conflicts with concurrent transactions should parallel Services operate on the database.",
+      "order_history_age": "Specifies the retention period for the execution history of orders and tasks. Any history entries older than the value specified will be purged.",
+      "order_history_logs_age": "Specifies the retention period for orders and task logs. Any logs older than the value specified will be purged. Consider that this value should not exceed the value of the cleanup_order_history_age setting as otherwise no navigation to logs can be offered by the JOC Cockpit GUI.",
+      "daily_plan_history_age": "Specifies the retention period for the history of submissions with the Daily Plan. Any history entries older than the value specified will be purged.",
+      "deployment_history_versions": "Specifies the number of versions per deployed object that should be retained. Such versions can be used to re-deploy an object from an older state. Any earlier deployed versions of deployed objects are removed.",
+      "audit_log_age": "Specifies the retention period for the Audit Log. Any audit log entries older than the value specified will be purged."
     },
     "dailyplan": {
-      "time_zone": "time zone",
-      "period_begin": "period begin",
-      "start_time": "start time",
-      "days_ahead_plan": "days ahead plan",
-      "days_ahead_submit": "days ahead submit"
+      "time_zone": "Specifies the time zone that is applied to the start time of the Daily Plan Service and period of the Daily Plan.",
+      "start_time": "Specifies the start time to run the Daily Plan on a daily basis with the indicated time zone. Without this setting the Daily Plan will run 30 minutes before the point in time specified by the period_begin setting. This setting accepts a time value, e.g. 23:00:00.",
+      "period_begin": "Specifies the begin of the 24 hours Daily Plan period with the indicated time zone.",
+      "days_ahead_plan": "Specifies the number of days ahead for which orders are generated and are made available with the PLANNED state.",
+      "days_ahead_submit": "Specifies the number of days ahead for which PLANNED orders are submitted to Controllers and are made available with the PENDING state."
     }
   },
   "user": {
