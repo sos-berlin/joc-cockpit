@@ -21,7 +21,6 @@
   --bg-blue: #1591d4;
   --mangenta: #d900d9;
   --bg-mangenta: #b966b9;
-  --bg-red: #ff2727;
   --row-selected: rgba(35, 52, 70, .5);
   --date-selected: rgba(255, 149, 5, .7);
   --date-selected-hover: rgba(255, 149, 5, 0.55);
@@ -87,7 +86,7 @@ a.text-dark:hover, a.text-dark:focus {
 .bg-white {
   background-color: var(--bg-box) !important;;
 }
-.bg-gold {
+.bg-gold, .bg-yellow-green, .bg-light-blue, .bg-calling, .badge-danger, .bg-orange {
   color: rgba(0, 0, 0, .87);
 }
 .ui-check input:checked + i:before {

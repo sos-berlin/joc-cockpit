@@ -11,7 +11,7 @@
 <form (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
     <div class="row">
-      <div class="col-md-12" [ngClass]="{'error-input': isError}">
+      <div class="col-md-12" [ngClass]="{'error-input': isError, 'json-editor-readonly': !edit}">
         <json-editor [options]="options" [data]="data" #editor></json-editor>
       </div>
       <div class="col-md-12" *ngIf="isError">

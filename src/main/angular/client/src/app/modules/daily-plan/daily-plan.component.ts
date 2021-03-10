@@ -317,10 +317,6 @@ export class RemovePlanModalComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.dateRange && this.dateRange.length > 0) {
-      alert('API not yet implemented!');
-      return;
-    }
     this.submitted = true;
     const obj: any = {
       controllerId: this.schedulerId,
@@ -352,10 +348,6 @@ export class RemovePlanModalComponent implements OnInit {
   }
 
   onRemove(): void {
-    if (this.dateRange && this.dateRange.length > 0) {
-      alert('API not yet implemented!');
-      return;
-    }
     const obj: any = {
       controllerId: this.schedulerId,
       filter: {}
@@ -381,6 +373,9 @@ export class RemovePlanModalComponent implements OnInit {
     }
     if (!obj.filter.dailyPlanDate && this.selectedDate && !this.submissionsDelete) {
       obj.filter.dailyPlanDate = moment(this.selectedDate).format('YYYY-MM-DD');
+    } else if (this.dateRange && this.dateRange.length > 0) {
+      obj.filter.dateFrom = new Date(this.dateRange[0]);
+      obj.filter.dateTo = new Date(this.dateRange[1]);
     } else if (this.submissionsDelete) {
       obj.filter.dateFor = new Date(this.selectedDate);
     }
@@ -388,11 +383,29 @@ export class RemovePlanModalComponent implements OnInit {
   }
 
   private remove(obj) {
-    this.submitted = true;
+     this.submitted = true;
+    if (this.dateRange && this.dateRange.length > 0 && !this.submissionsDelete) {
+      this.removeRecursively(obj);
+    }
     this.coreService.post(this.submissionsDelete ? 'daily_plan/submissions/delete' : 'daily_plan/orders/delete', obj).subscribe((res) => {
       this.submitted = false;
       this.activeModal.close('Done');
     }, () => {
+      this.submitted = false;
+    });
+  }
+
+  private removeRecursively(obj){
+    let apiArr = [];
+    const dates = this.coreService.getDates(this.dateRange[0], this.dateRange[1]);
+    dates.forEach((date) => {
+      obj.filter.dailyPlanDate = moment(date).format('YYYY-MM-DD');
+      apiArr.push(this.coreService.post('daily_plan/orders/delete', this.coreService.clone(obj)));
+    });
+    forkJoin(apiArr).subscribe((result: any) => {
+      this.submitted = false;
+      this.activeModal.close('Done');
+    }, (err) => {
       this.submitted = false;
     });
   }
@@ -1022,6 +1035,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.dateRange = this.dateRanges;
     modalRef.result.then((res) => {
       this.updateList();
+      if (this.dateRanges.length > 0) {
+        $('#full-calendar').data('calendar')._clearRange();
+      }
     }, () => {
 
     });
@@ -1087,7 +1103,22 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   cancelSelectedOrder() {
     if (this.dateRanges && this.dateRanges.length > 0) {
-      alert('API not yet implemented!');
+      let apiArr = [];
+      const dates = this.coreService.getDates(this.dateRanges[0], this.dateRanges[1]);
+      dates.forEach((date) => {
+        let obj = {
+          controllerId: this.schedulerIds.selected,
+          filter: {
+            dailyPlanDate: moment(date).format('YYYY-MM-DD')
+          }
+        };
+        apiArr.push(this.coreService.post('orders/cancel', this.coreService.clone(obj)));
+      });
+      forkJoin(apiArr).subscribe((result: any) => {
+        if (this.dateRanges.length > 0) {
+          $('#full-calendar').data('calendar')._clearRange();
+        }
+      });
     } else {
       const orderIds = [];
       this.object.mapOfCheckedId.forEach((value) => {
@@ -1242,6 +1273,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.dateRange = this.dateRanges;
     modalRef.result.then((res) => {
       this.updateList();
+      if (this.dateRanges.length > 0) {
+        $('#full-calendar').data('calendar')._clearRange();
+      }
     }, () => {
 
     });
@@ -1389,22 +1423,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.excelService.exportAsExcelFile(data, 'JS7-dailyplan');
   }
 
-  /* ------------- Utility Function Begin ------------------- */
-  getDates(startDate, endDate) {
-    let dates = [],
-      currentDate = startDate,
-      addDays = function (days) {
-        const date = new Date(this.valueOf());
-        date.setDate(date.getDate() + days);
-        return date;
-      };
-    while (currentDate <= endDate) {
-      dates.push(currentDate);
-      currentDate = addDays.call(currentDate, 1);
-    }
-    return dates;
-  }
-
   getOrderIds(orders, isMultiple, cb) {
     this.coreService.post('utilities/cyclic_orders', {
       orderIds: isMultiple ? orders : orders.orderId ? [orders.orderId] : orders.map((order) => order.orderId)
@@ -1475,7 +1493,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   private callApi(from, to, obj) {
     let apiArr = [];
-    let dates = this.getDates(from, to);
+    let dates = this.coreService.getDates(from, to);
     dates.forEach((date) => {
       obj.filter.dailyPlanDate = moment(date).format('YYYY-MM-DD');
       apiArr.push(this.coreService.post('daily_plan/orders', this.coreService.clone(obj)));
@@ -1690,6 +1708,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
     this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
     this.checkState(this.object, this.object.mapOfCheckedId);
+    if (this.dateRanges.length > 0) {
+      $('#full-calendar').data('calendar')._clearRange();
+    }
   }
 
   sortBy() {

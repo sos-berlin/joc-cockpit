@@ -4719,198 +4719,9 @@ body > .select2-container.open {
   border-color: #D44950;
 }
 
-/* Handle up direction Selectize */
-
-.ui-select-container[theme="selectize"].direction-up .ui-select-dropdown {
-  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.25);
-  margin-top: -2px;
-}
-
-/* Bootstrap theme */
-
-/* Helper class to show styles when focus */
-
-.btn-default-focus {
-  color: #333;
-  background-color: #EBEBEB;
-  border-color: #ADADAD;
-  text-decoration: none;
-  outline: 5px auto -webkit-focus-ring-color;
-  outline-offset: -2px;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
-}
-
 .btn-default {
   background: var(--background-color);
-  border: 1px solid var(--background-color);
-}
-
-.ui-select-bootstrap .ui-select-toggle {
-  position: relative;
-
-  > .caret {
-    position: absolute;
-    height: 10px;
-    top: 50%;
-    right: 10px;
-    margin-top: -2px;
-  }
-}
-
-/* Fix Bootstrap dropdown position when inside a input-group */
-
-.input-group > .ui-select-bootstrap {
-  &.dropdown {
-    position: static;
-  }
-
-  > input.ui-select-search.form-control {
-    border-radius: 4px 0 0 4px;
-
-    &.direction-up {
-      border-radius: 4px !important;
-      border-top-right-radius: 0 !important;
-      border-bottom-right-radius: 0 !important;
-    }
-  }
-}
-
-.ui-select-bootstrap > .ui-select-match > {
-  .btn {
-    text-align: left !important;
-  }
-
-  .caret {
-    position: absolute;
-    top: 45%;
-    right: 15px;
-  }
-}
-
-.ui-disabled {
-  background-color: #eceeef;
-  border-radius: 4px;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: 5;
-  opacity: 0.6;
-  top: 0;
-  left: 0;
-  cursor: not-allowed;
-}
-
-/* See Scrollable Menu with Bootstrap 3 http://stackoverflow.com/questions/19227496 */
-
-.ui-select-bootstrap > .ui-select-choices {
-  width: 100%;
-  height: auto;
-  max-height: 200px;
-  overflow-x: hidden;
-  margin-top: -1px;
-}
-
-body > .ui-select-bootstrap.open {
-  z-index: 1000;
-}
-
-.ui-select-multiple {
-  &.ui-select-bootstrap {
-    height: auto;
-    padding: 3px 3px 0 3px;
-
-    input.ui-select-search {
-      background-color: transparent !important;
-      /* To prevent double background when disabled */
-      border: none;
-      outline: none;
-      height: 1.666666em;
-      margin-bottom: 3px;
-    }
-
-    .ui-select-match .close {
-      font-size: 1.6em;
-      line-height: 0.75;
-    }
-
-    .ui-select-match-item {
-      outline: 0;
-      margin: 0 3px 3px 0;
-    }
-  }
-
-  .ui-select-match-item {
-    position: relative;
-
-    &.dropping-before:before {
-      content: "";
-      position: absolute;
-      top: 0;
-      right: 100%;
-      height: 100%;
-      margin-right: 2px;
-      border-left: 1px solid #428bca;
-    }
-
-    &.dropping-after:after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 100%;
-      height: 100%;
-      margin-left: 2px;
-      border-right: 1px solid #428bca;
-    }
-  }
-}
-
-.ui-select-bootstrap .ui-select-choices-row {
-  > a {
-    display: block;
-    padding: 3px 20px;
-    clear: both;
-    font-weight: 400;
-    line-height: 1.42857143;
-    color: #333;
-    white-space: nowrap;
-
-    &:hover, &:focus {
-      text-decoration: none;
-      color: #262626;
-      background-color: #f5f5f5;
-    }
-  }
-
-  &.active > a {
-    color: var(--white);
-    text-decoration: none;
-    outline: 0;
-    background-color: #428bca;
-  }
-
-  &.disabled > a, &.active.disabled > a {
-    color: #777;
-    cursor: not-allowed;
-    background-color: var(--white);
-  }
-}
-
-/* fix hide/show angular animation */
-
-.ui-select-match.ng-hide-add, .ui-select-search.ng-hide-add {
-  display: none !important;
-}
-
-/* Mark invalid Bootstrap */
-
-.ui-select-bootstrap.ng-dirty.ng-invalid > button.btn.ui-select-match {
-  border-color: #D44950;
-}
-
-/* Handle up direction Bootstrap */
-
-.ui-select-container[theme="bootstrap"].direction-up .ui-select-dropdown {
-  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.25);
+  border-color: var(--background-color);
 }
 
 .btn-secondary {
@@ -6578,13 +6389,16 @@ span.cm-error {
     height: 17px;
     margin-top: 8px !important;
   }
-  .nav-text{
+
+  .nav-text {
     font-size: 12px;
     padding: 6px 0 !important;
   }
-  .nav-text:hover{
+
+  .nav-text:hover {
     color: var(--primary) !important;
   }
+
   .nav-text,
   .anticon,
   button.close {
@@ -7095,12 +6909,35 @@ span.cm-error {
   }
 }
 
+.json-editor-readonly{
+  div.jsoneditor-menu {
+     display: none;
+  }
+}
+
+.jsoneditor-sort-asc,
+.jsoneditor-transform,
+.jsoneditor-repair,
+.jsoneditor-poweredBy {
+  display: none;
+}
+
+div.jsoneditor-contextmenu ul li button.jsoneditor-selected,
+div.jsoneditor-contextmenu ul li button.jsoneditor-selected:focus,
+div.jsoneditor-contextmenu ul li button.jsoneditor-selected:hover {
+  background-color: var(--row-selected);
+  color: #343434;
+}
+
 div.jsoneditor-outer {
   height: calc(100vh - 276px);
 }
 
 div.jsoneditor-menu {
-  display: none;
+
+  color: #fff;
+  background-color: var(--primary);
+  border-bottom: 1px solid var(--primary);
 }
 
 .ace-jsoneditor .ace_marker-layer .ace_active-line {

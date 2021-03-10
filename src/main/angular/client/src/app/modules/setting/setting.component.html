@@ -15,7 +15,7 @@
   <div class="padding p-b-0">
     <div class="row m-t-sm">
       <div class="col-sm-12">
-        <div class="box p-a">
+        <div class="box p-a" style="min-height: 80vh">
           <form #myForm="ngForm">
             <div class="p-b-sm" *ngFor="let setting of settingArr | orderBy: 'ordering': false;let i = index">
               <h5>
@@ -23,77 +23,111 @@
               </h5>
               <div class="row m-t" *ngFor="let val of setting.value | orderBy: 'ordering': false">
                 <ng-container *ngIf="val.value">
-                  <div class="col-sm-4 col-lg-3 form-control-label"><span class="p-l">{{val.name}}</span></div>
-                  <ng-container [ngSwitch]="val.value.type">
-                    <ng-container *ngSwitchCase="'TIMEZONE'">
-                      <div class="col-sm-8 col-lg-6">
-                        <nz-select nzShowSearch name="{{val.name}}{{i}}" class="w-xxxl"
-                                   [(ngModel)]="val.value.value" (ngModelChange)="changeConfiguration()">
-                          <nz-option *ngFor="let option of zones" [nzLabel]="option" [nzValue]="option"></nz-option>
-                        </nz-select>
-                      </div>
-                    </ng-container>
-                    <ng-container *ngSwitchCase="'DURATION'">
-                      <div class="col-sm-8 col-lg-6"
-                           [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
-                        <input autocomplete="off" #timeout="ngModel" validateDurtionReqex type="text"
-                               class="form-control w-xxxl" name="{{val.name}}{{i}}" (blur)="changeConfiguration()"
-                               placeholder="{{'workflow.placeholder.duration' | translate}}"
-                               [(ngModel)]="val.value.value">
-                      </div>
-                    </ng-container>
-                    <ng-container *ngSwitchCase="'WEEKDAYS'">
-                      <div class="col-sm-8 col-lg-6">
-                        <nz-select nzMode="multiple" name="{{val.name}}{{i}}" class="w-xxxl"
-                                   [(ngModel)]="val.value.value" (ngModelChange)="changeConfiguration()">
-                          <nz-option *ngFor="let option of daysOptions" [nzLabel]="'runtime.label.'+ option.label | translate" [nzValue]="option.value"></nz-option>
-                        </nz-select>
-                      </div>
-                    </ng-container>
-                    <ng-container *ngSwitchCase="'TIME'">
-                      <div class="col-sm-8 col-lg-6"
-                           [ngClass]="{ 'has-error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}">
-                        <input autocomplete="off" type="text" timevalidator class="form-control w-xxxl"
-                               #startTime="ngModel" name="{{val.name}}{{i}}" [maxLength]="8"
-                               (blur)="changeConfiguration()"
-                               [(ngModel)]="val.value.value" placeholder="HH:MM:SS">
-                      </div>
-                    </ng-container>
-                    <ng-container *ngSwitchCase="'POSITIVENUMBER'">
-                      <div class="col-sm-8 col-lg-6">
-                        <nz-input-number class="w-xxxl" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}" [nzMin]="1" [nzStep]="1" name="value{{i}}"
-                                         [(ngModel)]="val.value.value" (nzBlur)="changeConfiguration()"></nz-input-number>
-                      </div>
-                    </ng-container>
-                    <ng-container *ngSwitchCase="'NONNEGATIVENUMBER'">
-                      <div class="col-sm-8 col-lg-6">
-                        <nz-input-number class="w-xxxl" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}" [nzMin]="0" [nzStep]="1" name="value{{i}}"
-                                         [(ngModel)]="val.value.value" (nzBlur)="changeConfiguration()"></nz-input-number>
-                      </div>
-                    </ng-container>
-                    <ng-container *ngSwitchCase="'POSITIVEINTEGER'">
-                      <div class="col-sm-8 col-lg-6" [ngClass]="{ 'has-error' : (((positiveNum.dirty || positiveNum.touched) && positiveNum.invalid))}">
-                        <input autocomplete="off" type="text" class="form-control w-xxxl"
-                               name="{{val.name}}{{i}}" pattern="[1-9]+" #positiveNum="ngModel"
-                               (blur)="changeConfiguration()"
-                               [(ngModel)]="val.value.value">
-                      </div>
-                    </ng-container>
-                    <ng-container *ngSwitchCase="'NONNEGATIVEINTEGER'">
-                      <div class="col-sm-8 col-lg-6" [ngClass]="{ 'has-error' : (((nonNegNum.dirty || nonNegNum.touched) && nonNegNum.invalid))}">
-                        <input autocomplete="off" type="text" class="form-control w-xxxl"
-                               name="{{val.name}}{{i}}" pattern="[0-9]+" #nonNegNum="ngModel"
-                               (blur)="changeConfiguration()"
-                               [(ngModel)]="val.value.value">
-                      </div>
-                    </ng-container>
-                    <ng-container *ngSwitchDefault>
-                      <div class="col-sm-8 col-lg-6">
-                        <input autocomplete="off" type="text" class="form-control w-xxxl"
-                               name="{{val.name}}{{i}}"
-                               (blur)="changeConfiguration()"
-                               [(ngModel)]="val.value.value">
-                      </div>
+                  <div class="col-sm-4 col-lg-3 form-control-label"><span class="p-l">
+                    {{val.name}} <i class="p-l-sm fa fa-info-circle" [nz-tooltip]="'settings.' + setting.name +'.' + val.name | translate"></i>
+                  </span></div>
+                  <div class="col-sm-2 col-lg-2 form-control-label" >
+                    <span>
+                      {{val.value.default}}
+                      <i *ngIf="!val.value.edit && !val.value.value" class="p-l-sm text-hover-primary fa fa-pencil" (click)="val.value.edit = true"></i>
+                    </span>
+                  </div>
+                  <ng-container *ngIf="val.value.edit || val.value.value">
+                    <ng-container [ngSwitch]="val.value.type">
+                      <ng-container *ngSwitchCase="'TIMEZONE'">
+                        <div class="col-sm-4 col-lg-3">
+                          <nz-select nzShowSearch name="{{val.name}}{{i}}" class="w-xxxl"
+                                     [(ngModel)]="val.value.value" (ngModelChange)="changeConfiguration(null, val)">
+                            <nz-option *ngFor="let option of zones" [nzLabel]="option" [nzValue]="option"></nz-option>
+                          </nz-select>
+                           <i class="p-l-sm text-hover-primary fa fa-times" style="position: absolute;left: 396px;top: 8px;" (click)="removeValue(val)"></i>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'DURATION'">
+                        <div class="col-sm-4 col-lg-3"
+                             [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
+                          <input autocomplete="off" #timeout="ngModel" validateDurtionReqex type="text"
+                                 class="form-control w-xxxl" required name="{{val.name}}{{i}}"
+                                 (blur)="changeConfiguration(timeout, val)"
+                                 placeholder="{{'workflow.placeholder.duration' | translate}}"
+                                 [(ngModel)]="val.value.value">
+                           <i class="p-l-sm text-hover-primary fa fa-times" style="position: absolute;left: 396px;top: 8px;" (click)="removeValue(val)"></i>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'WEEKDAYS'">
+                        <div class="col-sm-4 col-lg-3"
+                             [ngClass]="{'has-error' : ((wkday.dirty || wkday.touched) && wkday.invalid)}">
+                          <nz-select nzMode="multiple" required name="{{val.name}}{{i}}" class="w-xxxl"
+                                     #wkday="ngModel" [(ngModel)]="val.value.value"
+                                     (ngModelChange)="changeConfiguration(wkday, val)">
+                            <nz-option *ngFor="let option of daysOptions"
+                                       [nzLabel]="'runtime.label.'+ option.label | translate"
+                                       [nzValue]="option.value"></nz-option>
+                          </nz-select>
+                          <i class="p-l-sm text-hover-primary fa fa-times" style="position: absolute;left: 396px;top: 8px;" (click)="removeValue(val)"></i>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'TIME'">
+                        <div class="col-sm-4 col-lg-3"
+                             [ngClass]="{ 'has-error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}">
+                          <input autocomplete="off" type="text" timevalidator class="form-control w-xxxl"
+                                 #startTime="ngModel" required name="{{val.name}}{{i}}" [maxLength]="8"
+                                 (blur)="changeConfiguration(startTime, val)"
+                                 [(ngModel)]="val.value.value" placeholder="HH:MM:SS">
+                           <i class="p-l-sm text-hover-primary fa fa-times" style="position: absolute;left: 396px;top: 8px;" (click)="removeValue(val)"></i>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'POSITIVENUMBER'">
+                        <div class="col-sm-4 col-lg-3"
+                             [ngClass]="{ 'has-error' : (((pnum.dirty || pnum.touched) && pnum.invalid))}">
+                          <nz-input-number class="w-xxxl" required
+                                           nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}" [nzMin]="1"
+                                           [nzStep]="1" name="value{{i}}"
+                                           #pnum="ngModel" [(ngModel)]="val.value.value"
+                                           (nzBlur)="changeConfiguration(pnum, val)"></nz-input-number>
+                           <i class="p-l-sm text-hover-primary fa fa-times" style="position: absolute;left: 396px;top: 8px;" (click)="removeValue(val)"></i>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'NONNEGATIVENUMBER'">
+                        <div class="col-sm-4 col-lg-3"
+                             [ngClass]="{ 'has-error' : (((nonnegnum.dirty || nonnegnum.touched) && nonnegnum.invalid))}">
+                          <nz-input-number class="w-xxxl" required
+                                           nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}" [nzMin]="0"
+                                           [nzStep]="1" name="value{{i}}"
+                                           #nonnegnum="ngModel" [(ngModel)]="val.value.value"
+                                           (nzBlur)="changeConfiguration(nonnegnum, val)"></nz-input-number>
+                           <i class="p-l-sm text-hover-primary fa fa-times" style="position: absolute;left: 396px;top: 8px;" (click)="removeValue(val)"></i>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'POSITIVEINTEGER'">
+                        <div class="col-sm-4 col-lg-3"
+                             [ngClass]="{ 'has-error' : (((positiveNum.dirty || positiveNum.touched) && positiveNum.invalid))}">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl"
+                                 name="{{val.name}}{{i}}" pattern="[1-9]+[0-9]*" #positiveNum="ngModel"
+                                 (blur)="changeConfiguration(positiveNum, val)" required
+                                 [(ngModel)]="val.value.value">
+                          <i class="p-l-sm text-hover-primary fa fa-times" style="position: absolute;left: 396px;top: 8px;" (click)="removeValue(val)"></i>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'NONNEGATIVEINTEGER'">
+                        <div class="col-sm-4 col-lg-3"
+                             [ngClass]="{ 'has-error' : (((nonNegNum.dirty || nonNegNum.touched) && nonNegNum.invalid))}">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl"
+                                 name="{{val.name}}{{i}}" pattern="[0-9]+" #nonNegNum="ngModel"
+                                 (blur)="changeConfiguration(nonNegNum, val)" required
+                                 [(ngModel)]="val.value.value">
+                           <i class="p-l-sm text-hover-primary fa fa-times" style="position: absolute;left: 396px;top: 8px;" (click)="removeValue(val)"></i>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngSwitchDefault>
+                        <div class="col-sm-4 col-lg-3"
+                             [ngClass]="{ 'has-error' : (((common.dirty || common.touched) && common.invalid))}">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl" required
+                                 name="{{val.name}}{{i}}" (blur)="changeConfiguration(common, val)" #common="ngModel"
+                                 [(ngModel)]="val.value.value">
+                           <i class="p-l-sm text-hover-primary fa fa-times" style="position: absolute;left: 396px;top: 8px;" (click)="removeValue(val)"></i>
+                        </div>
+                      </ng-container>
                     </ng-container>
                   </ng-container>
                 </ng-container>
@@ -106,4 +140,8 @@
     </div>
   </div>
 </div>
-
+<div class="spinner" *ngIf="!loading">
+  <div class="cssload-inner cssload-one"></div>
+  <div class="cssload-inner cssload-two"></div>
+  <div class="cssload-inner cssload-three"></div>
+</div>

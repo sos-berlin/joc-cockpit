@@ -82,7 +82,7 @@
   "normal": "normal",
   "submitted": "submitted",
   "notSubmitted": "not submitted",
-  "--------COMMENT BOX BEGIN------------": "Inventory tree objects start here",
+  "--------COMMENT BOX BEGIN------------": "Configuration > Inventory view",
   "WORKFLOW": "Workflow",
   "JOBCLASS": "Job Class",
   "JUNCTION": "Junction",
@@ -99,7 +99,7 @@
   "Controller": "Controller",
   "Daily Plan": "Daily Plan",
   "ImplicitEnd": "End",
-  "--------COMMENT BOX END------------": "Inventory tree objects end here",
+  "--------COMMENT BOX END------------": "Configuration > Inventory view",
   "agent": {
     "label.standalone": "Standalone",
     "label.cluster": "Cluster",
@@ -344,6 +344,7 @@
     "message.noDataAvailable": "no data available",
     "message.requiredError": "This field is required",
     "message.invalid": "Invalid Input",
+    "message.notValidInput": "Please enter valid Input",
     "message.noNotificationFound": "no Notifications found",
     "message.resetLayout": "Are you sure you want to reset current Dashboard layout?",
     "message.resetSingleProfile": "Are you sure you want to reset the selected profile to the default profile?",
@@ -1261,6 +1262,26 @@
     "message.documentNotUsed": "This Documentation is not yet used",
     "message.deleteAllDocument": "Are you sure you want to delete all Documentation?",
     "placeholder.enterAgentUrl": "Enter Agent URL"
+  },
+  "settings": {
+    "cleanup": {
+      "time_zone": "time zone",
+      "period": "period",
+      "period_begin": "period",
+      "period_end": "period",
+      "batch_size": "batch size ",
+      "order_history_age": "order history age",
+      "order_history_logs_age": "order history logs age",
+      "daily_plan_history_age": "daily plan history age",
+      "deployment_history_versions": "deployment history versions"
+    },
+    "dailyplan": {
+      "time_zone": "time zone",
+      "period_begin": "period begin",
+      "start_time": "start time",
+      "days_ahead_plan": "days ahead plan",
+      "days_ahead_submit": "days ahead submit"
+    }
   },
   "user": {
     "label.user": "Account",
