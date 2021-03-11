@@ -1,10 +1,120 @@
-import {Component, OnInit} from '@angular/core';
-import {CoreService} from '../../services/core.service';
-import {AuthService} from '../../components/guard';
+import {Component, Input, OnInit} from '@angular/core';
 import * as moment from 'moment-timezone';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
+import {FileUploader} from 'ng2-file-upload';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {saveAs} from 'file-saver';
 import * as _ from 'underscore';
+import {CoreService} from '../../services/core.service';
+import {AuthService} from '../../components/guard';
+import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
+
+@Component({
+  selector: 'app-add-section-content',
+  templateUrl: './add-section-dialog.html'
+})
+export class AddSectionComponent implements OnInit {
+  @Input() defaultGlobals: any;
+  @Input() settings: any;
+  settingArr = [];
+  setting: any = {};
+  submitted = false;
+
+  constructor(public activeModal: NgbActiveModal, public translate: TranslateService,
+              public toasterService: ToasterService) {
+  }
+
+  ngOnInit() {
+    for (let prop in this.defaultGlobals) {
+      let flag = false;
+      for (let i = 0; i < this.settings.length; i++) {
+        if (prop === this.settings[i].name) {
+          flag = true;
+          break;
+        }
+      }
+      this.settingArr.push(
+        {
+          name: prop,
+          isExist: flag,
+          value: this.defaultGlobals[prop]
+        });
+    }
+    // console.log(this.defaultGlobals);
+    console.log(this.settingArr);
+  }
+
+  onSubmit() {
+    this.submitted = true;
+    setTimeout(() => {
+      this.activeModal.close(this.setting);
+    }, 100);
+  }
+}
+
+@Component({
+  selector: 'app-import-setting-content',
+  templateUrl: './import-dialog.html'
+})
+export class ImportSettingComponent implements OnInit {
+  setting: any;
+  submitted = false;
+  uploader: FileUploader;
+
+  constructor(public activeModal: NgbActiveModal, public translate: TranslateService, public toasterService: ToasterService) {
+    this.uploader = new FileUploader({
+      url: '',
+      queueLimit: 1
+    });
+  }
+
+  ngOnInit() {
+    this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
+      const res = typeof response === 'string' ? JSON.parse(response) : response;
+      if (res.error) {
+        this.toasterService.pop('error', res.error.code, res.error.message);
+      }
+    };
+  }
+
+  // CALLBACKS
+  onFileSelected(event: any): void {
+    const self = this;
+    let item = event['0'];
+
+    let fileExt = item.name.slice(item.name.lastIndexOf('.') + 1).toUpperCase();
+    if (fileExt != 'JSON') {
+      let msg = '';
+      this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
+        msg = translatedValue;
+      });
+      this.toasterService.pop('error', '', fileExt + ' ' + msg);
+      this.uploader.clearQueue();
+    } else {
+      let reader = new FileReader();
+      reader.readAsText(item, 'UTF-8');
+      reader.onload = onLoadFile;
+    }
+
+    function onLoadFile(_event) {
+      let data;
+      try {
+        data = JSON.parse(_event.target.result);
+        self.setting = data;
+      } catch (e) {
+
+      }
+    }
+  }
+
+  onSubmit() {
+    this.submitted = true;
+    setTimeout(() => {
+      this.activeModal.close(this.setting);
+    }, 100);
+  }
+}
 
 @Component({
   selector: 'app-user',
@@ -31,7 +141,7 @@ export class SettingComponent implements OnInit {
     {label: 'sunday', value: 7},
   ];
 
-  constructor(public coreService: CoreService, private authService: AuthService,
+  constructor(public coreService: CoreService, private authService: AuthService, private modalService: NgbModal,
               private translate: TranslateService, private toasterService: ToasterService) {
 
   }
@@ -144,7 +254,7 @@ export class SettingComponent implements OnInit {
   }
 
   private generateStoreObject(setting): any {
-    let tempSetting: any = {};
+    const tempSetting: any = {};
     for (let prop in setting) {
       tempSetting[prop] = {};
       for (let x in setting[prop]) {
@@ -165,7 +275,6 @@ export class SettingComponent implements OnInit {
         }
       }
     }
-
     return tempSetting;
   }
 
@@ -186,6 +295,56 @@ export class SettingComponent implements OnInit {
     val.value.edit = false;
     val.value.value = undefined;
     this.changeConfiguration(null, null);
+  }
+
+  addSection() {
+    const modalRef = this.modalService.open(AddSectionComponent, {backdrop: 'static'});
+    modalRef.componentInstance.settings = this.settingArr;
+    modalRef.componentInstance.defaultGlobals = this.defaultGlobals;
+    modalRef.result.then((section) => {
+      this.settings[section.name] = {};
+      this.changeConfiguration(null, null);
+      this.loadSetting();
+    }, () => {
+    });
+  }
+
+  removeSection(section) {
+    const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.title = 'remove';
+    modalRef.componentInstance.message = 'removeSetting';
+    modalRef.componentInstance.type = 'Remove';
+    modalRef.componentInstance.objectName = section.name;
+    modalRef.result.then(() => {
+      for (let i = 0; i < this.settingArr.length; i++) {
+        if (this.settingArr[i].name === section.name) {
+          this.settingArr.splice(i, 1);
+          delete this.settings[section.name];
+          break;
+        }
+      }
+      this.changeConfiguration(null, null);
+    }, () => {
+    });
+  }
+
+  importSetting() {
+    const modalRef = this.modalService.open(ImportSettingComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.result.then((result) => {
+      this.settings = result;
+      this.changeConfiguration(null, null);
+      this.loadSetting();
+    }, () => {
+    });
+  }
+
+  exportSetting() {
+    const name = 'global-setting.json';
+    const fileType = 'application/octet-stream';
+    let data = this.generateStoreObject(this.settings);
+    data = JSON.stringify(data, undefined, 2);
+    const blob = new Blob([data], {type: fileType});
+    saveAs(blob, name);
   }
 }
 

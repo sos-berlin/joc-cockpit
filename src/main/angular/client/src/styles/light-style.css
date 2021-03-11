@@ -186,3 +186,40 @@ button.close {
 .ant-calendar-header .ant-calendar-next-year-btn::after {
   border-color: #777;
 }
+
+div.jsoneditor-tree button {
+  background: transparent url("../assets/images/jsoneditor-icons.svg");
+}
+
+div.jsoneditor-tree button.jsoneditor-dragarea {
+  background: url("../assets/images/jsoneditor-icons.svg") -72px -72px;
+}
+
+div.jsoneditor-tree .jsoneditor-schema-error {
+  background: url("../assets/images/jsoneditor-icons.svg")  -168px -48px;
+}
+
+.jsoneditor-text-errors .jsoneditor-schema-error {
+  background: url("../assets/images/jsoneditor-icons.svg")  -168px -48px;
+}
+
+
+div.jsoneditor-contextmenu div.jsoneditor-icon {
+  background-image: url("../assets/images/jsoneditor-icons.svg");
+}
+
+div.jsoneditor-contextmenu ul li button div.jsoneditor-expand {
+  background: url("../assets/images/jsoneditor-icons.svg") 0 -72px;
+}
+
+div.jsoneditor-menu > button,
+div.jsoneditor-menu > div.jsoneditor-modes > button {
+  background: transparent url("../assets/images/jsoneditor-icons.svg");
+}
+
+table.jsoneditor-search button {
+  background: url("../assets/images/jsoneditor-icons.svg");
+}
+table.jsoneditor-search div.jsoneditor-frame {
+  background-color: #FFFFFF;
+}

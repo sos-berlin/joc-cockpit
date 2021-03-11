@@ -6,6 +6,20 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
+          <div class="show-inline">
+            <button type="button" class="btn btn-sm btn-grey" [disabled]="settingArr.length === 0" (click)="exportSetting();">
+              <i class="fa fa-download"></i>
+              {{'settings.button.exportSetting' | translate}}
+            </button>
+            <button type="button" class="btn btn-sm btn-grey m-l-12" (click)="importSetting();">
+              <i class="fa fa-upload"></i>
+              {{'settings.button.importSetting' | translate}}
+            </button>
+            <button type="button" class="btn btn-sm btn-grey m-l-12" (click)="addSection();">
+              <i class="fa fa-plus"></i>
+              {{'settings.button.addSection' | translate}}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -15,20 +29,28 @@
   <div class="padding p-b-0">
     <div class="row m-t-sm">
       <div class="col-sm-12">
-        <div class="box p-a" style="min-height: 80vh">
+        <div class="box p-a" *ngIf="settingArr.length > 0 && loading">
           <form #myForm="ngForm">
-            <div class="p-b-sm" *ngFor="let setting of settingArr | orderBy: 'ordering': false;let i = index">
-              <h5>
+            <div class="p-b-sm p-l-sm" *ngFor="let setting of settingArr | orderBy: 'ordering': false;let i = index">
+              <h4>
                 {{setting.name}}
-              </h5>
-              <div class="row m-t" *ngFor="let val of setting.value | orderBy: 'ordering': false">
+                <i class="text-hover-color cursor fa fa-trash-o" [nz-tooltip]="'settings.button.dropSection' | translate" style="position: absolute;right: 22px;" (click)="removeSection(setting)"></i>
+              </h4>
+              <div class="row m-t m-b">
+                <div class="col-sm-4 col-lg-3 _600 font14">
+                  <span class="p-l" translate>settings.label.name</span>
+                </div>
+                <div class="col-sm-2 col-lg-2 _600 font14" translate>settings.label.default</div>
+                <div class="col-sm-4 col-lg-3 _600 font14" translate>settings.label.value</div>
+              </div>
+              <div class="row m-t-sm" *ngFor="let val of setting.value | orderBy: 'ordering': false">
                 <ng-container *ngIf="val.value">
                   <div class="col-sm-4 col-lg-3 form-control-label"><span class="p-l">
-                    {{val.name}} <i class="p-l-sm fa fa-info-circle" [nz-tooltip]="'settings.' + setting.name +'.' + val.name | translate"></i>
+                    <label class="_600">{{val.name}}</label> <i class="p-l-sm fa fa-info-circle" [nz-tooltip]="'settings.' + setting.name +'.' + val.name | translate"></i>
                   </span></div>
                   <div class="col-sm-2 col-lg-2 form-control-label" >
                     <span>
-                      {{val.value.default}}
+                      {{val.value.default || '  -  '}}
                       <i *ngIf="!val.value.edit && !val.value.value" class="p-l-sm text-hover-primary fa fa-pencil" (click)="val.value.edit = true"></i>
                     </span>
                   </div>
@@ -40,7 +62,7 @@
                                      [(ngModel)]="val.value.value" (ngModelChange)="changeConfiguration(null, val)">
                             <nz-option *ngFor="let option of zones" [nzLabel]="option" [nzValue]="option"></nz-option>
                           </nz-select>
-                           <i class="p-l-sm text-hover-primary fa fa-times" style="position: absolute;left: 396px;top: 8px;" (click)="removeValue(val)"></i>
+                           <i class="text-hover-primary fa fa-times" style="position: absolute;left: 402px;top: 8px;" (click)="removeValue(val)"></i>
                         </div>
                       </ng-container>
                       <ng-container *ngSwitchCase="'DURATION'">
@@ -51,7 +73,7 @@
                                  (blur)="changeConfiguration(timeout, val)"
                                  placeholder="{{'workflow.placeholder.duration' | translate}}"
                                  [(ngModel)]="val.value.value">
-                           <i class="p-l-sm text-hover-primary fa fa-times" style="position: absolute;left: 396px;top: 8px;" (click)="removeValue(val)"></i>
+                           <i class="text-hover-primary fa fa-times" style="position: absolute;left: 402px;top: 8px;" (click)="removeValue(val)"></i>
                         </div>
                       </ng-container>
                       <ng-container *ngSwitchCase="'WEEKDAYS'">
@@ -64,7 +86,7 @@
                                        [nzLabel]="'runtime.label.'+ option.label | translate"
                                        [nzValue]="option.value"></nz-option>
                           </nz-select>
-                          <i class="p-l-sm text-hover-primary fa fa-times" style="position: absolute;left: 396px;top: 8px;" (click)="removeValue(val)"></i>
+                          <i class="text-hover-primary fa fa-times" style="position: absolute;left: 402px;top: 8px;" (click)="removeValue(val)"></i>
                         </div>
                       </ng-container>
                       <ng-container *ngSwitchCase="'TIME'">
@@ -74,7 +96,7 @@
                                  #startTime="ngModel" required name="{{val.name}}{{i}}" [maxLength]="8"
                                  (blur)="changeConfiguration(startTime, val)"
                                  [(ngModel)]="val.value.value" placeholder="HH:MM:SS">
-                           <i class="p-l-sm text-hover-primary fa fa-times" style="position: absolute;left: 396px;top: 8px;" (click)="removeValue(val)"></i>
+                           <i class="text-hover-primary fa fa-times" style="position: absolute;left: 402px;top: 8px;" (click)="removeValue(val)"></i>
                         </div>
                       </ng-container>
                       <ng-container *ngSwitchCase="'POSITIVENUMBER'">
@@ -85,7 +107,7 @@
                                            [nzStep]="1" name="value{{i}}"
                                            #pnum="ngModel" [(ngModel)]="val.value.value"
                                            (nzBlur)="changeConfiguration(pnum, val)"></nz-input-number>
-                           <i class="p-l-sm text-hover-primary fa fa-times" style="position: absolute;left: 396px;top: 8px;" (click)="removeValue(val)"></i>
+                           <i class="text-hover-primary fa fa-times" style="position: absolute;left: 402px;top: 8px;" (click)="removeValue(val)"></i>
                         </div>
                       </ng-container>
                       <ng-container *ngSwitchCase="'NONNEGATIVENUMBER'">
@@ -96,7 +118,7 @@
                                            [nzStep]="1" name="value{{i}}"
                                            #nonnegnum="ngModel" [(ngModel)]="val.value.value"
                                            (nzBlur)="changeConfiguration(nonnegnum, val)"></nz-input-number>
-                           <i class="p-l-sm text-hover-primary fa fa-times" style="position: absolute;left: 396px;top: 8px;" (click)="removeValue(val)"></i>
+                           <i class="text-hover-primary fa fa-times" style="position: absolute;left: 402px;top: 8px;" (click)="removeValue(val)"></i>
                         </div>
                       </ng-container>
                       <ng-container *ngSwitchCase="'POSITIVEINTEGER'">
@@ -106,7 +128,7 @@
                                  name="{{val.name}}{{i}}" pattern="[1-9]+[0-9]*" #positiveNum="ngModel"
                                  (blur)="changeConfiguration(positiveNum, val)" required
                                  [(ngModel)]="val.value.value">
-                          <i class="p-l-sm text-hover-primary fa fa-times" style="position: absolute;left: 396px;top: 8px;" (click)="removeValue(val)"></i>
+                          <i class="text-hover-primary fa fa-times" style="position: absolute;left: 402px;top: 8px;" (click)="removeValue(val)"></i>
                         </div>
                       </ng-container>
                       <ng-container *ngSwitchCase="'NONNEGATIVEINTEGER'">
@@ -116,7 +138,7 @@
                                  name="{{val.name}}{{i}}" pattern="[0-9]+" #nonNegNum="ngModel"
                                  (blur)="changeConfiguration(nonNegNum, val)" required
                                  [(ngModel)]="val.value.value">
-                           <i class="p-l-sm text-hover-primary fa fa-times" style="position: absolute;left: 396px;top: 8px;" (click)="removeValue(val)"></i>
+                           <i class="text-hover-primary fa fa-times" style="position: absolute;left: 402px;top: 8px;" (click)="removeValue(val)"></i>
                         </div>
                       </ng-container>
                       <ng-container *ngSwitchDefault>
@@ -125,16 +147,19 @@
                           <input autocomplete="off" type="text" class="form-control w-xxxl" required
                                  name="{{val.name}}{{i}}" (blur)="changeConfiguration(common, val)" #common="ngModel"
                                  [(ngModel)]="val.value.value">
-                           <i class="p-l-sm text-hover-primary fa fa-times" style="position: absolute;left: 396px;top: 8px;" (click)="removeValue(val)"></i>
+                           <i class="text-hover-primary fa fa-times" style="position: absolute;left: 402px;top: 8px;" (click)="removeValue(val)"></i>
                         </div>
                       </ng-container>
                     </ng-container>
                   </ng-container>
                 </ng-container>
               </div>
-              <hr>
+              <hr class="m-t-0" *ngIf="i !== (settingArr.length - 1)">
             </div>
           </form>
+        </div>
+        <div class="m-t-lg" *ngIf="settingArr.length === 0 && loading">
+          <app-empty-data></app-empty-data>
         </div>
       </div>
     </div>

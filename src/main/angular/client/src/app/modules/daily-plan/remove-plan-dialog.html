@@ -5,8 +5,8 @@
       <span *ngIf="!isSubmit" translate>dailyPlan.label.removeOrders</span>
     </span>
     <span *ngIf="submissionsDelete">
-       {{'dailyPlan.label.submissionsDelete' | translate}} :
-       <i class="text-muted p-l-xs text" *ngIf="!(dateRange && dateRange.length > 0)">{{selectedDate | stringToDate1}}</i>
+       {{'dailyPlan.label.submissionsDelete' | translate}}
+       <i class="text-muted p-l-xs text" *ngIf="!(dateRange && dateRange.length > 0)"> : {{selectedDate | stringToDate1}}</i>
     </span>
     <span *ngIf="dateRange && dateRange.length > 0">
       :

@@ -180,9 +180,8 @@
                         </div>
                       </div>
                       <div class="text-sm text-left text-muted p-t-sm block-ellipsis" style="width: 99%">
-                        <span translate>inventory.label.version </span>:
-                        <span class="text-blak-dk" [innerHtml]="workflow.versionId | highlight : workflowFilters.searchText"></span>
-                        <div class="text-muted text-sm" *ngIf="workflow.versionDate"><i>({{workflow.versionDate | stringToDate}})</i></div>
+                        <span translate>inventory.label.deploymentDate </span>:
+                        <span class="text-blak-dk" [innerHtml]="workflow.versionDate | stringToDate | highlight : workflowFilters.searchText"></span>
                       </div>
                       <div class="text-sm text-left text-muted p-t-xs">
                         <span translate>common.label.status </span>:
@@ -285,7 +284,7 @@
                            class="fa fa-caret-down "></i></a>
                     </th>
                     <th (click)="sort('isCurrentVersion')" rowspan="2">
-                      <a><span class="p-r-xs" translate>inventory.label.version</span>
+                      <a><span class="p-r-xs" translate>inventory.label.deploymentDate</span>
                         <i *ngIf="workflowFilters.filter.sortBy == 'isCurrentVersion' && !workflowFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="workflowFilters.filter.sortBy == 'isCurrentVersion' && workflowFilters.reverse"
@@ -399,8 +398,7 @@
                        </span>
                       </td>
                       <td>
-                        <span [innerHtml]="workflow.versionId | highlight : workflowFilters.searchText"></span>
-                        <div class="text-muted text-sm" *ngIf="workflow.versionDate"><i>({{workflow.versionDate | stringToDate}})</i></div>
+                        <span [innerHtml]="workflow.versionDate | stringToDate | highlight : workflowFilters.searchText"></span>
                       </td>
                       <td>
                         <a class="label" *ngIf="workflow.state" [ngClass]="coreService.getColor(workflow.state.severity, 'bg')"

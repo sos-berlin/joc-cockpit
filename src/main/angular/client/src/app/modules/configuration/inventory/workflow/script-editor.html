@@ -12,56 +12,58 @@
     <div class="row">
       <div class="col-md-12">
         <div class="inline">
-        <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
-          <li class="nav-item">
-            <a class="nav-link" (click)="execCommand('find')">
-              <span class="nav-text"> Find</span>
-            </a>
-          </li>
-        <li class="nav-item">
-            <a class="nav-link" (click)="execCommand('findNext')">
-              <span class="nav-text"> Find next</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" (click)="execCommand('findPrev');">
-              <span class="nav-text"> Find previous</span>
-            </a>
-          </li>
-          <li class="nav-item dropdown-separator">
-            <span class="separator"></span>
-          </li>
-            <li class="nav-item">
-            <a class="nav-link" (click)="execCommand('replace')">
-              <span class="nav-text">Replace</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" (click)="execCommand('replaceAll')">
-              <span class="nav-text">Replace all</span>
-            </a>
-          </li>
-          <li class="nav-item dropdown-separator">
-            <span class="separator"></span>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" (click)="execCommand('jumpToLine');">
-              <span class="nav-text">Jump to line</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-        <span class="pull-right" nz-tooltip [nzTooltipTitle]="tooltipTemplate" [nzTooltipPlacement]="'left'" style="font-size: 14px"><i nz-icon nzType="question-circle" nzTheme="outline"></i></span>
-        <ng-template #tooltipTemplate>
-          <div class="m-a-sm">
-            <div>Find:<span class="m-l-sm _600">Ctrl-F</span></div>
-            <div>Find next:<span class="m-l-sm _600">Ctrl-G</span></div>
-            <div>Find previous:<span class="m-l-sm _600">Shift-Ctrl-G</span></div>
-            <div>Replace:<span class="m-l-sm _600">Shift-Ctrl-F</span></div>
-            <div>Replace all:<span class="m-l-sm _600">Shift-Ctrl-R</span></div>
-            <div>Jump to line:<span class="m-l-sm _600">Alt-G</span></div>
-          </div>
-        </ng-template>
+          <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
+            <li class="nav-item" nz-tooltip="Ctrl-F">
+              <a class="nav-link" (click)="execCommand('find')">
+                <span class="nav-text" translate>workflow.button.find</span>
+              </a>
+            </li>
+            <li class="nav-item" nz-tooltip="Ctrl-G">
+              <a class="nav-link" (click)="execCommand('findNext')">
+                <span class="nav-text" translate>workflow.button.findNext</span>
+              </a>
+            </li>
+            <li class="nav-item" nz-tooltip="Shift-Ctrl-G">
+              <a class="nav-link" (click)="execCommand('findPrev');">
+                <span class="nav-text" translate>workflow.button.findPrevious</span>
+              </a>
+            </li>
+            <li class="nav-item dropdown-separator">
+              <span class="separator"></span>
+            </li>
+            <li class="nav-item" nz-tooltip="Shift-Ctrl-F">
+              <a class="nav-link" (click)="execCommand('replace')">
+                <span class="nav-text" translate>workflow.button.replace</span>
+              </a>
+            </li>
+            <li class="nav-item" nz-tooltip="Shift-Ctrl-R">
+              <a class="nav-link" (click)="execCommand('replaceAll')">
+                <span class="nav-text" translate>workflow.button.replaceAll</span>
+              </a>
+            </li>
+            <li class="nav-item dropdown-separator">
+              <span class="separator"></span>
+            </li>
+            <li class="nav-item" nz-tooltip="Alt-G">
+              <a class="nav-link" (click)="execCommand('jumpToLine');">
+                <span class="nav-text" translate>workflow.button.jumpToLine</span>
+              </a>
+            </li>
+            <li class="nav-item dropdown-separator">
+              <span class="separator"></span>
+            </li>
+            <li class="nav-item" nz-tooltip="Ctrl-Z">
+              <a class="nav-link" (click)="execCommand('undo');">
+                <span class="nav-text" translate>workflow.button.undo</span>
+              </a>
+            </li>
+            <li class="nav-item" nz-tooltip="Ctrl-Y">
+              <a class="nav-link" (click)="execCommand('redo');">
+                <span class="nav-text" translate>workflow.button.redo</span>
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
       <div class="col-md-12">
         <div class="b-a" [ngClass]="{'invalid': (cm.invalid && (cm.dirty || cm.touched))}">

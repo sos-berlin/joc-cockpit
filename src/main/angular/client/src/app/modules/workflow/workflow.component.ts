@@ -329,7 +329,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   sideBar: any = {};
   subscription1: Subscription;
   subscription2: Subscription;
-  searchableProperties = ['name', 'path', 'versionId', 'state', '_text'];
+  searchableProperties = ['name', 'path', 'versionDate', 'state', '_text'];
 
   filterBtn: any = [
     {date: 'ALL', text: 'all'},
@@ -949,7 +949,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   exportToExcel() {
-    let name = '', path = '', version = '', status = '', numOfOrders = '', pending = '', running = '',
+    let name = '', path = '', deploymentDate = '', status = '', numOfOrders = '', pending = '', running = '',
       suspended = '', failed = '', waiting = '', blocked = '', calling = '', inprogress = '';
     this.translate.get('common.label.name').subscribe(translatedValue => {
       name = translatedValue;
@@ -957,8 +957,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.translate.get('common.label.path').subscribe(translatedValue => {
       path = translatedValue;
     });
-    this.translate.get('inventory.label.version').subscribe(translatedValue => {
-      version = translatedValue;
+    this.translate.get('inventory.label.deploymentDate').subscribe(translatedValue => {
+      deploymentDate = translatedValue;
     });
     this.translate.get('common.label.status').subscribe(translatedValue => {
       status = translatedValue;
@@ -998,7 +998,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       let obj: any = {};
       obj[name] = this.workflows[i].name;
       obj[path] = this.workflows[i].path;
-      obj[version] = this.workflows[i].versionId + ' (' + this.coreService.stringToDate(this.preferences, this.workflows[i].versionDate) + ')';
+      obj[deploymentDate] = this.coreService.stringToDate(this.preferences, this.workflows[i].versionDate);
       this.translate.get(this.workflows[i].state._text).subscribe(translatedValue => {
         obj[status] = translatedValue;
       });

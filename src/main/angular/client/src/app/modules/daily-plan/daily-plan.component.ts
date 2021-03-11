@@ -223,6 +223,7 @@ export class SelectOrderTemplatesComponent implements OnInit {
 export class CreatePlanModalComponent {
   @Input() schedulerId;
   @Input() selectedDate;
+  @Input() dateRanges;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
   objects: any = [];
   object: any = {at: 'all', overwrite: false, submitWith: false};
@@ -245,11 +246,31 @@ export class CreatePlanModalComponent {
       obj.selector = {schedulePaths: this.selectedTemplates.schedules};
     }
 
-    obj.dailyPlanDate = moment(this.selectedDate).format('YYYY-MM-DD');
-    this.coreService.post('daily_plan/orders/generate', obj).subscribe((result) => {
+    if(this.dateRanges && this.dateRanges.length > 0){
+      this.submitted = false;
+      this.recursivelyCreate(obj);
+    } else {
+      obj.dailyPlanDate = moment(this.selectedDate).format('YYYY-MM-DD');
+      this.coreService.post('daily_plan/orders/generate', obj).subscribe((result) => {
+        this.submitted = false;
+        this.activeModal.close('Done');
+      }, () => {
+        this.submitted = false;
+      });
+    }
+  }
+
+   private recursivelyCreate(obj){
+    let apiArr = [];
+    const dates = this.coreService.getDates(this.dateRanges[0], this.dateRanges[1]);
+    dates.forEach((date) => {
+      obj.dailyPlanDate = moment(date).format('YYYY-MM-DD');
+      apiArr.push(this.coreService.post('daily_plan/orders/generate', this.coreService.clone(obj)));
+    });
+    forkJoin(apiArr).subscribe((result: any) => {
       this.submitted = false;
       this.activeModal.close('Done');
-    }, () => {
+    }, (err) => {
       this.submitted = false;
     });
   }
@@ -996,7 +1017,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     const modalRef = this.modalService.open(CreatePlanModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.selectedDate = this.selectedDate;
+    modalRef.componentInstance.dateRanges = this.dateRanges;
     modalRef.result.then((res) => {
+      if (this.dateRanges.length > 0) {
+        $('#full-calendar').data('calendar')._clearRange();
+      }
       this.updateList();
     }, () => {
 
@@ -1108,9 +1133,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       dates.forEach((date) => {
         let obj = {
           controllerId: this.schedulerIds.selected,
-          filter: {
-            dailyPlanDate: moment(date).format('YYYY-MM-DD')
-          }
+          dailyPlanDate: moment(date).format('YYYY-MM-DD'),
+          orderIds: []
         };
         apiArr.push(this.coreService.post('orders/cancel', this.coreService.clone(obj)));
       });
@@ -2018,6 +2042,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         this.isPastDate = this.selectedDate.setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
         this.submissionHistory = e.events;
         this.selectedSubmissionId = null;
+        this.showSearchPanel = false;
+        this.searchFilter = {};
+        this.isSearchHit = false;
         if (this.selectedFiltered) {
           this.changeFilter(null);
         } else {

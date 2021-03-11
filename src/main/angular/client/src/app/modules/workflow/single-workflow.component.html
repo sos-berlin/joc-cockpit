@@ -41,7 +41,7 @@
                 <th class="tableexport-ignore" rowspan="2" nzWidth="55px"><span translate>common.label.action</span></th>
                 <th rowspan="2"><span translate>common.label.name</span></th>
                 <th rowspan="2"><span translate>common.label.path</span></th>
-                <th rowspan="2"><span translate>inventory.label.version</span></th>
+                <th rowspan="2"><span translate>inventory.label.deploymentDate</span></th>
                 <th rowspan="2"><span translate>common.label.status</span></th>
                 <th rowspan="2"><span translate>common.label.noOfOrders</span></th>
                 <th colspan="8"><span translate>common.label.order</span></th>
@@ -83,8 +83,7 @@
                     </span>
                   </td>
                   <td>
-                    <span>{{workflow.versionId}}</span>
-                    <div class="text-muted text-sm" *ngIf="workflow.versionDate"><i>({{workflow.versionDate | stringToDate}})</i></div>
+                    <div *ngIf="workflow.versionDate">({{workflow.versionDate | stringToDate}})</div>
                   </td>
                   <td>
                     <a class="label" *ngIf="workflow.state" [ngClass]="coreService.getColor(workflow.state.severity, 'bg')"

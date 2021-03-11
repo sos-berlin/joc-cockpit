@@ -441,7 +441,7 @@
               <div class="calendar-sm m-t-0" id="full-calendar"></div>
             </div>
             <div class="text-center m-t">
-              <button [disabled]="isPastDate || dateRanges.length > 0" class="btn btn-grey btn-sm" (click)="createPlan()">
+              <button [disabled]="isPastDate" class="btn btn-grey btn-sm" (click)="createPlan()">
                 <i class="fa fa-plus"></i>&nbsp;
                 <span translate>dailyPlan.button.createPlan</span>
               </button>
@@ -449,7 +449,7 @@
                 <i class="fa fa-trash"></i>&nbsp;
                 <span translate>dailyPlan.button.deleteSubmissions</span>
               </button>
-              <div class="m-t p-a-sm p-l-0" *ngIf="submissionHistory.length > 0">
+              <div class="m-t p-a-sm p-l-0" *ngIf="submissionHistory.length > 0 && dateRanges.length == 0">
                 <div class="_600 m-b-sm text-left p-l" style="font-size: 14px">
                   <a class="text-hover-primary" (click)="navToHistory()"
                      translate>dailyPlan.label.submissionHistory</a>
@@ -461,6 +461,31 @@
                       <i class="fa fa-circle p-r-xs"></i>
                       <span translate>dailyPlan.label.submission</span> -
                       <i class="text-muted">({{history.submissionTime | stringToTime}})</i>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div class="m-t p-a-sm p-l-0" *ngIf="dateRanges.length > 0">
+                <div class="_600 m-b-sm text-left p-l" style="font-size: 14px">
+                  <a translate>common.label.dateRange</a>
+                </div>
+                <ul class="text-left p-l">
+                  <li>
+                    <a>
+                      <div class="w inline" >
+                        <span translate>common.label.from</span>
+                        <i> -</i>
+                      </div>
+                      <i class="text-muted" style="position: relative; top:-4px">{{dateRanges[0] | stringToDate1}}</i>
+                    </a>
+                  </li>
+                   <li>
+                    <a>
+                      <div class="w inline">
+                        <span translate>common.label.to</span>
+                        <i> -</i>
+                      </div>
+                      <i class="text-muted" style="position: relative; top:-4px">{{dateRanges[1] | stringToDate1}}</i>
                     </a>
                   </li>
                 </ul>

@@ -1134,7 +1134,7 @@ JSON editor
 }
 
 .ace-jsoneditor .ace_gutter {
-  background: var(--box-color) !important;
+  background: rgba(50, 70, 90, .6) !important;
   color: var(--text-color) !important
 }
 
@@ -1415,4 +1415,34 @@ span.cm-variable-3, span.cm-type {
 
 .highlighted {
   color: yellow;
+}
+
+/* coloring of JSON in tree mode */
+div.jsoneditor-navigation-bar {
+  color: #f9f9f9;
+}
+div.jsoneditor-readonly {
+  color: #acacac;
+}
+div.jsoneditor td.jsoneditor-separator {
+  color: #acacac;
+}
+div.jsoneditor-value.jsoneditor-string {
+  color: #00ff88;
+}
+div.jsoneditor-value.jsoneditor-object,
+div.jsoneditor-value.jsoneditor-array {
+  color: #bababa;
+}
+div.jsoneditor-value.jsoneditor-number {
+  color: #ff4040;
+}
+div.jsoneditor-value.jsoneditor-boolean {
+  color: #ff8048;
+}
+div.jsoneditor-value.jsoneditor-null {
+  color: #49a7fc;
+}
+div.jsoneditor-value.jsoneditor-invalid {
+  color: white;
 }

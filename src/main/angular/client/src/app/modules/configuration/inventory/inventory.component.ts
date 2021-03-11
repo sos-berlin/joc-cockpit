@@ -1642,28 +1642,34 @@ export class UploadModalComponent implements OnInit {
     selector: 'app-create-object-template',
     templateUrl: './create-object-dialog.html'
 })
-export class CreateObjectModalComponent {
+export class CreateObjectModalComponent implements OnInit {
     @Input() schedulerId: any;
     @Input() obj: any;
     @Input() copy: any;
     @Input() restore: boolean;
     submitted = false;
-    object = {name: '', type: 'suffix', _name: '', onlyContains: false};
+    object = {name: '', type: 'suffix', _name: '', onlyContains: false, originalName: ''};
 
     constructor(private coreService: CoreService, public activeModal: NgbActiveModal) {
+    }
+
+    ngOnInit(): void {
+        this.object.originalName = this.copy;
     }
 
     onSubmit(): void {
         if (this.copy || this.restore) {
             const obj: any = {};
             if (this.object._name) {
-                if (this.object.type) {
+                if (this.object.type === 'suffix') {
                     obj.suffix = this.object._name;
-                } else {
+                } else if (this.object.type === 'prefix') {
+                    obj.prefix = this.object._name;
+                } else{
                     obj.prefix = this.object._name;
                 }
                 if (this.object.onlyContains) {
-                    obj.noFolder = true;
+                    obj.originalName = this.object.originalName;
                 }
             }
             this.activeModal.close(obj);
@@ -2935,8 +2941,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
             suffix: data.suffix,
             prefix: data.prefix
         };
+        console.log(data.originalName)
         if (this.copyObj.id) {
-            request.newPath = obj.path + (obj.path === '/' ? '' : '/') + this.copyObj.name;
+            request.newPath = obj.path + (obj.path === '/' ? '' : '/') + (data.originalName ? data.originalName : this.copyObj.name);
             request.id = this.copyObj.id;
         } else {
             request.objectType = 'FOLDER';
