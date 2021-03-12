@@ -246,7 +246,7 @@ export class CreatePlanModalComponent {
       obj.selector = {schedulePaths: this.selectedTemplates.schedules};
     }
 
-    if(this.dateRanges && this.dateRanges.length > 0){
+    if (this.dateRanges && this.dateRanges.length > 0) {
       this.submitted = false;
       this.recursivelyCreate(obj);
     } else {
@@ -260,7 +260,7 @@ export class CreatePlanModalComponent {
     }
   }
 
-   private recursivelyCreate(obj){
+  private recursivelyCreate(obj) {
     let apiArr = [];
     const dates = this.coreService.getDates(this.dateRanges[0], this.dateRanges[1]);
     dates.forEach((date) => {
@@ -404,7 +404,7 @@ export class RemovePlanModalComponent implements OnInit {
   }
 
   private remove(obj) {
-     this.submitted = true;
+    this.submitted = true;
     if (this.dateRange && this.dateRange.length > 0 && !this.submissionsDelete) {
       this.removeRecursively(obj);
     }
@@ -416,7 +416,7 @@ export class RemovePlanModalComponent implements OnInit {
     });
   }
 
-  private removeRecursively(obj){
+  private removeRecursively(obj) {
     let apiArr = [];
     const dates = this.coreService.getDates(this.dateRange[0], this.dateRange[1]);
     dates.forEach((date) => {
@@ -627,14 +627,17 @@ export class SearchComponent implements OnInit {
   schedules = [];
   workflowTree = [];
   checkOptions = [
-    {label: 'planned', value: 'PLANNED'},
-    {label: 'pending', value: 'PENDING'},
-    {label: 'incomplete', value: 'INPROGRESS'},
-    {label: 'running', value: 'RUNNING'},
-    {label: 'suspended', value: 'SUSPENDED'},
-    {label: 'calling', value: 'CALLING'},
-    {label: 'waiting', value: 'WAITING'},
-    {label: 'blocked', value: 'BLOCKED'}
+    {status: 'ALL', text: 'all'},
+    {status: 'PLANNED', text: 'planned'},
+    {status: 'PENDING', text: 'pending'},
+    {status: 'INPROGRESS', text: 'incomplete'},
+    {status: 'RUNNING', text: 'running'},
+    {status: 'SUSPENDED', text: 'suspended'},
+    {status: 'CALLING', text: 'calling'},
+    {status: 'WAITING', text: 'waiting'},
+    {status: 'BLOCKED', text: 'blocked'},
+    {status: 'FAILED', text: 'failed'},
+    {status: 'FINISHED', text: 'finished'}
   ];
 
   constructor(public coreService: CoreService) {
@@ -647,7 +650,7 @@ export class SearchComponent implements OnInit {
       this.checkOptions = this.checkOptions.map(item => {
         return {
           ...item,
-          checked: this.filter.state.indexOf(item.value) > -1
+          checked: this.filter.state.indexOf(item.status) > -1
         };
       });
     }
@@ -803,6 +806,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
   plans: any = [];
+  currentData = [];
   submissionHistoryItems: any = [];
   planOrders: any = [];
   isLoaded = false;
@@ -819,6 +823,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   dateFormatM: any;
   isPastDate = false;
   isToggle = false;
+  isCalendarClick = false;
   selectedDate: Date;
   submissionHistory: any = [];
   searchableProperties = ['orderId', 'schedulePath', 'workflowPath', 'status', 'plannedStartTime', 'expectedEndTime'];
@@ -1013,18 +1018,20 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.setStateToParentObject();
   }
 
+  selectDateRange(flag) {
+    this.isCalendarClick = flag;
+    $('#full-calendar').data('calendar').setRange(this.isCalendarClick);
+    this.dateRanges = [];
+  }
+
   createPlan() {
     const modalRef = this.modalService.open(CreatePlanModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.selectedDate = this.selectedDate;
     modalRef.componentInstance.dateRanges = this.dateRanges;
     modalRef.result.then((res) => {
-      if (this.dateRanges.length > 0) {
-        $('#full-calendar').data('calendar')._clearRange();
-      }
       this.updateList();
     }, () => {
-
     });
   }
 
@@ -1060,9 +1067,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.dateRange = this.dateRanges;
     modalRef.result.then((res) => {
       this.updateList();
-      if (this.dateRanges.length > 0) {
-        $('#full-calendar').data('calendar')._clearRange();
-      }
     }, () => {
 
     });
@@ -1138,10 +1142,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         };
         apiArr.push(this.coreService.post('orders/cancel', this.coreService.clone(obj)));
       });
-      forkJoin(apiArr).subscribe((result: any) => {
-        if (this.dateRanges.length > 0) {
-          $('#full-calendar').data('calendar')._clearRange();
-        }
+      forkJoin(apiArr).subscribe((result) => {
+        this.resetCheckBox();
       });
     } else {
       const orderIds = [];
@@ -1297,9 +1299,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.dateRange = this.dateRanges;
     modalRef.result.then((res) => {
       this.updateList();
-      if (this.dateRanges.length > 0) {
-        $('#full-calendar').data('calendar')._clearRange();
-      }
     }, () => {
 
     });
@@ -1611,6 +1610,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     object.isModify = true;
     object.isSuspend = true;
     object.isResume = true;
+    let finishedCount = 0;
     let count = 0;
     let workflow = null;
     list.forEach((order) => {
@@ -1626,17 +1626,17 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         object.isResume = false;
       }
       if (order.state._text === 'FINISHED') {
-        object.isFinished = true;
+        ++finishedCount;
       } else if (order.state._text === 'RUNNING') {
         object.isRunning = true;
       }
-      if (order.state._text === 'FINISHED' || order.state._text === 'PLANNED') {
+      if (order.state._text === 'PLANNED') {
         object.isCancel = true;
       }
       if (order.state._text !== 'PLANNED' && order.state._text !== 'PENDING') {
         object.isModify = false;
       }
-      if (order.state._text === 'PLANNED' || order.state._text === 'PENDING' || order.state._text === 'FAILED' || order.state._text === 'FINISHED') {
+      if (order.state._text === 'PLANNED' || order.state._text === 'PENDING' || order.state._text === 'FAILED') {
         object.isSuspend = false;
       }
 
@@ -1646,25 +1646,43 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         object.isModify = false;
       }
     });
+
+    if (finishedCount === list.length) {
+      object.isFinished = true;
+    }
   }
 
   checkAll() {
+
     if (this.planOrders.length > 0) {
       this.object.mapOfCheckedId.clear();
-      let orders = this.planOrders.slice((this.preferences.entryPerPage * (this.dailyPlanFilters.currentPage - 1)), (this.preferences.entryPerPage * this.dailyPlanFilters.currentPage));
+      let orders = this.currentData;
+       let flag = false;
       if (this.dailyPlanFilters.filter.groupBy) {
         if (this.object.checked) {
           for (let i = 0; i < orders.length; i++) {
-            orders[i].indeterminate = false;
-            orders[i].checked = true;
-            orders[i].value.forEach(item => {
-              this.object.mapOfCheckedId.set(item.orderId, item);
-            });
+            if (!orders[i].isFinished) {
+              orders[i].indeterminate = false;
+              orders[i].checked = true;
+              orders[i].value.forEach(item => {
+                this.object.mapOfCheckedId.set(item.orderId, item);
+              });
+            } else {
+              flag = true;
+            }
           }
         } else {
           for (let i = 0; i < orders.length; i++) {
             orders[i].checked = false;
           }
+        }
+        if (flag) {
+          setTimeout(() => {
+            this.object.checked = false;
+            if(this.object.mapOfCheckedId.size > 0) {
+              this.object.indeterminate = true;
+            }
+          }, 0);
         }
       } else {
         if (this.object.checked) {
@@ -1724,7 +1742,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private updateMainCheckbox() {
-    let data = this.planOrders.slice((this.preferences.entryPerPage * (this.dailyPlanFilters.currentPage - 1)), (this.preferences.entryPerPage * this.dailyPlanFilters.currentPage));
+    let data = this.currentData;
     if (this.dailyPlanFilters.filter.groupBy) {
       this.object.checked = data.every(item => item.checked);
     } else {
@@ -1733,8 +1751,12 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
     this.checkState(this.object, this.object.mapOfCheckedId);
     if (this.dateRanges.length > 0) {
-      $('#full-calendar').data('calendar')._clearRange();
+      $('#full-calendar').data('calendar').clearRange();
     }
+  }
+
+  currentPageDataChange($event) {
+    this.currentData = $event;
   }
 
   sortBy() {
@@ -1998,6 +2020,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       isPlanned: false,
       isFinished: false
     };
+    this.isCalendarClick = false;
+    if (this.dateRanges.length > 0) {
+      $('#full-calendar').data('calendar').clearRange();
+    }
   }
 
   private initConf() {
@@ -2043,6 +2069,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         this.submissionHistory = e.events;
         this.selectedSubmissionId = null;
         this.showSearchPanel = false;
+        this.isCalendarClick = false;
         this.searchFilter = {};
         this.isSearchHit = false;
         if (this.selectedFiltered) {
@@ -2057,6 +2084,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       },
       rangeEnd: (e) => {
         this.dateRanges = e.dateRanges;
+        this.isCalendarClick = false;
       }
     });
   }

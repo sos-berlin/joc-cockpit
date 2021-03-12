@@ -202,9 +202,13 @@
   }
 }
 
-/* Header */
-
-/* Months */
+.grab {
+    td.day .day-content:hover {
+      background: rgba(0, 0, 0, 0.2);
+      cursor: -webkit-grab !important;
+      cursor: grab !important;
+    }
+}
 
 .table-striped .calendar table.month tr {
   td, th {

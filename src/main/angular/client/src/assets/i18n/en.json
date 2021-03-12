@@ -820,7 +820,8 @@
     "button.backToObject": "Back to previous object",
     "button.backToList": "Back to list",
     "tooltip.setVersion": "Set Version",
-    "tooltip.newObjectNameInfoMessage": "If suffix and prefix are empty, then a suffix=\"-copy<integer>\"",
+    "tooltip.newObjectNameSuffixInfoMessage": "If suffix is empty, then a suffix=\"-copy<integer>\"",
+    "tooltip.newObjectNamePrefixInfoMessage": "If prefix is empty, then a suffix=\"-copy<integer>\"",
     "placeholder.enterUniqueName": "Enter unique object name",
     "placeholder.enterFileName": "Enter file name",
     "placeholder.enterNewPath": "Enter new path",
@@ -840,6 +841,8 @@
     "placeholder.enterFolderPath": "Enter Folder Path",
     "placeholder.signatureAlgorithm": "Enter the used signature algorithm",
     "placeholder.searchNonWorkingCalendars": "Search Non-working Days Calendars",
+    "placeholder.suffix" : "Enter suffix",
+    "placeholder.prefix" : "Enter prefix",
     "message.emptyWorkflow": "Workflow is empty, minimum one instruction is required",
     "message.workflowIsMissing": "Workflow is missing, but it is required",
     "message.calendarIsMissing": "Working day calendar is missing, but it is required",
@@ -1277,6 +1280,10 @@
     "button.exportSetting": "Download Settings",
     "button.addSection": "Add Section",
     "button.dropSection": "Drop Section",
+    "placeholder.enterPositiveNumber": "Enter only positive number",
+    "placeholder.enterNonNegativeNumber": "Enter non negative number",
+    "placeholder.enterPositiveInteger": "Enter only positive integer",
+    "placeholder.enterNonNegativeInteger": "Enter non negative integer",
     "cleanup": {
       "time_zone": "Specifies the time zone that is applied to the start time and period of the Cleanup Service",
       "period": "Specifies weekdays on which the Cleanup Service is performed. The first day of week is considered being Monday. When initially installing JS7 then the distribution specifies the full week. Without this setting the Cleanup Service will not start.",
@@ -1295,6 +1302,23 @@
       "period_begin": "Specifies the begin of the 24 hours Daily Plan period with the indicated time zone.",
       "days_ahead_plan": "Specifies the number of days ahead for which orders are generated and are made available with the PLANNED state.",
       "days_ahead_submit": "Specifies the number of days ahead for which PLANNED orders are submitted to Controllers and are made available with the PENDING state."
+    },
+    "joc": {
+      "force_comments_for_audit_log": "force_comments_for_audit_log",
+      "comments_for_audit_log": "comments_for_audit_log",
+      "default_profile_account": "default_profile_account",
+      "enable_remember_me": "enable_remember_me",
+      "copy_paste_suffix": "copy_paste_suffix",
+      "copy_paste_prefix": "copy_paste_prefix",
+      "restore_suffix": "restore_suffix",
+      "restore_prefix": "restore_prefix",
+      "show_view_dashboard": "show_view_dashboard",
+      "show_view_dailyplan": "show_view_dailyplan",
+      "show_view_workflows": "show_view_workflows",
+      "show_view_resources": "show_view_resources",
+      "show_view_history": "show_view_history",
+      "show_view_auditlog": "show_view_auditlog",
+      "show_view_configuration": "show_view_configuration"
     }
   },
   "user": {

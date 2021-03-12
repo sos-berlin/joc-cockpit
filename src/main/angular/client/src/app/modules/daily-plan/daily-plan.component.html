@@ -14,7 +14,7 @@
       </div>
     </ng-template>
     <tr>
-      <td [nzShowCheckbox]="true"
+      <td [nzShowCheckbox]="true" [nzDisabled]="value.state && value.state._text === 'FINISHED'"
           [nzChecked]="object.mapOfCheckedId.has(value.orderId)"
           (nzCheckedChange)="onItemChecked(value, plan, $event)">
       </td>
@@ -150,13 +150,14 @@
     </ng-template>
     <tr>
       <td [nzShowCheckbox]="true"
+          [nzDisabled]="plan.isFinished"
           [(nzChecked)]="plan.checked"
           [nzIndeterminate]="plan.indeterminate"
           (nzCheckedChange)="checkOrderTemplate(plan)">
       </td>
       <td>
         <div class="btn-group dropdown">
-          <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+          <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [ngClass]="{'disable-link': plan.isFinished}"
                   [nzDropdownMenu]="export2" type="button">
             <i class="fa fa-ellipsis-h"></i>
           </button>
@@ -437,8 +438,17 @@
       <div class="col-lg-12">
         <div id="leftPanel" class="sticky leftPanel daily-plan" [hidden]="pageView === 'grid'">
           <div class="box m-b-0" style="height: calc(100vh - 155px)">
-            <div class="p-b b-b">
-              <div class="calendar-sm m-t-0" id="full-calendar"></div>
+            <div class="p-b b-b icon-hover">
+              <ng-template #tooltipTemplate>
+                <div class="m-a-xs">
+                  1. <span translate>Hold mouse and drag to select date range</span><br>
+                  2. <span translate>Press ctrl key and select start date and end date using mouse click</span><br>
+                  3. <span translate>Click calendar icon and then select start date and end date using mouse click</span>
+                </div>
+              </ng-template>
+              <i class="fa fa-info-circle pos-abt" style="right: 8px;top:6px" nz-tooltip [nzTooltipTitle]="tooltipTemplate" [nzTooltipPlacement]="'left'"></i>
+              <i class="fa fa-calendar-plus-o pos-abt cursor" [ngClass]="{'text-primary' :isCalendarClick }" style="left: 8px;top:6px" (click)="selectDateRange(true)"></i>
+              <div class="calendar-sm m-t-0" [ngClass]="{'grab' :isCalendarClick }" id="full-calendar"></div>
             </div>
             <div class="text-center m-t">
               <button [disabled]="isPastDate" class="btn btn-grey btn-sm" (click)="createPlan()">
@@ -580,6 +590,7 @@
                   [nzShowSizeChanger]="true"
                   (nzPageIndexChange)="pageIndexChange($event)"
                   (nzPageSizeChange)="pageSizeChange($event)"
+                  (nzCurrentPageDataChange)="currentPageDataChange($event)"
                   [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
                 >
                   <thead>
@@ -699,9 +710,9 @@
               </div>
               <div class="w-half label-top" *ngIf="ajaxTable.data.length >0">
                 <span translate *ngIf="dailyPlanFilters.filter.groupBy === 'ORDER'"
-                      [translateParams]="{total: planOrders.length, orderCount: (plans | filter: dailyPlanFilters.searchText).length}">dailyPlan.label.totalEntry</span>
+                      [translateParams]="{total: planOrders.length, orderCount: (plans | filter: dailyPlanFilters.searchText: searchableProperties).length}">dailyPlan.label.totalEntry</span>
                 <span translate *ngIf="dailyPlanFilters.filter.groupBy === 'WORKFLOW'"
-                      [translateParams]="{total: planOrders.length, orderCount: (plans | filter: dailyPlanFilters.searchText).length}">dailyPlan.label.totalWorkflowEntry</span>
+                      [translateParams]="{total: planOrders.length, orderCount: (plans | filter: dailyPlanFilters.searchText: searchableProperties).length}">dailyPlan.label.totalWorkflowEntry</span>
                 <span translate *ngIf="dailyPlanFilters.filter.groupBy === ''"
                       [translateParams]="{total: planOrders.length}">dailyPlan.label.totalOrderEntry</span>
               </div>

@@ -220,7 +220,7 @@
         titleCell.text(dates[this.options.language].months[m]);
         titleRow.append(titleCell);
         thead.append(titleRow);
-      } else if(this.options.dateFrom && this.options.dateTo) {
+      } else if (this.options.dateFrom && this.options.dateTo) {
         setTimeout(() => {
           let dates = this._getDates(this.options.dateFrom, this.options.dateTo);
           let cells = _this.element.find('.day:not(.old, .new, .disabled)');
@@ -302,11 +302,11 @@
         do {
           let cell = $(document.createElement('td'));
           cell.addClass('day');
-          if(_this.options.rangeSelection) {
+          if (_this.options.rangeSelection) {
             let moved = false;
             cell.mousedown(function (evt) {
-              if (!evt.ctrlKey) {
-                _this.options.dateFrom = $(this).attr('currentDate');
+              if (!evt.ctrlKey && !_this.options.isCrtlPress) {
+                _this.options.dateFrom = parseInt($(this).attr('currentDate'));
                 _this.options.dateTo = null;
               }
               moved = false;
@@ -333,7 +333,7 @@
             })
             cell.mouseup(function (evt) {
               let flag = false;
-              if (moved && _this.options.dateFrom) {
+              if ((moved || _this.options.isCrtlPress) && _this.options.dateFrom) {
                 let cells = _this.element.find('.day:not(.old, .new, .disabled)');
                 for (let i = 0; i < cells.length; i++) {
                   let date = _this._getDate($(cells[i])).getTime();
@@ -343,27 +343,36 @@
                     $(cells[i]).removeClass('range');
                   }
                   if (!_this.options.dateTo) {
-                    _this.options.dateTo = $(this).attr('currentDate')
+                    _this.options.dateTo = parseInt($(this).attr('currentDate'))
                   }
                   if (date == _this.options.dateTo) {
                     $(cells[i]).addClass('range-end');
                   }
                 }
-              } else if (!evt.ctrlKey) {
+              } else if (!evt.ctrlKey && !_this.options.isCrtlPress) {
                 flag = true;
               }
               let cells = _this.element.find('.range');
               if (cells.length === 1 || flag) {
-                _this._clearRange();
+                _this.clearRange();
               } else if (cells.length > 1) {
                 $(cells[cells.length - 1]).addClass('range-end');
               }
               if (_this.options.dateFrom && _this.options.dateTo) {
+                let arr = [];
+                if (_this.options.dateFrom && _this.options.dateTo && _this.options.dateFrom !== _this.options.dateTo) {
+                  arr.push(_this.options.dateFrom);
+                  arr.push(_this.options.dateTo);
+                }
                 _this._triggerEvent('rangeEnd', {
                   element: $(this),
-                  dateRanges: [parseInt(_this.options.dateFrom), parseInt(_this.options.dateTo)]
+                  dateRanges: arr
                 });
-                _this.options.dateFrom = null;
+                setTimeout(() => {
+                  _this.options.dateFrom = null;
+                  _this.options.dateTo = null;
+                  _this.options.isCrtlPress = false;
+                }, 0)
               }
             })
           }
@@ -547,21 +556,24 @@
       cells.click(function (e) {
         e.stopPropagation();
         let date = _this._getDate($(this));
-        if (e.ctrlKey && _this.options.rangeSelection) {
+        if ((e.ctrlKey || _this.options.isCrtlPress) && _this.options.rangeSelection) {
           if (_this.options.dateFrom) {
             _this.options.dateTo = date.getTime();
-            if (_this.options.dateFrom != _this.options.dateTo) {
+            if (_this.options.dateFrom && _this.options.dateTo && _this.options.dateFrom != _this.options.dateTo) {
               _this._triggerEvent('rangeEnd', {
                 element: $(this),
                 dateRanges: [_this.options.dateFrom, _this.options.dateTo]
               });
+              _this.options.dateFrom = null;
+              _this.options.dateTo = null;
+              _this.options.isCrtlPress = false;
             }
           } else {
             _this.options.dateFrom = date.getTime();
           }
         } else {
-          if(_this.options.rangeSelection) {
-            _this._clearRange();
+          if (_this.options.rangeSelection) {
+            _this.clearRange();
           }
           if (_this.options.selectedDate) {
             for (let i = 0; i < cells.length; i++) {
@@ -588,18 +600,6 @@
         monthContainerClass += ' month-view';
       }
       $(_this.element).find('.month-container').attr('class', monthContainerClass);
-    },
-
-    _clearRange: function () {
-      this.element.find('td.day.range').removeClass('range');
-      this.element.find('td.day.range-start').removeClass('range-start');
-      this.element.find('td.day.range-end').removeClass('range-end');
-      this.options.dateFrom = null;
-      this.options.dateTo = null;
-      this._triggerEvent('rangeEnd', {
-        element: $(this),
-        dateRanges: []
-      });
     },
 
     _getDates: function (startDate, endDate) {
@@ -629,6 +629,26 @@
         event[i] = parameters[i];
       }
       this.element.trigger(event);
+    },
+    clearRange: function () {
+      this.element.find('td.day.range').removeClass('range');
+      this.element.find('td.day.range-start').removeClass('range-start');
+      this.element.find('td.day.range-end').removeClass('range-end');
+      this.options.dateFrom = null;
+      this.options.dateTo = null;
+      this.options.isCrtlPress = false;
+      this._triggerEvent('rangeEnd', {
+        element: $(this),
+        dateRanges: []
+      });
+    },
+    setRange: function (flag) {
+      this.options.isCrtlPress = flag;
+      this.element.find('td.day.range').removeClass('range');
+      this.element.find('td.day.range-start').removeClass('range-start');
+      this.element.find('td.day.range-end').removeClass('range-end');
+      this.options.dateFrom = null;
+      this.options.dateTo = null;
     },
     getWeekNumber: function (date) {
       let tempDate = new Date(date.getTime());

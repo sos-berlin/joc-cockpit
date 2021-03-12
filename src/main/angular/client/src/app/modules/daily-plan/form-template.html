@@ -126,7 +126,7 @@
       <div class="col-sm-8" [ngClass]="{'col-md-6': isSearch}">
         <nz-checkbox-wrapper (nzOnChange)="stateChange($event)">
           <ng-container *ngFor="let option of checkOptions">
-            <label nz-checkbox [nzValue]="option.value" [ngModel]="option.checked" [name]="option.label"><span translate>common.label.{{option.label}}</span></label>
+            <label nz-checkbox [nzValue]="option.status" [ngModel]="option.checked" [name]="option.text"><span translate>common.label.{{option.text}}</span></label>
           </ng-container>
         </nz-checkbox-wrapper>
       </div>

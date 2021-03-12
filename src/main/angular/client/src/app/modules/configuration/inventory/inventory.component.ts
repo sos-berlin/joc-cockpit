@@ -1464,7 +1464,7 @@ export class JsonEditorModalComponent implements OnInit {
     constructor(public coreService: CoreService, private clipboardService: ClipboardService, public activeModal: NgbActiveModal,
                 private translate: TranslateService, private message: NzMessageService) {
         this.options.mode = 'code';
-        this.options.statusBar = false;
+        
         this.options.onEditable = () => {
             return this.edit;
         };
@@ -1482,6 +1482,8 @@ export class JsonEditorModalComponent implements OnInit {
     ngOnInit(): void {
       if (this.edit) {
         this.options.modes = ['code', 'tree'];
+      } else{
+      	this.options.modes = ['code', 'view'];
       }
       this.data = this.coreService.clone(this.object);
       delete this.data['type'];
@@ -1643,51 +1645,59 @@ export class UploadModalComponent implements OnInit {
     templateUrl: './create-object-dialog.html'
 })
 export class CreateObjectModalComponent implements OnInit {
-    @Input() schedulerId: any;
-    @Input() obj: any;
-    @Input() copy: any;
-    @Input() restore: boolean;
-    submitted = false;
-    object = {name: '', type: 'suffix', _name: '', onlyContains: false, originalName: ''};
+  @Input() schedulerId: any;
+  @Input() obj: any;
+  @Input() copy: any;
+  @Input() restore: boolean;
+  submitted = false;
+  settings: any = {};
+  object = {name: '', type: 'suffix', newName: '', onlyContains: false, originalName: '', suffix: '', prefix: ''};
 
-    constructor(private coreService: CoreService, public activeModal: NgbActiveModal) {
-    }
+  constructor(private coreService: CoreService, public activeModal: NgbActiveModal) {
+  }
 
-    ngOnInit(): void {
-        this.object.originalName = this.copy;
+  ngOnInit(): void {
+    if (this.restore) {
+      this.settings = JSON.parse(sessionStorage.$SOS$RESTORE);
+    } else if (this.copy) {
+      this.settings = JSON.parse(sessionStorage.$SOS$COPY);
     }
+    this.object.originalName = this.copy;
+    console.log(this.settings);
+  }
 
-    onSubmit(): void {
-        if (this.copy || this.restore) {
-            const obj: any = {};
-            if (this.object._name) {
-                if (this.object.type === 'suffix') {
-                    obj.suffix = this.object._name;
-                } else if (this.object.type === 'prefix') {
-                    obj.prefix = this.object._name;
-                } else{
-                    obj.prefix = this.object._name;
-                }
-                if (this.object.onlyContains) {
-                    obj.originalName = this.object.originalName;
-                }
-            }
-            this.activeModal.close(obj);
-        } else {
-            this.submitted = true;
-            const _path = this.obj.path + (this.obj.path === '/' ? '' : '/') + this.object.name;
-            this.coreService.post('inventory/validate/path', {
-                objectType: this.obj.type,
-                path: _path
-            }).subscribe(() => {
-                this.activeModal.close({
-                    name: this.object.name
-                });
-            }, () => {
-                this.submitted = false;
-            });
-        }
+  onSubmit(): void {
+    if (this.copy || this.restore) {
+      const obj: any = {};
+      if (this.object.type === 'suffix') {
+        obj.suffix = this.object.suffix;
+      } else if (this.object.type === 'prefix') {
+        obj.prefix = this.object.prefix;
+      } else {
+        obj.newName = this.object.newName;
+      }
+      if (this.object.originalName) {
+        obj.originalName = this.object.originalName;
+      }
+      if (this.object.onlyContains) {
+        obj.noFolder = true;
+      }
+      this.activeModal.close(obj);
+    } else {
+      this.submitted = true;
+      const _path = this.obj.path + (this.obj.path === '/' ? '' : '/') + this.object.name;
+      this.coreService.post('inventory/validate/path', {
+        objectType: this.obj.type,
+        path: _path
+      }).subscribe(() => {
+        this.activeModal.close({
+          name: this.object.name
+        });
+      }, () => {
+        this.submitted = false;
+      });
     }
+  }
 }
 
 @Component({
@@ -2941,7 +2951,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             suffix: data.suffix,
             prefix: data.prefix
         };
-        console.log(data.originalName)
+       
         if (this.copyObj.id) {
             request.newPath = obj.path + (obj.path === '/' ? '' : '/') + (data.originalName ? data.originalName : this.copyObj.name);
             request.id = this.copyObj.id;

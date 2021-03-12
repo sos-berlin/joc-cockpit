@@ -61,8 +61,7 @@ export class LoggingComponent implements OnInit, OnDestroy {
     { label: 'info', value: 'info'},
     { label: 'error', value: 'error' },
     { label: 'warn', value: 'warn' },
-    { label: 'debug', value: 'debug' },
-    { label: 'suspended', value: 'SUSPENDED' }
+    { label: 'debug', value: 'debug' }
   ];
 
   constructor(private coreService: CoreService, private authService: AuthService,

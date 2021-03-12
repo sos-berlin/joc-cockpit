@@ -3602,6 +3602,9 @@ pre.cdata {
   position: absolute;
   left: 50%;
 }
+.fa-info-circle:hover{
+  cursor: help;
+}
 
 .fa-angle-circle {
   font-size: 11px;
@@ -3610,6 +3613,17 @@ pre.cdata {
   background: rgba(58, 58, 58, 0.7);
   border-radius: 50%;
 }
+.icon-hover {
+	>i {
+		opacity: 0;
+	}
+	&:hover {
+		>i {
+			opacity: 1;
+		}
+	}
+}
+
 
 .btn-drop {
   box-shadow: none !important;
@@ -6067,7 +6081,9 @@ aside.sidebar-hover-effect {
 .highlighted {
   font-weight: bolder
 }
-
+input {
+  filter: none;
+}
 /** ----- nz zerro ----------- ****/
 .ant-table-small {
   width: 100%;
@@ -6340,6 +6356,9 @@ span.cm-error {
     color: inherit;
     margin: 16px;
     top: 46px
+  }
+  .CodeMirror-cursor {
+    border-left: 2px solid #000000 !important;
   }
 
   .CodeMirror-dialog-top {
@@ -6665,9 +6684,9 @@ span.cm-error {
 }
 
 .ant-calendar-header a:hover,
-.ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled),
 .ant-select-dropdown-menu-item-active > a,
 .ant-select-dropdown-menu-item-selected,
+.ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled)
 .ant-select-dropdown-menu-item-selected > a,
 .ant-select-dropdown-menu-item:hover,
 .ant-dropdown-menu-item:hover,
@@ -6917,19 +6936,23 @@ span.cm-error {
   }
 }
 
-.json-editor-readonly{
+.json-editor-readonly {
   div.jsoneditor-menu {
-     display: none;
+    display: none;
   }
 }
-
+.jsoneditor-sort,
 .jsoneditor-sort-asc,
 .jsoneditor-transform,
 .jsoneditor-repair,
 .jsoneditor-poweredBy {
   display: none;
 }
-
+div.jsoneditor-statusbar{
+  background: var(--bg-box);
+  border-color: var(--border-color);
+  color: var(--text-color);
+}
 div.jsoneditor-contextmenu ul li button:focus,
 div.jsoneditor-contextmenu ul li button:hover,
 div.jsoneditor-contextmenu ul li button.jsoneditor-selected,
@@ -6959,6 +6982,7 @@ div.jsoneditor-menu {
 .ace_editor.ace-jsoneditor {
   min-height: calc(100vh - 276px);
 }
+
 .ace-jsoneditor .ace_marker-layer .ace_active-line {
   background: var(--row-selected) !important;
 }
@@ -7061,20 +7085,14 @@ div.jsoneditor-menu a {
 
 table.jsoneditor-search div.jsoneditor-results {
   color: var(--text-color);
-  padding-right: 5px;
-  line-height: 24px;
 }
 
 table.jsoneditor-search div.jsoneditor-frame {
-  border: 1px solid transparent;
   background-color: var(--box-color);
-  padding: 0 2px;
-  margin: 0;
 }
 
 table.jsoneditor-search button {
   background: url("../assets/images/dark-jsoneditor-icons.svg");
-  vertical-align: top;
 }
 
 div.jsoneditor div.autocomplete.dropdown {

@@ -41,8 +41,6 @@ export class AddSectionComponent implements OnInit {
           value: this.defaultGlobals[prop]
         });
     }
-    // console.log(this.defaultGlobals);
-    console.log(this.settingArr);
   }
 
   onSubmit() {
@@ -170,7 +168,7 @@ export class SettingComponent implements OnInit {
         } else {
           this.settings = {};
           this.mergeData(this.defaultGlobals);
-          this.changeConfiguration(null, null);
+          this.changeConfiguration(null, null, null);
           this.loading = true;
         }
       });
@@ -181,7 +179,6 @@ export class SettingComponent implements OnInit {
     for (let prop in defaultGlobals) {
       for (let setProp in this.settings) {
         if (setProp === prop) {
-
           for (let x in defaultGlobals[prop]) {
             let flag = true;
             if (!_.isEmpty(this.settings[setProp])) {
@@ -205,6 +202,7 @@ export class SettingComponent implements OnInit {
       }
     }
     this.settingArr = [];
+    console.log('Create array from object');
     for (let prop in this.settings) {
       const obj = {
         name: prop,
@@ -217,6 +215,19 @@ export class SettingComponent implements OnInit {
         }
         if (_v.type === 'WEEKDAYS' && _v.value) {
           _v.value = _v.value.split(',').map(Number);
+        }
+        if (_v.type === 'ARRAY') {
+          if (typeof _v.default === 'string') {
+            _v.default = _v.default.split(';');
+          }
+
+          if (_v.value) {
+            let arr = _v.value.split(';');
+            _v.value = [];
+            for (let i = 0; i < arr.length; i++) {
+              _v.value.push({name: arr[i]});
+            }
+          }
         }
         return {name: k, value: _v, ordering: _v.ordering};
       });
@@ -238,7 +249,7 @@ export class SettingComponent implements OnInit {
     return time;
   }
 
-  changeConfiguration(form, value): void {
+  changeConfiguration(form, value, isJoc): void {
     const tempSetting = this.coreService.clone(this.settings);
     if (form && form.invalid) {
       let msg = 'Oops';
@@ -250,7 +261,7 @@ export class SettingComponent implements OnInit {
     } else if (value && value.value && value.value.type === 'TIME') {
       value.value.value = this.checkTime(value.value.value);
     }
-    this.savePreferences(this.generateStoreObject(tempSetting));
+    this.savePreferences(this.generateStoreObject(tempSetting), isJoc);
   }
 
   private generateStoreObject(setting): any {
@@ -258,7 +269,7 @@ export class SettingComponent implements OnInit {
     for (let prop in setting) {
       tempSetting[prop] = {};
       for (let x in setting[prop]) {
-        if (setting[prop][x].value) {
+        if (setting[prop][x].value || setting[prop][x].value === false || setting[prop][x].value === 0) {
           tempSetting[prop][x] = {};
           if (x !== 'ordering') {
             tempSetting[prop][x].ordering = setting[prop][x].ordering;
@@ -266,6 +277,13 @@ export class SettingComponent implements OnInit {
             if (setting[prop][x].type === 'WEEKDAYS') {
               if (setting[prop][x].value && Array.isArray(setting[prop][x].value)) {
                 value = setting[prop][x].value.toString();
+              }
+            } else if (setting[prop][x].type === 'ARRAY') {
+              if (setting[prop][x].value && Array.isArray(setting[prop][x].value)) {
+                value = setting[prop][x].value.filter((item) => {
+                  return item.name;
+                });
+                value = value.map((item) => item.name).join(';');
               }
             }
             tempSetting[prop][x].value = value;
@@ -278,7 +296,7 @@ export class SettingComponent implements OnInit {
     return tempSetting;
   }
 
-  private savePreferences(tempSetting): void {
+  private savePreferences(tempSetting, isJoc): void {
     if (this.schedulerIds.selected) {
       this.coreService.post('configuration/save', {
         controllerId: this.schedulerIds.selected,
@@ -287,14 +305,35 @@ export class SettingComponent implements OnInit {
         configurationType: 'GLOBALS',
         configurationItem: JSON.stringify(tempSetting)
       }).subscribe(() => {
+        if (isJoc) {
+          // TODO
+          // this.getProperties();
+        }
       });
     }
+  }
+
+  openEditField(val) {
+    val.value.edit = true;
+    if (!val.value.value) {
+      val.value.value = [{name: ''}];
+    }
+  }
+
+  addValInArr(val) {
+    if (val.value.value.length === 0 || val.value.value[val.value.value.length - 1].name) {
+      val.value.value.push({name: ''});
+    }
+  }
+
+  removeValInArr(val, index) {
+    val.value.value.splice(index, 1);
   }
 
   removeValue(val): void {
     val.value.edit = false;
     val.value.value = undefined;
-    this.changeConfiguration(null, null);
+    this.changeConfiguration(null, null, null);
   }
 
   addSection() {
@@ -303,7 +342,7 @@ export class SettingComponent implements OnInit {
     modalRef.componentInstance.defaultGlobals = this.defaultGlobals;
     modalRef.result.then((section) => {
       this.settings[section.name] = {};
-      this.changeConfiguration(null, null);
+      this.changeConfiguration(null, null, null);
       this.loadSetting();
     }, () => {
     });
@@ -323,7 +362,7 @@ export class SettingComponent implements OnInit {
           break;
         }
       }
-      this.changeConfiguration(null, null);
+      this.changeConfiguration(null, null, null);
     }, () => {
     });
   }
@@ -332,7 +371,7 @@ export class SettingComponent implements OnInit {
     const modalRef = this.modalService.open(ImportSettingComponent, {backdrop: 'static', size: 'lg'});
     modalRef.result.then((result) => {
       this.settings = result;
-      this.changeConfiguration(null, null);
+      this.changeConfiguration(null, null, null);
       this.loadSetting();
     }, () => {
     });
@@ -345,6 +384,18 @@ export class SettingComponent implements OnInit {
     data = JSON.stringify(data, undefined, 2);
     const blob = new Blob([data], {type: fileType});
     saveAs(blob, name);
+  }
+
+  private getProperties(): void {
+    this.coreService.post('joc/properties', {}).subscribe((result: any) => {
+      sessionStorage.$SOS$FORCELOGING = result.forceCommentsForAuditLog;
+      sessionStorage.comments = JSON.stringify(result.comments);
+      sessionStorage.showViews = JSON.stringify(result.showViews);
+      sessionStorage.securityLevel = result.securityLevel;
+      sessionStorage.defaultProfile = result.defaultProfileAccount;
+      sessionStorage.$SOS$COPY = JSON.stringify(result.copy);
+      sessionStorage.$SOS$RESTORE = JSON.stringify(result.restore);
+    });
   }
 }
 
