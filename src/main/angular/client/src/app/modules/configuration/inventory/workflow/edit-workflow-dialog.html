@@ -58,7 +58,7 @@
           <input *ngSwitchDefault autocomplete="off" type="text" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event)"
                  [(ngModel)]="variable.value.default" placeholder="{{'common.placeholder.value' | translate}}">
         </div>
-        <div class="col-md-1 col-lg-1 p-l-0" *ngIf="variableDeclarations.parameters.length>1">
+        <div class="col-md-1 col-lg-1 p-l-0">
           <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
         </div>
       </div>

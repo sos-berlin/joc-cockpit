@@ -1,5 +1,6 @@
-import {Component, Input} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {CoreService} from '../../services/core.service';
 
 @Component({
   selector: 'app-about',
@@ -38,9 +39,14 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
     </div>
   `
 })
-export class AboutModalComponent {
-  @Input() versionData: any;
+export class AboutModalComponent implements OnInit {
+  versionData: any;
+  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
+  }
 
-  constructor(public activeModal: NgbActiveModal) {
+  ngOnInit(): void {
+    this.coreService.get('version.json').subscribe((data) => {
+      this.versionData = data;
+    });
   }
 }

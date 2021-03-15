@@ -4,8 +4,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-type',
-  templateUrl: './type.component.html',
-  styles: ['.expand-collapse-btn{opacity: 0; padding-left:8px;}', '.hover:hover .expand-collapse-btn{opacity: 1}']
+  templateUrl: './type.component.html'
 })
 export class TypeComponent implements OnChanges {
   @Input() configuration;

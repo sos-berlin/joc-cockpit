@@ -5,8 +5,11 @@
   </button>
   <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
     <ul nz-menu>
-      <li nz-menu-item (click)="navToDetailView()">
-        <a translate>workflow.button.showDetailView</a>
+      <li nz-menu-item (click)="navToDetailView('list')">
+        <a translate>workflow.button.showTabularView</a>
+      </li>
+      <li nz-menu-item (click)="navToDetailView('grid')">
+        <a translate>workflow.button.showGraphicalView</a>
       </li>
       <li nz-menu-item *ngIf="permission.Workflow.execute.addOrder" [nzDisabled]="!workflow.isCurrentVersion" (click)="addOrder(workflow);" >
         <a translate>workflow.button.addOrder</a>

@@ -172,7 +172,7 @@
                       <div>
                         <div class="text-left block-ellipsis">
                           <span class="text-sm fa fa-sitemap"></span>&nbsp;
-                          <a class="text-hover-primary" (click)="navToDetailView(workflow)" [nz-tooltip]="workflow.title" [innerHtml]="workflow.name | highlight : workflowFilters.searchText"></a>
+                          <span [nz-tooltip]="workflow.title" [innerHtml]="workflow.name | highlight : workflowFilters.searchText"></span>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
                           <app-workflow-action [schedulerId]="schedulerIds.selected" [permission]="permission"
@@ -435,15 +435,13 @@
                     <tr *ngIf="workflow.show">
                       <td colspan="14">
                         <div class="m-a-sm">
-                          <a class="text" (click)="workflow.isExpand = true;"
-                             [nz-tooltip]="'common.tooltip.expandAll' | translate">
-                            <i class="fa fa-angle-double-down fa-lg"></i>
-                          </a>
-                          <a class="text m-l-xs" (click)="workflow.isExpand = false;"
-                             [nz-tooltip]="'common.tooltip.collapseAll' | translate">
-                            <i class="fa fa-angle-double-up fa-lg"></i>
-                          </a>
-                          <div class="text-primary m-t-xs" translate>workflow.label.start</div>
+                          <div class="hover" >
+                            <a class="text-primary" translate >workflow.label.start</a>
+                            <span class="expand-collapse-btn">
+                              <i class="fa fa-lg fa-angle-double-down" [nz-tooltip]="'common.tooltip.expandAll' | translate" (click)="workflow.isExpand = true;"></i>
+                              <i class="fa fa-lg fa-angle-double-up p-l-xs" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="workflow.isExpand = false;"></i>
+                            </span>
+                          </div>
                           <app-type [configuration]="workflow.configuration" [orderRequirements]="workflow.configuration.orderRequirements" [permission]="permission" [preferences]="preferences"
                                     [schedulerId]="schedulerIds.selected" [expandAll]="workflow.isExpand"
                                     (update)="updatePanelHeight()" [orders]="workflow.orders"></app-type>

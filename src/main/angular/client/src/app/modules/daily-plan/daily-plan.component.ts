@@ -407,6 +407,10 @@ export class RemovePlanModalComponent implements OnInit {
     this.submitted = true;
     if (this.dateRange && this.dateRange.length > 0 && !this.submissionsDelete) {
       this.removeRecursively(obj);
+      return;
+    }
+    if (this.submissionsDelete) {
+      obj.timezone = this.preferences.zone;
     }
     this.coreService.post(this.submissionsDelete ? 'daily_plan/submissions/delete' : 'daily_plan/orders/delete', obj).subscribe((res) => {
       this.submitted = false;
@@ -423,10 +427,10 @@ export class RemovePlanModalComponent implements OnInit {
       obj.filter.dailyPlanDate = moment(date).format('YYYY-MM-DD');
       apiArr.push(this.coreService.post('daily_plan/orders/delete', this.coreService.clone(obj)));
     });
-    forkJoin(apiArr).subscribe((result: any) => {
+    forkJoin(apiArr).subscribe((result) => {
       this.submitted = false;
       this.activeModal.close('Done');
-    }, (err) => {
+    }, () => {
       this.submitted = false;
     });
   }

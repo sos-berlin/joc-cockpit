@@ -184,7 +184,9 @@ export class WorkflowActionComponent implements OnInit {
 
   }
 
-  navToDetailView() {
+  navToDetailView(view) {
+   
+    this.coreService.getWorkflowDetailTab().pageView = view;
     this.router.navigate(['/workflows/workflow_detail', this.workflow.path, this.workflow.versionId]);
   }
 

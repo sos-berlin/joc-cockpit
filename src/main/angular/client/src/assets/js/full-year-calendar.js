@@ -360,7 +360,7 @@
               }
               if (_this.options.dateFrom && _this.options.dateTo) {
                 let arr = [];
-                if (_this.options.dateFrom && _this.options.dateTo && _this.options.dateFrom !== _this.options.dateTo) {
+                if (_this.options.dateFrom && _this.options.dateTo && _this.options.dateFrom !== _this.options.dateTo && _this.options.dateFrom < _this.options.dateTo) {
                   arr.push(_this.options.dateFrom);
                   arr.push(_this.options.dateTo);
                 }
@@ -560,10 +560,12 @@
           if (_this.options.dateFrom) {
             _this.options.dateTo = date.getTime();
             if (_this.options.dateFrom && _this.options.dateTo && _this.options.dateFrom != _this.options.dateTo) {
-              _this._triggerEvent('rangeEnd', {
-                element: $(this),
-                dateRanges: [_this.options.dateFrom, _this.options.dateTo]
-              });
+              if(_this.options.dateFrom < _this.options.dateTo) {
+                _this._triggerEvent('rangeEnd', {
+                  element: $(this),
+                  dateRanges: [_this.options.dateFrom, _this.options.dateTo]
+                });
+              }
               _this.options.dateFrom = null;
               _this.options.dateTo = null;
               _this.options.isCrtlPress = false;

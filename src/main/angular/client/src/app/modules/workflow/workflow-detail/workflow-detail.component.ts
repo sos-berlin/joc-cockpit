@@ -81,6 +81,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     this.path = this.route.snapshot.paramMap.get('path');
     this.versionId = this.route.snapshot.paramMap.get('versionId');
     this.workflowFilters = this.coreService.getWorkflowDetailTab();
+    this.pageView = this.workflowFilters.pageView;
     this.init();
 
     const dom = $('#graph');
@@ -256,9 +257,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     $(window).scrollTop($('body').height());
   }
 
-  /** ---------------------------- Broadcast messages ----------------------------------*/
-  receiveMessage($event) {
-    this.pageView = $event;
+  setView(view) {
+    this.pageView = view;
     this.showAndHideBtn();
     if (this.pageView === 'grid') {
       this.updateOrdersInGraph(false);
@@ -307,9 +307,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   private init(): void {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
-    }
-    if (localStorage.views) {
-      this.pageView = JSON.parse(localStorage.views).workflowDetail;
     }
     if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
       this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';

@@ -212,19 +212,11 @@ table.folder-tree-grid .indented a {
   color: #606060
 }
 
-.expand-collapse:hover {
-  color: #337ab7;
-  cursor: pointer
-}
-
 input[readonly=readonly],
 input[readonly] {
   background-color: #fff !important
 }
 
-.start-on-hover:hover .fa-star-o {
-  color: #337ab7
-}
 
 input[type=search] {
   background: url(../assets/images/search-lt.png) 6px center no-repeat;
@@ -359,6 +351,11 @@ a .text-danger:hover {
   -webkit-box-shadow: inset 0 2px 9px rgba(255, 255, 255, .3), inset 0 -2px 6px rgba(0, 0, 0, .2);
   -moz-box-shadow: inset 0 2px 9px rgba(255, 255, 255, .3), inset 0 -2px 6px rgba(0, 0, 0, .2);
   box-shadow: inset 0 2px 9px rgba(255, 255, 255, .3), inset 0 -2px 6px rgba(0, 0, 0, .2)
+}
+
+.joc.current {
+  box-shadow: inset 0 2px 9px rgba(255, 255, 255, 0.4), inset 0 -2px 6px rgba(0, 0, 0, .2);
+  border: 1px solid rgba(255, 255, 255, .3) !important;
 }
 
 .light {
@@ -726,6 +723,10 @@ input:-webkit-autofill, input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
   -webkit-text-fill-color: rgba(255, 255, 255, 0.87);
   -webkit-box-shadow: 0 0 0 100px var(--bg-box) inset;
+}
+.center-block input:-webkit-autofill, .center-block input:-webkit-autofill:hover,
+.center-block input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 100px var(--background-color) inset;
 }
 
 .ngx-pagination a, .ngx-pagination button {
@@ -1415,6 +1416,10 @@ span.cm-variable-3, span.cm-type {
 
 .highlighted {
   color: yellow;
+}
+tr.jsoneditor-highlight,
+tr.jsoneditor-selected {
+  background-color: rgba(35, 52, 70, .35);
 }
 
 /* coloring of JSON in tree mode */

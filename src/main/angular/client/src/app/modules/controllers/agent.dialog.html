@@ -52,7 +52,7 @@
         <input type="text" class="form-control" name="agentNameAliases{{i}}" [(ngModel)]="alisa.name"
                placeholder="{{'agent.placeholder.enterAgentNameAlias' | translate}} {{i}}">
       </div>
-      <div class="p-l-0 m-l-0 col-sm-1" *ngIf="agentNameAliases.length > 1 && agentNameAliases.length - 1 !== i" style="padding-top: 6px"><i (click)="removeAlise(i)" class="cursor text-muted fa fa-times"></i></div>
+      <div class="p-l-0 m-l-0 col-sm-1" *ngIf="agentNameAliases.length > 1 && agentNameAliases.length - 1 !== i" style="padding-top: 6px"><i (click)="removeAlise(i)" class="cursor text-muted text-hover-color fa fa-times"></i></div>
       <div class="p-l-0 m-l-0 col-sm-1" *ngIf="agentNameAliases.length - 1 == i" style="padding-top: 6px"><i (click)="addAlise()" class="cursor text-muted fa fa-plus"></i></div>
     </div>
 

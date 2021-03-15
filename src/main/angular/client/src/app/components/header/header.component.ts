@@ -5,6 +5,8 @@ import * as _ from 'underscore';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../guard';
 import {DataService} from '../../services/data.service';
+import {AboutModalComponent} from '../about-modal/about.component';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-header',
@@ -27,7 +29,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   @Output() myLogout: EventEmitter<any> = new EventEmitter();
 
-  constructor(public coreService: CoreService, private authService: AuthService, private router: Router, private dataService: DataService) {
+  constructor(public coreService: CoreService, private authService: AuthService,
+              private modalService: NgbModal, private router: Router, private dataService: DataService) {
     this.subscription = dataService.isProfileReload.subscribe(res => {
       if (res) {
         this.init();
@@ -77,6 +80,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscription.unsubscribe();
     clearTimeout(this.timeout);
+  }
+
+  about(): any {
+    const modalRef = this.modalService.open(AboutModalComponent, {
+      backdrop: 'static'
+    });
+    modalRef.result.then(() => {
+    }, () => {
+    });
   }
 
   logout() {

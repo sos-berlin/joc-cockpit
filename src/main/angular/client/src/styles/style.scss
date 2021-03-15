@@ -1737,7 +1737,8 @@ button.close {
 }
 
 .show-in-single-line {
-  display: inline-flex
+  display: inline-flex;
+  word-break: break-all;
 }
 
 .show-in-single-line i {
@@ -3602,7 +3603,8 @@ pre.cdata {
   position: absolute;
   left: 50%;
 }
-.fa-info-circle:hover{
+
+.fa-info-circle:hover {
   cursor: help;
 }
 
@@ -3613,15 +3615,17 @@ pre.cdata {
   background: rgba(58, 58, 58, 0.7);
   border-radius: 50%;
 }
+
 .icon-hover {
-	>i {
-		opacity: 0;
-	}
-	&:hover {
-		>i {
-			opacity: 1;
-		}
-	}
+  > i {
+    opacity: 0;
+  }
+
+  &:hover {
+    > i {
+      opacity: 1;
+    }
+  }
 }
 
 
@@ -3867,6 +3871,9 @@ table.folder-tree-grid {
   cursor: pointer;
 }
 
+.expand-collapse-btn{opacity: 0; padding-left:8px;}
+.hover:hover .expand-collapse-btn{opacity: 1}
+
 .node-wrapper:hover .expand-collapse {
   opacity: 1;
 }
@@ -3891,7 +3898,7 @@ input {
 }
 
 .start-on-hover:hover .fa-star-o {
-  color: #0086B0;
+  color: var(--primary)
 }
 
 input[type=search] {
@@ -6081,9 +6088,11 @@ aside.sidebar-hover-effect {
 .highlighted {
   font-weight: bolder
 }
+
 input {
   filter: none;
 }
+
 /** ----- nz zerro ----------- ****/
 .ant-table-small {
   width: 100%;
@@ -6357,6 +6366,7 @@ span.cm-error {
     margin: 16px;
     top: 46px
   }
+
   .CodeMirror-cursor {
     border-left: 2px solid #000000 !important;
   }
@@ -6695,10 +6705,12 @@ span.cm-error {
 .ant-dropdown-menu-submenu-title:hover > a {
   color: var(--text-hover) !important;
 }
+
 .ant-select-dropdown-menu-item-disabled:hover,
-.ant-select-dropdown-menu-item-disabled:hover > a{
+.ant-select-dropdown-menu-item-disabled:hover > a {
   color: var(--text-color) !important;
 }
+
 .ant-select-dropdown-menu-item-selected {
   background-color: #e6f7ff;
 }
@@ -6937,10 +6949,17 @@ span.cm-error {
 }
 
 .json-editor-readonly {
-  div.jsoneditor-menu {
-    display: none;
+  .jsoneditor-tree {
+    button.jsoneditor-contextmenu {
+      display: none;
+    }
+  }
+
+  div.jsoneditor-tree table.jsoneditor-tree {
+    margin-left: -42px;
   }
 }
+
 .jsoneditor-sort,
 .jsoneditor-sort-asc,
 .jsoneditor-transform,
@@ -6948,11 +6967,13 @@ span.cm-error {
 .jsoneditor-poweredBy {
   display: none;
 }
-div.jsoneditor-statusbar{
+
+div.jsoneditor-statusbar {
   background: var(--bg-box);
   border-color: var(--border-color);
   color: var(--text-color);
 }
+
 div.jsoneditor-contextmenu ul li button:focus,
 div.jsoneditor-contextmenu ul li button:hover,
 div.jsoneditor-contextmenu ul li button.jsoneditor-selected,
@@ -6979,6 +7000,7 @@ div.jsoneditor,
 div.jsoneditor-menu {
   border-color: var(--background-color);
 }
+
 .ace_editor.ace-jsoneditor {
   min-height: calc(100vh - 276px);
 }
@@ -6986,9 +7008,11 @@ div.jsoneditor-menu {
 .ace-jsoneditor .ace_marker-layer .ace_active-line {
   background: var(--row-selected) !important;
 }
+
 .ace-jsoneditor .ace_gutter {
   background: #f2f2f2 !important;
 }
+
 .ace-jsoneditor .ace_cursor {
   border-color: var(--text-color) !important;
 }

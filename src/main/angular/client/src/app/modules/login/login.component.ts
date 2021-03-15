@@ -3,6 +3,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import { CoreService } from '../../services/core.service';
 import { AuthService } from '../../components/guard';
 import * as crypto from 'crypto-js';
+import {AboutModalComponent} from '../../components/about-modal/about.component';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +20,8 @@ export class LoginComponent implements OnInit {
   errorMsg = false;
   returnUrl: string;
 
-  constructor(private route: ActivatedRoute, private router: Router, public coreService: CoreService, private authService: AuthService) {
+  constructor(private route: ActivatedRoute, private router: Router, private modalService: NgbModal,
+              public coreService: CoreService, private authService: AuthService) {
   }
 
   ngOnInit() {
@@ -36,18 +39,18 @@ export class LoginComponent implements OnInit {
     // this.getDefaultConfiguration();
   }
 
-/*  getDefaultConfiguration() {
-    this.coreService.get('configuration/login').subscribe((res: any) => {
-      if (res.customLogo && res.customLogo.name) {
-        const imgUrl = '../ext/images/' + res.customLogo.name;
-        if (res.customLogo.position && res.customLogo.position !== 'BOTTOM') {
-          $('#logo-top').append('<img style=\'height: ' + res.customLogo.height + '\' src=\'' + imgUrl + '\'>');
-        } else {
-          $('#logo-bottom').append('<img style=\'height: ' + res.customLogo.height + '\' src=\'' + imgUrl + '\'>');
+  /*  getDefaultConfiguration() {
+      this.coreService.get('configuration/login').subscribe((res: any) => {
+        if (res.customLogo && res.customLogo.name) {
+          const imgUrl = '../ext/images/' + res.customLogo.name;
+          if (res.customLogo.position && res.customLogo.position !== 'BOTTOM') {
+            $('#logo-top').append('<img style=\'height: ' + res.customLogo.height + '\' src=\'' + imgUrl + '\'>');
+          } else {
+            $('#logo-bottom').append('<img style=\'height: ' + res.customLogo.height + '\' src=\'' + imgUrl + '\'>');
+          }
         }
-      }
-    });
-  }*/
+      });
+    }*/
 
   private getComments(): void {
     this.coreService.post('joc/properties', {}).subscribe((result: any) => {
@@ -88,7 +91,7 @@ export class LoginComponent implements OnInit {
       } else {
         this.coreService.post('controllers/security_level', {}).subscribe((result: any) => {
           this.checkSecurityControllers(result);
-        }, ()=>{
+        }, () => {
           this.checkSecurityControllers(null);
         });
       }
@@ -107,7 +110,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  private navigate(){
+  private navigate() {
     this.getComments();
     this.router.navigate(['/start-up']);
     this.submitted = false;
@@ -135,6 +138,15 @@ export class LoginComponent implements OnInit {
     }, () => {
       this.submitted = false;
       this.errorMsg = true;
+    });
+  }
+
+  about(): any {
+    const modalRef = this.modalService.open(AboutModalComponent, {
+      backdrop: 'static'
+    });
+    modalRef.result.then(() => {
+    }, () => {
     });
   }
 }

@@ -30,7 +30,6 @@ export class ToggleComponent implements OnInit {
     this.views = {
       dailyPlan: this.view,
       workflow: this.view,
-      workflowDetail: this.view,
       orderOverview: this.view,
       lock: this.view,
       agent: this.view,
@@ -55,8 +54,6 @@ export class ToggleComponent implements OnInit {
       this.pageView = 'grid';
     }  else if (this.router.url === '/workflows') {
       this.pageView = this.views.workflow;
-    } else if (this.router.url.match(/workflow_detail/)) {
-      this.pageView = this.views.workflowDetail;
     } else if (this.router.url.match(/orders_overview/)) {
       this.pageView = this.views.orderOverview;
     } else if (this.router.url === '/resources/agents') {
@@ -82,8 +79,6 @@ export class ToggleComponent implements OnInit {
       this.views.joe = view;
     } else if (this.router.url === '/workflows') {
       this.views.workflow = view;
-    } else if (this.router.url.match(/workflow_detail/)) {
-      this.views.workflowDetail = view;
     } else if (this.router.url.match(/orders_overview/)) {
       this.views.orderOverview = this.pageView;
     } else if (this.router.url === '/resources/agents') {

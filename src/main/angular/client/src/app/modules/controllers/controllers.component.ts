@@ -59,7 +59,7 @@ export class AgentModalComponent implements OnInit {
   }
 
   removeAlise(index) {
-    this.agent.agentNameAliases.splice(index, 1);
+    this.agentNameAliases.splice(index, 1);
   }
 
   checkDisable() {

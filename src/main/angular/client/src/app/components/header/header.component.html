@@ -5,7 +5,7 @@
         </a>
         <!-- brand -->
         <a class="navbar-brand white fa-fa-color b-b-transparent p-l-3" style="width: 208px;">
-            <img class="cursor" (click)="coreService.about()" src="./assets/images/jobscheduler-logo.png" alt="JS7">
+            <img class="cursor" (click)="about()" src="./assets/images/jobscheduler-logo.png" alt="JS7">
         </a>
         <!-- / brand -->
         <!-- nabar right -->
@@ -18,7 +18,7 @@
                 </a>
                 <nz-dropdown-menu #help="nzDropdownMenu">
                     <ul nz-menu >
-                        <li nz-menu-item><a (click)="coreService.about()">{{'info.button.aboutJS7' | translate}}</a></li>
+                        <li nz-menu-item><a (click)="about()">{{'info.button.aboutJS7' | translate}}</a></li>
                         <li nz-submenu nzTitle="{{'info.button.featuresAndDownload' | translate}} " >
                             <ul>
                                 <li nz-menu-item >

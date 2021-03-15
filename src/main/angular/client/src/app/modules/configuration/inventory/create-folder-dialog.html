@@ -15,7 +15,7 @@
         inventory.label.folderName
       </label>
       <div class="col-md-6" [ngClass]="{'has-error' : !isUnique || ((name.dirty || name.touched) && name.invalid)}">
-        <input type="text"  (blur)="checkFolderName()" identifierValidation class="form-control" name="name" required
+        <input type="text" (blur)="checkFolderName()" identifierValidation class="form-control" name="name" required
                #name="ngModel" [(ngModel)]="folder.name" [appAutofocus]="true" autocomplete="off">
         <div *ngIf="name.invalid && (name.dirty || name.touched)"
              class="text-danger help-block">
@@ -45,15 +45,17 @@
         <label class="col-md-3 form-control-label" translate>
           inventory.label.newName
         </label>
-        <div class="col-md-6" [ngClass]="{'has-error' :  ((name.dirty || name.touched) && name.invalid)}">
-          <input type="text" placeholder="Enter new name" identifierValidation class="form-control" name="name" required
-                 #name="ngModel" [(ngModel)]="folder.name" [appAutofocus]="true" autocomplete="off">
+        <div class="col-md-6" [ngClass]="{'has-error' :  !isValid || ((name.dirty || name.touched) && name.invalid)}">
+          <input type="text" placeholder="{{'inventory.placeholder.enterNewName' | translate}}" class="form-control" name="name" required
+                 #name="ngModel" (blur)="isValidObject(folder.name)" [(ngModel)]="folder.name" [appAutofocus]="true" autocomplete="off">
           <div *ngIf="name.invalid && (name.dirty || name.touched)"
                class="text-danger help-block">
             <div *ngIf="(name.errors && name.errors.required)">
               <div translate>common.message.requiredError</div>
             </div>
-            <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
+          </div>
+           <div class="help-block text-danger" *ngIf="!isValid">
+            <div translate>common.message.invalid</div>
           </div>
         </div>
       </div>
@@ -105,7 +107,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || !isUnique || submitted || folder.error" class="btn btn-primary btn-sm">
+    <button type="submit" [disabled]="!myForm.form.valid || !isUnique || submitted || !isValid || folder.error" class="btn btn-primary btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>

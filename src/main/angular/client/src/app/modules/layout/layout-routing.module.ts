@@ -39,7 +39,7 @@ const routes: Routes = [
         path: 'orders_overview/:state',
         loadChildren: () => import('./../order-overview/order-overview.module').then(m => m.OrderOverviewModule),
         canActivate: [AuthGuard],
-        data: {breadcrumb: 'breadcrumb.label.orderOverview'}
+        data: {breadcrumb: 'breadcrumb.label.ordersOverview'}
       },
       {
         path: 'history',

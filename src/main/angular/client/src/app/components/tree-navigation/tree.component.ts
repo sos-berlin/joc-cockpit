@@ -98,6 +98,7 @@ export class TreeComponent implements OnInit, OnChanges {
     this.defaultSelectedKeys = [];
     this.navFullTree(node, true);
     this.defaultExpandedKeys = [...this.defaultExpandedKeys];
+    node.action = undefined;
     this.messageEvent.emit(node);
   }
 

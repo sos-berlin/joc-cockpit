@@ -436,14 +436,14 @@
   <div class="padding p-b-0">
     <div class="row m-t-sm">
       <div class="col-lg-12">
-        <div id="leftPanel" class="sticky leftPanel daily-plan" [hidden]="pageView === 'grid'">
+        <div id="leftPanel" class="sticky leftPanel daily-plan">
           <div class="box m-b-0" style="height: calc(100vh - 155px)">
             <div class="p-b b-b icon-hover">
               <ng-template #tooltipTemplate>
                 <div class="m-a-xs">
-                  1. <span translate>Hold mouse and drag to select date range</span><br>
-                  2. <span translate>Press ctrl key and select start date and end date using mouse click</span><br>
-                  3. <span translate>Click calendar icon and then select start date and end date using mouse click</span>
+                  <span translate>dailyPlan.tooltip.dateRangeSelectStep1</span><br>
+                  <span translate>dailyPlan.tooltip.dateRangeSelectStep2</span><br>
+                  <span translate>dailyPlan.tooltip.dateRangeSelectStep3</span>
                 </div>
               </ng-template>
               <i class="fa fa-info-circle pos-abt" style="right: 8px;top:6px" nz-tooltip [nzTooltipTitle]="tooltipTemplate" [nzTooltipPlacement]="'left'"></i>
@@ -503,7 +503,7 @@
             </div>
           </div>
         </div>
-        <div id="rightPanel" [ngClass]="{'m-l-0' : pageView === 'grid'}">
+        <div id="rightPanel">
           <div>
             <div class="row m-b-12">
               <div class="col-lg-12">

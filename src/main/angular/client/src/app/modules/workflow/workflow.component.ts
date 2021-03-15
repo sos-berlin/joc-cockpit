@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild, OnDestroy, Input, Output, EventEmitter} from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Subscription} from 'rxjs';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import * as _ from 'underscore';
@@ -345,7 +345,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private modalService: NgbModal, private workflowService: WorkflowService,
               private translate: TranslateService, private searchPipe: SearchPipe, private excelService: ExcelService,
-              private toasterService: ToasterService, private router: Router) {
+              private toasterService: ToasterService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -1020,10 +1020,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   hidePanel() {
     this.showPanel = '';
-  }
-
-  navToDetailView(workflow) {
-    this.router.navigate(['/workflows/workflow_detail', workflow.path, workflow.versionId]);
   }
 
   expandDetails() {

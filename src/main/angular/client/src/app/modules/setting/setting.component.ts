@@ -152,7 +152,7 @@ export class SettingComponent implements OnInit {
   }
 
   private loadSetting(): void {
-    if (this.permission.user) {
+    if (this.permission.user && this.schedulerIds.selected) {
       const configObj = {
         controllerId: this.schedulerIds.selected,
         account: this.permission.user,
@@ -202,7 +202,6 @@ export class SettingComponent implements OnInit {
       }
     }
     this.settingArr = [];
-    console.log('Create array from object');
     for (let prop in this.settings) {
       const obj = {
         name: prop,
@@ -343,7 +342,9 @@ export class SettingComponent implements OnInit {
     modalRef.result.then((section) => {
       this.settings[section.name] = {};
       this.changeConfiguration(null, null, null);
-      this.loadSetting();
+      setTimeout(() => {
+        this.loadSetting();
+      }, 100);
     }, () => {
     });
   }

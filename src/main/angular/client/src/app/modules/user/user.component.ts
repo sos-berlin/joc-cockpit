@@ -355,7 +355,6 @@ export class UserComponent implements OnInit, OnDestroy {
     let views = {
       dailyPlan: this.preferences.pageView,
       workflow: this.preferences.pageView,
-      workflowDetail: this.preferences.pageView,
       orderOverview: this.preferences.pageView,
       lock: this.preferences.pageView,
       documentation: this.preferences.pageView,

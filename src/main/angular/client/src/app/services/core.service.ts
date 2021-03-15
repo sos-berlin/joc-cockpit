@@ -35,7 +35,7 @@ export class CoreService {
   windowProperties: any = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
 
   constructor(private http: HttpClient, private authService: AuthService, private router: Router,
-              private clipboardService: ClipboardService, public modalService: NgbModal, private translate: TranslateService) {
+              private clipboardService: ClipboardService, private translate: TranslateService) {
 
     this.tabs._workflow = {};
     this.tabs._workflow.filter = {};
@@ -51,6 +51,7 @@ export class CoreService {
     this.tabs._workflowDetail.date = '1d';
     this.tabs._workflowDetail.panelSize = 0;
     this.tabs._workflowDetail.panelSize2 = 450;
+    this.tabs._workflowDetail.pageView = 'list';
 
     this.tabs._daliyPlan = {};
     this.tabs._daliyPlan.filter = {};
@@ -196,6 +197,7 @@ export class CoreService {
     this.tempTabs._workflowDetail.date = '1d';
     this.tempTabs._workflowDetail.panelSize = 0;
     this.tempTabs._workflowDetail.panelSize2 = 450;
+    this.tempTabs._workflowDetail.pageView = 'list';
 
     this.tempTabs._daliyPlan = {};
     this.tempTabs._daliyPlan.filter = {};
@@ -885,19 +887,6 @@ export class CoreService {
     return flag;
   }
 
-  about(): any {
-    this.get('version.json').subscribe((data) => {
-      const modalRef = this.modalService.open(AboutModalComponent, {
-        backdrop: 'static'
-      });
-      modalRef.componentInstance.versionData = data;
-      modalRef.result.then(() => {
-
-      }, (reason) => {
-        console.log('close...', reason);
-      });
-    });
-  }
 
   // To convert date string into moment date format
   toMomentDateFormat(date): any {
