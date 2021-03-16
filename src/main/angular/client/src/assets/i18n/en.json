@@ -562,9 +562,9 @@
     "popup.removeOrderCount": "Are you sure you want to remove {{count}} orders?",
     "popup.submitSelectedOrder": "Are you sure you want to submit this order?",
     "popup.submitOrderCount": "Are you sure you want to submit {{count}} orders?",
-    "tooltip.dateRangeSelectStep1": "1. Hold mouse and drag to select date range",
-    "tooltip.dateRangeSelectStep2": "2. Press ctrl key and select start date and end date using mouse click",
-    "tooltip.dateRangeSelectStep3": "3. Click calendar icon and then select start date and end date using mouse click"
+    "tooltip.dateRangeSelectStep1": "Hold mouse and drag to select date range",
+    "tooltip.dateRangeSelectStep2": "Or press CTRL key and select start date and end date using mouse click",
+    "tooltip.dateRangeSelectStep3": "Or click calendar icon and then select start date and end date using mouse click"
   },
   "error": {
     "button.backHome": "Back Home",
