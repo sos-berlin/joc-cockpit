@@ -126,6 +126,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.subscription3.unsubscribe();
     this.subscription4.unsubscribe();
     this.subscription5.unsubscribe();
+    this.modalService.dismissAll();
   }
 
 
@@ -261,12 +262,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
         this.remainingSessionTime = d + 'd ' + h + 'h';
       }
 
-      if (this.count < 0) {
+      if (this.count <= 0) {
         clearInterval(this.interval);
         this.isLogout = true;
         this.logout('timeout');
       }
-
     }, 1000);
   }
 

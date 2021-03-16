@@ -170,7 +170,7 @@ export class AddOrderModalComponent implements OnInit {
   selector: 'app-workflow-action',
   templateUrl: './workflow-action.component.html'
 })
-export class WorkflowActionComponent implements OnInit {
+export class WorkflowActionComponent {
 
   @Input() workflow: any;
   @Input() preferences: any;
@@ -180,12 +180,7 @@ export class WorkflowActionComponent implements OnInit {
   constructor(public modalService: NgbModal, public coreService: CoreService, private router: Router) {
   }
 
-  ngOnInit() {
-
-  }
-
   navToDetailView(view) {
-   
     this.coreService.getWorkflowDetailTab().pageView = view;
     this.router.navigate(['/workflows/workflow_detail', this.workflow.path, this.workflow.versionId]);
   }
@@ -198,8 +193,8 @@ export class WorkflowActionComponent implements OnInit {
     modalRef.componentInstance.workflow = workflow;
     modalRef.result.then((result) => {
       console.log(result);
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -207,9 +202,9 @@ export class WorkflowActionComponent implements OnInit {
     const modalRef = this.modalService.open(CalendarModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.path = workflow.path;
     modalRef.result.then((result) => {
-      console.log(result);
-    }, (reason) => {
-      console.log('close...', reason);
+
+    }, () => {
+
     });
   }
 }

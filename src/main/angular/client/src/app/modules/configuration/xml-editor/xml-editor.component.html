@@ -208,7 +208,7 @@
                         <span *ngIf="(!node.children || node.children.length === 0) && node.origin.nodes && node.origin.nodes.length === 0" class="w-11">
                           <span class="fa fa-lg"></span>
                         </span>
-                        <button class="btn-drop more-option-h" (click)="checkChildNode(node.origin, null);checkRules(node.origin, copyItem);setDropdownPosition(node.origin.uuid, $event);checkChoice(node.origin);checkOrder(node.origin);" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" type="button">
+                        <button class="btn-drop more-option-h" (click)="checkChildNode(node.origin, null);checkRules(node.origin, copyItem);checkChoice(node.origin);checkOrder(node.origin);" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" type="button">
                           <i class="fa fa-ellipsis-h"></i>
                         </button>
                         <nz-dropdown-menu #menu="nzDropdownMenu">
@@ -232,22 +232,19 @@
                               </a>
                             </li>
                             <li nz-menu-divider>
-                            <li nz-menu-item *ngIf="node.origin && node.origin.parent !=='#'">
-                              <a (click)="cutNode(node.origin)"
-                                [ngClass]="cutData? 'disabled' : ''" translate>xml.button.cut
+                            <li nz-menu-item [nzDisabled]="cutData" *ngIf="node.origin && node.origin.parent !=='#'">
+                              <a (click)="cutNode(node.origin)" translate>xml.button.cut
                               </a>
                             </li>
-                            <li nz-menu-item><a (click)="copyNode(node.origin)" translate>xml.button.copy
-                            </a></li>
-                            <li nz-menu-item>
-                              <a (click)="pasteNode(node.origin)" [ngClass]="checkRule == true? '':'disabled'" translate>
+                            <li nz-menu-item><a (click)="copyNode(node.origin)" translate>xml.button.copy</a></li>
+                            <li nz-menu-item [nzDisabled]="checkRule == true">
+                              <a (click)="pasteNode(node.origin)" translate>
                                 xml.button.paste</a>
                             </li>
                             <li nz-menu-divider>
-                            <li nz-menu-item>
-                              <a (click)="removeNode(node.origin)"
-                                 [ngClass]="node.origin && node.origin.parent!=='#'? '':'disabled'" translate>xml.button.remove
-                              </a></li>
+                            <li nz-menu-item [nzDisabled]="!(node.origin && node.origin.parent !== '#')">
+                              <a (click)="removeNode(node.origin)" translate>xml.button.remove</a>
+                            </li>
                           </ul>
                         </nz-dropdown-menu>
                         <div>
@@ -459,11 +456,11 @@
                           id="{{node.name}}Alert" role="alert">
                       </div>
                     </div>
-                    <div class="col-sm-3">
-                      <span (click)="gotoKey(node); getIndividualData(selectedNode); expandParentNodesOfSelectedNode(selectedNode)"  *ngIf="node.refer"><a translate>xml.button.gotoKeyElement</a></span>
-                      <span (click)="gotoKeyref(node); getIndividualData(selectedNode); expandParentNodesOfSelectedNode(selectedNode)" class="m-t-sm" *ngIf="node.refElement"
+                    <div class="col-sm-3 p-l-xs">
+                      <span (click)="gotoKey(node); getIndividualData(selectedNode, undefined); expandParentNodesOfSelectedNode(selectedNode)"  *ngIf="node.refer"><a translate>xml.button.gotoKeyElement</a></span>
+                      <span (click)="gotoKeyref(node); getIndividualData(selectedNode, undefined); expandParentNodesOfSelectedNode(selectedNode)" class="m-t-sm" *ngIf="node.refElement"
                             ><a translate>xml.button.gotoRefElement</a></span>
-                      <span [ngClass]="(node.refer || node.refElement) ? 'm-l-xs' : ''" *ngIf="node.text && node.text.doc && node.text.doc[0] && node.text.doc[0].innerHTML" id="{{node.id}}" data-toggle="tooltip" data-placement="bottom" (mouseover)="getpos(node.id)" title="{{node.text.doc[0].innerHTML}}">
+                      <span [ngClass]="(node.refer || node.refElement) ? 'm-l-xs' : ''" *ngIf="node.text && node.text.doc && node.text.doc[0] && node.text.doc[0].innerHTML" id="{{node.id}}" [nz-tooltip]="node.text.doc[0].innerHTML">
                           <i class="fa fa-info-circle m-t-sm"></i>
                       </span>
                     </div>

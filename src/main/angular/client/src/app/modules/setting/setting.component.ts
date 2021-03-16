@@ -305,8 +305,7 @@ export class SettingComponent implements OnInit {
         configurationItem: JSON.stringify(tempSetting)
       }).subscribe(() => {
         if (isJoc) {
-          // TODO
-          // this.getProperties();
+           this.getProperties();
         }
       });
     }

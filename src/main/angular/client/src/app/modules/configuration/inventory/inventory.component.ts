@@ -1481,7 +1481,6 @@ export class JsonEditorModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.coreService.get('assets/i18n/json-editor-text.json').subscribe((data) => {
-      console.log(data, this.preferences.locale);
       this.options.languages = data;
       this.options.language = this.preferences.locale;
       this.editor.setOptions(this.options);
@@ -1949,6 +1948,31 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
+  private getExpandPaths(): Array<any> {
+    const arr = [];
+    if (this.tree.length > 0) {
+      function traverseTree(data) {
+        if (data.children && data.children.length > 0) {
+          const obj: any = {name: data.name, path: data.path};
+          if (data.children[0].controller) {
+            obj.child1 = data.children[0];
+            obj.child2 = data.children[1];
+            obj.expanded = data.expanded;
+          }
+          arr.push(obj);
+          for (let i = 0; i < data.children.length; i++) {
+            if (!data.children[i].controller && !data.children[i].dailyPlan) {
+              traverseTree(data.children[i]);
+            }
+          }
+        }
+      }
+
+      traverseTree(this.tree[0]);
+    }
+    return arr;
+  }
+
   ngOnDestroy() {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
@@ -1956,7 +1980,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.coreService.setSideView(this.sideView);
     this.dataService.reloadTree.next(null);
     this.coreService.tabs._configuration.state = 'inventory';
-    this.inventoryConfig.expand_to = this.tree;
+    this.inventoryConfig.expand_to = this.getExpandPaths();
     if (!this.isTrash) {
       this.inventoryConfig.selectedObj = this.selectedObj;
     }
@@ -1988,7 +2012,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
         }
       } else {
         if (!_.isEmpty(this.inventoryConfig.expand_to)) {
-          this.tree = this.recursiveTreeUpdate(tree, this.inventoryConfig.expand_to, false);
+          this.tree = this.mergeTree(tree, this.inventoryConfig.expand_to);
+          this.inventoryConfig.expand_to = undefined;
           this.selectedObj = this.inventoryConfig.selectedObj || {};
           this.copyObj = this.inventoryConfig.copyObj;
           if (this.inventoryConfig.selectedObj && this.inventoryConfig.selectedObj.path) {
@@ -2490,6 +2515,36 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
+  mergeTree(scr, dest) {
+    function checkPath(obj) {
+      for (let i = 0; i < dest.length; i++) {
+        if (dest[i].name === obj.name && dest[i].path === obj.path) {
+          obj.expanded = dest[i].expanded;
+          if (dest[i].child1 && Array.isArray(obj.children)) {
+            obj.children.splice(0, 0, dest[i].child1);
+            obj.children.splice(1, 0, dest[i].child2);
+          }
+          dest.splice(i, 1);
+          break;
+        }
+      }
+    }
+
+    function recursive(scrTree) {
+      if (scrTree) {
+        for (let j = 0; j < scrTree.length; j++) {
+          checkPath(scrTree[j]);
+          if (scrTree[j].children) {
+            recursive(scrTree[j].children);
+          }
+        }
+      }
+    }
+
+    recursive(scr);
+    return scr;
+  }
+
   backToObject() {
     if (this.indexOfNextAdd > 0) {
       --this.indexOfNextAdd;
@@ -2968,7 +3023,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
       suffix: data.suffix,
       prefix: data.prefix
     };
-    console.log(data);
     if (this.copyObj.id) {
       request.newPath = obj.path + (obj.path === '/' ? '' : '/') + (data.originalName ? data.originalName : this.copyObj.name);
       request.id = this.copyObj.id;

@@ -514,6 +514,7 @@ small {
 .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled .ant-dropdown-menu-submenu-title,
 .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled .ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-arrow-icon {
   background: transparent;
+  color: var(--text-color);
 }
 
 .ant-dropdown-menu-sub {
@@ -4492,7 +4493,9 @@ svg text {
     height: 24px;
   }
 }
-
+.center-block .input-dropdown {
+  background: transparent;
+}
 .min-ht-500 {
   min-height: 500px;
 }
@@ -6696,8 +6699,7 @@ span.cm-error {
 .ant-calendar-header a:hover,
 .ant-select-dropdown-menu-item-active > a,
 .ant-select-dropdown-menu-item-selected,
-.ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled)
-.ant-select-dropdown-menu-item-selected > a,
+.ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled) .ant-select-dropdown-menu-item-selected > a,
 .ant-select-dropdown-menu-item:hover,
 .ant-dropdown-menu-item:hover,
 .ant-dropdown-menu-item:hover > a,
@@ -6705,7 +6707,27 @@ span.cm-error {
 .ant-dropdown-menu-submenu-title:hover > a {
   color: var(--text-hover) !important;
 }
+.ant-dropdown-menu-submenu-disabled {
+   opacity: 0.7;
+  .ant-calendar-header a:hover,
+  .ant-select-dropdown-menu-item-active > a,
+  .ant-select-dropdown-menu-item-selected,
+  .ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled) .ant-select-dropdown-menu-item-selected > a,
+  .ant-select-dropdown-menu-item:hover,
+  .ant-dropdown-menu-item:hover,
+  .ant-dropdown-menu-item:hover > a,
+  .ant-dropdown-menu-submenu-title:hover,
+  .ant-dropdown-menu-submenu-title:hover > a {
+    color: var(--text-color) !important;
+  }
+}
 
+.ant-dropdown-menu-item-disabled:hover,
+.ant-dropdown-menu-submenu-title-disabled:hover{
+  background: transparent;
+}
+.ant-dropdown-menu-item-disabled:hover > a,
+.ant-dropdown-menu-submenu-title-disabled:hover > a,
 .ant-select-dropdown-menu-item-disabled:hover,
 .ant-select-dropdown-menu-item-disabled:hover > a {
   color: var(--text-color) !important;

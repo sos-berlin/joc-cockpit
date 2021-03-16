@@ -46,15 +46,16 @@ export class DataService implements OnDestroy{
   }
 
   ngOnDestroy() {
-    this.eventAnnouncedSource.complete();
-    this.refreshUISource.complete();
-    this.switchSchedulerSource.complete();
-    this.functionSource.complete();
-    this.refreshWidgetSource.complete();
-    this.reloadTree.complete();
-    this.isCalendarReload.complete();
-    this.isProfileReload.complete();
-    this.resetProfileSetting.complete();
+    
+    this.eventAnnouncedSource.unsubscribe();
+    this.refreshUISource.unsubscribe();
+    this.switchSchedulerSource.unsubscribe();
+    this.functionSource.unsubscribe();
+    this.refreshWidgetSource.unsubscribe();
+    this.reloadTree.unsubscribe();
+    this.isCalendarReload.unsubscribe();
+    this.isProfileReload.unsubscribe();
+    this.resetProfileSetting.unsubscribe();
   }
 }
 
