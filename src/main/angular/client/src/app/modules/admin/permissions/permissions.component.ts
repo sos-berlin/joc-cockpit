@@ -1,18 +1,16 @@
 import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs';
+import * as _ from 'underscore';
+import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
-import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from '../data.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {TreeModalComponent} from '../../../components/tree-modal/tree.component';
 
-import * as _ from 'underscore';
-
 declare var $: any;
 declare var d3: any;
-
 
 // Permission Modal
 @Component({
@@ -157,8 +155,8 @@ export class FolderModalComponent implements OnInit {
     modalRef.componentInstance.showCheckBox = true;
     modalRef.result.then((result) => {
       this.folderObj.paths = _.clone(result);
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -246,7 +244,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   getPermissions() {
-    console.log('getPermissions')
     this.coreService.post('authentication/permissions', {}).subscribe(res => {
       this.PermissionsObj = res;
       this.permissions = this.PermissionsObj.SOSPermissions;
@@ -269,8 +266,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
     modalRef.result.then((result) => {
       this.folderArr = result;
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -286,10 +283,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.folderArr = this.folderArr;
     modalRef.componentInstance.oldFolder = folder;
     modalRef.result.then((result) => {
-      console.log(result);
       this.folderArr = result;
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -300,11 +296,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.type = 'Delete';
     modalRef.componentInstance.objectName = folder.folder;
     modalRef.result.then((result) => {
-      console.log('Deleted');
       this.folderArr.splice(this.folderArr.indexOf(folder), 1);
       this.saveInfo();
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
     });
   }
 
@@ -320,8 +314,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.add = true;
     modalRef.result.then((result) => {
       this.rolePermissions = result;
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
     });
   }
 
@@ -357,8 +350,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       }
       this.selectPermissionObj(this.permissionNodes[0][0], result.path, result.excluded);
       this.updateDiagramData(this.permissionNodes[0][0]);
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -374,8 +367,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       this.saveInfo();
       this.findPermissionObj(this.permissionNodes[0][0], permission.path);
       this.updateDiagramData(this.permissionNodes[0][0]);
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -1310,7 +1303,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
 
     function checkNodes(_nodes, rolePermissions) {
-      console.log(rolePermissions);
       let arr = [];
       for (let i = _nodes.length - 1; i >= 0; i--) {
         let flag = false;

@@ -40,10 +40,10 @@ export class ShowChildModalComponent implements OnInit {
   ngOnInit(): void {
     this.getText(this.showAllChild[0]);
     this.printTreeArray();
-    const obj: any = this.showAllChild[0];
+    let obj: any = this.showAllChild[0];
     obj.title = obj.ref;
     // tslint:disable-next-line: forin
-    for (const child in obj.children) {
+    for (let child in obj.children) {
       obj.children[child].children = [];
       obj.children[child].title = obj.children[child].ref;
       this.checkChildNode(obj.children[child], obj.children[child]);
@@ -53,7 +53,7 @@ export class ShowChildModalComponent implements OnInit {
 
   recursiveGetAllChilds(list: any) {
     // tslint:disable-next-line: forin
-    for (const child in list) {
+    for (let child in list) {
       list[child].children = [];
       this.checkChildNode(list[child], list[child]);
       this.printTreeArray();
@@ -65,7 +65,7 @@ export class ShowChildModalComponent implements OnInit {
     if (data instanceof NzTreeNode) {
       data.isExpanded = !data.isExpanded;
     } else {
-      const node = data.node;
+      let node = data.node;
       if (node) {
         node.isExpanded = !node.isExpanded;
       }
@@ -79,10 +79,10 @@ export class ShowChildModalComponent implements OnInit {
   }
 
   checkText(node) {
-    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     let text: any = {};
-    const documentationPath2 = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:annotation/xs:documentation';
-    const element2 = select(documentationPath2, this.doc);
+    let documentationPath2 = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:annotation/xs:documentation';
+    let element2 = select(documentationPath2, this.doc);
     if (element2.length > 0) {
       text.doc = element2[0].innerHTML;
     }
@@ -124,11 +124,11 @@ export class ShowChildModalComponent implements OnInit {
   search(q) {
     let count = 0;
     this.counter = 0;
-    const checkExpand = {expanded: false, parent: this.showAllChild};
+    let checkExpand = {expanded: false, parent: this.showAllChild};
     for (let i = 0; i < this.showAllChild.length; i++) {
       this.showAllChild[i].isSearch = false;
       if (q) {
-        const pattern = new RegExp('(' + q + ')', 'gi');
+        let pattern = new RegExp('(' + q + ')', 'gi');
         if (pattern.test(this.showAllChild[i].ref)) {
           this.showAllChild[i].isSearch = true;
           ++count;
@@ -146,14 +146,14 @@ export class ShowChildModalComponent implements OnInit {
     for (let i = 0; i < arr.length; i++) {
       arr[i].isSearch = false;
       if (q) {
-        const pattern = new RegExp('(' + q + ')', 'gi');
+        let pattern = new RegExp('(' + q + ')', 'gi');
         if (pattern.test(arr[i].ref)) {
           arr[i].isSearch = true;
           ++count;
           if (count > 0 && !checkExpand.isExpand) {
             checkExpand.parent.expanded = true;
             for (let j = 2; j < 10; j++) {
-              const key = 'parent' + j;
+              let key = 'parent' + j;
               if (checkExpand[key]) {
                 checkExpand[key].expanded = true;
               }
@@ -207,31 +207,31 @@ export class ShowChildModalComponent implements OnInit {
   }
 
   checkChildNode(showAllChild, data) {
-    const node = showAllChild.ref;
+    let node = showAllChild.ref;
     let parentNode;
-    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const complexTypePath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType';
-    const TypePath = '/xs:schemas/xs:element[@name=\'' + node + '\']';
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let complexTypePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType';
+    let TypePath = '/xs:schema/xs:element[@name=\'' + node + '\']';
     let nodes: any = {};
-    const childArr: any = [];
-    const element = select(complexTypePath, this.doc);
+    let childArr: any = [];
+    let element = select(complexTypePath, this.doc);
     if (element.length > 0) {
-      const sequencePath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence';
-      const choicePath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice';
-      const childFromBasePath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/@base';
+      let sequencePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence';
+      let choicePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice';
+      let childFromBasePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/@base';
       // tslint:disable-next-line: max-line-length
-      const complexContentWithElementPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/xs:sequence/xs:element';
-      const childs = select(childFromBasePath, this.doc);
-      const element1 = select(sequencePath, this.doc);
+      let complexContentWithElementPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/xs:sequence/xs:element';
+      let childs = select(childFromBasePath, this.doc);
+      let element1 = select(sequencePath, this.doc);
       if (element1.length > 0) {
-        const cPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:element';
-        const cElement = select(cPath, this.doc);
+        let cPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:element';
+        let cElement = select(cPath, this.doc);
         if (cElement.length > 0) {
           for (let i = 0; i < cElement.length; i++) {
             nodes = {};
             for (let j = 0; j < cElement[i].attributes.length; j++) {
-              const a = cElement[i].attributes[j].nodeName;
-              const b = cElement[i].attributes[j].nodeValue;
+              let a = cElement[i].attributes[j].nodeName;
+              let b = cElement[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, {[a]: b});
               if (a === 'ref') {
                 nodes = Object.assign(nodes, {title: b});
@@ -244,14 +244,14 @@ export class ShowChildModalComponent implements OnInit {
             }
           }
         }
-        const dPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:element';
-        const dElement = select(dPath, this.doc);
+        let dPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:element';
+        let dElement = select(dPath, this.doc);
         if (dElement.length > 0) {
           for (let i = 0; i < dElement.length; i++) {
             nodes = {};
             for (let j = 0; j < dElement[i].attributes.length; j++) {
-              const a = dElement[i].attributes[j].nodeName;
-              const b = dElement[i].attributes[j].nodeValue;
+              let a = dElement[i].attributes[j].nodeName;
+              let b = dElement[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, {[a]: b});
               if (a === 'ref') {
                 nodes = Object.assign(nodes, {title: b});
@@ -265,14 +265,14 @@ export class ShowChildModalComponent implements OnInit {
             }
           }
         }
-        const ePath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:sequence/xs:element';
-        const eElement = select(ePath, this.doc);
+        let ePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:sequence/xs:element';
+        let eElement = select(ePath, this.doc);
         if (eElement.length > 0) {
           for (let i = 0; i < eElement.length; i++) {
             nodes = {};
             for (let j = 0; j < eElement[i].attributes.length; j++) {
-              const a = eElement[i].attributes[j].nodeName;
-              const b = eElement[i].attributes[j].nodeValue;
+              let a = eElement[i].attributes[j].nodeName;
+              let b = eElement[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, {[a]: b});
               if (a === 'ref') {
                 nodes = Object.assign(nodes, {title: b});
@@ -294,14 +294,14 @@ export class ShowChildModalComponent implements OnInit {
         return childArr;
       }
       if ((select(choicePath, this.doc)).length > 0) {
-        const childPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice/xs:element';
-        const childs1 = select(childPath, this.doc);
+        let childPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice/xs:element';
+        let childs1 = select(childPath, this.doc);
         if (childs1.length > 0) {
           for (let i = 0; i < childs1.length; i++) {
             nodes = {};
             for (let j = 0; j < childs1[i].attributes.length; j++) {
-              const a = childs1[i].attributes[j].nodeName;
-              const b = childs1[i].attributes[j].nodeValue;
+              let a = childs1[i].attributes[j].nodeName;
+              let b = childs1[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, {[a]: b});
               if (a === 'ref') {
                 nodes = Object.assign(nodes, {title: b});
@@ -314,14 +314,14 @@ export class ShowChildModalComponent implements OnInit {
               data.children = childArr;
             }
           }
-          const childPath2 = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice/xs:sequence/xs:element';
-          const child12 = select(childPath2, this.doc);
+          let childPath2 = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice/xs:sequence/xs:element';
+          let child12 = select(childPath2, this.doc);
           if (child12.length > 0) {
             for (let i = 0; i < child12.length; i++) {
               nodes = {};
               for (let j = 0; j < child12[i].attributes.length; j++) {
-                const a = child12[i].attributes[j].nodeName;
-                const b = child12[i].attributes[j].nodeValue;
+                let a = child12[i].attributes[j].nodeName;
+                let b = child12[i].attributes[j].nodeValue;
                 nodes = Object.assign(nodes, {[a]: b});
                 if (a === 'ref') {
                   nodes = Object.assign(nodes, {title: b});
@@ -340,14 +340,14 @@ export class ShowChildModalComponent implements OnInit {
       }
       if (childs.length > 0) {
         if (childs[0].nodeValue !== 'NotEmptyType') {
-          const childrenPath = '/xs:schemas/xs:complexType[@name=\'' + childs[0].nodeValue + '\']/xs:sequence/xs:element';
-          const sElement = select(childrenPath, this.doc);
+          let childrenPath = '/xs:schema/xs:complexType[@name=\'' + childs[0].nodeValue + '\']/xs:sequence/xs:element';
+          let sElement = select(childrenPath, this.doc);
           if (sElement.length > 0) {
             for (let i = 0; i < sElement.length; i++) {
               nodes = {};
               for (let j = 0; j < sElement[i].attributes.length; j++) {
-                const a = sElement[i].attributes[j].nodeName;
-                const b = sElement[i].attributes[j].nodeValue;
+                let a = sElement[i].attributes[j].nodeName;
+                let b = sElement[i].attributes[j].nodeValue;
                 nodes = Object.assign(nodes, {[a]: b});
                 if (a === 'ref') {
                   nodes = Object.assign(nodes, {title: b});
@@ -360,14 +360,14 @@ export class ShowChildModalComponent implements OnInit {
               }
             }
           } else if ((select(complexContentWithElementPath, this.doc)).length > 0) {
-            const childrenPath1 = '/xs:schemas/xs:complexType[@name=\'' + childs[0].nodeValue + '\']/xs:choice/xs:element';
-            const elementx = select(childrenPath1, this.doc);
+            let childrenPath1 = '/xs:schema/xs:complexType[@name=\'' + childs[0].nodeValue + '\']/xs:choice/xs:element';
+            let elementx = select(childrenPath1, this.doc);
             if (elementx.length > 0) {
               for (let i = 0; i < elementx.length; i++) {
                 nodes = {};
                 for (let j = 0; j < elementx[i].attributes.length; j++) {
-                  const a = elementx[i].attributes[j].nodeName;
-                  const b = elementx[i].attributes[j].nodeValue;
+                  let a = elementx[i].attributes[j].nodeName;
+                  let b = elementx[i].attributes[j].nodeValue;
                   nodes = Object.assign(nodes, {[a]: b});
                   if (a === 'ref') {
                     nodes = Object.assign(nodes, {title: b});
@@ -380,12 +380,12 @@ export class ShowChildModalComponent implements OnInit {
                   data.children = childArr;
                 }
               }
-              const ele = select(complexContentWithElementPath, this.doc);
+              let ele = select(complexContentWithElementPath, this.doc);
               for (let i = 0; i < ele.length; i++) {
                 nodes = {};
                 for (let j = 0; j < ele[i].attributes.length; j++) {
-                  const a = ele[i].attributes[j].nodeName;
-                  const b = ele[i].attributes[j].nodeValue;
+                  let a = ele[i].attributes[j].nodeName;
+                  let b = ele[i].attributes[j].nodeValue;
                   nodes = Object.assign(nodes, {[a]: b});
                   if (a === 'ref') {
                     nodes = Object.assign(nodes, {title: b});
@@ -404,7 +404,7 @@ export class ShowChildModalComponent implements OnInit {
       }
     } else if ((select(TypePath, this.doc).length > 0)) {
       parentNode = node;
-      const typeElement = select(TypePath, this.doc);
+      let typeElement = select(TypePath, this.doc);
       if (typeElement.length > 0 && typeElement[0].attributes.length > 0) {
         for (let i = 0; i < typeElement[0].attributes.length; i++) {
           if (typeElement[0].attributes[i].nodeName === 'type') {
@@ -415,7 +415,7 @@ export class ShowChildModalComponent implements OnInit {
             let temp: any = {};
             for (let j = 0; j < typeElement[0].attributes.length; j++) {
               let a = typeElement[0].attributes[j].nodeName;
-              const b = typeElement[0].attributes[j].nodeValue;
+              let b = typeElement[0].attributes[j].nodeValue;
               if (a === 'type') {
                 a = 'base';
               }
@@ -434,24 +434,24 @@ export class ShowChildModalComponent implements OnInit {
 
   addTypeChildNode(node, parent, data) {
     let parentNode;
-    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const complexTypePath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']';
-    const TypePath = '/xs:schemas/xs:element[@name=\'' + node + '\']';
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let complexTypePath = '/xs:schema/xs:complexType[@name=\'' + node + '\']';
+    let TypePath = '/xs:schema/xs:element[@name=\'' + node + '\']';
     let nodes: any = {};
-    const childArr: any = [];
-    const element = select(complexTypePath, this.doc);
+    let childArr: any = [];
+    let element = select(complexTypePath, this.doc);
     if (element.length > 0) {
-      const sequencePath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']/xs:sequence';
-      const element1 = select(sequencePath, this.doc);
+      let sequencePath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:sequence';
+      let element1 = select(sequencePath, this.doc);
       if (element1.length > 0) {
-        const childPath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:element';
-        const childs = select(childPath, this.doc);
+        let childPath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:element';
+        let childs = select(childPath, this.doc);
         if (childs.length > 0) {
           for (let i = 0; i < childs.length; i++) {
             nodes = {};
             for (let j = 0; j < childs[i].attributes.length; j++) {
-              const a = childs[i].attributes[j].nodeName;
-              const b = childs[i].attributes[j].nodeValue;
+              let a = childs[i].attributes[j].nodeName;
+              let b = childs[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, {[a]: b});
               if (a === 'ref') {
                 nodes = Object.assign(nodes, {title: b});
@@ -464,14 +464,14 @@ export class ShowChildModalComponent implements OnInit {
             }
           }
         }
-        const seqChoicePath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:choice/xs:element';
-        const getChildChoice = select(seqChoicePath, this.doc);
+        let seqChoicePath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:choice/xs:element';
+        let getChildChoice = select(seqChoicePath, this.doc);
         if (getChildChoice.length > 0) {
           for (let i = 0; i < getChildChoice.length; i++) {
             nodes = {};
             for (let j = 0; j < getChildChoice[i].attributes.length; j++) {
-              const a = getChildChoice[i].attributes[j].nodeName;
-              const b = getChildChoice[i].attributes[j].nodeValue;
+              let a = getChildChoice[i].attributes[j].nodeName;
+              let b = getChildChoice[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, {[a]: b});
               if (a === 'ref') {
                 nodes = Object.assign(nodes, {title: b});
@@ -485,14 +485,14 @@ export class ShowChildModalComponent implements OnInit {
             }
           }
         }
-        const seqChoiceSeqPath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:choice/xs:sequence/xs:element';
-        const getChildChoiceSeq = select(seqChoiceSeqPath, this.doc);
+        let seqChoiceSeqPath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:choice/xs:sequence/xs:element';
+        let getChildChoiceSeq = select(seqChoiceSeqPath, this.doc);
         if (getChildChoiceSeq.length > 0) {
           for (let i = 0; i < getChildChoiceSeq.length; i++) {
             nodes = {};
             for (let j = 0; j < getChildChoiceSeq[i].attributes.length; j++) {
-              const a = getChildChoiceSeq[i].attributes[j].nodeName;
-              const b = getChildChoiceSeq[i].attributes[j].nodeValue;
+              let a = getChildChoiceSeq[i].attributes[j].nodeName;
+              let b = getChildChoiceSeq[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, {[a]: b});
               if (a === 'ref') {
                 nodes = Object.assign(nodes, {title: b});
@@ -508,16 +508,16 @@ export class ShowChildModalComponent implements OnInit {
         }
         return childArr;
       }
-      const choicePath = '//xs:complexType[@name=\'' + node + '\']/xs:choice';
+      let choicePath = '//xs:complexType[@name=\'' + node + '\']/xs:choice';
       if ((select(choicePath, this.doc)).length) {
-        const childPath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']/xs:choice/xs:element';
-        const childs = select(childPath, this.doc);
+        let childPath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:choice/xs:element';
+        let childs = select(childPath, this.doc);
         if (childs.length > 0) {
           for (let i = 0; i < childs.length; i++) {
             nodes = {};
             for (let j = 0; j < childs[i].attributes.length; j++) {
-              const a = childs[i].attributes[j].nodeName;
-              const b = childs[i].attributes[j].nodeValue;
+              let a = childs[i].attributes[j].nodeName;
+              let b = childs[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, {[a]: b});
               if (a === 'ref') {
                 nodes = Object.assign(nodes, {title: b});
@@ -535,7 +535,7 @@ export class ShowChildModalComponent implements OnInit {
       }
     } else if ((select(TypePath, this.doc).length > 0)) {
       parentNode = node;
-      const typeElement = select(TypePath, this.doc);
+      let typeElement = select(TypePath, this.doc);
       if (typeElement.length > 0 && typeElement[0].attributes.length > 0) {
         for (let i = 0; i < typeElement[0].attributes.length; i++) {
           if (typeElement[0].attributes[i].nodeName === 'type') {
@@ -580,7 +580,7 @@ export class ShowModalComponent implements OnInit {
   }
 
   validateXML() {
-    const obj: any = {
+    let obj: any = {
       controllerId: this.schedulerId,
       objectType: this.objectType,
       configuration: this.obj.xml
@@ -607,8 +607,8 @@ export class ShowModalComponent implements OnInit {
   }
 
   submitXML() {
-    const data = this.obj.xml;
-    const obj: any = {
+    let data = this.obj.xml;
+    let obj: any = {
       controllerId: this.schedulerId,
       objectType: this.objectType,
       configuration: data
@@ -641,7 +641,7 @@ export class ShowModalComponent implements OnInit {
       }
       setTimeout(() => {
         dom = document.getElementsByClassName('CodeMirror-code');
-        lNum = _.clone(num - parseInt(dom[0].children[0].innerText.split(' ')[0].split('↵')[0]) + 1);
+        lNum = _.clone(num - parseInt(dom[0].children[0].innerText.split(' ')[0].split('↵')[0], 10) + 1);
         if (this.prevErrLine) {
           dom[0].children[this.prevErrLine - 1].classList.remove('bg-highlight');
           let x = dom[0].children[this.prevErrLine - 1];
@@ -721,15 +721,15 @@ export class ImportModalComponent implements OnInit {
 
   // import xml
   onFileSelected(event: any): void {
-    const item = event['0'];
-    const fileExt = item.name.slice(item.name.lastIndexOf('.') + 1).toUpperCase();
+    let item = event['0'];
+    let fileExt = item.name.slice(item.name.lastIndexOf('.') + 1).toUpperCase();
     if (!this.importXsd) {
       if (fileExt !== 'XML') {
         this.toasterService.pop('error', '', fileExt + ' ' + 'invalid file type');
         event.remove();
       } else {
         this.fileLoading = false;
-        const reader = new FileReader();
+        let reader = new FileReader();
         reader.readAsText(item, 'UTF-8');
         reader.onload = (_event: any) => {
           this.uploadData = _event.target.result;
@@ -745,7 +745,7 @@ export class ImportModalComponent implements OnInit {
         event.remove();
       } else {
         this.fileLoading = false;
-        const reader = new FileReader();
+        let reader = new FileReader();
         reader.readAsText(item, 'UTF-8');
         reader.onload = (_event: any) => {
           this.uploadData = _event.target.result;
@@ -819,15 +819,12 @@ export class ConfirmationModalComponent implements OnInit {
   selector: 'app-ngbd-modal-content',
   templateUrl: './diff-dialog.html'
 })
-export class DiffPatchModalComponent implements OnInit {
+export class DiffPatchModalComponent {
   @Input() liveXml;
   @Input() draftXml;
   @Input() xmlVersionObj;
 
   constructor(public activeModal: NgbActiveModal) {
-  }
-
-  ngOnInit() {
   }
 
   checkBoxCheck(data) {
@@ -845,8 +842,6 @@ export class DiffPatchModalComponent implements OnInit {
   cancel() {
     this.activeModal.dismiss();
   }
-
-
 }
 
 @Component({
@@ -987,7 +982,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.sideView.xml && !this.sideView.xml.show) {
       this.hidePanel();
     }
-    const url = this.router.url.split('/')[2];
+    let url = this.router.url.split('/')[2];
     this.objectType = url.toUpperCase();
     if (url === 'notification') {
       this.selectedXsd = 'systemMonitorNotification';
@@ -1045,15 +1040,15 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   deleteAllConf() {
     this.deleteAll = true;
     this.delete = false;
-    const modalRef = this.modalService.open(ConfirmationModalComponent, {backdrop: 'static'});
+    let modalRef = this.modalService.open(ConfirmationModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.deleteAll = true;
     modalRef.componentInstance.objectType = this.objectType;
-    modalRef.result.then((res: any) => {
-      const obj = {
+    modalRef.result.then((res) => {
+      let obj = {
         controllerId: this.schedulerIds.selected,
         objectTypes: ['OTHER'],
       };
-      this.coreService.post('xmleditor/delete/all', obj).subscribe((res: any) => {
+      this.coreService.post('xmleditor/delete/all', obj).subscribe(() => {
         this.tabsArray = [];
         this.nodes = [];
         this.selectedNode = [];
@@ -1072,7 +1067,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     if (data instanceof NzTreeNode) {
       data.isExpanded = !data.isExpanded;
     } else {
-      const node = data.node;
+      let node = data.node;
       if (node) {
         node.isExpanded = !node.isExpanded;
       }
@@ -1083,7 +1078,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   deleteConf() {
     this.delete = true;
     this.deleteAll = false;
-    const modalRef = this.modalService.open(ConfirmationModalComponent, {backdrop: 'static', size: 'sm'});
+    let modalRef = this.modalService.open(ConfirmationModalComponent, {backdrop: 'static', size: 'sm'});
     modalRef.componentInstance.delete = this.delete;
     modalRef.componentInstance.deleteAll = this.deleteAll;
     modalRef.componentInstance.objectType = this.objectType;
@@ -1320,7 +1315,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   readXML() {
     this.selectedXsd = this.selectedXsd.toUpperCase();
-    const obj = {
+    let obj = {
       controllerId: this.schedulerIds.selected,
       objectType: this.objectType
     };
@@ -1333,7 +1328,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.XSDState.modified = res.modified;
       this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
       if (res.configurationJson) {
-        const _tempArrToExpand = [];
+        let _tempArrToExpand = [];
         this.prevXML = this.removeComment(res.configuration);
         let jsonArray;
         try {
@@ -1349,7 +1344,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           this.nodes = jsonArray.node;
           this.counting = _.clone(jsonArray.nodesCount);
         } else {
-          const a = [jsonArray];
+          let a = [jsonArray];
           this.counting = jsonArray.lastUuid;
           this.nodes = a;
           this.getIndividualData(this.nodes[0], undefined);
@@ -1400,34 +1395,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  setDropdownPosition(data, e) {
-    $('[data-toggle="popover"]').popover('hide');
-    const top = e.clientY + 8;
-    const left = e.clientX - 20;
-    if (window.innerHeight > top + (180 + ((this.childNode.length > 5 ? 5 : this.childNode.length) * 22))) {
-      $('.list-dropdown').css({top: top + 'px', left: left + 'px', bottom: 'auto'})
-        .removeClass('arrow-down').addClass('dropdown-ac');
-      const dom = $('#zoomCn');
-      if (dom && dom.css('transform')) {
-        if (dom.css('transform') !== 'none') {
-          $('.list-dropdown').css({
-            '-webkit-transform': 'translateY(-' + (top - 120) + 'px)',
-            '-moz-transform': 'translateY(-' + (top - 120) + 'px)',
-            '-ms-transform': 'translateY(-' + (top - 120) + 'px)',
-            '-o-transform': 'translateY(-' + (top - 120) + 'px)',
-            'transform': 'translateY(-' + (top - 120) + 'px)'
-          });
-        }
-      }
-    } else {
-      $('.list-dropdown').css({
-        top: 'auto',
-        left: left + 'px',
-        bottom: (window.innerHeight - top + 14) + 'px'
-      }).addClass('arrow-down').removeClass('dropdown-ac');
-    }
-  }
-
   checkOrder(node) {
     setTimeout(() => {
       if (node && this.childNode.length > 0) {
@@ -1447,7 +1414,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getIndividualData(node, scroll) {
-    const attrs = this.checkAttributes(node.ref);
+    let attrs = this.checkAttributes(node.ref);
     if (attrs && attrs.length > 0) {
       if (node.attributes && node.attributes.length > 0) {
         for (let i = 0; i < attrs.length; i++) {
@@ -1461,7 +1428,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     }
-    const value = this.getValues(node.ref);
+    let value = this.getValues(node.ref);
     if (node.values && node.values.length > 0) {
       for (let i = 0; i < value.length; i++) {
         for (let j = 0; j < node.values.length; j++) {
@@ -1471,7 +1438,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     }
-    const attrsType = this.getAttrFromType(node.ref, node.parent);
+    let attrsType = this.getAttrFromType(node.ref, node.parent);
     if (attrsType && attrsType.length > 0) {
       if (node.attributes && node.attributes.length > 0) {
         for (let i = 0; i < attrsType.length; i++) {
@@ -1483,7 +1450,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     }
-    const valueType = this.getValueFromType(node.ref, node.parent);
+    let valueType = this.getValueFromType(node.ref, node.parent);
 
     if (valueType) {
       if (node.values && node.values.length > 0) {
@@ -1618,7 +1585,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.autoExpand(this.nodes[0]);
 
     } else {
-      const someNode = this.treeCtrl.getTreeNodeByKey(node.parentId);
+      let someNode = this.treeCtrl.getTreeNodeByKey(node.parentId);
       if (someNode) {
         this.autoExpand(someNode.origin);
       }
@@ -1629,13 +1596,13 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ok(conf) {
-    const dom_parser = new DOMParser();
-    const dom_document = dom_parser.parseFromString(conf, 'text/xml');
+    let dom_parser = new DOMParser();
+    let dom_document = dom_parser.parseFromString(conf, 'text/xml');
     try {
       if (dom_document.documentElement.getElementsByTagName('parsererror').length > 0
         || dom_document.documentElement.nodeName === 'parsererror') {
         if (dom_document.documentElement.getElementsByTagName('parsererror').length > 0) {
-          const a: any = dom_document.documentElement.getElementsByTagName('parsererror')[0];
+          let a: any = dom_document.documentElement.getElementsByTagName('parsererror')[0];
           this.toasterService.pop('error', 'Invalid xml ' + a.innerText);
         } else {
           this.toasterService.pop('error', 'Invalid xml ' + dom_document.documentElement.firstChild.nodeValue);
@@ -1645,7 +1612,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         return false;
       }
     } catch (e) {
-      const a: any = dom_document.documentElement.getElementsByTagName('parsererror')[0];
+      let a: any = dom_document.documentElement.getElementsByTagName('parsererror')[0];
       this.toasterService.pop('error', 'Invalid xml ' + a.innerText, e);
       return true;
     }
@@ -1676,11 +1643,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     let temp: any;
     let attrs: any;
     let child: any;
-    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const rootElementPath = '//xs:element';
-    const root = select(rootElementPath, doc);
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let rootElementPath = '//xs:element';
+    let root = select(rootElementPath, doc);
     for (let i = 0; i < root[0].attributes.length; i++) {
-      const b = root[0].attributes[i].nodeValue;
+      let b = root[0].attributes[i].nodeValue;
       temp = Object.assign({}, {ref: b});
     }
     temp.parent = '#';
@@ -1698,13 +1665,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         temp.attributes.push(attrs[i]);
       }
     }
-    const text = this.checkText(temp.ref);
+    let text = this.checkText(temp.ref);
     if (text) {
       temp.text = text;
     }
     if (!check) {
       child = this.checkChildNode(temp, undefined);
-      if (child.length > 0) {
+
+      if (child && child.length > 0) {
         for (let i = 0; i < child.length; i++) {
           if (child[i].minOccurs === undefined) {
             if (!temp.children) {
@@ -1719,161 +1687,97 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   checkAttributes(node) {
-    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const complexTypePath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType';
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let complexTypePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType';
     let attribute: any = {};
-    const attrsArr: any = [];
-    const element = select(complexTypePath, this.doc);
-    if (element.length > 0) {
-      const attrsPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:attribute';
-      const attrs = select(attrsPath, this.doc);
-      if (attrs.length > 0) {
-        for (let i = 0; i < attrs.length; i++) {
-          attribute = {};
-          let x;
-          for (let j = 0; j < attrs[i].attributes.length; j++) {
-            const a = attrs[i].attributes[j].nodeName;
-            const b = attrs[i].attributes[j].nodeValue;
-            attribute = Object.assign(attribute, {[a]: b});
-            // tslint:disable-next-line: max-line-length
-            const valueFromXmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:complexType/xs:attribute[@name=\'' + b + '\']/xs:annotation/xs:appinfo/XmlEditor';
-            const attr1 = select(valueFromXmlEditorPath, this.doc);
-            if (attr1.length > 0) {
-              if (attr1[0].attributes && attr1[0].attributes.length > 0) {
-                for (let k = 0; k < attr1[0].attributes.length; k++) {
-                  if (attr1[0].attributes[k].nodeName === 'type') {
-                    x = attr1[0].attributes[k].nodeValue;
-                    break;
-                  }
-                }
-              }
-            }
-          }
-          if (x !== undefined) {
-            attribute.type = x;
-          }
-          attribute.parent = node;
-          attrsArr.push(attribute);
-        }
-      }
-    }
-    if (element.length > 0) {
-      const attrsPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/xs:attribute';
-      const attrs = select(attrsPath, this.doc);
-      if (attrs.length > 0) {
-        for (let i = 0; i < attrs.length; i++) {
-          attribute = {};
-          let x;
-          for (let j = 0; j < attrs[i].attributes.length; j++) {
-            const a = attrs[i].attributes[j].nodeName;
-            const b = attrs[i].attributes[j].nodeValue;
-            attribute = Object.assign(attribute, {[a]: b});
-            // tslint:disable-next-line: max-line-length
-            const valueFromXmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:complexType/xs:attribute[@name=\'' + b + '\']/xs:annotation/xs:appinfo/XmlEditor';
-            const attr1 = select(valueFromXmlEditorPath, this.doc);
-            if (attr1.length > 0) {
-              if (attr1[0].attributes && attr1[0].attributes.length > 0) {
-                for (let k = 0; k < attr1[0].attributes.length; k++) {
-                  if (attr1[0].attributes[k].nodeName === 'type') {
-                    x = attr1[0].attributes[k].nodeValue;
-                    break;
-                  }
-                }
-              }
-            }
-          }
-          if (x !== undefined) {
-            attribute.type = x;
-          }
-          attribute.parent = node;
-          attrsArr.push(attribute);
-        }
-      }
-    }
-    if (element.length > 0) {
-      const attrsPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute';
-      const attrs = select(attrsPath, this.doc);
-      if (attrs.length > 0) {
-        for (let i = 0; i < attrs.length; i++) {
-          attribute = {};
-          let x;
-          for (let j = 0; j < attrs[i].attributes.length; j++) {
-            const a = attrs[i].attributes[j].nodeName;
-            const b = attrs[i].attributes[j].nodeValue;
-            attribute = Object.assign(attribute, {[a]: b});
-            // tslint:disable-next-line: max-line-length
-            const valueFromXmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:complexType/xs:attribute[@name=\'' + b + '\']/xs:annotation/xs:appinfo/XmlEditor';
-            const attr1 = select(valueFromXmlEditorPath, this.doc);
-            if (attr1.length > 0) {
-              if (attr1[0].attributes && attr1[0].attributes.length > 0) {
-                for (let k = 0; k < attr1[0].attributes.length; k++) {
-                  if (attr1[0].attributes[k].nodeName === 'type') {
-                    x = attr1[0].attributes[k].nodeValue;
-                    break;
-                  }
-                }
-              }
-            }
-          }
-          if (x !== undefined) {
-            attribute.type = x;
-          }
-          attribute.parent = node;
-          attrsArr.push(attribute);
-        }
-      }
+    let attrsArr: any = [];
+    let element = select(complexTypePath, this.doc);
+    if (element && element.length > 0) {
+      this._checkAttributes('/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:attribute', attribute, node, attrsArr, select);
+      this._checkAttributes('/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/xs:attribute', attribute, node, attrsArr, select);
+      this._checkAttributes('/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute', attribute, node, attrsArr, select);
     }
     return attrsArr;
   }
 
+  _defineProperty(obj, key, value) {
+    if (key in obj) {
+      Object.defineProperty(obj, key, {value: value, enumerable: true, configurable: true, writable: true});
+    } else {
+      obj[key] = value;
+    }
+    return obj;
+  }
+
+  _checkAttributes(attrsPath, attribute, node, attrsArr, select) {
+    var attrs = select(attrsPath, this.doc);
+
+    if (attrs.length > 0) {
+      for (var i = 0; i < attrs.length; i++) {
+        attribute = {};
+        var x = void 0;
+
+        for (var j = 0; j < attrs[i].attributes.length; j++) {
+          var a = attrs[i].attributes[j].nodeName;
+          var b = attrs[i].attributes[j].nodeValue;
+          attribute = Object.assign(attribute, this._defineProperty({}, a, b));
+          var valueFromXmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:complexType/xs:attribute[@name=\''
+            + b + '\']/xs:annotation/xs:appinfo/XmlEditor';
+          var attr1 = select(valueFromXmlEditorPath, this.doc);
+
+          if (attr1.length > 0) {
+            if (attr1[0].attributes && attr1[0].attributes.length > 0) {
+              for (var _i18 = 0; _i18 < attr1[0].attributes.length; _i18++) {
+                if (attr1[0].attributes[_i18].nodeName === 'type') {
+                  x = attr1[0].attributes[_i18].nodeValue;
+                  break;
+                }
+              }
+            }
+          }
+        }
+
+        if (x !== undefined) {
+          attribute.type = x;
+        }
+
+        attribute.parent = node;
+        attrsArr.push(attribute);
+      }
+    }
+  }
+
   checkChildNode(showAllChild, data) {
-    const node = showAllChild.ref;
+    let node = showAllChild.ref;
     let parentNode;
     if (!data) {
       this.childNode = [];
     }
-    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const complexTypePath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType';
-    const TypePath = '/xs:schemas/xs:element[@name=\'' + node + '\']';
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let complexTypePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType';
+    let TypePath = '/xs:schema/xs:element[@name=\'' + node + '\']';
     let nodes: any = {};
-    const childArr: any = [];
-    const element = select(complexTypePath, this.doc);
+    let childArr: any = [];
+    let element = select(complexTypePath, this.doc);
     if (element.length > 0) {
-      const sequencePath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence';
-      const choicePath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice';
-      const childFromBasePath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/@base';
-      // tslint:disable-next-line: max-line-length
-      const complexContentWithElementPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/xs:sequence/xs:element';
-      const childs = select(childFromBasePath, this.doc);
-      const element1 = select(sequencePath, this.doc);
+      let sequencePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence';
+      let choicePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice';
+      let childFromBasePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/@base';
+      let complexContentWithElementPath = '/xs:schema/xs:element[@name=\'' + node
+        + '\']/xs:complexType/xs:complexContent/xs:extension/xs:sequence/xs:element';
+      let childs = select(childFromBasePath, this.doc);
+      let element1 = select(sequencePath, this.doc);
       if (element1.length > 0) {
-        const cPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:element';
-        const cElement = select(cPath, this.doc);
-        if (cElement.length > 0) {
-          for (let i = 0; i < cElement.length; i++) {
-            nodes = {};
-            for (let j = 0; j < cElement[i].attributes.length; j++) {
-              const a = cElement[i].attributes[j].nodeName;
-              const b = cElement[i].attributes[j].nodeValue;
-              nodes = Object.assign(nodes, {[a]: b});
-            }
-            nodes.parent = node;
-            childArr.push(nodes);
-            if (data) {
-              data.children = childArr;
-            } else {
-              this.childNode = childArr;
-            }
-          }
-        }
-        const dPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:element';
-        const dElement = select(dPath, this.doc);
+        let cPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:element';
+        let cElement = select(cPath, this.doc);
+        let dPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:element';
+        let dElement = select(dPath, this.doc);
         if (dElement.length > 0) {
           for (let i = 0; i < dElement.length; i++) {
             nodes = {};
             for (let j = 0; j < dElement[i].attributes.length; j++) {
-              const a = dElement[i].attributes[j].nodeName;
-              const b = dElement[i].attributes[j].nodeValue;
+              let a = dElement[i].attributes[j].nodeName;
+              let b = dElement[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, {[a]: b});
             }
             nodes.parent = node;
@@ -1886,14 +1790,31 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             }
           }
         }
-        const ePath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:sequence/xs:element';
-        const eElement = select(ePath, this.doc);
+        if (cElement.length > 0) {
+          for (let i = 0; i < cElement.length; i++) {
+            nodes = {};
+            for (let j = 0; j < cElement[i].attributes.length; j++) {
+              let a = cElement[i].attributes[j].nodeName;
+              let b = cElement[i].attributes[j].nodeValue;
+              nodes = Object.assign(nodes, {[a]: b});
+            }
+            nodes.parent = node;
+            childArr.push(nodes);
+            if (data) {
+              data.children = childArr;
+            } else {
+              this.childNode = childArr;
+            }
+          }
+        }
+        let ePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:sequence/xs:element';
+        let eElement = select(ePath, this.doc);
         if (eElement.length > 0) {
           for (let i = 0; i < eElement.length; i++) {
             nodes = {};
             for (let j = 0; j < eElement[i].attributes.length; j++) {
-              const a = eElement[i].attributes[j].nodeName;
-              const b = eElement[i].attributes[j].nodeValue;
+              let a = eElement[i].attributes[j].nodeName;
+              let b = eElement[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, {[a]: b});
             }
             nodes.parent = node;
@@ -1914,14 +1835,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         return childArr;
       }
       if ((select(choicePath, this.doc)).length > 0) {
-        const childPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice/xs:element';
-        const childs1 = select(childPath, this.doc);
+        let childPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice/xs:element';
+        let childs1 = select(childPath, this.doc);
         if (childs1.length > 0) {
           for (let i = 0; i < childs1.length; i++) {
             nodes = {};
             for (let j = 0; j < childs1[i].attributes.length; j++) {
-              const a = childs1[i].attributes[j].nodeName;
-              const b = childs1[i].attributes[j].nodeValue;
+              let a = childs1[i].attributes[j].nodeName;
+              let b = childs1[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, {[a]: b});
             }
             nodes.parent = node;
@@ -1933,14 +1854,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
               this.childNode = childArr;
             }
           }
-          const childPath2 = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice/xs:sequence/xs:element';
-          const child12 = select(childPath2, this.doc);
+          let childPath2 = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice/xs:sequence/xs:element';
+          let child12 = select(childPath2, this.doc);
           if (child12.length > 0) {
             for (let i = 0; i < child12.length; i++) {
               nodes = {};
               for (let j = 0; j < child12[i].attributes.length; j++) {
-                const a = child12[i].attributes[j].nodeName;
-                const b = child12[i].attributes[j].nodeValue;
+                let a = child12[i].attributes[j].nodeName;
+                let b = child12[i].attributes[j].nodeValue;
                 nodes = Object.assign(nodes, {[a]: b});
               }
               nodes.parent = node;
@@ -1958,14 +1879,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       if (childs.length > 0) {
         if (childs[0].nodeValue !== 'NotEmptyType') {
-          const childrenPath = '/xs:schemas/xs:complexType[@name=\'' + childs[0].nodeValue + '\']/xs:sequence/xs:element';
-          const sElement = select(childrenPath, this.doc);
+          let childrenPath = '/xs:schema/xs:complexType[@name=\'' + childs[0].nodeValue + '\']/xs:sequence/xs:element';
+          let sElement = select(childrenPath, this.doc);
           if (sElement.length > 0) {
             for (let i = 0; i < sElement.length; i++) {
               nodes = {};
               for (let j = 0; j < sElement[i].attributes.length; j++) {
-                const a = sElement[i].attributes[j].nodeName;
-                const b = sElement[i].attributes[j].nodeValue;
+                let a = sElement[i].attributes[j].nodeName;
+                let b = sElement[i].attributes[j].nodeValue;
                 nodes = Object.assign(nodes, {[a]: b});
               }
               nodes.parent = node;
@@ -1977,14 +1898,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
               }
             }
           } else if ((select(complexContentWithElementPath, this.doc)).length > 0) {
-            const childrenPath1 = '/xs:schemas/xs:complexType[@name=\'' + childs[0].nodeValue + '\']/xs:choice/xs:element';
-            const elementx = select(childrenPath1, this.doc);
+            let childrenPath1 = '/xs:schema/xs:complexType[@name=\'' + childs[0].nodeValue + '\']/xs:choice/xs:element';
+            let elementx = select(childrenPath1, this.doc);
             if (elementx.length > 0) {
               for (let i = 0; i < elementx.length; i++) {
                 nodes = {};
                 for (let j = 0; j < elementx[i].attributes.length; j++) {
-                  const a = elementx[i].attributes[j].nodeName;
-                  const b = elementx[i].attributes[j].nodeValue;
+                  let a = elementx[i].attributes[j].nodeName;
+                  let b = elementx[i].attributes[j].nodeValue;
                   nodes = Object.assign(nodes, {[a]: b});
                 }
                 nodes.parent = node;
@@ -1996,12 +1917,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
                   this.childNode = childArr;
                 }
               }
-              const ele = select(complexContentWithElementPath, this.doc);
+              let ele = select(complexContentWithElementPath, this.doc);
               for (let i = 0; i < ele.length; i++) {
                 nodes = {};
                 for (let j = 0; j < ele[i].attributes.length; j++) {
-                  const a = ele[i].attributes[j].nodeName;
-                  const b = ele[i].attributes[j].nodeValue;
+                  let a = ele[i].attributes[j].nodeName;
+                  let b = ele[i].attributes[j].nodeValue;
                   nodes = Object.assign(nodes, {[a]: b});
                 }
                 nodes.parent = node;
@@ -2019,7 +1940,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     } else if ((select(TypePath, this.doc).length > 0)) {
       parentNode = node;
-      const typeElement = select(TypePath, this.doc);
+      let typeElement = select(TypePath, this.doc);
       if (typeElement.length > 0 && typeElement[0].attributes.length > 0) {
         for (let i = 0; i < typeElement[0].attributes.length; i++) {
           if (typeElement[0].attributes[i].nodeName === 'type') {
@@ -2030,7 +1951,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             let temp: any = {};
             for (let j = 0; j < typeElement[0].attributes.length; j++) {
               let a = typeElement[0].attributes[j].nodeName;
-              const b = typeElement[0].attributes[j].nodeValue;
+              let b = typeElement[0].attributes[j].nodeValue;
               if (a === 'type') {
                 a = 'base';
               }
@@ -2048,16 +1969,16 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getAttrFromType(nodeValue, parentNode) {
-    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const attrTypePath = '/xs:schemas/xs:element[@name=\'' + nodeValue + '\']/@type';
-    const element = select(attrTypePath, this.doc);
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let attrTypePath = '/xs:schema/xs:element[@name=\'' + nodeValue + '\']/@type';
+    let element = select(attrTypePath, this.doc);
     let attribute: any = {};
     if (element.length > 0) {
-      const ele = select(attrTypePath, this.doc);
+      let ele = select(attrTypePath, this.doc);
       let x;
       for (let i = 0; i < ele.length; i++) {
-        const a = ele[i].nodeName;
-        const b = ele[i].nodeValue;
+        let a = ele[i].nodeName;
+        let b = ele[i].nodeValue;
         attribute = Object.assign(attribute, {[a]: b});
 
       }
@@ -2069,20 +1990,20 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getAttrsFromType(node) {
-    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const attrTypePath = '/xs:schemas/xs:complexType[@name=\'' + node.type + '\']/xs:simpleContent/xs:extension/xs:attribute/@*';
-    const element = select(attrTypePath, this.doc);
-    const attrArr = [];
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let attrTypePath = '/xs:schema/xs:complexType[@name=\'' + node.type + '\']/xs:simpleContent/xs:extension/xs:attribute/@*';
+    let element = select(attrTypePath, this.doc);
+    let attrArr = [];
     let attribute: any = {};
     if (element.length > 0) {
       for (let i = 0; i < element.length; i++) {
-        const a = element[i].nodeName;
-        const b = element[i].nodeValue;
+        let a = element[i].nodeName;
+        let b = element[i].nodeValue;
         attribute = Object.assign(attribute, {[a]: b});
       }
       attribute.parent = node.parent;
       attribute.grandFather = node.grandFather;
-      const value: any = this.getAttrsValueFromType(attribute, node);
+      let value: any = this.getAttrsValueFromType(attribute, node);
       if (value.length > 0) {
         attribute.values = value;
       }
@@ -2092,17 +2013,17 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getAttrsValueFromType(attr, node) {
-    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     // tslint:disable-next-line: max-line-length
-    const valueTypePath = '//xs:complexType[@name=\'' + node.type + '\']/xs:simpleContent/xs:extension/xs:attribute[@name=\'' + attr.name + '\']/xs:simpleType/xs:restriction/xs:enumeration';
-    const element = select(valueTypePath, this.doc);
-    const valueArr = [];
+    let valueTypePath = '//xs:complexType[@name=\'' + node.type + '\']/xs:simpleContent/xs:extension/xs:attribute[@name=\'' + attr.name + '\']/xs:simpleType/xs:restriction/xs:enumeration';
+    let element = select(valueTypePath, this.doc);
+    let valueArr = [];
     if (element.length > 0) {
       for (let i = 0; i < element.length; i++) {
         let value = {};
         for (let j = 0; j < element[i].attributes.length; j++) {
-          const a = element[i].attributes[j].nodeName;
-          const b = element[i].attributes[j].nodeValue;
+          let a = element[i].attributes[j].nodeName;
+          let b = element[i].attributes[j].nodeValue;
           value = Object.assign(value, {[a]: b});
         }
         valueArr.push(value);
@@ -2112,11 +2033,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getValFromDefault(node) {
-    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const attrTypePath = '/xs:schemas/xs:element[@name=\'' + node.ref + '\']/@default';
-    const ele = select(attrTypePath, this.doc);
-    const valueArr: any = [];
-    const value: any = {};
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let attrTypePath = '/xs:schema/xs:element[@name=\'' + node.ref + '\']/@default';
+    let ele = select(attrTypePath, this.doc);
+    let valueArr: any = [];
+    let value: any = {};
     for (let i = 0; i < ele.length; i++) {
       value.base = 'xs:string';
       value.parent = node.ref;
@@ -2130,11 +2051,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getVal(nodeValue) {
-    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const attrTypePath = '/xs:schemas/xs:element[@name=\'' + nodeValue.ref + '\']/@type';
-    const ele = select(attrTypePath, this.doc);
-    const valueArr: any = [];
-    const value: any = {};
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let attrTypePath = '/xs:schema/xs:element[@name=\'' + nodeValue.ref + '\']/@type';
+    let ele = select(attrTypePath, this.doc);
+    let valueArr: any = [];
+    let value: any = {};
     for (let i = 0; i < ele.length; i++) {
       if (ele[i].nodeValue === 'xs:string' || ele[i].nodeValue === 'xs:long' || ele[i].nodeValue === 'xs:positiveInteger') {
         value.base = ele[i].nodeValue;
@@ -2149,14 +2070,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getValueFromType(nodeValue, parentNode) {
-    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const attrTypePath = '/xs:schemas/xs:element[@name=\'' + nodeValue + '\']/@type';
-    const ele = select(attrTypePath, this.doc);
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let attrTypePath = '/xs:schema/xs:element[@name=\'' + nodeValue + '\']/@type';
+    let ele = select(attrTypePath, this.doc);
     let attribute: any = {};
     if (ele.length > 0) {
       for (let i = 0; i < ele.length; i++) {
-        const a = ele[i].nodeName;
-        const b = ele[i].nodeValue;
+        let a = ele[i].nodeName;
+        let b = ele[i].nodeValue;
         attribute = Object.assign(attribute, {[a]: b});
       }
       attribute.parent = nodeValue;
@@ -2166,28 +2087,28 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getTypeValue(node) {
-    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const extensionTypePath = '/xs:schemas/xs:complexType[@name=\'' + node.type + '\']/xs:simpleContent/xs:extension/@*';
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let extensionTypePath = '/xs:schema/xs:complexType[@name=\'' + node.type + '\']/xs:simpleContent/xs:extension/@*';
     let element = select(extensionTypePath, this.doc);
     let value: any = {};
-    const valueArr: any = [];
+    let valueArr: any = [];
     let b;
     if (element.length > 0) {
       if (element[0] && element[0].nodeValue === 'NotEmptyType') {
         let a = element[0].nodeName;
-        const x = element[0].nodeValue;
-        value = Object.assign(value, {[a]: x});
-        const simpleTypePath = '/xs:schemas/xs:simpleType[@name=\'' + value.base + '\']/xs:restriction/@*';
+        let x = element[0].nodeValue;
+        value = Object.assign(value, this._defineProperty({}, a, x));
+        let simpleTypePath = '/xs:schema/xs:simpleType[@name=\'' + value.base + '\']/xs:restriction/@*';
         element = select(simpleTypePath, this.doc);
         if (element.length > 0) {
           a = element[0].nodeName;
           b = element[0].nodeValue;
-          value = Object.assign(value, {[a]: b});
-          const minLengthPath = '/xs:schemas/xs:simpleType[@name=\'' + x + '\']/xs:restriction/xs:minLength/@*';
+          value = Object.assign(value, this._defineProperty({}, a, b));
+          let minLengthPath = '/xs:schema/xs:simpleType[@name=\'' + x + '\']/xs:restriction/xs:minLength/@*';
           element = select(minLengthPath, this.doc);
           a = element[0].nodeName;
           b = element[0].nodeValue;
-          value = Object.assign(value, {[a]: b});
+          value = Object.assign(value, this._defineProperty({}, a, b));
         }
         value.parent = node.parent;
         value.grandFather = node.grandFather;
@@ -2201,27 +2122,27 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   checkText(node) {
-    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     let text: any = {};
-    // const documentationPath = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:annotation/xs:documentation/@*';
-    // const element = select(documentationPath, this.doc);
-    // if (element.length > 0) {
-    //   for (let i = 0; i < element.length; i++) {
-    //     const a = element[i].nodeName;
-    //     const b = element[i].nodeValue;
-    //     text = Object.assign(text, {[a]: b});
-    //   }
-    // } else {
-    //   const documentationPath1 = '/xs:schemas/xs:element[@ref=\'' + node + '\']/xs:annotation/xs:documentation/@*';
-    //   const element1 = select(documentationPath1, this.doc);
-    //   for (let i = 0; i < element1.length; i++) {
-    //     const a = element1[i].nodeName;
-    //     const b = element1[i].nodeValue;
-    //     text = Object.assign(text, {[a]: b});
-    //   }
-    // }
-    const documentationPath2 = '/xs:schemas/xs:element[@name=\'' + node + '\']/xs:annotation/xs:documentation';
-    const element2 = select(documentationPath2, this.doc);
+    let documentationPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:annotation/xs:documentation/@*';
+    let element = select(documentationPath, this.doc);
+    if (element.length > 0) {
+      for (let i = 0; i < element.length; i++) {
+        let a = element[i].nodeName;
+        let b = element[i].nodeValue[0].innerHTML;
+        text = Object.assign(text, this._defineProperty({}, a, b));
+      }
+    } else {
+      let documentationPath1 = '/xs:schema/xs:element[@ref=\'' + node + '\']/xs:annotation/xs:documentation/@*';
+      let element1 = select(documentationPath1, this.doc);
+      for (let i = 0; i < element1.length; i++) {
+        let a = element1[i].nodeName;
+        let b = element1[i].nodeValue[0].innerHTML;
+        text = Object.assign(text, this._defineProperty({}, a, b));
+      }
+    }
+    let documentationPath2 = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:annotation/xs:documentation';
+    let element2 = select(documentationPath2, this.doc);
     if (element2.length > 0) {
       text.doc = element2[0].innerHTML;
     }
@@ -2231,7 +2152,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async checkDupProfileId(value, tag) {
     if (tag.name === 'profile_id' && this.selectedNode.ref == 'Profile') {
-      const tempParentNode: any = await this.getParentNode(this.selectedNode);
+      let tempParentNode: any = await this.getParentNode(this.selectedNode);
       if (tempParentNode && tempParentNode.children && tempParentNode.children.length > 0) {
         for (let i = 0; i < tempParentNode.children.length; i++) {
           if (tempParentNode.children[i].attributes) {
@@ -2242,7 +2163,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
                   this.errorName = tag.name;
                   this.text = tag.name + ': ' + this.uniqueName;
                   if (tag.data !== undefined) {
-                    for (const key in tag) {
+                    for (let key in tag) {
                       if (key === 'data') {
                         delete tag[key];
                       }
@@ -2266,8 +2187,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getParentNode(node) {
-    const x = this.treeCtrl.getTreeNodeByKey(node.key);
-    const parent = x.getParentNode();
+    let x = this.treeCtrl.getTreeNodeByKey(node.key);
+    let parent = x.getParentNode();
     if (parent && parent.origin.parent !== '#') {
       parent.origin.expanded = true;
       this.updateTree();
@@ -2277,7 +2198,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async expandParentNodesOfSelectedNode(node) {
     if (node.parent !== '#') {
-      const tempParentNode: any = await this.getParentNode(node);
+      let tempParentNode: any = await this.getParentNode(node);
       if (tempParentNode.parent !== '#') {
         await this.expandParentNodesOfSelectedNode(tempParentNode);
       }
@@ -2297,50 +2218,52 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   checkAttrsText(node) {
-    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    // tslint:disable-next-line: max-line-length
-    const textAttrsPath = '/xs:schemas/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:attribute[@name=\'' + node.name + '\']/xs:annotation/xs:documentation';
-    const element = select(textAttrsPath, this.doc);
-    const text: any = {};
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let textAttrsPath = '/xs:schema/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:attribute[@name=\''
+      + node.name + '\']/xs:annotation/xs:documentation';
+    let element = select(textAttrsPath, this.doc);
+    let text: any = {};
     if (element.length > 0) {
       text.doc = element;
       node.text = text;
     }
     if (element.length === 0) {
-      // tslint:disable-next-line: max-line-length
-      const textAttrsPath2 = '/xs:schemas/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name=\'' + node.name + '\']/xs:annotation/xs:documentation';
+      let textAttrsPath2 = '/xs:schema/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name=\''
+        + node.name + '\']/xs:annotation/xs:documentation';
       text.doc = select(textAttrsPath2, this.doc);
       node.text = text;
       if (text.length <= 0) {
-        // tslint:disable-next-line: max-line-length
-        const textAttrsPath1 = '/xs:schemas/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:complexContent/xs:extension/xs:attribute[@name=\'' + node.name + '\']/xs:annotation/xs:documentation';
+        let textAttrsPath1 = '/xs:schema/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:complexContent/xs:extension/xs:attribute[@name=\''
+          + node.name + '\']/xs:annotation/xs:documentation';
         text.doc = select(textAttrsPath1, this.doc);
-        node.text = text;
+        if (text.doc) {
+          node.text = text;
+        }
       }
     }
   }
 
   addTypeChildNode(node, parent, data) {
     let parentNode;
-    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const complexTypePath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']';
-    const TypePath = '/xs:schemas/xs:element[@name=\'' + node + '\']';
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let complexTypePath = '/xs:schema/xs:complexType[@name=\'' + node + '\']';
+    let TypePath = '/xs:schema/xs:element[@name=\'' + node + '\']';
     let nodes: any = {};
-    const childArr: any = [];
-    const element = select(complexTypePath, this.doc);
+    let childArr: any = [];
+    let element = select(complexTypePath, this.doc);
     if (element.length > 0) {
-      const sequencePath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']/xs:sequence';
-      const element1 = select(sequencePath, this.doc);
+      let sequencePath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:sequence';
+      let element1 = select(sequencePath, this.doc);
       if (element1.length > 0) {
-        const childPath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:element';
-        const childs = select(childPath, this.doc);
+        let childPath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:element';
+        let childs = select(childPath, this.doc);
         if (childs.length > 0) {
           for (let i = 0; i < childs.length; i++) {
             nodes = {};
             for (let j = 0; j < childs[i].attributes.length; j++) {
-              const a = childs[i].attributes[j].nodeName;
-              const b = childs[i].attributes[j].nodeValue;
-              nodes = Object.assign(nodes, {[a]: b});
+              let a = childs[i].attributes[j].nodeName;
+              let b = childs[i].attributes[j].nodeValue;
+              nodes = Object.assign(nodes, this._defineProperty({}, a, b));
             }
             nodes.parent = parent;
             childArr.push(nodes);
@@ -2351,15 +2274,15 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             }
           }
         }
-        const seqChoicePath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:choice/xs:element';
-        const getChildChoice = select(seqChoicePath, this.doc);
+        let seqChoicePath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:choice/xs:element';
+        let getChildChoice = select(seqChoicePath, this.doc);
         if (getChildChoice.length > 0) {
           for (let i = 0; i < getChildChoice.length; i++) {
             nodes = {};
             for (let j = 0; j < getChildChoice[i].attributes.length; j++) {
-              const a = getChildChoice[i].attributes[j].nodeName;
-              const b = getChildChoice[i].attributes[j].nodeValue;
-              nodes = Object.assign(nodes, {[a]: b});
+              let a = getChildChoice[i].attributes[j].nodeName;
+              let b = getChildChoice[i].attributes[j].nodeValue;
+              nodes = Object.assign(nodes, this._defineProperty({}, a, b));
             }
             nodes.parent = parent;
             nodes.choice = parent;
@@ -2371,14 +2294,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             }
           }
         }
-        const seqChoiceSeqPath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:choice/xs:sequence/xs:element';
-        const getChildChoiceSeq = select(seqChoiceSeqPath, this.doc);
+        let seqChoiceSeqPath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:choice/xs:sequence/xs:element';
+        let getChildChoiceSeq = select(seqChoiceSeqPath, this.doc);
         if (getChildChoiceSeq.length > 0) {
           for (let i = 0; i < getChildChoiceSeq.length; i++) {
             nodes = {};
             for (let j = 0; j < getChildChoiceSeq[i].attributes.length; j++) {
-              const a = getChildChoiceSeq[i].attributes[j].nodeName;
-              const b = getChildChoiceSeq[i].attributes[j].nodeValue;
+              let a = getChildChoiceSeq[i].attributes[j].nodeName;
+              let b = getChildChoiceSeq[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, {[a]: b});
             }
             nodes.parent = parent;
@@ -2393,17 +2316,17 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         return childArr;
       }
-      const choicePath = '//xs:complexType[@name=\'' + node + '\']/xs:choice';
+      let choicePath = '//xs:complexType[@name=\'' + node + '\']/xs:choice';
       if ((select(choicePath, this.doc)).length) {
-        const childPath = '/xs:schemas/xs:complexType[@name=\'' + node + '\']/xs:choice/xs:element';
-        const childs = select(childPath, this.doc);
+        let childPath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:choice/xs:element';
+        let childs = select(childPath, this.doc);
         if (childs.length > 0) {
           for (let i = 0; i < childs.length; i++) {
             nodes = {};
             for (let j = 0; j < childs[i].attributes.length; j++) {
-              const a = childs[i].attributes[j].nodeName;
-              const b = childs[i].attributes[j].nodeValue;
-              nodes = Object.assign(nodes, {[a]: b});
+              let a = childs[i].attributes[j].nodeName;
+              let b = childs[i].attributes[j].nodeValue;
+              nodes = Object.assign(nodes, this._defineProperty({}, a, b));
             }
             nodes.parent = parent;
             nodes.choice = parent;
@@ -2419,7 +2342,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     } else if ((select(TypePath, this.doc).length > 0)) {
       parentNode = node;
-      const typeElement = select(TypePath, this.doc);
+      let typeElement = select(TypePath, this.doc);
       if (typeElement.length > 0 && typeElement[0].attributes.length > 0) {
         for (let i = 0; i < typeElement[0].attributes.length; i++) {
           if (typeElement[0].attributes[i].nodeName === 'type') {
@@ -2431,11 +2354,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   addChild(child, nodeArr, check, index) {
-    const attrs = this.checkAttributes(child.ref);
-    const text = this.checkText(child.ref);
-    const value = this.getValues(child.ref);
-    const attrsType: any = this.getAttrFromType(child.ref, child.parent);
-    const valueType = this.getValueFromType(child.ref, child.parent);
+    let attrs = this.checkAttributes(child.ref);
+    let text = this.checkText(child.ref);
+    let value = this.getValues(child.ref);
+    let attrsType: any = this.getAttrFromType(child.ref, child.parent);
+    let valueType = this.getValueFromType(child.ref, child.parent);
     let val = this.getVal(child);
     if ((_.isEmpty(val)) && (_.isEmpty(value)) && (_.isEmpty(valueType))) {
       val = this.getValFromDefault(child);
@@ -2460,9 +2383,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.autoAddChild(child);
       }
     }
-    if (!(_.isEmpty(text))) {
-      this.addText(text, nodeArr.children);
-    }
     if (!(_.isEmpty(val))) {
       this.attachValue(val, nodeArr.children);
     }
@@ -2475,7 +2395,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     if (attrsType !== undefined) {
       this.attachTypeAttrs(attrsType, nodeArr.children);
     }
-    this.autoExpand(nodeArr);
+    if (!_.isEmpty(text)) {
+      this.addText(text, nodeArr.children);
+    }
+    // this.autoExpand(nodeArr);
     this.printArraya(false);
     if (child) {
       this.selectedNode = child;
@@ -2485,12 +2408,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.scrollTreeToGivenId(this.selectedNode.uuid);
       }
     }
-    // this.changeValidConfigStatus(false);
   }
 
   autoAddChild(child) {
     if (this.autoAddCount === 0) {
-      const getCh = this.checkChildNode(child, undefined);
+      let getCh = this.checkChildNode(child, undefined);
       if (getCh) {
         for (let i = 0; i < getCh.length; i++) {
           if (getCh[i].minOccurs === undefined || getCh[i].minOccurs === 1) {
@@ -2512,7 +2434,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       for (let i = 0; i < child.length; i++) {
         if (text && text.parent === child[i].ref) {
           if (!child[i].text) {
-            child[i].text = Object.assign({}, text);
+            child[i].text = text;
+            child[i].show = !child[i].attributes && !child[i].values;
           }
         }
       }
@@ -2607,18 +2530,18 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   checkAttrsValue(attrs) {
-    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const enumerationPath = '//xs:element[@name=\'' + attrs.parent + '\']//xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name=\'' + attrs.name + '\']/xs:simpleType/xs:restriction/xs:enumeration';
-    const valueArr = [];
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let enumerationPath = '//xs:element[@name=\'' + attrs.parent + '\']//xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name=\'' + attrs.name + '\']/xs:simpleType/xs:restriction/xs:enumeration';
+    let valueArr = [];
     let valueJson = {};
     let value = select(enumerationPath, this.doc);
     if (value.length > 0) {
       for (let i = 0; i < value.length; i++) {
         valueJson = {};
         for (let j = 0; j < value[i].attributes.length; j++) {
-          const a = value[i].attributes[j].nodeName;
-          const b = value[i].attributes[j].nodeValue;
-          valueJson = Object.assign(valueJson, {[a]: b});
+          let a = value[i].attributes[j].nodeName;
+          let b = value[i].attributes[j].nodeValue;
+          valueJson = Object.assign(valueJson, this._defineProperty({}, a, b));
         }
         valueArr.push(valueJson);
       }
@@ -2629,14 +2552,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     } else {
-      const enumerationPath = '//xs:element[@name=\'' + attrs.parent + '\']//xs:complexType/xs:attribute[@name=\'' + attrs.name + '\']/xs:simpleType/xs:restriction/xs:enumeration';
+      let enumerationPath = '//xs:element[@name=\'' + attrs.parent + '\']//xs:complexType/xs:attribute[@name=\'' + attrs.name + '\']/xs:simpleType/xs:restriction/xs:enumeration';
       value = select(enumerationPath, this.doc);
       for (let i = 0; i < value.length; i++) {
         valueJson = {};
         for (let j = 0; j < value[i].attributes.length; j++) {
-          const a = value[i].attributes[j].nodeName;
-          const b = value[i].attributes[j].nodeValue;
-          valueJson = Object.assign(valueJson, {[a]: b});
+          let a = value[i].attributes[j].nodeName;
+          let b = value[i].attributes[j].nodeValue;
+          valueJson = Object.assign(valueJson, this._defineProperty({}, a, b));
         }
         valueArr.push(valueJson);
       }
@@ -2650,18 +2573,18 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getValues(node) {
-    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    const extensionPath = '//xs:element[@name=\'' + node + '\']/xs:complexType/xs:simpleContent/xs:extension/@*';
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let extensionPath = '//xs:element[@name=\'' + node + '\']/xs:complexType/xs:simpleContent/xs:extension/@*';
     let value: any = {};
-    const valueArr: any = [];
+    let valueArr: any = [];
     let b;
     let element = select(extensionPath, this.doc);
     if (element[0] && element[0].nodeValue !== 'NotEmptyType') {
-      const a = element[0].nodeName;
-      const x = element[0].nodeValue;
-      value = Object.assign(value, {[a]: x});
-      const defultPath = '//xs:element[@name=\'' + node + '\']/@*';
-      const defAttr = select(defultPath, this.doc);
+      let a = element[0].nodeName;
+      let x = element[0].nodeValue;
+      value = Object.assign(value, this._defineProperty({}, a, x));
+      let defultPath = '//xs:element[@name=\'' + node + '\']/@*';
+      let defAttr = select(defultPath, this.doc);
       if (defAttr.length > 0) {
         for (let s = 0; s < defAttr.length; s++) {
           if (defAttr[s].nodeName === 'default') {
@@ -2672,114 +2595,138 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
     if (element[0] && element[0].nodeValue === 'NotEmptyType') {
-      let a = element[0].nodeName;
-      const x = element[0].nodeValue;
-      value = Object.assign(value, {[a]: x});
-      const simpleTypePath = '//xs:simpleType[@name=\'' + value.base + '\']/xs:restriction/@*';
+      var _a13 = element[0].nodeName;
+      var _x2 = element[0].nodeValue;
+      value = Object.assign(value, this._defineProperty({}, _a13, _x2));
+      var simpleTypePath = '//xs:simpleType[@name=\'' + value.base + '\']/xs:restriction/@*';
       element = select(simpleTypePath, this.doc);
-      if (element.length > 0) {
-        a = element[0].nodeName;
-        b = element[0].nodeValue;
-        value = Object.assign(value, {[a]: b});
-        const minLengthPath = '//xs:simpleType[@name=\'' + x + '\']/xs:restriction/xs:minLength/@*';
-        element = select(minLengthPath, this.doc);
-        a = element[0].nodeName;
-        b = element[0].nodeValue;
-        value = Object.assign(value, {[a]: b});
 
+      if (element.length > 0) {
+        _a13 = element[0].nodeName;
+        b = element[0].nodeValue;
+        value = Object.assign(value, this._defineProperty({}, _a13, b));
+        var minLengthPath = '//xs:simpleType[@name=\'' + _x2 + '\']/xs:restriction/xs:minLength/@*';
+        element = select(minLengthPath, this.doc);
+        _a13 = element[0].nodeName;
+        b = element[0].nodeValue;
+        value = Object.assign(value, this._defineProperty({}, _a13, b));
       }
-      const defultPath = '//xs:element[@name=\'' + node + '\']/@*';
-      const defAttr = select(defultPath, this.doc);
-      if (defAttr.length > 0) {
-        for (let s = 0; s < defAttr.length; s++) {
-          if (defAttr[s].nodeName === 'default') {
-            value.default = defAttr[s].nodeValue;
-            value.data = defAttr[s].nodeValue;
+
+      var _defultPath = '//xs:element[@name=\'' + node + '\']/@*';
+
+      var _defAttr = select(_defultPath, this.doc);
+
+      if (_defAttr.length > 0) {
+        for (let _s = 0; _s < _defAttr.length; _s++) {
+          if (_defAttr[_s].nodeName === 'default') {
+            value.default = _defAttr[_s].nodeValue;
+            value.data = _defAttr[_s].nodeValue;
           }
         }
       }
+
       value.parent = node;
     } else {
-      const extensionPath1 = '//xs:element[@name=\'' + node + '\']/xs:simpleType/xs:restriction/@*';
+      var extensionPath1 = '//xs:element[@name=\'' + node + '\']/xs:simpleType/xs:restriction/@*';
       element = select(extensionPath1, this.doc);
+
       if (element.length > 0) {
-        let a = element[0].nodeName;
-        const c = element[0].nodeValue;
-        value = Object.assign(value, {[a]: c});
-        const defultPath = '//xs:element[@name=\'' + node + '\']/@*';
-        const defAttr = select(defultPath, this.doc);
-        if (defAttr.length > 0) {
-          for (let s = 0; s < defAttr.length; s++) {
-            if (defAttr[s].nodeName === 'default') {
-              value.default = defAttr[s].nodeValue;
-              value.data = defAttr[s].nodeValue;
+        var _a14 = element[0].nodeName;
+        var c = element[0].nodeValue;
+        value = Object.assign(value, this._defineProperty({}, _a14, c));
+
+        var _defultPath2 = '//xs:element[@name=\'' + node + '\']/@*';
+
+        var _defAttr2 = select(_defultPath2, this.doc);
+
+        if (_defAttr2.length > 0) {
+          for (let _s2 = 0; _s2 < _defAttr2.length; _s2++) {
+            if (_defAttr2[_s2].nodeName === 'default') {
+              value.default = _defAttr2[_s2].nodeValue;
+              value.data = _defAttr2[_s2].nodeValue;
             }
           }
         }
-        const minLengthPath = '//xs:element[@name=\'' + node + '\']/xs:simpleType/xs:restriction/xs:minLength/@*';
-        element = select(minLengthPath, this.doc);
-        const enumPath = '//xs:element[@name=\'' + node + '\']/xs:simpleType/xs:restriction/xs:enumeration/@*';
-        const ele = select(enumPath, this.doc);
+
+        var _minLengthPath = '//xs:element[@name=\'' + node + '\']/xs:simpleType/xs:restriction/xs:minLength/@*';
+
+        element = select(_minLengthPath, this.doc);
+        var enumPath = '//xs:element[@name=\'' + node + '\']/xs:simpleType/xs:restriction/xs:enumeration/@*';
+        var ele = select(enumPath, this.doc);
+
         if (element.length > 0) {
-          a = element[0].nodeName;
+          _a14 = element[0].nodeName;
           b = element[0].nodeValue;
-          value = Object.assign(value, {[a]: b});
-          const defultPath1 = '//xs:element[@name=\'' + node + '\']/@*';
-          const defAttr = select(defultPath1, this.doc);
-          if (defAttr.length > 0) {
-            for (let s = 0; s < defAttr.length; s++) {
-              if (defAttr[s].nodeName === 'default') {
-                value.default = defAttr[s].nodeValue;
-                value.data = defAttr[s].nodeValue;
+          value = Object.assign(value, this._defineProperty({}, _a14, b));
+          var defultPath1 = '//xs:element[@name=\'' + node + '\']/@*';
+
+          var _defAttr3 = select(defultPath1, this.doc);
+
+          if (_defAttr3.length > 0) {
+            for (let _s3 = 0; _s3 < _defAttr3.length; _s3++) {
+              if (_defAttr3[_s3].nodeName === 'default') {
+                value.default = _defAttr3[_s3].nodeValue;
+                value.data = _defAttr3[_s3].nodeValue;
               }
             }
           }
         }
+
         if (ele.length > 0) {
           value.values = [];
+
           for (let i = 0; i < ele.length; i++) {
-            let z: any = {};
-            const x = ele[i].nodeName;
-            const y = ele[i].nodeValue;
-            z = Object.assign(z, {[x]: y});
+            let z = {};
+            let _x3 = ele[i].nodeName;
+            let y = ele[i].nodeValue;
+            z = Object.assign(z, this._defineProperty({}, _x3, y));
             value.values.push(z);
           }
-          const defultPath2 = '//xs:element[@name=\'' + node + '\']/@*';
-          const defAttr = select(defultPath2, this.doc);
 
-          if (defAttr.length > 0) {
-            for (let s = 0; s < defAttr.length; s++) {
-              if (defAttr[s].nodeName === 'default') {
-                value.default = defAttr[s].nodeValue;
-                value.data = defAttr[s].nodeValue;
+          var defultPath2 = '//xs:element[@name=\'' + node + '\']/@*';
+
+          var _defAttr4 = select(defultPath2, this.doc);
+
+          if (_defAttr4.length > 0) {
+            for (let _s4 = 0; _s4 < _defAttr4.length; _s4++) {
+              if (_defAttr4[_s4].nodeName === 'default') {
+                value.default = _defAttr4[_s4].nodeValue;
+                value.data = _defAttr4[_s4].nodeValue;
               }
             }
           }
         }
       }
-      if (!(_.isEmpty(value))) {
+
+      if (!_.isEmpty(value)) {
         value.parent = node;
       }
     }
-    const xmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:annotation/xs:appinfo/XmlEditor/@type';
-    const attr = select(xmlEditorPath, this.doc);
+
+    var xmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:annotation/xs:appinfo/XmlEditor/@type';
+    var attr = select(xmlEditorPath, this.doc);
+
     if (attr.length > 0) {
       value.base = attr[0].nodeValue;
     }
+
     if (_.isEmpty(value)) {
-      let x;
-      const valueFromXmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:annotation/xs:appinfo/XmlEditor';
-      const attr1 = select(valueFromXmlEditorPath, this.doc);
+      var _x4;
+
+      var valueFromXmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:annotation/xs:appinfo/XmlEditor';
+      var attr1 = select(valueFromXmlEditorPath, this.doc);
+
       if (attr1.length > 0) {
         if (attr1[0].attributes && attr1[0].attributes.length > 0) {
-          for (let i = 0; i < attr1[0].attributes.length; i++) {
-            if (attr1[0].attributes[i].nodeName === 'type') {
-              x = attr1[0].attributes[i].nodeValue;
+          for (let _i32 = 0; _i32 < attr1[0].attributes.length; _i32++) {
+            if (attr1[0].attributes[_i32].nodeName === 'type') {
+              _x4 = attr1[0].attributes[_i32].nodeValue;
               break;
             }
           }
-          if (x !== undefined) {
-            value.base = x;
+
+          if (_x4 !== undefined) {
+            value.base = _x4;
             value.parent = node;
           } else {
             value.base = 'xs:string';
@@ -2788,9 +2735,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     }
-    if (!(_.isEmpty(value))) {
+
+    if (!_.isEmpty(value)) {
       valueArr.push(value);
     }
+
+
     return valueArr;
   }
 
@@ -2884,17 +2834,17 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   checkDuplicateEntries(child, json) {
-    const keys = [];
+    let keys = [];
     let count = 0;
     // tslint:disable-next-line: forin
-    for (const key in child) {
+    for (let key in child) {
       keys[count] = key;
       count++;
     }
     for (let i = 0; i < json.length; i++) {
       let count1 = 0;
       for (let k = 0; k < keys.length; k++) {
-        const temp = json[i];
+        let temp = json[i];
         if (temp[keys[k]] === child[keys[k]]) {
           count1++;
         }
@@ -2945,7 +2895,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     if (this.nodes[0] && this.nodes[0].children && this.nodes[0].children.length > 0) {
       for (let i = 0; i < this.nodes[0].children.length; i++) {
-        const x = this.autoValidateRecursion(this.nodes[0].children[i]);
+        let x = this.autoValidateRecursion(this.nodes[0].children[i]);
         if (x === false) {
           return x;
         }
@@ -2977,7 +2927,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     if (child && child.children && child.children.length > 0) {
       for (let i = 0; i < child.children.length; i++) {
-        const x = this.autoValidateRecursion(child.children[i]);
+        let x = this.autoValidateRecursion(child.children[i]);
         if (x === false) {
           return x;
         }
@@ -2987,8 +2937,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // drag and drop check
   dragAndDropRules(arg: NzFormatBeforeDropEvent): Observable<boolean> {
-    const dropNode = arg.node.origin;
-    const dragNode = arg.dragNode.origin;
+    let dropNode = arg.node.origin;
+    let dragNode = arg.dragNode.origin;
     if (dropNode.ref === dragNode.parent) {
       let count = 0;
       if (dragNode.maxOccurs === 'unbounded') {
@@ -3038,8 +2988,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   dragOverRules(arg: NzFormatBeforeDropEvent) {
-    const dropNode = arg.node.origin;
-    const dragNode = arg.dragNode.origin;
+    let dropNode = arg.node.origin;
+    let dragNode = arg.dragNode.origin;
     if (dropNode.ref === dragNode.parent) {
       let count = 0;
       if (dragNode.maxOccurs === 'unbounded') {
@@ -3081,8 +3031,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // drop data
   dropData(arg: NzFormatBeforeDropEvent) {
-    const from = arg.dragNode.origin;
-    const to = arg.node.origin;
+    let from = arg.dragNode.origin;
+    let to = arg.node.origin;
     if (this.dropCheck.status && this.dropCheck && this.dropCheck.dropNode && this.dropCheck.dropNode.ref === to.ref) {
       this.removeNode(this.dropCheck.dragNode);
       from.parentId = to.uuid;
@@ -3107,10 +3057,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.breadCrumbArray = [];
     this.createBreadCrumb(event);
     this.breadCrumbArray.reverse();
-
-    if (this.preferences.expandOption === 'both') {
-
-    }
   }
 
   // BreadCrumb
@@ -3237,15 +3183,15 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           this.isNext = false;
         }
       }
-      if (node.keyReference) {
+      if (node.key) {
         if (this.nodes[0].keyref) {
           if (this.nodes[0].attributes.length > 0) {
             for (let i = 0; i < this.nodes[0].attributes.length; i++) {
               if (this.nodes[0].keyref === this.nodes[0].attributes[i].name) {
                 for (let j = 0; j < node.attributes.length; j++) {
-                  if (node.attributes[j].name === node.keyReference) {
+                  if (node.attributes[j].name === node.key) {
                     if (this.nodes[0].attributes[i].data === node.attributes[j].data) {
-                      for (const key in this.nodes[0].attributes[i]) {
+                      for (let key in this.nodes[0].attributes[i]) {
                         if (key === 'data') {
                           delete this.nodes[0].attributes[i][key];
                         }
@@ -3273,9 +3219,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         for (let i = 0; i < child.attributes.length; i++) {
           if (child.keyref === child.attributes[i].name) {
             for (let j = 0; j < node.attributes.length; j++) {
-              if (node.attributes[j].name === node.keyReference) {
+              if (node.attributes[j].name === node.key) {
                 if (child.attributes[i].data === node.attributes[j].data) {
-                  for (const key in child.attributes[i]) {
+                  for (let key in child.attributes[i]) {
                     if (key === 'data') {
                       delete child.attributes[i][key];
                       break;
@@ -3343,32 +3289,32 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   copyNode(node) {
     this.copyItem = undefined;
     this.cutData = false;
-    for (const key in node) {
+    for (let key in node) {
       if (typeof (node[key]) === 'object') {
-        this.copyItem = Object.assign({}, this.copyItem, {[key]: []});
+        this.copyItem = Object.assign({}, this.copyItem, this._defineProperty({}, key, []));
         if ((key === 'attributes' || key === 'values') && node[key].length > 0) {
           for (let i = 0; i < node[key].length; i++) {
             let temp = {};
-            for (const a in node[key][i]) {
+            for (let a in node[key][i]) {
               if (a === 'id') {
-                temp = Object.assign(temp, {[a]: this.counting});
+                temp = Object.assign(temp, this._defineProperty({}, a, this.counting));
                 this.counting++;
               } else {
-                temp = Object.assign(temp, {[a]: node[key][i][a]});
+                temp = Object.assign(temp, this._defineProperty({}, a, node[key][i][a]));
               }
             }
             this.copyItem[key].push(Object.assign({}, temp));
           }
         } else if (key === 'children' && node[key].length > 0) {
           for (let i = 0; i < node[key].length; i++) {
-            const a = this.copyNodeRecursion(node[key][i]);
+            let a = this.copyNodeRecursion(node[key][i]);
             this.copyItem[key].push(a);
           }
         } else if (key === 'text') {
-          this.copyItem = Object.assign({}, this.copyItem, {[key]: node[key]});
+          this.copyItem = Object.assign({}, this.copyItem, this._defineProperty({}, key, node[key]));
         }
       } else {
-        this.copyItem = Object.assign({}, this.copyItem, {[key]: node[key]});
+        this.copyItem = Object.assign({}, this.copyItem, this._defineProperty({}, key, node[key]));
       }
     }
   }
@@ -3421,7 +3367,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.copyItem.key = node.uuid + this.counting;
     this.counting++;
     if (this.copyItem && !this.copyItem.order) {
-      const a = this.checkChildNode(node, undefined);
+      let a = this.checkChildNode(node, undefined);
       if (a && a.length > 0) {
         for (let i = 0; i < a.length; i++) {
           if (a[i].ref === this.copyItem.ref) {
@@ -3437,7 +3383,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.changeParentId(res, this.copyItem.uuid);
       });
     }
-    const copyData = JSON.parse(JSON.stringify(this.copyItem));
+    let copyData = JSON.parse(JSON.stringify(this.copyItem));
     if (node.ref === 'Profiles' && this.router.url.split('/')[2] === 'yade' && !this.cutData) {
       let tName;
       let x = [];
@@ -3460,9 +3406,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             tName = _.clone(copyData.attributes[i].data + '-copy1');
           } else if (tName) {
             if (tName !== copyData.attributes[i].data && tName.split('-copy')) {
-              const xz = tName.split('-copy');
+              let xz = tName.split('-copy');
               tName = xz[xz.length - 1];
-              tName = parseInt(tName) || 0;
+              tName = parseInt(tName, 10) || 0;
             } else {
               tName = 0;
             }
@@ -3490,9 +3436,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.schemaIdentifier) {
       tab.rename = true;
       this.oldName = Object.assign(this.oldName, {name: tab.name});
-      const wt = $('#' + tab.id).width();
+      let wt = $('#' + tab.id).width();
       setTimeout(() => {
-        const dom = $('#rename-field');
+        let dom = $('#rename-field');
         dom.width(wt);
         dom.focus();
         try {
@@ -3505,7 +3451,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   renameOnEnter($event, data) {
-    const key = $event.keyCode || $event.which;
+    let key = $event.keyCode || $event.which;
     if (key === 13) {
       delete data['rename'];
       if (data.name && data.name !== this.oldName.name) {
@@ -3551,6 +3497,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 // Show all Child Nodes and search functionalities.
   showAllChildNode(node) {
     this.showAllChild = [];
+    const text = node.text;
+    const _node = {ref: node.ref, parent: node.parent};
     const obj = {ref: node.ref, parent: node.parent, children: [], expanded: true};
     this.checkChildNode(obj, obj);
     this.counter = 0;
@@ -3573,8 +3521,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.nodes[0]) {
       a = this.nodes[0].ref;
     }
-    const keyPath = '/xs:schemas/xs:element[@name=\'' + a + '\']/xs:key/@name';
-    const keyRefPath = '/xs:schemas/xs:element[@name=\'' + a + '\']/xs:keyref';
+    const keyPath = '/xs:schema/xs:element[@name=\'' + a + '\']/xs:key/@name';
+    const keyRefPath = '/xs:schema/xs:element[@name=\'' + a + '\']/xs:keyref';
     let keyattrs: any = {};
 
     if (!this.keyRefNodes || this.keyRefNodes.length === 0) {
@@ -3589,13 +3537,13 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     if (this.keyNodes.length > 0) {
       for (let i = 0; i < this.keyNodes.length; i++) {
-        const key = this.keyNodes[i].nodeName;
-        const value = this.strReplace(this.keyNodes[i].nodeValue);
-        keyattrs = Object.assign(keyattrs, {[key]: value});
+        let key = this.keyNodes[i].nodeName;
+        let value = this.strReplace(this.keyNodes[i].nodeValue);
+        keyattrs = Object.assign(keyattrs, this._defineProperty({}, key, value));
         for (let j = 0; j < this.keyNodes[i].ownerElement.childNodes.length; j++) {
           if (this.keyNodes[i].ownerElement.childNodes[j].nodeName === 'xs:field') {
             for (let k = 0; k < this.keyNodes[i].ownerElement.childNodes[j].attributes.length; k++) {
-              keyattrs.keyReference = this.strReplace(this.keyNodes[i].ownerElement.childNodes[j].attributes[k].nodeValue);
+              keyattrs.key = this.strReplace(this.keyNodes[i].ownerElement.childNodes[j].attributes[k].nodeValue);
             }
             break;
           }
@@ -3613,9 +3561,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   getKeyRef(keyRefNodes) {
     let attrs: any = {};
     for (let i = 0; i < keyRefNodes.attributes.length; i++) {
-      const key = keyRefNodes.attributes[i].nodeName;
-      const value = this.strReplace(keyRefNodes.attributes[i].nodeValue);
-      attrs = Object.assign(attrs, {[key]: value});
+      let key = keyRefNodes.attributes[i].nodeName;
+      let value = this.strReplace(keyRefNodes.attributes[i].nodeValue);
+      attrs = Object.assign(attrs, this._defineProperty({}, key, value));
       for (let j = 0; j < keyRefNodes.attributes[0].ownerElement.childNodes.length; j++) {
         if (keyRefNodes.attributes[0].ownerElement.childNodes[j].nodeName === 'xs:field') {
           for (let k = 0; k < keyRefNodes.attributes[0].ownerElement.childNodes[j].attributes.length; k++) {
@@ -3638,8 +3586,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   AddKeyAndKeyref(nodes) {
     let k = false;
     let keyre = false;
-    for (const key in nodes) {
-      if (key === 'keyReference') {
+    for (let key in nodes) {
+      if (key === 'key') {
         k = true;
         break;
       } else if (key === 'keyref') {
@@ -3651,7 +3599,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       for (let i = 0; i < this.nodes[0].children.length; i++) {
         if (this.nodes[0].children[i].ref === nodes.name) {
           if (k) {
-            this.nodes[0].children[i].keyReference = nodes.keyReference;
+            this.nodes[0].children[i].key = nodes.key;
           } else if (keyre) {
             this.nodes[0].children[i].keyref = nodes.keyref;
           }
@@ -3667,8 +3615,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     function recursion(showAllChild, child) {
       let ke = false;
       let keyref = false;
-      for (const key in showAllChild) {
-        if (key === 'keyReference') {
+      for (let key in showAllChild) {
+        if (key === 'key') {
           ke = true;
           break;
         } else if (key === 'keyref') {
@@ -3679,7 +3627,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       for (let i = 0; i < child.length; i++) {
         if (child[i].ref === showAllChild.name) {
           if (ke) {
-            child[i].keyReference = showAllChild.keyReference;
+            child[i].key = showAllChild.key;
           } else if (keyref) {
             child[i].keyref = showAllChild.keyref;
             if (child[i].attributes) {
@@ -3749,9 +3697,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   attachKeyReferencing(key) {
     if (key.name) {
-      if (this.nodes[0].ref === key.name && this.nodes[0].keyReference) {
+      if (this.nodes[0].ref === key.name && this.nodes[0].key) {
         for (let i = 0; i < this.nodes[0].attributes.length; i++) {
-          if (this.nodes[0].attributes[i].name === this.nodes[0].keyReference) {
+          if (this.nodes[0].attributes[i].name === this.nodes[0].key) {
             this.nodes[0].attributes[i].refElement = key.refe;
             break;
           }
@@ -3766,9 +3714,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   attachKeyReferencingRecursion(key, child) {
     if (key.name) {
-      if (child.ref === key.name && child.keyReference && child.attributes) {
+      if (child.ref === key.name && child.key && child.attributes) {
         for (let i = 0; i < child.attributes.length; i++) {
-          if (child.attributes[i].name === child.keyReference) {
+          if (child.attributes[i].name === child.key) {
             child.attributes[i].refElement = key.refe;
             break;
           }
@@ -3787,7 +3735,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.error = true;
     } else {
       if (event.match(/<[^>]+>/gm)) {
-        const x = event.replace(/<[^>]+>/gm);
+        let x = event.replace(/<[^>]+>/gm);
         if (x !== 'undefined&nbsp;undefined') {
           nodes.values[0] = Object.assign(nodes.values[0], {data: event});
           event = '';
@@ -3808,7 +3756,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ': ' + this.spaceNotAllowed;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key === 'data') {
               delete tag[key];
               this.autoValidate();
@@ -3820,7 +3768,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ': ' + this.requiredField;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key === 'data') {
               delete tag[key];
               this.autoValidate();
@@ -3836,7 +3784,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ': ' + this.colonNotAllowed;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key === 'data') {
               delete tag[key];
               this.autoValidate();
@@ -3848,7 +3796,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ': ' + this.requiredField;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key === 'data') {
               delete tag[key];
               this.autoValidate();
@@ -3866,7 +3814,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ': ' + this.requiredField;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key === 'data') {
               delete tag[key];
               this.autoValidate();
@@ -3878,7 +3826,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ': ' + this.cannotAddBlankSpace;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key === 'data') {
               delete tag[key];
               this.autoValidate();
@@ -3897,7 +3845,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ': ' + this.requiredField;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key === 'data') {
               delete tag[key];
               this.autoValidate();
@@ -3909,7 +3857,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ': ' + this.onlyPositiveNumbers;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key == 'data') {
               delete tag[key];
               this.autoValidate();
@@ -3921,7 +3869,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ': ' + this.cannotNegative;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key === 'data') {
               delete tag[key];
               this.autoValidate();
@@ -3940,7 +3888,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           this.text = tag.name + ': ' + this.requiredField;
           this.errorName = {e: tag.name};
           if (tag.data !== undefined) {
-            for (const key in tag) {
+            for (let key in tag) {
               if (key === 'data') {
                 delete tag[key];
                 this.autoValidate();
@@ -3952,7 +3900,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           this.text = tag.name + ': ' + this.onlyNumbers;
           this.errorName = {e: tag.name};
           if (tag.data !== undefined) {
-            for (const key in tag) {
+            for (let key in tag) {
               if (key === 'data') {
                 delete tag[key];
                 this.autoValidate();
@@ -3964,7 +3912,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           this.text = tag.name + ': ' + this.onlyNumbers;
           this.errorName = {e: tag.name};
           if (tag.data !== undefined) {
-            for (const key in tag) {
+            for (let key in tag) {
               if (key === 'data') {
                 delete tag[key];
                 this.autoValidate();
@@ -3980,7 +3928,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           this.text = tag.name + ': ' + this.requiredField;
           this.errorName = {e: tag.name};
           if (tag.data !== undefined) {
-            for (const key in tag) {
+            for (let key in tag) {
               if (key === 'data') {
                 delete tag[key];
                 this.autoValidate();
@@ -3992,7 +3940,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           this.text = tag.name + ': ' + this.notValidUrl;
           this.errorName = {e: tag.name};
           if (tag.data !== undefined) {
-            for (const key in tag) {
+            for (let key in tag) {
               if (key === 'data') {
                 delete tag[key];
                 this.autoValidate();
@@ -4026,7 +3974,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ': ' + this.spaceNotAllowed;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key === 'data') {
               delete tag[key];
               this.autoValidate();
@@ -4038,7 +3986,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ':' + this.requiredField;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key == 'data') {
               delete tag[key];
               this.autoValidate();
@@ -4056,7 +4004,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ': ' + this.colonNotAllowed;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key == 'data') {
               delete tag[key];
               this.autoValidate();
@@ -4068,7 +4016,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ': ' + this.requiredField;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key === 'data') {
               delete tag[key];
               this.autoValidate();
@@ -4090,7 +4038,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ': ' + this.requiredField;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key === 'data') {
               delete tag[key];
               this.autoValidate();
@@ -4102,7 +4050,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ': ' + this.cannotAddBlankSpace;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key == 'data') {
               delete tag[key];
               this.autoValidate();
@@ -4122,7 +4070,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ': ' + this.requiredField;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key == 'data') {
               delete tag[key];
               this.autoValidate();
@@ -4134,7 +4082,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ': ' + this.onlyPositiveNumbers;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key == 'data') {
               delete tag[key];
               this.autoValidate();
@@ -4146,7 +4094,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ': ' + this.onlyPositiveNumbers;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key == 'data') {
               delete tag[key];
               this.autoValidate();
@@ -4158,7 +4106,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ': ' + this.cannotNegative;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key == 'data') {
               delete tag[key];
               this.autoValidate();
@@ -4176,7 +4124,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ': ' + this.requiredField;
         this.errorName = {e: tag.name};
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key === 'data') {
               delete tag[key];
               this.autoValidate();
@@ -4188,7 +4136,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ': ' + this.onlyNumbers;
         this.errorName = {e: tag.name};
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key === 'data') {
               delete tag[key];
               this.autoValidate();
@@ -4200,7 +4148,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ': ' + this.onlyNumbers;
         this.errorName = {e: tag.name};
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key === 'data') {
               delete tag[key];
               this.autoValidate();
@@ -4215,7 +4163,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           this.text = tag.name + ': ' + this.requiredField;
           this.errorName = {e: tag.name};
           if (tag.data !== undefined) {
-            for (const key in tag) {
+            for (let key in tag) {
               if (key === 'data') {
                 delete tag[key];
                 this.autoValidate();
@@ -4228,7 +4176,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           this.text = tag.name + ': ' + this.notValidUrl;
           this.errorName = {e: tag.name};
           if (tag.data !== undefined) {
-            for (const key in tag) {
+            for (let key in tag) {
               if (key === 'data') {
                 delete tag[key];
                 this.autoValidate();
@@ -4247,7 +4195,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         tag = Object.assign(tag, {data: value});
         this.autoValidate();
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key === 'data') {
               delete tag[key];
               this.autoValidate();
@@ -4259,7 +4207,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.text = tag.name + ': ' + this.requiredField;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
-          for (const key in tag) {
+          for (let key in tag) {
             if (key === 'data') {
               delete tag[key];
               this.autoValidate();
@@ -4280,7 +4228,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.text = this.requiredField;
       this.errorName = {e: ref};
       if (tag.data !== undefined) {
-        for (const key in tag) {
+        for (let key in tag) {
           if (key === 'data') {
             delete tag[key];
             this.autoValidate();
@@ -4299,7 +4247,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.text = this.requiredField;
       this.errorName = {e: ref};
       if (tag.data !== undefined) {
-        for (const key in tag) {
+        for (let key in tag) {
           if (key === 'data') {
             this.autoValidate();
             delete tag[key];
@@ -4315,33 +4263,15 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getDataAttr(refer) {
     this.tempArr = [];
-    let temp;
-    for (let i = 0; i < this.nodes[0].children.length; i++) {
-      if (this.nodes[0].children[i].ref === refer) {
-        if (this.nodes[0].children[i].keyReference) {
-          temp = this.nodes[0].children[i].keyReference;
-          for (let j = 0; j < this.nodes[0].children[i].attributes.length; j++) {
-            if (this.nodes[0].children[i].attributes[j].name === temp) {
-              if (this.nodes[0].children[i].attributes[j] && this.nodes[0].children[i].attributes[j].data) {
-                this.tempArr.push(this.nodes[0].children[i].attributes[j].data);
-              }
-            }
-          }
-        }
-      } else {
-        if (this.nodes[0].children[i].children) {
-          this.keyrecursion(refer, this.nodes[0].children[i].children);
-        }
-      }
-    }
+    this.keyrecursion(refer, this.nodes[0].children);
   }
 
   keyrecursion(refer, childNode) {
     let temp;
     for (let i = 0; i < childNode.length; i++) {
       if (childNode[i].ref === refer) {
-        if (childNode[i].keyReference) {
-          temp = childNode[i].keyReference;
+        if (childNode[i].key) {
+          temp = childNode[i].key;
           for (let j = 0; j < childNode[i].attributes.length; j++) {
             if (childNode[i].attributes[j].name === temp) {
               if (childNode[i].attributes[j] && childNode[i].attributes[j].data) {
@@ -4362,9 +4292,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   gotoKey(node) {
     if (node !== undefined) {
       if (node.refer === this.nodes[0].ref) {
-        if (this.nodes[0].keyReference) {
+        if (this.nodes[0].key) {
           for (let i = 0; i < this.nodes[0].attributes.length; i++) {
-            if (this.nodes[0].attributes[i].name === this.nodes[0].keyReference) {
+            if (this.nodes[0].attributes[i].name === this.nodes[0].key) {
               if (node.data === this.nodes[0].attributes[i].data) {
                 this.getData(this.nodes[0]);
                 this.selectedNode = this.nodes[0];
@@ -4389,9 +4319,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   gotoKeyRecursion(node, child) {
     if (node !== undefined) {
       if (node.refer === child.ref) {
-        if (child.keyReference) {
+        if (child.key) {
           for (let i = 0; i < child.attributes.length; i++) {
-            if (child.attributes[i].name === child.keyReference) {
+            if (child.attributes[i].name === child.key) {
               if (node.data === child.attributes[i].data) {
                 this.getData(child);
                 this.selectedNode = child;
@@ -4513,7 +4443,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       this.importObj = {assignXsd: this.objectType};
     }
-    const modalRef = this.modalService.open(ImportModalComponent, {backdrop: 'static', size: 'lg'});
+    let modalRef = this.modalService.open(ImportModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.importObj = this.importObj;
     modalRef.componentInstance.otherSchema = this.otherSchema;
     modalRef.componentInstance.importXsd = false;
@@ -4528,7 +4458,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             this.isLoading = true;
             if (this.objectType === 'OTHER') {
               if (this.tabsArray.length === 0) {
-                const _tab = _.clone({id: -1, name: 'edit1', schemaIdentifier: this.schemaIdentifier});
+                let _tab = _.clone({id: -1, name: 'edit1', schemaIdentifier: this.schemaIdentifier});
                 this.tabsArray.push(_tab);
                 this.coreService.post('xmleditor/read', {
                   controllerId: this.schedulerIds.selected,
@@ -4562,12 +4492,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getXsdSchema() {
-    const obj = {
+    let obj = {
       controllerId: this.schedulerIds.selected,
       objectType: this.objectType,
       uri: this.schemaIdentifier
     };
-    this.coreService.post('xmleditor/schemas/assign', obj).subscribe((res: any) => {
+    this.coreService.post('xmleditor/schema/assign', obj).subscribe((res: any) => {
       if (res.schema) {
         this.path = res.schema;
         this.schemaIdentifier = res.schemaIdentifier;
@@ -4645,11 +4575,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   checkForTab(id) {
     $(document).delegate('#' + id, 'keydown', function (e) {
-      const keyCode = e.keyCode || e.which;
+      let keyCode = e.keyCode || e.which;
       if (keyCode == 9) {
         e.preventDefault();
-        const start = this.selectionStart;
-        const end = this.selectionEnd;
+        let start = this.selectionStart;
+        let end = this.selectionEnd;
         // set textarea value to: text before caret + tab + text after caret
         $(this).val($(this).val().substring(0, start)
           + '\t'
@@ -4663,7 +4593,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   autosize(evt) {
     if (evt) {
-      const el = document.getElementById(evt);
+      let el = document.getElementById(evt);
       if (el !== null) {
         setTimeout(() => {
           el.style.cssText = 'padding:4px 8px; overflow:hidden;height:' + el.scrollHeight + 'px';
@@ -4727,7 +4657,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  othersSubmit(data) {
+  othersSubmit(data): void {
     this.isLoading = true;
     let obj: any = {
       controllerId: this.schedulerIds.selected,
@@ -4740,7 +4670,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       obj.fileContent = this.uploadData;
     }
     this.path = this.selectedXsd;
-    this.coreService.post('xmleditor/schemas/assign', obj).subscribe((res: any) => {
+    this.coreService.post('xmleditor/schema/assign', obj).subscribe((res: any) => {
       this.schemaIdentifier = res.schemaIdentifier;
       this.loadTree(res.schema, false);
       this.submitXsd = true;
@@ -4776,7 +4706,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         configuration: this._showXml()
       };
     }
-    this.coreService.post('xmleditor/schemas/reassign', obj).subscribe((res: any) => {
+    this.coreService.post('xmleditor/schema/reassign', obj).subscribe((res: any) => {
       this.doc = new DOMParser().parseFromString(res.schema, 'application/xml');
       this.nodes = [];
       this.nodes.push(JSON.parse(res.configurationJson));
@@ -4808,19 +4738,19 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       _tab.id = Math.sign(_.clone(_tab.id - 1)) === 1 ? -1 : _.clone(_tab.id - 1);
       for (let i = 0; i < this.tabsArray.length; i++) {
         if (this.tabsArray[i].name) {
-          const _arr = this.tabsArray[i].name.match(/[a-zA-Z]+/g);
+          let _arr = this.tabsArray[i].name.match(/[a-zA-Z]+/g);
           if (_arr && _arr.length > 0 && _arr[0] === 'edit') {
             if (!tempName) {
               tempName = this.tabsArray[i].name;
             }
-            if (tempName && (parseInt(this.tabsArray[i].name.match(/\d+/g)[0]) > parseInt(tempName.match(/\d+/g)[0]))) {
+            if (tempName && (parseInt(this.tabsArray[i].name.match(/\d+/g)[0], 10) > parseInt(tempName.match(/\d+/g)[0], 10))) {
               tempName = this.tabsArray[i].name;
             }
           }
         }
       }
       if (tempName) {
-        _tab.name = _.clone('edit' + (parseInt(tempName.match(/\d+/g)[0]) + 1));
+        _tab.name = _.clone('edit' + (parseInt(tempName.match(/\d+/g)[0], 10) + 1));
       } else {
         _tab.name = 'edit1';
       }
@@ -4844,16 +4774,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     self.submitXsd = false;
   }
 
-  getpos(id) {
-    $('[data-toggle="tooltip"]').tooltip({
-      trigger: 'hover focus manual',
-      html: true,
-      delay: {'show': 500, 'hide': 200}
-    });
-    const a = '#' + id;
-    $(a).tooltip('show');
-  }
-
   // create Xml from Json
   showXml() {
     const xml = this._showXml();
@@ -4865,29 +4785,28 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     modalRef.componentInstance.activeTab = this.activeTab;
     modalRef.result.then((res: any) => {
       if (res && res.result.configurationJson) {
-        const a = [];
-        const arr = JSON.parse(res.result.configurationJson);
+        let a = [];
+        let arr = JSON.parse(res.result.configurationJson);
         a.push(arr);
         this.counting = arr.lastUuid;
         this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
         this.nodes = a;
         this.submitXsd = true;
-        const x = {state: {message: res.result.message}};
+        let x = {state: {message: res.result.message}};
         this.XSDState = x.state;
         this.prevXML = '';
         this.selectedNode = this.nodes[0];
         this.getIndividualData(this.selectedNode, undefined);
         this.getData(this.selectedNode);
-        // cb();
       }
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
   jsonToXml() {
-    const doc = document.implementation.createDocument('', '', null);
-    const peopleElem = doc.createElement(this.nodes[0].ref);
+    let doc = document.implementation.createDocument('', '', null);
+    let peopleElem = doc.createElement(this.nodes[0].ref);
     if (this.nodes[0].attributes && this.nodes[0].attributes.length > 0) {
       for (let i = 0; i < this.nodes[0].attributes.length; i++) {
         if (this.nodes[0].attributes[i].data) {
@@ -4921,7 +4840,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     if (childrenNode && childrenNode.values && childrenNode.values.length >= 0) {
       for (let i = 0; i < childrenNode.values.length; i++) {
         if (childrenNode.values[i].data) {
-          const a = doc.createCDATASection(childrenNode.values[i].data);
+          let a = doc.createCDATASection(childrenNode.values[i].data);
           if (a) {
             curentNode.appendChild(a);
           }
@@ -4946,19 +4865,21 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   downloadSchema(objType, schemaIdentifier) {
-    let link = './api/xmleditor/schemas/download?controllerId='
+    let name = objType + '.xsd';
+    let link = './api/xmleditor/schema/download?controllerId='
       + this.schedulerIds.selected + '&objectType=' + objType +
       '&accessToken=' + this.authService.accessTokenId;
     if (objType === 'OTHER') {
       link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier);
+      name = schemaIdentifier + '.xsd';
     }
     // saveAs(link, name);
     $('#tmpFrame').attr('src', link);
   }
 
   showXSD(objType, schemaIdentifier) {
-    const windowProperties = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
-    let link = './api/xmleditor/schemas/download?show=true&controllerId='
+    let windowProperties = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
+    let link = './api/xmleditor/schema/download?show=true&controllerId='
       + this.schedulerIds.selected + '&objectType=' + objType + '&accessToken='
       + this.authService.accessTokenId;
     if (objType === 'OTHER') {
@@ -5035,7 +4956,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // create json from xml
   createJsonfromXml(data) {
-    const result1: any = convert.xml2json(data, {
+    let result1: any = convert.xml2json(data, {
       compact: true,
       spaces: 4,
       ignoreDeclaration: true,
@@ -5044,12 +4965,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     });
     let rootNode;
     let r_node;
-    const x: any = JSON.parse(result1);
-    for (const key in x) {
+    let x: any = JSON.parse(result1);
+    for (let key in x) {
       rootNode = key;
     }
-    const json = this.createTempJson(x, rootNode);
-    for (const key in json) {
+    let json = this.createTempJson(x, rootNode);
+    for (let key in json) {
       r_node = key;
     }
     if (this.nodes[0] && this.nodes[0].ref === rootNode) {
@@ -5064,7 +4985,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     let temp: any = {};
     if (_.isArray(editJson[rootNode])) {
       for (let i = 0; i < editJson[rootNode].length; i++) {
-        temp = Object.assign(temp, {[rootNode]: editJson[rootNode][i]});
+        temp = Object.assign(temp, this._defineProperty({}, rootNode, editJson[rootNode][i]));
       }
     } else {
       for (let a in editJson[rootNode]) {
@@ -5073,32 +4994,32 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         if (a === '_attributes' || a === '_cdata') {
           if (temp[rootNode] === undefined) {
-            temp = Object.assign(temp, {[rootNode]: {[a]: editJson[rootNode][a]}});
+            temp = Object.assign(temp, this._defineProperty({}, rootNode, this._defineProperty({}, a, editJson[rootNode][a])));
           } else {
-            temp[rootNode] = Object.assign(temp[rootNode], {[a]: editJson[rootNode][a]});
+            temp[rootNode] = Object.assign(temp[rootNode], this._defineProperty({}, a, editJson[rootNode][a]));
           }
         } else {
           if (_.isArray(editJson[rootNode][a])) {
             for (let i = 0; i < editJson[rootNode][a].length; i++) {
-              const x = a + '*' + i;
+              let x = a + '*' + i;
               if (temp[rootNode] === undefined) {
-                temp = Object.assign(temp, {[rootNode]: {[x]: {}}});
+                temp = Object.assign(temp,  this._defineProperty({}, rootNode, this._defineProperty({}, x, {})));
               } else {
-                temp[rootNode] = Object.assign(temp[rootNode], {[x]: {}});
+                temp[rootNode] = Object.assign(temp[rootNode], this._defineProperty({}, x, {}));
               }
-              for (const key in editJson[rootNode][a][i]) {
+              for (let key in editJson[rootNode][a][i]) {
                 this.createTempJsonRecursion(key, temp[rootNode][x], editJson[rootNode][a][i]);
               }
             }
           } else {
             if (temp[rootNode] === undefined) {
-              temp = Object.assign(temp, {[rootNode]: {[a]: {}}});
-              for (const key in editJson[rootNode][a]) {
+              temp = Object.assign(temp, this._defineProperty({}, rootNode, this._defineProperty({}, a, {})));
+              for (let key in editJson[rootNode][a]) {
                 this.createTempJsonRecursion(key, temp[rootNode][a], editJson[rootNode][a]);
               }
             } else {
-              temp[rootNode] = Object.assign(temp[rootNode], {[a]: {}});
-              for (const key in editJson[rootNode][a]) {
+              temp[rootNode] = Object.assign(temp[rootNode], this._defineProperty({}, a, {}));
+              for (let key in editJson[rootNode][a]) {
                 this.createTempJsonRecursion(key, temp[rootNode][a], editJson[rootNode][a]);
               }
             }
@@ -5112,25 +5033,27 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   createTempJsonRecursion(key, tempArr, editJson) {
     if (key === '_text') {
+      editJson['_cdata'] = editJson['_text'];
+      delete editJson['_text'];
       key = '_cdata';
     }
     if (key === '_attributes' || key === '_cdata') {
-      tempArr = Object.assign(tempArr, {[key]: editJson[key]});
+      tempArr = Object.assign(tempArr, this._defineProperty({}, key, editJson[key]));
     } else {
       if (editJson && _.isArray(editJson[key])) {
         for (let i = 0; i < editJson[key].length; i++) {
-          const x = key + '*' + i;
-          tempArr = Object.assign(tempArr, {[x]: {}});
+          let x = key + '*' + i;
+          tempArr = Object.assign(tempArr, this._defineProperty({}, key, editJson[key]));
           if (editJson) {
-            for (const as in editJson[key][i]) {
+            for (let as in editJson[key][i]) {
               this.createTempJsonRecursion(as, tempArr[x], editJson[key][i]);
             }
           }
         }
       } else {
-        tempArr = Object.assign(tempArr, {[key]: {}});
+        tempArr = Object.assign(tempArr, this._defineProperty({}, key, {}));
         if (editJson) {
-          for (const x in editJson[key]) {
+          for (let x in editJson[key]) {
             this.createTempJsonRecursion(x, tempArr[key], editJson[key]);
           }
         }
@@ -5141,11 +5064,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   createJsonAccToXsd(xmljson, rootNode, mainjson) {
     mainjson.children = [];
     if (xmljson[rootNode] && xmljson[rootNode]._attributes !== undefined) {
-      for (const key in xmljson[rootNode]._attributes) {
+      for (let key in xmljson[rootNode]._attributes) {
         if (mainjson && mainjson.attributes) {
           for (let i = 0; i < mainjson.attributes.length; i++) {
             if (key === mainjson.attributes[i].name) {
-              const a = xmljson[rootNode]._attributes[key];
+              let a = xmljson[rootNode]._attributes[key];
               mainjson.attributes[i] = Object.assign(mainjson.attributes[i], {data: a});
             }
           }
@@ -5156,7 +5079,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       mainjson.values[0] = Object.assign(mainjson.values[0], {data: xmljson[rootNode]._cdata});
     }
 
-    for (const key in xmljson[rootNode]) {
+    for (let key in xmljson[rootNode]) {
       if (key !== '_attributes' && key !== '_cdata') {
         this.addChildForxml(key, rootNode, xmljson, mainjson);
       }
@@ -5184,7 +5107,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // create json if xsd not matched
   createNormalTreeJson(xmljson, rootNode, mainjson, parent) {
-    const temp = {};
+    let temp = {};
     this.getData(temp);
     let a = undefined;
     if (rootNode.indexOf('*')) {
@@ -5195,18 +5118,18 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       mainjson = Object.assign(mainjson, {ref: a, parent: parent, import: rootNode});
     }
-    for (const key in xmljson[rootNode]) {
+    for (let key in xmljson[rootNode]) {
       if (key === '_attributes') {
         mainjson = Object.assign(mainjson, {attributes: []});
-        for (const x in xmljson[rootNode]._attributes) {
-          const dat = xmljson[rootNode]._attributes[x];
+        for (let x in xmljson[rootNode]._attributes) {
+          let dat = xmljson[rootNode]._attributes[x];
           let temp1 = {};
           temp1 = Object.assign(temp1, {name: x, data: dat, parent: rootNode});
           mainjson.attributes.push(temp1);
         }
       }
     }
-    for (const key in xmljson[rootNode]) {
+    for (let key in xmljson[rootNode]) {
       if (key !== '_attributes' && key !== '_cdata') {
         if (!mainjson.children) {
           mainjson = Object.assign(mainjson, {children: []});
@@ -5287,17 +5210,17 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if ((d === null || d === 'null') && (e === null || e === 'null')) {
 
-      const x = f - a - b - c - 160;
+      let x = f - a - b - c - 160;
       $('.documents').css({
         'max-height': x + 'px'
       });
     } else if ((d === null || d === 'null') && (e !== null || e !== 'null')) {
-      const x = f - a - b - c - e - 160;
+      let x = f - a - b - c - e - 160;
       $('.documents').css({
         'max-height': x + 'px'
       });
     } else if ((d !== null || d !== 'null') && (e == null || e === 'null')) {
-      const x = f - a - b - c - d - 160;
+      let x = f - a - b - c - d - 160;
       if (x > 300) {
         $('.documents').css({
           'max-height': x + 'px'
@@ -5328,7 +5251,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       return;
     }
-    const obj: any = {
+    let obj: any = {
       controllerId: this.schedulerIds.selected,
       objectType: this.objectType,
     };
@@ -5338,7 +5261,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.coreService.post('xmleditor/delete', obj).subscribe((res: any) => {
       if (res.configuration) {
         if (!this.ok(res.configuration)) {
-          const obj1: any = {
+          let obj1: any = {
             controllerId: this.schedulerIds.selected,
             objectType: this.objectType,
             configuration: res.configuration
@@ -5348,8 +5271,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           }
           this.coreService.post('xmleditor/xml2json', obj1).subscribe((result: any) => {
             this.isLoading = true;
-            const a = [];
-            const arr = JSON.parse(result.configurationJson);
+            let a = [];
+            let arr = JSON.parse(result.configurationJson);
             a.push(arr);
             this.counting = arr.lastUuid;
             this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
@@ -5413,7 +5336,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private showError(error) {
-    const iNode = {
+    let iNode = {
       eleName: error.elementName,
       elePos: error.elementPosition.split('-')
     };
@@ -5504,7 +5427,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private getNodeRulesData(node) {
     if (!node.recreateJson) {
-      const nod = {ref: node.parent};
+      let nod = {ref: node.parent};
 
       let a = this.checkChildNode(nod, undefined);
 
@@ -5549,7 +5472,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private removeComment(data) {
-    const d = data.replace(/\<\!\-\-((?!\-\-\>)[\s\S])*\-\-\>\s*/g, '');
+    let d = data.replace(/\<\!\-\-((?!\-\-\>)[\s\S])*\-\-\>\s*/g, '');
     return d.replace(/(\\n)/g, '');
   }
 
@@ -5574,32 +5497,32 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private copyNodeRecursion(node) {
     let tempa = {};
-    for (const key in node) {
+    for (let key in node) {
       if (typeof (node[key]) === 'object') {
-        tempa = Object.assign({}, tempa, {[key]: []});
+        tempa = Object.assign({}, tempa, this._defineProperty({}, key, []));
         if ((key === 'attributes' || key === 'values') && node[key].length > 0) {
           for (let i = 0; i < node[key].length; i++) {
             let temp = {};
-            for (const a in node[key][i]) {
+            for (let a in node[key][i]) {
               if (a === 'id') {
-                temp = Object.assign(temp, {[a]: this.counting});
+                temp = Object.assign(temp, this._defineProperty({}, a, this.counting));
                 this.counting++;
               } else {
-                temp = Object.assign(temp, {[a]: node[key][i][a]});
+                temp = Object.assign(temp, this._defineProperty({}, a, node[key][i][a]));
               }
             }
             tempa[key].push(Object.assign({}, temp));
           }
         } else if (key === 'nodes' && node[key].length > 0) {
           for (let i = 0; i < node[key].length; i++) {
-            const a = this.copyNodeRecursion(node[key][i]);
+            let a = this.copyNodeRecursion(node[key][i]);
             tempa[key].push(a);
           }
         } else if (key === 'text') {
-          tempa = Object.assign({}, tempa, {[key]: node[key]});
+          tempa = Object.assign({}, tempa, this._defineProperty({}, key, node[key]));
         }
       } else {
-        tempa = Object.assign({}, tempa, {[key]: node[key]});
+        tempa = Object.assign({}, tempa, this._defineProperty({}, key, node[key]));
       }
     }
     return tempa;
@@ -5627,14 +5550,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private getAllChild(list: any) {
     // tslint:disable-next-line: forin
-    for (const child in list) {
+    for (let child in list) {
       list[child].children = [];
       this.checkChildNode(list[child], list[child]);
     }
   }
 
   private xmlToJsonService(data) {
-    const obj: any = {
+    let obj: any = {
       controllerId: this.schedulerIds.selected,
       objectType: this.objectType,
       configuration: data
@@ -5644,8 +5567,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.coreService.post('xmleditor/xml2json', obj).subscribe((res: any) => {
       this.validConfig = false;
-      const a = [];
-      const arr = JSON.parse(res.configurationJson);
+      let a = [];
+      let arr = JSON.parse(res.configurationJson);
       a.push(arr);
       this.counting = arr.lastUuid;
       this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
@@ -5775,12 +5698,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     return vkbeautify.xml(a);
   }
 
-  hidePanel  () {
+  hidePanel() {
     this.sideView.xml.show = false;
     this.coreService.hideConfigPanel();
   }
 
-  showPanel  () {
+  showPanel() {
     this.sideView.xml.show = true;
     this.coreService.showConfigPanel();
   }

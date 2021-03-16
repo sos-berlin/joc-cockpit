@@ -455,7 +455,7 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
   @Input() toggle: boolean;
   tasks = [];
 
-  constructor(public coreService: CoreService, public translate: TranslateService, private stringDatePipe: StringDatePipe) {
+  constructor(public coreService: CoreService, public translate: TranslateService) {
   }
 
   ngOnInit() {
@@ -522,14 +522,15 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
               id: ++count,
               col1: plans[i].value[j].orderId,
               col2: this.groupBy === 'WORKFLOW' ? '' : plans[i].value[j].workflowPath,
-              plannedDate: this.stringDatePipe.transform(plans[i].value[j].plannedDate),
-              begin: plans[i].value[j].period.begin ? this.stringDatePipe.transform(plans[i].value[j].period.begin) : '',
-              end: plans[i].value[j].period.end ? this.stringDatePipe.transform(plans[i].value[j].period.end) : '',
+              plannedDate: moment(plans[i].value[j].plannedDate).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss'),
+              begin: (plans[i].value[j].cyclicOrder && plans[i].value[j].cyclicOrder.firstStart) ? moment(plans[i].value[j].cyclicOrder.firstStart).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
+              end: (plans[i].value[j].cyclicOrder && plans[i].value[j].cyclicOrder.lastStart) ? moment(plans[i].value[j].cyclicOrder.lastStart).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
               repeat: plans[i].value[j].period.repeat,
               class: this.coreService.getColor(plans[i].value[j].state.severity, 'bg'),
               duration: dur > 60 ? (dur / (60 * 60)) : 1,
               progress: dur > 60 ? (dur / (60 * 60)) : 0.1,
               state: plans[i].value[j].state,
+              cyclicOrder: plans[i].value[j].cyclicOrder,
               parent: _obj.id
             };
             this.tasks.push(obj);
@@ -543,14 +544,15 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
           id: (j + 1),
           col1: this.data[j].orderId,
           col2: this.groupBy === 'WORKFLOW' ? '' : this.data[j].workflowPath,
-          plannedDate: this.stringDatePipe.transform(this.data[j].plannedDate),
-          begin: this.data[j].period.begin ? this.stringDatePipe.transform(this.data[j].period.begin) : '',
-          end: this.data[j].period.end ? this.stringDatePipe.transform(this.data[j].period.end) : '',
+          plannedDate: moment(this.data[j].plannedDate).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss'),
+          begin: (this.data[j].cyclicOrder && this.data[j].cyclicOrder.firstStart) ? moment(self.data[j].cyclicOrder.firstStart).format('YYYY-MM-DD HH:mm:ss') : '',
+          end: (this.data[j].cyclicOrder && this.data[j].cyclicOrder.lastStart) ? moment(self.data[j].cyclicOrder.lastStart).format('YYYY-MM-DD HH:mm:ss') : '',
           repeat: this.data[j].period.repeat,
           class: this.coreService.getColor(this.data[j].state.severity, 'bg'),
           duration: dur > 60 ? (dur / (60 * 60)) : 1,
           progress: dur > 60 ? (dur / (60 * 60)) : 0.1,
-          state: this.data[j].state
+          state: this.data[j].state,
+          cyclicOrder: this.data[j].cyclicOrder,
         };
         this.tasks.push(obj);
       }

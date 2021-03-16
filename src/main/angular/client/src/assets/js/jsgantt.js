@@ -1173,7 +1173,17 @@ var JSGantt = function () {
         }(e, d, u, a);
         var f = function (e, i, n) {
           var r = document.createElement("div");
-          r.className = "jsgantt-task-content my-tooltip", r.title = "<b>Order ID:</b>" + e.col1 + "<br/>Repeat every " + e.repeat + "<br/>" + e.begin + " - " + e.end;
+          r.className = "jsgantt-task-content my-tooltip",
+            r.title = "<b>Order ID:</b>" + e.col1 + "<br/>";
+          if(e.repeat){
+            r.title += "Repeat every " + e.repeat + "<br/>";
+          }
+          if(e.cyclicOrder){
+            r.title += "<div class=\"m-a-sm m-t-xs\"><b>Cyclic Order</b> <br/>";
+            r.title += "<span class=\"_600 p-l-sm\" translate>Begin: </span>" + e.begin + "<br/>";
+            r.title += "<span class=\"_600 p-l-sm\" translate>End: </span>" + e.end + "<br/>";
+            r.title += "<span class=\"_600 p-l-sm\" translate>Orders: </span>" + e.cyclicOrder.count + "</div>";
+          }
           var s = document.createAttribute("data-toggle");
           s.value = "tooltip", r.setAttributeNode(s);
           var a = document.createAttribute("data-html");
@@ -5938,11 +5948,7 @@ var JSGantt = function () {
           label: "Column 2",
           align: "left"
         }],
-        btnRemoveOrder: "Remove Order",
-        btnCancelOrder: "Cancel Order",
-        btnSubmitOrder: "Submit Order",
-        btnChangeParameter: "Change Parameter",
-        btnModifyOrder: "Modify Order",
+      
         step: 1,
         scrollable: !0,
         scale_unit: "day",

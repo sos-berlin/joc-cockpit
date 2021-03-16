@@ -172,6 +172,8 @@
                       <div>
                         <div class="text-left block-ellipsis">
                           <span class="text-sm fa fa-sitemap"></span>&nbsp;
+                          <i class="cursor fa fa-bars" (click)="navToDetailView('list', workflow)"></i>
+                          <i class="cursor fa fa-rss p-l-xs p-r-xs" (click)="navToDetailView('grid', workflow)"></i>
                           <span [nz-tooltip]="workflow.title" [innerHtml]="workflow.name | highlight : workflowFilters.searchText"></span>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
@@ -383,6 +385,8 @@
                              *ngIf="!workflow.show" (click)="showPanelFuc(workflow)"></i>
                           <i class="cursor fa fa-caret-up tableexport-ignore fa-lg p-l-xs p-r-xs" *ngIf="workflow.show"
                              (click)="hidePanelFuc(workflow)"></i>
+                          <i class="cursor fa fa-bars p-l-xs" (click)="navToDetailView('list', workflow)"></i>
+                          <i class="cursor fa fa-rss p-l-xs p-r-xs" (click)="navToDetailView('grid', workflow)"></i>
                           <a class="text-dark" (click)="showPanelFunc(workflow)">
                             <span [innerHtml]="workflow.name | highlight : workflowFilters.searchText"></span>
                             <i *ngIf="workflow.title"> - </i>

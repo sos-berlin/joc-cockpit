@@ -1,11 +1,9 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
 import {ClipboardService} from 'ngx-clipboard';
 import {TranslateService} from '@ngx-translate/core';
 import {Observable} from 'rxjs';
-import {AboutModalComponent} from '../components/about-modal/about.component';
 import {AuthService} from '../components/guard';
 import * as moment from 'moment';
 import * as _ from 'underscore';
@@ -372,10 +370,6 @@ export class CoreService {
     return this.tabs;
   }
 
-  getDashboard(): any {
-    return this.dashboard;
-  }
-
   getWorkflowTab(): any {
     return this.tabs._workflow;
   }
@@ -511,22 +505,6 @@ export class CoreService {
     return dateFormat;
   }
 
-  getTimeFormat(timeFormat: string): string {
-    if (!timeFormat) {
-      return '';
-    }
-    if ((timeFormat.match(/HH:mm:ss/gi) || timeFormat.match(/HH:mm/gi) ||
-      timeFormat.match(/hh:mm:ss A/gi) || timeFormat.match(/hh:mm A/gi)) != null) {
-      const result = (timeFormat.match(/HH:mm:ss/gi) || timeFormat.match(/HH:mm/gi) ||
-        timeFormat.match(/hh:mm:ss A/gi) || timeFormat.match(/hh:mm A/gi)) + '';
-      if (result.match(/hh/g)) {
-        return result + ' a';
-      } else {
-        return result;
-      }
-    }
-  }
-
   setSideView(view): void {
     if (view) {
       window.sessionStorage.$SOS$SIDEVIEW = JSON.stringify(view);
@@ -588,18 +566,6 @@ export class CoreService {
     } else {
       return [];
     }
-  }
-
-  isIE(): boolean {
-    return !!navigator.userAgent.match(/MSIE/i) || !!navigator.userAgent.match(/Trident.*rv:11\./);
-  }
-
-  isFF(): boolean {
-    return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
-  }
-
-  isChrome(): boolean {
-    return navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
   }
 
   showLogWindow(order, task, job, id, transfer): void {
@@ -1009,34 +975,6 @@ export class CoreService {
     }
   }
 
-  getCopyName(actualName, list): string {
-    let str = actualName;
-    for (let i = 0; i < list.length; i++) {
-      if (list[i].name == actualName) {
-        str = str + '_copy_1';
-        break;
-      }
-    }
-
-    function recursivelyCheck(name): void {
-      for (let i = 0; i < list.length; i++) {
-        if (list[i].name == name) {
-          if (name.match(/_copy_[0-9]+/)) {
-            const arr = name.split('copy_');
-            let x = arr[arr.length - 1];
-            const num = parseInt(x, 10) || 0;
-            str = name.substring(0, name.lastIndexOf('_copy')) + '_copy' + '_' + (num + 1);
-            recursivelyCheck(str);
-          }
-          break;
-        }
-      }
-    }
-
-    recursivelyCheck(str);
-    return str;
-  }
-
   stringToDate(preferences, date): any {
     if (!date) {
       return '-';
@@ -1166,5 +1104,4 @@ export class CoreService {
     }
     return dates;
   }
-
 }

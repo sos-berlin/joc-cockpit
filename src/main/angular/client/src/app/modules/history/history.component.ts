@@ -807,10 +807,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
   taskHistorys: any = [];
   deploymentHistorys: any = [];
   submissionHistorys: any = [];
-  orderHistoryFilterList: any = [];
-  jobHistoryFilterList: any = [];
-  deploymentHistoryFilterList: any = [];
-  submissionHistoryFilterList: any = [];
+  orderHistoryFilterList: any;
+  jobHistoryFilterList: any;
+  deploymentHistoryFilterList: any;
+  submissionHistoryFilterList: any;
 
   orderSearchableProperties = ['controllerId', 'orderId', 'workflow', 'state', '_text', 'orderState', 'position'];
   taskSearchableProperties = ['controllerId', 'job', 'criticality', 'request', 'workflow', 'orderId', 'position'];
@@ -940,6 +940,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
   orderHistory(obj, flag) {
     this.historyFilters.type = 'ORDER';
     if (!obj) {
+      if (!this.orderHistoryFilterList && this.schedulerIds.selected) {
+        this.checkSharedFilters('ORDER');
+        return;
+      }
       obj = {controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''};
       this.isLoading = false;
       this.data = [];
@@ -1098,6 +1102,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
   taskHistory(obj, flag) {
     this.historyFilters.type = 'TASK';
     if (!obj) {
+      if (!this.jobHistoryFilterList && this.schedulerIds.selected) {
+        this.checkSharedFilters('TASK');
+        return;
+      }
+    }
+    if (!obj) {
       obj = {controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''};
       this.isLoading = false;
       this.data = [];
@@ -1199,6 +1209,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
   deploymentHistory(obj, flag) {
     this.historyFilters.type = 'DEPLOYMENT';
     if (!obj) {
+      if (!this.deploymentHistoryFilterList && this.schedulerIds.selected) {
+        this.checkSharedFilters('DEPLOYMENT');
+        return;
+      }
       if (this.historyFilters.current == true) {
         obj = {controllerId: this.schedulerIds.selected};
       } else {
@@ -1304,6 +1318,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
   submissionHistory(obj, flag) {
     this.historyFilters.type = 'SUBMISSION';
     if (!obj) {
+      if (!this.submissionHistoryFilterList && this.schedulerIds.selected) {
+        this.checkSharedFilters('SUBMISSION');
+        return;
+      }
       if (this.historyFilters.current == true) {
         obj = {controllerId: this.schedulerIds.selected};
       } else {

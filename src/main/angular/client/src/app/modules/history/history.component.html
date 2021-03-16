@@ -107,10 +107,10 @@
                   <li nz-menu-item>
                     <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
                   </li>
-                  <li nz-menu-item *ngIf="orderHistoryFilterList.length>0">
+                  <li nz-menu-item *ngIf="orderHistoryFilterList && orderHistoryFilterList.length>0">
                     <a (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
                   </li>
-                  <li nz-menu-divider *ngIf="orderHistoryFilterList.length>0"></li>
+                  <li nz-menu-divider *ngIf="orderHistoryFilterList && orderHistoryFilterList.length>0"></li>
                   <li nz-menu-item *ngFor="let filter of orderHistoryFilterList | orderBy: 'name'"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': (savedHistoryFilter.selected == filter.id)}">
                     <a (click)="changeFilter(filter)">
@@ -221,10 +221,10 @@
                   <li nz-menu-item>
                     <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
                   </li>
-                  <li nz-menu-item *ngIf="jobHistoryFilterList.length>0">
+                  <li nz-menu-item *ngIf="jobHistoryFilterList && jobHistoryFilterList.length>0">
                     <a (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
                   </li>
-                  <li nz-menu-divider *ngIf="jobHistoryFilterList.length>0"></li>
+                  <li nz-menu-divider *ngIf="jobHistoryFilterList && jobHistoryFilterList.length>0"></li>
                   <li nz-menu-item *ngFor="let filter of jobHistoryFilterList | orderBy: 'name'"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': (savedJobHistoryFilter.selected == filter.id)}">
                     <a (click)="changeFilter(filter)">
@@ -328,10 +328,10 @@
                   <li nz-menu-item>
                     <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
                   </li>
-                  <li nz-menu-item *ngIf="deploymentHistoryFilterList.length>0">
+                  <li nz-menu-item *ngIf="deploymentHistoryFilterList && deploymentHistoryFilterList.length>0">
                     <a (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
                   </li>
-                  <li nz-menu-divider *ngIf="deploymentHistoryFilterList.length>0"></li>
+                  <li nz-menu-divider *ngIf="deploymentHistoryFilterList && deploymentHistoryFilterList.length>0"></li>
                   <li nz-menu-item *ngFor="let filter of deploymentHistoryFilterList | orderBy: 'name'"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': (savedDeploymentHistoryFilter.selected == filter.id)}">
                     <a (click)="changeFilter(filter)">
@@ -436,10 +436,10 @@
                   <li nz-menu-item>
                     <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
                   </li>
-                  <li nz-menu-item *ngIf="submissionHistoryFilterList.length>0">
+                  <li nz-menu-item *ngIf="submissionHistoryFilterList && submissionHistoryFilterList.length>0">
                     <a (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
                   </li>
-                  <li nz-menu-divider *ngIf="submissionHistoryFilterList.length>0"></li>
+                  <li nz-menu-divider *ngIf="submissionHistoryFilterList && submissionHistoryFilterList.length>0"></li>
                   <li nz-menu-item *ngFor="let filter of submissionHistoryFilterList | orderBy: 'name'"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': (savedSubmissionHistoryFilter.selected == filter.id)}">
                     <a (click)="changeFilter(filter)">
