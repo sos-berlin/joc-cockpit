@@ -150,7 +150,7 @@
           <label nz-checkbox name="controller"  [(ngModel)]="filter.controller" (ngModelChange)="filterList()">
             {{'inventory.export.label.controller'| translate}}
           </label>
-          <label nz-checkbox name="dailyPlan" [disabled]="exportObj.forSigning" [(ngModel)]="filter.dailyPlan" (ngModelChange)="filterList()">
+          <label class="m-l" nz-checkbox name="dailyPlan" [disabled]="exportObj.forSigning" [(ngModel)]="filter.dailyPlan" (ngModelChange)="filterList()">
             {{'inventory.export.label.dailyPlan'| translate}}
           </label>
         </div>
@@ -163,14 +163,14 @@
           <label nz-checkbox name="valid" [disabled]="exportObj.forSigning" [(ngModel)]="filter.valid" (ngModelChange)="filterList()">
             {{'inventory.export.label.validOnly'| translate}}
           </label>
-          <label nz-checkbox name="draft" [(ngModel)]="filter.draft" (ngModelChange)="filterList()">
+          <label class="m-l" nz-checkbox name="draft" [(ngModel)]="filter.draft" (ngModelChange)="filterList()">
             {{'inventory.export.label.draft'| translate}}
           </label>
-          <label nz-checkbox name="deploy" [(ngModel)]="filter.deploy" (ngModelChange)="filterList()"
+          <label class="m-l" nz-checkbox name="deploy" [(ngModel)]="filter.deploy" (ngModelChange)="filterList()"
             *ngIf="!(exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType.match('CALENDAR'))">
             {{'inventory.export.label.deployed'| translate}}
           </label>
-          <label nz-checkbox name="release" [disabled]="exportObj.forSigning" [(ngModel)]="filter.release" (ngModelChange)="filterList()"
+          <label class="m-l" nz-checkbox name="release" [disabled]="exportObj.forSigning" [(ngModel)]="filter.release" (ngModelChange)="filterList()"
                  *ngIf="exportType === 'BOTH' || exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType.match('CALENDAR')">
             {{'inventory.export.label.released'| translate}}
           </label>
@@ -212,6 +212,7 @@
               <div [ngClass]="{'m-t-xs' :node.origin.object}">
                 <i *ngIf="!node.origin.object && !node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                 <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
+                <i *ngIf="node.origin.object == 'FILEORDERSOURCE'" class="icon-orders-icon icon-color tree-icon"></i>
                 <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>
                 <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color" nzTheme="outline"></i>
                 <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>

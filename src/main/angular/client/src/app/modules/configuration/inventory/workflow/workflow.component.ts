@@ -6477,7 +6477,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (this.title) {
       newObj.title = this.title;
     }
-
+    
     this.coreService.post('inventory/store', {
       configuration: newObj,
       id: this.workflow.id,

@@ -315,7 +315,7 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   getKeys() {
-    this.keys ={};
+    this.keys = {};
     this.coreService.post('profile/key', {}).subscribe((res: any) => {
       this.keys = res;
       if (this.keys.validUntil) {

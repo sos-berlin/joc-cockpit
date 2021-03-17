@@ -14,11 +14,11 @@ import {forkJoin, Subscription} from 'rxjs';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {TranslateService} from '@ngx-translate/core';
 import {OrderPipe} from 'ngx-order-pipe';
-import * as moment from 'moment';
+import * as moment from 'moment-timezone';
 import * as _ from 'underscore';
 import {Router} from '@angular/router';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
-import {GroupByPipe, SearchPipe, StringDatePipe} from '../../pipes/core.pipe';
+import {GroupByPipe, SearchPipe} from '../../pipes/core.pipe';
 import {CoreService} from '../../services/core.service';
 import {SaveService} from '../../services/save.service';
 import {AuthService} from '../../components/guard';
@@ -1659,11 +1659,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   checkAll() {
-
+    let flag = false;
     if (this.planOrders.length > 0) {
       this.object.mapOfCheckedId.clear();
       let orders = this.currentData;
-       let flag = false;
       if (this.dailyPlanFilters.filter.groupBy) {
         if (this.object.checked) {
           for (let i = 0; i < orders.length; i++) {
@@ -1682,23 +1681,27 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
             orders[i].checked = false;
           }
         }
-        if (flag) {
-          setTimeout(() => {
-            this.object.checked = false;
-            if(this.object.mapOfCheckedId.size > 0) {
-              this.object.indeterminate = true;
-            }
-          }, 0);
-        }
       } else {
         if (this.object.checked) {
           orders.forEach(item => {
-            this.object.mapOfCheckedId.set(item.orderId, item);
+            if (item.status !== 'finished') {
+              this.object.mapOfCheckedId.set(item.orderId, item);
+            } else {
+              flag = true;
+            }
           });
         }
       }
     } else {
       this.object.checked = false;
+    }
+    if (flag) {
+      setTimeout(() => {
+        this.object.checked = false;
+        if (this.object.mapOfCheckedId.size > 0) {
+          this.object.indeterminate = true;
+        }
+      }, 0);
     }
     this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
     this.checkState(this.object, this.object.mapOfCheckedId);

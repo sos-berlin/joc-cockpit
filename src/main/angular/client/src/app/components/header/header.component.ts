@@ -1,12 +1,12 @@
 import {Component, OnInit, OnDestroy, Output, EventEmitter} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import * as _ from 'underscore';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../guard';
 import {DataService} from '../../services/data.service';
 import {AboutModalComponent} from '../about-modal/about.component';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-header',
@@ -18,6 +18,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   schedulerIds: any = {};
   permission: any = {};
   username = '';
+  showViews: any = {};
   timeout: any;
   eventId: string;
   eventLoading = false;
@@ -48,6 +49,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.getSelectedSchedulerInfo();
     if (this.schedulerIds && this.schedulerIds.selected) {
       this.getEvents();
+    }
+    if (sessionStorage.showViews) {
+      let showViews = JSON.parse(sessionStorage.showViews);
+      if (!_.isEmpty(showViews)) {
+        this.showViews = showViews;
+        console.log(showViews)
+      }
     }
   }
 
@@ -146,14 +154,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const confFilters = this.coreService.getConfigurationTab();
     if (confFilters.state === 'inventory') {
       if (this.permission.Inventory.configurations.view) {
-        this.router.navigate(['/configuration/' + confFilters.state]);
-        return;
-      } else {
-        confFilters.state = 'yade';
-      }
-    }
-    if (confFilters.state === 'yade') {
-      if (this.permission.YADE.configurations.view) {
         this.router.navigate(['/configuration/' + confFilters.state]);
         return;
       } else {

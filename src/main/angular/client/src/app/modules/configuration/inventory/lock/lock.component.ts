@@ -4,8 +4,7 @@ import {DataService} from '../../../../services/data.service';
 
 @Component({
   selector: 'app-lock',
-  templateUrl: './lock.component.html',
-  styleUrls: ['./lock.component.css']
+  templateUrl: './lock.component.html'
 })
 export class LockComponent implements OnChanges {
   @Input() preferences: any;

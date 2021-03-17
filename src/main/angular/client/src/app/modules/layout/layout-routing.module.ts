@@ -12,7 +12,12 @@ const routes: Routes = [
     component: LayoutComponent,
     children: [
       {path: '', pathMatch: 'full', redirectTo: 'dashboard'},
-      {path: 'dashboard', component: DashboardComponent, data: {breadcrumb: 'breadcrumb.label.dashboard'}},
+      {
+        path: 'dashboard',
+        component: DashboardComponent,
+        canActivate: [AuthGuard],
+        data: {breadcrumb: 'breadcrumb.label.dashboard'}
+      },
       {
         path: 'start-up',
         loadChildren: () => import('./../start-up/start-up.module').then(m => m.StartUpModule),

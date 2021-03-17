@@ -13,11 +13,6 @@ const routes: Routes = [
         data: {breadcrumb: 'configuration.tab.inventory'}
       },
       {
-        path: 'yade',
-        loadChildren: () => import('./xml-editor/xml-editor.module').then(m => m.XmlEditorModule),
-        data: {breadcrumb: 'configuration.tab.yade'}
-      },
-      {
         path: 'notification',
         loadChildren: () => import('./xml-editor/xml-editor.module').then(m => m.XmlEditorModule),
         data: {breadcrumb: 'configuration.tab.notification'}
@@ -25,7 +20,7 @@ const routes: Routes = [
       {
         path: 'other',
         loadChildren: () => import('./xml-editor/xml-editor.module').then(m => m.XmlEditorModule),
-        data: {breadcrumb: 'configuration.tab.other'}
+        data: {breadcrumb: 'configuration.tab.fileTransfer'}
       }
     ]
   },

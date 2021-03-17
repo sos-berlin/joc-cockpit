@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import { CoreService } from '../../services/core.service';
-import { AuthService } from '../../components/guard';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import * as crypto from 'crypto-js';
 import {AboutModalComponent} from '../../components/about-modal/about.component';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {CoreService} from '../../services/core.service';
+import {AuthService} from '../../components/guard';
 
 @Component({
   selector: 'app-login',
@@ -34,6 +34,9 @@ export class LoginComponent implements OnInit {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
     if (this.returnUrl.match(/login/)) {
       this.returnUrl = '/';
+    }
+    if (this.authService.accessTokenId) {
+      this.router.navigate(['/dashboard']);
     }
     // this.getDefaultConfiguration();
   }

@@ -1,6 +1,6 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit} from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import * as moment from 'moment';
+import * as moment from 'moment-timezone';
 import * as _ from 'underscore';
 import {DatePipe} from '@angular/common';
 import {TreeModalComponent} from '../tree-modal/tree.component';

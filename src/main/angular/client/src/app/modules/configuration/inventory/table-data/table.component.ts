@@ -57,10 +57,11 @@ export class TableComponent {
   }
 
   private store(obj, _path, configuration): void {
+    const valid = !(this.objectType.match(/CALENDAR/) || this.objectType === 'SCHEDULE' || this.objectType === 'WORKFLOW' || this.objectType === 'FILEORDERSOURCE');
     this.coreService.post('inventory/store', {
       objectType: this.objectType === 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : this.objectType,
       path: _path,
-      valid: !(this.objectType.match(/CALENDAR/) || this.objectType === 'SCHEDULE' || this.objectType === 'WORKFLOW'),
+      valid: valid,
       configuration: configuration
     }).subscribe((res: any) => {
       obj.id = res.id;
@@ -68,7 +69,7 @@ export class TableComponent {
         obj.type = 'CALENDAR';
         obj.objectType = 'WORKINGDAYSCALENDAR';
       }
-      obj.valid = !(this.objectType.match(/CALENDAR/) || this.objectType === 'SCHEDULE' || this.objectType === 'WORKFLOW');
+      obj.valid = valid;
       this.dataObj.children.push(obj);
       this.dataObj.children = [...this.dataObj.children];
       this.dataService.reloadTree.next({add: true});

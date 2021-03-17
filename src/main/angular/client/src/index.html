@@ -20,7 +20,7 @@
 <link rel="stylesheet" href="./styles/light-style.css" type="text/css" id="style-color"/>
 
 <script>
-  var mxBasePath = './assets/mxgraph';
+  const mxBasePath = './assets/mxgraph';
   (function () {
     if (!sessionStorage.length) {
       // Ask other tabs for session storage
@@ -35,7 +35,7 @@
       } else if (event.key === 'sessionStorage' && !sessionStorage.length) {
         // sessionStorage is empty -> fill it
         if (event.newValue) {
-          var data = JSON.parse(event.newValue);
+          let data = JSON.parse(event.newValue);
           for (let key in data) {
             sessionStorage.setItem(key, data[key]);
           }

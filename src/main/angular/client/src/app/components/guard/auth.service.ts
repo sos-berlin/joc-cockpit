@@ -138,17 +138,6 @@ export class AuthService {
           }
         }
         break;
-      case 'Order':
-        if (showViews.orders !== undefined) {
-          if (showViews.orders) {
-            ifPermissionPassed = true;
-          }
-        } else {
-          if (permission.Order && permission.Order.view.status) {
-            ifPermissionPassed = true;
-          }
-        }
-        break;
       case 'History':
         if (showViews.history !== undefined) {
           if (showViews.history === true) {
@@ -195,8 +184,8 @@ export class AuthService {
         }
         break;
       case 'Configuration':
-        if (showViews.configurations !== undefined) {
-          if (showViews.configurations === true) {
+        if (showViews.configuration !== undefined) {
+          if (showViews.configuration === true) {
             ifPermissionPassed = true;
           }
         } else {

@@ -9,6 +9,7 @@ import * as _ from 'underscore';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
+import {DataService} from '../../services/data.service';
 
 @Component({
   selector: 'app-add-section-content',
@@ -140,7 +141,7 @@ export class SettingComponent implements OnInit {
   ];
 
   constructor(public coreService: CoreService, private authService: AuthService, private modalService: NgbModal,
-              private translate: TranslateService, private toasterService: ToasterService) {
+              private translate: TranslateService, private toasterService: ToasterService, private dataService: DataService) {
 
   }
 
@@ -305,7 +306,7 @@ export class SettingComponent implements OnInit {
         configurationItem: JSON.stringify(tempSetting)
       }).subscribe(() => {
         if (isJoc) {
-           this.getProperties();
+          this.getProperties();
         }
       });
     }
@@ -395,6 +396,7 @@ export class SettingComponent implements OnInit {
       sessionStorage.defaultProfile = result.defaultProfileAccount;
       sessionStorage.$SOS$COPY = JSON.stringify(result.copy);
       sessionStorage.$SOS$RESTORE = JSON.stringify(result.restore);
+      this.dataService.isProfileReload.next(true);
     });
   }
 }

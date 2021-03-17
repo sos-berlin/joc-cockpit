@@ -5,7 +5,7 @@ import {ClipboardService} from 'ngx-clipboard';
 import {TranslateService} from '@ngx-translate/core';
 import {Observable} from 'rxjs';
 import {AuthService} from '../components/guard';
-import * as moment from 'moment';
+import * as moment from 'moment-timezone';
 import * as _ from 'underscore';
 
 declare const diff_match_patch;
@@ -975,7 +975,7 @@ export class CoreService {
     }
   }
 
-  stringToDate(preferences, date): any {
+  stringToDate(preferences, date): string {
     if (!date) {
       return '-';
     }
@@ -984,6 +984,17 @@ export class CoreService {
       return;
     }
     return moment(date).tz(preferences.zone).format(preferences.dateFormat);
+  }
+
+  convertEtcTomeZone(timezone: string): string {
+    console.log(timezone,  'convertEtcTomeZone')
+    if (timezone.match(/Etc\/GMT/)) {
+      if (timezone.match(/-/)) {
+        return `${timezone.replace(/-/, '+')}`;
+      } else {
+        return `${timezone.replace(/\+/, '-')}`;
+      }
+    }
   }
 
   calDuration(n: any, r: any): string {

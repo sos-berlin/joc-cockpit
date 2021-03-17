@@ -12,51 +12,51 @@
                  <span *ngIf="isDeploy" translate>xml.label.deployed</span>
                  <span *ngIf="!isDeploy" translate>xml.label.notDeployed</span>
              </span>
-             <span class="badge" [ngClass]="validConfig ? 'badge-success':'badge-danger'" *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
-             translate>{{validConfig ? 'xml.label.validate' : 'xml.label.nonValidate'}}</span>
-            <button class="btn btn-sm btn-grey m-l-12" (click)="newFile()"
-                    [nz-tooltip]="'xml.button.new' | translate">
+             <span class="badge" [ngClass]="validConfig ? 'badge-success':'badge-danger'"
+                   *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
+              translate>{{validConfig ? 'xml.label.validate' : 'xml.label.nonValidate'}}
+             </span>
+            <button class="btn btn-sm btn-grey m-l-12" (click)="newFile()">
               <i class="fa fa-file m-r-xs"></i>
               <span translate>xml.button.new</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" (click)="deleteConf()" *ngIf="objectType !== 'OTHER'  && submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
-                    [nz-tooltip]="'xml.button.delete' | translate">
+            <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType !== 'OTHER'  && submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
+              (click)="deleteConf()">
               <i class="fa fa-trash-o m-r-xs"></i>
               <span translate>xml.button.delete</span>
             </button>
             <button *ngIf="objectType === 'OTHER' && submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
-              (click)="reassignSchemaa()" class="btn btn-sm btn-grey hidden-btn-text m-l-sm">
+              (click)="reassignSchemaa()" class="btn btn-sm btn-grey m-l-12">
               <i class="fa fa-recycle m-r-xs"></i>
               <span translate>xml.button.reassignSchema</span>
             </button>
             <button *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105' && objectType ==='OTHER'"
                     [disabled]="XSDState && XSDState.message && XSDState.message.code === 'XMLEDITOR-101'"
-                    class="btn btn-sm btn-grey hidden-btn-text m-l-sm" (click)="deleteAllConf()" [nz-tooltip]="'xml.button.deleteAll' | translate">
-                <i class="fa fa-trash m-r-xs"></i>
-                <span translate>xml.button.deleteAll</span>
+                    class="btn btn-sm btn-grey m-l-12" (click)="deleteAllConf()">
+              <i class="fa fa-trash m-r-xs"></i>
+              <span translate>xml.button.deleteAll</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" (click)="importXML()"
-                    [nz-tooltip]="'xml.button.importXML' | translate">
+            <button class="btn btn-sm btn-grey m-l-12" (click)="importXML()">
               <i class="fa fa-upload m-r-xs"></i>
               <span translate>xml.button.import</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12"  *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
-                    [nz-tooltip]="'xml.button.export' | translate" (click)="save()">
+            <button class="btn btn-sm btn-grey m-l-12" *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
+                    (click)="save()">
               <i class="fa fa-download m-r-xs"></i>
               <span translate>xml.button.export</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" (click)="showXml()"  *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
-                    [nz-tooltip]="'xml.button.editXML' | translate">
+            <button class="btn btn-sm btn-grey m-l-12" *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
+                    (click)="showXml()">
               <i class="fa fa-pencil m-r-xs"></i>
               <span translate>xml.button.editXML</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12"  *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
-                    [nz-tooltip]="'xml.button.validate' | translate" (click)="validate()">
+            <button class="btn btn-sm btn-grey m-l-12" *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
+                    (click)="validate()">
               <i class="fa fa-check m-r-xs"></i>
               <span translate>xml.button.validate</span>
             </button>
             <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType != 'OTHER' && submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"  [disabled]="isDeploy"
-                    [nz-tooltip]="'xml.button.deploy' | translate" (click)="deployXML()">
+                    (click)="deployXML()">
               <i class="fa fa-rocket m-r-xs"></i>
               <span translate>xml.button.deploy</span>
             </button>
@@ -80,14 +80,6 @@
             <span class="separator"></span>
           </li>
           <li class="nav-item">
-            <a class="nav-link" [routerLink]="['/configuration/yade']" [routerLinkActive]="['active']">
-              <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.yade</span></span>
-            </a>
-          </li>
-          <li class="nav-item dropdown-separator">
-            <span class="separator"></span>
-          </li>
-          <li class="nav-item">
             <a class="nav-link" [routerLink]="['/configuration/notification']" [routerLinkActive]="['active']">
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.notification</span></span>
             </a>
@@ -97,7 +89,7 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" [routerLink]="['/configuration/other']" [routerLinkActive]="['active']">
-              <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.others</span></span>
+              <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.fileTransfer</span></span>
             </a>
           </li>
         </ul>

@@ -4,7 +4,6 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {Subscription} from 'rxjs';
 import * as _ from 'underscore';
-import * as moment from 'moment';
 import {CommentModalComponent} from '../action/action.component';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -313,7 +312,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
         className += ' joc';
         let d1 = ' - ', dis = ' - ', arc = ' - ';
         if (data.startedAt) {
-          d1 = moment(data.startedAt).tz(self.preferences.zone).format(self.preferences.dateFormat);
+          d1 =  self.coreService.stringToDate(self.preferences, data.startedAt);
         }
         if (data.current) {
           className += ' current';
@@ -337,7 +336,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
           '<br> <span class="_600">' + labelDistribution + ' : </span>' + dis +
           '<br><span class="_600">' + labelVersion + ' :</span>' + data.version +
           '<br><span class="_600">' + labelStartedAt + ' : </span>' + d1 +
-          '<br><span class="_600">' + labelSurveyDate + ' : </span>' + moment(data.surveyDate).tz(self.preferences.zone).format(self.preferences.dateFormat);
+          '<br><span class="_600">' + labelSurveyDate + ' : </span>' + self.coreService.stringToDate(self.preferences, data.surveyDate);
 
         return '<div data-toggle="popover" data-placement="top" data-content=\'' + popoverTemplate + '\'' +
           ' class="' + className + '"   >' +
@@ -363,7 +362,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
         className += ' controller';
         let d1 = ' - ', dis = ' - ', arc = ' - ';
         if (data.startedAt) {
-          d1 = moment(data.startedAt).tz(self.preferences.zone).format(self.preferences.dateFormat);
+          d1 = self.coreService.stringToDate(self.preferences, data.startedAt);
         }
         if (data.os) {
           arc = data.os.architecture;
@@ -374,7 +373,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
           '<br> <span class="_600">' + labelUrl + ' : </span>' + data.url +
           '<br><span class="_600">' + labelVersion + ' :</span>' + data.version +
           '<br><span class="_600">' + labelStartedAt + ' : </span>' + d1 +
-          '<br><span class="_600">' + labelSurveyDate + ' : </span>' + moment(data.surveyDate).tz(self.preferences.zone).format(self.preferences.dateFormat);
+          '<br><span class="_600">' + labelSurveyDate + ' : </span>' + self.coreService.stringToDate(self.preferences, data.surveyDate);
 
         let controllerTemplate = '<div data-toggle="popover" data-placement="top" data-content=\'' + popoverTemplate + '\'' +
           ' class="' + className + '">' +

@@ -182,7 +182,7 @@
                         <div class="col-sm-4 col-lg-3"
                              [ngClass]="{ 'has-error' : (((booleanVal.dirty || booleanVal.touched) && booleanVal.invalid))}">
                           <nz-select name="{{val.name}}{{i}}" [(ngModel)]="val.value.value" #booleanVal="ngModel"
-                                     class="w-xxxl" (ngModelChange)="changeConfiguration(booleanVal, val)">
+                                     class="w-xxxl" (ngModelChange)="changeConfiguration(booleanVal, val, setting.name === 'joc')">
                             <nz-option [nzValue]=""
                                        [nzLabel]="'common.placeholder.selectValue' | translate"></nz-option>
                             <nz-option [nzLabel]="'true'" [nzValue]="true"></nz-option>
