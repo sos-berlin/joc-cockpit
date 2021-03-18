@@ -54,7 +54,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
       let showViews = JSON.parse(sessionStorage.showViews);
       if (!_.isEmpty(showViews)) {
         this.showViews = showViews;
-        console.log(showViews)
       }
     }
   }
@@ -154,6 +153,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const confFilters = this.coreService.getConfigurationTab();
     if (confFilters.state === 'inventory') {
       if (this.permission.Inventory.configurations.view) {
+        this.router.navigate(['/configuration/' + confFilters.state]);
+        return;
+      } else {
+        confFilters.state = 'file_transfer';
+      }
+    }
+    if (confFilters.state === 'file_transfer') {
+      if (this.permission.YADE.configurations.view) {
         this.router.navigate(['/configuration/' + confFilters.state]);
         return;
       } else {

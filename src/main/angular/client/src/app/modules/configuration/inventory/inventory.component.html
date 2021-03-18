@@ -48,6 +48,14 @@
             <span class="separator"></span>
           </li>
           <li class="nav-item" *ngIf="permission.YADE && permission.YADE.configurations.view">
+            <a class="nav-link" [routerLink]="['/configuration/file_transfer']" [routerLinkActive]="['active']">
+              <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.fileTransfer</span></span>
+            </a>
+          </li>
+          <li class="nav-item dropdown-separator" *ngIf="permission.YADE && permission.YADE.configurations.view">
+            <span class="separator"></span>
+          </li>
+          <li class="nav-item" *ngIf="permission.YADE && permission.YADE.configurations.view">
             <a class="nav-link" [routerLink]="['/configuration/notification']" [routerLinkActive]="['active']">
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.notification</span></span>
             </a>
@@ -57,7 +65,7 @@
           </li>
           <li class="nav-item" *ngIf="permission.YADE && permission.YADE.configurations.view">
             <a class="nav-link" [routerLink]="['/configuration/other']" [routerLinkActive]="['active']">
-              <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.fileTransfer</span></span>
+              <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.others</span></span>
             </a>
           </li>
         </ul>

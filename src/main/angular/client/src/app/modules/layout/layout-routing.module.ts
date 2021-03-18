@@ -53,6 +53,12 @@ const routes: Routes = [
         data: {breadcrumb: 'breadcrumb.label.history'}
       },
       {
+        path: 'file_transfer',
+        loadChildren: () => import('./../file-transfer/file-transfer.module').then(m => m.FileTransferModule),
+        canActivate: [AuthGuard],
+        data: {breadcrumb: 'breadcrumb.label.fileTransfers'}
+      },
+      {
         path: 'audit_log',
         loadChildren: () => import('./../audit-log/audit-log.module').then(m => m.AuditLogModule),
         canActivate: [AuthGuard],

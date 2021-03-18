@@ -185,7 +185,8 @@
   "configuration": {
     "tab.inventory": "Inventory",
     "tab.notification": "Notification",
-    "tab.fileTransfer": "File Transfer"
+    "tab.fileTransfer": "File Transfer",
+    "tab.others": "Others"
   },
   "controller": {
     "label.standalone": "Standalone",
@@ -582,6 +583,35 @@
     "message.connectionSuccess": "Connected successfully to Controller",
     "message.objectNotFound": "Object does not exist any longer",
     "message.pasteInSubFolderNotAllowed": "The destination folder is a sub-folder of the source folder."
+  },
+  "fileTransfer": {
+    "label.transfer": "Transfer",
+    "label.status": "Status",
+    "label.operation": "Operation",
+    "label.profileName": "Profile Name",
+    "label.mandator": "Mandator",
+    "label.sourceFileName": "Source File Name",
+    "label.targetFileName": "Target File Name",
+    "label.sourceHost": "Source Host",
+    "label.targetHost": "Target Host",
+    "label.protocol": "Protocol",
+    "label.startTime": "Start Time",
+    "label.endTime": "End Time",
+    "label.targetProtocol": "Target Protocol",
+    "label.totalNumberOfFiles": "Total Number of Files",
+    "label.sourceHostUser": "Source Host Account",
+    "label.sourceHostPort": "Source Host Port",
+    "label.sourceHostProtocol": "Source Host Protocol",
+    "label.targetHostUser": "Target Host Account",
+    "label.targetHostPort": "Target Host Port",
+    "label.targetHostProtocol": "Target Host Protocol",
+    "label.jumpUser": "Jump Host Account",
+    "label.jumpPort": "Jump Host Port",
+    "label.jumpProtocol": "Jump Host Protocol",
+    "label.sourceFilePath": "Source File Path",
+    "label.targetFilePath": "Target File Path",
+    "label.lastErrorMessage": "Last Error Message",
+    "label.integrityHash": "Integrity Hash"
   },
   "filters": {
     "button.all": "All",

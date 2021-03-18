@@ -941,6 +941,10 @@ export class CoreService {
     if (this.newWindow) {
       try {
         this.newWindow.addEventListener('beforeunload', () => {
+          if (this.newWindow.screenX != window.localStorage.log_window_x) {
+            window.localStorage.log_window_x = this.newWindow.screenX;
+            window.localStorage.log_window_y = this.newWindow.screenY;
+          }
           if (this.newWindow.sessionStorage.changedPreferences) {
             let preferences = JSON.parse(sessionStorage.preferences);
             preferences.logFilter = JSON.parse(this.newWindow.sessionStorage.changedPreferences).logFilter;

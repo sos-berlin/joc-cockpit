@@ -188,38 +188,30 @@ a.text-primary:focus,
   opacity: 0.6;
 }
 
-pre.log {
-  color: #f5f5f5
+.log_error, .log_stderr {
+  color: #ff5252 !important;
 }
 
-.log_info,
-.log_stdout {
-  color: var(--white)
+.log_warn {
+  color: tomato;
 }
-
-.log_debug {
-  color: green
+.log_trace {
+  color: #f9f9f9;
+}
+.log_info {
+  color: #fafafa;
 }
 
 .log_detail {
-  color: var(--primary);
+  color: #8481e4;
 }
 
 .log_success {
   color: #90ee90;
 }
 
-.log_debug2 {
-  color: #90ee90
-}
-
-.log_debug3 {
-  color: #969696
-}
-
-.log_debug9,
-.log_trace {
-  color: #a8a8a8
+.log_debug {
+  color: #adff2f;
 }
 
 .rzslider .rz-pointer {

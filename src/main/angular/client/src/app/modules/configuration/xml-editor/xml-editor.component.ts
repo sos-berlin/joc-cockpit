@@ -585,7 +585,7 @@ export class ShowModalComponent implements OnInit {
       objectType: this.objectType,
       configuration: this.obj.xml
     };
-    if (this.objectType === 'OTHER') {
+    if (this.objectType !== 'NOTIFICATION') {
       obj.schemaIdentifier = this.activeTab.schemaIdentifier;
     }
     this.coreService.post('xmleditor/validate', obj).subscribe((res: any) => {
@@ -613,7 +613,7 @@ export class ShowModalComponent implements OnInit {
       objectType: this.objectType,
       configuration: data
     };
-    if (this.objectType === 'OTHER') {
+    if (this.objectType !== 'NOTIFICATION') {
       obj.id = this.activeTab.id;
       obj.schemaIdentifier = this.schemaIdentifier;
       obj.name = this.activeTab.name;
@@ -984,6 +984,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     let url = this.router.url.split('/')[2];
     this.objectType = url.toUpperCase();
+    if (this.objectType === 'FILE_TRANSFER') {
+      this.objectType = 'YADE';
+    }
     if (url === 'notification') {
       this.selectedXsd = 'systemMonitorNotification';
     } else if (url === 'yade') {
@@ -1033,7 +1036,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscription.unsubscribe();
     this.coreService.setSideView(this.sideView);
     clearInterval(this.intervalId);
-    this.coreService.tabs._configuration.state = this.objectType.toLowerCase();
+    this.coreService.tabs._configuration.state = this.objectType === 'YADE' ? 'file_transfer' : this.objectType.toLowerCase();
   }
 
 
@@ -1082,7 +1085,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     modalRef.componentInstance.delete = this.delete;
     modalRef.componentInstance.deleteAll = this.deleteAll;
     modalRef.componentInstance.objectType = this.objectType;
-    if (this.objectType === 'OTHER') {
+    if (this.objectType !== 'NOTIFICATION') {
       modalRef.componentInstance.activeTab = this.activeTab;
     }
     modalRef.result.then((res: any) => {
@@ -1240,7 +1243,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
               // createJSONFromXML(res.configuration.configuration);
             }, 600);
           }
-          if (this.objectType === 'OTHER' && this._activeTab) {
+          if (this.objectType !== 'NOTIFICATION' && this._activeTab) {
             this._activeTab.isVisible = false;
           }
         } else {
@@ -4438,7 +4441,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     if (localStorage.getItem('schemas')) {
       this.otherSchema = localStorage.getItem('schemas').split(',');
     }
-    if (this.objectType === 'OTHER') {
+    if (this.objectType !== 'NOTIFICATION') {
       this.importObj = {assignXsd: this.schemaIdentifier};
     } else {
       this.importObj = {assignXsd: this.objectType};
@@ -4456,7 +4459,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             this.copyItem = undefined;
             this.selectedXsd = this.importObj.assignXsd;
             this.isLoading = true;
-            if (this.objectType === 'OTHER') {
+            if (this.objectType !== 'NOTIFICATION') {
               if (this.tabsArray.length === 0) {
                 let _tab = _.clone({id: -1, name: 'edit1', schemaIdentifier: this.schemaIdentifier});
                 this.tabsArray.push(_tab);
@@ -4626,7 +4629,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.selectedNode = [];
       this.newConf();
     } else {
-      if (this.objectType === 'OTHER') {
+      if (this.objectType !== 'NOTIFICATION') {
         this.nodes = [];
         this.selectedNode = [];
         this.selectedXsd = undefined;
@@ -5003,7 +5006,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             for (let i = 0; i < editJson[rootNode][a].length; i++) {
               let x = a + '*' + i;
               if (temp[rootNode] === undefined) {
-                temp = Object.assign(temp,  this._defineProperty({}, rootNode, this._defineProperty({}, x, {})));
+                temp = Object.assign(temp, this._defineProperty({}, rootNode, this._defineProperty({}, x, {})));
               } else {
                 temp[rootNode] = Object.assign(temp[rootNode], this._defineProperty({}, x, {}));
               }
@@ -5239,7 +5242,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private del() {
-    if (this.objectType === 'OTHER' && this.activeTab.id < 0) {
+    if (this.objectType !== 'NOTIFICATION' && this.activeTab.id < 0) {
       for (let i = 0; i < this.tabsArray.length; i++) {
         if (this.tabsArray[i].id === this.activeTab.id) {
           this.tabsArray.splice(i, 1);
@@ -5255,7 +5258,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       controllerId: this.schedulerIds.selected,
       objectType: this.objectType,
     };
-    if (this.objectType === 'OTHER') {
+    if (this.objectType !== 'NOTIFICATION') {
       obj.id = this.activeTab.id;
     }
     this.coreService.post('xmleditor/delete', obj).subscribe((res: any) => {
@@ -5266,7 +5269,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             objectType: this.objectType,
             configuration: res.configuration
           };
-          if (this.objectType === 'OTHER') {
+          if (this.objectType !== 'NOTIFICATION') {
             obj1.schemaIdentifier = this.schemaIdentifier;
           }
           this.coreService.post('xmleditor/xml2json', obj1).subscribe((result: any) => {
@@ -5298,7 +5301,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           this.submitXsd = false;
           this.isLoading = false;
           this.XSDState = res.state;
-          if (this.objectType === 'OTHER') {
+          if (this.objectType !== 'NOTIFICATION') {
             this.tabsArray = this.tabsArray.filter(x => {
               return x.id !== this.activeTab.id;
             });
@@ -5318,7 +5321,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.submitXsd = false;
         this.isLoading = false;
         this.XSDState = res.state;
-        if (this.objectType === 'OTHER') {
+        if (this.objectType !== 'NOTIFICATION') {
           this.schemaIdentifier = undefined;
           this.tabsArray = this.tabsArray.filter(x => {
             return x.id !== this.activeTab.id;
@@ -5562,7 +5565,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       objectType: this.objectType,
       configuration: data
     };
-    if (this.objectType === 'OTHER') {
+    if (this.objectType !== 'NOTIFICATION') {
       obj.schemaIdentifier = this.schemaIdentifier;
     }
     this.coreService.post('xmleditor/xml2json', obj).subscribe((res: any) => {
@@ -5582,7 +5585,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.XSDState = {};
       this.prevXML = '';
       this.storeXML(undefined);
-      if (this.objectType === 'OTHER') {
+      if (this.objectType !== 'NOTIFICATION') {
         // this.activeTab.schemaIdentifier = this.schemaIdentifier;
       }
     }, () => {
@@ -5673,7 +5676,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       objectType: this.objectType,
       configuration: this._xml
     };
-    if (this.objectType === 'OTHER') {
+    if (this.objectType !== 'NOTIFICATION') {
       obj.schemaIdentifier = this.schemaIdentifier;
     }
     this.coreService.post('xmleditor/validate', obj).subscribe((res: any) => {

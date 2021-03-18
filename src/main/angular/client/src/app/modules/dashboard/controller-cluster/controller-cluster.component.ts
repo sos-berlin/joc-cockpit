@@ -338,20 +338,29 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
           '<br><span class="_600">' + labelStartedAt + ' : </span>' + d1 +
           '<br><span class="_600">' + labelSurveyDate + ' : </span>' + self.coreService.stringToDate(self.preferences, data.surveyDate);
 
-        return '<div data-toggle="popover" data-placement="top" data-content=\'' + popoverTemplate + '\'' +
+        let str = '<div data-toggle="popover" data-placement="top" data-content=\'' + popoverTemplate + '\'' +
           ' class="' + className + '"   >' +
           '<span class="m-t-n-xxs fa fa-stop success-node ' + colorClass + '"></span>' +
           '<div class="text-left p-t-sm p-l-sm "><i class="fa fa-television"></i><span class="p-l-sm _600">' + data.title +
           '</span><span class="pull-right ' + actionMenuCls + ' "><div class="btn-group dropdown " >' +
           '<a class="more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h cluster-action-menu"></i></a></div></span></div>' +
           '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + name
-          + '"></i><span class="p-l-sm text-sm" title="' + (data.url || data.host) + '">' + (data.url || data.host) + '</span></div>' +
+          + '"></i>';
+
+        if (data.url && !data.current) {
+          str += '<a class="p-l-sm text-sm" target="_blank" href="' + data.url + '" title="' + (data.url || data.host) + '">' + (data.url || data.host) + '</a>';
+        } else {
+          str += '<span class="p-l-sm text-sm" title="' + (data.url || data.host) + '">' + (data.url || data.host) + '</span>';
+        }
+        str += '</div>' +
           '<div class="text-left text-xs p-l-sm "><span class="text-black-dk" >' + labelSecurity + '</span>: ' +
           '<span class="text-sm ' + '">' + security + '</span></div>' +
           '<div class="text-left text-xs p-l-sm "><span class="text-black-dk" >' + labelState + '</span>: ' +
           '<span class="text-sm ' + colorClass + '">' + status + '</span></div>' +
           '<div class="text-left text-xs p-l-sm "><span class="text-black-dk" >' + labelClusterNodeState + '</span>: ' +
-          '<span class="text-sm ' + clusterColorClass + '">' + clusterNodeState + '</span></div></div>';
+          '<span class="text-sm ' + clusterColorClass + '">' + clusterNodeState + '</span></div></div>'
+
+        return str;
       } else if (cell.value.tagName === 'Controller') {
         if (data.clusterNodeState && data.clusterNodeState._text) {
           self.translate.get(data.clusterNodeState._text).subscribe(translatedValue => {
@@ -717,11 +726,10 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.show = true;
       modalRef.componentInstance.obj = obj;
       modalRef.componentInstance.performAction = this.performAction;
-
       modalRef.result.then((result) => {
-        console.log('Close...', result);
-      }, (reason) => {
-        console.log('close...', reason);
+
+      }, () => {
+
       });
 
     } else {
