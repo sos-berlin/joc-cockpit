@@ -1,8 +1,8 @@
 import {Component, OnInit, OnDestroy, Input} from '@angular/core';
+import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
-import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-scheduler-instance',

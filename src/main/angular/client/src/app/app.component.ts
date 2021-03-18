@@ -29,12 +29,6 @@ export class AppComponent {
   static themeInit(): void {
     if (localStorage.$SOS$THEME != null && localStorage.$SOS$THEME != 'undefined') {
       $('#style-color').attr('href', './styles/' + window.localStorage.$SOS$THEME + '-style.css');
-      if (localStorage.$SOS$MENUTHEME != null) {
-        $('#headerColor').addClass(window.localStorage.$SOS$MENUTHEME);
-        if (localStorage.$SOS$AVATARTHEME != null) {
-          $('#avatarBg').addClass(window.localStorage.$SOS$AVATARTHEME);
-        }
-      }
     }
   }
 

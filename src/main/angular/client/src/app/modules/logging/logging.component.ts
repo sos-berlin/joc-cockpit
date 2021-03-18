@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {interval, Subscription} from 'rxjs';
+import {ClipboardService} from 'ngx-clipboard';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
-import {ClipboardService} from 'ngx-clipboard';
 
 declare const $;
 
@@ -24,7 +24,6 @@ export class Logging2Component implements OnInit, OnDestroy {
   clientLogFilter: any = {};
 
   constructor() {
-
   }
 
   ngOnInit() {
@@ -51,7 +50,6 @@ export class Logging2Component implements OnInit, OnDestroy {
   templateUrl: './logging.component.html'
 })
 export class LoggingComponent implements OnInit, OnDestroy {
-
   clientLogs = [];
   clientLogFilter: any = {};
   schedulerIds: any = {};

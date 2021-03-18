@@ -1,5 +1,4 @@
 import {Component, Input, OnInit} from '@angular/core';
-import * as moment from 'moment-timezone';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {FileUploader} from 'ng2-file-upload';
@@ -148,7 +147,7 @@ export class SettingComponent implements OnInit {
   ngOnInit(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
-    this.zones = moment.tz.names();
+    this.zones = this.coreService.getTimeZoneList();
     this.loadSetting();
   }
 

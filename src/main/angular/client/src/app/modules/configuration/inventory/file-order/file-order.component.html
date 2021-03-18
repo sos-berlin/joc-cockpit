@@ -112,7 +112,7 @@
           <div class="col-md-8 col-lg-6">
             <input type="text" [readonly]="isTrash" class="form-control" autocomplete="off" maxlength="255"
                    placeholder="{{'inventory.placeholder.directory' | translate}}"
-                   name="title" [(ngModel)]="fileOrder.configuration.directory" (blur)="saveJSON()">
+                   name="directory" [(ngModel)]="fileOrder.configuration.directory" (blur)="saveJSON()">
           </div>
         </div>
         <div class="form-group row">
@@ -120,7 +120,7 @@
           <div class="col-md-8 col-lg-6">
             <input type="text" [readonly]="isTrash" class="form-control" autocomplete="off" maxlength="255"
                    placeholder="{{'inventory.placeholder.pattern' | translate}}"
-                   name="title" [(ngModel)]="fileOrder.configuration.pattern" (blur)="saveJSON()">
+                   name="pattern" [(ngModel)]="fileOrder.configuration.pattern" (blur)="saveJSON()">
           </div>
         </div>
       </form>

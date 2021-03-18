@@ -4,7 +4,6 @@ import {TranslateService} from '@ngx-translate/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToasterService} from 'angular2-toaster';
 import {Subscription} from 'rxjs';
-import * as jstz from 'jstz';
 import {filter} from 'rxjs/operators';
 import {NzConfigService} from 'ng-zorro-antd';
 import {CoreService} from '../../services/core.service';
@@ -274,9 +273,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   private setUserPreferences(preferences, configObj, reload) {
     if (sessionStorage.preferenceId === 0 || sessionStorage.preferenceId == '0') {
-      const timezone = jstz.determine();
+      const timezone = this.coreService.getTimeZone();
       if (timezone) {
-        preferences.zone = timezone.name() || this.selectedController.timeZone;
+        preferences.zone = timezone;
       } else {
         preferences.zone = this.selectedController.timeZone;
       }
@@ -320,7 +319,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   private setUserObject(preferences, conf, configObj) {
     if (conf.configurationItem) {
       const obj = JSON.parse(conf.configurationItem);
-      obj.zone = this.coreService.convertEtcTomeZone(obj.zone);
+     // obj.zone = this.coreService.convertEtcTomeZone(obj.zone);
       sessionStorage.preferences = JSON.stringify(obj);
       this.reloadThemeAndLang(preferences);
     } else {

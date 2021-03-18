@@ -1,8 +1,6 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Router} from '@angular/router';
-import * as moment from 'moment-timezone';
-import * as jstz from 'jstz';
 import {Subscription} from 'rxjs';
 import {FileUploader, FileUploaderOptions} from 'ng2-file-upload';
 import {ToasterService} from 'angular2-toaster';
@@ -297,10 +295,10 @@ export class UserComponent implements OnInit, OnDestroy {
     this.setIds();
     this.getKeys();
     this.setPreferences();
-    this.zones = moment.tz.names();
-    const localTZ = jstz.determine();
+    this.zones = this.coreService.getTimeZoneList();
+    const localTZ = this.coreService.getTimeZone();
     if (localTZ) {
-      this.timeZone = localTZ.name() || this.selectedController.timeZone;
+      this.timeZone = localTZ || this.selectedController.timeZone;
     } else {
       this.timeZone = this.selectedController.timeZone;
     }
@@ -319,7 +317,7 @@ export class UserComponent implements OnInit, OnDestroy {
     this.coreService.post('profile/key', {}).subscribe((res: any) => {
       this.keys = res;
       if (this.keys.validUntil) {
-        this.keys.isKeyExpired = moment(moment(this.keys.validUntil).tz(this.preferences.zone)).diff(moment()) < 0;
+        this.keys.isKeyExpired = this.coreService.getTimeDiff(this.preferences, this.keys.validUntil) < 0;
       }
     }, (err) => {
       this.keys = {};

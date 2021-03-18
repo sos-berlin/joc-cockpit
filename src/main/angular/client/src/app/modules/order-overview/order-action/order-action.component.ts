@@ -24,13 +24,14 @@ export class StartOrderModalComponent implements OnInit {
   required = false;
   submitted = false;
   comments: any = {};
-  zones = moment.tz.names();
+  zones = [];
 
   constructor(public coreService: CoreService, public activeModal: NgbActiveModal) {
   }
 
   ngOnInit() {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.zones = this.coreService.getTimeZoneList();
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
     this.order.timeZone = this.preferences.zone;

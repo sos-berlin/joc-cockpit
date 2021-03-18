@@ -14,7 +14,6 @@ import {forkJoin, Subscription} from 'rxjs';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {TranslateService} from '@ngx-translate/core';
 import {OrderPipe} from 'ngx-order-pipe';
-import * as moment from 'moment-timezone';
 import * as _ from 'underscore';
 import {Router} from '@angular/router';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
@@ -250,7 +249,7 @@ export class CreatePlanModalComponent {
       this.submitted = false;
       this.recursivelyCreate(obj);
     } else {
-      obj.dailyPlanDate = moment(this.selectedDate).format('YYYY-MM-DD');
+      obj.dailyPlanDate = this.coreService.getStringDate(this.selectedDate);
       this.coreService.post('daily_plan/orders/generate', obj).subscribe((result) => {
         this.submitted = false;
         this.activeModal.close('Done');
@@ -264,7 +263,7 @@ export class CreatePlanModalComponent {
     let apiArr = [];
     const dates = this.coreService.getDates(this.dateRanges[0], this.dateRanges[1]);
     dates.forEach((date) => {
-      obj.dailyPlanDate = moment(date).format('YYYY-MM-DD');
+      obj.dailyPlanDate = this.coreService.getStringDate(date);
       apiArr.push(this.coreService.post('daily_plan/orders/generate', this.coreService.clone(obj)));
     });
     forkJoin(apiArr).subscribe((result: any) => {
@@ -393,7 +392,7 @@ export class RemovePlanModalComponent implements OnInit {
       });
     }
     if (!obj.filter.dailyPlanDate && this.selectedDate && !this.submissionsDelete) {
-      obj.filter.dailyPlanDate = moment(this.selectedDate).format('YYYY-MM-DD');
+      obj.filter.dailyPlanDate = this.coreService.getStringDate(this.selectedDate);
     } else if (this.dateRange && this.dateRange.length > 0) {
       obj.filter.dateFrom = new Date(this.dateRange[0]);
       obj.filter.dateTo = new Date(this.dateRange[1]);
@@ -424,7 +423,7 @@ export class RemovePlanModalComponent implements OnInit {
     let apiArr = [];
     const dates = this.coreService.getDates(this.dateRange[0], this.dateRange[1]);
     dates.forEach((date) => {
-      obj.filter.dailyPlanDate = moment(date).format('YYYY-MM-DD');
+      obj.filter.dailyPlanDate = this.coreService.getStringDate(date);
       apiArr.push(this.coreService.post('daily_plan/orders/delete', this.coreService.clone(obj)));
     });
     forkJoin(apiArr).subscribe((result) => {
@@ -522,9 +521,9 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
               id: ++count,
               col1: plans[i].value[j].orderId,
               col2: this.groupBy === 'WORKFLOW' ? '' : plans[i].value[j].workflowPath,
-              plannedDate: moment(plans[i].value[j].plannedDate).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss'),
-              begin: (plans[i].value[j].cyclicOrder && plans[i].value[j].cyclicOrder.firstStart) ? moment(plans[i].value[j].cyclicOrder.firstStart).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
-              end: (plans[i].value[j].cyclicOrder && plans[i].value[j].cyclicOrder.lastStart) ? moment(plans[i].value[j].cyclicOrder.lastStart).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
+              plannedDate: this.coreService.getDateByFormat(plans[i].value[j].plannedDate, this.preferences.zone, 'YYYY-MM-DD HH:mm:ss'),
+              begin: (plans[i].value[j].cyclicOrder && plans[i].value[j].cyclicOrder.firstStart) ? this.coreService.getDateByFormat(plans[i].value[j].cyclicOrder.firstStart, self.preferences.zone, 'YYYY-MM-DD HH:mm:ss') : '',
+              end: (plans[i].value[j].cyclicOrder && plans[i].value[j].cyclicOrder.lastStart) ? this.coreService.getDateByFormat(plans[i].value[j].cyclicOrder.lastStart, self.preferences.zone, 'YYYY-MM-DD HH:mm:ss') : '',
               repeat: plans[i].value[j].period.repeat,
               class: this.coreService.getColor(plans[i].value[j].state.severity, 'bg'),
               duration: dur > 60 ? (dur / (60 * 60)) : 1,
@@ -544,9 +543,9 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
           id: (j + 1),
           col1: this.data[j].orderId,
           col2: this.groupBy === 'WORKFLOW' ? '' : this.data[j].workflowPath,
-          plannedDate: moment(this.data[j].plannedDate).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss'),
-          begin: (this.data[j].cyclicOrder && this.data[j].cyclicOrder.firstStart) ? moment(self.data[j].cyclicOrder.firstStart).format('YYYY-MM-DD HH:mm:ss') : '',
-          end: (this.data[j].cyclicOrder && this.data[j].cyclicOrder.lastStart) ? moment(self.data[j].cyclicOrder.lastStart).format('YYYY-MM-DD HH:mm:ss') : '',
+          plannedDate: this.coreService.getDateByFormat(this.data[j].plannedDate, self.preferences.zone, 'YYYY-MM-DD HH:mm:ss'),
+          begin: (this.data[j].cyclicOrder && this.data[j].cyclicOrder.firstStart) ? this.coreService.getDateByFormat(self.data[j].cyclicOrder.firstStart, null, 'YYYY-MM-DD HH:mm:ss') : '',
+          end: (this.data[j].cyclicOrder && this.data[j].cyclicOrder.lastStart) ? this.coreService.getDateByFormat(self.data[j].cyclicOrder.lastStart, null, 'YYYY-MM-DD HH:mm:ss') : '',
           repeat: this.data[j].period.repeat,
           class: this.coreService.getColor(this.data[j].state.severity, 'bg'),
           duration: dur > 60 ? (dur / (60 * 60)) : 1,
@@ -905,7 +904,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         this.callApi(new Date(dates[0]), new Date(dates[1]), obj);
       });
     } else {
-      obj.filter.dailyPlanDate = moment(this.selectedDate).format('YYYY-MM-DD');
+      obj.filter.dailyPlanDate = this.coreService.getStringDate(this.selectedDate);
       if (this.selectedSubmissionId) {
         obj.filter.submissionHistoryIds = [this.selectedSubmissionId];
       }
@@ -1143,7 +1142,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       dates.forEach((date) => {
         let obj = {
           controllerId: this.schedulerIds.selected,
-          dailyPlanDate: moment(date).format('YYYY-MM-DD'),
+          dailyPlanDate: this.coreService.getStringDate(date),
           orderIds: []
         };
         apiArr.push(this.coreService.post('orders/cancel', this.coreService.clone(obj)));
@@ -1524,7 +1523,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     let apiArr = [];
     let dates = this.coreService.getDates(from, to);
     dates.forEach((date) => {
-      obj.filter.dailyPlanDate = moment(date).format('YYYY-MM-DD');
+      obj.filter.dailyPlanDate = this.coreService.getStringDate(date);
       apiArr.push(this.coreService.post('daily_plan/orders', this.coreService.clone(obj)));
     });
     forkJoin(apiArr).subscribe((result: any) => {

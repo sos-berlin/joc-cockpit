@@ -325,7 +325,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType.match(/Order/) || args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
+        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
           this.getOrders({
             controllerId: this.schedulerIds.selected,
             states: this.getState()

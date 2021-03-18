@@ -1,9 +1,9 @@
 import {Component, OnInit, OnDestroy, Input} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {Router} from '@angular/router';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
-import {Subscription} from 'rxjs';
-import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-order-overview',

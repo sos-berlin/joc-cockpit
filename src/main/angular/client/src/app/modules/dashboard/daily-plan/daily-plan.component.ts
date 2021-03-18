@@ -1,7 +1,6 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
-import * as moment from 'moment';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
@@ -71,7 +70,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     const obj = {
       controllerId: this.schedulerIds.selected,
       filter: {
-        dailyPlanDate: this.filters.date === '0d' ? moment().format('YYYY-MM-DD') : moment(d).format('YYYY-MM-DD')
+        dailyPlanDate: this.coreService.getStringDate(this.filters.date === '0d' ? null : d)
       }
     };
 

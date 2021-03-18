@@ -5,7 +5,6 @@ import {TranslateService} from '@ngx-translate/core';
 import {Router} from '@angular/router';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import * as _ from 'underscore';
-import * as moment from 'moment';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
@@ -930,10 +929,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       delete obj['timeZone'];
     }
     if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-      obj.dateFrom = moment(obj.dateFrom).tz(this.preferences.zone);
+      obj.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, obj.dateFrom);
     }
     if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-      obj.dateTo = moment(obj.dateTo).tz(this.preferences.zone);
+      obj.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, obj.dateTo);
     }
   }
 
@@ -1210,8 +1209,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.historyFilters.type = 'DEPLOYMENT';
     if (!obj) {
       if (!this.deploymentHistoryFilterList && this.schedulerIds.selected) {
-        this.checkSharedFilters('DEPLOYMENT');
-        return;
+      //  this.checkSharedFilters('DEPLOYMENT');
+        this.deploymentHistoryFilterList = [];
+       // return;
       }
       if (this.historyFilters.current == true) {
         obj = {controllerId: this.schedulerIds.selected};
@@ -1272,10 +1272,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       delete obj['timeZone'];
     }
     if ((obj.from && typeof obj.from.getMonth === 'function')) {
-      obj.from = moment(obj.from).tz(this.preferences.zone);
+      obj.from = this.coreService.convertTimeToLocalTZ(this.preferences, obj.from);
     }
     if ((obj.to && typeof obj.to.getMonth === 'function')) {
-      obj.to = moment(obj.to).tz(this.preferences.zone);
+      obj.to = this.coreService.convertTimeToLocalTZ(this.preferences, obj.to);
     }
   }
 
@@ -1319,8 +1319,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.historyFilters.type = 'SUBMISSION';
     if (!obj) {
       if (!this.submissionHistoryFilterList && this.schedulerIds.selected) {
-        this.checkSharedFilters('SUBMISSION');
-        return;
+      //  this.checkSharedFilters('SUBMISSION');
+        this.submissionHistoryFilterList = [];
+      //  return;
       }
       if (this.historyFilters.current == true) {
         obj = {controllerId: this.schedulerIds.selected};
@@ -1423,7 +1424,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             fromDate.setSeconds(0);
           }
           fromDate.setMilliseconds(0);
-          filter.dateFrom = moment.utc(fromDate);
+          filter.dateFrom = this.coreService.getUTC(fromDate);
         }
         if (obj.to) {
           toDate = new Date(obj.to);
@@ -1437,7 +1438,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             toDate.setSeconds(0);
           }
           toDate.setMilliseconds(0);
-          filter.dateTo = moment.utc(toDate);
+          filter.dateTo = this.coreService.getUTC(toDate);
         }
       }
 
@@ -1484,10 +1485,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       filter.timeZone = this.preferences.zone;
       if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-        filter.dateFrom = moment(filter.dateFrom).tz(this.preferences.zone);
+        filter.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateFrom);
       }
       if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-        filter.dateTo = moment(filter.dateTo).tz(this.preferences.zone);
+        filter.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateTo);
       }
       if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true') && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0))) {
         filter.excludeOrders = [];
@@ -1535,7 +1536,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             fromDate.setSeconds(0);
           }
           fromDate.setMilliseconds(0);
-          filter.dateFrom = moment.utc(fromDate);
+          filter.dateFrom = this.coreService.getUTC(fromDate);
         }
         if (obj.to) {
           toDate = new Date(obj.to);
@@ -1550,7 +1551,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             toDate.setSeconds(0);
           }
           toDate.setMilliseconds(0);
-          filter.dateTo = moment.utc(toDate);
+          filter.dateTo = this.coreService.getUTC(toDate);
         }
       }
 
@@ -1576,10 +1577,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       filter.timeZone = this.preferences.zone;
       if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-        filter.dateFrom = moment(filter.dateFrom).tz(this.preferences.zone);
+        filter.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateFrom);
       }
       if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-        filter.dateTo = moment(filter.dateTo).tz(this.preferences.zone);
+        filter.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateTo);
       }
       if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true')
         && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
@@ -1614,7 +1615,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             fromDate.setSeconds(0);
           }
           fromDate.setMilliseconds(0);
-          filter.from = moment.utc(fromDate);
+          filter.from = this.coreService.getUTC(fromDate);
         }
         if (obj.to) {
           toDate = new Date(obj.to);
@@ -1628,7 +1629,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             toDate.setSeconds(0);
           }
           toDate.setMilliseconds(0);
-          filter.to = moment.utc(toDate);
+          filter.to = this.coreService.getUTC(toDate);
         }
       }
 
@@ -1644,10 +1645,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
       filter.timeZone = this.preferences.zone;
       if ((filter.from && typeof filter.from.getMonth === 'function')) {
-        filter.from = moment(filter.from).tz(this.preferences.zone);
+        filter.from = this.coreService.convertTimeToLocalTZ(this.preferences, filter.from);
       }
       if ((filter.to && typeof filter.to.getMonth === 'function')) {
-        filter.to = moment(filter.to).tz(this.preferences.zone);
+        filter.to = this.coreService.convertTimeToLocalTZ(this.preferences, filter.to);
       }
       this.coreService.post('inventory/deployment/history', {compactFilter: filter}).subscribe((res: any) => {
         this.deploymentHistorys = res.depHistory;
@@ -1674,7 +1675,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             fromDate.setSeconds(0);
           }
           fromDate.setMilliseconds(0);
-          filter.dateFrom = moment.utc(fromDate);
+          filter.dateFrom = this.coreService.getUTC(fromDate);
         }
         if (obj.to) {
           toDate = new Date(obj.to);
@@ -1688,7 +1689,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             toDate.setSeconds(0);
           }
           toDate.setMilliseconds(0);
-          filter.dateTo = moment.utc(toDate);
+          filter.dateTo = this.coreService.getUTC(toDate);
         }
       }
       if (obj.type && obj.type.length === 1) {
@@ -1701,10 +1702,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
       filter.timeZone = this.preferences.zone;
       if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-        filter.dateFrom = moment(filter.dateFrom).tz(this.preferences.zone);
+        filter.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateFrom);
       }
       if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-        filter.dateTo = moment(filter.dateTo).tz(this.preferences.zone);
+        filter.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateTo);
       }
       this.coreService.post('daily_plan/history', {filter: filter}).subscribe((res: any) => {
         this.submissionHistorys = res.dailyPlans;
@@ -2610,7 +2611,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     let data = [];
     for (let i = 0; i < this.submissionHistorys.length; i++) {
       let obj: any = {};
-      obj[dailyPlanDate] = moment(this.submissionHistorys[i].dailyPlanDate).tz(this.preferences.zone).format(df);
+      obj[dailyPlanDate] = this.coreService.getDateByFormat(this.submissionHistorys[i].dailyPlanDate, this.preferences.zone, df);
       data.push(obj);
       for (let j = 0; j < this.submissionHistorys[i].controllers.length; j++) {
         if (!this.historyFilters.current) {

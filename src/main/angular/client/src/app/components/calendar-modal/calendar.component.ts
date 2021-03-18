@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import * as moment from 'moment';
 import {CoreService} from '../../services/core.service';
 
 declare const $;
@@ -93,7 +92,7 @@ export class CalendarModalComponent implements OnInit {
       }
     } else if (newDate.getFullYear() === this.calendarTitle) {
       let obj: any = {
-        dateFrom: moment().format('YYYY-MM-DD'),
+        dateFrom: this.coreService.getStringDate(null),
         dateTo: toDate,
       };
       if (this.calendar) {
@@ -117,7 +116,7 @@ export class CalendarModalComponent implements OnInit {
       }
     });
     const obj: any = {
-      dateFrom: moment().format('YYYY-MM-DD'),
+      dateFrom: this.coreService.getStringDate(null),
       dateTo: this.calendarTitle + '-12-31'
     };
     if (this.calendar) {
@@ -140,8 +139,8 @@ export class CalendarModalComponent implements OnInit {
       for (let i = 0; i < result.dates.length; i++) {
         let x = result.dates[i];
         let obj = {
-          startDate: moment(x),
-          endDate: moment(x),
+          startDate: this.coreService.getDate(x),
+          endDate: this.coreService.getDate(x),
           color: '#007da6'
         };
 
@@ -152,8 +151,8 @@ export class CalendarModalComponent implements OnInit {
       for (let i = 0; i < result.withExcludes.length; i++) {
         let x = result.withExcludes[i];
         this.planItems.push({
-          startDate: moment(x),
-          endDate: moment(x),
+          startDate: this.coreService.getDate(x),
+          endDate: this.coreService.getDate(x),
           color: '#eb8814'
         });
       }
