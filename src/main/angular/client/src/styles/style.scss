@@ -3220,7 +3220,9 @@ pre.log {
 .log_warn {
   color: tomato;
 }
-
+.log_trace {
+  color: #a0a0a0
+}
 .log_info {
   color: #666;
 }
@@ -3235,22 +3237,6 @@ pre.log {
 
 .log_debug {
   color: #006400;
-}
-
-.log_debug2 {
-  color: #408040;
-}
-
-.log_debug3 {
-  color: grey;
-}
-
-.log_debug4, .log_debug5, .log_debug6, .log_debug7, .log_debug8 {
-  color: #8080FF;
-}
-
-.log_debug9 {
-  color: #a0a0a0;
 }
 
 span {

@@ -29,6 +29,7 @@ import {LockComponent} from './lock/lock.component';
 import {JunctionComponent} from './junction/junction.component';
 import {JobClassComponent} from './job-class/job-class.component';
 import {CalendarComponent, FrequencyModalComponent} from './calendar/calendar.component';
+import {FileOrderComponent} from './file-order/file-order.component';
 
 const COMPONENTS = [FrequencyModalComponent, ImportComponent, UpdateWorkflowComponent, SingleDeployComponent,
   DeployComponent, ExportComponent, SetVersionComponent, CreateFolderModalComponent, CreateObjectModalComponent,
@@ -56,6 +57,7 @@ const COMPONENTS = [FrequencyModalComponent, ImportComponent, UpdateWorkflowComp
     WorkflowComponent,
     JunctionComponent,
     JobClassComponent,
+    FileOrderComponent,
     TableComponent,
     ...COMPONENTS
   ],

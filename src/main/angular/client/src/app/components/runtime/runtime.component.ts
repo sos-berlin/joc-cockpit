@@ -1,6 +1,5 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit} from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import * as moment from 'moment';
 import * as _ from 'underscore';
 import {DatePipe} from '@angular/common';
 import {TreeModalComponent} from '../tree-modal/tree.component';
@@ -94,18 +93,22 @@ export class AddRestrictionComponent implements OnInit {
     }
     this.setEditorEnable();
     if (this.frequency.days && this.frequency.days.length > 0) {
-      this.daysOptions = this.daysOptions.map(item => {
-        return {
-          ...item,
-          checked: this.frequency.days.indexOf(item.value) > -1
-        };
-      });
+      this.checkDays();
     }
+  }
+
+  checkDays(){
+    this.daysOptions = this.daysOptions.map(item => {
+      return {
+        ...item,
+        checked: (this.frequency.days ? this.frequency.days.indexOf(item.value) > -1 : false)
+      };
+    });
   }
 
   convertStringToDate(date) {
     if (typeof date === 'string') {
-      return moment(date);
+      return this.coreService.getDate(date);
     } else {
       return date;
     }
@@ -133,10 +136,10 @@ export class AddRestrictionComponent implements OnInit {
         }
       }
       if (this.calendar.frequencyList[i].startingWithM) {
-        this.frequency.startingWithM = moment(this.calendar.frequencyList[i].startingWithM).format(this.dateFormatM);
+        this.frequency.startingWithM = this.coreService.getDateByFormat(this.calendar.frequencyList[i].startingWithM, null, this.dateFormatM);
       }
       if (this.calendar.frequencyList[i].endOnM) {
-        this.frequency.endOnM = moment(this.calendar.frequencyList[i].endOnM).format(this.dateFormatM);
+        this.frequency.endOnM = this.coreService.getDateByFormat(this.calendar.frequencyList[i].endOnM, null, this.dateFormatM);
       }
     } else if (this.calendar.frequencyList[i].tab === 'specificDays') {
       if (this.calendar.frequencyList[i].dates) {
@@ -149,36 +152,36 @@ export class AddRestrictionComponent implements OnInit {
         });
       }
       if (this.calendar.frequencyList[i].startingWithS) {
-        this.frequency.startingWithS = moment(this.calendar.frequencyList[i].startingWithS).format(this.dateFormatM);
+        this.frequency.startingWithS = this.coreService.getDateByFormat(this.calendar.frequencyList[i].startingWithS, null, this.dateFormatM);
       }
       if (this.calendar.frequencyList[i].endOnS) {
-        this.frequency.endOnS = moment(this.calendar.frequencyList[i].endOnS).format(this.dateFormatM);
+        this.frequency.endOnS = this.coreService.getDateByFormat(this.calendar.frequencyList[i].endOnS, null, this.dateFormatM);
       }
     }
     if (this.calendar.frequencyList[i].tab === 'weekDays') {
       this.frequency.days = this.coreService.clone(this.calendar.frequencyList[i].days);
       this.frequency.all = this.calendar.frequencyList[i].days.length === 7;
       if (this.calendar.frequencyList[i].startingWithW) {
-        this.frequency.startingWithW = moment(this.calendar.frequencyList[i].startingWithW).format(this.dateFormatM);
+        this.frequency.startingWithW = this.coreService.getDateByFormat(this.calendar.frequencyList[i].startingWithW, null, this.dateFormatM);
       }
       if (this.calendar.frequencyList[i].endOnW) {
-        this.frequency.endOnW = moment(this.calendar.frequencyList[i].endOnW).format(this.dateFormatM);
+        this.frequency.endOnW = this.coreService.getDateByFormat(this.calendar.frequencyList[i].endOnW, null, this.dateFormatM);
       }
     }
     if (this.calendar.frequencyList[i].tab == 'every') {
       if (this.calendar.frequencyList[i].startingWith) {
-        this.frequency.startingWith = moment(this.calendar.frequencyList[i].startingWith).format(this.dateFormatM);
+        this.frequency.startingWith = this.coreService.getDateByFormat(this.calendar.frequencyList[i].startingWith, null, this.dateFormatM);
       }
       if (this.calendar.frequencyList[i].endOn) {
-        this.frequency.endOn = moment(this.calendar.frequencyList[i].endOn).format(this.dateFormatM);
+        this.frequency.endOn = this.coreService.getDateByFormat(this.calendar.frequencyList[i].endOn, null, this.dateFormatM);
       }
     }
     if (this.calendar.frequencyList[i].tab == 'specificWeekDays') {
       if (this.calendar.frequencyList[i].startingWithS) {
-        this.frequency.startingWithS = moment(this.calendar.frequencyList[i].startingWithS).format(this.dateFormatM);
+        this.frequency.startingWithS = this.coreService.getDateByFormat(this.calendar.frequencyList[i].startingWithS, null, this.dateFormatM);
       }
       if (this.calendar.frequencyList[i].endOnS) {
-        this.frequency.endOnS = moment(this.calendar.frequencyList[i].endOnS).format(this.dateFormatM);
+        this.frequency.endOnS = this.coreService.getDateByFormat(this.calendar.frequencyList[i].endOnS, null, this.dateFormatM);
       }
     }
     if (this.frequency.tab === 'specificDays') {
@@ -303,6 +306,7 @@ export class AddRestrictionComponent implements OnInit {
       this.frequency.days = [];
       this.editor.isEnable = false;
     }
+    this.checkDays();
   }
 
   selectAllMonth() {
@@ -312,11 +316,6 @@ export class AddRestrictionComponent implements OnInit {
       this.frequency.months = [];
     }
   }
-
-  getDateFormat(date) {
-    return moment(date).format(this.dateFormatM);
-  }
-
 
   addFrequency() {
     this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
@@ -330,7 +329,7 @@ export class AddRestrictionComponent implements OnInit {
             if (this.frequency.tab === 'specificDays') {
               this.frequency.dates = [];
               this.tempItems.forEach((date) => {
-                this.frequency.dates.push(moment(date.startDate).format('YYYY-MM-DD'));
+                this.frequency.dates.push(this.coreService.getStringDate(date.startDate));
               });
               this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
             }
@@ -349,7 +348,7 @@ export class AddRestrictionComponent implements OnInit {
     if (this.frequency.tab == 'specificDays') {
       this.frequency.dates = [];
       for (let j = 0; j < this.tempItems.length; j++) {
-        this.frequency.dates.push(moment(this.tempItems[j].startDate).format('YYYY-MM-DD'));
+        this.frequency.dates.push(this.coreService.getStringDate(this.tempItems[j].startDate));
       }
       this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
     }
@@ -483,7 +482,7 @@ export class AddRestrictionComponent implements OnInit {
           } else if (this.frequency.tab == 'specificDays') {
             this.frequency.dates = [];
             for (let j = 0; j < this.tempItems.length; j++) {
-              this.frequency.dates.push(moment(this.tempItems[j].startDate).format('YYYY-MM-DD'));
+              this.frequency.dates.push(this.coreService.getStringDate(this.tempItems[j].startDate));
             }
             this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
             this.calendar.frequencyList[i].dates = this.coreService.clone(this.frequency.dates);
@@ -506,7 +505,7 @@ export class AddRestrictionComponent implements OnInit {
         if (this.frequency.tab == 'specificDays') {
           this.frequency.dates = [];
           for (let i = 0; i < this.tempItems.length; i++) {
-            this.frequency.dates.push(moment(this.tempItems[i].startDate).format('YYYY-MM-DD'));
+            this.frequency.dates.push(this.coreService.getStringDate(this.tempItems[i].startDate));
           }
           this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
         }
@@ -519,7 +518,7 @@ export class AddRestrictionComponent implements OnInit {
       if (this.frequency.tab == 'specificDays') {
         this.frequency.dates = [];
         for (let i = 0; i < this.tempItems.length; i++) {
-          this.frequency.dates.push(moment(this.tempItems[i].startDate).format('YYYY-MM-DD'));
+          this.frequency.dates.push(this.coreService.getStringDate(this.tempItems[i].startDate));
         }
         this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
       }
@@ -560,6 +559,7 @@ export class AddRestrictionComponent implements OnInit {
     if (data.tab == 'specificDays') {
       this.tempItems = [];
     }
+    this.checkDays();
   }
 
   save() {
@@ -698,7 +698,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   viewCalObj: any = {calendarView: 'year'};
   calendars: any = [];
   nonWorkingCalendars: any = [];
-  zones = moment.tz.names();
+  zones = [];
   calendar: any;
   toDate: any;
   calendarTitle = new Date().getFullYear();
@@ -708,6 +708,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes) {
+    this.zones = this.coreService.getTimeZoneList()
     this.init();
   }
 
@@ -870,7 +871,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
         }
       });
       let obj: any = {
-        dateFrom: moment().format('YYYY-MM-DD'),
+        dateFrom: this.coreService.getStringDate(null),
         dateTo: this.calendarTitle + '-12-31'
       };
       if (this.calendar) {
@@ -1039,8 +1040,8 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
         for (let i = 0; i < result.dates.length; i++) {
           let x = result.dates[i];
           let obj = {
-            startDate: moment(x),
-            endDate: moment(x),
+            startDate: this.coreService.getDate(x),
+            endDate: this.coreService.getDate(x),
             color: '#007da6'
           };
 
@@ -1051,8 +1052,8 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
         for (let i = 0; i < result.withExcludes.length; i++) {
           let x = result.withExcludes[i];
           this.planItems.push({
-            startDate: moment(x),
-            endDate: moment(x),
+            startDate: this.coreService.getDate(x),
+            endDate: this.coreService.getDate(x),
             color: '#eb8814'
           });
         }
@@ -1069,11 +1070,11 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       let planData: any = {};
       if (value.begin) {
         planData = {
-          plannedStartTime: moment(value.begin).tz(this.preferences.zone),
-          plannedShowTime: this.coreService.getTimeFromDate(moment(value.begin).tz(this.preferences.zone), this.preferences.dateFormat)
+          plannedStartTime: this.coreService.convertTimeToLocalTZ(value.begin, this.preferences.zone),
+          plannedShowTime: this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(value.begin,this.preferences.zone), this.preferences.dateFormat)
         };
         if (value.end) {
-          planData.endTime = this.coreService.getTimeFromDate(moment(value.end).tz(this.preferences.zone),
+          planData.endTime = this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(value.end,this.preferences.zone),
             this.preferences.dateFormat);
         }
         if (value.repeat) {
@@ -1081,8 +1082,8 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
         }
       } else if (value.singleStart) {
         planData = {
-          plannedStartTime: moment(value.singleStart).tz(this.preferences.zone),
-          plannedShowTime: this.coreService.getTimeFromDate(moment(value.begin).tz(this.preferences.zone), this.preferences.dateFormat)
+          plannedStartTime: this.coreService.convertTimeToLocalTZ(value.singleStart, this.preferences.zone),
+          plannedShowTime: this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(value.begin,this.preferences.zone), this.preferences.dateFormat)
         };
       }
       let date = new Date(planData.plannedStartTime).setHours(0, 0, 0, 0);

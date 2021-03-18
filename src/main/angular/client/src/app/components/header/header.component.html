@@ -139,7 +139,7 @@
         <div class="collapse navbar-toggleable-custom" id="navbar1">
             <!-- link -->
             <ul class="nav navbar-nav navbar-nav-inline text-center pull-left nav-active-border b-orange">
-                <li class="nav-item">
+                <li class="nav-item" *ngIf="(showViews && showViews.dashboard != undefined) ? showViews.dashboard : true">
                     <a class="nav-link" routerLink="/dashboard" [routerLinkActive]="['active']">
                         <span class="nav-text">
                              <i class="icon-dashboard-icon text-white" ></i>
@@ -147,7 +147,7 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item" *ngIf="permission.DailyPlan && permission.DailyPlan.view.status">
+                <li class="nav-item" *ngIf="(showViews && showViews.dailyPlan != undefined) ? showViews.dailyPlan : (permission.DailyPlan && permission.DailyPlan.view.status)">
                     <a class="nav-link" routerLink="/daily_plan" [routerLinkActive]="['active']">
                         <span class="nav-text">
                             <i class="icon-daily-plan-icon text-white"></i>
@@ -155,7 +155,7 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item" *ngIf="permission.Workflow && permission.Workflow.view.status">
+                <li class="nav-item" *ngIf="(showViews && showViews.workflows != undefined) ? showViews.workflows : (permission.Workflow && permission.Workflow.view.status)">
                     <a class="nav-link" routerLink="/workflows" [routerLinkActive]="['active']">
                         <span class="nav-text">
                           <i class="icon-workflows-icon text-white"></i>
@@ -163,8 +163,16 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item" *ngIf="permission.JS7UniversalAgent && (permission.JS7UniversalAgent.view.status || permission.ProcessClass.view.status ||
-                    permission.Lock.view.status  || permission.Calendar.view.status || permission.Documentation.view)">
+ 		<li class="nav-item" *ngIf="permission.YADE && permission.YADE.view.status">
+                    <a class="nav-link" routerLink="/file_transfer" [routerLinkActive]="['active']">
+                        <span class="nav-text">
+                            <i class="icon-file-transfers-icon text-white"></i>
+                            <span class="ico text-white text-u-c _600" translate>header.label.fileTransfers</span>
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item" *ngIf="(showViews && showViews.resources != undefined) ? showViews.resources : (permission.JS7UniversalAgent && (permission.JS7UniversalAgent.view.status || permission.ProcessClass.view.status ||
+                    permission.Lock.view.status  || permission.Calendar.view.status || permission.Documentation.view))">
                     <a class="nav-link" routerLink="/resources" [routerLinkActive]="['active']" (click)="navigateToResource()">
                         <span class="nav-text">
                             <i class="icon-resources-icon text-white"></i>
@@ -172,7 +180,7 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item" *ngIf="permission.History && (permission.History.view.status || permission.YADE.view.status)">
+                <li class="nav-item" *ngIf="(showViews && showViews.history != undefined) ? showViews.history : (permission.History && (permission.History.view.status || permission.YADE.view.status))">
                     <a class="nav-link" routerLink="/history" [routerLinkActive]="['active']">
                         <span class="nav-text">
                             <i class="icon-alarm-icon text-white"></i>
@@ -180,7 +188,7 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item" *ngIf="permission.AuditLog && permission.AuditLog.view.status">
+                <li class="nav-item" *ngIf="(showViews && showViews.auditLog != undefined) ? showViews.auditLog : (permission.AuditLog && permission.AuditLog.view.status)">
                     <a class="nav-link" routerLink="/audit_log" [routerLinkActive]="['active']">
                         <span class="nav-text">
                             <i class="icon-audit-log-icon text-white"></i>
@@ -188,7 +196,7 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item" *ngIf="permission.Inventory && (permission.Inventory.configurations.view || permission.YADE.configurations.view)">
+                <li class="nav-item" *ngIf="(showViews && showViews.configuration != undefined) ? showViews.configuration : (permission.Inventory && (permission.Inventory.configurations.view || permission.YADE.configurations.view))">
                     <a class="nav-link" routerLink="/configuration" [routerLinkActive]="['active']" (click)="navigateToConfiguration()">
                         <span class="nav-text" >
                             <i class="icon-configuration-icon text-white"></i>

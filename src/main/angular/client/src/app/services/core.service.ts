@@ -5,7 +5,7 @@ import {ClipboardService} from 'ngx-clipboard';
 import {TranslateService} from '@ngx-translate/core';
 import {Observable} from 'rxjs';
 import {AuthService} from '../components/guard';
-import * as moment from 'moment';
+import * as moment from 'moment-timezone';
 import * as _ from 'underscore';
 
 declare const diff_match_patch;
@@ -605,7 +605,7 @@ export class CoreService {
     if (preferenceObj.isNewWindow === 'newWindow') {
       this.newWindow = window.open('#/log2' + url, '', 'top=' + window.localStorage.log_window_y + ',' +
         'left=' + window.localStorage.log_window_x + ',innerwidth=' + window.localStorage.log_window_wt + ',' +
-        'innerheight=' + window.localStorage.log_window_ht + this.windowProperties, true);
+        'innerheight=' + window.localStorage.log_window_ht + this.windowProperties);
       setTimeout(() => {
         this.calWindowSize();
       }, 500);
@@ -853,10 +853,19 @@ export class CoreService {
     return flag;
   }
 
-
   // To convert date string into moment date format
   toMomentDateFormat(date): any {
     return moment(date, 'DD.MM.YYYY');
+  }
+
+  // Function: get local time zone
+  getTimeZone(): string {
+    return moment.tz.guess();
+  }
+
+  // Function: get list of time zones
+  getTimeZoneList(): any {
+    return moment.tz.names();
   }
 
   getProtocols(): Array<string> {
@@ -932,6 +941,10 @@ export class CoreService {
     if (this.newWindow) {
       try {
         this.newWindow.addEventListener('beforeunload', () => {
+          if (this.newWindow.screenX != window.localStorage.log_window_x) {
+            window.localStorage.log_window_x = this.newWindow.screenX;
+            window.localStorage.log_window_y = this.newWindow.screenY;
+          }
           if (this.newWindow.sessionStorage.changedPreferences) {
             let preferences = JSON.parse(sessionStorage.preferences);
             preferences.logFilter = JSON.parse(this.newWindow.sessionStorage.changedPreferences).logFilter;
@@ -975,15 +988,64 @@ export class CoreService {
     }
   }
 
-  stringToDate(preferences, date): any {
+  getLogDateFormat(date, zone): string {
+    return moment(date).tz(zone).format('YYYY-MM-DD HH:mm:ss.SSSZ');
+  }
+
+  getDateByFormat(date, zone, format): string {
+    if (zone) {
+      return moment(date).tz(zone).format(format);
+    }
+    return moment(date).format(format);
+  }
+
+  getStringDate(date): string {
+    if (!date) {
+      return moment().format('YYYY-MM-DD');
+    }
+    return moment(date).format('YYYY-MM-DD');
+  }
+
+  convertTimeToLocalTZ(preferences, date): any {
+    return moment(date).tz(preferences.zone);
+  }
+
+  getUTC(date): any {
+    return moment.utc(date);
+  }
+
+  getDate(date): any {
+    return moment(date);
+  }
+
+  stringToDate(preferences, date): string {
     if (!date) {
       return '-';
     }
-
     if (!preferences.zone) {
       return;
     }
     return moment(date).tz(preferences.zone).format(preferences.dateFormat);
+  }
+
+  getTimeDiff(preferences, date): number {
+    if (!date) {
+      return 0;
+    }
+    if (!preferences.zone) {
+      return;
+    }
+    return moment(moment(date).tz(preferences.zone)).diff(moment());
+  }
+
+  convertEtcTomeZone(timezone: string): string {
+    if (timezone.match(/Etc\/GMT/)) {
+      if (timezone.match(/-/)) {
+        return `${timezone.replace(/-/, '+')}`;
+      } else {
+        return `${timezone.replace(/\+/, '-')}`;
+      }
+    }
   }
 
   calDuration(n: any, r: any): string {
@@ -1030,12 +1092,12 @@ export class CoreService {
     setTimeout(() => {
       let arr = currentView != null ? [53] : [];
       if (!currentView) {
-        $('#orderTable').find('thead th.dynamic-thead-o').each(function() {
+        $('#orderTable').find('thead th.dynamic-thead-o').each(function () {
           const w = $(this).outerWidth();
           arr.push(w);
         });
       }
-      $('#orderTable').find('thead th.dynamic-thead').each(function() {
+      $('#orderTable').find('thead th.dynamic-thead').each(function () {
         const w = $(this).outerWidth();
         arr.push(w);
       });

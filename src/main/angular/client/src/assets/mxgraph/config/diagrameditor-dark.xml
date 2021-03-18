@@ -109,9 +109,9 @@
       <add as="order">
         <add as="shape" value="ellipse"/>
         <add as="perimeter" value="ellipsePerimeter"/>
-        <add as="fillColor" value="#666"/>
+        <add as="fillColor" value="#ffb732"/>
+        <add as="strokeColor" value="#ffb732"/>
         <add as="gradientColor" value="#333"/>
-        <add as="strokeColor" value="#777"/>
         <add as="rounded" value="1"/>
       </add>
       <add as="if">

@@ -1,7 +1,7 @@
-import {Component, OnInit, OnDestroy, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, OnInit, OnDestroy, Input} from '@angular/core';
+import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
-import {Subscription} from 'rxjs';
 import {AuthService} from '../../../components/guard';
 
 @Component({

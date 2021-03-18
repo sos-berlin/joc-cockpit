@@ -148,20 +148,10 @@ export class FrequencyModalComponent implements OnInit {
     }
     this.setEditorEnable();
     if (this.frequency.days && this.frequency.days.length > 0) {
-      this.daysOptions = this.daysOptions.map(item => {
-        return {
-          ...item,
-          checked: this.frequency.days.indexOf(item.value) > -1
-        };
-      });
+      this.checkDays();
     }
     if (this.frequency.months && this.frequency.months.length > 0) {
-      this.monthsOptions = this.monthsOptions.map(item => {
-        return {
-          ...item,
-          checked: this.frequency.months.indexOf(item.value) > -1
-        };
-      });
+      this.checkMonths();
     }
   }
 
@@ -296,7 +286,6 @@ export class FrequencyModalComponent implements OnInit {
         } else {
           this.editor.isEnable = this.selectedMonthsU.length != 0;
         }
-
       } else if (this.frequency.tab == 'every') {
         this.editor.isEnable = !!(this.frequency.interval && this.frequency.dateEntity);
       } else if (this.frequency.tab == 'nationalHoliday') {
@@ -305,6 +294,10 @@ export class FrequencyModalComponent implements OnInit {
         this.editor.isEnable = this.frequency.days && this.frequency.days.length > 0;
       } else if (this.frequency.tab == 'specificDays') {
         this.editor.isEnable = this.tempItems.length > 0;
+      }
+
+      if (this.frequency.months && this.frequency.months.length > 0) {
+        this.checkMonths();
       }
     }
   }
@@ -435,6 +428,16 @@ export class FrequencyModalComponent implements OnInit {
       this.frequency.days = [];
       this.editor.isEnable = false;
     }
+    this.checkDays();
+  }
+
+  checkDays(){
+    this.daysOptions = this.daysOptions.map(item => {
+      return {
+        ...item,
+        checked: (this.frequency.days ? this.frequency.days.indexOf(item.value) > -1 : false)
+      };
+    });
   }
 
   selectAllMonth() {
@@ -443,6 +446,16 @@ export class FrequencyModalComponent implements OnInit {
     } else {
       this.frequency.months = [];
     }
+     this.checkMonths();
+  }
+
+  checkMonths() {
+    this.monthsOptions = this.monthsOptions.map(item => {
+      return {
+        ...item,
+        checked: (this.frequency.months ? this.frequency.months.indexOf(item.value) > -1 :  false)
+      };
+    });
   }
 
   getDateFormat(date) {
@@ -707,6 +720,7 @@ export class FrequencyModalComponent implements OnInit {
     this.frequency.allMonth = false;
     this.holidayDays.checked = false;
     this.editor.isEnable = false;
+    this.checkMonths();
   }
 
   saveFrequency() {
@@ -770,19 +784,21 @@ export class FrequencyModalComponent implements OnInit {
         } else if (data.tab == 'weekDays') {
           this.frequency.days = [];
           this.frequency.all = false;
+          this.checkDays();
         }
-        if(this.frequency.tab === data.tab){
+        if (this.frequency.tab === data.tab) {
           this.editor.isEnable = false;
         }
         break;
       }
     }
-    if (this.frequencyList.length == 0) {
+    if (this.frequencyList.length === 0) {
       let temp = _.clone(this.frequency);
       this.frequency = {};
       this.frequency.tab = temp.tab;
       this.frequency.isUltimos = temp.isUltimos;
     }
+    this.checkMonths();
     if (this.frequencyList && this.frequencyList.length > 0) {
       this.generateFrequencyObj();
     }

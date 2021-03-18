@@ -1,10 +1,9 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit} from '@angular/core';
-import {AuthService} from '../../components/guard';
-import {CoreService} from '../../services/core.service';
 import {ActivatedRoute} from '@angular/router';
 import * as _ from 'underscore';
-import * as moment from 'moment-timezone';
 import {Subscription} from 'rxjs';
+import {AuthService} from '../../components/guard';
+import {CoreService} from '../../services/core.service';
 
 declare const $;
 
@@ -345,7 +344,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
         this.isDetailLevel = true;
       }
 
-      const datetime = this.preferences.logTimezone ? moment(dt[i].controllerDatetime).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss.SSSZ') : dt[i].controllerDatetime;
+      const datetime = this.preferences.logTimezone ? this.coreService.getLogDateFormat(dt[i].controllerDatetime, this.preferences.zone) : dt[i].controllerDatetime;
       col = (datetime + ' <span style="width: 64px;display: inline-block;">[' + dt[i].logLevel + ']</span> ' +
         '[' + dt[i].logEvent + '] ' + (dt[i].orderId ? ('id=' + dt[i].orderId) : '') + ( dt[i].position ? ', pos=' + dt[i].position : '') + '');
       if (dt[i].job) {
@@ -360,7 +359,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
           col += 'path=' + dt[i].agentPath + ', ';
         }
         if (dt[i].agentDatetime) {
-          const datetime = this.preferences.logTimezone ? moment(dt[i].agentDatetime).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss.SSSZ') : dt[i].agentDatetime;
+          const datetime = this.preferences.logTimezone ? this.coreService.getLogDateFormat(dt[i].agentDatetime, this.preferences.zone) : dt[i].agentDatetime;
           col += 'time=' + datetime;
         }
         col += ')';
@@ -433,7 +432,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
           date = arr[0];
         }
         if (date) {
-          const datetime = this.preferences.logTimezone ? moment(date).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss.SSSZ') : date;
+          const datetime = this.preferences.logTimezone ? this.coreService.getLogDateFormat(date, this.preferences.zone) : date;
           match = match.replace(timestampRegex, datetime);
         }
       }

@@ -1664,7 +1664,10 @@ export class CreateObjectModalComponent implements OnInit {
       this.settings = JSON.parse(sessionStorage.$SOS$COPY);
     }
     this.object.originalName = this.copy;
-    console.log(this.settings);
+    if (this.settings) {
+      this.object.suffix = this.settings.suffix;
+      this.object.prefix = this.settings.prefix;
+    }
   }
 
   onSubmit(): void {
@@ -2385,6 +2388,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         path: data.path,
         key: (_key + 'Workflows$')
       },
+        {name: 'File Order Sources', object: 'FILEORDERSOURCE', children: [], path: data.path, key: (_key + 'File_Order_Sources$')},
         {name: 'Job Classes', object: 'JOBCLASS', children: [], path: data.path, key: (_key + 'Job_Classes$')},
         {name: 'Junctions', object: 'JUNCTION', children: [], path: data.path, key: (_key + 'Junctions$')},
         {name: 'Locks', object: 'LOCK', children: [], path: data.path, key: (_key + 'Locks$')}];
@@ -2401,6 +2405,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
         let resObject;
         if (controllerObj.controllerArr[i].object === 'WORKFLOW') {
           resObject = res.workflows;
+        } else if (controllerObj.controllerArr[i].object === 'FILEORDERSOURCE') {
+          resObject = res.fileOrderSources;
         } else if (controllerObj.controllerArr[i].object === 'JOBCLASS') {
           resObject = res.jobClasses;
         } else if (controllerObj.controllerArr[i].object === 'JUNCTION') {
@@ -3316,12 +3322,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private storeObject(obj, list, configuration) {
+    const valid = !(obj.type.match(/CALENDAR/) || obj.type === 'SCHEDULE' || obj.type === 'WORKFLOW' || obj.type === 'FILEORDERSOURCE');
     const _path = obj.path + (obj.path === '/' ? '' : '/') + obj.name;
     if (_path && obj.type) {
       this.coreService.post('inventory/store', {
         objectType: obj.type,
         path: _path,
-        valid: obj.valid ? obj.valid : !(obj.type.match(/CALENDAR/) || obj.type === 'SCHEDULE' || obj.type === 'WORKFLOW'),
+        valid: obj.valid ? obj.valid : valid,
         configuration: configuration
       }).subscribe((res: any) => {
         if ((obj.type === 'WORKINGDAYSCALENDAR' || obj.type === 'NONWORKINGDAYSCALENDAR')) {
@@ -3329,7 +3336,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           obj.type = 'CALENDAR';
         }
         obj.id = res.id;
-        obj.valid = obj.valid ? obj.valid : !(obj.type.match(/CALENDAR/) || obj.type === 'SCHEDULE' || obj.type === 'WORKFLOW');
+        obj.valid = obj.valid ? obj.valid : valid;
         list.push(obj);
         this.type = obj.type;
         this.selectedData = obj;

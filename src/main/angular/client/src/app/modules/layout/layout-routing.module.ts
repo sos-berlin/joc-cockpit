@@ -12,7 +12,12 @@ const routes: Routes = [
     component: LayoutComponent,
     children: [
       {path: '', pathMatch: 'full', redirectTo: 'dashboard'},
-      {path: 'dashboard', component: DashboardComponent, data: {breadcrumb: 'breadcrumb.label.dashboard'}},
+      {
+        path: 'dashboard',
+        component: DashboardComponent,
+        canActivate: [AuthGuard],
+        data: {breadcrumb: 'breadcrumb.label.dashboard'}
+      },
       {
         path: 'start-up',
         loadChildren: () => import('./../start-up/start-up.module').then(m => m.StartUpModule),
@@ -46,6 +51,12 @@ const routes: Routes = [
         loadChildren: () => import('./../history/history.module').then(m => m.HistoryModule),
         canActivate: [AuthGuard],
         data: {breadcrumb: 'breadcrumb.label.history'}
+      },
+      {
+        path: 'file_transfer',
+        loadChildren: () => import('./../file-transfer/file-transfer.module').then(m => m.FileTransferModule),
+        canActivate: [AuthGuard],
+        data: {breadcrumb: 'breadcrumb.label.fileTransfers'}
       },
       {
         path: 'audit_log',

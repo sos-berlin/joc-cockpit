@@ -8,18 +8,20 @@ export class InventoryService {
     for (let i = 0; i < arr.length; i++) {
       if (arr[i].objectType === 'WORKFLOW') {
         arr[i].level = 0;
-      } else if (arr[i].objectType === 'JOBCLASS') {
+      } else if (arr[i].objectType === 'FILEORDERSOURCE') {
         arr[i].level = 1;
-      } else if (arr[i].objectType === 'JUNCTION') {
+      } else if (arr[i].objectType === 'JOBCLASS') {
         arr[i].level = 2;
-      } else if (arr[i].objectType === 'LOCK') {
+      } else if (arr[i].objectType === 'JUNCTION') {
         arr[i].level = 3;
-      } else if (arr[i].objectType === 'SCHEDULE') {
+      } else if (arr[i].objectType === 'LOCK') {
         arr[i].level = 4;
-      } else if (arr[i].objectType === 'WORKINGDAYSCALENDAR') {
+      } else if (arr[i].objectType === 'SCHEDULE') {
         arr[i].level = 5;
-      } else if (arr[i].objectType === 'NONWORKINGDAYSCALENDAR') {
+      } else if (arr[i].objectType === 'WORKINGDAYSCALENDAR') {
         arr[i].level = 6;
+      } else if (arr[i].objectType === 'NONWORKINGDAYSCALENDAR') {
+        arr[i].level = 7;
       }
     }
     return _.sortBy(arr, 'level');
@@ -219,7 +221,7 @@ export class InventoryService {
   }
 
   isControllerObject(type) {
-    return type === 'WORKFLOW' || type === 'JOBCLASS' || type === 'JUNCTION' || type === 'LOCK';
+    return type === 'WORKFLOW' || type === 'JOBCLASS' || type === 'JUNCTION' || type === 'LOCK' || type === 'FILEORDERSOURCE';
   }
 }
 

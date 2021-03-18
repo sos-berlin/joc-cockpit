@@ -724,44 +724,46 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   private updateOrdersInGraph(isCollapse): void {
     this.closeMenu();
-    const graph = this.editor.graph;
-    if (graph) {
-      graph.getModel().beginUpdate();
-      let doc = mxUtils.createXmlDocument();
-      let edges = [];
-      try {
-        if (this.countArr.length > 0) {
-          graph.removeCells(this.countArr, true);
-          this.countArr = [];
-        }
-        if (this.vertixMap.size > 0) {
-          this.vertixMap.forEach((node) => {
-            const parent = node.getParent() || graph.getDefaultParent();
-            this.deleteOrder(graph, node);
-            if (node.collapsed) {
-              let positions = this.orderCountMap.get(node.id.toString());
-              if (positions) {
-                positions = JSON.parse(positions);
-                this.setCount(graph, doc, parent, positions, node);
+    if (this.editor) {
+      const graph = this.editor.graph;
+      if (graph) {
+        graph.getModel().beginUpdate();
+        let doc = mxUtils.createXmlDocument();
+        let edges = [];
+        try {
+          if (this.countArr.length > 0) {
+            graph.removeCells(this.countArr, true);
+            this.countArr = [];
+          }
+          if (this.vertixMap.size > 0) {
+            this.vertixMap.forEach((node) => {
+              const parent = node.getParent() || graph.getDefaultParent();
+              this.deleteOrder(graph, node);
+              if (node.collapsed) {
+                let positions = this.orderCountMap.get(node.id.toString());
+                if (positions) {
+                  positions = JSON.parse(positions);
+                  this.setCount(graph, doc, parent, positions, node);
+                }
               }
-            }
-            if (!isCollapse) {
-              const edge = this.createOrder(graph, doc, parent, node);
-              if (edge) {
-                edges.push(edge);
+              if (!isCollapse) {
+                const edge = this.createOrder(graph, doc, parent, node);
+                if (edge) {
+                  edges.push(edge);
+                }
               }
-            }
-          });
+            });
+          }
+        } finally {
+          // Updates the display
+          graph.getModel().endUpdate();
         }
-      } finally {
-        // Updates the display
-        graph.getModel().endUpdate();
-      }
-      if (edges.length > 0) {
-        for (let i = 0; i < edges.length; i++) {
-          const state = graph.view.getState(edges[i]);
-          if (state) {
-            state.shape.node.getElementsByTagName('path')[1].setAttribute('class', 'flow');
+        if (edges.length > 0) {
+          for (let i = 0; i < edges.length; i++) {
+            const state = graph.view.getState(edges[i]);
+            if (state) {
+              state.shape.node.getElementsByTagName('path')[1].setAttribute('class', 'flow');
+            }
           }
         }
       }

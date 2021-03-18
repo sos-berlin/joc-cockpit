@@ -67,7 +67,7 @@
               </nz-select>
             </span>
             <span class="form-group" *ngIf="importObj && (importObj.assignXsd !== 'NOTIFICATION' && importObj.assignXsd !== 'YADE')">
-              <nz-select class="form-control" [(ngModel)]="importObj.assignXsd" required name="schema">
+              <nz-select [(ngModel)]="importObj.assignXsd" required name="schema">
                 <nz-option *ngFor="let xsd of otherSchema; let i=index" [nzValue]="xsd" [nzLabel]="xsd"></nz-option>
               </nz-select>
             </span>

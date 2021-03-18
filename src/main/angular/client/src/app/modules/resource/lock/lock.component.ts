@@ -6,12 +6,9 @@ import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 import {SearchPipe} from '../../../pipes/core.pipe';
 
-// Main Component
 @Component({
   selector: 'app-lock',
-  templateUrl: 'lock.component.html',
-  styleUrls: ['./lock.component.css'],
-
+  templateUrl: 'lock.component.html'
 })
 export class LockComponent implements OnInit, OnDestroy {
 
@@ -26,7 +23,7 @@ export class LockComponent implements OnInit, OnDestroy {
   data: any = [];
   locksFilters: any = {};
   sideView: any = {};
-  searchableProperties = ['id', 'path', 'limit', 'title'];
+  searchableProperties = ['id', 'path', 'limit', 'title', 'state', 'versionDate'];
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -181,7 +178,9 @@ export class LockComponent implements OnInit, OnDestroy {
     this.coreService.post('locks', obj).subscribe((res: any) => {
       this.loading = false;
       res.locks.forEach((value) => {
-        value.id = value.lock.id;
+        value.id = value.lock.path.substring(value.lock.path.lastIndexOf('/') + 1);
+        value.state = value.lock.state;
+        value.versionDate = value.lock.versionDate;
         value.path = value.lock.path;
         value.limit = value.lock.limit;
         value.title = value.lock.title;

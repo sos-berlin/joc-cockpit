@@ -5,8 +5,7 @@ import {WorkflowService} from '../../../../services/workflow.service';
 
 @Component({
   selector: 'app-junction',
-  templateUrl: './junction.component.html',
-  styleUrls: ['./junction.component.css']
+  templateUrl: './junction.component.html'
 })
 export class JunctionComponent implements OnChanges {
   @Input() preferences: any;

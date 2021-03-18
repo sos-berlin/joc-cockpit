@@ -48,8 +48,8 @@
             <span class="separator"></span>
           </li>
           <li class="nav-item" *ngIf="permission.YADE && permission.YADE.configurations.view">
-            <a class="nav-link" [routerLink]="['/configuration/yade']" [routerLinkActive]="['active']">
-              <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.yade</span></span>
+            <a class="nav-link" [routerLink]="['/configuration/file_transfer']" [routerLinkActive]="['active']">
+              <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.fileTransfer</span></span>
             </a>
           </li>
           <li class="nav-item dropdown-separator" *ngIf="permission.YADE && permission.YADE.configurations.view">
@@ -144,23 +144,26 @@
                           <li nz-menu-item *ngIf="!node.origin.controller && !node.origin.dailyPlan"><a
                             (click)="createFolder(node);" translate>inventory.button.newFolder</a></li>
                           <li nz-menu-divider *ngIf="!node.origin.controller && !node.origin.dailyPlan"></li>
-                          <li nz-menu-item *ngIf="!node.origin.dailyPlan"><a (click)="newObject(node, 'WORKFLOW')"
-                                                                             translate>inventory.button.newWorkflow</a>
+                          <li nz-menu-item *ngIf="!node.origin.dailyPlan">
+                            <a (click)="newObject(node, 'WORKFLOW')" translate>inventory.button.newWorkflow</a>
                           </li>
-                          <li nz-menu-item *ngIf="!node.origin.dailyPlan"><a (click)="newObject(node, 'JUNCTION')"
-                                                                             translate>inventory.button.newJunction</a>
+                          <li nz-menu-item *ngIf="!node.origin.dailyPlan">
+                            <a (click)="newObject(node, 'FILEORDERSOURCE')" translate>inventory.button.newFileOrderSource</a>
                           </li>
-                          <li nz-menu-item *ngIf="!node.origin.dailyPlan"><a (click)="newObject(node, 'JOBCLASS')"
-                                                                             translate>inventory.button.newJobClass</a>
+                          <li nz-menu-item *ngIf="!node.origin.dailyPlan">
+                            <a (click)="newObject(node, 'JUNCTION')" translate>inventory.button.newJunction</a>
                           </li>
-                          <li nz-menu-item *ngIf="!node.origin.dailyPlan"><a (click)="newObject(node, 'LOCK')"
-                                                                             translate>inventory.button.newLock</a></li>
+                          <li nz-menu-item *ngIf="!node.origin.dailyPlan">
+                            <a (click)="newObject(node, 'JOBCLASS')" translate>inventory.button.newJobClass</a>
+                          </li>
+                          <li nz-menu-item *ngIf="!node.origin.dailyPlan">
+                            <a (click)="newObject(node, 'LOCK')" translate>inventory.button.newLock</a></li>
                           <li nz-menu-divider *ngIf="!node.origin.controller && !node.origin.dailyPlan"></li>
-                          <li nz-menu-item *ngIf="!node.origin.controller"><a (click)="newObject(node, 'SCHEDULE')"
-                                                                              translate>inventory.button.newOrder</a>
+                          <li nz-menu-item *ngIf="!node.origin.controller">
+                            <a (click)="newObject(node, 'SCHEDULE')" translate>inventory.button.newOrder</a>
                           </li>
-                          <li nz-menu-item *ngIf="!node.origin.controller"><a
-                            (click)="newObject(node, 'WORKINGDAYSCALENDAR')" translate>inventory.button.newCalendar</a>
+                          <li nz-menu-item *ngIf="!node.origin.controller">
+                            <a (click)="newObject(node, 'WORKINGDAYSCALENDAR')" translate>inventory.button.newCalendar</a>
                           </li>
                         </ul>
                       </li>
@@ -239,6 +242,7 @@
                        style="opacity: .8"></i>
                     <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color"
                        nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object == 'FILEORDERSOURCE'" class="icon-orders-icon icon-color tree-icon"></i>
                     <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color"
                        nzTheme="outline"></i>
                     <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color"
@@ -319,6 +323,7 @@
                        style="opacity: .8"></i>
                     <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color"
                        nzTheme="outline"></i>
+                    <i *ngIf="node.origin.object == 'FILEORDERSOURCE'" class="icon-orders-icon icon-color tree-icon"></i>
                     <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color"
                        nzTheme="outline"></i>
                     <i *ngIf="node.origin.object == 'JUNCTION'" nz-icon nzType="gateway" class="icon-color"
@@ -352,6 +357,10 @@
         <div *ngIf="type == 'WORKFLOW'">
           <app-workflow [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"
                         [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-workflow>
+        </div>
+        <div *ngIf="type == 'FILEORDERSOURCE'">
+          <app-file-order [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"
+                        [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-file-order>
         </div>
         <div *ngIf="type == 'SCHEDULE'">
           <app-schedule [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"

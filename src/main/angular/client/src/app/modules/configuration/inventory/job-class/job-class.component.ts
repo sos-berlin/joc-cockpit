@@ -4,8 +4,7 @@ import {DataService} from '../../../../services/data.service';
 
 @Component({
   selector: 'app-job-class',
-  templateUrl: './job-class.component.html',
-  styleUrls: ['./job-class.component.css']
+  templateUrl: './job-class.component.html'
 })
 export class JobClassComponent implements OnChanges {
   @Input() preferences: any;

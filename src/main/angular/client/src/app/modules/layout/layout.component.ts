@@ -4,7 +4,6 @@ import {TranslateService} from '@ngx-translate/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToasterService} from 'angular2-toaster';
 import {Subscription} from 'rxjs';
-import * as jstz from 'jstz';
 import {filter} from 'rxjs/operators';
 import {NzConfigService} from 'ng-zorro-antd';
 import {CoreService} from '../../services/core.service';
@@ -28,7 +27,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   remainingSessionTime: string;
   interval: any;
   tabsMap = new Map();
-  currentTime = new Date();
+  currentTime: string;
   subscription1: any = Subscription;
   subscription2: any = Subscription;
   subscription3: any = Subscription;
@@ -59,7 +58,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       }
     });
     this.subscription4 = dataService.resetProfileSetting.subscribe(res => {
-      if (res) {
+      if (res && sessionStorage.preferences) {
         this.preferences = JSON.parse(sessionStorage.preferences) || {};
       }
     });
@@ -242,12 +241,14 @@ export class LayoutComponent implements OnInit, OnDestroy {
   private calculateTime() {
     this.interval = setInterval(() => {
       --this.count;
-      this.currentTime = new Date();
+      if (!this.preferences.zone && sessionStorage.preferences) {
+        this.preferences = JSON.parse(sessionStorage.preferences) || {};
+      }
+      this.currentTime = this.coreService.stringToDate(this.preferences, new Date());
       const s = Math.floor((this.count) % 60),
         m = Math.floor((this.count / (60)) % 60),
         h = Math.floor((this.count / (60 * 60)) % 24),
         d = Math.floor(this.count / (60 * 60 * 24));
-
 
       const x = m > 9 ? m : '0' + m;
       const y = s > 9 ? s : '0' + s;
@@ -272,9 +273,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   private setUserPreferences(preferences, configObj, reload) {
     if (sessionStorage.preferenceId === 0 || sessionStorage.preferenceId == '0') {
-      const timezone = jstz.determine();
+      const timezone = this.coreService.getTimeZone();
       if (timezone) {
-        preferences.zone = timezone.name() || this.selectedController.timeZone;
+        preferences.zone = timezone;
       } else {
         preferences.zone = this.selectedController.timeZone;
       }
@@ -317,7 +318,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   private setUserObject(preferences, conf, configObj) {
     if (conf.configurationItem) {
-      sessionStorage.preferences = JSON.parse(JSON.stringify(conf.configurationItem));
+      const obj = JSON.parse(conf.configurationItem);
+     // obj.zone = this.coreService.convertEtcTomeZone(obj.zone);
+      sessionStorage.preferences = JSON.stringify(obj);
       this.reloadThemeAndLang(preferences);
     } else {
       this.setUserPreferences(preferences, configObj, false);

@@ -46,7 +46,7 @@ export class DataService implements OnDestroy{
   }
 
   ngOnDestroy() {
-    
+
     this.eventAnnouncedSource.unsubscribe();
     this.refreshUISource.unsubscribe();
     this.switchSchedulerSource.unsubscribe();

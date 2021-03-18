@@ -13,9 +13,9 @@ const routes: Routes = [
         data: {breadcrumb: 'configuration.tab.inventory'}
       },
       {
-        path: 'yade',
+        path: 'file_transfer',
         loadChildren: () => import('./xml-editor/xml-editor.module').then(m => m.XmlEditorModule),
-        data: {breadcrumb: 'configuration.tab.yade'}
+        data: {breadcrumb: 'configuration.tab.fileTransfer'}
       },
       {
         path: 'notification',
