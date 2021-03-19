@@ -1,33 +1,32 @@
 <div class="modal-header">
   <h4 class="modal-title">
     <span *ngIf="!delete && !deleteAll" translate>xml.label.saveXml</span>
-    <span *ngIf="!delete && deleteAll && objectType === 'OTHER'" translate>xml.label.deleteXml</span>
-      <span *ngIf="delete && objectType !== 'OTHER'" translate>xml.label.deleteXml</span>
-      <span *ngIf="delete && !deleteAll && objectType === 'OTHER'" ><span translate>button.delete</span> <span class="m-l-xs" *ngIf="objectType === 'OTHER'">{{activeTab.name}}</span></span> ?
+    <span *ngIf="!delete && deleteAll && objectType !== 'NOTIFICATION'" translate>xml.label.deleteXml</span>
+      <span *ngIf="delete && objectType === 'NOTIFICATION'" translate>xml.label.deleteXml</span>
+      <span *ngIf="delete && !deleteAll && objectType !== 'NOTIFICATION'" ><span translate>xml.button.delete</span> <span class="m-l-xs" *ngIf="objectType !== 'NOTIFICATION'">{{activeTab.name}}</span></span> ?
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
-<div class="modal-body">
-  <div class="p-a text-center">
-    <div class="row">
-      <div class="col-sm-12 text m-b">
-        <span *ngIf="!delete && !deleteAll" translate>xml.message.wouldYouLikeToSaveCurrentXml</span>
-        <span *ngIf="!delete && deleteAll" translate>xml.message.deleteAllDraft</span>
-	    <span *ngIf="delete && !deleteAll">
-            <span *ngIf="objectType !== 'OTHER'" translate>xml.message.wouldYouLikeToDeleteCurrentXml</span>
-            <span *ngIf="objectType === 'OTHER'" translate>xml.message.wouldYouLikeToDeleteThisConfiguration</span>
-        </span>
-      </div>
+<div class="modal-body p-a">
+  <div class="row text-center">
+    <div class="col-sm-12 text m-t m-b">
+      <span *ngIf="!delete && !deleteAll" translate>xml.message.wouldYouLikeToSaveCurrentXml</span>
+      <span *ngIf="!delete && deleteAll" translate>xml.message.deleteAllDraft</span>
+      <span *ngIf="delete && !deleteAll">
+        <span *ngIf="objectType === 'NOTIFICATION'" translate>xml.message.wouldYouLikeToDeleteCurrentXml</span>
+        <span *ngIf="objectType !== 'NOTIFICATION'" translate>xml.message.wouldYouLikeToDeleteThisConfiguration</span>
+      </span>
     </div>
   </div>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-primary btn-sm" (click)="confirmMessage('yes')"
-          translate>xml.button.yes
+  <button type="button" class="btn btn-danger btn-sm" [ngClass]="{'btn-primary' : (!delete && !deleteAll)}" (click)="confirmMessage('yes')">
+    <span *ngIf="delete || deleteAll">{{'common.button.delete' | translate}}</span>
+    <span *ngIf="!delete && !deleteAll">{{'common.button.confirm' | translate}}</span>
   </button>
   <button type="button" class="btn btn-grey btn-sm" (click)="confirmMessage('no')"
-          translate>xml.button.no
+          translate>common.button.cancel
   </button>
 </div>

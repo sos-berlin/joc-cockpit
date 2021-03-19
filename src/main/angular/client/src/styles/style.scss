@@ -1060,6 +1060,7 @@ button.close {
 
 .valign {
   top: 2px !important;
+  position: relative;
 }
 
 .v-c {
@@ -6151,7 +6152,7 @@ div.jsoneditor,
 }
 
 .ant-select-selection__clear {
-  background: transparent;
+  background: var(--bg-box);
 }
 
 .inner-table .ant-table-small.ant-table-bordered {

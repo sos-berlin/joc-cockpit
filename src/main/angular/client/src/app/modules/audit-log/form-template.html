@@ -37,7 +37,7 @@
     <div class="form-group row" *ngIf="filter.radio === 'current'" [ngClass]="{'has-error': ((toTime.dirty || toTime.touched) && toTime.invalid)}">
       <label class="col-sm-2 form-control-label" translate>common.label.to</label>
       <div class="col-sm-6" [ngClass]="{'has-error': ((to.dirty || to.touched) && to.invalid)}">
-        <nz-date-picker [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat" [(ngModel)]="filter.to" displayDate="" #to="ngModel" name="to"></nz-date-picker>
+        <nz-date-picker [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat" [(ngModel)]="filter.to"  #to="ngModel" name="to"></nz-date-picker>
         <nz-time-picker [nzDisabled]="!filter.to" class="input-time m-l time-picker"
           [(ngModel)]="filter.toTime" name="toTime" #toTime="ngModel" [nzFormat]="'HH:mm:ss'"
           [nzPlaceHolder]="('common.placeholder.endTime' | translate)+' (HH:MM:SS)'"></nz-time-picker>
@@ -111,7 +111,7 @@
   </div>
   <div class="modal-footer" *ngIf="!isSearch">
     <button type="submit" [disabled]="!myForm.form.valid || !isUnique || submitted" class="btn btn-primary btn-sm">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
     <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>

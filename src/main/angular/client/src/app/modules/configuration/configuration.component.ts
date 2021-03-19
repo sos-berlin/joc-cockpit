@@ -37,12 +37,10 @@ export class ConfigurationComponent implements OnDestroy{
         if (top < 96) {
           top = 96;
         }
-        if (this.router.url.split('/')[2] !== 'other') {
-          $('.sticky').css('top', top + 2);
-        } else {
-            top = top + 40;
-            $('.sticky').css('top', top);
+        if (this.router.url.match(/file_transfer/) || this.router.url.match(/other/)) {
+          top = top + 40;
         }
+        $('.sticky').css('top', top + 2);
         const sidebar = $('#sidebar');
         if (sidebar) {
           sidebar.css('top', (top - 17));

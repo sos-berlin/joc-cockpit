@@ -1,19 +1,18 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription} from 'rxjs';
+import * as _ from 'underscore';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {AuthService} from '../../components/guard';
 import {CoreService} from '../../services/core.service';
 import {DataService} from '../../services/data.service';
 import {SaveService} from '../../services/save.service';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
-
-import * as moment from 'moment';
-import * as _ from 'underscore';
+import {SearchPipe} from '../../pipes/core.pipe';
 
 declare const $;
 
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-modal-content',
   templateUrl: './filter-dialog.html',
 })
 
@@ -82,6 +81,19 @@ export class SearchComponent implements OnInit {
   sourceProtocol: any = [];
   targetProtocol: any = [];
 
+  stateOptions = [
+    {status: 'SUCCESSFUL', text: 'successful'},
+    {status: 'FAILED', text: 'failed'},
+    {status: 'INCOMPLETE', text: 'incomplete'}
+  ];
+
+  operationOptions = [
+    {status: 'COPY', text: 'copy'},
+    {status: 'MOVE', text: 'move'},
+    {status: 'GETLIST', text: 'getList'},
+    {status: 'RENAME', text: 'rename'}
+  ];
+
   constructor(public coreService: CoreService) {
   }
 
@@ -119,6 +131,14 @@ export class SearchComponent implements OnInit {
 
   removedSourceProtocol(value: any): void {
     this.filter.sourceProtocol.splice(this.filter.sourceProtocol.indexOf(value.text), 1);
+  }
+
+  stateChange(value: string[]): void {
+    this.filter.states = value;
+  }
+
+  operationChange(value: string[]): void {
+    this.filter.operations = value;
   }
 
   onSubmit(result): void {
@@ -193,7 +213,6 @@ export class SearchComponent implements OnInit {
   templateUrl: './file-transfer.component.html'
 })
 export class FileTransferComponent implements OnInit, OnDestroy {
-
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
@@ -205,22 +224,24 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   selectedFiltered: any = {};
   filterList: any = [];
   fileTransfers: any = [];
-  subscription1: Subscription;
-  subscription2: Subscription;
-
+  data = [];
   dateFormat: any;
   checkAllFileTransfers: any = {checkbox: false};
   temp_filter: any = {};
   searchKey: string;
-
   showFiles = false;
   isLoading = false;
   isLoaded = false;
   loading = false;
   loadConfig = false;
   showSearchPanel = false;
+  subscription1: Subscription;
+  subscription2: Subscription;
 
-  constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private dataService: DataService, private modalService: NgbModal) {
+  searchableProperties = ['controllerId', 'profile', 'mandator', 'start', 'end', 'operation', 'numOfFiles', 'source', 'target'];
+
+  constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
+              private searchPipe: SearchPipe, private dataService: DataService, private modalService: NgbModal) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -238,9 +259,9 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.subscription2.unsubscribe();
   }
 
-  sortBy(propertyName) {
+  sort(propertyName) {
     this.yadeFilters.reverse = !this.yadeFilters.reverse;
-    this.yadeFilters.filter.sortBy = propertyName.key;
+    this.yadeFilters.filter.sortBy = propertyName;
   }
 
   pageIndexChange($event) {
@@ -249,6 +270,11 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   pageSizeChange($event) {
     this.yadeFilters.entryPerPage = $event;
+  }
+
+  searchInResult() {
+    this.data = this.yadeFilters.searchText ? this.searchPipe.transform(this.fileTransfers, this.yadeFilters.searchText, this.searchableProperties) : this.fileTransfers;
+    this.data = [...this.data];
   }
 
   changeController() {
@@ -276,13 +302,10 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     if (this.selectedFiltered && !_.isEmpty(this.selectedFiltered)) {
       this.isCustomizationSelected(true);
     }
-    let obj: any = {};
-
-    obj.controllerId = this.yadeView.current == true ? this.schedulerIds.selected : '';
-
+    let obj: any = {
+      controllerId: this.yadeView.current == true ? this.schedulerIds.selected : ''
+    };
     if (this.selectedFiltered && !_.isEmpty(this.selectedFiltered)) {
-
-
       if (this.selectedFiltered.states && this.selectedFiltered.states.length > 0) {
         obj.states = this.selectedFiltered.states;
       }
@@ -290,11 +313,9 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         this.selectedFiltered.profileId = this.selectedFiltered.profileId.replace(/\s*(,|^|$)\s*/g, '$1');
         obj.profiles = this.selectedFiltered.profileId.split(',');
       }
-
       if (this.selectedFiltered.mandator) {
         obj.mandator = this.selectedFiltered.mandator;
       }
-
       if (this.selectedFiltered.operations && this.selectedFiltered.operations.length > 0) {
         obj.operations = this.selectedFiltered.operations;
       }
@@ -318,7 +339,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
           protocols = this.selectedFiltered.sourceProtocol.split(',');
         }
         obj.sources = this.coreService.mergeHostAndProtocol(hosts, protocols);
-
       }
       if (this.selectedFiltered.targetHost || this.selectedFiltered.targetProtocol) {
         let hosts = [];
@@ -347,22 +367,19 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     if (!this.showFiles) {
       obj.compact = true;
     }
-
     obj.timeZone = this.preferences.zone;
     if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
       delete obj['timeZone'];
     }
     if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-      obj.dateFrom = moment(obj.dateFrom).tz(this.preferences.zone);
+      obj.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, obj.dateFrom);
     }
     if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-      obj.dateTo = moment(obj.dateTo).tz(this.preferences.zone);
+      obj.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, obj.dateTo);
     }
     obj.limit = parseInt(this.preferences.maxRecords, 10);
-
     this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
       this.fileTransfers = res.transfers || [];
-
       this.fileTransfers.forEach(function (transfer) {
         let id = transfer.controllerId || self.schedulerIds.selected;
         transfer.permission = self.authService.getPermission(id).YADE;
@@ -371,8 +388,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
           self.getFiles(transfer);
         }
       });
-
-
+      this.searchInResult();
       this.isLoading = true;
     }, () => this.isLoading = true);
   }
@@ -630,10 +646,10 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       delete filter['timeZone'];
     }
     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-      filter.dateFrom = moment(filter.dateFrom).tz(this.preferences.zone);
+      filter.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateFrom);
     }
     if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-      filter.dateTo = moment(filter.dateTo).tz(this.preferences.zone);
+      filter.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateTo);
     }
     this.coreService.post('yade/transfers', filter).subscribe((res: any) => {
       this.fileTransfers = res.transfers;

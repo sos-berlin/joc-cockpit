@@ -7,11 +7,13 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Subscription, of, Observable} from 'rxjs';
 import {Router} from '@angular/router';
+import {ClipboardService} from 'ngx-clipboard';
 import {saveAs} from 'file-saver';
 import * as _ from 'underscore';
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
+
 declare const require;
 declare const vkbeautify;
 declare const $;
@@ -20,8 +22,8 @@ const xpath = require('xpath');
 const convert = require('xml-js');
 
 @Component({
-  selector: 'app-modal-child-content',
-  templateUrl: './show-childs-dialog.html'
+  selector: 'app-show-child-modal',
+  templateUrl: './show-child-dialog.html'
 })
 export class ShowChildModalComponent implements OnInit {
   @Input() doc: any;
@@ -548,7 +550,7 @@ export class ShowChildModalComponent implements OnInit {
 }
 
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-show-modal',
   templateUrl: './show-dialog.html'
 })
 export class ShowModalComponent implements OnInit {
@@ -565,10 +567,10 @@ export class ShowModalComponent implements OnInit {
     mode: 'xml',
   };
   obj: any = {xml: ''};
+  @ViewChild('codeMirror', {static: true}) cm;
 
-  constructor(public activeModal: NgbActiveModal,
-              public coreService: CoreService,
-              private toasterService: ToasterService) {
+  constructor(public activeModal: NgbActiveModal, public coreService: CoreService,
+              private toasterService: ToasterService, private clipboardService: ClipboardService) {
   }
 
   ngOnInit(): void {
@@ -576,7 +578,7 @@ export class ShowModalComponent implements OnInit {
   }
 
   copyToClipboard() {
-
+    this.clipboardService.copyFromContent(this.obj.xml);
   }
 
   validateXML() {
@@ -606,6 +608,10 @@ export class ShowModalComponent implements OnInit {
     this.activeModal.close();
   }
 
+  execCommand(type) {
+    this.cm.codeMirror.execCommand(type);
+  }
+
   submitXML() {
     let data = this.obj.xml;
     let obj: any = {
@@ -626,7 +632,7 @@ export class ShowModalComponent implements OnInit {
         this.activeModal.close({result: res});
       }
     }, (error) => {
-      console.log(error);
+      console.error(error);
     });
   }
 
@@ -661,7 +667,7 @@ export class ShowModalComponent implements OnInit {
 }
 
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-import-modal',
   templateUrl: './import-dialog.html'
 })
 export class ImportModalComponent implements OnInit {
@@ -678,10 +684,8 @@ export class ImportModalComponent implements OnInit {
   required = false;
   submitted = false;
   comments: any = {};
-  selectedXsd: any;
   assignXsd: any;
   uploadData: any;
-  url;
 
   constructor(public activeModal: NgbActiveModal,
               public modalService: NgbModal,
@@ -701,10 +705,6 @@ export class ImportModalComponent implements OnInit {
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
     }
-
-    this.uploader.onBeforeUploadItem = (item: any) => {
-
-    };
 
     this.uploader.onCompleteItem = (fileItem: any, response, status, headers) => {
       if (status === 200) {
@@ -767,20 +767,16 @@ export class ImportModalComponent implements OnInit {
     }
   }
 
-  onSubmitXSD() {
-    this.activeModal.close({uploadData: this.uploadData, importObj: this.importObj});
-  }
-
   cancel() {
     this.activeModal.close('');
   }
 }
 
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-confirmation-modal',
   templateUrl: './confirmation-dialog.html'
 })
-export class ConfirmationModalComponent implements OnInit {
+export class ConfirmationModalComponent {
   @Input() save;
   @Input() self;
   @Input() assignXsd;
@@ -792,12 +788,9 @@ export class ConfirmationModalComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal) {
   }
 
-  ngOnInit() {
-  }
-
   confirmMessage(message) {
     if (message === 'yes') {
-      if (!this.delete) {
+      if (!this.delete && this.save) {
         this.save(this.self);
         this.activeModal.close('success');
       } else {
@@ -816,7 +809,7 @@ export class ConfirmationModalComponent implements OnInit {
 
 
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-diff-modal',
   templateUrl: './diff-dialog.html'
 })
 export class DiffPatchModalComponent {
@@ -904,11 +897,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   importObj: any = {};
   editorOptions: any = {readOnly: true};
   activeTab: any = {};
-  prevErrLine: any;
   deleteAll: boolean;
   delete: boolean;
   tabsArray = [];
-  oldName: any = {};
+  oldName: string;
   tab: any;
   showSelectSchema: any;
   _activeTab: any;
@@ -921,9 +913,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   liveXml: any;
   selectedTabIndex = 0;
   counter: number;
-  @ViewChild('myckeditor', {static: false}) ckeditor: any;
-  @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
-  // translate messages
+  intervalId: any;
   requiredField: string;
   spaceNotAllowed: string;
   cannotAddBlankSpace: string;
@@ -956,7 +946,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     ], allowedContent: true
   };
 
-  intervalId: any;
+  @ViewChild('myckeditor', {static: false}) ckeditor: any;
+  @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
 
   constructor(
     public coreService: CoreService,
@@ -989,10 +980,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     if (url === 'notification') {
       this.selectedXsd = 'systemMonitorNotification';
-    } else if (url === 'yade') {
-      this.selectedXsd = url;
     }
-    if (this.selectedXsd !== '' && this.objectType !== 'OTHER') {
+    if (this.objectType === 'NOTIFICATION') {
+      if(this.selectedXsd !== '')
       this.readXML();
     } else {
       this.othersXSD();
@@ -1001,7 +991,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.submitXsd && !this.objectXml.xml) {
         this.storeXML(undefined);
       }
-    }, 3000);
+    }, 30000);
 
     this.translate.get('xml.message.requiredField').subscribe(translatedValue => {
       this.requiredField = translatedValue;
@@ -1049,7 +1039,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     modalRef.result.then((res) => {
       let obj = {
         controllerId: this.schedulerIds.selected,
-        objectTypes: ['OTHER'],
+        objectTypes: [this.objectType],
       };
       this.coreService.post('xmleditor/delete/all', obj).subscribe(() => {
         this.tabsArray = [];
@@ -1130,11 +1120,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   changeTab(data, isStore) {
-    if (!data.schemaIdentifier) {
-      // this._activeTab.isVisible = true;
-    } else {
-      // this._activeTab.isVisible = false;
-    }
     if (this.activeTab.id !== data.id) {
       if (this.activeTab.id < 0 || isStore) {
         this.activeTab = data;
@@ -1161,7 +1146,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }).subscribe((res: any) => {
       if (res.schemas) {
         this.otherSchema = res.schemas;
-        localStorage.setItem('schemas', this.otherSchema);
+        if (this.objectType === 'OTHER') {
+          localStorage.setItem('schemas', this.otherSchema);
+        } else {
+          localStorage.setItem('yadeSchema', this.otherSchema);
+        }
       }
       if (!res.configurations) {
         this.tabsArray = [];
@@ -1194,7 +1183,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.submitXsd = false;
         this.schemaIdentifier = undefined;
         this.otherSchema = res.schemas;
-        localStorage.setItem('schemas', this.otherSchema);
+        if (this.objectType === 'OTHER') {
+          localStorage.setItem('schemas', this.otherSchema);
+        } else {
+          localStorage.setItem('yadeSchema', this.otherSchema);
+        }
       } else {
         this.showSelectSchema = false;
         if (!this.ok(res.configuration.configuration)) {
@@ -1223,8 +1216,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             }
             this.isLoading = false;
             this.selectedNode = this.nodes[0];
-            res.configuration.state.modified = res.configuration.modified;
-            this.XSDState = res.configuration.state;
+            this.XSDState = {modified : res.configuration.modified};
             this.storeXML(undefined);
             this.printArraya(false);
             if (_tempArrToExpand && _tempArrToExpand.length > 0) {
@@ -1637,8 +1629,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.submitXsd = false;
     this.showSelectSchema = true;
     this.selectedXsd = (this.schemaIdentifier) ? this.schemaIdentifier : this.selectedXsd;
-    if (localStorage.getItem('schemas')) {
+    if (this.objectType === 'OTHER') {
       this.otherSchema = localStorage.getItem('schemas').split(',');
+    } else {
+      this.otherSchema = localStorage.getItem('yadeSchema').split(',');
     }
   }
 
@@ -3438,13 +3432,13 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   renameTab(tab) {
     if (this.schemaIdentifier) {
       tab.rename = true;
-      this.oldName = Object.assign(this.oldName, {name: tab.name});
-      let wt = $('#' + tab.id).width();
+      this.oldName = _.clone(tab.name);
       setTimeout(() => {
-        let dom = $('#rename-field');
-        dom.width(wt);
-        dom.focus();
+        let wt = $('#' + tab.id).width();
         try {
+          const dom = $('#rename-field');
+          dom.width(wt - 14);
+          dom.focus();
           dom.select();
         } catch (e) {
 
@@ -3454,14 +3448,13 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   renameOnEnter($event, data) {
-    let key = $event.keyCode || $event.which;
-    if (key === 13) {
+    if ($event.which === 13 || $event.key === 'Enter') {
       delete data['rename'];
-      if (data.name && data.name !== this.oldName.name) {
+      if (data.name && data.name !== this.oldName) {
         this.renameFile(data);
       } else {
-        data.name = _.clone(this.oldName.name);
-        this.oldName = undefined;
+        data.name = _.clone(this.oldName);
+        this.oldName = null;
       }
     }
   }
@@ -3473,28 +3466,28 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       id: data.id,
       name: data.name,
       schemaIdentifier: this.schemaIdentifier
-    }).subscribe((res: any) => {
-      this.oldName = undefined;
+    }).subscribe((res) => {
+      this.oldName = null;
     }, (err) => {
-      data.name = this.oldName.name;
+      data.name = this.oldName;
       this.toasterService.pop('error', err.data.error.message);
     });
   }
 
   renameDone(data) {
-    if (data.name && data.name !== this.oldName.name) {
+    if (data.name && data.name !== this.oldName) {
       this.renameFile(data);
     } else {
-      data.name = _.clone(this.oldName.name);
-      this.oldName = undefined;
+      data.name = _.clone(this.oldName);
+      this.oldName = null;
     }
     delete data['rename'];
   }
 
   cancelRename(data) {
     delete data['rename'];
-    data.name = _.clone(this.oldName.name);
-    this.oldName = undefined;
+    data.name = _.clone(this.oldName);
+    this.oldName = null;
   }
 
 // Show all Child Nodes and search functionalities.
@@ -3532,7 +3525,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       try {
         this.keyRefNodes = select(keyRefPath, this.doc);
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     }
     if (!this.keyNodes || this.keyNodes.length === 0) {
@@ -4438,15 +4431,21 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // import xml model
   importXML() {
-    if (localStorage.getItem('schemas')) {
-      this.otherSchema = localStorage.getItem('schemas').split(',');
+    if (this.objectType === 'OTHER') {
+      if (localStorage.getItem('schemas')) {
+        this.otherSchema = localStorage.getItem('schemas').split(',');
+      }
+    } else {
+      if (localStorage.getItem('yadeSchema')) {
+        this.otherSchema = localStorage.getItem('yadeSchema').split(',');
+      }
     }
     if (this.objectType !== 'NOTIFICATION') {
       this.importObj = {assignXsd: this.schemaIdentifier};
     } else {
       this.importObj = {assignXsd: this.objectType};
     }
-    let modalRef = this.modalService.open(ImportModalComponent, {backdrop: 'static', size: 'lg'});
+    const modalRef = this.modalService.open(ImportModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.importObj = this.importObj;
     modalRef.componentInstance.otherSchema = this.otherSchema;
     modalRef.componentInstance.importXsd = false;
@@ -4463,29 +4462,15 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
               if (this.tabsArray.length === 0) {
                 let _tab = _.clone({id: -1, name: 'edit1', schemaIdentifier: this.schemaIdentifier});
                 this.tabsArray.push(_tab);
-                this.coreService.post('xmleditor/read', {
-                  controllerId: this.schedulerIds.selected,
-                  objectType: this.objectType,
-                  id: _tab.id
-                }).subscribe((res: any) => {
-                  this.activeTab = this.tabsArray[0];
-                  this.getXsdSchema();
-                }, (err) => {
-                  this.toasterService.pop('error', err.data.error.message);
-                  this.isLoading = false;
-                });
-              } else {
-                this.getXsdSchema();
+                this.activeTab = this.tabsArray[0];
               }
+              this.getXsdSchema();
             } else {
               this.xmlToJsonService(res.uploadData);
             }
           } else {
             this.openXMLDialog(res.uploadData);
             this.importObj = {};
-            // if (uploader.queue && uploader.queue.length > 0) {
-            //     uploader.queue[0].remove();
-            // }
           }
         }
       }
@@ -4605,9 +4590,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  // open new Confimation model
+  // open new Confirmation model
   newFile() {
-    if (this.submitXsd && this.objectType !== 'OTHER') {
+    if (this.submitXsd && this.objectType === 'NOTIFICATION') {
       const modalRef = this.modalService.open(ConfirmationModalComponent, {backdrop: 'static', size: 'sm'});
       modalRef.componentInstance.save = this.save2;
       modalRef.componentInstance.assignXsd = this.newXsdAssign;
@@ -4623,7 +4608,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.selectedNode = [];
         this.newConf();
       });
-    } else if (!this.submitXsd && this.objectType !== 'OTHER') {
+    } else if (!this.submitXsd && this.objectType === 'NOTIFICATION') {
       this.copyItem = undefined;
       this.nodes = [];
       this.selectedNode = [];
@@ -4664,7 +4649,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isLoading = true;
     let obj: any = {
       controllerId: this.schedulerIds.selected,
-      objectType: 'OTHER'
+      objectType: this.objectType
     };
     if (!this.importXSDFile) {
       obj.uri = this.selectedXsd;
@@ -4681,7 +4666,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.prevXML = '';
       this.isLoading = false;
       this.storeXML(res.schemaIdentifier);
-      // this._activeTab.isVisible = false;
     }, (error) => {
       this.isLoading = false;
       if (error.error) {
@@ -4696,14 +4680,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!this.importXSDFile) {
       obj = {
         controllerId: this.schedulerIds.selected,
-        objectType: 'OTHER',
+        objectType: this.objectType,
         uri: this.selectedXsd,
         configuration: this._showXml()
       };
     } else {
       obj = {
         controllerId: this.schedulerIds.selected,
-        objectType: 'OTHER',
+        objectType: this.objectType,
         fileName: data._file.name,
         fileContent: this.uploadData,
         configuration: this._showXml()
@@ -4731,7 +4715,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  createNewTab() {
+  private createNewTab() {
     let _tab;
     if (this.tabsArray.length === 0) {
       _tab = _.clone({id: -1, name: 'edit1'});
@@ -4780,7 +4764,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   // create Xml from Json
   showXml() {
     const xml = this._showXml();
-    const modalRef = this.modalService.open(ShowModalComponent, {backdrop: 'static', size: 'lg'});
+    const modalRef = this.modalService.open(ShowModalComponent, {backdrop: 'static', size: 'lg', windowClass: 'script-editor'});
     modalRef.componentInstance.xml = xml;
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.objectType = this.objectType;
@@ -4807,29 +4791,33 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  jsonToXml() {
-    let doc = document.implementation.createDocument('', '', null);
-    let peopleElem = doc.createElement(this.nodes[0].ref);
-    if (this.nodes[0].attributes && this.nodes[0].attributes.length > 0) {
-      for (let i = 0; i < this.nodes[0].attributes.length; i++) {
-        if (this.nodes[0].attributes[i].data) {
-          peopleElem.setAttribute(this.nodes[0].attributes[i].name, this.nodes[0].attributes[i].data);
+  private jsonToXml() {
+    if (this.nodes.length > 0) {
+      let doc = document.implementation.createDocument('', '', null);
+      let peopleElem = doc.createElement(this.nodes[0].ref);
+      if (peopleElem) {
+        if (this.nodes[0].attributes && this.nodes[0].attributes.length > 0) {
+          for (let i = 0; i < this.nodes[0].attributes.length; i++) {
+            if (this.nodes[0].attributes[i].data) {
+              peopleElem.setAttribute(this.nodes[0].attributes[i].name, this.nodes[0].attributes[i].data);
+            }
+          }
+        }
+        if (this.nodes[0] && this.nodes[0].values && this.nodes[0].values.length >= 0) {
+          for (let i = 0; i < this.nodes[0].values.length; i++) {
+            if (this.nodes[0].values[0].data) {
+              peopleElem.createCDATASection(this.nodes[0].values[0].data);
+            }
+          }
+        }
+        if (this.nodes[0].children && this.nodes[0].children.length > 0) {
+          for (let i = 0; i < this.nodes[0].children.length; i++) {
+            this.createChildJson(peopleElem, this.nodes[0].children[i], doc.createElement(this.nodes[0].children[i].ref), doc);
+          }
         }
       }
+      return peopleElem;
     }
-    if (this.nodes[0] && this.nodes[0].values && this.nodes[0].values.length >= 0) {
-      for (let i = 0; i < this.nodes[0].values.length; i++) {
-        if (this.nodes[0].values[0].data) {
-          peopleElem.createCDATASection(this.nodes[0].values[0].data);
-        }
-      }
-    }
-    if (this.nodes[0].children && this.nodes[0].children.length > 0) {
-      for (let i = 0; i < this.nodes[0].children.length; i++) {
-        this.createChildJson(peopleElem, this.nodes[0].children[i], doc.createElement(this.nodes[0].children[i].ref), doc);
-      }
-    }
-    return peopleElem;
   }
 
   createChildJson(node, childrenNode, curentNode, doc) {
@@ -4872,7 +4860,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     let link = './api/xmleditor/schema/download?controllerId='
       + this.schedulerIds.selected + '&objectType=' + objType +
       '&accessToken=' + this.authService.accessTokenId;
-    if (objType === 'OTHER') {
+    if (objType !== 'NOTIFICATION') {
       link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier);
       name = schemaIdentifier + '.xsd';
     }
@@ -4885,7 +4873,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     let link = './api/xmleditor/schema/download?show=true&controllerId='
       + this.schedulerIds.selected + '&objectType=' + objType + '&accessToken='
       + this.authService.accessTokenId;
-    if (objType === 'OTHER') {
+    if (objType !== 'NOTIFICATION') {
       link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier);
     }
     if (this.preferences.isXSDNewWindow === 'newWindow') {
@@ -5379,7 +5367,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.prevXML && this._xml) {
       eRes = this.compare(this.prevXML.toString(), this._xml.toString());
     }
-    if (!eRes && this.objectType !== 'OTHER') {
+    if (!eRes && this.objectType === 'NOTIFICATION') {
       this.coreService.post('xmleditor/store', {
         controllerId: this.schedulerIds.selected,
         objectType: this.objectType,
@@ -5431,9 +5419,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   private getNodeRulesData(node) {
     if (!node.recreateJson) {
       let nod = {ref: node.parent};
-
       let a = this.checkChildNode(nod, undefined);
-
       if (a && a.length > 0) {
         for (let i = 0; i < a.length; i++) {
           if (a[i].ref === node.ref) {
@@ -5455,7 +5441,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private scrollTree(id, cb) {
-
     const dom = $('#' + id);
     let top;
     if (dom && dom.offset()) {
@@ -5552,7 +5537,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private getAllChild(list: any) {
-    // tslint:disable-next-line: forin
     for (let child in list) {
       list[child].children = [];
       this.checkChildNode(list[child], list[child]);
@@ -5585,14 +5569,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.XSDState = {};
       this.prevXML = '';
       this.storeXML(undefined);
-      if (this.objectType !== 'NOTIFICATION') {
-        // this.activeTab.schemaIdentifier = this.schemaIdentifier;
-      }
     }, () => {
       this.importObj = {};
-      // if (uploader.queue && uploader.queue.length > 0) {
-      //     uploader.queue[0].remove();
-      // }
       this.isLoading = false;
     });
   }
@@ -5602,7 +5580,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.objectXml = {};
     this.objectXml.isXMLEditor = true;
     this.objectXml.xml = data;
-    const modalRef = this.modalService.open(ShowModalComponent, {size: 'lg', backdrop: 'static'});
+    const modalRef = this.modalService.open(ShowModalComponent, {size: 'lg', backdrop: 'static', windowClass: 'script-editor'});
     modalRef.result.then(() => {
 
     }, () => {
@@ -5638,35 +5616,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.error = true;
       this.toasterService.pop('error', err.data.error.message);
     });
-  }
-
-  private highlightLineNo(num) {
-    let lNum = _.clone(num);
-    let dom: any = document.getElementsByClassName('CodeMirror-code');
-    if (dom && dom[0]) {
-      if (num > dom[0].children.length) {
-        $('.CodeMirror-scroll').animate({
-          scrollTop: (17.8 * num)
-        }, 500);
-      }
-      setTimeout(() => {
-        dom = document.getElementsByClassName('CodeMirror-code');
-        lNum = _.clone(num - parseInt(dom[0].children[0].innerText.split(' ')[0].split('↵')[0]) + 1);
-        if (this.prevErrLine) {
-          dom[0].children[this.prevErrLine - 1].classList.remove('bg-highlight');
-          let x = dom[0].children[this.prevErrLine - 1];
-          x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('text-danger');
-          x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('bg-highlight');
-        }
-        if (dom[0].children[lNum - 1]) {
-          dom[0].children[lNum - 1].classList.add('bg-highlight');
-          let x = dom[0].children[lNum - 1];
-          x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.add('text-danger');
-          x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.add('bg-highlight');
-          this.prevErrLine = _.clone(lNum);
-        }
-      }, 500);
-    }
   }
 
   private validateSer() {

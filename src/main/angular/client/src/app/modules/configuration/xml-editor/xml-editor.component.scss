@@ -28,12 +28,12 @@ strong{
 }
 
 .rename-field {
-  border-left: none;
-  border-right: none;
-  border-top: none;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
   padding: 0 16px 0 4px;
   white-space: nowrap;
-  width: auto
+  width: auto;
+  background: var(--background-color) !important;
 }
 
 .password-hide-icon {
@@ -42,4 +42,3 @@ strong{
   top: -20px;
   right: 15px
 }
-
