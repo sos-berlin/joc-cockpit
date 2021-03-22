@@ -1142,10 +1142,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       dates.forEach((date) => {
         let obj = {
           controllerId: this.schedulerIds.selected,
-          dailyPlanDate: this.coreService.getStringDate(date),
-          orderIds: []
+          dailyPlanDate: this.coreService.getStringDate(date)
         };
-        apiArr.push(this.coreService.post('orders/cancel', this.coreService.clone(obj)));
+        apiArr.push(this.coreService.post('orders/daily_plan/cancel', this.coreService.clone(obj)));
       });
       forkJoin(apiArr).subscribe((result) => {
         this.resetCheckBox();
@@ -1203,14 +1202,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
         modalRef.componentInstance.comments = comments;
         modalRef.componentInstance.obj = obj;
-        modalRef.componentInstance.url = 'orders/cancel';
+        modalRef.componentInstance.url = 'orders/daily_plan/cancel';
         modalRef.result.then(() => {
           this.updateList();
         }, () => {
 
         });
       } else {
-        this.coreService.post('orders/cancel', obj).subscribe(() => {
+        this.coreService.post('orders/daily_plan/cancel', obj).subscribe(() => {
           this.updateList();
         });
       }

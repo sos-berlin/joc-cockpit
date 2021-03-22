@@ -238,6 +238,113 @@
               </nz-dropdown-menu>
             </div>
           </div>
+          <div class="hide" [ngClass]="{'show-block':historyFilters.type == 'YADE'}">
+            <div class="btn-group m-l-12 hidden-btn-group">
+              <button [disabled]="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                      (click)="loadHistory('STATE','ALL')"
+                      [ngClass]="{'btn-primary': yade.filter.historyStates=='ALL'}" translate>common.button.allStatus
+              </button>
+              <button [disabled]="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                      (click)="loadHistory('STATE','SUCCESSFUL')"
+                      [ngClass]="{'btn-primary': yade.filter.historyStates=='SUCCESSFUL'}" translate>common.button.successful
+              </button>
+              <button [disabled]="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                      (click)="loadHistory('STATE','FAILED')"
+                      [ngClass]="{'btn-primary': yade.filter.historyStates=='FAILED'}" translate>common.button.failed
+              </button>
+              <button [disabled]="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                      (click)="loadHistory('STATE','INCOMPLETE')"
+                      [ngClass]="{'btn-primary': yade.filter.historyStates=='INCOMPLETE'}" translate>common.button.incomplete
+              </button>
+            </div>
+            <div class="btn-group dropdown hidden-dropdown">
+              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="state3" [nzPlacement]="'bottomRight'" translate>label.state
+                <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+              </button>
+              <nz-dropdown-menu #state3="nzDropdownMenu" >
+                <ul nz-menu>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': yade.filter.historyStates=='ALL', 'disable-link':savedYadeHistoryFilter.selected}">
+                    <a (click)="loadHistory('STATE','ALL')"
+                       translate>common.button.allStatus
+                    </a>
+                  </li>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active':yade.filter.historyStates=='SUCCESSFUL', 'disable-link':savedYadeHistoryFilter.selected}">
+                    <a (click)="loadHistory('STATE','SUCCESSFUL')"
+                       translate>common.button.successful
+                    </a>
+                  </li>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': yade.filter.historyStates=='FAILED', 'disable-link':savedYadeHistoryFilter.selected}">
+                    <a (click)="loadHistory('STATE','FAILED')"
+                       translate>common.button.failed
+                    </a>
+                  </li>
+                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': yade.filter.historyStates=='INCOMPLETE', 'disable-link':savedYadeHistoryFilter.selected}">
+                    <a (click)="loadHistory('STATE','INCOMPLETE')"
+                       translate>common.button.incomplete
+                    </a>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+            <div class="btn-group m-l-12 hidden-btn-group">
+              <ng-container *ngFor="let btn of filterBtn">
+                <button [disabled]="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
+                        [ngClass]="{'btn-primary': yade.filter.date===btn.date}"
+                        (click)="loadHistory('DATE', btn.date)" translate>filters.button.{{btn.text}}
+                </button>
+              </ng-container>
+            </div>
+            <div class="btn-group dropdown hidden-dropdown">
+                  <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate"
+                          [nzPlacement]="'bottomRight'" type="button" translate>
+                    common.label.anyDate
+                    <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+                  </button>
+                  <nz-dropdown-menu #anyDate="nzDropdownMenu">
+                    <ul nz-menu>
+                      <ng-container *ngFor="let btn of filterBtn">
+                        <li nz-menu-item
+                            [ngClass]="{'ant-select-dropdown-menu-item-active': yade.filter.date==btn.date, 'disable-link':savedYadeHistoryFilter.selected}">
+                          <a (click)="loadHistory('DATE',btn.date)"
+                             translate>filters.button.{{btn.text}}
+                          </a>
+                        </li>
+                      </ng-container>
+                    </ul>
+                  </nz-dropdown-menu>
+                </div>
+          </div>
+          <div class="inline break-line" *ngIf="historyFilters.type == 'YADE'">
+             <div class="btn-group dropdown">
+              <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered3.account" nz-dropdown
+                      nzTrigger="click" [nzDropdownMenu]="customization3" [nzPlacement]="'bottomRight'" type="button"
+                      translate>
+                {{'customization.label.customizations' | translate}} <span class="text-primary"
+                                                                           [innerHtml]="selectedFiltered3.name"></span>
+                <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+              </button>
+              <nz-dropdown-menu #customization3="nzDropdownMenu">
+                <ul nz-menu>
+                  <li nz-menu-item>
+                    <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
+                  </li>
+                  <li nz-menu-item *ngIf="yadeHistoryFilterList && yadeHistoryFilterList.length>0">
+                    <a (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
+                  </li>
+                  <li nz-menu-divider *ngIf="yadeHistoryFilterList && yadeHistoryFilterList.length>0"></li>
+                  <li nz-menu-item *ngFor="let filter of yadeHistoryFilterList | orderBy: 'name'"
+                      [ngClass]="{'ant-select-dropdown-menu-item-active': (savedYadeHistoryFilter.selected == filter.id)}">
+                    <a (click)="changeFilter(filter)">
+                      <span [nz-tooltip]="filter.account">{{filter.name}}</span>
+                      <i (click)="changeFilter(null);$event.stopPropagation();"
+                         *ngIf="savedYadeHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove"
+                         [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"></i>
+                    </a>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+          </div>
           <div class="hide" [ngClass]="{'show-block':historyFilters.type == 'DEPLOYMENT'}">
             <div class="btn-group m-l-12 hidden-btn-group">
               <button [disabled]="savedDeploymentHistoryFilter.selected"
@@ -493,7 +600,7 @@
 <div class="scroll-y max-ht">
   <div class="padding p-b-0">
     <div class="row m-b-12 m-t-xs">
-      <div class="col-md-6 col-sm-4">
+      <div class="col-md-6 col-sm-6">
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
           <li class="nav-item" *ngIf="permission.History.view.status">
             <a class="nav-link" [ngClass]="{'active': historyFilters.type=='ORDER'}" (click)="orderHistory(null,false)">
@@ -506,6 +613,14 @@
           <li class="nav-item" *ngIf="permission.History.view.status">
             <a class="nav-link" [ngClass]="{'active': historyFilters.type=='TASK'}" (click)="taskHistory(null, false)">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.tasks</span></span>
+            </a>
+          </li>
+          <li class="nav-item dropdown-separator" *ngIf="permission.YADE.view.status">
+            <span class="separator"></span>
+          </li>
+          <li class="nav-item" *ngIf="permission.YADE.view.status">
+            <a class="nav-link" [ngClass]="{'active': historyFilters.type=='YADE'}" (click)="yadeHistory(null, false)">
+              <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.fileTransfers</span></span>
             </a>
           </li>
           <li class="nav-item dropdown-separator">
@@ -526,7 +641,7 @@
           </li>
         </ul>
       </div>
-      <div class="col-md-6 col-sm-8">
+      <div class="col-md-6 col-sm-6">
         <button *ngIf="historyFilters.type !== 'ORDER'" class="btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}" (click)="collapseDetails()">
           <i class="fa fa-compress text"></i>
         </button>
@@ -554,6 +669,13 @@
           </label>
           <i *ngIf="historyFilters.type === 'TASK'" [hidden]="!task.searchText" class="fa fa-times search-close"
              (click)="task.searchText = '';searchInResult()"></i>
+           <label>
+            <input *ngIf="historyFilters.type === 'YADE'" type="search" placeholder="{{'common.placeholder.search' | translate}}"
+                   [(ngModel)]="yade.searchText" (keyup)="searchInResult()">
+          </label>
+          <i *ngIf="historyFilters.type === 'YADE'" [hidden]="!yade.searchText" class="fa fa-times search-close"
+             (click)="yade.searchText = '';searchInResult()"></i>
+          <label>
           <label>
             <input *ngIf="historyFilters.type === 'DEPLOYMENT'" type="search" placeholder="{{'common.placeholder.search' | translate}}"
                    [(ngModel)]="deployment.searchText" (keyup)="searchInResult()">
@@ -566,7 +688,8 @@
           </label>
           <i *ngIf="historyFilters.type === 'SUBMISSION'" [hidden]="!submission.searchText" class="fa fa-times search-close"
              (click)="submission.searchText = '';searchInResult()"></i>
-        </div>
+          </label>
+      </div>
       </div>
     </div>
     <div class="row m-b hide" [ngClass]="{'show':showSearchPanel}">
@@ -583,6 +706,12 @@
                                     [permission]="permission" [allFilter]="jobHistoryFilterList"
                                     [isSearch]="true" (onCancel)="cancel()"
                                     (onSearch)="search($event)"></app-task-form-template>
+          </div>
+          <div *ngIf="historyFilters.type === 'YADE'">
+            <app-yade-form-template [filter]="yadeSearch" [preferences]="preferences" [schedulerIds]="schedulerIds"
+                                    [permission]="permission" [allFilter]="yadeHistoryFilterList"
+                                    [isSearch]="true" (onCancel)="cancel()"
+                                    (onSearch)="search($event)"></app-yade-form-template>
           </div>
           <div *ngIf="historyFilters.type === 'DEPLOYMENT'">
             <app-deployment-form-template [filter]="deploymentSearch" [preferences]="preferences" [schedulerIds]="schedulerIds"
@@ -962,6 +1091,246 @@
           <span translate>common.label.total</span> {{data.length}}
           <span *ngIf="ajaxTable.data.length >1" translate>history.label.historiesFound</span>
           <span *ngIf="ajaxTable.data.length === 1" translate>history.label.historyFound</span>
+        </div>
+      </div>
+    </div>
+    <div class="m-t-sm box p-a" *ngIf="historyFilters.type == 'YADE'">
+      <div class="table-responsive">
+        <nz-table
+          #ajaxYadeTable
+          [nzSize]="'small'"
+          [nzPageSize]="yade.entryPerPage || preferences.entryPerPage"
+          [nzPageIndex]="yade.currentPage"
+          [nzBordered]="true"
+          [nzShowPagination]="data.length > 0"
+          [nzData]="data"
+          [nzLoading]="!isLoading"
+          [nzShowSizeChanger]="true"
+          (nzPageIndexChange)="pageIndexChange($event)"
+          (nzPageSizeChange)="pageSizeChange($event)"
+          (nzCurrentPageDataChange)="currentPageDataChange($event)"
+          [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+        >
+          <thead (nzSortChange)="sortBy2($event)" nzSingleSort>
+          <tr>
+            <th *ngIf="!historyFilters.current" (click)="sort('controllerId')"><a><span
+              translate>common.label.controllerId</span>
+              <i *ngIf="yade.filter.sortBy == 'controllerId' && !yade.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="yade.filter.sortBy == 'controllerId' && yade.reverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort('state._text')"><a>
+              <span class="p-r-xs" translate>fileTransfer.label.status</span>
+              <i *ngIf="yade.filter.sortBy == 'state._text' && !yade.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="yade.filter.sortBy == 'state._text' && yade.reverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort('profile')"><a>
+              <span class="p-r-xs" translate>fileTransfer.label.profileName</span>
+              <i *ngIf="yade.filter.sortBy == 'profile' && !yade.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="yade.filter.sortBy == 'profile' && yade.reverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort('created')"><a>
+              <span class="p-r-xs" translate>fileTransfer.label.mandator</span>
+              <i *ngIf="yade.filter.sortBy == 'created' && !yade.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="yade.filter.sortBy == 'created' && yade.reverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort('operation')"><a>
+              <span class="p-r-xs" translate>fileTransfer.label.operation</span>
+              <i *ngIf="yade.filter.sortBy == 'operation' && !yade.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="yade.filter.sortBy == 'operation' && yade.reverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort('source.host')"><a>
+              <span class="p-r-xs" translate>fileTransfer.label.sourceHost</span>
+              <i *ngIf="yade.filter.sortBy == 'source.host' && !yade.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="yade.filter.sortBy == 'source.host' && yade.reverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort('target.host')"><a>
+              <span class="p-r-xs" translate>fileTransfer.label.targetHost</span>
+              <i *ngIf="yade.filter.sortBy == 'target.host' && !yade.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="yade.filter.sortBy == 'target.host' && yade.reverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort('numOfFiles')"><a>
+              <span class="p-r-xs" translate>fileTransfer.label.totalNumberOfFiles</span>
+              <i *ngIf="yade.filter.sortBy == 'numOfFiles' && !yade.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="yade.filter.sortBy == 'numOfFiles' && yade.reverse"
+                 class="fa fa-caret-down "></i></a>
+
+            </th>
+            <th (click)="sort('error.message')"><a>
+              <span class="p-r-xs" translate>fileTransfer.label.lastErrorMessage</span>
+              <i *ngIf="yade.filter.sortBy == 'error.message' && !yade.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="yade.filter.sortBy == 'error.message' && yade.reverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort('start')"><a>
+              <span class="p-r-xs" translate>fileTransfer.label.startTime</span>
+              <i *ngIf="yade.filter.sortBy == 'start' && !yade.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="yade.filter.sortBy == 'start' && yade.reverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort('end')"><a>
+              <span class="p-r-xs" translate>fileTransfer.label.endTime</span>
+              <i *ngIf="yade.filter.sortBy == 'end' && !yade.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="yade.filter.sortBy == 'end' && yade.reverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort('duration')"><a>
+              <span class="p-r-xs" translate>common.label.duration</span>
+              <i *ngIf="yade.filter.sortBy == 'duration' && !yade.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="yade.filter.sortBy == 'duration' && yade.reverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-template ngFor let-transfer
+                       [ngForOf]="ajaxYadeTable.data | orderBy: yade.filter.sortBy:yade.reverse">
+            <tr class="cursor" [ngClass]="{'light-bg':transfer.show}">
+              <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" *ngIf="!historyFilters.current">
+                <i class="cursor fa fa-caret-down fa-lg"
+                   *ngIf="!transfer.show && !historyFilters.current"
+                   (click)="showTransferFuc(transfer);$event.stopPropagation()"></i>
+                <i class="cursor fa fa-caret-up fa-lg"
+                   *ngIf="transfer.show && !historyFilters.current"
+                   (click)="transfer.show = false;$event.stopPropagation()"></i>&nbsp;
+                <span [innerHtml]="transfer.controllerId"></span>
+                <span *ngIf="!transfer.controllerId" [innerHtml]="transfer.controllerId"></span>
+              </td>
+              <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" class="nowrap">
+                <i class="cursor fa fa-caret-down fa-lg"
+                   *ngIf="!transfer.show && historyFilters.current"
+                   (click)="showTransferFuc(transfer);$event.stopPropagation()"></i>
+                <i class="cursor fa fa-caret-up fa-lg"
+                   *ngIf="transfer.show && historyFilters.current"
+                   (click)="transfer.show = false;$event.stopPropagation()"></i>&nbsp;
+                <span class="label" [ngClass]="coreService.getColor(transfer.state.severity,'bg')"
+                      [innerHtml]="transfer.state._text | translate"></span>
+              </td>
+              <td (click)="coreService.showLogWindow(null, transfer,null,null,true)"
+                  [innerHtml]="transfer.profile"></td>
+              <td (click)="coreService.showLogWindow(null, transfer,null,null,true)"
+                  [innerHtml]="transfer.mandator"></td>
+              <td (click)="coreService.showLogWindow(null, transfer,null,null,true)"
+                  [innerHtml]="transfer._operation"></td>
+              <td (click)="coreService.showLogWindow(null, transfer,null,null,true)">
+                <span *ngIf="transfer.source" [innerHtml]="transfer.source.protocol"></span>
+              </td>
+              <td (click)="coreService.showLogWindow(null, transfer,null,null,true)">
+                <span *ngIf="transfer.target" [innerHtml]="transfer.target.host"></span>
+              </td>
+              <td (click)="coreService.showLogWindow(null, transfer,null,null,true)">
+                <span *ngIf="transfer.target" [innerHtml]="transfer.target.protocol"></span>
+              </td>
+              <td (click)="coreService.showLogWindow(null, transfer,null,null,true)"
+                  [innerHtml]="transfer.numOfFiles"></td>
+              <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" class="text-danger">
+                <span *ngIf="transfer.error" [innerHtml]="transfer.error.message"></span>
+              </td>
+              <td (click)="coreService.showLogWindow(null, transfer,null,null,true)"
+                  [innerHtml]="transfer.start | stringToDate"></td>
+              <td (click)="coreService.showLogWindow(null, transfer,null,null,true)"
+                  [innerHtml]="transfer.end | stringToDate"></td>
+              <td (click)="coreService.showLogWindow(null, transfer,null,null,true)"
+                  [innerHtml]="transfer.start | duration:transfer.end"></td>
+            </tr>
+            <tr *ngIf="transfer.show">
+              <td></td>
+              <td colspan="13" style="padding: 0 !important;">
+                <nz-table #innerTable nzSize="small" [nzShowPagination]="false">
+                  <thead>
+                  <tr>
+                    <th><span translate>fileTransfer.label.sourceHostUser</span></th>
+                    <th><span translate>fileTransfer.label.sourceHostPort</span></th>
+                    <th><span translate>fileTransfer.label.sourceHostProtocol</span></th>
+                    <th><span translate>fileTransfer.label.targetHostUser</span></th>
+                    <th><span translate>fileTransfer.label.targetHostPort</span></th>
+                    <th><span translate>fileTransfer.label.targetHostProtocol</span></th>
+                    <th><span translate>fileTransfer.label.jumpHost</span></th>
+                    <th><span translate>fileTransfer.label.jumpUser</span></th>
+                    <th><span translate>fileTransfer.label.jumpPort</span></th>
+                    <th><span translate>fileTransfer.label.jumpProtocol</span></th>
+                    <th><span translate>fileTransfer.label.workflow</span></th>
+                    <th><span translate>fileTransfer.label.order</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let transfer of innerTable.data">
+                    <td [innerHtml]="transfer.source.account"></td>
+                    <td [innerHtml]="transfer.source.port"></td>
+                    <td [innerHtml]="transfer.source.protocol"></td>
+                    <td [innerHtml]="transfer.target.account"></td>
+                    <td [innerHtml]="transfer.target.port"></td>
+                    <td [innerHtml]="transfer.target.protocol"></td>
+                    <td [innerHtml]="transfer.jump.host"></td>
+                    <td [innerHtml]="transfer.jump.account"></td>
+                    <td [innerHtml]="transfer.jump.port"></td>
+                    <td [innerHtml]="transfer.jump.protocol"></td>
+                    <td><span [innerHtml]="transfer.workflow"></span></td>
+                    <td><span [innerHtml]="transfer.job"></span></td>
+                    <td><span [innerHtml]="transfer.orderId"></span></td>
+                  </tr>
+                </tbody>
+              </nz-table>
+              </td>
+            </tr>
+            <tr *ngIf="transfer.show">
+              <td></td>
+              <td colspan="14" style="padding: 0 !important;">
+                <table class="table m-a-0">
+                  <thead>
+                  <tr>
+                    <th><span translate>fileTransfer.label.sourceFileName</span></th>
+                    <th><span translate>fileTransfer.label.sourceFilePath</span></th>
+                    <th><span translate>fileTransfer.label.targetFileName</span></th>
+                    <th><span translate>fileTransfer.label.targetFilePath</span></th>
+                    <th><span translate>fileTransfer.label.status</span></th>
+                    <th><span translate>fileTransfer.label.errorMessage</span></th>
+                    <th><span translate>fileTransfer.label.size</span></th>
+                    <th><span translate>fileTransfer.label.integrityHash</span></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let file of transfer.files">
+                    <td>{{file.sourceName}}</td>
+                    <td>{{file.sourcePath}}</td>
+                    <td>{{file.targetName}}</td>
+                    <td>{{file.targetPath}}</td>
+                    <td><span class="label" [ngClass]="coreService.getColor(file.state.severity,'bg')"
+                              [innerHtml]="file.state._text | translate"></span></td>
+                    <td>{{file.error}}</td>
+                    <td>{{file.size | byteToSize}}</td>
+                    <td>{{file.integrityHash}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+                <div *ngIf="transfer.files.length==0" translate>message.noFileFound</div>
+              </td>
+            </tr>
+          </ng-template>
+          </tbody>
+        </nz-table>
+        <div class="w-half label-top" *ngIf="ajaxYadeTable.data.length >0">
+          <span translate>label.total</span> {{data.length}}
+          <span *ngIf="ajaxYadeTable.data.length >1" translate>label.historiesFound</span>
+          <span *ngIf="ajaxYadeTable.data.length === 1" translate>label.historyFound</span>
         </div>
       </div>
     </div>

@@ -379,11 +379,10 @@
               <td [innerHtml]="transfer.end | stringToDate"></td>
               <td [innerHtml]="transfer.start | duration:transfer.end"></td>
             </tr>
-   <!--         <tr *ngIf="transfer.show">
+            <tr *ngIf="transfer.show">
               <td></td>
               <td colspan="13" style="padding: 0 !important;">
-                <nz-table class="m-a-0 inner-table"
-                          [nzSize]="'small'" [nzShowPagination]="false">
+                <nz-table class="m-a-0 inner-table" [nzSize]="'small'" [nzShowPagination]="false">
                   <thead>
                   <tr>
                     <th><span translate>fileTransfer.label.sourceHostUser</span></th>
@@ -396,8 +395,7 @@
                     <th><span translate>fileTransfer.label.jumpUser</span></th>
                     <th><span translate>fileTransfer.label.jumpPort</span></th>
                     <th><span translate>fileTransfer.label.jumpProtocol</span></th>
-                    <th><span translate>fileTransfer.label.jobChain</span></th>
-                    <th><span translate>fileTransfer.label.job</span></th>
+                    <th><span translate>fileTransfer.label.workflow</span></th>
                     <th><span translate>fileTransfer.label.order</span></th>
                   </tr>
                   </thead>
@@ -433,17 +431,12 @@
                     <td>
                       <span *ngIf="transfer.jump" [innerHtml]="transfer.jump.protocol"></span>
                     </td>
-                    <td><span (click)="coreService.showJobChain(transfer.jobChain);" class="text-hover-primary"
-                              [innerHtml]="transfer.jobChain"></span></td>
-                    <td><span (click)="coreService.showJob(transfer.job);" class="text-hover-primary"
-                              [innerHtml]="transfer.job"></span></td>
-                    <td><span (click)="coreService.showOrderLink(transfer);" class="text-hover-primary"
-                              [innerHtml]="transfer.orderId"></span></td>
+                    <td><span [innerHtml]="transfer.orderId"></span></td>
                   </tr>
                   </tbody>
                 </nz-table>
               </td>
-            </tr>-->
+            </tr>
             <tr *ngIf="transfer.show">
               <td></td>
               <td colspan="13" style="padding: 0 !important;">
@@ -466,11 +459,11 @@
                   </thead>
                   <tbody>
                   <tr *ngFor="let file of innerChildTable.data">
-                    <td *ngIf="transfer.permission.execute.transferStart">
-                      <label class="md-check">
-                        <input type="checkbox" [(checklist)]="object.files" [disabled]="transfer.state._text=='SUCCESSFUL'"
-                               [checklistValue]="file"><i class="primary"></i>
-                      </label>
+                    <td *ngIf="transfer.permission.execute.transferStart" [nzShowCheckbox]="true"
+                        [nzDisabled]="transfer.state._text=='SUCCESSFUL'"
+                        [(nzChecked)]="file.checked"
+                        [nzIndeterminate]="file.indeterminate"
+                        (nzCheckedChange)="checkALLFilesFnc(file)">
                     </td>
                     <td>{{file.sourceName}}</td>
                     <td>{{file.sourcePath}}</td>

@@ -6,7 +6,7 @@ import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
 import {NzEmptyModule} from 'ng-zorro-antd/empty';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import {PerfectScrollbarModule} from 'ngx-perfect-scrollbar';
 import {
   DecodeSpacePipe,
   SafeHtmlPipe,

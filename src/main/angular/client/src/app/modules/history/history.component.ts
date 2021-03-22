@@ -764,6 +764,142 @@ export class SubmissionSearchComponent implements OnInit {
 }
 
 @Component({
+  selector: 'app-yade-form-template',
+  templateUrl: './yade-form-template.html',
+})
+export class YadeSearchComponent implements OnInit {
+
+  @Input() schedulerIds: any;
+  @Input() filter: any;
+  @Input() preferences: any;
+  @Input() allFilter: any;
+  @Input() permission: any;
+  @Input() isSearch: boolean;
+
+  @Output() onCancel: EventEmitter<any> = new EventEmitter();
+  @Output() onSearch: EventEmitter<any> = new EventEmitter();
+
+  dateFormat: any;
+  dateFormatM: any;
+  existingName: any;
+  submitted = false;
+  isUnique = true;
+  allhosts: any;
+  sourceProtocol: any = [];
+  targetProtocol: any = [];
+
+  stateOptions = [
+    {status: 'SUCCESSFUL', text: 'successful'},
+    {status: 'FAILED', text: 'failed'},
+    {status: 'INCOMPLETE', text: 'incomplete'}
+  ];
+
+  operationOptions = [
+    {status: 'COPY', text: 'copy'},
+    {status: 'MOVE', text: 'move'},
+    {status: 'GETLIST', text: 'getList'},
+    {status: 'RENAME', text: 'rename'}
+  ];
+
+  constructor(public coreService: CoreService, private modalService: NgbModal) {
+  }
+
+  ngOnInit() {
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.allhosts = this.coreService.getProtocols();
+  }
+
+  checkFilterName() {
+    this.isUnique = true;
+    for (let i = 0; i < this.allFilter.length; i++) {
+      if (this.filter.name === this.allFilter[i].name && this.permission.user === this.allFilter[i].account && this.filter.name !== this.existingName) {
+        this.isUnique = false;
+      }
+    }
+  }
+
+  stateChange(value: string[]): void {
+    this.filter.states = value;
+  }
+
+  operationChange(value: string[]): void {
+    this.filter.operations = value;
+  }
+
+  selectedTargetProtocol(value: any): void {
+    if (!this.filter.targetProtocol) {
+      this.filter.targetProtocol = [];
+    }
+    this.filter.targetProtocol.push(value.text);
+  }
+
+  onSubmit(result): void {
+    this.submitted = true;
+    let configObj = {
+      controllerId: this.schedulerIds.selected,
+      account: this.permission.user,
+      configurationType: 'CUSTOMIZATION',
+      objectType: 'YADE_HISTORY',
+      name: result.name,
+      shared: result.shared,
+      id: 0,
+      configurationItem: {}
+    };
+    let fromDate: any;
+    let toDate: any;
+    let obj: any = {};
+    obj.regex = result.regex;
+    obj.paths = result.paths;
+    obj.workflow = result.workflow;
+    obj.orderId = result.orderId;
+    obj.job = result.job;
+    obj.state = result.state;
+    obj.name = result.name;
+    if (result.radio != 'current') {
+      if (result.from1) {
+        fromDate = this.coreService.parseProcessExecuted(result.from1);
+      }
+      if (result.to1) {
+        toDate = this.coreService.parseProcessExecuted(result.to1);
+      }
+    }
+
+    if (fromDate) {
+      obj.from1 = fromDate;
+    } else {
+      obj.from1 = '0d';
+    }
+    if (toDate) {
+      obj.to1 = toDate;
+    } else {
+      obj.to1 = '0d';
+    }
+    configObj.configurationItem = JSON.stringify(obj);
+    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+      configObj.id = res.id;
+      this.allFilter.push(configObj);
+      if (this.isSearch) {
+        this.filter.name = '';
+      } else {
+        this.onCancel.emit(configObj);
+      }
+      this.submitted = false;
+    }, err => {
+      this.submitted = false;
+    });
+  }
+
+  search() {
+    this.onSearch.emit(this.filter);
+  }
+
+  cancel() {
+    this.onCancel.emit();
+  }
+}
+
+
+@Component({
   selector: 'app-history',
   templateUrl: './history.component.html'
 })
@@ -780,40 +916,48 @@ export class HistoryComponent implements OnInit, OnDestroy {
   historyFilters: any = {};
   selectedFiltered1: any = {};
   selectedFiltered2: any = {};
+  selectedFiltered3: any = {};
   selectedFiltered4: any = {};
   selectedFiltered5: any = {};
   temp_filter1: any = {};
   temp_filter2: any = {};
+  temp_filter3: any = {};
   temp_filter4: any = {};
   temp_filter5: any = {};
   historyFilterObj: any = {};
   savedHistoryFilter: any = {};
   savedJobHistoryFilter: any = {};
+  savedYadeHistoryFilter: any = {};
   savedDeploymentHistoryFilter: any = {};
   savedSubmissionHistoryFilter: any = {};
   savedIgnoreList: any = {workflows: [], jobs: []};
   orderSearch: any = {};
   jobSearch: any = {};
+  yadeSearch: any = {};
   deploymentSearch: any = {};
   submissionSearch: any = {};
   data = [];
   currentData = [];
   order: any = {};
   task: any = {};
+  yade: any = {};
   deployment: any = {};
   submission: any = {};
   historys: any = [];
   taskHistorys: any = [];
+  yadeHistorys: any = [];
   deploymentHistorys: any = [];
   submissionHistorys: any = [];
   orderHistoryFilterList: any;
   jobHistoryFilterList: any;
+  yadeHistoryFilterList: any;
   deploymentHistoryFilterList: any;
   submissionHistoryFilterList: any;
 
   orderSearchableProperties = ['controllerId', 'orderId', 'workflow', 'state', '_text', 'orderState', 'position'];
   taskSearchableProperties = ['controllerId', 'job', 'criticality', 'request', 'workflow', 'orderId', 'position'];
   deploymentSearchableProperties = ['controllerId', 'deploymentDate', 'account', 'state'];
+  yadeSearchableProperties = ['controllerId', 'profile', 'mandator', 'start', 'end', 'operation', 'numOfFiles', 'source', 'target'];
 
   object: any = {};
   ignoreListConfigId = 0;
@@ -940,6 +1084,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.historyFilters.type = 'ORDER';
     if (!obj) {
       if (!this.orderHistoryFilterList && this.schedulerIds.selected) {
+        this.data = [];
         this.checkSharedFilters('ORDER');
         return;
       }
@@ -1101,12 +1246,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
   taskHistory(obj, flag) {
     this.historyFilters.type = 'TASK';
     if (!obj) {
-      if (!this.jobHistoryFilterList && this.schedulerIds.selected) {
+       if (!this.jobHistoryFilterList && this.schedulerIds.selected) {
+        this.data = [];
         this.checkSharedFilters('TASK');
         return;
       }
-    }
-    if (!obj) {
       obj = {controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''};
       this.isLoading = false;
       this.data = [];
@@ -1160,6 +1304,90 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.data = arr;
   }
 
+  isCustomizationSelected3(flag) {
+    if (flag) {
+      this.temp_filter3.states = _.clone(this.yade.filter.historyStates);
+      this.temp_filter3.date = _.clone(this.yade.filter.date);
+      this.yade.filter.historyStates = '';
+      this.yade.filter.date = '';
+    } else {
+      if (this.temp_filter3.states) {
+        this.yade.filter.historyStates = _.clone(this.temp_filter3.historyStates);
+        this.yade.filter.date = _.clone(this.temp_filter3.date);
+      } else {
+        this.yade.filter.historyStates = 'ALL';
+        this.yade.filter.date = 'today';
+      }
+    }
+  }
+
+  setYadeDateRange(filter) {
+    if (this.yade.filter.date == 'today') {
+      filter.dateFrom = '0d';
+      filter.dateTo = '0d';
+    } else if (this.yade.filter.date && this.yade.filter.date != 'ALL') {
+      filter.dateFrom = this.yade.filter.date;
+    }
+    return filter;
+  }
+
+  yadeHistory(obj, flag) {
+    this.historyFilters.type = 'YADE';
+    if (!obj) {
+      if (!this.yadeHistoryFilterList && this.schedulerIds.selected) {
+        this.data = [];
+        this.checkSharedFilters('YADE');
+        return;
+      }
+      obj = {controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''};
+      this.isLoading = false;
+      this.data = [];
+    }
+
+    if (this.selectedFiltered3 && !_.isEmpty(this.selectedFiltered3)) {
+      this.isCustomizationSelected3(true);
+      //obj = this.yadeParseDate(obj);
+    } else {
+      obj = this.setYadeDateRange(obj);
+      if (this.yade.filter.historyStates && this.yade.filter.historyStates != 'ALL' && this.yade.filter.historyStates.length > 0) {
+        obj.states = [];
+        obj.states.push(this.yade.filter.historyStates);
+      }
+    }
+    this.convertRequestBody(obj);
+    obj.compact = true;
+    this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
+      this.yadeHistorys = res.transfers || [];
+      if (flag) {
+        this.mergeOldYadeData();
+      } else {
+        this.searchInResult();
+      }
+      this.isLoading = true;
+    }, () => {
+      this.data = [];
+      this.isLoading = true;
+    });
+  }
+
+  private mergeOldYadeData() {
+    let oldEntires = _.clone(this.data);
+    let arr = this.yade.searchText ? this.searchPipe.transform(this.yadeHistorys, this.yade.searchText, this.yadeSearchableProperties) : this.yadeHistorys;
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0; j < oldEntires.length; j++) {
+        if (arr[i].yadeId === oldEntires[j].yadeId) {
+          if (oldEntires[j].show) {
+            arr[i].show = true;
+          }
+          oldEntires.splice(j, 1);
+          break;
+        }
+      }
+    }
+    this.data = arr;
+  }
+
+
   isCustomizationSelected4(flag) {
     if (flag) {
       this.temp_filter4.state = _.clone(this.deployment.filter.state);
@@ -1209,9 +1437,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.historyFilters.type = 'DEPLOYMENT';
     if (!obj) {
       if (!this.deploymentHistoryFilterList && this.schedulerIds.selected) {
-      //  this.checkSharedFilters('DEPLOYMENT');
+        //  this.checkSharedFilters('DEPLOYMENT');
         this.deploymentHistoryFilterList = [];
-       // return;
+        // return;
       }
       if (this.historyFilters.current == true) {
         obj = {controllerId: this.schedulerIds.selected};
@@ -1319,9 +1547,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.historyFilters.type = 'SUBMISSION';
     if (!obj) {
       if (!this.submissionHistoryFilterList && this.schedulerIds.selected) {
-      //  this.checkSharedFilters('SUBMISSION');
+        //  this.checkSharedFilters('SUBMISSION');
         this.submissionHistoryFilterList = [];
-      //  return;
+        //  return;
       }
       if (this.historyFilters.current == true) {
         obj = {controllerId: this.schedulerIds.selected};
@@ -1409,7 +1637,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (obj.states && obj.states.length > 0) {
         filter.historyStates = obj.states;
       }
-      if (obj.radio == 'planned') {
+      if (obj.radio === 'planned') {
         filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);
       } else {
         if (obj.from) {
@@ -1467,11 +1695,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
             filter.orders.push({workflow: value});
           });
         } else {
-          if (obj.workflows)
+          if (obj.workflows) {
             for (let i = 0; i < obj.workflows.length; i++) {
               let flg = true;
               for (let j = 0; j < filter.orders.length; j++) {
-                if (filter.orders[j].workflow == obj.workflows[i]) {
+                if (filter.orders[j].workflow === obj.workflows[i]) {
                   flg = false;
                   break;
                 }
@@ -1480,6 +1708,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
                 filter.orders.push({workflow: obj.workflows[i]});
               }
             }
+          }
         }
 
       }
@@ -1525,11 +1754,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
         if (obj.from) {
           fromDate = new Date(obj.from);
           if (obj.fromTime) {
-
             fromDate.setHours(obj.fromTime.getHours());
             fromDate.setMinutes(obj.fromTime.getMinutes());
             fromDate.setSeconds(obj.fromTime.getSeconds());
-
           } else {
             fromDate.setHours(0);
             fromDate.setMinutes(0);
@@ -1544,7 +1771,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
             toDate.setHours(obj.toTime.getHours());
             toDate.setMinutes(obj.toTime.getMinutes());
             toDate.setSeconds(obj.toTime.getSeconds());
-
           } else {
             toDate.setHours(0);
             toDate.setMinutes(0);
@@ -1660,7 +1886,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       });
     } else if (this.historyFilters.type === 'SUBMISSION') {
       this.submission.filter.date = '';
-      if (obj.radio == 'planned') {
+      if (obj.radio === 'planned') {
         filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);
       } else {
         if (obj.from) {
@@ -1715,6 +1941,99 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.data = [];
         this.isLoading = true;
       });
+    } else if (this.historyFilters.type === 'YADE') {
+      this.yade.filter.historyStates = '';
+      this.yade.filter.date = '';
+      if (obj.file) {
+        filter.files = [];
+        let s = obj.file.replace(/,\s+/g, ',');
+        var files = s.split(',');
+        files.forEach(function (value) {
+          filter.files.push({file: value});
+        });
+      }
+      if (obj.states && obj.states.length > 0) {
+        filter.historyStates = obj.states;
+      }
+      if (obj.criticality && obj.criticality.length > 0) {
+        filter.criticality = obj.criticality;
+      }
+      if (obj.radio === 'process') {
+        filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);
+      } else {
+        if (obj.from) {
+          fromDate = new Date(obj.from);
+          if (obj.fromTime) {
+
+            fromDate.setHours(obj.fromTime.getHours());
+            fromDate.setMinutes(obj.fromTime.getMinutes());
+            fromDate.setSeconds(obj.fromTime.getSeconds());
+
+          } else {
+            fromDate.setHours(0);
+            fromDate.setMinutes(0);
+            fromDate.setSeconds(0);
+          }
+          fromDate.setMilliseconds(0);
+          filter.dateFrom = this.coreService.getUTC(fromDate);
+        }
+        if (obj.to) {
+          toDate = new Date(obj.to);
+          if (obj.toTime) {
+
+            toDate.setHours(obj.toTime.getHours());
+            toDate.setMinutes(obj.toTime.getMinutes());
+            toDate.setSeconds(obj.toTime.getSeconds());
+
+          } else {
+            toDate.setHours(0);
+            toDate.setMinutes(0);
+            toDate.setSeconds(0);
+          }
+          toDate.setMilliseconds(0);
+          filter.dateTo = this.coreService.getUTC(toDate);
+        }
+      }
+
+      if (obj.regex) {
+        filter.regex = obj.regex;
+      }
+      if (obj.controllerId) {
+        filter.controllerId = obj.controllerId;
+      }
+      if (obj.paths && obj.paths.length > 0) {
+        filter.folders = [];
+        obj.paths.forEach(function (value) {
+          filter.folders.push({folder: value, recursive: true});
+        });
+      }
+
+      if (obj.files && obj.files.length > 0) {
+        filter.files = [];
+
+        obj.files.forEach(function (value) {
+          filter.files.push({file: value});
+        });
+
+      }
+      filter.timeZone = this.preferences.zone;
+      if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
+        filter.timeZone = 'UTC';
+      }
+      if ((filter.from && typeof filter.from.getMonth === 'function')) {
+        filter.from = this.coreService.convertTimeToLocalTZ(this.preferences, filter.from);
+      }
+      if ((filter.to && typeof filter.to.getMonth === 'function')) {
+        filter.to = this.coreService.convertTimeToLocalTZ(this.preferences, filter.to);
+      }
+      this.coreService.post('yade/history', filter).subscribe((res: any) => {
+        this.yadeHistorys = this.setDuration(res);
+        this.searchInResult();
+        this.isLoading = true;
+      }, () => {
+         this.data = [];
+        this.isLoading = true;
+      });
     }
   }
 
@@ -1738,6 +2057,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
       planned: 'today',
       operation: 'ALL',
       state: 'ALL',
+      from: new Date(),
+      to: new Date(),
+      toTime: new Date()
+    };
+
+    this.yadeSearch = {
+      radio: 'current',
+      planned: 'today',
       from: new Date(),
       to: new Date(),
       toTime: new Date()
@@ -1777,22 +2104,25 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (!this.task.filter.date) {
       this.task.filter.date = 'today';
     }
-
+    if (!this.yade.filter.historyStates) {
+      this.yade.filter.historyStates = 'ALL';
+    }
+    if (!this.yade.filter.date) {
+      this.yade.filter.date = 'today';
+    }
     if (!this.deployment.filter.state) {
       this.deployment.filter.state = 'ALL';
     }
     if (!this.deployment.filter.date) {
       this.deployment.filter.date = 'today';
     }
-
     if (!this.submission.filter.date) {
       this.submission.filter.date = 'today';
     }
     if (!this.submission.filter.category) {
       this.submission.filter.category = 'ALL';
     }
-
-    if (this.historyFilters.type == 'TASK') {
+    if (this.historyFilters.type === 'TASK') {
       this.jobSearch = {};
       this.jobSearch.date = 'date';
       if (type === 'STATE') {
@@ -1800,7 +2130,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       } else if (type === 'DATE') {
         this.task.filter.date = value;
       }
-    } else if (this.historyFilters.type == 'ORDER') {
+    } else if (this.historyFilters.type === 'ORDER') {
       this.orderSearch = {};
       this.orderSearch.date = 'date';
       if (type === 'STATE') {
@@ -1808,8 +2138,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       } else if (type === 'DATE') {
         this.order.filter.date = value;
       }
-
-    } else if (this.historyFilters.type == 'DEPLOYMENT') {
+    } else if (this.historyFilters.type === 'DEPLOYMENT') {
       this.deploymentSearch = {};
       this.deploymentSearch.date = 'date';
       if (type === 'STATE') {
@@ -1824,6 +2153,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.submission.filter.date = value;
       } else if (type === 'CATEGORY') {
         this.submission.filter.category = value;
+      }
+    } else if (this.historyFilters.type === 'YADE'){
+      this.yadeSearch = {};
+      this.yadeSearch.date = 'date';
+      if (type === 'STATE') {
+        this.yade.filter.historyStates = value;
+      } else if (type === 'DATE') {
+        this.yade.filter.date = value;
       }
     }
     this.init(false);
@@ -1864,6 +2201,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.task.filter.sortBy = propertyName;
   }
 
+  sortBy2(propertyName): void {
+    this.yade.reverse = !this.yade.reverse;
+    this.yade.filter.sortBy = propertyName;
+  }
+
   sort3(propertyName): void {
     this.deployment.reverse = !this.deployment.reverse;
     this.deployment.filter.sortBy = propertyName;
@@ -1879,6 +2221,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.order.currentPage = $event;
     } else if (this.historyFilters.type === 'TASK') {
       this.task.currentPage = $event;
+    } else if (this.historyFilters.type === 'YADE') {
+      this.yade.currentPage = $event;
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
       this.deployment.currentPage = $event;
     } else if (this.historyFilters.type === 'SUBMISSION') {
@@ -1891,6 +2235,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.order.entryPerPage = $event;
     } else if (this.historyFilters.type === 'TASK') {
       this.task.entryPerPage = $event;
+    } else if (this.historyFilters.type === 'YADE') {
+      this.yade.entryPerPage = $event;
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
       this.deployment.entryPerPage = $event;
     } else if (this.historyFilters.type === 'SUBMISSION') {
@@ -1907,6 +2253,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.data = this.order.searchText ? this.searchPipe.transform(this.historys, this.order.searchText, this.orderSearchableProperties) : this.historys;
     } else if (this.historyFilters.type === 'TASK') {
       this.data = this.task.searchText ? this.searchPipe.transform(this.taskHistorys, this.task.searchText, this.taskSearchableProperties) : this.taskHistorys;
+    } else if (this.historyFilters.type === 'YADE') {
+      this.data = this.yade.searchText ? this.searchPipe.transform(this.yadeHistorys, this.yade.searchText, this.yadeSearchableProperties) : this.yadeHistorys;
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
       this.data = this.deployment.searchText ? this.searchPipe.transform(this.deploymentHistorys, this.deployment.searchText, this.deploymentSearchableProperties) : this.deploymentHistorys;
     } else if (this.historyFilters.type === 'SUBMISSION') {
@@ -1928,6 +2276,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
         });
       }
     });
+    if (this.historyFilters.type === 'YADE') {
+      //this.showFiles = true;
+      //this.yadeFilters.showFiles = true;
+      //this.load();
+    }
   }
 
   collapseDetails() {
@@ -1942,6 +2295,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (this.historyFilters.type === 'TASK') {
       data = this.exportToExcelTask();
       fileName = 'JS7-task-history-report';
+    } else if (this.historyFilters.type === 'YADE') {
+      data = this.exportToExcelYade();
+      fileName = 'JS7-yade-history-report';
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
       data = this.exportToExcelDeployment();
       fileName = 'JS7-deployment-history-report';
@@ -2017,7 +2373,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     data.loading = true;
     data.show = true;
     data.children = [];
-    let obj = {
+    const obj = {
       detailFilter: {
         controllerId: data.controllerId || this.schedulerIds.selected,
         commitId: data.commitId
@@ -2028,6 +2384,24 @@ export class HistoryComponent implements OnInit, OnDestroy {
       data.loading = false;
     }, () => {
       data.loading = false;
+    });
+  }
+
+  showTransferFuc(data) {
+    const obj = {
+      controllerId: data.controllerId || this.schedulerIds.selected,
+      transferIds: [data.id]
+    };
+    this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
+      data = _.extend(data, res.transfers[0]);
+      this.isLoading = true;
+    }, () => {
+      this.isLoading = true;
+    });
+    data.show = true;
+    data.files = [];
+    this.coreService.post('yade/files', obj).subscribe((res: any) => {
+      data.files = res.files;
     });
   }
 
@@ -2066,7 +2440,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.init(false);
       }
     }
-    let configObj = {
+    const configObj = {
       controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'IGNORELIST',
@@ -2093,7 +2467,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   enableDisableIgnoreList() {
     this.savedIgnoreList.isEnable = !this.savedIgnoreList.isEnable;
-    let configObj = {
+    const configObj = {
       controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'IGNORELIST',
@@ -2147,6 +2521,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.allFilter = this.orderHistoryFilterList;
     } else if (this.historyFilters.type === 'TASK') {
       modalRef.componentInstance.allFilter = this.jobHistoryFilterList;
+    } else if (this.historyFilters.type === 'YADE') {
+      modalRef.componentInstance.allFilter = this.yadeHistoryFilterList;
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
       modalRef.componentInstance.allFilter = this.deploymentHistoryFilterList;
     } else if (this.historyFilters.type === 'SUBMISSION') {
@@ -2168,6 +2544,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     } else if (this.historyFilters.type === 'TASK') {
       modalRef.componentInstance.filterList = this.jobHistoryFilterList;
       modalRef.componentInstance.favorite = this.savedJobHistoryFilter.favorite;
+    } else if (this.historyFilters.type === 'YADE') {
+      modalRef.componentInstance.filterList = this.yadeHistoryFilterList;
+      modalRef.componentInstance.favorite = this.savedYadeHistoryFilter.favorite;
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
       modalRef.componentInstance.filterList = this.deploymentHistoryFilterList;
       modalRef.componentInstance.favorite = this.savedDeploymentHistoryFilter.favorite;
@@ -2179,17 +2558,17 @@ export class HistoryComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.username = this.permission.user;
     modalRef.componentInstance.action = this.action;
     modalRef.componentInstance.self = this;
-
     modalRef.result.then((obj) => {
       if (obj.type === 'EDIT') {
         this.editFilter(obj);
       } else if (obj.type === 'COPY') {
         this.copyFilter(obj);
       }
-    }, (reason) => {
-
+    }, () => {
     });
   }
+
+  /* --------------------------Actions -----------------------*/
 
   downloadLog(obj, schedulerId) {
     if (!schedulerId) {
@@ -2263,6 +2642,36 @@ export class HistoryComponent implements OnInit, OnDestroy {
       } else if (type === 'REMOVEFAV') {
         self.savedJobHistoryFilter.favorite = '';
         self.saveService.setHistory(self.savedJobHistoryFilter);
+        self.saveService.save();
+      }
+    } else if (self.historyFilters.type === 'YADE') {
+      if (type === 'DELETE') {
+        if (self.savedYadeHistoryFilter.selected == obj.id) {
+          self.savedYadeHistoryFilter.selected = undefined;
+          self.isCustomizationSelected3(false);
+          self.yade.selectedView = false;
+          self.selectedFiltered3 = undefined;
+          self.setDateRange(null);
+          self.load();
+        } else {
+          if (self.yadeHistoryFilterList.length == 0) {
+            self.isCustomizationSelected(false);
+            self.savedYadeHistoryFilter.selected = undefined;
+            self.yade.selectedView = false;
+            self.selectedFiltered3 = undefined;
+          }
+        }
+        self.saveService.setHistory(self.savedYadeHistoryFilter);
+        self.saveService.save();
+      } else if (type === 'MAKEFAV') {
+        self.savedYadeHistoryFilter.favorite = obj.id;
+        self.yade.selectedView = true;
+        self.saveService.setHistory(self.savedYadeHistoryFilter);
+        self.saveService.save();
+        self.load();
+      } else if (type === 'REMOVEFAV') {
+        self.savedYadeHistoryFilter.favorite = '';
+        self.saveService.setHistory(self.savedYadeHistoryFilter);
         self.saveService.save();
       }
     } else if (self.historyFilters.type === 'DEPLOYMENT') {
@@ -2369,6 +2778,27 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.init(false);
       }
       this.historyFilterObj.job = this.savedJobHistoryFilter;
+    } else if (this.historyFilters.type === 'YADE') {
+      if (filter) {
+        this.savedYadeHistoryFilter.selected = filter.id;
+        this.historyFilters.yade.selectedView = true;
+        this.coreService.post('configuration', {
+          controllerId: filter.controllerId,
+          id: filter.id
+        }).subscribe((conf: any) => {
+          this.selectedFiltered3 = JSON.parse(conf.configuration.configurationItem);
+          this.selectedFiltered3.account = filter.account;
+          this.init(false);
+        });
+      } else {
+        this.isCustomizationSelected3(false);
+        this.savedYadeHistoryFilter.selected = filter;
+        this.historyFilters.yade.selectedView = false;
+        this.selectedFiltered3 = {};
+        this.init(false);
+      }
+      this.historyFilterObj.yade = this.savedYadeHistoryFilter;
+
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
       if (filter) {
         this.savedDeploymentHistoryFilter.selected = filter.id;
@@ -2474,6 +2904,64 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private exportToExcelTask(): any {
+    let controllerId = '', workflow = '', job = '', status = '', position = '', plannedTime = '',
+      startTime = '', endTime = '', duration = '', criticality = '', returnCode = '';
+    this.translate.get('common.label.controllerId').subscribe(translatedValue => {
+      controllerId = translatedValue;
+    });
+    this.translate.get('history.label.workflow').subscribe(translatedValue => {
+      workflow = translatedValue;
+    });
+    this.translate.get('history.label.job').subscribe(translatedValue => {
+      job = translatedValue;
+    });
+    this.translate.get('history.label.status').subscribe(translatedValue => {
+      status = translatedValue;
+    });
+    this.translate.get('history.label.position').subscribe(translatedValue => {
+      position = translatedValue;
+    });
+    this.translate.get('history.label.plannedTime').subscribe(translatedValue => {
+      plannedTime = translatedValue;
+    });
+    this.translate.get('history.label.startTime').subscribe(translatedValue => {
+      startTime = translatedValue;
+    });
+    this.translate.get('history.label.endTime').subscribe(translatedValue => {
+      endTime = translatedValue;
+    });
+    this.translate.get('history.label.duration').subscribe(translatedValue => {
+      duration = translatedValue;
+    });
+    this.translate.get('history.label.criticality').subscribe(translatedValue => {
+      criticality = translatedValue;
+    });
+    this.translate.get('history.label.returnCode').subscribe(translatedValue => {
+      returnCode = translatedValue;
+    });
+    let data = [];
+    for (let i = 0; i < this.taskHistorys.length; i++) {
+      let obj: any = {};
+      if (!this.historyFilters.current) {
+        obj[controllerId] = this.taskHistorys[i].controllerId;
+      }
+      obj[job] = this.taskHistorys[i].job;
+      obj[workflow] = this.taskHistorys[i].workflow;
+      obj[position] = this.taskHistorys[i].position;
+      this.translate.get(this.taskHistorys[i].state._text).subscribe(translatedValue => {
+        obj[status] = translatedValue;
+      });
+      obj[startTime] = this.coreService.stringToDate(this.preferences, this.taskHistorys[i].startTime);
+      obj[endTime] = this.coreService.stringToDate(this.preferences, this.taskHistorys[i].endTime);
+      obj[duration] = this.coreService.calDuration(this.taskHistorys[i].startTime, this.taskHistorys[i].endTime);
+      obj[criticality] = this.taskHistorys[i].criticality;
+      obj[returnCode] = this.taskHistorys[i].exitCode;
+      data.push(obj);
+    }
+    return data;
+  }
+
+  private exportToExcelYade(): any {
     let controllerId = '', workflow = '', job = '', status = '', position = '', plannedTime = '',
       startTime = '', endTime = '', duration = '', criticality = '', returnCode = '';
     this.translate.get('common.label.controllerId').subscribe(translatedValue => {
@@ -2659,7 +3147,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           this.init(true);
           break;
         } else if (this.isLoading && this.historyFilters.type === 'SUBMISSION') {
-         // this.init(true);
+          // this.init(true);
           break;
         }
       }
@@ -2676,6 +3164,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.historyFilters = this.coreService.getHistoryTab();
     this.order = this.historyFilters.order;
     this.task = this.historyFilters.task;
+    this.yade = this.historyFilters.yade;
     this.deployment = this.historyFilters.deployment;
     this.submission = this.historyFilters.submission;
 
@@ -2690,6 +3179,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     if (!this.task.filter.date) {
       this.task.filter.date = 'today';
+    }
+    if (!this.yade.filter.historyStates) {
+      this.yade.filter.historyStates = 'ALL';
+    }
+    if (!this.yade.filter.date) {
+      this.yade.filter.date = 'today';
     }
     if (!this.deployment.filter.date) {
       this.deployment.filter.date = 'today';
@@ -2719,6 +3214,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.savedJobHistoryFilter.selected = undefined;
     }
 
+    this.savedYadeHistoryFilter = this.historyFilterObj.yade || {};
+    if (this.historyFilters.yade.selectedView) {
+      this.savedYadeHistoryFilter.selected = this.savedYadeHistoryFilter.selected || this.savedYadeHistoryFilter.favorite;
+    } else {
+      this.savedYadeHistoryFilter.selected = undefined;
+    }
+
     this.savedDeploymentHistoryFilter = this.historyFilterObj.deployment || {};
     if (this.historyFilters.deployment.selectedView) {
       this.savedDeploymentHistoryFilter.selected = this.savedDeploymentHistoryFilter.selected || this.savedDeploymentHistoryFilter.favorite;
@@ -2737,11 +3239,51 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.getIgnoreList();
   }
 
+  private checkCurrentTab(type, res, obj) {
+    if (type === 'ORDER') {
+      this.orderHistoryFilterList = res ? res.configurations : [];
+    } else if (type === 'TASK') {
+      this.jobHistoryFilterList = res ? res.configurations : [];
+    } else if (type === 'YADE') {
+      this.yadeHistoryFilterList = res ? res.configurations : [];
+    } else if (type === 'DEPLOYMENT') {
+      this.deploymentHistoryFilterList = res ? res.configurations : [];
+    } else if (type === 'SUBMISSION') {
+      this.submissionHistoryFilterList = res ? res.configurations : [];
+    }
+    this.getCustomizations(type, obj);
+  }
+
+  private init(flag) {
+    if (this.loadConfig && this.loadIgnoreList) {
+      let obj = {
+        controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''
+      };
+      if (!flag) {
+        this.isLoading = false;
+        this.data = [];
+      }
+      if (this.historyFilters.type === 'ORDER') {
+        this.orderHistory(obj, flag);
+      } else if (this.historyFilters.type === 'TASK') {
+        this.taskHistory(obj, flag);
+      } else if (this.historyFilters.type === 'YADE') {
+        this.yadeHistory(obj, flag);
+      } else if (this.historyFilters.type === 'DEPLOYMENT') {
+        this.deploymentHistory(obj, flag);
+      } else if (this.historyFilters.type === 'SUBMISSION') {
+        this.submissionHistory(obj, flag);
+      }
+    }
+  }
+
+  /* --------------------------Customizations Begin-----------------------*/
+
   private checkSharedFilters(type) {
     let obj = {
       controllerId: this.schedulerIds.selected,
       configurationType: 'CUSTOMIZATION',
-      objectType: type === 'ORDER' ? 'ORDER_HISTORY' : type === 'TASK' ? 'TASK_HISTORY' : type === 'DEPLOYMENT' ? 'DEPLOYMENT_HISTORY' : 'SUBMISSION_HISTORY',
+      objectType: type === 'ORDER' ? 'ORDER_HISTORY' : type === 'TASK' ? 'TASK_HISTORY' : type === 'YADE' ? 'YADE_HISTORY' : type === 'DEPLOYMENT' ? 'DEPLOYMENT_HISTORY' : 'SUBMISSION_HISTORY',
       shared: true
     };
     if (this.permission.JOCConfigurations.share.view) {
@@ -2755,21 +3297,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private checkCurrentTab(type, res, obj) {
-    if (type === 'ORDER') {
-      this.orderHistoryFilterList = res ? res.configurations : [];
-    } else if (type === 'TASK') {
-      this.jobHistoryFilterList = res ? res.configurations : [];
-    } else if (type === 'DEPLOYMENT') {
-      this.deploymentHistoryFilterList = res ? res.configurations : [];
-    } else if (type === 'SUBMISSION') {
-      this.submissionHistoryFilterList = res ? res.configurations : [];
-    }
-    this.getCustomizations(type, obj);
-  }
-
-  /* --------------------------Customizations -----------------------*/
-
   private getCustomizations(type, obj) {
     obj.account = this.permission.user;
     obj.shared = false;
@@ -2778,12 +3305,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.checkOrderCustomization(result);
       } else if (type === 'TASK') {
         this.checkTaskCustomization(result);
+      } else if (type === 'YADE') {
+        this.checkYadeCustomization(result);
       } else if (type === 'DEPLOYMENT') {
         this.checkDeploymentCustomization(result);
       } else if (type === 'SUBMISSION') {
         this.checkSubmissionCustomization(result);
+      } else {
+        this.checkYadeCustomization(result);
       }
-    }, (err) => {
+    }, () => {
       this.savedHistoryFilter.selected = undefined;
       this.loadConfig = true;
       this.init(false);
@@ -2893,6 +3424,60 @@ export class HistoryComponent implements OnInit, OnDestroy {
     } else {
       this.loadConfig = true;
       this.savedJobHistoryFilter.selected = undefined;
+      this.init(false);
+    }
+  }
+
+  private checkYadeCustomization(result) {
+    if (this.yadeHistoryFilterList && this.yadeHistoryFilterList.length > 0) {
+      if (result.configurations && result.configurations.length > 0) {
+        let data = [];
+
+        for (let i = 0; i < this.yadeHistoryFilterList.length; i++) {
+          let flag = true;
+          for (let j = 0; j < result.configurations.length; j++) {
+            if (result.configurations[j].id === this.yadeHistoryFilterList[i].id) {
+              flag = false;
+              result.configurations.splice(j, 1);
+              break;
+            }
+          }
+          if (flag) {
+            data.push(this.yadeHistoryFilterList[i]);
+          }
+        }
+        this.yadeHistoryFilterList = data;
+      }
+    } else {
+      this.yadeHistoryFilterList = result.configurations;
+    }
+
+    if (this.savedYadeHistoryFilter.selected) {
+      let flag = true;
+      for (let i = 0; i < this.yadeHistoryFilterList.length; i++) {
+        if (this.yadeHistoryFilterList[i].id === this.savedYadeHistoryFilter.selected) {
+          flag = false;
+          this.coreService.post('configuration', {
+            controllerId: this.yadeHistoryFilterList[i].controllerId,
+            id: this.yadeHistoryFilterList[i].id
+          }).subscribe((conf: any) => {
+            this.loadConfig = true;
+            this.selectedFiltered3 = JSON.parse(result.configuration.configurationItem);
+            this.selectedFiltered3.account = this.yadeHistoryFilterList[i].account;
+            this.init(false);
+          });
+          break;
+        }
+      }
+
+      if (flag) {
+        this.savedYadeHistoryFilter.selected = undefined;
+        this.loadConfig = true;
+        this.init(false);
+      }
+    } else {
+      this.loadConfig = true;
+      this.savedYadeHistoryFilter.selected = undefined;
       this.init(false);
     }
   }
@@ -3035,27 +3620,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  private init(flag) {
-    if (this.loadConfig && this.loadIgnoreList) {
-      let obj = {
-        controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''
-      };
-      if (!flag) {
-        this.isLoading = false;
-        this.data = [];
-      }
-      if (this.historyFilters.type === 'ORDER') {
-        this.orderHistory(obj, flag);
-      } else if (this.historyFilters.type === 'TASK') {
-        this.taskHistory(obj, flag);
-      } else if (this.historyFilters.type === 'DEPLOYMENT') {
-        this.deploymentHistory(obj, flag);
-      } else if (this.historyFilters.type === 'SUBMISSION') {
-        this.submissionHistory(obj, flag);
-      }
-    }
-  }
-
   private setDuration(histories): any {
     if (histories.history) {
       histories.history.forEach((history, index) => {
@@ -3081,6 +3645,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
         modalRef.componentInstance.allFilter = this.orderHistoryFilterList;
       } else if (this.historyFilters.type === 'TASK') {
         modalRef.componentInstance.allFilter = this.jobHistoryFilterList;
+      } else if (this.historyFilters.type === 'YADE') {
+        modalRef.componentInstance.allFilter = this.yadeHistoryFilterList;
       } else if (this.historyFilters.type === 'DEPLOYMENT') {
         modalRef.componentInstance.allFilter = this.deploymentHistoryFilterList;
       } else if (this.historyFilters.type === 'SUBMISSION') {
@@ -3089,7 +3655,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.filter = filterObj;
       modalRef.componentInstance.edit = true;
       modalRef.componentInstance.type = this.historyFilters.type;
-      modalRef.result.then((configObj) => {
+      modalRef.result.then(() => {
 
       }, () => {
 
@@ -3106,6 +3672,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
         filterObj.name = this.coreService.checkCopyName(this.orderHistoryFilterList, filter.name);
       } else if (this.historyFilters.type === 'TASK') {
         filterObj.name = this.coreService.checkCopyName(this.jobHistoryFilterList, filter.name);
+      } else if (this.historyFilters.type === 'YADE') {
+        filterObj.name = this.coreService.checkCopyName(this.yadeHistoryFilterList, filter.name);
       } else if (this.historyFilters.type === 'DEPLOYMENT') {
         filterObj.name = this.coreService.checkCopyName(this.deploymentHistoryFilterList, filter.name);
       } else if (this.historyFilters.type === 'SUBMISSION') {
@@ -3120,6 +3688,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
         modalRef.componentInstance.allFilter = this.orderHistoryFilterList;
       } else if (this.historyFilters.type === 'TASK') {
         modalRef.componentInstance.allFilter = this.jobHistoryFilterList;
+      } else if (this.historyFilters.type === 'YADE') {
+        modalRef.componentInstance.allFilter = this.yadeHistoryFilterList;
       } else if (this.historyFilters.type === 'DEPLOYMENT') {
         modalRef.componentInstance.allFilter = this.deploymentHistoryFilterList;
       } else if (this.historyFilters.type === 'SUBMISSION') {
@@ -3133,5 +3703,5 @@ export class HistoryComponent implements OnInit, OnDestroy {
       });
     });
   }
-
+ /* --------------------------Customizations End-----------------------*/
 }

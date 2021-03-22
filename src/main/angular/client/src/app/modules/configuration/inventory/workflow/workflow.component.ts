@@ -886,6 +886,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       try {
         if (this.editor) {
           this.editor.destroy();
+          mxOutline.prototype.destroy()
           this.editor = null;
         }
       } catch (e) {
@@ -1256,6 +1257,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   beforeunload() {
     if (this.data.type) {
       this.saveJSON(false);
+      this.ngOnDestroy();
     }
   }
 
@@ -6477,7 +6479,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (this.title) {
       newObj.title = this.title;
     }
-    
+
     this.coreService.post('inventory/store', {
       configuration: newObj,
       id: this.workflow.id,

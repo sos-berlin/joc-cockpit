@@ -7,15 +7,16 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
-            <span class="custom-icon badge mr-2" [ngClass]="isDeploy ? 'badge-success' : 'badge-danger'"
+            <span class="badge" [ngClass]="validConfig ? 'badge-success':'badge-danger'"
+                  *ngIf="submitXsd && XSDState && (XSDState.message && XSDState.message.code !== 'XMLEDITOR-105' || !XSDState.message)">
+              <span *ngIf="validConfig" translate>xml.label.validate</span>
+              <span *ngIf="!validConfig" translate>xml.label.nonValidate</span>
+            </span>
+            <span class="custom-icon badge m-l-12" [ngClass]="isDeploy ? 'badge-success' : 'badge-danger'"
                   *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105' && objectType === 'NOTIFICATION'">
-                 <span *ngIf="isDeploy" translate>xml.label.deployed</span>
-                 <span *ngIf="!isDeploy" translate>xml.label.notDeployed</span>
-             </span>
-             <span class="badge" [ngClass]="validConfig ? 'badge-success':'badge-danger'"
-                   *ngIf="submitXsd && XSDState && (XSDState.message && XSDState.message.code !== 'XMLEDITOR-105' || !XSDState.message)"
-              translate>{{validConfig ? 'xml.label.validate' : 'xml.label.nonValidate'}}
-             </span>
+              <span *ngIf="isDeploy" translate>xml.label.deployed</span>
+              <span *ngIf="!isDeploy" translate>xml.label.notDeployed</span>
+            </span>
             <button class="btn btn-sm btn-grey m-l-12" (click)="newFile()">
               <i class="fa fa-file m-r-xs"></i>
               <span translate>xml.button.new</span>
@@ -67,7 +68,7 @@
 </div>
 <div class="sub-link">
   <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-12">
       <div>
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
           <li class="nav-item" *ngIf="permission.Inventory && permission.Inventory.configurations.view">
@@ -101,10 +102,8 @@
           </li>
         </ul>
       </div>
-    </div>
-    <div class="col-md-4">
-      <div class="padding p-b-0" [hidden]="isLoading">
-        <div class="pos-abt" style="right: 20px" [ngStyle]="{'margin-top': objectType !== 'NOTIFICATION' ? '-13px' : '-13px'}" *ngIf="schemaIdentifier">
+      <div *ngIf="!isLoading && schemaIdentifier">
+        <div class="pos-abt" style="right: 13px;margin-top: 10px">
           <span translate>xml.label.assignedSchema</span>:
           <i class="cursor fa fa-download p-l-sm" (click)="downloadSchema(objectType, schemaIdentifier)"></i>
           <span class="text-hover-primary cursor _600 p-l-xs" (click)="showXSD(objectType, schemaIdentifier)">{{schemaIdentifier}}</span>

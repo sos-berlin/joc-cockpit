@@ -55,7 +55,7 @@
                   *ngIf="value.state && (value.state._text === 'SUSPENDED' || value.state._text === 'FAILED')">
                 <a (click)="resumeOrder(value, null )" translate>order.button.resume</a>
               </li>
-              <li nz-menu-item [nzDisabled]="value.period && !value.period.repeat"
+              <li nz-menu-item [nzDisabled]="value.period && value.period.repeat"
                   *ngIf="value.state && (value.state._text === 'PLANNED' || value.state._text === 'PENDING')">
                 <a (click)="modifyOrder(value)" translate>dailyPlan.button.setStartTime</a>
               </li>
