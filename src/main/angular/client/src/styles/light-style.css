@@ -1,135 +1,144 @@
 :root {
   --border-color: #e3e3e3;
 }
+
 .backup {
-	background: #2c3e50;
-	background: -webkit-linear-gradient(left, rgba(255, 255, 255, .51), #2c3e50);
-	background: -o-linear-gradient(right, rgba(255, 255, 255, .51), rgba(44, 62, 80, 1));
-	background: -moz-linear-gradient(right, rgba(255, 255, 255, .51), rgba(44, 62, 80, 1));
-	background: linear-gradient(to right, rgba(255, 255, 255, .51), rgba(44, 62, 80, 1))
+  background: #2c3e50;
+  background: -webkit-linear-gradient(left, rgba(255, 255, 255, .51), #2c3e50);
+  background: -o-linear-gradient(right, rgba(255, 255, 255, .51), rgba(44, 62, 80, 1));
+  background: -moz-linear-gradient(right, rgba(255, 255, 255, .51), rgba(44, 62, 80, 1));
+  background: linear-gradient(to right, rgba(255, 255, 255, .51), rgba(44, 62, 80, 1))
 }
 
 .backup-top-header {
-	background: #2c3e50
+  background: #2c3e50
 }
 
 .backup-top-header .backup-text,
 .backup-top-header .m-r-sm {
-	color: #fff
+  color: #fff
 }
 
 .header-prussian-blue {
-    background-color: #03254E !important;
+  background-color: #03254E !important;
 }
 
 .header-eggplant {
-    background-color: #45062E !important;
+  background-color: #45062E !important;
 }
 
 .header-blackcurrant {
-    background-color: #320E3B !important;
+  background-color: #320E3B !important;
 }
 
 .header-Dodger-Blue {
-    background-color: #246EB9 !important;
+  background-color: #246EB9 !important;
 }
 
 .header-nordic {
-    background-color: #022C2F !important;
+  background-color: #022C2F !important;
 }
 
 .header-light-sea-green {
-    background-color: #2EC4B6 !important;
+  background-color: #2EC4B6 !important;
 }
 
 .header-toledo {
-    background-color: #3A3335 !important;
+  background-color: #3A3335 !important;
 }
 
 .header-Pine-Green {
-    background-color: #0F7173 !important;
+  background-color: #0F7173 !important;
 }
 
 .header-radical-red {
-    background-color: #C20114 !important;
+  background-color: #C20114 !important;
 }
 
 .avatarbg-prussian-blue {
-    background-color: #FFF !important;
-    color: #03254E !important;
+  background-color: #FFF !important;
+  color: #03254E !important;
 }
 
 .avatarbg-eggplant {
-    background-color: #FFF !important;
-    color: #45062E !important;
+  background-color: #FFF !important;
+  color: #45062E !important;
 }
 
 .avatarbg-blackcurrant {
-    background-color: #FFF !important;
-    color: #320E3B !important;
+  background-color: #FFF !important;
+  color: #320E3B !important;
 }
 
 .avatarbg-Dodger-Blue {
-    background-color: #FFF !important;
-    color: #246EB9 !important;
+  background-color: #FFF !important;
+  color: #246EB9 !important;
 }
 
 .avatarbg-nordic {
-    background-color: #FFF !important;
-    color: #022C2F !important;
+  background-color: #FFF !important;
+  color: #022C2F !important;
 }
 
 .avatarbg-light-sea-green {
-    background-color: #FFF !important;
-    color: #2EC4B6 !important;
+  background-color: #FFF !important;
+  color: #2EC4B6 !important;
 }
 
 .avatarbg-toledo {
-    background-color: #FFF !important;
-    color: #3A3335 !important;
+  background-color: #FFF !important;
+  color: #3A3335 !important;
 }
 
 .avatarbg-Pine-Green {
-    background-color: #FFF !important;
-    color: #0F7173 !important;
+  background-color: #FFF !important;
+  color: #0F7173 !important;
 }
 
 .avatarbg-radical-red {
-    background-color: #FFF !important;
-    color: #7B0D1E !important;
+  background-color: #FFF !important;
+  color: #7B0D1E !important;
 }
+
 button.close {
   color: #3a3a3a;
 }
-#outlineContainer{
+
+#outlineContainer {
   background: #fff !important;
 }
+
 .property-panel .sidebar-close i {
   color: darkcyan;
 }
+
 .documents a[href*="http:"] {
   color: #1395BE !important;
 }
+
 .documents a[href*="https:"] {
   color: #1395BE !important;
 }
+
 .ck .ck-link_selected {
   color: #1395BE;
   text-decoration: underline;
 }
+
 .ck-content a {
   color: #1395BE;
   text-decoration: underline;
 }
+
+.ant-picker-header > button:hover,
 .ant-dropdown-menu-item .ant-dropdown-menu-submenu-arrow-icon, .ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-arrow-icon,
-.cluster-rect, .connection, .cluster, .icon-color,.ant-tree li,
-.ant-time-picker-input,
-.ant-calendar-header a:hover,
+.cluster-rect, .connection, .cluster, .icon-color, .ant-tree li,
+.ant-picker-header a:hover,
 .ant-time-picker-panel,
-.ant-calendar-picker-container,
-.ant-calendar-year-panel-year,
-.ant-calendar-month-panel-month,
-.ant-calendar-date,
+.ant-picker-picker-container,
+.ant-picker-year-panel-year,
+.ant-picker-month-panel-month,
+.ant-picker-date,
 .ant-tabs,
 .ant-pagination-item a, .ant-pagination-prev a, .ant-pagination-next a,
 .ant-table-thead > tr > th, .ant-table-tbody > tr > td, .ant-table, .ant-table-placeholder,
@@ -141,8 +150,6 @@ button.close {
 .ant-pagination-disabled:focus .ant-pagination-item-link,
 .ant-select-arrow .ant-select-arrow-icon, .ant-result-title, .ant-result-subtitle,
 .ant-select-dropdown-menu-item,
-.ant-calendar-picker-icon,
-.ant-time-picker-icon,
 .ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled),
 .ant-select-dropdown-menu-item-selected, .ant-select-dropdown-menu-item:hover,
 .ant-dropdown-menu-submenu-title,
@@ -150,76 +157,69 @@ button.close {
 .anticon-calendar, .anticon-clock-circle {
   color: #3d464d;
 }
-.ant-calendar-header .ant-calendar-prev-century-btn:hover::before,
-.ant-calendar-header .ant-calendar-prev-decade-btn:hover::before,
-.ant-calendar-header .ant-calendar-prev-year-btn:hover::before,
-.ant-calendar-header .ant-calendar-prev-century-btn:hover::after,
-.ant-calendar-header .ant-calendar-prev-decade-btn:hover::after,
-.ant-calendar-header .ant-calendar-prev-year-btn:hover::after,
-.ant-calendar-header .ant-calendar-next-century-btn:hover::before,
-.ant-calendar-header .ant-calendar-next-decade-btn:hover::before,
-.ant-calendar-header .ant-calendar-next-year-btn:hover::before,
-.ant-calendar-header .ant-calendar-next-century-btn:hover::after,
-.ant-calendar-header .ant-calendar-next-decade-btn:hover::after,
-.ant-calendar-header .ant-calendar-next-year-btn:hover::after,
-.ant-calendar-header .ant-calendar-prev-month-btn:hover::before,
-.ant-calendar-header .ant-calendar-prev-month-btn:hover::after,
-.ant-calendar-header .ant-calendar-next-month-btn:hover::before,
-.ant-calendar-header .ant-calendar-next-month-btn:hover::after{
-  border-color: #1d1d1d;
-}
-.ant-calendar-header .ant-calendar-prev-month-btn::before,
-.ant-calendar-header .ant-calendar-prev-month-btn::after,
-.ant-calendar-header .ant-calendar-prev-century-btn::before,
-.ant-calendar-header .ant-calendar-prev-decade-btn::before,
-.ant-calendar-header .ant-calendar-prev-year-btn::before,
-.ant-calendar-header .ant-calendar-prev-century-btn::after,
-.ant-calendar-header .ant-calendar-prev-decade-btn::after,
-.ant-calendar-header .ant-calendar-prev-year-btn::after,
-.ant-calendar-header .ant-calendar-next-month-btn::before,
-.ant-calendar-header .ant-calendar-next-month-btn::after,
-.ant-calendar-header .ant-calendar-next-century-btn::before,
-.ant-calendar-header .ant-calendar-next-decade-btn::before,
-.ant-calendar-header .ant-calendar-next-year-btn::before,
-.ant-calendar-header .ant-calendar-next-century-btn::after,
-.ant-calendar-header .ant-calendar-next-decade-btn::after,
-.ant-calendar-header .ant-calendar-next-year-btn::after {
-  border-color: #777;
+
+.ant-picker-cell {
+  color: rgba(0, 0, 0, .25);
 }
 
-div.jsoneditor-tree button {
-  background: transparent url("../assets/images/jsoneditor-icons.svg");
+.ant-picker-header button {
+  color: rgba(0, 0, 0, .55);
+}
+
+.ant-picker-header button:hover {
+  color: rgba(0, 0, 0, .85);
+}
+
+div.jsoneditor-tree button.jsoneditor-button {
+  background: transparent url(../assets/images/jsoneditor-icons.svg);
+  background-position: 0 -48px;
+}
+div.jsoneditor-tree button.jsoneditor-contextmenu-button {
+  background: transparent url(../assets/images/jsoneditor-icons.svg);
+  background-position: -48px -72px;
+}
+
+.jsoneditor-contextmenu .jsoneditor-menu li button .jsoneditor-expand {
+  background: url("../assets/images/jsoneditor-icons.svg") 0 -72px;
+}
+
+.jsoneditor-contextmenu .jsoneditor-icon {
+  background-image: url("../assets/images/jsoneditor-icons.svg");
 }
 
 div.jsoneditor-tree button.jsoneditor-dragarea {
   background: url("../assets/images/jsoneditor-icons.svg") -72px -72px;
 }
 
-div.jsoneditor-tree .jsoneditor-schema-error {
-  background: url("../assets/images/jsoneditor-icons.svg")  -168px -48px;
+div.jsoneditor-tree .jsoneditor-button.jsoneditor-schema-error {
+  background: url("../assets/images/jsoneditor-icons.svg") -168px -48px;
 }
 
-.jsoneditor-text-errors .jsoneditor-schema-error {
-  background: url("../assets/images/jsoneditor-icons.svg")  -168px -48px;
+.jsoneditor-text-errors tr .jsoneditor-schema-error {
+  background: url(../assets/images/jsoneditor-icons.svg) -168px -48px
 }
 
-
-div.jsoneditor-contextmenu div.jsoneditor-icon {
-  background-image: url("../assets/images/jsoneditor-icons.svg");
+.jsoneditor-text-errors tr.parse-error .jsoneditor-schema-error {
+  background: url(../assets/images/jsoneditor-icons.svg) -25px 0
 }
 
-div.jsoneditor-contextmenu ul li button div.jsoneditor-expand {
-  background: url("../assets/images/jsoneditor-icons.svg") 0 -72px;
-}
-
-div.jsoneditor-menu > button,
-div.jsoneditor-menu > div.jsoneditor-modes > button {
+.jsoneditor-menu > .jsoneditor-modes > button,
+.jsoneditor-menu > button {
   background: transparent url("../assets/images/jsoneditor-icons.svg");
 }
 
-table.jsoneditor-search button {
+.jsoneditor-search button {
   background: url("../assets/images/jsoneditor-icons.svg");
 }
-table.jsoneditor-search div.jsoneditor-frame {
+
+.jsoneditor-statusbar > .jsoneditor-validation-error-icon {
+  background: url(../assets/images/jsoneditor-icons.svg) -168px -48px;
+}
+
+.jsoneditor-statusbar > .jsoneditor-parse-error-icon {
+  background: url(../assets/images/jsoneditor-icons.svg) -25px 0
+}
+
+.jsoneditor-frame {
   background-color: #FFFFFF;
 }

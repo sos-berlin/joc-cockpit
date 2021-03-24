@@ -3045,7 +3045,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       request.newPath = obj.path + (data.noFolder ? '' : (obj.path === '/' ? '' : '/') + this.copyObj.name);
       request.path = this.copyObj.path;
     }
-    this.coreService.post('inventory/copy', request).subscribe(() => {
+    this.coreService.post('inventory/copy', request).subscribe((res) => {
       cb();
     });
   }

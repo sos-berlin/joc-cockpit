@@ -34,17 +34,15 @@ export class ShowChildModalComponent implements OnInit {
   options: any = {};
   selectedNode: any;
   isExpandAll = false;
-  nodes = [];
 
   constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
   }
 
   ngOnInit(): void {
     this.getText(this.showAllChild[0]);
-    this.printTreeArray();
+    this.updateTree();
     let obj: any = this.showAllChild[0];
     obj.title = obj.ref;
-    // tslint:disable-next-line: forin
     for (let child in obj.children) {
       obj.children[child].children = [];
       obj.children[child].title = obj.children[child].ref;
@@ -53,12 +51,11 @@ export class ShowChildModalComponent implements OnInit {
     }
   }
 
-  recursiveGetAllChilds(list: any) {
-    // tslint:disable-next-line: forin
+  recursiveGetAllChilds(list: any): void {
     for (let child in list) {
       list[child].children = [];
       this.checkChildNode(list[child], list[child]);
-      this.printTreeArray();
+      this.updateTree();
       this.recursiveGetAllChilds(list[child].children);
     }
   }
@@ -75,12 +72,12 @@ export class ShowChildModalComponent implements OnInit {
   }
 
 
-  getText(data) {
+  getText(data): void {
     this.selectedNode = data;
     this.selectedNode.doc = this.checkText(data.ref);
   }
 
-  checkText(node) {
+  checkText(node): void {
     let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     let text: any = {};
     let documentationPath2 = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:annotation/xs:documentation';
@@ -92,28 +89,24 @@ export class ShowChildModalComponent implements OnInit {
     return text;
   }
 
-  toggleExpanded(e): void {
-    e.node.data.isExpanded = e.isExpanded;
-  }
-
-  private expandCollapseRec(node, flag) {
+  private expandCollapseRec(node, flag): void {
     for (let i = 0; i < node.length; i++) {
       if (node[i].children && node[i].children.length > 0) {
         node[i].expanded = flag;
         this.expandCollapseRec(node[i].children, flag);
       }
     }
-    this.printTreeArray();
+    this.updateTree();
   }
 
-  expandAll() {
+  expandAll(): void {
     this.isExpandAll = true;
-    this.printTreeArray();
+    this.updateTree();
   }
 
-  collapseAll() {
+  collapseAll(): void {
     this.isExpandAll = false;
-    this.printTreeArray();
+    this.updateTree();
     for (let i = 0; i < this.showAllChild.length; i++) {
       this.showAllChild[i].expanded = false;
       if (this.showAllChild[i].children && this.showAllChild[i].children.length > 0) {
@@ -123,7 +116,7 @@ export class ShowChildModalComponent implements OnInit {
   }
 
 
-  search(q) {
+  search(q): void {
     let count = 0;
     this.counter = 0;
     let checkExpand = {expanded: false, parent: this.showAllChild};
@@ -200,11 +193,11 @@ export class ShowChildModalComponent implements OnInit {
         this.getFilteredData(q, arr[i].children, checkExpand);
       }
     }
-    this.printTreeArray();
+    this.updateTree();
   }
 
 
-  printTreeArray() {
+  updateTree(): void {
     this.showAllChild = [...this.showAllChild];
   }
 
@@ -965,7 +958,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     if (sessionStorage.preferences) {
       this.permission = JSON.parse(this.authService.permission) || {};
@@ -983,8 +976,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.selectedXsd = 'systemMonitorNotification';
     }
     if (this.objectType === 'NOTIFICATION') {
-      if (this.selectedXsd !== '')
+      if (this.selectedXsd !== '') {
         this.readXML();
+      }
     } else {
       this.othersXSD();
     }
@@ -1221,7 +1215,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             this.storeXML(undefined);
             this.printArraya(false);
             if (_tempArrToExpand && _tempArrToExpand.length > 0) {
-              setTimeout(function () {
+              setTimeout(function() {
                 for (let i = 0; i < _tempArrToExpand.length; i++) {
                   _tempArrToExpand[i].expanded = true;
                 }
@@ -1232,9 +1226,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             this.nodes = [];
             this.isLoading = true;
             this.loadTree(res.configuration.schema, true);
-            setTimeout(function () {
-              // createJSONFromXML(res.configuration.configuration);
-            }, 600);
           }
           if (this.objectType !== 'NOTIFICATION' && this._activeTab) {
             this._activeTab.isVisible = false;
@@ -3961,7 +3952,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   stopPressingSpace(id) {
-    $('#' + id).keypress(function (e) {
+    $('#' + id).keypress(function(e) {
       if (e.key === ' ' || e.key === 'Spacebar') {
         e.preventDefault();
       }
@@ -4567,7 +4558,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   checkForTab(id) {
-    $(document).delegate('#' + id, 'keydown', function (e) {
+    $(document).delegate('#' + id, 'keydown', function(e) {
       let keyCode = e.keyCode || e.which;
       if (keyCode == 9) {
         e.preventDefault();

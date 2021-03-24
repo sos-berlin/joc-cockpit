@@ -6,13 +6,13 @@
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
-<div class="modal-body">
+<div class="modal-body p-a">
     <div class="row m-b-sm">
-      <div class="col-md-2 m-l-xs">
+      <div class="col-md-2">
         <button class="btn btn-sm btn-grey" (click)="expandAll()" [nz-tooltip]="'common.tooltip.expandAll' | translate">
           <i class="fa fa-expand"></i>
         </button>
-        <button class="btn btn-sm btn-grey m-l-sm" (click)="collapseAll()" [nz-tooltip]="'common.tooltip.collapseAll' | translate">
+        <button class="btn btn-sm btn-grey m-l-12" (click)="collapseAll()" [nz-tooltip]="'common.tooltip.collapseAll' | translate">
           <i class="fa fa-compress"></i>
         </button>
       </div>
@@ -27,30 +27,29 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-5 b-r ">
-        <div class="tree-block">
-          <nz-tree #treeCtrl
-                   nzNoAnimation
+      <div class="col-md-5 b-r">
+        <div class="tree-block m-l-0">
+          <nz-tree
+            nzNoAnimation
             [nzShowExpand]="false"
             [nzData]="showAllChild"
             [nzExpandAll]="isExpandAll"
             [nzTreeTemplate]="nzTreeTemplate"
-            nzAsyncData
           ></nz-tree>
           <ng-template #nzTreeTemplate let-node>
-              <div class="node-wrapper" nzNoAnimation>
+              <div class="node-wrapper">
                 <span *ngIf="node.children && node.children.length>0"
                       [class.toggle-children-wrapper-expanded]="node.isExpanded"
                       [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
-                      (click)="openFolder(node)" class="w-11 cursor">
-                  <span *ngIf="!node.isExpanded" class="fa fa-angle-right fa-lg"></span>
-                  <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg"></span>
+                      (click)="openFolder(node)" class="w-15 cursor">
+                  <i *ngIf="!node.isExpanded" nz-icon nzType="caret-right" nzTheme="outline" class="tree-icon"></i>
+                  <i *ngIf="node.isExpanded" nz-icon nzType="caret-down" nzTheme="outline" class="tree-icon"></i>
                 </span>
-                <span *ngIf="(!node.children || node.children.length === 0) && node.origin.nodes && node.origin.nodes.length === 0" class="w-11">
+                <span *ngIf="node.origin.children && node.origin.children.length === 0" class="w-15">
                   <span class="fa fa-lg"></span>
                 </span>
                 <div class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active' :selectedNode && selectedNode.ref === node.origin.ref && selectedNode.uuid === node.origin.uuid}">
-                  <span nzNoAnimation (click)="getText(node.origin)"  [ngClass]="{'_600': node.origin.isSearch}">{{node.origin.ref}}
+                  <span (click)="getText(node.origin)"  [ngClass]="{'_600': node.origin.isSearch}">{{node.origin.ref}}
                   </span>
                 </div>
               </div>
