@@ -422,7 +422,11 @@
         return {
             link: function (i, n, a) {
                 function r() {
-                    n.text(u(l))
+                    let x = u(l);
+                    if(x && x.substring(0,1) === '-'){
+                       x =  x.substring(1);
+                    }
+                    n.text(x)
                 }
 
                 function o() {

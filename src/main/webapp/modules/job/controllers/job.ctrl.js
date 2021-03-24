@@ -12959,8 +12959,7 @@
                                 title: vm.jobStreamList[x].jobstreamStarters[j].title || '',
                                 jobs: vm.jobStreamList[x].jobstreamStarters[j].jobs,
                                 runTime: vm.jobStreamList[x].jobstreamStarters[j].runTime,
-                                params: vm.jobStreamList[x].jobstreamStarters[j].params,
-                                jobStream: vm.jobStreamList[x].jobStream,
+                                params: vm.jobStreamList[x].jobstreamStarters[j].params
                             };
                             obj.jobstreamStarters.push(_obj);
                         }

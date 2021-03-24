@@ -172,7 +172,6 @@
             if (e.sessionStorage.preferences) {
                 var n = new Date, r = JSON.parse(e.sessionStorage.preferences);
                 t = moment(t).tz(r.zone), n = moment(n).tz(r.zone);
-
                 var o = moment(t).diff(n);
                 let minius = false;
                 if(o < 0){

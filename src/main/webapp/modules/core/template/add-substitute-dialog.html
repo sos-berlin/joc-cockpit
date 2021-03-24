@@ -100,7 +100,7 @@
                              ng-class="{ 'has-error' : (form.date1.$invalid && form.date1.$dirty) || form.fromTime.$invalid && form.fromTime.$dirty }">
                             <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
                             <div class="col-sm-9">
-                                <input class="form-control input-date" ng-focus="error.validDate=false" required
+                                <input autocomplete="off" class="form-control input-date" ng-focus="error.validDate=false" required
                                        ng-change="saveScheduleDetail('check');" name="date1"
                                        ng-model="substituteObj.fromDate" data-date-format="{{dataFormat}}"
                                        data-autoclose="1" placeholder="{{dataFormat | uppercase}}"
@@ -115,7 +115,7 @@
                              ng-class="{'has-error': (error.validDate) || (form.date2.$invalid && form.date2.$dirty) || form.toTime.$invalid && form.toTime.$dirty}">
                             <label class="col-sm-3 form-control-label" translate>label.validTo</label>
                             <div class="col-sm-9">
-                                <input class="form-control input-date" required ng-focus="error.validDate=false"
+                                <input autocomplete="off" class="form-control input-date" required ng-focus="error.validDate=false"
                                        ng-change="saveScheduleDetail('check');" name="date2"
                                        ng-model="substituteObj.toDate" data-date-format="{{dataFormat}}"
                                        data-autoclose="1" placeholder="{{dataFormat | uppercase}}"

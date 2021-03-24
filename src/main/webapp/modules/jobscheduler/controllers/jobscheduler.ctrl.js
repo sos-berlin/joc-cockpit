@@ -3533,6 +3533,7 @@
             }
             schedules.schedule = vm.substituteObj.folder + '' + vm.substituteObj.name;
             schedules.runTime = vm.schedule.runTime;
+            schedules.runTime.schedule.substitute = vm.schedule.path;
             schedules.calendars = vm.schedule.calendars;
             schedules.auditLog = {};
             if (vm.comments.comment) {
@@ -3544,6 +3545,7 @@
             if (vm.comments.ticketLink) {
                 schedules.auditLog.ticketLink = vm.comments.ticketLink;
             }
+
             ScheduleService.setRunTime(schedules);
         }
 
@@ -3555,9 +3557,11 @@
             vm.comments.radio = 'predefined';
             vm.sch._substitute = schedule.path;
             vm.schedule = schedule;
-            vm.substituteObj = {};
-            vm.substituteObj.showText = false;
-            vm.substituteObj.folder = '/';
+            vm.substituteObj = {
+                showText: false,
+                folder: '/',
+                title: schedule.title
+            };
             vm.scheduleAction = undefined;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/add-substitute-dialog.html',
@@ -3570,9 +3574,10 @@
             modalInstance.result.then(function () {
 
             }, function (res) {
-                if(res === 'ok') {
+                if (res === 'ok') {
+
                     createSchedule();
-                }else {
+                } else {
                     vm.substituteCalendars = [];
                     vm.runTimes = undefined;
                 }

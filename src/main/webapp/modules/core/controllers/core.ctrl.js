@@ -4992,11 +4992,11 @@
             if (vm.substituteObj) {
                 vm.substituteObj.name = run_time.name;
                 if (!run_time.validFrom) {
-                    vm.substituteObj.fromDate = '';
+                    vm.substituteObj.fromDate = new Date();
                     vm.substituteObj.fromTime = '00:00';
                 }
                 if (!run_time.validTo) {
-                    vm.substituteObj.toDate = '';
+                    vm.substituteObj.toDate = new Date();
                     vm.substituteObj.toTime = '00:00';
                 }
             }
@@ -10175,6 +10175,9 @@
                 vm.jsonObj.json.run_time.timeZone = vm.userPreferences.zone;
             }
             getXml2Json(angular.copy(vm.jsonObj.json));
+            if(vm.jsonObj.json.schedule) {
+                vm.saveScheduleDetail('check');
+            }
             if (!vm.calendars) {
                 let cal;
                 if (vm.runTimes) {
