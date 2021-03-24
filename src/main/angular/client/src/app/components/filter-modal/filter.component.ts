@@ -12,7 +12,7 @@ export class EditFilterModalComponent {
   @Input() filterList: any;
   @Input() username: any;
   @Input() favorite: any;
-  @Input() action: Function;
+  @Input() action: any;
   @Input() self;
 
   constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {

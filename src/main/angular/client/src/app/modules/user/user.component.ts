@@ -26,7 +26,7 @@ export class UpdateKeyModalComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.algorithm.keyAlg = this.securityLevel !== 'HIGH' ? 'RSA' : 'PGP';
   }
 
@@ -82,7 +82,7 @@ export class ImportKeyModalComponent implements OnInit {
     this.uploader.setOptions(uo);
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.comments.radio = 'predefined';
     if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
@@ -161,7 +161,7 @@ export class ImportKeyModalComponent implements OnInit {
     }
   }
 
-  import() {
+  import(): void {
     this.submitted = true;
     this.uploader.queue = this.uploader.queue.sort((a, b) => {
       return a.index - b.index;
@@ -173,7 +173,7 @@ export class ImportKeyModalComponent implements OnInit {
     }
   }
 
-  cancel() {
+  cancel(): void {
     this.activeModal.close('');
   }
 }
@@ -192,15 +192,15 @@ export class GenerateKeyComponent {
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private toasterService: ToasterService) {
   }
 
-  cancel() {
+  cancel(): void {
     this.activeModal.close('');
   }
 
-  onChange(date) {
+  onChange(date): void {
     this.key.date = date;
   }
 
-  generateKey() {
+  generateKey(): void {
     this.submitted = true;
     const obj: any = {
       keyAlgorithm: this.key.keyAlg
@@ -250,7 +250,7 @@ export class UserComponent implements OnInit, OnDestroy {
     });
   }
 
-  savePreferences() {
+  savePreferences(): void {
     if (this.schedulerIds.selected) {
       this.configObj.configurationItem = JSON.stringify(this.preferences);
       sessionStorage.preferences = JSON.stringify(this.preferences);
@@ -261,11 +261,11 @@ export class UserComponent implements OnInit, OnDestroy {
     }
   }
 
-  setIds() {
+  setIds(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
   }
 
-  setPreferences() {
+  setPreferences(): void {
     this.username = this.authService.currentUserData;
     this.securityLevel = sessionStorage.securityLevel;
     if (this.securityLevel === 'LOW' && sessionStorage.defaultProfile && sessionStorage.defaultProfile === this.username) {
@@ -280,7 +280,7 @@ export class UserComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.locales = [
       {lang: 'en', country: 'US', name: 'English'},
       {lang: 'fr', country: 'FR', name: 'French'},
@@ -308,11 +308,11 @@ export class UserComponent implements OnInit, OnDestroy {
     this.configObj.id = parseInt(sessionStorage.preferenceId, 10);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  getKeys() {
+  getKeys(): void {
     this.keys = {};
     this.coreService.post('profile/key', {}).subscribe((res: any) => {
       this.keys = res;
@@ -324,7 +324,7 @@ export class UserComponent implements OnInit, OnDestroy {
     });
   }
 
-  changeConfiguration() {
+  changeConfiguration(): void {
     if (isNaN(parseInt(this.preferences.maxRecords, 10))) {
       this.preferences.maxRecords = parseInt(Object.assign({}, this.preferences, 10).maxRecords, 10);
     }
@@ -349,7 +349,7 @@ export class UserComponent implements OnInit, OnDestroy {
     this.savePreferences();
   }
 
-  changeView() {
+  changeView(): void {
     let views = {
       dailyPlan: this.preferences.pageView,
       workflow: this.preferences.pageView,
@@ -363,19 +363,19 @@ export class UserComponent implements OnInit, OnDestroy {
     localStorage.views = JSON.stringify(views);
   }
 
-  setLocale() {
+  setLocale(): void {
     localStorage.$SOS$LANG = this.preferences.locale;
     this.translate.use(this.preferences.locale);
     this.savePreferences();
   }
 
-  changeTheme(theme) {
+  changeTheme(theme): void {
     $('#style-color').attr('href', './styles/' + theme + '-style.css');
     localStorage.$SOS$THEME = theme;
     this.savePreferences();
   }
 
-  changeMenuTheme(theme) {
+  changeMenuTheme(theme): void {
     const headerDom = $('#headerColor');
     const avatarrDom = $('#avatarBg');
     for (let i = 0; i < headerDom[0].classList.length; i++) {
@@ -438,7 +438,7 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
 
-  pasteKey() {
+  pasteKey(): void {
     const modalRef = this.modalService.open(UpdateKeyModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.securityLevel = this.securityLevel;
     modalRef.componentInstance.paste = true;
@@ -450,7 +450,7 @@ export class UserComponent implements OnInit, OnDestroy {
     });
   }
 
-  showGenerateKeyModal() {
+  showGenerateKeyModal(): void {
     const modalRef = this.modalService.open(GenerateKeyComponent, {backdrop: 'static'});
     modalRef.result.then((result) => {
       this.getKeys();
@@ -459,28 +459,28 @@ export class UserComponent implements OnInit, OnDestroy {
     });
   }
 
-  importKey() {
+  importKey(): void {
     const modalRef = this.modalService.open(ImportKeyModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.securityLevel = this.securityLevel;
     modalRef.result.then(() => {
       this.getKeys();
-    }, (reason) => {
+    }, () => {
 
     });
   }
 
-  showKey() {
+  showKey(): void {
     const modalRef = this.modalService.open(UpdateKeyModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.securityLevel = this.securityLevel;
     modalRef.componentInstance.data = this.keys;
     modalRef.result.then(() => {
 
-    }, (reason) => {
+    }, () => {
 
     });
   }
 
-  resetProfile() {
+  resetProfile(): void {
     const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.title = 'resetProfile';
     modalRef.componentInstance.message = 'resetSingleProfile';
@@ -488,12 +488,12 @@ export class UserComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.objectName = this.permission.user;
     modalRef.result.then(() => {
       this._resetProfile();
-    }, (reason) => {
+    }, () => {
 
     });
   }
 
-  private _resetProfile() {
+  private _resetProfile(): void {
     const obj = {accounts: [this.permission.user]};
     this.coreService.post('configurations/delete', obj).subscribe(res => {
       this.dataService.isProfileReload.next(true);

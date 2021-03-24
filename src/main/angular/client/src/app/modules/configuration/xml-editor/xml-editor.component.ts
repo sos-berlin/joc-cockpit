@@ -1,5 +1,5 @@
 import {Component, Input, OnInit, ViewChild, OnDestroy, HostListener, AfterViewInit} from '@angular/core';
-import {NzFormatEmitEvent, NzTreeNode, NzFormatBeforeDropEvent} from 'ng-zorro-antd';
+import {NzFormatEmitEvent, NzTreeNode, NzFormatBeforeDropEvent} from 'ng-zorro-antd/tree';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {FileUploader} from 'ng2-file-upload';
@@ -1627,7 +1627,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isLoading = !!check;
   }
 
-  reassignSchemaa() {
+  reassignSchemaFunc() {
     this.reassignSchema = true;
     this.submitXsd = false;
     this.showSelectSchema = true;

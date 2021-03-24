@@ -1,10 +1,10 @@
 import {Component, OnInit, Input} from '@angular/core';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {Router} from '@angular/router';
+import * as _ from 'underscore';
+import * as moment from 'moment';
 import {CoreService} from '../../../services/core.service';
 import {CalendarModalComponent} from '../../../components/calendar-modal/calendar.component';
-import {Router} from '@angular/router';
-import * as moment from 'moment';
-import * as _ from 'underscore';
 
 @Component({
   selector: 'app-add-order',
@@ -24,14 +24,15 @@ export class AddOrderModalComponent implements OnInit {
   required = false;
   submitted = false;
   comments: any = {};
-  zones = moment.tz.names();
+  zones = [];
   variableList = [];
 
   constructor(public coreService: CoreService, public activeModal: NgbActiveModal) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.zones = this.coreService.getTimeZoneList();
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
     this.order.timeZone = this.preferences.zone;
@@ -47,12 +48,14 @@ export class AddOrderModalComponent implements OnInit {
     this.updateVariableList();
   }
 
-  updateVariableList() {
+  updateVariableList(): void {
     if (this.workflow.orderRequirements && this.workflow.orderRequirements.parameters && !_.isEmpty(this.workflow.orderRequirements.parameters)) {
       this.variableList = Object.entries(this.workflow.orderRequirements.parameters).map(([k, v]) => {
         const val: any = v;
         if (!val.default && val.default !== false && val.default !== 0) {
           this.arguments.push({name: k, type: val.type, isRequired: true});
+        } else{
+          this.arguments.push({name: k, value: val.default, type: val.type, isRequired: false});
         }
         return {name: k, value: v};
       });
@@ -60,7 +63,7 @@ export class AddOrderModalComponent implements OnInit {
     this.updateSelectItems();
   }
 
-  checkVariableType(argument) {
+  checkVariableType(argument): void {
     let obj = this.workflow.orderRequirements.parameters[argument.name];
     if (obj) {
       argument.type = obj.type;
@@ -71,7 +74,7 @@ export class AddOrderModalComponent implements OnInit {
     this.updateSelectItems();
   }
 
-  updateSelectItems() {
+  updateSelectItems(): void {
     if (this.arguments.length > 0) {
       for (let i = 0; i < this.variableList.length; i++) {
         this.variableList[i].isSelected = false;
@@ -85,7 +88,7 @@ export class AddOrderModalComponent implements OnInit {
     }
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.submitted = true;
     const obj: any = {
       controllerId: this.schedulerId,
@@ -154,13 +157,13 @@ export class AddOrderModalComponent implements OnInit {
     this.updateSelectItems();
   }
 
-  onKeyPress($event) {
+  onKeyPress($event): void {
     if ($event.which === '13' || $event.which === 13) {
       this.addArgument();
     }
   }
 
-  cancel() {
+  cancel(): void {
     this.activeModal.dismiss('');
   }
 
@@ -180,12 +183,12 @@ export class WorkflowActionComponent {
   constructor(public modalService: NgbModal, public coreService: CoreService, private router: Router) {
   }
 
-  navToDetailView(view) {
+  navToDetailView(view): void {
     this.coreService.getWorkflowDetailTab().pageView = view;
     this.router.navigate(['/workflows/workflow_detail', this.workflow.path, this.workflow.versionId]);
   }
 
-  addOrder(workflow) {
+  addOrder(workflow): void {
     const modalRef = this.modalService.open(AddOrderModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.preferences = this.preferences;
     modalRef.componentInstance.permission = this.permission;
@@ -198,7 +201,7 @@ export class WorkflowActionComponent {
     });
   }
 
-  showDailyPlan(workflow) {
+  showDailyPlan(workflow): void {
     const modalRef = this.modalService.open(CalendarModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.path = workflow.path;
     modalRef.result.then((result) => {

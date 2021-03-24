@@ -37,7 +37,7 @@ export class FilterModalComponent implements OnInit {
   constructor(private authService: AuthService, public activeModal: NgbActiveModal) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.preferences = JSON.parse(sessionStorage.preferences) || {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
@@ -51,14 +51,13 @@ export class FilterModalComponent implements OnInit {
     }
   }
 
-  cancel(obj) {
+  cancel(obj): void {
     if (obj) {
       this.activeModal.close(obj);
     } else {
       this.activeModal.dismiss('');
     }
   }
-
 }
 
 @Component({
@@ -83,11 +82,11 @@ export class SearchComponent implements OnInit {
   constructor(public coreService: CoreService, private modalService: NgbModal) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
   }
 
-  getFolderTree() {
+  getFolderTree(): void {
     const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.paths = this.filter.paths || [];
@@ -102,11 +101,11 @@ export class SearchComponent implements OnInit {
     });
   }
 
-  remove(path) {
+  remove(path): void {
     this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
   }
 
-  checkFilterName() {
+  checkFilterName(): void {
     this.isUnique = true;
     for (let i = 0; i < this.allFilter.length; i++) {
       if (this.filter.name === this.allFilter[i].name && this.permission.user === this.allFilter[i].account && this.filter.name !== this.existingName) {
@@ -117,7 +116,13 @@ export class SearchComponent implements OnInit {
 
   onSubmit(result): void {
     this.submitted = true;
-    let configObj = {
+
+    const obj: any = {
+      regex: result.regex,
+      paths: result.paths,
+      name: result.name
+    };
+    const configObj = {
       controllerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'CUSTOMIZATION',
@@ -125,13 +130,8 @@ export class SearchComponent implements OnInit {
       name: result.name,
       shared: result.shared,
       id: result.id || 0,
-      configurationItem: {}
+      configurationItem: JSON.stringify(obj)
     };
-    let obj: any = {};
-    obj.regex = result.regex;
-    obj.paths = result.paths;
-    obj.name = result.name;
-    configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
       configObj.id = res.id;
       this.allFilter.push(configObj);
@@ -146,11 +146,11 @@ export class SearchComponent implements OnInit {
     });
   }
 
-  search() {
+  search(): void {
     this.onSearch.emit();
   }
 
-  cancel() {
+  cancel(): void {
     this.onCancel.emit();
   }
 }
@@ -169,7 +169,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
   path: any;
   showPanel: any;
   sideBar: any = {};
-  date = '0d';
+  date = '1d';
   subscription1: Subscription;
 
   filterBtn: any = [
@@ -189,7 +189,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.path = this.route.snapshot.queryParamMap.get('path');
     this.schedulerId = this.route.snapshot.queryParamMap.get('scheduler_id');
     if (sessionStorage.preferences) {
@@ -202,11 +202,11 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription1.unsubscribe();
   }
 
-  private refresh(args) {
+  private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow && this.path === args.eventSnapshots[j].workflow.path) {
@@ -220,7 +220,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getWorkflowList(obj) {
+  private getWorkflowList(obj): void {
     this.coreService.post('workflow', obj).subscribe((res: any) => {
       this.loading = false;
       const request = {
@@ -244,7 +244,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
     });
   }
 
-  private getOrders(obj) {
+  private getOrders(obj): void {
     if (this.date !== 'ALL') {
       obj.dateTo = this.date;
     }
@@ -268,7 +268,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadOrders(date) {
+  loadOrders(date): void {
     this.date = date;
     const request = {
       compact: true,
@@ -282,26 +282,27 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
-  showPanelFuc(workflow) {
+  showPanelFuc(workflow): void {
     workflow.show = true;
+    $('#workflowTableId').css('height', 450);
     workflow.configuration = this.coreService.clone(workflow);
     this.workflowService.convertTryToRetry(workflow.configuration, null);
   }
 
-  hidePanelFuc(workflow) {
+  hidePanelFuc(workflow): void {
     workflow.show = false;
+    $('#workflowTableId').css('height', 150);
     delete workflow['configuration'];
   }
 
-  viewOrders(workflow) {
+  viewOrders(workflow): void {
     this.sideBar = {isVisible: true, orders: workflow.orders, workflow: workflow.path, orderRequirements: workflow.orderRequirements};
   }
 
-  navToDetailView(view, workflow) {
+  navToDetailView(view, workflow): void {
     this.coreService.getWorkflowDetailTab().pageView = view;
     this.router.navigate(['/workflows/workflow_detail', workflow.path, workflow.versionId]);
   }
-
 }
 
 @Component({

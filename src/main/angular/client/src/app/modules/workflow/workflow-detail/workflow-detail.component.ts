@@ -551,7 +551,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
               try {
                 data = JSON.parse(data);
                 if (self.menu) {
-                  self.menu.open = true;
+                
                   setTimeout(() => {
                     self.order = data;
                     self.nzContextMenuService.create(evt, self.menu);

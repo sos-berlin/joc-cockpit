@@ -1576,7 +1576,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       obj = this.setSubmissionDateRange(obj);
     }
     this.convertRequestBody(obj);
-    this.coreService.post('daily_plan/history', {filter: obj}).subscribe((res: any) => {
+    this.coreService.post('daily_plan/history', {filter: obj, controllerId: this.schedulerIds.selected}).subscribe((res: any) => {
       this.submissionHistorys = res.dailyPlans;
       if (flag) {
         this.mergeSubData();
@@ -1933,7 +1933,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
         filter.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateTo);
       }
-      this.coreService.post('daily_plan/history', {filter: filter}).subscribe((res: any) => {
+      this.coreService.post('daily_plan/history', {filter: filter, controllerId: this.schedulerIds.selected}).subscribe((res: any) => {
         this.submissionHistorys = res.dailyPlans;
         this.searchInResult();
         this.isLoading = true;

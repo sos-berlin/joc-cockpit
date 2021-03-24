@@ -8,8 +8,8 @@ import {TranslateService} from '@ngx-translate/core';
 import * as _ from 'underscore';
 import {ClipboardService} from 'ngx-clipboard';
 import {saveAs} from 'file-saver';
+import {NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd/tree';
 import {NzMessageService} from 'ng-zorro-antd/message';
-import {NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
@@ -1663,7 +1663,7 @@ export class CreateObjectModalComponent implements OnInit {
     } else if (this.copy) {
       this.settings = JSON.parse(sessionStorage.$SOS$COPY);
     }
-    this.object.originalName = this.copy;
+    this.object.originalName = this.copy.name;
     if (this.settings) {
       this.object.suffix = this.settings.suffix;
       this.object.prefix = this.settings.prefix;
@@ -1689,10 +1689,10 @@ export class CreateObjectModalComponent implements OnInit {
       this.activeModal.close(obj);
     } else {
       this.submitted = true;
-      const _path = this.obj.path + (this.obj.path === '/' ? '' : '/') + this.object.name;
+      const PATH = this.obj.path + (this.obj.path === '/' ? '' : '/') + this.object.name;
       this.coreService.post('inventory/validate/path', {
         objectType: this.obj.type,
-        path: _path
+        path: PATH
       }).subscribe(() => {
         this.activeModal.close({
           name: this.object.name
@@ -1991,7 +1991,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.inventoryConfig.isTrash = this.isTrash;
   }
 
-  initTree(path, mainPath) {
+  initTree(path, mainPath): void {
     if (!path) {
       this.isLoading = true;
     }
@@ -2915,6 +2915,52 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.message.success(msg);
   }
 
+  private checkNewCopyObject(node): void {
+    let object = node;
+    if (this.copyObj) {
+      if (this.copyObj.operation === 'COPY') {
+        if (node instanceof NzTreeNode) {
+          object = node.origin;
+          if (!object.controller && !object.dailyPlan && !object.object) {
+            let data = object.children;
+            if (!data[0] || !data[0].controller || data.length === 0) {
+              this.updateObjects(node.origin, false,(children) => {
+                if ((this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'SCHEDULE')) {
+                  children[1].expanded = true;
+                } else {
+                  children[0].expanded = true;
+                }
+                node.origin.children = children;
+                if (data.length > 0) {
+                  node.origin.children = node.origin.children.concat(data);
+                }
+                node.origin.expanded = true;
+                this.updateTree(false);
+                this.checkNewCopyObject(node);
+              }, false);
+              return;
+            }
+            if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'SCHEDULE') {
+              data = object.children[1];
+            } else {
+              data = object.children[0];
+            }
+            data.expanded = true;
+            if (data && data.children) {
+              for (let i = 0; i < data.children.length; i++) {
+                if (data.children[i].object === this.copyObj.type) {
+                  object = data.children[i];
+                  object.expanded = true;
+                  break;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   paste(node) {
     let object = node;
     if (node instanceof NzTreeNode) {
@@ -2924,45 +2970,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (this.copyObj) {
       if (this.copyObj.operation === 'COPY') {
         this.openObjectNameModal(object, () => {
-          if (node instanceof NzTreeNode) {
-            object.expanded = true;
-            if (!object.controller && !object.dailyPlan && !object.object) {
-              let data = object.children;
-              if (!data[0] || !data[0].controller || data.length === 0) {
-                this.updateObjects(node.origin, false, (children) => {
-                  if (this.copyObj.type) {
-                    if ((this.copyObj.type.match(/CALENDAR/) || this.copyObj.type === 'SCHEDULE')) {
-                      children[1].expanded = true;
-                    } else {
-                      children[0].expanded = true;
-                    }
-                  }
-                  node.origin.children = children;
-                  if (data.length > 0) {
-                    node.origin.children = node.origin.children.concat(data);
-                  }
-                  node.origin.expanded = true;
-                  this.updateTree(false);
-                }, false);
-                return;
-              }
-              if (this.copyObj.type) {
-                if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'SCHEDULE') {
-                  data = object.children[1];
-                } else {
-                  data = object.children[0];
-                }
-              }
-              if (data && data.children) {
-                for (let i = 0; i < data.children.length; i++) {
-                  if (data.children[i].object === this.copyObj.type) {
-                    object = data.children[i];
-                    break;
-                  }
-                }
-              }
-            }
-          }
+          this.checkNewCopyObject(node);
         });
       } else if (this.copyObj.operation === 'CUT') {
         let obj: any = {newPath: object.path};
@@ -3012,11 +3020,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private openObjectNameModal(obj, cb) {
+  private openObjectNameModal(obj, cb): void {
     const modalRef = this.modalService.open(CreateObjectModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.obj = obj;
-    modalRef.componentInstance.copy = this.copyObj.name;
+    modalRef.componentInstance.copy = this.copyObj;
     modalRef.result.then(data => {
       this._paste(obj, data, cb);
     }, () => {
@@ -3035,7 +3043,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
     } else {
       request.objectType = 'FOLDER';
       request.newPath = obj.path + (data.noFolder ? '' : (obj.path === '/' ? '' : '/') + this.copyObj.name);
-
       request.path = this.copyObj.path;
     }
     this.coreService.post('inventory/copy', request).subscribe(() => {
@@ -3043,7 +3050,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  removeObject(node) {
+  removeObject(node): void {
     const object = node.origin;
     let _path;
     if (object.type) {

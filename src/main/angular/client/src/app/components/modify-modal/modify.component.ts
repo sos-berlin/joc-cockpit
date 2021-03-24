@@ -24,7 +24,7 @@ export class ChangeParameterModalComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (this.variable) {
       this.variables = Object.assign(this.variables, [this.coreService.clone(this.variable)]);
     } else if (this.order && (this.order.variables)) {
@@ -46,7 +46,7 @@ export class ChangeParameterModalComponent implements OnInit {
     }
   }
 
-  updateVariableList() {
+  updateVariableList(): void {
     if (this.orderRequirements && this.orderRequirements.parameters && !_.isEmpty(this.orderRequirements.parameters)) {
       this.variableList = Object.entries(this.orderRequirements.parameters).map(([k, v]) => {
         const val: any = v;
@@ -61,8 +61,12 @@ export class ChangeParameterModalComponent implements OnInit {
             break;
           }
         }
-        if (!val.default && val.default !== false && val.default !== 0 && !isExist && !this.variable) {
-          this.variables.push({name: k, type: val.type, isRequired: true});
+        if (!isExist && !this.variable) {
+          if (!val.default && val.default !== false && val.default !== 0) {
+            this.variables.push({name: k, type: val.type, isRequired: true});
+          } else {
+            this.variables.push({name: k, value: val.default, type: val.type, isRequired: false});
+          }
         }
         return {name: k, value: v};
       });
@@ -70,7 +74,7 @@ export class ChangeParameterModalComponent implements OnInit {
     this.updateSelectItems();
   }
 
-  checkVariableType(variable) {
+  checkVariableType(variable): void {
     let obj = this.orderRequirements.parameters[variable.name];
     if (obj) {
       variable.type = obj.type;
@@ -81,7 +85,7 @@ export class ChangeParameterModalComponent implements OnInit {
     this.updateSelectItems();
   }
 
-  updateSelectItems() {
+  updateSelectItems(): void {
     if (this.variables.length > 0) {
       for (let i = 0; i < this.variableList.length; i++) {
         this.variableList[i].isSelected = false;
@@ -118,7 +122,7 @@ export class ChangeParameterModalComponent implements OnInit {
     }
   }
 
-  onKeyPress($event) {
+  onKeyPress($event): void {
     if ($event.which === '13' || $event.which === 13) {
       $event.preventDefault();
       this.addVariable();
@@ -173,7 +177,7 @@ export class ChangeParameterModalComponent implements OnInit {
     }
   }
 
-  cancel() {
+  cancel(): void {
     this.activeModal.dismiss('');
   }
 }
@@ -192,7 +196,7 @@ export class ModifyStartTimeModalComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal, public  coreService: CoreService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
   }
 
@@ -222,7 +226,7 @@ export class ModifyStartTimeModalComponent implements OnInit {
     });
   }
 
-  cancel() {
+  cancel(): void {
     this.activeModal.dismiss('');
   }
 }

@@ -1,12 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {CoreService} from '../../services/core.service';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {CoreService} from '../../services/core.service';
 
 @Component({
   selector: 'app-resume-order',
   templateUrl: './resume-order-dialog.html',
 })
-
 export class ResumeOrderModalComponent implements OnInit {
   @Input() schedulerId: any;
   @Input() permission: any;
@@ -22,7 +21,7 @@ export class ResumeOrderModalComponent implements OnInit {
   constructor(public coreService: CoreService, public activeModal: NgbActiveModal) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
     this.order.timeZone = this.preferences.zone;
@@ -38,7 +37,7 @@ export class ResumeOrderModalComponent implements OnInit {
     this.positions.push(this.order.position);
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.submitted = true;
     const obj: any = {
       controllerId: this.schedulerId, orderIds: [this.order.orderId]
@@ -64,7 +63,7 @@ export class ResumeOrderModalComponent implements OnInit {
     });
   }
 
-  cancel() {
+  cancel(): void {
     this.activeModal.dismiss('');
   }
 

@@ -316,7 +316,7 @@ export class ResizableDirective implements OnInit {
   constructor(private el: ElementRef, private saveService: SaveService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     let dom: any;
     if (this.el.nativeElement.attributes.class.value.match('resizable')) {
       dom = $('#' + this.el.nativeElement.attributes.id.value);
@@ -357,11 +357,11 @@ export class ResizableDirective implements OnInit {
           handles: 'w',
           resize: (e, x) => {
             const wt = x.size.width;
-            $('#outlineContainer').css({'right': wt + 10 + 'px'});
+            $('#outlineContainer').css({right: wt + 10 + 'px'});
             $('.graph-container').css({'margin-right': wt + 'px'});
-            $('.bottom-btn').css({'right': wt + 22 + 'px'});
+            $('.bottom-btn').css({right: wt + 22 + 'px'});
             $('.toolbar').css({'margin-right': (wt - 12) + 'px'});
-            $('.sidebar-close').css({'right': wt + 'px'});
+            $('.sidebar-close').css({right: wt + 'px'});
             localStorage.propertyPanelWidth = wt;
             if (wt > 349) {
               $('#btn-text').show();

@@ -5,11 +5,12 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToasterService} from 'angular2-toaster';
 import {Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
-import {NzConfigService} from 'ng-zorro-antd';
+import {NzConfigService} from 'ng-zorro-antd/core/config';
 import {CoreService} from '../../services/core.service';
 import {DataService} from '../../services/data.service';
 import {AuthService} from '../../components/guard';
 import {HeaderComponent} from '../../components/header/header.component';
+
 
 declare const $;
 
@@ -148,7 +149,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  loadScheduleDetail() {
+  loadScheduleDetail(): void {
     if (sessionStorage.$SOS$CONTROLLER && sessionStorage.$SOS$CONTROLLER !== 'null') {
       this.selectedController = JSON.parse(sessionStorage.$SOS$CONTROLLER);
       this.selectedScheduler.scheduler = this.selectedController;
@@ -161,7 +162,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  changeScheduler(controller) {
+  changeScheduler(controller): void {
+    if(this.schedulerIds.selected === controller){
+      return;
+    }
     this.child.switchScheduler = true;
     this.schedulerIds.selected = controller;
     const key = this.schedulerIds.selected;
@@ -194,7 +198,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     });
   }
 
-  logout(timeout) {
+  logout(timeout): void {
     this.isLogout = true;
     this.child.isLogout = true;
     this.coreService.post('authentication/logout', {}).subscribe(() => {
@@ -204,12 +208,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
     });
   }
 
-  private _logout(timeout) {
+  private _logout(timeout): void {
     this.authService.clearUser();
     this.authService.clearStorage();
     if (timeout) {
       sessionStorage.setItem('$SOS$CONTROLLER', null);
-      let returnUrl = this.router.url, queryParams = {queryParams: {returnUrl: returnUrl}};
+      const returnUrl = this.router.url;
+      let queryParams = {queryParams: {returnUrl}};
       if (!returnUrl || returnUrl.match(/login/)) {
         queryParams = undefined;
       } else {
@@ -224,7 +229,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  private refreshSession() {
+  private refreshSession(): void {
     if (!this.isTouch) {
       this.isTouch = true;
       this.coreService.post('touch', undefined).subscribe(res => {
@@ -238,7 +243,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  private calculateTime() {
+  private calculateTime(): void {
     this.interval = setInterval(() => {
       --this.count;
       if (!this.preferences.zone && sessionStorage.preferences) {
@@ -271,7 +276,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  private setUserPreferences(preferences, configObj, reload) {
+  private setUserPreferences(preferences, configObj, reload): void {
     if (sessionStorage.preferenceId === 0 || sessionStorage.preferenceId == '0') {
       const timezone = this.coreService.getTimeZone();
       if (timezone) {
@@ -316,39 +321,39 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setUserObject(preferences, conf, configObj) {
+  private setUserObject(preferences, conf, configObj): void {
     if (conf.configurationItem) {
-      const obj = JSON.parse(conf.configurationItem);
-     // obj.zone = this.coreService.convertEtcTomeZone(obj.zone);
-      sessionStorage.preferences = JSON.stringify(obj);
+      sessionStorage.preferences = JSON.parse(JSON.stringify(conf.configurationItem));
       this.reloadThemeAndLang(preferences);
     } else {
       this.setUserPreferences(preferences, configObj, false);
     }
   }
 
-  private getUserProfileConfiguration(id, user, reload: boolean) {
-    const configObj = {
-      controllerId: id,
-      account: user,
-      configurationType: 'PROFILE'
-    };
-    const preferences: any = {};
-    this.coreService.post('configurations', configObj).subscribe((res: any) => {
-      sessionStorage.preferenceId = 0;
-      if (res.configurations && res.configurations.length > 0) {
-        const conf = res.configurations[0];
-        sessionStorage.preferenceId = conf.id;
-        this.setUserObject(preferences, conf, configObj);
-      } else {
+  private getUserProfileConfiguration(id, user, reload: boolean): void {
+    if (id) {
+      const configObj = {
+        controllerId: id,
+        account: user,
+        configurationType: 'PROFILE'
+      };
+      const preferences: any = {};
+      this.coreService.post('configurations', configObj).subscribe((res: any) => {
+        sessionStorage.preferenceId = 0;
+        if (res.configurations && res.configurations.length > 0) {
+          const conf = res.configurations[0];
+          sessionStorage.preferenceId = conf.id;
+          this.setUserObject(preferences, conf, configObj);
+        } else {
+          this.setUserPreferences(preferences, configObj, reload);
+        }
+      }, () => {
         this.setUserPreferences(preferences, configObj, reload);
-      }
-    }, () => {
-      this.setUserPreferences(preferences, configObj, reload);
-    });
+      });
+    }
   }
 
-  private loadSettingConfiguration() {
+  private loadSettingConfiguration(): void {
     if (this.permission.user) {
       const configObj = {
         controllerId: this.schedulerIds.selected,

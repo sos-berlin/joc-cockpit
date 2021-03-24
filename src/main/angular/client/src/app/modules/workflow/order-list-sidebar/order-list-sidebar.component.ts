@@ -1,7 +1,7 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, Input} from '@angular/core';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../../services/core.service';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ChangeParameterModalComponent} from '../../../components/modify-modal/modify.component';
 
 @Component({
@@ -80,7 +80,7 @@ export class OrderListSidebarComponent {
     this.indeterminate = this.orders.some(item => this.setOfCheckedId.has(item.orderId)) && !this.checked;
   }
 
-  showPanelFuc(order) {
+  showPanelFuc(order): void {
     if (order.arguments && !order.arguments[0]) {
       order.arguments = Object.entries(order.arguments).map(([k, v]) => {
         return {name: k, value: v};
@@ -89,7 +89,7 @@ export class OrderListSidebarComponent {
     order.show = true;
   }
 
-  modifyAllOrder() {
+  modifyAllOrder(): void {
     const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerId;
     modalRef.componentInstance.orderRequirements = this.coreService.clone(this.orderRequirements);
@@ -100,23 +100,23 @@ export class OrderListSidebarComponent {
     });
   }
 
-  terminateAllOrder() {
+  terminateAllOrder(): void {
     this._bulkOperation('Terminate', 'remove_when_terminated');
   }
 
-  suspendAllOrder() {
+  suspendAllOrder(): void {
     this._bulkOperation('Suspend', 'suspend');
   }
 
-  resumeAllOrder() {
+  resumeAllOrder(): void {
     this._bulkOperation('Resume', 'resume');
   }
 
-  cancelAllOrder() {
+  cancelAllOrder(): void {
     this._bulkOperation('Cancel', 'cancel');
   }
 
-  _bulkOperation(operation, url) {
+  _bulkOperation(operation, url): void {
     const obj: any = {
       controllerId: this.schedulerId,
       orderIds: Array.from(this.setOfCheckedId)
@@ -145,7 +145,7 @@ export class OrderListSidebarComponent {
     }
   }
 
-  private resetCheckBox() {
+  private resetCheckBox(): void {
     this.checked = false;
     this.indeterminate = false;
     this.setOfCheckedId.clear();

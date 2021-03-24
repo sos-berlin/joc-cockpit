@@ -1,7 +1,6 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit} from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import * as _ from 'underscore';
-import {DatePipe} from '@angular/common';
 import {TreeModalComponent} from '../tree-modal/tree.component';
 import {CoreService} from '../../services/core.service';
 import {CalendarService} from '../../services/calendar.service';
@@ -50,10 +49,10 @@ export class AddRestrictionComponent implements OnInit {
     { label: 'saturday', value: '6' }
   ];
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, public modalService: NgbModal, private datePipe: DatePipe, private calendarService: CalendarService) {
+  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, public modalService: NgbModal, private calendarService: CalendarService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     setTimeout(() => {
       this.isVisible = true;
     }, 0);
@@ -97,7 +96,7 @@ export class AddRestrictionComponent implements OnInit {
     }
   }
 
-  checkDays(){
+  checkDays(): void {
     this.daysOptions = this.daysOptions.map(item => {
       return {
         ...item,
@@ -106,7 +105,7 @@ export class AddRestrictionComponent implements OnInit {
     });
   }
 
-  convertStringToDate(date) {
+  convertStringToDate(date): void {
     if (typeof date === 'string') {
       return this.coreService.getDate(date);
     } else {
@@ -114,13 +113,13 @@ export class AddRestrictionComponent implements OnInit {
     }
   }
 
-  setEditorEnable() {
+  setEditorEnable(): void {
     if (this.frequency.days && this.frequency.days.length > 0) {
       this.editor.isEnable = true;
     }
   }
 
-  updateFrequencyObj(i) {
+  updateFrequencyObj(i): void {
     if (this.calendar.frequencyList[i].tab == 'monthDays') {
       if (this.calendar.frequencyList[i].isUltimos === 'months') {
         this.frequency.selectedMonths = this.coreService.clone(this.calendar.frequencyList[i].selectedMonths);
@@ -193,14 +192,14 @@ export class AddRestrictionComponent implements OnInit {
     }
   }
 
-  generateFrequencyObj() {
+  generateFrequencyObj(): void {
     this.tempItems = [];
     for (let i = 0; i < this.calendar.frequencyList.length; i++) {
       this.updateFrequencyObj(i);
     }
   }
 
-  onFrequencyChange() {
+  onFrequencyChange(): void {
     if (this.frequency) {
       if (!this.frequency.isUltimos) {
         this.frequency.isUltimos = 'months';
@@ -245,7 +244,7 @@ export class AddRestrictionComponent implements OnInit {
     this.onChangeDays();
   }
 
-  onChangeDays() {
+  onChangeDays(): void {
     if (this.frequency.days) {
       this.editor.isEnable = this.frequency.days.length > 0;
       this.frequency.all = this.frequency.days.length == 7;
@@ -253,7 +252,7 @@ export class AddRestrictionComponent implements OnInit {
     }
   }
 
-  changeFrequency() {
+  changeFrequency(): void {
     this.onFrequencyChange();
     if (this.frequency.tab === 'specificDays') {
       $('#calendar').calendar({
@@ -264,7 +263,7 @@ export class AddRestrictionComponent implements OnInit {
     }
   }
 
-  selectMonthDaysFunc(value) {
+  selectMonthDaysFunc(value): void {
     if (this.selectedMonths.indexOf(value) == -1) {
       this.selectedMonths.push(value);
     } else {
@@ -275,7 +274,7 @@ export class AddRestrictionComponent implements OnInit {
     this.editor.isEnable = this.selectedMonths.length > 0;
   }
 
-  selectMonthDaysUFunc(value) {
+  selectMonthDaysUFunc(value): void {
     if (this.selectedMonthsU.indexOf(value) == -1) {
       this.selectedMonthsU.push(value);
     } else {
@@ -286,19 +285,19 @@ export class AddRestrictionComponent implements OnInit {
     this.editor.isEnable = this.selectedMonthsU.length > 0;
   }
 
-  getSelectedMonthDays(value) {
+  getSelectedMonthDays(value): boolean {
     if (this.selectedMonths.indexOf(value) != -1) {
       return true;
     }
   }
 
-  getSelectedMonthDaysU(value) {
+  getSelectedMonthDaysU(value): boolean {
     if (this.selectedMonthsU.indexOf(value) != -1) {
       return true;
     }
   }
 
-  selectAllWeek() {
+  selectAllWeek(): void {
     if (this.frequency.all) {
       this.frequency.days = ['0', '1', '2', '3', '4', '5', '6'];
       this.editor.isEnable = true;
@@ -307,14 +306,6 @@ export class AddRestrictionComponent implements OnInit {
       this.editor.isEnable = false;
     }
     this.checkDays();
-  }
-
-  selectAllMonth() {
-    if (this.frequency.allMonth) {
-      this.frequency.months = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
-    } else {
-      this.frequency.months = [];
-    }
   }
 
   addFrequency() {

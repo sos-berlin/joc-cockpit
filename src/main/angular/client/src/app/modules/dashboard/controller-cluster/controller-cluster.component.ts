@@ -74,7 +74,6 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     if (this.schedulerIds.selected) {
       this.init();
-      this.createEditor();
     } else {
       this.isLoaded = true;
     }
@@ -113,6 +112,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
         }
       }, 100);
     }
+    this.getClusterStatusData();
   }
 
   getClusterStatusData(): void {
@@ -120,6 +120,8 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
       this.clusterStatusData = res;
       if (this.editor) {
         this.createWorkflowDiagram(this.editor.graph);
+      } else{
+        this.createEditor();
       }
     }, (err) => {
       this.isLoaded = true;
@@ -139,7 +141,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
         editor = new mxEditor(node);
         this.editor = editor;
         this.initEditorConf(editor);
-        this.getClusterStatusData();
+        this.createWorkflowDiagram(this.editor.graph);
       }
     } catch (e) {
       console.error(e);
@@ -236,7 +238,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
           } else {
             self.joc = data;
           }
-          self.menu.open = true;
+
           setTimeout(() => {
             self.nzContextMenuService.create(event, self.menu);
           }, 0);
@@ -312,11 +314,12 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
         className += ' joc';
         let d1 = ' - ', dis = ' - ', arc = ' - ';
         if (data.startedAt) {
-          d1 =  self.coreService.stringToDate(self.preferences, data.startedAt);
+          d1 = self.coreService.stringToDate(self.preferences, data.startedAt);
         }
         if (data.current) {
           className += ' current';
         }
+
         if (data.clusterNodeState && data.clusterNodeState._text) {
           self.translate.get(data.clusterNodeState._text).subscribe(translatedValue => {
             clusterNodeState = translatedValue;
@@ -329,7 +332,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
           name = data.os.name ? data.os.name.toLowerCase() : '';
         }
         let actionMenuCls = '';
-        if(!data.current && data.clusterNodeState._text == 'active'){
+        if (!data.current && data.clusterNodeState._text == 'active') {
           actionMenuCls = ' hide';
         }
         const popoverTemplate = '<span class="_600">' + labelArchitecture + ' :</span> ' + arc +
@@ -762,7 +765,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   }
 
   restartService(type): void {
-    this.postCall('joc/cluster/restart', {type: type});
+    this.postCall('joc/cluster/restart', {type});
   }
 
   switchOver(): void {

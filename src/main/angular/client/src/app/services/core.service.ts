@@ -806,37 +806,19 @@ export class CoreService {
     config.inventory.selectedObj = {
       name: path.substring(path.lastIndexOf('/') + 1),
       path: path.substring(0, path.lastIndexOf('/')) || '/',
-      type: type
+      type
     };
     this.router.navigate(['/configuration/inventory']);
 
   }
 
   showWorkflow(workflow): void {
-    let pathArr = [];
-    let arr = workflow.split('/');
-    const workflowFilters = this.getWorkflowTab();
-    workflowFilters.selectedkeys = [];
-    let len = arr.length - 1;
-    if (len > 1) {
-      for (let i = 0; i < len; i++) {
-        if (arr[i]) {
-          if (i > 0 && pathArr[i - 1]) {
-            pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + arr[i]);
-          } else {
-            pathArr.push('/' + arr[i]);
-          }
-        } else {
-          pathArr.push('/');
-        }
+    this.router.navigate(['/workflows/workflow'], {
+      queryParams: {
+        path: workflow,
+        scheduler_id: JSON.parse(this.authService.scheduleIds).selected
       }
-    }
-    if (pathArr.length === 0) {
-      pathArr.push('/');
-    }
-    workflowFilters.expandedKeys = pathArr;
-    workflowFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
-    this.router.navigate(['/workflows']);
+    });
   }
 
   isLastEntryEmpty(list, key1, key2): boolean {

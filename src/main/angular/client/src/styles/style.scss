@@ -510,6 +510,20 @@ small {
   }
 }
 
+.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  background-color: transparent;
+  border-color: var(--border-color) !important;
+}
+
+.form-control:hover,
+.ant-picker-input > input:hover,
+.ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector,
+.ant-select:not(.ant-select-disabled):hover .ant-select-selector{
+  border-color: var(--primary);
+}
+.ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector{
+  box-shadow: none;
+}
 .ant-select-disabled .ant-select-selection,
 .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled .ant-dropdown-menu-submenu-title,
 .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-disabled .ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-arrow-icon {
@@ -3221,9 +3235,11 @@ pre.log {
 .log_warn {
   color: tomato;
 }
+
 .log_trace {
   color: #a0a0a0
 }
+
 .log_info {
   color: #666;
 }
@@ -3673,10 +3689,6 @@ aside {
   width: 265px;
 }
 
-#xmlLeftSidePanel.sticky {
-  width: 30%
-}
-
 .editor-tree {
   height: 100%;
   overflow: auto;
@@ -3859,8 +3871,14 @@ table.folder-tree-grid {
   cursor: pointer;
 }
 
-.expand-collapse-btn{opacity: 0; padding-left:8px;}
-.hover:hover .expand-collapse-btn{opacity: 1}
+.expand-collapse-btn {
+  opacity: 0;
+  padding-left: 8px;
+}
+
+.hover:hover .expand-collapse-btn {
+  opacity: 1
+}
 
 .node-wrapper:hover .expand-collapse {
   opacity: 1;
@@ -4480,9 +4498,11 @@ svg text {
     height: 24px;
   }
 }
+
 .center-block .input-dropdown {
   background: transparent;
 }
+
 .min-ht-500 {
   min-height: 500px;
 }
@@ -4834,7 +4854,7 @@ tr.disabled-row td:not(.menu) {
   padding: 2px 3px 5px 1px;
 }
 
-.node-content-wrapper {
+.node-content-wrapper, .node-content-wrapper2 {
   display: inline-block;
   font-family: "Open Sans", "lucida grande", "Segoe UI", arial, verdana, "lucida sans unicode", tahoma, serif;
   font-size: 13px;
@@ -4852,7 +4872,7 @@ tr.disabled-row td:not(.menu) {
   overflow: scroll !important;
 }
 
-.node-content-wrapper {
+.node-content-wrapper, .node-content-wrapper2 {
   &:after {
     display: block;
     content: '';
@@ -4869,7 +4889,11 @@ tr.disabled-row td:not(.menu) {
     transform-origin: 0 50%;
   }
 }
-
+.node-content-wrapper2{
+   &:after {
+     border-color: transparent !important;
+   }
+}
 .node-content-wrapper-active:after {
   transform: scaleX(1) !important;
 }
@@ -5096,8 +5120,8 @@ General CSS
 }
 
 .ant-table-small .inner-table table {
-  table-layout: fixed;
-  word-wrap: break-word;
+  table-layout: fixed !important;
+  word-wrap: break-word !important;
 }
 
 .inner-history-table table {
@@ -5787,7 +5811,28 @@ pre#pre {
   z-index: 0;
   background: var(--primary);
 }
+.cdk-drag-preview {
+  box-sizing: border-box;
+  z-index: 99999 !important;
+}
 
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.example-box:last-child {
+  border: none;
+}
+.cdk-drop-list-dragging {
+  z-index: 99999;
+}
+.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
 .view-all-agent {
   span {
     display: block;
@@ -5806,18 +5851,17 @@ pre#pre {
   color: var(--text-color);
   font-size: $base__font-size;
   font-family: $base__font-family;
+  width: 100%;
 }
 
 .ant-select-tree-dropdown .ant-select-not-found {
   color: var(--text-color);
 }
 
-.job-property-editor {
-  .ant-select {
-    width: 100%;
-  }
+.ant-tree-switcher .ant-tree-switcher-icon,
+.ant-tree-switcher .ant-select-tree-switcher-icon{
+  font-size: 13px;
 }
-
 .select-input-both {
   .ant-select {
     position: absolute;
@@ -5871,19 +5915,34 @@ pre#pre {
   border-color: var(--border-color);
 }
 
+.ant-table.ant-table-small,
 .ant-table {
   font-size: 12px;
   border-color: var(--border-color);
+  background: transparent;
 }
 
-.ant-table-thead > tr > th, .ant-table-tbody > tr > td, tr.tr-border td {
+.ant-table-small .ant-table-thead > tr > th,
+.ant-table-small .ant-table-tbody > tr > td,
+tr.tr-border td {
   padding: 2px 8px !important;
   border-color: var(--border-color);
   border-width: 1px;
   background: transparent;
   color: var(--text-color);
 }
-
+.ant-table.ant-table-small .ant-table-tbody .ant-table-wrapper:only-child .ant-table{
+  margin: 0;
+}
+.ant-table-small .ant-table-thead > tr > th{
+  padding: 6px 8px !important;
+}
+.ant-table-small {
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td {
+    border-right: 1px solid var(--border-color);
+  }
+}
 tr.tr-border td {
   border: 1px solid var(--border-color);
   border-right: none;
@@ -6118,9 +6177,14 @@ div.jsoneditor,
 .ant-pagination-item, .ant-pagination-item-active,
 .ant-table-small,
 .ant-time-picker-input,
-.ant-table-bordered .ant-table-thead > tr > th, .ant-table-bordered .ant-table-tbody > tr > td,
-.ant-table-small.ant-table-bordered .ant-table-content {
-  border-color: var(--border-color)
+.ant-table.ant-table-bordered > .ant-table-container > .ant-table-content > table > thead > tr > th,
+.ant-table.ant-table-bordered > .ant-table-container > .ant-table-header > table > thead > tr > th,
+.ant-table.ant-table-bordered > .ant-table-container > .ant-table-body > table > thead > tr > th,
+.ant-table.ant-table-bordered > .ant-table-container > .ant-table-content > table > tbody > tr > td,
+.ant-table.ant-table-bordered > .ant-table-container > .ant-table-header > table > tbody > tr > td,
+.ant-table.ant-table-bordered > .ant-table-container > .ant-table-body > table > tbody > tr > td,
+.ant-table.ant-table-bordered > .ant-table-container {
+  border-color: var(--border-color) !important;
 }
 
 .ant-table-small {
@@ -6132,11 +6196,7 @@ div.jsoneditor,
 }
 
 .ant-table-bordered .ant-table-thead > tr:not(:last-child) > th, .ant-table-small.ant-table-bordered .ant-table-thead > tr > th:last-child {
-  border-color: var(--border-color);
-}
-
-.ant-table-small.ant-table-bordered {
-  border-right: 1px solid var(--border-color);
+  border-color: var(--border-color) !important;
 }
 
 .ant-table-small.ant-table-bordered .ant-table-placeholder, .ant-table-small > .ant-table-content .ant-table-row:last-child td {
@@ -6144,7 +6204,7 @@ div.jsoneditor,
 }
 
 .inner-table .ant-table-small > .ant-table-content .ant-table-row:last-child td {
-  border-bottom: none;
+  border-bottom: none !important;
 }
 
 .inner-table .ant-table-small > .ant-table-content .ant-table-row:first-child td {
@@ -6156,8 +6216,8 @@ div.jsoneditor,
 }
 
 .inner-table .ant-table-small.ant-table-bordered {
-  border-bottom: none;
-  border-top: none;
+  border-bottom: none !important;
+  border-top: none !important;
 }
 
 tr.tr-border td:first-child {
@@ -6180,6 +6240,7 @@ tr.tr-border td:first-child {
   background: transparent;
 }
 
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn,
 .ant-pagination-item:focus a, .ant-pagination-item:hover a,
 .ant-select-selection:hover,
 .ant-tabs-nav .ant-tabs-tab-active,
@@ -6582,7 +6643,6 @@ span.cm-error {
 }
 
 .version-inner-list {
-  background: var(--bg-box) !important;
   padding-bottom: 4px;
   padding-left: 30px;
   margin: 4px -11px -4px;
@@ -6596,9 +6656,29 @@ span.cm-error {
   padding-right: 8px;
 }
 
-.ant-tree li {
-  padding: 0;
+.ant-tree {
+  background: transparent;
+  color: var(--text-color);
 
+  .ant-tree-treenode {
+    padding: 0;
+  }
+
+  .ant-tree-node-content-wrapper {
+    min-height: auto;
+    line-height: unset;
+  }
+
+  .ant-tree-node-content-wrapper:hover,
+  .ant-tree-node-content-wrapper.ant-tree-node-selected {
+    background: transparent;
+  }
+}
+.ant-tree .ant-tree-node-content-wrapper{
+  padding: 0;
+}
+
+.ant-tree-treenode {
   .ant-tree-checkbox-disabled {
     display: none;
   }
@@ -6607,7 +6687,10 @@ span.cm-error {
 .ant-tree-child-tree {
   width: fit-content !important;
 }
-
+.ant-select-dropdown {
+    color: var(--text-color);
+    background-color: var(--bg-box);
+}
 .ant-calendar-header .ant-calendar-prev-century-btn:hover::before,
 .ant-calendar-header .ant-calendar-prev-decade-btn:hover::before,
 .ant-calendar-header .ant-calendar-prev-year-btn:hover::before,
@@ -6694,8 +6777,10 @@ span.cm-error {
 .ant-dropdown-menu-submenu-title:hover > a {
   color: var(--text-hover) !important;
 }
+
 .ant-dropdown-menu-submenu-disabled {
-   opacity: 0.7;
+  opacity: 0.7;
+
   .ant-calendar-header a:hover,
   .ant-select-dropdown-menu-item-active > a,
   .ant-select-dropdown-menu-item-selected,
@@ -6710,9 +6795,10 @@ span.cm-error {
 }
 
 .ant-dropdown-menu-item-disabled:hover,
-.ant-dropdown-menu-submenu-title-disabled:hover{
+.ant-dropdown-menu-submenu-title-disabled:hover {
   background: transparent;
 }
+
 .ant-dropdown-menu-item-disabled:hover > a,
 .ant-dropdown-menu-submenu-title-disabled:hover > a,
 .ant-select-dropdown-menu-item-disabled:hover,
@@ -6720,6 +6806,8 @@ span.cm-error {
   color: var(--text-color) !important;
 }
 
+.ant-select-dropdown-menu-item-active,
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled),
 .ant-select-dropdown-menu-item-selected {
   background-color: #e6f7ff;
 }
@@ -6727,7 +6815,12 @@ span.cm-error {
 .ant-select-dropdown-menu-item-disabled {
   opacity: .7;
 }
-
+.ant-select-item{
+  color: var(--text-color);
+}
+.ant-select-item-option-active:not(.ant-select-item-option-disabled){
+  color: rgba(0, 0, 0, .87)
+}
 .ant-calendar-year-panel-selected-cell .ant-calendar-year-panel-year:hover,
 .ant-calendar-today .ant-calendar-date {
   border-color: var(--row-selected);
@@ -6759,7 +6852,9 @@ span.cm-error {
   border-color: var(--primary);
   background-color: var(--primary);
 }
-
+.ant-tree-checkbox-disabled .ant-tree-checkbox-inner{
+  background: transparent;
+}
 .ant-checkbox-wrapper, .ant-input-number-handler, .ant-input-number-handler-up-inner, .ant-input-number-handler-down-inner {
   color: var(--text-color)
 }
@@ -6851,6 +6946,7 @@ span.cm-error {
 }
 
 .ant-table-placeholder {
+  height: 64px;
   .ant-empty {
     height: 40px;
   }
@@ -6859,6 +6955,14 @@ span.cm-error {
 .ant-empty-image {
   max-height: 28px;
   margin-bottom: 5px;
+}
+
+.ant-pagination-item{
+  border: none;
+}
+
+.ant-pagination-item-active{
+  border: 1px solid var(--border-color);
 }
 
 .ant-pagination-item-active:focus, .ant-pagination-item-active:hover,
@@ -6873,7 +6977,7 @@ span.cm-error {
 .ant-radio-checked::after,
 .ant-checkbox-checked::after,
 .ant-radio-wrapper:hover .ant-radio, .ant-radio:hover .ant-radio-inner, .ant-radio-input:focus + .ant-radio-inner {
-  border-color: var(--primary);
+  border-color: var(--primary) !important;
 }
 
 .ant-empty-normal {
@@ -6882,15 +6986,18 @@ span.cm-error {
 }
 
 .node-wrapper {
-  .ant-select-sm .ant-select-selection--single {
-    height: 20px;
-    min-height: 20px;
+  .ant-select-sm.ant-select-single {
     width: 300px;
+    .ant-select-selector {
+      height: 20px;
+      min-height: 20px;
+      .ant-select-selection-item,
+      .ant-select-selection-placeholder {
+        line-height: 18px;
+      }
+    }
   }
 
-  .ant-select-sm .ant-select-selection__rendered {
-    line-height: 18px;
-  }
 }
 
 .ant-select-tree {
@@ -6983,11 +7090,11 @@ div.jsoneditor-statusbar {
   color: var(--text-color);
 }
 
+.jsoneditor-contextmenu .jsoneditor-menu li button.jsoneditor-selected,
+.jsoneditor-contextmenu .jsoneditor-menu li button.jsoneditor-selected:focus,
+.jsoneditor-contextmenu .jsoneditor-menu li button.jsoneditor-selected:hover,
 div.jsoneditor-contextmenu ul li button:focus,
-div.jsoneditor-contextmenu ul li button:hover,
-div.jsoneditor-contextmenu ul li button.jsoneditor-selected,
-div.jsoneditor-contextmenu ul li button.jsoneditor-selected:focus,
-div.jsoneditor-contextmenu ul li button.jsoneditor-selected:hover {
+div.jsoneditor-contextmenu ul li button:hover{
   background-color: #e6f7ff;
   color: var(--text-hover);
 }
@@ -7062,11 +7169,11 @@ div.jsoneditor-contextmenu div.jsoneditor-icon {
   background-image: url("../assets/images/dark-jsoneditor-icons.svg");
 }
 
-div.jsoneditor-contextmenu ul li button {
+div.jsoneditor-contextmenu .jsoneditor-menu li button {
   color: var(--text-color)
 }
 
-div.jsoneditor-contextmenu ul li button div.jsoneditor-expand {
+div.jsoneditor-contextmenu .jsoneditor-menu li button .jsoneditor-expand {
   background: url("../assets/images/dark-jsoneditor-icons.svg") 0 -72px;
 }
 
@@ -7116,15 +7223,15 @@ div.jsoneditor-menu a {
   color: var(--text-color);
 }
 
-table.jsoneditor-search div.jsoneditor-results {
+.jsoneditor-search div.jsoneditor-results {
   color: var(--text-color);
 }
 
-table.jsoneditor-search div.jsoneditor-frame {
+.jsoneditor-search div.jsoneditor-frame {
   background-color: var(--box-color);
 }
 
-table.jsoneditor-search button {
+.jsoneditor-search button {
   background: url("../assets/images/dark-jsoneditor-icons.svg");
 }
 

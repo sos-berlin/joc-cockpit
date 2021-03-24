@@ -980,6 +980,7 @@ pre#pre {
   background: var(--bg-box) !important
 }
 
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn,
 .ant-calendar-header .ant-calendar-prev-century-btn:hover,
 .ant-calendar-header .ant-calendar-prev-decade-btn:hover,
 .ant-calendar-header .ant-calendar-prev-year-btn:hover,
@@ -1076,7 +1077,7 @@ pre#pre {
   background: var(--bg-box) !important;
 }
 
-.ant-select-selection--multiple .ant-select-selection__choice {
+.ant-select-multiple .ant-select-selection-item {
   background: var(--bg-box);
   border-color: var(--bg-box);
   color: var(--text-color);

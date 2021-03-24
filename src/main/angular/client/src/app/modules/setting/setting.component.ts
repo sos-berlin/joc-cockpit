@@ -25,7 +25,7 @@ export class AddSectionComponent implements OnInit {
               public toasterService: ToasterService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     for (let prop in this.defaultGlobals) {
       let flag = false;
       for (let i = 0; i < this.settings.length; i++) {

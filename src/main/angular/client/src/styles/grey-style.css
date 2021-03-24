@@ -960,13 +960,19 @@ span ul li a {
   -webkit-box-shadow: 0 2px 4px rgba(255, 255, 255, .3);
   box-shadow: 0 2px 4px rgba(255, 255, 255, .3)
 }
-
+.ant-select-item{
+  color: rgba(255, 255, 255, .87)
+}
 .ant-select-dropdown {
   background-color: var(--bg-box) !important;
   color: rgba(255, 255, 255, .87);
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.15);
 }
-
+.ant-select-multiple .ant-select-selection-item {
+  background: var(--bg-box);
+  border-color: var(--bg-box);
+  color: var(--text-color);
+}
 .ant-calendar-year-panel-header .ant-calendar-year-panel-century-select, .ant-calendar-year-panel-header .ant-calendar-year-panel-decade-select, .ant-calendar-year-panel-header .ant-calendar-year-panel-year-select, .ant-calendar-year-panel-header .ant-calendar-year-panel-month-select,
 .ant-calendar-month-panel-header .ant-calendar-month-panel-century-select, .ant-calendar-month-panel-header .ant-calendar-month-panel-decade-select, .ant-calendar-month-panel-header .ant-calendar-month-panel-year-select, .ant-calendar-month-panel-header .ant-calendar-month-panel-month-select,
 .ant-calendar-header .ant-calendar-century-select, .ant-calendar-header .ant-calendar-decade-select, .ant-calendar-header .ant-calendar-year-select, .ant-calendar-header .ant-calendar-month-select {
@@ -1054,6 +1060,8 @@ span ul li a {
 .ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
   background: var(--box-color) !important
 }
+
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn,
 .ant-calendar-header .ant-calendar-prev-century-btn:hover,
 .ant-calendar-header .ant-calendar-prev-decade-btn:hover,
 .ant-calendar-header .ant-calendar-prev-year-btn:hover,

@@ -7,6 +7,7 @@ import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropd
 import {Subscription} from 'rxjs';
 import * as _ from 'underscore';
 import {saveAs} from 'file-saver';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {WorkflowService} from '../../../../services/workflow.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
@@ -105,7 +106,7 @@ export class UpdateWorkflowComponent implements OnInit {
     }
   }
 
-  checkDuplicateEntries(variable, index) {
+  checkDuplicateEntries(variable, index): void {
     if (variable.name) {
       for (let i = 0; i < this.variableDeclarations.parameters.length; i++) {
         if (this.variableDeclarations.parameters[i].name === variable.name && i !== index) {
@@ -117,11 +118,16 @@ export class UpdateWorkflowComponent implements OnInit {
     }
   }
 
+  drop(event: CdkDragDrop<string[]>) {
+    console.log('????????', this.variableDeclarations.parameters)
+    moveItemInArray(this.variableDeclarations.parameters, event.previousIndex, event.currentIndex);
+  }
+
   removeVariable(index): void {
     this.variableDeclarations.parameters.splice(index, 1);
   }
 
-  onKeyPress($event) {
+  onKeyPress($event): void {
     if ($event.which === '13' || $event.which === 13) {
       this.addVariable();
     }
@@ -895,28 +901,29 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  openDeclarationModal() {
+  openDeclarationModal(): void {
     const modalRef = this.modalService.open(UpdateWorkflowComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.schedulerId = this.schedulerId;
     modalRef.componentInstance.orderRequirements = this.coreService.clone(this.orderRequirements);
     modalRef.componentInstance.isVariableOnly = true;
     modalRef.result.then((result) => {
-      result.variableDeclarations.parameters = result.variableDeclarations.parameters.filter((value) => {
+      let variableDeclarations = {parameters: []};
+      variableDeclarations.parameters = result.variableDeclarations.parameters.filter((value) => {
         return !!value.name;
       });
-      result.variableDeclarations.parameters = this.coreService.keyValuePair(result.variableDeclarations.parameters);
-      if (result.variableDeclarations.parameters && _.isEmpty(result.variableDeclarations.parameters)) {
-        delete result.variableDeclarations['parameters'];
+      variableDeclarations.parameters = this.coreService.keyValuePair(variableDeclarations.parameters);
+      if (variableDeclarations.parameters && _.isEmpty(variableDeclarations.parameters)) {
+        delete variableDeclarations['parameters'];
       }
-      if (JSON.stringify(this.orderRequirements) !== JSON.stringify(result.variableDeclarations)) {
-        this.orderRequirements = result.variableDeclarations;
+      if (JSON.stringify(this.orderRequirements) !== JSON.stringify(variableDeclarations)) {
+        this.orderRequirements = variableDeclarations;
         this.updateOtherProperties();
       }
     }, () => {
     });
   }
 
-  addWorkflow() {
+  addWorkflow(): void {
     const modalRef = this.modalService.open(UpdateWorkflowComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerId;
     modalRef.componentInstance.data = this.workflow;
@@ -937,21 +944,21 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     });
   }
 
-  zoomIn() {
+  zoomIn(): void {
     this.closeMenu();
     if (this.editor && this.editor.graph) {
       this.editor.graph.zoomIn();
     }
   }
 
-  zoomOut() {
+  zoomOut(): void {
     this.closeMenu();
     if (this.editor && this.editor.graph) {
       this.editor.graph.zoomOut();
     }
   }
 
-  actual() {
+  actual(): void {
     this.closeMenu();
     if (this.editor && this.editor.graph) {
       this.editor.graph.zoomActual();
@@ -959,7 +966,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  fit() {
+  fit(): void {
     this.closeMenu();
     if (this.editor && this.editor.graph) {
       this.editor.graph.fit();
@@ -967,7 +974,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  private center() {
+  private center(): void {
     let dom = document.getElementById('graph');
     let x = 0.5, y = 0.2;
     if (dom && this.editor) {
@@ -986,7 +993,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
    *
    * Redoes the last change.
    */
-  redo() {
+  redo(): void {
     const n = this.history.length;
     if (this.indexOfNextAdd < n) {
       const obj = this.history[this.indexOfNextAdd++];
@@ -999,14 +1006,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
    *
    * Undoes the last change.
    */
-  undo() {
+  undo(): void {
     if (this.indexOfNextAdd > 0) {
       const obj = this.history[--this.indexOfNextAdd];
       this.reloadWorkflow(obj);
     }
   }
 
-  private reloadWorkflow(obj) {
+  private reloadWorkflow(obj): void {
     this.closeMenu();
     this.workflow.configuration = JSON.parse(obj);
     if (this.workflow.configuration.jobs) {
@@ -1019,28 +1026,28 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.updateXMLJSON(false);
   }
 
-  expandAll() {
+  expandAll(): void {
     if (this.editor.graph.isEnabled()) {
       const cells = this.editor.graph.getChildVertices();
       this.editor.graph.foldCells(false, true, cells, null, null);
     }
   }
 
-  collapseAll() {
+  collapseAll(): void {
     if (this.editor.graph.isEnabled()) {
       const cells = this.editor.graph.getChildVertices();
       this.editor.graph.foldCells(true, true, cells, null, null);
     }
   }
 
-  delete() {
+  delete(): void {
     if (this.editor && this.editor.graph) {
       let cells = this.node ? [this.node.cell] : null;
       this.editor.graph.removeCells(cells, null);
     }
   }
 
-  copy(node) {
+  copy(node): void {
     if (this.editor && this.editor.graph) {
       let cell;
       if (node) {
@@ -1066,7 +1073,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  cut(node) {
+  cut(node): void {
     if (this.editor && this.editor.graph) {
       const graph = this.editor.graph;
       let cell;
@@ -1092,11 +1099,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  closeMenu() {
+  closeMenu(): void {
     this.node = null;
   }
 
-  validate() {
+  validate(): void {
     if (this.invalidMsg && this.invalidMsg.match(/orderRequirements/)) {
       this.openDeclarationModal();
     } else {
@@ -1107,7 +1114,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  exportJSON() {
+  exportJSON(): void {
     this.closeMenu();
     if (this.workflow.configuration && this.workflow.configuration.instructions && this.workflow.configuration.instructions.length > 0) {
       this.editor.graph.clearSelection();
@@ -2753,7 +2760,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               mxUtils.bind(this, function (evt) {
                 self.node = {cell: state.cell};
                 if (self.menu) {
-                  self.menu.open = true;
                   setTimeout(() => {
                     self.nzContextMenuService.create(evt, self.menu);
                   }, 0);

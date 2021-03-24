@@ -27,7 +27,7 @@
               <span translate>xml.button.delete</span>
             </button>
             <button *ngIf="objectType !== 'NOTIFICATION' && submitXsd"
-              (click)="reassignSchemaa()" class="btn btn-sm btn-grey m-l-12">
+              (click)="reassignSchemaFunc()" class="btn btn-sm btn-grey m-l-12">
               <i class="fa fa-recycle m-r-xs"></i>
               <span translate>xml.button.reassignSchema</span>
             </button>
@@ -173,7 +173,7 @@
     </div>
     <div class="inline w-full" [ngClass]="submitXsd ? 'show': 'hide'"
          [ngStyle]="{'margin-top': objectType !== 'NOTIFICATION' ? '-7px' : '12px'}">
-      <div appResizable [sideView]="sideView.xml" class="sticky leftPanel editor" id="xmlLeftSidePanel">
+      <div appResizable [sideView]="sideView.xml" class="sticky leftPanel editor" id="xmlLeftSidePanel" [ngStyle]="{'width': sideView.xml ? sideView.xml.width +'px' : 'auto'}">
         <div class="pl-20 m-l-xs editor-tree">
           <div class="row" *ngIf="nodes.length > 0">
             <div class="col-12 p-l-sm">
@@ -310,7 +310,7 @@
         </div>
         <div class="rg-right"><span></span></div>
       </div>
-      <div class="xmlCenterPanel" id="rightPanel">
+      <div id="rightPanel" [ngStyle]="{'margin-left': sideView.xml ? (sideView.xml.width + 18) + 'px' : 'auto'}">
         <div class="row">
           <nav class="col-12" aria-label="breadcrumb" *ngIf="breadCrumbArray.length>0">
             <ol class="breadcrumb">
@@ -337,11 +337,11 @@
           </div>
           <div class="col-12">
             <div class="box p-a documents" *ngIf="selectedNode && selectedNode.text">
-              <div class="text _600"><span translate>xml.label.documentation</span> <i id="expandIcon"
-                                                                                       class="fa fa-lg pull-left p-t-xs pointer"
-                                                                                       (click)="hideDocumentation(selectedNode)"
-                                                                                       [ngClass]="selectedNode.show ? 'fa-caret-up' : 'fa-caret-down'"
-                                                                                       aria-hidden="true"></i></div>
+              <div class="text _600"><span translate>xml.label.documentation</span>
+                <i id="expandIcon" class="fa fa-lg pull-left p-t-xs pointer"
+                   (click)="hideDocumentation(selectedNode)"
+                   [ngClass]="selectedNode.show ? 'fa-caret-up' : 'fa-caret-down'"
+                   aria-hidden="true"></i></div>
               <span id="doc" *ngIf="selectedNode.show">
                   <hr>
                   <div *ngIf="selectedNode && selectedNode.text">

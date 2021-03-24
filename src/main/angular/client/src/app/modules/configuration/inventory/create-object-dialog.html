@@ -10,7 +10,7 @@
   </h4>
   <h4 class="modal-title" *ngIf="copy">
     <span translate>inventory.label.copyOf</span>
-    {{copy}}
+    {{copy.name}}
   </h4>
   <h4 class="modal-title" *ngIf="restore">
     <span translate>inventory.label.restore</span>:
@@ -41,7 +41,7 @@
         <label class="col-md-3" translate>inventory.label.newName</label>
         <div class="col-md-9">
           <nz-radio-group name="type" [(ngModel)]="object.type">
-            <label nz-radio *ngIf="obj.object" nzValue="name"><span translate>inventory.label.specifyName</span></label>
+            <label nz-radio *ngIf="copy.objectType" nzValue="name"><span translate>inventory.label.specifyName</span></label>
             <label nz-radio nzValue="prefix"><span translate>inventory.label.prefix</span></label>
             <label nz-radio nzValue="suffix"><span translate>inventory.label.suffix</span></label>
           </nz-radio-group>
@@ -49,7 +49,7 @@
       </div>
       <div class="form-group row" *ngIf="object.type === 'suffix'">
         <label class="col-md-3"></label>
-        <div class="col-md-6" [ngClass]="{'has-error' : ((suffix.dirty || suffix.touched) && suffix.invalid), 'col-md-9' : obj.object}">
+        <div class="col-md-6" [ngClass]="{'has-error' : ((suffix.dirty || suffix.touched) && suffix.invalid), 'col-md-9' : copy.objectType}">
           <input type="text" required identifierValidation class="form-control" name="suffix" placeholder="{{'inventory.placeholder.suffix' | translate}}"
                  #suffix="ngModel" [(ngModel)]="object.suffix" [appAutofocus]="true" autocomplete="off">
           <div *ngIf="suffix.invalid && (suffix.dirty || suffix.touched)"
@@ -63,7 +63,7 @@
       </div>
       <div class="form-group row" *ngIf="object.type === 'prefix'">
         <label class="col-md-3"></label>
-        <div class="col-md-6" [ngClass]="{'has-error' : ((prefix.dirty || prefix.touched) && prefix.invalid), 'col-md-9' : obj.object}">
+        <div class="col-md-6" [ngClass]="{'has-error' : ((prefix.dirty || prefix.touched) && prefix.invalid), 'col-md-9' : copy.objectType}">
           <input type="text" required identifierValidation class="form-control" name="prefix" placeholder="{{'inventory.placeholder.prefix' | translate}}"
                  #prefix="ngModel" [(ngModel)]="object.prefix" [appAutofocus]="true" autocomplete="off">
           <div *ngIf="prefix.invalid && (prefix.dirty || prefix.touched)"
@@ -75,7 +75,7 @@
           </div>
         </div>
       </div>
-      <div class="form-group row" *ngIf="object.type === 'name' && obj.object">
+      <div class="form-group row" *ngIf="object.type === 'name' && copy.objectType">
         <label class="col-md-3"></label>
         <div class="col-md-9" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
           <input type="text" identifierValidation class="form-control" name="name" required
@@ -86,7 +86,7 @@
           </div>
         </div>
       </div>
-      <div class="form-group row" *ngIf="!obj.object">
+      <div class="form-group row" *ngIf="!copy.objectType">
         <div class="col-md-3">
           <label translate>inventory.label.withoutFolder</label>
         </div>

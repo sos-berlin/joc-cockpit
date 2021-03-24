@@ -120,8 +120,7 @@
       <div class="form-group row" *ngIf="selectedNode.job.executable">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.executableType</label>
         <div class="col-md-8 col-lg-9">
-          <nz-select nzShowSearch name="agentId" nzPlaceHolder="{{'workflow.placeholder.selectAgentName' | translate}}"
-                     [(ngModel)]="selectedNode.job.executable.TYPE" #agentId="ngModel">
+          <nz-select name="executableType" [(ngModel)]="selectedNode.job.executable.TYPE">
             <nz-option [nzLabel]="'workflow.label.shell' | translate" [nzValue]="'ScriptExecutable'"></nz-option>
             <nz-option [nzLabel]="'workflow.label.java' | translate" [nzValue]="'Java'"></nz-option>
           </nz-select>

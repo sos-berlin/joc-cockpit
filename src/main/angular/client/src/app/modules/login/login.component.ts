@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import * as crypto from 'crypto-js';
+import AES from 'crypto-js/aes';
+import Utf8 from 'crypto-js/enc-utf8';
 import {AboutModalComponent} from '../../components/about-modal/about.component';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
@@ -25,10 +26,10 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     if (localStorage.$SOS$REMEMBER === 'true' || localStorage.$SOS$REMEMBER === true) {
-      const urs = crypto.AES.decrypt(localStorage.$SOS$FOO.toString(), '$SOSJOBSCHEDULER2');
-      const pwd = crypto.AES.decrypt(localStorage.$SOS$BOO.toString(), '$SOSJOBSCHEDULER2');
-      this.user.userName = urs.toString(crypto.enc.Utf8);
-      this.user.password = pwd.toString(crypto.enc.Utf8);
+      const urs = AES.decrypt(localStorage.$SOS$FOO.toString(), '$SOSJOBSCHEDULER2');
+      const pwd = AES.decrypt(localStorage.$SOS$BOO.toString(), '$SOSJOBSCHEDULER2');
+      this.user.userName = urs.toString(Utf8);
+      this.user.password = pwd.toString(Utf8);
       this.rememberMe = true;
     }
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
@@ -124,8 +125,8 @@ export class LoginComponent implements OnInit {
     this.coreService.post('authentication/login', values).subscribe((data) => {
       this.authService.rememberMe = this.rememberMe;
       if (this.rememberMe) {
-        const urs = crypto.AES.encrypt(values.userName, '$SOSJOBSCHEDULER2');
-        const pwd = crypto.AES.encrypt(values.password, '$SOSJOBSCHEDULER2');
+        const urs = AES.encrypt(values.userName, '$SOSJOBSCHEDULER2');
+        const pwd = AES.encrypt(values.password, '$SOSJOBSCHEDULER2');
         localStorage.$SOS$FOO = urs;
         localStorage.$SOS$BOO = pwd;
         localStorage.$SOS$REMEMBER = this.rememberMe;

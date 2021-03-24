@@ -1,22 +1,31 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {registerLocaleData} from '@angular/common';
+
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 import {FormsModule} from '@angular/forms';
-import {HttpClientModule, HTTP_INTERCEPTORS, HttpClient} from '@angular/common/http';
-import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
+import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {ToasterModule} from 'angular2-toaster';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ErrorHandler, Inject, NgModule} from '@angular/core';
-import { NZ_I18N, en_US } from 'ng-zorro-antd';
+import {NZ_I18N, en_US} from 'ng-zorro-antd/i18n';
+
 import en from '@angular/common/locales/en';
+import {NzMessageService} from 'ng-zorro-antd/message';
+
+
+
+
+
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {AuthInterceptor} from './components/guard';
 import {AboutModalComponent} from './components/about-modal/about.component';
 import {LoginModule} from './modules/login/login.module';
-
 import {LoggingService} from './services/logging.service';
+
+
 
 registerLocaleData(en);
 
@@ -25,7 +34,7 @@ export function createTranslateLoader(http: HttpClient): any {
 }
 
 export class MyErrorHandler implements ErrorHandler {
-  constructor(@Inject(LoggingService) private loggingService: LoggingService) {
+  constructor(private loggingService: LoggingService) {
   }
 
   handleError(error) {
@@ -34,6 +43,7 @@ export class MyErrorHandler implements ErrorHandler {
   }
 }
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -41,11 +51,11 @@ export class MyErrorHandler implements ErrorHandler {
   ],
   imports: [
     BrowserModule,
+    AppRoutingModule,
     FormsModule,
-    NgbModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    AppRoutingModule,
+    NgbModule,
     LoginModule,
     ToasterModule.forRoot(),
     TranslateModule.forRoot({
@@ -57,15 +67,16 @@ export class MyErrorHandler implements ErrorHandler {
     })
   ],
   providers: [
-    {provide: ErrorHandler, useClass: MyErrorHandler},
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
     },
-    {provide: NZ_I18N, useValue: en_US}],
-  bootstrap: [AppComponent],
-  entryComponents: [AboutModalComponent]
+    {
+      provide: NZ_I18N, useValue: en_US
+    },
+    NzMessageService],
+  bootstrap: [AppComponent]
 })
 export class AppModule {
 }

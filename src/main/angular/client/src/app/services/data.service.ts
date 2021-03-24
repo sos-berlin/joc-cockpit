@@ -4,7 +4,7 @@ import {Subject, BehaviorSubject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class DataService implements OnDestroy{
+export class DataService implements OnDestroy {
   // Observable string sources
   private eventAnnouncedSource = new Subject<any>();
   private refreshUISource = new Subject<any>();

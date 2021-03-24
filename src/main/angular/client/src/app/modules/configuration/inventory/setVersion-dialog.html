@@ -11,16 +11,10 @@
         <div class="form-group row">
           <label class="col-md-3 " translate>common.label.selectComments</label>
           <div class=" col-md-6">
-            <div>
-              <label class="md-check w w-md">
-                <input type="radio" name="radio" [(ngModel)]="comments.radio" value="predefined">
-                <i class="primary"></i> <span translate>common.label.predefined</span>
-              </label>
-              <label class="md-check  w">
-                <input type="radio" name="radio" [(ngModel)]="comments.radio" value="new">
-                <i class="primary"></i> <span translate>common.label.individual</span>
-              </label>
-            </div>
+            <nz-radio-group name="radio"  [(ngModel)]="comments.radio">
+              <label nz-radio nzValue="predefined"><span translate>common.label.predefined</span></label>
+              <label nz-radio nzValue="new"><span translate>common.label.individual</span></label>
+            </nz-radio-group>
           </div>
         </div>
         <div class="form-group row" *ngIf="comments.radio=='predefined'"
@@ -153,7 +147,7 @@
                   <i class="fa fa-plus" *ngIf="!node.origin.version"></i>
                 </button>
               </div>
-              <div class="node-content-wrapper">
+              <div class="node-content-wrapper2">
                 <i *ngIf="!node.origin.object && !node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                 <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
                 <i *ngIf="node.origin.object == 'FILEORDERSOURCE'" class="icon-orders-icon icon-color tree-icon"></i>
