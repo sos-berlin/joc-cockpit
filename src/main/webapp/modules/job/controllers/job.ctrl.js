@@ -377,6 +377,7 @@
             let obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = true;
+            obj.folders = [];
             if (vm.selectedFiltered) {
                 obj.regex = vm.selectedFiltered.regex;
                 if (vm.selectedFiltered.jobRegex) {
@@ -394,8 +395,17 @@
                     }
                 }
             }
-            obj.folders = [];
-            obj.folders.push({folder: data.path, recursive: true});
+            if(vm.selectedFiltered && vm.selectedFiltered.paths && vm.selectedFiltered.paths.length > 0) {
+                vm.selectedFiltered.paths.forEach(function (path) {
+                    if (path !== data.path && path.indexOf(data.path) > -1) {
+                        obj.folders.push({folder: path, recursive: true});
+                    }
+                })
+                obj.folders.push({folder: data.path, recursive: obj.folders.length === 0});
+            } else {
+                obj.folders.push({folder: data.path, recursive: true});
+            }
+
             if (vm.userPreferences.showOrders) {
                 obj.compact = false;
             }
@@ -3717,8 +3727,16 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = true;
             obj.folders = [];
-            obj.folders.push({folder: data.path, recursive: true});
-
+            if(vm.selectedFiltered && vm.selectedFiltered.paths && vm.selectedFiltered.paths.length > 0) {
+                vm.selectedFiltered.paths.forEach(function (path) {
+                    if (path !== data.path && path.indexOf(data.path) > -1) {
+                        obj.folders.push({folder: path, recursive: true});
+                    }
+                })
+                obj.folders.push({folder: data.path, recursive: obj.folders.length === 0});
+            } else {
+                obj.folders.push({folder: data.path, recursive: true});
+            }
             if (vm.selectedFiltered) {
                 obj.regex = vm.selectedFiltered.regex;
                 obj = parseDate(obj);
