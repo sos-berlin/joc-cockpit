@@ -14,7 +14,6 @@
   --text-muted: #7D90A8;
   --placholder-color: #bfbfbf;
   --border-color: #e3e3e3;
-  --dark-border-color: #ccc;
   --primary: rgb(14, 138, 139);
   --hover-primary: rgb(12, 102, 121);
   --secondary: rgb(67, 149, 166);
@@ -260,10 +259,6 @@
 
 .btn-icon, .label.up, body, sup {
   position: relative;
-}
-
-.navbar-brand:hover {
-  text-decoration: none;
 }
 
 a {
@@ -933,9 +928,6 @@ button.close {
 .navbar-item {
   margin-right: 16px;
   margin-bottom: 0;
-}
-
-.navbar-brand, .navbar-item {
   padding: 0;
   line-height: 60px;
   white-space: nowrap;
@@ -949,7 +941,18 @@ button.close {
   }
 }
 
+.navside .navbar-brand {
+  float: none;
+  margin-right: 0;
+}
+.navbar-brand:hover {
+  text-decoration: none;
+}
+
 .navbar-brand {
+  padding: 0;
+  line-height: 60px;
+  white-space: nowrap;
   cursor: auto;
   width: 160px;
   img {
@@ -1461,11 +1464,6 @@ button.close {
   small, span {
     display: block;
   }
-}
-
-.navside .navbar-brand {
-  float: none;
-  margin-right: 0;
 }
 
 .nav-fold {
@@ -3969,7 +3967,7 @@ input[type=search] {
   margin-top: -7px;
   padding: 6px 17px 6px 31px;
   width: 100%;
-  border-bottom: 1px solid var(--dark-border-color);
+  border-bottom: 1px solid var(--border-color);
   color: var(--text-color);
   &:focus {
     font-weight: 300;
@@ -6883,12 +6881,12 @@ span.cm-error {
 }
 
 .ant-checkbox-inner, .ant-radio-inner, .ant-tree-checkbox-inner {
-  border: 1px solid var(--dark-border-color);
+  border: 1px solid var(--border-color);
   background: transparent;
 }
 
 .ant-checkbox-disabled .ant-checkbox-inner {
-  border-color: var(--dark-border-color) !important;
+  border-color: var(--border-color) !important;
   background: transparent;
 }
 

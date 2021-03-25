@@ -66,12 +66,12 @@
                   </td>
                   <td>
                     <span class="show-in-single-line">
-                      <i class="cursor fa fa-caret-down tableexport-ignore fa-lg p-l-xs p-r-xs"
+                      <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
                          *ngIf="!workflow.show" (click)="showPanelFuc(workflow)"></i>
-                      <i class="cursor fa fa-caret-up tableexport-ignore fa-lg p-l-xs p-r-xs" *ngIf="workflow.show"
+                      <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" *ngIf="workflow.show"
                          (click)="hidePanelFuc(workflow)"></i>
-                      <i class="cursor fa fa-bars p-l-xs" (click)="navToDetailView('list', workflow)"></i>
-                      <i class="cursor fa fa-rss p-l-xs p-r-xs" (click)="navToDetailView('grid', workflow)"></i>
+                      <i class="cursor fa fa-list p-l-xs" (click)="navToDetailView('list', workflow)"></i>
+                      <i class="cursor fa fa-th p-l-xs p-r-xs" (click)="navToDetailView('grid', workflow)"></i>
                       <a class="text-dark">{{workflow.name}}</a>
                       <span *ngIf="workflow.title">-</span>
                       <i class="text-muted">{{workflow.title}}</i>

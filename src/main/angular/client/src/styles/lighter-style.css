@@ -96,6 +96,14 @@
   color: #3d464d;
 }
 
+.ant-checkbox-inner, .ant-radio-inner, .ant-tree-checkbox-inner {
+  border: 1px solid #ccc;
+}
+
+.ant-checkbox-disabled .ant-checkbox-inner {
+  border-color:  #ccc !important;
+}
+
 .ant-picker-cell {
   color: rgba(0, 0, 0, .25);
 }

@@ -172,8 +172,8 @@
                       <div>
                         <div class="text-left block-ellipsis">
                           <span class="text-sm fa fa-sitemap"></span>&nbsp;
-                          <i class="cursor fa fa-bars" (click)="navToDetailView('list', workflow)"></i>
-                          <i class="cursor fa fa-rss p-l-xs p-r-xs" (click)="navToDetailView('grid', workflow)"></i>
+                          <i class="cursor fa fa-list" (click)="navToDetailView('list', workflow)"></i>
+                          <i class="cursor fa fa-th p-l-xs p-r-xs" (click)="navToDetailView('grid', workflow)"></i>
                           <span [nz-tooltip]="workflow.title" [innerHtml]="workflow.name | highlight : workflowFilters.searchText"></span>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
@@ -373,7 +373,7 @@
                   <ng-template ngFor let-workflow
                                [ngForOf]="ajaxTable.data | orderBy: workflowFilters.filter.sortBy:workflowFilters.reverse">
                     <tr [ngClass]="{'light-bg':workflow.show}">
-                      <td class="tableexport-ignore">
+                      <td>
                         <div class="btn-group dropdown">
                           <app-workflow-action [schedulerId]="schedulerIds.selected" [permission]="permission"
                                                [preferences]="preferences" [workflow]="workflow"></app-workflow-action>
@@ -381,12 +381,12 @@
                       </td>
                       <td>
                         <span class="show-in-single-line">
-                          <i class="cursor fa fa-caret-down tableexport-ignore fa-lg p-l-xs p-r-xs"
+                          <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
                              *ngIf="!workflow.show" (click)="showPanelFuc(workflow)"></i>
-                          <i class="cursor fa fa-caret-up tableexport-ignore fa-lg p-l-xs p-r-xs" *ngIf="workflow.show"
+                          <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" *ngIf="workflow.show"
                              (click)="hidePanelFuc(workflow)"></i>
-                          <i class="cursor fa fa-bars p-l-xs" (click)="navToDetailView('list', workflow)"></i>
-                          <i class="cursor fa fa-rss p-l-xs p-r-xs" (click)="navToDetailView('grid', workflow)"></i>
+                          <i class="cursor fa fa-list p-l-xs" (click)="navToDetailView('list', workflow)"></i>
+                          <i class="cursor fa fa-th p-l-xs p-r-xs" (click)="navToDetailView('grid', workflow)"></i>
                           <a class="text-dark" (click)="showPanelFunc(workflow)">
                             <span [innerHtml]="workflow.name | highlight : workflowFilters.searchText"></span>
                             <i *ngIf="workflow.title"> - </i>

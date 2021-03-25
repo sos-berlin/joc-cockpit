@@ -83,7 +83,7 @@
 <div class="scroll-y max-ht2">
   <div class="padding p-b-0">
     <div class="inline w-full" [hidden]="isLoading">
-      <div appResizable [sideView]="sideView.inventory" id="leftPanel" class="sticky leftPanel editor " [ngClass]="{'bg-white' : isTrash}">
+      <div appResizable [sideView]="sideView.inventory" id="leftPanel" class="sticky leftPanel editor " [ngClass]="{'bg-white' : isTrash}" [ngStyle]="{'width': sideView.inventory ? sideView.inventory.width +'px' : 'auto'}">
         <div class="pl-20 editor-tree">
           <a class="text resize-cursor a-1" *ngIf="!isTrash" style="position: absolute; right: 28px;z-index:99">
             <i class="fa fa-angle-double-left fa-lg" (click)="hidePanel()"></i>
@@ -353,7 +353,7 @@
           <div class="rg-right" [ngClass]="{'bg-white' : isTrash}"><span></span></div>
         </div>
       </div>
-      <div id="rightPanel">
+      <div id="rightPanel" [ngStyle]="{'margin-left': sideView.inventory ? (sideView.inventory.width + 18) + 'px' : 'auto'}">
         <div *ngIf="type == 'WORKFLOW'">
           <app-workflow [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"
                         [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-workflow>

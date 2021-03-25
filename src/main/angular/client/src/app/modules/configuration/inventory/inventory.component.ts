@@ -42,7 +42,7 @@ export class SingleDeployComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
     if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
@@ -53,12 +53,12 @@ export class SingleDeployComponent implements OnInit {
     this.init();
   }
 
-  init() {
+  init(): void {
     const obj: any = {onlyValidObjects: true, withVersions: true, id: this.data.id};
     this.getSingleObject(obj);
   }
 
-  private getSingleObject(obj) {
+  private getSingleObject(obj): void {
     this.coreService.post('inventory/deployable', obj).subscribe((res: any) => {
       const result = res.deployable;
       if (result.deployablesVersions && result.deployablesVersions.length > 0 && !result.deleted) {
@@ -76,7 +76,7 @@ export class SingleDeployComponent implements OnInit {
     });
   }
 
-  getJSObject() {
+  getJSObject(): void {
     this.object = {
       store: {draftConfigurations: [], deployConfigurations: []},
       delete: {deployConfigurations: []}
@@ -124,7 +124,7 @@ export class SingleDeployComponent implements OnInit {
     }
   }
 
-  deploy() {
+  deploy(): void {
     this.submitted = true;
     this.getJSObject();
     const obj: any = {
@@ -133,10 +133,10 @@ export class SingleDeployComponent implements OnInit {
     };
     if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
       if (this.object.store.draftConfigurations.length === 0) {
-        delete this.object.store['draftConfigurations'];
+        delete this.object.store.draftConfigurations;
       }
       if (this.object.store.deployConfigurations.length === 0) {
-        delete this.object.store['deployConfigurations'];
+        delete this.object.store.deployConfigurations;
       }
       obj.store = this.object.store;
     }
@@ -164,7 +164,7 @@ export class SingleDeployComponent implements OnInit {
     });
   }
 
-  cancel() {
+  cancel(): void {
     this.activeModal.dismiss();
   }
 }
@@ -204,7 +204,7 @@ export class DeployComponent implements OnInit {
               private authService: AuthService, private inventoryService: InventoryService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (this.data && this.data.deleted) {
       this.isDeleted = true;
     }
@@ -236,12 +236,12 @@ export class DeployComponent implements OnInit {
     recursive(this.nodes);
   }
 
-  collapseAll() {
+  collapseAll(): void {
     this.isExpandAll = false;
     this.expandCollapseRec(this.nodes);
   }
 
-  private expandCollapseRec(node) {
+  private expandCollapseRec(node): void {
     for (let i = 0; i < node.length; i++) {
       if (node[i].children && node[i].children.length > 0) {
         const a = this.treeCtrl.getTreeNodeByKey(node[i].key);
@@ -251,7 +251,7 @@ export class DeployComponent implements OnInit {
     }
   }
 
-  private filterTree() {
+  private filterTree(): void {
     this.nodes = [{path: '/', key: '/', name: '/', children: [], isFolder: true}];
     this.buildDeployablesTree(this.actualResult);
     setTimeout(() => {
@@ -269,7 +269,7 @@ export class DeployComponent implements OnInit {
     }, 0);
   }
 
-  private preselected(node) {
+  private preselected(node): void {
     node.checked = true;
     for (let i = 0; i < node.children.length; i++) {
       if (node.children[i].type) {
@@ -309,7 +309,7 @@ export class DeployComponent implements OnInit {
     }
   }
 
-  private getChildTree() {
+  private getChildTree(): void {
     const self = this;
 
     function recursive(nodes) {
@@ -331,7 +331,7 @@ export class DeployComponent implements OnInit {
     recursive(this.nodes);
   }
 
-  buildTree() {
+  buildTree(): void {
     const obj: any = {
       folder: this.path || '/',
       recursive: true,
@@ -373,7 +373,7 @@ export class DeployComponent implements OnInit {
     }
   }
 
-  private buildDeployablesTree(result) {
+  private buildDeployablesTree(result): void {
     if (result && result.length > 0) {
       const arr = _.groupBy(_.sortBy(result, 'folder'), (res) => {
         return res.folder;
@@ -384,7 +384,7 @@ export class DeployComponent implements OnInit {
     }
   }
 
-  getJSObject() {
+  getJSObject(): void {
     this.object.store = {draftConfigurations: [], deployConfigurations: []};
     this.object.deleteObj = {deployConfigurations: []};
     const self = this;
@@ -488,7 +488,7 @@ export class DeployComponent implements OnInit {
     recursive(this.nodes);
   }
 
-  getReleaseObject() {
+  getReleaseObject(): void {
     this.object = {
       update: [],
       delete: []
@@ -537,10 +537,10 @@ export class DeployComponent implements OnInit {
       obj.controllerIds = this.selectedSchedulerIds;
       if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
         if (this.object.store.draftConfigurations.length === 0) {
-          delete this.object.store['draftConfigurations'];
+          delete this.object.store.draftConfigurations;
         }
         if (this.object.store.deployConfigurations.length === 0) {
-          delete this.object.store['deployConfigurations'];
+          delete this.object.store.deployConfigurations;
         }
         obj.store = this.object.store;
       }
@@ -1043,16 +1043,16 @@ export class ExportComponent implements OnInit {
       (this.object.releaseDraftConfigurations.length && this.object.releaseDraftConfigurations.length > 0)) {
       let param = '';
       if (this.object.deployConfigurations && this.object.deployConfigurations.length === 0) {
-        delete this.object['deployConfigurations'];
+        delete this.object.deployConfigurations;
       }
       if (this.object.draftConfigurations && this.object.draftConfigurations.length === 0) {
-        delete this.object['draftConfigurations'];
+        delete this.object.draftConfigurations;
       }
       if (this.object.releasedConfigurations && this.object.releasedConfigurations.length === 0) {
-        delete this.object['releasedConfigurations'];
+        delete this.object.releasedConfigurations;
       }
       if (this.object.releaseDraftConfigurations && this.object.releaseDraftConfigurations.length === 0) {
-        delete this.object['releaseDraftConfigurations'];
+        delete this.object.releaseDraftConfigurations;
       }
       const obj: any = {
         exportFile: {filename: this.exportObj.filename, format: this.exportObj.fileFormat}
@@ -1228,11 +1228,11 @@ export class SetVersionComponent implements OnInit {
             }
             if (self.version.type === 'setSeparateVersion') {
               self.object.deployConfigurations.push({
-                configuration: configuration,
+                configuration,
                 version: nodes[i].version
               });
             } else {
-              self.object.deployConfigurations.push({configuration: configuration});
+              self.object.deployConfigurations.push({configuration});
             }
           }
         }
@@ -1284,7 +1284,7 @@ export class SetVersionComponent implements OnInit {
   }
 
   deleteSetVersion(data) {
-    delete data['version'];
+    delete data.version;
   }
 
   editVersion(data) {
@@ -1377,7 +1377,7 @@ export class ImportWorkflowModalComponent implements OnInit {
     }
 
     this.uploader.onBeforeUploadItem = (item: any) => {
-      let obj: any = {};
+      const obj: any = {};
       if (this.comments.comment) {
         obj.comment = this.comments.comment;
       }
@@ -1421,7 +1421,7 @@ export class ImportWorkflowModalComponent implements OnInit {
 
   // CALLBACKS
   onFileSelected(event: any): void {
-    let item = event['0'];
+    const item = event['0'];
     const fileExt = item.name.slice(item.name.lastIndexOf('.') + 1);
     if (!(fileExt && ((fileExt === 'zip' && this.requestObj.format === 'ZIP') ||
       (this.requestObj.format !== 'ZIP' && (fileExt.match(/tar/) || fileExt.match(/gz/)))))) {
@@ -1487,9 +1487,9 @@ export class JsonEditorModalComponent implements OnInit {
     });
     this.options.modes = ['code', 'tree'];
     this.data = this.coreService.clone(this.object);
-    delete this.data['type'];
-    delete this.data['TYPE'];
-    delete this.data['versionId'];
+    delete this.data.type;
+    delete this.data.TYPE;
+    delete this.data.versionId;
   }
 
   private parseErrorMsg(res, cb): void {
@@ -1586,7 +1586,7 @@ export class UploadModalComponent implements OnInit {
   // CALLBACKS
   onFileSelected(event: any): void {
     const self = this;
-    let item = event['0'];
+    const item = event['0'];
     const fileExt = item.name.slice(item.name.lastIndexOf('.') + 1).toUpperCase();
     if (fileExt != 'JSON') {
       let msg = '';
@@ -1596,7 +1596,7 @@ export class UploadModalComponent implements OnInit {
       this.toasterService.pop('error', '', fileExt + ' ' + msg);
       this.uploader.clearQueue();
     } else {
-      let reader = new FileReader();
+      const reader = new FileReader();
       reader.readAsText(item, 'UTF-8');
       reader.onload = onLoadFile;
     }
@@ -1671,24 +1671,24 @@ export class CreateObjectModalComponent implements OnInit {
   }
 
   onSubmit(): void {
+    this.submitted = true;
     if (this.copy || this.restore) {
-      const obj: any = {};
+      const data: any = {};
       if (this.object.type === 'suffix') {
-        obj.suffix = this.object.suffix;
+        data.suffix = this.object.suffix;
       } else if (this.object.type === 'prefix') {
-        obj.prefix = this.object.prefix;
+        data.prefix = this.object.prefix;
       } else {
-        obj.newName = this.object.newName;
+        data.newName = this.object.newName;
       }
       if (this.object.originalName) {
-        obj.originalName = this.object.originalName;
+        data.originalName = this.object.originalName;
       }
       if (this.object.onlyContains) {
-        obj.noFolder = true;
+        data.noFolder = true;
       }
-      this.activeModal.close(obj);
+      this.paste(this.obj, data);
     } else {
-      this.submitted = true;
       const PATH = this.obj.path + (this.obj.path === '/' ? '' : '/') + this.object.name;
       this.coreService.post('inventory/validate/path', {
         objectType: this.obj.type,
@@ -1701,6 +1701,27 @@ export class CreateObjectModalComponent implements OnInit {
         this.submitted = false;
       });
     }
+  }
+
+  private paste(obj, data): void {
+    const request: any = {
+      shallowCopy: this.copy.shallowCopy,
+      suffix: data.suffix,
+      prefix: data.prefix
+    };
+    if (this.copy.id) {
+      request.newPath = obj.path + (obj.path === '/' ? '' : '/') + (data.originalName ? data.originalName : this.copy.name);
+      request.id = this.copy.id;
+    } else {
+      request.objectType = 'FOLDER';
+      request.newPath = obj.path + (data.noFolder ? '' : (obj.path === '/' ? '' : '/') + this.copy.name);
+      request.path = this.copy.path;
+    }
+    this.coreService.post('inventory/copy', request).subscribe((res) => {
+      this.activeModal.close(res);
+    }, () => {
+      this.submitted = false;
+    });
   }
 }
 
@@ -1737,10 +1758,10 @@ export class CreateFolderModalComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
     if (!this.rename) {
-      const _path = this.origin.path + (this.origin.path === '/' ? '' : '/') + this.folder.name;
+      const PATH = this.origin.path + (this.origin.path === '/' ? '' : '/') + this.folder.name;
       this.coreService.post('inventory/store', {
         objectType: 'FOLDER',
-        path: _path,
+        path: PATH,
         configuration: {}
       }).subscribe((res: any) => {
         this.activeModal.close({
@@ -1790,7 +1811,7 @@ export class CreateFolderModalComponent implements OnInit {
   }
 
   private getObjectArr(object): any {
-    let obj: any = {objects: []};
+    const obj: any = {objects: []};
     object.children.forEach((item) => {
       if (item.children) {
         item.children.forEach((data) => {
@@ -1923,11 +1944,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.initConf(true);
   }
 
-  private initConf(isReload) {
+  private initConf(isReload): void {
     if (this.authService.permission) {
       this.permission = JSON.parse(this.authService.permission) || {};
     }
@@ -2082,7 +2103,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }, () => this.isTreeLoaded = false);
   }
 
-  recursivelyExpandTree() {
+  recursivelyExpandTree(): void {
     this.coreService.post('inventory/read/configuration', {
       objectType: this.selectedObj.type,
       path: this.selectedObj.name
@@ -2200,7 +2221,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
                 scrTree[j].expanded = destTree[i].expanded;
               }
               if (destTree[i].children && destTree[i].children.length > 0 && !destTree[i].object) {
-                let arr = [];
+                const arr = [];
                 for (let x = 0; x < destTree[i].children.length; x++) {
                   if (destTree[i].children[x].controller) {
                     arr.push(destTree[i].children[x]);
@@ -2259,7 +2280,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           for (let i = 0; i < data.children.length; i++) {
             if (data.children[i].controller || data.children[i].dailyPlan) {
               for (let j = 0; j < data.children[i].children.length; j++) {
-                let x = data.children[i].children[j];
+                const x = data.children[i].children[j];
                 if (x.object === self.selectedObj.type &&
                   x.path === self.selectedObj.path && cb) {
                   flag = true;
@@ -2299,7 +2320,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (node instanceof NzTreeNode) {
       node.isExpanded = !node.isExpanded;
       if (node.isExpanded && !node.origin.controller && !node.origin.dailyPlan && !node.origin.type && !node.origin.object) {
-        let data = node.origin.children;
+        const data = node.origin.children;
         if (!(data.length > 1 && data[0].controller)) {
           node.origin.loading = true;
         }
@@ -2328,7 +2349,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         if (!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.dailyPlan) {
           node.isExpanded = !node.isExpanded;
           if (node.isExpanded) {
-            let data = node.origin.children;
+            const data = node.origin.children;
             if (!(data.length > 1 && data[0].controller)) {
               node.origin.loading = true;
             }
@@ -2356,16 +2377,17 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (this.preferences.expandOption === 'both' && !node.origin.type) {
         node.isExpanded = !node.isExpanded;
       }
+
       this.type = node.origin.object || node.origin.type;
       this.selectedData = node.origin;
       this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
     }
   }
 
-  updateObjects(data, isTrash, cb, isExpandConfiguration) {
+  updateObjects(data, isTrash, cb, isExpandConfiguration): void {
     let flag = true;
     const controllerObj: any = {controllerArr: []}, dailyPlanObj: any = {dailyPlanArr: []};
-    const _key = data.path === '/' ? '/' : (data.path + '/');
+    const KEY = data.path === '/' ? '/' : (data.path + '/');
     if (!data.children) {
       data.children = [];
     } else if (data.children.length > 0) {
@@ -2386,14 +2408,14 @@ export class InventoryComponent implements OnInit, OnDestroy {
         object: 'WORKFLOW',
         children: [],
         path: data.path,
-        key: (_key + 'Workflows$')
+        key: (KEY + 'Workflows$')
       },
-        {name: 'File Order Sources', object: 'FILEORDERSOURCE', children: [], path: data.path, key: (_key + 'File_Order_Sources$')},
-        {name: 'Job Classes', object: 'JOBCLASS', children: [], path: data.path, key: (_key + 'Job_Classes$')},
-        {name: 'Junctions', object: 'JUNCTION', children: [], path: data.path, key: (_key + 'Junctions$')},
-        {name: 'Locks', object: 'LOCK', children: [], path: data.path, key: (_key + 'Locks$')}];
-      dailyPlanObj.dailyPlanArr = [{name: 'Schedules', object: 'SCHEDULE', children: [], path: data.path, key: (_key + 'Schedules$')},
-        {name: 'Calendars', object: 'CALENDAR', children: [], path: data.path, key: (_key + 'Calendars$')}];
+        {name: 'File Order Sources', object: 'FILEORDERSOURCE', children: [], path: data.path, key: (KEY + 'File_Order_Sources$')},
+        {name: 'Job Classes', object: 'JOBCLASS', children: [], path: data.path, key: (KEY + 'Job_Classes$')},
+        {name: 'Junctions', object: 'JUNCTION', children: [], path: data.path, key: (KEY + 'Junctions$')},
+        {name: 'Locks', object: 'LOCK', children: [], path: data.path, key: (KEY + 'Locks$')}];
+      dailyPlanObj.dailyPlanArr = [{name: 'Schedules', object: 'SCHEDULE', children: [], path: data.path, key: (KEY + 'Schedules$')},
+        {name: 'Calendars', object: 'CALENDAR', children: [], path: data.path, key: (KEY + 'Calendars$')}];
     }
 
     const URL = isTrash ? 'inventory/trash/read/folder' : 'inventory/read/folder';
@@ -2458,7 +2480,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         isLeaf: false,
         children: controllerObj.controllerArr,
         path: data.path,
-        key: (_key + 'Controller$'),
+        key: (KEY + 'Controller$'),
         expanded: controllerObj.expanded,
         deleted: data.deleted
       }, {
@@ -2467,7 +2489,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         isLeaf: false,
         children: dailyPlanObj.dailyPlanArr,
         path: data.path,
-        key: (_key + 'Schedule$'),
+        key: (KEY + 'Schedule$'),
         expanded: dailyPlanObj.expanded,
         deleted: data.deleted
       }];
@@ -2481,14 +2503,14 @@ export class InventoryComponent implements OnInit, OnDestroy {
       cb([{
         name: 'Controller',
         controller: 'CONTROLLER',
-        key: (_key + 'Controller$'),
+        key: (KEY + 'Controller$'),
         children: controllerObj.controllerArr,
         path: data.path,
         deleted: data.deleted
       }, {
         name: 'Daily Plan',
         dailyPlan: 'DAILYPLAN',
-        key: (_key + 'Schedule$'),
+        key: (KEY + 'Schedule$'),
         children: dailyPlanObj.dailyPlanArr,
         path: data.path,
         deleted: data.deleted
@@ -2496,7 +2518,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  switchToTrash() {
+  switchToTrash(): void {
     this.trashTree = [];
     this.isTrash = !this.isTrash;
     if (this.isTrash) {
@@ -2521,7 +2543,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  mergeTree(scr, dest) {
+  mergeTree(scr, dest): void {
     function checkPath(obj) {
       for (let i = 0; i < dest.length; i++) {
         if (dest[i].name === obj.name && dest[i].path === obj.path) {
@@ -2551,7 +2573,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     return scr;
   }
 
-  backToObject() {
+  backToObject(): void {
     if (this.indexOfNextAdd > 0) {
       --this.indexOfNextAdd;
       this.selectedObj = _.clone(this.objectHistory[this.indexOfNextAdd]);
@@ -2560,7 +2582,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private backToListView() {
+  private backToListView(): void {
     let parent: any;
     if (this.isTrash) {
       parent = this.treeCtrl2.getTreeNodeByKey(this.selectedObj.path);
@@ -2569,7 +2591,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
     if (parent && parent.origin.children) {
       const index = (this.selectedObj.type === 'CALENDAR' || this.selectedObj.type === 'SCHEDULE') ? 1 : 0;
-      let child = parent.origin.children[index];
+      const child = parent.origin.children[index];
       for (let i = 0; i < child.children.length; i++) {
         if (child.children[i].object === this.selectedObj.type) {
           this.selectedData = child.children[i];
@@ -2580,7 +2602,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  addObject(data, type) {
+  addObject(data, type): void {
     if (data instanceof NzTreeNode) {
       data.isExpanded = true;
     }
@@ -2588,7 +2610,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.createObject(type || object.object, object.children, object.path);
   }
 
-  newObject(node, type) {
+  newObject(node, type): void {
     let list;
     if (node instanceof NzTreeNode) {
       node.isExpanded = true;
@@ -2621,7 +2643,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (list) {
       this.createObject(type, list, node.origin.path);
     } else {
-      let data = node.origin.children;
+      const data = node.origin.children;
       this.updateObjects(node.origin, false, (children) => {
         if ((type.match('CALENDAR') || type === 'SCHEDULE')) {
           children[1].expanded = true;
@@ -2661,7 +2683,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  exportObject(node) {
+  exportObject(node): void {
     let origin = null;
     if (node) {
       origin = node.origin ? node.origin : node;
@@ -2677,7 +2699,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  import() {
+  import(): void {
     const modalRef = this.modalService.open(ImportWorkflowModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.display = this.preferences.auditLog;
     modalRef.result.then((path) => {
@@ -2846,14 +2868,14 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }).subscribe((res: any) => {
       const name = obj.name + '.json';
       const fileType = 'application/octet-stream';
-      delete res.configuration['TYPE'];
+      delete res.configuration.TYPE;
       const data = JSON.stringify(res.configuration, undefined, 2);
       const blob = new Blob([data], {type: fileType});
       saveAs(blob, name);
     });
   }
 
-  private storeData(obj, result) {
+  private storeData(obj, result): void {
     this.coreService.post('inventory/store', {
       configuration: result,
       valid: true,
@@ -2873,12 +2895,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.updateFolders(obj.path, false, () => {
         this.updateTree(false);
       });
-    }, (err) => {
-      console.log(err);
     });
   }
 
-  renameObject(node) {
+  renameObject(node): void {
     if (this.permission && this.permission.Inventory && this.permission.Inventory.configurations.edit) {
       const modalRef = this.modalService.open(CreateFolderModalComponent, {backdrop: 'static'});
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
@@ -2891,20 +2911,20 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  cut(node) {
+  cut(node): void {
     this.copyObj = node.cut || node.origin;
     this.copyObj.operation = 'CUT';
   }
 
-  copy(node) {
+  copy(node): void {
     this._copy(node, false);
   }
 
-  shallowCopy(node) {
+  shallowCopy(node): void {
     this._copy(node, true);
   }
 
-  private _copy(node, isShallowCopy) {
+  private _copy(node, isShallowCopy): void {
     this.copyObj = node.copy || node.origin;
     this.copyObj.operation = 'COPY';
     this.copyObj.shallowCopy = isShallowCopy;
@@ -2915,65 +2935,74 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.message.success(msg);
   }
 
-  private checkNewCopyObject(node): void {
+  private checkNewCopyObject(node, res): void {
     let object = node;
     if (this.copyObj) {
-      if (this.copyObj.operation === 'COPY') {
-        if (node instanceof NzTreeNode) {
-          object = node.origin;
-          if (!object.controller && !object.dailyPlan && !object.object) {
-            let data = object.children;
-            if (!data[0] || !data[0].controller || data.length === 0) {
-              this.updateObjects(node.origin, false,(children) => {
-                if ((this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'SCHEDULE')) {
-                  children[1].expanded = true;
-                } else {
-                  children[0].expanded = true;
-                }
-                node.origin.children = children;
-                if (data.length > 0) {
-                  node.origin.children = node.origin.children.concat(data);
-                }
-                node.origin.expanded = true;
-                this.updateTree(false);
-                this.checkNewCopyObject(node);
-              }, false);
-              return;
-            }
-            if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'SCHEDULE') {
-              data = object.children[1];
-            } else {
-              data = object.children[0];
-            }
-            data.expanded = true;
-            if (data && data.children) {
-              for (let i = 0; i < data.children.length; i++) {
-                if (data.children[i].object === this.copyObj.type) {
-                  object = data.children[i];
-                  object.expanded = true;
-                  break;
-                }
+      if (node instanceof NzTreeNode) {
+        object = node.origin;
+        if (!object.controller && !object.dailyPlan && !object.object) {
+          let data = object.children;
+          if (!data[0] || !data[0].controller || data.length === 0) {
+            this.updateObjects(node.origin, false, (children) => {
+              if ((this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'SCHEDULE')) {
+                children[1].expanded = true;
+              } else {
+                children[0].expanded = true;
+              }
+              node.origin.children = children;
+              if (data.length > 0) {
+                node.origin.children = node.origin.children.concat(data);
+              }
+              node.origin.expanded = true;
+              this.updateTree(false);
+              this.checkNewCopyObject(node, res);
+            }, true);
+            return;
+          }
+          if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'SCHEDULE') {
+            data = object.children[1];
+          } else {
+            data = object.children[0];
+          }
+          data.expanded = true;
+          if (data && data.children) {
+            for (let i = 0; i < data.children.length; i++) {
+              if (data.children[i].object === this.copyObj.type) {
+                object = data.children[i];
+                break;
               }
             }
           }
         }
+
       }
+      let obj: any = {
+        type: this.copyObj.type,
+        objectType: this.copyObj.type,
+        id: res.id,
+        path: res.path.substring(0, res.path.lastIndexOf('/')) || '/',
+        name: res.path.substring(res.path.lastIndexOf('/') + 1),
+        valid: this.copyObj.valid
+      };
+      object.expanded = true;
+      this.type = obj.type;
+      this.selectedData = obj;
+      this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
     }
   }
 
-  paste(node) {
+  paste(node): void {
     let object = node;
     if (node instanceof NzTreeNode) {
       object = node.origin;
     }
-
     if (this.copyObj) {
       if (this.copyObj.operation === 'COPY') {
-        this.openObjectNameModal(object, () => {
-          this.checkNewCopyObject(node);
+        this.openObjectNameModal(object, (res) => {
+          this.checkNewCopyObject(node, res);
         });
       } else if (this.copyObj.operation === 'CUT') {
-        let obj: any = {newPath: object.path};
+        const obj: any = {newPath: object.path};
         if (this.copyObj.id) {
           obj.id = this.copyObj.id;
         } else {
@@ -2984,9 +3013,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.copyObj = null;
           return;
         } else {
-          let pathArr = [];
-          let arr = obj.newPath.split('/');
-          let len = arr.length;
+          const pathArr = [];
+          const arr = obj.newPath.split('/');
+          const len = arr.length;
           if (len > 1) {
             for (let i = 0; i < len; i++) {
               if (arr[i]) {
@@ -3010,9 +3039,15 @@ export class InventoryComponent implements OnInit, OnDestroy {
           }
         }
         obj.newPath = obj.newPath + '/' + this.copyObj.name;
-        this.coreService.post('inventory/rename', obj).subscribe(() => {
+        this.coreService.post('inventory/rename', obj).subscribe((res) => {
+          let obj: any = this.coreService.clone(this.copyObj);
           this.updateFolders(this.copyObj.path, false, () => {
             this.updateTree(false);
+            obj.path = res.path.substring(0, res.path.lastIndexOf('/')) || '/';
+            obj.name = res.path.substring(res.path.lastIndexOf('/') + 1);
+            this.type = obj.type;
+            this.selectedData = obj;
+            this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
           });
           this.copyObj = null;
         });
@@ -3026,37 +3061,18 @@ export class InventoryComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.obj = obj;
     modalRef.componentInstance.copy = this.copyObj;
     modalRef.result.then(data => {
-      this._paste(obj, data, cb);
+      cb(data);
     }, () => {
-    });
-  }
-
-  private _paste(obj, data, cb) {
-    const request: any = {
-      shallowCopy: this.copyObj.shallowCopy,
-      suffix: data.suffix,
-      prefix: data.prefix
-    };
-    if (this.copyObj.id) {
-      request.newPath = obj.path + (obj.path === '/' ? '' : '/') + (data.originalName ? data.originalName : this.copyObj.name);
-      request.id = this.copyObj.id;
-    } else {
-      request.objectType = 'FOLDER';
-      request.newPath = obj.path + (data.noFolder ? '' : (obj.path === '/' ? '' : '/') + this.copyObj.name);
-      request.path = this.copyObj.path;
-    }
-    this.coreService.post('inventory/copy', request).subscribe((res) => {
-      cb();
     });
   }
 
   removeObject(node): void {
     const object = node.origin;
-    let _path;
+    let path;
     if (object.type) {
-      _path = object.path + (object.path === '/' ? '' : '/') + object.name;
+      path = object.path + (object.path === '/' ? '' : '/') + object.name;
     } else {
-      _path = object.path;
+      path = object.path;
     }
     const obj = this.getObjectArr(object, false);
     const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
@@ -3067,10 +3083,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.countMessage = 'removeAllObject';
       modalRef.componentInstance.count = obj.objects.length;
     }
-    modalRef.componentInstance.objectName = _path;
+    modalRef.componentInstance.objectName = path;
     modalRef.result.then(() => {
       if (!object.type && !object.object && !object.controller && !object.dailyPlan) {
-        this.deleteObject(_path, object, node);
+        this.deleteObject(path, object, node);
       } else {
         this.coreService.post('inventory/remove', obj).subscribe(() => {
 
@@ -3081,13 +3097,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   }
 
-  deleteDraft(node) {
+  deleteDraft(node): void {
     const object = node.origin;
-    let _path;
+    let path;
     if (object.type) {
-      _path = object.path + (object.path === '/' ? '' : '/') + object.name;
+      path = object.path + (object.path === '/' ? '' : '/') + object.name;
     } else {
-      _path = object.path;
+      path = object.path;
     }
     const obj = this.getObjectArr(object, true);
     const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
@@ -3098,7 +3114,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.count = obj.objects.length;
     }
     modalRef.componentInstance.type = 'Delete';
-    modalRef.componentInstance.objectName = _path;
+    modalRef.componentInstance.objectName = path;
     modalRef.result.then(() => {
       const URL = (object.type || object.object || object.controller || object.dailyPlan) ? 'inventory/delete_draft' : 'inventory/delete_draft/folder';
       this.coreService.post(URL, obj).subscribe(() => {
@@ -3143,7 +3159,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  deletePermanently(node) {
+  deletePermanently(node): void {
     let object = node;
     if (node instanceof NzTreeNode) {
       object = node.origin;
@@ -3167,7 +3183,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  restoreObject(node) {
+  restoreObject(node): void {
     let object = node;
     if (node instanceof NzTreeNode) {
       object = node.origin;
@@ -3196,11 +3212,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  receiveMessage($event) {
+  receiveMessage($event): void {
     this.pageView = $event;
   }
 
-  private refresh(args) {
+  private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].path) {
@@ -3226,10 +3242,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private pushObjectInHistory() {
+  private pushObjectInHistory(): void {
     let flag = true;
     if (this.objectHistory.length > 0) {
-      let x = this.objectHistory[this.objectHistory.length - 1];
+      const x = this.objectHistory[this.objectHistory.length - 1];
       if (_.isEqual(JSON.stringify(this.selectedObj), JSON.stringify(x))) {
         flag = false;
       }
@@ -3243,14 +3259,14 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setSelectedObj(type, name, path, id) {
+  private setSelectedObj(type, name, path, id): void {
     if (this.selectedObj.id) {
       this.pushObjectInHistory();
     }
-    this.selectedObj = {type: type, name: name, path: path, id: id};
+    this.selectedObj = {type, name, path, id};
   }
 
-  private mergeFolderData(sour, dest, path) {
+  private mergeFolderData(sour, dest, path): void {
     for (let i = 0; i < dest.children.length; i++) {
       for (let j = 0; j < sour.length; j++) {
         if (dest.children[i].name === sour[j].name) {
@@ -3270,7 +3286,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     dest.children = dest.children.filter(child => {
       if (child.match) {
         child.path = path;
-        delete child['match'];
+        delete child.match;
         return true;
       } else if (this.type) {
         if (this.selectedObj.type === child.type && child.name === this.selectedObj.name) {
@@ -3286,7 +3302,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         dest.children.push({
           name: sour[j].name,
           id: sour[j].id,
-          path: path,
+          path,
           deleted: sour[j].deleted,
           deployed: sour[j].deployed,
           released: sour[j].released,
@@ -3300,13 +3316,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
     dest.children = _.sortBy(dest.children, 'name');
   }
 
-  private createObject(type, list, path) {
+  private createObject(type, list, path): void {
     if (!path) {
       return;
     }
-    let obj: any = {
-      type: type,
-      path: path
+    const obj: any = {
+      type,
+      path
     };
     const modalRef = this.modalService.open(CreateObjectModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
@@ -3321,22 +3337,22 @@ export class InventoryComponent implements OnInit, OnDestroy {
       } else if (type === 'LOCK') {
         configuration = {limit: 1, id: res.name};
       } else if (type === 'WORKINGDAYSCALENDAR' || type === 'NONWORKINGDAYSCALENDAR') {
-        configuration = {type: type};
+        configuration = {type};
       }
       this.storeObject(obj, list, configuration);
     }, () => {
     });
   }
 
-  private storeObject(obj, list, configuration) {
+  private storeObject(obj, list, configuration): void {
     const valid = !(obj.type.match(/CALENDAR/) || obj.type === 'SCHEDULE' || obj.type === 'WORKFLOW' || obj.type === 'FILEORDERSOURCE');
-    const _path = obj.path + (obj.path === '/' ? '' : '/') + obj.name;
-    if (_path && obj.type) {
+    const PATH = obj.path + (obj.path === '/' ? '' : '/') + obj.name;
+    if (PATH && obj.type) {
       this.coreService.post('inventory/store', {
         objectType: obj.type,
-        path: _path,
+        path: PATH,
         valid: obj.valid ? obj.valid : valid,
-        configuration: configuration
+        configuration
       }).subscribe((res: any) => {
         if ((obj.type === 'WORKINGDAYSCALENDAR' || obj.type === 'NONWORKINGDAYSCALENDAR')) {
           obj.objectType = obj.type;
@@ -3353,15 +3369,15 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private deleteObject(_path, object, node) {
-    this.coreService.post('inventory/remove/folder', {path: _path}).subscribe(() => {
+  private deleteObject(path, object, node): void {
+    this.coreService.post('inventory/remove/folder', {path: path}).subscribe(() => {
       object.deleted = true;
       if (node && node.parentNode && node.parentNode.origin) {
         node.parentNode.origin.children = node.parentNode.origin.children.filter((child) => {
-          return child.path !== _path;
+          return child.path !== path;
         });
       }
-      if (this.selectedObj && _path === this.selectedObj.path) {
+      if (this.selectedObj && path === this.selectedObj.path) {
         this.clearSelection();
       }
       this.updateTree(false);
@@ -3393,7 +3409,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     return obj;
   }
 
-  private updateTree(isTrash) {
+  private updateTree(isTrash): void {
     if (isTrash) {
       this.trashTree = [...this.trashTree];
     } else {
@@ -3404,7 +3420,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private clearCopyObject(obj) {
+  private clearCopyObject(obj): void {
     if ((this.selectedData && this.selectedData.type === obj.type && this.selectedData.name === obj.name
       && this.selectedData.path === obj.path)) {
       this.clearSelection();
@@ -3414,18 +3430,18 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private clearSelection() {
+  private clearSelection(): void {
     this.type = null;
     this.selectedData = {};
     this.selectedObj = {};
   }
 
-  hidePanel() {
+  hidePanel(): void {
     this.sideView.inventory.show = false;
     this.coreService.hidePanel();
   }
 
-  showPanel() {
+  showPanel(): void {
     this.sideView.inventory.show = true;
     this.coreService.showLeftPanel();
   }

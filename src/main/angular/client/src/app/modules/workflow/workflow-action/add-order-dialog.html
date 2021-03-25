@@ -145,8 +145,8 @@
       </div>
       <div cdkDropList (cdkDropListDropped)="drop($event)">
         <div class="form-group row m-b-0 m-l-12" *ngFor="let argument of arguments; let i=index" cdkDrag>
-          <div class="pos-abt" style="margin-left: -12px;font-size: 18px;margin-top: 4px;cursor: move" cdkDragHandle>
-            <i nz-icon nzType="drag" nzTheme="outline"></i>
+          <div class="pos-abt" style="margin-left: -13px;font-size: 18px;margin-top: 3px;cursor: move" cdkDragHandle>
+            <i class="fa fa-bars" aria-hidden="true"></i>
           </div>
           <div class="col-sm-4 m-b-sm">
             <nz-select nzShowSearch name="name{{i}}" [(ngModel)]="argument.name" (ngModelChange)="checkVariableType(argument)">

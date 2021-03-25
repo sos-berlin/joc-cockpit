@@ -17,7 +17,6 @@
   --menu-hover: #4e6d8c;
   --box-shadow: rgba(0, 0, 0, .2);
   --border-color: rgba(255, 255, 255, .3);
-  --dark-border-color: rgba(255, 255, 255, .4);
   --blue: #1591d4;
   --green: #9ccc65;
   --red: #ff5252;
@@ -915,7 +914,7 @@ pre#pre {
   color: rgba(255, 255, 255, .87);
   background-color: var(--bg-box) !important;
 }
-
+.ant-select-clear,
 .ant-picker-clear,
 .ant-picker-clear:hover {
   background-color: var(--bg-box) !important;
@@ -962,14 +961,6 @@ pre#pre {
 
 .anticon, .ant-radio, .ant-checkbox, .ant-radio-group, .ant-radio-wrapper, .ant-checkbox-wrapper {
   color: var(--text-color);
-}
-
-.ant-checkbox-inner, .ant-radio-inner, .ant-tree-checkbox-inner {
-  border: 1px solid var(--border-color);
-}
-
-.ant-checkbox-disabled .ant-checkbox-inner {
-  border-color: var(--border-color) !important;
 }
 
 .select-input-both .ant-select-open .ant-select-selection {

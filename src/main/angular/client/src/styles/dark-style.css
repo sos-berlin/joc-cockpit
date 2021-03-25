@@ -15,7 +15,6 @@
   --placholder-color: rgba(255, 255, 255, .5);
   --box-shadow: rgba(255, 255, 255, .1);
   --border-color: rgba(255, 255, 255, .3);
-  --dark-border-color: rgba(255, 255, 255, .4);
   --menu-hover: rgba(29, 29, 28, .7);
   --bg-dimgrey: #999;
   --green: #9ccc65;
@@ -166,8 +165,8 @@ a.text-primary:focus,
 
 .order-detail-rect {
   background-color: var(--white);
-  border: 1px solid var(--dark-border-color);
-  border-top: 4px solid var(--dark-border-color)
+  border: 1px solid rgba(0, 0, 0, .2);
+  border-top: 4px solid rgba(0, 0, 0, .2)
 }
 
 .error-link {
@@ -307,6 +306,7 @@ input[readonly] {
 
 input[type=search] {
   background: url(../assets/images/Search.png) 6px center no-repeat;
+  border-bottom: 1px solid rgba(255, 255, 255, .5);
 }
 
 .table .table,
@@ -397,9 +397,9 @@ a.text-dark:hover {
   background: var(--box-color);
   background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, var(--box-color)), color-stop(1, var(--bg-box)));
   background-image: -moz-linear-gradient(center bottom, var(--box-color) 37%, var(--bg-box) 69%);
-  -webkit-box-shadow: inset 0 2px 9px var(--border-color), inset 0 -2px 6px var(--dark-border-color);
-  -moz-box-shadow: inset 0 2px 9px var(--border-color), inset 0 -2px 6px var(--dark-border-color);
-  box-shadow: inset 0 2px 9px var(--border-color), inset 0 -2px 6px var(--dark-border-color)
+  -webkit-box-shadow: inset 0 2px 9px var(--border-color), inset 0 -2px 6px rgba(0, 0, 0, .2);
+  -moz-box-shadow: inset 0 2px 9px var(--border-color), inset 0 -2px 6px rgba(0, 0, 0, .2);
+  box-shadow: inset 0 2px 9px var(--border-color), inset 0 -2px 6px rgba(0, 0, 0, .2)
 }
 .joc.current {
   box-shadow: inset 0 2px 9px rgba(255, 255, 255, 0.4), inset 0 -2px 6px rgba(0, 0, 0, .2);
@@ -470,8 +470,8 @@ textarea {
 
 .popover {
   background-color: var(--box-color);
-  -webkit-box-shadow: 1px 1px 8px 4px var(--dark-border-color);
-  box-shadow: 2px 2px 8px 4px var(--dark-border-color);
+  -webkit-box-shadow: 1px 1px 8px 4px rgba(0, 0, 0, .2);
+  box-shadow: 2px 2px 8px 4px rgba(0, 0, 0, .2);
   color: var(--text-color) !important;
 }
 
@@ -790,7 +790,7 @@ span ul li a {
 }
 
 .sidebar-hover-effect:hover {
-  box-shadow: 0 0 25px 0 var(--dark-border-color)
+  box-shadow: 0 0 25px 0 rgba(0, 0, 0, .2)
 }
 
 .close-btn:before, .close-btn:after {
@@ -951,6 +951,7 @@ span ul li a {
   color: var(--white);
 }
 
+.ant-select-clear,
 .ant-picker-clear,
 .ant-picker-clear:hover {
   background-color: var(--bg-box) !important;
@@ -969,33 +970,8 @@ span ul li a {
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3) !important;
 }
 
-.ant-checkbox-indeterminate .ant-checkbox-inner::after {
-  background-color: var(--primary);
-}
-
 .anticon, .ant-radio, .ant-checkbox, .ant-radio-group, .ant-radio-wrapper, .ant-checkbox-wrapper {
   color: var(--text-color);
-}
-
-.ant-checkbox-checked .ant-checkbox-inner {
-  background-color: var(--primary);
-  border-color: var(--primary);
-}
-
-.ant-radio-inner::after {
-  background-color: var(--primary);
-}
-
-.ant-checkbox-inner, .ant-radio-inner, .ant-tree-checkbox-inner {
-  border: 1px solid var(--border-color);
-}
-
-.ant-checkbox-disabled .ant-checkbox-inner {
-  border-color: var(--border-color) !important;
-}
-
-.ant-radio-wrapper:hover .ant-radio, .ant-radio:hover .ant-radio-inner, .ant-radio-input:focus + .ant-radio-inner {
-  border-color: var(--primary);
 }
 
 .select-input-both .ant-select-open .ant-select-selection {

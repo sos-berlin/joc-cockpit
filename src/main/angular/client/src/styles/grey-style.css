@@ -11,7 +11,6 @@
   --menu-hover: rgba(78, 84, 92, .7);
   --box-shadow: rgba(255, 255, 255, .1);
   --border-color: rgba(255, 255, 255, .3);
-  --dark-border-color: rgba(255, 255, 255, .3);
   --bar-color: #ffe8c9;
   --bg-box: #4e545c;
   --box-color: #656d78;
@@ -935,6 +934,7 @@ span ul li a {
   color: var(--text-color);
 }
 
+.ant-select-clear,
 .ant-picker-clear,
 .ant-picker-clear:hover {
   background-color: var(--bg-box) !important;
