@@ -12,6 +12,7 @@
   --text-color: #3d464d;
   --text-hover: #333;
   --text-muted: #7D90A8;
+  --placholder-color: #bfbfbf;
   --border-color: #e3e3e3;
   --dark-border-color: #ccc;
   --primary: rgb(14, 138, 139);
@@ -582,6 +583,7 @@ small {
 
 .form-control {
   border-radius: 0;
+  background: transparent;
 }
 
 .form-control-spin {
@@ -948,23 +950,16 @@ button.close {
 }
 
 .navbar-brand {
+  cursor: auto;
+  width: 160px;
   img {
-    max-height: 24px;
+    max-height: 59px;
+    padding: 2px;
     display: inline-block;
-  }
-
-  > span {
-    display: inline-block;
-    line-height: .8;
-    margin-left: 10px;
-  }
-
-  &.md img {
-    max-height: 38px;
-    vertical-align: -8px;
+    margin-left: 50%;
+    transform: translateX(-50%);
   }
 }
-
 .pull-center .navbar-brand {
   margin-left: -50%;
 }
@@ -3955,17 +3950,6 @@ input[type=search] {
   display: none !important;
 }
 
-.navbar-brand {
-  cursor: auto;
-  padding-bottom: 1px !important;
-  margin-right: 20px;
-
-  img {
-    margin-left: 17px;
-    margin-right: 14px;
-  }
-}
-
 .box-footer div {
   height: 18px;
   width: 100%;
@@ -4672,97 +4656,6 @@ div.min-ht-widget-controller-status {
   filter: alpha(opacity=90);
 }
 
-/* ng-select css */
-/* Style when highlighting a search. */
-
-.ui-select-highlight {
-  font-weight: bold;
-}
-
-.ui-select-offscreen {
-  clip: rect(0 0 0 0) !important;
-  width: 1px !important;
-  height: 1px !important;
-  border: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-  position: absolute !important;
-  outline: 0 !important;
-  left: 0 !important;
-  top: 0 !important;
-}
-
-.ui-select-choices-row:hover {
-  background-color: #f5f5f5;
-}
-
-/* Select2 theme */
-
-/* Mark invalid Select2 */
-
-.ng-dirty.ng-invalid > a.select2-choice {
-  border-color: #D44950;
-}
-
-.select2-result-single {
-  padding-left: 0;
-}
-
-.select2-locked > .select2-search-choice-close, .select-locked > .ui-select-match-close {
-  display: none;
-}
-
-body > .select2-container.open {
-  z-index: 9999;
-}
-
-/* Handle up direction Select2 */
-
-.ui-select-container[theme="select2"].direction-up {
-  .ui-select-match {
-    border-radius: 0 0 4px 4px;
-  }
-
-  .ui-select-dropdown {
-    border-radius: 4px 4px 0 0;
-    border-top: 1px solid;
-    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.25);
-    margin-top: -4px;
-
-    .select2-search {
-      margin-top: 4px;
-    }
-  }
-
-  &.select2-dropdown-open .ui-select-match {
-    border-bottom-color: #5897fb;
-  }
-}
-
-/* Selectize theme */
-/* Helper class to show styles when focus */
-
-.selectize-input.selectize-focus {
-  border-color: #007FBB !important;
-}
-
-/* Fix input width for Selectize theme */
-
-.selectize-control > {
-  .selectize-input > input, .selectize-dropdown {
-    width: 100%;
-  }
-}
-
-/* Fix dropdown width for Selectize theme */
-
-/* Mark invalid Selectize */
-
-.ng-dirty.ng-invalid > div.selectize-input {
-  border-color: #D44950;
-}
-
 .btn-default {
   background: var(--background-color);
   border-color: var(--background-color);
@@ -5351,14 +5244,6 @@ button, html [type="button"], [type="reset"], [type="submit"] {
   margin-top: 12px;
 }
 
-.ui-select-match .close {
-  line-height: 0.95 !important;
-}
-
-.ui-select-multiple input.ui-select-search {
-  padding: 4px 8px !important;
-}
-
 .reverse {
   top: auto !important;
 }
@@ -5871,7 +5756,9 @@ pre#pre {
 .ant-select-tree-dropdown .ant-select-not-found {
   color: var(--text-color);
 }
-
+ .ant-select-item-option-disabled{
+   opacity: .7;
+ }
 .ant-tree-switcher .ant-tree-switcher-icon,
 .ant-tree-switcher .ant-select-tree-switcher-icon {
   font-size: 13px;
@@ -6148,20 +6035,46 @@ aside.sidebar-hover-effect {
   z-index: 9990;
 }
 
+.ant-select-selection-placeholder{
+  color: var(--placholder-color)
+}
+.ant-picker-input > input::placeholder {
+  color: var(--placholder-color)
+}
+.ant-picker-input-placeholder > input {
+  color: var(--placholder-color)
+}
+
+.ant-input-affix-wrapper::placeholder {
+  color: var(--placholder-color)
+}
+
+.ant-input::placeholder {
+  color: var(--placholder-color)
+}
+.ant-input-number::placeholder {
+  color: var(--placholder-color)
+}
+.ant-input-number-input::placeholder {
+  color: var(--placholder-color)
+}
+.ant-mention-wrapper .ant-mention-editor::placeholder {
+  color: var(--placholder-color)
+}
 ::placeholder {
-  color: rgba(0, 0, 0, .35);
+  color: var(--placholder-color)
 }
 
 :-moz-placeholder {
-  color: rgba(0, 0, 0, .35);
+  color: var(--placholder-color)
 }
 
 ::-moz-placeholder {
-  color: rgba(0, 0, 0, .35);
+  color: var(--placholder-color)
 }
 
 :-ms-input-placeholder {
-  color: rgba(0, 0, 0, .35);
+  color: var(--placholder-color)
 }
 
 .highlighted {
@@ -6262,6 +6175,7 @@ tr.tr-border td:first-child {
 
 .ant-picker.ant-picker-disabled {
   background: transparent;
+  border-color: var(--border-color)
 }
 .ant-input-number-handler-up-inner,
 .ant-input-number-handler-down-inner{
@@ -6388,10 +6302,6 @@ tr.tr-border td:first-child {
 .ant-tabs-nav .ant-tabs-tab:hover,
 .ant-pagination-item-active a {
   color: var(--black);
-}
-
-.ant-pagination-disabled {
-  opacity: .7;
 }
 
 .ant-table-placeholder {
@@ -6879,6 +6789,9 @@ span.cm-error {
   color: var(--text-hover) !important;
 }
 
+.ant-pagination-disabled {
+  opacity: 0.7;
+}
 .ant-dropdown-menu-submenu-disabled {
   opacity: 0.7;
 

@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 
@@ -6,7 +6,7 @@ import {DataService} from '../../../../services/data.service';
   selector: 'app-file-order',
   templateUrl: './file-order.component.html'
 })
-export class FileOrderComponent implements OnChanges {
+export class FileOrderComponent implements OnChanges, OnInit {
   @Input() preferences: any;
   @Input() schedulerId: any;
   @Input() data: any;
@@ -16,6 +16,7 @@ export class FileOrderComponent implements OnChanges {
   @Input() isTrash: any;
 
   invalidMsg: string;
+  zones = [];
   agents = [];
   workflowTree = [];
   fileOrder: any = {};
@@ -43,7 +44,11 @@ export class FileOrderComponent implements OnChanges {
     }
   }
 
-  private getAgents() {
+  ngOnInit(): void {
+    this.zones = this.coreService.getTimeZoneList();
+  }
+
+  private getAgents(): void {
     if (this.agents.length === 0) {
       this.coreService.post('agents/names', {controllerId: this.schedulerId}).subscribe((res: any) => {
         this.agents = res.agentNames ? res.agentNames.sort() : [];
@@ -51,7 +56,7 @@ export class FileOrderComponent implements OnChanges {
     }
   }
 
-  private getWorkflows() {
+  private getWorkflows(): void {
     if (this.workflowTree.length === 0) {
       this.coreService.post('tree', {
         controllerId: this.schedulerId,
@@ -63,7 +68,7 @@ export class FileOrderComponent implements OnChanges {
     }
   }
 
-  private getObject() {
+  private getObject(): void {
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
     this.coreService.post(URL, {
       id: this.data.id
@@ -95,7 +100,7 @@ export class FileOrderComponent implements OnChanges {
     });
   }
 
-  private validateJSON(json) {
+  private validateJSON(json): void {
     const obj = this.coreService.clone(json);
     obj.path = this.data.path;
     this.coreService.post('inventory/' + this.objectType + '/validate', obj).subscribe((res: any) => {
@@ -104,7 +109,7 @@ export class FileOrderComponent implements OnChanges {
     });
   }
 
-  private setErrorMessage(res) {
+  private setErrorMessage(res): void {
     if (res.invalidMsg) {
       this.invalidMsg = res.invalidMsg;
       if (res.invalidMsg.match('workflowPath')) {
@@ -117,7 +122,7 @@ export class FileOrderComponent implements OnChanges {
     }
   }
 
-  rename(inValid) {
+  rename(inValid): void {
     if (this.data.id === this.fileOrder.id && this.data.name !== this.fileOrder.name) {
       if (!inValid) {
         const data = this.coreService.clone(this.data);
@@ -172,7 +177,7 @@ export class FileOrderComponent implements OnChanges {
     }
   }
 
-  updateList(node) {
+  updateList(node): void {
     let obj: any = {
       path: node.key,
       objectTypes: ['WORKFLOW']
@@ -199,23 +204,23 @@ export class FileOrderComponent implements OnChanges {
     });
   }
 
-  onExpand(e) {
+  onExpand(e): void {
     this.loadData(e.node, null);
   }
 
-  deploy() {
+  deploy(): void {
     this.dataService.reloadTree.next({deploy: this.fileOrder});
   }
 
-  backToListView() {
+  backToListView(): void {
     this.dataService.reloadTree.next({back: this.fileOrder});
   }
 
-  navToWorkflow() {
-    this.dataService.reloadTree.next({navigate: {name: this.fileOrder.configuration.workflowPath,  type: 'WORKFLOW'}});
+  navToWorkflow(): void {
+    this.dataService.reloadTree.next({navigate: {name: this.fileOrder.configuration.workflowPath, type: 'WORKFLOW'}});
   }
 
-  saveJSON() {
+  saveJSON(): void {
     if (this.isTrash) {
       return;
     }

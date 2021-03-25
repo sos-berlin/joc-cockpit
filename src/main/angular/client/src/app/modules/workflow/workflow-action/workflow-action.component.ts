@@ -1,6 +1,7 @@
 import {Component, OnInit, Input} from '@angular/core';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import * as _ from 'underscore';
 import * as moment from 'moment';
 import {CoreService} from '../../../services/core.service';
@@ -54,8 +55,6 @@ export class AddOrderModalComponent implements OnInit {
         const val: any = v;
         if (!val.default && val.default !== false && val.default !== 0) {
           this.arguments.push({name: k, type: val.type, isRequired: true});
-        } else{
-          this.arguments.push({name: k, value: val.default, type: val.type, isRequired: false});
         }
         return {name: k, value: v};
       });
@@ -69,6 +68,8 @@ export class AddOrderModalComponent implements OnInit {
       argument.type = obj.type;
       if (!obj.default && obj.default !== false && obj.default !== 0) {
         argument.isRequired = true;
+      } else{
+        argument.value = obj.default;
       }
     }
     this.updateSelectItems();
@@ -86,6 +87,10 @@ export class AddOrderModalComponent implements OnInit {
         }
       }
     }
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.arguments, event.previousIndex, event.currentIndex);
   }
 
   onSubmit(): void {

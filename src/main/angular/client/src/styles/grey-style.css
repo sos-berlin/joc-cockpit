@@ -7,6 +7,7 @@
   --text-color: rgba(255, 255, 255, .87);
   --text-hover: rgba(0, 0, 0, .87);
   --text-muted: rgba(255, 255, 255, .67);
+  --placholder-color: rgba(255, 255, 255, .5);
   --menu-hover: rgba(78, 84, 92, .7);
   --box-shadow: rgba(255, 255, 255, .1);
   --border-color: rgba(255, 255, 255, .3);
@@ -510,47 +511,6 @@ div.order-panel div {
 
 .nvd3 .nv-axis path {
   stroke: #fff
-}
-
-::placeholder {
-  color: rgba(255, 255, 255, .65);
-}
-
-:-moz-placeholder {
-  color: rgba(255, 255, 255, .65);
-}
-
-::-moz-placeholder {
-  color: rgba(255, 255, 255, .65);
-}
-
-:-ms-input-placeholder {
-  color: rgba(255, 255, 255, .65);
-}
-
-
-.pagination > li > a,
-.pagination > li > span {
-  color: inherit !important;
-  background-color: transparent !important;
-  border-color: rgba(216, 239, 255, .13) !important;
-  border-radius: 0 !important
-}
-
-.pagination > li > a:focus,
-.pagination > li > a:hover,
-.pagination > li > span:focus,
-.pagination > li > span:hover {
-  border-color: rgba(218, 239, 255, .13);
-  background-color: rgba(255, 255, 255, .06);
-  color: inherit
-}
-
-.pagination > .active > a,
-.pagination > .active > span {
-  color: #fff !important;
-  background-color: var(--primary) !important;
-  border-color: #e98514
 }
 
 .box-shadow {

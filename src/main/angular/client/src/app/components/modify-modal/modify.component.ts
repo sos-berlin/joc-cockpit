@@ -1,8 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {CoreService} from '../../services/core.service';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import * as moment from 'moment';
 import * as _ from 'underscore';
+import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {CoreService} from '../../services/core.service';
 
 @Component({
   selector: 'app-change-parameter',
@@ -64,8 +65,6 @@ export class ChangeParameterModalComponent implements OnInit {
         if (!isExist && !this.variable) {
           if (!val.default && val.default !== false && val.default !== 0) {
             this.variables.push({name: k, type: val.type, isRequired: true});
-          } else {
-            this.variables.push({name: k, value: val.default, type: val.type, isRequired: false});
           }
         }
         return {name: k, value: v};
@@ -80,6 +79,8 @@ export class ChangeParameterModalComponent implements OnInit {
       variable.type = obj.type;
       if (!obj.default && obj.default !== false && obj.default !== 0) {
         variable.isRequired = true;
+      } else{
+        variable.value = obj.default;
       }
     }
     this.updateSelectItems();
@@ -120,6 +121,10 @@ export class ChangeParameterModalComponent implements OnInit {
         this.variables.push(param);
       }
     }
+  }
+
+  drop(event: CdkDragDrop<string[]>): void {
+    moveItemInArray(this.variables, event.previousIndex, event.currentIndex);
   }
 
   onKeyPress($event): void {

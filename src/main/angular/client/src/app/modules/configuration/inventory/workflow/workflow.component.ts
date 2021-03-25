@@ -118,8 +118,7 @@ export class UpdateWorkflowComponent implements OnInit {
     }
   }
 
-  drop(event: CdkDragDrop<string[]>) {
-    console.log('????????', this.variableDeclarations.parameters)
+  drop(event: CdkDragDrop<string[]>): void {
     moveItemInArray(this.variableDeclarations.parameters, event.previousIndex, event.currentIndex);
   }
 
@@ -195,8 +194,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   updateSelectItems(): void {
-    this.mentionValueList = [...this.variableList, ...this.selectedNode.obj.defaultArguments];
-    this.filteredOptions = [...this.variableList, ...this.selectedNode.obj.defaultArguments];
+    let arr = this.selectedNode.obj.defaultArguments.filter(option => option.name);
+    this.mentionValueList = [...this.variableList, ...arr];
+    this.filteredOptions = [...this.variableList, ...arr];
   }
 
   reloadScript(): void {
@@ -892,7 +892,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       try {
         if (this.editor) {
           this.editor.destroy();
-          mxOutline.prototype.destroy()
+          mxOutline.prototype.destroy();
           this.editor = null;
         }
       } catch (e) {
@@ -4566,7 +4566,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               if (job.defaultArguments) {
                 self.coreService.convertArrayToObject(job, 'defaultArguments', true);
               }
-              if (job.executable.env) {
+              if (job.executable && job.executable.env) {
                 self.coreService.convertArrayToObject(job.executable, 'env', true);
               }
               if (job.returnCodeMeaning && !_.isEmpty(job.returnCodeMeaning)) {
@@ -4588,7 +4588,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 delete _job['defaultArguments'];
               }
 
-              if (!_job.executable.env || typeof _job.executable.env === 'string' || _job.executable.env.length === 0) {
+              if (_job.executable && (!_job.executable.env || typeof _job.executable.env === 'string' || _job.executable.env.length === 0)) {
                 delete _job.executable['env'];
               }
               if (!_.isEqual(_job, job)) {
@@ -6073,7 +6073,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   private clearCopyObj() {
     this.copyId = null;
-    $('#toolbar').find('img').each(function (index) {
+    $('#toolbar').find('img').each(function(index) {
       if (index === 12) {
         $(this).addClass('disable-link');
       }

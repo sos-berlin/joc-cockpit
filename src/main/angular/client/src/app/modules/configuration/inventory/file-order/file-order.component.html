@@ -123,6 +123,21 @@
                    name="pattern" [(ngModel)]="fileOrder.configuration.pattern" (blur)="saveJSON()">
           </div>
         </div>
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label" translate>common.label.timeZone</label>
+          <div class="col-sm-6">
+            <nz-select nzShowSearch name="timeZone" nzAllowClear [(ngModel)]="fileOrder.configuration.timeZone" (ngModelChange)="saveJSON()">
+              <nz-option *ngFor="let zone of zones" [nzValue]="zone" [nzLabel]="zone"></nz-option>
+            </nz-select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label" translate>workflow.label.delay</label>
+          <div class="col-sm-6">
+            <nz-input-number [appAutofocus]="true" [nzMin]="0" [nzStep]="1" name="delay"
+                             [(ngModel)]="fileOrder.configuration.delay"></nz-input-number>
+          </div>
+        </div>
       </form>
     </div>
   </div>

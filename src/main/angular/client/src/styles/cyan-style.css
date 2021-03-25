@@ -11,10 +11,11 @@
   --bg-footer: #00485f;
   --text-color: rgba(255, 255, 255, .87);
   --text-hover: rgba(0, 0, 0, .87);
+  --placholder-color: rgba(255, 255, 255, .5);
   --text-muted: rgba(255, 255, 255, .67);
   --box-shadow: rgba(0, 0, 0, .1);
   --border-color: rgba(255, 255, 255, .3);
-  --dark-border-color: rgba(0, 0, 0, .2);
+  --dark-border-color: rgba(0, 0, 0, .35);
   --menu-hover: rgba(0, 48, 64, .7);
   --bg-dimgrey: #999;
   --green: #9ccc65;
@@ -48,11 +49,6 @@ pre, .syntax-box {
 .list-group-item.active > .label,
 .nav-pills > .active > a > .label {
   color: rgba(0, 0, 0, .87)
-}
-
-.form-control,
-.input-group-addon {
-  border-color: var(--border-color)
 }
 
 .nav-active-border2 > li.dropdown-separator .separator {
@@ -554,22 +550,6 @@ div.order-panel div {
   stroke: var(--white)
 }
 
-::placeholder {
-  color: rgba(255, 255, 255, .65);
-}
-
-:-moz-placeholder {
-  color: rgba(255, 255, 255, .65);
-}
-
-::-moz-placeholder {
-  color: rgba(255, 255, 255, .65);
-}
-
-:-ms-input-placeholder {
-  color: rgba(255, 255, 255, .65);
-}
-
 .box-shadow {
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .12) !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, .12) !important
@@ -974,18 +954,6 @@ span ul li a {
 .modal-open input:-webkit-autofill, .modal-open input:-webkit-autofill:hover,
 .modal-open input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0 100px var(--bg-footer) inset;
-}
-
-.ant-table-bordered .ant-table-thead > tr:not(:last-child) > th, .ant-table-small.ant-table-bordered .ant-table-thead > tr > th:last-child {
-  border-color: var(--border-color);
-}
-
-.ant-table-small.ant-table-bordered {
-  border-right: 1px solid var(--border-color);
-}
-
-.ant-table-small.ant-table-bordered .ant-table-placeholder, .ant-table-small > .ant-table-content .ant-table-row:last-child td {
-  border-bottom: 1px solid var(--border-color);
 }
 
 .ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {

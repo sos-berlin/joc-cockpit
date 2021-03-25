@@ -26,7 +26,7 @@ export class AddWidgetModalComponent {
   constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
   }
 
-  addWidgetFunc(widget) {
+  addWidgetFunc(widget): void {
     this.addWidget(widget, this.self);
   }
 }
@@ -40,10 +40,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   options: GridsterConfig = {};
   dashboard: Array<any> = [];
   editLayoutObj = false;
+  count = 0;
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
-  _tempDashboard: Array<any> = [];
+  tempDashboard: Array<any> = [];
   dashboardLayout: Array<any> = [];
   widgets: Array<any> = [];
   subscription: any;
@@ -137,7 +138,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   editLayout(): void {
-    this._tempDashboard = this.coreService.clone(this.dashboard);
+    this.tempDashboard = this.coreService.clone(this.dashboard);
     this.editLayoutObj = true;
     this.initConfig(true);
   }
@@ -164,7 +165,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   cancelWidget(): void {
     this.editLayoutObj = false;
-    this.dashboard = this.coreService.clone(this._tempDashboard);
+    this.dashboard = this.coreService.clone(this.tempDashboard);
     this.initConfig(false);
     this.dataService.refreshWidget(this.widgets);
   }
@@ -175,7 +176,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     widget.visible = false;
     this.dashboard = this.dashboard.filter((item) => {
       return item.name !== widget.name;
-    })
+    });
   }
 
   addWidgetDialog(): void {
@@ -217,8 +218,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private init(): void {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    } else {
+    } else if (this.count < 8) {
       setTimeout(() => {
+        ++this.count;
         this.init();
       }, 100);
       return;

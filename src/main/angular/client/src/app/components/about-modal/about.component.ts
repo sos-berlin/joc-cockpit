@@ -16,7 +16,7 @@ import {CoreService} from '../../services/core.service';
     <div class="modal-body p-a">
       <div class="row" *ngIf="versionData">
         <div class=" col-sm-3">
-          <img src="./assets/images/job_scheduler_rabbit_circle_colour.png" alt="" class="p-l" width="100">
+          <img src="./assets/images/js7-logo.png" alt="" class="p-l" width="100">
         </div>
         <div class=" col-sm-9">
           <div class="row">

@@ -11,6 +11,7 @@
   --bg-dimgrey: #7c8d9e;
   --text-color: rgba(255, 255, 255, .87);
   --text-hover: rgba(0, 0, 0, .87);
+  --placholder-color: rgba(255, 255, 255, .5);
   --text-muted: rgba(255, 255, 255, .67);
   --menu-hover: rgba(70, 82, 95, .7);
   --blue: #1690d4;
@@ -21,7 +22,7 @@
   --bg-mangenta: #b966b9;
   --bg-red: #ff2727;
   --border-color: rgba(233, 244, 255, .18);
-  --dark-border-color: rgba(255, 255, 255, .3);
+  --dark-border-color: rgba(233, 244, 255, .22);
   --box-shadow: rgba(255, 255, 255, 0.1);
   --row-selected: rgba(66, 89, 109, .87);
   --date-selected: rgba(235, 136, 20, .4);
@@ -433,46 +434,6 @@ div.order-panel div {
 
 .nvd3 .nv-axis path {
   stroke: #fff
-}
-
-::placeholder {
-  color: rgba(255, 255, 255, .65);
-}
-
-:-moz-placeholder {
-  color: rgba(255, 255, 255, .65);
-}
-
-::-moz-placeholder {
-  color: rgba(255, 255, 255, .65);
-}
-
-:-ms-input-placeholder {
-  color: rgba(255, 255, 255, .65);
-}
-
-.pagination > li > a,
-.pagination > li > span {
-  color: inherit !important;
-  background-color: transparent !important;
-  border-color: rgba(216, 239, 255, .13) !important;
-  border-radius: 0 !important
-}
-
-.pagination > li > a:focus,
-.pagination > li > a:hover,
-.pagination > li > span:focus,
-.pagination > li > span:hover {
-  border-color: rgba(218, 239, 255, .13);
-  background-color: rgba(255, 255, 255, .06);
-  color: inherit
-}
-
-.pagination > .active > a,
-.pagination > .active > span {
-  color: #fff !important;
-  background-color: #eb8814 !important;
-  border-color: #e98514
 }
 
 .box-shadow {

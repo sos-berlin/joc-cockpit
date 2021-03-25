@@ -14,19 +14,11 @@
   --default-btn-hover: #f9f9f9;
 }
 .bg-blue-color {
-  background-color: #fff !important
+  background-color: #fafafa !important
 }
 
 .text-white, .text-white:hover, a[href]:hover span.text-white {
   color: #4d4d4d !important
-}
-
-.fa-fa-color {
-  border-bottom: 1px solid #ccc
-}
-
-.b-b-transparent {
-  border-bottom: 1px solid transparent
 }
 
 .cluster-rect, .rect {
