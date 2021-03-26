@@ -6360,86 +6360,86 @@ tr.tr-border td:first-child {
   color: #f44455 !important
 }
 
-span.cm-meta {
+.cm-s-default .cm-meta {
   color: gray
 }
 
-span.cm-keyword {
+.cm-s-default .cm-keyword {
   line-height: 1em;
   font-weight: 700;
   color: #7f0055
 }
 
-span.cm-atom {
+.cm-s-default .cm-atom {
   color: #e08d00
 }
 
-span.cm-number {
+.cm-s-default .cm-number {
   color: #164
 }
 
-span.cm-def {
+.cm-s-default .cm-def {
   color: #00f
 }
 
-span.cm-variable {
+.cm-s-default .cm-variable {
   color: #000
 }
 
-span.cm-variable-2 {
+.cm-s-default .cm-variable-2 {
   color: #0000c0
 }
 
-span.cm-type, span.cm-variable-3 {
+.cm-s-default .cm-type, .cm-s-default .cm-variable-3 {
   color: #0000c0
 }
 
-span.cm-property {
+.cm-s-default .cm-property {
   color: #000
 }
 
-span.cm-operator {
+.cm-s-default .cm-operator {
   color: #000;
   font-weight: 700
 }
 
-span.cm-comment {
+.cm-s-default .cm-comment {
   color: #3f7f5f
 }
 
-span.cm-string {
+.cm-s-default .cm-string {
   color: var(--primary)
 }
 
-span.cm-string-2 {
+.cm-s-default .cm-string-2 {
   color: #f50
 }
 
-span.cm-qualifier {
+.cm-s-default .cm-qualifier {
   color: #555
 }
 
-span.cm-builtin {
+.cm-s-default .cm-builtin {
   color: #30a
 }
 
-span.cm-bracket {
+.cm-s-default.cm-bracket {
   color: #cc7
 }
 
-span.cm-tag {
+.cm-s-default .cm-tag {
   color: #170
 }
 
-span.cm-attribute {
+.cm-s-default .cm-attribute{
   color: #c4008a
 }
 
-span.cm-link {
+.cm-s-default .cm-link {
   color: #219
 }
 
-span.cm-error {
+.cm-s-default .cm-error {
   color: red
 }
 
