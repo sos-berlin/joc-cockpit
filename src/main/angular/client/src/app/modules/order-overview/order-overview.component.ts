@@ -107,8 +107,6 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
           this.colorScheme.domain.push('#7ab97a');
         } else if (prop === 'suspended') {
           this.colorScheme.domain.push('#FF8d1a');
-        } else if (prop === 'calling') {
-          this.colorScheme.domain.push('#f37891');
         } else if (prop === 'waiting') {
           this.colorScheme.domain.push('#cccc00');
         } else if (prop === 'blocked') {
@@ -174,7 +172,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     {status: 'INPROGRESS', text: 'incomplete'},
     {status: 'RUNNING', text: 'running'},
     {status: 'SUSPENDED', text: 'suspended'},
-    {status: 'CALLING', text: 'calling'},
     {status: 'WAITING', text: 'waiting'},
     {status: 'BLOCKED', text: 'blocked'},
     {status: 'FAILED', text: 'failed'},

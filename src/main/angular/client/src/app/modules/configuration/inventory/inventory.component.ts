@@ -524,7 +524,7 @@ export class DeployComponent implements OnInit {
     recursive(this.nodes);
   }
 
-  deploy() {
+  deploy(): void {
     this.submitted = true;
     if (this.releasable) {
       this.getReleaseObject();
@@ -588,7 +588,7 @@ export class DeployComponent implements OnInit {
     });
   }
 
-  remove() {
+  remove(): void {
     if (this.nodes.length > 0) {
       this.submitted = true;
       const obj: any = {delete: {deployConfigurations: []}};
@@ -622,7 +622,7 @@ export class DeployComponent implements OnInit {
     }
   }
 
-  cancel() {
+  cancel(): void {
     this.activeModal.dismiss();
   }
 }
@@ -671,7 +671,7 @@ export class ExportComponent implements OnInit {
               private authService: AuthService, private inventoryService: InventoryService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.exportObj.controllerId = this.schedulerIds.selected;
     this.securityLevel = sessionStorage.securityLevel;
     if (sessionStorage.comments) {
@@ -694,7 +694,7 @@ export class ExportComponent implements OnInit {
     this.buildTree();
   }
 
-  checkFileName() {
+  checkFileName(): void {
     if (this.exportObj.filename) {
       const ext = this.exportObj.filename.split('.').pop();
       if (ext) {
@@ -709,7 +709,7 @@ export class ExportComponent implements OnInit {
     }
   }
 
-  buildTree() {
+  buildTree(): void {
     const obj: any = {
       folder: this.path || '/',
       onlyValidObjects: false,
@@ -762,7 +762,7 @@ export class ExportComponent implements OnInit {
     });
   }
 
-  onchangeSigning() {
+  onchangeSigning(): void {
     if (this.exportObj.forSigning) {
       this.filter.valid = true;
     }
@@ -787,12 +787,12 @@ export class ExportComponent implements OnInit {
     recursive(this.nodes);
   }
 
-  collapseAll() {
+  collapseAll(): void {
     this.isExpandAll = false;
     this.expandCollapseRec(this.nodes);
   }
 
-  private expandCollapseRec(node) {
+  private expandCollapseRec(node): void {
     for (let i = 0; i < node.length; i++) {
       if (node[i].children && node[i].children.length > 0) {
         const a = this.treeCtrl.getTreeNodeByKey(node[i].key);
@@ -802,7 +802,7 @@ export class ExportComponent implements OnInit {
     }
   }
 
-  filterList() {
+  filterList(): void {
     this.nodes = [{path: '/', key: '/', name: '/', children: [], isFolder: true}];
     const arr = this.actualResult.filter((value) => {
       if (value.objectType === 'FOLDER') {
@@ -863,7 +863,7 @@ export class ExportComponent implements OnInit {
     }, 0);
   }
 
-  private preselected(node) {
+  private preselected(node): void {
     node.checked = true;
     for (let i = 0; i < node.children.length; i++) {
       if (node.children[i].type) {
@@ -875,7 +875,7 @@ export class ExportComponent implements OnInit {
     }
   }
 
-  private getChildTree() {
+  private getChildTree(): void {
     const self = this;
 
     function recursive(nodes) {
@@ -1030,13 +1030,13 @@ export class ExportComponent implements OnInit {
     recursive(this.nodes);
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.submitted = true;
     this.getJSObject();
     this.export();
   }
 
-  export() {
+  export(): void {
     if ((this.object.deployConfigurations && this.object.deployConfigurations.length > 0) ||
       (this.object.draftConfigurations.length && this.object.draftConfigurations.length > 0) ||
       (this.object.releasedConfigurations && this.object.releasedConfigurations.length > 0) ||
@@ -1109,7 +1109,7 @@ export class ExportComponent implements OnInit {
     }
   }
 
-  cancel() {
+  cancel(): void {
     this.activeModal.dismiss();
   }
 }
@@ -1633,7 +1633,7 @@ export class UploadModalComponent implements OnInit {
     this.uploader.queue[0].remove();
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.submitted = true;
     setTimeout(() => {
       this.activeModal.close(this.data);
@@ -1663,7 +1663,9 @@ export class CreateObjectModalComponent implements OnInit {
     } else if (this.copy) {
       this.settings = JSON.parse(sessionStorage.$SOS$COPY);
     }
-    this.object.originalName = this.copy.name;
+    if (this.copy) {
+      this.object.originalName = this.copy.name;
+    }
     if (this.settings) {
       this.object.suffix = this.settings.suffix;
       this.object.prefix = this.settings.prefix;

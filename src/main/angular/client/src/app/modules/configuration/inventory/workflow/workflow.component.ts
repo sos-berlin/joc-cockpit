@@ -1,4 +1,14 @@
-import {Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy, ChangeDetectorRef,
+  Component,
+  HostListener,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploader} from 'ng2-file-upload';
 import {TranslateService} from '@ngx-translate/core';
@@ -42,6 +52,7 @@ const x2js = new X2JS();
 
 @Component({
   selector: 'app-edit-workflow-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './edit-workflow-dialog.html'
 })
 export class UpdateWorkflowComponent implements OnInit {
@@ -58,7 +69,7 @@ export class UpdateWorkflowComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService, public toasterService: ToasterService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (this.data) {
       this.workflowName = this.data.name;
     }
@@ -135,6 +146,7 @@ export class UpdateWorkflowComponent implements OnInit {
 
 @Component({
   selector: 'app-job-content',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './job-text-editor.html'
 })
 export class JobComponent implements OnInit, OnChanges, OnDestroy {
@@ -163,7 +175,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   subscription: Subscription;
 
-  constructor(private coreService: CoreService, private modalService: NgbModal,
+  constructor(private coreService: CoreService, private modalService: NgbModal, private ref: ChangeDetectorRef,
               private workflowService: WorkflowService, private dataService: DataService) {
     this.subscription = dataService.reloadWorkflowError.subscribe(res => {
       this.error = res.error;
@@ -203,6 +215,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.isDisplay = false;
     setTimeout(() => {
       this.isDisplay = true;
+      this.ref.detectChanges();
     }, 5);
   }
 
@@ -233,6 +246,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     modalRef.componentInstance.script = this.selectedNode.job.executable.script;
     modalRef.result.then((result) => {
       this.selectedNode.job.executable.script = result;
+      this.ref.detectChanges();
     }, () => {
     });
   }
@@ -329,7 +343,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.selectedNode.job.executable.env.splice(index, 1);
   }
 
-  upperCase(env) {
+  upperCase(env): void {
     if (env.name) {
       env.name = env.name.toUpperCase();
       if (!env.value) {
@@ -502,6 +516,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
 @Component({
   selector: 'app-script-content',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './script-editor.html'
 })
 export class ScriptEditorComponent {
@@ -519,17 +534,18 @@ export class ScriptEditorComponent {
   constructor(public activeModal: NgbActiveModal) {
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.activeModal.close(this.script);
   }
 
-  execCommand(type) {
+  execCommand(type): void {
     this.cm.codeMirror.execCommand(type);
   }
 }
 
 @Component({
   selector: 'app-expression-content',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './expression-editor.html'
 })
 export class ExpressionComponent implements OnInit {
@@ -6071,7 +6087,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  private clearCopyObj() {
+  private clearCopyObj(): void {
     this.copyId = null;
     $('#toolbar').find('img').each(function(index) {
       if (index === 12) {
@@ -6080,7 +6096,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     });
   }
 
-  private storeJSON() {
+  private storeJSON(): void {
     setTimeout(() => {
       if (this.editor && this.editor.graph && !this.implicitSave) {
         this.noSave = true;
@@ -6093,11 +6109,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }, 150);
   }
 
-  private openSideBar(id) {
+  private openSideBar(id): void {
     this.error = true;
     if (this.editor.graph && id) {
       this.dataService.reloadWorkflowError.next({error: this.error, msg: this.invalidMsg});
       this.editor.graph.setSelectionCells([this.editor.graph.getModel().getCell(id)]);
+      this.initEditorConf(this.editor, false, true);
     }
   }
 

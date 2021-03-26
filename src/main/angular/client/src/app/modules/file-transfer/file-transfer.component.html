@@ -159,9 +159,9 @@
           </div>
           <div class="hide" [ngClass]="{'show-block':object.fileTransfers.length>0}">
             <button class="hide btn btn-grey btn-sm m-l-12"
-                    [ngClass]="{'show-block':permission.YADE.execute.transferStart}"
+                    [ngClass]="{'show-block':permission && permission.YADE && permission.YADE.execute.transferStart}"
                     (click)="restartAllTransfer()"><i class="fa fa-repeat"></i>&nbsp;
-              <span class="hidden-sm-down" translate>common.button.restart</span></button>
+              <span class="hidden-sm-down" translate>fileTransfer.button.restart</span></button>
           </div>
         </div>
       </div>
@@ -226,7 +226,7 @@
         >
           <thead>
           <tr>
-            <th *ngIf="permission.YADE.execute.transferStart" class="chk" [nzShowCheckbox]="true"
+            <th *ngIf="permission && permission.YADE && permission.YADE.execute.transferStart" class="chk" [nzShowCheckbox]="true"
                 [(nzChecked)]="checkAllFileTransfers.checked"
                 [nzIndeterminate]="checkAllFileTransfers.indeterminate"
                 (nzCheckedChange)="checkAllFileTransfersFnc()">
@@ -291,7 +291,7 @@
                  class="fa fa-caret-down "></i></a>
 
             </th>
-            <th (click)="sort('error.message')"><a>
+            <th width="20%" (click)="sort('error.message')"><a>
               <span class="p-r-xs" translate>fileTransfer.label.lastErrorMessage</span>
               <i *ngIf="yadeFilters.filter.sortBy == 'error.message' && !yadeFilters.reverse"
                  class="fa fa-caret-up "></i>
@@ -325,7 +325,7 @@
           <ng-template ngFor let-transfer
                        [ngForOf]="ajaxTable.data | orderBy: yadeFilters.filter.sortBy:yadeFilters.reverse">
             <tr>
-               <td *ngIf="permission.YADE.execute.transferStart" [nzShowCheckbox]="true"
+               <td *ngIf="permission && permission.YADE && permission.YADE.execute.transferStart" [nzShowCheckbox]="true"
                   [nzDisabled]="transfer.state._text=='SUCCESSFUL'"
                   [(nzChecked)]="transfer.checked"
                   [nzIndeterminate]="transfer.indeterminate"
@@ -341,7 +341,7 @@
                     <ul nz-menu>
                       <li nz-menu-item
                           *ngIf="transfer.permission.execute.transferStart && transfer.state._text!='SUCCESSFUL'">
-                        <a (click)="restartTransfer(transfer)" translate>common.button.restart</a>
+                        <a (click)="restartTransfer(transfer)" translate>fileTransfer.button.restart</a>
                       </li>
                       <li nz-menu-item>
                         <a (click)="coreService.copyLink('fileTransfer',transfer.id)" translate>common.button.copyLinkToObject</a>
@@ -350,8 +350,8 @@
                   </nz-dropdown-menu>
                 </div>
               </td>
-              <td>
-                <span class="show-in-single-line">
+              <td noWrap>
+                <span>
                   <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
                      *ngIf="!transfer.show" (click)="showTransferFuc(transfer);"></i>
                   <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
@@ -382,7 +382,7 @@
             <tr *ngIf="transfer.show">
               <td></td>
               <td colspan="13" style="padding: 0 !important;">
-                <nz-table class="m-a-0 inner-table" [nzSize]="'small'" [nzShowPagination]="false">
+                <nz-table class="m-a-0 inner-table" [nzData]="['']" [nzSize]="'small'" [nzShowPagination]="false">
                   <thead>
                   <tr>
                     <th><span translate>fileTransfer.label.sourceHostUser</span></th>
@@ -431,6 +431,7 @@
                     <td>
                       <span *ngIf="transfer.jump" [innerHtml]="transfer.jump.protocol"></span>
                     </td>
+                    <td><span [innerHtml]="transfer.workflowPath"></span></td>
                     <td><span [innerHtml]="transfer.orderId"></span></td>
                   </tr>
                   </tbody>
@@ -485,8 +486,8 @@
       </div>
       <div class="w-half label-top" *ngIf="ajaxTable.data.length >0"><span
         translate>common.label.total</span> {{data.length}}
-        <span *ngIf="ajaxTable.data.length >1" translate>fileTransfer.label.noFilesFound</span>
-        <span *ngIf="ajaxTable.data.length ==1" translate>fileTransfer.label.noFileFound</span>
+        <span *ngIf="ajaxTable.data.length >1" translate>fileTransfer.label.fileTransfersFound</span>
+        <span *ngIf="ajaxTable.data.length ==1" translate>fileTransfer.label.fileTransferFound</span>
       </div>
     </div>
   </div>

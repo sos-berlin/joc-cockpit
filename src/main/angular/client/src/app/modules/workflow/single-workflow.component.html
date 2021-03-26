@@ -51,10 +51,10 @@
                 <th><span translate>common.label.incomplete</span></th>
                 <th><span translate>common.label.running</span></th>
                 <th><span translate>common.label.suspended</span></th>
-                <th><span translate>common.label.calling</span></th>
                 <th><span translate>common.label.waiting</span></th>
                 <th><span translate>common.label.blocked</span></th>
                 <th><span translate>common.label.failed</span></th>
+                <th><span translate>common.label.completed</span></th>
               </tr>
               </thead>
               <tbody>
@@ -94,22 +94,19 @@
                   <td>
                     <a class="text-hover-primary" (click)="viewOrders(workflow)" [innerHtml]="workflow.numOfOrders || 0"></a>
                   </td>
-                  <td >
+                  <td>
                     <span [innerHtml]="workflow.ordersSummary.pending || 0"></span>
                   </td>
-                  <td >
+                  <td>
                     <span [innerHtml]="workflow.ordersSummary.inprogress || 0"></span>
                   </td>
-                  <td >
+                  <td>
                     <span [innerHtml]="workflow.ordersSummary.running || 0"></span>
                   </td>
-                  <td >
+                  <td>
                     <span [innerHtml]="workflow.ordersSummary.suspended || 0"></span>
                   </td>
-                  <td >
-                    <span [innerHtml]="workflow.ordersSummary.calling || 0"></span>
-                  </td>
-                  <td >
+                  <td>
                     <span [innerHtml]="workflow.ordersSummary.waiting || 0"></span>
                   </td>
                   <td >
@@ -117,6 +114,9 @@
                   </td>
                   <td >
                     <span [innerHtml]="workflow.ordersSummary.failed || 0"></span>
+                  </td>
+                  <td >
+                    <span [innerHtml]="workflow.ordersSummary.terminated || 0"></span>
                   </td>
                 </tr>
                 <tr *ngIf="workflow.show">

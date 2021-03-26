@@ -54,8 +54,8 @@
             </div>
             <div *ngIf="showPanel[id]" class="row">
               <div class="col-md-12">
-                <div class="p-a-sm p-b-0" style="max-height: 350px;overflow: auto">
-                  <nz-table class="m-a-0 inner-table" #ajaxTable nzSize="small" [nzLoading]="controller.loading"
+                <perfect-scrollbar class="p-a-sm p-b-0" style="max-height: 350px;overflow: auto">
+                  <nz-table #ajaxTable nzSize="small" [nzBordered]="true" [nzLoading]="controller.loading"
                             [nzData]="controller.agents" [nzShowPagination]="false" [nzFrontPagination]="false">
                     <thead>
                     <tr>
@@ -69,8 +69,8 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr [ngClass]="{'disabled-row': agent.disabled}" *ngFor="let agent of ajaxTable.data" class="cursor" (click)="editAgent(agent, controller)">
-                      <td class="menu">
+                    <tr [ngClass]="{'disabled-row': agent.disabled}" *ngFor="let agent of ajaxTable.data" class="cursor">
+                      <td>
                         <div class="btn-group dropdown pull-left m-r-sm">
                           <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
                           <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
@@ -88,16 +88,16 @@
                           </nz-dropdown-menu>
                         </div>
                       </td>
-                      <td><span [innerHtml]="agent.agentId"></span></td>
-                      <td><span [innerHtml]="agent.agentName"></span></td>
-                      <td><span [innerHtml]="agent.agentNameAliases || '-'"></span></td>
-                      <td><span [innerHtml]="agent.url"></span></td>
-                      <td>{{agent.disabled ? 'Yes' : 'No'}}</td>
-                      <td>{{agent.isClusterWatcher ? 'Yes' : 'No'}}</td>
+                      <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.agentId"></span></td>
+                      <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.agentName"></span></td>
+                      <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.agentNameAliases || '-'"></span></td>
+                      <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.url"></span></td>
+                      <td (click)="editAgent(agent, controller)">{{agent.disabled ? 'Yes' : 'No'}}</td>
+                      <td (click)="editAgent(agent, controller)">{{agent.isClusterWatcher ? 'Yes' : 'No'}}</td>
                     </tr>
                     </tbody>
                   </nz-table>
-                </div>
+                </perfect-scrollbar>
               </div>
             </div>
             <hr *ngIf="showPanel[id]">

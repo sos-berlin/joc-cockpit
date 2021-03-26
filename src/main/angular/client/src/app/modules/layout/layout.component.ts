@@ -5,6 +5,8 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToasterService} from 'angular2-toaster';
 import {Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
+import AES from 'crypto-js/aes';
+import Utf8 from 'crypto-js/enc-utf8';
 import {NzConfigService} from 'ng-zorro-antd/core/config';
 import {CoreService} from '../../services/core.service';
 import {DataService} from '../../services/data.service';
@@ -21,8 +23,8 @@ declare const $;
 export class LayoutComponent implements OnInit, OnDestroy {
 
   preferences: any = {};
-  schedulerIds: any = {};
-  permission: any = {};
+  schedulerIds: any;
+  permission: any;
   selectedScheduler: any = {};
   selectedController: any = {};
   remainingSessionTime: string;
@@ -35,8 +37,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
   subscription4: any = Subscription;
   subscription5: any = Subscription;
   isLogout = false;
+  loading = false;
+  isPermissionLoaded = true;
   isTouch = false;
   count = 0;
+  count2 = 0;
 
   @ViewChild(HeaderComponent, {static: false}) child;
   @ViewChild('customTpl', {static: true}) customTpl;
@@ -65,13 +70,15 @@ export class LayoutComponent implements OnInit, OnDestroy {
     });
     this.subscription5 = router.events
       .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd)).subscribe((e: any) => {
-        LayoutComponent.calculateHeight();
+        if (this.loading) {
+          LayoutComponent.calculateHeight();
+        }
         // close all open modals
         this.modalService.dismissAll();
       });
   }
 
-  static calculateHeight() {
+  static calculateHeight(): void {
     const navBar = $('#navbar1');
     if (navBar.hasClass('in')) {
       navBar.removeClass('in');
@@ -81,7 +88,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     $('.app-body').css('margin-top', headerHt + 'px');
   }
 
-  static checkNavHeader() {
+  static checkNavHeader(): void {
     const dom = $('#navbar1');
     if (dom && dom.hasClass('in')) {
       dom.removeClass('in');
@@ -89,7 +96,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  refresh(args) {
+  refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'ProblemEvent' && args.eventSnapshots[j].message) {
@@ -104,22 +111,141 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() {
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+  ngOnInit(): void {
+    ++this.count2;
+    if (this.count2 > 8) {
+      this.schedulerIds = {};
+      return;
+    }
+    if (this.authService.accessTokenId) {
+      if (this.authService.scheduleIds) {
+        this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+        this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, false);
+        this.init();
+      } else if (!this.schedulerIds) {
+        this.schedulerIds = {};
+        this.getSchedulerIds();
+      }
+    } else {
+      let userName;
+      if (localStorage.$SOS$REMEMBER === 'true' || localStorage.$SOS$REMEMBER === true) {
+        userName = AES.decrypt(localStorage.$SOS$FOO, '$SOSJS7');
+        userName = userName.toString(Utf8);
+      }
+      this.authenticate(userName);
+    }
+  }
+
+  private getComments(): void {
+    if (this.schedulerIds && this.schedulerIds.selected) {
+      this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, false);
+      this.coreService.post('joc/properties', {}).subscribe((result: any) => {
+        sessionStorage.$SOS$FORCELOGING = result.forceCommentsForAuditLog;
+        sessionStorage.comments = JSON.stringify(result.comments);
+        sessionStorage.showViews = JSON.stringify(result.showViews);
+        sessionStorage.securityLevel = result.securityLevel;
+        sessionStorage.defaultProfile = result.defaultProfileAccount;
+        sessionStorage.$SOS$COPY = JSON.stringify(result.copy);
+        sessionStorage.$SOS$RESTORE = JSON.stringify(result.restore);
+        this.ngOnInit();
+      }, () => {
+        this.ngOnInit();
+      });
+    } else {
+      this.schedulerIds = {};
+      this.loading = true;
+    }
+  }
+
+  private getPermissions(): void {
+    if (this.authService.scheduleIds) {
+      this.isPermissionLoaded = false;
+      this.schedulerIds = JSON.parse(this.authService.scheduleIds);
+      this.coreService.post('authentication/joc_cockpit_permissions', {controllerId: this.schedulerIds.selected}).subscribe((permission) => {
+        this.authService.setPermissions(permission);
+        this.authService.save();
+        if (this.schedulerIds) {
+          this.authService.savePermission(this.schedulerIds.selected);
+        } else {
+          this.authService.savePermission('');
+        }
+        this.isPermissionLoaded = true;
+        if (!sessionStorage.preferenceId) {
+          this.ngOnInit();
+        }
+      });
+    }
+  }
+
+  private getSchedulerIds(): void {
+    this.coreService.post('controller/ids', {}).subscribe((res: any) => {
+      if (res && res.controllerIds && res.controllerIds.length > 0) {
+        this.authService.setIds(res);
+        this.authService.save();
+        this.schedulerIds = res;
+        this.getComments();
+        this.getPermissions();
+      } else {
+        this.coreService.post('controllers/security_level', {}).subscribe((result: any) => {
+          this.checkSecurityControllers(result);
+        }, () => {
+          this.checkSecurityControllers(null);
+        });
+      }
+    }, () => {
+      this.getComments();
+      this.router.navigate(['/start-up']);
+    });
+  }
+
+  private checkSecurityControllers(res): void {
+    this.getComments();
+    if (res && res.controllers && res.controllers.length > 0) {
+      this.router.navigate(['/controllers']);
+    } else {
+      this.router.navigate(['/start-up']);
+    }
+  }
+
+  private authenticate(userName): any {
+    this.coreService.post('authentication/login', {userName}).subscribe((data) => {
+      this.authService.setUser(data);
+      this.authService.save();
+      this.getSchedulerIds();
+    }, () => {
+      const returnUrl = this.router.url.match(/login/) ? '/' : this.router.url;
+      this.router.navigate(['login'], {queryParams: {returnUrl}});
+    });
+  }
+
+  private init(): void {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    } else {
+      setTimeout(() => {
+        this.init();
+      }, 100);
+      return;
+    }
+    if (!this.isPermissionLoaded) {
+      setTimeout(() => {
+        this.init();
+      }, 50);
+      return;
     }
     this.permission = JSON.parse(this.authService.permission) || {};
-    this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, false);
+    this.loading = true;
     this.loadSettingConfiguration();
     this.count = parseInt(this.authService.sessionTimeout, 10) / 1000;
     this.loadScheduleDetail();
     this.calculateTime();
     this.nzConfigService.set('empty', {nzDefaultEmptyContent: this.customTpl});
-    LayoutComponent.calculateHeight();
+    setTimeout(() => {
+      LayoutComponent.calculateHeight();
+    }, 10);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     clearInterval(this.interval);
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
@@ -131,13 +257,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
 
   @HostListener('window:resize', ['$event'])
-  onResize() {
+  onResize(): void {
     LayoutComponent.calculateHeight();
     LayoutComponent.checkNavHeader();
   }
 
   @HostListener('window:click', ['$event'])
-  onClick() {
+  onClick(): void {
     if (!this.isLogout) {
       this.refreshSession();
     }
@@ -163,7 +289,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   changeScheduler(controller): void {
-    if(this.schedulerIds.selected === controller){
+    if (this.schedulerIds.selected === controller) {
       return;
     }
     this.child.switchScheduler = true;
@@ -426,15 +552,14 @@ export class LayoutComponent implements OnInit, OnDestroy {
       if (flag) {
         this.dataService.refreshUI('reload');
       }
-    }, (err) => {
     });
   }
 
-  private reloadUI() {
+  private reloadUI(): void {
     this.getVolatileData(true);
     this.child.reloadSettings();
-    this.preferences = JSON.parse(sessionStorage.preferences);
-    this.permission = JSON.parse(this.authService.permission);
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, true);
     this.loadSettingConfiguration();
   }

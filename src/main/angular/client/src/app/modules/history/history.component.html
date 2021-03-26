@@ -1170,7 +1170,7 @@
                  class="fa fa-caret-down "></i></a>
 
             </th>
-            <th (click)="sort('error.message')"><a>
+            <th width="20%" (click)="sort('error.message')"><a>
               <span class="p-r-xs" translate>fileTransfer.label.lastErrorMessage</span>
               <i *ngIf="yade.filter.sortBy == 'error.message' && !yade.reverse"
                  class="fa fa-caret-up "></i>
@@ -1205,6 +1205,7 @@
                        [ngForOf]="ajaxYadeTable.data | orderBy: yade.filter.sortBy:yade.reverse">
             <tr class="cursor" [ngClass]="{'light-bg':transfer.show}">
               <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" *ngIf="!historyFilters.current">
+                <span class="show-in-single-line">
                 <i class="cursor fa fa-caret-down fa-lg"
                    *ngIf="!transfer.show && !historyFilters.current"
                    (click)="showTransferFuc(transfer);$event.stopPropagation()"></i>
@@ -1213,8 +1214,10 @@
                    (click)="transfer.show = false;$event.stopPropagation()"></i>&nbsp;
                 <span [innerHtml]="transfer.controllerId"></span>
                 <span *ngIf="!transfer.controllerId" [innerHtml]="transfer.controllerId"></span>
+                </span>
               </td>
-              <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" class="nowrap">
+              <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" noWrap>
+                <span>
                 <i class="cursor fa fa-caret-down fa-lg"
                    *ngIf="!transfer.show && historyFilters.current"
                    (click)="showTransferFuc(transfer);$event.stopPropagation()"></i>
@@ -1223,6 +1226,7 @@
                    (click)="transfer.show = false;$event.stopPropagation()"></i>&nbsp;
                 <span class="label" [ngClass]="coreService.getColor(transfer.state.severity,'bg')"
                       [innerHtml]="transfer.state._text | translate"></span>
+                </span>
               </td>
               <td (click)="coreService.showLogWindow(null, transfer,null,null,true)"
                   [innerHtml]="transfer.profile"></td>
@@ -1231,13 +1235,10 @@
               <td (click)="coreService.showLogWindow(null, transfer,null,null,true)"
                   [innerHtml]="transfer._operation"></td>
               <td (click)="coreService.showLogWindow(null, transfer,null,null,true)">
-                <span *ngIf="transfer.source" [innerHtml]="transfer.source.protocol"></span>
+                <span *ngIf="transfer.source" [innerHtml]="transfer.source.host"></span>
               </td>
               <td (click)="coreService.showLogWindow(null, transfer,null,null,true)">
                 <span *ngIf="transfer.target" [innerHtml]="transfer.target.host"></span>
-              </td>
-              <td (click)="coreService.showLogWindow(null, transfer,null,null,true)">
-                <span *ngIf="transfer.target" [innerHtml]="transfer.target.protocol"></span>
               </td>
               <td (click)="coreService.showLogWindow(null, transfer,null,null,true)"
                   [innerHtml]="transfer.numOfFiles"></td>
@@ -1253,8 +1254,8 @@
             </tr>
             <tr *ngIf="transfer.show">
               <td></td>
-              <td colspan="13" style="padding: 0 !important;">
-                <nz-table #innerTable nzSize="small" [nzShowPagination]="false">
+              <td colspan="11" style="padding: 0 !important;">
+                <nz-table class="m-a-0 inner-table" nzSize="small" [nzData]="['']" [nzShowPagination]="false">
                   <thead>
                   <tr>
                     <th><span translate>fileTransfer.label.sourceHostUser</span></th>
@@ -1272,19 +1273,18 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let transfer of innerTable.data">
-                    <td [innerHtml]="transfer.source.account"></td>
-                    <td [innerHtml]="transfer.source.port"></td>
-                    <td [innerHtml]="transfer.source.protocol"></td>
-                    <td [innerHtml]="transfer.target.account"></td>
-                    <td [innerHtml]="transfer.target.port"></td>
-                    <td [innerHtml]="transfer.target.protocol"></td>
-                    <td [innerHtml]="transfer.jump.host"></td>
-                    <td [innerHtml]="transfer.jump.account"></td>
-                    <td [innerHtml]="transfer.jump.port"></td>
-                    <td [innerHtml]="transfer.jump.protocol"></td>
-                    <td><span [innerHtml]="transfer.workflow"></span></td>
-                    <td><span [innerHtml]="transfer.job"></span></td>
+                  <tr>
+                    <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.account"></span></td>
+                    <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.port"></span></td>
+                    <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.protocol"></span></td>
+                    <td><span *ngIf="transfer.target" [innerHtml]="transfer.target.account"></span></td>
+                    <td><span *ngIf="transfer.target" [innerHtml]="transfer.target.port"></span></td>
+                    <td><span *ngIf="transfer.target" [innerHtml]="transfer.target.protocol"></span></td>
+                    <td><span *ngIf="transfer.jump" [innerHtml]="transfer.jump.host"></span></td>
+                    <td><span *ngIf="transfer.jump" [innerHtml]="transfer.jump.account"></span></td>
+                    <td><span *ngIf="transfer.jump" [innerHtml]="transfer.jump.port"></span></td>
+                    <td><span *ngIf="transfer.jump" [innerHtml]="transfer.jump.protocol"></span></td>
+                    <td><span [innerHtml]="transfer.workflowPath"></span></td>
                     <td><span [innerHtml]="transfer.orderId"></span></td>
                   </tr>
                 </tbody>
@@ -1293,8 +1293,9 @@
             </tr>
             <tr *ngIf="transfer.show">
               <td></td>
-              <td colspan="14" style="padding: 0 !important;">
-                <table class="table m-a-0">
+              <td colspan="11" style="padding: 0 !important;">
+                <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small" [nzLoading]="transfer.loading"
+                          [nzData]="transfer.files" [nzFrontPagination]="false" [nzShowPagination]="false">
                   <thead>
                   <tr>
                     <th><span translate>fileTransfer.label.sourceFileName</span></th>
@@ -1308,7 +1309,7 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr *ngFor="let file of transfer.files">
+                  <tr *ngFor="let file of innerChildTable.data">
                     <td>{{file.sourceName}}</td>
                     <td>{{file.sourcePath}}</td>
                     <td>{{file.targetName}}</td>
@@ -1320,17 +1321,16 @@
                     <td>{{file.integrityHash}}</td>
                   </tr>
                   </tbody>
-                </table>
-                <div *ngIf="transfer.files.length==0" translate>message.noFileFound</div>
+                </nz-table>
               </td>
             </tr>
           </ng-template>
           </tbody>
         </nz-table>
         <div class="w-half label-top" *ngIf="ajaxYadeTable.data.length >0">
-          <span translate>label.total</span> {{data.length}}
-          <span *ngIf="ajaxYadeTable.data.length >1" translate>label.historiesFound</span>
-          <span *ngIf="ajaxYadeTable.data.length === 1" translate>label.historyFound</span>
+          <span translate>common.label.total</span> {{data.length}}
+          <span *ngIf="ajaxYadeTable.data.length >1" translate>history.label.historiesFound</span>
+          <span *ngIf="ajaxYadeTable.data.length === 1" translate>history.label.historyFound</span>
         </div>
       </div>
     </div>

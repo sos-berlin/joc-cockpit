@@ -40,7 +40,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   options: GridsterConfig = {};
   dashboard: Array<any> = [];
   editLayoutObj = false;
-  count = 0;
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
@@ -218,12 +217,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private init(): void {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    } else if (this.count < 8) {
-      setTimeout(() => {
-        ++this.count;
-        this.init();
-      }, 100);
-      return;
     }
     this.isLoading = true;
     if (this.authService.scheduleIds) {

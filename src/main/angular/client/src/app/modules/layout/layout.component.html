@@ -1,7 +1,7 @@
 <ng-template #customTpl>
   <app-empty-data></app-empty-data>
 </ng-template>
-<div class="app-content" id="content">
+<div class="app-content" id="content" *ngIf="loading">
   <div class="fixed-top">
     <div class="w-full text-right top-header-bar white fa-fa-color">
       <span *ngIf="preferences.themeTitle" class="pull-left p-l-3 backup-text">
@@ -36,5 +36,10 @@
   <div class="app-body">
     <router-outlet></router-outlet>
   </div>
+</div>
+<div class="spinner" *ngIf="!loading">
+  <div class="cssload-inner cssload-one"></div>
+  <div class="cssload-inner cssload-two"></div>
+  <div class="cssload-inner cssload-three"></div>
 </div>
 <iframe name="tmpFrame" id="tmpFrame" width="1"  height="1" style="visibility:hidden;position:absolute;display:none"></iframe>

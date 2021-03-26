@@ -134,7 +134,7 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.delay</label>
           <div class="col-md-8 col-lg-6">
-            <nz-input-number [appAutofocus]="true" [nzMin]="0" [nzStep]="1" name="delay"
+            <nz-input-number [nzMin]="1" [nzStep]="1" name="delay" (nzBlur)="saveJSON()"
                              [(ngModel)]="fileOrder.configuration.delay"></nz-input-number>
           </div>
         </div>

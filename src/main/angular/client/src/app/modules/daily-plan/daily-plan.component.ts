@@ -878,20 +878,20 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.initConf();
     if (this.pageView === 'grid') {
       this.isToggle = true;
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.dailyPlanFilters.selectedDate = this.selectedDate;
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
   }
 
-  loadOrderPlan() {
+  loadOrderPlan(): void {
     const obj: any = {
       controllerId: this.schedulerIds.selected,
       filter: {}
@@ -923,7 +923,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectSubmissionHistory(id) {
+  selectSubmissionHistory(id): void {
     this.selectedSubmissionId = id;
     this.loadOrderPlan();
   }
@@ -975,7 +975,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.loadOrderPlan();
   }
 
-  changeLate() {
+  changeLate(): void {
     this.dailyPlanFilters.filter.late = !this.dailyPlanFilters.filter.late;
     if (this.dailyPlanFilters.filter.late) {
       if (this.dailyPlanFilters.filter.status === 'ALL') {
@@ -985,7 +985,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.loadOrderPlan();
   }
 
-  expandCollapseDetails(flag) {
+  expandCollapseDetails(flag): void {
     this.isToggle = flag;
     if (this.pageView !== 'grid') {
       if (!this.dailyPlanFilters.filter.groupBy) {
@@ -1005,13 +1005,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updateList() {
+  private updateList(): void {
     this.load(this.selectedDate);
     this.loadOrderPlan();
     this.resetCheckBox();
   }
 
-  groupByWorkflow(type) {
+  groupByWorkflow(type): void {
     if (this.dailyPlanFilters.filter.groupBy !== type) {
       this.dailyPlanFilters.filter.groupBy = type;
       if (type) {
@@ -1023,13 +1023,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.setStateToParentObject();
   }
 
-  selectDateRange(flag) {
+  selectDateRange(flag): void {
     this.isCalendarClick = flag;
     $('#full-calendar').data('calendar').setRange(this.isCalendarClick);
     this.dateRanges = [];
   }
 
-  createPlan() {
+  createPlan(): void {
     const modalRef = this.modalService.open(CreatePlanModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.selectedDate = this.selectedDate;
@@ -1040,9 +1040,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  /**--------------- Begin Navigate -------------------*/
+  /*--------------- Begin Navigate -------------------*/
 
-  navToHistory() {
+  navToHistory(): void {
     let filter = this.coreService.getHistoryTab();
     filter.type = 'SUBMISSION';
     filter.submission.selectedView = false;
@@ -1050,7 +1050,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.router.navigate(['/history']);
   }
 
-  navToOrderHistory(orderId) {
+  navToOrderHistory(orderId): void {
+    // console.log(orderId)
     let filter = this.coreService.getHistoryTab();
     filter.type = 'ORDER';
     filter.order.selectedView = false;
@@ -1058,7 +1059,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.router.navigate(['/history']);
   }
 
-  /**--------------- Navigate End-------------------*/
+  /* --------------- Navigate End-------------------*/
 
 
   /* ------------- Action ------------------- */
@@ -1077,7 +1078,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  modifySelectedOrder() {
+  modifySelectedOrder(): void {
     let order = this.object.mapOfCheckedId.values().next().value;
     if (order.requirements) {
       openModal(order.requirements);
@@ -1106,7 +1107,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  submitSelectedOrder() {
+  submitSelectedOrder(): void {
     const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.orders = this.object.mapOfCheckedId;
@@ -1118,7 +1119,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  submitOrder(order, workflow) {
+  submitOrder(order, workflow): void {
     const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.order = order;
@@ -1131,11 +1132,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  resumeSelectedOrder() {
+  resumeSelectedOrder(): void {
     this.restCall(false, null, this.object.mapOfCheckedId, 'Resume');
   }
 
-  cancelSelectedOrder() {
+  cancelSelectedOrder(): void {
     if (this.dateRanges && this.dateRanges.length > 0) {
       let apiArr = [];
       const dates = this.coreService.getDates(this.dateRanges[0], this.dateRanges[1]);
@@ -1158,11 +1159,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  suspendSelectedOrder() {
+  suspendSelectedOrder(): void {
     this.restCall(false, null, this.object.mapOfCheckedId, 'Suspend');
   }
 
-  cancelOrderWithKill(order, plan) {
+  cancelOrderWithKill(order, plan): void {
     if (plan && plan.value) {
       this.cancelCyclicOrder(plan.value, true, false);
     } else {
@@ -1170,7 +1171,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  cancelOrder(order, plan) {
+  cancelOrder(order, plan): void {
     if (plan && plan.value) {
       this.cancelCyclicOrder(plan.value, false, false);
     } else {
@@ -1178,45 +1179,44 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  cancelCyclicOrder(orders, isKill, isMultiple) {
-    this.getOrderIds(orders, isMultiple, (orderIds) => {
-      const obj: any = {
-        controllerId: this.schedulerIds.selected, orderIds: orderIds, kill: isKill
+  cancelCyclicOrder(orders, isKill, isMultiple): void {
+    let orderIds = isMultiple ? orders : orders.orderId ? [orders.orderId] : orders.map((order) => order.orderId);
+    const obj: any = {
+      controllerId: this.schedulerIds.selected, orderIds, kill: isKill
+    };
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Order',
+        operation: 'Cancel',
+        name: ''
       };
-      if (this.preferences.auditLog) {
-        let comments = {
-          radio: 'predefined',
-          type: 'Order',
-          operation: 'Cancel',
-          name: ''
-        };
 
-        orderIds.forEach((id, index) => {
-          if (index == orderIds.length - 1) {
-            comments.name = comments.name + ' ' + id;
-          } else {
-            comments.name = id + ', ' + comments.name;
-          }
-        });
+      orderIds.forEach((id, index) => {
+        if (index == orderIds.length - 1) {
+          comments.name = comments.name + ' ' + id;
+        } else {
+          comments.name = id + ', ' + comments.name;
+        }
+      });
 
-        const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
-        modalRef.componentInstance.comments = comments;
-        modalRef.componentInstance.obj = obj;
-        modalRef.componentInstance.url = 'orders/daily_plan/cancel';
-        modalRef.result.then(() => {
-          this.updateList();
-        }, () => {
+      const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
+      modalRef.componentInstance.comments = comments;
+      modalRef.componentInstance.obj = obj;
+      modalRef.componentInstance.url = 'orders/daily_plan/cancel';
+      modalRef.result.then(() => {
+        this.updateList();
+      }, () => {
 
-        });
-      } else {
-        this.coreService.post('orders/daily_plan/cancel', obj).subscribe(() => {
-          this.updateList();
-        });
-      }
-    });
+      });
+    } else {
+      this.coreService.post('orders/daily_plan/cancel', obj).subscribe(() => {
+        this.updateList();
+      });
+    }
   }
 
-  suspendOrderWithKill(order, plan) {
+  suspendOrderWithKill(order, plan): void {
     if (plan && plan.value) {
       this.restCall(true, null, plan.value, 'Suspend');
     } else {
@@ -1224,7 +1224,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  suspendOrder(order, plan) {
+  suspendOrder(order, plan): void {
     if (plan && plan.value) {
       this.restCall(false, null, plan.value, 'Suspend');
     } else {
@@ -1232,7 +1232,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  resumeOrder(order, plan) {
+  resumeOrder(order, plan): void {
     if (plan && plan.value) {
       this.restCall(false, null, plan.value, 'Resume');
     } else {
@@ -1249,7 +1249,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  private restCall(isKill, order, multiple, type) {
+  private restCall(isKill, order, multiple, type): void {
     const obj: any = {
       controllerId: this.schedulerIds.selected, orderIds: [], kill: isKill
     };
@@ -1294,7 +1294,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  removeSelectedOrder() {
+  removeSelectedOrder(): void {
     const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.orders = this.object.mapOfCheckedId;
@@ -1308,7 +1308,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  removeOrder(order, workflow) {
+  removeOrder(order, workflow): void {
     const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.order = order;
@@ -1322,7 +1322,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  addDetailsOfOrder(plan) {
+  addDetailsOfOrder(plan): void {
     plan.show = plan.show === undefined || plan.show === false;
     if (plan.show) {
       this.coreService.post('orders/variables', {
@@ -1335,7 +1335,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  expandCollapseTable(plan) {
+  expandCollapseTable(plan): void {
     plan.show = plan.show === undefined || plan.show === false;
     if (plan.show) {
       this.expandedPaths.add(plan.key);
@@ -1344,7 +1344,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  expandCollapseOrder(plan) {
+  expandCollapseOrder(plan): void {
     plan.order = plan.order === undefined || plan.order === false;
     if (plan.order) {
       this.expandedPaths.add(plan.key);
@@ -1353,7 +1353,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  exportToExcel() {
+  exportToExcel(): void {
     let workflow = '', workflowAndOrder = '', schedule = '', scheduleAndOrder = '', order = '', state = '', late = '', plannedStart = '',
       exceptedEnd = '', expectedDuration = '',
       startTime = '', endTime = '', duration = '', repeatInterval = '';
@@ -1442,7 +1442,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           obj[endTime] = this.planOrders[i].value[j].endTime;
           obj[duration] = this.planOrders[i].value[j].duration;
           obj[repeatInterval] = this.planOrders[i].value[j].period.repeat ? 'Repeat every ' + this.planOrders[i].value[j].period.repeat + 's' : '';
-
           data.push(obj);
         }
       }
@@ -1450,17 +1449,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.excelService.exportAsExcelFile(data, 'JS7-dailyplan');
   }
 
-  getOrderIds(orders, isMultiple, cb) {
-    this.coreService.post('utilities/cyclic_orders', {
-      orderIds: isMultiple ? orders : orders.orderId ? [orders.orderId] : orders.map((order) => order.orderId)
-    }).subscribe((res: any) => {
-      cb(res.orderIds);
-    }, () => {
-      cb([]);
-    });
-  }
-
-  getDatesByUrl(arr, cb) {
+  /* ------------- Utility Function Begin ------------------- */
+  getDatesByUrl(arr, cb): void {
     this.coreService.post('utilities/convert_relative_dates', {relativDates: arr}).subscribe((res: any) => {
       cb(res.absoluteDates);
     }, () => {
@@ -1471,7 +1461,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   /* ------------- Utility Function End ------------------- */
 
   /* ------------- Advance search Begin------------------- */
-  advancedSearch() {
+  advancedSearch(): void {
     this.showSearchPanel = true;
     this.searchFilter = {
       radio: 'current',
@@ -1484,7 +1474,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     };
   }
 
-  applySearchFilter(obj, filter) {
+  applySearchFilter(obj, filter): void {
     if (filter.workflowPaths) {
       obj.workflowPaths = filter.workflowPaths;
     }
@@ -1502,7 +1492,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   /* ------------- Advance search End------------------- */
 
-  search() {
+  search(): void {
     this.isSearchHit = true;
     let obj: any = {
       controllerId: this.schedulerIds.selected,
@@ -1518,7 +1508,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  private callApi(from, to, obj) {
+  private callApi(from, to, obj): void {
     let apiArr = [];
     let dates = this.coreService.getDates(from, to);
     dates.forEach((date) => {
@@ -1537,7 +1527,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  private updateTable(filterData) {
+  private updateTable(filterData): void {
     if (this.dailyPlanFilters.filter.groupBy) {
       let tempArr = [];
       if (this.planOrders && this.planOrders.length > 0) {
@@ -1582,7 +1572,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.planOrders = [...this.planOrders];
   }
 
-  private setStateToParentObject() {
+  private setStateToParentObject(): void {
     if (this.expandedPaths.size > 0 || this.isToggle) {
       for (let j = 0; j < this.planOrders.length; j++) {
         if (this.expandedPaths.has(this.planOrders[j].key) || this.isToggle) {
@@ -1606,7 +1596,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  private checkState(object, list) {
+  private checkState(object, list): void {
     object.isPlanned = true;
     object.isFinished = false;
     object.isRunning = false;
@@ -1656,7 +1646,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  checkAll() {
+  checkAll(): void {
     let flag = false;
     if (this.planOrders.length > 0) {
       this.object.mapOfCheckedId.clear();
@@ -1705,7 +1695,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.checkState(this.object, this.object.mapOfCheckedId);
   }
 
-  checkOrderTemplate(template) {
+  checkOrderTemplate(template): void {
     template.indeterminate = false;
     if (template.checked) {
       for (let i = 0; i < template.value.length; i++) {
@@ -1732,7 +1722,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.checkPlan(plan);
   }
 
-  private checkPlan(plan) {
+  private checkPlan(plan): void {
     if (this.dailyPlanFilters.filter.groupBy) {
       let count = 0;
       this.object.mapOfCheckedId.forEach((item) => {
@@ -1748,7 +1738,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updateMainCheckbox() {
+  private updateMainCheckbox(): void {
     let data = this.currentData;
     if (this.dailyPlanFilters.filter.groupBy) {
       this.object.checked = data.every(item => item.checked);
@@ -1762,22 +1752,22 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  currentPageDataChange($event) {
+  currentPageDataChange($event): void {
     this.currentData = $event;
   }
 
-  sortBy() {
+  sortBy(): void {
     this.plans = this.orderPipe.transform(this.plans, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
     this.updateTable(this.plans);
   }
 
-  searchInResult() {
+  searchInResult(): void {
     this.updateTable(this.dailyPlanFilters.searchText ? this.searchPipe.transform(this.plans, this.dailyPlanFilters.searchText, this.searchableProperties) : this.plans);
   }
 
   /* ---- Begin Action ------ */
 
-  cancel() {
+  cancel(): void {
     this.showSearchPanel = false;
     this.searchFilter = {};
     if (this.isSearchHit) {
@@ -1786,7 +1776,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  modifyOrder(order) {
+  modifyOrder(order): void {
     const modalRef = this.modalService.open(ModifyStartTimeModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.preferences = this.preferences;
@@ -1798,7 +1788,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  private convertObjectToArray(res, order) {
+  private convertObjectToArray(res, order): void {
     if (_.isEmpty(res)) {
       order.variables = [];
     } else {
@@ -1808,7 +1798,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  changeParameter(plan, order) {
+  changeParameter(plan, order): void {
     if (order) {
       this.coreService.post('orders/variables', {
         orderId: order.orderId,
@@ -1822,7 +1812,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  private openModel(plan, order) {
+  private openModel(plan, order): void {
     if (order) {
       if (!order.requirements) {
         this.coreService.post('workflow', {
@@ -1865,7 +1855,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  private _openModel(plan, order, orderRequirements) {
+  private _openModel(plan, order, orderRequirements): void {
     const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.order = order;
@@ -1890,7 +1880,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   /* ---- Begin Customization ------ */
 
-  createCustomization() {
+  createCustomization(): void {
     const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.permission = this.permission;
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
@@ -1911,7 +1901,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  editFilters() {
+  editFilters(): void {
     const modalRef = this.modalService.open(EditFilterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.filterList = this.filterList;
     modalRef.componentInstance.favorite = this.savedFilter.favorite;
@@ -1930,7 +1920,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  action(type, obj, self) {
+  action(type, obj, self): void {
     if (type === 'DELETE') {
       if (self.savedFilter.selected === obj.id) {
         self.savedFilter.selected = undefined;
@@ -1961,7 +1951,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  changeFilter(filter) {
+  changeFilter(filter): void {
     if (filter) {
       this.savedFilter.selected = filter.id;
       this.dailyPlanFilters.selectedView = true;
@@ -1987,7 +1977,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   /* ---- End Customization ------ */
 
-  receiveMessage($event) {
+  receiveMessage($event): void {
     if ($event === 'grid') {
       this.isToggle = true;
     }
@@ -1995,26 +1985,26 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.resetCheckBox();
   }
 
-  sort(key) {
+  sort(key): void {
     this.dailyPlanFilters.reverse = !this.dailyPlanFilters.reverse;
     this.dailyPlanFilters.filter.sortBy = key;
     this.sortBy();
     this.resetCheckBox();
   }
 
-  pageIndexChange($event) {
+  pageIndexChange($event): void {
     this.dailyPlanFilters.currentPage = $event;
     this.resetCheckBox();
   }
 
-  pageSizeChange($event) {
+  pageSizeChange($event): void {
     this.dailyPlanFilters.entryPerPage = $event;
     if (this.object.checked) {
       this.checkAll();
     }
   }
 
-  private resetCheckBox() {
+  private resetCheckBox(): void {
     this.object = {
       mapOfCheckedId: new Map(),
       indeterminate: false,
@@ -2033,7 +2023,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  private initConf() {
+  private initConf(): void {
     if (!sessionStorage.preferences) {
       setTimeout(() => {
         this.initConf();
@@ -2086,7 +2076,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         }
       },
       renderEnd: (e) => {
-        const year = e.currentYear || new Date().getFullYear(), month = e.currentMonth || new Date().getMonth();
+        let year = e.currentYear || new Date().getFullYear(), month = e.currentMonth || new Date().getMonth();
         this.load(new Date(year, month, 1));
       },
       rangeEnd: (e) => {
@@ -2096,7 +2086,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  private refresh(args) {
+  private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType.match(/WorkflowStateChanged/)) {
@@ -2108,7 +2098,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  private isCustomizationSelected(flag) {
+  private isCustomizationSelected(flag): void {
     if (flag) {
       this.temp_filter.status = _.clone(this.dailyPlanFilters.filter.status);
       this.dailyPlanFilters.filter.status = '';
@@ -2121,14 +2111,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  private filterResponse(res) {
+  private filterResponse(res): void {
     if (res.configurations && res.configurations.length > 0) {
       this.filterList = res.configurations;
     }
     this.getCustomizations();
   }
 
-  private checkSharedFilters() {
+  private checkSharedFilters(): void {
     if (this.permission.JOCConfigurations.share.view.status) {
       const obj = {
         controllerId: this.schedulerIds.selected,
@@ -2146,7 +2136,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  private filterCustomizationResponse(res) {
+  private filterCustomizationResponse(res): void {
     if (this.filterList && this.filterList.length > 0) {
       if (res.configurations && res.configurations.length > 0) {
         this.filterList = this.filterList.concat(res.configurations);
@@ -2172,7 +2162,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (this.savedFilter.selected) {
       let flag = true;
       const self = this;
-      this.filterList.forEach(function (value) {
+      this.filterList.forEach((value) => {
         if (value.id === self.savedFilter.selected) {
           flag = false;
           self.coreService.post('configuration', {
@@ -2195,7 +2185,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getCustomizations() {
+  private getCustomizations(): void {
     const obj = {
       controllerId: this.schedulerIds.selected,
       account: this.permission.user,
@@ -2244,15 +2234,15 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  private editFilter(filter) {
+  private editFilter(filter): void {
     this.openFilterModal(filter, false);
   }
 
-  private copyFilter(filter) {
+  private copyFilter(filter): void {
     this.openFilterModal(filter, true);
   }
 
-  private openFilterModal(filter, isCopy) {
+  private openFilterModal(filter, isCopy): void {
     let filterObj: any = {};
     this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
       filterObj = JSON.parse(conf.configuration.configurationItem);

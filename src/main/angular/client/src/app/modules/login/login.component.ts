@@ -24,12 +24,14 @@ export class LoginComponent implements OnInit {
               public coreService: CoreService, private authService: AuthService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (localStorage.$SOS$REMEMBER === 'true' || localStorage.$SOS$REMEMBER === true) {
-      const urs = AES.decrypt(localStorage.$SOS$FOO.toString(), '$SOSJOBSCHEDULER2');
-      const pwd = AES.decrypt(localStorage.$SOS$BOO.toString(), '$SOSJOBSCHEDULER2');
+      const urs = AES.decrypt(localStorage.$SOS$FOO.toString(), '$SOSJS7');
       this.user.userName = urs.toString(Utf8);
-      this.user.password = pwd.toString(Utf8);
+      if (localStorage.$SOS$BOO) {
+        const pwd = AES.decrypt(localStorage.$SOS$BOO.toString(), '$SOSJS7');
+        this.user.password = pwd.toString(Utf8);
+      }
       this.rememberMe = true;
     }
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
@@ -39,84 +41,6 @@ export class LoginComponent implements OnInit {
     if (this.authService.accessTokenId) {
       this.router.navigate(['/dashboard']);
     }
-    // this.getDefaultConfiguration();
-  }
-
-  /*  getDefaultConfiguration() {
-      this.coreService.get('configuration/login').subscribe((res: any) => {
-        if (res.customLogo && res.customLogo.name) {
-          const imgUrl = '../ext/images/' + res.customLogo.name;
-          if (res.customLogo.position && res.customLogo.position !== 'BOTTOM') {
-            $('#logo-top').append('<img style=\'height: ' + res.customLogo.height + '\' src=\'' + imgUrl + '\'>');
-          } else {
-            $('#logo-bottom').append('<img style=\'height: ' + res.customLogo.height + '\' src=\'' + imgUrl + '\'>');
-          }
-        }
-      });
-    }*/
-
-  private getComments(): void {
-    this.coreService.post('joc/properties', {}).subscribe((result: any) => {
-      sessionStorage.$SOS$FORCELOGING = result.forceCommentsForAuditLog;
-      sessionStorage.comments = JSON.stringify(result.comments);
-      sessionStorage.showViews = JSON.stringify(result.showViews);
-      sessionStorage.securityLevel = result.securityLevel;
-      sessionStorage.defaultProfile = result.defaultProfileAccount;
-      sessionStorage.$SOS$COPY = JSON.stringify(result.copy);
-      sessionStorage.$SOS$RESTORE = JSON.stringify(result.restore);
-    });
-  }
-
-  private getPermissions(): void {
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.coreService.post('authentication/joc_cockpit_permissions', {controllerId: this.schedulerIds.selected}).subscribe((permission) => {
-      this.authService.setPermissions(permission);
-      this.authService.save();
-      if (this.schedulerIds) {
-        this.authService.savePermission(this.schedulerIds.selected);
-      } else {
-        this.authService.savePermission('');
-      }
-      this.submitted = false;
-      this.router.navigateByUrl(this.returnUrl);
-    }, () => {
-      this.submitted = false;
-    });
-  }
-
-  private getSchedulerIds(): void {
-    this.coreService.post('controller/ids', {}).subscribe((res: any) => {
-      if (res && res.controllerIds && res.controllerIds.length > 0) {
-        this.authService.setIds(res);
-        this.authService.save();
-        this.getComments();
-        this.getPermissions();
-      } else {
-        this.coreService.post('controllers/security_level', {}).subscribe((result: any) => {
-          this.checkSecurityControllers(result);
-        }, () => {
-          this.checkSecurityControllers(null);
-        });
-      }
-    }, () => {
-      this.navigate();
-    });
-  }
-
-  private checkSecurityControllers(res) {
-    if (res && res.controllers && res.controllers.length > 0) {
-      this.getComments();
-      this.router.navigate(['/controllers']);
-      this.submitted = false;
-    } else {
-      this.navigate();
-    }
-  }
-
-  private navigate() {
-    this.getComments();
-    this.router.navigate(['/start-up']);
-    this.submitted = false;
   }
 
   onSubmit(values): void {
@@ -125,10 +49,12 @@ export class LoginComponent implements OnInit {
     this.coreService.post('authentication/login', values).subscribe((data) => {
       this.authService.rememberMe = this.rememberMe;
       if (this.rememberMe) {
-        const urs = AES.encrypt(values.userName, '$SOSJOBSCHEDULER2');
-        const pwd = AES.encrypt(values.password, '$SOSJOBSCHEDULER2');
-        localStorage.$SOS$FOO = urs;
-        localStorage.$SOS$BOO = pwd;
+        localStorage.$SOS$FOO = AES.encrypt(values.userName, '$SOSJS7');
+        if (values.password) {
+          localStorage.$SOS$BOO = AES.encrypt(values.password, '$SOSJS7');
+        } else {
+          delete localStorage.$SOS$BOO;
+        }
         localStorage.$SOS$REMEMBER = this.rememberMe;
       } else {
         localStorage.removeItem('$SOS$FOO');
@@ -137,7 +63,7 @@ export class LoginComponent implements OnInit {
       }
       this.authService.setUser(data);
       this.authService.save();
-      this.getSchedulerIds();
+      this.router.navigateByUrl(this.returnUrl);
     }, () => {
       this.submitted = false;
       this.errorMsg = true;

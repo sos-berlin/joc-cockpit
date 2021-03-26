@@ -689,7 +689,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   };
 
   checkSharedFilters() {
-    if (this.permission.JOCConfigurations.share.view) {
+    if (this.permission && this.permission.JOCConfigurations && this.permission.JOCConfigurations.share.view) {
       let obj = {
         controllerId: this.schedulerIds.selected,
         configurationType: 'CUSTOMIZATION',

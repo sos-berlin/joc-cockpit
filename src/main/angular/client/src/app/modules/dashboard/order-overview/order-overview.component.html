@@ -43,9 +43,6 @@
           <td [width]="(xbody > 7 && ybody == 2) ? '12.5%' : '25%'">
             <div translate>common.label.suspended</div>
           </td>
-          <td width="12.5%" *ngIf="xbody > 7 && ybody == 2">
-            <div translate>common.label.calling</div>
-          </td>
           <td width="12.5%"  *ngIf="xbody > 7 && ybody == 2">
             <div translate>common.label.waiting</div>
           </td>
@@ -54,6 +51,9 @@
           </td>
           <td width="12.5%"  *ngIf="xbody > 7 && ybody == 2">
             <div translate>common.label.failed</div>
+          </td>
+           <td width="12.5%" *ngIf="xbody > 7 && ybody == 2">
+            <div translate>common.label.completed</div>
           </td>
         </tr>
         <tr class="text-center">
@@ -70,9 +70,6 @@
             <a (click)="navigate('SUSPENDED')" class="text-lg _600" [ngClass]="{'orange' : orders.suspended > 0}" [innerHtml]="orders.suspended || 0"></a>
           </td>
           <td width="12.5%"  *ngIf="xbody > 7 && ybody == 2">
-            <a (click)="navigate('CALLING')" class="text-lg _600" [ngClass]="{'calling' : orders.calling > 0}" [innerHtml]="orders.calling || 0"></a>
-          </td>
-          <td width="12.5%"  *ngIf="xbody > 7 && ybody == 2">
             <a (click)="navigate('WAITING')" class="text-lg _600" [ngClass]="{'yellow-green' : orders.waiting > 0}" [innerHtml]="orders.waiting || 0"></a>
           </td>
           <td width="12.5%"  *ngIf="xbody > 7 && ybody == 2">
@@ -81,11 +78,11 @@
           <td width="12.5%"  *ngIf="xbody > 7 && ybody == 2">
             <a (click)="navigate('FAILED')" class="text-lg _600" [ngClass]="{'red' : orders.failed > 0}" [innerHtml]="orders.failed || 0"></a>
           </td>
+           <td width="12.5%"  *ngIf="xbody > 7 && ybody == 2">
+            <a (click)="navigate('COMPLETED')" class="text-lg _600" [ngClass]="{'terminated' : orders.terminated > 0}" [innerHtml]="orders.terminated || 0"></a>
+          </td>
         </tr>
         <tr class="text-center" style="border-top: 16px solid transparent"  *ngIf="xbody < 8 || ybody !== 2">
-          <td width="25%">
-            <div translate>common.label.calling</div>
-          </td>
           <td width="25%">
             <div translate>common.label.waiting</div>
           </td>
@@ -95,11 +92,11 @@
           <td width="25%">
             <div translate>common.label.failed</div>
           </td>
+          <td width="25%">
+            <div translate>common.label.completed</div>
+          </td>
         </tr>
         <tr class="text-center" *ngIf="xbody < 8 || ybody !== 2">
-          <td width="25%">
-            <a (click)="navigate('CALLING')" class="text-lg _600" [ngClass]="{'calling' : orders.calling > 0}" [innerHtml]="orders.calling || 0"></a>
-          </td>
           <td width="25%">
             <a (click)="navigate('WAITING')" class="text-lg _600" [ngClass]="{'yellow-green' : orders.waiting > 0}" [innerHtml]="orders.waiting || 0"></a>
           </td>
@@ -108,6 +105,9 @@
           </td>
           <td width="25%">
             <a (click)="navigate('FAILED')" class="text-lg _600" [ngClass]="{'red' : orders.failed > 0}" [innerHtml]="orders.failed || 0"></a>
+          </td>
+          <td width="25%">
+            <a (click)="navigate('COMPLETED')" class="text-lg _600" [ngClass]="{'terminated' : orders.terminated > 0}" [innerHtml]="orders.terminated || 0"></a>
           </td>
         </tr>
       </table>

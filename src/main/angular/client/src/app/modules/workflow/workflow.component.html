@@ -215,18 +215,18 @@
                            [innerHtml]="workflow.ordersSummary.suspended || 0"></span>
                         <span [innerHtml]="'common.label.suspended' | translate"></span>
                         <span class="text-black _600 m-l p-r-xs"
-                              [innerHtml]="workflow.ordersSummary.calling || 0"></span>
-                        <span [innerHtml]="'common.label.calling' | translate"></span>
-                        <span class="text-black _600 m-l p-r-xs"
                            [innerHtml]="workflow.ordersSummary.waiting || 0"></span>
                         <span [innerHtml]="'common.label.waiting' | translate"></span>
+                        <span class="text-black _600 m-l p-r-xs"
+                                 [innerHtml]="workflow.ordersSummary.blocked || 0"></span>
+                        <span [innerHtml]="'common.label.blocked' | translate"></span>
                       </div>
                       <div class="text-sm text-left text-muted m-l p-t-xs" *ngIf="!workflowFilters.isCompact">
                         <span class="text-black _600 p-r-xs"
-                                 [innerHtml]="workflow.ordersSummary.blocked || 0"></span>
-                        <span [innerHtml]="'common.label.blocked' | translate"></span>
-                        <span class="text-black _600 m-l p-r-xs"
                               [innerHtml]="workflow.ordersSummary.failed || 0"></span>
+                        <span [innerHtml]="'common.label.completed' | translate"></span>
+                        <span class="text-black _600 m-l p-r-xs"
+                              [innerHtml]="workflow.ordersSummary.terminated || 0"></span>
                         <span [innerHtml]="'common.label.failed' | translate"></span>
                       </div>
                     </div>
@@ -338,14 +338,6 @@
                         <i *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.suspended' && workflowFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('ordersSummary.calling')">
-                      <a><span class="p-r-xs" translate>common.label.calling</span>
-                        <i
-                          *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.calling' && !workflowFilters.reverse"
-                          class="fa fa-caret-up "></i>
-                        <i *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.calling' && workflowFilters.reverse"
-                           class="fa fa-caret-down "></i></a>
-                    </th>
                     <th (click)="sort('ordersSummary.waiting')">
                       <a><span class="p-r-xs" translate>common.label.waiting</span>
                         <i *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.waiting' && !workflowFilters.reverse"
@@ -365,6 +357,14 @@
                         <i *ngIf="workflowFilters.filter.sortBy == 'failed' && !workflowFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="workflowFilters.filter.sortBy == 'failed' && workflowFilters.reverse"
+                           class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th (click)="sort('ordersSummary.terminated')">
+                      <a><span class="p-r-xs" translate>common.label.completed</span>
+                        <i
+                          *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.terminated' && !workflowFilters.reverse"
+                          class="fa fa-caret-up "></i>
+                        <i *ngIf="workflowFilters.filter.sortBy == 'ordersSummary.terminated' && workflowFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
                   </tr>
@@ -424,9 +424,6 @@
                         <span [innerHtml]="workflow.ordersSummary.suspended || 0"></span>
                       </td>
                       <td *ngIf="!workflowFilters.isCompact">
-                        <span [innerHtml]="workflow.ordersSummary.calling || 0"></span>
-                      </td>
-                      <td *ngIf="!workflowFilters.isCompact">
                         <span [innerHtml]="workflow.ordersSummary.waiting || 0"></span>
                       </td>
                       <td *ngIf="!workflowFilters.isCompact">
@@ -434,6 +431,9 @@
                       </td>
                       <td *ngIf="!workflowFilters.isCompact">
                         <span [innerHtml]="workflow.ordersSummary.failed || 0"></span>
+                      </td>
+                       <td *ngIf="!workflowFilters.isCompact">
+                        <span [innerHtml]="workflow.ordersSummary.terminated || 0"></span>
                       </td>
                     </tr>
                     <tr *ngIf="workflow.show">

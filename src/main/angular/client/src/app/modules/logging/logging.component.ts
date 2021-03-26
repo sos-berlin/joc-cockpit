@@ -26,7 +26,7 @@ export class Logging2Component implements OnInit, OnDestroy {
   constructor() {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.clientLogFilter = JSON.parse(sessionStorage.clientLogFilter);
     this.clientLogs = JSON.parse(localStorage.logging);
     // Create an Observable that will publish a value on an interval
@@ -35,7 +35,7 @@ export class Logging2Component implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
@@ -71,7 +71,7 @@ export class LoggingComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (this.authService.scheduleIds) {
       this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     }
@@ -97,7 +97,7 @@ export class LoggingComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
@@ -110,24 +110,26 @@ export class LoggingComponent implements OnInit, OnDestroy {
     return this.clientLogFilter.status.indexOf(log.level ? log.level.toLowerCase() : log.level) !== -1;
   }
 
-  saveSettingConf() {
-    let configObj = {
-      controllerId: this.schedulerIds.selected,
-      account: this.permission.user,
-      configurationType: 'SETTING',
-      id: parseInt(sessionStorage.settingId, 10),
-      configurationItem: JSON.stringify(this.clientLogFilter)
-    };
-    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      sessionStorage.clientLogFilter = JSON.stringify(this.clientLogFilter);
-    });
+  saveSettingConf(): void {
+    if (this.schedulerIds && this.schedulerIds.selected) {
+      let configObj = {
+        controllerId: this.schedulerIds.selected,
+        account: this.permission.user,
+        configurationType: 'SETTING',
+        id: parseInt(sessionStorage.settingId, 10),
+        configurationItem: JSON.stringify(this.clientLogFilter)
+      };
+      this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+        sessionStorage.clientLogFilter = JSON.stringify(this.clientLogFilter);
+      });
+    }
   }
 
-  copy() {
+  copy(): void {
     this.clipboardService.copyFromContent($('#logDiv').text());
   }
 
-  redirectToNewTab() {
+  redirectToNewTab(): void {
     window.open('#/client-logs', '_blank');
   }
 }

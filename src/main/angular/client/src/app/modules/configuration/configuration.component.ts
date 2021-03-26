@@ -9,8 +9,8 @@ declare const $;
   selector: 'app-configuration',
   templateUrl: './configuration.component.html'
 })
-export class ConfigurationComponent implements OnDestroy{
-  subscription:  Subscription;
+export class ConfigurationComponent implements OnDestroy {
+  subscription: Subscription;
 
   constructor(private router: Router) {
     this.subscription = router.events
@@ -18,14 +18,14 @@ export class ConfigurationComponent implements OnDestroy{
         setTimeout(() => {
           this.calcHeight();
         }, 5);
-    });
+      });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  calcHeight() {
+  calcHeight(): void {
     const dom = $('.scroll-y');
     let count = 0;
     if (dom && dom.position()) {
@@ -69,12 +69,12 @@ export class ConfigurationComponent implements OnDestroy{
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize(event) {
+  onResize(event): void {
     this.calcHeight();
   }
 
   @HostListener('window:scroll', ['$event'])
-  onScroll() {
+  onScroll(): void {
     this.calcHeight();
   }
 }

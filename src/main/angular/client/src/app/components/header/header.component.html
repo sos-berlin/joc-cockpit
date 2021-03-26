@@ -102,7 +102,7 @@
                             {{'header.button.profile' | translate}}
                           </a>
                         </li>
-                      <li nz-menu-item routerLink="/settings">
+                      <li nz-menu-item routerLink="/settings" *ngIf="permission && permission.JS7Controller">
                         <a>
                           <i class="fa fa-cog"></i>
                           {{'header.button.settings' | translate}}

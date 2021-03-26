@@ -60,13 +60,6 @@
         <a (click)="setFilter('SUSPENDED')" class="pull-right text primary-text-hover-color"
            [ngClass]="{'_600': state =='SUSPENDED'}" [innerHtml]="snapshot.suspended || 0"></a>
       </div>
-      <div class="calling">
-        <span class="text-black-lt _300" [ngClass]="{'_600': state =='CALLING'}">
-          <a (click)="setFilter('CALLING')" class="primary-text-hover-color"
-             translate>common.label.calling</a></span>
-        <a (click)="setFilter('CALLING')" class="pull-right text primary-text-hover-color"
-           [ngClass]="{'_600': state =='CALLING'}" [innerHtml]="snapshot.calling || 0"></a>
-      </div>
       <div class="waiting">
         <span class="text-black-lt _300" [ngClass]="{'_600': state =='WAITING'}">
           <a (click)="setFilter('WAITING')"

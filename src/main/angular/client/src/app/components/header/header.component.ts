@@ -39,11 +39,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.init();
   }
 
-  private init() {
+  private init(): void {
     this.username = this.authService.currentUserData;
     this.reloadSettings();
     this.getSelectedSchedulerInfo();
@@ -58,7 +58,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-  getSelectedSchedulerInfo() {
+  getSelectedSchedulerInfo(): void {
     if (sessionStorage.$SOS$CONTROLLER && JSON.parse(sessionStorage.$SOS$CONTROLLER)) {
       this.selectedController = JSON.parse(sessionStorage.$SOS$CONTROLLER) || {};
     }
@@ -74,7 +74,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-  reloadSettings() {
+  reloadSettings(): void {
     if (this.authService.scheduleIds) {
       this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     }
@@ -84,7 +84,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.permission = JSON.parse(this.authService.permission) || {};
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
     clearTimeout(this.timeout);
   }
@@ -98,16 +98,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
   }
 
-  logout() {
+  logout(): void {
     this.isLogout = true;
     this.myLogout.emit();
   }
 
-  switchSchedulerController() {
+  switchSchedulerController(): void {
     this.getSelectedSchedulerInfo();
   }
 
-  navigateToResource() {
+  navigateToResource(): void {
     const resourceFilters = this.coreService.getResourceTab();
     if (resourceFilters.state === 'agent') {
       if (this.permission.JS7UniversalAgent.view.status) {
@@ -149,7 +149,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-  navigateToConfiguration() {
+  navigateToConfiguration(): void {
     const confFilters = this.coreService.getConfigurationTab();
     if (confFilters.state === 'inventory') {
       if (this.permission.Inventory.configurations.view) {

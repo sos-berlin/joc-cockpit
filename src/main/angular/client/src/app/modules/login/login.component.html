@@ -95,7 +95,6 @@
           <span translate>login.message.loginError</span>
         </div>
         <form #myForm="ngForm" (ngSubmit)="onSubmit(user)" class="p-t-sm p-b-sm p-l-xs p-r-xs">
-
           <div class="md-form-group" [ngClass]="{'has-error' : ((userName.dirty || userName.touched) && userName.invalid)}">
             <input type="text" [(ngModel)]="user.userName" id="account" class="md-input" #userName="ngModel" name="userName" required>
             <label class="font14" for="account"> {{ 'login.label.account' | translate}}</label>

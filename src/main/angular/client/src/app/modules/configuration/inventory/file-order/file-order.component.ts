@@ -84,6 +84,10 @@ export class FileOrderComponent implements OnChanges, OnInit {
       this.fileOrder.path1 = this.data.path;
       this.fileOrder.name = this.data.name;
       this.fileOrder.actual = JSON.stringify(res.configuration);
+      if(!this.fileOrder.configuration.timeZone){
+        this.fileOrder.configuration.timeZone = this.preferences.zone;
+     
+      }
       this.getAgents();
       this.getWorkflows();
       if (!res.valid) {
