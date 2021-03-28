@@ -397,6 +397,12 @@
                     if (!isExist.isCurrentFolderExist && vm.path) {
                         vm.removeSection();
                     }
+                    let scrollTop = $('.tree-block').scrollTop();
+                    if (scrollTop) {
+                        setTimeout(function () {
+                            $('.tree-block').scrollTop(scrollTop);
+                        }, 0);
+                    }
                 }, function () {
                     vm.isloaded = true;
                     vm.isLoading = false;
@@ -1852,7 +1858,6 @@
                 if (obj.ignoreSignals && typeof obj.ignoreSignals == 'string') {
                     obj.ignoreSignals = obj.ignoreSignals.split(/\s+/);
                 }
-
             } else if (obj.type === 'ORDER') {
                 if (obj.priority)
                     obj.priority = parseInt(obj.priority);
@@ -4274,6 +4279,12 @@
                 }
                 if (vm._tempJob.deleted !== vm.job.deleted) {
                     vm._tempJob.deleted = vm.job.deleted;
+                }
+                if(vm._tempJob.startWhenDirectoriesChanged && vm._tempJob.startWhenDirectoriesChanged.length == 0){
+                    delete vm._tempJob['startWhenDirectoriesChanged'];
+                }
+                if(vm.job.startWhenDirectoriesChanged && vm.job.startWhenDirectoriesChanged.length == 0){
+                    delete vm.job['startWhenDirectoriesChanged'];
                 }
                 if (!angular.equals(angular.toJson(vm._tempJob), angular.toJson(vm.job)) && vm._tempJob.name === vm.job.name) {
                     isLoadingCompleted = false;

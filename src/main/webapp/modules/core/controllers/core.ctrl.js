@@ -1103,6 +1103,10 @@
             }
         };
 
+        vm.showJobstream = function (jobStream) {
+            console.log(jobStream)
+        };
+
         vm.showJobChain1 = function (jobChain, id) {
             if (id && id !== vm.schedulerIds.selected) {
                 return;
@@ -10175,7 +10179,7 @@
                 vm.jsonObj.json.run_time.timeZone = vm.userPreferences.zone;
             }
             getXml2Json(angular.copy(vm.jsonObj.json));
-            if(vm.jsonObj.json.schedule) {
+            if(vm.jsonObj.json.schedule && vm.substituteObj) {
                 vm.saveScheduleDetail('check');
             }
             if (!vm.calendars) {

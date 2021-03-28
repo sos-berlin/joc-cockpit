@@ -46,9 +46,11 @@
 
         if ($window.localStorage.$SOS$REMEMBER == 'true' || $window.localStorage.$SOS$REMEMBER == true) {
             let urs = CryptoJS.AES.decrypt($window.localStorage.$SOS$FOO.toString(), '$SOSJOBSCHEDULER');
-            let pwd = CryptoJS.AES.decrypt($window.localStorage.$SOS$BOO.toString(), '$SOSJOBSCHEDULER');
             vm.user.username = urs.toString(CryptoJS.enc.Utf8);
-            vm.user.password = pwd.toString(CryptoJS.enc.Utf8);
+            if ($window.localStorage.$SOS$BOO) {
+                let pwd = CryptoJS.AES.decrypt($window.localStorage.$SOS$BOO.toString(), '$SOSJOBSCHEDULER');
+                vm.user.password = pwd.toString(CryptoJS.enc.Utf8);
+            }
             vm.rememberMe = true;
         }
 
@@ -81,7 +83,7 @@
             $window.sessionStorage.errorMsg = '';
             $rootScope.error = '';
             vm.loginError = '';
-            if (vm.user.username && vm.user.password) {
+            if (vm.user.username) {
                 $('#loginBtn').text(gettextCatalog.getString("button.processing") + '...')
                     .attr("disabled", true);
                 SOSAuth.currentUserData = null;
@@ -94,9 +96,11 @@
                         SOSAuth.rememberMe = vm.rememberMe;
                         if (vm.rememberMe) {
                             let urs = CryptoJS.AES.encrypt(vm.user.username, '$SOSJOBSCHEDULER');
-                            let pwd = CryptoJS.AES.encrypt(vm.user.password, '$SOSJOBSCHEDULER');
                             $window.localStorage.$SOS$FOO = urs;
-                            $window.localStorage.$SOS$BOO = pwd;
+                            if (vm.user.password) {
+                                let pwd = CryptoJS.AES.encrypt(vm.user.password, '$SOSJOBSCHEDULER');
+                                $window.localStorage.$SOS$BOO = pwd;
+                            }
                             $window.localStorage.$SOS$REMEMBER = vm.rememberMe;
                         } else {
                             $window.localStorage.removeItem('$SOS$FOO');
