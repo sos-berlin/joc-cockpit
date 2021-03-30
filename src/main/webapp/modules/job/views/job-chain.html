@@ -264,7 +264,7 @@
                                                    ng-click="unstopJobChain(jobChain)" translate>button.unstopJobChain</a>
                                                 <a ng-click="viewOrders(jobChain)" ng-class="{'disable-link':(!jobChain.numOfOrders || jobChain.numOfOrders == 0)}"
                                                    class="dropdown-item" translate>button.showOrders</a>
-                                                <a class="hide dropdown-item" ng-class="{show:permission.JobChain.execute.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
+                                                <a class="hide dropdown-item" ng-class="{show:permission.JobChain.execute.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED' || (jobChain.fileOrderSources && jobChain.fileOrderSources.length>0))}"
                                                    ng-click="addOrder(jobChain);" translate>button.addOrder</a>
                                                 <a class="dropdown-item" ng-if="jobChain.numOfOrders>0"
                                                    ng-click="showOrders(jobChain);" translate>button.manageOrders</a>
@@ -330,7 +330,8 @@
                                 </div>
                                 <div class="box-footer b-t">
                                     <div>
-                                        <a href class="hide text-left primary-text-hover-color" ng-class="{'show-block':permission.JobChain.execute.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}" ng-click="addOrder(jobChain);">
+                                        <a href class="hide text-left primary-text-hover-color" ng-class="{'show-block':permission.JobChain.execute.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED' || (jobChain.fileOrderSources && jobChain.fileOrderSources.length>0))}"
+                                           ng-click="addOrder(jobChain);">
                                             <i class="fa fa-plus-square-o text-black-lt"></i>
                                             <span class="text-black-lt" translate>button.addOrder</span>
                                         </a>
@@ -446,14 +447,15 @@
                                                     <i class="fa fa-ellipsis-h"></i></button>
                                                 <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more"
                                                      role="menu">
-                                                    <a ng-click="viewFlowDiagram(jobChain)" class="dropdown-item {{(!jobChain.numOfNodes || jobChain.numOfNodes == 0) ? 'disable-link': ''}}"                                                              translate>button.showDetailView</a>
+                                                    <a ng-click="viewFlowDiagram(jobChain)" class="dropdown-item {{(!jobChain.numOfNodes || jobChain.numOfNodes == 0) ? 'disable-link': ''}}"
+                                                       translate>button.showDetailView</a>
                                                     <a class="dropdown-item bg-hover-color {{(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED') ? 'disable-link': ''}}"
                                                        ng-if="jobChain.state._text != 'STOPPED' && permission.JobChain.execute.stop" ng-click="stopJobChain(jobChain)" translate>button.stopJobChain</a>
                                                     <a class="dropdown-item {{(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED') ? 'disable-link': ''}}"
                                                        ng-if="jobChain.state._text == 'STOPPED' && permission.JobChain.execute.unstop" ng-click="unstopJobChain(jobChain)" translate>button.unstopJobChain</a>
                                                     <a ng-click="viewOrders(jobChain)" class="dropdown-item {{(!jobChain.numOfOrders || jobChain.numOfOrders == 0) ? 'disable-link': ''}}"
                                                         translate>button.showOrders</a>
-                                                    <a class="hide dropdown-item" ng-class="{show:permission.JobChain.execute.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
+                                                    <a class="hide dropdown-item" ng-class="{show:permission.JobChain.execute.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED' || (jobChain.fileOrderSources && jobChain.fileOrderSources.length>0))}"
                                                        ng-click="addOrder(jobChain);" translate>button.addOrder</a>
                                                     <a class="dropdown-item {{(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED') ? 'disable-link': ''}}"
                                                        ng-if="permission.DailyPlan.view.status" ng-click="showCalendar('JobChain',jobChain);" translate>button.showDailyPlan</a>
@@ -557,7 +559,7 @@
                                                                             <a ng-click="viewOrders(nestedJobChain)" ng-class="{'disable-link':(!nestedJobChain.numOfOrders || nestedJobChain.numOfOrders == 0)}"
                                                                                class="dropdown-item" translate>button.showOrders</a>
                                                                             <a class="hide dropdown-item"
-                                                                               ng-class="{show:permission.JobChain.execute.addOrder, 'disable-link':(nestedJobChain.fileWatchingProcessClass || nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED')}"
+                                                                               ng-class="{show:permission.JobChain.execute.addOrder, 'disable-link':(nestedJobChain.fileWatchingProcessClass || nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED' || (nestedJobChain.fileOrderSources && nestedJobChain.fileOrderSources.length>0))}"
                                                                                ng-click="addOrder(nestedJobChain);" translate>button.addOrder</a>
                                                                             <a class="dropdown-item" ng-if="permission.DailyPlan.view.status"
                                                                                ng-class="{'disable-link':(nestedJobChain.fileWatchingProcessClass || nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED')}"

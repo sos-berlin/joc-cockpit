@@ -1510,7 +1510,8 @@
         vm.minDate = new Date();
         vm.minDate.setDate(vm.minDate.getDate() - 1);
 
-        var count = parseInt(SOSAuth.sessionTimeout / 1000);
+        vm.sessionTimeout = parseInt(SOSAuth.sessionTimeout)
+        var count = vm.sessionTimeout / 1000;
         var resetDate = true;
         var interval = $interval(function () {
             --count;
@@ -1538,7 +1539,7 @@
                 vm.remainingSessionTime = d + 'd ' + h + 'h';
             }
 
-            if (count < 1) {
+            if (count < 1 && vm.sessionTimeout >= 0) {
                 $interval.cancel(interval);
                 $window.localStorage.$SOS$URL = $location.path();
                 $window.localStorage.$SOS$URLPARAMS = JSON.stringify($location.search());
@@ -1573,7 +1574,7 @@
                 UserService.touch().then(function (res) {
                     isTouch = false;
                     if (res && res.ok)
-                        count = parseInt(SOSAuth.sessionTimeout / 1000) - 2;
+                        count = (vm.sessionTimeout / 1000) - 2;
                 }, function () {
                     isTouch = false;
                 });
@@ -1617,7 +1618,6 @@
 
 
         if ($window.sessionStorage.$SOS$JOBSCHEDULE && $window.sessionStorage.$SOS$JOBSCHEDULE != 'null') {
-
             vm.selectedJobScheduler = JSON.parse($window.sessionStorage.$SOS$JOBSCHEDULE);
             if (vm.selectedJobScheduler && vm.selectedJobScheduler.state)
                 vm.scheduleState = vm.selectedJobScheduler.state._text;

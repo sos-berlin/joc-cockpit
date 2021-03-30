@@ -10407,13 +10407,13 @@
             if (jobStreamObj) {
                 vm._jobstream = jobStreamObj
                 let data = JSON.parse(jobStreamObj.cell.getAttribute('starter'));
-                vm.order = {runTime: data.runTime, calendars: data.calendars, path: jobStreamObj.cell.getAttribute('label'), isJobStream: true};
+                vm.order = {runTime: data.runTime, path: jobStreamObj.cell.getAttribute('label'), isJobStream: true};
             } else if (!jobStream) {
-                vm.order = {runTime: starter.runTime, calendars: starter.calendars, path: vm._jobStream.jobStream, isJobStream: true};
+                vm.order = {runTime: starter.runTime, path: vm._jobStream.jobStream, isJobStream: true};
             } else {
                 vm._jobstream = jobStream;
                 vm._jobstream.starter = starter;
-                vm.order = {runTime: starter.runTime, calendars: starter.calendars, path: vm._jobstream.jobStream, isJobStream: true};
+                vm.order = {runTime: starter.runTime, path: vm._jobstream.jobStream, isJobStream: true};
             }
             if (starter && !jobStream) {
                 vm.order.hideAuditLog = true;
@@ -10449,7 +10449,6 @@
                         data = vm._jobstream.starter;
                     }
                     data.runTime = vm.order.runTime;
-                    data.calendars = vm.order.calendars;
                     obj.jobstreamStarters = [data];
                     obj.auditLog = {};
                     if (vm.comments.comment)

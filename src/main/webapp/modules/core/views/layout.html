@@ -7,7 +7,7 @@
             <span class="_600 m-l-sm text-shadow backup-text" ng-bind="userPreferences.themeTitle"></span> </span>
         <span class="m-r-sm"><span translate>label.time</span>:
             <span class="text-primary" ng-bind="currentTime | stringToDate"></span></span>
-        <span class="m-r-sm"><span translate>label.remainingSessionTime</span>:
+        <span class="m-r-sm" ng-if="sessionTimeout >= 0"><span translate>label.remainingSessionTime</span>:
             <span class="text-primary" ng-bind="remainingSessionTime"></span></span>
         <span class="m-r-sm" ng-if="scheduleState"><span translate>label.state</span>:
             <span class="text-warn" ng-class="{'text-success': scheduleState == 'RUNNING', 'text-danger': (scheduleState == 'UNREACHABLE' || scheduleState == 'TERMINATING'  || scheduleState == 'DEAD')}" ng-bind="scheduleState | translate"></span>
