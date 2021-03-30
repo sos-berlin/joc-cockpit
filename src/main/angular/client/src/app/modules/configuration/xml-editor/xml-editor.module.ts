@@ -30,8 +30,7 @@ const COMPONENTS = [ImportModalComponent, DiffPatchModalComponent, ShowModalComp
     XmlEditorComponent,
     XMLAutofocusDirective,
     ...COMPONENTS
-  ],
-  entryComponents: [...COMPONENTS]
+  ]
 })
 export class XmlEditorModule {
 }

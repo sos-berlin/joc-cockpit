@@ -8,10 +8,7 @@ import {FileTransferRoutingModule} from './file-transfer-routing.module';
     SharedModule,
     FileTransferRoutingModule
   ],
-  declarations: [FileTransferComponent, FilterModalComponent, SearchComponent],
-  entryComponents: [
-    FilterModalComponent
-  ]
+  declarations: [FileTransferComponent, FilterModalComponent, SearchComponent]
 })
 export class FileTransferModule {
 }

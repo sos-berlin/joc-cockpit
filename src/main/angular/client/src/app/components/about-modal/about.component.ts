@@ -15,8 +15,11 @@ import {CoreService} from '../../services/core.service';
     </div>
     <div class="modal-body p-a">
       <div class="row" *ngIf="versionData">
-        <div class=" col-sm-3">
-          <img src="./assets/images/js7-logo.png" alt="" class="p-l" width="100">
+        <div class="col-sm-3">
+          <img class="p-l logo-for-default" src="./assets/images/JS7-logo-default-theme.png" alt="JS7" width="100">
+          <img class="p-l logo-for-light" src="./assets/images/JS7-logo-light-theme.png" alt="JS7" width="100">
+          <img class="p-l logo-for-dark" src="./assets/images/JS7-light-dark-theme.png" alt="JS7" width="100">
+          <img class="p-l logo-for-grey" src="./assets/images/JS7-logo-grey-theme.png" alt="JS7" width="100">
         </div>
         <div class=" col-sm-9">
           <div class="row">

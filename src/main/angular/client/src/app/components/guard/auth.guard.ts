@@ -13,7 +13,7 @@ export class AuthGuard implements CanActivate {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    if (this.authService.accessTokenId) {
+    if (this.authService.permission && this.authService.accessTokenId) {
       const name = state.url === '/dashboard' ? 'Dashboard' : state.url === '/daily_plan' ? 'DailyPlan' : state.url === '/workflows' ? 'WorkFlow' :
         state.url === '/audit_log' ? 'AuditLog' : state.url.match('/resources') ? 'Resource' : state.url === '/history' ? 'History' :
           state.url.match('/configuration') ? 'Configuration' : state.url.match('/users') ? 'ManageAccount' : '';
@@ -23,12 +23,7 @@ export class AuthGuard implements CanActivate {
         this.router.navigate(['/error']);
         return false;
       }
-
-      // authorised so return true
-      return true;
     }
-    // not logged in so redirect to login page with the return url and return false
-    this.router.navigate(['login'], {queryParams: {returnUrl: state.url}});
-    return false;
+    return true;
   }
 }

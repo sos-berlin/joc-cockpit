@@ -20,11 +20,7 @@ import {GroupByPipe} from '../../pipes/core.pipe';
   ],
   declarations: [DailyPlanComponent, GanttComponent, RemovePlanModalComponent, FilterModalComponent,
     SearchComponent, DailyPlanRegexValidator, CreatePlanModalComponent, SelectOrderTemplatesComponent],
-  entryComponents: [
-    FilterModalComponent,
-    RemovePlanModalComponent,
-    CreatePlanModalComponent
-  ], providers: [GroupByPipe]
+  providers: [GroupByPipe]
 })
 export class DailyPlanModule {
 }

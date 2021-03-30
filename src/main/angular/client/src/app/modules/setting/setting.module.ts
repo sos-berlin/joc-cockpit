@@ -14,8 +14,7 @@ import {SettingRoutingModule} from './setting-routing.module';
     SharedModule,
     SettingRoutingModule,
     FileUploadModule
-  ],
-  entryComponents: [AddSectionComponent, ImportSettingComponent]
+  ]
 })
 export class SettingModule {
 

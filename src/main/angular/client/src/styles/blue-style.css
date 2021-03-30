@@ -41,6 +41,10 @@ body {
   background-color: var(--background-color) !important
 }
 
+img.logo-for-dark{
+  display: inline-block !important;
+}
+
 a.text-dark:hover, a.text-dark:focus {
   color: #fff;
 }
@@ -371,12 +375,10 @@ a .text-danger:hover {
 .nvd3 .nv-multibar .nv-groups rect,
 .nvd3.nv-noData,
 .nvd3.nv-pie path,
-.anticon-calendar,
-.anticon-clock-circle,
 input,
 select,
 textarea {
-  color: rgba(255, 255, 255, .87) !important
+  color: var(--text-color) !important
 }
 
 .modal-footer {
@@ -912,7 +914,7 @@ pre#pre {
 
 .ant-input-number, .ant-select-selection {
   color: rgba(255, 255, 255, .87);
-  background-color: var(--bg-box) !important;
+  background-color: transparent !important;
 }
 .ant-select-clear,
 .ant-picker-clear,
@@ -922,7 +924,6 @@ pre#pre {
 }
 
 .modal-open .ant-select-dropdown,
-.modal-open .ant-input-number,
 .modal-open .ant-select-selection {
   background-color: var(--bg-footer) !important
 }

@@ -41,6 +41,10 @@ pre, .syntax-box {
   background-color: var(--bg-box)
 }
 
+img.logo-for-dark{
+  display: inline-block !important;
+}
+
 .list-group-item.active > .label,
 .nav-pills > .active > a > .label {
   color: rgba(0, 0, 0, .87)
@@ -345,8 +349,6 @@ input[type=search] {
 .nvd3 .nv-multibar .nv-groups rect,
 .nvd3.nv-noData,
 .nvd3.nv-pie path,
-.anticon-calendar,
-.anticon-clock-circle,
 input,
 select,
 textarea {
@@ -838,7 +840,6 @@ pre#pre {
 }
 
 .ant-dropdown-menu {
-  color: var(--text-color);
   background-color: var(--bg-box);
   border: 1px solid var(--bg-box) !important;
   border-bottom: 1px solid rgba(0, 0, 0, .95);
@@ -860,11 +861,11 @@ pre#pre {
 }
 
 .ant-input-number, .ant-select-selection {
-  background-color: var(--bg-box) !important;
+  color: rgba(255, 255, 255, .87);
+  background-color: transparent !important;
 }
 
 .modal-open .ant-select-dropdown,
-.modal-open .ant-input-number,
 .modal-open .ant-select-selection {
   background-color: var(--bg-footer) !important
 }
@@ -922,7 +923,6 @@ pre#pre {
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3) !important;
 }
 
-
 .anticon, .ant-radio, .ant-checkbox, .ant-radio-group, .ant-radio-wrapper, .ant-checkbox-wrapper {
   color: var(--text-color);
 }
@@ -937,9 +937,9 @@ pre#pre {
 }
 
 .ant-select-multiple .ant-select-selection-item {
-  background: var(--bg-box);
-  border-color: var(--bg-box);
-  color: var(--text-color);
+  background: #6a747e;
+  border-color: #6a747e;
+  color: #fff;
 }
 
 /*

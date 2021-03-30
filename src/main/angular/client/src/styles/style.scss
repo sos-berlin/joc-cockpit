@@ -12,7 +12,7 @@
   --text-color: #3d464d;
   --text-hover: #333;
   --text-muted: #7D90A8;
-  --placholder-color: #bfbfbf;
+  --placholder-color: #a9a9a9;
   --border-color: #e3e3e3;
   --primary: rgb(14, 138, 139);
   --hover-primary: rgb(12, 102, 121);
@@ -951,18 +951,22 @@ button.close {
 
 .navbar-brand {
   padding: 0;
-  line-height: 60px;
+  line-height: 61px;
   white-space: nowrap;
   cursor: auto;
-  width: 160px;
+  width: 183px;
   img {
-    max-height: 59px;
-    padding: 2px;
-    display: inline-block;
+    width: 143px;
+    height: auto;
     margin-left: 50%;
     transform: translateX(-50%);
   }
 }
+
+.logo-for-default, .logo-for-light, .logo-for-dark, .logo-for-grey{
+  display: none !important;
+}
+
 .pull-center .navbar-brand {
   margin-left: -50%;
 }

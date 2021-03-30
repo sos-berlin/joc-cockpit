@@ -11,9 +11,6 @@ import {OrderOverviewRoutingModule} from './order-overview-routing.module';
     SharedModule,
     PieChartModule,
     OrderOverviewRoutingModule
-  ],
-  entryComponents: [
-    StartOrderModalComponent
   ]
 })
 export class OrderOverviewModule { }

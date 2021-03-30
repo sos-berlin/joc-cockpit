@@ -8,10 +8,7 @@ import {AuditLogRoutingModule} from './audit-log-routing.module';
     SharedModule,
     AuditLogRoutingModule
   ],
-  declarations: [AuditLogComponent, FilterModalComponent, SearchComponent],
-  entryComponents: [
-    FilterModalComponent
-  ]
+  declarations: [AuditLogComponent, FilterModalComponent, SearchComponent]
 })
 export class AuditLogModule {
 }

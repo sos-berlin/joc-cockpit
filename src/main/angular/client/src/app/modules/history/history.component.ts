@@ -2026,7 +2026,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if ((filter.to && typeof filter.to.getMonth === 'function')) {
         filter.to = this.coreService.convertTimeToLocalTZ(this.preferences, filter.to);
       }
-      this.coreService.post('yade/history', filter).subscribe((res: any) => {
+      this.coreService.post('yade/transfers', filter).subscribe((res: any) => {
         this.yadeHistorys = this.setDuration(res);
         this.searchInResult();
         this.isLoading = true;

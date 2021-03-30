@@ -161,7 +161,7 @@ export class SearchComponent implements OnInit {
 })
 export class SingleWorkflowComponent implements OnInit, OnDestroy {
   loading = true;
-  schedulerId: any = {};
+  schedulerId: any;
   preferences: any = {};
   permission: any = {};
   resizerHeight: any = 150;

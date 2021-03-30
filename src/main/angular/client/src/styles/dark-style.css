@@ -39,6 +39,10 @@ body {
   background-color: var(--background-color) !important
 }
 
+img.logo-for-dark{
+  display: inline-block !important;
+}
+
 pre, .syntax-box {
   background-color: var(--bg-box)
 }
@@ -922,11 +926,10 @@ span ul li a {
 
 .ant-input-number, .ant-select-selection {
   color: var(--text-color);
-  background-color: var(--bg-box) !important;
+  background-color: transparent !important;
 }
 
 .modal-open .ant-select-dropdown,
-.modal-open .ant-input-number,
 .modal-open .ant-select-selection {
   background-color: var(--bg-footer) !important
 }

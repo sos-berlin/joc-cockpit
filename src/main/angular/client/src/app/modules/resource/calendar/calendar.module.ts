@@ -11,8 +11,7 @@ import {CalendarRoutingModule} from './calendar-routing.module';
     SharedModule,
     CalendarRoutingModule
   ],
-  declarations: [CalendarComponent, SingleCalendarComponent, ShowModalComponent],
-  entryComponents: [ShowModalComponent]
+  declarations: [CalendarComponent, SingleCalendarComponent, ShowModalComponent]
 })
 export class CalendarModule {
 }

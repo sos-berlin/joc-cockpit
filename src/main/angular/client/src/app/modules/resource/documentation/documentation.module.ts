@@ -10,8 +10,7 @@ import {FileUploadModule} from 'ng2-file-upload';
     DocumentationRoutingModule,
     FileUploadModule
   ],
-  declarations: [DocumentationComponent, SingleDocumentationComponent, ImportModalComponent, ShowModalComponent],
-  entryComponents: [ImportModalComponent, ShowModalComponent]
+  declarations: [DocumentationComponent, SingleDocumentationComponent, ImportModalComponent, ShowModalComponent]
 })
 export class DocumentationModule {
 }

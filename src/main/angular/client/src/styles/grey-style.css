@@ -1,4 +1,5 @@
 :root {
+  --antd-wave-shadow-color: #fff;
   --primary: #eb8814;
   --hover-primary: #d47a12;
   --primary-disable-color: rgba(235, 136, 20, .7);
@@ -37,6 +38,10 @@ body {
 
 .bg-blue-color {
   background-color: var(--background-color) !important
+}
+
+img.logo-for-grey{
+  display: inline-block !important;
 }
 
 .dropdown-menu,
@@ -421,8 +426,6 @@ input[type=search]:focus {
 .nvd3 .nv-multibar .nv-groups rect,
 .nvd3.nv-noData,
 .nvd3.nv-pie path,
-.anticon-calendar,
-.anticon-clock-circle,
 input,
 select,
 textarea {
@@ -920,19 +923,13 @@ span ul li a {
   -webkit-box-shadow: 0 2px 4px rgba(255, 255, 255, .3);
   box-shadow: 0 2px 4px rgba(255, 255, 255, .3)
 }
-.ant-select-item{
-  color: rgba(255, 255, 255, .87)
-}
+
 .ant-select-dropdown {
   background-color: var(--bg-box) !important;
   color: rgba(255, 255, 255, .87);
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.15);
 }
-.ant-select-multiple .ant-select-selection-item {
-  background: var(--bg-box);
-  border-color: var(--bg-box);
-  color: var(--text-color);
-}
+
 
 .ant-select-clear,
 .ant-picker-clear,
@@ -943,12 +940,11 @@ span ul li a {
 
 .ant-input-number, .ant-select-selection {
   color: rgba(255, 255, 255, .87);
-  background-color: var(--bg-box) !important;
+  background-color: transparent !important;
   border: 1px solid rgba(221, 221, 221, .2)
 }
 
 .modal-open .ant-select-dropdown,
-.modal-open .ant-input-number,
 .modal-open .ant-select-selection {
   background-color: var(--bg-footer) !important
 }
@@ -997,6 +993,24 @@ span ul li a {
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3) !important;
 }
 
+.anticon, .ant-radio, .ant-checkbox, .ant-radio-group, .ant-radio-wrapper, .ant-checkbox-wrapper {
+  color: var(--text-color);
+}
+
+.select-input-both .ant-select-open .ant-select-selection {
+  color: var(--text-color) !important;
+}
+
+.select-input-both .ant-select-open {
+  border: 1px solid var(--primary);
+  background: var(--bg-box) !important;
+}
+
+.ant-select-multiple .ant-select-selection-item {
+  background: #7c7c7c;
+  border-color: #7c7c7c;
+  color: #fff;
+}
 
 .table tr.active {
   background: rgba(113, 122, 134, .65) !important

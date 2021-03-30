@@ -60,8 +60,7 @@ const COMPONENTS = [FrequencyModalComponent, ImportComponent, UpdateWorkflowComp
     FileOrderComponent,
     TableComponent,
     ...COMPONENTS
-  ],
-  entryComponents: [...COMPONENTS]
+  ]
 })
 export class InventoryModule {
 }

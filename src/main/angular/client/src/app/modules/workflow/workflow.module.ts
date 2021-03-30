@@ -31,10 +31,6 @@ import {TypeComponent} from './workflow-type/type.component';
   exports: [
     OrderListSidebarComponent,
     TypeComponent
-  ],
-  entryComponents: [
-    FilterModalComponent,
-    AddOrderModalComponent
   ]
 })
 export class WorkflowModule {

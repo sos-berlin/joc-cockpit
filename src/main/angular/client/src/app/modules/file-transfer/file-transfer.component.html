@@ -6,7 +6,7 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div class="inline" [ngClass]="{'hide':object.fileTransfers.length>0}">
+          <div class="inline" [ngClass]="{'hide':object.mapOfCheckedId.size>0}">
             <div class="inline valign">
               <label nz-checkbox [(ngModel)]="yadeView.current" name="current" (ngModelChange)="changeController()">
                 {{'common.label.currentController' | translate}}
@@ -157,9 +157,8 @@
               </nz-dropdown-menu>
             </div>
           </div>
-          <div class="hide" [ngClass]="{'show-block':object.fileTransfers.length>0}">
-            <button class="hide btn btn-grey btn-sm m-l-12"
-                    [ngClass]="{'show-block':permission && permission.YADE && permission.YADE.execute.transferStart}"
+          <div class="hide" [ngClass]="{'show-block':object.mapOfCheckedId.size>0}">
+            <button class="btn btn-grey btn-sm m-l-12"
                     (click)="restartAllTransfer()"><i class="fa fa-repeat"></i>&nbsp;
               <span class="hidden-sm-down" translate>fileTransfer.button.restart</span></button>
           </div>
@@ -173,11 +172,11 @@
     <div class="row m-b-12 m-t-xs">
       <div class="col-md-12">
         <button class="btn btn-sm btn-grey" nz-tooltip="{{'common.button.expandDetails' | translate}}"
-                (click)="expandDetails()" *ngIf="fileTransfers.length>0">
+                (click)="expandDetails()" *ngIf="data.length>0">
           <i class="fa fa-expand text"></i>
         </button>
         <button class="btn btn-sm btn-grey m-l-12" nz-tooltip="{{'common.button.collapseDetails' | translate}}"
-                (click)="collapseDetails()" *ngIf="fileTransfers.length>0">
+                (click)="collapseDetails()" *ngIf="data.length>0">
           <i class="fa fa-compress text"></i>
         </button>
         <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="advancedSearch()" *ngIf="!showSearchPanel">
@@ -222,14 +221,16 @@
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
           (nzPageSizeChange)="pageSizeChange($event)"
+          (nzCurrentPageDataChange)="currentPageDataChange($event)"
           [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
         >
           <thead>
           <tr>
-            <th *ngIf="permission && permission.YADE && permission.YADE.execute.transferStart" class="chk" [nzShowCheckbox]="true"
-                [(nzChecked)]="checkAllFileTransfers.checked"
-                [nzIndeterminate]="checkAllFileTransfers.indeterminate"
-                (nzCheckedChange)="checkAllFileTransfersFnc()">
+            <th class="chk" *ngIf="permission && permission.YADE && permission.YADE.execute.transferStart"
+                [nzShowCheckbox]="true"
+                [(nzChecked)]="object.checked"
+                [nzIndeterminate]="object.indeterminate"
+                (nzCheckedChange)="checkAll($event)">
             </th>
             <th class="menu">
               <span translate>common.label.action</span>
@@ -327,9 +328,9 @@
             <tr>
                <td *ngIf="permission && permission.YADE && permission.YADE.execute.transferStart" [nzShowCheckbox]="true"
                   [nzDisabled]="transfer.state._text=='SUCCESSFUL'"
-                  [(nzChecked)]="transfer.checked"
+                   [nzChecked]="object.mapOfCheckedId.has(transfer.id)"
                   [nzIndeterminate]="transfer.indeterminate"
-                  (nzCheckedChange)="checkALLFilesFnc(transfer)">
+                  (nzCheckedChange)="onItemChecked(transfer, $event)">
               </td>
               <td>
                 <div class="btn-group dropdown">
@@ -463,8 +464,7 @@
                     <td *ngIf="transfer.permission.execute.transferStart" [nzShowCheckbox]="true"
                         [nzDisabled]="transfer.state._text=='SUCCESSFUL'"
                         [(nzChecked)]="file.checked"
-                        [nzIndeterminate]="file.indeterminate"
-                        (nzCheckedChange)="checkALLFilesFnc(file)">
+                        (nzCheckedChange)="checkALLFilesFnc(transfer, $event)">
                     </td>
                     <td>{{file.sourceName}}</td>
                     <td>{{file.sourcePath}}</td>

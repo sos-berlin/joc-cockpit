@@ -15,8 +15,7 @@ import {FileUploadModule} from 'ng2-file-upload';
     SharedModule,
     UserRoutingModule,
     FileUploadModule
-  ],
-  entryComponents: [ImportKeyModalComponent, UpdateKeyModalComponent, GenerateKeyComponent]
+  ]
 })
 export class UserModule {
 

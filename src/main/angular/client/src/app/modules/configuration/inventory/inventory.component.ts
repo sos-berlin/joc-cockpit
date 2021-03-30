@@ -1093,7 +1093,7 @@ export class ExportComponent implements OnInit {
           param = param + '&ticketLink=' + encodeURIComponent(this.comments.ticketLink);
         }
       }
-      // console.log('http://jstest.zehntech.net:7446/joc/api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
+      
       try {
         $('#tmpFrame').attr('src', './api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
         setTimeout(() => {

@@ -8,8 +8,7 @@ import {CoreService} from '../../services/core.service';
 import {DataService} from '../../services/data.service';
 import {SaveService} from '../../services/save.service';
 import {SearchPipe} from '../../pipes/core.pipe';
-
-declare const $;
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-modal-content',
@@ -17,21 +16,20 @@ declare const $;
 })
 
 export class FilterModalComponent implements OnInit {
-  schedulerIds: any = {};
-  preferences: any = {};
-  permission: any = {};
-
   @Input() allFilter;
   @Input() new;
   @Input() edit;
   @Input() filter;
 
+  schedulerIds: any = {};
+  preferences: any = {};
+  permission: any = {};
   name: string;
 
   constructor(private authService: AuthService, public activeModal: NgbActiveModal) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.preferences = JSON.parse(sessionStorage.preferences) || {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
@@ -47,7 +45,7 @@ export class FilterModalComponent implements OnInit {
     }
   }
 
-  cancel(obj) {
+  cancel(obj): void {
     if (obj) {
       this.activeModal.close(obj);
     } else {
@@ -97,12 +95,12 @@ export class SearchComponent implements OnInit {
   constructor(public coreService: CoreService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.allhosts = this.coreService.getProtocols();
   }
 
-  checkFilterName() {
+  checkFilterName(): void {
     this.isUnique = true;
     for (let i = 0; i < this.allFilter.length; i++) {
       if (this.filter.name === this.allFilter[i].name && this.permission.user === this.allFilter[i].account && this.filter.name !== this.existingName) {
@@ -118,19 +116,11 @@ export class SearchComponent implements OnInit {
     this.filter.targetProtocol.push(value.text);
   }
 
-  removedTargetProtocol(value: any): void {
-    this.filter.targetProtocol.splice(this.filter.targetProtocol.indexOf(value.text), 1);
-  }
-
   selectedSourceProtocol(value: any): void {
     if (!this.filter.targetProtocol) {
       this.filter.sourceProtocol = [];
     }
     this.filter.sourceProtocol.push(value.text);
-  }
-
-  removedSourceProtocol(value: any): void {
-    this.filter.sourceProtocol.splice(this.filter.sourceProtocol.indexOf(value.text), 1);
   }
 
   stateChange(value: string[]): void {
@@ -143,7 +133,6 @@ export class SearchComponent implements OnInit {
 
   onSubmit(result): void {
     console.log(result);
-
     this.submitted = true;
     let configObj = {
       controllerId: this.schedulerIds.selected,
@@ -199,11 +188,11 @@ export class SearchComponent implements OnInit {
     });
   }
 
-  search() {
+  search(): void {
     this.onSearch.emit();
   }
 
-  cancel() {
+  cancel(): void {
     this.onCancel.emit();
   }
 }
@@ -218,15 +207,14 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   permission: any = {};
   yadeFilters: any = {};
   yadeView: any = {current: false};
-  object: any = {files: [], fileTransfers: []};
   searchFilter: any = {};
   savedFilter: any = {};
   selectedFiltered: any = {};
   filterList: any = [];
   fileTransfers: any = [];
+  currentData = [];
   data = [];
   dateFormat: any;
-  checkAllFileTransfers: any = {checkbox: false};
   temp_filter: any = {};
   searchKey: string;
   showFiles = false;
@@ -235,6 +223,11 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   loading = false;
   loadConfig = false;
   showSearchPanel = false;
+  object: any = {
+    mapOfCheckedId: new Map(),
+    checked: false,
+    indeterminate: false
+  };
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -250,38 +243,43 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.init();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
   }
 
-  sort(propertyName) {
+  sort(propertyName): void {
     this.yadeFilters.reverse = !this.yadeFilters.reverse;
     this.yadeFilters.filter.sortBy = propertyName;
   }
 
-  pageIndexChange($event) {
+  pageIndexChange($event): void {
     this.yadeFilters.currentPage = $event;
   }
 
-  pageSizeChange($event) {
+  pageSizeChange($event): void {
     this.yadeFilters.entryPerPage = $event;
   }
 
-  searchInResult() {
+
+  currentPageDataChange($event): void {
+    this.currentData = $event;
+  }
+
+  searchInResult(): void {
     this.data = this.yadeFilters.searchText ? this.searchPipe.transform(this.fileTransfers, this.yadeFilters.searchText, this.searchableProperties) : this.fileTransfers;
     this.data = [...this.data];
   }
 
-  changeController() {
+  changeController(): void {
     this.load();
   }
 
-  loadYadeFiles(type, value) {
+  loadYadeFiles(type, value): void {
     if (type === 'DATE') {
       this.yadeFilters.filter.date = value;
 
@@ -291,7 +289,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.load();
   }
 
-  load() {
+  load(): void {
     this.isLoaded = true;
     const self = this;
     this.reset();
@@ -380,12 +378,12 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     obj.limit = parseInt(this.preferences.maxRecords, 10);
     this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
       this.fileTransfers = res.transfers || [];
-      this.fileTransfers.forEach(function (transfer) {
+      this.fileTransfers.forEach((transfer) => {
         let id = transfer.controllerId || self.schedulerIds.selected;
         transfer.permission = self.authService.getPermission(id).YADE;
-        if (self.showFiles) {
+        if (this.showFiles) {
           transfer.show = true;
-          self.getFiles(transfer);
+          this.getFiles(transfer);
         }
       });
       this.searchInResult();
@@ -393,7 +391,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     }, () => this.isLoading = true);
   }
 
-  getTransfer(transfer) {
+  getTransfer(transfer): void {
     let obj = {
       controllerId: this.schedulerIds.selected,
       transferIds: [transfer.id]
@@ -414,19 +412,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     });
   }
 
-  getFileTransferById(transferId) {
-    let obj = {
-      controllerId: this.schedulerIds.selected,
-      transferIds: [transferId]
-    };
-    this.coreService.post('yade/transfers', obj).subscribe((result: any) => {
-      this.fileTransfers = result.transfers;
-      this.fileTransfers[0].permission = this.authService.getPermission(this.schedulerIds.selected).YADE;
-      this.isLoading = true;
-    }, () => this.isLoading = true);
-  }
-
-  getFiles(value) {
+  getFiles(value): void {
     let ids = [value.id];
     this.coreService.post('yade/files', {
       transferIds: ids,
@@ -436,101 +422,68 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     });
   }
 
-  checkAllFileTransfersFnc() {
-    const self = this;
-    if (this.checkAllFileTransfers.checkbox && this.fileTransfers.length > 0) {
-      this.object.fileTransfers = [];
-      // let data = $filter('orderBy')($scope.filtered, this.yadeFilters.filter.sortBy, this.yadeFilters.sortReverse);
-      let data = this.fileTransfers.slice((this.preferences.entryPerPage * (this.yadeFilters.currentPage - 1)), (this.preferences.entryPerPage * this.yadeFilters.currentPage));
-      data.forEach(function (value) {
-        if (value.state._text != 'SUCCESSFUL') {
-          self.object.fileTransfers.push(value);
-          if (value.files && value.files.length > 0) {
-            value.files.forEach(function (file) {
-              self.object.files.push(file);
+  checkAll(value: boolean): void {
+    if (this.currentData.length > 0) {
+      this.object.mapOfCheckedId.clear();
+      let data = this.currentData;
+      data.forEach(item => {
+        if (item.state._text !== 'SUCCESSFUL') {
+          console.log(item, 'item');
+          item.indeterminate = false;
+          if (value) {
+            this.object.mapOfCheckedId.set(item.id, item);
+          }
+          if (item.files && item.files.length > 0) {
+            item.files.forEach((file) => {
+              file.checked = value;
+              console.log(file, 'file')
             });
           }
         }
       });
-
-    } else {
+    }
+    if (!value) {
       this.reset();
     }
   }
 
-  checkFileTransfers(newNames) {
-    if (newNames && newNames.length > 0) {
-
+  onItemChecked(transfer: any, checked: boolean): void {
+    transfer.indeterminate = false;
+    if (checked) {
+      this.object.mapOfCheckedId.set(transfer.id, transfer);
     } else {
-      this.checkAllFileTransfers.checkbox = false;
-      this.object.files = [];
+      this.object.mapOfCheckedId.delete(transfer.id);
     }
-
-  }
-
-  checkALLFilesFnc(transfer) {
-    const self = this;
-    if ($('#' + transfer.id) && $('#' + transfer.id).prop('checked')) {
-      if (transfer && transfer.files) {
-        transfer.files.forEach(function (file) {
-          let flag = false;
-          for (let x = 0; x < self.object.files.length; x++) {
-            if (_.isEqual(file, self.object.files[x])) {
-              flag = true;
-              break;
-            }
-          }
-          if (!flag) {
-            self.object.files.push(file);
-          }
-        });
-      }
-    } else {
-      let _temp = _.clone(this.object.files);
-      _temp.forEach(function (file, index) {
-        for (let x = 0; x < self.object.files.length; x++) {
-          if (transfer.id == self.object.files[x].id) {
-            self.object.files.splice(index, 1);
-            break;
-          }
-        }
+    if (transfer.files && transfer.files.length > 0) {
+      transfer.files.forEach(file => {
+        file.checked = checked;
       });
     }
+    this.object.checked = this.object.mapOfCheckedId.size === this.currentData.length;
+    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
   }
 
-  checkFile(newNames) {
-    const self = this;
-    if (newNames && newNames.length > 0) {
-      let data = this.fileTransfers.slice((this.preferences.entryPerPage * (this.yadeFilters.currentPage - 1)), (this.preferences.entryPerPage * this.yadeFilters.currentPage));
-      newNames.forEach(function (value) {
-        for (let i = 0; i < data.length; i++) {
-          if (data[i].id == value.transferId) {
-            let flg = false;
-            for (let x = 0; x < self.object.fileTransfers.length; x++) {
-              if (self.object.fileTransfers[x].id == data[i].id) {
-                flg = true;
-              }
-            }
-            if (!flg)
-              self.object.fileTransfers.push(data[i]);
-            break;
-          }
-        }
-      });
-
-    } else {
-      if (this.fileTransfers && this.fileTransfers.length > 0) {
-        let data = this.fileTransfers.slice((this.preferences.entryPerPage * (this.yadeFilters.currentPage - 1)), (this.preferences.entryPerPage * this.yadeFilters.currentPage));
-        data.forEach(function (transfer) {
-          if ($('#' + transfer.id)) {
-            $('#' + transfer.id).prop('checked', false);
-          }
-        });
+  checkALLFilesFnc(transfer, checked: boolean): void {
+    transfer.indeterminate = checked;
+    let count = 0;
+    transfer.files.forEach((item) => {
+      if (item.checked) {
+        ++count;
       }
+    });
+
+    if (count === transfer.files.length) {
+      this.object.mapOfCheckedId.set(transfer.id, transfer);
+    } else if (count === 0) {
+      this.object.mapOfCheckedId.delete(transfer.id);
+    } else {
+      transfer.indeterminate = true;
     }
+    this.object.checked = this.object.mapOfCheckedId.size === this.currentData.length;
+    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
   }
 
-  showTransferFuc(value) {
+  showTransferFuc(value): void {
     let obj = {
       controllerId: value.controllerId || this.schedulerIds.selected,
       transferIds: [value.id]
@@ -543,7 +496,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.getFiles(value);
   }
 
-  search() {
+  search(): void {
     this.isLoaded = false;
     let filter: any = {
       controllerId: this.yadeView.current == true ? this.schedulerIds.selected : '',
@@ -591,7 +544,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
     }
     if (this.searchFilter.targetHost || this.searchFilter.targetProtocol) {
-
       let hosts = [];
       let protocols = [];
       if (this.searchFilter.targetHost) {
@@ -653,6 +605,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     }
     this.coreService.post('yade/transfers', filter).subscribe((res: any) => {
       this.fileTransfers = res.transfers;
+      this.searchInResult();
       this.loading = false;
       this.isLoaded = true;
     }, () => {
@@ -661,34 +614,26 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     });
   }
 
-  /* ------------- Advance search ------------------- */
-  advancedSearch() {
-    this.showSearchPanel = true;
-    this.searchFilter = {
-      radio: 'current',
-      planned: 'today',
-      from: new Date(),
-      to: new Date(),
-      toTime: new Date(),
-      paths: [],
-      state: []
-    };
+
+  private init(): void {
+    this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
+    this.yadeFilters = this.coreService.getYadeTab();
+    this.yadeView.current = this.preferences.fileTransfer == 'current';
+    this.savedFilter = JSON.parse(this.saveService.yadeFilters) || {};
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    if (this.yadeFilters.showFiles != undefined) {
+      this.showFiles = this.yadeFilters.showFiles;
+    } else {
+      this.showFiles = this.preferences.showFiles;
+    }
+
+    this.checkSharedFilters();
   }
 
-  cancel() {
-    this.searchFilter = {};
-    this.showSearchPanel = false;
-    if (!this.yadeFilters.filter.states) {
-      this.yadeFilters.filter.states = 'ALL';
-    }
-    if (!this.yadeFilters.filter.date) {
-      this.yadeFilters.filter.date = 'today';
-    }
 
-    this.load();
-  };
-
-  checkSharedFilters() {
+  checkSharedFilters(): void {
     if (this.permission && this.permission.JOCConfigurations && this.permission.JOCConfigurations.share.view) {
       let obj = {
         controllerId: this.schedulerIds.selected,
@@ -711,7 +656,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     }
   }
 
-  getYadeCustomizations() {
+  getYadeCustomizations(): void {
     let obj = {
       controllerId: this.schedulerIds.selected,
       account: this.permission.user,
@@ -774,7 +719,68 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     });
   }
 
-  saveAsFilter() {
+  expandDetails(): void {
+    this.showFiles = true;
+    this.yadeFilters.showFiles = true;
+    this.load();
+  }
+
+  collapseDetails(): void {
+    this.showFiles = false;
+    this.yadeFilters.showFiles = false;
+    this.fileTransfers.forEach((value) => {
+      value.show = false;
+    });
+  }
+
+  /** ------------------Action------------------- */
+
+  restartAllTransfer(): void {
+    this.coreService.post('yade/transfers/restart', {
+      transferIds: this.object.mapOfCheckedId.keys(),
+      controllerId: this.schedulerIds.selected
+    }).subscribe((res: any) => {
+
+    });
+  }
+
+  restartTransfer(data): void {
+    this.coreService.post('yade/transfers/restart', {
+      transferIds: [data.id],
+      controllerId: this.schedulerIds.selected
+    }).subscribe((res: any) => {
+
+    });
+  }
+
+  /* ------------- Advance search ------------------- */
+  advancedSearch(): void {
+    this.showSearchPanel = true;
+    this.searchFilter = {
+      radio: 'current',
+      planned: 'today',
+      from: new Date(),
+      to: new Date(),
+      toTime: new Date(),
+      paths: [],
+      state: []
+    };
+  }
+
+  cancel(): void {
+    this.searchFilter = {};
+    this.showSearchPanel = false;
+    if (!this.yadeFilters.filter.states) {
+      this.yadeFilters.filter.states = 'ALL';
+    }
+    if (!this.yadeFilters.filter.date) {
+      this.yadeFilters.filter.date = 'today';
+    }
+
+    this.load();
+  }
+
+  saveAsFilter(): void {
     let configObj = {
       controllerId: this.schedulerIds.selected,
       account: this.permission.user,
@@ -791,33 +797,9 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     });
   }
 
-  expandDetails() {
-    this.showFiles = true;
-    this.yadeFilters.showFiles = true;
-    this.load();
-  }
 
-  collapseDetails() {
-    this.showFiles = false;
-    this.yadeFilters.showFiles = false;
-
-    this.fileTransfers.forEach(function (value) {
-      value.show = false;
-    });
-  }
-
-  /** ------------------Action------------------- */
-
-  restartAllTransfer() {
-
-  }
-
-  restartTransfer(data) {
-
-  }
-
-  /* ---- Customization ------ */
-  createCustomization() {
+  /* ---- Customization Begin------ */
+  createCustomization(): void {
     const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.permission = this.permission;
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
@@ -838,7 +820,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     });
   }
 
-  editFilters() {
+  editFilters(): void {
     const modalRef = this.modalService.open(EditFilterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.filterList = this.filterList;
     modalRef.componentInstance.favorite = this.savedFilter.favorite;
@@ -846,21 +828,20 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.username = this.permission.user;
     modalRef.componentInstance.action = this.action;
     modalRef.componentInstance.self = this;
-
     modalRef.result.then((obj) => {
       if (obj.type === 'EDIT') {
         this.editFilter(obj);
       } else if (obj.type === 'COPY') {
         this.copyFilter(obj);
       }
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
-  action(type, obj, self) {
+  action(type, obj, self): void {
     if (type === 'DELETE') {
-      if (self.savedFilter.selected == obj.id) {
+      if (self.savedFilter.selected === obj.id) {
         self.savedFilter.selected = undefined;
         self.isCustomizationSelected(false);
         self.yadeFilters.selectedView = false;
@@ -890,8 +871,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     }
   }
 
-  changeFilter(filter) {
-    this.cancel();
+  changeFilter(filter): void {
     if (filter) {
       this.savedFilter.selected = filter.id;
       this.yadeFilters.selectedView = true;
@@ -914,65 +894,79 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
     this.saveService.setYade(this.savedFilter);
     this.saveService.save();
-  };
+  }
 
-  private refresh(args) {
-    for (let i = 0; i < args.length; i++) {
-      if (args[i].controllerId == this.schedulerIds.selected) {
-        if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
-          for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].objectType === 'OTHER') {
-              if (args[i].eventSnapshots[j].eventType == 'YADETransferStarted') {
-                this.load();
+  private editFilter(filter): void {
+    this.openFilterModal(filter, false);
+  }
+
+  private copyFilter(filter): void {
+    this.openFilterModal(filter, true);
+  }
+
+  private openFilterModal(filter, isCopy): void {
+    let filterObj: any = {};
+    this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
+      filterObj = JSON.parse(conf.configuration.configurationItem);
+      filterObj.shared = filter.shared;
+      if (isCopy) {
+        filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
+      } else {
+        filterObj.id = filter.id;
+      }
+      const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
+      modalRef.componentInstance.permission = this.permission;
+      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+      modalRef.componentInstance.allFilter = this.filterList;
+      modalRef.componentInstance.filter = filterObj;
+      modalRef.componentInstance.edit = !isCopy;
+      modalRef.result.then(() => {
+
+      }, () => {
+
+      });
+    });
+  }
+
+  /* ---- End Customization ------ */
+
+  private refresh(args): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].objectType === 'OTHER') {
+          if (args.eventSnapshots[j].eventType == 'YADETransferStarted') {
+            this.load();
+            break;
+          } else if (args.eventSnapshots[j].eventType == 'YADETransferUpdated') {
+            for (let x = 0; x < this.fileTransfers.length; x++) {
+              if (this.fileTransfers[x].id == args.eventSnapshots[j].path) {
+                this.getTransfer(this.fileTransfers[x]);
                 break;
-              } else if (args[i].eventSnapshots[j].eventType == 'YADETransferUpdated') {
-                for (let x = 0; x < this.fileTransfers.length; x++) {
-                  if (this.fileTransfers[x].id == args[i].eventSnapshots[j].path) {
-                    this.getTransfer(this.fileTransfers[x]);
-                    break;
-                  }
-                }
-              } else if (args[i].eventSnapshots[j].eventType == 'YADEFileStateChanged') {
-                for (let x = 0; x < this.fileTransfers.length; x++) {
-                  if (this.fileTransfers[x].id == args[i].eventSnapshots[j].path && this.fileTransfers[x].show) {
-                    this.getFiles(this.fileTransfers[x]);
-                    break;
-                  }
-                }
               }
-              break;
+            }
+          } else if (args.eventSnapshots[j].eventType == 'YADEFileStateChanged') {
+            for (let x = 0; x < this.fileTransfers.length; x++) {
+              if (this.fileTransfers[x].id == args.eventSnapshots[j].path && this.fileTransfers[x].show) {
+                this.getFiles(this.fileTransfers[x]);
+                break;
+              }
             }
           }
+          break;
         }
-        break;
       }
     }
   }
 
-  private init() {
-    this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    this.permission = JSON.parse(this.authService.permission) || {};
-    this.yadeFilters = this.coreService.getYadeTab();
-    this.yadeView.current = this.preferences.fileTransfer == 'current';
-    this.savedFilter = JSON.parse(this.saveService.yadeFilters) || {};
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-
-    if (this.yadeFilters.showFiles != undefined) {
-      this.showFiles = this.yadeFilters.showFiles;
-    } else {
-      this.showFiles = this.preferences.showFiles;
-    }
-
-    this.checkSharedFilters();
+  private reset(): void {
+    this.object = {
+      mapOfCheckedId: new Map(),
+      checked: false,
+      indeterminate: false
+    };
   }
 
-  private reset() {
-    this.object.files = [];
-    this.object.fileTransfers = [];
-  }
-
-  private setDateRange(filter) {
+  private setDateRange(filter): any {
     if (this.yadeFilters.filter.date == 'all') {
 
     } else if (this.yadeFilters.filter.date == 'today') {
@@ -984,7 +978,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     return filter;
   }
 
-  private isCustomizationSelected(flag) {
+  private isCustomizationSelected(flag): void {
     if (flag) {
       this.temp_filter.states = _.clone(this.yadeFilters.filter.states);
       this.temp_filter.date = _.clone(this.yadeFilters.filter.date);
@@ -1001,7 +995,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     }
   }
 
-  private parseProcessExecuted(regex, obj) {
+  private parseProcessExecuted(regex, obj): void {
     let fromDate, toDate, date, arr;
 
     if (/^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
@@ -1071,46 +1065,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       obj.dateTo = toDate;
     }
     return obj;
-  }
-
-  private editFilter(filter) {
-    let filterObj: any = {};
-    this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
-      filterObj = JSON.parse(conf.configuration.configurationItem);
-      filterObj.shared = filter.shared;
-
-      const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.permission = this.permission;
-      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-      modalRef.componentInstance.allFilter = this.filterList;
-      modalRef.componentInstance.filter = filterObj;
-      modalRef.componentInstance.edit = true;
-      modalRef.result.then((configObj) => {
-
-      }, (reason) => {
-        console.log('close...', reason);
-      });
-    });
-  }
-
-  private copyFilter(filter) {
-    let filterObj: any = {};
-    this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
-      filterObj = JSON.parse(conf.configuration.configurationItem);
-      filterObj.shared = filter.shared;
-      filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
-
-      const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.permission = this.permission;
-      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-      modalRef.componentInstance.allFilter = this.filterList;
-      modalRef.componentInstance.filter = filterObj;
-      modalRef.result.then((configObj) => {
-
-      }, (reason) => {
-        console.log('close...', reason);
-      });
-    });
   }
 
 }
