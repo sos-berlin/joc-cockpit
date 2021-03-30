@@ -1,11 +1,11 @@
 import {Component, OnInit, OnDestroy, Input} from '@angular/core';
-import {CoreService} from '../../../services/core.service';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
+import * as _ from 'underscore';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from '../data.service';
+import {CoreService} from '../../../services/core.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
-import * as _ from 'underscore';
 
 // Add and Edit main Section
 @Component({
@@ -13,22 +13,24 @@ import * as _ from 'underscore';
   templateUrl: 'main-dialog.html'
 })
 export class MainSectionModalComponent implements OnInit {
-  submitted = false;
-  mainSection: any = [];
   @Input() userDetail: any;
   @Input() isUpdate: boolean;
+  submitted = false;
+  mainSection: any = [];
+  fullSection = false;
+  mainText = '';
 
   constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (this.isUpdate) {
       this.userDetail.main.forEach((entry) => {
-        let values = [];
-        let comments = [];
+        const values = [];
+        const comments = [];
         if (entry.entryValue && entry.entryValue.length > 0) {
-          entry.entryValue.forEach(function (value) {
-            values.push({value: value});
+          entry.entryValue.forEach((value) => {
+            values.push({value});
           });
         } else {
           values.push({value: ''});
@@ -42,8 +44,8 @@ export class MainSectionModalComponent implements OnInit {
         }
         this.mainSection.push({
           name: entry.entryName,
-          values: values,
-          comments: comments
+          values,
+          comments
         });
       });
     } else {
@@ -52,13 +54,170 @@ export class MainSectionModalComponent implements OnInit {
         values: [{value: ''}],
         comments: [{value: ''}]
       });
-
     }
+    this.toggleView(false);
+  }
+
+  toggleView(value): void {
+    this.fullSection = value;
+    if (!value) {
+      let main = [];
+      this.mainSection.forEach((val) => {
+        if (val.name && val.name != '') {
+          let obj = {
+            entryName: val.name,
+            entryValue: [],
+            entryComment: []
+          };
+          val.values.forEach((val1) => {
+            if (val1.value && val1.value != '') {
+              obj.entryValue.push(val1.value);
+            }
+          });
+          val.comments.forEach((val1) => {
+            if (val1.value && val1.value != '') {
+              obj.entryComment.push(val1.value);
+            }
+          });
+          main.push(obj);
+        }
+      });
+      this.mainText = '';
+      main.forEach((entry) => {
+        if (entry.entryComment && entry.entryComment.length > 0) {
+          entry.entryComment.forEach((comment) => {
+            this.mainText = this.mainText + '#' + comment + '\n';
+          });
+        }
+        this.mainText = this.mainText + entry.entryName + ' = ';
+        if (entry.entryValue && entry.entryValue.length > 0) {
+          entry.entryValue.forEach((item, index) => {
+            this.mainText = this.mainText + (entry.entryValue.length > 1 ? '\\ \n' + item : item);
+            if (entry.entryValue.length - 1 !== index) {
+              this.mainText = this.mainText + ',';
+            }
+
+            if (entry.entryValue.length - 1 === index) {
+              this.mainText = this.mainText + '\n';
+            }
+          });
+        }
+      });
+    }
+  }
+
+  generateObject(): void {
+    let main = [];
+    let obj: any = {entryName: '', entryValue: [], entryComment: []};
+    let arr = this.mainText.split('\n');
+    let flag = false;
+    for (let i = 0; i < arr.length; i++) {
+
+      if (arr[i]) {
+        arr[i] = arr[i].trim();
+        if (arr[i].substring(0, 1) === '#') {
+          flag = false;
+          obj.entryComment.push(arr[i].substring(1));
+        } else if (arr[i].lastIndexOf('\\') === arr[i].length - 1) {
+          let index = arr[i].indexOf('=');
+          if (index > 0) {
+            flag = true;
+            obj.entryName = arr[i].substring(0, index);
+            let x = arr[i].substring(index + 1).trim();
+            let val = x.replace('\\', '');
+            if (val && val != '') {
+              obj.entryValue.push(val);
+            }
+          } else {
+            if (flag) {
+              let val = arr[i].substring(0, arr[i].lastIndexOf(','));
+              obj.entryValue.push(val);
+            }
+          }
+
+        } else {
+          if (flag) {
+            obj.entryValue.push(arr[i]);
+            main.push(obj);
+            obj = {entryValue: [], entryComment: []};
+            flag = false;
+          } else {
+            let index = arr[i].indexOf('=');
+            if (index > 0) {
+              obj.entryName = arr[i].substring(0, index);
+              let x = arr[i].substring(index + 1).trim();
+              let split = [];
+              if (x.substring(0, 1) === '\\') {
+                split = x.split(',');
+              }
+              if (split.length > 0) {
+                for (let j = 0; j < split.length; j++) {
+                  obj.entryValue.push(split[j].replace('\\', ''));
+                }
+              } else {
+                obj.entryValue.push(x.replace('\\', ''));
+              }
+              main.push(obj);
+              obj = {entryValue: [], entryComment: []};
+            }
+          }
+        }
+      }
+    }
+
+    let mainSection = [];
+    main.forEach((entry) => {
+      let values = [];
+      let comments = [];
+      if (entry.entryComment && entry.entryComment.length > 0) {
+        entry.entryComment.forEach((comment) => {
+          comments.push({value: comment});
+        });
+      } else {
+        comments.push({value: ''});
+      }
+      if (entry.entryValue && entry.entryValue.length > 0) {
+        entry.entryValue.forEach((value) => {
+          values.push({value});
+        });
+      } else {
+        values.push({value: ''});
+      }
+
+      mainSection.push({
+        name: entry.entryName,
+        values,
+        comments
+      });
+    });
+    this.mainSection = mainSection;
   }
 
   onSubmit(): void {
     this.submitted = true;
-    this.userDetail.main = this.userDetail.main.concat(this.mainSection);
+    let main = [];
+    this.mainSection.forEach((val) => {
+      if (val.name && val.name != '') {
+        var obj = {
+          entryName: val.name,
+          entryValue: [],
+          entryComment: []
+        };
+        val.values.forEach((val1) => {
+          if (val1.value && val1.value != '') {
+            obj.entryValue.push(val1.value);
+          }
+        });
+        val.comments.forEach((val1) => {
+          if (val1.value && val1.value != '') {
+            obj.entryComment.push(val1.value);
+          }
+        });
+
+        main.push(obj);
+      }
+    });
+    this.userDetail.main = main;
     this.coreService.post('authentication/shiro/store', this.userDetail).subscribe(() => {
       this.submitted = false;
       this.activeModal.close(this.userDetail.main);
@@ -67,8 +226,8 @@ export class MainSectionModalComponent implements OnInit {
     });
   }
 
-  addMainEntry() {
-    let param = {
+  addMainEntry(): void {
+    const param = {
       name: '',
       values: [{value: ''}],
       comments: [{value: ''}]
@@ -78,35 +237,33 @@ export class MainSectionModalComponent implements OnInit {
     }
   }
 
-  addEntryValueField(index) {
+  addEntryValueField(index): void {
     if (this.mainSection[index].values) {
       this.mainSection[index].values.push({value: ''});
     }
   }
 
-  removeEntry(index) {
+  removeEntry(index): void {
     this.mainSection.splice(index, 1);
   }
 
-  removeEntryValueField(parentIindex, index) {
+  removeEntryValueField(parentIindex, index): void {
     this.mainSection[parentIindex].values.splice(index, 1);
   }
 
-  addEntryCommentField(index) {
+  addEntryCommentField(index): void {
     if (this.mainSection[index].comments) {
       this.mainSection[index].comments.push({value: ''});
     }
   }
 
-  removeEntryCommentField(parentIindex, index) {
-
+  removeEntryCommentField(parentIindex, index): void {
     if (this.mainSection[parentIindex].comments.length === 1) {
       this.mainSection[parentIindex].comments[0].value = '';
     } else {
       this.mainSection[parentIindex].comments.splice(index, 1);
     }
   }
-
 }
 
 // Edit Single Section
@@ -127,7 +284,7 @@ export class EditMainSectionModalComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.entry = _.clone(this.oldEntry);
     this.existingEntry = this.oldEntry.entryName;
     if (this.entry.entryValue.length > 0) {
@@ -146,7 +303,7 @@ export class EditMainSectionModalComponent implements OnInit {
     }
   }
 
-  checkMainSection(newEntry) {
+  checkMainSection(newEntry): void {
     this.isUnique = true;
     for (let i = 0; i < this.userDetail.main.length; i++) {
       if (this.userDetail.main[i].entryName === newEntry && newEntry !== this.existingEntry) {
@@ -156,7 +313,7 @@ export class EditMainSectionModalComponent implements OnInit {
     }
   }
 
-  onSubmit(obj): void {
+  onSubmit(): void {
     this.submitted = true;
     this.entry.entryValue = [];
     this.entry.entryComment = [];
@@ -177,28 +334,29 @@ export class EditMainSectionModalComponent implements OnInit {
       }
     });
 
-    this.coreService.post('authentication/shiro/store', this.userDetail).subscribe(res => {
+    this.coreService.post('authentication/shiro/store', this.userDetail).subscribe(() => {
       this.submitted = false;
       this.activeModal.close(this.userDetail.main);
-    }, err => {
+    }, () => {
       this.submitted = false;
     });
   }
 
-  addValueField() {
-    let param = {
+  addValueField(): void {
+    const param = {
       value: ''
     };
-    if (this.entryValue)
-      {this.entryValue.push(param);}
+    if (this.entryValue) {
+      this.entryValue.push(param);
+    }
   }
 
-  removeValueField(index) {
+  removeValueField(index): void {
     this.entryValue.splice(index, 1);
   }
 
-  addCommentField() {
-    let param = {
+  addCommentField(): void {
+    const param = {
       value: ''
     };
     if (this.entryComment) {
@@ -206,7 +364,7 @@ export class EditMainSectionModalComponent implements OnInit {
     }
   }
 
-  removeCommentField(index) {
+  removeCommentField(index): void {
     this.entryComment.splice(index, 1);
   }
 }
@@ -225,7 +383,7 @@ export class LdapSectionModalComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     let mainSection;
     if (this.isldap) {
       mainSection = [
@@ -263,7 +421,7 @@ export class LdapSectionModalComponent implements OnInit {
           entryComment: []
         }];
     } else {
-       mainSection = [
+      mainSection = [
         {
           entryName: 'sessionDAO',
           entryValue: ['com.sos.auth.shiro.SOSDistributedSessionDAO'],
@@ -277,13 +435,13 @@ export class LdapSectionModalComponent implements OnInit {
     this.mainSection = _.clone(mainSection);
   }
 
-  onSubmit(obj): void {
+  onSubmit(): void {
     this.submitted = true;
     if (this.isldap) {
       for (let i = 0; i < this.mainSection.length; i++) {
         if (this.mainSection[i].entryName === 'ldapRealm.contextFactory.url') {
           if (!_.isArray(this.mainSection[i].entryValue)) {
-            let value = _.clone(this.mainSection[i].entryValue);
+            const value = _.clone(this.mainSection[i].entryValue);
             this.mainSection[i].entryValue = [value];
           }
           break;
@@ -291,7 +449,7 @@ export class LdapSectionModalComponent implements OnInit {
       }
     }
     this.userDetail.main = this.userDetail.main.concat(this.mainSection);
-    this.coreService.post('authentication/shiro/store', this.userDetail).subscribe(res => {
+    this.coreService.post('authentication/shiro/store', this.userDetail).subscribe(() => {
       this.submitted = false;
       this.activeModal.close(this.userDetail.main);
     }, () => {
@@ -306,7 +464,7 @@ export class LdapSectionModalComponent implements OnInit {
 })
 export class MainSectionComponent implements OnInit, OnDestroy {
 
-  loading =  true;
+  loading = true;
   main: any = [];
   usr: any = {currentPage: 1};
   preferences: any = {};
@@ -334,60 +492,58 @@ export class MainSectionComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.preferences = JSON.parse(sessionStorage.preferences);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
   }
 
-  setUserData(res) {
+  setUserData(res): void {
     this.userDetail = res;
     this.main = res.main;
     setTimeout(() => {
       this.loading = false;
-    }, 400)
+    }, 400);
   }
 
-  saveInfo() {
-    let obj = {
+  saveInfo(): void {
+    const obj = {
       users: this.userDetail.users,
       masters: this.userDetail.masters,
       main: this.main
     };
 
-    this.coreService.post('authentication/shiro/store', obj).subscribe(res => {
+    this.coreService.post('authentication/shiro/store', obj).subscribe(() => {
       this.main = [...this.main];
-    }, () => {
-
     });
   }
 
-  editMain(main) {
+  editMain(main): void {
     const modalRef = this.modalService.open(EditMainSectionModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.oldEntry = main;
     modalRef.componentInstance.userDetail = this.userDetail;
     modalRef.result.then((result) => {
       this.main = result;
       this.main = [...this.main];
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
-  deleteMain(main) {
+  deleteMain(main): void {
     const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.title = 'delete';
     modalRef.componentInstance.message = 'deleteMainSection';
     modalRef.componentInstance.type = 'Delete';
     modalRef.componentInstance.objectName = main.entryName;
-    modalRef.result.then((result) => {
+    modalRef.result.then(() => {
       this.main.splice(this.main.indexOf(main), 1);
       this.saveInfo();
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -396,8 +552,8 @@ export class MainSectionComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.userDetail = this.userDetail;
     modalRef.result.then((result) => {
       this.main = result;
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -408,8 +564,8 @@ export class MainSectionComponent implements OnInit, OnDestroy {
     modalRef.result.then((result) => {
       this.main = result;
       this.main = [...this.main];
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -420,8 +576,8 @@ export class MainSectionComponent implements OnInit, OnDestroy {
     modalRef.result.then((result) => {
       this.main = result;
       this.main = [...this.main];
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
@@ -431,8 +587,8 @@ export class MainSectionComponent implements OnInit, OnDestroy {
     modalRef.result.then((result) => {
       this.main = result;
       this.main = [...this.main];
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 }

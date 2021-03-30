@@ -8,67 +8,82 @@
     </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
-    <div class="modal-body p-a text-overflow">
-        <div *ngFor="let entry of mainSection; let PIndex = index " [ngClass]="{'b-t p-t': PIndex>0}" class="p-l-sm">
-
-            <div class="pos-abt cursor text-hover-color" style="right: 28px" (click)="removeEntry(PIndex)"><i
-                    class="fa fa-times fa-lg"></i></div>
-            <div class="form-group row m-b-0">
-                <div class="row col-sm-12" *ngIf="PIndex==0">
-                    <div class="col-sm-1" style="width: 30px"></div>
-                    <div class="col-sm-4 m-b-sm" translate>common.label.name</div>
-                    <div class="col-sm-7 m-b-sm p-l-md" translate>common.label.value</div>
-                </div>
-                <div class="col-sm-1" style="width: 30px">
-                    <a *ngIf="PIndex==mainSection.length-1"><i (click)="addMainEntry()"
-                                                               class="fa fa-plus m-t-sm text-muted"></i></a>
-                </div>
-                <div class="col-sm-4 m-b-sm">
-                    <input type="text" class="form-control" [(ngModel)]="entry.name" name="name{{PIndex+1}}"
-                           placeholder="{{'common.placeholder.name' | translate}} {{PIndex+1}}">
-                </div>
-
-                <div class="col-sm-7 m-b-sm">
-                    <div class="row" *ngFor="let value of entry.values; let cIndex = index">
-                        <div class="col-sm-1" style="width: 30px" *ngIf="entry.name.indexOf('groupRolesMapping') > -1">
-                            <a><i (click)="addEntryValueField(PIndex)" class="fa fa-plus m-t-sm text-muted"></i></a>
-                        </div>
-                        <div class="col-sm-10"
-                             [ngClass]="{'m-t-sm' : cIndex>0, 'p-r-0': entry.name.indexOf('groupRolesMapping') == -1,'p-r-26': entry.name.indexOf('groupRolesMapping') > -1}">
-                            <input type="text" class="form-control" [(ngModel)]="value.value" name="value{{PIndex+1}}{{cIndex+1}}"
-                                   placeholder="{{'common.placeholder.value' | translate}} {{cIndex+1}}">
-                        </div>
-                        <div class="col-sm-1 m-m-p-7" *ngIf="entry.name.indexOf('groupRolesMapping') > -1">
-                            <a *ngIf="cIndex==entry.values.length-1 && entry.values.length>1">
-                                <i (click)="removeEntryValueField(PIndex,cIndex)" class="fa fa-times m-t-sm text-muted"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group row m-l" *ngFor="let comment of entry.comments; let cIndex1 = index">
-                <div class="col-sm-1" style="width: 27px;padding-left: 13px">
-                    <a *ngIf="cIndex1==entry.comments.length-1">
-                        <i (click)="addEntryCommentField(PIndex)" class="fa fa-plus m-t-sm text-muted"></i></a>
-                </div>
-                <div class="col-sm-10">
-                    <textarea rows="1" class="form-control"
-                              placeholder="{{'user.placeholder.writeComment' | translate}} {{cIndex1 +1}}"
-                              [(ngModel)]="comment.value" name="comment{{PIndex+1}}{{cIndex1+1}}"></textarea>
-                </div>
-                <div class="col-sm-1 p-l-0" style="padding-top: 6px" *ngIf="cIndex1==entry.comments.length-1">
-                    <a><i (click)="removeEntryCommentField(PIndex,cIndex1)"
-                          class="fa fa-times text-muted"></i></a>
-                </div>
-            </div>
+  <div class="modal-body p-a text-overflow">
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <div class="btn-group m-b">
+          <button type="button" class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': !fullSection}" (click)="toggleView(false)"><i class="fa fa-th"></i></button>
+          <button type="button" class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': fullSection}" (click)="toggleView(true)"><i class="fa fa-bars"></i></button>
         </div>
+      </div>
     </div>
-    <div class="modal-footer text-left">
-        <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted" >
-            <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-            {{'common.button.submit' | translate}}
-        </button>
-        <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="activeModal.dismiss('Cross click')" translate>common.button.cancel
-        </button>
+    <div [hidden]="!fullSection">
+      <div *ngFor="let entry of mainSection; let PIndex = index " [ngClass]="{'b-t p-t': PIndex>0}" class="p-l-sm">
+        <div class="pos-abt cursor text-hover-color" style="right: 28px" (click)="removeEntry(PIndex)"><i
+          class="fa fa-times fa-lg"></i></div>
+        <div class="form-group row m-b-0">
+          <div class="row col-sm-12" *ngIf="PIndex==0">
+            <div class="col-sm-1" style="width: 30px"></div>
+            <div class="col-sm-4 m-b-sm" translate>common.label.name</div>
+            <div class="col-sm-7 m-b-sm p-l-md" translate>common.label.value</div>
+          </div>
+          <div class="col-sm-1" style="width: 30px">
+            <a *ngIf="PIndex==mainSection.length-1"><i (click)="addMainEntry()"
+                                                       class="fa fa-plus m-t-sm text-muted"></i></a>
+          </div>
+          <div class="col-sm-4 m-b-sm">
+            <input type="text" class="form-control" [(ngModel)]="entry.name" name="name{{PIndex+1}}"
+                     placeholder="{{'common.placeholder.name' | translate}} {{PIndex+1}}">
+          </div>
+
+          <div class="col-sm-7 m-b-sm">
+            <div class="row" *ngFor="let value of entry.values; let cIndex = index">
+              <div class="col-sm-1" style="width: 30px" *ngIf="entry.name && entry.name.indexOf('groupRolesMapping') > -1">
+                <a><i (click)="addEntryValueField(PIndex)" class="fa fa-plus m-t-sm text-muted"></i></a>
+              </div>
+              <div class="col-sm-10"
+                   [ngClass]="{'m-t-sm' : cIndex>0, 'p-r-0': entry.name && entry.name.indexOf('groupRolesMapping') == -1,'p-r-26': entry.name && entry.name.indexOf('groupRolesMapping') > -1}">
+                <label>
+                  <input type="text" class="form-control" [(ngModel)]="value.value" name="value{{PIndex+1}}{{cIndex+1}}"
+                         placeholder="{{'common.placeholder.value' | translate}} {{cIndex+1}}">
+                </label>
+              </div>
+              <div class="col-sm-1 m-m-p-7" *ngIf="entry.name && entry.name.indexOf('groupRolesMapping') > -1">
+                <a *ngIf="cIndex==entry.values.length-1 && entry.values.length>1">
+                  <i (click)="removeEntryValueField(PIndex,cIndex)" class="fa fa-times m-t-sm text-muted"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row m-l" *ngFor="let comment of entry.comments; let cIndex1 = index">
+          <div class="col-sm-1" style="width: 27px;padding-left: 13px">
+            <a *ngIf="cIndex1==entry.comments.length-1">
+              <i (click)="addEntryCommentField(PIndex)" class="fa fa-plus m-t-sm text-muted"></i></a>
+          </div>
+          <div class="col-sm-10">
+                      <textarea rows="1" class="form-control"
+                                placeholder="{{'user.placeholder.writeComment' | translate}} {{cIndex1 +1}}"
+                                [(ngModel)]="comment.value" name="comment{{PIndex+1}}{{cIndex1+1}}"></textarea>
+          </div>
+          <div class="col-sm-1 p-l-0" style="padding-top: 6px" *ngIf="cIndex1==entry.comments.length-1">
+            <a><i (click)="removeEntryCommentField(PIndex,cIndex1)"
+                  class="fa fa-times text-muted"></i></a>
+          </div>
+        </div>
+      </div>
     </div>
+     <div [hidden]="fullSection">
+       <textarea class="form-control" name="full-text" rows="15" placeholder="{{'user.placeholder.enterMainSection' | translate}}" [(ngModel)]="mainText" (blur)="generateObject()"></textarea>
+     </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
+      common.button.cancel
+    </button>
+  </div>
 </form>
 

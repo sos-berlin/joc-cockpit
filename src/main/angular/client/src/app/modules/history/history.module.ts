@@ -25,10 +25,6 @@ import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component
     TaskSearchComponent,
     DeploymentSearchComponent,
     SubmissionSearchComponent
-  ],
-  entryComponents: [
-    FilterModalComponent,
-    EditIgnoreListComponent
   ]
 })
 export class HistoryModule {

@@ -218,7 +218,7 @@
               <td><span [innerHtml]="auditLog.account | highlight : adtLog.searchText"></span></td>
               <td><span [innerHtml]="auditLog.request | highlight : adtLog.searchText"></span></td>
               <td>
-                <span class="show-in-single-line">
+                <span class="show-in-single-line" *ngIf="auditLog.workflow">
                   <i (click)="coreService.navToInventoryTab(auditLog.workflow, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
                   <a class="text-hover-primary" (click)="coreService.showWorkflow(auditLog.workflow);" [innerHtml]="auditLog.workflow | highlight : adtLog.searchText"></a>
                 </span>

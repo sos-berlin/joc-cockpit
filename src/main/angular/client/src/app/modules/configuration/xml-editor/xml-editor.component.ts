@@ -850,8 +850,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   counting = 0;
   autoAddCount = 0;
   copyItem: any = {};
-  cutData = false;
-  checkRule = true;
+  cutData: boolean;
+  checkRule: boolean;
   choice = true;
   dropCheck: any = {status: false, dropNode: undefined};
   selectedNode: any;
@@ -1024,8 +1024,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.coreService.tabs._configuration.state = this.objectType === 'YADE' ? 'file_transfer' : this.objectType.toLowerCase();
   }
 
+  contextMenu(node: any): void {
+    this.checkChildNode(node, null);
+    this.checkRules(node, this.copyItem);
+    this.checkChoice(node);
+    this.checkOrder(node);
+  }
 
-  deleteAllConf() {
+  deleteAllConf(): void {
     this.deleteAll = true;
     this.delete = false;
     let modalRef = this.modalService.open(ConfirmationModalComponent, {backdrop: 'static'});
@@ -3313,7 +3319,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   // check rules before paste
-  checkRules(pasteNode, copyNode) {
+  checkRules(pasteNode, copyNode): void {
     if (copyNode !== undefined) {
       this.checkRule = false;
       if (pasteNode.ref === copyNode.parent) {
@@ -5626,7 +5632,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  private validateSer() {
+  private validateSer(): void {
     this._xml = this._showXml();
     if (!this._xml) {
       return;

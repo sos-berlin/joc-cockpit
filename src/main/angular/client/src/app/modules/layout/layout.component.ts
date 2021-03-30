@@ -38,6 +38,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   subscription5: any = Subscription;
   isLogout = false;
   loading = false;
+  sessionTimeout = 0;
   isPermissionLoaded = true;
   isTouch = false;
   count = 0;
@@ -233,12 +234,15 @@ export class LayoutComponent implements OnInit, OnDestroy {
       }, 50);
       return;
     }
+    this.sessionTimeout = parseInt(this.authService.sessionTimeout, 10);
     this.permission = JSON.parse(this.authService.permission) || {};
     this.loading = true;
     this.loadSettingConfiguration();
-    this.count = parseInt(this.authService.sessionTimeout, 10) / 1000;
+    this.count = this.sessionTimeout / 1000;
     this.loadScheduleDetail();
-    this.calculateTime();
+    if (this.sessionTimeout > 0) {
+      this.calculateTime();
+    }
     this.nzConfigService.set('empty', {nzDefaultEmptyContent: this.customTpl});
     setTimeout(() => {
       LayoutComponent.calculateHeight();
@@ -356,12 +360,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private refreshSession(): void {
-    if (!this.isTouch) {
+    if (!this.isTouch && this.sessionTimeout >= 0) {
       this.isTouch = true;
       this.coreService.post('touch', undefined).subscribe(res => {
         this.isTouch = false;
         if (res) {
-          this.count = parseInt(this.authService.sessionTimeout, 10) / 1000 - 1;
+          this.count = this.sessionTimeout / 1000 - 1;
         }
       }, () => {
         this.isTouch = false;

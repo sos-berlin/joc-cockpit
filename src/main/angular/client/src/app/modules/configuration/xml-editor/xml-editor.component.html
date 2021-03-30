@@ -220,10 +220,10 @@
                   <span
                     *ngIf="(!node.children || node.children.length === 0) && node.origin.nodes && node.origin.nodes.length === 0"
                     class="w-11">
-                          <span class="fa fa-lg"></span>
-                        </span>
+                    <span class="fa fa-lg"></span>
+                  </span>
                   <button class="btn-drop more-option-h"
-                          (click)="checkChildNode(node.origin, null);checkRules(node.origin, copyItem);checkChoice(node.origin);checkOrder(node.origin);"
+                          (click)="contextMenu(node.origin);"
                           nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" type="button">
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
@@ -253,7 +253,7 @@
                         </a>
                       </li>
                       <li nz-menu-item><a (click)="copyNode(node.origin)" translate>xml.button.copy</a></li>
-                      <li nz-menu-item [nzDisabled]="checkRule == true">
+                      <li nz-menu-item [nzDisabled]="!checkRule">
                         <a (click)="pasteNode(node.origin)" translate>
                           xml.button.paste</a>
                       </li>
@@ -264,38 +264,38 @@
                     </ul>
                   </nz-dropdown-menu>
                   <div>
-                          <span class="node-content-wrapper"
-                                [ngClass]="{'node-content-wrapper-active': selectedNode && selectedNode.ref === node.origin.ref && selectedNode.uuid === node.origin.uuid}">
-                            <ng-template #htmlContent>
-                              <table style="padding: 3px;" *ngIf="node.origin && node.origin.attributes">
-                                <tr *ngFor="let item of node.origin.attributes">
-                                  <td style="padding: 3px;"> <span> {{item.name}}</span></td>
-                                  <td
-                                    style="padding: 3px;">{{(item.data && item.name !== 'password') ? item.data : passwordLabel(item.data)}}</td>
-                                </tr>
-                              </table>
-                            </ng-template>
-                            <span nzNoAnimation
-                                  (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
-                                  [ngClass]="cutData && node.origin.uuid === copyItem.uuid? 'disabled' : ''"
-                                  [nz-tooltip]="(node.origin.attributes && node.origin.attributes.length>0) ? htmlContent : ''">{{node.origin.ref}}
-                            </span>
-                            <span nzNoAnimation class="text-sm pl-2"
-                                  (click)="getData(node.origin); getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
-                                  [hidden]="!node.origin.attributes || (node.origin.attributes && node.origin.attributes.length==0)">
-                              {{getFirstNotEmptyAttribute(node.origin.attributes)}}
-                            </span>
-                            <span nzNoAnimation class="text-sm pl-2"
-                                  (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
-                                  [ngClass]="(getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && node.origin.values[0].base !== 'password') ? 'inline': 'hide'">
-                              {{removeTag(node.origin)}}
-                            </span>
-                            <span nzNoAnimation class="text-sm pl-2"
-                                  (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
-                                  [ngClass]="(getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && (node.origin.values[0].parent === 'Password' || node.origin.values[0].base === 'password')) ? 'inline': 'hide'">
-                              {{passwordLabel(node.origin)}}
-                            </span>
-                          </span>
+                    <span class="node-content-wrapper"
+                          [ngClass]="{'node-content-wrapper-active': selectedNode && selectedNode.ref === node.origin.ref && selectedNode.uuid === node.origin.uuid}">
+                      <ng-template #htmlContent>
+                        <table style="padding: 3px;" *ngIf="node.origin && node.origin.attributes">
+                          <tr *ngFor="let item of node.origin.attributes">
+                            <td style="padding: 3px;"> <span> {{item.name}}</span></td>
+                            <td
+                              style="padding: 3px;">{{(item.data && item.name !== 'password') ? item.data : passwordLabel(item.data)}}</td>
+                          </tr>
+                        </table>
+                      </ng-template>
+                      <span nzNoAnimation
+                            (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
+                            [ngClass]="cutData && node.origin.uuid === copyItem.uuid? 'disabled' : ''"
+                            [nz-tooltip]="(node.origin.attributes && node.origin.attributes.length>0) ? htmlContent : ''">{{node.origin.ref}}
+                      </span>
+                      <span nzNoAnimation class="text-sm pl-2"
+                            (click)="getData(node.origin); getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
+                            [hidden]="!node.origin.attributes || (node.origin.attributes && node.origin.attributes.length==0)">
+                        {{getFirstNotEmptyAttribute(node.origin.attributes)}}
+                      </span>
+                      <span nzNoAnimation class="text-sm pl-2"
+                            (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
+                            [ngClass]="(getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && node.origin.values[0].base !== 'password') ? 'inline': 'hide'">
+                        {{removeTag(node.origin)}}
+                      </span>
+                      <span nzNoAnimation class="text-sm pl-2"
+                            (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
+                            [ngClass]="(getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && (node.origin.values[0].parent === 'Password' || node.origin.values[0].base === 'password')) ? 'inline': 'hide'">
+                        {{passwordLabel(node.origin)}}
+                      </span>
+                    </span>
                   </div>
                   <span *ngIf="node.children && node.children.length > 0"
                         (click)="expandNode(node.origin);$event.stopPropagation()"> <i

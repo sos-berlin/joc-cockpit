@@ -1,23 +1,23 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router, ActivatedRoute, RouterEvent, NavigationEnd} from '@angular/router';
 import {Subscription} from 'rxjs';
+import {filter} from 'rxjs/operators';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from './data.service';
-import {filter} from 'rxjs/operators';
+
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html'
 })
 export class AdminComponent implements OnInit, OnDestroy {
-
   schedulerIds: any;
   permission: any;
   isButtonShow = false;
   isLdapRealmEnable = true;
   isJOCClusterEnable = true;
   selectedUser: string;
-  route: any;
+  route: string;
   userObj: any;
   users: any;
   pageView: string;
@@ -25,11 +25,13 @@ export class AdminComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(private authService: AuthService, private router: Router, private activeRoute: ActivatedRoute, public coreService: CoreService, private dataService: DataService) {
+  constructor(private authService: AuthService, private router: Router, private activeRoute: ActivatedRoute,
+              public coreService: CoreService, private dataService: DataService) {
     this.subscription1 = router.events
       .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd)).subscribe((e: any) => {
-      this.checkUrl(e);
-    });
+        console.log('>>>>>', e);
+        this.checkUrl(e);
+      });
     this.subscription2 = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'IS_RESET_PROFILES_TRUE') {
         this.isButtonShow = true;
@@ -39,79 +41,82 @@ export class AdminComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
-    if(localStorage.views) {
+    if (localStorage.views) {
       this.pageView = JSON.parse(localStorage.views).permission;
     }
     this.getUsersData();
+    if (!this.route) {
+      this.checkUrl(this.router);
+    }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
   }
 
-  selectUser(user) {
+  selectUser(user): void {
     if (user) {
-      this.router.navigate(['/users/role'], {queryParams: {user: user}});
+      this.router.navigate(['/users/role'], {queryParams: {user}});
     } else {
       this.selectedUser = null;
       this.router.navigate(['/users/role']);
     }
   }
 
-  addAccount() {
+  addAccount(): void {
     this.dataService.announceFunction('ADD');
   }
 
-  addMaster() {
+  addMaster(): void {
     this.dataService.announceFunction('ADD_MASTER');
   }
 
-  addFolder() {
+  addFolder(): void {
     this.dataService.announceFunction('ADD_FOLDER');
   }
 
-  addPermission() {
+  addPermission(): void {
     this.dataService.announceFunction('ADD_PERMISSION');
   }
 
-  addRole() {
+  addRole(): void {
     this.dataService.announceFunction('ADD_ROLE');
   }
 
-  addMainSection() {
+  addMainSection(): void {
     this.dataService.announceFunction('ADD_MAIN_SECTION');
   }
 
-  editMainSection() {
+  editMainSection(): void {
     this.dataService.announceFunction('EDIT_MAIN_SECTION');
   }
 
-  addLdapRealm() {
+  addLdapRealm(): void {
     this.dataService.announceFunction('ADD_ALAD');
   }
 
-  enableJOCCluster() {
+  enableJOCCluster(): void {
     this.dataService.announceFunction('ENABLE_JOC');
   }
 
-  searchBar(searchKey) {
+  searchBar(searchKey): void {
     this.dataService.announceSearchKey(searchKey);
   }
 
-  resetProfiles() {
+  resetProfiles(): void {
     this.dataService.announceFunction('RESET_PROFILES');
   }
 
-  receiveMessage($event) {
+  receiveMessage($event): void {
     this.pageView = $event;
     this.dataService.announceFunction('CHANGE_VIEW');
   }
 
-  private checkUrl(val) {
+  private checkUrl(val): void {
     if (val.url) {
       this.route = val.url;
       if (this.route.match('/users')) {
@@ -124,7 +129,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getUsersData() {
+  private getUsersData(): void {
     this.coreService.post('authentication/shiro', {}).subscribe(res => {
       this.userObj = res;
       this.users = this.userObj.users;
@@ -135,7 +140,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     });
   }
 
-  private checkLdapConf() {
+  private checkLdapConf(): void {
     if (this.userObj.main && this.userObj.main.length > 1) {
       for (let i = 0; i < this.userObj.main.length; i++) {
         if ((this.userObj.main[i].entryName === 'sessionDAO' && this.userObj.main[i].entryValue === 'com.sos.auth.shiro.SOSDistributedSessionDAO') ||

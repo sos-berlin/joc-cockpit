@@ -1461,6 +1461,7 @@
     "placeholder.selectRoles": "Select Roles",
     "placeholder.user": "Enter account",
     "placeholder.password": "Enter password",
+    "placeholder.enterMainSection": "Enter Main Section",
     "placeholder.writeComment": "Write your comment",
     "placeholder.enterController": "Enter Controller ID",
     "placeholder.folderPath": "Enter folder path",

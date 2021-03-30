@@ -9,7 +9,7 @@
           </div>
           <div class="inline">
             <!-- Sorting via Account Name Starts -->
-            <div class="btn-group dropdown" *ngIf="route.match('/users/role')">
+            <div class="btn-group dropdown" *ngIf="route && route.match('/users/role')">
               <button class="btn btn-grey btn-sm m-l-12 "
                 nz-dropdown nzTrigger="click" [nzDropdownMenu]="account" [nzPlacement]="'bottomRight'">{{'user.label.user' | translate}}
                 <span class="text-primary">{{selectedUser | decodeSpace}} </span>
@@ -33,11 +33,11 @@
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.addUser</span>
             </button>
-            <button *ngIf="route.match('/users/role')" class="btn btn-grey btn-sm m-l-12" (click)="addMaster()">
+            <button *ngIf="route && route.match('/users/role')" class="btn btn-grey btn-sm m-l-12" (click)="addMaster()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.addSpecialisation</span>
             </button>
-            <button *ngIf="route.match('/users/role')" class="btn btn-grey btn-sm m-l-12" (click)="addRole()">
+            <button *ngIf="route && route.match('/users/role')" class="btn btn-grey btn-sm m-l-12" (click)="addRole()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.addRole</span>
             </button>
@@ -68,17 +68,17 @@
               <i class="fa fa-refresh"></i>&nbsp;
               <span translate>user.button.resetProfile</span>
             </button>
-            <button type="button" class="btn btn-sm btn-grey m-l-12" *ngIf="route.match('/users/permissions')"
+            <button type="button" class="btn btn-sm btn-grey m-l-12" *ngIf="route && route.match('/users/permissions')"
                     (click)="addFolder()">
               <i class="fa fa-plus"></i>
               {{'user.button.addFolder' | translate}}
             </button>
-            <button type="button" class="btn btn-sm btn-grey m-l-12" *ngIf="route.match('/users/permissions')"
+            <button type="button" class="btn btn-sm btn-grey m-l-12" *ngIf="route && route.match('/users/permissions')"
                     [hidden]="pageView=='grid'" (click)="addPermission();">
               <i class="fa fa-plus"></i>&nbsp;
               {{'user.button.addPermission' | translate}}
             </button>
-            <div class="hide" [ngClass]="{'show-block': route.match('/users/permissions')}">
+            <div class="hide" [ngClass]="{'show-block': route && route.match('/users/permissions')}">
               <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
             </div>
           </div>

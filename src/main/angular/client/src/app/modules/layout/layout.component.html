@@ -9,8 +9,8 @@
               class="_600 m-l-sm text-shadow _500 backup-text"></span> </span>
       <span class="m-r-sm"><span class="text-muted" translate>common.label.time</span>:
               <i [innerHtml]="currentTime" class="text-dark _500"></i></span>
-      <i class="fa fa-circle-o circle"></i>
-      <span class="m-r-sm"><span class="text-muted" translate>common.label.remainingSessionTime</span>:
+      <i class="fa fa-circle-o circle" *ngIf="sessionTimeout >= 0"></i>
+      <span class="m-r-sm" *ngIf="sessionTimeout >= 0"><span class="text-muted" translate>common.label.remainingSessionTime</span>:
               <span [innerHtml]="remainingSessionTime" class="text-orange"></span></span>
       <i *ngIf="schedulerIds.selected" class="fa fa-circle-o circle"></i>
       <span *ngIf="schedulerIds.selected" class="dropdown">

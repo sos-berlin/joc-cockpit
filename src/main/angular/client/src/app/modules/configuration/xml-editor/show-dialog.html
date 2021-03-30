@@ -83,10 +83,10 @@
     <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid" translate>
       common.button.submit
     </button>
-    <button type="button" class="btn btn-sm" (click)="validateXML()" translate>
+    <button type="button" class="btn btn-default btn-sm" (click)="validateXML()" translate>
         xml.button.validate
     </button>
-    <button type="button" class="btn btn-sm" [disabled]="obj.error"
+    <button type="button" class="btn btn-default btn-sm" [disabled]="obj.error"
             (click)="copyToClipboard()" translate>log.button.copyToClipboard
     </button>
     <button type="button" class="btn btn-grey btn-sm" (click)="cancel()">
