@@ -28,7 +28,7 @@ export class AgentModalComponent implements OnInit {
   constructor(public coreService: CoreService, public activeModal: NgbActiveModal) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
@@ -52,17 +52,17 @@ export class AgentModalComponent implements OnInit {
     }
   }
 
-  addAlise() {
+  addAlise(): void {
     if (this.agentNameAliases[this.agentNameAliases.length - 1].name) {
       this.agentNameAliases.push({name: ''});
     }
   }
 
-  removeAlise(index) {
+  removeAlise(index): void {
     this.agentNameAliases.splice(index, 1);
   }
 
-  checkDisable() {
+  checkDisable(): void {
     if (this.agent.disabled) {
       const x = this.agents.filter((agent) => {
         return agent.disabled;
@@ -76,7 +76,7 @@ export class AgentModalComponent implements OnInit {
     }
   }
 
-  checkId(newId) {
+  checkId(newId): void {
     this.isUniqueId = true;
     for (let i = 0; i < this.agents.length; i++) {
       if (this.agents[i].agentId === newId && (this.data && newId !== this.data.agentId)) {
@@ -169,7 +169,7 @@ export class ControllersComponent implements OnInit {
     }
   }
 
-  addController() {
+  addController(): void {
     const modalRef = this.modalService.open(StartUpModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.isModal = true;
     modalRef.componentInstance.new = true;
@@ -181,7 +181,7 @@ export class ControllersComponent implements OnInit {
     });
   }
 
-  editController(controller) {
+  editController(controller): void {
     this.coreService.post('controllers/p', {controllerId: controller}).subscribe((res: any) => {
       const modalRef = this.modalService.open(StartUpModalComponent, {backdrop: 'static'});
       modalRef.componentInstance.isModal = true;
@@ -197,7 +197,7 @@ export class ControllersComponent implements OnInit {
     });
   }
 
-  deleteController(matser) {
+  deleteController(matser): void {
     const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.title = 'delete';
     modalRef.componentInstance.message = 'deleteController';
@@ -212,7 +212,7 @@ export class ControllersComponent implements OnInit {
     });
   }
 
-  addAgent(controller) {
+  addAgent(controller): void {
     this.getAgents(controller, () => {
       const modalRef = this.modalService.open(AgentModalComponent, {backdrop: 'static'});
       modalRef.componentInstance.controllerId = controller.controllerId;
@@ -226,7 +226,7 @@ export class ControllersComponent implements OnInit {
     });
   }
 
-  editAgent(agent, controller) {
+  editAgent(agent, controller): void {
     this.getAgents(controller, () => {
       const modalRef = this.modalService.open(AgentModalComponent, {backdrop: 'static'});
       modalRef.componentInstance.controllerId = controller.controllerId;
@@ -240,7 +240,7 @@ export class ControllersComponent implements OnInit {
     });
   }
 
-  disableAgent(agent, controller) {
+  disableAgent(agent, controller): void {
     agent.disabled = true;
     this.coreService.post('agents/store', {
       controllerId: controller.controllerId, agents:
@@ -250,7 +250,7 @@ export class ControllersComponent implements OnInit {
     });
   }
 
-  enableAgent(agent, controller) {
+  enableAgent(agent, controller): void {
     agent.disabled = false;
     this.coreService.post('agents/store', {
       controllerId: controller.controllerId, agents: controller.agents
@@ -259,7 +259,7 @@ export class ControllersComponent implements OnInit {
     });
   }
 
-  private getSecurity() {
+  private getSecurity(): void {
     this.coreService.post('controllers/security_level', {})
       .subscribe((data: any) => {
         this.mergeData(data);
@@ -268,7 +268,7 @@ export class ControllersComponent implements OnInit {
       });
   }
 
-  private mergeData(securityData) {
+  private mergeData(securityData): void {
     this.controllers = [];
     this.currentSecurityLevel = securityData ? securityData.currentSecurityLevel : '';
     if (this.data.length > 0) {
@@ -305,11 +305,10 @@ export class ControllersComponent implements OnInit {
     }
   }
 
-  private checkIsFirstEntry(_permission) {
-    this.authService.setPermissions(_permission);
+  private checkIsFirstEntry(permission): void {
+    this.authService.setPermission(permission);
     this.authService.save();
     if (this.data.length === 1) {
-      this.authService.savePermission(this.data[0]);
       this.dataService.switchScheduler(this.data[0]);
     }
   }

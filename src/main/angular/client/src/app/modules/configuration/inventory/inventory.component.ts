@@ -1093,7 +1093,7 @@ export class ExportComponent implements OnInit {
           param = param + '&ticketLink=' + encodeURIComponent(this.comments.ticketLink);
         }
       }
-      
+
       try {
         $('#tmpFrame').attr('src', './api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
         setTimeout(() => {
@@ -2710,7 +2710,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  importDeploy() {
+  importDeploy(): void {
     const modalRef = this.modalService.open(ImportWorkflowModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.schedulerIds = this.schedulerIds;
     modalRef.componentInstance.display = this.preferences.auditLog;
@@ -2721,7 +2721,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  setVersion() {
+  setVersion(): void {
     const modalRef = this.modalService.open(SetVersionComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.schedulerIds = this.schedulerIds;
     modalRef.componentInstance.preferences = this.preferences;
@@ -2731,19 +2731,17 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  createFolder(node) {
-    if (this.permission && this.permission.Inventory && this.permission.Inventory.configurations.edit) {
-      const modalRef = this.modalService.open(CreateFolderModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-      modalRef.componentInstance.origin = node.origin;
-      modalRef.result.then(() => {
-        this.initTree(node.origin.path, null);
-      }, () => {
-      });
-    }
+  createFolder(node): void {
+    const modalRef = this.modalService.open(CreateFolderModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.origin = node.origin;
+    modalRef.result.then(() => {
+      this.initTree(node.origin.path, null);
+    }, () => {
+    });
   }
 
-  deployObject(node, releasable) {
+  deployObject(node, releasable): void {
     const origin = node.origin ? node.origin : node;
     if (releasable && origin.id) {
       this.releaseSingleObject(origin);
@@ -2901,7 +2899,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   renameObject(node): void {
-    if (this.permission && this.permission.Inventory && this.permission.Inventory.configurations.edit) {
+    if (this.permission && this.permission.joc && this.permission.joc.inventory.manage) {
       const modalRef = this.modalService.open(CreateFolderModalComponent, {backdrop: 'static'});
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
       modalRef.componentInstance.origin = node.renameObject || node.origin;

@@ -89,7 +89,7 @@
                [(ngModel)]="filter.account" name="account">
       </div>
     </div>
-    <div class="form-group row" *ngIf="permission.JOCConfigurations.share.change.sharedStatus.makeShared && !isSearch">
+    <div class="form-group row" *ngIf="permission.joc && !isSearch">
         <label class="col-sm-4" translate>customization.label.sharedCustomization</label>
         <div class="col-sm-8">
           <label nz-checkbox [(ngModel)]="filter.shared" name="shared"></label>

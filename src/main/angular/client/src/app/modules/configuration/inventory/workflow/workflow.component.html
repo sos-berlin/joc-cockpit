@@ -33,7 +33,7 @@
               <i class="fa fa-spin fa-spinner"></i>
               <i class="fa fa-spin fa-spinner m-l-12"></i>
             </span>
-            <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!workflow.valid && !workflow.hasDeployments"
+            <button *ngIf="permission.joc.inventory.deploy && permission.controllerDefaults.deployments.deploy" type="button" [disabled]="!workflow.valid && !workflow.hasDeployments"
                     class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="deploy()" >
               <i class="fa fa-rocket p-r-xs"></i>
               <span translate>inventory.button.deploy</span>

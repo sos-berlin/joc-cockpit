@@ -23,7 +23,7 @@ export class CommentModalComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
     }
@@ -42,7 +42,7 @@ export class CommentModalComponent implements OnInit {
     this.performAction(this.action, obj);
   }
 
-  postCall(url, obj) {
+  postCall(url, obj): void {
     this.coreService.post(url, obj).subscribe(() => {
       this.submitted = false;
       this.activeModal.close();
@@ -58,15 +58,15 @@ export class CommentModalComponent implements OnInit {
   templateUrl: './action.component.html'
 })
 export class ActionComponent implements OnInit {
-
   @Input() controller: any;
+  @Input() permission: any;
   preferences: any = {};
   schedulerIds: any;
 
   constructor(public modalService: NgbModal, private coreService: CoreService, private authService: AuthService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
     }
@@ -77,7 +77,7 @@ export class ActionComponent implements OnInit {
     }
   }
 
-  clusterAction(action, data, isFailOver) {
+  clusterAction(action, data, isFailOver): void {
     let obj = {
       controllerId: data.controllerId || this.schedulerIds.selected,
       url: data.url,
@@ -123,7 +123,7 @@ export class ActionComponent implements OnInit {
     }
   }
 
-  private postCall(url, obj) {
+  private postCall(url, obj): void {
     this.coreService.post(url, obj).subscribe(() => {
     });
   }

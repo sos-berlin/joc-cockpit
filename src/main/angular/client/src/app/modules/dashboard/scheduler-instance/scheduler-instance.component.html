@@ -21,7 +21,7 @@
               <tbody>
               <tr *ngFor="let controller of controllersList">
                 <td>
-                  <app-action [controller]="controller"></app-action>
+                  <app-action [controller]="controller" [permission]="permission"></app-action>
                 </td>
                 <td><a class="text-hover-primary"
                        (click)="changeScheduler(controller.controllerId)">{{controller.controllerId}}</a></td>

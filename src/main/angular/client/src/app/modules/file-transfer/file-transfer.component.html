@@ -226,7 +226,7 @@
         >
           <thead>
           <tr>
-            <th class="chk" *ngIf="permission && permission.YADE && permission.YADE.execute.transferStart"
+            <th class="chk" *ngIf="permission && permission.joc && permission.joc.fileTransfer.manage"
                 [nzShowCheckbox]="true"
                 [(nzChecked)]="object.checked"
                 [nzIndeterminate]="object.indeterminate"
@@ -326,7 +326,7 @@
           <ng-template ngFor let-transfer
                        [ngForOf]="ajaxTable.data | orderBy: yadeFilters.filter.sortBy:yadeFilters.reverse">
             <tr>
-               <td *ngIf="permission && permission.YADE && permission.YADE.execute.transferStart" [nzShowCheckbox]="true"
+               <td *ngIf="permission && permission.joc.fileTransfer.manage" [nzShowCheckbox]="true"
                   [nzDisabled]="transfer.state._text=='SUCCESSFUL'"
                    [nzChecked]="object.mapOfCheckedId.has(transfer.id)"
                   [nzIndeterminate]="transfer.indeterminate"
@@ -341,7 +341,7 @@
                   <nz-dropdown-menu #menu="nzDropdownMenu">
                     <ul nz-menu>
                       <li nz-menu-item
-                          *ngIf="transfer.permission.execute.transferStart && transfer.state._text!='SUCCESSFUL'">
+                          *ngIf="permission.joc.fileTransfer.manage && transfer.state._text!='SUCCESSFUL'">
                         <a (click)="restartTransfer(transfer)" translate>fileTransfer.button.restart</a>
                       </li>
                       <li nz-menu-item>
@@ -446,22 +446,22 @@
                           [nzData]="transfer.files" [nzFrontPagination]="false" [nzShowPagination]="false">
                   <thead>
                   <tr>
-                    <th class="chk" *ngIf="transfer.permission.execute.transferStart">
+                    <th class="chk" *ngIf="permission.joc.fileTransfer.manage">
                       #
                     </th>
                     <th><span translate>fileTransfer.label.sourceFileName</span></th>
                     <th><span translate>fileTransfer.label.sourceFilePath</span></th>
                     <th><span translate>fileTransfer.label.targetFileName</span></th>
                     <th><span translate>fileTransfer.label.targetFilePath</span></th>
-                    <th><span translate>fileTransfer.label.status</span></th>
-                    <th><span translate>fileTransfer.label.errorMessage</span></th>
-                    <th><span translate>fileTransfer.label.size</span></th>
+                    <th width="100px"><span translate>fileTransfer.label.status</span></th>
+                    <th width="20%"><span translate>fileTransfer.label.errorMessage</span></th>
+                    <th width="80px"><span translate>fileTransfer.label.size</span></th>
                     <th><span translate>fileTransfer.label.integrityHash</span></th>
                   </tr>
                   </thead>
                   <tbody>
                   <tr *ngFor="let file of innerChildTable.data">
-                    <td *ngIf="transfer.permission.execute.transferStart" [nzShowCheckbox]="true"
+                    <td *ngIf="permission.joc.fileTransfer.manage" [nzShowCheckbox]="true"
                         [nzDisabled]="transfer.state._text=='SUCCESSFUL'"
                         [(nzChecked)]="file.checked"
                         (nzCheckedChange)="checkALLFilesFnc(transfer, $event)">

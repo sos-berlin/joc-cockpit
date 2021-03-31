@@ -30,7 +30,7 @@ export class OrderTemplateComponent {
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router) {
   }
 
-  downloadLog(obj, schedulerId) {
+  downloadLog(obj, schedulerId): void {
     if (!schedulerId) {
       schedulerId = this.schedulerId;
     }
@@ -38,7 +38,7 @@ export class OrderTemplateComponent {
       '&accessToken=' + this.authService.accessTokenId);
   }
 
-  showPanelFuc(data, count) {
+  showPanelFuc(data, count): void {
     data.loading = true;
     data.show = true;
     data.steps = [];
@@ -142,10 +142,10 @@ export class OrderSearchComponent implements OnInit {
     {label: 'incomplete', value: 'INCOMPLETE'}
   ];
 
-  constructor(public coreService: CoreService, private modalService: NgbModal) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modalService: NgbModal) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.getWorkflowTree();
     if (this.filter.states && this.filter.states.length > 0) {
@@ -158,7 +158,7 @@ export class OrderSearchComponent implements OnInit {
     }
   }
 
-  private getWorkflowTree() {
+  private getWorkflowTree(): void {
     this.coreService.post('tree', {
       controllerId: this.schedulerIds.selected,
       forInventory: true,
@@ -172,7 +172,7 @@ export class OrderSearchComponent implements OnInit {
     this.filter.states = value;
   }
 
-  getFolderTree(flag) {
+  getFolderTree(flag): void {
     const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.paths = this.filter.paths || [];
@@ -184,20 +184,20 @@ export class OrderSearchComponent implements OnInit {
     });
   }
 
-  remove(path) {
+  remove(path): void {
     this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
   }
 
-  checkFilterName() {
+  checkFilterName(): void {
     this.isUnique = true;
     for (let i = 0; i < this.allFilter.length; i++) {
-      if (this.filter.name === this.allFilter[i].name && this.permission.user === this.allFilter[i].account && this.filter.name !== this.existingName) {
+      if (this.filter.name === this.allFilter[i].name && this.authService.currentUserData === this.allFilter[i].account && this.filter.name !== this.existingName) {
         this.isUnique = false;
       }
     }
   }
 
-  loadData(node, $event) {
+  loadData(node, $event): void {
     if (!node.origin.type) {
       if ($event) {
         $event.stopPropagation();
@@ -251,7 +251,7 @@ export class OrderSearchComponent implements OnInit {
     this.submitted = true;
     let configObj = {
       controllerId: this.schedulerIds.selected,
-      account: this.permission.user,
+      account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
       objectType: 'ORDER_HISTORY',
       name: result.name,
@@ -305,11 +305,11 @@ export class OrderSearchComponent implements OnInit {
     });
   }
 
-  search() {
+  search(): void {
     this.onSearch.emit(this.filter);
   }
 
-  cancel() {
+  cancel(): void {
     this.onCancel.emit();
   }
 }
@@ -346,10 +346,10 @@ export class TaskSearchComponent implements OnInit {
     {label: 'major', value: 'MAJOR'}
   ];
 
-  constructor(public coreService: CoreService, private modalService: NgbModal) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modalService: NgbModal) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.getWorkflowTree();
     if (this.filter.historyStates && this.filter.historyStates.length > 0) {
@@ -371,7 +371,7 @@ export class TaskSearchComponent implements OnInit {
 
   }
 
-  private getWorkflowTree() {
+  private getWorkflowTree(): void {
     this.coreService.post('tree', {
       controllerId: this.schedulerIds.selected,
       forInventory: true,
@@ -389,7 +389,7 @@ export class TaskSearchComponent implements OnInit {
     this.filter.criticality = value;
   }
 
-  getFolderTree(flag) {
+  getFolderTree(flag): void {
     const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.paths = this.filter.paths || [];
@@ -401,20 +401,20 @@ export class TaskSearchComponent implements OnInit {
     });
   }
 
-  remove(path) {
+  remove(path): void {
     this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
   }
 
-  checkFilterName() {
+  checkFilterName(): void {
     this.isUnique = true;
     for (let i = 0; i < this.allFilter.length; i++) {
-      if (this.filter.name === this.allFilter[i].name && this.permission.user === this.allFilter[i].account && this.filter.name !== this.existingName) {
+      if (this.filter.name === this.allFilter[i].name && this.authService.currentUserData === this.allFilter[i].account && this.filter.name !== this.existingName) {
         this.isUnique = false;
       }
     }
   }
 
-  loadData(node, $event) {
+  loadData(node, $event): void {
     if (!node.origin.type) {
       if ($event) {
         $event.stopPropagation();
@@ -468,7 +468,7 @@ export class TaskSearchComponent implements OnInit {
     this.submitted = true;
     let configObj = {
       controllerId: this.schedulerIds.selected,
-      account: this.permission.user,
+      account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
       objectType: 'TASK_HISTORY',
       name: result.name,
@@ -525,11 +525,11 @@ export class TaskSearchComponent implements OnInit {
     });
   }
 
-  search() {
+  search(): void {
     this.onSearch.emit(this.filter);
   }
 
-  cancel() {
+  cancel(): void {
     this.onCancel.emit();
   }
 }
@@ -556,22 +556,22 @@ export class DeploymentSearchComponent implements OnInit {
   isUnique = true;
   deployTypes = [];
 
-  constructor(public coreService: CoreService) {
+  constructor(private authService: AuthService, public coreService: CoreService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.deployTypes = ['WORKFLOW', 'JOBCLASS', 'LOCK', 'JUNCTION'];
   }
 
-  remove(path) {
+  remove(path): void {
     this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
   }
 
-  checkFilterName() {
+  checkFilterName(): void {
     this.isUnique = true;
     for (let i = 0; i < this.allFilter.length; i++) {
-      if (this.filter.name === this.allFilter[i].name && this.permission.user === this.allFilter[i].account && this.filter.name !== this.existingName) {
+      if (this.filter.name === this.allFilter[i].name && this.authService.currentUserData === this.allFilter[i].account && this.filter.name !== this.existingName) {
         this.isUnique = false;
       }
     }
@@ -581,7 +581,7 @@ export class DeploymentSearchComponent implements OnInit {
     this.submitted = true;
     let configObj = {
       controllerId: this.schedulerIds.selected,
-      account: this.permission.user,
+      account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
       objectType: 'DEPLOYMENT_HISTORY',
       name: result.name,
@@ -634,11 +634,11 @@ export class DeploymentSearchComponent implements OnInit {
     });
   }
 
-  search() {
+  search(): void {
     this.onSearch.emit(this.filter);
   }
 
-  cancel() {
+  cancel(): void {
     this.onCancel.emit();
   }
 }
@@ -668,10 +668,10 @@ export class SubmissionSearchComponent implements OnInit {
     {label: 'notSubmitted', value: 'NOT_SUBMITTED'}
   ];
 
-  constructor(public coreService: CoreService) {
+  constructor(public coreService: CoreService, private authService: AuthService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     if (this.filter.type && this.filter.type.length > 0) {
       this.checkOptions = this.checkOptions.map(item => {
@@ -683,7 +683,7 @@ export class SubmissionSearchComponent implements OnInit {
     }
   }
 
-  remove(path) {
+  remove(path): void {
     this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
   }
 
@@ -691,10 +691,10 @@ export class SubmissionSearchComponent implements OnInit {
     this.filter.type = value;
   }
 
-  checkFilterName() {
+  checkFilterName(): void {
     this.isUnique = true;
     for (let i = 0; i < this.allFilter.length; i++) {
-      if (this.filter.name === this.allFilter[i].name && this.permission.user === this.allFilter[i].account && this.filter.name !== this.existingName) {
+      if (this.filter.name === this.allFilter[i].name && this.authService.currentUserData === this.allFilter[i].account && this.filter.name !== this.existingName) {
         this.isUnique = false;
       }
     }
@@ -704,7 +704,7 @@ export class SubmissionSearchComponent implements OnInit {
     this.submitted = true;
     let configObj = {
       controllerId: this.schedulerIds.selected,
-      account: this.permission.user,
+      account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
       objectType: 'SUBMISSION_HISTORY',
       name: result.name,
@@ -754,11 +754,11 @@ export class SubmissionSearchComponent implements OnInit {
     });
   }
 
-  search() {
+  search(): void {
     this.onSearch.emit(this.filter);
   }
 
-  cancel() {
+  cancel(): void {
     this.onCancel.emit();
   }
 }
@@ -801,18 +801,18 @@ export class YadeSearchComponent implements OnInit {
     {status: 'RENAME', text: 'rename'}
   ];
 
-  constructor(public coreService: CoreService, private modalService: NgbModal) {
+  constructor(public coreService: CoreService, private authService: AuthService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.allhosts = this.coreService.getProtocols();
   }
 
-  checkFilterName() {
+  checkFilterName(): void {
     this.isUnique = true;
     for (let i = 0; i < this.allFilter.length; i++) {
-      if (this.filter.name === this.allFilter[i].name && this.permission.user === this.allFilter[i].account && this.filter.name !== this.existingName) {
+      if (this.filter.name === this.allFilter[i].name && this.authService.currentUserData === this.allFilter[i].account && this.filter.name !== this.existingName) {
         this.isUnique = false;
       }
     }
@@ -837,7 +837,7 @@ export class YadeSearchComponent implements OnInit {
     this.submitted = true;
     let configObj = {
       controllerId: this.schedulerIds.selected,
-      account: this.permission.user,
+      account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
       objectType: 'YADE_HISTORY',
       name: result.name,
@@ -889,11 +889,11 @@ export class YadeSearchComponent implements OnInit {
     });
   }
 
-  search() {
+  search(): void {
     this.onSearch.emit(this.filter);
   }
 
-  cancel() {
+  cancel(): void {
     this.onCancel.emit();
   }
 }
@@ -994,20 +994,20 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.initConf();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
   }
 
-  changeController() {
+  changeController(): void {
     this.init(true);
   }
 
-  orderParseDate(obj) {
+  orderParseDate(obj): void {
     if (this.selectedFiltered1.regex) {
       obj.regex = this.selectedFiltered1.regex;
     }
@@ -1031,7 +1031,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     return obj;
   }
 
-  isCustomizationSelected1(flag) {
+  isCustomizationSelected1(flag): void {
     if (flag) {
       this.temp_filter1.historyStates = _.clone(this.order.filter.historyStates);
       this.temp_filter1.date = _.clone(this.order.filter.date);
@@ -1048,7 +1048,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  setOrderDateRange(filter) {
+  setOrderDateRange(filter): void {
     if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true')
       && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0))) {
       filter.excludeOrders = [];
@@ -1066,7 +1066,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     return filter;
   }
 
-  convertRequestBody(obj) {
+  convertRequestBody(obj): void {
     obj.limit = parseInt(this.preferences.maxRecords, 10);
     obj.timeZone = this.preferences.zone;
     if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
@@ -1080,7 +1080,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  orderHistory(obj, flag) {
+  orderHistory(obj, flag): void {
     this.historyFilters.type = 'ORDER';
     if (!obj) {
       if (!this.orderHistoryFilterList && this.schedulerIds.selected) {
@@ -1125,7 +1125,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  private mergeOldData() {
+  private mergeOldData(): void {
     let oldEntires = _.clone(this.data);
     let arr = this.order.searchText ? this.searchPipe.transform(this.historys, this.order.searchText, this.orderSearchableProperties) : this.historys;
     for (let i = 0; i < arr.length; i++) {
@@ -1145,13 +1145,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize() {
+  onResize(): void {
     if (this.historyFilters.type === 'ORDER') {
       this.coreService.calRowWidth(this.historyFilters.current);
     }
   }
 
-  private recursiveMerge(data, count) {
+  private recursiveMerge(data, count): void {
     data.loading = true;
     let obj = {
       controllerId: data.controllerId || this.schedulerIds.selected,
@@ -1187,7 +1187,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  isCustomizationSelected2(flag) {
+  isCustomizationSelected2(flag): void {
     if (flag) {
       this.temp_filter2.historyStates = _.clone(this.task.filter.historyStates);
       this.temp_filter2.date = _.clone(this.task.filter.date);
@@ -1204,7 +1204,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  jobParseDate(obj) {
+  jobParseDate(obj): void {
     if (this.selectedFiltered2.regex) {
       obj.regex = this.selectedFiltered2.regex;
     }
@@ -1227,7 +1227,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     return obj;
   }
 
-  setTaskDateRange(filter) {
+  setTaskDateRange(filter): void {
     if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true') && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
       filter.excludeJobs = [];
       this.savedIgnoreList.jobs.forEach((job) => {
@@ -1243,10 +1243,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
     return filter;
   }
 
-  taskHistory(obj, flag) {
+  taskHistory(obj, flag): void {
     this.historyFilters.type = 'TASK';
     if (!obj) {
-       if (!this.jobHistoryFilterList && this.schedulerIds.selected) {
+      if (!this.jobHistoryFilterList && this.schedulerIds.selected) {
         this.data = [];
         this.checkSharedFilters('TASK');
         return;
@@ -1948,7 +1948,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         filter.files = [];
         let s = obj.file.replace(/,\s+/g, ',');
         var files = s.split(',');
-        files.forEach(function (value) {
+        files.forEach(function(value) {
           filter.files.push({file: value});
         });
       }
@@ -2003,7 +2003,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       if (obj.paths && obj.paths.length > 0) {
         filter.folders = [];
-        obj.paths.forEach(function (value) {
+        obj.paths.forEach(function(value) {
           filter.folders.push({folder: value, recursive: true});
         });
       }
@@ -2011,7 +2011,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (obj.files && obj.files.length > 0) {
         filter.files = [];
 
-        obj.files.forEach(function (value) {
+        obj.files.forEach(function(value) {
           filter.files.push({file: value});
         });
 
@@ -2031,7 +2031,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.searchInResult();
         this.isLoading = true;
       }, () => {
-         this.data = [];
+        this.data = [];
         this.isLoading = true;
       });
     }
@@ -2154,7 +2154,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       } else if (type === 'CATEGORY') {
         this.submission.filter.category = value;
       }
-    } else if (this.historyFilters.type === 'YADE'){
+    } else if (this.historyFilters.type === 'YADE') {
       this.yadeSearch = {};
       this.yadeSearch.date = 'date';
       if (type === 'STATE') {
@@ -2442,7 +2442,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     const configObj = {
       controllerId: this.schedulerIds.selected,
-      account: this.permission.user,
+      account: this.authService.currentUserData,
       configurationType: 'IGNORELIST',
       id: this.ignoreListConfigId,
       configurationItem: JSON.stringify(this.savedIgnoreList)
@@ -2469,7 +2469,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.savedIgnoreList.isEnable = !this.savedIgnoreList.isEnable;
     const configObj = {
       controllerId: this.schedulerIds.selected,
-      account: this.permission.user,
+      account: this.authService.currentUserData,
       configurationType: 'IGNORELIST',
       id: this.ignoreListConfigId,
       configurationItem: JSON.stringify(this.savedIgnoreList)
@@ -2503,7 +2503,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.savedIgnoreList.isEnable = false;
     let configObj = {
       controllerId: this.schedulerIds.selected,
-      account: this.permission.user,
+      account: this.authService.currentUserData,
       configurationType: 'IGNORELIST',
       id: this.ignoreListConfigId,
       configurationItem: JSON.stringify(this.savedIgnoreList)
@@ -2555,7 +2555,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.favorite = this.savedSubmissionHistoryFilter.favorite;
     }
     modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.username = this.permission.user;
+    modalRef.componentInstance.username = this.authService.currentUserData;
     modalRef.componentInstance.action = this.action;
     modalRef.componentInstance.self = this;
     modalRef.result.then((obj) => {
@@ -3286,7 +3286,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       objectType: type === 'ORDER' ? 'ORDER_HISTORY' : type === 'TASK' ? 'TASK_HISTORY' : type === 'YADE' ? 'YADE_HISTORY' : type === 'DEPLOYMENT' ? 'DEPLOYMENT_HISTORY' : 'SUBMISSION_HISTORY',
       shared: true
     };
-    if (this.permission.JOCConfigurations.share.view) {
+    if (this.permission.joc) {
       this.coreService.post('configurations', obj).subscribe((res: any) => {
         this.checkCurrentTab(type, res, obj);
       }, (err) => {
@@ -3297,8 +3297,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getCustomizations(type, obj) {
-    obj.account = this.permission.user;
+  private getCustomizations(type, obj): void {
+    obj.account = this.authService.currentUserData;
     obj.shared = false;
     this.coreService.post('configurations', obj).subscribe((result: any) => {
       if (type === 'ORDER') {
@@ -3591,7 +3591,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private getIgnoreList() {
     let configObj = {
       controllerId: this.schedulerIds.selected,
-      account: this.permission.user,
+      account: this.authService.currentUserData,
       configurationType: 'IGNORELIST'
     };
     this.coreService.post('configurations', configObj).subscribe((result: any) => {
@@ -3703,5 +3703,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
       });
     });
   }
- /* --------------------------Customizations End-----------------------*/
+
+  /* --------------------------Customizations End-----------------------*/
 }

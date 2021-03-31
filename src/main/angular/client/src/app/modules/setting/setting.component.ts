@@ -152,10 +152,10 @@ export class SettingComponent implements OnInit {
   }
 
   private loadSetting(): void {
-    if (this.permission.user && this.schedulerIds.selected) {
+    if (this.authService.currentUserData && this.schedulerIds.selected) {
       const configObj = {
         controllerId: this.schedulerIds.selected,
-        account: this.permission.user,
+        account: this.authService.currentUserData,
         configurationType: 'GLOBALS'
       };
       this.coreService.post('configurations', configObj).subscribe((res: any) => {
@@ -299,7 +299,7 @@ export class SettingComponent implements OnInit {
     if (this.schedulerIds.selected) {
       this.coreService.post('configuration/save', {
         controllerId: this.schedulerIds.selected,
-        account: this.permission.user,
+        account: this.authService.currentUserData,
         id: this.configId || 0,
         configurationType: 'GLOBALS',
         configurationItem: JSON.stringify(tempSetting)

@@ -126,6 +126,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       } else if (!this.schedulerIds) {
         this.schedulerIds = {};
         this.getSchedulerIds();
+        this.getPermissions();
       }
     } else {
       let userName;
@@ -159,23 +160,16 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private getPermissions(): void {
-    if (this.authService.scheduleIds) {
-      this.isPermissionLoaded = false;
-      this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-      this.coreService.post('authentication/joc_cockpit_permissions', {controllerId: this.schedulerIds.selected}).subscribe((permission) => {
-        this.authService.setPermissions(permission);
-        this.authService.save();
-        if (this.schedulerIds) {
-          this.authService.savePermission(this.schedulerIds.selected);
-        } else {
-          this.authService.savePermission('');
-        }
-        this.isPermissionLoaded = true;
-        if (!sessionStorage.preferenceId) {
-          this.ngOnInit();
-        }
-      });
-    }
+    this.isPermissionLoaded = false;
+    this.coreService.post('authentication/joc_cockpit_permissions', {}).subscribe((permission) => {
+      console.log(permission);
+      this.authService.setPermission(permission);
+      this.authService.save();
+      this.isPermissionLoaded = true;
+      if (!sessionStorage.preferenceId) {
+        this.ngOnInit();
+      }
+    });
   }
 
   private getSchedulerIds(): void {
@@ -185,7 +179,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
         this.authService.save();
         this.schedulerIds = res;
         this.getComments();
-        this.getPermissions();
       } else {
         this.coreService.post('controllers/security_level', {}).subscribe((result: any) => {
           this.checkSecurityControllers(result);
@@ -213,6 +206,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.authService.setUser(data);
       this.authService.save();
       this.getSchedulerIds();
+      this.getPermissions();
     }, () => {
       const returnUrl = this.router.url.match(/login/) ? '/' : this.router.url;
       this.router.navigate(['login'], {queryParams: {returnUrl}});
@@ -231,7 +225,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     if (!this.isPermissionLoaded) {
       setTimeout(() => {
         this.init();
-      }, 50);
+      }, 20);
       return;
     }
     this.sessionTimeout = parseInt(this.authService.sessionTimeout, 10);
@@ -274,7 +268,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   @HostListener('window:beforeunload')
-  onUnload() {
+  onUnload(): boolean {
     this.coreService.refreshParent();
     return true;
   }
@@ -311,7 +305,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
             this.coreService.setDefaultTab();
           }
           this.authService.setIds(res);
-          this.authService.savePermission(controller);
           this.authService.save();
           this.reloadUI();
         } else {

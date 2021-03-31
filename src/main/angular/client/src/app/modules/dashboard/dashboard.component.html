@@ -57,7 +57,7 @@
                   <app-agent-running-task [layout]="item"></app-agent-running-task>
               </div>
               <div *ngIf="item.name === 'js7Status'">
-                  <app-scheduler-instance [sizeY]="item.rows"></app-scheduler-instance>
+                  <app-scheduler-instance [sizeY]="item.rows" [permission]="permission"></app-scheduler-instance>
               </div>
               <div *ngIf="item.name === 'orders'">
                   <app-order-overview [sizeX]="item.cols" [sizeY]="item.rows"></app-order-overview>

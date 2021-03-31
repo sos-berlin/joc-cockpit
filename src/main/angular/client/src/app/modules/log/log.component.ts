@@ -687,7 +687,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     this.preferences.logFilter = this.object.checkBoxs;
     let configObj: any = {
       controllerId: this.schedulerIds.selected,
-      account: this.permission.user,
+      account: this.authService.currentUserData,
       configurationType: 'PROFILE',
       id: parseInt(window.sessionStorage.preferenceId, 10)
     };

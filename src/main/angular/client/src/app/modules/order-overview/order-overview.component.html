@@ -89,7 +89,7 @@
           </div>
           <div class="hide" [ngClass]="{'show-block':object.mapOfCheckedId.size>0}">
  <!--           <button class="hide btn btn-grey btn-sm m-l-12"
-                    [ngClass]="{'show-block':permission.Order.execute.start}"
+                    [ngClass]="{'show-block':permission.controllerDefaults.orders.start}"
                     [disabled]="object.runningSelected" (click)="startAllOrder()"><i class="fa fa-play p-r-xs"></i>
               <span class="hidden-sm-down" translate>order.button.startOrderNow</span></button>-->
             <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isModify" (click)="modifyAllOrder()"><i
@@ -97,19 +97,19 @@
               <span class="hidden-sm-down" translate>dailyPlan.button.modifySelectedOrder</span>
             </button>
             <button class="hide btn btn-grey btn-sm m-l-12"
-                    [ngClass]="{'show-block':permission.Order.execute}"
+                    [ngClass]="{'show-block':permission.controllerDefaults.orders.cancel}"
                     [disabled]="object.isCancel" (click)="cancelAllOrder()"><i class="fa fa-times p-r-xs"></i>
               <span class="hidden-sm-down" translate>dailyPlan.button.cancelSelectedOrder</span></button>
             <button class="hide btn btn-grey btn-sm m-l-12"  *ngIf="object.isTerminate"
-                    [ngClass]="{'show-block':permission.Order.execute}"
+                    [ngClass]="{'show-block':permission.controllerDefaults.orders}"
                     (click)="terminateAllOrder()"><i class="fa fa-trash p-r-xs"></i>
               <span class="hidden-sm-down" translate>order.button.leaveWorkflow</span></button>
             <button class="hide btn btn-grey btn-sm m-l-12"
-                    [ngClass]="{'show-block':permission.Order.execute.suspend}"
+                    [ngClass]="{'show-block':permission.controllerDefaults.orders.suspendResume}"
                     [disabled]="!object.isSuspend" (click)="suspendAllOrder()"><i class="fa fa-stop p-r-xs"></i>
               <span class="hidden-sm-down" translate>dailyPlan.button.suspendSelectedOrder</span></button>
             <button class="hide btn btn-grey btn-sm m-l-12"
-                    [ngClass]="{'show-block':permission.Order.execute.resume}"
+                    [ngClass]="{'show-block':permission.controllerDefaults.orders.suspendResume}"
                     [disabled]="!object.isResume" (click)="resumeAllOrder()"><i
               class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down" translate>dailyPlan.button.resumeSelectedOrder</span>
             </button>
@@ -193,11 +193,11 @@
                     </div>
                     <div class="box-footer b-t">
                       <div>
-                        <a class="hide text-left primary-text-hover-color" [ngClass]="{'show-block':permission.Order.execute.start, 'disable-link' : order.state._text !== 'PENDING'}" (click)="actionChild.modifyOrder(order);">
+                        <a class="hide text-left primary-text-hover-color" [ngClass]="{'show-block':permission.controllerDefaults.orders.modify, 'disable-link' : order.state._text !== 'PENDING'}" (click)="actionChild.modifyOrder(order);">
                           <i class="fa fa-edit p-r-xs text-black-lt"></i>
                           <span class="text-black-lt" translate>dailyPlan.button.setStartTime</span>
                         </a>
-                        <a class="text-right primary-text-hover-color" *ngIf="permission.Order.execute.suspend" [ngClass]="{'pull-right':permission.Order.execute.start}"
+                        <a class="text-right primary-text-hover-color" *ngIf="permission.controllerDefaults.orders.cancel" [ngClass]="{'pull-right':permission.controllerDefaults.orders.modify}"
                            (click)="actionChild.cancelOrder(order);">
                           <i class="fa fa-times p-r-xs text-black-lt"></i>
                           <span class="text-black-lt" translate>order.button.cancel</span>

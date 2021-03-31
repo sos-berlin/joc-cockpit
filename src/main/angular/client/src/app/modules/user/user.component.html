@@ -26,7 +26,7 @@
           <div class="row m-t">
             <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.userName</span></div>
             <div class="col-md-8 col-lg-9">
-              <span class="text-black-lt" [innerHtml]="permission.user | decodeSpace"></span>
+              <span class="text-black-lt" [innerHtml]="authService.currentUserData | decodeSpace"></span>
             </div>
           </div>
           <hr>
@@ -692,7 +692,7 @@
               </div>
             </nz-tab>
             <nz-tab [nzTitle]="'profile.label.keyManagement' | translate"
-                    *ngIf="securityLevel !== 'LOW' && permission.Inventory && permission.Inventory.configurations.publish.showKey">
+                    *ngIf="securityLevel !== 'LOW' && permission.joc && permission.joc.administration.certificates">
               <div class="m-l-12">
                 <div class="row m-t-sm">
                   <div class="col-sm-12">
@@ -724,17 +724,15 @@
                             profile.message.noKeyFound
                           </span>
                           <div class="inline pull-right" style="margin-bottom: 2px">
-                            <button class="btn btn-sm btn-grey m-l-12" (click)="pasteKey()"
+                            <button *ngIf="permission.joc.administration.certificates.manage" class="btn btn-sm btn-grey m-l-12" (click)="pasteKey()"
                                     [nz-tooltip]="'profile.tooltip.updateKey' | translate">
                               <i class="fa fa-paste"></i>
                             </button>
-                            <button *ngIf="permission.Inventory.configurations.publish.importKey"
-                                    class="btn btn-sm btn-grey m-l-12" (click)="importKey()"
+                            <button *ngIf="permission.joc.administration.certificates.manage" class="btn btn-sm btn-grey m-l-12" (click)="importKey()"
                                     [nz-tooltip]="'profile.tooltip.import' | translate">
                               <i nz-icon nzType="upload" nzTheme="outline"></i>
                             </button>
-                            <button
-                              *ngIf="securityLevel ==='MEDIUM' && permission.Inventory.configurations.publish.generateKey"
+                            <button *ngIf="securityLevel ==='MEDIUM' && permission.joc.administration.certificates.manage"
                               class="btn btn-sm btn-grey m-l-12"
                               (click)="showGenerateKeyModal()"
                               [nz-tooltip]="'profile.tooltip.generate' | translate">

@@ -24,7 +24,7 @@
               <span *ngIf="!data.released" translate>inventory.label.notReleased</span>
               <span *ngIf="data.released" translate>inventory.label.released</span>
             </span>
-          <button *ngIf="permission.Inventory.configurations.publish.deploy" type="button" [disabled]="!schedule.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="release()" >
+          <button *ngIf="permission.joc.inventory.deploy && permission.controllerDefaults.deployments.deploy" type="button" [disabled]="!schedule.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="release()" >
             <i class="fa fa-rocket p-r-xs"></i>
             <span translate>inventory.button.release</span>
           </button>

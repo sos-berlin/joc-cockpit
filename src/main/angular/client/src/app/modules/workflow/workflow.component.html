@@ -233,13 +233,13 @@
                     <div class="box-footer b-t">
                       <div>
                         <a class="hide text-left primary-text-hover-color"
-                           [ngClass]="{'show-block':permission.Workflow.execute.addOrder}"
+                           [ngClass]="{'show-block':permission.controllerDefaults.orders.create}"
                            (click)="actionChild.addOrder(workflow);">
                           <i class="fa fa-plus-square-o text-black-lt p-r-xs"></i>
                           <span class="text-black-lt" translate>workflow.button.addOrder</span>
                         </a>
-                        <a class="text-right primary-text-hover-color" *ngIf="permission.DailyPlan.view.status"
-                           [ngClass]="{'pull-right':permission.Workflow.execute.addOrder}"
+                        <a class="text-right primary-text-hover-color" *ngIf="permission.joc.dailyPlan.view"
+                           [ngClass]="{'pull-right':permission.controllerDefaults.orders.create}"
                            (click)="actionChild.showDailyPlan(workflow);">
                           <i class="fa fa-calendar text-black-lt p-r-xs"></i>
                           <span class="text-black-lt" translate>workflow.button.showDailyPlan</span>

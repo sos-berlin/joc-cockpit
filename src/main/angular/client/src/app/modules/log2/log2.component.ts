@@ -680,7 +680,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     this.preferences.logFilter = this.object.checkBoxs;
     let configObj: any = {
       controllerId: this.schedulerIds.selected,
-      account: this.permission.user,
+      account: this.authService.currentUserData,
       configurationType: 'PROFILE',
       id: window.sessionStorage.preferenceId,
       configurationItem : JSON.stringify(this.preferences)

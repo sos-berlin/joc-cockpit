@@ -307,23 +307,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }];
     }
 
-    if (this.permission.JS7Master) {
+    if (this.permission.joc) {
       for (let i = 0; i < this.dashboardLayout.length; i++) {
-        if (this.dashboardLayout[i].name === 'agentClusterStatus' && this.permission.JS7UniversalAgent.view.status) {
+        if (this.dashboardLayout[i].name === 'agentClusterStatus' && this.permission.controllerDefaults.agents.view) {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'agentClusterRunningTasks') {
+        } else if (this.dashboardLayout[i].name === 'agentClusterRunningTasks' && this.permission.controllerDefaults.agents.view) {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'js7Status') {
+        } else if (this.dashboardLayout[i].name === 'js7Status' && this.permission.controllerDefaults.view) {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'js7ClusterStatus') {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'orders' && this.permission.Order.view.status) {
+        } else if (this.dashboardLayout[i].name === 'orders' && this.permission.controllerDefaults.orders.view) {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'history' && (this.permission.Order.view.status || this.permission.Job.view.status)) {
+        } else if (this.dashboardLayout[i].name === 'history' && this.permission.controllerDefaults.orders.view) {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'inventory') {
+        } else if (this.dashboardLayout[i].name === 'inventory' && this.permission.joc.inventory.view) {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'dailyPlan' && this.permission.DailyPlan.view.status) {
+        } else if (this.dashboardLayout[i].name === 'dailyPlan' && this.permission.joc.dailyPlan.view) {
           this.widgets.push(this.dashboardLayout[i]);
         }
       }

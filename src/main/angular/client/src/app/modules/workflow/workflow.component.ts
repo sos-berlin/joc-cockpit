@@ -79,7 +79,7 @@ export class SearchComponent implements OnInit {
   submitted = false;
   isUnique = true;
 
-  constructor(public coreService: CoreService, private modalService: NgbModal) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modalService: NgbModal) {
   }
 
   ngOnInit(): void {
@@ -108,7 +108,7 @@ export class SearchComponent implements OnInit {
   checkFilterName(): void {
     this.isUnique = true;
     for (let i = 0; i < this.allFilter.length; i++) {
-      if (this.filter.name === this.allFilter[i].name && this.permission.user === this.allFilter[i].account && this.filter.name !== this.existingName) {
+      if (this.filter.name === this.allFilter[i].name && this.authService.currentUserData === this.allFilter[i].account && this.filter.name !== this.existingName) {
         this.isUnique = false;
       }
     }
@@ -124,7 +124,7 @@ export class SearchComponent implements OnInit {
     };
     const configObj = {
       controllerId: this.schedulerIds.selected,
-      account: this.permission.user,
+      account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
       objectType: 'WORKFLOW',
       name: result.name,
@@ -361,13 +361,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.workflowFilters = this.coreService.getWorkflowTab();
     this.sideView = this.coreService.getSideView();
     this.init();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.coreService.setSideView(this.sideView);
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
@@ -383,7 +383,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
-  private refresh(args) {
+  private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       const workflows = [];
       for (let j = 0; j < args.eventSnapshots.length; j++) {
@@ -404,16 +404,16 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   /** ---------------------------- Broadcast messages ----------------------------------*/
-  receiveMessage($event) {
+  receiveMessage($event): void {
     this.pageView = $event;
   }
 
-  navToDetailView(view, workflow) {
+  navToDetailView(view, workflow): void {
     this.coreService.getWorkflowDetailTab().pageView = view;
     this.router.navigate(['/workflows/workflow_detail', workflow.path, workflow.versionId]);
   }
 
-  private init() {
+  private init(): void {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
     }
@@ -428,7 +428,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     //this.checkSharedFilters();
   }
 
-  private initTree() {
+  private initTree(): void {
     this.coreService.post('tree', {
       controllerId: this.schedulerIds.selected,
       folders: [{
@@ -445,12 +445,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     });
   }
 
-  private filteredTreeData(output) {
+  private filteredTreeData(output): void {
     this.tree = output;
   }
 
-  checkSharedFilters() {
-    if (this.permission.JOCConfigurations.share.view) {
+  checkSharedFilters(): void {
+    if (this.permission.joc) {
       let obj = {
         controllerId: this.schedulerIds.selected,
         configurationType: 'CUSTOMIZATION',
@@ -473,7 +473,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   getCustomizations() {
     let obj = {
       controllerId: this.schedulerIds.selected,
-      account: this.permission.user,
+      account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
       objectType: 'WORKFLOW'
     };
@@ -832,7 +832,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.filterList = this.filterList;
     modalRef.componentInstance.favorite = this.savedFilter.favorite;
     modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.username = this.permission.user;
+    modalRef.componentInstance.username = this.authService.currentUserData;
     modalRef.componentInstance.action = this.action;
     modalRef.componentInstance.self = this;
 
@@ -1121,7 +1121,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   private saveProfileSettings(preferences) {
     const configObj = {
       controllerId: this.schedulerIds.selected,
-      account: this.permission.user,
+      account: this.authService.currentUserData,
       configurationType: 'PROFILE',
       id: parseInt(sessionStorage.preferenceId, 10),
       configurationItem: JSON.stringify(preferences)

@@ -240,7 +240,7 @@ export class UserComponent implements OnInit, OnDestroy {
   securityLevel: string;
 
 
-  constructor(public coreService: CoreService, private dataService: DataService, private authService: AuthService, private router: Router,
+  constructor(public coreService: CoreService, private dataService: DataService, public authService: AuthService, private router: Router,
               private modalService: NgbModal, private translate: TranslateService, private toasterService: ToasterService) {
     this.subscription = dataService.resetProfileSetting.subscribe(res => {
       if (res) {

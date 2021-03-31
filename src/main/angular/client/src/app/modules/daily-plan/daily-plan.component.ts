@@ -645,10 +645,10 @@ export class SearchComponent implements OnInit {
     {status: 'FINISHED', text: 'finished'}
   ];
 
-  constructor(public coreService: CoreService) {
+  constructor(private authService: AuthService, public coreService: CoreService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.getFolderTree();
     if (this.filter.state && this.filter.state.length > 0) {
@@ -661,7 +661,7 @@ export class SearchComponent implements OnInit {
     }
   }
 
-  getFolderTree() {
+  getFolderTree(): void {
     this.coreService.post('tree', {
       controllerId: this.schedulerIds.selected,
       forInventory: true,
@@ -685,7 +685,7 @@ export class SearchComponent implements OnInit {
     return data.key;
   }
 
-  remove(path) {
+  remove(path): void {
     this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
   }
 
@@ -693,7 +693,7 @@ export class SearchComponent implements OnInit {
     this.filter.state = value;
   }
 
-  loadData(node, $event) {
+  loadData(node, $event): void {
     if (!node.origin.type) {
       if ($event) {
         $event.stopPropagation();
@@ -743,11 +743,11 @@ export class SearchComponent implements OnInit {
     }
   }
 
-  checkFilterName() {
+  checkFilterName(): void {
     this.isUnique = true;
     for (let i = 0; i < this.allFilter.length; i++) {
       if (this.filter.name === this.allFilter[i].name &&
-        this.permission.user === this.allFilter[i].account && this.filter.name !== this.existingName) {
+        this.authService.currentUserData === this.allFilter[i].account && this.filter.name !== this.existingName) {
         this.isUnique = false;
       }
     }
@@ -757,7 +757,7 @@ export class SearchComponent implements OnInit {
     this.submitted = true;
     const configObj = {
       controllerId: this.schedulerIds.selected,
-      account: this.permission.user,
+      account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
       objectType: 'DAILYPLAN',
       name: result.name,
@@ -791,11 +791,11 @@ export class SearchComponent implements OnInit {
     });
   }
 
-  search() {
+  search(): void {
     this.onSearch.emit();
   }
 
-  cancel() {
+  cancel(): void {
     this.onCancel.emit();
   }
 }
@@ -1906,7 +1906,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.filterList = this.filterList;
     modalRef.componentInstance.favorite = this.savedFilter.favorite;
     modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.username = this.permission.user;
+    modalRef.componentInstance.username = this.authService.currentUserData;
     modalRef.componentInstance.action = this.action;
     modalRef.componentInstance.self = this;
     modalRef.result.then((obj) => {
@@ -2119,7 +2119,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private checkSharedFilters(): void {
-    if (this.permission.JOCConfigurations.share.view.status) {
+    if (this.permission.joc) {
       const obj = {
         controllerId: this.schedulerIds.selected,
         configurationType: 'CUSTOMIZATION',
@@ -2188,7 +2188,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   private getCustomizations(): void {
     const obj = {
       controllerId: this.schedulerIds.selected,
-      account: this.permission.user,
+      account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
       objectType: this.objectType
     };

@@ -5,28 +5,26 @@ import {Injectable} from '@angular/core';
 })
 export class AuthService {
 
-  props = ['accessTokenId', 'currentUserData', 'sessionTimeout', 'permissions', 'permission', 'scheduleIds'];
+  props = ['accessTokenId', 'currentUserData', 'sessionTimeout', 'permission', 'scheduleIds'];
   propsPrefix = '$SOS$';
   rememberMe = false;
   scheduleIds;
   accessTokenId;
   currentUserData;
   sessionTimeout;
-  permissions;
   permission;
-  Workflow;
 
   constructor() {
     const self = this;
-    for (let i = 0; i < this.props.length; i++) {
-      self[this.props[i]] = this.load(this.props[i]);
+    for (let prop of this.props) {
+      self[prop] = this.load(prop);
     }
   }
 
   save(): void {
     const self = this;
-    for (let i = 0; i < this.props.length; i++) {
-      this._save(sessionStorage, this.props[i], self[this.props[i]]);
+    for (let prop of this.props) {
+      this._save(sessionStorage, prop, self[prop]);
     }
   }
 
@@ -36,8 +34,8 @@ export class AuthService {
     this.sessionTimeout = userData.sessionTimeout;
   }
 
-  setPermissions(permissions): void {
-    this.permissions = JSON.stringify(permissions);
+  setPermission(permission): void {
+    this.permission = JSON.stringify(permission);
   }
 
   setIds(scheduleIds): void {
@@ -48,54 +46,15 @@ export class AuthService {
     this.accessTokenId = null;
     this.currentUserData = null;
     this.sessionTimeout = null;
-    this.permissions = null;
     this.permission = null;
     this.scheduleIds = null;
     sessionStorage.$SOS$URL = null;
   }
 
   clearStorage(): void {
-    for (let i = 0; i < this.props.length; i++) {
-      this._save(sessionStorage, this.props[i], null);
-      this._save(localStorage, this.props[i], null);
-    }
-  }
-
-  getPermission(id): any {
-    if (this.permissions) {
-      const p = JSON.parse(this.permissions).SOSPermissionJocCockpitController;
-      if (p) {
-        let flag = true;
-        for (let i = 0; i < p.length; i++) {
-          if (p[i].JS7Controller == id) {
-            flag = false;
-            return p[i].SOSPermissionJocCockpit;
-          }
-        }
-        if (flag) {
-          return p[0].SOSPermissionJocCockpit;
-        }
-      }
-    }
-  }
-
-  savePermission(id): void {
-    if (this.permissions) {
-      const p = JSON.parse(this.permissions).SOSPermissionJocCockpitController;
-      if (p) {
-        let flag = true;
-        for (let i = 0; i < p.length; i++) {
-          if (p[i].JS7Controller == id) {
-            flag = false;
-            this.permission = JSON.stringify(p[i].SOSPermissionJocCockpit);
-            break;
-          }
-        }
-        if (flag) {
-          this.permission = JSON.stringify(p[0].SOSPermissionJocCockpit);
-        }
-        this.save();
-      }
+    for (let prop of this.props) {
+      this._save(sessionStorage, prop, null);
+      this._save(localStorage, prop, null);
     }
   }
 
@@ -122,7 +81,7 @@ export class AuthService {
             ifPermissionPassed = true;
           }
         } else {
-          if (permission.DailyPlan && permission.DailyPlan.view.status) {
+          if (permission.joc && permission.joc.dailyPlan.view) {
             ifPermissionPassed = true;
           }
         }
@@ -133,9 +92,14 @@ export class AuthService {
             ifPermissionPassed = true;
           }
         } else {
-          if (permission.Workflow && permission.Workflow.view.configuration) {
+          if (permission.controllerDefaults && permission.controllerDefaults.workflows.view) {
             ifPermissionPassed = true;
           }
+        }
+        break;
+      case 'Order':
+        if (permission.controllerDefaults && permission.controllerDefaults.orders.view) {
+          ifPermissionPassed = true;
         }
         break;
       case 'History':
@@ -144,7 +108,8 @@ export class AuthService {
             ifPermissionPassed = true;
           }
         } else {
-          if (permission.History && (permission.History.view.status || permission.YADE.view.status)) {
+          if (permission.joc && (permission.joc || permission.joc.fileTransfer.view
+            || permission.controllerDefaults.deployments.view || permission.joc.dailyPlan.view)) {
             ifPermissionPassed = true;
           }
         }
@@ -155,8 +120,8 @@ export class AuthService {
             ifPermissionPassed = true;
           }
         } else {
-          if (permission.JS7UniversalAgent && (permission.JS7UniversalAgent.view.status || permission.Lock.view.status
-            || permission.Calendar.view.status || permission.Documentation.view)) {
+          if (permission.controllerDefaults && (permission.controllerDefaults.agents.view || permission.controllerDefaults.lock.view
+            || permission.joc.calendars.view || permission.joc.documentations.view)) {
             ifPermissionPassed = true;
           }
         }
@@ -167,7 +132,7 @@ export class AuthService {
             ifPermissionPassed = true;
           }
         } else {
-          if (permission.AuditLog && permission.AuditLog.view.status) {
+          if (permission.joc && permission.joc.auditLog.view) {
             ifPermissionPassed = true;
           }
         }
@@ -178,7 +143,7 @@ export class AuthService {
             ifPermissionPassed = true;
           }
         } else {
-          if (permission.YADE && permission.YADE.view.status) {
+          if (permission.joc && permission.joc.fileTransfer.view) {
             ifPermissionPassed = true;
           }
         }
@@ -189,15 +154,14 @@ export class AuthService {
             ifPermissionPassed = true;
           }
         } else {
-          if (permission.Inventory && permission.Inventory.configurations &&
-            (permission.Inventory.configurations.view ||
-              permission.YADE.configurations.view)) {
+          if (permission.joc && permission.joc.inventory.view || permission.joc.fileTransfer.view
+            || permission.joc.notification.view || permission.joc.others.view) {
             ifPermissionPassed = true;
           }
         }
         break;
       case 'ManageAccount':
-        if (permission.JS7Controller && permission.JS7Controller.administration.editPermissions) {
+        if (permission.joc.administration.accounts.view) {
           ifPermissionPassed = true;
         }
         break;
@@ -209,7 +173,9 @@ export class AuthService {
 
   private _save(storage, name, value): void {
     const key = this.propsPrefix + name;
-    if (value == null) value = '';
+    if (value == null) {
+      value = '';
+    }
     storage[key] = value;
   }
 

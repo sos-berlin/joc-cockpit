@@ -38,7 +38,7 @@ export class StartUpModalComponent implements OnInit {
               public translate: TranslateService, private toasterService: ToasterService, public modalService: NgbModal) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.controller = {
       url: '',
       type: 'STANDALONE',
@@ -152,7 +152,7 @@ export class StartUpModalComponent implements OnInit {
 
   }
 
-  testConnection(type, url) {
+  testConnection(type, url): void {
     this.error = false;
     this.setFlag(type, true);
     this.coreService.post('controller/test', {url: url, controllerId: this.new ? '' : this.controllerId}).subscribe((res: any) => {
@@ -191,11 +191,11 @@ export class StartUpModalComponent implements OnInit {
     }
   }
 
-  close() {
+  close(): void {
     this.modalRef.dismiss();
   }
 
-  cancel() {
+  cancel(): void {
     this.router.navigate(['/dashboard']);
   }
 }
@@ -212,27 +212,31 @@ export class StartUpComponent implements OnInit, OnDestroy {
   username: string;
   interval: any;
   error: any;
+  sessionTimeout = 0;
   count = 0;
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router,
               public translate: TranslateService, private dataService: DataService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.username = this.authService.currentUserData;
-    this.count = parseInt(this.authService.sessionTimeout, 10) / 1000;
-    this.calculateTime();
+    this.sessionTimeout = parseInt(this.authService.sessionTimeout, 10);
+    if (this.sessionTimeout > -1) {
+      this.count = this.sessionTimeout / 1000;
+      this.calculateTime();
+    }
     const headerHt = $('.fixed-top').height() || 70;
     $('.app-body').css('margin-top', headerHt + 'px');
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     if (this.interval) {
       clearInterval(this.interval);
     }
   }
 
-  private calculateTime() {
+  private calculateTime(): void {
     this.interval = setInterval(() => {
       --this.count;
       this.currentTime = new Date();
@@ -259,7 +263,7 @@ export class StartUpComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  logout() {
+  logout(): void {
     this.coreService.post('authentication/logout', {}).subscribe(() => {
       this.authService.clearUser();
       this.authService.clearStorage();
@@ -268,15 +272,9 @@ export class StartUpComponent implements OnInit, OnDestroy {
     });
   }
 
-  private setPermissions(_permission): void {
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.authService.setPermissions(_permission);
+  private setPermissions(permission): void {
+    this.authService.setPermission(permission);
     this.authService.save();
-    if (this.schedulerIds) {
-      this.authService.savePermission(this.schedulerIds.selected);
-    } else {
-      this.authService.savePermission('');
-    }
     this.dataService.isProfileReload.next(true);
     this.router.navigate(['/dashboard']);
   }

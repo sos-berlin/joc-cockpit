@@ -3,7 +3,6 @@ import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DatePipe} from '@angular/common';
 import * as moment from 'moment';
 import * as _ from 'underscore';
-
 import {CalendarService} from '../../../../services/calendar.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';

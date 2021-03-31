@@ -92,7 +92,7 @@ export class SearchComponent implements OnInit {
     {status: 'RENAME', text: 'rename'}
   ];
 
-  constructor(public coreService: CoreService) {
+  constructor(private authService: AuthService, public coreService: CoreService) {
   }
 
   ngOnInit(): void {
@@ -103,7 +103,7 @@ export class SearchComponent implements OnInit {
   checkFilterName(): void {
     this.isUnique = true;
     for (let i = 0; i < this.allFilter.length; i++) {
-      if (this.filter.name === this.allFilter[i].name && this.permission.user === this.allFilter[i].account && this.filter.name !== this.existingName) {
+      if (this.filter.name === this.allFilter[i].name && this.authService.currentUserData === this.allFilter[i].account && this.filter.name !== this.existingName) {
         this.isUnique = false;
       }
     }
@@ -136,7 +136,7 @@ export class SearchComponent implements OnInit {
     this.submitted = true;
     let configObj = {
       controllerId: this.schedulerIds.selected,
-      account: this.permission.user,
+      account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
       objectType: 'DAILYPLAN',
       name: result.name,
@@ -379,8 +379,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
       this.fileTransfers = res.transfers || [];
       this.fileTransfers.forEach((transfer) => {
-        let id = transfer.controllerId || self.schedulerIds.selected;
-        transfer.permission = self.authService.getPermission(id).YADE;
         if (this.showFiles) {
           transfer.show = true;
           this.getFiles(transfer);
@@ -634,7 +632,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
 
   checkSharedFilters(): void {
-    if (this.permission && this.permission.JOCConfigurations && this.permission.JOCConfigurations.share.view) {
+    if (this.permission && this.permission.joc) {
       let obj = {
         controllerId: this.schedulerIds.selected,
         configurationType: 'CUSTOMIZATION',
@@ -659,7 +657,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   getYadeCustomizations(): void {
     let obj = {
       controllerId: this.schedulerIds.selected,
-      account: this.permission.user,
+      account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
       objectType: 'YADE'
     };
@@ -783,7 +781,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   saveAsFilter(): void {
     let configObj = {
       controllerId: this.schedulerIds.selected,
-      account: this.permission.user,
+      account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
       objectType: 'YADE',
       id: 0,
@@ -825,7 +823,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.filterList = this.filterList;
     modalRef.componentInstance.favorite = this.savedFilter.favorite;
     modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.username = this.permission.user;
+    modalRef.componentInstance.username = this.authService.currentUserData;
     modalRef.componentInstance.action = this.action;
     modalRef.componentInstance.self = this;
     modalRef.result.then((obj) => {
