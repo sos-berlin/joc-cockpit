@@ -6,13 +6,13 @@
                 <i class="text-black-lt m-l-sm m-r-sm">/</i>
                 <span class="text-muted text-black-dk">{{roleName}}</span>
             </div>
-            <button class="btn btn-sm orange hide" (click)="undoPermission()"
+            <button class="btn btn-sm btn-grey hide" [nz-tooltip]="'workflow.button.undo' | translate" (click)="undoPermission()"
                     [ngClass]="{'show-block':previousPermission.length>0}">
-                <span translate>common.button.undo</span>
+                 <i nz-icon nzType="undo" nzTheme="outline"></i>
             </button>
-            <button class="btn btn-sm btn-primary hide m-l-sm" (click)="resetPermission()"
+            <button class="btn btn-sm btn-grey hide m-l-sm" [nz-tooltip]="'workflow.button.redo' | translate" (click)="resetPermission()"
                     [ngClass]="{'show-block':isReset}">
-                <span translate>common.button.reset</span>
+                 <i nz-icon nzType="redo" nzTheme="outline"></i>
             </button>
         </div>
     </div>
@@ -32,7 +32,7 @@
                           {{f.folder}}<span *ngIf="f.recursive && f.folder != '/'">/*</span><span
                                 *ngIf="f.recursive && f.folder == '/'">*</span>&nbsp;
                             <i (click)="editFolder(f)" class="fa fa-pencil m-l-xs"></i>
-                            <i (click)="deleteFolder(f)" class="fa fa-times m-l-xs"></i>
+                            <i (click)="deleteFolder(f)" class="fa fa-times m-l-sm"></i>
                         </span>
                     </div>
                     <div class="col-md-12 text-center" *ngIf="folderArr.length == 0">
@@ -58,7 +58,7 @@
                       <span>
                         <span *ngIf="p.excluded" class="_600">-</span>{{p.path}}&nbsp;
                         <i (click)="editPermission(p)" class="fa fa-pencil m-l-xs"></i>
-                        <i (click)="deletePermission(p)" class="fa fa-times m-l-xs"></i>
+                        <i (click)="deletePermission(p)" class="fa fa-times m-l-sm"></i>
                       </span>
                     </div>
                     <div class="col-md-12 text-center" *ngIf="rolePermissions.length == 0">

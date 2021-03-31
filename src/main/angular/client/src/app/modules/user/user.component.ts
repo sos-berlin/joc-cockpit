@@ -293,7 +293,9 @@ export class UserComponent implements OnInit, OnDestroy {
     }
 
     this.setIds();
-    this.getKeys();
+    if(this.permission.joc && this.permission.joc.administration.certificates.view) {
+      this.getKeys();
+    }
     this.setPreferences();
     this.zones = this.coreService.getTimeZoneList();
     const localTZ = this.coreService.getTimeZone();
@@ -303,7 +305,7 @@ export class UserComponent implements OnInit, OnDestroy {
       this.timeZone = this.selectedController.timeZone;
     }
     this.configObj.controllerId = this.schedulerIds.selected;
-    this.configObj.account = this.permission.user;
+    this.configObj.account = this.username;
     this.configObj.configurationType = 'PROFILE';
     this.configObj.id = parseInt(sessionStorage.preferenceId, 10);
   }
@@ -485,7 +487,7 @@ export class UserComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.title = 'resetProfile';
     modalRef.componentInstance.message = 'resetSingleProfile';
     modalRef.componentInstance.type = 'Reset';
-    modalRef.componentInstance.objectName = this.permission.user;
+    modalRef.componentInstance.objectName = this.username;
     modalRef.result.then(() => {
       this._resetProfile();
     }, () => {
@@ -494,7 +496,7 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   private _resetProfile(): void {
-    const obj = {accounts: [this.permission.user]};
+    const obj = {accounts: [this.username]};
     this.coreService.post('configurations/delete', obj).subscribe(res => {
       this.dataService.isProfileReload.next(true);
     });

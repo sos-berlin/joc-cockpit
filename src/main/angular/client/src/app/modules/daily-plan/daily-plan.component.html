@@ -28,39 +28,39 @@
           </button>
           <nz-dropdown-menu #export5="nzDropdownMenu" role="menu">
             <ul nz-menu>
-              <li nz-menu-item *ngIf="value.state && value.state._text === 'PLANNED'">
+              <li nz-menu-item *ngIf="permission.controllerDefaults.orders.create && value.state && value.state._text === 'PLANNED'">
                 <a (click)="submitOrder(value, false)" translate>dailyPlan.button.submitOrder</a>
               </li>
               <li nz-menu-item class="bg-hover-color"
-                  *ngIf="value.state && value.state._text === 'PLANNED'">
+                  *ngIf="permission.controllerDefaults.orders.cancel && value.state && value.state._text === 'PLANNED'">
                 <a (click)="removeOrder(value, false)" translate>dailyPlan.button.removeOrder</a>
               </li>
               <li nz-menu-item
-                  *ngIf="value.state && value.state._text !== 'PLANNED' && value.state._text !== 'FINISHED'">
+                  *ngIf="permission.controllerDefaults.orders.cancel && value.state && value.state._text !== 'PLANNED' && value.state._text !== 'FINISHED'">
                 <a (click)="cancelOrder(value, null )" translate>order.button.cancel</a>
               </li>
               <li nz-menu-item
-                  *ngIf="value.state && value.state._text !== 'PLANNED' && value.state._text !== 'FINISHED'">
+                  *ngIf="permission.controllerDefaults.orders.create && value.state && value.state._text !== 'PLANNED' && value.state._text !== 'FINISHED'">
                 <a (click)="cancelOrderWithKill(value, null )" translate>order.button.cancelAndKillTask</a>
               </li>
               <li nz-menu-item
-                  *ngIf="value.state && value.state._text !== 'PLANNED' && value.state._text !== 'FINISHED'  && value.state._text !== 'FAILED'  && value.state._text !== 'PENDING'">
+                  *ngIf="permission.controllerDefaults.orders.suspendResume && value.state && value.state._text !== 'PLANNED' && value.state._text !== 'FINISHED'  && value.state._text !== 'FAILED'  && value.state._text !== 'PENDING'">
                 <a (click)="suspendOrder(value, null )" translate>order.button.suspend</a>
               </li>
               <li nz-menu-item
-                  *ngIf="value.state && value.state._text !== 'PLANNED' && value.state._text !== 'FINISHED'  && value.state._text !== 'FAILED'  && value.state._text !== 'PENDING'">
+                  *ngIf="permission.controllerDefaults.orders.suspendResume && value.state && value.state._text !== 'PLANNED' && value.state._text !== 'FINISHED'  && value.state._text !== 'FAILED'  && value.state._text !== 'PENDING'">
                 <a (click)="suspendOrderWithKill(value, null )" translate>order.button.suspendAndKillTask</a>
               </li>
               <li nz-menu-item
-                  *ngIf="value.state && (value.state._text === 'SUSPENDED' || value.state._text === 'FAILED')">
+                  *ngIf="permission.controllerDefaults.orders.suspendResume && value.state && (value.state._text === 'SUSPENDED' || value.state._text === 'FAILED')">
                 <a (click)="resumeOrder(value, null )" translate>order.button.resume</a>
               </li>
               <li nz-menu-item [nzDisabled]="value.period && value.period.repeat"
-                  *ngIf="value.state && (value.state._text === 'PLANNED' || value.state._text === 'PENDING')">
+                  *ngIf="permission.controllerDefaults.orders.modify && value.state && (value.state._text === 'PLANNED' || value.state._text === 'PENDING')">
                 <a (click)="modifyOrder(value)" translate>dailyPlan.button.setStartTime</a>
               </li>
               <li nz-menu-item
-                  *ngIf="value.state && (value.state._text === 'PLANNED' || value.state._text === 'PENDING')">
+                  *ngIf="permission.controllerDefaults.orders.modify && value.state && (value.state._text === 'PLANNED' || value.state._text === 'PENDING')">
                 <a (click)="changeParameter(null, value)" translate>dailyPlan.button.setParameters</a>
               </li>
             </ul>
@@ -163,29 +163,29 @@
           </button>
           <nz-dropdown-menu #export2="nzDropdownMenu" role="menu">
             <ul nz-menu>
-              <li nz-menu-item [nzDisabled]="!plan.isPlanned">
+              <li nz-menu-item [nzDisabled]="!plan.isPlanned" *ngIf="permission.controllerDefaults.orders.create">
                 <a (click)="submitOrder(plan, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW')" translate>dailyPlan.button.submitOrder</a>
               </li>
-              <li nz-menu-item class="bg-hover-color" [nzDisabled]="!plan.isPlanned">
+              <li nz-menu-item *ngIf="permission.controllerDefaults.orders.cancel" class="bg-hover-color" [nzDisabled]="!plan.isPlanned">
                 <a (click)="removeOrder(plan, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW' )" translate>dailyPlan.button.removeOrder</a>
               </li>
-              <li nz-menu-item [nzDisabled]="plan.isCancel">
+              <li nz-menu-item *ngIf="permission.controllerDefaults.orders.cancel" [nzDisabled]="plan.isCancel">
                 <a (click)="cancelOrder(null, plan )" translate>order.button.cancel</a>
               </li>
-              <li nz-menu-item [nzDisabled]="plan.isCancel">
+              <li nz-menu-item *ngIf="permission.controllerDefaults.orders.cancel" [nzDisabled]="plan.isCancel">
                 <a (click)="cancelOrderWithKill(null, plan )"
                    translate>order.button.cancelAndKillTask</a>
               </li>
-              <li nz-menu-item [nzDisabled]="!plan.isSuspend">
+              <li nz-menu-item *ngIf="permission.controllerDefaults.orders.suspendResume" [nzDisabled]="!plan.isSuspend">
                 <a (click)="suspendOrder(null, plan )" translate>order.button.suspend</a>
               </li>
-              <li nz-menu-item [nzDisabled]="!plan.isSuspend">
+              <li nz-menu-item *ngIf="permission.controllerDefaults.orders.suspendResume" [nzDisabled]="!plan.isSuspend">
                 <a (click)="suspendOrderWithKill(null, plan )" translate>order.button.suspendAndKillTask</a>
               </li>
-              <li nz-menu-item *ngIf="plan.isResume">
+              <li nz-menu-item *ngIf="permission.controllerDefaults.orders.suspendResume && plan.isResume">
                 <a (click)="resumeOrder(null, plan )" translate>order.button.resume</a>
               </li>
-              <li nz-menu-item [nzDisabled]="!plan.isModify">
+              <li nz-menu-item *ngIf="permission.controllerDefaults.orders.modify" [nzDisabled]="!plan.isModify">
                 <a (click)="changeParameter(plan, null)" translate>dailyPlan.button.setParameters</a>
               </li>
             </ul>
@@ -451,11 +451,11 @@
               <div class="calendar-sm m-t-0" [ngClass]="{'grab' :isCalendarClick }" id="full-calendar"></div>
             </div>
             <div class="text-center m-t">
-              <button [disabled]="isPastDate" class="btn btn-grey btn-sm" (click)="createPlan()">
+              <button *ngIf="permission.joc.dailyPlan.manage" [disabled]="isPastDate" class="btn btn-grey btn-sm" (click)="createPlan()">
                 <i class="fa fa-plus"></i>&nbsp;
                 <span translate>dailyPlan.button.createPlan</span>
               </button>
-              <button class="btn btn-grey btn-sm m-l-xs" (click)="deleteSubmission()">
+              <button *ngIf="permission.joc.dailyPlan.manage" class="btn btn-grey btn-sm m-l-xs" (click)="deleteSubmission()">
                 <i class="fa fa-trash"></i>&nbsp;
                 <span translate>dailyPlan.button.deleteSubmissions</span>
               </button>

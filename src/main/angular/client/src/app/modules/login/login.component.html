@@ -1,13 +1,13 @@
 <div class="navbar p-l-0 p-r-20">
   <ul class="nav navbar-nav pull-right " style="margin-right: 165px">
     <li class="nav-item dropdown">
-      <a class="nav-link" data-toggle="dropdown" nz-dropdown nzTrigger="click" [nzDropdownMenu]="help" [nzPlacement]="'bottomRight'">
-         <span class="text-left p-l-xs">
+      <a class="pointer nav-link">
+         <span class="cursor text-left p-l-xs" data-toggle="dropdown" nz-dropdown nzTrigger="click" [nzDropdownMenu]="help" [nzPlacement]="'bottomRight'">
              <i class="fa fa-lg fa-question-circle" style="font-size: 20px"></i>
          </span>
       </a>
       <nz-dropdown-menu #help="nzDropdownMenu">
-        <ul nz-menu >
+        <ul nz-menu>
           <li nz-menu-item><a (click)="about()">{{'info.button.aboutJS7' | translate}}</a></li>
           <li nz-submenu nzTitle="{{'info.button.featuresAndDownload' | translate}} " >
             <ul>

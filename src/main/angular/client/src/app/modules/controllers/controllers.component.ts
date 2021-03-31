@@ -129,12 +129,14 @@ export class ControllersComponent implements OnInit {
   controllers: any = [];
   currentSecurityLevel: string;
   showPanel = [true];
+  permission: any = {};
 
   constructor(private coreService: CoreService, private modalService: NgbModal, private authService: AuthService,
               private dataService: DataService) {
   }
 
   ngOnInit(): void {
+    this.permission = JSON.parse(this.authService.permission) || {};
     this.getData();
   }
 
@@ -174,8 +176,8 @@ export class ControllersComponent implements OnInit {
     modalRef.componentInstance.isModal = true;
     modalRef.componentInstance.new = true;
     modalRef.componentInstance.modalRef = modalRef;
-    modalRef.result.then((permission) => {
-      this.getSchedulerIds(permission);
+    modalRef.result.then(() => {
+      this.getSchedulerIds();
     }, () => {
 
     });
@@ -188,9 +190,8 @@ export class ControllersComponent implements OnInit {
       modalRef.componentInstance.controllerInfo = res.controllers;
       modalRef.componentInstance.agents = res.agents;
       modalRef.componentInstance.modalRef = modalRef;
-      modalRef.result.then((result) => {
-        console.log(result);
-        this.getSchedulerIds(null);
+      modalRef.result.then(() => {
+        this.getSchedulerIds();
       }, () => {
 
       });
@@ -205,7 +206,7 @@ export class ControllersComponent implements OnInit {
     modalRef.componentInstance.objectName = matser;
     modalRef.result.then((result) => {
       this.coreService.post('controller/cleanup', {controllerId: matser}).subscribe((res: any) => {
-        this.getSchedulerIds(null);
+        this.getSchedulerIds();
       });
     }, () => {
 
@@ -305,23 +306,12 @@ export class ControllersComponent implements OnInit {
     }
   }
 
-  private checkIsFirstEntry(permission): void {
-    this.authService.setPermission(permission);
-    this.authService.save();
-    if (this.data.length === 1) {
-      this.dataService.switchScheduler(this.data[0]);
-    }
-  }
-
-  private getSchedulerIds(permission): void {
+  private getSchedulerIds(): void {
     this.coreService.post('controller/ids', {}).subscribe((res: any) => {
       this.data = res.controllerIds;
       this.getSecurity();
       this.authService.setIds(res);
       this.authService.save();
-      if (permission) {
-        this.checkIsFirstEntry(permission);
-      }
       this.dataService.isProfileReload.next(true);
     }, err => console.log(err));
   }

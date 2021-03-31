@@ -1005,7 +1005,7 @@ export class CoreService {
       return '-';
     }
     if (!preferences.zone) {
-      return;
+      return moment(date).tz(this.getTimeZone()).format('DD.MM.YYYY HH:mm:ss');
     }
     return moment(date).tz(preferences.zone).format(preferences.dateFormat);
   }
@@ -1018,16 +1018,6 @@ export class CoreService {
       return;
     }
     return moment(moment(date).tz(preferences.zone)).diff(moment());
-  }
-
-  convertEtcTomeZone(timezone: string): string {
-    if (timezone.match(/Etc\/GMT/)) {
-      if (timezone.match(/-/)) {
-        return `${timezone.replace(/-/, '+')}`;
-      } else {
-        return `${timezone.replace(/\+/, '-')}`;
-      }
-    }
   }
 
   calDuration(n: any, r: any): string {
@@ -1134,7 +1124,7 @@ export class CoreService {
     }));
   }
 
-  getDates(startDate, endDate) {
+  getDates(startDate, endDate): any {
     let dates = [],
       currentDate = startDate,
       addDays = function (days) {

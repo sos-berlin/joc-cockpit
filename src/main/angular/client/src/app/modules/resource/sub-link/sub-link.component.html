@@ -5,14 +5,14 @@
           <span class="nav-text text-dark p-b-sm"><span translate>resource.label.agentView</span></span>
         </a>
       </li>
-      <li class="nav-item dropdown-separator" *ngIf="permission.controllerDefaults.agents.view">
+<!--      <li class="nav-item dropdown-separator" *ngIf="permission.controllerDefaults.agents.view">
         <span class="separator"></span>
       </li>
       <li class="nav-item" *ngIf="permission.controllerDefaults.agents.view">
         <a class="nav-link" [routerLink]="['/resources/agent_job_executions']" [routerLinkActive]="['active']">
           <span class="nav-text text-dark p-b-sm"><span translate>resource.label.agentJobExecution</span></span>
         </a>
-      </li>
+      </li>-->
       <li class="nav-item dropdown-separator"
           *ngIf="permission.controllerDefaults.agents.view && permission.controllerDefaults.locks.view">
         <span class="separator"></span>

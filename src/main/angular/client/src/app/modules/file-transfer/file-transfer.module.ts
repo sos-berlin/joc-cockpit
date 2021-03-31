@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {FileTransferComponent, FilterModalComponent, SearchComponent} from './file-transfer.component';
+import {FileTransferComponent, FilterModalComponent, SearchComponent, SingleFileTransferComponent} from './file-transfer.component';
 import {SharedModule} from '../shared/shared.module';
 import {FileTransferRoutingModule} from './file-transfer-routing.module';
 
@@ -8,7 +8,7 @@ import {FileTransferRoutingModule} from './file-transfer-routing.module';
     SharedModule,
     FileTransferRoutingModule
   ],
-  declarations: [FileTransferComponent, FilterModalComponent, SearchComponent]
+  declarations: [FileTransferComponent, SingleFileTransferComponent, FilterModalComponent, SearchComponent]
 })
 export class FileTransferModule {
 }

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
@@ -144,9 +144,9 @@ export class StartUpModalComponent implements OnInit {
     this.coreService.post('controller/register', obj).subscribe(res => {
       this.submitted = false;
       if (this.modalRef) {
-        this.modalRef.close(res);
+        this.modalRef.close();
       } else {
-        this.afterSubmit.emit(res);
+        this.afterSubmit.emit();
       }
     }, err => this.submitted = false);
 
@@ -204,86 +204,31 @@ export class StartUpModalComponent implements OnInit {
   selector: 'app-start-up-component',
   templateUrl: './start-up.component.html'
 })
-export class StartUpComponent implements OnInit, OnDestroy {
+export class StartUpComponent implements OnInit {
   controller: any = {};
   schedulerIds: any = {};
-  currentTime: any;
-  remainingSessionTime: string;
-  username: string;
-  interval: any;
   error: any;
-  sessionTimeout = 0;
-  count = 0;
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router,
               public translate: TranslateService, private dataService: DataService) {
   }
 
   ngOnInit(): void {
-    this.username = this.authService.currentUserData;
-    this.sessionTimeout = parseInt(this.authService.sessionTimeout, 10);
-    if (this.sessionTimeout > -1) {
-      this.count = this.sessionTimeout / 1000;
-      this.calculateTime();
-    }
     const headerHt = $('.fixed-top').height() || 70;
     $('.app-body').css('margin-top', headerHt + 'px');
   }
 
-  ngOnDestroy(): void {
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
-  }
-
-  private calculateTime(): void {
-    this.interval = setInterval(() => {
-      --this.count;
-      this.currentTime = new Date();
-      const s = Math.floor((this.count) % 60),
-        m = Math.floor((this.count / (60)) % 60),
-        h = Math.floor((this.count / (60 * 60)) % 24),
-        d = Math.floor(this.count / (60 * 60 * 24));
-
-      const x = m > 9 ? m : '0' + m;
-      const y = s > 9 ? s : '0' + s;
-      if (d === 0 && h !== 0) {
-        this.remainingSessionTime = h + 'h ' + x + 'm ' + y + 's';
-      } else if (d === 0 && h === 0 && m !== 0) {
-        this.remainingSessionTime = x + 'm ' + y + 's';
-      } else if (d === 0 && h === 0 && m === 0) {
-        this.remainingSessionTime = s + 's';
-      } else {
-        this.remainingSessionTime = d + 'd ' + h + 'h';
-      }
-      if (this.count < 0) {
-        clearInterval(this.interval);
-        this.logout();
-      }
-    }, 1000);
-  }
-
-  logout(): void {
-    this.coreService.post('authentication/logout', {}).subscribe(() => {
-      this.authService.clearUser();
-      this.authService.clearStorage();
-      sessionStorage.clear();
-      this.router.navigate(['/login']);
-    });
-  }
-
-  private setPermissions(permission): void {
-    this.authService.setPermission(permission);
+  private redirect(): void {
     this.authService.save();
     this.dataService.isProfileReload.next(true);
     this.router.navigate(['/dashboard']);
   }
 
-  getSchedulerIds(permission): void {
+  getSchedulerIds(): void {
     this.coreService.post('controller/ids', {}).subscribe((res: any) => {
       this.authService.setIds(res);
       this.authService.save();
-      this.setPermissions(permission);
-    }, err => this.setPermissions(permission));
+      this.redirect();
+    }, err => this.redirect());
   }
 }

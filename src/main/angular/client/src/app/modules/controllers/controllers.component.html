@@ -6,7 +6,7 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div class="inline">
+          <div class="inline" *ngIf="permission.joc && permission.joc.administration.controllers.manage">
             <button (click)="addController()" class="btn btn-grey btn-sm">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>controller.button.newController</span>
@@ -25,7 +25,7 @@
           <ng-container *ngIf="!currentSecurityLevel || currentSecurityLevel === controller.securityLevel">
             <div class="row" >
               <div class="col-sm-12">
-                <div class="btn-group dropdown pull-left m-r-sm">
+                <div class="btn-group dropdown pull-left m-r-sm" *ngIf="permission.joc && permission.joc.administration.controllers.manage">
                   <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" type="button">
                     <i class="fa fa-ellipsis-h"></i></button>
                   <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
@@ -59,7 +59,7 @@
                             [nzData]="controller.agents" [nzShowPagination]="false" [nzFrontPagination]="false">
                     <thead>
                     <tr>
-                      <th class="menu"><span translate>common.label.action</span></th>
+                      <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="menu"><span translate>common.label.action</span></th>
                       <th width="15%"><span translate>agent.label.agentId</span></th>
                       <th width="20%"><span translate>agent.label.agentName</span></th>
                       <th><span translate>agent.label.agentNameAliases</span></th>
@@ -70,7 +70,7 @@
                     </thead>
                     <tbody>
                     <tr [ngClass]="{'disabled-row': agent.disabled}" *ngFor="let agent of ajaxTable.data" class="cursor">
-                      <td>
+                      <td *ngIf="permission.joc && permission.joc.administration.controllers.manage">
                         <div class="btn-group dropdown pull-left m-r-sm">
                           <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
                           <nz-dropdown-menu #option="nzDropdownMenu" role="menu">

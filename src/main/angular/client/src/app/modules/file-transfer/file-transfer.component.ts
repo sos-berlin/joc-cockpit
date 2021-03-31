@@ -14,7 +14,6 @@ import {ActivatedRoute} from '@angular/router';
   selector: 'app-modal-content',
   templateUrl: './filter-dialog.html',
 })
-
 export class FilterModalComponent implements OnInit {
   @Input() allFilter;
   @Input() new;
@@ -52,7 +51,6 @@ export class FilterModalComponent implements OnInit {
       this.activeModal.dismiss('');
     }
   }
-
 }
 
 @Component({
@@ -60,7 +58,6 @@ export class FilterModalComponent implements OnInit {
   templateUrl: './form-template.html',
 })
 export class SearchComponent implements OnInit {
-
   @Input() schedulerIds: any;
   @Input() filter: any;
   @Input() preferences: any;
@@ -132,7 +129,6 @@ export class SearchComponent implements OnInit {
   }
 
   onSubmit(result): void {
-    console.log(result);
     this.submitted = true;
     let configObj = {
       controllerId: this.schedulerIds.selected,
@@ -194,6 +190,118 @@ export class SearchComponent implements OnInit {
 
   cancel(): void {
     this.onCancel.emit();
+  }
+}
+
+@Component({
+  selector: 'app-single-file-transfer',
+  templateUrl: './single-file-transfer.component.html'
+})
+export class SingleFileTransferComponent implements OnInit, OnDestroy {
+  schedulerId: any;
+  transferId: any;
+  preferences: any = {};
+  permission: any = {};
+  fileTransfers: any = [];
+  dateFormat: any;
+  loading = false;
+
+  subscription1: Subscription;
+  subscription2: Subscription;
+
+  constructor(private authService: AuthService, public coreService: CoreService,
+              private route: ActivatedRoute, private dataService: DataService) {
+    this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
+      this.refresh(res);
+    });
+    this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
+      this.init();
+    });
+  }
+
+  ngOnInit(): void {
+    this.transferId = this.route.snapshot.queryParamMap.get('transferId');
+    this.schedulerId = this.route.snapshot.queryParamMap.get('scheduler_id');
+    this.init();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
+  }
+
+  private init(): void {
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences);
+    }
+    this.permission = JSON.parse(this.authService.permission) || {};
+    this.getFileTransferById(7);
+  }
+
+
+  getFileTransferById(transferId): void {
+    let obj = {
+      controllerId: this.schedulerId,
+      transferIds: [transferId]
+    };
+    this.coreService.post('yade/transfers', obj).subscribe((result: any) => {
+      this.fileTransfers = result.transfers;
+      this.loading = true;
+    }, () => this.loading = true);
+  }
+
+  getFiles(value): void {
+    this.coreService.post('yade/files', {
+      transferIds: [value.id],
+      controllerId: this.schedulerId
+    }).subscribe((res: any) => {
+      value.files = res.files;
+    });
+  }
+
+  showTransferFuc(value): void {
+    value.show = true;
+    this.getFiles(value);
+  }
+
+  /** ------------------Action------------------- */
+
+  restart(data): void {
+    this.coreService.post('yade/transfers/restart', {
+      transferIds: [data.id],
+      controllerId: this.schedulerId
+    }).subscribe((res: any) => {
+
+    });
+  }
+
+
+  private refresh(args): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].objectType === 'OTHER') {
+          if (args.eventSnapshots[j].eventType === 'YADETransferStarted') {
+
+            break;
+          } else if (args.eventSnapshots[j].eventType == 'YADETransferUpdated') {
+            for (let x = 0; x < this.fileTransfers.length; x++) {
+              if (this.fileTransfers[x].id === args.eventSnapshots[j].path) {
+
+                break;
+              }
+            }
+          } else if (args.eventSnapshots[j].eventType === 'YADEFileStateChanged') {
+            for (let x = 0; x < this.fileTransfers.length; x++) {
+              if (this.fileTransfers[x].id === args.eventSnapshots[j].path && this.fileTransfers[x].show) {
+
+                break;
+              }
+            }
+          }
+          break;
+        }
+      }
+    }
   }
 }
 
@@ -426,7 +534,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       let data = this.currentData;
       data.forEach(item => {
         if (item.state._text !== 'SUCCESSFUL') {
-          console.log(item, 'item');
           item.indeterminate = false;
           if (value) {
             this.object.mapOfCheckedId.set(item.id, item);
@@ -434,7 +541,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
           if (item.files && item.files.length > 0) {
             item.files.forEach((file) => {
               file.checked = value;
-              console.log(file, 'file')
             });
           }
         }
@@ -614,9 +720,15 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
 
   private init(): void {
-    this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    this.permission = JSON.parse(this.authService.permission) || {};
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    }
+    if (this.authService.scheduleIds) {
+      this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    }
+    if (this.authService.permission) {
+      this.permission = JSON.parse(this.authService.permission) || {};
+    }
     this.yadeFilters = this.coreService.getYadeTab();
     this.yadeView.current = this.preferences.fileTransfer == 'current';
     this.savedFilter = JSON.parse(this.saveService.yadeFilters) || {};
@@ -813,8 +925,8 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         this.saveService.setYade(this.savedFilter);
         this.saveService.save();
       }
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 

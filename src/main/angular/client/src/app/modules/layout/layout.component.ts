@@ -13,7 +13,6 @@ import {DataService} from '../../services/data.service';
 import {AuthService} from '../../components/guard';
 import {HeaderComponent} from '../../components/header/header.component';
 
-
 declare const $;
 
 @Component({
@@ -39,8 +38,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
   isLogout = false;
   loading = false;
   sessionTimeout = 0;
-  isPermissionLoaded = true;
   isTouch = false;
+  isProfileLoaded = false;
   count = 0;
   count2 = 0;
 
@@ -121,9 +120,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
     if (this.authService.accessTokenId) {
       if (this.authService.scheduleIds) {
         this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-        this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, false);
+        if (!this.isProfileLoaded) {
+          this.isProfileLoaded = true;
+          this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, false);
+        }
         this.init();
-      } else if (!this.schedulerIds) {
+      } else if (!this.schedulerIds || !this.schedulerIds.selected) {
         this.schedulerIds = {};
         this.getSchedulerIds();
         this.getPermissions();
@@ -140,7 +142,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   private getComments(): void {
     if (this.schedulerIds && this.schedulerIds.selected) {
-      this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, false);
+      if (!this.isProfileLoaded) {
+        this.isProfileLoaded = true;
+        this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, false);
+      }
       this.coreService.post('joc/properties', {}).subscribe((result: any) => {
         sessionStorage.$SOS$FORCELOGING = result.forceCommentsForAuditLog;
         sessionStorage.comments = JSON.stringify(result.comments);
@@ -149,26 +154,29 @@ export class LayoutComponent implements OnInit, OnDestroy {
         sessionStorage.defaultProfile = result.defaultProfileAccount;
         sessionStorage.$SOS$COPY = JSON.stringify(result.copy);
         sessionStorage.$SOS$RESTORE = JSON.stringify(result.restore);
-        this.ngOnInit();
       }, () => {
         this.ngOnInit();
       });
     } else {
       this.schedulerIds = {};
-      this.loading = true;
     }
   }
 
   private getPermissions(): void {
-    this.isPermissionLoaded = false;
     this.coreService.post('authentication/joc_cockpit_permissions', {}).subscribe((permission) => {
-      console.log(permission);
       this.authService.setPermission(permission);
       this.authService.save();
-      this.isPermissionLoaded = true;
       if (!sessionStorage.preferenceId) {
         this.ngOnInit();
       }
+      if (this.child) {
+        this.child.reloadSettings();
+      }
+      setTimeout(() => {
+        if (!this.loading) {
+          this.loadInit();
+        }
+      }, 10);
     });
   }
 
@@ -189,6 +197,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }, () => {
       this.getComments();
       this.router.navigate(['/start-up']);
+      setTimeout(() => {
+        this.loading = true;
+      }, 10);
     });
   }
 
@@ -199,6 +210,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
     } else {
       this.router.navigate(['/start-up']);
     }
+    setTimeout(() => {
+      this.loading = true;
+    }, 10);
   }
 
   private authenticate(userName): any {
@@ -222,18 +236,23 @@ export class LayoutComponent implements OnInit, OnDestroy {
       }, 100);
       return;
     }
-    if (!this.isPermissionLoaded) {
-      setTimeout(() => {
-        this.init();
-      }, 20);
-      return;
+
+    this.loadScheduleDetail();
+    if (!this.loading) {
+      this.loadInit();
     }
+  }
+
+  private loadInit(): void {
     this.sessionTimeout = parseInt(this.authService.sessionTimeout, 10);
     this.permission = JSON.parse(this.authService.permission) || {};
-    this.loading = true;
+    if (sessionStorage.preferences) {
+      this.loading = true;
+    } else {
+      return;
+    }
     this.loadSettingConfiguration();
     this.count = this.sessionTimeout / 1000;
-    this.loadScheduleDetail();
     if (this.sessionTimeout > 0) {
       this.calculateTime();
     }
@@ -252,7 +271,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.subscription5.unsubscribe();
     this.modalService.dismissAll();
   }
-
 
   @HostListener('window:resize', ['$event'])
   onResize(): void {
@@ -373,7 +391,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         this.preferences = JSON.parse(sessionStorage.preferences) || {};
       }
       this.currentTime = this.coreService.stringToDate(this.preferences, new Date());
-      const s = Math.floor((this.count) % 60),
+      let s = Math.floor((this.count) % 60),
         m = Math.floor((this.count / (60)) % 60),
         h = Math.floor((this.count / (60 * 60)) % 24),
         d = Math.floor(this.count / (60 * 60 * 24));
@@ -442,6 +460,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         });
       }
     }
+    this.isProfileLoaded = false;
   }
 
   private setUserObject(preferences, conf, configObj): void {
@@ -477,10 +496,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private loadSettingConfiguration(): void {
-    if (this.permission.user) {
+    if (this.authService.currentUserData && this.schedulerIds.selected) {
       const configObj = {
         controllerId: this.schedulerIds.selected,
-        account: this.permission.user,
+        account: this.authService.currentUserData,
         configurationType: 'SETTING'
       };
       if (!sessionStorage.settingId) {
@@ -502,11 +521,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  private saveSettingConf(flag) {
-    if ((sessionStorage.settingId || flag) && this.permission.user) {
+  private saveSettingConf(flag): void {
+    if ((sessionStorage.settingId || flag) && this.authService.currentUserData) {
       let configObj = {
         controllerId: this.schedulerIds.selected,
-        account: this.permission.user,
+        account: this.authService.currentUserData,
         configurationType: 'SETTING',
         id: flag ? 0 : parseInt(sessionStorage.settingId, 10),
         configurationItem: sessionStorage.clientLogFilter
@@ -517,7 +536,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  reloadThemeAndLang(preferences) {
+  reloadThemeAndLang(preferences): void {
     preferences = JSON.parse(sessionStorage.preferences);
     $('#style-color').attr('href', './styles/' + preferences.theme + '-style.css');
     localStorage.$SOS$THEME = preferences.theme;
@@ -530,7 +549,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.translate.use(preferences.locale);
   }
 
-  private updateTitle(res) {
+  private updateTitle(res): void {
     if (!res) {
       return;
     }
