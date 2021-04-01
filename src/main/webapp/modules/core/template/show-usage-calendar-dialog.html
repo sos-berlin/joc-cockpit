@@ -11,7 +11,7 @@
         <div class="row">
             <div class=" col-sm-12">
                 <div class="p-l-sm">
-                    <div class="row form-group" ng-if="calendar.usedIn.orders || calendar.usedIn.jobs || calendar.usedIn.schedules">
+                    <div class="row form-group" ng-if="calendar.usedIn.orders || calendar.usedIn.jobs || calendar.usedIn.schedules || calendar.usedIn.jobstreams">
                         <div class="col-md-12">
                             <span class="text _600" translate>label.usedIn</span> :
                         </div>
@@ -38,7 +38,7 @@
                     </div>
                     <div class="row form-group" ng-if="calendar.usedIn.jobstreams">
                         <label class="col-md-3" translate>
-                            label.jobstreams
+                            label.jobStreams
                         </label>
                         <div class="col-md-9">
                             <div ng-repeat="jobstream in calendar.usedIn.jobstreams">
@@ -57,7 +57,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="text-center text" ng-if="!calendar.usedIn.orders && !calendar.usedIn.jobs && !calendar.usedIn.schedules" translate>message.calendarNotUsed</div>
+                <div class="text-center text" ng-if="!calendar.usedIn.orders && !calendar.usedIn.jobs && !calendar.usedIn.schedules && !calendar.usedIn.jobstreams"
+                     translate>message.calendarNotUsed</div>
             </div>
         </div>
     </div>

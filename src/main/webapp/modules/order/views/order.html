@@ -586,7 +586,7 @@
                                         <td><span class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind-html="order.jobChain | highlight:orderFilters.searchText"></span></td>
                                         <td><span class="text-hover-primary" ng-click="showJob(order.job)" ng-bind-html="order.job  | highlight:orderFilters.searchText"></span></td>
                                         <td>
-                                            <span class="show-in-single-line">
+                                            <span>
                                                 <i ng-if="order.processingState.manually" class="fa fa-hand-o-up"></i>
                                                 <a class="label" ng-class="bgColorFunction(order.processingState.severity)"
                                                 ng-click="showLogWindow(order)" ng-if="order.historyId && permission.Order.view.orderLog && order.processingState._text"

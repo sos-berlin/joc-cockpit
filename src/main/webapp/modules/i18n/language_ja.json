@@ -1180,7 +1180,6 @@
   "message.noDatesFound": "日付が見つかりません",
   "EXCLUDE": "除く",
   "INCLUDE": "含む",
-  "message.calendarTypeCannotBeChange": "ジョブやオーダー、スケジュールが割り当てられているカレンダは変更できません",
   "message.noFrequencyCalendarFound": "周期/カレンダはありません",
   "button.showDailyPlan": "実行計画表示",
   "label.calendarViewFor": "実行計画表示",
@@ -1865,5 +1864,6 @@
   "label.showJobInJobStreamWithColor": "ジョブストリームジョブをカラー表示",
   "label.mergeJobStreamWithOtherFolder": "ジョブストリームを他フォルダーとマージ",
   "tab.addMissingEvents": "欠落イベントを追加",
-  "tab.deleteExistingEvents": "既存イベントを削除"
+  "tab.deleteExistingEvents": "既存イベントを削除",
+  "message.calendarTypeCannotBeChange": "You cannot change the type of a calendar that is assigned to a job, job stream, order or schedule"
 }

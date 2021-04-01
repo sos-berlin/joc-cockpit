@@ -1180,7 +1180,6 @@
   "message.noDatesFound": "Aucune information disponible.",
   "EXCLUDE": "exclure",
   "INCLUDE": "inclure",
-  "message.calendarTypeCannotBeChange": "Vous ne pouvez pas modifier le type de Calendrier lorsqu'il est déjà associé à une Tâche, un Ordre ou une Programmation.",
   "message.noFrequencyCalendarFound": "Aucune Fréquence/Calendrier trouvé",
   "button.showDailyPlan": "Visualiser le Plan Quotidien",
   "label.calendarViewFor": "Plan Quotidien pour",
@@ -1865,5 +1864,6 @@
   "label.showJobInJobStreamWithColor": "Visualiser les Tâches des Flots de Travaux avec de la couleur",
   "label.mergeJobStreamWithOtherFolder": "Fusionner le Flot de Travaux avec un autre dossier",
   "tab.addMissingEvents": "Ajouter les Événements",
-  "tab.deleteExistingEvents": "Supprimer les Événements"
+  "tab.deleteExistingEvents": "Supprimer les Événements",
+  "message.calendarTypeCannotBeChange": "You cannot change the type of a calendar that is assigned to a job, job stream, order or schedule"
 }

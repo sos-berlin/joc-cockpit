@@ -91,6 +91,16 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row form-group" ng-if="calendar.usedIn.jobstreams">
+                                    <label class="col-md-3" translate>
+                                        label.jobStreams
+                                    </label>
+                                    <div class="col-md-9">
+                                        <div ng-repeat="jobstream in calendar.usedIn.jobstreams">
+                                            {{$index+1}} - {{jobstream}}
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="row form-group" ng-if="calendar.usedIn.schedules">
                                     <label class="col-md-3" translate="">
                                         label.schedules
@@ -132,6 +142,16 @@
                                     <div class="col-md-9">
                                         <div ng-repeat="order in calendar.usedIn.orders">
                                             {{$index+1}} - {{order}}
+                                        </div>
+                                    </div>
+                                </div>
+                                 <div class="row form-group" ng-if="calendar.usedIn.jobstreams">
+                                    <label class="col-md-3" translate>
+                                        label.jobStreams
+                                    </label>
+                                    <div class="col-md-9">
+                                        <div ng-repeat="jobstream in calendar.usedIn.jobstreams">
+                                            {{$index+1}} - {{jobstream}}
                                         </div>
                                     </div>
                                 </div>

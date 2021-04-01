@@ -325,7 +325,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 vm.isDeploy = res.state.deployed;
                 vm.XSDState.modified = res.modified;
                 vm.doc = new DOMParser().parseFromString(vm.path, 'application/xml');
-
+                if(res.validation && res.validation.validated) {
+                    $scope.changeValidConfigStatus(true);
+                }
                 if (res.configurationJson) {
                     var _tempArrToExpand = [];
                     vm.prevXML = removeComment(res.configuration);
@@ -4897,6 +4899,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 objectType: vm.objectType,
                 id: id
             }).then(function (res) {
+                if(res.validation && res.validation.validated) {
+                    $scope.changeValidConfigStatus(true);
+                }
                 if (!res.configuration) {
                     vm.showSelectSchema = true;
                     vm.submitXsd = false;
@@ -4992,7 +4997,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
             EditorService.readXML(obj).then(function (res) {
                 vm.schemaIdentifier = res.schemaIdentifier;
-
+                if(res.validation && res.validation.validated) {
+                    $scope.changeValidConfigStatus(true);
+                }
                 if (res.schema) {
                     vm.path = res.schema;
                     loadTree(res.schema, false);

@@ -1180,7 +1180,6 @@
   "message.noDatesFound": "Keine Informationen gefunden.",
   "EXCLUDE": "ausschließen",
   "INCLUDE": "einschließen",
-  "message.calendarTypeCannotBeChange": "Der Typ eines Kalenders kann nicht geändert werden solange dieser einem Job, Auftrag oder Zeitplan zugeordnet ist",
   "message.noFrequencyCalendarFound": "Keine Häufigkeiten / Kalender gefunden",
   "button.showDailyPlan": "Tagesplan anzeigen",
   "label.calendarViewFor": "Ansicht Tagesplan für",
@@ -1865,5 +1864,6 @@
   "label.showJobInJobStreamWithColor": "Jobs in Job-Folgen mit Farben anzeigen",
   "label.mergeJobStreamWithOtherFolder": "Job-Folge mit anderem Ordner zusammenführen",
   "tab.addMissingEvents": "Fehlende Ereignisse hinzufügen",
-  "tab.deleteExistingEvents": "Events löschen"
+  "tab.deleteExistingEvents": "Events löschen",
+  "message.calendarTypeCannotBeChange": "You cannot change the type of a calendar that is assigned to a job, job stream, order or schedule"
 }

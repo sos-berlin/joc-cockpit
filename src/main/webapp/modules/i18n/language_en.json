@@ -1180,7 +1180,6 @@
   "message.noDatesFound": "No dates found",
   "EXCLUDE": "exclude",
   "INCLUDE": "include",
-  "message.calendarTypeCannotBeChange": "You cannot change the type of a calendar that is assigned to a job, order or schedule",
   "message.noFrequencyCalendarFound": "No Frequency / Calendar found",
   "button.showDailyPlan": "Show Daily Plan",
   "label.calendarViewFor": "Daily Plan View for",
@@ -1865,5 +1864,6 @@
   "label.showJobInJobStreamWithColor": "Show Jobs in Job Stream with color",
   "label.mergeJobStreamWithOtherFolder": "Merge Job Stream with other folder",
   "tab.addMissingEvents": "Add Missing Events",
-  "tab.deleteExistingEvents": "Delete Existing Events"
+  "tab.deleteExistingEvents": "Delete Existing Events",
+  "message.calendarTypeCannotBeChange": "You cannot change the type of a calendar that is assigned to a job, job stream, order or schedule"
 }

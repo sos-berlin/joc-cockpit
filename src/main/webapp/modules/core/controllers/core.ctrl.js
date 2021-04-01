@@ -1104,7 +1104,11 @@
         };
 
         vm.showJobstream = function (jobStream) {
-            console.log(jobStream)
+            let filter = CoreService.getConditionTab();
+            filter.graphViewDetail.jobStream = jobStream;
+            if (vm.permission.Job.view.status) {
+                $location.path('/job_streams').search({});
+            }
         };
 
         vm.showJobChain1 = function (jobChain, id) {
@@ -10261,7 +10265,7 @@
                 }).then(function (res) {
                     vm.calendar.usedIn = res;
                     vm.calendarArr = undefined;
-                    if (vm.calendar.usedIn && (vm.calendar.usedIn.orders || vm.calendar.usedIn.jobs || vm.calendar.usedIn.schedules)) {
+                    if (vm.calendar.usedIn && (vm.calendar.usedIn.orders || vm.calendar.usedIn.jobs || vm.calendar.usedIn.jobstreams || vm.calendar.usedIn.schedules)) {
                         if (vm.oldType != vm.calendar.type) {
                             toasty.warning({
                                 title: gettextCatalog.getString('message.calendarTypeCannotBeChange'),
