@@ -32,7 +32,7 @@ export class RoleModalComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (this.oldRole) {
       this.currentRole = _.clone(this.oldRole);
       this.currentRole.roleName = this.currentRole.role;
@@ -42,7 +42,6 @@ export class RoleModalComponent implements OnInit {
       this.mstr = {
         name: this.master === '' ? 'default' : this.master
       };
-      console.log(this.master);
     } else {
       this.currentRole = {
         permissions: [],
@@ -137,7 +136,7 @@ export class MasterModalComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (this.oldMaster) {
       this.currentMaster = _.clone(this.oldMaster);
       this.currentMaster.masterName = this.oldMaster.master;
@@ -202,7 +201,7 @@ export class MasterModalComponent implements OnInit {
   selector: 'app-roles',
   templateUrl: 'roles.component.html'
 })
-export class RolesComponent implements OnInit, OnDestroy {
+export class RolesComponent implements OnDestroy {
 
   users: any = [];
   masters: any = [];
@@ -232,28 +231,25 @@ export class RolesComponent implements OnInit, OnDestroy {
     });
     this.subscription3 = router.events
       .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd)).subscribe((e: any) => {
-      this.checkUrl(e);
-    });
+        this.checkUrl(e);
+      });
   }
 
-  ngOnInit() {
 
-  }
-
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.subscription3.unsubscribe();
   }
 
-  setUsersData(res) {
+  setUsersData(res): void {
     this.userDetail = res;
     this.users = res.users;
     this.masters = res.masters;
     this.getRoles();
   }
 
-  getRoles() {
+  getRoles(): void {
     if (this.roles.length === 0) {
       this.coreService.post('authentication/permissions', {}).subscribe((res: any) => {
         this.roles = res.SOSPermissionRoles.SOSPermissionRole;
@@ -261,22 +257,20 @@ export class RolesComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectUser(user) {
-    const self = this;
-    self.selectedMasters = [];
-    self.selectedRoles = [];
-    self.showMsg = false;
+  selectUser(user): void {
+    this.selectedMasters = [];
+    this.selectedRoles = [];
+    this.showMsg = false;
     if (user) {
-      for (let i = 0; i < self.users.length; i++) {
-        if (self.users[i].user === user && self.users[i].roles) {
-          self.selectedRoles = self.users[i].roles || [];
-          self.masters.forEach(function (master) {
-
+      for (let i = 0; i < this.users.length; i++) {
+        if (this.users[i].user === user && this.users[i].roles) {
+          this.selectedRoles = this.users[i].roles || [];
+          this.masters.forEach((master) => {
             let flag = true;
-            for (let j = 0; j < self.users[i].roles.length; j++) {
+            for (let j = 0; j < this.users[i].roles.length; j++) {
               for (let x = 0; x < master.roles.length; x++) {
-                if (master.roles[x].role === self.users[i].roles[j]) {
-                  self.selectedMasters.push(master.master);
+                if (master.roles[x].role === this.users[i].roles[j]) {
+                  this.selectedMasters.push(master.master);
                   flag = false;
                   break;
                 }
@@ -289,13 +283,13 @@ export class RolesComponent implements OnInit, OnDestroy {
           break;
         }
       }
-      if (self.selectedMasters.length === 0) {
-        self.showMsg = true;
+      if (this.selectedMasters.length === 0) {
+        this.showMsg = true;
       }
     }
   }
 
-  getSelectedRole(role) {
+  getSelectedRole(role): boolean {
     if (this.selectedRoles && this.selectedRoles.length > 0) {
       return this.selectedRoles.indexOf(role.role) > -1;
     } else {
@@ -303,7 +297,7 @@ export class RolesComponent implements OnInit, OnDestroy {
     }
   }
 
-  getSelectedMaster(master) {
+  getSelectedMaster(master): boolean {
     if (this.selectedMasters && this.selectedMasters.length > 0) {
       return this.selectedMasters.indexOf(master.master) > -1;
     } else {
@@ -311,20 +305,18 @@ export class RolesComponent implements OnInit, OnDestroy {
     }
   }
 
-  saveInfo() {
+  saveInfo(): void {
     const obj = {
       users: this.users,
       masters: this.masters,
       main: this.userDetail.main
     };
     this.coreService.post('authentication/shiro/store', obj).subscribe(res => {
-      console.log(res);
-    }, () => {
 
     });
   }
 
-  addRole() {
+  addRole(): void {
     const modalRef = this.modalService.open(RoleModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.allRoles = this.roles;
     modalRef.componentInstance.masters = this.masters;
@@ -337,14 +329,13 @@ export class RolesComponent implements OnInit, OnDestroy {
     });
   }
 
-  editRole(role, master) {
+  editRole(role, master): void {
     const modalRef = this.modalService.open(RoleModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.oldRole = role;
     modalRef.componentInstance.master = master;
     modalRef.componentInstance.allRoles = this.roles;
     modalRef.componentInstance.masters = this.masters;
     modalRef.componentInstance.userDetail = this.userDetail;
-
     modalRef.result.then((result) => {
       console.log(result);
     }, () => {
@@ -352,7 +343,7 @@ export class RolesComponent implements OnInit, OnDestroy {
     });
   }
 
-  copyRole(role, master) {
+  copyRole(role, master): void {
     const modalRef = this.modalService.open(RoleModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.oldRole = role;
     modalRef.componentInstance.master = master;
@@ -367,7 +358,7 @@ export class RolesComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteRole(role, master) {
+  deleteRole(role, master): void {
     let isAssigned: boolean;
     let waringMessage = '';
     for (let i = 0; i < this.users.length; i++) {
@@ -385,7 +376,6 @@ export class RolesComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.type = 'Delete';
       modalRef.componentInstance.objectName = role.role;
       modalRef.result.then(() => {
-
         for (let i = 0; i < this.masters.length; i++) {
           if (_.isEqual(this.masters[i].master, master)) {
             for (let j = 0; j < this.masters[i].roles.length; j++) {
@@ -417,7 +407,7 @@ export class RolesComponent implements OnInit, OnDestroy {
 
   }
 
-  addMaster() {
+  addMaster(): void {
     const modalRef = this.modalService.open(MasterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.allMasters = this.masters;
     modalRef.componentInstance.allRoles = this.roles;
@@ -429,7 +419,7 @@ export class RolesComponent implements OnInit, OnDestroy {
     });
   }
 
-  copyMaster(master) {
+  copyMaster(master): void {
     const modalRef = this.modalService.open(MasterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.oldMaster = master;
     modalRef.componentInstance.allMasters = this.masters;
@@ -442,7 +432,7 @@ export class RolesComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteMaster(master) {
+  deleteMaster(master): void {
     const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.title = 'delete';
     modalRef.componentInstance.message = 'deleteMaster';
@@ -462,7 +452,7 @@ export class RolesComponent implements OnInit, OnDestroy {
     });
   }
 
-  private checkUrl(val) {
+  private checkUrl(val): void {
     if (val.url) {
       this.activeRoute.queryParams
         .subscribe(params => {
@@ -470,5 +460,4 @@ export class RolesComponent implements OnInit, OnDestroy {
         });
     }
   }
-
 }

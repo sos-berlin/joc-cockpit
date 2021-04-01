@@ -48,15 +48,15 @@ export class AgentComponent implements OnInit, OnDestroy {
   private init() {
     this.agentsFilters = this.coreService.getResourceTab().agents;
     this.coreService.getResourceTab().state = 'agent';
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
-    }
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    this.permission = JSON.parse(this.authService.permission) || {};
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     if (localStorage.views) {
       this.pageView = JSON.parse(localStorage.views).agent;
     }
-    this.loadAgents(null);
+    if(this.schedulerIds.selected) {
+      this.loadAgents(null);
+    }
   }
 
   searchInResult() {

@@ -1355,7 +1355,7 @@ export class ImportWorkflowModalComponent implements OnInit {
               public toasterService: ToasterService, private authService: AuthService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.uploader = new FileUploader({
       url: this.isDeploy ? './api/inventory/deployment/import_deploy' : './api/inventory/import',
       queueLimit: 1,
@@ -1430,11 +1430,11 @@ export class ImportWorkflowModalComponent implements OnInit {
     }
   }
 
-  import() {
+  import(): void {
     this.uploader.queue[0].upload();
   }
 
-  cancel() {
+  cancel(): void {
     this.activeModal.close('Cross click');
   }
 }
@@ -1556,7 +1556,7 @@ export class UploadModalComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.uploader.onCompleteItem = (fileItem: any, response, status, headers) => {
       if (status === 200) {
         this.activeModal.close('success');
@@ -1571,7 +1571,7 @@ export class UploadModalComponent implements OnInit {
     };
   }
 
-  private validateByURL(json, cb) {
+  private validateByURL(json, cb): void {
     this.coreService.post('inventory/' + this.objectType + '/validate', json).subscribe((res: any) => {
       cb(res);
     }, (err) => {
@@ -1597,7 +1597,7 @@ export class UploadModalComponent implements OnInit {
       reader.onload = onLoadFile;
     }
 
-    function onLoadFile(_event) {
+    function onLoadFile(_event): void {
       let data;
       try {
         data = JSON.parse(_event.target.result);
@@ -1618,7 +1618,7 @@ export class UploadModalComponent implements OnInit {
     }
   }
 
-  private showErrorMsg(errorMsg) {
+  private showErrorMsg(errorMsg): void {
     let msg = errorMsg;
     if (!errorMsg) {
       this.translate.get('inventory.message.invalidFile', {objectType: this.object.objectType}).subscribe(translatedValue => {
@@ -1947,13 +1947,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private initConf(isReload): void {
-    if (this.authService.permission) {
-      this.permission = JSON.parse(this.authService.permission) || {};
-    }
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    }
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.securityLevel = sessionStorage.securityLevel;
     if (isReload) {
       this.sideView = this.coreService.getSideView();

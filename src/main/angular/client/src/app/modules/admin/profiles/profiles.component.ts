@@ -38,16 +38,16 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
-    this.preferences = JSON.parse(sessionStorage.preferences);
+  ngOnInit(): void {
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
   }
 
-  setUserData(res) {
+  setUserData(res): void {
     this.users = res;
     if (res) {
       this.profiles = res.profiles;
@@ -142,16 +142,16 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     });
   }
 
-  showMaster(user) {
+  showMaster(user): void {
     this.router.navigate(['/users/master'], {queryParams: {user: user}});
   }
 
-  sort(key) {
+  sort(key): void {
     this.order = key;
     this.reverse = !this.reverse;
   }
 
-  saveInfo() {
+  saveInfo(): void {
     let obj = {
       users: this.users.users,
       masters: this.users.masters,

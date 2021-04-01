@@ -960,9 +960,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    if (sessionStorage.preferences) {
-      this.permission = JSON.parse(this.authService.permission) || {};
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    if(!this.schedulerIds.selected){
+      this.isLoading = false;
+      return;
     }
     this.sideView = this.coreService.getSideView();
     if (this.sideView.xml && !this.sideView.xml.show) {
@@ -1025,7 +1028,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
     this.coreService.setSideView(this.sideView);
     clearInterval(this.intervalId);
-    this.coreService.tabs._configuration.state = this.objectType === 'YADE' ? 'file_transfer' : this.objectType.toLowerCase();
+    this.coreService.tabs._configuration.state = (this.objectType === 'YADE' || !this.objectType) ? 'file_transfer' :  this.objectType.toLowerCase();
   }
 
   contextMenu(node: any): void {
@@ -2081,7 +2084,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       for (let i = 0; i < ele.length; i++) {
         let a = ele[i].nodeName;
         let b = ele[i].nodeValue;
-        attribute = Object.assign(attribute, {[a]: b});
+        attribute = Object.assign(attribute, this._defineProperty({}, a, b));
       }
       attribute.parent = nodeValue;
       attribute.grandFather = parentNode;
@@ -2090,37 +2093,50 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   getTypeValue(node) {
-    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    let extensionTypePath = '/xs:schema/xs:complexType[@name=\'' + node.type + '\']/xs:simpleContent/xs:extension/@*';
-    let element = select(extensionTypePath, this.doc);
-    let value: any = {};
-    let valueArr: any = [];
-    let b;
-    if (element.length > 0) {
-      if (element[0] && element[0].nodeValue === 'NotEmptyType') {
-        let a = element[0].nodeName;
-        let x = element[0].nodeValue;
-        value = Object.assign(value, this._defineProperty({}, a, x));
-        let simpleTypePath = '/xs:schema/xs:simpleType[@name=\'' + value.base + '\']/xs:restriction/@*';
-        element = select(simpleTypePath, this.doc);
-        if (element.length > 0) {
-          a = element[0].nodeName;
-          b = element[0].nodeValue;
-          value = Object.assign(value, this._defineProperty({}, a, b));
-          let minLengthPath = '/xs:schema/xs:simpleType[@name=\'' + x + '\']/xs:restriction/xs:minLength/@*';
-          element = select(minLengthPath, this.doc);
-          a = element[0].nodeName;
-          b = element[0].nodeValue;
-          value = Object.assign(value, this._defineProperty({}, a, b));
+    if (node.type !== 'xs:boolean') {
+      let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+      let extensionTypePath = '/xs:schema/xs:complexType[@name=\'' + node.type + '\']/xs:simpleContent/xs:extension/@*';
+      let element = select(extensionTypePath, this.doc);
+      let value: any = {};
+      let valueArr: any = [];
+      let b;
+      if (element.length > 0) {
+        if (element[0] && element[0].nodeValue === 'NotEmptyType') {
+          let a = element[0].nodeName;
+          let x = element[0].nodeValue;
+          value = Object.assign(value, this._defineProperty({}, a, x));
+          let simpleTypePath = '/xs:schema/xs:simpleType[@name=\'' + value.base + '\']/xs:restriction/@*';
+          element = select(simpleTypePath, this.doc);
+          if (element.length > 0) {
+            a = element[0].nodeName;
+            b = element[0].nodeValue;
+            value = Object.assign(value, this._defineProperty({}, a, b));
+            let minLengthPath = '/xs:schema/xs:simpleType[@name=\'' + x + '\']/xs:restriction/xs:minLength/@*';
+            element = select(minLengthPath, this.doc);
+            a = element[0].nodeName;
+            b = element[0].nodeValue;
+            value = Object.assign(value, this._defineProperty({}, a, b));
+          }
+          value.parent = node.parent;
+          value.grandFather = node.grandFather;
         }
-        value.parent = node.parent;
-        value.grandFather = node.grandFather;
+
+        if (!(_.isEmpty(value))) {
+          valueArr.push(value);
+        }
+        return valueArr;
+      }
+    } else {
+      let _value;
+      let _valueArr = [];
+      _value = Object.assign(node, {
+        base: node.type
+      });
+      if (!_.isEmpty(_value)) {
+        _valueArr.push(_value);
       }
 
-      if (!(_.isEmpty(value))) {
-        valueArr.push(value);
-      }
-      return valueArr;
+      return _valueArr;
     }
   }
 
@@ -2599,6 +2615,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         }
       }
     }
+
     if (element[0] && element[0].nodeValue === 'NotEmptyType') {
       let a = element[0].nodeName;
       let x = element[0].nodeValue;
@@ -2804,57 +2821,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         }
       }
     }
-  }
-
-  checkmincss(node, parentNode) {
-    if (this.choice) {
-      let count = 0;
-      if (node.maxOccurs === 'unbounded') {
-        return '';
-      } else if (node.maxOccurs !== 'unbounded' && node.maxOccurs !== undefined) {
-        if (parentNode.children.length > 0) {
-          for (let i = 0; i < parentNode.children.length; i++) {
-            if (node.ref === parentNode.children[i].ref) {
-              count++;
-            }
-          }
-          if (node.maxOccurs === count) {
-            return 'disabled disable-link';
-          }
-        }
-      } else if (node.maxOccurs === undefined) {
-        if (parentNode.children && parentNode.children.length > 0) {
-          for (let i = 0; i < parentNode.children.length; i++) {
-            if (node.ref === parentNode.children[i].ref) {
-              return 'disabled disable-link';
-            }
-          }
-        }
-      }
-    }
-  }
-
-  checkDuplicateEntries(child, json) {
-    let keys = [];
-    let count = 0;
-    // tslint:disable-next-line: forin
-    for (let key in child) {
-      keys[count] = key;
-      count++;
-    }
-    for (let i = 0; i < json.length; i++) {
-      let count1 = 0;
-      for (let k = 0; k < keys.length; k++) {
-        let temp = json[i];
-        if (temp[keys[k]] === child[keys[k]]) {
-          count1++;
-        }
-        if (count1 === keys.length) {
-          return true;
-        }
-      }
-    }
-    return false;
   }
 
   printArray(rootchildrensattrArr) {
@@ -3583,7 +3549,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  getKeyRef(keyRefNodes) {
+  getKeyRef(keyRefNodes): void {
     let attrs: any = {};
     for (let i = 0; i < keyRefNodes.attributes.length; i++) {
       let key = keyRefNodes.attributes[i].nodeName;
@@ -3600,15 +3566,15 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.attachKeyRefNodes(attrs);
   }
 
-  attachKey(key) {
+  attachKey(key): void {
     this.AddKeyAndKeyref(key);
   }
 
-  attachKeyRefNodes(keyrefnodes) {
+  attachKeyRefNodes(keyrefnodes): void {
     this.AddKeyAndKeyref(keyrefnodes);
   }
 
-  AddKeyAndKeyref(nodes) {
+  AddKeyAndKeyref(nodes): void {
     let k = false;
     let keyre = false;
     for (let key in nodes) {
@@ -3911,7 +3877,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         } else if (tag.use === 'required' && value === '') {
           this.error = true;
           this.text = tag.name + ': ' + this.requiredField;
-          this.errorName = {e: tag.name};
+          this.errorName = tag.name;
           if (tag.data !== undefined) {
             for (let key in tag) {
               if (key === 'data') {
@@ -3923,7 +3889,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         } else if (/[a-zA-Z_*]/.test(value)) {
           this.error = true;
           this.text = tag.name + ': ' + this.onlyNumbers;
-          this.errorName = {e: tag.name};
+          this.errorName =  tag.name;
           if (tag.data !== undefined) {
             for (let key in tag) {
               if (key === 'data') {
@@ -3935,7 +3901,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         } else {
           this.error = true;
           this.text = tag.name + ': ' + this.onlyNumbers;
-          this.errorName = {e: tag.name};
+          this.errorName = tag.name;
           if (tag.data !== undefined) {
             for (let key in tag) {
               if (key === 'data') {
@@ -3951,7 +3917,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         if (value === '' && tag.use === 'required') {
           this.error = true;
           this.text = tag.name + ': ' + this.requiredField;
-          this.errorName = {e: tag.name};
+          this.errorName = tag.name;
           if (tag.data !== undefined) {
             for (let key in tag) {
               if (key === 'data') {
@@ -3963,7 +3929,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         } else if (!(this.coreService.xsdAnyURIValidation(value))) {
           this.error = true;
           this.text = tag.name + ': ' + this.notValidUrl;
-          this.errorName = {e: tag.name};
+          this.errorName = tag.name;
           if (tag.data !== undefined) {
             for (let key in tag) {
               if (key === 'data') {
@@ -4147,7 +4113,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       } else if (tag.use === 'required' && value === '') {
         this.error = true;
         this.text = tag.name + ': ' + this.requiredField;
-        this.errorName = {e: tag.name};
+        this.errorName = tag.name;
         if (tag.data !== undefined) {
           for (let key in tag) {
             if (key === 'data') {
@@ -4159,7 +4125,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       } else if (/[a-zA-Z_*]/.test(value)) {
         this.error = true;
         this.text = tag.name + ': ' + this.onlyNumbers;
-        this.errorName = {e: tag.name};
+        this.errorName = tag.name;
         if (tag.data !== undefined) {
           for (let key in tag) {
             if (key === 'data') {
@@ -4171,7 +4137,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       } else {
         this.error = true;
         this.text = tag.name + ': ' + this.onlyNumbers;
-        this.errorName = {e: tag.name};
+        this.errorName = tag.name;
         if (tag.data !== undefined) {
           for (let key in tag) {
             if (key === 'data') {
@@ -4186,7 +4152,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         if (value === '' && tag.use === 'required') {
           this.error = true;
           this.text = tag.name + ': ' + this.requiredField;
-          this.errorName = {e: tag.name};
+          this.errorName = tag.name;
           if (tag.data !== undefined) {
             for (let key in tag) {
               if (key === 'data') {
@@ -4199,7 +4165,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         if ((this.coreService.xsdAnyURIValidation(value)) === false) {
           this.error = true;
           this.text = tag.name + ': ' + this.notValidUrl;
-          this.errorName = {e: tag.name};
+          this.errorName = tag.name;
           if (tag.data !== undefined) {
             for (let key in tag) {
               if (key === 'data') {
@@ -4251,7 +4217,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (/^\s*$/.test(value)) {
       this.error = true;
       this.text = this.requiredField;
-      this.errorName = {e: ref};
+      this.errorName = ref;
       if (tag.data !== undefined) {
         for (let key in tag) {
           if (key === 'data') {
@@ -4270,7 +4236,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (/^\s*$/.test(value)) {
       this.error = true;
       this.text = this.requiredField;
-      this.errorName = {e: ref};
+      this.errorName = ref;
       if (tag.data !== undefined) {
         for (let key in tag) {
           if (key === 'data') {
@@ -4571,15 +4537,15 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   getAutoFocus(index, node, type) {
     if (node) {
       if (type === 'attribute' && node) {
-        if (this.errorName && this.errorName.e === node.name) {
+        if (this.errorName && this.errorName === node.name) {
           return 'true';
-        } else if (((this.errorName && this.errorName.e !== node.ref) || !this.errorName) && index == 0) {
+        } else if (((this.errorName && this.errorName !== node.ref) || !this.errorName) && index == 0) {
           return 'true';
         } else {
           return 'false';
         }
       } else if (type === 'value' && node) {
-        if (this.errorName && this.errorName.e === node.ref) {
+        if (this.errorName && this.errorName === node.ref) {
           return 'true';
         } else if (node && !node.attributes) {
           return 'true';
@@ -4941,7 +4907,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.popToast(this.nonValidattribute);
       if (this.nonValidattribute.base) {
         this.error = true;
-        this.errorName = {e: this.nonValidattribute.parent};
+        this.errorName = this.nonValidattribute.parent;
         this.text = this.requiredField;
       }
       if (this.nonValidattribute.name) {
@@ -4973,7 +4939,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.getData(this.errorLocation);
       this.selectedNode = this.errorLocation;
       this.errorLocation = {};
-      if (this.errorName && this.errorName.e === this.selectedNode.ref) {
+      if (this.errorName && this.errorName === this.selectedNode.ref) {
         this.getAutoFocus(0, this.selectedNode, 'value');
       }
       if (this.nodes[0].expanded === false || this.nodes[0].expanded === undefined) {

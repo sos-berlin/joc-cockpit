@@ -212,7 +212,7 @@
         <nz-table
           #ajaxTable
           [nzSize]="'small'"
-          [nzPageSize]="yadeFilters.entryPerPage || preferences.entryPerPage"
+          [nzPageSize]="yadeFilters.entryPerPage || preferences.entryPerPage || 25"
           [nzPageIndex]="yadeFilters.currentPage"
           [nzBordered]="true"
           [nzShowPagination]="data.length > 0"
@@ -222,7 +222,7 @@
           (nzPageIndexChange)="pageIndexChange($event)"
           (nzPageSizeChange)="pageSizeChange($event)"
           (nzCurrentPageDataChange)="currentPageDataChange($event)"
-          [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+          [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage || 500]"
         >
           <thead>
           <tr>
@@ -313,7 +313,7 @@
               <i *ngIf="yadeFilters.filter.sortBy == 'end' && yadeFilters.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th (click)="sort('duration')"><a>
+            <th width="90px" (click)="sort('duration')"><a>
               <span class="p-r-xs" translate>common.label.duration</span>
               <i *ngIf="yadeFilters.filter.sortBy == 'duration' && !yadeFilters.reverse"
                  class="fa fa-caret-up "></i>

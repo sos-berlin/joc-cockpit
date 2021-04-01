@@ -174,9 +174,8 @@ export class FolderModalComponent implements OnInit {
 export class PermissionsComponent implements OnInit, OnDestroy {
   masterName;
   roleName;
-  sub: any;
   masters: any = [];
-  PermissionsObj: any;
+  permissionsObj: any;
   permissionToEdit: any;
   permissions;
   rolePermissions: any = [];
@@ -190,14 +189,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   folderArr: any = [];
   permission: any = [];
   count = 0;
-
   showPanel1 = false;
   showPanel2 = false;
-
   userDetail: any = {};
-  subscription1: Subscription;
-  subscription2: Subscription;
-
   svg;
   root: any = {};
   boxWidth = 180;
@@ -205,14 +199,19 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   duration = 700;
   ht = 700;
   width = window.innerWidth - 100;
-  isReset: boolean = false;
-  _nodes: any;
-  _tree: any;
+  isReset = false;
+  nodes: any;
+  tree: any;
+
+  subscription1: Subscription;
+  subscription2: Subscription;
+  subscription3: Subscription;
 
   constructor(private coreService: CoreService, private route: ActivatedRoute, private router: Router, private modalService: NgbModal, private dataService: DataService) {
     this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
-      if (res)
+      if (res) {
         this.setUserData(res);
+      }
     });
 
     this.subscription2 = this.dataService.functionAnnounced$.subscribe(res => {
@@ -222,13 +221,18 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         this.addPermission();
       } else if (res === 'CHANGE_VIEW') {
         this.pageView = JSON.parse(localStorage.views).permission;
+        if (this.pageView === 'grid') {
+          setTimeout(() => {
+            this.drawTree(this.permissionNodes[0][0], '');
+          }, 5);
+        }
       }
     });
   }
 
   ngOnInit(): void {
     this.pageView = JSON.parse(localStorage.views).permission;
-    this.sub = this.route.params.subscribe(params => {
+    this.subscription3 = this.route.params.subscribe(params => {
       this.masterName = params['master.master'];
       if (this.masterName === 'default') {
         this.masterName = '';
@@ -241,12 +245,13 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.subscription3.unsubscribe();
   }
 
   getPermissions(): void {
     this.coreService.post('authentication/permissions', {}).subscribe(res => {
-      this.PermissionsObj = res;
-      this.permissions = this.PermissionsObj.SOSPermissions;
+      this.permissionsObj = res;
+      this.permissions = this.coreService.clone(this.permissionsObj.SOSPermissions);
       this.loadPermission();
       this.preparePermissionJSON();
       this.preparePermissionOptions();
@@ -725,15 +730,15 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     };
     if (type === 'EXPANDALL') {
 
-      nodes = this._nodes;
+      nodes = this.nodes;
       expandAll();
       return;
     } else if (type === 'COLLAPSEALL') {
-      nodes = this._nodes;
+      nodes = this.nodes;
       collapseAll();
       return;
     } else if (type === 'EXPANDSELECTED') {
-      nodes = this._nodes;
+      nodes = this.nodes;
       nodes.forEach(function(permissionNodes) {
         if (permissionNodes.name == 'sos') {
           expandSelected(permissionNodes);
@@ -742,7 +747,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       draw(nodes[0], calculateTopMost());
       return;
     } else if (type === 'COLLAPSEUNSELECTED') {
-      nodes = this._nodes;
+      nodes = this.nodes;
       nodes.forEach(function(permissionNodes) {
         if (permissionNodes.name == 'sos') {
           collapseUnselected(permissionNodes);
@@ -751,7 +756,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       draw(nodes[0], calculateTopMost());
       return;
     } else if (type === 'UPDATEDDIAGRAM') {
-      nodes = this._nodes;
+      nodes = this.nodes;
       updateDiagramData(json);
       return;
     }
@@ -762,7 +767,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       .append('g')
       .attr('transform', 'translate(150,250)');
 
-    self._tree = d3.layout.tree()
+    self.tree = d3.layout.tree()
       .nodeSize([100, 250])
       .separation(function() {
         return 0.5;
@@ -795,8 +800,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         if (permission_node.name === 'sos')
           expand(permission_node);
       });
-      $('svg').attr('height', 7150);
-      $('svg').attr('width', 2010);
+      $('#mainTree svg').attr('height', 7150);
+      $('#mainTree svg').attr('width', 2010);
       draw(nodes[0], calculateTopMost());
     }
 
@@ -818,9 +823,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
           collapseNode(permission_node);
         }
       });
-      $('svg').attr('width', self.width);
-      $('svg').attr('height', self.ht);
-      $('svg g').attr('transform', 'translate(150,250)');
+      $('#mainTree svg').attr('width', self.width);
+      $('#mainTree svg').attr('height', self.ht);
+      $('#mainTree svg g').attr('transform', 'translate(150,250)');
       draw(nodes[0], 0);
     }
 
@@ -861,7 +866,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
     function draw(source, diff) {
 
-      nodes = self._tree.nodes(self.root);
+      nodes = self.tree.nodes(self.root);
       checkNodes(nodes, self.rolePermissions);
       nodes.forEach(function(d) {
         if (diff > 0) {
@@ -869,7 +874,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         }
       });
 
-      let links = self._tree.links(nodes);
+      let links = self.tree.links(nodes);
 
       // Update links
       let link = self.svg.selectAll('path.link')
@@ -1059,7 +1064,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         lowerMost: {x: 0, y: 0}
       };
 
-      nodes = self._tree.nodes(self.root);
+      nodes = self.tree.nodes(self.root);
       nodes.forEach(function(node) {
         if (!endNodes2.rightMost.x || (endNodes2.rightMost.x <= node.y)) {
           endNodes2.rightMost.x = node.y;
@@ -1088,7 +1093,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
 
     function checkWindowSize() {
-      let dom = $('svg');
+      let dom = $('#mainTree svg');
       dom.attr('width', (endNodes2.rightMost.x - endNodes2.leftMost.x) + 520);
       if (dom.attr('width') > 2100) {
         dom.attr('width', 2100);
@@ -1237,12 +1242,12 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
 
     function updateDiagramData(nData) {
-      self._tree = d3.layout.tree()
+      self.tree = d3.layout.tree()
         .nodeSize([100, 250])
         .separation(function() {
           return .5;
         });
-      let nodes = self._tree.nodes(nData);
+      let nodes = self.tree.nodes(nData);
       self.svg.selectAll('g.permission_node')
         .data(nodes, function(permission_node) {
           return permission_node.id;
@@ -1350,7 +1355,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         + 'H' + d.source.y;
     }
 
-    self._nodes = nodes;
+    self.nodes = nodes;
   }
 
   private setUserData(res): void {

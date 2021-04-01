@@ -493,7 +493,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.preferences = JSON.parse(sessionStorage.preferences);
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
   }
 
   ngOnDestroy(): void {

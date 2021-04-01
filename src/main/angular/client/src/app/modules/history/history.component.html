@@ -1191,7 +1191,7 @@
               <i *ngIf="yade.filter.sortBy == 'end' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th (click)="sort('duration')"><a>
+            <th width="90px" (click)="sort('duration')"><a>
               <span class="p-r-xs" translate>common.label.duration</span>
               <i *ngIf="yade.filter.sortBy == 'duration' && !yade.reverse"
                  class="fa fa-caret-up "></i>
@@ -1302,9 +1302,9 @@
                     <th><span translate>fileTransfer.label.sourceFilePath</span></th>
                     <th><span translate>fileTransfer.label.targetFileName</span></th>
                     <th><span translate>fileTransfer.label.targetFilePath</span></th>
-                    <th><span translate>fileTransfer.label.status</span></th>
-                    <th><span translate>fileTransfer.label.errorMessage</span></th>
-                    <th><span translate>fileTransfer.label.size</span></th>
+                    <th width="100px"><span translate>fileTransfer.label.status</span></th>
+                    <th width="20%"><span translate>fileTransfer.label.errorMessage</span></th>
+                    <th width="80px"><span translate>fileTransfer.label.size</span></th>
                     <th><span translate>fileTransfer.label.integrityHash</span></th>
                   </tr>
                   </thead>

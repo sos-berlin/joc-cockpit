@@ -414,11 +414,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   private init(): void {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
-    }
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    this.permission = JSON.parse(this.authService.permission) || {};
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     if (localStorage.views) {
       this.pageView = JSON.parse(localStorage.views).workflow;
     }
@@ -429,20 +427,24 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   private initTree(): void {
-    this.coreService.post('tree', {
-      controllerId: this.schedulerIds.selected,
-      folders: [{
-        folder: '/',
-        recursive: true
-      }],
-      types: ['WORKFLOW']
-    }).subscribe(res => {
-      this.filteredTreeData(this.coreService.prepareTree(res, true));
-      this.loadWorkflow();
+    if(this.schedulerIds.selected) {
+      this.coreService.post('tree', {
+        controllerId: this.schedulerIds.selected,
+        folders: [{
+          folder: '/',
+          recursive: true
+        }],
+        types: ['WORKFLOW']
+      }).subscribe(res => {
+        this.filteredTreeData(this.coreService.prepareTree(res, true));
+        this.loadWorkflow();
+        this.isLoading = true;
+      }, () => {
+        this.isLoading = true;
+      });
+    } else{
       this.isLoading = true;
-    }, () => {
-      this.isLoading = true;
-    });
+    }
   }
 
   private filteredTreeData(output): void {

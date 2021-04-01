@@ -112,6 +112,9 @@
   </div>
   </div>
   <div class="scroll-y max-ht2">
+    <div class="m-t-lg" *ngIf="!isLoading && !schedulerIds.selected">
+      <app-empty-data [title]="'error.message.noControllerFound'"></app-empty-data>
+    </div>
     <div *ngIf="objectType !== 'NOTIFICATION' && tabsArray.length>0">
       <nz-tabset [nzType]="'line'" [nzSelectedIndex]="selectedTabIndex" [nzTabBarGutter]="3" [nzAnimated]="false">
         <nz-tab [nzForceRender]="true" *ngFor="let tab of tabsArray; let index= index" [nzTitle]="titleTemplate"
@@ -404,7 +407,7 @@
                              (focus)="hideError()" (blur)="validateAttr(node.data, node)"
                              (change)="submitData(node.data, node)"
                              *ngIf="node.values && node.values.length==0 && node.type=='password'"
-                             [ngClass]="error && errorName.e === node.name? 'invalid': ''"
+                             [ngClass]="error && errorName === node.name? 'invalid': ''"
                              [required]="node.use ==='required'" class="form-control"
                              placeholder="{{!node.text ? 'Example input' : ''}}"
                              type="{{!node.pShow ? 'password' : 'text'}}"
@@ -478,7 +481,7 @@
                         <input type="checkbox"
                                (init)="node.data = node.data ? node.data : node.default"
                                (change)="submitData(node.data, node)"
-                               [ngClass]="error && errorName.e === node.name? 'invalid': ''"
+                               [ngClass]="error && errorName === node.name? 'invalid': ''"
                                [(ngModel)]="node.data ? node.data : node.default"
                                [required]="node.use ==='required'"
                                class="form-control"
@@ -527,7 +530,7 @@
                     <input (blur)="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                            (change)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                            *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.values[0].base == 'password'"
-                           [ngClass]="error && errorName.e == selectedNode.ref ? 'invalid': ''"
+                           [ngClass]="error && errorName == selectedNode.ref ? 'invalid': ''"
                            [(ngModel)]="selectedNode.values[0].data"
                            [name]="{pos: 0, node: selectedNode, type: 'value', errorName: errorName}"
                            class="form-control" id="{{selectedNode.ref}}"
@@ -545,7 +548,7 @@
                               (blur)="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                               (change)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                               *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'password')  && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Body'"
-                              [ngClass]="error && errorName.e == selectedNode.ref ? 'invalid': ''"
+                              [ngClass]="error && errorName == selectedNode.ref ? 'invalid': ''"
                               xmlAutofocus
                               class="form-control"
                               rows="1"></textarea>
@@ -560,7 +563,7 @@
                     <nz-select [(ngModel)]="selectedNode.values[0].data"
                                (ngModelChange)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                                *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].base === 'xs:boolean'"
-                               [ngClass]="error && errorName.e == selectedNode.ref ? 'invalid': ''" class="w-full"
+                               [ngClass]="error && errorName == selectedNode.ref ? 'invalid': ''" class="w-full"
                                id="{{selectedNode.ref}}">
                       <nz-option [nzValue]="true" [nzLabel]="'True'"></nz-option>
                       <nz-option [nzValue]="false" [nzLabel]="'False'"></nz-option>
@@ -568,7 +571,7 @@
                     <nz-select [(ngModel)]="selectedNode.values[0].data"
                                (ngModelChange)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                                *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].values"
-                               [ngClass]="error && errorName.e == selectedNode.ref ? 'invalid': ''"
+                               [ngClass]="error && errorName == selectedNode.ref ? 'invalid': ''"
                                class="w-full"
                                id="{{selectedNode.ref}}">
                       <nz-option *ngFor="let value of selectedNode.values[0].values" [nzValue]="value.value"

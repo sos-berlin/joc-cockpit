@@ -298,18 +298,22 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   initTree() {
-    this.coreService.post('tree', {
-      controllerId: this.schedulerIds.selected,
-      types: ['DOCUMENTATION']
-    }).subscribe(res => {
-      this.tree = this.coreService.prepareTree(res, true);
-      if (this.tree.length) {
-        this.loadDocument();
-      }
+    if (this.schedulerIds.selected) {
+      this.coreService.post('tree', {
+        controllerId: this.schedulerIds.selected,
+        types: ['DOCUMENTATION']
+      }).subscribe(res => {
+        this.tree = this.coreService.prepareTree(res, true);
+        if (this.tree.length) {
+          this.loadDocument();
+        }
+        this.isLoading = true;
+      }, () => {
+        this.isLoading = true;
+      });
+    } else {
       this.isLoading = true;
-    }, () => {
-      this.isLoading = true;
-    });
+    }
   }
 
   loadDocument() {
@@ -334,11 +338,9 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   private init() {
     this.documentFilters = this.coreService.getResourceTab().documents;
     this.coreService.getResourceTab().state = 'documentations';
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
-    }
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    this.permission = JSON.parse(this.authService.permission) || {};
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     if (localStorage.views) {
       this.pageView = JSON.parse(localStorage.views).documentation;
     }

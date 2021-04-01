@@ -11,7 +11,7 @@ import {DataService} from './data.service';
   templateUrl: './admin.component.html'
 })
 export class AdminComponent implements OnInit, OnDestroy {
-  schedulerIds: any;
+  schedulerIds: any = {};
   permission: any;
   isButtonShow = false;
   isLdapRealmEnable = true;
@@ -41,7 +41,9 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    if(this.authService.scheduleIds) {
+      this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    }
     this.permission = JSON.parse(this.authService.permission) || {};
     if (localStorage.views) {
       this.pageView = JSON.parse(localStorage.views).permission;

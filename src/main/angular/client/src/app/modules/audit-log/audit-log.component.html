@@ -129,7 +129,7 @@
           <nz-table
             #ajaxTable
             [nzSize]="'small'"
-            [nzPageSize]="adtLog.entryPerPage || preferences.entryPerPage"
+            [nzPageSize]="adtLog.entryPerPage || preferences.entryPerPage || 25"
             [nzPageIndex]="adtLog.currentPage"
             [nzBordered]="true"
             [nzShowPagination]="data.length > 0"
@@ -138,7 +138,7 @@
             [nzShowSizeChanger]="true"
             (nzPageIndexChange)="pageIndexChange($event)"
             (nzPageSizeChange)="pageSizeChange($event)"
-            [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+            [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage || 500]"
           >
             <thead>
             <tr>

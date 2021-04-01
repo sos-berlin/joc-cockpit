@@ -29,9 +29,9 @@ export class FilterModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    this.permission = JSON.parse(this.authService.permission) || {};
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     if (this.new) {
       this.filter = {
         radio: 'planned',
@@ -718,17 +718,10 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     });
   }
 
-
   private init(): void {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    }
-    if (this.authService.scheduleIds) {
-      this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    }
-    if (this.authService.permission) {
-      this.permission = JSON.parse(this.authService.permission) || {};
-    }
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.yadeFilters = this.coreService.getYadeTab();
     this.yadeView.current = this.preferences.fileTransfer == 'current';
     this.savedFilter = JSON.parse(this.saveService.yadeFilters) || {};
@@ -739,9 +732,13 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       this.showFiles = this.preferences.showFiles;
     }
 
-    this.checkSharedFilters();
+    if (this.schedulerIds.selected) {
+      this.checkSharedFilters();
+    } else {
+      this.loadConfig = true;
+      this.load();
+    }
   }
-
 
   checkSharedFilters(): void {
     if (this.permission && this.permission.joc) {

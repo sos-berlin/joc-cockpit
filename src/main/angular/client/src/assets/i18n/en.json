@@ -580,6 +580,7 @@
     "message.connectionError": "Unable to connect to given Controller",
     "message.connectionSuccess": "Connected successfully to Controller",
     "message.objectNotFound": "Object does not exist any longer",
+    "message.noControllerFound": "No Controller Found",
     "message.pasteInSubFolderNotAllowed": "The destination folder is a sub-folder of the source folder."
   },
   "fileTransfer": {

@@ -215,17 +215,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private init(): void {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    }
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.isLoading = true;
-    if (this.authService.scheduleIds) {
-      this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    }
-    if (this.authService.permission) {
-      this.permission = JSON.parse(this.authService.permission) || {};
-    }
-
     this.initConfig(false);
     this.initWidgets();
     setTimeout(() => {

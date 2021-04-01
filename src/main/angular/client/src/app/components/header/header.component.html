@@ -123,7 +123,7 @@
                 {{'header.button.profile' | translate}}
               </a>
             </li>
-            <li nz-menu-item routerLink="/settings" *ngIf="schedulerIds.selected && permission && permission.joc && permission.joc.administration.settings.view">
+            <li nz-menu-item routerLink="/settings" [nzDisabled]="!schedulerIds.selected" *ngIf="permission && permission.joc && permission.joc.administration.settings.view">
               <a>
                 <i class="fa fa-cog"></i>
                 {{'header.button.settings' | translate}}
@@ -135,7 +135,7 @@
                 {{'header.button.logging' | translate}}
               </a>
             </li>
-            <li nz-menu-item routerLink="/users/account" *ngIf="schedulerIds.selected && permission && permission.joc && permission.joc.administration.accounts.view">
+            <li nz-menu-item routerLink="/users/account" *ngIf="permission && permission.joc && permission.joc.administration.accounts.view">
               <a><i class="fa fa-users"></i>
                 {{'header.button.manageAccount' | translate}}
               </a>
@@ -170,7 +170,7 @@
           </a>
         </li>
         <li class="nav-item"
-            *ngIf="schedulerIds.selected && ((showViews && showViews.dailyPlan != undefined) ? showViews.dailyPlan : (permission.joc && permission.joc.dailyPlan.view))">
+            *ngIf="((showViews && showViews.dailyPlan != undefined) ? showViews.dailyPlan : (permission.joc && permission.joc.dailyPlan.view && permission.controllerDefaults.orders.view))">
           <a class="nav-link" routerLink="/daily_plan" [routerLinkActive]="['active']">
             <span class="nav-text">
               <i class="icon-daily-plan-icon text-white"></i>
@@ -179,7 +179,7 @@
           </a>
         </li>
         <li class="nav-item"
-            *ngIf="schedulerIds.selected && ((showViews && showViews.workflows != undefined) ? showViews.workflows : (permission.controllerDefaults && permission.controllerDefaults.workflows.view))">
+            *ngIf="((showViews && showViews.workflows != undefined) ? showViews.workflows : (permission.controllerDefaults && permission.controllerDefaults.workflows.view))">
           <a class="nav-link" routerLink="/workflows" [routerLinkActive]="['active']">
             <span class="nav-text">
               <i class="icon-workflows-icon text-white"></i>
@@ -188,7 +188,7 @@
           </a>
         </li>
         <li class="nav-item"
-            *ngIf="schedulerIds.selected && ((showViews && showViews.fileTransfer != undefined) ? showViews.fileTransfer : (permission.joc && permission.joc.fileTransfer.view))">
+            *ngIf="((showViews && showViews.fileTransfer != undefined) ? showViews.fileTransfer : (permission.joc && permission.joc.fileTransfer.view))">
           <a class="nav-link" routerLink="/file_transfer" [routerLinkActive]="['active']">
             <span class="nav-text">
               <i class="icon-file-transfers-icon text-white"></i>
@@ -196,7 +196,7 @@
             </span>
           </a>
         </li>
-        <li class="nav-item" *ngIf="schedulerIds.selected && ((showViews && showViews.resources != undefined) ? showViews.resources : (permission.controllerDefaults && (permission.controllerDefaults.agents.view || permission.controllerDefaults.locks.view ||
+        <li class="nav-item" *ngIf="((showViews && showViews.resources != undefined) ? showViews.resources : (permission.controllerDefaults && (permission.controllerDefaults.agents.view || permission.controllerDefaults.locks.view ||
                     permission.joc.documentations.view  || permission.joc.calendars.view)))">
           <a class="nav-link" routerLink="/resources" [routerLinkActive]="['active']" (click)="navigateToResource()">
             <span class="nav-text">
@@ -206,7 +206,7 @@
           </a>
         </li>
         <li class="nav-item"
-            *ngIf="schedulerIds.selected && ((showViews && showViews.history != undefined) ? showViews.history : (permission.controllerDefaults && (permission.controllerDefaults.orders.view || permission.joc.fileTransfer.view || permission.controllerDefaults.deployments.view || permission.joc.dailyPlan.view)))">
+            *ngIf="((showViews && showViews.history != undefined) ? showViews.history : (permission.controllerDefaults && (permission.controllerDefaults.orders.view || permission.joc.fileTransfer.view || permission.controllerDefaults.deployments.view || permission.joc.dailyPlan.view)))">
           <a class="nav-link" routerLink="/history" [routerLinkActive]="['active']">
             <span class="nav-text">
               <i class="icon-alarm-icon text-white"></i>
@@ -215,7 +215,7 @@
           </a>
         </li>
         <li class="nav-item"
-            *ngIf="schedulerIds.selected && ((showViews && showViews.auditLog != undefined) ? showViews.auditLog : (permission.joc && permission.joc.auditLog.view))">
+            *ngIf="((showViews && showViews.auditLog != undefined) ? showViews.auditLog : (permission.joc && permission.joc.auditLog.view))">
           <a class="nav-link" routerLink="/audit_log" [routerLinkActive]="['active']">
             <span class="nav-text">
               <i class="icon-audit-log-icon text-white"></i>
@@ -224,7 +224,7 @@
           </a>
         </li>
         <li class="nav-item"
-            *ngIf="schedulerIds.selected && ((showViews && showViews.configuration != undefined) ? showViews.configuration : (permission.joc && (permission.joc.inventory.view || permission.joc.fileTransfer.view || permission.joc.notification.view || permission.joc.others.view)))">
+            *ngIf="((showViews && showViews.configuration != undefined) ? showViews.configuration : (permission.joc && (permission.joc.inventory.view || permission.joc.fileTransfer.view || permission.joc.notification.view || permission.joc.others.view)))">
           <a class="nav-link" routerLink="/configuration" [routerLinkActive]="['active']"
              (click)="navigateToConfiguration()">
             <span class="nav-text">

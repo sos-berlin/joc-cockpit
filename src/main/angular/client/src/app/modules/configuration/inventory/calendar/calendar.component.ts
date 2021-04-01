@@ -1330,7 +1330,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   constructor(public coreService: CoreService, public modalService: NgbModal, private calendarService: CalendarService, private dataService: DataService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
   }

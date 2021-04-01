@@ -88,7 +88,7 @@ export class FilterModalComponent implements OnInit {
   constructor(private authService: AuthService, public activeModal: NgbActiveModal) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.preferences = JSON.parse(sessionStorage.preferences) || {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
@@ -104,7 +104,7 @@ export class FilterModalComponent implements OnInit {
     }
   }
 
-  cancel(obj) {
+  cancel(obj): void {
     if (obj) {
       this.activeModal.close(obj);
     } else {
@@ -159,13 +159,15 @@ export class OrderSearchComponent implements OnInit {
   }
 
   private getWorkflowTree(): void {
-    this.coreService.post('tree', {
-      controllerId: this.schedulerIds.selected,
-      forInventory: true,
-      types: ['WORKFLOW']
-    }).subscribe((res) => {
-      this.workflowTree = this.coreService.prepareTree(res, true);
-    });
+    if (this.schedulerIds.selected) {
+      this.coreService.post('tree', {
+        controllerId: this.schedulerIds.selected,
+        forInventory: true,
+        types: ['WORKFLOW']
+      }).subscribe((res) => {
+        this.workflowTree = this.coreService.prepareTree(res, true);
+      });
+    }
   }
 
   stateChange(value: string[]): void {
@@ -173,15 +175,17 @@ export class OrderSearchComponent implements OnInit {
   }
 
   getFolderTree(flag): void {
-    const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.paths = this.filter.paths || [];
-    modalRef.componentInstance.type = 'FOLDER';
-    modalRef.componentInstance.showCheckBox = !flag;
-    modalRef.result.then((result) => {
-      this.filter.paths = result;
-    }, () => {
-    });
+    if (this.schedulerIds.selected) {
+      const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
+      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+      modalRef.componentInstance.paths = this.filter.paths || [];
+      modalRef.componentInstance.type = 'FOLDER';
+      modalRef.componentInstance.showCheckBox = !flag;
+      modalRef.result.then((result) => {
+        this.filter.paths = result;
+      }, () => {
+      });
+    }
   }
 
   remove(path): void {
@@ -372,13 +376,15 @@ export class TaskSearchComponent implements OnInit {
   }
 
   private getWorkflowTree(): void {
-    this.coreService.post('tree', {
-      controllerId: this.schedulerIds.selected,
-      forInventory: true,
-      types: ['WORKFLOW']
-    }).subscribe((res) => {
-      this.workflowTree = this.coreService.prepareTree(res, true);
-    });
+    if (this.schedulerIds.selected) {
+      this.coreService.post('tree', {
+        controllerId: this.schedulerIds.selected,
+        forInventory: true,
+        types: ['WORKFLOW']
+      }).subscribe((res) => {
+        this.workflowTree = this.coreService.prepareTree(res, true);
+      });
+    }
   }
 
   stateChange(value: string[]): void {
@@ -390,15 +396,17 @@ export class TaskSearchComponent implements OnInit {
   }
 
   getFolderTree(flag): void {
-    const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.paths = this.filter.paths || [];
-    modalRef.componentInstance.type = 'FOLDER';
-    modalRef.componentInstance.showCheckBox = !flag;
-    modalRef.result.then((result) => {
-      this.filter.paths = result;
-    }, () => {
-    });
+    if (this.schedulerIds.selected) {
+      const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
+      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+      modalRef.componentInstance.paths = this.filter.paths || [];
+      modalRef.componentInstance.type = 'FOLDER';
+      modalRef.componentInstance.showCheckBox = !flag;
+      modalRef.result.then((result) => {
+        this.filter.paths = result;
+      }, () => {
+      });
+    }
   }
 
   remove(path): void {
@@ -1067,7 +1075,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   convertRequestBody(obj): void {
-    obj.limit = parseInt(this.preferences.maxRecords, 10);
+    obj.limit = parseInt(this.preferences.maxRecords, 10) || 5000;
     obj.timeZone = this.preferences.zone;
     if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
       delete obj['timeZone'];
@@ -1494,7 +1502,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private convertDeployRequestBody(obj) {
-    obj.limit = parseInt(this.preferences.maxRecords, 10);
+    obj.limit = parseInt(this.preferences.maxRecords, 10) || 5000;
     obj.timeZone = this.preferences.zone;
     if ((obj.from && typeof obj.from.getMonth === 'function') || (obj.to && typeof obj.to.getMonth === 'function')) {
       delete obj['timeZone'];
@@ -1622,7 +1630,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   search(obj) {
     let filter: any = {
-      limit: parseInt(this.preferences.maxRecords, 10)
+      limit: parseInt(this.preferences.maxRecords, 10) || 5000
     };
     let fromDate, toDate;
     if (this.historyFilters.type === 'ORDER') {
@@ -2426,30 +2434,32 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private saveIgnoreList(flag) {
-    if (!flag) {
-      let msg;
-      this.translate.get('history.message.addedToIgnoreList').subscribe(translatedValue => {
-        msg = translatedValue;
-      });
-      this.message.success(msg);
-    }
-    if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true)) {
-      if ((!_.isEmpty(this.jobSearch) && this.historyFilters.type === 'TASK') || (!_.isEmpty(this.orderSearch) && this.historyFilters.type === 'ORDER')) {
-        this.search(true);
-      } else {
-        this.init(false);
+    if (this.schedulerIds.selected) {
+      if (!flag) {
+        let msg;
+        this.translate.get('history.message.addedToIgnoreList').subscribe(translatedValue => {
+          msg = translatedValue;
+        });
+        this.message.success(msg);
       }
+      if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true)) {
+        if ((!_.isEmpty(this.jobSearch) && this.historyFilters.type === 'TASK') || (!_.isEmpty(this.orderSearch) && this.historyFilters.type === 'ORDER')) {
+          this.search(true);
+        } else {
+          this.init(false);
+        }
+      }
+      const configObj = {
+        controllerId: this.schedulerIds.selected,
+        account: this.authService.currentUserData,
+        configurationType: 'IGNORELIST',
+        id: this.ignoreListConfigId,
+        configurationItem: JSON.stringify(this.savedIgnoreList)
+      };
+      this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+        this.ignoreListConfigId = res.id;
+      });
     }
-    const configObj = {
-      controllerId: this.schedulerIds.selected,
-      account: this.authService.currentUserData,
-      configurationType: 'IGNORELIST',
-      id: this.ignoreListConfigId,
-      configurationItem: JSON.stringify(this.savedIgnoreList)
-    };
-    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      this.ignoreListConfigId = res.id;
-    });
   }
 
   editIgnoreList() {
@@ -2466,74 +2476,80 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   enableDisableIgnoreList() {
-    this.savedIgnoreList.isEnable = !this.savedIgnoreList.isEnable;
-    const configObj = {
-      controllerId: this.schedulerIds.selected,
-      account: this.authService.currentUserData,
-      configurationType: 'IGNORELIST',
-      id: this.ignoreListConfigId,
-      configurationItem: JSON.stringify(this.savedIgnoreList)
-    };
-    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      this.ignoreListConfigId = res.id;
-    });
-    if ((!_.isEmpty(this.jobSearch) && this.historyFilters.type === 'TASK') || (!_.isEmpty(this.orderSearch) && this.historyFilters.type === 'ORDER')) {
-      this.search(true);
-    } else {
-      this.init(false);
+    if (this.schedulerIds.selected) {
+      this.savedIgnoreList.isEnable = !this.savedIgnoreList.isEnable;
+      const configObj = {
+        controllerId: this.schedulerIds.selected,
+        account: this.authService.currentUserData,
+        configurationType: 'IGNORELIST',
+        id: this.ignoreListConfigId,
+        configurationItem: JSON.stringify(this.savedIgnoreList)
+      };
+      this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+        this.ignoreListConfigId = res.id;
+      });
+      if ((!_.isEmpty(this.jobSearch) && this.historyFilters.type === 'TASK') || (!_.isEmpty(this.orderSearch) && this.historyFilters.type === 'ORDER')) {
+        this.search(true);
+      } else {
+        this.init(false);
+      }
     }
   }
 
   resetIgnoreList() {
-    if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true) && this.historyFilters.type == 'ORDER' && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0))) {
-      if (!_.isEmpty(this.orderSearch)) {
-        this.search(true);
-      } else {
-        this.init(false);
+    if (this.schedulerIds.selected) {
+      if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true) && this.historyFilters.type == 'ORDER' && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0))) {
+        if (!_.isEmpty(this.orderSearch)) {
+          this.search(true);
+        } else {
+          this.init(false);
+        }
+      } else if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true) && this.historyFilters.type != 'ORDER' && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
+        if (!_.isEmpty(this.jobSearch)) {
+          this.search(true);
+        } else {
+          this.init(false);
+        }
       }
-    } else if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true) && this.historyFilters.type != 'ORDER' && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
-      if (!_.isEmpty(this.jobSearch)) {
-        this.search(true);
-      } else {
-        this.init(false);
-      }
+      this.savedIgnoreList.workflows = [];
+      this.savedIgnoreList.jobs = [];
+      this.savedIgnoreList.isEnable = false;
+      let configObj = {
+        controllerId: this.schedulerIds.selected,
+        account: this.authService.currentUserData,
+        configurationType: 'IGNORELIST',
+        id: this.ignoreListConfigId,
+        configurationItem: JSON.stringify(this.savedIgnoreList)
+      };
+      this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+        this.ignoreListConfigId = res.id;
+      });
     }
-    this.savedIgnoreList.workflows = [];
-    this.savedIgnoreList.jobs = [];
-    this.savedIgnoreList.isEnable = false;
-    let configObj = {
-      controllerId: this.schedulerIds.selected,
-      account: this.authService.currentUserData,
-      configurationType: 'IGNORELIST',
-      id: this.ignoreListConfigId,
-      configurationItem: JSON.stringify(this.savedIgnoreList)
-    };
-    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      this.ignoreListConfigId = res.id;
-    });
   }
 
   createCustomization() {
-    const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    if (this.historyFilters.type === 'ORDER') {
-      modalRef.componentInstance.allFilter = this.orderHistoryFilterList;
-    } else if (this.historyFilters.type === 'TASK') {
-      modalRef.componentInstance.allFilter = this.jobHistoryFilterList;
-    } else if (this.historyFilters.type === 'YADE') {
-      modalRef.componentInstance.allFilter = this.yadeHistoryFilterList;
-    } else if (this.historyFilters.type === 'DEPLOYMENT') {
-      modalRef.componentInstance.allFilter = this.deploymentHistoryFilterList;
-    } else if (this.historyFilters.type === 'SUBMISSION') {
-      modalRef.componentInstance.allFilter = this.submissionHistoryFilterList;
-    }
-    modalRef.componentInstance.new = true;
-    modalRef.componentInstance.type = this.historyFilters.type;
-    modalRef.result.then(() => {
+    if (this.schedulerIds.selected) {
+      const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
+      modalRef.componentInstance.permission = this.permission;
+      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+      if (this.historyFilters.type === 'ORDER') {
+        modalRef.componentInstance.allFilter = this.orderHistoryFilterList;
+      } else if (this.historyFilters.type === 'TASK') {
+        modalRef.componentInstance.allFilter = this.jobHistoryFilterList;
+      } else if (this.historyFilters.type === 'YADE') {
+        modalRef.componentInstance.allFilter = this.yadeHistoryFilterList;
+      } else if (this.historyFilters.type === 'DEPLOYMENT') {
+        modalRef.componentInstance.allFilter = this.deploymentHistoryFilterList;
+      } else if (this.historyFilters.type === 'SUBMISSION') {
+        modalRef.componentInstance.allFilter = this.submissionHistoryFilterList;
+      }
+      modalRef.componentInstance.new = true;
+      modalRef.componentInstance.type = this.historyFilters.type;
+      modalRef.result.then(() => {
 
-    }, () => {
-    });
+      }, () => {
+      });
+    }
   }
 
   editFilters() {
@@ -3155,9 +3171,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private initConf() {
-    this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    this.permission = JSON.parse(this.authService.permission) || {};
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     if (this.preferences.dateFormat) {
       this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
     }
@@ -3235,8 +3251,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.savedSubmissionHistoryFilter.selected = undefined;
     }
 
-    this.checkSharedFilters(this.historyFilters.type);
-    this.getIgnoreList();
+    if (this.schedulerIds.selected) {
+      this.checkSharedFilters(this.historyFilters.type);
+      this.getIgnoreList();
+    } else {
+      this.loadIgnoreList = true;
+      this.loadConfig = true;
+      this.init(false);
+    }
   }
 
   private checkCurrentTab(type, res, obj) {
@@ -3280,20 +3302,22 @@ export class HistoryComponent implements OnInit, OnDestroy {
   /* --------------------------Customizations Begin-----------------------*/
 
   private checkSharedFilters(type) {
-    let obj = {
-      controllerId: this.schedulerIds.selected,
-      configurationType: 'CUSTOMIZATION',
-      objectType: type === 'ORDER' ? 'ORDER_HISTORY' : type === 'TASK' ? 'TASK_HISTORY' : type === 'YADE' ? 'YADE_HISTORY' : type === 'DEPLOYMENT' ? 'DEPLOYMENT_HISTORY' : 'SUBMISSION_HISTORY',
-      shared: true
-    };
-    if (this.permission.joc) {
-      this.coreService.post('configurations', obj).subscribe((res: any) => {
-        this.checkCurrentTab(type, res, obj);
-      }, (err) => {
+    if (this.schedulerIds.selected) {
+      let obj = {
+        controllerId: this.schedulerIds.selected,
+        configurationType: 'CUSTOMIZATION',
+        objectType: type === 'ORDER' ? 'ORDER_HISTORY' : type === 'TASK' ? 'TASK_HISTORY' : type === 'YADE' ? 'YADE_HISTORY' : type === 'DEPLOYMENT' ? 'DEPLOYMENT_HISTORY' : 'SUBMISSION_HISTORY',
+        shared: true
+      };
+      if (this.permission.joc) {
+        this.coreService.post('configurations', obj).subscribe((res: any) => {
+          this.checkCurrentTab(type, res, obj);
+        }, (err) => {
+          this.checkCurrentTab(type, null, obj);
+        });
+      } else {
         this.checkCurrentTab(type, null, obj);
-      });
-    } else {
-      this.checkCurrentTab(type, null, obj);
+      }
     }
   }
 
@@ -3589,35 +3613,37 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private getIgnoreList() {
-    let configObj = {
-      controllerId: this.schedulerIds.selected,
-      account: this.authService.currentUserData,
-      configurationType: 'IGNORELIST'
-    };
-    this.coreService.post('configurations', configObj).subscribe((result: any) => {
-      if (result.configurations && result.configurations.length > 0) {
-        this.ignoreListConfigId = result.configurations[0].id;
-        this.coreService.post('configuration', {
-          controllerId: this.schedulerIds.selected,
-          id: result.configurations[0].id
-        }).subscribe((result1: any) => {
-          if (result1.configuration && result1.configuration.configurationItem) {
-            this.savedIgnoreList = JSON.parse(result1.configuration.configurationItem) || {};
-          }
+    if (this.schedulerIds.selected) {
+      let configObj = {
+        controllerId: this.schedulerIds.selected,
+        account: this.authService.currentUserData,
+        configurationType: 'IGNORELIST'
+      };
+      this.coreService.post('configurations', configObj).subscribe((result: any) => {
+        if (result.configurations && result.configurations.length > 0) {
+          this.ignoreListConfigId = result.configurations[0].id;
+          this.coreService.post('configuration', {
+            controllerId: this.schedulerIds.selected,
+            id: result.configurations[0].id
+          }).subscribe((result1: any) => {
+            if (result1.configuration && result1.configuration.configurationItem) {
+              this.savedIgnoreList = JSON.parse(result1.configuration.configurationItem) || {};
+            }
+            this.loadIgnoreList = true;
+            this.init(false);
+          }, () => {
+            this.loadIgnoreList = true;
+            this.init(false);
+          });
+        } else {
           this.loadIgnoreList = true;
           this.init(false);
-        }, () => {
-          this.loadIgnoreList = true;
-          this.init(false);
-        });
-      } else {
+        }
+      }, () => {
         this.loadIgnoreList = true;
         this.init(false);
-      }
-    }, () => {
-      this.loadIgnoreList = true;
-      this.init(false);
-    });
+      });
+    }
   }
 
   private setDuration(histories): any {
@@ -3632,76 +3658,80 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private editFilter(filter) {
-    let filterObj: any = {};
-    this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
-      filterObj = JSON.parse(conf.configuration.configurationItem);
-      filterObj.shared = filter.shared;
-      filterObj.id = filter.id;
+    if (this.schedulerIds.selected) {
+      let filterObj: any = {};
+      this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
+        filterObj = JSON.parse(conf.configuration.configurationItem);
+        filterObj.shared = filter.shared;
+        filterObj.id = filter.id;
 
-      const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.permission = this.permission;
-      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-      if (this.historyFilters.type === 'ORDER') {
-        modalRef.componentInstance.allFilter = this.orderHistoryFilterList;
-      } else if (this.historyFilters.type === 'TASK') {
-        modalRef.componentInstance.allFilter = this.jobHistoryFilterList;
-      } else if (this.historyFilters.type === 'YADE') {
-        modalRef.componentInstance.allFilter = this.yadeHistoryFilterList;
-      } else if (this.historyFilters.type === 'DEPLOYMENT') {
-        modalRef.componentInstance.allFilter = this.deploymentHistoryFilterList;
-      } else if (this.historyFilters.type === 'SUBMISSION') {
-        modalRef.componentInstance.allFilter = this.submissionHistoryFilterList;
-      }
-      modalRef.componentInstance.filter = filterObj;
-      modalRef.componentInstance.edit = true;
-      modalRef.componentInstance.type = this.historyFilters.type;
-      modalRef.result.then(() => {
+        const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
+        modalRef.componentInstance.permission = this.permission;
+        modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+        if (this.historyFilters.type === 'ORDER') {
+          modalRef.componentInstance.allFilter = this.orderHistoryFilterList;
+        } else if (this.historyFilters.type === 'TASK') {
+          modalRef.componentInstance.allFilter = this.jobHistoryFilterList;
+        } else if (this.historyFilters.type === 'YADE') {
+          modalRef.componentInstance.allFilter = this.yadeHistoryFilterList;
+        } else if (this.historyFilters.type === 'DEPLOYMENT') {
+          modalRef.componentInstance.allFilter = this.deploymentHistoryFilterList;
+        } else if (this.historyFilters.type === 'SUBMISSION') {
+          modalRef.componentInstance.allFilter = this.submissionHistoryFilterList;
+        }
+        modalRef.componentInstance.filter = filterObj;
+        modalRef.componentInstance.edit = true;
+        modalRef.componentInstance.type = this.historyFilters.type;
+        modalRef.result.then(() => {
 
-      }, () => {
+        }, () => {
 
+        });
       });
-    });
+    }
   }
 
   private copyFilter(filter) {
-    let filterObj: any = {};
-    this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
-      filterObj = JSON.parse(conf.configuration.configurationItem);
-      filterObj.shared = filter.shared;
-      if (this.historyFilters.type === 'ORDER') {
-        filterObj.name = this.coreService.checkCopyName(this.orderHistoryFilterList, filter.name);
-      } else if (this.historyFilters.type === 'TASK') {
-        filterObj.name = this.coreService.checkCopyName(this.jobHistoryFilterList, filter.name);
-      } else if (this.historyFilters.type === 'YADE') {
-        filterObj.name = this.coreService.checkCopyName(this.yadeHistoryFilterList, filter.name);
-      } else if (this.historyFilters.type === 'DEPLOYMENT') {
-        filterObj.name = this.coreService.checkCopyName(this.deploymentHistoryFilterList, filter.name);
-      } else if (this.historyFilters.type === 'SUBMISSION') {
-        filterObj.name = this.coreService.checkCopyName(this.submissionHistoryFilterList, filter.name);
-      }
+    if (this.schedulerIds.selected) {
+      let filterObj: any = {};
+      this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
+        filterObj = JSON.parse(conf.configuration.configurationItem);
+        filterObj.shared = filter.shared;
+        if (this.historyFilters.type === 'ORDER') {
+          filterObj.name = this.coreService.checkCopyName(this.orderHistoryFilterList, filter.name);
+        } else if (this.historyFilters.type === 'TASK') {
+          filterObj.name = this.coreService.checkCopyName(this.jobHistoryFilterList, filter.name);
+        } else if (this.historyFilters.type === 'YADE') {
+          filterObj.name = this.coreService.checkCopyName(this.yadeHistoryFilterList, filter.name);
+        } else if (this.historyFilters.type === 'DEPLOYMENT') {
+          filterObj.name = this.coreService.checkCopyName(this.deploymentHistoryFilterList, filter.name);
+        } else if (this.historyFilters.type === 'SUBMISSION') {
+          filterObj.name = this.coreService.checkCopyName(this.submissionHistoryFilterList, filter.name);
+        }
 
-      const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.permission = this.permission;
-      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-      modalRef.componentInstance.type = this.historyFilters.type;
-      if (this.historyFilters.type === 'ORDER') {
-        modalRef.componentInstance.allFilter = this.orderHistoryFilterList;
-      } else if (this.historyFilters.type === 'TASK') {
-        modalRef.componentInstance.allFilter = this.jobHistoryFilterList;
-      } else if (this.historyFilters.type === 'YADE') {
-        modalRef.componentInstance.allFilter = this.yadeHistoryFilterList;
-      } else if (this.historyFilters.type === 'DEPLOYMENT') {
-        modalRef.componentInstance.allFilter = this.deploymentHistoryFilterList;
-      } else if (this.historyFilters.type === 'SUBMISSION') {
-        modalRef.componentInstance.allFilter = this.submissionHistoryFilterList;
-      }
-      modalRef.componentInstance.filter = filterObj;
-      modalRef.result.then(() => {
+        const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
+        modalRef.componentInstance.permission = this.permission;
+        modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+        modalRef.componentInstance.type = this.historyFilters.type;
+        if (this.historyFilters.type === 'ORDER') {
+          modalRef.componentInstance.allFilter = this.orderHistoryFilterList;
+        } else if (this.historyFilters.type === 'TASK') {
+          modalRef.componentInstance.allFilter = this.jobHistoryFilterList;
+        } else if (this.historyFilters.type === 'YADE') {
+          modalRef.componentInstance.allFilter = this.yadeHistoryFilterList;
+        } else if (this.historyFilters.type === 'DEPLOYMENT') {
+          modalRef.componentInstance.allFilter = this.deploymentHistoryFilterList;
+        } else if (this.historyFilters.type === 'SUBMISSION') {
+          modalRef.componentInstance.allFilter = this.submissionHistoryFilterList;
+        }
+        modalRef.componentInstance.filter = filterObj;
+        modalRef.result.then(() => {
 
-      }, () => {
+        }, () => {
 
+        });
       });
-    });
+    }
   }
 
   /* --------------------------Customizations End-----------------------*/

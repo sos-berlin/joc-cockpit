@@ -2,13 +2,13 @@
   <nz-table
     #ajaxTable
     [nzSize]="'small'"
-    [nzPageSize]="preferences.entryPerPage"
+    [nzPageSize]="preferences.entryPerPage || 25"
     [nzPageIndex]="usr.currentPage"
     [nzBordered]="true"
     [nzData]="main"
     [nzLoading]="loading"
     [nzShowSizeChanger]="true"
-    [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+    [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage || 5000]"
   >
     <thead>
     <tr>

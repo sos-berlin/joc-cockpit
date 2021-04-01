@@ -81,7 +81,7 @@ export class AuthService {
             ifPermissionPassed = true;
           }
         } else {
-          if (permission.joc && permission.joc.dailyPlan.view) {
+          if (permission.joc && permission.joc.dailyPlan.view && permission.controllerDefaults.orders.view) {
             ifPermissionPassed = true;
           }
         }
@@ -120,7 +120,7 @@ export class AuthService {
             ifPermissionPassed = true;
           }
         } else {
-          if (permission.controllerDefaults && (permission.controllerDefaults.agents.view || permission.controllerDefaults.lock.view
+          if (permission.controllerDefaults && (permission.controllerDefaults.agents.view || permission.controllerDefaults.locks.view
             || permission.joc.calendars.view || permission.joc.documentations.view)) {
             ifPermissionPassed = true;
           }

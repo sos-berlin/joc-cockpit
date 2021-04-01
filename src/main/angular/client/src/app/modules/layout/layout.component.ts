@@ -128,7 +128,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
       } else if (!this.schedulerIds || !this.schedulerIds.selected) {
         this.schedulerIds = {};
         this.getSchedulerIds();
-        this.getPermissions();
+        if(!this.permission) {
+          this.getPermissions();
+        }
       }
     } else {
       let userName;
@@ -166,6 +168,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.coreService.post('authentication/joc_cockpit_permissions', {}).subscribe((permission) => {
       this.authService.setPermission(permission);
       this.authService.save();
+      this.permission = permission;
       if (!sessionStorage.preferenceId) {
         this.ngOnInit();
       }
@@ -174,7 +177,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       }
       setTimeout(() => {
         if (!this.loading) {
-          this.loadInit();
+          this.loadInit(false);
         }
       }, 10);
     });
@@ -194,12 +197,16 @@ export class LayoutComponent implements OnInit, OnDestroy {
           this.checkSecurityControllers(null);
         });
       }
-    }, () => {
-      this.getComments();
-      this.router.navigate(['/start-up']);
-      setTimeout(() => {
-        this.loading = true;
-      }, 10);
+    }, (err) => {
+      if (err.error && err.error.message === 'Access denied') {
+        this.loadInit(true);
+      } else {
+        this.getComments();
+        this.router.navigate(['/start-up']);
+        setTimeout(() => {
+          this.loading = true;
+        }, 10);
+      }
     });
   }
 
@@ -239,14 +246,16 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
     this.loadScheduleDetail();
     if (!this.loading) {
-      this.loadInit();
+      this.loadInit(false);
     }
   }
 
-  private loadInit(): void {
+  private loadInit(isError): void {
     this.sessionTimeout = parseInt(this.authService.sessionTimeout, 10);
-    this.permission = JSON.parse(this.authService.permission) || {};
-    if (sessionStorage.preferences) {
+    if(!this.permission) {
+      this.permission = JSON.parse(this.authService.permission) || {};
+    }
+    if (sessionStorage.preferences || isError) {
       this.loading = true;
     } else {
       return;

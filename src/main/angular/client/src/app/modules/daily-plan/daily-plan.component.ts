@@ -63,11 +63,11 @@ export class SelectOrderTemplatesComponent implements OnInit {
   constructor(public  coreService: CoreService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.getOrderTemplates();
   }
 
-  getOrderTemplates() {
+  getOrderTemplates(): void {
     this.coreService.post('schedules', {
       controllerId: this.schedulerId,
       selector: {folders: [{folder: '/', recursive: true}]}
@@ -95,7 +95,7 @@ export class SelectOrderTemplatesComponent implements OnInit {
     });
   }
 
-  private generateTree(arr) {
+  private generateTree(arr): void {
     for (const [key, value] of Object.entries(arr)) {
       if (key !== '/') {
         const paths = key.split('/');
@@ -119,7 +119,7 @@ export class SelectOrderTemplatesComponent implements OnInit {
     }
   }
 
-  private checkFolderRecur(_path, data) {
+  private checkFolderRecur(_path, data): void {
     let flag = false;
     let arr = [];
     if (data.length > 0) {
@@ -151,7 +151,7 @@ export class SelectOrderTemplatesComponent implements OnInit {
     }
   }
 
-  private checkAndAddFolder(_path) {
+  private checkAndAddFolder(_path): void {
     let node: any;
 
     function recursive(path, nodes) {
@@ -189,7 +189,7 @@ export class SelectOrderTemplatesComponent implements OnInit {
     }
   }
 
-  private createTempArray(arr) {
+  private createTempArray(arr): any {
     const tempArr = [];
     for (let i = 0; i < arr.length; i++) {
       const parentObj: any = {
@@ -205,7 +205,7 @@ export class SelectOrderTemplatesComponent implements OnInit {
     return tempArr;
   }
 
-  loadData(node, $event) {
+  loadData(node, $event): void {
     if (!node.origin.type) {
       if ($event) {
         node.isExpanded = !node.isExpanded;
@@ -259,7 +259,7 @@ export class CreatePlanModalComponent {
     }
   }
 
-  private recursivelyCreate(obj) {
+  private recursivelyCreate(obj): void {
     let apiArr = [];
     const dates = this.coreService.getDates(this.dateRanges[0], this.dateRanges[1]);
     dates.forEach((date) => {
@@ -274,7 +274,7 @@ export class CreatePlanModalComponent {
     });
   }
 
-  cancel() {
+  cancel(): void {
     this.activeModal.dismiss('');
   }
 }
@@ -306,8 +306,8 @@ export class RemovePlanModalComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal, public  coreService: CoreService) {
   }
 
-  ngOnInit() {
-    this.preferences = JSON.parse(sessionStorage.preferences) || {};
+  ngOnInit(): void {
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     // this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
     if (sessionStorage.comments) {
@@ -457,7 +457,7 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
   constructor(public coreService: CoreService, public translate: TranslateService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.toggle = true;
     this.initConfig();
   }
@@ -473,10 +473,10 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private initConfig(): void {
-    $(this.editor.nativeElement).on('mouseover', '.my-tooltip', function () {
+    $(this.editor.nativeElement).on('mouseover', '.my-tooltip', function() {
       $(this).tooltip('show');
     });
-    $(this.editor.nativeElement).on('mouseout', '.my-tooltip', function () {
+    $(this.editor.nativeElement).on('mouseout', '.my-tooltip', function() {
       $('.tooltip').tooltip('hide');
     });
     this.editor.nativeElement.style.height = 'calc(100vh - 248px)';
@@ -494,7 +494,7 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
     jsgantt.config.columns = [{name: 'col2', tree: !0, label: workflow, align: 'left'}, {
       name: 'col1', label: orderId, width: '*', align: 'left'
     }];
-    jsgantt.templates.task_class = function (start, end, task) {
+    jsgantt.templates.task_class = function(start, end, task) {
       return task.class;
     };
     jsgantt.init(this.editor.nativeElement);
@@ -580,10 +580,10 @@ export class FilterModalComponent implements OnInit {
   constructor(private authService: AuthService, public activeModal: NgbActiveModal) {
   }
 
-  ngOnInit() {
-    this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    this.permission = JSON.parse(this.authService.permission) || {};
+  ngOnInit(): void {
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     if (this.new) {
       this.filter = {
         radio: 'planned',
@@ -599,7 +599,7 @@ export class FilterModalComponent implements OnInit {
     }
   }
 
-  cancel(obj) {
+  cancel(obj): void {
     if (obj) {
       this.activeModal.close(obj);
     } else {
@@ -1881,24 +1881,26 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   /* ---- Begin Customization ------ */
 
   createCustomization(): void {
-    const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.allFilter = this.filterList;
-    modalRef.componentInstance.new = true;
-    modalRef.result.then((configObj) => {
-      if (this.filterList.length === 1) {
-        this.savedFilter.selected = configObj.id;
-        this.dailyPlanFilters.selectedView = true;
-        this.selectedFiltered = configObj;
-        this.isCustomizationSelected(true);
-        this.loadOrderPlan();
-        this.saveService.setDailyPlan(this.savedFilter);
-        this.saveService.save();
-      }
-    }, () => {
+    if (this.schedulerIds.selected) {
+      const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
+      modalRef.componentInstance.permission = this.permission;
+      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+      modalRef.componentInstance.allFilter = this.filterList;
+      modalRef.componentInstance.new = true;
+      modalRef.result.then((configObj) => {
+        if (this.filterList.length === 1) {
+          this.savedFilter.selected = configObj.id;
+          this.dailyPlanFilters.selectedView = true;
+          this.selectedFiltered = configObj;
+          this.isCustomizationSelected(true);
+          this.loadOrderPlan();
+          this.saveService.setDailyPlan(this.savedFilter);
+          this.saveService.save();
+        }
+      }, () => {
 
-    });
+      });
+    }
   }
 
   editFilters(): void {
@@ -2024,15 +2026,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private initConf(): void {
-    if (!sessionStorage.preferences) {
-      setTimeout(() => {
-        this.initConf();
-      }, 100);
-      return;
-    }
-    this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    this.permission = JSON.parse(this.authService.permission) || {};
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.dailyPlanFilters = this.coreService.getDailyPlanTab();
     this.savedFilter = JSON.parse(this.saveService.dailyPlanFilters) || {};
     if (this.dailyPlanFilters.selectedDate) {
@@ -2054,7 +2050,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.pageView = JSON.parse(localStorage.views).dailyPlan;
     }
     this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
-    this.checkSharedFilters();
+    if (this.schedulerIds.selected) {
+      this.checkSharedFilters();
+    } else{
+      this.loadOrderPlan();
+    }
     $('#full-calendar').calendar({
       view: 'month',
       rangeSelection: true,
@@ -2119,7 +2119,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private checkSharedFilters(): void {
-    if (this.permission.joc) {
+    if (this.schedulerIds.selected) {
       const obj = {
         controllerId: this.schedulerIds.selected,
         configurationType: 'CUSTOMIZATION',
@@ -2186,18 +2186,20 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private getCustomizations(): void {
-    const obj = {
-      controllerId: this.schedulerIds.selected,
-      account: this.authService.currentUserData,
-      configurationType: 'CUSTOMIZATION',
-      objectType: this.objectType
-    };
-    this.coreService.post('configurations', obj).subscribe((res) => {
-      this.filterCustomizationResponse(res);
-    }, (err) => {
-      this.savedFilter.selected = undefined;
-      this.loadOrderPlan();
-    });
+    if (this.schedulerIds.selected) {
+      const obj = {
+        controllerId: this.schedulerIds.selected,
+        account: this.authService.currentUserData,
+        configurationType: 'CUSTOMIZATION',
+        objectType: this.objectType
+      };
+      this.coreService.post('configurations', obj).subscribe((res) => {
+        this.filterCustomizationResponse(res);
+      }, (err) => {
+        this.savedFilter.selected = undefined;
+        this.loadOrderPlan();
+      });
+    }
   }
 
   private filterData(planItems): void {
@@ -2243,26 +2245,28 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private openFilterModal(filter, isCopy): void {
-    let filterObj: any = {};
-    this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
-      filterObj = JSON.parse(conf.configuration.configurationItem);
-      filterObj.shared = filter.shared;
-      if (isCopy) {
-        filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
-      } else {
-        filterObj.id = filter.id;
-      }
-      const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.permission = this.permission;
-      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-      modalRef.componentInstance.allFilter = this.filterList;
-      modalRef.componentInstance.filter = filterObj;
-      modalRef.componentInstance.edit = !isCopy;
-      modalRef.result.then(() => {
+    if (this.schedulerIds.selected) {
+      let filterObj: any = {};
+      this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
+        filterObj = JSON.parse(conf.configuration.configurationItem);
+        filterObj.shared = filter.shared;
+        if (isCopy) {
+          filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
+        } else {
+          filterObj.id = filter.id;
+        }
+        const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
+        modalRef.componentInstance.permission = this.permission;
+        modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+        modalRef.componentInstance.allFilter = this.filterList;
+        modalRef.componentInstance.filter = filterObj;
+        modalRef.componentInstance.edit = !isCopy;
+        modalRef.result.then(() => {
 
-      }, () => {
+        }, () => {
 
+        });
       });
-    });
+    }
   }
 }

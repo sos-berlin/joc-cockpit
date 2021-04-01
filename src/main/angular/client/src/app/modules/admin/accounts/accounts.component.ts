@@ -129,31 +129,29 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.usr = {currentPage: 1};
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    }
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.username = this.authService.currentUserData;
 
   }
 
-  setUserData(res) {
+  setUserData(res): void {
     this.userDetail = res;
     this.users = res.users;
     setTimeout(() => {
       this.loading = false;
-    }, 400);
+    }, 300);
     this.getRoles();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.subscription3.unsubscribe();
   }
 
-  saveInfo() {
+  saveInfo(): void {
     let obj = {
       users: this.users,
       masters: this.userDetail.masters,
@@ -167,7 +165,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
   }
 
-  getRoles() {
+  getRoles(): void {
     if (this.roles.length === 0) {
       this.coreService.post('authentication/permissions', {}).subscribe((res: any) => {
         this.roles = res.SOSPermissionRoles.SOSPermissionRole;
@@ -175,12 +173,11 @@ export class AccountsComponent implements OnInit, OnDestroy {
     }
   }
 
-  showMaster(user) {
-    console.log(user);
+  showMaster(user): void {
     this.router.navigate(['/users/role'], {queryParams: {user: user}});
   }
 
-  addUser() {
+  addUser(): void {
     const modalRef = this.modalService.open(AccountModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.userDetail = this.userDetail;
     modalRef.componentInstance.allRoles = this.roles;
@@ -188,13 +185,12 @@ export class AccountsComponent implements OnInit, OnDestroy {
     modalRef.result.then((result) => {
       this.users = result;
       this.users = [...this.users];
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
-  editUser(user) {
-
+  editUser(user): void {
     const modalRef = this.modalService.open(AccountModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.userDetail = this.userDetail;
     modalRef.componentInstance.allRoles = this.roles;
@@ -202,12 +198,12 @@ export class AccountsComponent implements OnInit, OnDestroy {
     modalRef.result.then((result) => {
       this.users = result;
       this.users = [...this.users];
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
-  copyUser(user) {
+  copyUser(user): void {
     const modalRef = this.modalService.open(AccountModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.userDetail = this.userDetail;
     modalRef.componentInstance.copy = true;
@@ -215,12 +211,12 @@ export class AccountsComponent implements OnInit, OnDestroy {
     modalRef.result.then((result) => {
       this.users = result;
       this.users = [...this.users];
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
+
     });
   }
 
-  deleteUser(user, i) {
+  deleteUser(user, i): void {
     const modalRef = this.modalService.open(ConfirmModalComponent);
     modalRef.componentInstance.title = 'delete';
     modalRef.componentInstance.message = 'deleteUser';
@@ -229,8 +225,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     modalRef.result.then((result) => {
       this.users.splice(i, 1);
       this.saveInfo();
-    }, (reason) => {
-      console.log('close...', reason);
+    }, () => {
     });
   }
 

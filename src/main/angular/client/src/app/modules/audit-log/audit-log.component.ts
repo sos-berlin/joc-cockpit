@@ -208,7 +208,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   checkSharedFilters(): void {
-    if (this.permission.joc) {
+     if (this.schedulerIds.selected) {
       let obj = {
         controllerId: this.schedulerIds.selected,
         configurationType: 'CUSTOMIZATION',
@@ -229,58 +229,60 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   getCustomizations(): void {
-    let obj = {
-      controllerId: this.schedulerIds.selected,
-      account: this.authService.currentUserData,
-      configurationType: 'CUSTOMIZATION',
-      objectType: this.objectType
-    };
-    this.coreService.post('configurations', obj).subscribe((res: any) => {
-      if (this.filterList && this.filterList.length > 0) {
-        if (res.configurations && res.configurations.length > 0) {
-          this.filterList = this.filterList.concat(res.configurations);
-        }
-        let data = [];
-        for (let i = 0; i < this.filterList.length; i++) {
-          let flag = true;
-          for (let j = 0; j < data.length; j++) {
-            if (data[j].id === this.filterList[i].id) {
-              flag = false;
+    if (this.schedulerIds.selected) {
+      let obj = {
+        controllerId: this.schedulerIds.selected,
+        account: this.authService.currentUserData,
+        configurationType: 'CUSTOMIZATION',
+        objectType: this.objectType
+      };
+      this.coreService.post('configurations', obj).subscribe((res: any) => {
+        if (this.filterList && this.filterList.length > 0) {
+          if (res.configurations && res.configurations.length > 0) {
+            this.filterList = this.filterList.concat(res.configurations);
+          }
+          let data = [];
+          for (let i = 0; i < this.filterList.length; i++) {
+            let flag = true;
+            for (let j = 0; j < data.length; j++) {
+              if (data[j].id === this.filterList[i].id) {
+                flag = false;
+              }
+            }
+            if (flag) {
+              data.push(this.filterList[i]);
             }
           }
-          if (flag) {
-            data.push(this.filterList[i]);
-          }
+          this.filterList = data;
+        } else {
+          this.filterList = res.configurations;
         }
-        this.filterList = data;
-      } else {
-        this.filterList = res.configurations;
-      }
 
-      if (this.savedFilter.selected) {
-        let flag = true;
-        this.filterList.forEach((value) => {
-          if (value.id === this.savedFilter.selected) {
-            flag = false;
-            this.coreService.post('configuration', {
-              controllerId: value.controllerId,
-              id: value.id
-            }).subscribe((conf: any) => {
-              this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
-              this.selectedFiltered.account = value.account;
-              this.load(null);
-            });
+        if (this.savedFilter.selected) {
+          let flag = true;
+          this.filterList.forEach((value) => {
+            if (value.id === this.savedFilter.selected) {
+              flag = false;
+              this.coreService.post('configuration', {
+                controllerId: value.controllerId,
+                id: value.id
+              }).subscribe((conf: any) => {
+                this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
+                this.selectedFiltered.account = value.account;
+                this.load(null);
+              });
+            }
+          });
+          if (flag) {
+            this.savedFilter.selected = undefined;
+            this.load(null);
           }
-        });
-        if (flag) {
-          this.savedFilter.selected = undefined;
-          this.load(null);
         }
-      }
-    }, (err) => {
-      this.savedFilter.selected = undefined;
-      this.load(null);
-    });
+      }, (err) => {
+        this.savedFilter.selected = undefined;
+        this.load(null);
+      });
+    }
   }
 
   isCustomizationSelected(flag): void {
@@ -303,7 +305,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     }
     let obj:any = {
       controllerId: this.adtLog.current == true ? this.schedulerIds.selected : '',
-      limit: parseInt(this.preferences.maxAuditLogRecords, 10)
+      limit: parseInt(this.preferences.maxAuditLogRecords, 10) || 5000
     };
     if (this.selectedFiltered && !_.isEmpty(this.selectedFiltered)) {
       this.isCustomizationSelected(true);
@@ -464,24 +466,26 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
   /* ---- Customization ------ */
   createCustomization(): void {
-    const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.allFilter = this.filterList;
-    modalRef.componentInstance.new = true;
-    modalRef.result.then((configObj) => {
-      if (this.filterList.length == 1) {
-        this.savedFilter.selected = configObj.id;
-        this.adtLog.selectedView = true;
-        this.selectedFiltered = configObj;
-        this.isCustomizationSelected(true);
-        this.load(null);
-        this.saveService.setAuditLog(this.savedFilter);
-        this.saveService.save();
-      }
-    }, (reason) => {
-      console.log('close...', reason);
-    });
+    if (this.schedulerIds.selected) {
+      const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
+      modalRef.componentInstance.permission = this.permission;
+      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+      modalRef.componentInstance.allFilter = this.filterList;
+      modalRef.componentInstance.new = true;
+      modalRef.result.then((configObj) => {
+        if (this.filterList.length == 1) {
+          this.savedFilter.selected = configObj.id;
+          this.adtLog.selectedView = true;
+          this.selectedFiltered = configObj;
+          this.isCustomizationSelected(true);
+          this.load(null);
+          this.saveService.setAuditLog(this.savedFilter);
+          this.saveService.save();
+        }
+      }, (reason) => {
+        console.log('close...', reason);
+      });
+    }
   }
 
   editFilters(): void {
@@ -573,15 +577,9 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   private init(): void {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    }
-    if (this.authService.scheduleIds) {
-      this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    }
-    if (this.authService.permission) {
-      this.permission = JSON.parse(this.authService.permission) || {};
-    }
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
 
     this.adtLog = this.coreService.getAuditLogTab();
     if (!(this.adtLog.current || this.adtLog.current === false)) {
@@ -729,26 +727,28 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   private openFilterModal(filter, isCopy): void {
-    let filterObj: any = {};
-    this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
-      filterObj = JSON.parse(conf.configuration.configurationItem);
-      filterObj.shared = filter.shared;
-      if (isCopy) {
-        filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
-      } else {
-        filterObj.id = filter.id;
-      }
-      const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.permission = this.permission;
-      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-      modalRef.componentInstance.allFilter = this.filterList;
-      modalRef.componentInstance.filter = filterObj;
-      modalRef.componentInstance.edit = !isCopy;
-      modalRef.result.then((configObj) => {
+    if (this.schedulerIds.selected) {
+      let filterObj: any = {};
+      this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
+        filterObj = JSON.parse(conf.configuration.configurationItem);
+        filterObj.shared = filter.shared;
+        if (isCopy) {
+          filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
+        } else {
+          filterObj.id = filter.id;
+        }
+        const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
+        modalRef.componentInstance.permission = this.permission;
+        modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+        modalRef.componentInstance.allFilter = this.filterList;
+        modalRef.componentInstance.filter = filterObj;
+        modalRef.componentInstance.edit = !isCopy;
+        modalRef.result.then((configObj) => {
 
-      }, (reason) => {
-        console.log('close...', reason);
+        }, (reason) => {
+          console.log('close...', reason);
+        });
       });
-    });
+    }
   }
 }

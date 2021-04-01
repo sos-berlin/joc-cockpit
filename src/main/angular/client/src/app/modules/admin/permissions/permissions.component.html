@@ -6,12 +6,12 @@
                 <i class="text-black-lt m-l-sm m-r-sm">/</i>
                 <span class="text-muted text-black-dk">{{roleName}}</span>
             </div>
-            <button class="btn btn-sm btn-grey hide" [nz-tooltip]="'workflow.button.undo' | translate" (click)="undoPermission()"
-                    [ngClass]="{'show-block':previousPermission.length>0}">
+            <button class="btn btn-sm btn-grey" style="margin-top: -4px" [nz-tooltip]="'workflow.button.undo' | translate" (click)="undoPermission()"
+                    *ngIf="previousPermission.length>0">
                  <i nz-icon nzType="undo" nzTheme="outline"></i>
             </button>
-            <button class="btn btn-sm btn-grey hide m-l-sm" [nz-tooltip]="'workflow.button.redo' | translate" (click)="resetPermission()"
-                    [ngClass]="{'show-block':isReset}">
+            <button class="btn btn-sm btn-grey m-l-sm" style="margin-top: -4px" [nz-tooltip]="'workflow.button.redo' | translate" (click)="resetPermission()"
+                    *ngIf="isReset">
                  <i nz-icon nzType="redo" nzTheme="outline"></i>
             </button>
         </div>
@@ -45,7 +45,7 @@
     <!-- Folder Container End -->
 
     <!-- Permission Container Start -->
-    <div class="row m-t hide" [ngClass]="{'show':pageView =='list'}">
+    <div class="row m-t" *ngIf="pageView =='list'">
         <div class="col-md-12">
             <span class="text _600" translate>user.label.permissions</span>&nbsp;
             <i class="cursor fa fa-caret-down m-l-xs" [hidden]="showPanel1" (click)="showPanel1=true"></i>
@@ -71,7 +71,7 @@
 </div>
 <!-- Permission Container End -->
 <!-- tree start -->
-<div [hidden]="pageView =='list'">
+<div *ngIf="pageView !=='list'">
     <div class="m-t">
         <span class="text _600" [innerHtml]="'user.label.permissions' | translate"></span>&nbsp;
         <i class="cursor fa fa-caret-down m-l-xs" [hidden]="showPanel1" (click)="showPanel1=true"></i>

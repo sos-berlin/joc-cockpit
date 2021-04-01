@@ -581,7 +581,7 @@
                 <nz-table
                   #ajaxTable
                   [nzSize]="'small'"
-                  [nzPageSize]="dailyPlanFilters.entryPerPage || preferences.entryPerPage"
+                  [nzPageSize]="dailyPlanFilters.entryPerPage || preferences.entryPerPage || 25"
                   [nzPageIndex]="dailyPlanFilters.currentPage"
                   [nzBordered]="true"
                   [nzShowPagination]="planOrders.length > 0"
@@ -591,7 +591,7 @@
                   (nzPageIndexChange)="pageIndexChange($event)"
                   (nzPageSizeChange)="pageSizeChange($event)"
                   (nzCurrentPageDataChange)="currentPageDataChange($event)"
-                  [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+                  [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage || 500]"
                 >
                   <thead>
                   <tr>
