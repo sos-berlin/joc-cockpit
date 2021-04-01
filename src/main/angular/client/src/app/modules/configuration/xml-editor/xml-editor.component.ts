@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild, OnDestroy, HostListener, AfterViewInit} from '@angular/core';
+import {Component, Input, OnInit, ViewChild, OnDestroy} from '@angular/core';
 import {NzFormatEmitEvent, NzTreeNode, NzFormatBeforeDropEvent} from 'ng-zorro-antd/tree';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
@@ -835,7 +835,7 @@ export class DiffPatchModalComponent {
   templateUrl: './xml-editor.component.html',
   styleUrls: ['./xml-editor.component.scss']
 })
-export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
+export class XmlEditorComponent implements OnInit, OnDestroy {
   public Editor = ClassicEditor;
   schedulerIds: any = {};
   preferences: any = {};
@@ -863,6 +863,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   myContent: string;
   value: any = [];
   count = 1;
+  dRefFlag: number;
   error = false;
   errorName;
   tempArr: any = [];
@@ -1018,6 +1019,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy(): void {
+    if (this.submitXsd && !this.objectXml.xml && !this.isStore) {
+      this.storeXML(undefined);
+    }
     this.subscription.unsubscribe();
     this.coreService.setSideView(this.sideView);
     clearInterval(this.intervalId);
@@ -1109,7 +1113,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         }
       }, (error) => {
-        this.toasterService.pop('error', error.error.message);
+        this.toasterService.pop('error', error.data.error.message);
       });
     } else {
       this.gotoErrorLocation();
@@ -1156,6 +1160,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       if (!res.configurations) {
         this.tabsArray = [];
         this.isLoading = false;
+        this.newFile();
       } else {
         this.tabsArray = _.clone(res.configurations);
         this.activeTab = this.tabsArray[length - 1];
@@ -1165,8 +1170,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.isLoading = false;
       this.tabsArray = [];
       this.error = true;
-      if (error.error) {
-        this.toasterService.pop('error', error.error.message);
+      if (error.data && error.data.error) {
+        this.toasterService.pop('error', error.data.error.message);
       }
     });
   }
@@ -1179,6 +1184,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       objectType: this.objectType,
       id: id
     }).subscribe((res: any) => {
+      if(res.validation && res.validation.validated) {
+        this.validConfig = true;
+      }
       if (!res.configuration) {
         this.showSelectSchema = true;
         this.submitXsd = false;
@@ -1257,12 +1265,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.showSelectSchema = false;
   }
 
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.calcHeight();
-    }, 1);
-  }
-
   // Expand all Node
   private expandCollapseRec(node, flag) {
     for (let i = 0; i < node.length; i++) {
@@ -1315,6 +1317,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       objectType: this.objectType
     };
     this.coreService.post('xmleditor/read', obj).subscribe((res: any) => {
+      if(res.validation && res.validation.validated) {
+        this.validConfig = true;
+      }
       this.schemaIdentifier = res.schemaIdentifier;
       this.path = res.schema;
       this.XSDState = res.state;
@@ -1707,26 +1712,26 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   _checkAttributes(attrsPath, attribute, node, attrsArr, select) {
-    var attrs = select(attrsPath, this.doc);
+    let attrs = select(attrsPath, this.doc);
 
     if (attrs.length > 0) {
-      for (var i = 0; i < attrs.length; i++) {
+      for (let i = 0; i < attrs.length; i++) {
         attribute = {};
-        var x = void 0;
+        let x = void 0;
 
-        for (var j = 0; j < attrs[i].attributes.length; j++) {
-          var a = attrs[i].attributes[j].nodeName;
-          var b = attrs[i].attributes[j].nodeValue;
+        for (let j = 0; j < attrs[i].attributes.length; j++) {
+          let a = attrs[i].attributes[j].nodeName;
+          let b = attrs[i].attributes[j].nodeValue;
           attribute = Object.assign(attribute, this._defineProperty({}, a, b));
-          var valueFromXmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:complexType/xs:attribute[@name=\''
+          let valueFromXmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:complexType/xs:attribute[@name=\''
             + b + '\']/xs:annotation/xs:appinfo/XmlEditor';
-          var attr1 = select(valueFromXmlEditorPath, this.doc);
+          let attr1 = select(valueFromXmlEditorPath, this.doc);
 
           if (attr1.length > 0) {
             if (attr1[0].attributes && attr1[0].attributes.length > 0) {
-              for (var _i18 = 0; _i18 < attr1[0].attributes.length; _i18++) {
-                if (attr1[0].attributes[_i18].nodeName === 'type') {
-                  x = attr1[0].attributes[_i18].nodeValue;
+              for (let k = 0; k < attr1[0].attributes.length; k++) {
+                if (attr1[0].attributes[k].nodeName === 'type') {
+                  x = attr1[0].attributes[k].nodeValue;
                   break;
                 }
               }
@@ -1775,7 +1780,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             for (let j = 0; j < dElement[i].attributes.length; j++) {
               let a = dElement[i].attributes[j].nodeName;
               let b = dElement[i].attributes[j].nodeValue;
-              nodes = Object.assign(nodes, {[a]: b});
+              nodes = Object.assign(nodes, this._defineProperty({}, a, b));
             }
             nodes.parent = node;
             nodes.choice = node;
@@ -1793,7 +1798,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             for (let j = 0; j < cElement[i].attributes.length; j++) {
               let a = cElement[i].attributes[j].nodeName;
               let b = cElement[i].attributes[j].nodeValue;
-              nodes = Object.assign(nodes, {[a]: b});
+              nodes = Object.assign(nodes, this._defineProperty({}, a, b));
             }
             nodes.parent = node;
             childArr.push(nodes);
@@ -1840,7 +1845,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
             for (let j = 0; j < childs1[i].attributes.length; j++) {
               let a = childs1[i].attributes[j].nodeName;
               let b = childs1[i].attributes[j].nodeValue;
-              nodes = Object.assign(nodes, {[a]: b});
+              nodes = Object.assign(nodes, this._defineProperty({}, a, b));
             }
             nodes.parent = node;
             nodes.choice = node;
@@ -1859,7 +1864,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
               for (let j = 0; j < child12[i].attributes.length; j++) {
                 let a = child12[i].attributes[j].nodeName;
                 let b = child12[i].attributes[j].nodeValue;
-                nodes = Object.assign(nodes, {[a]: b});
+                nodes = Object.assign(nodes, this._defineProperty({}, a, b));
               }
               nodes.parent = node;
               nodes.choice = node;
@@ -1884,7 +1889,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
               for (let j = 0; j < sElement[i].attributes.length; j++) {
                 let a = sElement[i].attributes[j].nodeName;
                 let b = sElement[i].attributes[j].nodeValue;
-                nodes = Object.assign(nodes, {[a]: b});
+                nodes = Object.assign(nodes, this._defineProperty({}, a, b));
               }
               nodes.parent = node;
               childArr.push(nodes);
@@ -1903,7 +1908,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
                 for (let j = 0; j < elementx[i].attributes.length; j++) {
                   let a = elementx[i].attributes[j].nodeName;
                   let b = elementx[i].attributes[j].nodeValue;
-                  nodes = Object.assign(nodes, {[a]: b});
+                  nodes = Object.assign(nodes, this._defineProperty({}, a, b));
                 }
                 nodes.parent = node;
                 nodes.choice = node;
@@ -1920,7 +1925,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
                 for (let j = 0; j < ele[i].attributes.length; j++) {
                   let a = ele[i].attributes[j].nodeName;
                   let b = ele[i].attributes[j].nodeValue;
-                  nodes = Object.assign(nodes, {[a]: b});
+                  nodes = Object.assign(nodes, this._defineProperty({}, a, b));
                 }
                 nodes.parent = node;
                 childArr.push(nodes);
@@ -1955,7 +1960,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
               if (a === 'default') {
                 temp.data = b;
               }
-              temp = Object.assign(temp, {[a]: b});
+              temp = Object.assign(temp, this._defineProperty({}, a, b));
             }
             temp.parent = node;
             nodes.values.push(temp);
@@ -1965,21 +1970,20 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  getAttrFromType(nodeValue, parentNode) {
-    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+  getAttrFromType(nodeValue, parentNode): any {
+    let select = xpath.useNamespaces({
+      'xs': 'http://www.w3.org/2001/XMLSchema'
+    });
     let attrTypePath = '/xs:schema/xs:element[@name=\'' + nodeValue + '\']/@type';
     let element = select(attrTypePath, this.doc);
     let attribute: any = {};
     if (element.length > 0) {
       let ele = select(attrTypePath, this.doc);
-      let x;
       for (let i = 0; i < ele.length; i++) {
         let a = ele[i].nodeName;
         let b = ele[i].nodeValue;
-        attribute = Object.assign(attribute, {[a]: b});
-
+        attribute = Object.assign(attribute, this._defineProperty({}, a, b));
       }
-
       attribute.parent = nodeValue;
       attribute.grandFather = parentNode;
     }
@@ -1987,7 +1991,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getAttrsFromType(node) {
-    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let select = xpath.useNamespaces({
+      'xs': 'http://www.w3.org/2001/XMLSchema'
+    });
     let attrTypePath = '/xs:schema/xs:complexType[@name=\'' + node.type + '\']/xs:simpleContent/xs:extension/xs:attribute/@*';
     let element = select(attrTypePath, this.doc);
     let attrArr = [];
@@ -1996,7 +2002,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       for (let i = 0; i < element.length; i++) {
         let a = element[i].nodeName;
         let b = element[i].nodeValue;
-        attribute = Object.assign(attribute, {[a]: b});
+        attribute = Object.assign(attribute, this._defineProperty({}, a, b))
       }
       attribute.parent = node.parent;
       attribute.grandFather = node.grandFather;
@@ -2009,7 +2015,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  getAttrsValueFromType(attr, node) {
+  getAttrsValueFromType(attr, node): any {
     let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     // tslint:disable-next-line: max-line-length
     let valueTypePath = '//xs:complexType[@name=\'' + node.type + '\']/xs:simpleContent/xs:extension/xs:attribute[@name=\'' + attr.name + '\']/xs:simpleType/xs:restriction/xs:enumeration';
@@ -2021,7 +2027,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         for (let j = 0; j < element[i].attributes.length; j++) {
           let a = element[i].attributes[j].nodeName;
           let b = element[i].attributes[j].nodeValue;
-          value = Object.assign(value, {[a]: b});
+          value = Object.assign(value, this._defineProperty({}, a, b));
         }
         valueArr.push(value);
       }
@@ -2029,7 +2035,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  getValFromDefault(node) {
+  getValFromDefault(node): any {
     let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     let attrTypePath = '/xs:schema/xs:element[@name=\'' + node.ref + '\']/@default';
     let ele = select(attrTypePath, this.doc);
@@ -2047,7 +2053,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     return valueArr;
   }
 
-  getVal(nodeValue) {
+  getVal(nodeValue): any {
     let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     let attrTypePath = '/xs:schema/xs:element[@name=\'' + nodeValue.ref + '\']/@type';
     let ele = select(attrTypePath, this.doc);
@@ -2066,7 +2072,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     return valueArr;
   }
 
-  getValueFromType(nodeValue, parentNode) {
+  getValueFromType(nodeValue, parentNode): any {
     let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     let attrTypePath = '/xs:schema/xs:element[@name=\'' + nodeValue + '\']/@type';
     let ele = select(attrTypePath, this.doc);
@@ -2351,60 +2357,62 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   addChild(child, nodeArr, check, index) {
-    let attrs = this.checkAttributes(child.ref);
-    let text = this.checkText(child.ref);
-    let value = this.getValues(child.ref);
-    let attrsType: any = this.getAttrFromType(child.ref, child.parent);
-    let valueType = this.getValueFromType(child.ref, child.parent);
-    let val = this.getVal(child);
-    if ((_.isEmpty(val)) && (_.isEmpty(value)) && (_.isEmpty(valueType))) {
-      val = this.getValFromDefault(child);
-    }
-    child.recreateJson = true;
-    child.order = index;
-    child.children = [];
-    nodeArr.expanded = true;
-    child.uuid = this.counting;
-    child.key = this.counting;
-    child.parentId = nodeArr.uuid;
-    this.counting++;
-    child.expanded = child.children && child.children.length > 0;
-    if (!(_.isEmpty(attrs))) {
-      this.attachAttrs(attrs, child);
-    }
-
-    nodeArr.children.push(child);
-    nodeArr.children = _.sortBy(nodeArr.children, 'order');
-    if (check) {
-      if ((nodeArr && (nodeArr.ref !== 'SystemMonitorNotification' || (nodeArr.ref === 'SystemMonitorNotification' && child.ref !== 'Timer')))) {
-        this.autoAddChild(child);
+    setTimeout(() => {
+      let attrs = this.checkAttributes(child.ref);
+      let text = this.checkText(child.ref);
+      let value = this.getValues(child.ref);
+      let attrsType: any = this.getAttrFromType(child.ref, child.parent);
+      let valueType = this.getValueFromType(child.ref, child.parent);
+      let val = this.getVal(child);
+      if ((_.isEmpty(val)) && (_.isEmpty(value)) && (_.isEmpty(valueType))) {
+        val = this.getValFromDefault(child);
       }
-    }
-    if (!(_.isEmpty(val))) {
-      this.attachValue(val, nodeArr.children);
-    }
-    if (!(_.isEmpty(value))) {
-      this.attachValue(value, nodeArr.children);
-    }
-    if (valueType !== undefined) {
-      this.attachValue(valueType, nodeArr.children);
-    }
-    if (attrsType !== undefined) {
-      this.attachTypeAttrs(attrsType, nodeArr.children);
-    }
-    if (!_.isEmpty(text)) {
-      this.addText(text, nodeArr.children);
-    }
-    // this.autoExpand(nodeArr);
-    this.printArraya(false);
-    if (child) {
-      this.selectedNode = child;
-      this.getData(this.selectedNode);
-
-      if (this.nodes.length > 0) {
-        this.scrollTreeToGivenId(this.selectedNode.uuid);
+      child.recreateJson = true;
+      child.order = index;
+      child.children = [];
+      nodeArr.expanded = true;
+      child.uuid = this.counting;
+      child.key = this.counting;
+      child.parentId = nodeArr.uuid;
+      this.counting++;
+      child.expanded = child.children && child.children.length > 0;
+      if (!(_.isEmpty(attrs))) {
+        this.attachAttrs(attrs, child);
       }
-    }
+
+      nodeArr.children.push(child);
+      nodeArr.children = _.sortBy(nodeArr.children, 'order');
+      if (check) {
+        if ((nodeArr && (nodeArr.ref !== 'SystemMonitorNotification' || (nodeArr.ref === 'SystemMonitorNotification' && child.ref !== 'Timer')))) {
+          this.autoAddChild(child);
+        }
+      }
+      if (!(_.isEmpty(val))) {
+        this.attachValue(val, nodeArr.children);
+      }
+      if (!(_.isEmpty(value))) {
+        this.attachValue(value, nodeArr.children);
+      }
+      if (valueType !== undefined) {
+        this.attachValue(valueType, nodeArr.children);
+      }
+      if (attrsType !== undefined) {
+        this.attachTypeAttrs(attrsType, nodeArr.children);
+      }
+      if (!_.isEmpty(text)) {
+        this.addText(text, nodeArr.children);
+      }
+      // this.autoExpand(nodeArr);
+      this.printArraya(false);
+      if (child) {
+        this.selectedNode = child;
+        this.getData(this.selectedNode);
+
+        if (this.nodes.length > 0) {
+          this.scrollTreeToGivenId(this.selectedNode.uuid);
+        }
+      }
+    }, 0);
   }
 
   autoAddChild(child) {
@@ -2592,78 +2600,78 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
     if (element[0] && element[0].nodeValue === 'NotEmptyType') {
-      var _a13 = element[0].nodeName;
-      var _x2 = element[0].nodeValue;
-      value = Object.assign(value, this._defineProperty({}, _a13, _x2));
-      var simpleTypePath = '//xs:simpleType[@name=\'' + value.base + '\']/xs:restriction/@*';
+      let a = element[0].nodeName;
+      let x = element[0].nodeValue;
+      value = Object.assign(value, this._defineProperty({}, a, x));
+      let simpleTypePath = '//xs:simpleType[@name=\'' + value.base + '\']/xs:restriction/@*';
       element = select(simpleTypePath, this.doc);
 
       if (element.length > 0) {
-        _a13 = element[0].nodeName;
+        a = element[0].nodeName;
         b = element[0].nodeValue;
-        value = Object.assign(value, this._defineProperty({}, _a13, b));
-        var minLengthPath = '//xs:simpleType[@name=\'' + _x2 + '\']/xs:restriction/xs:minLength/@*';
+        value = Object.assign(value, this._defineProperty({}, a, b));
+        const minLengthPath = '//xs:simpleType[@name=\'' + x + '\']/xs:restriction/xs:minLength/@*';
         element = select(minLengthPath, this.doc);
-        _a13 = element[0].nodeName;
+        a = element[0].nodeName;
         b = element[0].nodeValue;
-        value = Object.assign(value, this._defineProperty({}, _a13, b));
+        value = Object.assign(value, this._defineProperty({}, a, b));
       }
 
-      var _defultPath = '//xs:element[@name=\'' + node + '\']/@*';
+      let _defultPath = '//xs:element[@name=\'' + node + '\']/@*';
 
-      var _defAttr = select(_defultPath, this.doc);
+      let _defAttr = select(_defultPath, this.doc);
 
       if (_defAttr.length > 0) {
-        for (let _s = 0; _s < _defAttr.length; _s++) {
-          if (_defAttr[_s].nodeName === 'default') {
-            value.default = _defAttr[_s].nodeValue;
-            value.data = _defAttr[_s].nodeValue;
+        for (let s = 0; s < _defAttr.length; s++) {
+          if (_defAttr[s].nodeName === 'default') {
+            value.default = _defAttr[s].nodeValue;
+            value.data = _defAttr[s].nodeValue;
           }
         }
       }
 
       value.parent = node;
     } else {
-      var extensionPath1 = '//xs:element[@name=\'' + node + '\']/xs:simpleType/xs:restriction/@*';
+      let extensionPath1 = '//xs:element[@name=\'' + node + '\']/xs:simpleType/xs:restriction/@*';
       element = select(extensionPath1, this.doc);
 
       if (element.length > 0) {
-        var _a14 = element[0].nodeName;
-        var c = element[0].nodeValue;
-        value = Object.assign(value, this._defineProperty({}, _a14, c));
+        let a = element[0].nodeName;
+        let c = element[0].nodeValue;
+        value = Object.assign(value, this._defineProperty({}, a, c));
 
-        var _defultPath2 = '//xs:element[@name=\'' + node + '\']/@*';
+        let _defultPath2 = '//xs:element[@name=\'' + node + '\']/@*';
 
-        var _defAttr2 = select(_defultPath2, this.doc);
+        let _defAttr2 = select(_defultPath2, this.doc);
 
         if (_defAttr2.length > 0) {
-          for (let _s2 = 0; _s2 < _defAttr2.length; _s2++) {
-            if (_defAttr2[_s2].nodeName === 'default') {
-              value.default = _defAttr2[_s2].nodeValue;
-              value.data = _defAttr2[_s2].nodeValue;
+          for (let s = 0; s < _defAttr2.length; s++) {
+            if (_defAttr2[s].nodeName === 'default') {
+              value.default = _defAttr2[s].nodeValue;
+              value.data = _defAttr2[s].nodeValue;
             }
           }
         }
 
-        var _minLengthPath = '//xs:element[@name=\'' + node + '\']/xs:simpleType/xs:restriction/xs:minLength/@*';
+        let _minLengthPath = '//xs:element[@name=\'' + node + '\']/xs:simpleType/xs:restriction/xs:minLength/@*';
 
         element = select(_minLengthPath, this.doc);
-        var enumPath = '//xs:element[@name=\'' + node + '\']/xs:simpleType/xs:restriction/xs:enumeration/@*';
-        var ele = select(enumPath, this.doc);
+        let enumPath = '//xs:element[@name=\'' + node + '\']/xs:simpleType/xs:restriction/xs:enumeration/@*';
+        let ele = select(enumPath, this.doc);
 
         if (element.length > 0) {
-          _a14 = element[0].nodeName;
+          a = element[0].nodeName;
           b = element[0].nodeValue;
-          value = Object.assign(value, this._defineProperty({}, _a14, b));
-          var defultPath1 = '//xs:element[@name=\'' + node + '\']/@*';
+          value = Object.assign(value, this._defineProperty({}, a, b));
+          let defultPath1 = '//xs:element[@name=\'' + node + '\']/@*';
 
-          var _defAttr3 = select(defultPath1, this.doc);
+          let _defAttr3 = select(defultPath1, this.doc);
 
           if (_defAttr3.length > 0) {
-            for (let _s3 = 0; _s3 < _defAttr3.length; _s3++) {
-              if (_defAttr3[_s3].nodeName === 'default') {
-                value.default = _defAttr3[_s3].nodeValue;
-                value.data = _defAttr3[_s3].nodeValue;
+            for (let s = 0; s < _defAttr3.length; s++) {
+              if (_defAttr3[s].nodeName === 'default') {
+                value.default = _defAttr3[s].nodeValue;
+                value.data = _defAttr3[s].nodeValue;
               }
             }
           }
@@ -2674,21 +2682,21 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
           for (let i = 0; i < ele.length; i++) {
             let z = {};
-            let _x3 = ele[i].nodeName;
+            let x = ele[i].nodeName;
             let y = ele[i].nodeValue;
-            z = Object.assign(z, this._defineProperty({}, _x3, y));
+            z = Object.assign(z, this._defineProperty({}, x, y));
             value.values.push(z);
           }
 
-          var defultPath2 = '//xs:element[@name=\'' + node + '\']/@*';
+          let defultPath2 = '//xs:element[@name=\'' + node + '\']/@*';
 
-          var _defAttr4 = select(defultPath2, this.doc);
+          let _defAttr4 = select(defultPath2, this.doc);
 
           if (_defAttr4.length > 0) {
-            for (let _s4 = 0; _s4 < _defAttr4.length; _s4++) {
-              if (_defAttr4[_s4].nodeName === 'default') {
-                value.default = _defAttr4[_s4].nodeValue;
-                value.data = _defAttr4[_s4].nodeValue;
+            for (let s = 0; s < _defAttr4.length; s++) {
+              if (_defAttr4[s].nodeName === 'default') {
+                value.default = _defAttr4[s].nodeValue;
+                value.data = _defAttr4[s].nodeValue;
               }
             }
           }
@@ -2699,31 +2707,27 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         value.parent = node;
       }
     }
-
-    var xmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:annotation/xs:appinfo/XmlEditor/@type';
-    var attr = select(xmlEditorPath, this.doc);
-
+    const xmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:annotation/xs:appinfo/XmlEditor/@type';
+    const attr = select(xmlEditorPath, this.doc);
     if (attr.length > 0) {
       value.base = attr[0].nodeValue;
     }
 
     if (_.isEmpty(value)) {
-      var _x4;
-
-      var valueFromXmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:annotation/xs:appinfo/XmlEditor';
-      var attr1 = select(valueFromXmlEditorPath, this.doc);
-
+      let x;
+      const valueFromXmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:annotation/xs:appinfo/XmlEditor';
+      const attr1 = select(valueFromXmlEditorPath, this.doc);
       if (attr1.length > 0) {
         if (attr1[0].attributes && attr1[0].attributes.length > 0) {
-          for (let _i32 = 0; _i32 < attr1[0].attributes.length; _i32++) {
-            if (attr1[0].attributes[_i32].nodeName === 'type') {
-              _x4 = attr1[0].attributes[_i32].nodeValue;
+          for (let i = 0; i < attr1[0].attributes.length; i++) {
+            if (attr1[0].attributes[i].nodeName === 'type') {
+              x = attr1[0].attributes[i].nodeValue;
               break;
             }
           }
 
-          if (_x4 !== undefined) {
-            value.base = _x4;
+          if (x !== undefined) {
+            value.base = x;
             value.parent = node;
           } else {
             value.base = 'xs:string';
@@ -3039,9 +3043,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // to send data in details component
   getData(event) {
-    setTimeout(() => {
-      this.calcHeight();
-    }, 1);
     if (event && event.keyref) {
       for (let i = 0; i < event.attributes.length; i++) {
         if (event.attributes[i].name === event.keyref) {
@@ -3052,12 +3053,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.selectedNode = event;
     this.breadCrumbArray = [];
-    this.createBreadCrumb(event);
-    this.breadCrumbArray.reverse();
+    if (event) {
+      this.createBreadCrumb(event);
+      this.breadCrumbArray.reverse();
+    }
   }
 
   // BreadCrumb
-  createBreadCrumb(node) {
+  createBreadCrumb(node): void {
     if (this.nodes[0] && this.nodes[0].ref === node.parent && this.nodes[0].uuid === node.parentId) {
       this.breadCrumbArray.push(this.nodes[0]);
     } else {
@@ -3069,8 +3072,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  createBreadCrumbRecursion(node, nodes) {
-    if (nodes.ref === node.parent && nodes.uuid === node.parentId) {
+  createBreadCrumbRecursion(node, nodes): void {
+    if (nodes && nodes.ref === node.parent && nodes.uuid === node.parentId) {
       this.breadCrumbArray.push(nodes);
       this.createBreadCrumb(nodes);
     } else {
@@ -3083,13 +3086,13 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   // Expand automatically on add nodes
-  autoExpand(exNode) {
+  autoExpand(exNode): void {
     exNode.expanded = true;
     this.updateTree();
   }
 
   // expand particular node
-  expandNode(node) {
+  expandNode(node): void {
     node.expanded = true;
     if (node.children && node.children.length > 0) {
       for (let i = 0; i < node.children.length; i++) {
@@ -3144,12 +3147,16 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
 // Remove Node
-  removeNode(node) {
+  removeNode(node): void {
+    this.dRefFlag = 0;
     if (node.parent === '#') {
-      alert('Cannot Delete Root Node');
     } else {
       this.isNext = false;
       this.getParent(node, this.nodes[0]);
+    }
+    if (this.selectedNode.ref === node.ref) {
+      this.selectedNode = this.nodes[0];
+      this.getIndividualData(this.selectedNode, undefined);
     }
   }
 
@@ -3180,18 +3187,42 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           this.isNext = false;
         }
       }
-      if (node.key) {
-        if (this.nodes[0].keyref) {
-          if (this.nodes[0].attributes.length > 0) {
-            for (let i = 0; i < this.nodes[0].attributes.length; i++) {
-              if (this.nodes[0].keyref === this.nodes[0].attributes[i].name) {
-                for (let j = 0; j < node.attributes.length; j++) {
-                  if (node.attributes[j].name === node.key) {
-                    if (this.nodes[0].attributes[i].data === node.attributes[j].data) {
-                      for (let key in this.nodes[0].attributes[i]) {
-                        if (key === 'data') {
-                          delete this.nodes[0].attributes[i][key];
-                        }
+      if (node.keyReference) {
+        this.checkRefPresent(node, this.nodes[0]);
+      }
+    }
+  }
+
+  checkRefPresent(node, child) {
+    if (child.ref == node.ref) {
+      if (child.attributes) {
+        for (let i = 0; i < child.attributes.length; i++) {
+          for (let j = 0; j < node.attributes.length; j++) {
+            if (child.attributes[i].name == node.attributes[j].name) {
+              this.dRefFlag++;
+              break;
+            }
+          }
+        }
+      }
+    } else {
+      if (child.nodes && child.nodes.length > 0) {
+        for (let i = 0; i < child.nodes.length; i++) {
+          this.checkRefPresent(node, child.nodes[i]);
+        }
+      }
+    }
+    if (this.dRefFlag < 1) {
+      if (this.nodes[0].keyref) {
+        if (this.nodes[0].attributes.length > 0) {
+          for (let i = 0; i < this.nodes[0].attributes.length; i++) {
+            if (this.nodes[0].keyref === this.nodes[0].attributes[i].name) {
+              for (let j = 0; j < node.attributes.length; j++) {
+                if (node.attributes[j].name == node.keyReference) {
+                  if (this.nodes[0].attributes[i].data == node.attributes[j].data) {
+                    for (let key in this.nodes[0].attributes[i]) {
+                      if (key == 'data') {
+                        delete this.nodes[0].attributes[i][key];
                       }
                     }
                   }
@@ -3199,11 +3230,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
               }
             }
           }
-        } else {
-          if (this.nodes[0].children) {
-            for (let i = 0; i < this.nodes[0].children.length; i++) {
-              this.deleteKeyRefData(this.nodes[0].children[i], node);
-            }
+        }
+      } else {
+        if (this.nodes[0].nodes) {
+          for (let i = 0; i < this.nodes[0].nodes.length; i++) {
+            this.deleteKeyRefData(this.nodes[0].nodes[i], node);
           }
         }
       }
@@ -3217,7 +3248,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
           if (child.keyref === child.attributes[i].name) {
             if (node.attributes) {
               for (let j = 0; j < node.attributes.length; j++) {
-                if (node.attributes[j].name === node.key) {
+                if (node.attributes[j].name === node.keyReference) {
                   if (child.attributes[i].data === node.attributes[j].data) {
                     for (let key in child.attributes[i]) {
                       if (key === 'data') {
@@ -3358,7 +3389,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   // Paste Node
-  pasteNode(node) {
+  pasteNode(node): void {
     if (this.cutData) {
       this.searchAndRemoveNode(this.copyItem);
     }
@@ -3382,10 +3413,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         this.changeParentId(res, this.copyItem.uuid);
       });
     }
-    let copyData = JSON.parse(JSON.stringify(this.copyItem));
-    if (node.ref === 'Profiles' && this.router.url.split('/')[2] === 'yade' && !this.cutData) {
+    let copyData = this.coreService.clone(this.copyItem);
+    if (node.ref === 'Profiles' && !this.cutData) {
       let tName;
-      let x = [];
       if (copyData && copyData.attributes) {
         for (let i = 0; i < copyData.attributes.length; i++) {
           if (copyData.attributes[i].name === 'profile_id' && copyData.attributes[i].data) {
@@ -3393,10 +3423,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
               for (let k = 0; k < node.children[j].attributes.length; k++) {
                 if (node.children[j].attributes[k].name === 'profile_id' && node.children[j].attributes[k].data) {
                   if (node.children[j].attributes[k].data.match(/-copy[0-9]+/i)) {
-                    x.push(node.children[j].attributes[k].data);
                     tName = node.children[j].attributes[k].data;
-                    break;
                   }
+                  break;
                 }
               }
             }
@@ -3421,7 +3450,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     }
-    node.children.push(Object.assign({}, copyData));
+    node.children.push(this.coreService.clone(copyData));
     node.children = _.sortBy(node.children, 'order');
     this.cutData = false;
     this.checkRule = true;
@@ -3493,10 +3522,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
 // Show all Child Nodes and search functionalities.
-  showAllChildNode(node) {
+  showAllChildNode(node): void {
     this.showAllChild = [];
-    const text = node.text;
-    const _node = {ref: node.ref, parent: node.parent};
     const obj = {ref: node.ref, parent: node.parent, children: [], expanded: true};
     this.checkChildNode(obj, obj);
     this.counter = 0;
@@ -3541,7 +3568,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
         for (let j = 0; j < this.keyNodes[i].ownerElement.childNodes.length; j++) {
           if (this.keyNodes[i].ownerElement.childNodes[j].nodeName === 'xs:field') {
             for (let k = 0; k < this.keyNodes[i].ownerElement.childNodes[j].attributes.length; k++) {
-              keyattrs.key = this.strReplace(this.keyNodes[i].ownerElement.childNodes[j].attributes[k].nodeValue);
+              keyattrs.keyReference = this.strReplace(this.keyNodes[i].ownerElement.childNodes[j].attributes[k].nodeValue);
             }
             break;
           }
@@ -3585,7 +3612,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     let k = false;
     let keyre = false;
     for (let key in nodes) {
-      if (key === 'key') {
+      if (key === 'keyReference') {
         k = true;
         break;
       } else if (key === 'keyref') {
@@ -3597,7 +3624,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       for (let i = 0; i < this.nodes[0].children.length; i++) {
         if (this.nodes[0].children[i].ref === nodes.name) {
           if (k) {
-            this.nodes[0].children[i].key = nodes.key;
+            this.nodes[0].children[i].keyReference = nodes.keyReference;
           } else if (keyre) {
             this.nodes[0].children[i].keyref = nodes.keyref;
           }
@@ -3614,7 +3641,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       let ke = false;
       let keyref = false;
       for (let key in showAllChild) {
-        if (key === 'key') {
+        if (key === 'keyReference') {
           ke = true;
           break;
         } else if (key === 'keyref') {
@@ -3625,7 +3652,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       for (let i = 0; i < child.length; i++) {
         if (child[i].ref === showAllChild.name) {
           if (ke) {
-            child[i].key = showAllChild.key;
+            child[i].keyReference = showAllChild.keyReference;
           } else if (keyref) {
             child[i].keyref = showAllChild.keyref;
             if (child[i].attributes) {
@@ -3695,9 +3722,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   attachKeyReferencing(key) {
     if (key.name) {
-      if (this.nodes[0].ref === key.name && this.nodes[0].key) {
+      if (this.nodes[0].ref === key.name && this.nodes[0].keyReference) {
         for (let i = 0; i < this.nodes[0].attributes.length; i++) {
-          if (this.nodes[0].attributes[i].name === this.nodes[0].key) {
+          if (this.nodes[0].attributes[i].name === this.nodes[0].keyReference) {
             this.nodes[0].attributes[i].refElement = key.refe;
             break;
           }
@@ -3712,9 +3739,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   attachKeyReferencingRecursion(key, child) {
     if (key.name) {
-      if (child.ref === key.name && child.key && child.attributes) {
+      if (child.ref === key.name && child.keyReference && child.attributes) {
         for (let i = 0; i < child.attributes.length; i++) {
-          if (child.attributes[i].name === child.key) {
+          if (child.attributes[i].name === child.keyReference) {
             child.attributes[i].refElement = key.refe;
             break;
           }
@@ -3733,7 +3760,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.error = true;
     } else {
       if (event.match(/<[^>]+>/gm)) {
-        let x = event.replace(/<[^>]+>/gm);
+        const x = event.replace(/<[^>]+>/gm);
         if (x !== 'undefined&nbsp;undefined') {
           nodes.values[0] = Object.assign(nodes.values[0], {data: event});
           event = '';
@@ -4268,8 +4295,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     let temp;
     for (let i = 0; i < childNode.length; i++) {
       if (childNode[i].ref === refer) {
-        if (childNode[i].key) {
-          temp = childNode[i].key;
+        if (childNode[i].keyReference) {
+          temp = childNode[i].keyReference;
           for (let j = 0; j < childNode[i].attributes.length; j++) {
             if (childNode[i].attributes[j].name === temp) {
               if (childNode[i].attributes[j] && childNode[i].attributes[j].data) {
@@ -4290,9 +4317,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   gotoKey(node) {
     if (node !== undefined) {
       if (node.refer === this.nodes[0].ref) {
-        if (this.nodes[0].key) {
+        if (this.nodes[0].keyReference) {
           for (let i = 0; i < this.nodes[0].attributes.length; i++) {
-            if (this.nodes[0].attributes[i].name === this.nodes[0].key) {
+            if (this.nodes[0].attributes[i].name === this.nodes[0].keyReference) {
               if (node.data === this.nodes[0].attributes[i].data) {
                 this.getData(this.nodes[0]);
                 this.selectedNode = this.nodes[0];
@@ -4317,9 +4344,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   gotoKeyRecursion(node, child) {
     if (node !== undefined) {
       if (node.refer === child.ref) {
-        if (child.key) {
+        if (child.keyReference) {
           for (let i = 0; i < child.attributes.length; i++) {
-            if (child.attributes[i].name === child.key) {
+            if (child.attributes[i].name === child.keyReference) {
               if (node.data === child.attributes[i].data) {
                 this.getData(child);
                 this.selectedNode = child;
@@ -4512,6 +4539,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       objectType: this.objectType,
       forceLive: true
     }).subscribe((res: any) => {
+      if(res.validation && res.validation.validated) {
+        this.validConfig = true;
+      }
       if (res.configuration) {
         this.schemaIdentifier = res.schemaIdentifier;
         liveVersion = res.configuration;
@@ -4524,7 +4554,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }, (error) => {
       this.isLoading = false;
-      this.toasterService.pop('error', error.error.message);
+      this.toasterService.pop('error', error.data.error.message);
     });
     const modalRef = this.modalService.open(DiffPatchModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.liveXml = this.liveXml;
@@ -4670,8 +4700,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.storeXML(res.schemaIdentifier);
     }, (error) => {
       this.isLoading = false;
-      if (error.error) {
-        this.toasterService.pop('error', error.error.message);
+      if (error.data && error.data.error) {
+        this.toasterService.pop('error', error.data.error.message);
       }
     });
   }
@@ -5177,13 +5207,13 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }, 1);
   }
 
-  removeCkCss(id) {
+  removeCkCss(id): void {
     setTimeout(() => {
       $(('#') + id + (' .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused)')).removeClass('invalid');
     }, 1);
   }
 
-  addContent(data) {
+  addContent(data): void {
     if (data && data[0] && data[0].data !== undefined) {
       this.myContent = data[0].data;
     } else {
@@ -5191,51 +5221,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  passwordLabel(password: any) {
-    if (password && password.values && password.values.length > 0) {
-      password = password.values[0].data;
-      if (password !== undefined) {
-        return '********';
-      }
+  passwordLabel(password: any): string {
+    if (password !== undefined) {
+      return '********';
     }
-  }
-
-  calcHeight() {
-    const a = $('.top-header-bar').outerHeight(true);
-    const b = $('.navbar').outerHeight(true);
-    const c = $('.white').outerHeight(true);
-    const d = $('.attr').outerHeight(true);
-    const e = $('.val').outerHeight(true);
-    const f = $(window).outerHeight(true);
-
-    if ((d === null || d === 'null') && (e === null || e === 'null')) {
-
-      let x = f - a - b - c - 160;
-      $('.documents').css({
-        'max-height': x + 'px'
-      });
-    } else if ((d === null || d === 'null') && (e !== null || e !== 'null')) {
-      let x = f - a - b - c - e - 160;
-      $('.documents').css({
-        'max-height': x + 'px'
-      });
-    } else if ((d !== null || d !== 'null') && (e == null || e === 'null')) {
-      let x = f - a - b - c - d - 160;
-      if (x > 300) {
-        $('.documents').css({
-          'max-height': x + 'px'
-        });
-      } else {
-        $('.documents').css({
-          'max-height': 300 + 'px'
-        });
-      }
-    }
-  }
-
-  @HostListener('window:beforeunload', ['$event'])
-  beforeunload($event) {
-    return true;
   }
 
   private del() {
@@ -5616,6 +5605,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       obj.configuration = this._xml;
     }
     this.coreService.post('xmleditor/read', obj).subscribe((res: any) => {
+      if(res.validation && res.validation.validated) {
+        this.validConfig = true;
+      }
       this.schemaIdentifier = res.schemaIdentifier;
       if (res.schema) {
         this.path = res.schema;
@@ -5657,8 +5649,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }, (error) => {
       this.validConfig = false;
-      if (error.error) {
-        this.toasterService.pop('error', error.error.message);
+      if (error.data && error.data.error) {
+        this.toasterService.pop('error', error.data.error.message);
       }
     });
   }

@@ -253,9 +253,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
     this.loadSettingConfiguration();
     this.count = this.sessionTimeout / 1000;
-    if (this.sessionTimeout > 0) {
-      this.calculateTime();
-    }
+    this.calculateTime();
     this.nzConfigService.set('empty', {nzDefaultEmptyContent: this.customTpl});
     setTimeout(() => {
       LayoutComponent.calculateHeight();
@@ -386,33 +384,34 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   private calculateTime(): void {
     this.interval = setInterval(() => {
-      --this.count;
       if (!this.preferences.zone && sessionStorage.preferences) {
         this.preferences = JSON.parse(sessionStorage.preferences) || {};
       }
       this.currentTime = this.coreService.stringToDate(this.preferences, new Date());
-      let s = Math.floor((this.count) % 60),
-        m = Math.floor((this.count / (60)) % 60),
-        h = Math.floor((this.count / (60 * 60)) % 24),
-        d = Math.floor(this.count / (60 * 60 * 24));
+      if (this.sessionTimeout > 0) {
+        --this.count;
+        let s = Math.floor((this.count) % 60),
+          m = Math.floor((this.count / (60)) % 60),
+          h = Math.floor((this.count / (60 * 60)) % 24),
+          d = Math.floor(this.count / (60 * 60 * 24));
 
-      const x = m > 9 ? m : '0' + m;
-      const y = s > 9 ? s : '0' + s;
+        const x = m > 9 ? m : '0' + m;
+        const y = s > 9 ? s : '0' + s;
 
-      if (d === 0 && h !== 0) {
-        this.remainingSessionTime = h + 'h ' + x + 'm ' + y + 's';
-      } else if (d === 0 && h === 0 && m !== 0) {
-        this.remainingSessionTime = x + 'm ' + y + 's';
-      } else if (d === 0 && h === 0 && m === 0) {
-        this.remainingSessionTime = s + 's';
-      } else {
-        this.remainingSessionTime = d + 'd ' + h + 'h';
-      }
-
-      if (this.count <= 0) {
-        clearInterval(this.interval);
-        this.isLogout = true;
-        this.logout('timeout');
+        if (d === 0 && h !== 0) {
+          this.remainingSessionTime = h + 'h ' + x + 'm ' + y + 's';
+        } else if (d === 0 && h === 0 && m !== 0) {
+          this.remainingSessionTime = x + 'm ' + y + 's';
+        } else if (d === 0 && h === 0 && m === 0) {
+          this.remainingSessionTime = s + 's';
+        } else {
+          this.remainingSessionTime = d + 'd ' + h + 'h';
+        }
+        if (this.count <= 0) {
+          clearInterval(this.interval);
+          this.isLogout = true;
+          this.logout('timeout');
+        }
       }
     }, 1000);
   }

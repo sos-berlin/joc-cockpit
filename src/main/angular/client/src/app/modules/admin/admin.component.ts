@@ -29,7 +29,6 @@ export class AdminComponent implements OnInit, OnDestroy {
               public coreService: CoreService, private dataService: DataService) {
     this.subscription1 = router.events
       .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd)).subscribe((e: any) => {
-        console.log('>>>>>', e);
         this.checkUrl(e);
       });
     this.subscription2 = this.dataService.functionAnnounced$.subscribe(res => {

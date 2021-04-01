@@ -32,7 +32,7 @@ export class PermissionModalComponent {
   constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
   }
 
-  checkCovered(currentPermission) {
+  checkCovered(currentPermission): void {
     this.isCovered = false;
     this.rolePermissions.forEach((permission1) => {
       if (currentPermission.path.trim() && currentPermission.path.trim().indexOf(permission1.path) !== -1 &&
@@ -102,7 +102,7 @@ export class FolderModalComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private authService: AuthService, private modalService: NgbModal) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
   }
 
@@ -226,7 +226,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.pageView = JSON.parse(localStorage.views).permission;
     this.sub = this.route.params.subscribe(params => {
       this.masterName = params['master.master'];
@@ -238,12 +238,12 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
   }
 
-  getPermissions() {
+  getPermissions(): void {
     this.coreService.post('authentication/permissions', {}).subscribe(res => {
       this.PermissionsObj = res;
       this.permissions = this.PermissionsObj.SOSPermissions;
@@ -254,7 +254,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  addFolder() {
+  addFolder(): void {
     let folder = {folder: '', recursive: true};
     const modalRef = this.modalService.open(FolderModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.currentFolder = folder;
@@ -271,7 +271,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  editFolder(folder) {
+  editFolder(folder): void {
     let tempFolder = _.clone(folder);
     tempFolder.folder = tempFolder.folder == '' ? '/' : tempFolder.folder;
     tempFolder.folderName = tempFolder.folder;
@@ -289,7 +289,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteFolder(folder) {
+  deleteFolder(folder): void {
     const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.title = 'delete';
     modalRef.componentInstance.message = 'deleteFolder';
@@ -302,9 +302,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  addPermission() {
+  addPermission(): void {
     let permission = {path: '', excluded: false};
-    const modalRef = this.modalService.open(PermissionModalComponent, {backdrop: 'static', size:'lg'});
+    const modalRef = this.modalService.open(PermissionModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.currentPermission = permission;
     modalRef.componentInstance.permissionOptions = this.permissionOptions;
     modalRef.componentInstance.rolePermissions = this.rolePermissions;
@@ -318,10 +318,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  editPermission(permission) {
+  editPermission(permission): void {
     let tempPermission = _.clone(permission);
     tempPermission.permissionLabel = permission.path;
-    const modalRef = this.modalService.open(PermissionModalComponent, {backdrop: 'static', size:'lg'});
+    const modalRef = this.modalService.open(PermissionModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.currentPermission = tempPermission;
     modalRef.componentInstance.oldPermission = permission;
     modalRef.componentInstance.permissionOptions = this.permissionOptions;
@@ -330,7 +330,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.master = this.masterName;
     modalRef.componentInstance.role = this.roleName;
     modalRef.result.then((result) => {
-
       let exists = false;
       for (let i = 0; i < this.rolePermissions.length; i++) {
         if (this.rolePermissions[i].path == result.path) {
@@ -355,7 +354,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  deletePermission(permission) {
+  deletePermission(permission): void {
     const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.title = 'delete';
     modalRef.componentInstance.message = 'deletePermission';
@@ -372,7 +371,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadPermission() {
+  loadPermission(): void {
     this.masters.forEach((master) => {
       if (_.isEqual(master.master, this.masterName) || (master.master == '' && this.masterName === 'default')) {
         master.roles.forEach((value) => {
@@ -386,8 +385,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  preparePermissionJSON() {
-    this.permissionArr = this.permissions.SOSPermissionListJoc.SOSPermission;
+  preparePermissionJSON(): void {
+    this.permissionArr = this.permissions.SOSPermission;
     for (let i = 0; i < this.permissionArr.length; i++) {
       let nodes = this.permissionArr[i].split(':');
       let arr = [];
@@ -429,8 +428,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  preparePermissionOptions() {
-    let temp = this.permissions.SOSPermissionListJoc.SOSPermission;
+  preparePermissionOptions(): void {
+    let temp = this.permissions.SOSPermission;
     temp.forEach((option, index) => {
       if (index > 0 && (option.split(':')[2] != temp[index - 1].split(':')[2] || option.split(':')[3] != temp[index - 1].split(':')[3])) {
         this.permissionOptions.push('---------------------------------------------------------------------------------');
@@ -440,15 +439,15 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
   }
 
-  recursiveUpdate(arr, obj) {
-    if (arr._parents.length == 0) {
+  recursiveUpdate(arr, obj): void {
+    if (arr._parents.length === 0) {
       arr._parents.push(obj);
     } else {
       this.recursiveUpdate(arr._parents[0], obj);
     }
   }
 
-  recursiveUpdate1(permission, arr) {
+  recursiveUpdate1(permission, arr): void {
     let flag = true;
     if (arr[0]._parents) {
       for (let y = 0; y < permission._parents.length; y++) {
@@ -461,10 +460,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     if (flag) {
       permission._parents.push(arr[0]);
     }
-
   }
 
-  findPermissionObj(permissionNodes, permission) {
+  findPermissionObj(permissionNodes, permission): void {
     if (permissionNodes._parents) {
       for (let i = 0; i < permissionNodes._parents.length; i++) {
         if ((permissionNodes._parents[i].path + permissionNodes._parents[i].name) == permission) {
@@ -489,7 +487,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateChildExclude(permissionNodes, excluded) {
+  updateChildExclude(permissionNodes, excluded): void {
     if (permissionNodes._parents) {
       for (let i = 0; i < permissionNodes._parents.length; i++) {
         permissionNodes._parents[i].excluded = excluded;
@@ -502,7 +500,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectPermissionObj(permissionNodes, permission, excluded) {
+  selectPermissionObj(permissionNodes, permission, excluded): void {
     if (permissionNodes._parents) {
       for (let i = 0; i < permissionNodes._parents.length; i++) {
         if ((permissionNodes._parents[i].path + permissionNodes._parents[i].name) == permission) {
@@ -524,30 +522,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  unSelectPermissionObj(permissionNodes, permission, excluded) {
-    if (permissionNodes._parents) {
-      for (let i = 0; i < permissionNodes._parents.length; i++) {
-        if ((permissionNodes._parents[i].path + permissionNodes._parents[i].name) == permission) {
-          permissionNodes._parents[i].excluded = !permissionNodes._parents[i].excluded;
-          if (permissionNodes._parents[i].excluded) {
-            permissionNodes._parents[i].greyedBtn = false;
-          }
-          this.updateChildExclude(permissionNodes._parents[i], excluded);
-          break;
-        }
-        this.unSelectPermissionObj(permissionNodes._parents[i], permission, excluded);
-      }
-    } else {
-      if ((permissionNodes.path + permissionNodes.name) == permission) {
-        permissionNodes.excluded = !permissionNodes.excluded;
-        if (permissionNodes.excluded) {
-          permissionNodes.greyedBtn = false;
-        }
-      }
-    }
-  }
-
-  selectedNode(permission_node, flag) {
+  selectedNode(permission_node, flag): void {
     if (permission_node && permission_node._parents) {
       for (let j = 0; j < permission_node._parents.length; j++) {
         permission_node._parents[j].greyed = true;
@@ -562,7 +537,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  unSelectedNode(permission_node, flag) {
+  unSelectedNode(permission_node, flag): void {
     if (permission_node && permission_node._parents) {
       for (let j = 0; j < permission_node._parents.length; j++) {
         permission_node._parents[j].greyed = false;
@@ -577,7 +552,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  checkPermissionListRecursively(permission_node, list) {
+  checkPermissionListRecursively(permission_node, list): void {
     if (permission_node && permission_node._parents) {
       for (let j = 0; j < permission_node._parents.length; j++) {
         permission_node._parents[j].greyed = !list.excluded;
@@ -594,7 +569,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  checkPermissionList(permission_node, list) {
+  checkPermissionList(permission_node, list): void {
     if (list.length > 0) {
       if (permission_node && permission_node._parents) {
         for (let j = 0; j < permission_node._parents.length; j++) {
@@ -633,7 +608,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectedExcludeNode(permission_node) {
+  selectedExcludeNode(permission_node): void {
     if (permission_node && permission_node._parents) {
       for (let j = 0; j < permission_node._parents.length; j++) {
         permission_node._parents[j].greyedBtn = true;
@@ -645,7 +620,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  unSelectedExcludeNode(permission_node) {
+  unSelectedExcludeNode(permission_node): void {
     if (permission_node && permission_node._parents) {
       for (let j = 0; j < permission_node._parents.length; j++) {
         permission_node._parents[j].greyedBtn = false;
@@ -657,8 +632,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  calculateHeight() {
-    let headerHt = $('.app-header').height() || 60;
+  calculateHeight(): void {
+    let headerHt = $('.app-header').height() || 61;
     let topHeaderHt = $('.top-header-bar').height() || 16;
     let subHeaderHt = 59;
     let folderDivHt = $('.folder').height();
@@ -666,13 +641,13 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     $('#mainTree').css('height', this.ht + 80 + 'px');
   }
 
-  switchTree() {
+  switchTree(): void {
     if (!this.svg) {
       this.drawTree(this.permissionNodes[0][0], '');
     }
   }
 
-  saveInfo() {
+  saveInfo(): void {
     let obj = {
       users: this.userDetail.users,
       masters: this.masters,
@@ -680,13 +655,11 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     };
 
     this.coreService.post('authentication/shiro/store', obj).subscribe(res => {
-      console.log(res);
-    }, err => {
 
     });
   }
 
-  updatePermissionList() {
+  updatePermissionList(): void {
     this.unSelectedNode(this.permissionNodes[0][0], true);
     this.checkPermissionList(this.permissionNodes[0][0], _.clone(this.rolePermissions));
     this.updateDiagramData(this.permissionNodes[0][0]);
@@ -705,7 +678,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     this.saveInfo();
   }
 
-  undoPermission() {
+  undoPermission(): void {
     this.rolePermissions = this.previousPermission[this.previousPermission.length - 1];
     this.previousPermission.splice(this.previousPermission.length - 1, 1);
     if (_.isEqual(this.originalPermission, this.rolePermissions)) {
@@ -714,26 +687,26 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     this.updatePermissionList();
   }
 
-  resetPermission() {
+  resetPermission(): void {
     this.rolePermissions = _.clone(this.originalPermission);
     this.previousPermission = [];
     this.updatePermissionList();
     this.isReset = false;
   }
 
-  expandAll() {
+  expandAll(): void {
     this.drawTree(this.permissionNodes[0][0], 'EXPANDALL');
   }
 
-  collapseAll() {
+  collapseAll(): void {
     this.drawTree(this.permissionNodes[0][0], 'COLLAPSEALL');
   }
 
-  expandSelected() {
+  expandSelected(): void {
     this.drawTree(this.permissionNodes[0][0], 'EXPANDSELECTED');
   }
 
-  collapseUnselected() {
+  collapseUnselected(): void {
     this.drawTree(this.permissionNodes[0][0], 'COLLAPSEUNSELECTED');
   }
 
@@ -741,7 +714,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     this.drawTree(this.permissionNodes[0][0], 'UPDATEDDIAGRAM');
   }
 
-  drawTree(json, type) {
+  drawTree(json, type): void {
     let nodes;
     const self = this;
     let endNodes2 = {
@@ -761,7 +734,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       return;
     } else if (type === 'EXPANDSELECTED') {
       nodes = this._nodes;
-      nodes.forEach(function (permissionNodes) {
+      nodes.forEach(function(permissionNodes) {
         if (permissionNodes.name == 'sos') {
           expandSelected(permissionNodes);
         }
@@ -770,7 +743,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       return;
     } else if (type === 'COLLAPSEUNSELECTED') {
       nodes = this._nodes;
-      nodes.forEach(function (permissionNodes) {
+      nodes.forEach(function(permissionNodes) {
         if (permissionNodes.name == 'sos') {
           collapseUnselected(permissionNodes);
         }
@@ -791,10 +764,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
     self._tree = d3.layout.tree()
       .nodeSize([100, 250])
-      .separation(function () {
+      .separation(function() {
         return 0.5;
       })
-      .children(function (permission_node) {
+      .children(function(permission_node) {
         if (permission_node.collapsed) {
 
         } else {
@@ -803,8 +776,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       });
 
     // Start with only the first few generations showing
-    json._parents.forEach(function (gen2) {
-      gen2._parents.forEach(function (gen3) {
+    json._parents.forEach(function(gen2) {
+      gen2._parents.forEach(function(gen3) {
         collapse(gen3);
       });
     });
@@ -818,7 +791,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     draw(self.root, 0);
 
     function expandAll() {
-      nodes.forEach(function (permission_node) {
+      nodes.forEach(function(permission_node) {
         if (permission_node.name === 'sos')
           expand(permission_node);
       });
@@ -840,7 +813,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
 
     function collapseAll() {
-      nodes.forEach(function (permission_node) {
+      nodes.forEach(function(permission_node) {
         if (permission_node.name === 'sos') {
           collapseNode(permission_node);
         }
@@ -865,28 +838,32 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     function expandSelected(permissionNodes) {
       if (permissionNodes.isSelected || permissionNodes.name == 'sos') {
         permissionNodes.collapsed = false;
-        if (permissionNodes.icon)
+        if (permissionNodes.icon) {
           permissionNodes.icon = './assets/images/minus.png';
+        }
       }
-      if (permissionNodes._parents)
+      if (permissionNodes._parents) {
         permissionNodes._parents.forEach(expandSelected);
+      }
     }
 
     function collapseUnselected(permissionNodes) {
       if (!permissionNodes.isSelected && permissionNodes.name != 'sos') {
         permissionNodes.collapsed = true;
-        if (permissionNodes.icon)
+        if (permissionNodes.icon) {
           permissionNodes.icon = './assets/images/plus.png';
+        }
       }
-      if (permissionNodes._parents)
+      if (permissionNodes._parents) {
         permissionNodes._parents.forEach(collapseUnselected);
+      }
     }
 
     function draw(source, diff) {
 
       nodes = self._tree.nodes(self.root);
       checkNodes(nodes, self.rolePermissions);
-      nodes.forEach(function (d) {
+      nodes.forEach(function(d) {
         if (diff > 0) {
           d.x = d.x + diff;
         }
@@ -896,13 +873,13 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
       // Update links
       let link = self.svg.selectAll('path.link')
-        .data(links, function (d) {
+        .data(links, function(d) {
           return d.target.id;
         });
 
       link.enter().append('path')
         .attr('class', 'link')
-        .attr('d', function (d) {
+        .attr('d', function(d) {
           let o = {x: source.x0, y: (source.y0 + self.boxWidth / 2)};
           return transitionElbow({source: o, target: o});
         });
@@ -915,33 +892,33 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       link.exit()
         .transition()
         .duration(self.duration)
-        .attr('d', function (d) {
+        .attr('d', function(d) {
           let o = {x: source.x, y: (source.y + self.boxWidth / 2)};
           return transitionElbow({source: o, target: o});
         })
         .remove();
       // Update nodes
       let node = self.svg.selectAll('g.permission_node')
-        .data(nodes, function (permission_node) {
+        .data(nodes, function(permission_node) {
           return permission_node.id;
         });
 
       // Add any new nodes
       let nodeEnter = node.enter().append('g')
         .attr('class', 'permission_node')
-        .style('cursor', function (d) {
+        .style('cursor', function(d) {
           if (d.name == 'sos') {
             return 'default';
           }
           return d.greyed ? 'default' : 'pointer';
         })
-        .attr('transform', function () {
+        .attr('transform', function() {
           return 'translate(' + (source.y0 + self.boxWidth / 2) + ',' + source.x0 + ')';
         });
 
 
       nodeEnter.append('image')
-        .attr('xlink:href', function (d) {
+        .attr('xlink:href', function(d) {
           return d.icon;
         })
         .attr('class', 'img')
@@ -952,7 +929,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         .on('click', togglePermission);
 
       nodeEnter.append('rect')
-        .style('fill', function (d) {
+        .style('fill', function(d) {
           return d.excluded ? d.excludedParent ? '#9E9E9E' : '#eee' : d.selected ? '#7fbfff' : d.greyed ? '#cce5ff' : '#fff';
         })
         .on('click', selectPermission)
@@ -964,11 +941,11 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         });
 
       nodeEnter.append('image')
-        .attr('xlink:href', function (d) {
+        .attr('xlink:href', function(d) {
           return d.excluded ? './assets/images/permission-minus.png' : './assets/images/permission-plus.png';
         })
         .attr('class', 'img exclude-img')
-        .attr('id', function (d) {
+        .attr('id', function(d) {
           if (d.path) {
             return d.path.replace(/:/g, '-') + d.name.replace(/-/g, '');
           } else return d.name.replace(/-/g, '');
@@ -977,7 +954,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         .attr('y', '-10')
         .attr('width', '10px')
         .attr('height', '20px')
-        .style('cursor', function (d) {
+        .style('cursor', function(d) {
           if (d.name == 'sos') {
             return 'default';
           }
@@ -1000,7 +977,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         .attr('dy', 4)
         .attr('text-anchor', 'start')
         .attr('class', 'name')
-        .text(function (d) {
+        .text(function(d) {
           return d.name;
         })
         .on('click', selectPermission)
@@ -1009,7 +986,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       // Update the position of both old and new nodes
       let nodeUpdate = node.transition()
         .duration(self.duration)
-        .attr('transform', function (d) {
+        .attr('transform', function(d) {
           return 'translate(' + d.y + ',' + d.x + ')';
         });
 
@@ -1023,7 +1000,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         });
 
       nodeUpdate.select('image')
-        .attr('xlink:href', function (d) {
+        .attr('xlink:href', function(d) {
           return d.icon;
         })
         .attr('x', '90px')
@@ -1043,7 +1020,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         .duration(self.duration)
 
         // Transition exit nodes to the source's position
-        .attr('transform', function (d) {
+        .attr('transform', function(d) {
           return 'translate(' + (source.y + self.boxWidth / 2) + ',' + source.x + ')';
         })
         .remove();
@@ -1063,7 +1040,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         .attr('dx', 0);
 
       // Stash the old positions for transition.
-      nodes.forEach(function (permission_node) {
+      nodes.forEach(function(permission_node) {
         permission_node.x0 = permission_node.x;
         permission_node.y0 = permission_node.y;
       });
@@ -1083,7 +1060,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       };
 
       nodes = self._tree.nodes(self.root);
-      nodes.forEach(function (node) {
+      nodes.forEach(function(node) {
         if (!endNodes2.rightMost.x || (endNodes2.rightMost.x <= node.y)) {
           endNodes2.rightMost.x = node.y;
           endNodes2.rightMost.y = node.x;
@@ -1197,9 +1174,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         generatePermissionList(self.permissionNodes[0][0]);
         toggleRectangleColour(_temp);
         self.rolePermissions = _temp;
-        self.masters.forEach(function (master) {
+        self.masters.forEach(function(master) {
           if (_.isEqual(master.master, self.masterName) || (master.master == '' && self.masterName == 'default')) {
-            master.roles.forEach(function (value) {
+            master.roles.forEach(function(value) {
               if (_.isEqual(value.role, self.roleName)) {
                 value.permissions = _temp;
                 self.folderArr = value.folders;
@@ -1240,9 +1217,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         generatePermissionList(self.permissionNodes[0][0]);
         toggleRectangleColour(_temp);
         self.rolePermissions = _temp;
-        self.masters.forEach(function (master, index) {
+        self.masters.forEach(function(master, index) {
           if (_.isEqual(master.master, self.masterName) || (master.master == '' && self.masterName == 'default')) {
-            master.roles.forEach(function (value) {
+            master.roles.forEach(function(value) {
               if (_.isEqual(value.role, self.roleName)) {
                 value.permissions = _temp;
                 self.folderArr = value.folders;
@@ -1262,12 +1239,12 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     function updateDiagramData(nData) {
       self._tree = d3.layout.tree()
         .nodeSize([100, 250])
-        .separation(function () {
+        .separation(function() {
           return .5;
         });
       let nodes = self._tree.nodes(nData);
       self.svg.selectAll('g.permission_node')
-        .data(nodes, function (permission_node) {
+        .data(nodes, function(permission_node) {
           return permission_node.id;
         });
       toggleRectangleColour(self.rolePermissions);
@@ -1276,11 +1253,11 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     function toggleRectangleColour(permissionArr) {
       if (self.svg) {
         self.svg.selectAll('rect')
-          .style('fill', function (d) {
+          .style('fill', function(d) {
             return d.excluded ? d.excludedParent ? '#9E9E9E' : '#eee' : d.selected ? '#7fbfff' : d.greyed ? '#cce5ff' : '#fff';
           });
         self.svg.selectAll('g.permission_node')
-          .style('cursor', function (d) {
+          .style('cursor', function(d) {
             if (d.name === 'sos') {
               return 'default';
             }
@@ -1288,10 +1265,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
           });
 
         self.svg.selectAll('.img.exclude-img')
-          .attr('xlink:href', function (d) {
+          .attr('xlink:href', function(d) {
             return d.excluded ? './assets/images/permission-minus.png' : './assets/images/permission-plus.png';
           })
-          .style('cursor', function (d) {
+          .style('cursor', function(d) {
             if (d.name === 'sos') {
               return 'default';
             }
@@ -1338,7 +1315,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     function toggleTriangle() {
       if (self.svg) {
         self.svg.selectAll('.img.triangle')
-          .attr('xlink:href', function (d) {
+          .attr('xlink:href', function(d) {
             return d.isAnyChildSelected ? './assets/images/triangle.png' : '';
           });
       }
@@ -1376,7 +1353,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     self._nodes = nodes;
   }
 
-  private setUserData(res) {
+  private setUserData(res): void {
     this.userDetail = res;
     this.masters = res.masters;
     this.getPermissions();

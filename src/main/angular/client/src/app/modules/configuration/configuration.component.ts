@@ -1,4 +1,4 @@
-import {Component, HostListener, OnDestroy} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {NavigationEnd, Router, RouterEvent} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
@@ -9,16 +9,22 @@ declare const $;
   selector: 'app-configuration',
   templateUrl: './configuration.component.html'
 })
-export class ConfigurationComponent implements OnDestroy {
+export class ConfigurationComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(private router: Router) {
     this.subscription = router.events
-      .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd)).subscribe((e: any) => {
+      .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd)).subscribe((e) => {
         setTimeout(() => {
           this.calcHeight();
         }, 5);
       });
+  }
+
+  ngOnInit(): void {
+    setTimeout(() => {
+      this.calcHeight();
+    }, 10);
   }
 
   ngOnDestroy(): void {
@@ -56,20 +62,18 @@ export class ConfigurationComponent implements OnDestroy {
               recursiveCheck();
             }, 5);
           } else {
-            let intval = setInterval(() => {
+            setTimeout(() => {
               recursiveCheck();
-              clearInterval(intval);
             }, 100);
           }
         }
-
       };
       recursiveCheck();
     }
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize(event): void {
+  onResize(): void {
     this.calcHeight();
   }
 

@@ -17,7 +17,7 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (req.method === 'POST' || req.url.match('controller/log?')) {
+    if (req.method === 'POST') {
       req = req.clone({
         url: './api/' + req.url,
         headers: req.headers.set('Content-Type', req.url.match('validate/predicate') ? 'text/plain' : 'application/json')
@@ -31,11 +31,6 @@ export class AuthInterceptor implements HttpInterceptor {
       } else {
         req = req.clone({
           headers: req.headers.set('X-Access-Token', this.authService.accessTokenId)
-        });
-      }
-      if (req.url.match('publish/export')) {
-        req = req.clone({
-          headers: req.headers.set('Accept', 'application/octet-stream')
         });
       }
       if (!req.url.match('touch')) {

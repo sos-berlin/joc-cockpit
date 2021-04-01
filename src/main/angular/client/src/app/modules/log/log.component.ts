@@ -47,7 +47,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
-  static calculateHeight() {
+  static calculateHeight(): void {
     const $header = $('app-header').height() || 60;
     const $topHeader = $('.top-header-bar').height() || 16;
     const $subHeaderHt = $('.sub-header').height() || 59;
@@ -56,11 +56,11 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize() {
+  onResize(): void {
     LogComponent.calculateHeight();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
@@ -88,14 +88,14 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     this.init();
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     if (!this.scrolled && this.dataBody.nativeElement) {
       this.dataBody.nativeElement.scrollTop = this.dataBody.nativeElement.scrollHeight;
       this.scrolled = true;
     }
   }
 
-  scrollBottom() {
+  scrollBottom(): void {
     const pre = this.dataBody.nativeElement;
     $('#pp').scroll(() => {
       if (!this.scrolled) {
@@ -111,7 +111,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  init() {
+  init(): void {
     this.loading = true;
     if (this.route.snapshot.queryParams['historyId']) {
       this.orderId = this.route.snapshot.queryParams['orderId'];
@@ -122,7 +122,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  loadOrderLog() {
+  loadOrderLog(): void {
     this.workflow = this.route.snapshot.queryParams['workflow'];
     const order: any = {};
     order.controllerId = this.route.snapshot.queryParams['schedulerId'];
@@ -147,7 +147,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  showHideTask(id, res) {
+  showHideTask(id, res): void {
     const x: any = document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
       const element = x[i];
@@ -192,7 +192,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  loadJobLog() {
+  loadJobLog(): void {
     this.job = this.route.snapshot.queryParams['job'];
     let jobs: any = {};
     jobs.controllerId = this.route.snapshot.queryParams['schedulerId'];
@@ -222,7 +222,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  runningTaskLog(obj, orderTaskFlag) {
+  runningTaskLog(obj, orderTaskFlag): void {
     if (obj.eventId) {
       this.coreService.post('task/log/running', obj).subscribe((res: any) => {
         if (res) {
@@ -238,7 +238,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  runningOrderLog(obj) {
+  runningOrderLog(obj): void {
     if (obj.eventId) {
       this.coreService.post('order/log/running', obj).subscribe((res: any) => {
         if (res) {
@@ -255,7 +255,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  jsonToString(json) {
+  jsonToString(json): void {
     if (!json) {
       return;
     }
@@ -419,7 +419,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     this.loading = false;
   }
 
-  renderData(res, orderTaskFlag) {
+  renderData(res, orderTaskFlag): void {
     this.loading = false;
     LogComponent.calculateHeight();
     const timestampRegex = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].(\d)+([+,-])(\d+)(:\d+)*/;
@@ -534,7 +534,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
-  expandAll() {
+  expandAll(): void {
     const x: any = document.getElementsByClassName('tx_order');
     const arr: any = [];
     for (let i = 0; i < x.length; i++) {
@@ -578,7 +578,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  cancel() {
+  cancel(): void {
     this.isCancel = true;
     if (this.subscriber) {
       this.subscriber.unsubscribe();
@@ -588,7 +588,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  downloadLog() {
+  downloadLog(): void {
     this.cancel();
     const schedulerId = this.route.snapshot.queryParams['schedulerId'];
     if (this.route.snapshot.queryParams['orderId']) {
@@ -602,7 +602,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  checkLogLevel(type) {
+  checkLogLevel(type): void {
     this.sheetContent = '';
     if (type === 'STDOUT') {
       if (!this.object.checkBoxs.stdout) {
@@ -683,7 +683,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
    * Save the user preference of log filter
    *
    */
-  saveUserPreference() {
+  saveUserPreference(): void {
     this.preferences.logFilter = this.object.checkBoxs;
     let configObj: any = {
       controllerId: this.schedulerIds.selected,

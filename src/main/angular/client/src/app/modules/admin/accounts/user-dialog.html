@@ -19,7 +19,7 @@
         <div class="form-group row" [ngClass]="{'has-error' : ((user.dirty || user.touched) && user.invalid) || !isUnique}">
             <label class="col-sm-4 form-control-label" translate>user.label.user</label>
             <div class="col-sm-6">
-                <input type="text" class="form-control" name="name" [(ngModel)]="currentUser.user" required #user="ngModel" autofocus autocomplete="off"
+                <input type="text" class="form-control" name="name" [(ngModel)]="currentUser.user" required #user="ngModel" [appAutofocus]="true" autocomplete="off"
                        (blur)="checkUser(user.value, currentUser.userName)"/>
 
                 <div *ngIf="user.invalid && (user.dirty || user.touched)" class="text-danger help-block">
@@ -42,6 +42,7 @@
             <label class="col-sm-4 form-control-label" translate>user.label.roles</label>
             <div class="col-sm-6">
               <nz-select name="roles"
+                nzShowSearch
                 nzMode="multiple"
                 nzPlaceHolder="{{'user.placeholder.selectRoles' | translate}}"
                 [(ngModel)]="currentUser.roles">

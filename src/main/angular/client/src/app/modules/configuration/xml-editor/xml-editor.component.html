@@ -140,15 +140,15 @@
         <div class="col-md-offset-2 col-md-8 m-t-md">
             <span class="form-group">
               <span>
-                <nz-select class="w-full" name="schema" [(ngModel)]="selectedXsd"
-                           (ngModelChange)="changeXSD(selectedXsd)" style="border: none">
+                <nz-select nzShowSearch class="w-full" name="schema" [(ngModel)]="selectedXsd"
+                           (ngModelChange)="changeXSD(selectedXsd)">
                     <nz-option *ngFor="let xsd of otherSchema;" [nzValue]="xsd"
                                [nzLabel]="xsd"></nz-option>
                 </nz-select>
-                <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
+             <!--   <div class="input-dropdown" style="margin-bottom: -27px;top: -28px">
                     <input name="schema" class="form-control" [(ngModel)]="selectedXsd" autocomplete="off"
                            (change)="changeXSD(selectedXsd)" type="text">
-                </div>
+                </div>-->
             </span>
             <span class="pos-abt" style="right: -16px; top: 2px;">
                 <i class="cursor fa fa-upload fa-lg p-t-sm" (click)="importXSD()" aria-hidden="true"></i>

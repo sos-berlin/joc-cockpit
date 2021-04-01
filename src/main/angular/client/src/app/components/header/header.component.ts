@@ -44,7 +44,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   private init(): void {
-    this.username = this.authService.currentUserData;
     this.reloadSettings();
     this.getSelectedSchedulerInfo();
     if (this.schedulerIds && this.schedulerIds.selected) {
@@ -75,6 +74,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   reloadSettings(): void {
+    this.username = this.authService.currentUserData;
     if (this.authService.scheduleIds) {
       this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     }

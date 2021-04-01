@@ -16,8 +16,6 @@ import {AuthService} from '../../../components/guard';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {InventoryService} from './inventory.service';
 
-declare const $;
-
 @Component({
   selector: 'app-deploy-draft-modal',
   templateUrl: './single-deploy-dialog.html'
@@ -1041,7 +1039,6 @@ export class ExportComponent implements OnInit {
       (this.object.draftConfigurations.length && this.object.draftConfigurations.length > 0) ||
       (this.object.releasedConfigurations && this.object.releasedConfigurations.length > 0) ||
       (this.object.releaseDraftConfigurations.length && this.object.releaseDraftConfigurations.length > 0)) {
-      let param = '';
       if (this.object.deployConfigurations && this.object.deployConfigurations.length === 0) {
         delete this.object.deployConfigurations;
       }
@@ -1083,27 +1080,26 @@ export class ExportComponent implements OnInit {
         }
       }
 
-      param = param + '&exportFilter=' + JSON.stringify(obj);
       if (this.comments.comment) {
-        param = param + '&comment=' + this.comments.comment;
+        obj.auditLog = {};
+        obj.auditLog.comment = this.comments.comment;
         if (this.comments.timeSpent) {
-          param = param + '&timeSpent=' + this.comments.timeSpent;
+          obj.auditLog.timeSpent = this.comments.timeSpent;
         }
         if (this.comments.ticketLink) {
-          param = param + '&ticketLink=' + encodeURIComponent(this.comments.ticketLink);
+          obj.auditLog.ticketLink = this.comments.ticketLink;
         }
       }
-
-      try {
-        $('#tmpFrame').attr('src', './api/inventory/export?accessToken=' + this.authService.accessTokenId + param);
-        setTimeout(() => {
-          this.submitted = false;
-          this.activeModal.close('ok');
-        }, 150);
-      } catch (e) {
-        console.error(e);
+      this.coreService.log('inventory/export', obj, {
+        Accept: 'application/octet-stream',
+        responseType: 'blob',
+        observe: 'response' as 'response'
+      }).subscribe((res: any) => {
+        saveAs(res.body, this.exportObj.filename);
+        this.activeModal.close('ok');
+      }, () => {
         this.submitted = false;
-      }
+      });
     } else {
       this.submitted = false;
     }
