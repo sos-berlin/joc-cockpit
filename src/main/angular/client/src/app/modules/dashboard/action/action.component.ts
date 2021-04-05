@@ -62,23 +62,27 @@ export class ActionComponent implements OnInit {
   @Input() permission: any;
   preferences: any = {};
   schedulerIds: any;
+  controllerPermission: any = {};
 
   constructor(public modalService: NgbModal, private coreService: CoreService, private authService: AuthService) {
   }
 
-  ngOnInit(): void {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
-    }
-    if (this.authService.scheduleIds) {
-      this.schedulerIds = JSON.parse(this.authService.scheduleIds);
+  static setControllerPermission(permissions, controllerId): any {
+    if (permissions.controllers && controllerId && permissions.controllers[controllerId]) {
+      return permissions.controllers[controllerId];
     } else {
-      this.schedulerIds = {};
+      return permissions.controllerDefaults;
     }
   }
 
+  ngOnInit(): void {
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.controllerPermission = ActionComponent.setControllerPermission(this.permission, this.controller.controllerId);
+  }
+
   clusterAction(action, data, isFailOver): void {
-    let obj = {
+    const obj = {
       controllerId: data.controllerId || this.schedulerIds.selected,
       url: data.url,
       withFailover: isFailOver,

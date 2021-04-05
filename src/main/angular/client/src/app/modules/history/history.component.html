@@ -95,7 +95,7 @@
                 </ul>
               </nz-dropdown-menu>
             </div>
-            <div class="btn-group dropdown">
+            <div class="btn-group dropdown" *ngIf="permission.joc && permission.joc.administration.customization.view">
               <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered1.account" nz-dropdown
                       nzTrigger="click" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'" type="button"
                       translate>{{'customization.label.customizations' | translate}}
@@ -104,7 +104,7 @@
               </button>
               <nz-dropdown-menu #customization="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item>
+                  <li nz-menu-item *ngIf="permission.joc && permission.joc.administration.customization.manage">
                     <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
                   </li>
                   <li nz-menu-item *ngIf="orderHistoryFilterList && orderHistoryFilterList.length>0">
@@ -208,7 +208,7 @@
                 </ul>
               </nz-dropdown-menu>
             </div>
-            <div class="btn-group dropdown">
+            <div class="btn-group dropdown" *ngIf="permission.joc && permission.joc.administration.customization.view">
               <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered2.account" nz-dropdown
                       nzTrigger="click" [nzDropdownMenu]="customization2" [nzPlacement]="'bottomRight'" type="button"
                       translate>
@@ -218,7 +218,7 @@
               </button>
               <nz-dropdown-menu #customization2="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item>
+                  <li nz-menu-item *ngIf="permission.joc && permission.joc.administration.customization.manage">
                     <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
                   </li>
                   <li nz-menu-item *ngIf="jobHistoryFilterList && jobHistoryFilterList.length>0">
@@ -315,7 +315,7 @@
                 </div>
           </div>
           <div class="inline break-line" *ngIf="historyFilters.type == 'YADE'">
-             <div class="btn-group dropdown">
+             <div class="btn-group dropdown" *ngIf="permission.joc && permission.joc.administration.customization.view">
               <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered3.account" nz-dropdown
                       nzTrigger="click" [nzDropdownMenu]="customization3" [nzPlacement]="'bottomRight'" type="button"
                       translate>
@@ -325,7 +325,7 @@
               </button>
               <nz-dropdown-menu #customization3="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item>
+                  <li nz-menu-item *ngIf="permission.joc && permission.joc.administration.customization.manage">
                     <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
                   </li>
                   <li nz-menu-item *ngIf="yadeHistoryFilterList && yadeHistoryFilterList.length>0">
@@ -422,7 +422,7 @@
                 </ul>
               </nz-dropdown-menu>
             </div>
-            <div class="btn-group dropdown">
+            <div class="btn-group dropdown" *ngIf="permission.joc && permission.joc.administration.customization.view">
               <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered1.account" nz-dropdown
                       nzTrigger="click" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'" type="button"
                       translate>
@@ -432,7 +432,7 @@
               </button>
               <nz-dropdown-menu #customization="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item>
+                  <li nz-menu-item *ngIf="permission.joc && permission.joc.administration.customization.manage">
                     <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
                   </li>
                   <li nz-menu-item *ngIf="deploymentHistoryFilterList && deploymentHistoryFilterList.length>0">
@@ -530,7 +530,7 @@
                 </ul>
               </nz-dropdown-menu>
             </div>
-            <div class="btn-group dropdown">
+            <div class="btn-group dropdown" *ngIf="permission.joc && permission.joc.administration.customization.view">
               <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered1.account" nz-dropdown
                       nzTrigger="click" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'" type="button"
                       translate>
@@ -540,7 +540,7 @@
               </button>
               <nz-dropdown-menu #customization="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item>
+                  <li nz-menu-item *ngIf="permission.joc && permission.joc.administration.customization.manage">
                     <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
                   </li>
                   <li nz-menu-item *ngIf="submissionHistoryFilterList && submissionHistoryFilterList.length>0">
@@ -602,20 +602,20 @@
     <div class="row m-b-12 m-t-xs">
       <div class="col-md-6 col-sm-6">
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-          <li class="nav-item" *ngIf="permission.controllerDefaults.orders.view">
+          <li class="nav-item" *ngIf="permission.currentController.orders.view">
             <a class="nav-link" [ngClass]="{'active': historyFilters.type=='ORDER'}" (click)="orderHistory(null,false)">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.orders</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="permission.controllerDefaults.orders.view">
+          <li class="nav-item dropdown-separator" *ngIf="permission.currentController.orders.view">
             <span class="separator"></span>
           </li>
-          <li class="nav-item" *ngIf="permission.controllerDefaults.orders.view">
+          <li class="nav-item" *ngIf="permission.currentController.orders.view">
             <a class="nav-link" [ngClass]="{'active': historyFilters.type=='TASK'}" (click)="taskHistory(null, false)">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.tasks</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="permission.joc.fileTransfer.view && permission.controllerDefaults.orders.view">
+          <li class="nav-item dropdown-separator" *ngIf="permission.joc.fileTransfer.view && permission.currentController.orders.view">
             <span class="separator"></span>
           </li>
           <li class="nav-item" *ngIf="permission.joc.fileTransfer.view">
@@ -623,15 +623,15 @@
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.fileTransfers</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="permission.controllerDefaults.deployments.view && (permission.joc.fileTransfer.view || permission.controllerDefaults.orders.view)">
+          <li class="nav-item dropdown-separator" *ngIf="permission.currentController.deployments.view && (permission.joc.fileTransfer.view || permission.currentController.orders.view)">
             <span class="separator"></span>
           </li>
-          <li class="nav-item" *ngIf="permission.controllerDefaults.deployments.view">
+          <li class="nav-item" *ngIf="permission.currentController.deployments.view">
             <a class="nav-link" [ngClass]="{'active': historyFilters.type=='DEPLOYMENT'}" (click)="deploymentHistory(null,false)">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.deployments</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="permission.joc.dailyPlan.view && (permission.controllerDefaults.deployments.view || permission.joc.fileTransfer.view || permission.controllerDefaults.orders.view)">
+          <li class="nav-item dropdown-separator" *ngIf="permission.joc.dailyPlan.view && (permission.currentController.deployments.view || permission.joc.fileTransfer.view || permission.currentController.orders.view)">
             <span class="separator"></span>
           </li>
           <li class="nav-item" *ngIf="permission.joc.dailyPlan.view">

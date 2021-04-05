@@ -63,6 +63,8 @@ export class SingleDeployComponent implements OnInit {
         result.deployId = '';
         if (result.valid && result.deployablesVersions[0].versions && result.deployablesVersions[0].versions.length > 0) {
           result.deployId = result.deployablesVersions[0].deploymentId;
+        } else if(!result.deployablesVersions[0].deploymentId){
+           result.deployablesVersions[0].deploymentId = '';
         }
       } else {
         result.deployablesVersions = [];

@@ -127,7 +127,7 @@
                   [nzSize]="'small'"
                   [(ngModel)]="child.deployId">
                   <ng-container *ngIf="!child.valid" >
-                    <nz-option nzCustomContent [nzValue]="''" [nzLabel]="'workflow.label.draft' | translate">
+                    <nz-option nzCustomContent nzValue="" [nzLabel]="'workflow.label.draft' | translate">
                       <div>
                         <span class="fa fa-circle-o text-xs text-danger p-r-xs"></span>{{'workflow.label.draft' | translate}} - <span class="label bg-gold" translate>inventory.label.notValid</span>
                       </div>

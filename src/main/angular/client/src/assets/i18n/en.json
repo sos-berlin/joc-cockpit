@@ -581,6 +581,7 @@
     "message.connectionSuccess": "Connected successfully to Controller",
     "message.objectNotFound": "Object does not exist any longer",
     "message.noControllerFound": "No Controller Found",
+    "message.errorInLoadingScheduleIds": "Error in fetching Controller IDs",
     "message.pasteInSubFolderNotAllowed": "The destination folder is a sub-folder of the source folder."
   },
   "fileTransfer": {
@@ -1003,8 +1004,7 @@
     "label.manage": "manage",
     "label.delete": "delete",
     "label.deploy": "deploy",
-    "label.makePrivate": "make private",
-    "label.makeShared": "make shared",
+    "label.share": "share",
     "label.view": "view",
     "label.terminate": "terminate",
     "label.restart": "restart",
@@ -1119,7 +1119,7 @@
     "label.inventory": "Inventory",
     "label.auditLog": "Audit Log",
     "label.documentation": "Documentation",
-    "label.JOCConfiguration": "JOC Configuration",
+    "label.customization": "Customization",
     "button.resetProfile": "Reset profile to default",
     "message.noKeyFound": "No key is present",
     "message.keyGeneratedSuccessfully": "Key has been generated successfully",

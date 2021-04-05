@@ -110,7 +110,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   navigateToResource(): void {
     const resourceFilters = this.coreService.getResourceTab();
     if (resourceFilters.state === 'agent') {
-      if (this.permission.controllerDefaults.agents.view) {
+      if (this.permission.currentController.agents.view) {
         this.router.navigate(['/resources/agents']);
         return;
       } else {
@@ -118,7 +118,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     }
     if (resourceFilters.state === 'agentJobExecutions') {
-      if (this.permission.controllerDefaults.agents.view) {
+      if (this.permission.currentController.agents.view) {
         this.router.navigate(['/resources/agent_job_executions']);
         return;
       } else {
@@ -126,7 +126,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     }
     if (resourceFilters.state === 'locks') {
-      if (this.permission.controllerDefaults.locks.view) {
+      if (this.permission.currentController.locks.view) {
         this.router.navigate(['/resources/locks']);
         return;
       } else {

@@ -212,7 +212,7 @@
               ></nz-tree>
               <ng-template #nzTreeTemplate let-node>
                 <div id="{{node.key}}" class="node-wrapper" [attr.draggable]="true" [attr.aria-grabbed]="true"
-                     [class.draggable]="true" nzNoAnimation>
+                     [class.draggable]="true">
                          <span *ngIf="node.children && node.children.length>0"
                                [class.toggle-children-wrapper-expanded]="node.isExpanded"
                                [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
@@ -278,22 +278,21 @@
                           </tr>
                         </table>
                       </ng-template>
-                      <span nzNoAnimation
-                            (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
+                      <span (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
                             [ngClass]="cutData && node.origin.uuid === copyItem.uuid? 'disabled' : ''"
                             [nz-tooltip]="(node.origin.attributes && node.origin.attributes.length>0) ? htmlContent : ''">{{node.origin.ref}}
                       </span>
-                      <span nzNoAnimation class="text-sm pl-2"
+                      <span class="text-sm pl-2"
                             (click)="getData(node.origin); getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
                             [hidden]="!node.origin.attributes || (node.origin.attributes && node.origin.attributes.length==0)">
                         {{getFirstNotEmptyAttribute(node.origin.attributes)}}
                       </span>
-                      <span nzNoAnimation class="text-sm pl-2"
+                      <span class="text-sm pl-2"
                             (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
                             [ngClass]="(getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && node.origin.values[0].base !== 'password') ? 'inline': 'hide'">
                         {{removeTag(node.origin)}}
                       </span>
-                      <span nzNoAnimation class="text-sm pl-2"
+                      <span class="text-sm pl-2"
                             (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
                             [ngClass]="(getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && (node.origin.values[0].parent === 'Password' || node.origin.values[0].base === 'password')) ? 'inline': 'hide'">
                         {{passwordLabel(node.origin)}}

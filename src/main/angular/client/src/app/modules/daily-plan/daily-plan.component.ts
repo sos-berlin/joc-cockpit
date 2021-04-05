@@ -2050,7 +2050,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.pageView = JSON.parse(localStorage.views).dailyPlan;
     }
     this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
-    if (this.schedulerIds.selected) {
+    if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
       this.checkSharedFilters();
     } else{
       this.loadOrderPlan();
@@ -2119,21 +2119,17 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private checkSharedFilters(): void {
-    if (this.schedulerIds.selected) {
-      const obj = {
-        controllerId: this.schedulerIds.selected,
-        configurationType: 'CUSTOMIZATION',
-        objectType: this.objectType,
-        shared: true
-      };
-      this.coreService.post('configurations', obj).subscribe((res) => {
-        this.filterResponse(res);
-      }, err => {
-        this.getCustomizations();
-      });
-    } else {
+    const obj = {
+      controllerId: this.schedulerIds.selected,
+      configurationType: 'CUSTOMIZATION',
+      objectType: this.objectType,
+      shared: true
+    };
+    this.coreService.post('configurations', obj).subscribe((res) => {
+      this.filterResponse(res);
+    }, err => {
       this.getCustomizations();
-    }
+    });
   }
 
   private filterCustomizationResponse(res): void {

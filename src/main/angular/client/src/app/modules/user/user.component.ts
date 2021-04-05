@@ -228,7 +228,6 @@ export class UserComponent implements OnInit, OnDestroy {
   permission: any = {};
   object: any = {};
   schedulerIds: any = {};
-  selectedController: any = {};
   keys: any;
   configObj: any = {};
   timeZone: any = {};
@@ -236,17 +235,20 @@ export class UserComponent implements OnInit, OnDestroy {
   forceLoging = false;
   prevMenuTheme: string;
   prevMenuAvatorColor: string;
-  subscription: Subscription;
   securityLevel: string;
-
+   subscription1: Subscription;
+   subscription2: Subscription;
 
   constructor(public coreService: CoreService, private dataService: DataService, public authService: AuthService, private router: Router,
               private modalService: NgbModal, private translate: TranslateService, private toasterService: ToasterService) {
-    this.subscription = dataService.resetProfileSetting.subscribe(res => {
+    this.subscription1 = dataService.resetProfileSetting.subscribe(res => {
       if (res) {
         this.configObj.id = parseInt(sessionStorage.preferenceId, 10);
         this.setPreferences();
       }
+    });
+    this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
+      this.setPreferences();
     });
   }
 
@@ -271,13 +273,8 @@ export class UserComponent implements OnInit, OnDestroy {
     if (this.securityLevel === 'LOW' && sessionStorage.defaultProfile && sessionStorage.defaultProfile === this.username) {
       this.securityLevel = 'MEDIUM';
     }
-    if (sessionStorage.preferences && sessionStorage.preferences != 'undefined') {
-      this.preferences = JSON.parse(sessionStorage.preferences);
-      this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-      if (sessionStorage.$SOS$JOBSCHEDULE) {
-        this.selectedController = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE);
-      }
-    }
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
   }
 
   ngOnInit(): void {
@@ -293,17 +290,12 @@ export class UserComponent implements OnInit, OnDestroy {
     }
 
     this.setIds();
+    this.setPreferences();
     if(this.permission.joc && this.permission.joc.administration.certificates.view) {
       this.getKeys();
     }
-    this.setPreferences();
     this.zones = this.coreService.getTimeZoneList();
-    const localTZ = this.coreService.getTimeZone();
-    if (localTZ) {
-      this.timeZone = localTZ || this.selectedController.timeZone;
-    } else {
-      this.timeZone = this.selectedController.timeZone;
-    }
+    this.timeZone = this.coreService.getTimeZone();
     this.configObj.controllerId = this.schedulerIds.selected;
     this.configObj.account = this.username;
     this.configObj.configurationType = 'PROFILE';
@@ -311,7 +303,8 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
   }
 
   getKeys(): void {

@@ -13,6 +13,7 @@ import * as _ from 'underscore';
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
+import {PerfectScrollbarComponent} from 'ngx-perfect-scrollbar';
 
 declare const require;
 declare const vkbeautify;
@@ -943,6 +944,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   @ViewChild('myckeditor', {static: false}) ckeditor: any;
   @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
+  @ViewChild(PerfectScrollbarComponent, { static: false }) componentRef?: PerfectScrollbarComponent;
 
   constructor(
     public coreService: CoreService,
@@ -963,7 +965,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    if(!this.schedulerIds.selected){
+    if (!this.schedulerIds.selected) {
       this.isLoading = false;
       return;
     }
@@ -1028,7 +1030,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
     this.coreService.setSideView(this.sideView);
     clearInterval(this.intervalId);
-    this.coreService.tabs._configuration.state = (this.objectType === 'YADE' || !this.objectType) ? 'file_transfer' :  this.objectType.toLowerCase();
+    this.coreService.tabs._configuration.state = (this.objectType === 'YADE' || !this.objectType) ? 'file_transfer' : this.objectType.toLowerCase();
   }
 
   contextMenu(node: any): void {
@@ -1570,13 +1572,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.lastScrollId = _.clone(id);
     }
     this.scrollTree(id, () => {
-      if (this.selectedNode) {
-        this.selectedNode.expanded = true;
-        this.autoExpand(this.selectedNode);
-      }
-      this.getParentToExpand(this.selectedNode);
       this.selectedNode.expanded = true;
-      this.autoExpand(this.selectedNode);
+      this.getParentToExpand(this.selectedNode);
+      this.updateTree();
       setTimeout(() => {
         this.scrollTree(this.selectedNode.uuid, undefined);
       }, 0);
@@ -2005,7 +2003,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       for (let i = 0; i < element.length; i++) {
         let a = element[i].nodeName;
         let b = element[i].nodeValue;
-        attribute = Object.assign(attribute, this._defineProperty({}, a, b))
+        attribute = Object.assign(attribute, this._defineProperty({}, a, b));
       }
       attribute.parent = node.parent;
       attribute.grandFather = node.grandFather;
@@ -4370,8 +4368,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           this.gotoKeyrefRecursion(node, this.nodes[0].children[i]);
         }
       }
+      this.scrollTreeToGivenId(this.selectedNode.uuid);
     }
-    this.scrollTreeToGivenId(this.selectedNode.uuid);
   }
 
   gotoKeyrefRecursion(node, child) {
@@ -5413,18 +5411,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  private scrollTree(id, cb) {
+  private scrollTree(id, cb): void {
     const dom = $('#' + id);
-    let top;
     if (dom && dom.offset()) {
-      if (dom.offset().top < 0) {
-        top = $('.tree-block')[0].scrollTopMax + dom.offset().top;
-      } else {
-        top = dom.offset().top;
-      }
-      $('.tree-block').animate({
-        scrollTop: (top - 348)
-      }, 500);
+      this.componentRef.directiveRef.scrollToTop((dom.offset().top - 348), 500);
     } else {
       if (cb) {
         cb();
@@ -5432,12 +5422,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  private removeComment(data) {
+  private removeComment(data): string {
     let d = data.replace(/\<\!\-\-((?!\-\-\>)[\s\S])*\-\-\>\s*/g, '');
     return d.replace(/(\\n)/g, '');
   }
 
-  private handleNodeToExpandAtOnce(nodes, path, _tempArrToExpand) {
+  private handleNodeToExpandAtOnce(nodes, path, tempArrToExpand): void {
     for (let i = 0; i < nodes.length; i++) {
       if (nodes[i].expanded) {
         if (!path) {
@@ -5447,16 +5437,16 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         }
         if (nodes[i].children && nodes[i].children.length) {
           if (nodes[i].path.split('/').length === 10) {
-            _tempArrToExpand.push(nodes[i]);
+            tempArrToExpand.push(nodes[i]);
             nodes[i].expanded = false;
           }
-          this.handleNodeToExpandAtOnce(nodes[i].children, nodes[i].path, _tempArrToExpand);
+          this.handleNodeToExpandAtOnce(nodes[i].children, nodes[i].path, tempArrToExpand);
         }
       }
     }
   }
 
-  private copyNodeRecursion(node) {
+  private copyNodeRecursion(node): any {
     let tempa = {};
     for (let key in node) {
       if (typeof (node[key]) === 'object') {
@@ -5489,7 +5479,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     return tempa;
   }
 
-  private changeParentId(node, parentId) {
+  private changeParentId(node, parentId): void {
     node.parentId = parentId;
     if (node && node.children && node.children.length > 0) {
       node.children.forEach((cNode) => {
@@ -5498,7 +5488,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  private changeUuId(node, id) {
+  private changeUuId(node, id): void {
     node.uuid = id + this.counting;
     node.key = id + this.counting;
     this.counting++;
@@ -5509,14 +5499,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getAllChild(list: any) {
+  private getAllChild(list: any): void {
     for (let child in list) {
       list[child].children = [];
       this.checkChildNode(list[child], list[child]);
     }
   }
 
-  private xmlToJsonService(data) {
+  private xmlToJsonService(data): void {
     let obj: any = {
       controllerId: this.schedulerIds.selected,
       objectType: this.objectType,
@@ -5548,7 +5538,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     });
   }
 
-  private openXMLDialog(data) {
+  private openXMLDialog(data): void {
     this.editorOptions.readOnly = false;
     this.objectXml = {};
     this.objectXml.isXMLEditor = true;
@@ -5562,7 +5552,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     });
   }
 
-  private newConf() {
+  private newConf(): void {
     const obj: any = {
       controllerId: this.schedulerIds.selected,
       objectType: this.objectType,
@@ -5571,7 +5561,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       obj.configuration = this._xml;
     }
     this.coreService.post('xmleditor/read', obj).subscribe((res: any) => {
-      if(res.validation && res.validation.validated) {
+      if (res.validation && res.validation.validated) {
         this.validConfig = true;
       }
       this.schemaIdentifier = res.schemaIdentifier;
@@ -5621,7 +5611,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     });
   }
 
-  private _showXml() {
+  private _showXml(): any {
     const xml = this.jsonToXml();
     if (xml) {
       const xmlAsString = new XMLSerializer().serializeToString(xml);
@@ -5633,12 +5623,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  hidePanel() {
+  hidePanel(): void {
     this.sideView.xml.show = false;
     this.coreService.hideConfigPanel();
   }
 
-  showPanel() {
+  showPanel(): void {
     this.sideView.xml.show = true;
     this.coreService.showConfigPanel();
   }

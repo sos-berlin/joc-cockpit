@@ -1,5 +1,5 @@
 <div class="box p-a">
-    <div *ngFor="let master of masters; let id = index" [hidden]="showMsg && !getSelectedMaster(master)" class="box-body p-b-0">
+    <div *ngFor="let master of masters; let id = index" [hidden]="showMsg && !getSelectedController(master)" class="box-body p-b-0">
         <div class="row">
             <div class="col-sm-12">
                 <div class="btn-group dropdown pull-left m-r-sm">
@@ -8,10 +8,10 @@
                     <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                         <ul nz-menu >
                           <li nz-menu-item >
-                            <a (click)="copyMaster(master)" translate>common.button.copy</a>
+                            <a (click)="copyController(master)" translate>common.button.copy</a>
                           </li>
                           <li nz-menu-item class="bg-hover-color">
-                            <a (click)="deleteMaster(master)" translate="">common.button.delete</a>
+                            <a (click)="deleteController(master)" translate="">common.button.delete</a>
                           </li>
                         </ul>
                     </nz-dropdown-menu>

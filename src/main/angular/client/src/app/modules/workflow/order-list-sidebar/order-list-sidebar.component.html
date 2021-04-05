@@ -1,22 +1,22 @@
 <div class="pos-abt" style="top:16px;right:20px" *ngIf="setOfCheckedId.size > 0">
   <button class="hide btn btn-grey btn-sm m-l-12"
-          [ngClass]="{'show-block':permission.controllerDefaults.orders.modify, 'disable-link': !object.isModify }"
+          [ngClass]="{'show-block':permission.currentController.orders.modify, 'disable-link': !object.isModify }"
           (click)="modifyAllOrder()"><i class="fa fa-edit p-r-xs"></i>
     <span class="hidden-sm-down" translate>dailyPlan.button.setParameters</span></button>
   <button class="hide btn btn-grey btn-sm m-l-12"  *ngIf="!object.isCancel"
-          [ngClass]="{'show-block':permission.controllerDefaults.orders.cancel}"
+          [ngClass]="{'show-block':permission.currentController.orders.cancel}"
           (click)="cancelAllOrder()"><i class="fa fa-times p-r-xs"></i>
     <span class="hidden-sm-down" translate>order.button.cancel</span></button>
   <button class="hide btn btn-grey btn-sm m-l-12"  *ngIf="object.isTerminate"
-          [ngClass]="{'show-block':permission.controllerDefaults.orders.cancel}"
+          [ngClass]="{'show-block':permission.currentController.orders.cancel}"
           (click)="terminateAllOrder()"><i class="fa fa-trash p-r-xs"></i>
     <span class="hidden-sm-down" translate>order.button.leaveWorkflow</span></button>
   <button class="hide btn btn-grey btn-sm m-l-12" *ngIf="object.isSuspend"
-          [ngClass]="{'show-block':permission.controllerDefaults.orders.suspendResume}"
+          [ngClass]="{'show-block':permission.currentController.orders.suspendResume}"
           (click)="suspendAllOrder()"><i class="fa fa-stop p-r-xs"></i>
     <span class="hidden-sm-down" translate>order.button.suspend</span></button>
   <button class="hide btn btn-grey btn-sm m-l-12" *ngIf="object.isResume"
-          [ngClass]="{'show-block':permission.controllerDefaults.orders.suspendResume}"
+          [ngClass]="{'show-block':permission.currentController.orders.suspendResume}"
           (click)="resumeAllOrder()"><i
     class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.resume</span>
   </button>

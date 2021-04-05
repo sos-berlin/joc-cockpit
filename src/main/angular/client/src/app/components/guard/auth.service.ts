@@ -81,7 +81,7 @@ export class AuthService {
             ifPermissionPassed = true;
           }
         } else {
-          if (permission.joc && permission.joc.dailyPlan.view && permission.controllerDefaults.orders.view) {
+          if (permission.joc && permission.joc.dailyPlan.view && permission.currentController.orders.view) {
             ifPermissionPassed = true;
           }
         }
@@ -92,13 +92,13 @@ export class AuthService {
             ifPermissionPassed = true;
           }
         } else {
-          if (permission.controllerDefaults && permission.controllerDefaults.workflows.view) {
+          if (permission.currentController && permission.currentController.workflows.view) {
             ifPermissionPassed = true;
           }
         }
         break;
       case 'Order':
-        if (permission.controllerDefaults && permission.controllerDefaults.orders.view) {
+        if (permission.currentController && permission.currentController.orders.view) {
           ifPermissionPassed = true;
         }
         break;
@@ -109,7 +109,7 @@ export class AuthService {
           }
         } else {
           if (permission.joc && (permission.joc || permission.joc.fileTransfer.view
-            || permission.controllerDefaults.deployments.view || permission.joc.dailyPlan.view)) {
+            || permission.currentController.deployments.view || permission.joc.dailyPlan.view)) {
             ifPermissionPassed = true;
           }
         }
@@ -120,7 +120,7 @@ export class AuthService {
             ifPermissionPassed = true;
           }
         } else {
-          if (permission.controllerDefaults && (permission.controllerDefaults.agents.view || permission.controllerDefaults.locks.view
+          if (permission.currentController && (permission.currentController.agents.view || permission.currentController.locks.view
             || permission.joc.calendars.view || permission.joc.documentations.view)) {
             ifPermissionPassed = true;
           }

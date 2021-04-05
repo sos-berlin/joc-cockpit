@@ -170,7 +170,7 @@
           </a>
         </li>
         <li class="nav-item"
-            *ngIf="((showViews && showViews.dailyPlan != undefined) ? showViews.dailyPlan : (permission.joc && permission.joc.dailyPlan.view && permission.controllerDefaults.orders.view))">
+            *ngIf="((showViews && showViews.dailyPlan != undefined) ? showViews.dailyPlan : (permission.joc && permission.joc.dailyPlan.view && permission.currentController.orders.view))">
           <a class="nav-link" routerLink="/daily_plan" [routerLinkActive]="['active']">
             <span class="nav-text">
               <i class="icon-daily-plan-icon text-white"></i>
@@ -179,7 +179,7 @@
           </a>
         </li>
         <li class="nav-item"
-            *ngIf="((showViews && showViews.workflows != undefined) ? showViews.workflows : (permission.controllerDefaults && permission.controllerDefaults.workflows.view))">
+            *ngIf="((showViews && showViews.workflows != undefined) ? showViews.workflows : (permission.currentController && permission.currentController.workflows.view))">
           <a class="nav-link" routerLink="/workflows" [routerLinkActive]="['active']">
             <span class="nav-text">
               <i class="icon-workflows-icon text-white"></i>
@@ -196,7 +196,7 @@
             </span>
           </a>
         </li>
-        <li class="nav-item" *ngIf="((showViews && showViews.resources != undefined) ? showViews.resources : (permission.controllerDefaults && (permission.controllerDefaults.agents.view || permission.controllerDefaults.locks.view ||
+        <li class="nav-item" *ngIf="((showViews && showViews.resources != undefined) ? showViews.resources : (permission.currentController && (permission.currentController.agents.view || permission.currentController.locks.view ||
                     permission.joc.documentations.view  || permission.joc.calendars.view)))">
           <a class="nav-link" routerLink="/resources" [routerLinkActive]="['active']" (click)="navigateToResource()">
             <span class="nav-text">
@@ -206,7 +206,7 @@
           </a>
         </li>
         <li class="nav-item"
-            *ngIf="((showViews && showViews.history != undefined) ? showViews.history : (permission.controllerDefaults && (permission.controllerDefaults.orders.view || permission.joc.fileTransfer.view || permission.controllerDefaults.deployments.view || permission.joc.dailyPlan.view)))">
+            *ngIf="((showViews && showViews.history != undefined) ? showViews.history : (permission.currentController && (permission.currentController.orders.view || permission.joc.fileTransfer.view || permission.currentController.deployments.view || permission.joc.dailyPlan.view)))">
           <a class="nav-link" routerLink="/history" [routerLinkActive]="['active']">
             <span class="nav-text">
               <i class="icon-alarm-icon text-white"></i>

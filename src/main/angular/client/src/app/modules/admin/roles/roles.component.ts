@@ -1,14 +1,15 @@
 import {Component, OnInit, Input, OnDestroy} from '@angular/core';
-import {Subscription} from 'rxjs';
 import {Router, ActivatedRoute, RouterEvent, NavigationEnd} from '@angular/router';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToasterService} from 'angular2-toaster';
 import {TranslateService} from '@ngx-translate/core';
+import * as _ from 'underscore';
+import {filter} from 'rxjs/operators';
+import {Subscription} from 'rxjs';
 import {DataService} from '../data.service';
 import {CoreService} from '../../../services/core.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
-import * as _ from 'underscore';
-import {filter} from 'rxjs/operators';
+import {AuthService} from '../../../components/guard';
 
 // Role Actions
 @Component({
@@ -116,33 +117,34 @@ export class RoleModalComponent implements OnInit {
   }
 }
 
-// Master Actions
+// Controller Actions
 @Component({
-  selector: 'app-master-modal-content',
-  templateUrl: 'master-dialog.html'
+  selector: 'app-controller-modal-content',
+  templateUrl: 'controller-dialog.html'
 })
-export class MasterModalComponent implements OnInit {
-
+export class ControllerModalComponent implements OnInit {
   submitted = false;
   isUnique = true;
-  currentMaster: any = {};
+  currentController: any = {};
+  schedulerIds: any = {};
 
-  @Input() allMasters: any;
+  @Input() allControllers: any;
   @Input() allRoles: any;
-  @Input() oldMaster: any;
+  @Input() oldController: any;
   @Input() copy: boolean;
   @Input() userDetail: any;
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
+  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
-    if (this.oldMaster) {
-      this.currentMaster = _.clone(this.oldMaster);
-      this.currentMaster.masterName = this.oldMaster.master;
-      this.currentMaster.master = '';
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    if (this.oldController) {
+      this.currentController = _.clone(this.oldController);
+      this.currentController.masterName = this.oldController.master;
+      this.currentController.master = '';
     } else {
-      this.currentMaster = {
+      this.currentController = {
         master: '',
         ipAddress: '',
         roles: []
@@ -150,10 +152,10 @@ export class MasterModalComponent implements OnInit {
     }
   }
 
-  checkMaster(newMaster): void {
+  checkController(newController): void {
     this.isUnique = true;
-    for (let i = 0; i < this.allMasters.length; i++) {
-      if (this.allMasters[i].master === newMaster) {
+    for (let i = 0; i < this.allControllers.length; i++) {
+      if (this.allControllers[i].master === newController) {
         this.isUnique = false;
         break;
       }
@@ -163,7 +165,7 @@ export class MasterModalComponent implements OnInit {
   onSubmit(obj): void {
     this.submitted = true;
     if (!this.copy) {
-      obj.roles.forEach(function (value, i) {
+      obj.roles.forEach((value, i) => {
         obj.roles[i] = {
           permissions: [],
           folders: [],
@@ -181,7 +183,7 @@ export class MasterModalComponent implements OnInit {
       this.userDetail.masters.push(obj);
     } else {
       const data = {
-        roles: _.clone(this.oldMaster.roles),
+        roles: _.clone(this.oldController.roles),
         master: obj.master
       };
 
@@ -208,7 +210,7 @@ export class RolesComponent implements OnDestroy {
   userDetail: any = {};
   showMsg: any;
   roles: any = [];
-  selectedMasters = [];
+  selectedControllers = [];
   selectedRoles = [];
   showPanel = [true];
   subscription1: Subscription;
@@ -226,7 +228,7 @@ export class RolesComponent implements OnDestroy {
       if (res === 'ADD_ROLE') {
         this.addRole();
       } else if (res === 'ADD_MASTER') {
-        this.addMaster();
+        this.addController();
       }
     });
     this.subscription3 = router.events
@@ -258,7 +260,7 @@ export class RolesComponent implements OnDestroy {
   }
 
   selectUser(user): void {
-    this.selectedMasters = [];
+    this.selectedControllers = [];
     this.selectedRoles = [];
     this.showMsg = false;
     if (user) {
@@ -270,7 +272,7 @@ export class RolesComponent implements OnDestroy {
             for (let j = 0; j < this.users[i].roles.length; j++) {
               for (let x = 0; x < master.roles.length; x++) {
                 if (master.roles[x].role === this.users[i].roles[j]) {
-                  this.selectedMasters.push(master.master);
+                  this.selectedControllers.push(master.master);
                   flag = false;
                   break;
                 }
@@ -283,7 +285,7 @@ export class RolesComponent implements OnDestroy {
           break;
         }
       }
-      if (this.selectedMasters.length === 0) {
+      if (this.selectedControllers.length === 0) {
         this.showMsg = true;
       }
     }
@@ -297,9 +299,9 @@ export class RolesComponent implements OnDestroy {
     }
   }
 
-  getSelectedMaster(master): boolean {
-    if (this.selectedMasters && this.selectedMasters.length > 0) {
-      return this.selectedMasters.indexOf(master.master) > -1;
+  getSelectedController(master): boolean {
+    if (this.selectedControllers && this.selectedControllers.length > 0) {
+      return this.selectedControllers.indexOf(master.master) > -1;
     } else {
       return true;
     }
@@ -393,7 +395,7 @@ export class RolesComponent implements OnDestroy {
 
       });
     } else {
-      this.translate.get('message.cannotDeleteRole').subscribe(translatedValue => {
+      this.translate.get('common.message.cannotDeleteRole').subscribe(translatedValue => {
         waringMessage = translatedValue;
       });
       this.toasterService.pop({
@@ -407,9 +409,9 @@ export class RolesComponent implements OnDestroy {
 
   }
 
-  addMaster(): void {
-    const modalRef = this.modalService.open(MasterModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.allMasters = this.masters;
+  addController(): void {
+    const modalRef = this.modalService.open(ControllerModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.allControllers = this.masters;
     modalRef.componentInstance.allRoles = this.roles;
     modalRef.componentInstance.userDetail = this.userDetail;
     modalRef.result.then(() => {
@@ -419,10 +421,10 @@ export class RolesComponent implements OnDestroy {
     });
   }
 
-  copyMaster(master): void {
-    const modalRef = this.modalService.open(MasterModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.oldMaster = master;
-    modalRef.componentInstance.allMasters = this.masters;
+  copyController(master): void {
+    const modalRef = this.modalService.open(ControllerModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.oldController = master;
+    modalRef.componentInstance.allControllers = this.masters;
     modalRef.componentInstance.copy = true;
     modalRef.componentInstance.userDetail = this.userDetail;
     modalRef.result.then(() => {
@@ -432,14 +434,13 @@ export class RolesComponent implements OnDestroy {
     });
   }
 
-  deleteMaster(master): void {
+  deleteController(master): void {
     const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.title = 'delete';
-    modalRef.componentInstance.message = 'deleteMaster';
+    modalRef.componentInstance.message = 'deleteController';
     modalRef.componentInstance.type = 'Delete';
     modalRef.componentInstance.objectName = master.master || 'default';
     modalRef.result.then(() => {
-
       for (let i = 0; i < this.masters.length; i++) {
         if (_.isEqual(this.masters[i], master)) {
           this.masters.splice(this.masters.indexOf(master), 1);

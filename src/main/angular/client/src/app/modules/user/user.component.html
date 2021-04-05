@@ -370,7 +370,7 @@
                 </div>
               </div>
             </nz-tab>
-            <nz-tab [nzTitle]="'profile.label.permissions' | translate" *ngIf="permission.joc && permission.controllerDefaults">
+            <nz-tab [nzTitle]="'profile.label.permissions' | translate" *ngIf="permission.joc && permission.currentController">
               <div class="m-l-12">
                 <div class="row m-t-xs">
                   <div class="col-md-4 col-lg-3"><span class="text-dark"
@@ -391,7 +391,7 @@
                   </div>
                   <div class="row col-md-8 col-lg-9">
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.controllerDefaults.agents.view}"></i>&nbsp; <span
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.currentController.agents.view}"></i>&nbsp; <span
                       translate>permission.label.view</span></span>
                   </div>
                 </div>
@@ -447,6 +447,22 @@
                       translate>permission.label.manage</span></span>
                   </div>
                 </div>
+                <div class="row m-t">
+                  <div class="col-md-4 col-lg-3"><span class="text-dark"
+                                                       translate>profile.label.customization</span>
+                  </div>
+                  <div class="row col-md-8 col-lg-9">
+                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.joc.administration.customization.view}"></i>&nbsp; <span
+                      translate>permission.label.view</span></span>
+                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.joc.administration.customization.manage}"></i>&nbsp; <span
+                      translate>permission.label.manage</span></span>
+                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.joc.administration.customization.share}"></i>&nbsp; <span
+                      translate>permission.label.share</span></span>
+                  </div>
+                </div>
                  <div class="row m-t">
                   <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.dailyPlan</span></div>
                   <div class="row col-md-8 col-lg-9">
@@ -462,10 +478,10 @@
                   <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.deployments</span></div>
                   <div class="row col-md-8 col-lg-9">
                       <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.controllerDefaults.deployments.view}"></i>&nbsp; <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.currentController.deployments.view}"></i>&nbsp; <span
                         translate>permission.label.view</span></span>
                      <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.controllerDefaults.deployments.deploy}"></i>&nbsp; <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.currentController.deployments.deploy}"></i>&nbsp; <span
                         translate>permission.label.deploy</span></span>
                   </div>
                 </div>
@@ -513,16 +529,16 @@
                   </div>
                   <div class="row col-md-8 col-lg-9">
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                           [ngClass]="{'fa-times text-black-lt': !permission.controllerDefaults.view}"></i>&nbsp; <span
+                                                           [ngClass]="{'fa-times text-black-lt': !permission.currentController.view}"></i>&nbsp; <span
                       translate>permission.label.view</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.controllerDefaults.terminate}"></i>&nbsp; <span
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.currentController.terminate}"></i>&nbsp; <span
                       translate>permission.label.terminate</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.controllerDefaults.restart}"></i>&nbsp; <span
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.currentController.restart}"></i>&nbsp; <span
                       translate>permission.label.restart</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.controllerDefaults.switchOver}"></i>&nbsp; <span
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.currentController.switchOver}"></i>&nbsp; <span
                       translate>permission.label.switchOver</span></span>
                   </div>
                 </div>
@@ -530,7 +546,7 @@
                   <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.lock</span></div>
                   <div class="row col-md-8 col-lg-9">
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.controllerDefaults.locks.view}"></i>&nbsp; <span
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.currentController.locks.view}"></i>&nbsp; <span
                       translate>permission.label.view</span></span>
                   </div>
                 </div>
@@ -562,20 +578,20 @@
                   <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.order</span></div>
                   <div class="row col-md-8 col-lg-9">
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.controllerDefaults.orders.view}"></i>&nbsp; <span
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.currentController.orders.view}"></i>&nbsp; <span
                       translate>permission.label.view</span></span>
                     <span class="col-sm-3 text-black-lt"><i
                       class="fa fa-check text-success"
-                      [ngClass]="{'fa-times text-black-lt': !permission.controllerDefaults.orders.create}"></i>&nbsp; <span
+                      [ngClass]="{'fa-times text-black-lt': !permission.currentController.orders.create}"></i>&nbsp; <span
                       translate>permission.label.create</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.controllerDefaults.orders.modify}"></i>&nbsp; <span
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.currentController.orders.modify}"></i>&nbsp; <span
                       translate>permission.label.modify</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.controllerDefaults.orders.suspendResume}"></i>&nbsp; <span
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.currentController.orders.suspendResume}"></i>&nbsp; <span
                       translate>permission.label.suspendResume</span></span>
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.controllerDefaults.orders.cancel}"></i>&nbsp; <span
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.currentController.orders.cancel}"></i>&nbsp; <span
                       translate>permission.label.cancel</span></span>
                   </div>
                 </div>
@@ -596,31 +612,10 @@
                   <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.workflow</span></div>
                   <div class="row col-md-8 col-lg-9">
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.controllerDefaults.workflows.view}"></i>&nbsp; <span
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.currentController.workflows.view}"></i>&nbsp; <span
                       translate>permission.label.view</span></span>
                   </div>
                 </div>
-                <!--<div class="row m-t">
-                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.JOCConfiguration</span>
-                  </div>
-                  <div class="row col-md-8 col-lg-9">
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.JOCConfigurations.share.view.status}"></i>&nbsp; <span
-                      translate>permission.label.view</span></span>
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.JOCConfigurations.share.change.editContent}"></i>&nbsp; <span
-                      translate>permission.label.edit</span></span>
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.JOCConfigurations.share.change.delete}"></i>&nbsp; <span
-                      translate>permission.label.delete</span></span>
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.JOCConfigurations.share.change.sharedStatus.makePrivate}"></i>&nbsp; <span
-                      translate>permission.label.makePrivate</span></span>
-                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                            [ngClass]="{'fa-times text-black-lt': !permission.JOCConfigurations.share.change.sharedStatus.makeShared}"></i>&nbsp; <span
-                      translate>permission.label.makeShared</span></span>
-                  </div>
-                </div>-->
               </div>
             </nz-tab>
             <nz-tab [nzTitle]="'profile.label.keyManagement' | translate"

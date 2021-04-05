@@ -71,7 +71,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     if (this.schedulerIds.selected) {
       this.init();
     } else {
@@ -93,9 +93,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   }
 
   init(): void {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
-    }
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     if (sessionStorage.$SOS$CONTROLLER && JSON.parse(sessionStorage.$SOS$CONTROLLER)) {
       this.selectedController = JSON.parse(sessionStorage.$SOS$CONTROLLER) || {};
     }

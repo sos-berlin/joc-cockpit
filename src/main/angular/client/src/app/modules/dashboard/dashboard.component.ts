@@ -302,21 +302,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     if (this.permission.joc) {
       for (let i = 0; i < this.dashboardLayout.length; i++) {
-        if (this.dashboardLayout[i].name === 'agentClusterStatus' && this.permission.controllerDefaults.agents.view) {
+        if (this.dashboardLayout[i].name === 'agentClusterStatus' && this.permission.currentController.agents.view) {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'agentClusterRunningTasks' && this.permission.controllerDefaults.agents.view) {
+        } else if (this.dashboardLayout[i].name === 'agentClusterRunningTasks' && this.permission.currentController.agents.view) {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'js7Status' && this.permission.controllerDefaults.view) {
+        } else if (this.dashboardLayout[i].name === 'js7Status' && this.permission.currentController.view) {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'js7ClusterStatus') {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'orders' && this.permission.controllerDefaults.orders.view) {
+        } else if (this.dashboardLayout[i].name === 'orders' && this.permission.currentController.orders.view) {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'history' && this.permission.controllerDefaults.orders.view) {
+        } else if (this.dashboardLayout[i].name === 'history' && this.permission.currentController.orders.view) {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'inventory' && this.permission.joc.inventory.view) {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'dailyPlan' && this.permission.joc.dailyPlan.view) {
+        } else if (this.dashboardLayout[i].name === 'dailyPlan' && this.permission.joc.dailyPlan.view && this.permission.currentController.orders.view) {
           this.widgets.push(this.dashboardLayout[i]);
         }
       }

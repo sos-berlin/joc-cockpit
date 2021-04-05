@@ -40,6 +40,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   sessionTimeout = 0;
   isTouch = false;
   isProfileLoaded = false;
+  isPropertiesLoaded = false;
   count = 0;
   count2 = 0;
 
@@ -96,6 +97,14 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
+  static setControllerPermission(permissions, controllerIds): any {
+    if (permissions.controllers && controllerIds.selected && permissions.controllers[controllerIds.selected]) {
+      return permissions.controllers[controllerIds.selected];
+    } else {
+      return permissions.controllerDefaults;
+    }
+  }
+
   refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
@@ -124,13 +133,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
           this.isProfileLoaded = true;
           this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, false);
         }
-        this.init();
+        if (!this.permission) {
+          this.getPermissions();
+        }
       } else if (!this.schedulerIds || !this.schedulerIds.selected) {
         this.schedulerIds = {};
         this.getSchedulerIds();
-        if(!this.permission) {
-          this.getPermissions();
-        }
       }
     } else {
       let userName;
@@ -140,133 +148,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
       }
       this.authenticate(userName);
     }
-  }
-
-  private getComments(): void {
-    if (this.schedulerIds && this.schedulerIds.selected) {
-      if (!this.isProfileLoaded) {
-        this.isProfileLoaded = true;
-        this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, false);
-      }
-      this.coreService.post('joc/properties', {}).subscribe((result: any) => {
-        sessionStorage.$SOS$FORCELOGING = result.forceCommentsForAuditLog;
-        sessionStorage.comments = JSON.stringify(result.comments);
-        sessionStorage.showViews = JSON.stringify(result.showViews);
-        sessionStorage.securityLevel = result.securityLevel;
-        sessionStorage.defaultProfile = result.defaultProfileAccount;
-        sessionStorage.$SOS$COPY = JSON.stringify(result.copy);
-        sessionStorage.$SOS$RESTORE = JSON.stringify(result.restore);
-      }, () => {
-        this.ngOnInit();
-      });
-    } else {
-      this.schedulerIds = {};
-    }
-  }
-
-  private getPermissions(): void {
-    this.coreService.post('authentication/joc_cockpit_permissions', {}).subscribe((permission) => {
-      this.authService.setPermission(permission);
-      this.authService.save();
-      this.permission = permission;
-      if (!sessionStorage.preferenceId) {
-        this.ngOnInit();
-      }
-      if (this.child) {
-        this.child.reloadSettings();
-      }
-      setTimeout(() => {
-        if (!this.loading) {
-          this.loadInit(false);
-        }
-      }, 10);
-    });
-  }
-
-  private getSchedulerIds(): void {
-    this.coreService.post('controller/ids', {}).subscribe((res: any) => {
-      if (res && res.controllerIds && res.controllerIds.length > 0) {
-        this.authService.setIds(res);
-        this.authService.save();
-        this.schedulerIds = res;
-        this.getComments();
-      } else {
-        this.coreService.post('controllers/security_level', {}).subscribe((result: any) => {
-          this.checkSecurityControllers(result);
-        }, () => {
-          this.checkSecurityControllers(null);
-        });
-      }
-    }, (err) => {
-      if (err.error && err.error.message === 'Access denied') {
-        this.loadInit(true);
-      } else {
-        this.getComments();
-        this.router.navigate(['/start-up']);
-        setTimeout(() => {
-          this.loading = true;
-        }, 10);
-      }
-    });
-  }
-
-  private checkSecurityControllers(res): void {
-    this.getComments();
-    if (res && res.controllers && res.controllers.length > 0) {
-      this.router.navigate(['/controllers']);
-    } else {
-      this.router.navigate(['/start-up']);
-    }
-    setTimeout(() => {
-      this.loading = true;
-    }, 10);
-  }
-
-  private authenticate(userName): any {
-    this.coreService.post('authentication/login', {userName}).subscribe((data) => {
-      this.authService.setUser(data);
-      this.authService.save();
-      this.getSchedulerIds();
-      this.getPermissions();
-    }, () => {
-      const returnUrl = this.router.url.match(/login/) ? '/' : this.router.url;
-      this.router.navigate(['login'], {queryParams: {returnUrl}});
-    });
-  }
-
-  private init(): void {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    } else {
-      setTimeout(() => {
-        this.init();
-      }, 100);
-      return;
-    }
-
-    this.loadScheduleDetail();
-    if (!this.loading) {
-      this.loadInit(false);
-    }
-  }
-
-  private loadInit(isError): void {
-    this.sessionTimeout = parseInt(this.authService.sessionTimeout, 10);
-    if(!this.permission) {
-      this.permission = JSON.parse(this.authService.permission) || {};
-    }
-    if (sessionStorage.preferences || isError) {
-      this.loading = true;
-    } else {
-      return;
-    }
-    this.loadSettingConfiguration();
-    this.count = this.sessionTimeout / 1000;
-    this.calculateTime();
-    this.nzConfigService.set('empty', {nzDefaultEmptyContent: this.customTpl});
-    setTimeout(() => {
-      LayoutComponent.calculateHeight();
-    }, 10);
   }
 
   ngOnDestroy(): void {
@@ -330,14 +211,18 @@ export class LayoutComponent implements OnInit, OnDestroy {
             this.coreService.setDefaultTab();
           }
           this.authService.setIds(res);
+          let permission = JSON.parse(this.authService.permission);
+          permission.currentController = LayoutComponent.setControllerPermission( permission, this.schedulerIds);
+          this.authService.setPermission(permission);
           this.authService.save();
           this.reloadUI();
         } else {
-          let title = '', msg = '';
-          this.translate.get('message.oops').subscribe(translatedValue => {
+          let title = '';
+          let msg = '';
+          this.translate.get('error.message.oops').subscribe(translatedValue => {
             title = translatedValue;
           });
-          this.translate.get('message.errorInLoadingScheduleIds').subscribe(translatedValue => {
+          this.translate.get('error.message.errorInLoadingScheduleIds').subscribe(translatedValue => {
             msg = translatedValue;
           });
           this.toasterService.pop('error', title, msg);
@@ -354,6 +239,160 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }, () => {
       this._logout(timeout);
     });
+  }
+
+  reloadThemeAndLang(preferences): void {
+    preferences = JSON.parse(sessionStorage.preferences);
+    $('#style-color').attr('href', './styles/' + preferences.theme + '-style.css');
+    localStorage.$SOS$THEME = preferences.theme;
+    $('#headerColor').addClass(preferences.headerColor);
+    localStorage.$SOS$MENUTHEME = preferences.headerColor;
+    $('#avatarBg').addClass(preferences.avatarColor);
+    localStorage.$SOS$AVATARTHEME = preferences.avatarColor;
+    localStorage.$SOS$LANG = preferences.locale;
+    this.translate.setDefaultLang(preferences.locale);
+    this.translate.use(preferences.locale);
+  }
+
+  private getComments(): void {
+    if (!this.permission) {
+      this.getPermissions();
+    }
+    if (this.schedulerIds && this.schedulerIds.selected) {
+      if (!this.isProfileLoaded) {
+        this.isProfileLoaded = true;
+        this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, false);
+      }
+      if (!this.isPropertiesLoaded) {
+        this.isPropertiesLoaded = true;
+        this.coreService.post('joc/properties', {}).subscribe((result: any) => {
+          sessionStorage.$SOS$FORCELOGING = result.forceCommentsForAuditLog;
+          sessionStorage.comments = JSON.stringify(result.comments);
+          sessionStorage.showViews = JSON.stringify(result.showViews);
+          sessionStorage.securityLevel = result.securityLevel;
+          sessionStorage.defaultProfile = result.defaultProfileAccount;
+          sessionStorage.$SOS$COPY = JSON.stringify(result.copy);
+          sessionStorage.$SOS$RESTORE = JSON.stringify(result.restore);
+          setTimeout(() => {
+            if (this.isProfileLoaded && !this.loading && sessionStorage.preferences !== undefined && sessionStorage.preferences !== null) {
+              this.loadInit(false);
+            }
+            this.isPropertiesLoaded = false;
+          }, 10);
+        }, () => {
+          this.ngOnInit();
+        });
+      }
+    } else {
+      this.schedulerIds = {};
+    }
+  }
+
+  private getPermissions(): void {
+    this.coreService.post('authentication/joc_cockpit_permissions', {}).subscribe((permission: any) => {
+      console.log(JSON.stringify(permission));
+      permission.currentController = LayoutComponent.setControllerPermission( permission, this.schedulerIds);
+      console.log(permission);
+      this.authService.setPermission(permission);
+      this.authService.save();
+      this.permission = permission;
+      if (!sessionStorage.preferenceId) {
+        this.ngOnInit();
+      }
+      if (this.child) {
+        this.child.reloadSettings();
+      }
+      setTimeout(() => {
+        if (!this.loading) {
+          this.loadInit(false);
+        }
+      }, 10);
+    });
+  }
+
+  private getSchedulerIds(): void {
+    this.coreService.post('controller/ids', {}).subscribe((res: any) => {
+      if (res && res.controllerIds && res.controllerIds.length > 0) {
+        this.authService.setIds(res);
+        this.authService.save();
+        this.schedulerIds = res;
+        this.getComments();
+      } else {
+        this.coreService.post('controllers/security_level', {}).subscribe((result: any) => {
+          this.checkSecurityControllers(result);
+        }, () => {
+          this.checkSecurityControllers(null);
+        });
+      }
+    }, (err) => {
+      if (err.error && err.error.message === 'Access denied') {
+        this.loadInit(true);
+      } else {
+        this.getComments();
+        this.router.navigate(['/start-up']);
+        setTimeout(() => {
+          this.loading = true;
+        }, 10);
+      }
+    });
+  }
+
+  private checkSecurityControllers(res): void {
+    this.getComments();
+    if (res && res.controllers && res.controllers.length > 0) {
+      this.router.navigate(['/controllers']);
+    } else {
+      this.router.navigate(['/start-up']);
+    }
+    setTimeout(() => {
+      this.loading = true;
+    }, 10);
+  }
+
+  private authenticate(userName): any {
+    this.coreService.post('authentication/login', {userName}).subscribe((data) => {
+      this.authService.setUser(data);
+      this.authService.save();
+      this.getSchedulerIds();
+    }, () => {
+      const returnUrl = this.router.url.match(/login/) ? '/' : this.router.url;
+      this.router.navigate(['login'], {queryParams: {returnUrl}});
+    });
+  }
+
+  private init(): void {
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    } else {
+      setTimeout(() => {
+        this.init();
+      }, 100);
+      return;
+    }
+
+    this.loadScheduleDetail();
+    if (!this.loading) {
+      this.loadInit(false);
+    }
+  }
+
+  private loadInit(isError): void {
+    this.sessionTimeout = parseInt(this.authService.sessionTimeout, 10);
+    if (sessionStorage.preferences || isError) {
+      this.loading = true;
+    } else {
+      return;
+    }
+    if (!this.permission) {
+      this.permission = JSON.parse(this.authService.permission) || {};
+    }
+    this.loadSettingConfiguration();
+    this.count = this.sessionTimeout / 1000;
+    this.calculateTime();
+    this.nzConfigService.set('empty', {nzDefaultEmptyContent: this.customTpl});
+    setTimeout(() => {
+      LayoutComponent.calculateHeight();
+    }, 10);
   }
 
   private _logout(timeout): void {
@@ -542,19 +581,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
         sessionStorage.settingId = res.id;
       });
     }
-  }
-
-  reloadThemeAndLang(preferences): void {
-    preferences = JSON.parse(sessionStorage.preferences);
-    $('#style-color').attr('href', './styles/' + preferences.theme + '-style.css');
-    localStorage.$SOS$THEME = preferences.theme;
-    $('#headerColor').addClass(preferences.headerColor);
-    localStorage.$SOS$MENUTHEME = preferences.headerColor;
-    $('#avatarBg').addClass(preferences.avatarColor);
-    localStorage.$SOS$AVATARTHEME = preferences.avatarColor;
-    localStorage.$SOS$LANG = preferences.locale;
-    this.translate.setDefaultLang(preferences.locale);
-    this.translate.use(preferences.locale);
   }
 
   private updateTitle(res): void {

@@ -59,6 +59,7 @@ export class InventoryService {
     if (data.length > 0) {
       arr = this.createTempArray(data);
     }
+
     function recursive(path, nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if (!nodes[i].type && !nodes[i].object) {
@@ -97,8 +98,9 @@ export class InventoryService {
     }
   }
 
-  private checkAndAddFolder(_path, treeArr) {
+  private checkAndAddFolder(_path, treeArr): void {
     let node: any;
+
     function recursive(path, nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if (!nodes[i].type && !nodes[i].object) {
@@ -136,7 +138,7 @@ export class InventoryService {
     }
   }
 
-  private createTempArray(arr) {
+  private createTempArray(arr): any {
     let x = _.groupBy(arr, (res) => {
       return res.objectType;
     });
@@ -189,7 +191,7 @@ export class InventoryService {
     return tempArr.concat(folderArr);
   }
 
-  checkHalfCheckBox(parentNode, isCheck) {
+  checkHalfCheckBox(parentNode, isCheck): boolean {
     let flag = true;
     for (let i = 0; i < parentNode.children.length; i++) {
       if (parentNode.children[i].origin.type) {
@@ -205,22 +207,24 @@ export class InventoryService {
     return flag;
   }
 
-  checkAndUpdateVersionList(data) {
+  checkAndUpdateVersionList(data): void {
     data.isCall = true;
     for (let i = 0; i < data.children.length; i++) {
       if (data.children[i].deployablesVersions && data.children[i].deployablesVersions.length > 0) {
         data.children[i].deployId = '';
         if (data.children[i].deployablesVersions[0].versions && data.children[i].deployablesVersions[0].versions.length > 0) {
           data.children[i].deployId = data.children[i].deployablesVersions[0].deploymentId;
+        } else if (!data.children[i].deployablesVersions[0].deploymentId) {
+          data.children[i].deployablesVersions[0].deploymentId = '';
         }
       }
       if (data.children[i].releasableVersions && data.children[i].releasableVersions.length > 0) {
-        data.children[i].releaseId = data.children[i].releasableVersions[0].releaseId;
+        data.children[i].releaseId = data.children[i].releasableVersions[0].releaseId || '';
       }
     }
   }
 
-  isControllerObject(type) {
+  isControllerObject(type): boolean {
     return type === 'WORKFLOW' || type === 'JOBCLASS' || type === 'JUNCTION' || type === 'LOCK' || type === 'FILEORDERSOURCE';
   }
 }

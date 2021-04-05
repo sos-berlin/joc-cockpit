@@ -3,7 +3,7 @@ import {AdminRoutingModule} from './admin-routing.module';
 import {AdminComponent} from './admin.component';
 import {SharedModule} from '../shared/shared.module';
 import {AccountsComponent, AccountModalComponent} from './accounts/accounts.component';
-import {RolesComponent, RoleModalComponent, MasterModalComponent} from './roles/roles.component';
+import {RolesComponent, RoleModalComponent, ControllerModalComponent} from './roles/roles.component';
 import {
   MainSectionComponent, MainSectionModalComponent, LdapSectionModalComponent,
   EditMainSectionModalComponent
@@ -24,7 +24,7 @@ import {ProfilesComponent} from './profiles/profiles.component';
     FolderModalComponent,
     PermissionModalComponent,
     AccountModalComponent,
-    MasterModalComponent,
+    ControllerModalComponent,
     RoleModalComponent,
     AccountsComponent,
     AdminComponent,

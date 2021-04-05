@@ -3170,7 +3170,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private initConf() {
+  private initConf(): void {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
@@ -3178,6 +3178,15 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
     }
     this.historyFilters = this.coreService.getHistoryTab();
+    if (!this.permission.currentController.orders.view && (this.historyFilters.type === 'ORDER' || this.historyFilters.type === 'TASK')) {
+      this.historyFilters.type = 'YADE';
+    }
+    if (!this.permission.joc.fileTransfer.view && this.historyFilters.type === 'YADE') {
+      this.historyFilters.type = 'DEPLOYMENT';
+    }
+    if (!this.permission.currentController.deployments.view && this.historyFilters.type === 'DEPLOYMENT') {
+      this.historyFilters.type = 'SUBMISSION';
+    }
     this.order = this.historyFilters.order;
     this.task = this.historyFilters.task;
     this.yade = this.historyFilters.yade;
@@ -3251,17 +3260,22 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.savedSubmissionHistoryFilter.selected = undefined;
     }
 
-    if (this.schedulerIds.selected) {
+   if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
       this.checkSharedFilters(this.historyFilters.type);
       this.getIgnoreList();
     } else {
-      this.loadIgnoreList = true;
-      this.loadConfig = true;
-      this.init(false);
-    }
+     this.orderHistoryFilterList = [];
+     this.jobHistoryFilterList = [];
+     this.yadeHistoryFilterList = [];
+     this.deploymentHistoryFilterList = [];
+     this.submissionHistoryFilterList = [];
+     this.loadIgnoreList = true;
+     this.loadConfig = true;
+     this.init(false);
+   }
   }
 
-  private checkCurrentTab(type, res, obj) {
+  private checkCurrentTab(type, res, obj): void {
     if (type === 'ORDER') {
       this.orderHistoryFilterList = res ? res.configurations : [];
     } else if (type === 'TASK') {
@@ -3276,7 +3290,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.getCustomizations(type, obj);
   }
 
-  private init(flag) {
+  private init(flag): void {
     if (this.loadConfig && this.loadIgnoreList) {
       let obj = {
         controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''
@@ -3301,23 +3315,21 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   /* --------------------------Customizations Begin-----------------------*/
 
-  private checkSharedFilters(type) {
-    if (this.schedulerIds.selected) {
-      let obj = {
-        controllerId: this.schedulerIds.selected,
-        configurationType: 'CUSTOMIZATION',
-        objectType: type === 'ORDER' ? 'ORDER_HISTORY' : type === 'TASK' ? 'TASK_HISTORY' : type === 'YADE' ? 'YADE_HISTORY' : type === 'DEPLOYMENT' ? 'DEPLOYMENT_HISTORY' : 'SUBMISSION_HISTORY',
-        shared: true
-      };
-      if (this.permission.joc) {
-        this.coreService.post('configurations', obj).subscribe((res: any) => {
-          this.checkCurrentTab(type, res, obj);
-        }, (err) => {
-          this.checkCurrentTab(type, null, obj);
-        });
-      } else {
+  private checkSharedFilters(type): void {
+    let obj = {
+      controllerId: this.schedulerIds.selected,
+      configurationType: 'CUSTOMIZATION',
+      objectType: type === 'ORDER' ? 'ORDER_HISTORY' : type === 'TASK' ? 'TASK_HISTORY' : type === 'YADE' ? 'YADE_HISTORY' : type === 'DEPLOYMENT' ? 'DEPLOYMENT_HISTORY' : 'SUBMISSION_HISTORY',
+      shared: true
+    };
+    if (this.permission.joc.administration.customization.view) {
+      this.coreService.post('configurations', obj).subscribe((res: any) => {
+        this.checkCurrentTab(type, res, obj);
+      }, (err) => {
         this.checkCurrentTab(type, null, obj);
-      }
+      });
+    } else {
+      this.checkCurrentTab(type, null, obj);
     }
   }
 
@@ -3345,7 +3357,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  private checkOrderCustomization(result) {
+  private checkOrderCustomization(result): void {
     if (this.orderHistoryFilterList && this.orderHistoryFilterList.length > 0) {
       if (result.configurations && result.configurations.length > 0) {
         let data = [];
@@ -3399,7 +3411,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private checkTaskCustomization(result) {
+  private checkTaskCustomization(result): void {
     if (this.jobHistoryFilterList && this.jobHistoryFilterList.length > 0) {
       if (result.configurations && result.configurations.length > 0) {
         let data = [];
@@ -3452,7 +3464,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private checkYadeCustomization(result) {
+  private checkYadeCustomization(result): void {
     if (this.yadeHistoryFilterList && this.yadeHistoryFilterList.length > 0) {
       if (result.configurations && result.configurations.length > 0) {
         let data = [];
@@ -3506,7 +3518,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private checkDeploymentCustomization(result) {
+  private checkDeploymentCustomization(result): void {
     if (this.deploymentHistoryFilterList && this.deploymentHistoryFilterList.length > 0) {
       if (result.configurations && result.configurations.length > 0) {
         let data = [];
@@ -3559,7 +3571,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private checkSubmissionCustomization(result) {
+  private checkSubmissionCustomization(result): void {
     if (this.submissionHistoryFilterList && this.submissionHistoryFilterList.length > 0) {
       if (result.configurations && result.configurations.length > 0) {
         let data = [];
@@ -3612,7 +3624,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getIgnoreList() {
+  private getIgnoreList(): void {
     if (this.schedulerIds.selected) {
       let configObj = {
         controllerId: this.schedulerIds.selected,

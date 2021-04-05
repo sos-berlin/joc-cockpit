@@ -128,7 +128,7 @@
                 </ul>
               </nz-dropdown-menu>
             </div>
-            <div class="btn-group dropdown">
+            <div class="btn-group dropdown" *ngIf="permission.joc && permission.joc.administration.customization.view">
               <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered.account" nz-dropdown
                       nzTrigger="click" [nzDropdownMenu]="customization" nzPlacement="bottomRight" type="button">
                 {{'customization.label.customizations' | translate}}
@@ -137,7 +137,7 @@
               </button>
               <nz-dropdown-menu #customization="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item>
+                  <li nz-menu-item *ngIf="permission.joc && permission.joc.administration.customization.manage">
                     <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
                   </li>
                   <li nz-menu-item *ngIf="filterList.length>0">

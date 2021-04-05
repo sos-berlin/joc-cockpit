@@ -401,10 +401,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.isLoaded = true;
     const self = this;
     this.reset();
-    if (!this.filterList) {
-      this.checkSharedFilters();
-      return;
-    }
     if (this.selectedFiltered && !_.isEmpty(this.selectedFiltered)) {
       this.isCustomizationSelected(true);
     }
@@ -732,7 +728,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       this.showFiles = this.preferences.showFiles;
     }
 
-    if (this.schedulerIds.selected) {
+    if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
       this.checkSharedFilters();
     } else {
       this.loadConfig = true;
@@ -741,30 +737,25 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   }
 
   checkSharedFilters(): void {
-    if (this.permission && this.permission.joc) {
-      let obj = {
-        controllerId: this.schedulerIds.selected,
-        configurationType: 'CUSTOMIZATION',
-        objectType: 'YADE',
-        shared: true
-      };
-      this.coreService.post('configurations', obj).subscribe((res: any) => {
-        if (res.configurations && res.configurations.length > 0) {
-          this.filterList = res.configurations;
-        }
-        this.getYadeCustomizations();
-      }, () => {
-        this.filterList = [];
-        this.getYadeCustomizations();
-      });
-    } else {
+    const obj = {
+      controllerId: this.schedulerIds.selected,
+      configurationType: 'CUSTOMIZATION',
+      objectType: 'YADE',
+      shared: true
+    };
+    this.coreService.post('configurations', obj).subscribe((res: any) => {
+      if (res.configurations && res.configurations.length > 0) {
+        this.filterList = res.configurations;
+      }
+      this.getYadeCustomizations();
+    }, () => {
       this.filterList = [];
       this.getYadeCustomizations();
-    }
+    });
   }
 
   getYadeCustomizations(): void {
-    let obj = {
+    const obj = {
       controllerId: this.schedulerIds.selected,
       account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',

@@ -143,7 +143,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
   }
 
   showMaster(user): void {
-    this.router.navigate(['/users/master'], {queryParams: {user: user}});
+    this.router.navigate(['/users/role'], {queryParams: {user}});
   }
 
   sort(key): void {

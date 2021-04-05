@@ -208,81 +208,78 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   checkSharedFilters(): void {
-     if (this.schedulerIds.selected) {
-      let obj = {
-        controllerId: this.schedulerIds.selected,
-        configurationType: 'CUSTOMIZATION',
-        objectType: this.objectType,
-        shared: true
-      };
-      this.coreService.post('configurations', obj).subscribe((res: any) => {
-        if (res.configurations && res.configurations.length > 0) {
-          this.filterList = res.configurations;
-        }
-        this.getCustomizations();
-      }, (err) => {
-        this.getCustomizations();
-      });
-    } else {
+    let obj = {
+      controllerId: this.schedulerIds.selected,
+      configurationType: 'CUSTOMIZATION',
+      objectType: this.objectType,
+      shared: true
+    };
+    this.coreService.post('configurations', obj).subscribe((res: any) => {
+      if (res.configurations && res.configurations.length > 0) {
+        this.filterList = res.configurations;
+      }
       this.getCustomizations();
-    }
+    }, () => {
+      this.getCustomizations();
+    });
   }
 
   getCustomizations(): void {
-    if (this.schedulerIds.selected) {
-      let obj = {
-        controllerId: this.schedulerIds.selected,
-        account: this.authService.currentUserData,
-        configurationType: 'CUSTOMIZATION',
-        objectType: this.objectType
-      };
-      this.coreService.post('configurations', obj).subscribe((res: any) => {
-        if (this.filterList && this.filterList.length > 0) {
-          if (res.configurations && res.configurations.length > 0) {
-            this.filterList = this.filterList.concat(res.configurations);
-          }
-          let data = [];
-          for (let i = 0; i < this.filterList.length; i++) {
-            let flag = true;
-            for (let j = 0; j < data.length; j++) {
-              if (data[j].id === this.filterList[i].id) {
-                flag = false;
-              }
-            }
-            if (flag) {
-              data.push(this.filterList[i]);
-            }
-          }
-          this.filterList = data;
-        } else {
-          this.filterList = res.configurations;
+    let obj = {
+      controllerId: this.schedulerIds.selected,
+      account: this.authService.currentUserData,
+      configurationType: 'CUSTOMIZATION',
+      objectType: this.objectType
+    };
+    this.coreService.post('configurations', obj).subscribe((res: any) => {
+      if (this.filterList && this.filterList.length > 0) {
+        if (res.configurations && res.configurations.length > 0) {
+          this.filterList = this.filterList.concat(res.configurations);
         }
-
-        if (this.savedFilter.selected) {
+        let data = [];
+        for (let i = 0; i < this.filterList.length; i++) {
           let flag = true;
-          this.filterList.forEach((value) => {
-            if (value.id === this.savedFilter.selected) {
+          for (let j = 0; j < data.length; j++) {
+            if (data[j].id === this.filterList[i].id) {
               flag = false;
-              this.coreService.post('configuration', {
-                controllerId: value.controllerId,
-                id: value.id
-              }).subscribe((conf: any) => {
-                this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
-                this.selectedFiltered.account = value.account;
-                this.load(null);
-              });
             }
-          });
+          }
           if (flag) {
-            this.savedFilter.selected = undefined;
-            this.load(null);
+            data.push(this.filterList[i]);
           }
         }
-      }, (err) => {
-        this.savedFilter.selected = undefined;
-        this.load(null);
-      });
-    }
+        this.filterList = data;
+      } else {
+        this.filterList = res.configurations;
+      }
+
+      if (this.savedFilter.selected) {
+        let flag = true;
+        this.filterList.forEach((value) => {
+          if (value.id === this.savedFilter.selected) {
+            flag = false;
+            this.coreService.post('configuration', {
+              controllerId: value.controllerId,
+              id: value.id
+            }).subscribe((conf: any) => {
+              this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
+              this.selectedFiltered.account = value.account;
+              this.load(null);
+            }, () => {
+              this.savedFilter.selected = undefined;
+              this.load(null);
+            });
+          }
+        });
+        if (flag) {
+          this.savedFilter.selected = undefined;
+          this.load(null);
+        }
+      }
+    }, () => {
+      this.savedFilter.selected = undefined;
+      this.load(null);
+    });
   }
 
   isCustomizationSelected(flag): void {
@@ -292,8 +289,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     } else {
       if (this.temp_filter) {
         this.adtLog.filter.date = _.clone(this.temp_filter);
-      }
-      else {
+      } else {
         this.adtLog.filter.date = 'today';
       }
     }
@@ -586,10 +582,12 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       this.adtLog.current = this.preferences.currentController;
     }
     this.savedFilter = JSON.parse(this.saveService.auditLogFilters) || {};
-    if (!this.savedFilter.selected) {
+    if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
+      this.checkSharedFilters();
+    } else {
+      this.savedFilter.selected = undefined;
       this.load(null);
     }
-    this.checkSharedFilters();
   }
 
   private setDateRange(filter): void {
