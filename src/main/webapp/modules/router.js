@@ -30,7 +30,7 @@
                 } else {
                     t.localStorage.$SOS$URL = r.path(), t.localStorage.$SOS$URLPARAMS = JSON.stringify(r.search());
                 }
-                s.reject("login");
+                s.resolve()
             }
             return s.promise
         };

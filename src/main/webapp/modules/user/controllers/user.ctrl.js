@@ -45,17 +45,19 @@
         }
 
         if ($window.localStorage.$SOS$REMEMBER == 'true' || $window.localStorage.$SOS$REMEMBER == true) {
-            let urs = CryptoJS.AES.decrypt($window.localStorage.$SOS$FOO.toString(), '$SOSJOBSCHEDULER');
-            vm.user.username = urs.toString(CryptoJS.enc.Utf8);
-            if ($window.localStorage.$SOS$BOO) {
-                let pwd = CryptoJS.AES.decrypt($window.localStorage.$SOS$BOO.toString(), '$SOSJOBSCHEDULER');
-                vm.user.password = pwd.toString(CryptoJS.enc.Utf8);
+            if($window.localStorage.$SOS$FOO) {
+                let urs = CryptoJS.AES.decrypt($window.localStorage.$SOS$FOO.toString(), '$SOSJOBSCHEDULER');
+                vm.user.username = urs.toString(CryptoJS.enc.Utf8);
+                if ($window.localStorage.$SOS$BOO) {
+                    let pwd = CryptoJS.AES.decrypt($window.localStorage.$SOS$BOO.toString(), '$SOSJOBSCHEDULER');
+                    vm.user.password = pwd.toString(CryptoJS.enc.Utf8);
+                }
             }
             vm.rememberMe = true;
         }
 
         function getPermissions() {
-            vm.schedulerIds = JSON.parse(SOSAuth.scheduleIds);
+            vm.schedulerIds = SOSAuth.scheduleIds ? JSON.parse(SOSAuth.scheduleIds) : {};
             UserService.getPermissions().then(function (permissions) {
                 SOSAuth.setPermissions(permissions);
                 SOSAuth.save();
@@ -64,8 +66,7 @@
                 } else {
                     PermissionService.savePermission('');
                 }
-                if ($window.localStorage.$SOS$URL && $window.localStorage.$SOS$URL != 'null') {
-
+                if ($window.localStorage.$SOS$URL && $window.localStorage.$SOS$URL != 'null' && $window.localStorage.$SOS$URL != '/login') {
                     $location.path($window.localStorage.$SOS$URL).search(JSON.parse($window.localStorage.$SOS$URLPARAMS));
                     $window.localStorage.removeItem('$SOS$URL');
                     $window.localStorage.removeItem('$SOS$URLPARAMS');
@@ -83,53 +84,52 @@
             $window.sessionStorage.errorMsg = '';
             $rootScope.error = '';
             vm.loginError = '';
-            if (vm.user.username) {
-                $('#loginBtn').text(gettextCatalog.getString("button.processing") + '...')
-                    .attr("disabled", true);
-                SOSAuth.currentUserData = null;
-                UserService.authenticate(
-                    vm.user.username,
-                    vm.user.password
-                ).then(function (response) {
-                    if (response && response.isAuthenticated) {
-                        SOSAuth.accessTokenId = response.accessToken;
-                        SOSAuth.rememberMe = vm.rememberMe;
-                        if (vm.rememberMe) {
-                            let urs = CryptoJS.AES.encrypt(vm.user.username, '$SOSJOBSCHEDULER');
-                            $window.localStorage.$SOS$FOO = urs;
-                            if (vm.user.password) {
-                                let pwd = CryptoJS.AES.encrypt(vm.user.password, '$SOSJOBSCHEDULER');
-                                $window.localStorage.$SOS$BOO = pwd;
-                            }
-                            $window.localStorage.$SOS$REMEMBER = vm.rememberMe;
-                        } else {
-                            $window.localStorage.removeItem('$SOS$FOO');
-                            $window.localStorage.removeItem('$SOS$BOO');
-                            $window.localStorage.removeItem('$SOS$REMEMBER');
-                        }
 
-                        SOSAuth.setUser(response);
-                        SOSAuth.save();
-                        getSchedulerIds(response.user);
+            $('#loginBtn').text(gettextCatalog.getString("button.processing") + '...')
+                .attr("disabled", true);
+            SOSAuth.currentUserData = null;
+            UserService.authenticate(
+                vm.user.username,
+                vm.user.password
+            ).then(function (response) {
+                if (response && response.isAuthenticated) {
+                    SOSAuth.accessTokenId = response.accessToken;
+                    SOSAuth.rememberMe = vm.rememberMe;
+                    if (vm.rememberMe) {
+                        if (vm.user.username) {
+                            $window.localStorage.$SOS$FOO = CryptoJS.AES.encrypt(vm.user.username, '$SOSJOBSCHEDULER');
+                            if (vm.user.password) {
+                                $window.localStorage.$SOS$BOO = CryptoJS.AES.encrypt(vm.user.password, '$SOSJOBSCHEDULER');
+                            }
+                        }
+                        $window.localStorage.$SOS$REMEMBER = vm.rememberMe;
+                    } else {
+                        $window.localStorage.removeItem('$SOS$FOO');
+                        $window.localStorage.removeItem('$SOS$BOO');
+                        $window.localStorage.removeItem('$SOS$REMEMBER');
+                    }
+
+                    SOSAuth.setUser(response);
+                    SOSAuth.save();
+                    getSchedulerIds(response.user);
+
+                } else {
+                    vm.loginError = 'message.loginError';
+                }
+
+            }, function (err) {
+                if (err.status === 401) {
+                    vm.loginError = 'message.loginError';
+                } else {
+                    if (err.data && err.data.error && err.data.error.message) {
 
                     } else {
                         vm.loginError = 'message.loginError';
                     }
-
-                }, function (err) {
-                    if (err.status === 401) {
-                        vm.loginError = 'message.loginError';
-                    }else {
-                        if(err.data && err.data.error && err.data.error.message) {
-
-                        }else{
-                            vm.loginError = 'message.loginError';
-                        }
-                    }
-                    $('#loginBtn').text(gettextCatalog.getString("button.logIn"))
-                        .attr("disabled", false);
-                });
-            }
+                }
+                $('#loginBtn').text(gettextCatalog.getString("button.logIn"))
+                    .attr("disabled", false);
+            });
         };
 
         function getDefaultConfiguration(){

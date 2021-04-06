@@ -552,7 +552,7 @@
             },
             addJobStream: function (filter) {
                 const deferred = $q.defer();
-                let JobStream = $resource('jobstreams/add_jobstream');
+                let JobStream = $resource('jobstreams/add');
                 JobStream.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -562,7 +562,7 @@
             },
             editJobStream: function (filter) {
                 const deferred = $q.defer();
-                let JobStream = $resource('jobstreams/edit_jobstream');
+                let JobStream = $resource('jobstreams/edit');
                 JobStream.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -572,7 +572,7 @@
             },
             deleteJobStream: function (filter) {
                 const deferred = $q.defer();
-                let JobStream = $resource('jobstreams/delete_jobstream');
+                let JobStream = $resource('jobstreams/delete');
                 JobStream.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -582,7 +582,7 @@
             },
             getJobStreams: function (filter) {
                 const deferred = $q.defer();
-                let JobStream = $resource('jobstreams/list_jobstreams');
+                let JobStream = $resource('jobstreams/list');
                 JobStream.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -632,7 +632,7 @@
             },
             startJobStreamStarter: function (filter) {
                 const deferred = $q.defer();
-                let JobStream = $resource('jobstreams/start_jobstream');
+                let JobStream = $resource('jobstreams/start');
                 JobStream.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {

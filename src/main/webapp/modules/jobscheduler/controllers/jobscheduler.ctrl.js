@@ -6562,29 +6562,31 @@
                 }];
             }
 
-            for (let i = 0; i < vm.dashboardLayout.length; i++) {
-                if (vm.dashboardLayout[i].name === 'agentClusterStatus' && vm.permission.JobschedulerUniversalAgent.view.status) {
-                    vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name === 'agentClusterRunningTasks' && vm.permission.ProcessClass.view.status) {
-                    vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name === 'jobSchedulerStatus') {
-                    vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name === 'masterClusterStatus') {
-                    vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name === 'dailyPlanOverview' && vm.permission.DailyPlan.view.status) {
-                    vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name === 'ordersOverview' && vm.permission.Order.view.status) {
-                    vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name === 'ordersSummary' && vm.permission.Order.view.status) {
-                    vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name === 'tasksOverview' && vm.permission.Job.view.status) {
-                    vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name === 'tasksSummary' && vm.permission.Job.view.status) {
-                    vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name === 'fileTransferOverview' && vm.permission.YADE.view.status) {
-                    vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name === 'fileTransferSummary' && vm.permission.YADE.view.status) {
-                    vm.widgetWithPermission.push(vm.dashboardLayout[i]);
+            if(vm.permission.JobschedulerUniversalAgent) {
+                for (let i = 0; i < vm.dashboardLayout.length; i++) {
+                    if (vm.dashboardLayout[i].name === 'agentClusterStatus' && vm.permission.JobschedulerUniversalAgent.view.status) {
+                        vm.widgetWithPermission.push(vm.dashboardLayout[i]);
+                    } else if (vm.dashboardLayout[i].name === 'agentClusterRunningTasks' && vm.permission.ProcessClass.view.status) {
+                        vm.widgetWithPermission.push(vm.dashboardLayout[i]);
+                    } else if (vm.dashboardLayout[i].name === 'jobSchedulerStatus') {
+                        vm.widgetWithPermission.push(vm.dashboardLayout[i]);
+                    } else if (vm.dashboardLayout[i].name === 'masterClusterStatus') {
+                        vm.widgetWithPermission.push(vm.dashboardLayout[i]);
+                    } else if (vm.dashboardLayout[i].name === 'dailyPlanOverview' && vm.permission.DailyPlan.view.status) {
+                        vm.widgetWithPermission.push(vm.dashboardLayout[i]);
+                    } else if (vm.dashboardLayout[i].name === 'ordersOverview' && vm.permission.Order.view.status) {
+                        vm.widgetWithPermission.push(vm.dashboardLayout[i]);
+                    } else if (vm.dashboardLayout[i].name === 'ordersSummary' && vm.permission.Order.view.status) {
+                        vm.widgetWithPermission.push(vm.dashboardLayout[i]);
+                    } else if (vm.dashboardLayout[i].name === 'tasksOverview' && vm.permission.Job.view.status) {
+                        vm.widgetWithPermission.push(vm.dashboardLayout[i]);
+                    } else if (vm.dashboardLayout[i].name === 'tasksSummary' && vm.permission.Job.view.status) {
+                        vm.widgetWithPermission.push(vm.dashboardLayout[i]);
+                    } else if (vm.dashboardLayout[i].name === 'fileTransferOverview' && vm.permission.YADE.view.status) {
+                        vm.widgetWithPermission.push(vm.dashboardLayout[i]);
+                    } else if (vm.dashboardLayout[i].name === 'fileTransferSummary' && vm.permission.YADE.view.status) {
+                        vm.widgetWithPermission.push(vm.dashboardLayout[i]);
+                    }
                 }
             }
 

@@ -9665,7 +9665,7 @@
                 if(vm.selectedJobStreamObj.jobstreamStarters.length>0) {
                     for (let a = 0; a < vm.selectedJobStreamObj.jobstreamStarters.length; a++) {
                         let starter = vm.selectedJobStreamObj.jobstreamStarters[a];
-                        let _node = getCellNode('Jobstream', starter.title || ' -', '', '');
+                        let _node = getCellNode('Jobstream', starter.name || starter.title, '', '');
                         _node.setAttribute('jobStreamId', vm.selectedJobStreamObj.jobStreamId);
                         if (starter.nextStart) {
                             _node.setAttribute('nextStart', starter.nextStart);
@@ -10310,7 +10310,7 @@
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
-                vm.comments.name = data.title;
+                vm.comments.name = data.name;
                 vm.comments.operation = 'Start';
                 vm.comments.type = 'Job Stream Starter';
 
@@ -10550,7 +10550,7 @@
                 vm.comments.radio = 'predefined';
                 vm.comments.type = 'Job Stream Starter';
                 vm.comments.operation = 'Delete';
-                vm.comments.name = strter.title;
+                vm.comments.name = strter.name;
 
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/comment-dialog.html',
@@ -10575,7 +10575,7 @@
                 });
 
             } else {
-                vm.deleteJobSteam = {title: strter.title || '', stater: true};
+                vm.deleteJobSteam = {title: strter.name || '', stater: true};
                 let modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/confirm-dialog.html',
                     controller: 'DialogCtrl1',
@@ -10602,10 +10602,9 @@
             if (path.substring(0, 1) !== '/') {
                 path = '/' + path;
             }
-
             if (jobStream.jobstreamStarters && jobStream.jobstreamStarters.length > 0) {
                 for (let i = 0; i < jobStream.jobstreamStarters.length; i++) {
-                    if(!jobStream.jobstreamStarters[i].title){
+                    if(!jobStream.jobstreamStarters[i].name){
                         for (let j = 0; j < jobStream.jobstreamStarters[i].jobs.length; j++) {
                             if(!jobStream.jobstreamStarters[i].jobs[j].job){
                                 jobStream.jobstreamStarters.splice(i, 1);
@@ -10693,7 +10692,7 @@
             let _extraJobs = [];
             for (let m = 0; m < res.jobstreamStarters.length; m++) {
                 if (updateStarter) {
-                    if (updateStarter.title === res.jobstreamStarters[m].title) {
+                    if (updateStarter.name === res.jobstreamStarters[m].name) {
                         vm.selectedStarterId = res.jobstreamStarters[m].jobStreamStarterId;
                     }
                 }
@@ -10825,7 +10824,7 @@
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
-                vm.comments.name = starterObj.title;
+                vm.comments.name = starterObj.name;
                 vm.comments.operation = status === 'active' ? 'Continue' : 'Paused';
                 vm.comments.type = 'Job Stream Starter';
 
@@ -12974,7 +12973,7 @@
                     if (vm.workflows[i].jobStream === vm.jobStreamList[x].jobStream) {
                         for (let j = 0; j < vm.jobStreamList[x].jobstreamStarters.length; j++) {
                             let _obj = {
-                                title: vm.jobStreamList[x].jobstreamStarters[j].title || '',
+                                title: vm.jobStreamList[x].jobstreamStarters[j].name || '',
                                 jobs: vm.jobStreamList[x].jobstreamStarters[j].jobs,
                                 runTime: vm.jobStreamList[x].jobstreamStarters[j].runTime,
                                 params: vm.jobStreamList[x].jobstreamStarters[j].params

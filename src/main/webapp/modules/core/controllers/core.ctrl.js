@@ -22,15 +22,19 @@
         .controller('AddRestrictionDialogCtrl', AddRestrictionDialogCtrl)
         .controller('EditConditionDialogCtrl', EditConditionDialogCtrl);
 
+    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal', '$location', 'toasty', 'clipboard', 'CoreService', 'AuditLogService', 'JobSchedulerService',
+        'PermissionService', '$state', 'UserService', '$timeout', '$resource', 'gettextCatalog', 'TaskService', 'OrderService','DailyPlanService'];
 
-    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal', '$location', 'toasty', 'clipboard', 'CoreService', '$state', 'UserService', '$timeout', '$resource', 'gettextCatalog', 'TaskService', 'OrderService','DailyPlanService'];
-
-    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal, $location, toasty, clipboard, CoreService, $state, UserService, $timeout, $resource, gettextCatalog, TaskService, OrderService,DailyPlanService) {
+    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal, $location, toasty, clipboard, CoreService, AuditLogService, JobSchedulerService,
+                     PermissionService, $state, UserService, $timeout, $resource, gettextCatalog, TaskService, OrderService,DailyPlanService) {
         const vm = $scope;
         vm.schedulerIds = {};
         $rootScope.currentYear = moment().format(('YYYY'));
-
         vm.userPreferences = {};
+        vm.selectedScheduler = {};
+        vm.navObj = {collapse: false};
+        vm.username = SOSAuth.currentUserData;
+        vm.isLoaded = false;
 
         /**
          * Exception Logging Service, currently only used by the $exceptionHandler
@@ -107,9 +111,7 @@
             $window.open('#!/client-logs', '_blank');
         };
 
-        vm.selectedScheduler = {};
-
-        vm.getTimeFromDate = function(t) {
+        vm.getTimeFromDate = function (t) {
             let tf = vm.userPreferences.dateFormat;
             var x = "HH:mm:ss";
             if ((tf.match(/HH:mm:ss/gi) || tf.match(/HH:mm/gi) || tf.match(/hh:mm:ss A/gi) || tf.match(/hh:mm A/gi)) != null) {
@@ -121,13 +123,13 @@
                 }
             }
             let time = moment(t).format(x);
-            if(time === '00:00' || time === '00:00:00'){
+            if (time === '00:00' || time === '00:00:00') {
                 time = '24:00:00'
             }
             return time;
         };
 
-        vm.getTimeFromNumber = function(totalSeconds) {
+        vm.getTimeFromNumber = function (totalSeconds) {
             let hours = Math.floor(totalSeconds / 3600);
             totalSeconds %= 3600;
             let minutes = Math.floor(totalSeconds / 60);
@@ -251,9 +253,9 @@
 
         vm.getPlan = function (newYear, newMonth, isReload) {
             vm.planItems = [];
-            let date, year = newYear, month =  newMonth;
+            let date, year = newYear, month = newMonth;
             let dom = $('#year-calendar').data('calendar');
-            if(!year){
+            if (!year) {
                 year = dom.getYear();
                 month = dom.getMonth();
             }
@@ -291,7 +293,7 @@
             };
             if (vm._job) {
                 obj.job = vm._job.path;
-            } else if(vm._jobChain){
+            } else if (vm._jobChain) {
                 if (vm._jobChain.orderId) {
                     obj.jobChain = vm._jobChain.jobChain;
                     obj.orderId = vm._jobChain.orderId;
@@ -380,7 +382,6 @@
             }
         };
 
-        vm.navObj = {collapse: false};
         vm.checkNavHeader = function () {
             if ($('#navbar1').hasClass('in')) {
                 $('#navbar1').removeClass('in');
@@ -593,14 +594,6 @@
             });
         }
 
-        vm.username = SOSAuth.currentUserData;
-        setPermission();
-        setIds();
-        if (vm.username && vm.schedulerIds.selected) {
-            getUserProfileConfiguration(vm.schedulerIds.selected, vm.username);
-        }
-        setPreferences();
-
         $scope.$on('reloadPreferences', function () {
             setPreferences();
         });
@@ -622,6 +615,75 @@
             loadSettingConfiguration(arg);
             getUserProfileConfiguration(vm.schedulerIds.selected, vm.username, null, true);
         });
+
+        function getSchedulerIds() {
+            $window.sessionStorage.errorMsg = '';
+            JobSchedulerService.getSchedulerIds().then(function (res) {
+                SOSAuth.setIds(res);
+                SOSAuth.save();
+                getComments();
+                getPermissions();
+            }, function (err) {
+                getPermissions();
+            });
+        }
+
+          function getPermissions() {
+              vm.schedulerIds = JSON.parse(SOSAuth.scheduleIds);
+              UserService.getPermissions().then(function (permissions) {
+                  SOSAuth.setPermissions(permissions);
+                  SOSAuth.save();
+                  if (vm.schedulerIds) {
+                      PermissionService.savePermission(vm.schedulerIds.selected);
+                  } else {
+                      PermissionService.savePermission('');
+                  }
+                  initAll();
+              }, function () {
+                  initAll();
+              });
+          }
+
+        function getComments() {
+            AuditLogService.comments().then(function (result) {
+                $window.sessionStorage.$SOS$FORCELOGING = result.forceCommentsForAuditLog;
+                $window.sessionStorage.comments = JSON.stringify(result.comments);
+                $window.sessionStorage.showViews = JSON.stringify(result.showViews);
+            });
+        }
+
+        function authenticate() {
+            UserService.authenticate('root', '').then(function (response) {
+                if (response && response.isAuthenticated) {
+                    SOSAuth.accessTokenId = response.accessToken;
+                    SOSAuth.setUser(response);
+                    SOSAuth.save();
+                    getSchedulerIds(response.user);
+                } else {
+                    initAll();
+                    $location.path('/login').search({});
+                }
+            }, function () {
+                initAll();
+                $location.path('/login').search({});
+            });
+        }
+
+        function initAll(flag) {
+            const URL = $location.path() || '/';
+            if (URL !== '/login' && !SOSAuth.accessTokenId && flag) {
+                authenticate();
+                return;
+            } else {
+                vm.isLoaded = true;
+            }
+            $rootScope.$broadcast('reloadUser');
+            setIds();
+            setPreferences();
+            setPermission();
+        }
+
+        initAll(true);
 
         function setPermission() {
             if (SOSAuth.permission) {
@@ -1573,7 +1635,7 @@
 
         var isTouch = false;
         vm.refreshSession = function () {
-            if (!isTouch) {
+            if (!isTouch && vm.sessionTimeout >= 0) {
                 isTouch = true;
                 UserService.touch().then(function (res) {
                     isTouch = false;
@@ -1615,7 +1677,7 @@
                         $window.sessionStorage.removeItem(key);
                     });
                     $window.localStorage.setItem('$SOS$URLRESET', 'true');
-                    window.location.reload();
+                    $location.path('/login').search({});
                 }
             });
         };
