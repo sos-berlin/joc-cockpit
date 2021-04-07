@@ -9665,7 +9665,7 @@
                 if(vm.selectedJobStreamObj.jobstreamStarters.length>0) {
                     for (let a = 0; a < vm.selectedJobStreamObj.jobstreamStarters.length; a++) {
                         let starter = vm.selectedJobStreamObj.jobstreamStarters[a];
-                        let _node = getCellNode('Jobstream', starter.name || starter.title, '', '');
+                        let _node = getCellNode('Jobstream', starter.starterName || starter.title, '', '');
                         _node.setAttribute('jobStreamId', vm.selectedJobStreamObj.jobStreamId);
                         if (starter.nextStart) {
                             _node.setAttribute('nextStart', starter.nextStart);
@@ -10253,7 +10253,7 @@
         };
 
         vm.addParam = function () {
-            if (vm.starter.params.length === 0 || (vm.starter.params.length > 0 && vm.starter.params[vm.starter.params.length - 1].name !== '')) {
+            if (vm.starter.params.length === 0 || (vm.starter.params.length > 0 && vm.starter.params[vm.starter.params.length - 1].starterName !== '')) {
                 vm.starter.params.push({name: '', value: ''});
             }
         };
@@ -10310,7 +10310,7 @@
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
-                vm.comments.name = data.name;
+                vm.comments.name = data.starterName;
                 vm.comments.operation = 'Start';
                 vm.comments.type = 'Job Stream Starter';
 
@@ -10550,7 +10550,7 @@
                 vm.comments.radio = 'predefined';
                 vm.comments.type = 'Job Stream Starter';
                 vm.comments.operation = 'Delete';
-                vm.comments.name = strter.name;
+                vm.comments.name = strter.starterName;
 
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/comment-dialog.html',
@@ -10575,7 +10575,7 @@
                 });
 
             } else {
-                vm.deleteJobSteam = {title: strter.name || '', stater: true};
+                vm.deleteJobSteam = {title: strter.starterName || '', stater: true};
                 let modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/confirm-dialog.html',
                     controller: 'DialogCtrl1',
@@ -10604,7 +10604,7 @@
             }
             if (jobStream.jobstreamStarters && jobStream.jobstreamStarters.length > 0) {
                 for (let i = 0; i < jobStream.jobstreamStarters.length; i++) {
-                    if(!jobStream.jobstreamStarters[i].name){
+                    if(!jobStream.jobstreamStarters[i].starterName){
                         for (let j = 0; j < jobStream.jobstreamStarters[i].jobs.length; j++) {
                             if(!jobStream.jobstreamStarters[i].jobs[j].job){
                                 jobStream.jobstreamStarters.splice(i, 1);
@@ -10692,7 +10692,7 @@
             let _extraJobs = [];
             for (let m = 0; m < res.jobstreamStarters.length; m++) {
                 if (updateStarter) {
-                    if (updateStarter.name === res.jobstreamStarters[m].name) {
+                    if (updateStarter.starterName === res.jobstreamStarters[m].starterName) {
                         vm.selectedStarterId = res.jobstreamStarters[m].jobStreamStarterId;
                     }
                 }
@@ -10824,7 +10824,7 @@
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
-                vm.comments.name = starterObj.name;
+                vm.comments.name = starterObj.starterName;
                 vm.comments.operation = status === 'active' ? 'Continue' : 'Paused';
                 vm.comments.type = 'Job Stream Starter';
 

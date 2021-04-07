@@ -562,7 +562,7 @@
             },
             editJobStream: function (filter) {
                 const deferred = $q.defer();
-                let JobStream = $resource('jobstreams/edit');
+                let JobStream = $resource('jobstreams/edit_jobstream');
                 JobStream.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {

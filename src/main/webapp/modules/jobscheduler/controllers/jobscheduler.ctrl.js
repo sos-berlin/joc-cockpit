@@ -3533,7 +3533,7 @@
             }
             schedules.schedule = vm.substituteObj.folder + '' + vm.substituteObj.name;
             schedules.runTime = vm.schedule.runTime;
-            schedules.runTime.schedule.substitute = vm.schedule.path;
+            schedules.runTime.substitute = vm.schedule.path;
             schedules.calendars = vm.schedule.calendars;
             schedules.auditLog = {};
             if (vm.comments.comment) {
@@ -5773,13 +5773,9 @@
             if (vm.substituteObj.folder.lastIndexOf('/') != vm.substituteObj.folder.length - 1) {
                 vm.substituteObj.folder = vm.substituteObj.folder + '/';
             }
-            if (vm.substituteObj.name.substring(0, 1) == '/') {
-                schedules.schedule = vm.substituteObj.name;
-            } else {
-                schedules.schedule = vm.substituteObj.folder + '' + vm.substituteObj.name;
-            }
-
+            schedules.schedule = vm.substituteObj.folder + '' + vm.substituteObj.name;
             schedules.runTime = vm.schedule.runTime;
+            schedules.runTime.substitute = vm.schedule.path;
             schedules.calendars = vm.schedule.calendars;
 
             schedules.auditLog = {};
