@@ -207,6 +207,24 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.subscription2.unsubscribe();
   }
 
+  private init(): void {
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+
+    this.adtLog = this.coreService.getAuditLogTab();
+    if (!(this.adtLog.current || this.adtLog.current === false)) {
+      this.adtLog.current = this.preferences.currentController;
+    }
+    this.savedFilter = JSON.parse(this.saveService.auditLogFilters) || {};
+    if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
+      this.checkSharedFilters();
+    } else {
+      this.savedFilter.selected = undefined;
+      this.load(null);
+    }
+  }
+
   checkSharedFilters(): void {
     let obj = {
       controllerId: this.schedulerIds.selected,
@@ -275,6 +293,9 @@ export class AuditLogComponent implements OnInit, OnDestroy {
           this.savedFilter.selected = undefined;
           this.load(null);
         }
+      } else {
+        this.savedFilter.selected = undefined;
+        this.load(null);
       }
     }, () => {
       this.savedFilter.selected = undefined;
@@ -569,24 +590,6 @@ export class AuditLogComponent implements OnInit, OnDestroy {
           break;
         }
       }
-    }
-  }
-
-  private init(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
-    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
-    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-
-    this.adtLog = this.coreService.getAuditLogTab();
-    if (!(this.adtLog.current || this.adtLog.current === false)) {
-      this.adtLog.current = this.preferences.currentController;
-    }
-    this.savedFilter = JSON.parse(this.saveService.auditLogFilters) || {};
-    if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
-      this.checkSharedFilters();
-    } else {
-      this.savedFilter.selected = undefined;
-      this.load(null);
     }
   }
 

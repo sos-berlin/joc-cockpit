@@ -77,7 +77,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.path = this.route.snapshot.paramMap.get('path');
     this.versionId = this.route.snapshot.paramMap.get('versionId');
     this.workflowFilters = this.coreService.getWorkflowDetailTab();
@@ -113,7 +113,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     this.showAndHideBtn();
   }
 
-  refresh(args) {
+  refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow
@@ -125,7 +125,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
     try {
       if (this.editor) {
@@ -138,18 +138,18 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   }
 
   @HostListener('window:scroll', ['$event'])
-  scrollHandler(event) {
+  scrollHandler(): void {
     this.showAndHideBtn();
   }
 
   @HostListener('window:click', ['$event'])
-  clickHandler(event) {
+  clickHandler(event): void {
     if (event.target && event.target.tagName === 'svg') {
       this.sideBar = {};
     }
   }
 
-  backClicked() {
+  backClicked(): void {
     window.history.back();
   }
 
@@ -177,7 +177,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   /**
    * Constructs a new application (returns an mxEditor instance)
    */
-  createEditor(config) {
+  createEditor(config): void {
     let editor = null;
     try {
       if (!mxClient.isBrowserSupported()) {
@@ -201,33 +201,33 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  zoomIn() {
+  zoomIn(): void {
     if (this.editor && this.editor.graph) {
       this.editor.graph.zoomIn();
     }
   }
 
-  zoomOut() {
+  zoomOut(): void {
     if (this.editor && this.editor.graph) {
       this.editor.graph.zoomOut();
     }
   }
 
-  actual() {
+  actual(): void {
     if (this.editor && this.editor.graph) {
       this.editor.graph.zoomActual();
       this.editor.graph.center(true, true, 0.5, 0.1);
     }
   }
 
-  fit() {
+  fit(): void {
     if (this.editor && this.editor.graph) {
       this.editor.graph.fit();
       this.editor.graph.center(true, true, 0.5, 0.1);
     }
   }
 
-  expandAll() {
+  expandAll(): void {
     if (this.pageView === 'list') {
       this.isExpandAll = true;
     } else {
@@ -238,7 +238,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  collapseAll() {
+  collapseAll(): void {
     if (this.pageView === 'list') {
       this.isExpandAll = false;
     } else {
@@ -249,15 +249,15 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  scrollTop() {
+  scrollTop(): void {
     $(window).scrollTop(0);
   }
 
-  scrollBottom() {
+  scrollBottom(): void {
     $(window).scrollTop($('body').height());
   }
 
-  setView(view) {
+  setView(view): void {
     this.pageView = view;
     this.showAndHideBtn();
     if (this.pageView === 'grid') {
@@ -268,7 +268,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  addOrder() {
+  addOrder(): void {
     const modalRef = this.modalService.open(AddOrderModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.preferences = this.preferences;
     modalRef.componentInstance.permission = this.permission;
@@ -280,7 +280,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  showDailyPlan() {
+  showDailyPlan(): void {
     const modalRef = this.modalService.open(CalendarModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.path = this.workFlowJson.path;
     modalRef.result.then((result) => {
@@ -289,7 +289,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  private showAndHideBtn() {
+  private showAndHideBtn(): void {
     if (document.body.scrollHeight > document.body.clientHeight) {
       if (window.scrollY > 50) {
         $('.scrollBottom-btn').hide();
@@ -551,7 +551,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
               try {
                 data = JSON.parse(data);
                 if (self.menu) {
-                
+
                   setTimeout(() => {
                     self.order = data;
                     self.nzContextMenuService.create(evt, self.menu);

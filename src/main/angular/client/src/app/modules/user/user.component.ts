@@ -236,8 +236,8 @@ export class UserComponent implements OnInit, OnDestroy {
   prevMenuTheme: string;
   prevMenuAvatorColor: string;
   securityLevel: string;
-   subscription1: Subscription;
-   subscription2: Subscription;
+  subscription1: Subscription;
+  subscription2: Subscription;
 
   constructor(public coreService: CoreService, private dataService: DataService, public authService: AuthService, private router: Router,
               private modalService: NgbModal, private translate: TranslateService, private toasterService: ToasterService) {

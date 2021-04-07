@@ -118,7 +118,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
       this.clusterStatusData = res;
       if (this.editor) {
         this.createWorkflowDiagram(this.editor.graph);
-      } else{
+      } else {
         this.createEditor();
       }
     }, (err) => {
@@ -359,7 +359,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
           '<div class="text-left text-xs p-l-sm "><span class="text-black-dk" >' + labelState + '</span>: ' +
           '<span class="text-sm ' + colorClass + '">' + status + '</span></div>' +
           '<div class="text-left text-xs p-l-sm "><span class="text-black-dk" >' + labelClusterNodeState + '</span>: ' +
-          '<span class="text-sm ' + clusterColorClass + '">' + clusterNodeState + '</span></div></div>'
+          '<span class="text-sm ' + clusterColorClass + '">' + clusterNodeState + '</span></div></div>';
 
         return str;
       } else if (cell.value.tagName === 'Controller') {
@@ -758,7 +758,11 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
       delete obj1['withFailover'];
       this.postCall('controller/cluster/switchover', obj1);
     } else if (action === 'download') {
-      $('#tmpFrame').attr('src', './api/controller/log?url=' + obj.url + '&controllerId=' + obj.controllerId + '&accessToken=' + this.authService.accessTokenId);
+      this.coreService.download('controller/log', {
+        controllerId: obj.controllerId,
+        url: obj.url
+      }, 'controller.log.gz', (res) => {
+      });
     }
   }
 
@@ -786,7 +790,8 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   }
 
   downloadJocLog(): void {
-    $('#tmpFrame').attr('src', './api/joc/log?accessToken=' + this.authService.accessTokenId);
+    this.coreService.download('joc/log', {}, 'joc.log', (res) => {
+    });
   }
 
   private onRefresh(): any {

@@ -4,8 +4,6 @@ import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 
-declare const $;
-
 @Component({
   selector: 'app-order-history-template',
   templateUrl: './workflow-history-template.html'
@@ -14,10 +12,10 @@ export class WorkflowTemplateComponent {
   @Input() history: any;
   @Input() schedulerId: any;
 
-  constructor(public coreService: CoreService, private authService: AuthService) {
+  constructor(public coreService: CoreService) {
   }
 
-  showPanelFuc(data, count) {
+  showPanelFuc(data, count): void {
     data.loading = true;
     data.show = true;
     data.steps = [];
@@ -36,9 +34,8 @@ export class WorkflowTemplateComponent {
     });
   }
 
-  downloadLog(obj) {
-    $('#tmpFrame').attr('src', './api/order/log/download?historyId=' + obj.historyId + '&controllerId=' + this.schedulerId +
-      '&accessToken=' + this.authService.accessTokenId);
+  downloadLog(obj): void {
+    this.coreService.downloadLog(obj, this.schedulerId);
   }
 }
 
@@ -70,7 +67,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
@@ -79,16 +76,16 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     this.init();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize() {
+  onResize(): void {
     this.coreService.calRowWidth(null);
   }
 
-  private refresh(args) {
+  private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
        // console.log(args.eventSnapshots[j])
@@ -111,7 +108,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-  private init() {
+  private init(): void {
     if (this.index === 0) {
       this.loadOrderHistory();
     } else if (this.index === 1) {
@@ -121,7 +118,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-  loadOrderHistory() {
+  loadOrderHistory(): void {
     let obj = {
       controllerId: this.schedulerIds.selected,
       orders: [{workflowPath: this.workflow.path}],
@@ -135,13 +132,13 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
-  showAllPanelFuc(data) {
+  showAllPanelFuc(data): void {
     data.showAll = true;
     data.show = true;
     this.recursiveExpand(data, 1);
   }
 
-  private recursiveExpand(data, count) {
+  private recursiveExpand(data, count): void {
     data.loading = true;
     let obj = {
       controllerId: data.controllerId || this.schedulerIds.selected,
@@ -164,12 +161,12 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
-  hideAllPanelFuc(data) {
+  hideAllPanelFuc(data): void {
     data.showAll = false;
     data.show = false;
   }
 
-  showPanelFuc(data) {
+  showPanelFuc(data): void {
     data.loading = true;
     data.show = true;
     data.children = [];
@@ -189,17 +186,16 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
-  hidePanelFuc(data) {
+  hidePanelFuc(data): void {
     data.show = false;
     data.showAll = false;
   }
 
-  downloadLog(obj) {
-    $('#tmpFrame').attr('src', './api/order/log/download?historyId=' + obj.historyId + '&controllerId=' + this.schedulerIds.selected +
-      '&accessToken=' + this.authService.accessTokenId);
+  downloadLog(obj): void {
+    this.coreService.downloadLog(obj, this.schedulerIds.selected);
   }
 
-  loadTaskHistory() {
+  loadTaskHistory(): void {
     let obj = {
       controllerId: this.schedulerIds.selected,
       jobs: [{workflowPath: this.workflow.path}],
@@ -210,7 +206,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
-  loadAuditLogs() {
+  loadAuditLogs(): void {
     let obj = {
       controllerId: this.schedulerIds.selected,
       orders: [{workflowPath: this.workflow.path}],

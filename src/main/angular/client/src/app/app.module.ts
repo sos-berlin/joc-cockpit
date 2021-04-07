@@ -8,11 +8,11 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {ToasterModule} from 'angular2-toaster';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {ErrorHandler, Inject, NgModule} from '@angular/core';
+import {ErrorHandler, Injectable, NgModule} from '@angular/core';
 import {NZ_I18N, en_US} from 'ng-zorro-antd/i18n';
-
 import en from '@angular/common/locales/en';
 import {NzMessageService} from 'ng-zorro-antd/message';
+
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {AuthInterceptor} from './components/guard';
@@ -20,24 +20,21 @@ import {AboutModalComponent} from './components/about-modal/about.component';
 import {LoginModule} from './modules/login/login.module';
 import {LoggingService} from './services/logging.service';
 
-
-
 registerLocaleData(en);
 
 export function createTranslateLoader(http: HttpClient): any {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
-
+@Injectable()
 export class MyErrorHandler implements ErrorHandler {
   constructor(private loggingService: LoggingService) {
   }
 
-  handleError(error) {
+  handleError(error: any): void {
     console.log(error);
     this.loggingService.error(error.stack || error.message);
   }
 }
-
 
 @NgModule({
   declarations: [
@@ -62,6 +59,7 @@ export class MyErrorHandler implements ErrorHandler {
     })
   ],
   providers: [
+    {provide: ErrorHandler, useClass: MyErrorHandler},
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

@@ -571,7 +571,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  cancel() {
+  cancel(): void {
     this.isCancel = true;
     if (this.subscriber) {
       this.subscriber.unsubscribe();
@@ -581,21 +581,23 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  downloadLog() {
+  downloadLog(): void {
     this.cancel();
-    const schedulerId = this.route.snapshot.queryParams['schedulerId'];
-    if (this.route.snapshot.queryParams['orderId']) {
-      const historyId = parseInt(this.route.snapshot.queryParams['historyId'], 10);
-      $('#tmpFrame').attr('src', './api/order/log/download?historyId=' + historyId + '&controllerId=' + schedulerId +
-        '&accessToken=' + this.authService.accessTokenId);
-    } else if (this.route.snapshot.queryParams['taskId']) {
-      const taskId = this.route.snapshot.queryParams['taskId'];
-      $('#tmpFrame').attr('src', './api/task/log/download?taskId=' + taskId + '&controllerId=' + schedulerId +
-        '&accessToken=' + this.authService.accessTokenId);
+    const schedulerId = this.route.snapshot.queryParams.schedulerId;
+    let obj: any;
+    if (this.route.snapshot.queryParams.orderId) {
+      obj = {
+        historyId: this.route.snapshot.queryParams.historyId
+      };
+    } else if (this.route.snapshot.queryParams.taskId) {
+      obj = {
+        taskId: this.route.snapshot.queryParams.taskId
+      };
     }
+    this.coreService.downloadLog(obj, schedulerId);
   }
 
-  checkLogLevel(type) {
+  checkLogLevel(type): void {
     this.sheetContent = '';
     if (type === 'STDOUT') {
       if (!this.object.checkBoxs.stdout) {

@@ -14,7 +14,6 @@ import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.c
 import * as _ from 'underscore';
 import {SearchPipe} from '../../../pipes/core.pipe';
 
-declare const $;
 const API_URL = './api/';
 
 @Component({
@@ -52,7 +51,7 @@ export class ImportModalComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.comments.radio = 'predefined';
     if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
@@ -63,7 +62,7 @@ export class ImportModalComponent implements OnInit {
 
     this.document.path = this.selectedPath;
     this.uploader.onBeforeUploadItem = (item: any) => {
-      let obj: any = {
+      const obj: any = {
         folder: this.document.path,
         controllerId: this.schedulerId,
         accessToken: this.authService.accessTokenId,
@@ -95,7 +94,7 @@ export class ImportModalComponent implements OnInit {
     };
   }
 
-  cancel() {
+  cancel(): void {
     this.activeModal.close('');
   }
 
@@ -125,7 +124,7 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.path = this.route.snapshot.queryParamMap.get('path');
     this.schedulerId = this.route.snapshot.queryParamMap.get('scheduler_id');
     if (sessionStorage.preferences) {
@@ -138,11 +137,11 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  private getDocumentationsList(obj) {
+  private getDocumentationsList(obj): void {
     this.coreService.post('documentations', obj).subscribe((res: any) => {
       this.loading = false;
       this.documents = res.documentations;
@@ -153,7 +152,7 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
 
   /** ---------------------------- Action ----------------------------------*/
 
-  previewDocument(document) {
+  previewDocument(document): void {
     const link = API_URL + 'documentation/preview?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId + '&controllerId=' + this.schedulerId;
     if (this.preferences.isDocNewWindow === 'newWindow') {
       window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no', true);
@@ -162,8 +161,8 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
     }
   }
 
-  showDocumentUsage(document) {
-    let documentObj = _.clone(document);
+  showDocumentUsage(document): void {
+    const documentObj = _.clone(document);
     this.coreService.post('documentation/used', {
       documentation: document.path,
       controllerId: this.schedulerId
@@ -180,20 +179,23 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
     });
   }
 
-  exportDocument(document) {
-    let obj = {controllerId: this.schedulerId, documentations: []};
+  exportDocument(document): void {
+    const obj = {controllerId: this.schedulerId, documentations: []};
     if (document) {
       obj.documentations.push(document.path);
     }
     this.coreService.post('documentations/export/info', obj).subscribe((res: any) => {
-      $('#tmpFrame').attr('src', API_URL + 'documentations/export?controllerId=' +
-        this.schedulerId + '&filename=' + res.filename + '&accessToken=' +
-        this.authService.accessTokenId);
+      this.coreService.download('documentations/export', {
+        controllerId: this.schedulerId,
+        filename: res.filename
+      }, res.filename, (res) => {
+
+      });
     });
   }
 
-  deleteDocumentations() {
-    let obj: any = {
+  deleteDocumentations(): void {
+    const obj: any = {
       controllerId: this.schedulerId,
       documentations: [this.path]
     };
@@ -201,19 +203,19 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
       documentation: this.path,
       controllerId: this.schedulerId
     }).subscribe((res: any) => {
-      this.deleteDocumentFn(obj, {usedIn : res.objects || [], path: this.path});
+      this.deleteDocumentFn(obj, {usedIn: res.objects || [], path: this.path});
     });
   }
 
-  deleteDocument(obj) {
+  deleteDocument(obj): void {
     this.coreService.post('documentations/delete', obj).subscribe(res => {
       this.documents = [];
     });
   }
 
-  private deleteDocumentFn(obj, document) {
+  private deleteDocumentFn(obj, document): void {
     if (this.preferences.auditLog) {
-      let comments = {
+      const comments = {
         radio: 'predefined',
         type: 'Documentation',
         operation: 'Delete',
@@ -226,7 +228,7 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.url = 'documentations/delete';
       modalRef.result.then(() => {
         this.deleteDocument(obj);
-      }, function () {
+      }, () => {
 
       });
 
@@ -239,7 +241,7 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.objectName = document.name;
       modalRef.result.then(() => {
         this.deleteDocument(obj);
-      }, function () {
+      }, () => {
 
       });
     }
@@ -283,12 +285,12 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.sideView = this.coreService.getSideView();
     this.init();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
     this.coreService.setSideView(this.sideView);
     if (this.child) {
@@ -297,7 +299,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     }
   }
 
-  initTree() {
+  initTree(): void {
     if (this.schedulerIds.selected) {
       this.coreService.post('tree', {
         controllerId: this.schedulerIds.selected,
@@ -316,8 +318,8 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     }
   }
 
-  loadDocument() {
-    let obj = {folders: [], types: [], controllerId: this.schedulerIds.selected};
+  loadDocument(): void {
+    const obj = {folders: [], types: [], controllerId: this.schedulerIds.selected};
     this.documents = [];
     this.loading = true;
     let paths = [];
@@ -335,7 +337,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     this.getDocumentationsList(obj);
   }
 
-  private init() {
+  private init(): void {
     this.documentFilters = this.coreService.getResourceTab().documents;
     this.coreService.getResourceTab().state = 'documentations';
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
@@ -347,7 +349,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     this.initTree();
   }
 
-  private getDocumentationsList(obj) {
+  private getDocumentationsList(obj): void {
     this.coreService.post('documentations', obj).subscribe((res: any) => {
       this.loading = false;
       res.documentations.forEach((value) => {
@@ -360,15 +362,15 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     });
   }
 
-  receiveAction($event) {
+  receiveAction($event): void {
     this.getDocumentations($event, $event.action !== 'NODE');
   }
 
-  getDocumentations(data, recursive) {
+  getDocumentations(data, recursive): void {
     data.isSelected = true;
     this.loading = true;
-    let obj = {
-      folders: [{folder: data.path, recursive: recursive}],
+    const obj = {
+      folders: [{folder: data.path, recursive}],
       controllerId: this.schedulerIds.selected,
       compact: true
     };
@@ -379,34 +381,34 @@ export class DocumentationComponent implements OnInit, OnDestroy {
 
   /** ---------------------------- Action ----------------------------------*/
 
-  pageIndexChange($event) {
+  pageIndexChange($event): void {
     this.documentFilters.currentPage = $event;
   }
 
-  pageSizeChange($event) {
+  pageSizeChange($event): void {
     this.documentFilters.entryPerPage = $event;
   }
 
-  sort(propertyName) {
+  sort(propertyName): void {
     this.documentFilters.reverse = !this.documentFilters.reverse;
     this.documentFilters.filter.sortBy = propertyName;
   }
 
-  searchInResult() {
+  searchInResult(): void {
     this.data = this.documentFilters.searchText ? this.searchPipe.transform(this.documents, this.documentFilters.searchText, this.searchableProperties) : this.documents;
     this.data = [...this.data];
   }
 
-  receiveMessage($event) {
+  receiveMessage($event): void {
     this.pageView = $event;
   }
 
   checkAll(value: boolean): void {
     if (value && this.documents.length > 0) {
       this.documents.slice((this.preferences.entryPerPage * (this.documentFilters.currentPage - 1)), (this.preferences.entryPerPage * this.documentFilters.currentPage))
-      .forEach(item => {
-        this.object.mapOfCheckedId.add(item.path);
-      });
+        .forEach(item => {
+          this.object.mapOfCheckedId.add(item.path);
+        });
     } else {
       this.object.mapOfCheckedId.clear();
     }
@@ -427,7 +429,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
   }
 
-  previewDocument(document) {
+  previewDocument(document): void {
     const link = API_URL + 'documentation/preview?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId + '&controllerId=' + this.schedulerIds.selected;
     if (this.preferences.isDocNewWindow === 'newWindow') {
       window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no', true);
@@ -436,8 +438,8 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     }
   }
 
-  showDocumentUsage(document) {
-    let documentObj = _.clone(document);
+  showDocumentUsage(document): void {
+    const documentObj = _.clone(document);
     this.coreService.post('documentation/used', {
       documentation: document.path,
       controllerId: this.schedulerIds.selected
@@ -454,21 +456,24 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     });
   }
 
-  exportDocument(document) {
-    let obj = {controllerId: this.schedulerIds.selected, documentations: []};
+  exportDocument(document): void {
+    const obj = {controllerId: this.schedulerIds.selected, documentations: []};
     if (document) {
       obj.documentations.push(document.path);
     } else {
       obj.documentations = Array.from(this.object.mapOfCheckedId);
     }
     this.coreService.post('documentations/export/info', obj).subscribe((res: any) => {
-      $('#tmpFrame').attr('src', API_URL + 'documentations/export?controllerId=' +
-        this.schedulerIds.selected + '&filename=' + res.filename + '&accessToken=' +
-        this.authService.accessTokenId);
+      this.coreService.download('documentations/export', {
+        controllerId: this.schedulerIds.selected,
+        filename: res.filename
+      }, res.filename, (res) => {
+
+      });
     });
   }
 
-  importDocument() {
+  importDocument(): void {
     const modalRef = this.modalService.open(ImportModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.display = this.preferences.auditLog;
@@ -476,16 +481,15 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.nodes = this.tree;
     modalRef.result.then((res) => {
       if (res === 'success') {
-        console.log(res);
         this.init();
       }
-    }, function () {
+    }, () => {
 
     });
   }
 
-  deleteDocumentations(document) {
-    let obj: any = {
+  deleteDocumentations(document): void {
+    const obj: any = {
       controllerId: this.schedulerIds.selected,
       documentations: []
     };
@@ -494,7 +498,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     } else {
       obj.documentations = Array.from(this.object.mapOfCheckedId);
     }
-    let documentObj = _.clone(document);
+    const documentObj = _.clone(document);
     if (document) {
       documentObj.delete = true;
       this.coreService.post('documentation/used', {
@@ -505,7 +509,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
         this.deleteDocumentFn(obj, documentObj, null);
       });
     } else {
-      let documentArr = _.clone(this.object.mapOfCheckedId);
+      const documentArr = _.clone(this.object.mapOfCheckedId);
       for (let i = 0; i < documentArr.length; i++) {
         this.coreService.post('documentation/used', {
           documentation: documentArr[i].path,
@@ -520,7 +524,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteDocument(obj, document) {
+  deleteDocument(obj, document): void {
     this.coreService.post('documentations/delete', obj).subscribe(res => {
       if (document) {
         for (let i = 0; i < this.documents.length; i++) {
@@ -539,10 +543,9 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     });
   }
 
-  private deleteDocumentFn(obj, document, arr) {
-    const self = this;
+  private deleteDocumentFn(obj, document, arr): void {
     if (this.preferences.auditLog) {
-      let comments = {
+      const comments = {
         radio: 'predefined',
         type: 'Documentation',
         operation: 'Delete',
@@ -566,7 +569,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.url = 'documentations/delete';
       modalRef.result.then(() => {
         this.deleteDocument(obj, document);
-      }, function () {
+      }, () => {
 
       });
 
@@ -586,7 +589,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       }
       modalRef.result.then(() => {
         this.deleteDocument(obj, null);
-      }, function () {
+      }, () => {
 
       });
     }

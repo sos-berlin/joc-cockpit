@@ -4,9 +4,10 @@ import {Router} from '@angular/router';
 import {ClipboardService} from 'ngx-clipboard';
 import {TranslateService} from '@ngx-translate/core';
 import {Observable} from 'rxjs';
-import {AuthService} from '../components/guard';
 import * as moment from 'moment-timezone';
 import * as _ from 'underscore';
+import {saveAs} from 'file-saver';
+import {AuthService} from '../components/guard';
 
 declare const diff_match_patch;
 declare var $;
@@ -420,6 +421,21 @@ export class CoreService {
 
   log(url, object, headers): Observable<any> {
     return this.http.post(url, object, headers);
+  }
+
+  download(url, object, fileName, cb): void {
+    const headers: any = {
+      Accept: 'application/octet-stream',
+      responseType: 'blob',
+      observe: 'response'
+    };
+    this.http.post(url, object, headers).subscribe((response: any) => {
+      console.log(response.headers.get('content-disposition'), '???', response);
+      saveAs(response.body, fileName || response.headers.get('content-disposition'));
+      cb(true);
+    }, () => {
+      cb(false);
+    });
   }
 
   getColor(d: number, type: string): string {
@@ -909,13 +925,27 @@ export class CoreService {
     }
   }
 
-  private downloadLog(data, id): void {
+  downloadLog(data, id): void {
+    let url = 'order/log/download';
+    let obj: any;
+    let name;
     if (data.historyId) {
-      $('#tmpFrame').attr('src', './api/order/log/download?controllerId=' + id + '&historyId=' + data.historyId +
-        '&accessToken=' + this.authService.accessTokenId);
+      name = 'order-' + data.historyId + '.log';
+      obj = {
+        historyId: data.historyId,
+        controllerId: id
+      };
     } else if (data.taskId) {
-      $('#tmpFrame').attr('src', './api/task/log/download?&controllerId=' + id + '&taskId=' + data.taskId +
-        '&accessToken=' + this.authService.accessTokenId);
+      name = 'task-' + data.taskId + '.log';
+      obj = {
+        taskId: data.taskId,
+        controllerId: id
+      };
+      url = 'task/log/download';
+    }
+    if (obj) {
+      this.download(url, obj, name, (res) => {
+      });
     }
   }
 
@@ -1064,17 +1094,17 @@ export class CoreService {
     setTimeout(() => {
       let arr = currentView != null ? [53] : [];
       if (!currentView) {
-        $('#orderTable').find('thead th.dynamic-thead-o').each(function () {
+        $('#orderTable').find('thead th.dynamic-thead-o').each(function() {
           const w = $(this).outerWidth();
           arr.push(w);
         });
       }
-      $('#orderTable').find('thead th.dynamic-thead').each(function () {
+      $('#orderTable').find('thead th.dynamic-thead').each(function() {
         const w = $(this).outerWidth();
         arr.push(w);
       });
       let count = -1;
-      $('tr.tr-border').find('td').each(function (i) {
+      $('tr.tr-border').find('td').each(function(i) {
         count = count + 1;
         if (arr.length === count) {
           count = 0;
@@ -1127,7 +1157,7 @@ export class CoreService {
   getDates(startDate, endDate): any {
     let dates = [],
       currentDate = startDate,
-      addDays = function (days) {
+      addDays = function(days) {
         const date = new Date(this.valueOf());
         date.setDate(date.getDate() + days);
         return date;

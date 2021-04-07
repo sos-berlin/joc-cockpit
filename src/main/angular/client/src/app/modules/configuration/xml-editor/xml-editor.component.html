@@ -122,8 +122,8 @@
           <ng-template #titleTemplate>
             <div id="{{tab.id}}" style="width: 100%">
               <span class="text-hover-primary" (click)="renameTab(tab)"
-                    *ngIf="!tab.rename && activeTab.id === tab.id">{{tab.name}}</span>
-              <span *ngIf="activeTab.id !== tab.id">{{tab.name}}</span>
+                    *ngIf="activeTab && !tab.rename && activeTab.id === tab.id">{{tab.name}}</span>
+              <span *ngIf="activeTab && activeTab.id !== tab.id">{{tab.name}}</span>
               <input id="rename-field" *ngIf="tab.rename" (keypress)="renameOnEnter($event, tab)"
                      class="form-control rename-field" (blur)="renameDone(tab)" type="text" [(ngModel)]="tab.name">
               <i *ngIf="tab.rename" class="fa fa-times pos-abt" style="top: 13px;right: 12px"
@@ -160,7 +160,7 @@
         </div>
         <div class="col-md-offset-2 col-md-8 m-t-md">
           <button class="btn btn-primary btn-sm" [disabled]="!selectedXsd"
-                  (click)="(!reassignSchema) ? othersSubmit() : changeSchema()" translate>xml.button.assign
+                  (click)="(!reassignSchema) ? othersSubmit(null) : changeSchema(null)" translate>xml.button.assign
           </button>
           <button type="button" class="btn btn-grey btn-sm m-l-sm" *ngIf="reassignSchema"
                   (click)="cancelReassignSchema()" translate>common.button.cancel
@@ -208,7 +208,6 @@
                 [nzBlockNode]="true"
                 [nzExpandAll]="isExpandAll"
                 [nzTreeTemplate]="nzTreeTemplate"
-                nzAsyncData
               ></nz-tree>
               <ng-template #nzTreeTemplate let-node>
                 <div id="{{node.key}}" class="node-wrapper" [attr.draggable]="true" [attr.aria-grabbed]="true"
@@ -355,8 +354,7 @@
           <div class="col-12" id="attr">
             <div *ngIf="selectedNode">
               <div class="box p-a attr" *ngIf="selectedNode.attributes && selectedNode.attributes.length>0">
-                <div
-                  *ngIf="selectedNode.attributes && selectedNode.attributes.length>0 && selectedNode.attributes[0].id"
+                <div *ngIf="selectedNode.attributes && selectedNode.attributes.length>0 && selectedNode.attributes[0].id"
                   class="_600 text m-b-sm" translate>xml.label.attributes
                 </div>
                 <div *ngFor="let node of selectedNode.attributes; let i= index" class="form-group">
@@ -366,7 +364,6 @@
                       <sup *ngIf="node.use ==='required' || !node.use" class="text-danger text-sm">*</sup></label></div>
                     <div class="col-sm-5">
                       <input class="form-control w-full" id="{{node.name}}" type="text"
-                             (init)="node.data = node.data ? node.data : node.default"
                              [(ngModel)]="node.data"
                              (blur)="validateAttr(node.data, node)"
                              (focus)="hideError()"
@@ -377,7 +374,6 @@
                              [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
                              xmlAutofocus>
                       <input class="form-control w-full" id="{{node.name}}" type="text"
-                             (init)="node.data = node.data ? node.data : node.default"
                              [(ngModel)]="node.data"
                              (blur)="validateAttr(node.data, node)"
                              (focus)="hideError()"
@@ -389,7 +385,6 @@
                              xmlAutofocus
                       >
                       <input id="{{node.name}}" type="text" class="form-control w-full"
-                             (init)="node.data = node.data ? node.data : node.default"
                              [(ngModel)]="node.data"
                              (blur)="validateAttr(node.data, node)"
                              (change)="submitData(node.data, node)"
@@ -401,7 +396,6 @@
                              [required]="node.use ==='required'"
                       >
                       <input id="{{node.name}}"
-                             (init)="node.data = node.data ? node.data : node.default"
                              [(ngModel)]="node.data"
                              (focus)="hideError()" (blur)="validateAttr(node.data, node)"
                              (change)="submitData(node.data, node)"
@@ -417,9 +411,8 @@
                          *ngIf="node.values && node.values.length==0 && node.type=='password'"
                          aria-hidden="true"></i>
                       <input id="{{node.name}}" type="text" class="form-control w-full"
-                             (init)="node.data = node.data ? node.data : node.default"
                              [(ngModel)]="node.data"
-                             (blur)="validateAttr(node.data, node); checkDupProfileId(node.data, node)"
+                             (blur)="validateAttr(node.data, node);checkDupProfileId(node.data, node)"
                              (focus)="hideError()"
                              (keydown)="stopPressingSpace(node.name)"
                              (change)="submitData(node.data, node)"
@@ -429,7 +422,6 @@
                              [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
                              xmlAutofocus>
                       <input id="{{node.name}}" type="url"
-                             (init)="node.data = node.data ? node.data : node.default"
                              [(ngModel)]="node.data"
                              (blur)="validateAttr(node.data, node)"
                              (focus)="hideError()"
@@ -441,7 +433,6 @@
                              [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
                              xmlAutofocus>
                       <nz-select class="w-full"
-                                 (init)="node.data = node.data ? node.data : node.default"
                                  [(ngModel)]="node.data"
                                  (nzBlur)="validateAttr(node.data, node)"
                                  (ngModelChange)="submitData(node.data, node)" (nzFocus)="getDataAttr(node.refer)"
@@ -452,11 +443,10 @@
                         <nz-option [nzValue]="key" *ngFor="let key of tempArr" [nzLabel]="key"></nz-option>
                       </nz-select>
                       <nz-input-number class="w-full"
-                                       (init)="node.data = node.data ? node.data : node.default"
                                        (nzBlur)="validateAttr(node.data, node)"
                                        (nzFocus)="hideError()"
                                        (ngModelChange)="submitData(node.data, node)"
-                                       [(ngModel)]="node.data? node.data: node.default"
+                                       [(ngModel)]="node.data"
                                        *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:integer'"
                                        [ngClass]="error && errorName === node.name? 'invalid': ''"
                                        id="{{node.name}}" required
@@ -464,10 +454,9 @@
                                        xmlAutofocus>
                       </nz-input-number>
                       <nz-input-number class="w-full"
-                                       (init)="node.data = node.data ? node.data : node.default"
                                        (nzBlur)="validateAttr(node.data, node)"
                                        (nzFocus)="hideError()"
-                                       [(ngModel)]="node.data? node.data: node.default"
+                                       [(ngModel)]="node.data"
                                        (ngModelChange)="submitData(node.data, node)"
                                        *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:positiveInteger'"
                                        [ngClass]="error && errorName === node.name? 'invalid': ''"
@@ -478,22 +467,20 @@
                       <label class="md-check w"
                              *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:boolean'">
                         <input type="checkbox"
-                               (init)="node.data = node.data ? node.data : node.default"
                                (change)="submitData(node.data, node)"
                                [ngClass]="error && errorName === node.name? 'invalid': ''"
-                               [(ngModel)]="node.data ? node.data : node.default"
+                               [(ngModel)]="node.data"
                                [required]="node.use ==='required'"
                                class="form-control"
                                id="{{node.name}}">
                         <i class="primary"></i>
                       </label>
                       <nz-select class="w-full"
-                                 (init)="node.data = node.data ? node.data : node.default"
                                  (nzBlur)="validateAttr(node.data, node)"
                                  (ngModelChange)="submitData(node.data, node)"
                                  *ngIf="node.values && node.values.length > 0"
                                  [ngClass]="error && errorName === node.name? 'invalid': ''"
-                                 [(ngModel)]="node.data? node.data: node.default" [required]="node.use ==='required'"
+                                 [(ngModel)]="node.data" [required]="node.use ==='required'"
                                  id="{{node.name}}">
                         <nz-option [nzValue]="key.value" *ngFor="let key of node.values"
                                    [nzLabel]="key.value"></nz-option>

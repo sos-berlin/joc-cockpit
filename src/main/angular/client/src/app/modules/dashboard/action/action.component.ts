@@ -2,13 +2,11 @@ import {Component, OnInit, Input} from '@angular/core';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
-declare const $;
 
 @Component({
   selector: 'app-ngbd-modal-content',
   templateUrl: './dialog.html',
 })
-
 export class CommentModalComponent implements OnInit {
   @Input() action;
   @Input() comments: any;
@@ -51,7 +49,6 @@ export class CommentModalComponent implements OnInit {
     });
   }
 }
-
 
 @Component({
   selector: 'app-action',
@@ -123,7 +120,12 @@ export class ActionComponent implements OnInit {
     } else if (action === 'terminateAndRestart') {
       this.postCall('controller/restart', obj);
     } else if (action === 'downloadLog') {
-      $('#tmpFrame').attr('src', './api/controller/log?url=' + obj.url + '&controllerId=' + obj.controllerId + '&accessToken=' + this.authService.accessTokenId);
+      this.coreService.download('controller/log', {
+        url: obj.url,
+        controllerId: obj.controllerId
+      }, 'controller.log.gz', (res) => {
+
+      });
     }
   }
 

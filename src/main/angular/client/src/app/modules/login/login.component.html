@@ -98,8 +98,8 @@
           <span translate>login.message.loginError</span>
         </div>
         <form #myForm="ngForm" (ngSubmit)="onSubmit(user)" class="p-t-sm p-b-sm p-l-xs p-r-xs">
-          <div class="md-form-group" [ngClass]="{'has-error' : ((userName.dirty || userName.touched) && userName.invalid)}">
-            <input type="text" [(ngModel)]="user.userName" id="account" class="md-input" #userName="ngModel" name="userName" required>
+          <div class="md-form-group">
+            <input type="text" [(ngModel)]="user.userName" id="account" class="md-input" #userName="ngModel" name="userName">
             <label class="font14" for="account"> {{ 'login.label.account' | translate}}</label>
           </div>
           <div class="md-form-group">
@@ -111,7 +111,7 @@
               {{'login.label.rememberMe' | translate}}
             </label>
           </div>
-          <button [disabled]="!myForm.form.valid || submitted" type="submit" class="btn btn-primary btn-block p-x-md">
+          <button [disabled]="submitted" type="submit" class="btn btn-primary btn-block p-x-md">
             <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
             <i *ngIf="!submitted" class="fa fa-sign-in p-r-xs"></i>
             {{'login.button.logIn' | translate}}

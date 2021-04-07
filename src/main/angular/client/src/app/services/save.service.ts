@@ -21,7 +21,7 @@ export class SaveService {
     }
   }
 
-  save() {
+  save(): void {
     const self = this;
     for (let i = 0; i < this.props.length; i++) {
       this._save(localStorage, this.props[i], self[this.props[i]]);
@@ -29,45 +29,45 @@ export class SaveService {
   }
 
 
-  setWorkflow(workflow) {
+  setWorkflow(workflow): void {
     this.workflowFilters = JSON.stringify(workflow);
   }
 
-  setJob(job) {
+  setJob(job): void {
     this.jobFilters = JSON.stringify(job);
   }
 
-  setYade(yade) {
+  setYade(yade): void {
     this.yadeFilters = JSON.stringify(yade);
   }
 
-  setHistory(history) {
+  setHistory(history): void {
     this.historyFilters = JSON.stringify(history);
   }
 
-  setAuditLog(filter) {
+  setAuditLog(filter): void {
     this.auditLogFilters = JSON.stringify(filter);
   }
 
-  setIgnoreList(ignoreList) {
+  setIgnoreList(ignoreList): void {
     this.ignoreList = JSON.stringify(ignoreList);
   }
 
-  setDailyPlan(dailyPlan) {
+  setDailyPlan(dailyPlan): void {
     this.dailyPlanFilters = JSON.stringify(dailyPlan);
   }
 
-  setResizerHeight(resizer) {
+  setResizerHeight(resizer): void {
     this.resizerHeight = JSON.stringify(resizer);
   }
 
-  private _save(storage, name, value) {
+  private _save(storage, name, value): void {
     let key = this.propsPrefix + name;
     if (value == null) value = '';
     storage[key] = value;
   }
 
-  private load(name) {
+  private load(name): any {
     let key = this.propsPrefix + name;
     return localStorage[key] || null;
   }

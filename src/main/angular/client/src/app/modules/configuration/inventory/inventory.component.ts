@@ -1092,15 +1092,12 @@ export class ExportComponent implements OnInit {
           obj.auditLog.ticketLink = this.comments.ticketLink;
         }
       }
-      this.coreService.log('inventory/export', obj, {
-        Accept: 'application/octet-stream',
-        responseType: 'blob',
-        observe: 'response' as 'response'
-      }).subscribe((res: any) => {
-        saveAs(res.body, this.exportObj.filename);
-        this.activeModal.close('ok');
-      }, () => {
-        this.submitted = false;
+      this.coreService.download('inventory/export', obj, this.exportObj.filename, (res) => {
+        if (res) {
+          this.activeModal.close('ok');
+        } else {
+          this.submitted = false;
+        }
       });
     } else {
       this.submitted = false;
@@ -1137,7 +1134,7 @@ export class SetVersionComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private inventoryService: InventoryService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
     }
@@ -1152,7 +1149,7 @@ export class SetVersionComponent implements OnInit {
   }
 
   // Collapse all Node
-  collapseAll() {
+  collapseAll(): void {
     this.isExpandAll = false;
     this.expandCollapseRec(this.nodes);
   }

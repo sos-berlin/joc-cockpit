@@ -54,10 +54,17 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.comment</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.search.label.searchRegExInComment</label>
       <div class="col-sm-6">
-        <input autocomplete="off" type="text" class="form-control" placeholder="{{'common.placeholder.enterComment' | translate}}"
+        <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.searchRegExInComment' | translate}}"
                [(ngModel)]="filter.regex" name="regex">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.search.label.ticketLink</label>
+      <div class="col-sm-6">
+        <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.ticketLink' | translate}}"
+               [(ngModel)]="filter.ticketLink" name="ticketLink">
       </div>
     </div>
     <div class="form-group row" *ngIf="isSearch">
@@ -76,16 +83,16 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.label.orderIds</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.search.label.orderIds</label>
       <div class="col-sm-6" >
-        <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.placeholder.enterOrderIds' | translate}}"
+        <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.enterOrderIds' | translate}}"
                [(ngModel)]="filter.orderIds" name="orderid">
       </div>
     </div>
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}"  translate>auditLog.label.account</label>
       <div class="col-sm-6">
-        <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.placeholder.enterAccount' | translate}}"
+        <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.enterAccount' | translate}}"
                [(ngModel)]="filter.account" name="account">
       </div>
     </div>

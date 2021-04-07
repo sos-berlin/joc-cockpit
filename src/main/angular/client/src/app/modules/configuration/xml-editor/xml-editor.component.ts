@@ -1168,8 +1168,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         this.newFile();
       } else {
         this.tabsArray = _.clone(res.configurations);
-        this.activeTab = this.tabsArray[length - 1];
-        this.readOthersXSD(this.activeTab.id);
+        this.activeTab = this.tabsArray[this.tabsArray.length - 1];
+        if (this.activeTab) {
+          this.readOthersXSD(this.activeTab.id);
+        }
       }
     }, (error) => {
       this.isLoading = false;
@@ -1189,7 +1191,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       objectType: this.objectType,
       id: id
     }).subscribe((res: any) => {
-      if(res.validation && res.validation.validated) {
+      if (res.validation && res.validation.validated) {
         this.validConfig = true;
       }
       if (!res.configuration) {
@@ -1234,7 +1236,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             this.storeXML(undefined);
             this.printArraya(false);
             if (_tempArrToExpand && _tempArrToExpand.length > 0) {
-              setTimeout(function() {
+              setTimeout(() => {
                 for (let i = 0; i < _tempArrToExpand.length; i++) {
                   _tempArrToExpand[i].expanded = true;
                 }
@@ -1322,7 +1324,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       objectType: this.objectType
     };
     this.coreService.post('xmleditor/read', obj).subscribe((res: any) => {
-      if(res.validation && res.validation.validated) {
+      if (res.validation && res.validation.validated) {
         this.validConfig = true;
       }
       this.schemaIdentifier = res.schemaIdentifier;
@@ -2167,9 +2169,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     return text;
   }
 
-  async checkDupProfileId(value, tag) {
+  checkDupProfileId(value, tag) {
     if (tag.name === 'profile_id' && this.selectedNode.ref == 'Profile') {
-      let tempParentNode: any = await this.getParentNode(this.selectedNode);
+      let tempParentNode: any = this.getParentNode(this.selectedNode);
       if (tempParentNode && tempParentNode.children && tempParentNode.children.length > 0) {
         for (let i = 0; i < tempParentNode.children.length; i++) {
           if (tempParentNode.children[i].attributes) {
@@ -3887,7 +3889,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         } else if (/[a-zA-Z_*]/.test(value)) {
           this.error = true;
           this.text = tag.name + ': ' + this.onlyNumbers;
-          this.errorName =  tag.name;
+          this.errorName = tag.name;
           if (tag.data !== undefined) {
             for (let key in tag) {
               if (key === 'data') {
@@ -3949,7 +3951,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   stopPressingSpace(id) {
-    $('#' + id).keypress(function(e) {
+    $('#' + id).keypress((e) => {
       if (e.key === ' ' || e.key === 'Spacebar') {
         e.preventDefault();
       }
@@ -4503,7 +4505,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       objectType: this.objectType,
       forceLive: true
     }).subscribe((res: any) => {
-      if(res.validation && res.validation.validated) {
+      if (res.validation && res.validation.validated) {
         this.validConfig = true;
       }
       if (res.configuration) {
@@ -4858,20 +4860,19 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     saveAs(blob, name);
   }
 
-  downloadSchema(objType, schemaIdentifier) {
-    let name = objType + '.xsd';
-    let link = './api/xmleditor/schema/download?controllerId='
-      + this.schedulerIds.selected + '&objectType=' + objType +
-      '&accessToken=' + this.authService.accessTokenId;
+  downloadSchema(objType, schemaIdentifier): void {
+    let obj: any = {
+      controllerId: this.schedulerIds.selected,
+      objectType: objType
+    };
     if (objType !== 'NOTIFICATION') {
-      link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier);
-      name = schemaIdentifier + '.xsd';
+      obj.schemaIdentifier = schemaIdentifier;
     }
-    // saveAs(link, name);
-    $('#tmpFrame').attr('src', link);
+    this.coreService.download('xmleditor/schema/download', obj, (schemaIdentifier || objType) + '.xsd', (res) => {
+    });
   }
 
-  showXSD(objType, schemaIdentifier) {
+  showXSD(objType, schemaIdentifier): void {
     let windowProperties = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
     let link = './api/xmleditor/schema/download?show=true&controllerId='
       + this.schedulerIds.selected + '&objectType=' + objType + '&accessToken='
@@ -4886,7 +4887,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  save2(self) {
+  save2(self): void {
     self.save();
     self.nodes = [];
     self.selectedNode = [];
@@ -4894,7 +4895,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   // validate xml
-  validate() {
+  validate(): void {
     this.autoValidate();
     if (_.isEmpty(this.nonValidattribute)) {
       this.validateSer();
@@ -4916,7 +4917,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   // toaster pop toast
-  popToast(node) {
+  popToast(node): void {
     let msg;
     if (node && node.name) {
       msg = 'Attribute "' + node.name + '" cannot be empty';
@@ -4927,12 +4928,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.toasterService.pop('error', 'Element : ' + node.parent, msg);
   }
 
-  successPopToast() {
+  successPopToast(): void {
     this.toasterService.pop('success', 'Element : ' + this.nodes[0].ref, 'XML is valid');
   }
 
   // goto error location
-  gotoErrorLocation() {
+  gotoErrorLocation(): void {
     if (this.errorLocation && this.errorLocation.ref) {
       this.getData(this.errorLocation);
       this.selectedNode = this.errorLocation;
@@ -4949,7 +4950,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   // create json from xml
-  createJsonfromXml(data) {
+  createJsonfromXml(data): void {
     let result1: any = convert.xml2json(data, {
       compact: true,
       spaces: 4,
@@ -5165,7 +5166,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  addCkCss(id) {
+  addCkCss(id): void {
     setTimeout(() => {
       $(('#') + id + (' .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused)')).addClass('invalid');
     }, 1);

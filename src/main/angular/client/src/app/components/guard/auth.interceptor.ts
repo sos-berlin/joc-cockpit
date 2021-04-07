@@ -44,23 +44,25 @@ export class AuthInterceptor implements HttpInterceptor {
             this.logService.debug(message);
           }
         }, err => {
-          if ((err.status === 401 || err.status === 440 || (err.status === 420 && err.error.error && err.error.error.message.match(/UnknownSessionException/))) && this.router.url !== '/login') {
-            let title = '';
-            let msg = '';
-            this.translate.get('error.message.sessionTimeout').subscribe(translatedValue => {
-              title = translatedValue;
-            });
-            this.translate.get('error.message.sessionExpired').subscribe(translatedValue => {
-              msg = translatedValue;
-            });
-            this.toasterService.pop('error', title, msg);
-            this.authService.clearUser();
-            this.authService.clearStorage();
-            let url = this.router.url;
-            if (url && url.match(/returnUrl/)) {
-              url = url.substring(0, url.indexOf('returnUrl'));
+          if ((err.status === 401 || err.status === 440 || (err.status === 420 && err.error.error && (err.error.error.message.match(/UnknownSessionException/) || err.error.error.message.match(/user is null/))))) {
+            if (!this.router.url.match('/login') && !req.url.match('authentication/login')) {
+              let title = '';
+              let msg = '';
+              this.translate.get('error.message.sessionTimeout').subscribe(translatedValue => {
+                title = translatedValue;
+              });
+              this.translate.get('error.message.sessionExpired').subscribe(translatedValue => {
+                msg = translatedValue;
+              });
+              this.toasterService.pop('error', title, msg);
+              this.authService.clearUser();
+              this.authService.clearStorage();
+              let url = this.router.url;
+              if (url && url.match(/returnUrl/)) {
+                url = url.substring(0, url.indexOf('returnUrl'));
+              }
+              return this.router.navigate(['login'], {queryParams: {returnUrl: url}});
             }
-            return this.router.navigate(['login'], {queryParams: {returnUrl: url}});
           } else if (err.status && err.status !== 434) {
             if (err.error.error) {
               if (err.error.error.message && err.error.error.message.match('JocObjectAlreadyExistException')) {

@@ -715,7 +715,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     this.drawTree(this.permissionNodes[0][0], 'COLLAPSEUNSELECTED');
   }
 
-  updateDiagramData(json) {
+  updateDiagramData(json): void {
     this.drawTree(this.permissionNodes[0][0], 'UPDATEDDIAGRAM');
   }
 

@@ -15,8 +15,6 @@ import {EditFilterModalComponent} from '../../components/filter-modal/filter.com
 import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component';
 import {SearchPipe} from '../../pipes/core.pipe';
 
-declare const $;
-
 @Component({
   selector: 'app-order-history-template',
   templateUrl: './order-history-template.html'
@@ -34,8 +32,7 @@ export class OrderTemplateComponent {
     if (!schedulerId) {
       schedulerId = this.schedulerId;
     }
-    $('#tmpFrame').attr('src', './api/order/log/download?historyId=' + obj.historyId + '&controllerId=' + schedulerId +
-      '&accessToken=' + this.authService.accessTokenId);
+    this.coreService.downloadLog(obj, schedulerId);
   }
 
   showPanelFuc(data, count): void {
@@ -2586,20 +2583,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   /* --------------------------Actions -----------------------*/
 
-  downloadLog(obj, schedulerId) {
+  downloadLog(obj, schedulerId): void {
     if (!schedulerId) {
       schedulerId = this.schedulerIds.selected;
     }
-    if (this.historyFilters.type == 'ORDER') {
-      $('#tmpFrame').attr('src', './api/order/log/download?historyId=' + obj.historyId + '&controllerId=' + schedulerId +
-        '&accessToken=' + this.authService.accessTokenId);
-    } else {
-      $('#tmpFrame').attr('src', './api/task/log/download?taskId=' + obj.taskId + '&controllerId=' + schedulerId +
-        '&accessToken=' + this.authService.accessTokenId);
-    }
+    this.coreService.downloadLog(obj, schedulerId);
   }
 
-  action(type, obj, self) {
+  action(type, obj, self): void {
     if (self.historyFilters.type === 'ORDER') {
       if (type === 'DELETE') {
         if (self.savedHistoryFilter.selected == obj.id) {

@@ -26,11 +26,13 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     if (localStorage.$SOS$REMEMBER === 'true' || localStorage.$SOS$REMEMBER === true) {
-      const urs = AES.decrypt(localStorage.$SOS$FOO.toString(), '$SOSJS7');
-      this.user.userName = urs.toString(Utf8);
-      if (localStorage.$SOS$BOO) {
-        const pwd = AES.decrypt(localStorage.$SOS$BOO.toString(), '$SOSJS7');
-        this.user.password = pwd.toString(Utf8);
+      if (localStorage.$SOS$FOO) {
+        const urs = AES.decrypt(localStorage.$SOS$FOO.toString(), '$SOSJS7');
+        this.user.userName = urs.toString(Utf8);
+        if (localStorage.$SOS$BOO) {
+          const pwd = AES.decrypt(localStorage.$SOS$BOO.toString(), '$SOSJS7');
+          this.user.password = pwd.toString(Utf8);
+        }
       }
       this.rememberMe = true;
     }
@@ -49,11 +51,15 @@ export class LoginComponent implements OnInit {
     this.coreService.post('authentication/login', values).subscribe((data) => {
       this.authService.rememberMe = this.rememberMe;
       if (this.rememberMe) {
-        localStorage.$SOS$FOO = AES.encrypt(values.userName, '$SOSJS7');
+        if (values.userName) {
+          localStorage.$SOS$FOO = AES.encrypt(values.userName, '$SOSJS7');
+        } else {
+          localStorage.removeItem('$SOS$FOO');
+        }
         if (values.password) {
           localStorage.$SOS$BOO = AES.encrypt(values.password, '$SOSJS7');
         } else {
-          delete localStorage.$SOS$BOO;
+          localStorage.removeItem('$SOS$BOO');
         }
         localStorage.$SOS$REMEMBER = this.rememberMe;
       } else {

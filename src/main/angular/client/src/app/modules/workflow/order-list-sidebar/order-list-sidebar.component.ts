@@ -94,7 +94,7 @@ export class OrderListSidebarComponent {
     modalRef.componentInstance.schedulerId = this.schedulerId;
     modalRef.componentInstance.orderRequirements = this.coreService.clone(this.orderRequirements);
     modalRef.componentInstance.orderIds = Array.from(this.setOfCheckedId);
-    modalRef.result.then((result) => {
+    modalRef.result.then(() => {
 
     }, () => {
     });
@@ -126,7 +126,7 @@ export class OrderListSidebarComponent {
       let comments = {
         radio: 'predefined',
         type: 'Order',
-        operation: operation,
+        operation,
         name: ''
       };
       const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});

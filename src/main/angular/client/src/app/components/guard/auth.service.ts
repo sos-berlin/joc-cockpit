@@ -58,7 +58,10 @@ export class AuthService {
     }
   }
 
-  permissionCheck(routePath): boolean {
+  permissionCheck(url): boolean {
+    const routePath = url === '/dashboard' ? 'Dashboard' : url === '/daily_plan' ? 'DailyPlan' : url.match(/workflow/) ? 'WorkFlow' : url === '/file_transfer' ? 'FileTransfer' :
+      url === '/audit_log' ? 'AuditLog' : url.match('order') ? 'Order' : url.match('/resources') ? 'Resource' : url === '/history' ? 'History' :
+        url.match('/configuration') ? 'Configuration' : url.match('/users') ? 'ManageAccount' : '';
     let showViews: any = {};
     if (window.sessionStorage.showViews) {
       showViews = JSON.parse(window.sessionStorage.showViews);
@@ -137,7 +140,7 @@ export class AuthService {
           }
         }
         break;
-      case 'File Transfer':
+      case 'FileTransfer':
         if (showViews.fileTransfers !== undefined) {
           if (showViews.fileTransfers === true) {
             ifPermissionPassed = true;

@@ -1065,7 +1065,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
-  updatePanelHeight() {
+  updatePanelHeight(): void {
     let rsHt = this.saveService.resizerHeight ? JSON.parse(this.saveService.resizerHeight) || {} : {};
     if (rsHt.workflow && !_.isEmpty(rsHt.workflow)) {
       if (rsHt.workflow[this.currentPath]) {
@@ -1077,10 +1077,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     } else {
       this._updatePanelHeight();
     }
-
   }
 
-  private _updatePanelHeight() {
+  private _updatePanelHeight(): void {
     setTimeout(() => {
       let ht = (parseInt($('#workflowTableId table').height(), 10) + 90);
       if (ht > 140 && ht < 150) {

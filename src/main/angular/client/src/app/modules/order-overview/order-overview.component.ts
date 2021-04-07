@@ -470,7 +470,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  updatePanelHeight() {
+  updatePanelHeight(): void {
     const rsHt = this.saveService.resizerHeight ? JSON.parse(this.saveService.resizerHeight) || {} : {};
     if (rsHt.orderOverview) {
       $('#orderTableId').css('height', this.resizerHeight);
@@ -479,7 +479,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  private _updatePanelHeight() {
+  private _updatePanelHeight(): void {
     setTimeout(() => {
       let ht = (parseInt($('#orderTableId table').height(), 10) + 90);
       if (ht > 140 && ht < 150) {

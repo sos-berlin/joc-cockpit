@@ -5,8 +5,6 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToasterService} from 'angular2-toaster';
 import {Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
-import AES from 'crypto-js/aes';
-import Utf8 from 'crypto-js/enc-utf8';
 import {NzConfigService} from 'ng-zorro-antd/core/config';
 import {CoreService} from '../../services/core.service';
 import {DataService} from '../../services/data.service';
@@ -20,7 +18,6 @@ declare const $;
   templateUrl: './layout.component.html',
 })
 export class LayoutComponent implements OnInit, OnDestroy {
-
   preferences: any = {};
   schedulerIds: any;
   permission: any;
@@ -141,12 +138,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         this.getSchedulerIds();
       }
     } else {
-      let userName;
-      if (localStorage.$SOS$REMEMBER === 'true' || localStorage.$SOS$REMEMBER === true) {
-        userName = AES.decrypt(localStorage.$SOS$FOO, '$SOSJS7');
-        userName = userName.toString(Utf8);
-      }
-      this.authenticate(userName);
+      this.authenticate();
     }
   }
 
@@ -212,7 +204,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
           }
           this.authService.setIds(res);
           let permission = JSON.parse(this.authService.permission);
-          permission.currentController = LayoutComponent.setControllerPermission( permission, this.schedulerIds);
+          permission.currentController = LayoutComponent.setControllerPermission(permission, this.schedulerIds);
           this.authService.setPermission(permission);
           this.authService.save();
           this.reloadUI();
@@ -273,12 +265,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
           sessionStorage.defaultProfile = result.defaultProfileAccount;
           sessionStorage.$SOS$COPY = JSON.stringify(result.copy);
           sessionStorage.$SOS$RESTORE = JSON.stringify(result.restore);
-          setTimeout(() => {
-            if (this.isProfileLoaded && !this.loading && sessionStorage.preferences !== undefined && sessionStorage.preferences !== null) {
-              this.loadInit(false);
-            }
-            this.isPropertiesLoaded = false;
-          }, 10);
+          if (!this.loading) {
+            this.init();
+          }
+          this.isPropertiesLoaded = false;
         }, () => {
           this.ngOnInit();
         });
@@ -290,9 +280,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   private getPermissions(): void {
     this.coreService.post('authentication/joc_cockpit_permissions', {}).subscribe((permission: any) => {
-      console.log(JSON.stringify(permission));
-      permission.currentController = LayoutComponent.setControllerPermission( permission, this.schedulerIds);
-      console.log(permission);
+      permission.currentController = LayoutComponent.setControllerPermission(permission, this.schedulerIds);
       this.authService.setPermission(permission);
       this.authService.save();
       this.permission = permission;
@@ -349,8 +337,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }, 10);
   }
 
-  private authenticate(userName): any {
-    this.coreService.post('authentication/login', {userName}).subscribe((data) => {
+  private authenticate(): any {
+    this.coreService.post('authentication/login', {}).subscribe((data) => {
       this.authService.setUser(data);
       this.authService.save();
       this.getSchedulerIds();
@@ -378,6 +366,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   private loadInit(isError): void {
     this.sessionTimeout = parseInt(this.authService.sessionTimeout, 10);
+    if (!this.authService.permissionCheck(this.router.url)) {
+      this.router.navigate(['/error']);
+    }
     if (sessionStorage.preferences || isError) {
       this.loading = true;
     } else {
