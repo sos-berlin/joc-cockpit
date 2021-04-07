@@ -1148,22 +1148,22 @@
               <i *ngIf="yade.filter.sortBy == 'operation' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th (click)="sort('source.host')"><a>
-              <span class="p-r-xs" translate>fileTransfer.label.sourceHost</span>
-              <i *ngIf="yade.filter.sortBy == 'source.host' && !yade.reverse"
+            <th (click)="sort('workflow')"><a>
+              <span class="p-r-xs" translate>fileTransfer.label.workflow</span>
+              <i *ngIf="yade.filter.sortBy == 'workflow' && !yade.reverse"
                  class="fa fa-caret-up "></i>
-              <i *ngIf="yade.filter.sortBy == 'source.host' && yade.reverse"
+              <i *ngIf="yade.filter.sortBy == 'workflow' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th (click)="sort('target.host')"><a>
-              <span class="p-r-xs" translate>fileTransfer.label.targetHost</span>
-              <i *ngIf="yade.filter.sortBy == 'target.host' && !yade.reverse"
+            <th (click)="sort('orderId')"><a>
+              <span class="p-r-xs" translate>fileTransfer.label.order</span>
+              <i *ngIf="yade.filter.sortBy == 'orderId' && !yade.reverse"
                  class="fa fa-caret-up "></i>
-              <i *ngIf="yade.filter.sortBy == 'target.host' && yade.reverse"
+              <i *ngIf="yade.filter.sortBy == 'orderId' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th (click)="sort('numOfFiles')"><a>
-              <span class="p-r-xs" translate>fileTransfer.label.totalNumberOfFiles</span>
+            <th width="60px" (click)="sort('numOfFiles')"><a>
+              <span class="p-r-xs" [nz-tooltip]="'fileTransfer.tooltip.totalNumberOfFiles' | translate" translate>fileTransfer.label.total</span>
               <i *ngIf="yade.filter.sortBy == 'numOfFiles' && !yade.reverse"
                  class="fa fa-caret-up "></i>
               <i *ngIf="yade.filter.sortBy == 'numOfFiles' && yade.reverse"
@@ -1235,10 +1235,10 @@
               <td (click)="coreService.showLogWindow(null, transfer,null,null,true)"
                   [innerHtml]="transfer._operation"></td>
               <td (click)="coreService.showLogWindow(null, transfer,null,null,true)">
-                <span *ngIf="transfer.source" [innerHtml]="transfer.source.host"></span>
+                <span *ngIf="transfer.source" [innerHtml]="transfer.workflowPath"></span>
               </td>
               <td (click)="coreService.showLogWindow(null, transfer,null,null,true)">
-                <span *ngIf="transfer.target" [innerHtml]="transfer.target.host"></span>
+                <span *ngIf="transfer.target" [innerHtml]="transfer.orderId"></span>
               </td>
               <td (click)="coreService.showLogWindow(null, transfer,null,null,true)"
                   [innerHtml]="transfer.numOfFiles"></td>
@@ -1257,26 +1257,33 @@
               <td colspan="11" style="padding: 0 !important;">
                 <nz-table class="m-a-0 inner-table" nzSize="small" [nzData]="['']" [nzShowPagination]="false">
                   <thead>
-                  <tr>
-                    <th><span translate>fileTransfer.label.sourceHostUser</span></th>
-                    <th><span translate>fileTransfer.label.sourceHostPort</span></th>
-                    <th><span translate>fileTransfer.label.sourceHostProtocol</span></th>
-                    <th><span translate>fileTransfer.label.targetHostUser</span></th>
-                    <th><span translate>fileTransfer.label.targetHostPort</span></th>
-                    <th><span translate>fileTransfer.label.targetHostProtocol</span></th>
-                    <th><span translate>fileTransfer.label.jumpHost</span></th>
-                    <th><span translate>fileTransfer.label.jumpUser</span></th>
-                    <th><span translate>fileTransfer.label.jumpPort</span></th>
-                    <th><span translate>fileTransfer.label.jumpProtocol</span></th>
-                    <th><span translate>fileTransfer.label.workflow</span></th>
-                    <th><span translate>fileTransfer.label.order</span></th>
-                  </tr>
+                    <tr>
+                      <th style="border-bottom: 1px solid #eee;" colspan="4"><span translate>fileTransfer.label.source</span></th>
+                      <th style="border-bottom: 1px solid #eee;" colspan="4"><span translate>fileTransfer.label.target</span></th>
+                      <th style="border-bottom: 1px solid #eee;" colspan="4"><span translate>fileTransfer.label.jump</span></th>
+                    </tr>
+                    <tr>
+                      <th><span translate>fileTransfer.label.host</span></th>
+                      <th><span translate>fileTransfer.label.account</span></th>
+                      <th width="100px"><span translate>fileTransfer.label.port</span></th>
+                      <th width="120px"><span translate>fileTransfer.label.protocol</span></th>
+                      <th><span translate>fileTransfer.label.host</span></th>
+                      <th><span translate>fileTransfer.label.account</span></th>
+                      <th width="100px"><span translate>fileTransfer.label.port</span></th>
+                      <th width="120px"><span translate>fileTransfer.label.protocol</span></th>
+                      <th><span translate>fileTransfer.label.host</span></th>
+                      <th><span translate>fileTransfer.label.account</span></th>
+                      <th width="100px"><span translate>fileTransfer.label.port</span></th>
+                      <th width="120px"><span translate>fileTransfer.label.protocol</span></th>
+                    </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.account"></span></td>
+                    <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.host"></span></td>
                     <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.port"></span></td>
                     <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.protocol"></span></td>
+                    <td><span *ngIf="transfer.target" [innerHtml]="transfer.target.host"></span></td>
                     <td><span *ngIf="transfer.target" [innerHtml]="transfer.target.account"></span></td>
                     <td><span *ngIf="transfer.target" [innerHtml]="transfer.target.port"></span></td>
                     <td><span *ngIf="transfer.target" [innerHtml]="transfer.target.protocol"></span></td>
@@ -1284,8 +1291,6 @@
                     <td><span *ngIf="transfer.jump" [innerHtml]="transfer.jump.account"></span></td>
                     <td><span *ngIf="transfer.jump" [innerHtml]="transfer.jump.port"></span></td>
                     <td><span *ngIf="transfer.jump" [innerHtml]="transfer.jump.protocol"></span></td>
-                    <td><span [innerHtml]="transfer.workflowPath"></span></td>
-                    <td><span [innerHtml]="transfer.orderId"></span></td>
                   </tr>
                 </tbody>
               </nz-table>

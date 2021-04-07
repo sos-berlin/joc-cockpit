@@ -54,7 +54,7 @@ export class RoleModalComponent implements OnInit {
     }
   }
 
-  checkRole(newRole) {
+  checkRole(newRole): void {
     this.isUnique = true;
     for (let i = 0; i < this.allRoles.length; i++) {
       if (this.allRoles[i] === newRole && newRole !== this.oldRole.role) {
@@ -123,16 +123,16 @@ export class RoleModalComponent implements OnInit {
   templateUrl: 'controller-dialog.html'
 })
 export class ControllerModalComponent implements OnInit {
-  submitted = false;
-  isUnique = true;
-  currentController: any = {};
-  schedulerIds: any = {};
-
   @Input() allControllers: any;
   @Input() allRoles: any;
   @Input() oldController: any;
   @Input() copy: boolean;
   @Input() userDetail: any;
+
+  submitted = false;
+  isUnique = true;
+  currentController: any = {};
+  schedulerIds: any = {};
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private authService: AuthService) {
   }
@@ -146,7 +146,6 @@ export class ControllerModalComponent implements OnInit {
     } else {
       this.currentController = {
         master: '',
-        ipAddress: '',
         roles: []
       };
     }
@@ -172,14 +171,6 @@ export class ControllerModalComponent implements OnInit {
           role: value
         };
       });
-      if (obj.ipAddress) {
-        let name = 'ip=' + obj.ipAddress;
-        if (obj.master) {
-          name = name + ':' + obj.master;
-        }
-        obj.master = name;
-      }
-      delete obj['ipAddress'];
       this.userDetail.masters.push(obj);
     } else {
       const data = {
@@ -204,7 +195,6 @@ export class ControllerModalComponent implements OnInit {
   templateUrl: 'roles.component.html'
 })
 export class RolesComponent implements OnDestroy {
-
   users: any = [];
   masters: any = [];
   userDetail: any = {};
@@ -212,13 +202,12 @@ export class RolesComponent implements OnDestroy {
   roles: any = [];
   selectedControllers = [];
   selectedRoles = [];
-  showPanel = [true];
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
 
   constructor(private coreService: CoreService, private router: Router, private activeRoute: ActivatedRoute, private modalService: NgbModal,
-              private translate: TranslateService, private toasterService: ToasterService, private dataService: DataService) {
+              private translate: TranslateService, private toasterService: ToasterService, public dataService: DataService) {
     this.subscription1 = dataService.dataAnnounced$.subscribe(res => {
       if (res) {
         this.setUsersData(res);
@@ -227,7 +216,7 @@ export class RolesComponent implements OnDestroy {
     this.subscription2 = dataService.functionAnnounced$.subscribe(res => {
       if (res === 'ADD_ROLE') {
         this.addRole();
-      } else if (res === 'ADD_MASTER') {
+      } else if (res === 'ADD_CONTROLLER') {
         this.addController();
       }
     });

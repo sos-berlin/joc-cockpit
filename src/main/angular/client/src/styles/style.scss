@@ -955,12 +955,13 @@ button.close {
   line-height: 61px;
   white-space: nowrap;
   cursor: auto;
-  width: 183px;
+  width: 195px;
   img {
-    width: 143px;
+    width: 156px;
     height: auto;
     margin-left: 50%;
-    transform: translate(-50%, -3%);
+    transform: translateX(-50%);
+    margin-top: -4px;
   }
 }
 

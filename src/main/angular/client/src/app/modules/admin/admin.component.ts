@@ -70,8 +70,8 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.dataService.announceFunction('ADD');
   }
 
-  addMaster(): void {
-    this.dataService.announceFunction('ADD_MASTER');
+  addController(): void {
+    this.dataService.announceFunction('ADD_CONTROLLER');
   }
 
   addFolder(): void {

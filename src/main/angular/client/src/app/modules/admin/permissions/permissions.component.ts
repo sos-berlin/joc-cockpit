@@ -252,6 +252,12 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     this.coreService.post('authentication/permissions', {}).subscribe(res => {
       this.permissionsObj = res;
       this.permissions = this.coreService.clone(this.permissionsObj.SOSPermissions);
+      if (this.masterName) {
+        this.permissions.SOSPermission = this.permissions.SOSPermission.filter((val) => {
+          return !val.match(':joc:');
+        });
+       
+      }
       this.loadPermission();
       this.preparePermissionJSON();
       this.preparePermissionOptions();
@@ -511,8 +517,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         if ((permissionNodes._parents[i].path + permissionNodes._parents[i].name) == permission) {
           permissionNodes._parents[i].selected = true;
           permissionNodes._parents[i].excluded = excluded;
-          if (permissionNodes._parents[i].excluded)
+          if (permissionNodes._parents[i].excluded) {
             permissionNodes._parents[i].greyedBtn = false;
+          }
           this.selectedNode(permissionNodes._parents[i], excluded);
           break;
         }
@@ -722,6 +729,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   drawTree(json, type): void {
     let nodes;
     const self = this;
+    let _temp = [];
     let endNodes2 = {
       leftMost: {x: 0, y: 0},
       rightMost: {x: 0, y: 0},
@@ -769,10 +777,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
     self.tree = d3.layout.tree()
       .nodeSize([100, 250])
-      .separation(function() {
+      .separation(() => {
         return 0.5;
       })
-      .children(function(permission_node) {
+      .children((permission_node) => {
         if (permission_node.collapsed) {
 
         } else {
@@ -781,8 +789,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       });
 
     // Start with only the first few generations showing
-    json._parents.forEach(function(gen2) {
-      gen2._parents.forEach(function(gen3) {
+    json._parents.forEach((gen2) => {
+      gen2._parents.forEach((gen3) => {
         collapse(gen3);
       });
     });
@@ -796,9 +804,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     draw(self.root, 0);
 
     function expandAll() {
-      nodes.forEach(function(permission_node) {
-        if (permission_node.name === 'sos')
+      nodes.forEach((permission_node) => {
+        if (permission_node.name === 'sos') {
           expand(permission_node);
+        }
       });
       $('#mainTree svg').attr('height', 7150);
       $('#mainTree svg').attr('width', 2010);
@@ -832,8 +841,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     function collapseNode(permission_node) {
       if (!permission_node.collapsed) {
         permission_node.collapsed = true;
-        if (permission_node.icon)
+        if (permission_node.icon) {
           permission_node.icon = './assets/images/plus.png';
+        }
       }
       if (permission_node._parents) {
         permission_node._parents.forEach(collapseNode);
@@ -865,7 +875,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
 
     function draw(source, diff) {
-
       nodes = self.tree.nodes(self.root);
       checkNodes(nodes, self.rolePermissions);
       nodes.forEach(function(d) {
@@ -897,33 +906,33 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       link.exit()
         .transition()
         .duration(self.duration)
-        .attr('d', function(d) {
+        .attr('d', (d) => {
           let o = {x: source.x, y: (source.y + self.boxWidth / 2)};
           return transitionElbow({source: o, target: o});
         })
         .remove();
       // Update nodes
       let node = self.svg.selectAll('g.permission_node')
-        .data(nodes, function(permission_node) {
+        .data(nodes, (permission_node) => {
           return permission_node.id;
         });
 
       // Add any new nodes
       let nodeEnter = node.enter().append('g')
         .attr('class', 'permission_node')
-        .style('cursor', function(d) {
+        .style('cursor', (d) => {
           if (d.name == 'sos') {
             return 'default';
           }
           return d.greyed ? 'default' : 'pointer';
         })
-        .attr('transform', function() {
+        .attr('transform', () => {
           return 'translate(' + (source.y0 + self.boxWidth / 2) + ',' + source.x0 + ')';
         });
 
 
       nodeEnter.append('image')
-        .attr('xlink:href', function(d) {
+        .attr('xlink:href', (d) => {
           return d.icon;
         })
         .attr('class', 'img')
@@ -934,7 +943,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         .on('click', togglePermission);
 
       nodeEnter.append('rect')
-        .style('fill', function(d) {
+        .style('fill', (d) => {
           return d.excluded ? d.excludedParent ? '#9E9E9E' : '#eee' : d.selected ? '#7fbfff' : d.greyed ? '#cce5ff' : '#fff';
         })
         .on('click', selectPermission)
@@ -946,20 +955,22 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         });
 
       nodeEnter.append('image')
-        .attr('xlink:href', function(d) {
+        .attr('xlink:href', (d) => {
           return d.excluded ? './assets/images/permission-minus.png' : './assets/images/permission-plus.png';
         })
         .attr('class', 'img exclude-img')
-        .attr('id', function(d) {
+        .attr('id', (d) => {
           if (d.path) {
             return d.path.replace(/:/g, '-') + d.name.replace(/-/g, '');
-          } else return d.name.replace(/-/g, '');
+          } else {
+            return d.name.replace(/-/g, '');
+          }
         })
         .attr('x', '-80')
         .attr('y', '-10')
         .attr('width', '10px')
         .attr('height', '20px')
-        .style('cursor', function(d) {
+        .style('cursor', (d) => {
           if (d.name == 'sos') {
             return 'default';
           }
@@ -991,7 +1002,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       // Update the position of both old and new nodes
       let nodeUpdate = node.transition()
         .duration(self.duration)
-        .attr('transform', function(d) {
+        .attr('transform', (d) => {
           return 'translate(' + d.y + ',' + d.x + ')';
         });
 
@@ -1005,7 +1016,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         });
 
       nodeUpdate.select('image')
-        .attr('xlink:href', function(d) {
+        .attr('xlink:href', (d) => {
           return d.icon;
         })
         .attr('x', '90px')
@@ -1025,7 +1036,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         .duration(self.duration)
 
         // Transition exit nodes to the source's position
-        .attr('transform', function(d) {
+        .attr('transform', (d) => {
           return 'translate(' + (source.y + self.boxWidth / 2) + ',' + source.x + ')';
         })
         .remove();
@@ -1045,7 +1056,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         .attr('dx', 0);
 
       // Stash the old positions for transition.
-      nodes.forEach(function(permission_node) {
+      nodes.forEach((permission_node) => {
         permission_node.x0 = permission_node.x;
         permission_node.y0 = permission_node.y;
       });
@@ -1065,7 +1076,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       };
 
       nodes = self.tree.nodes(self.root);
-      nodes.forEach(function(node) {
+      nodes.forEach((node) => {
         if (!endNodes2.rightMost.x || (endNodes2.rightMost.x <= node.y)) {
           endNodes2.rightMost.x = node.y;
           endNodes2.rightMost.y = node.x;
@@ -1130,8 +1141,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       draw(permission_node, calculateTopMost());
     }
 
-    let _temp = [];
-
     function generatePermissionList(permission) {
       if (permission._parents) {
         for (let i = 0; i < permission._parents.length; i++) {
@@ -1179,9 +1188,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         generatePermissionList(self.permissionNodes[0][0]);
         toggleRectangleColour(_temp);
         self.rolePermissions = _temp;
-        self.masters.forEach(function(master) {
+        self.masters.forEach((master) => {
           if (_.isEqual(master.master, self.masterName) || (master.master == '' && self.masterName == 'default')) {
-            master.roles.forEach(function(value) {
+            master.roles.forEach((value) => {
               if (_.isEqual(value.role, self.roleName)) {
                 value.permissions = _temp;
                 self.folderArr = value.folders;
@@ -1222,9 +1231,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         generatePermissionList(self.permissionNodes[0][0]);
         toggleRectangleColour(_temp);
         self.rolePermissions = _temp;
-        self.masters.forEach(function(master, index) {
+        self.masters.forEach((master) => {
           if (_.isEqual(master.master, self.masterName) || (master.master == '' && self.masterName == 'default')) {
-            master.roles.forEach(function(value) {
+            master.roles.forEach((value) => {
               if (_.isEqual(value.role, self.roleName)) {
                 value.permissions = _temp;
                 self.folderArr = value.folders;
@@ -1244,12 +1253,12 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     function updateDiagramData(nData) {
       self.tree = d3.layout.tree()
         .nodeSize([100, 250])
-        .separation(function() {
+        .separation(() => {
           return .5;
         });
       let nodes = self.tree.nodes(nData);
       self.svg.selectAll('g.permission_node')
-        .data(nodes, function(permission_node) {
+        .data(nodes, (permission_node) => {
           return permission_node.id;
         });
       toggleRectangleColour(self.rolePermissions);
@@ -1258,11 +1267,11 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     function toggleRectangleColour(permissionArr) {
       if (self.svg) {
         self.svg.selectAll('rect')
-          .style('fill', function(d) {
+          .style('fill', (d) => {
             return d.excluded ? d.excludedParent ? '#9E9E9E' : '#eee' : d.selected ? '#7fbfff' : d.greyed ? '#cce5ff' : '#fff';
           });
         self.svg.selectAll('g.permission_node')
-          .style('cursor', function(d) {
+          .style('cursor', (d) => {
             if (d.name === 'sos') {
               return 'default';
             }
@@ -1270,10 +1279,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
           });
 
         self.svg.selectAll('.img.exclude-img')
-          .attr('xlink:href', function(d) {
+          .attr('xlink:href', (d) => {
             return d.excluded ? './assets/images/permission-minus.png' : './assets/images/permission-plus.png';
           })
-          .style('cursor', function(d) {
+          .style('cursor', (d) => {
             if (d.name === 'sos') {
               return 'default';
             }

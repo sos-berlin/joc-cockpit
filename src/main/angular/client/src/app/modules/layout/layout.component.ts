@@ -498,6 +498,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
         });
       }
     }
+    if (reload) {
+      this.dataService.refreshUI('reload');
+    }
     this.isProfileLoaded = false;
   }
 
@@ -524,6 +527,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
           const conf = res.configurations[0];
           sessionStorage.preferenceId = conf.id;
           this.setUserObject(preferences, conf, configObj);
+          if (reload) {
+            this.dataService.refreshUI('reload');
+          }
         } else {
           this.setUserPreferences(preferences, configObj, reload);
         }
@@ -590,16 +596,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.coreService.post('controller', {controllerId: this.schedulerIds.selected}).subscribe(res => {
       this.updateTitle(res);
       this.child.switchSchedulerController();
-      if (flag) {
-        this.dataService.refreshUI('reload');
-      }
     });
   }
 
   private reloadUI(): void {
     this.getVolatileData(true);
     this.child.reloadSettings();
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, true);
     this.loadSettingConfiguration();

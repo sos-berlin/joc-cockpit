@@ -1,7 +1,7 @@
 <div class="modal-header">
     <h4 class="modal-title">
-        <span *ngIf="!copy" translate>user.label.addSpecialisation</span>
-        <span *ngIf="copy" ><span translate>user.label.copySpecialisation</span> : {{currentController.masterName || 'default'}}</span>
+        <span *ngIf="!copy" translate>user.label.addController</span>
+        <span *ngIf="copy" ><span translate>user.label.copyController</span> : {{currentController.masterName || 'default'}}</span>
     </h4>
     <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
       <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -29,12 +29,6 @@
                </div>
             </div>
         </div>
-        <!--<div class="form-group row" *ngIf="!copy">
-            <label class="col-sm-4 form-control-label" translate>user.label.remoteIPAddress</label>
-            <div class="col-sm-6">
-                <input type="text" class="form-control" name="ipAddress" [(ngModel)]="currentController.ipAddress" #ipAddress="ngModel">
-            </div>
-        </div>-->
         <div class="form-group row" *ngIf="!copy">
             <label class="col-sm-4 form-control-label" translate>user.label.roles</label>
             <div class="col-sm-6">
@@ -52,7 +46,7 @@
             <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
             {{'common.button.submit' | translate}}
         </button>
-        <button type="button" class="btn btn-outline-dark btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
+        <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
           common.button.cancel
         </button>
     </div>

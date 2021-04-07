@@ -17,13 +17,13 @@
                     </nz-dropdown-menu>
                 </div>
                 <h5 class="text-dark">{{master.master || 'default'}}
-                    <i (click)="showPanel[id] = true" [hidden]="showPanel[id]" class="cursor fa fa-caret-up m-l-xs"></i>
-                    <i (click)="showPanel[id]  = false" *ngIf="showPanel[id]"
+                    <i (click)="dataService.preferences.showPanel[id] = true" [hidden]="dataService.preferences.showPanel[id]" class="cursor fa fa-caret-up m-l-xs"></i>
+                    <i (click)="dataService.preferences.showPanel[id]  = false" *ngIf="dataService.preferences.showPanel[id]"
                        class="cursor fa fa-caret-down m-l-xs"></i>
                 </h5>
             </div>
         </div>
-        <div *ngIf="showPanel[id]" class="row">
+        <div *ngIf="dataService.preferences.showPanel[id]" class="row">
             <div class="col-xl-1 col-lg-2 col-md-2 col-sm-4 col-xs-4"><span class="p-l-lg" translate>user.label.roles</span></div>
             <div class="col-lg-9 col-md-10 col-sm-8 col-xs-8">
                 <div *ngFor="let role of master.roles" [hidden]="!getSelectedRole(role)" class="role">
@@ -37,7 +37,7 @@
                 </div>
             </div>
         </div>
-        <hr *ngIf="showPanel[id]">
+        <hr *ngIf="dataService.preferences.showPanel[id]">
     </div>
     <div [ngClass]="{show : showMsg}" class="box-body p-b-0 hide">
         <div class="row">

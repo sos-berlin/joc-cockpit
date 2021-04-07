@@ -2,7 +2,12 @@ import {Injectable, OnDestroy} from '@angular/core';
 import {Subject} from 'rxjs';
 
 @Injectable()
-export class DataService implements OnDestroy{
+export class DataService implements OnDestroy {
+
+  preferences = {
+    showPanel: [true]
+  };
+
   // Observable string sources
   private dataAnnouncedSource = new Subject<any>();
   private searchKeySource = new Subject<string>();
@@ -12,19 +17,19 @@ export class DataService implements OnDestroy{
   searchKeyAnnounced$ = this.searchKeySource.asObservable();
   functionAnnounced$ = this.functionSource.asObservable();
 
-  announceData(data: any) {
+  announceData(data: any): void {
     this.dataAnnouncedSource.next(data);
   }
 
-  announceSearchKey(searchKey: string) {
+  announceSearchKey(searchKey: string): void {
     this.searchKeySource.next(searchKey);
   }
 
-  announceFunction(data: string) {
+  announceFunction(data: string): void {
     this.functionSource.next(data);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.dataAnnouncedSource.complete();
     this.searchKeySource.complete();
     this.functionSource.complete();

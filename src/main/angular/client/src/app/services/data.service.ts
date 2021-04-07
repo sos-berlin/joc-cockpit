@@ -25,28 +25,27 @@ export class DataService implements OnDestroy {
   functionAnnounced$ = this.functionSource.asObservable();
 
   // Service message commands
-  announceEvent(event: any) {
+  announceEvent(event: any): void {
     this.eventAnnouncedSource.next(event);
   }
 
-  refreshUI(event: any) {
+  refreshUI(event: any): void {
     this.refreshUISource.next(event);
   }
 
-  switchScheduler(event: any) {
+  switchScheduler(event: any): void {
     this.switchSchedulerSource.next(event);
   }
 
-  announceFunction(data: string) {
+  announceFunction(data: string): void {
     this.functionSource.next(data);
   }
 
-  refreshWidget(event: any) {
+  refreshWidget(event: any): void {
     this.refreshWidgetSource.next(event);
   }
 
-  ngOnDestroy() {
-
+  ngOnDestroy(): void {
     this.eventAnnouncedSource.unsubscribe();
     this.refreshUISource.unsubscribe();
     this.switchSchedulerSource.unsubscribe();

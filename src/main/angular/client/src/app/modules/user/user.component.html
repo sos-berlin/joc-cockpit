@@ -32,14 +32,9 @@
           <hr>
           <h5 translate>profile.label.roles</h5>
           <div class="row m-t-sm">
-            <div class="col-sm-6" *ngIf="permission.SOSPermissionRoles">
-              <div class="m-t-sm" *ngFor="let role of permission.SOSPermissionRoles.SOSPermissionRole">
-                <div class="col-sm-12 text-black-lt">{{role}}</div>
-              </div>
-            </div>
-            <div class="col-sm-6" *ngIf="!permission.SOSPermissionRoles">
+            <div class="col-sm-6">
               <div class="m-t-sm">
-                <div class="col-sm-12 text-black-lt">all</div>
+                <div class="col-sm-12 text-black-lt">{{authService.roles}}</div>
               </div>
             </div>
           </div>
@@ -83,102 +78,82 @@
                       <nz-option nzValue="YYYY/DD/MM hh:mm A" nzLabel="YYYY/DD/MM hh:mm A"></nz-option>
                       <nz-option nzValue="YYYY/DD/MM HH:mm:ss" nzLabel="YYYY/DD/MM HH:mm:ss"></nz-option>
                       <nz-option nzValue="YYYY/DD/MM hh:mm:ss A" nzLabel="YYYY/DD/MM hh:mm:ss A"></nz-option>
-
                       <nz-option nzValue="YYYY-MM-DD HH:mm" nzLabel="YYYY-MM-DD HH:mm"></nz-option>
                       <nz-option nzValue="YYYY-MM-DD hh:mm A" nzLabel="YYYY-MM-DD hh:mm A"></nz-option>
                       <nz-option nzValue="YYYY-MM-DD HH:mm:ss" nzLabel="YYYY-MM-DD HH:mm:ss"></nz-option>
                       <nz-option nzValue="YYYY-MM-DD hh:mm:ss A" nzLabel="YYYY-MM-DD hh:mm:ss A"></nz-option>
-
                       <nz-option nzValue="YYYY.MM.DD HH:mm" nzLabel="YYYY.MM.DD HH:mm"></nz-option>
                       <nz-option nzValue="YYYY.MM.DD hh:mm A" nzLabel="YYYY.MM.DD hh:mm A"></nz-option>
                       <nz-option nzValue="YYYY.MM.DD HH:mm:ss" nzLabel="YYYY.MM.DD HH:mm:ss"></nz-option>
                       <nz-option nzValue="YYYY.MM.DD hh:mm:ss A" nzLabel="YYYY.MM.DD hh:mm:ss A"></nz-option>
-
                       <nz-option nzValue="YYYY MM DD HH:mm" nzLabel="YYYY MM DD HH:mm"></nz-option>
                       <nz-option nzValue="YYYY MM DD hh:mm A" nzLabel="YYYY MM DD hh:mm A"></nz-option>
                       <nz-option nzValue="YYYY MM DD HH:mm:ss" nzLabel="YYYY MM DD HH:mm:ss"></nz-option>
                       <nz-option nzValue="YYYY MM DD hh:mm:ss A" nzLabel="YYYY MM DD hh:mm:ss A"></nz-option>
-
                       <nz-option nzValue="DD/MM/YYYY HH:mm" nzLabel="DD/MM/YYYY HH:mm"></nz-option>
                       <nz-option nzValue="DD/MM/YYYY hh:mm A" nzLabel="DD/MM/YYYY hh:mm A"></nz-option>
                       <nz-option nzValue="DD/MM/YYYY HH:mm:ss" nzLabel="DD/MM/YYYY HH:mm:ss"></nz-option>
                       <nz-option nzValue="DD/MM/YYYY hh:mm:ss A" nzLabel="DD/MM/YYYY hh:mm:ss A"></nz-option>
-
                       <nz-option nzValue="DD-MM-YYYY HH:mm" nzLabel="DD-MM-YYYY HH:mm"></nz-option>
                       <nz-option nzValue="DD-MM-YYYY hh:mm A" nzLabel="DD-MM-YYYY hh:mm A"></nz-option>
                       <nz-option nzValue="DD-MM-YYYY HH:mm:ss" nzLabel="DD-MM-YYYY HH:mm:ss"></nz-option>
                       <nz-option nzValue="DD-MM-YYYY hh:mm:ss A" nzLabel="DD-MM-YYYY hh:mm:ss A"></nz-option>
-
                       <nz-option nzValue="DD.MM.YYYY HH:mm" nzLabel="DD.MM.YYYY HH:mm"></nz-option>
                       <nz-option nzValue="DD.MM.YYYY hh:mm A" nzLabel="DD.MM.YYYY hh:mm A"></nz-option>
                       <nz-option nzValue="DD.MM.YYYY HH:mm:ss" nzLabel="DD.MM.YYYY HH:mm:ss"></nz-option>
                       <nz-option nzValue="DD.MM.YYYY hh:mm:ss A" nzLabel="DD.MM.YYYY hh:mm:ss A"></nz-option>
-
                       <nz-option nzValue="DD MM YYYY HH:mm" nzLabel="DD MM YYYY HH:mm"></nz-option>
                       <nz-option nzValue="DD MM YYYY hh:mm A" nzLabel="DD MM YYYY hh:mm A"></nz-option>
                       <nz-option nzValue="DD MM YYYY HH:mm:ss" nzLabel="DD MM YYYY HH:mm:ss"></nz-option>
                       <nz-option nzValue="DD MM YYYY hh:mm:ss A" nzLabel="DD MM YYYY hh:mm:ss A"></nz-option>
-
                       <nz-option nzValue="DD.MMM YYYY HH:mm" nzLabel="DD.MMM YYYY HH:mm"></nz-option>
                       <nz-option nzValue="DD.MMM YYYY hh:mm A" nzLabel="DD.MMM YYYY hh:mm A"></nz-option>
                       <nz-option nzValue="DD.MMM YYYY HH:mm:ss" nzLabel="DD.MMM YYYY HH:mm:ss"></nz-option>
                       <nz-option nzValue="DD.MMM YYYY hh:mm:ss A" nzLabel="DD.MMM YYYY hh:mm:ss A"></nz-option>
-
                       <nz-option nzValue="MM/DD/YYYY HH:mm" nzLabel="MM/DD/YYYY HH:mm"></nz-option>
                       <nz-option nzValue="MM/DD/YYYY hh:mm A" nzLabel="MM/DD/YYYY hh:mm A"></nz-option>
                       <nz-option nzValue="MM/DD/YYYY HH:mm:ss" nzLabel="MM/DD/YYYY HH:mm:ss"></nz-option>
                       <nz-option nzValue="MM/DD/YYYY hh:mm:ss A" nzLabel="MM/DD/YYYY hh:mm:ss A"></nz-option>
-
                       <nz-option nzValue="MMM/DD/YYYY HH:mm" nzLabel="MMM/DD/YYYY HH:mm"></nz-option>
                       <nz-option nzValue="MMM/DD/YYYY hh:mm A" nzLabel="MMM/DD/YYYY hh:mm A"></nz-option>
                       <nz-option nzValue="MMM/DD/YYYY HH:mm:ss" nzLabel="MMM/DD/YYYY HH:mm:ss"></nz-option>
                       <nz-option nzValue="MMM/DD/YYYY hh:mm:ss A" nzLabel="MMM/DD/YYYY hh:mm:ss A"></nz-option>
-
                       <nz-option nzValue="MM-DD-YYYY HH:mm" nzLabel="MM-DD-YYYY HH:mm"></nz-option>
                       <nz-option nzValue="MM-DD-YYYY hh:mm A" nzLabel="MM-DD-YYYY hh:mm A"></nz-option>
                       <nz-option nzValue="MM-DD-YYYY HH:mm:ss" nzLabel="MM-DD-YYYY HH:mm:ss"></nz-option>
                       <nz-option nzValue="MM-DD-YYYY hh:mm:ss A" nzLabel="MM-DD-YYYY hh:mm:ss A"></nz-option>
-
                       <nz-option nzValue="MM.DD.YYYY HH:mm" nzLabel="MM.DD.YYYY HH:mm"></nz-option>
                       <nz-option nzValue="MM.DD.YYYY hh:mm A" nzLabel="MM.DD.YYYY hh:mm A"></nz-option>
                       <nz-option nzValue="MM.DD.YYYY HH:mm:ss" nzLabel="MM.DD.YYYY HH:mm:ss"></nz-option>
                       <nz-option nzValue="MM.DD.YYYY hh:mm:ss A" nzLabel="MM.DD.YYYY hh:mm:ss A"></nz-option>
-
                       <nz-option nzValue="MM DD YYYY HH:mm" nzLabel="MM DD YYYY HH:mm"></nz-option>
                       <nz-option nzValue="MM DD YYYY hh:mm A" nzLabel="MM DD YYYY hh:mm A"></nz-option>
                       <nz-option nzValue="MM DD YYYY HH:mm:ss" nzLabel="MM DD YYYY HH:mm:ss"></nz-option>
                       <nz-option nzValue="MM DD YYYY hh:mm:ss A" nzLabel="MM DD YYYY hh:mm:ss A"></nz-option>
-
                       <nz-option nzValue="MMM.DD YYYY HH:mm" nzLabel="MMM.DD YYYY HH:mm"></nz-option>
                       <nz-option nzValue="MMM.DD YYYY hh:mm A" nzLabel="MMM.DD YYYY hh:mm A"></nz-option>
                       <nz-option nzValue="MMM.DD YYYY HH:mm:ss" nzLabel="MMM.DD YYYY HH:mm:ss"></nz-option>
                       <nz-option nzValue="MMM.DD YYYY hh:mm:ss A" nzLabel="MMM.DD YYYY hh:mm:ss A"></nz-option>
-
                       <nz-option nzValue="D.M.YYYY HH:mm" nzLabel="D.M.YYYY HH:mm"></nz-option>
                       <nz-option nzValue="D.M.YYYY hh:mm A" nzLabel="D.M.YYYY hh:mm A"></nz-option>
                       <nz-option nzValue="D.M.YYYY HH:mm:ss" nzLabel="D.M.YYYY HH:mm:ss"></nz-option>
                       <nz-option nzValue="D.M.YYYY hh:mm:ss A" nzLabel="D.M.YYYY hh:mm:ss A"></nz-option>
-
                       <nz-option nzValue="D.MMMM YYYY HH:mm" nzLabel="D.MMMM YYYY HH:mm"></nz-option>
                       <nz-option nzValue="D.MMMM YYYY hh:mm A" nzLabel="D.MMMM YYYY hh:mm A"></nz-option>
                       <nz-option nzValue="D.MMMM YYYY HH:mm:ss" nzLabel="D.MMMM YYYY HH:mm:ss"></nz-option>
                       <nz-option nzValue="D.MMMM YYYY hh:mm:ss A" nzLabel="D.MMMM YYYY hh:mm:ss A"></nz-option>
-
                       <nz-option nzValue="D/M/YY HH:mm" nzLabel="D/M/YY HH:mm"></nz-option>
                       <nz-option nzValue="D/M/YY hh:mm A" nzLabel="D/M/YY hh:mm A"></nz-option>
                       <nz-option nzValue="D/M/YY HH:mm:ss" nzLabel="D/M/YY HH:mm:ss"></nz-option>
                       <nz-option nzValue="D/M/YY hh:mm:ss A" nzLabel="D/M/YY hh:mm:ss A"></nz-option>
-
                       <nz-option nzValue="M/D/YYYY HH:mm" nzLabel="M/D/YYYY HH:mm"></nz-option>
                       <nz-option nzValue="M/D/YYYY hh:mm A" nzLabel="M/D/YYYY hh:mm A"></nz-option>
                       <nz-option nzValue="M/D/YYYY HH:mm:ss" nzLabel="M/D/YYYY HH:mm:ss"></nz-option>
                       <nz-option nzValue="M/D/YYYY hh:mm:ss A" nzLabel="M/D/YYYY hh:mm:ss A"></nz-option>
-
                       <nz-option nzValue="MMM DD, YYYY HH:mm" nzLabel="MMM DD, YYYY HH:mm"></nz-option>
                       <nz-option nzValue="MMM DD, YYYY hh:mm A" nzLabel="MMM DD, YYYY hh:mm A"></nz-option>
                       <nz-option nzValue="MMM DD, YYYY HH:mm:ss" nzLabel="MMM DD, YYYY HH:mm:ss"></nz-option>
                       <nz-option nzValue="MMM DD, YYYY hh:mm:ss A" nzLabel="MMM DD, YYYY hh:mm:ss A"></nz-option>
-
                       <nz-option nzValue="MMMM DD, YYYY HH:mm" nzLabel="MMMM DD, YYYY HH:mm"></nz-option>
                       <nz-option nzValue="MMMM DD, YYYY hh:mm A" nzLabel="MMMM DD, YYYY hh:mm A"></nz-option>
                       <nz-option nzValue="MMMM DD, YYYY HH:mm:ss" nzLabel="MMMM DD, YYYY HH:mm:ss"></nz-option>
@@ -276,13 +251,13 @@
                   <div class="col-sm-6">
                     <nz-select class="w-xl" [(ngModel)]="preferences.theme"
                                (ngModelChange)="changeTheme(preferences.theme)">
-                      <nz-option nzValue="lighter" [nzLabel]="'profile.label.white' | translate"></nz-option>
-                      <nz-option nzValue="light" [nzLabel]="'profile.label.light' | translate"></nz-option>
-                      <nz-option nzValue="blue-lt" [nzLabel]="'profile.label.blueGrey' | translate"></nz-option>
-                      <nz-option nzValue="blue" [nzLabel]="'profile.label.blue' | translate"></nz-option>
-                      <nz-option nzValue="cyan" [nzLabel]="'profile.label.petrol' | translate"></nz-option>
-                      <nz-option nzValue="grey" [nzLabel]="'profile.label.grey' | translate"></nz-option>
-                      <nz-option nzValue="dark" [nzLabel]="'profile.label.dark' | translate"></nz-option>
+                      <nz-option [nzValue]="'lighter'" [nzLabel]="'profile.label.white' | translate"></nz-option>
+                      <nz-option [nzValue]="'light'" [nzLabel]="'profile.label.light' | translate"></nz-option>
+                      <nz-option [nzValue]="'blue-lt'" [nzLabel]="'profile.label.blueGrey' | translate"></nz-option>
+                      <nz-option [nzValue]="'blue'" [nzLabel]="'profile.label.blue' | translate"></nz-option>
+                      <nz-option [nzValue]="'cyan'" [nzLabel]="'profile.label.petrol' | translate"></nz-option>
+                      <nz-option [nzValue]="'grey'" [nzLabel]="'profile.label.grey' | translate"></nz-option>
+                      <nz-option [nzValue]="'dark'" [nzLabel]="'profile.label.dark' | translate"></nz-option>
                     </nz-select>
                   </div>
                 </div>
@@ -337,6 +312,14 @@
                       <label nz-radio nzValue="single"><span translate>profile.label.folderContents</span></label>
                       <label nz-radio nzValue="both"><span translate>profile.label.subFolderAndFolderContents</span></label>
                     </nz-radio-group>
+                  </div>
+                </div>
+                <div class="row m-t">
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
+                       translate>profile.label.showFilesImmediately
+                  </div>
+                  <div class="col-sm-6">
+                    <label nz-checkbox [(ngModel)]="preferences.showFiles" [disabled]="forceLoging" (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
                 <div class="row m-t">
