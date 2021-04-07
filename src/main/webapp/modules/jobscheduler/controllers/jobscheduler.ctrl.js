@@ -10,10 +10,10 @@
         .controller('DashboardCtrl', DashboardCtrl)
         .controller('DailyPlanCtrl', DailyPlanCtrl);
 
-    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$window", "TaskService",
+    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$window", "TaskService", "$state",
         "CalendarService", "$timeout", "FileSaver", "FileUploader", "toasty", "gettextCatalog", "AuditLogService", "EventService", "UserService", "SavedFilter", "OrderService", "JobService", "$filter", "SOSAuth"];
 
-    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService,
+    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService, $state,
                           CalendarService, $timeout, FileSaver, FileUploader, toasty, gettextCatalog, AuditLogService, EventService, UserService, SavedFilter, OrderService, JobService, $filter, SOSAuth) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
@@ -5150,7 +5150,7 @@
             vm.allCheckCalendar.checkbox = false;
         }
 
-        $scope.$on('$stateChangeSuccess', function (event, toState, toParams) {
+        function loadView(toState, toParams) {
             var views = {};
             initialObj();
             vm.document = undefined;
@@ -5205,6 +5205,19 @@
             }
             hidePanelAfterCheck();
             startPolling();
+        }
+
+        let isCall = false;
+        $scope.$on('$viewContentLoaded', function () {
+            if(!isCall) {
+                isCall = true;
+                loadView($state.current, $state.params);
+            }
+        });
+
+        $scope.$on('$stateChangeSuccess', function (event, toState, toParams) {
+            isCall = true;
+            loadView(toState, toParams);
         });
 
         $scope.$on('event-started', function () {
@@ -5777,20 +5790,16 @@
             schedules.runTime = vm.schedule.runTime;
             schedules.runTime.substitute = vm.schedule.path;
             schedules.calendars = vm.schedule.calendars;
-
             schedules.auditLog = {};
             if (vm.comments.comment) {
                 schedules.auditLog.comment = vm.comments.comment;
             }
-
             if (vm.comments.timeSpent) {
                 schedules.auditLog.timeSpent = vm.comments.timeSpent;
             }
-
             if (vm.comments.ticketLink) {
                 schedules.auditLog.ticketLink = vm.comments.ticketLink;
             }
-
             ScheduleService.setRunTime(schedules);
         }
 
@@ -6425,7 +6434,6 @@
     function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, $rootScope, $timeout, CoreService, SOSAuth, $interval, UserService, $window, YadeService, JobService, PermissionService) {
         var vm = $scope;
         vm.loadingImg = true;
-
         function initConfig(flag) {
            let grid = $('.grid-stack').data('gridstack');
             grid.movable('.grid-stack-item', flag);
@@ -6558,7 +6566,7 @@
                 }];
             }
 
-            if(vm.permission.JobschedulerUniversalAgent) {
+            if(vm.permission && vm.permission.JobschedulerUniversalAgent) {
                 for (let i = 0; i < vm.dashboardLayout.length; i++) {
                     if (vm.dashboardLayout[i].name === 'agentClusterStatus' && vm.permission.JobschedulerUniversalAgent.view.status) {
                         vm.widgetWithPermission.push(vm.dashboardLayout[i]);
@@ -7534,7 +7542,6 @@
             }
         };
 
-
         function filterData() {
             vm.waiting = 0;
             vm.late = 0;
@@ -7711,7 +7718,6 @@
             if (vm.userPreferences && !vm.userPreferences.dashboard)
                 setWidgetPreference();
         } else {
-
             $scope.$on('reloadPreferences', function () {
                 if (vm.loadingImg)
                     initWidgets();

@@ -15,6 +15,7 @@
             link: function (i, n) {
                 n.addClass("hide");
                 var a, r;
+                let isCall = false;
                 e.$on("$stateChangeStart", function (i, r, o, l) {
                     if (n.removeClass("hide"), a = new Date, "/job_chain_detail" === r.url)return t.go("app.jobChainDetails.orders"), void i.preventDefault();
                     if ("/resources" === r.url && "app.resources.agentClusters" != l.name)return t.go("app.resources.agentClusters"), void i.preventDefault();
@@ -26,6 +27,8 @@
                         e.clientLogs.push(s)
                     }
                 }), e.$on("$stateChangeSuccess", function (t, i) {
+                    isCall = true;
+                   
                     if (n.addClass("hide"), $("body, html").animate({scrollTop: 0}, 1e3), n.addClass("hide"), e.clientLogFilter && e.clientLogFilter.isEnable && a) {
                         r = new Date;
                         var o = {
@@ -38,6 +41,14 @@
                 }), e.$on("$stateNotFound", function () {
                     n.addClass("hide")
                 }), e.$on("$viewContentLoading", function () {
+                    setTimeout(function(){
+                        if(!isCall) {
+                          
+                            n.addClass("hide");
+                            $("body, html").animate({scrollTop: 0}, 1e3)
+                        }
+                    }, 10)
+
                     var t = new Date;
                     if (r && r.getTime() < t.getTime() && e.clientLogFilter) {
                         var i = {

@@ -402,7 +402,7 @@
                             $location.path('/user/profile');
                         }
                     }else{
-                        deferred.reject('login');
+                        deferred.resolve();
                     }
                     $rootScope.$on('$locationChangeSuccess', function (event, newUrl, oldUrl) {
                         if (newUrl && newUrl.substring(newUrl.lastIndexOf('#!') + 2) === $location.path()) {

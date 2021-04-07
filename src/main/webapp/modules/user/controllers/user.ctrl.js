@@ -1269,8 +1269,8 @@
         });
     }
 
-    UsersCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$rootScope', '$location', 'toasty', 'gettextCatalog'];
-    function UsersCtrl($scope, UserService, $uibModal, $rootScope, $location, toasty, gettextCatalog) {
+    UsersCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$rootScope', '$state', '$location', 'toasty', 'gettextCatalog'];
+    function UsersCtrl($scope, UserService, $uibModal, $rootScope, $state, $location, toasty, gettextCatalog) {
         const vm = $scope;
 
         vm.usr = {};
@@ -2188,7 +2188,8 @@
         };
 
         /* ------------- End Main Section -------------------*/
-        vm.$on('$stateChangeSuccess', function (event, toState, toParams) {
+        function loadView (toState, toParams) {
+           
             if (toState.name == 'app.users.user') {
                 vm.state = 'user';
             } else if (toState.name == 'app.users.master') {
@@ -2202,6 +2203,19 @@
             }else if (toState.name == 'app.users.profiles') {
                 vm.state = 'profile';
             }
+        }
+
+        let isCall = false;
+        $scope.$on('$viewContentLoaded', function () {
+            if(!isCall) {
+                isCall = true;
+                loadView($state.current, $state.params);
+            }
+        });
+
+        $scope.$on('$stateChangeSuccess', function (event, toState, toParams) {
+            isCall = true;
+            loadView(toState, toParams);
         });
 
         vm.addFolder = function () {
