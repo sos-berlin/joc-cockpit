@@ -653,7 +653,7 @@
         }
 
         function authenticate() {
-            UserService.authenticate('root', '').then(function (response) {
+            UserService.authenticate().then(function (response) {
                 if (response && response.isAuthenticated) {
                     SOSAuth.accessTokenId = response.accessToken;
                     SOSAuth.setUser(response);
