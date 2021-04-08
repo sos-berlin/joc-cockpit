@@ -1,7 +1,7 @@
 <div class="hide-block sidebar-btn resize-cursor">
     <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
 </div>
-<div class="pos-abt" style="right: 20px" ng-style="{'margin-top': objectType == 'OTHER' ? '-40px' : '-50px'}" ng-if="schemaIdentifier">
+<div class="pos-abt" style="right: 20px;margin-top: -40px" ng-if="schemaIdentifier">
     <span translate>xml.label.assignedSchema</span>:
     <i class="cursor fa fa-download p-l-sm" ng-click="downloadSchema(objectType, schemaIdentifier)"></i>
     <span class="text-hover-primary cursor _600 p-l-xs" ng-click="showXSD(objectType, schemaIdentifier)">{{schemaIdentifier}}</span>

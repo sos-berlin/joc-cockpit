@@ -3532,7 +3532,7 @@
                 vm.substituteObj.folder = vm.substituteObj.folder + '/';
             }
             schedules.schedule = vm.substituteObj.folder + '' + vm.substituteObj.name;
-            schedules.runTime = vm.schedule.runTime;
+            schedules.runTime = vm.schedule.runTime.schedule;
             schedules.runTime.substitute = vm.schedule.path;
             schedules.calendars = vm.schedule.calendars;
             schedules.auditLog = {};
@@ -5787,7 +5787,7 @@
                 vm.substituteObj.folder = vm.substituteObj.folder + '/';
             }
             schedules.schedule = vm.substituteObj.folder + '' + vm.substituteObj.name;
-            schedules.runTime = vm.schedule.runTime;
+            schedules.runTime = vm.schedule.runTime.schedule;
             schedules.runTime.substitute = vm.schedule.path;
             schedules.calendars = vm.schedule.calendars;
             schedules.auditLog = {};

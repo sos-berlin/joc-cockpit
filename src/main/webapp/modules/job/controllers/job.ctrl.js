@@ -10669,6 +10669,7 @@
                     updateStreamObj(res, obj, isRename, updateStarter, isNew);
                 })
             } else {
+                delete obj['deliveryDate'];
                 ConditionService.editJobStream(obj).then(function (res) {
                     updateStreamObj(res, obj, isRename, updateStarter, isNew);
                 })
