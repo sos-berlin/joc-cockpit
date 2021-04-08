@@ -87,8 +87,11 @@
             <div ng-repeat="starter in _jobStream.jobstreamStarters track by $index">
                 <div class="form-group row">
                     <label class="col-sm-4 form-control-label" translate>label.name</label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" name="starterName" ng-model="starter.starterName" autofocus autocomplete="off">
+                    <div class="col-sm-6" ng-class="{ 'has-error' : isExist}">
+                        <input type="text" class="form-control" ng-blur="getStarterName(starter)" name="starterName" ng-model="starter.starterName" autofocus autocomplete="off">
+                        <div class="help-block text-danger" ng-if="isExist">
+                            <div translate>message.uniqueError</div>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -187,7 +190,7 @@
             </div>
         </div>
         <div class="modal-footer text-left">
-            <button type="submit" class="btn btn-primary btn-sm" translate ng-disabled="form.$invalid || !isUnique || (_jobStream.newStarter && !_jobStream.jobstreamStarters[0].jobs[0].job)">
+            <button type="submit" class="btn btn-primary btn-sm" translate ng-disabled="form.$invalid || !isUnique || isExist || (_jobStream.newStarter && !_jobStream.jobstreamStarters[0].jobs[0].job)">
                 button.submit
             </button>
             <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.cancel</button>

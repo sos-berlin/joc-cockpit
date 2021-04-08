@@ -570,6 +570,16 @@
                 });
                 return deferred.promise;
             },
+            getStarterName: function (filter) {
+                const deferred = $q.defer();
+                let Starter = $resource('jobstreams/get_jobstream_starter');
+                Starter.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             deleteJobStream: function (filter) {
                 const deferred = $q.defer();
                 let JobStream = $resource('jobstreams/delete');

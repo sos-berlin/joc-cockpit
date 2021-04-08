@@ -10075,6 +10075,18 @@
             }
         };
 
+        $scope.getStarterName = function (starter) {
+            $scope.isExist = false;
+            ConditionService.getStarterName({
+                jobschedulerId: $scope.schedulerIds.selected,
+                starterName: starter.starterName
+            }).then(function (result) {
+                if (result.exist && result.jobStreamStarterId != starter.jobStreamStarterId) {
+                    $scope.isExist = true;
+                }
+            });
+        }
+
         function showJobsToStream(jobStream) {
             $scope.isUnique = true;
             vm.jobList = angular.copy(vm.allJobs);
@@ -10634,12 +10646,11 @@
                 obj.oldJobStreamName = isRename;
             }
             let updateStarter;
-            if (vm.selectedStarterId) {
-                for (let i = 0; i < obj.jobstreamStarters.length; i++) {
-                    if (obj.jobstreamStarters[i].jobStreamStarterId === vm.selectedStarterId) {
-                        updateStarter = obj.jobstreamStarters[i];
-                        break;
-                    }
+
+            for (let i = 0; i < obj.jobstreamStarters.length; i++) {
+                delete obj.jobstreamStarters[i]['nextStart'];
+                if (vm.selectedStarterId && obj.jobstreamStarters[i].jobStreamStarterId === vm.selectedStarterId) {
+                    updateStarter = obj.jobstreamStarters[i];
                 }
             }
 
