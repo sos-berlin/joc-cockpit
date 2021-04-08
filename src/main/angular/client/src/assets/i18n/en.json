@@ -375,7 +375,6 @@
     "message.deleteProfiles": "Are you sure you want to delete the selected profiles?",
     "message.deleteAllProfiles": "Are you sure you want to delete the selected Profiles?",
     "message.cannotDeleteLastFolderOrPermission": "You cannot delete the last permission or folder for this role.",
-    "message.cannotDeleteRole": "Cannot remove a role that is assigned an account.",
     "message.deleteFolder": "Deleting a folder will permanently remove it from the folder list.",
     "message.deleteController": "Deleting a Controller will permanently remove it from the Controller list.",
     "message.deletePermission": "Deleting a permission will permanently remove it from the permission list.",
@@ -1371,7 +1370,7 @@
     "label.users": "Accounts",
     "label.usersFound": "Accounts found",
     "label.role": "Role",
-    "label.roles": "Roles",
+    "label.controllers": "Controllers",
     "label.addFolder": "Add Folder",
     "label.account": "Account",
     "label.manageUser": "Manage Accounts",
@@ -1441,6 +1440,7 @@
     "message.permissionIsAlreadyCovered": "Permission is already active",
     "message.noPermissionFound": "No permission found",
     "message.noRoleAssign": "No role assigned to selected account",
+    "message.cannotDeleteRole": "Cannot remove a role that is assigned an account.",
     "message.noFolderFound": "No folder found"
   },
   "workflow": {

@@ -54,7 +54,7 @@
             </nz-dropdown-menu>
           </div>
         </td>
-        <td><a (click)="showMaster(user.user)" class="text-hover-primary" [innerHtml]="user.user  | decodeSpace | highlight: searchKey"></a></td>
+        <td><a (click)="showRole(user.user)" class="text-hover-primary" [innerHtml]="user.user  | decodeSpace | highlight: searchKey"></a></td>
         <td><span>********</span></td>
         <td>
           <div *ngFor="let role of user.roles"><span [innerHtml]= "role | highlight: searchKey"></span></div>

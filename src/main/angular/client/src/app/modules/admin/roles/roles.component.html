@@ -1,5 +1,5 @@
 <div class="box p-a">
-    <div *ngFor="let master of masters; let id = index" [hidden]="showMsg && !getSelectedController(master)" class="box-body p-b-0">
+    <div *ngFor="let role of controllerRoles; let id = index" class="box-body p-b-0">
         <div class="row">
             <div class="col-sm-12">
                 <div class="btn-group dropdown pull-left m-r-sm">
@@ -8,15 +8,18 @@
                     <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                         <ul nz-menu >
                           <li nz-menu-item >
-                            <a (click)="copyController(master)" translate>common.button.copy</a>
+                            <a (click)="editRole(role)" translate>common.button.edit</a>
+                          </li>
+                          <li nz-menu-item >
+                            <a (click)="copyRole(role)" translate>common.button.copy</a>
                           </li>
                           <li nz-menu-item class="bg-hover-color">
-                            <a (click)="deleteController(master)" translate="">common.button.delete</a>
+                            <a (click)="deleteRole(role, id)" translate="">common.button.delete</a>
                           </li>
                         </ul>
                     </nz-dropdown-menu>
                 </div>
-                <h5 class="text-dark">{{master.master || 'default'}}
+                <h5 class="text-dark">{{role.name}}
                     <i (click)="dataService.preferences.showPanel[id] = true" [hidden]="dataService.preferences.showPanel[id]" class="cursor fa fa-caret-up m-l-xs"></i>
                     <i (click)="dataService.preferences.showPanel[id]  = false" *ngIf="dataService.preferences.showPanel[id]"
                        class="cursor fa fa-caret-down m-l-xs"></i>
@@ -24,16 +27,15 @@
             </div>
         </div>
         <div *ngIf="dataService.preferences.showPanel[id]" class="row">
-            <div class="col-xl-1 col-lg-2 col-md-2 col-sm-4 col-xs-4"><span class="p-l-lg" translate>user.label.roles</span></div>
+            <div class="col-xl-1 col-lg-2 col-md-2 col-sm-4 col-xs-4"><span class="p-l-lg" translate>user.label.controllers</span></div>
             <div class="col-lg-9 col-md-10 col-sm-8 col-xs-8">
-                <div *ngFor="let role of master.roles" [hidden]="!getSelectedRole(role)" class="role">
-                    <span class="fa fa-circle" style="font-size: 9px"></span>
-                    <a [routerLink]="['/users/permissions',master.master || 'default', role.role]" class="text-primary">
-                        {{role.role}}
+                <div *ngFor="let controller of role.controllers" class="role">
+                    <span class="fa fa-circle p-r-xs" style="font-size: 9px"></span>
+                    <a [routerLink]="['/users/permissions',controller.name || 'default', role.name]" class="text-primary">
+                        {{controller.name || 'default'}}
                     </a>
-                    <i (click)="editRole(role, master.master)" class="fa fa-pencil"></i>
-                    <i (click)="copyRole(role,master)" class="fa fa-copy m-l-xs p-l-xs"></i>
-                    <i (click)="deleteRole(role,master.master)" class="fa fa-times m-l-xs p-l-xs"></i>
+                    <i (click)="copyController(role, controller)" class="fa fa-copy m-l-xs p-l-xs"></i>
+                    <i *ngIf="controller.name" (click)="deleteController(role,controller)" class="fa fa-times m-l-xs p-l-xs"></i>
                 </div>
             </div>
         </div>

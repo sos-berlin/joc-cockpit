@@ -33,8 +33,8 @@
           <h5 translate>profile.label.roles</h5>
           <div class="row m-t-sm">
             <div class="col-sm-6">
-              <div class="m-t-sm">
-                <div class="col-sm-12 text-black-lt">{{authService.roles}}</div>
+              <div class="m-t-sm" *ngFor="let role of permission.roles">
+                <div class="col-sm-12 text-black-lt">{{role}}</div>
               </div>
             </div>
           </div>

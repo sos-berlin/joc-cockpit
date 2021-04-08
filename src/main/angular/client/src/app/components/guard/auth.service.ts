@@ -5,13 +5,12 @@ import {Injectable} from '@angular/core';
 })
 export class AuthService {
 
-  props = ['accessTokenId', 'currentUserData', 'roles', 'sessionTimeout', 'permission', 'scheduleIds'];
+  props = ['accessTokenId', 'currentUserData', 'sessionTimeout', 'permission', 'scheduleIds'];
   propsPrefix = '$SOS$';
   rememberMe = false;
   scheduleIds;
   accessTokenId;
   currentUserData;
-  roles;
   sessionTimeout;
   permission;
 
@@ -32,7 +31,6 @@ export class AuthService {
   setUser(userData): void {
     this.accessTokenId = userData.accessToken;
     this.currentUserData = userData.user;
-    this.roles = userData.role;
     this.sessionTimeout = userData.sessionTimeout;
   }
 
@@ -166,7 +164,7 @@ export class AuthService {
         }
         break;
       case 'ManageAccount':
-        if (permission.joc.administration.accounts.view) {
+        if (permission.joc && permission.joc.administration.accounts.view) {
           ifPermissionPassed = true;
         }
         break;

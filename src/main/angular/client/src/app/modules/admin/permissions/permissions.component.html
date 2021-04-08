@@ -2,9 +2,9 @@
     <div class="col-md-12">
         <div class="text-right ">
             <div class="text-md text-primary pull-left" style="font-size: 16px">
-                <a routerLink="/users/role">{{masterName || 'default'}}</a>
+                <a style="cursor: default">{{controllerName || 'default'}}</a>
                 <i class="text-black-lt m-l-sm m-r-sm">/</i>
-                <span class="text-muted text-black-dk">{{roleName}}</span>
+                <span class="text-muted">{{roleName}}</span>
             </div>
             <button class="btn btn-sm btn-grey" style="margin-top: -4px" [nz-tooltip]="'workflow.button.undo' | translate" (click)="undoPermission()"
                     *ngIf="previousPermission.length>0">

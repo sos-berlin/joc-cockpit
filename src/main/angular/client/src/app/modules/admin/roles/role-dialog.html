@@ -3,7 +3,7 @@
         <span *ngIf="!newRole">
             <span *ngIf="copy" translate>user.label.copyRole</span>
             <span *ngIf="!copy" translate>user.label.editRole</span> :
-            <span>{{currentRole.roleName}}</span>
+            <span>{{oldName}}</span>
         </span>
         <span *ngIf="newRole" translate>user.label.addRole</span>
     </h4>
@@ -13,15 +13,6 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit(currentRole)">
     <div class="modal-body container">
-        <div class="form-group row" *ngIf="!copy">
-            <label class="col-sm-4 form-control-label" translate>user.label.js7Controller</label>
-            <div class=" col-sm-6">
-                <nz-select name="master" [(ngModel)]="mstr.name" *ngIf="newRole">
-                    <nz-option *ngFor="let master of masters" [nzLabel]="master.master || 'default'" [nzValue]="master.master"></nz-option>
-                </nz-select>
-                <input type="text" class="form-control" name="master" readonly [(ngModel)]="mstr.name" *ngIf="!newRole">
-            </div>
-        </div>
         <div class="form-group row"  [ngClass]="{'has-error' : ((roleName.dirty || roleName.touched) && roleName.invalid) || !isUnique}">
             <label class="col-sm-4 form-control-label" translate>user.label.role</label>
             <div class="col-sm-6">

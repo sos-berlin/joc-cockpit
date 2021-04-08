@@ -188,7 +188,7 @@
           </a>
         </li>
         <li class="nav-item"
-            *ngIf="((showViews && showViews.fileTransfer != undefined) ? showViews.fileTransfer : (permission.joc && permission.joc.fileTransfer.view))">
+            *ngIf="((showViews && showViews.fileTransfers != undefined) ? showViews.fileTransfers : (permission.joc && permission.joc.fileTransfer.view))">
           <a class="nav-link" routerLink="/file_transfer" [routerLinkActive]="['active']">
             <span class="nav-text">
               <i class="icon-file-transfers-icon text-white"></i>

@@ -512,7 +512,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
   saveInfo(): void {
     const obj = {
       users: this.userDetail.users,
-      masters: this.userDetail.masters,
+      roles: this.userDetail.roles,
       main: this.main
     };
 

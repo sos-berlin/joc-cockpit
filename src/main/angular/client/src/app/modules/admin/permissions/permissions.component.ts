@@ -1,13 +1,13 @@
-import {Component, OnInit, OnDestroy, Input} from '@angular/core';
-import {Router, ActivatedRoute} from '@angular/router';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import * as _ from 'underscore';
-import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
+import {TreeModalComponent} from '../../../components/tree-modal/tree.component';
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../data.service';
-import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
-import {TreeModalComponent} from '../../../components/tree-modal/tree.component';
 
 declare var $: any;
 declare var d3: any;
@@ -18,8 +18,6 @@ declare var d3: any;
   templateUrl: 'permission-modal.html'
 })
 export class PermissionModalComponent {
-  submitted = false;
-  isCovered = false;
   @Input() rolePermissions: any;
   @Input() userDetail: any;
   @Input() master: any;
@@ -28,6 +26,9 @@ export class PermissionModalComponent {
   @Input() currentPermission: any;
   @Input() permissionOptions: any;
   @Input() add;
+
+  submitted = false;
+  isCovered = false;
 
   constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
   }
@@ -56,25 +57,13 @@ export class PermissionModalComponent {
       }
     }
 
-    for (let i = 0; i < this.userDetail.masters.length; i++) {
-      if (this.userDetail.masters[i].master === this.master || _.isEqual(this.userDetail.masters[i].master, this.master)) {
-        for (let j = 0; j < this.userDetail.masters[i].roles.length; j++) {
-          if (this.userDetail.masters[i].roles[j].role === this.role) {
-            this.userDetail.masters[i].roles[j].permissions = this.rolePermissions;
-            break;
-          }
-        }
-        break;
-      }
-    }
-
-    this.coreService.post('authentication/shiro/store', this.userDetail).subscribe(res => {
+    this.coreService.post('authentication/shiro/store', obj = {
+      users: this.userDetail.users,
+      roles: this.userDetail.roles,
+      main: this.userDetail.main
+    }).subscribe(res => {
       this.submitted = false;
-      if (this.add) {
-        this.activeModal.close(this.rolePermissions);
-      } else {
-        this.activeModal.close(obj);
-      }
+      this.activeModal.close(this.rolePermissions);
     }, err => {
       this.submitted = false;
     });
@@ -128,19 +117,16 @@ export class FolderModalComponent implements OnInit {
         });
       }
     }
-    for (let i = 0; i < this.userDetail.masters.length; i++) {
-      if (this.userDetail.masters[i].master === this.master || _.isEqual(this.userDetail.masters[i].master, this.master)) {
-        for (let j = 0; j < this.userDetail.masters[i].roles.length; j++) {
-          if (this.userDetail.masters[i].roles[j].role === this.role) {
-            this.userDetail.masters[i].roles[j].folders = this.folderArr;
-            break;
-          }
-        }
-        break;
-      }
-    }
 
-    this.coreService.post('authentication/shiro/store', this.userDetail).subscribe(res => {
+    this.userDetail.roles[this.role].folders = {joc: this.folderArr};
+    console.log(this.userDetail.roles[this.role]);
+    console.log(this.folderArr);
+
+    this.coreService.post('authentication/shiro/store', obj = {
+      users: this.userDetail.users,
+      roles: this.userDetail.roles,
+      main: this.userDetail.main
+    }).subscribe(res => {
       this.submitted = false;
       this.activeModal.close(this.folderArr);
     }, err => {
@@ -148,7 +134,7 @@ export class FolderModalComponent implements OnInit {
     });
   }
 
-  getFolderTree() {
+  getFolderTree(): void {
     const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.paths = _.clone(this.folderObj.paths);
@@ -169,12 +155,11 @@ export class FolderModalComponent implements OnInit {
 @Component({
   selector: 'app-permissions',
   templateUrl: './permissions.component.html'
-
 })
 export class PermissionsComponent implements OnInit, OnDestroy {
-  masterName;
+  controllerName;
   roleName;
-  masters: any = [];
+  roles: any = [];
   permissionsObj: any;
   permissionToEdit: any;
   permissions;
@@ -233,9 +218,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.pageView = JSON.parse(localStorage.views).permission;
     this.subscription3 = this.route.params.subscribe(params => {
-      this.masterName = params['master.master'];
-      if (this.masterName === 'default') {
-        this.masterName = '';
+      this.controllerName = params['master.master'];
+      if (this.controllerName === 'default') {
+        this.controllerName = '';
       }
       this.roleName = params['role.role'];
     });
@@ -252,11 +237,11 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     this.coreService.post('authentication/permissions', {}).subscribe(res => {
       this.permissionsObj = res;
       this.permissions = this.coreService.clone(this.permissionsObj.SOSPermissions);
-      if (this.masterName) {
+      if (this.controllerName) {
         this.permissions.SOSPermission = this.permissions.SOSPermission.filter((val) => {
           return !val.match(':joc:');
         });
-       
+
       }
       this.loadPermission();
       this.preparePermissionJSON();
@@ -271,7 +256,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.currentFolder = folder;
     modalRef.componentInstance.userDetail = this.userDetail;
     modalRef.componentInstance.newFolder = true;
-    modalRef.componentInstance.master = this.masterName;
+    modalRef.componentInstance.master = this.controllerName;
     modalRef.componentInstance.role = this.roleName;
     modalRef.componentInstance.folderArr = this.folderArr;
 
@@ -289,7 +274,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     const modalRef = this.modalService.open(FolderModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.currentFolder = tempFolder;
     modalRef.componentInstance.userDetail = this.userDetail;
-    modalRef.componentInstance.master = this.masterName;
+    modalRef.componentInstance.master = this.controllerName;
     modalRef.componentInstance.role = this.roleName;
     modalRef.componentInstance.folderArr = this.folderArr;
     modalRef.componentInstance.oldFolder = folder;
@@ -320,11 +305,11 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.permissionOptions = this.permissionOptions;
     modalRef.componentInstance.rolePermissions = this.rolePermissions;
     modalRef.componentInstance.userDetail = this.userDetail;
-    modalRef.componentInstance.master = this.masterName;
+    modalRef.componentInstance.master = this.controllerName;
     modalRef.componentInstance.role = this.roleName;
     modalRef.componentInstance.add = true;
     modalRef.result.then((result) => {
-      this.rolePermissions = result;
+
     }, () => {
     });
   }
@@ -338,28 +323,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.permissionOptions = this.permissionOptions;
     modalRef.componentInstance.rolePermissions = this.rolePermissions;
     modalRef.componentInstance.userDetail = this.userDetail;
-    modalRef.componentInstance.master = this.masterName;
+    modalRef.componentInstance.master = this.controllerName;
     modalRef.componentInstance.role = this.roleName;
     modalRef.result.then((result) => {
-      let exists = false;
-      for (let i = 0; i < this.rolePermissions.length; i++) {
-        if (this.rolePermissions[i].path == result.path) {
-          this.rolePermissions[i].excluded = result.excluded;
-          exists = true;
-          break;
-        }
-      }
-      if (!exists) {
-        for (let i = 0; i < this.rolePermissions.length; i++) {
-          if (this.rolePermissions[i].path === this.permissionToEdit.path) {
-            this.rolePermissions.splice(i, 1);
-            this.rolePermissions.splice(i, 0, result);
-            break;
-          }
-        }
-      }
-      this.selectPermissionObj(this.permissionNodes[0][0], result.path, result.excluded);
-      this.updateDiagramData(this.permissionNodes[0][0]);
+
     }, () => {
 
     });
@@ -383,17 +350,13 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   loadPermission(): void {
-    this.masters.forEach((master) => {
-      if (_.isEqual(master.master, this.masterName) || (master.master == '' && this.masterName === 'default')) {
-        master.roles.forEach((value) => {
-          if (_.isEqual(value.role, this.roleName)) {
-            this.rolePermissions = value.permissions;
-            this.folderArr = value.folders;
-            this.originalPermission = _.clone(this.rolePermissions);
-          }
-        });
-      }
-    });
+    this.folderArr = this.roles[this.roleName].folders ? (this.roles[this.roleName].folders.joc || []) : [];
+    if (this.controllerName) {
+      this.rolePermissions = this.roles[this.roleName].permissions ? (this.roles[this.roleName].permissions.controllers[this.controllerName] || []) : [];
+    } else {
+      this.rolePermissions = this.roles[this.roleName].permissions ? [...this.roles[this.roleName].permissions.controllerDefaults, ...this.roles[this.roleName].permissions.joc] : [];
+    }
+    this.originalPermission = _.clone(this.rolePermissions);
   }
 
   preparePermissionJSON(): void {
@@ -582,7 +545,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   checkPermissionList(permission_node, list): void {
-    if (list.length > 0) {
+    if (list && list.length > 0) {
       if (permission_node && permission_node._parents) {
         for (let j = 0; j < permission_node._parents.length; j++) {
           for (let i = 0; i < list.length; i++) {
@@ -660,14 +623,11 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   saveInfo(): void {
-    let obj = {
+    this.coreService.post('authentication/shiro/store',  {
       users: this.userDetail.users,
-      masters: this.masters,
+      roles: this.roles,
       main: this.userDetail.main
-    };
-
-    this.coreService.post('authentication/shiro/store', obj).subscribe(res => {
-
+    }).subscribe(res => {
     });
   }
 
@@ -675,18 +635,13 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     this.unSelectedNode(this.permissionNodes[0][0], true);
     this.checkPermissionList(this.permissionNodes[0][0], _.clone(this.rolePermissions));
     this.updateDiagramData(this.permissionNodes[0][0]);
-    for (let i = 0; i < this.masters.length; i++) {
-      if (_.isEqual(this.masters[i].master, this.masterName) || (this.masters[i].master == '' && this.masterName == 'default')) {
-        for (let j = 0; j < this.masters[i].roles.length; j++) {
-          if (_.isEqual(this.masters[i].roles[j].role, this.roleName)) {
-            this.masters[i].roles[j].permissions = _.clone(this.rolePermissions);
-            break;
-          }
-        }
-        break;
-      }
+    if (this.controllerName) {
+      this.roles[this.roleName].permissions.controllers[this.controllerName] = _.clone(this.rolePermissions);
+    } else {
+      this.roles[this.roleName].permissions.joc = _.clone(this.rolePermissions);
+      this.roles[this.roleName].permissions.controllerDefaults = [];
     }
-
+    console.log(this.roles[this.roleName]);
     this.saveInfo();
   }
 
@@ -747,7 +702,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       return;
     } else if (type === 'EXPANDSELECTED') {
       nodes = this.nodes;
-      nodes.forEach(function(permissionNodes) {
+      nodes.forEach((permissionNodes) => {
         if (permissionNodes.name == 'sos') {
           expandSelected(permissionNodes);
         }
@@ -756,7 +711,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       return;
     } else if (type === 'COLLAPSEUNSELECTED') {
       nodes = this.nodes;
-      nodes.forEach(function(permissionNodes) {
+      nodes.forEach((permissionNodes) => {
         if (permissionNodes.name == 'sos') {
           collapseUnselected(permissionNodes);
         }
@@ -827,7 +782,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
 
     function collapseAll() {
-      nodes.forEach(function(permission_node) {
+      nodes.forEach((permission_node) => {
         if (permission_node.name === 'sos') {
           collapseNode(permission_node);
         }
@@ -877,7 +832,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     function draw(source, diff) {
       nodes = self.tree.nodes(self.root);
       checkNodes(nodes, self.rolePermissions);
-      nodes.forEach(function(d) {
+      nodes.forEach((d) => {
         if (diff > 0) {
           d.x = d.x + diff;
         }
@@ -887,13 +842,13 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
       // Update links
       let link = self.svg.selectAll('path.link')
-        .data(links, function(d) {
+        .data(links, (d) => {
           return d.target.id;
         });
 
       link.enter().append('path')
         .attr('class', 'link')
-        .attr('d', function(d) {
+        .attr('d', (d) => {
           let o = {x: source.x0, y: (source.y0 + self.boxWidth / 2)};
           return transitionElbow({source: o, target: o});
         });
@@ -993,7 +948,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         .attr('dy', 4)
         .attr('text-anchor', 'start')
         .attr('class', 'name')
-        .text(function(d) {
+        .text((d) => {
           return d.name;
         })
         .on('click', selectPermission)
@@ -1188,18 +1143,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         generatePermissionList(self.permissionNodes[0][0]);
         toggleRectangleColour(_temp);
         self.rolePermissions = _temp;
-        self.masters.forEach((master) => {
-          if (_.isEqual(master.master, self.masterName) || (master.master == '' && self.masterName == 'default')) {
-            master.roles.forEach((value) => {
-              if (_.isEqual(value.role, self.roleName)) {
-                value.permissions = _temp;
-                self.folderArr = value.folders;
-              }
-            });
-          }
-        });
-
-        self.saveInfo();
+        updatePermissionAfterChange(_temp);
         if (self.previousPermission.length === 10) {
           self.previousPermission.splice(0, 1);
         }
@@ -1231,23 +1175,22 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         generatePermissionList(self.permissionNodes[0][0]);
         toggleRectangleColour(_temp);
         self.rolePermissions = _temp;
-        self.masters.forEach((master) => {
-          if (_.isEqual(master.master, self.masterName) || (master.master == '' && self.masterName == 'default')) {
-            master.roles.forEach((value) => {
-              if (_.isEqual(value.role, self.roleName)) {
-                value.permissions = _temp;
-                self.folderArr = value.folders;
-              }
-            });
-          }
-        });
-        self.saveInfo();
+        updatePermissionAfterChange(_temp);
         if (self.previousPermission.length === 10) {
           self.previousPermission.splice(0, 1);
         }
         self.isReset = true;
         self.previousPermission.push(_previousPermissionObj);
       }
+    }
+
+    function updatePermissionAfterChange(temp) {
+      if (self.controllerName) {
+        self.roles[self.roleName].permissions.controllers[self.controllerName] = temp;
+      } else {
+        self.roles[self.roleName].permissions.joc = temp;
+      }
+      self.saveInfo();
     }
 
     function updateDiagramData(nData) {
@@ -1329,7 +1272,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     function toggleTriangle() {
       if (self.svg) {
         self.svg.selectAll('.img.triangle')
-          .attr('xlink:href', function(d) {
+          .attr('xlink:href', (d) => {
             return d.isAnyChildSelected ? './assets/images/triangle.png' : '';
           });
       }
@@ -1368,8 +1311,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   private setUserData(res): void {
+    console.log(res);
     this.userDetail = res;
-    this.masters = res.masters;
+    this.roles = res.roles;
     this.getPermissions();
   }
 }

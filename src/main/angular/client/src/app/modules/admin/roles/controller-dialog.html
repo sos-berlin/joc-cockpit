@@ -1,7 +1,7 @@
 <div class="modal-header">
     <h4 class="modal-title">
         <span *ngIf="!copy" translate>user.label.addController</span>
-        <span *ngIf="copy" ><span translate>user.label.copyController</span> : {{currentController.masterName || 'default'}}</span>
+        <span *ngIf="copy" ><span translate>user.label.copyController</span> : {{currentController.name || 'default'}}</span>
     </h4>
     <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
       <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -9,36 +9,41 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit(currentController)">
     <div class="modal-body container">
-        <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>user.label.js7Controller</label>
-            <div class="col-sm-6 has-error" [ngClass]="{'has-error' : !isUnique || ((masterName.dirty || masterName.touched) && masterName.invalid)}">
-               <nz-select nzPlaceHolder="{{'user.placeholder.enterController' | translate}}"
-                required #masterName="ngModel" name="schedulerIds" (ngModelChange)="checkController($event)"
-                [(ngModel)]="currentController.master">
-                <ng-container *ngFor="let id of schedulerIds.controllerIds">
-                  <nz-option [nzValue]="id" [nzLabel]="id"></nz-option>
-                </ng-container>
-              </nz-select>
-              <div *ngIf="masterName.invalid && (masterName.dirty || masterName.touched)" class= "text-danger help-block">
-                <div *ngIf="masterName.errors.required" translate>
-                  common.message.requiredError
-                </div>
-              </div>
-              <div *ngIf="!isUnique" class="text-danger help-block" translate>
-                  common.message.uniqueError
-               </div>
-            </div>
+        <div class="form-group row" *ngIf="copy">
+          <label class="col-sm-4 form-control-label" translate>user.label.js7Controller</label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" name="schedulerId" [(ngModel)]="currentController.name" readonly>
+          </div>
         </div>
-        <div class="form-group row" *ngIf="!copy">
-            <label class="col-sm-4 form-control-label" translate>user.label.roles</label>
+        <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>user.label.role</label>
             <div class="col-sm-6">
-              <nz-select name="roles"
-                         nzMode="multiple"
+              <nz-select name="role" nzShowSearch
                          nzPlaceHolder="{{'user.placeholder.selectRoles' | translate}}"
-                         [(ngModel)]="currentController.roles">
+                         [(ngModel)]="currentController.role" (ngModelChange)="checkRole($event)">
                 <nz-option *ngFor="let option of allRoles" [nzLabel]="option" [nzValue]="option"></nz-option>
               </nz-select>
             </div>
+        </div>
+        <div class="form-group row" *ngIf="!copy">
+          <label class="col-sm-4 form-control-label" translate>user.label.js7Controller</label>
+          <div class="col-sm-6" [ngClass]="{'has-error' : !isUnique || ((controllerName.dirty || controllerName.touched) && controllerName.invalid)}">
+            <nz-select [nzDisabled]="!currentController.role" nzPlaceHolder="{{'user.placeholder.enterController' | translate}}"
+                       required #controllerName="ngModel" name="schedulerIds" (ngModelChange)="checkController($event, currentController.role)"
+                       [(ngModel)]="currentController.controller">
+              <ng-container *ngFor="let id of schedulerIds.controllerIds">
+                <nz-option [nzValue]="id" [nzLabel]="id"></nz-option>
+              </ng-container>
+            </nz-select>
+            <div *ngIf="controllerName.invalid && (controllerName.dirty || controllerName.touched)" class= "text-danger help-block">
+              <div *ngIf="controllerName.errors.required" translate>
+                common.message.requiredError
+              </div>
+            </div>
+            <div *ngIf="!isUnique" class="text-danger help-block" translate>
+              common.message.uniqueError
+            </div>
+          </div>
         </div>
     </div>
     <div class="modal-footer">

@@ -1,6 +1,6 @@
-import {Component, OnInit, Input, OnDestroy} from '@angular/core';
-import {Router, ActivatedRoute, RouterEvent, NavigationEnd} from '@angular/router';
-import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute, NavigationEnd, Router, RouterEvent} from '@angular/router';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToasterService} from 'angular2-toaster';
 import {TranslateService} from '@ngx-translate/core';
 import * as _ from 'underscore';
@@ -20,36 +20,36 @@ export class RoleModalComponent implements OnInit {
   submitted = false;
   isUnique = true;
   currentRole: any = {};
-  mstr: any = {};
+  oldName: string;
 
   @Input() userDetail: any;
   @Input() oldRole: any;
   @Input() allRoles: any;
   @Input() newRole: boolean;
   @Input() copy: boolean;
-  @Input() master: any;
-  @Input() masters: any;
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
   }
 
   ngOnInit(): void {
     if (this.oldRole) {
-      this.currentRole = _.clone(this.oldRole);
-      this.currentRole.roleName = this.currentRole.role;
-      if (this.copy) {
-        this.currentRole.role = '';
+      this.currentRole = _.clone(this.oldRole.mainObj);
+      this.oldName = this.oldRole.name;
+      if (!this.copy) {
+        this.currentRole.role = this.oldRole.name;
       }
-      this.mstr = {
-        name: this.master === '' ? 'default' : this.master
-      };
     } else {
       this.currentRole = {
-        permissions: [],
-        folders: []
-      };
-      this.mstr = {
-        name: ''
+        permissions: {
+          joc: [
+            {
+              path: 'sos:products:joc',
+              excluded: false
+            }
+          ],
+          controllerDefaults: [],
+          controllers: {}
+        }
       };
     }
   }
@@ -57,7 +57,7 @@ export class RoleModalComponent implements OnInit {
   checkRole(newRole): void {
     this.isUnique = true;
     for (let i = 0; i < this.allRoles.length; i++) {
-      if (this.allRoles[i] === newRole && newRole !== this.oldRole.role) {
+      if (this.allRoles[i] === newRole && ((this.oldRole && newRole !== this.oldRole.name) || !this.oldRole)) {
         this.isUnique = false;
         break;
       }
@@ -66,41 +66,26 @@ export class RoleModalComponent implements OnInit {
 
   onSubmit(obj): void {
     this.submitted = true;
-
-    if (this.newRole) {
+    if (this.newRole || this.copy) {
       this.allRoles.push(obj.role);
-      for (let i = 0; i < this.userDetail.masters.length; i++) {
-        if (_.isEqual(this.userDetail.masters[i].master, this.mstr.name) || (this.userDetail.masters[i].master === '' && !this.mstr.name)) {
-          this.userDetail.masters[i].roles.push(obj);
-          break;
-        }
-      }
-    } else if (this.copy) {
-      for (let i = 0; i < this.userDetail.masters.length; i++) {
-        if (_.isEqual(this.userDetail.masters[i], this.master)) {
-          this.userDetail.masters[i].roles.push(obj);
-        }
-      }
-
+      this.userDetail.roles[obj.role] = {
+        permissions: obj.permissions
+      };
     } else {
-      for (let i = 0; i < this.userDetail.masters.length; i++) {
-        for (let j = 0; j < this.userDetail.masters[i].roles.length; j++) {
-          if (this.userDetail.masters[i].roles[j].role === obj.roleName) {
-            this.userDetail.masters[i].roles[j].role = _.clone(obj.role);
-            break;
-          }
-        }
-      }
+      delete this.userDetail.roles[this.oldName];
+      this.userDetail.roles[obj.role] = {
+        permissions: obj.permissions
+      };
       for (let i = 0; i < this.userDetail.users.length; i++) {
         for (let j = 0; j < this.userDetail.users[i].roles.length; j++) {
-          if (this.userDetail.users[i].roles[j] === obj.roleName) {
+          if (this.userDetail.users[i].roles[j] === this.oldName) {
             this.userDetail.users[i].roles.splice(j, 1);
             this.userDetail.users[i].roles.push(obj.role);
           }
         }
       }
       for (let i = 0; i < this.allRoles.length; i++) {
-        if (this.allRoles[i] === obj.roleName || _.isEqual(this.allRoles[i], obj.roleName)) {
+        if (this.allRoles[i] === this.oldName || _.isEqual(this.allRoles[i], this.oldName)) {
           this.allRoles.splice(i, 1);
           this.allRoles.push(obj.role);
           break;
@@ -108,9 +93,13 @@ export class RoleModalComponent implements OnInit {
       }
     }
 
-    this.coreService.post('authentication/shiro/store', this.userDetail).subscribe(() => {
+    this.coreService.post('authentication/shiro/store', {
+      users: this.userDetail.users,
+      roles: this.userDetail.roles,
+      main: this.userDetail.main
+    }).subscribe(() => {
       this.submitted = false;
-      this.activeModal.close(this.userDetail.masters);
+      this.activeModal.close(this.userDetail);
     }, () => {
       this.submitted = false;
     });
@@ -123,11 +112,12 @@ export class RoleModalComponent implements OnInit {
   templateUrl: 'controller-dialog.html'
 })
 export class ControllerModalComponent implements OnInit {
-  @Input() allControllers: any;
+  @Input() controllerRoles: any;
   @Input() allRoles: any;
   @Input() oldController: any;
   @Input() copy: boolean;
   @Input() userDetail: any;
+  @Input() role: any;
 
   submitted = false;
   isUnique = true;
@@ -141,21 +131,33 @@ export class ControllerModalComponent implements OnInit {
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     if (this.oldController) {
       this.currentController = _.clone(this.oldController);
-      this.currentController.masterName = this.oldController.master;
-      this.currentController.master = '';
+      this.allRoles = this.allRoles.filter((role) => {
+        return this.role.name !== role;
+      });
     } else {
       this.currentController = {
-        master: '',
-        roles: []
+        controller: '',
+        role: ''
       };
     }
   }
 
-  checkController(newController): void {
+  checkRole(role): void {
+    if (this.currentController.controller) {
+      this.checkController(this.currentController.controller, role);
+    }
+  }
+
+  checkController(controller, role): void {
     this.isUnique = true;
-    for (let i = 0; i < this.allControllers.length; i++) {
-      if (this.allControllers[i].master === newController) {
-        this.isUnique = false;
+    for (let i = 0; i < this.controllerRoles.length; i++) {
+      if (this.controllerRoles[i].name === role && this.controllerRoles[i].controllers) {
+        for (let j = 0; j < this.controllerRoles[i].controllers.length; j++) {
+          if (this.controllerRoles[i].controllers[j].name === controller) {
+            this.isUnique = false;
+            break;
+          }
+        }
         break;
       }
     }
@@ -163,31 +165,32 @@ export class ControllerModalComponent implements OnInit {
 
   onSubmit(obj): void {
     this.submitted = true;
-    if (!this.copy) {
-      obj.roles.forEach((value, i) => {
-        obj.roles[i] = {
-          permissions: [],
-          folders: [],
-          role: value
-        };
-      });
-      this.userDetail.masters.push(obj);
-    } else {
-      const data = {
-        roles: _.clone(this.oldController.roles),
-        master: obj.master
+    if (!this.userDetail.roles[obj.role].permissions) {
+      this.userDetail.roles[obj.role].permissions = {
+        joc: [{
+          path: 'sos:products:joc',
+          excluded: false
+        }],
+        controllerDefaults: [],
+        controllers: {}
       };
-
-      this.userDetail.masters.push(data);
     }
-    this.coreService.post('authentication/shiro/store', this.userDetail).subscribe(() => {
+    if (!this.copy) {
+      this.userDetail.roles[obj.role].permissions.controllers[obj.controller] = [];
+    } else {
+      this.userDetail.roles[obj.role].permissions.controllers[obj.name] = obj.permissions;
+    }
+    this.coreService.post('authentication/shiro/store', {
+      users: this.userDetail.users,
+      roles: this.userDetail.roles,
+      main: this.userDetail.main
+    }).subscribe(() => {
       this.submitted = false;
-      this.activeModal.close(this.userDetail.masters);
+      this.activeModal.close(this.userDetail);
     }, () => {
       this.submitted = false;
     });
   }
-
 }
 
 @Component({
@@ -196,12 +199,11 @@ export class ControllerModalComponent implements OnInit {
 })
 export class RolesComponent implements OnDestroy {
   users: any = [];
-  masters: any = [];
   userDetail: any = {};
   showMsg: any;
   roles: any = [];
+  controllerRoles = [];
   selectedControllers = [];
-  selectedRoles = [];
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
@@ -236,125 +238,89 @@ export class RolesComponent implements OnDestroy {
   setUsersData(res): void {
     this.userDetail = res;
     this.users = res.users;
-    this.masters = res.masters;
-    this.getRoles();
-  }
-
-  getRoles(): void {
-    if (this.roles.length === 0) {
-      this.coreService.post('authentication/permissions', {}).subscribe((res: any) => {
-        this.roles = res.SOSPermissionRoles.SOSPermissionRole;
+    this.createRoleArray(res);
+    this.activeRoute.queryParams
+      .subscribe(params => {
+        if (params.user) {
+          this.selectUser(params.user);
+        }
       });
-    }
   }
 
   selectUser(user): void {
     this.selectedControllers = [];
-    this.selectedRoles = [];
     this.showMsg = false;
     if (user) {
       for (let i = 0; i < this.users.length; i++) {
         if (this.users[i].user === user && this.users[i].roles) {
-          this.selectedRoles = this.users[i].roles || [];
-          this.masters.forEach((master) => {
-            let flag = true;
-            for (let j = 0; j < this.users[i].roles.length; j++) {
-              for (let x = 0; x < master.roles.length; x++) {
-                if (master.roles[x].role === this.users[i].roles[j]) {
-                  this.selectedControllers.push(master.master);
-                  flag = false;
-                  break;
-                }
-              }
-              if (!flag) {
-                break;
-              }
-            }
+          const selectedRoles = this.users[i].roles || [];
+          this.controllerRoles = this.controllerRoles.filter((role) => {
+            return selectedRoles.includes(role.name);
           });
           break;
         }
       }
-      if (this.selectedControllers.length === 0) {
+      if (this.controllerRoles.length === 0) {
         this.showMsg = true;
       }
-    }
-  }
-
-  getSelectedRole(role): boolean {
-    if (this.selectedRoles && this.selectedRoles.length > 0) {
-      return this.selectedRoles.indexOf(role.role) > -1;
-    } else {
-      return true;
-    }
-  }
-
-  getSelectedController(master): boolean {
-    if (this.selectedControllers && this.selectedControllers.length > 0) {
-      return this.selectedControllers.indexOf(master.master) > -1;
-    } else {
-      return true;
     }
   }
 
   saveInfo(): void {
     const obj = {
       users: this.users,
-      masters: this.masters,
+      roles: this.userDetail.roles,
       main: this.userDetail.main
     };
     this.coreService.post('authentication/shiro/store', obj).subscribe(res => {
-
+      // console.log(res)
+      this.createRoleArray(obj);
     });
   }
 
   addRole(): void {
     const modalRef = this.modalService.open(RoleModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.allRoles = this.roles;
-    modalRef.componentInstance.masters = this.masters;
     modalRef.componentInstance.userDetail = this.userDetail;
     modalRef.componentInstance.newRole = true;
     modalRef.result.then((result) => {
-      console.log(result);
+      this.createRoleArray(result);
     }, () => {
 
     });
   }
 
-  editRole(role, master): void {
+  editRole(role): void {
     const modalRef = this.modalService.open(RoleModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.oldRole = role;
-    modalRef.componentInstance.master = master;
     modalRef.componentInstance.allRoles = this.roles;
-    modalRef.componentInstance.masters = this.masters;
     modalRef.componentInstance.userDetail = this.userDetail;
     modalRef.result.then((result) => {
-      console.log(result);
+      this.createRoleArray(result);
     }, () => {
 
     });
   }
 
-  copyRole(role, master): void {
+  copyRole(role): void {
     const modalRef = this.modalService.open(RoleModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.oldRole = role;
-    modalRef.componentInstance.master = master;
     modalRef.componentInstance.allRoles = this.roles;
-    modalRef.componentInstance.masters = this.masters;
     modalRef.componentInstance.userDetail = this.userDetail;
     modalRef.componentInstance.copy = true;
     modalRef.result.then((result) => {
-      console.log(result);
+      this.createRoleArray(result);
     }, () => {
 
     });
   }
 
-  deleteRole(role, master): void {
+  deleteRole(role, index): void {
     let isAssigned: boolean;
     let waringMessage = '';
     for (let i = 0; i < this.users.length; i++) {
       for (let j = 0; j < this.users[i].roles.length; j++) {
-        if (this.users[i].roles[j] === role.role) {
+        if (this.users[i].roles[j] === role.name) {
           isAssigned = true;
           break;
         }
@@ -365,34 +331,23 @@ export class RolesComponent implements OnDestroy {
       modalRef.componentInstance.title = 'delete';
       modalRef.componentInstance.message = 'deleteRole';
       modalRef.componentInstance.type = 'Delete';
-      modalRef.componentInstance.objectName = role.role;
+      modalRef.componentInstance.objectName = role.name;
       modalRef.result.then(() => {
-        for (let i = 0; i < this.masters.length; i++) {
-          if (_.isEqual(this.masters[i].master, master)) {
-            for (let j = 0; j < this.masters[i].roles.length; j++) {
-              if (_.isEqual(this.masters[i].roles[j], role)) {
-                this.masters[i].roles.splice(this.masters[i].roles.indexOf(role), 1);
-                break;
-              }
-            }
-            break;
-          }
-        }
-
+        delete this.userDetail.roles[role.name];
         this.saveInfo();
+        this.dataService.preferences.showPanel.splice(index, 1);
       }, () => {
 
       });
     } else {
-      this.translate.get('common.message.cannotDeleteRole').subscribe(translatedValue => {
+      this.translate.get('user.message.cannotDeleteRole').subscribe(translatedValue => {
         waringMessage = translatedValue;
       });
       this.toasterService.pop({
         type: 'warning',
         title: '',
         body: waringMessage,
-        showCloseButton: false,
-        timeout: 2000
+        timeout: 3000
       });
     }
 
@@ -400,46 +355,58 @@ export class RolesComponent implements OnDestroy {
 
   addController(): void {
     const modalRef = this.modalService.open(ControllerModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.allControllers = this.masters;
+    modalRef.componentInstance.controllerRoles = this.controllerRoles;
     modalRef.componentInstance.allRoles = this.roles;
     modalRef.componentInstance.userDetail = this.userDetail;
-    modalRef.result.then(() => {
-
+    modalRef.result.then((result) => {
+      this.createRoleArray(result);
     }, () => {
 
     });
   }
 
-  copyController(master): void {
+  copyController(role, controller): void {
     const modalRef = this.modalService.open(ControllerModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.oldController = master;
-    modalRef.componentInstance.allControllers = this.masters;
+    modalRef.componentInstance.controllerRoles = this.controllerRoles;
+    modalRef.componentInstance.oldController = controller;
+    modalRef.componentInstance.role = role;
+    modalRef.componentInstance.allRoles = this.roles;
     modalRef.componentInstance.copy = true;
     modalRef.componentInstance.userDetail = this.userDetail;
-    modalRef.result.then(() => {
-
+    modalRef.result.then((result) => {
+      this.createRoleArray(result);
     }, () => {
 
     });
   }
 
-  deleteController(master): void {
+  deleteController(role, controller): void {
     const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.title = 'delete';
     modalRef.componentInstance.message = 'deleteController';
     modalRef.componentInstance.type = 'Delete';
-    modalRef.componentInstance.objectName = master.master || 'default';
+    modalRef.componentInstance.objectName = controller.name || 'default';
     modalRef.result.then(() => {
-      for (let i = 0; i < this.masters.length; i++) {
-        if (_.isEqual(this.masters[i], master)) {
-          this.masters.splice(this.masters.indexOf(master), 1);
-        }
-      }
+      delete this.userDetail.roles[role.name].permissions.controllers[controller.name];
       this.saveInfo();
-
     }, () => {
 
     });
+  }
+
+  private createRoleArray(res): void {
+    this.controllerRoles = [];
+    this.roles = [];
+    for (let role in res.roles) {
+      let obj = {name: role, controllers: [{name: '', permissions: res.roles[role].permissions}], mainObj: res.roles[role]};
+      if (res.roles[role].permissions) {
+        for (let controller in res.roles[role].permissions.controllers) {
+          obj.controllers.push({name: controller, permissions: res.roles[role].permissions.controllers[controller]});
+        }
+      }
+      this.roles.push(role);
+      this.controllerRoles.push(obj);
+    }
   }
 
   private checkUrl(val): void {

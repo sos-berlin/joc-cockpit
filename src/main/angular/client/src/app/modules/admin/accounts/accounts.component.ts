@@ -43,7 +43,7 @@ export class AccountModalComponent implements OnInit {
     }
   }
 
-  checkUser(newUser, existingUser) {
+  checkUser(newUser, existingUser): void {
     this.isUnique = true;
     for (let i = 0; i < this.userDetail.users.length; i++) {
       if (this.userDetail.users[i].user === newUser && newUser !== existingUser) {
@@ -154,7 +154,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
   saveInfo(): void {
     let obj = {
       users: this.users,
-      masters: this.userDetail.masters,
+      roles: this.userDetail.roles,
       main: this.userDetail.main
     };
 
@@ -173,7 +173,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     }
   }
 
-  showMaster(user): void {
+  showRole(user): void {
     this.router.navigate(['/users/role'], {queryParams: {user}});
   }
 
