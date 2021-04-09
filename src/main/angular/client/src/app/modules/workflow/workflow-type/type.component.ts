@@ -113,12 +113,11 @@ export class TypeComponent implements OnChanges {
   showOrders(data) {
     const self = this;
     this.sideBar = {
-      isVisible: true,
       orders: [],
       data: data
     };
     if (data.orders) {
-      this.sideBar.orders = data.orders;
+      this.sideBar.orders = data.orders || [];
     }
 
     function recursive(json) {
@@ -179,6 +178,7 @@ export class TypeComponent implements OnChanges {
     }
 
     recursive(data);
+    this.sideBar.isVisible = true;
   }
 
   expandNode(node) {

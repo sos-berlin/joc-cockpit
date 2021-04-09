@@ -3146,7 +3146,6 @@ div.order-panel div {
   position: relative;
 }
 
-.ant-dropdown-menu-item .ant-dropdown-menu-submenu-arrow-icon, .ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-arrow-icon,
 .cluster-rect, .connection, .cluster, .icon-color, .ant-tree li {
   color: rgba(255, 255, 255, 0.87)
 }
@@ -5249,7 +5248,10 @@ ul {
 button, html [type="button"], [type="reset"], [type="submit"] {
   -webkit-appearance: none;
 }
-
+button[disabled], html input[disabled]{
+  cursor: not-allowed;
+  opacity: .8 !important;
+}
 #full-calendar {
   margin-top: 12px;
 }
@@ -6766,6 +6768,8 @@ tr.tr-border td:first-child {
 
 
 .ant-tabs,
+.ant-dropdown-menu-item .ant-dropdown-menu-submenu-arrow-icon,
+.ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-arrow-icon,
 .ant-pagination-item a, .ant-pagination-prev a, .ant-pagination-next a,
 .ant-table-thead > tr > th, .ant-table-tbody > tr > td, .ant-table, .ant-table-placeholder,
 .ant-pagination-disabled a,
@@ -6797,6 +6801,13 @@ tr.tr-border td:first-child {
 .ant-dropdown-menu-submenu-title:hover,
 .ant-dropdown-menu-submenu-title:hover > a {
   color: var(--text-hover) !important;
+}
+
+.ant-dropdown-menu-item:hover,
+.ant-dropdown-menu-submenu-title:hover {
+  .ant-dropdown-menu-submenu-arrow-icon {
+    color: rgba(0, 0, 0.8) !important;
+  }
 }
 
 .ant-pagination-disabled {

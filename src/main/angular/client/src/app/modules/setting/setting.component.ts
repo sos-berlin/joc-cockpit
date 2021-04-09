@@ -67,7 +67,7 @@ export class ImportSettingComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
       const res = typeof response === 'string' ? JSON.parse(response) : response;
       if (res.error) {
@@ -106,7 +106,7 @@ export class ImportSettingComponent implements OnInit {
     }
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.submitted = true;
     setTimeout(() => {
       this.activeModal.close(this.setting);
@@ -311,30 +311,30 @@ export class SettingComponent implements OnInit {
     }
   }
 
-  openEditField(val) {
+  openEditField(val): void {
     val.value.edit = true;
     if (!val.value.value) {
       val.value.value = [{name: ''}];
     }
   }
 
-  addValInArr(val) {
+  addValInArr(val): void {
     if (val.value.value.length === 0 || val.value.value[val.value.value.length - 1].name) {
       val.value.value.push({name: ''});
     }
   }
 
-  removeValInArr(val, index) {
+  removeValInArr(val, index): void {
     val.value.value.splice(index, 1);
   }
 
-  removeValue(val): void {
+  removeValue(val, isJoc): void {
     val.value.edit = false;
     val.value.value = undefined;
-    this.changeConfiguration(null, null, null);
+    this.changeConfiguration(null, null, isJoc);
   }
 
-  addSection() {
+  addSection(): void {
     const modalRef = this.modalService.open(AddSectionComponent, {backdrop: 'static'});
     modalRef.componentInstance.settings = this.settingArr;
     modalRef.componentInstance.defaultGlobals = this.defaultGlobals;
@@ -348,7 +348,7 @@ export class SettingComponent implements OnInit {
     });
   }
 
-  removeSection(section) {
+  removeSection(section): void {
     const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.title = 'remove';
     modalRef.componentInstance.message = 'removeSetting';
@@ -367,7 +367,7 @@ export class SettingComponent implements OnInit {
     });
   }
 
-  importSetting() {
+  importSetting(): void {
     const modalRef = this.modalService.open(ImportSettingComponent, {backdrop: 'static', size: 'lg'});
     modalRef.result.then((result) => {
       this.settings = result;
@@ -377,7 +377,7 @@ export class SettingComponent implements OnInit {
     });
   }
 
-  exportSetting() {
+  exportSetting(): void {
     const name = 'global-setting.json';
     const fileType = 'application/octet-stream';
     let data = this.generateStoreObject(this.settings);
@@ -395,6 +395,7 @@ export class SettingComponent implements OnInit {
       sessionStorage.defaultProfile = result.defaultProfileAccount;
       sessionStorage.$SOS$COPY = JSON.stringify(result.copy);
       sessionStorage.$SOS$RESTORE = JSON.stringify(result.restore);
+      sessionStorage.$SOS$IMPORT = JSON.stringify(result.import);
       this.dataService.isProfileReload.next(true);
     });
   }

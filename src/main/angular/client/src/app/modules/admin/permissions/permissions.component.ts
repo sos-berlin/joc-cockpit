@@ -76,10 +76,6 @@ export class PermissionModalComponent {
   templateUrl: 'folder-modal.html'
 })
 export class FolderModalComponent implements OnInit {
-  submitted = false;
-
-  folderObj: any = {paths: []};
-  schedulerIds: any;
   @Input() userDetail: any;
   @Input() currentFolder: any;
   @Input() master: any;
@@ -87,6 +83,10 @@ export class FolderModalComponent implements OnInit {
   @Input() folderArr: any;
   @Input() oldFolder: any;
   @Input() newFolder = false;
+
+  submitted = false;
+  folderObj: any = {paths: []};
+  schedulerIds: any;
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private authService: AuthService, private modalService: NgbModal) {
   }
@@ -97,9 +97,7 @@ export class FolderModalComponent implements OnInit {
 
   onSubmit(obj): void {
     this.submitted = true;
-
     if (!this.newFolder) {
-
       for (let i = 0; i < this.folderArr.length; i++) {
         if (this.oldFolder === this.folderArr[i] || _.isEqual(this.oldFolder, this.folderArr[i])) {
           this.folderArr[i] = obj;
@@ -110,7 +108,6 @@ export class FolderModalComponent implements OnInit {
       if (obj.folder) {
         this.folderArr.push(obj);
       }
-
       if (this.folderObj.paths && this.folderObj.paths.length > 0) {
         this.folderObj.paths.forEach((path) => {
           this.folderArr.push({folder: path, recursive: obj.recursive});
@@ -118,18 +115,26 @@ export class FolderModalComponent implements OnInit {
       }
     }
 
-    this.userDetail.roles[this.role].folders = {joc: this.folderArr};
-    console.log(this.userDetail.roles[this.role]);
-    console.log(this.folderArr);
+    if (!this.userDetail.roles[this.role].folders) {
+      this.userDetail.roles[this.role].folders = {};
+    }
+    if (this.master) {
+      if (!this.userDetail.roles[this.role].folders.controllers) {
+        this.userDetail.roles[this.role].folders.controllers = {};
+      }
+      this.userDetail.roles[this.role].folders.controllers[this.master] = this.folderArr;
+    } else {
+      this.userDetail.roles[this.role].folders.joc = this.folderArr;
+    }
 
     this.coreService.post('authentication/shiro/store', obj = {
       users: this.userDetail.users,
       roles: this.userDetail.roles,
       main: this.userDetail.main
-    }).subscribe(res => {
+    }).subscribe(() => {
       this.submitted = false;
       this.activeModal.close(this.folderArr);
-    }, err => {
+    }, () => {
       this.submitted = false;
     });
   }
@@ -259,7 +264,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.master = this.controllerName;
     modalRef.componentInstance.role = this.roleName;
     modalRef.componentInstance.folderArr = this.folderArr;
-
     modalRef.result.then((result) => {
       this.folderArr = result;
     }, () => {
@@ -338,7 +342,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.message = 'deletePermission';
     modalRef.componentInstance.type = 'Delete';
     modalRef.componentInstance.objectName = permission.path;
-
     modalRef.result.then((result) => {
       this.rolePermissions.splice(this.rolePermissions.indexOf(permission), 1);
       this.saveInfo();
@@ -350,10 +353,11 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   loadPermission(): void {
-    this.folderArr = this.roles[this.roleName].folders ? (this.roles[this.roleName].folders.joc || []) : [];
     if (this.controllerName) {
+      this.folderArr = (this.roles[this.roleName].folders && this.roles[this.roleName].folders.controllers) ? (this.roles[this.roleName].folders.controllers[this.controllerName] || []) : [];
       this.rolePermissions = this.roles[this.roleName].permissions ? (this.roles[this.roleName].permissions.controllers[this.controllerName] || []) : [];
     } else {
+      this.folderArr = this.roles[this.roleName].folders ? (this.roles[this.roleName].folders.joc || []) : [];
       this.rolePermissions = this.roles[this.roleName].permissions ? [...this.roles[this.roleName].permissions.controllerDefaults, ...this.roles[this.roleName].permissions.joc] : [];
     }
     this.originalPermission = _.clone(this.rolePermissions);
@@ -623,7 +627,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   saveInfo(): void {
-    this.coreService.post('authentication/shiro/store',  {
+    this.coreService.post('authentication/shiro/store', {
       users: this.userDetail.users,
       roles: this.roles,
       main: this.userDetail.main
@@ -641,7 +645,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       this.roles[this.roleName].permissions.joc = _.clone(this.rolePermissions);
       this.roles[this.roleName].permissions.controllerDefaults = [];
     }
-    console.log(this.roles[this.roleName]);
     this.saveInfo();
   }
 
@@ -1311,7 +1314,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   private setUserData(res): void {
-    console.log(res);
     this.userDetail = res;
     this.roles = res.roles;
     this.getPermissions();

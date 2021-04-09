@@ -265,6 +265,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
           sessionStorage.defaultProfile = result.defaultProfileAccount;
           sessionStorage.$SOS$COPY = JSON.stringify(result.copy);
           sessionStorage.$SOS$RESTORE = JSON.stringify(result.restore);
+          if(result.import) {
+            sessionStorage.$SOS$IMPORT = JSON.stringify(result.import);
+          }
+          
           if (!this.loading) {
             this.init();
           }

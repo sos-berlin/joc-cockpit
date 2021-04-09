@@ -128,7 +128,8 @@
                   <span *ngIf="(!node.children || node.children.length === 0) && node.origin.type">
                     <span class="p-r-xs"></span>
                   </span>
-                  <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
+                  <button class="btn-drop more-option-h" [disabled]="!node.origin.permitted && !node.origin.controller
+                   && !node.origin.dailyPlan && !node.origin.object && !node.origin.type" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
                           type="button">
                     <i class="fa fa-ellipsis-h"></i>
                   </button>

@@ -92,22 +92,6 @@
         </div>
       </div>
       <div class="col-md-12" *ngIf="isDeploy">
-        <!--<div class="form-group row">
-          <label class="col-md-3 form-control-label">
-            <label translate>inventory.label.controllers</label>
-          </label>
-          <div class="col-md-9">
-            <nz-select
-              nzMode="multiple"
-              nzShowSearch
-              name="schedulerIds"
-              [(ngModel)]="selectedSchedulerIds">
-              <ng-container *ngFor="let id of schedulerIds.controllerIds">
-                <nz-option [nzValue]="id" [nzLabel]="id"></nz-option>
-              </ng-container>
-            </nz-select>
-          </div>
-        </div>-->
         <div class="form-group row">
           <label class="col-md-3 form-control-label">
             <label translate>inventory.label.signatureAlgorithm</label>
@@ -154,6 +138,44 @@
           </label>
           <div class="col-md-9">
             <label nz-checkbox name="overwrite" [(ngModel)]="requestObj.overwrite"></label>
+          </div>
+        </div>
+        <div class="m-b-sm row" *ngIf="!requestObj.overwrite">
+          <label class="col-md-3" translate>inventory.label.objectName</label>
+          <div class="col-md-9">
+            <nz-radio-group name="type" [(ngModel)]="requestObj.type">
+              <label nz-radio nzValue="ignore"><span translate>inventory.label.ignoreIfExist</span></label>
+              <label nz-radio nzValue="prefix"><span translate>inventory.label.prefix</span></label>
+              <label nz-radio nzValue="suffix"><span translate>inventory.label.suffix</span></label>
+            </nz-radio-group>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="!requestObj.overwrite && requestObj.type === 'suffix'">
+          <label class="col-md-3"></label>
+          <div class="col-md-9" [ngClass]="{'has-error' : ((suffix.dirty || suffix.touched) && suffix.invalid)}">
+            <input type="text" required identifierValidation class="form-control" name="suffix" placeholder="{{'inventory.placeholder.suffix' | translate}}"
+                   #suffix="ngModel" [(ngModel)]="requestObj.suffix" [appAutofocus]="true" autocomplete="off">
+            <div *ngIf="suffix.invalid && (suffix.dirty || suffix.touched)"
+                 class="text-danger help-block">
+              <div *ngIf="(suffix.errors && suffix.errors.required)">
+                <div translate>common.message.requiredError</div>
+              </div>
+              <div *ngIf="suffix.errors.invalidIdentifier" translate>common.message.invalid</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="!requestObj.overwrite && requestObj.type === 'prefix'">
+          <label class="col-md-3"></label>
+          <div class="col-md-9" [ngClass]="{'has-error' : ((prefix.dirty || prefix.touched) && prefix.invalid)}">
+            <input type="text" required identifierValidation class="form-control" name="prefix" placeholder="{{'inventory.placeholder.prefix' | translate}}"
+                   #prefix="ngModel" [(ngModel)]="requestObj.prefix" [appAutofocus]="true" autocomplete="off">
+            <div *ngIf="prefix.invalid && (prefix.dirty || prefix.touched)"
+                 class="text-danger help-block">
+              <div *ngIf="(prefix.errors && prefix.errors.required)">
+                <div translate>common.message.requiredError</div>
+              </div>
+              <div *ngIf="prefix.errors.invalidIdentifier" translate>common.message.invalid</div>
+            </div>
           </div>
         </div>
       </div>

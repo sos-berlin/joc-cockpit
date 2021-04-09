@@ -19,7 +19,7 @@ export class TreeComponent implements OnInit, OnChanges {
   constructor(public coreService: CoreService) {
   }
 
-  static calcTop() {
+  static calcTop(): void {
     const dom = $('.scroll-y');
     let count = 0;
     if (dom && dom.position()) {
@@ -55,27 +55,29 @@ export class TreeComponent implements OnInit, OnChanges {
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
     if (this.sideView && !this.sideView.show) {
       this.hidePanel();
     }
-    TreeComponent.calcTop();
+    setTimeout(() => {
+      TreeComponent.calcTop();
+    }, 10);
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes: SimpleChanges): void {
     this.defaultExpandedKeys = [...this.defaultExpandedKeys];
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize() {
+  onResize(): void {
     TreeComponent.calcTop();
   }
 
   @HostListener('window:scroll', ['$event'])
-  onScroll() {
+  onScroll(): void {
     TreeComponent.calcTop();
   }
 
@@ -112,11 +114,18 @@ export class TreeComponent implements OnInit, OnChanges {
       e.isExpanded = !e.isExpanded;
     }
     this.defaultSelectedKeys = [e.origin.key];
+    if (e.isExpanded) {
+      if (this.defaultExpandedKeys.indexOf(e.origin.key) === -1) {
+        this.defaultExpandedKeys.push(e.origin.key);
+      }
+    } else {
+      this.defaultExpandedKeys.splice(this.defaultExpandedKeys.indexOf(e.origin.key), 1);
+    }
     e.origin.action = 'NODE';
     this.messageEvent.emit(e.origin);
   }
 
-  private traverseTree(data, isExpand) {
+  private traverseTree(data, isExpand): void {
     data.children.forEach((value) => {
       if (isExpand) {
         if (this.defaultExpandedKeys.indexOf(value.key) === -1) {
@@ -130,7 +139,7 @@ export class TreeComponent implements OnInit, OnChanges {
     });
   }
 
-  private navFullTree(node, isExpand) {
+  private navFullTree(node, isExpand): void {
     if (isExpand) {
       if (this.defaultExpandedKeys.indexOf(node.key) === -1) {
         this.defaultExpandedKeys.push(node.key);
@@ -142,12 +151,12 @@ export class TreeComponent implements OnInit, OnChanges {
     this.traverseTree(node, isExpand);
   }
 
-  hidePanel  () {
+  hidePanel(): void {
     this.sideView.show = false;
     this.coreService.hidePanel();
   }
 
-  showPanel  () {
+  showPanel(): void {
     this.sideView.show = true;
     this.coreService.showLeftPanel();
   }

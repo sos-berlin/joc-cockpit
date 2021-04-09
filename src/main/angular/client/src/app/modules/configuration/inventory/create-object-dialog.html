@@ -25,7 +25,7 @@
     <div class="form-group row" *ngIf="!copy && !restore">
       <label class="col-md-3 form-control-label" translate>inventory.label.objectName</label>
       <div class="col-md-6" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-        <input type="text" identifierValidation class="form-control" name="name" required placeholder="{{'inventory.placeholder.enterUniqueName' | translate}}"
+        <input type="text" required identifierValidation class="form-control" name="name" placeholder="{{'inventory.placeholder.enterUniqueName' | translate}}"
                #name="ngModel" [(ngModel)]="object.name" [appAutofocus]="true" autocomplete="off">
         <div *ngIf="name.invalid && (name.dirty || name.touched)"
              class="text-danger help-block">
@@ -78,10 +78,13 @@
       <div class="form-group row" *ngIf="object.type === 'name' && copy.objectType">
         <label class="col-md-3"></label>
         <div class="col-md-9" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-          <input type="text" identifierValidation class="form-control" name="name" required
+          <input type="text" required identifierValidation class="form-control" name="name"
                  #name="ngModel" [(ngModel)]="object.originalName" [appAutofocus]="true" autocomplete="off">
           <div *ngIf="name.invalid && (name.dirty || name.touched)"
                class="text-danger help-block">
+            <div *ngIf="(name.errors && name.errors.required)">
+              <div translate>common.message.requiredError</div>
+            </div>
             <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
           </div>
         </div>
@@ -110,10 +113,13 @@
       <div class="form-group row" *ngIf="object.type === 'new'">
         <label class="col-md-3"></label>
         <div class="col-md-6" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-          <input type="text" identifierValidation class="form-control" name="name" placeholder="{{'inventory.placeholder.enterUniqueName' | translate}}"
+          <input type="text" required identifierValidation class="form-control" name="name" placeholder="{{'inventory.placeholder.enterUniqueName' | translate}}"
                  #name="ngModel" [(ngModel)]="object.newName" [appAutofocus]="true" autocomplete="off">
           <div *ngIf="name.invalid && (name.dirty || name.touched)"
                class="text-danger help-block">
+            <div *ngIf="(name.errors && name.errors.required)">
+              <div translate>common.message.requiredError</div>
+            </div>
             <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
           </div>
         </div>
@@ -121,10 +127,13 @@
       <div class="form-group row" *ngIf="object.type === 'suffix'">
         <label class="col-md-3"></label>
         <div class="col-md-6" [ngClass]="{'has-error' : ((suffix.dirty || suffix.touched) && suffix.invalid)}">
-          <input type="text" identifierValidation class="form-control" name="suffix" placeholder="{{'inventory.placeholder.suffix' | translate}}"
+          <input type="text" required identifierValidation class="form-control" name="suffix" placeholder="{{'inventory.placeholder.suffix' | translate}}"
                  #suffix="ngModel" [(ngModel)]="object.suffix" [appAutofocus]="true" autocomplete="off">
           <div *ngIf="suffix.invalid && (suffix.dirty || suffix.touched)"
                class="text-danger help-block">
+            <div *ngIf="(suffix.errors && suffix.errors.required)">
+              <div translate>common.message.requiredError</div>
+            </div>
             <div *ngIf="suffix.errors.invalidIdentifier" translate>common.message.invalid</div>
           </div>
         </div>
@@ -135,11 +144,13 @@
       <div class="form-group row" *ngIf="object.type === 'prefix'">
         <label class="col-md-3"></label>
         <div class="col-md-6" [ngClass]="{'has-error' : ((prefix.dirty || prefix.touched) && prefix.invalid)}">
-          <input type="text" identifierValidation class="form-control" name="prefix" placeholder="{{'inventory.placeholder.prefix' | translate}}"
-
+          <input type="text" required identifierValidation class="form-control" name="prefix" placeholder="{{'inventory.placeholder.prefix' | translate}}"
                  #prefix="ngModel" [(ngModel)]="object.prefix" [appAutofocus]="true" autocomplete="off">
           <div *ngIf="prefix.invalid && (prefix.dirty || prefix.touched)"
                class="text-danger help-block">
+            <div *ngIf="(prefix.errors && prefix.errors.required)">
+              <div translate>common.message.requiredError</div>
+            </div>
             <div *ngIf="prefix.errors.invalidIdentifier" translate>common.message.invalid</div>
           </div>
         </div>
