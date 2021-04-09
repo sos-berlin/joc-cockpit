@@ -105,7 +105,7 @@
             }, authenticate: function (e, r) {
                 let i = n.defer();
                 t.defaults.headers.common['X-CLIENT-ID'] = 'JOC Cockpit';
-                return t.defaults.headers.common.Authorization = "Basic " + o.encode(unescape(encodeURIComponent(e + ":" + r))), t.post("security/login").then(function (e) {
+                return t.defaults.headers.common.Authorization = "Basic " + o.encode(unescape(encodeURIComponent((e || '') + ":" + (r || '')))), t.post("security/login").then(function (e) {
                     i.resolve(e.data)
                 }, function (e) {
                     i.reject(e)

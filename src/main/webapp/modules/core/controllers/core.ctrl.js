@@ -34,7 +34,7 @@
         vm.selectedScheduler = {};
         vm.navObj = {collapse: false};
         vm.username = SOSAuth.currentUserData;
-        vm.isLoaded = false;
+        vm.isUILoaded = false;
 
         /**
          * Exception Logging Service, currently only used by the $exceptionHandler
@@ -675,7 +675,7 @@
                 authenticate();
                 return;
             } else {
-                vm.isLoaded = true;
+                vm.isUILoaded = true;
             }
             $rootScope.$broadcast('reloadUser');
             setIds();

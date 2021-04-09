@@ -7717,19 +7717,15 @@
             initWidgets();
             if (vm.userPreferences && !vm.userPreferences.dashboard)
                 setWidgetPreference();
-        } else {
-            $scope.$on('reloadPreferences', function () {
-                if (vm.loadingImg)
-                    initWidgets();
-                if (vm.userPreferences && !vm.userPreferences.dashboard) {
-                    setWidgetPreference();
-                }
-            });
-            if (!vm.schedulerIds.selected) {
-                initWidgets();
-            }
         }
 
+        $scope.$on('reloadPreferences', function () {
+            if (vm.loadingImg)
+                initWidgets();
+            if (vm.userPreferences && !vm.userPreferences.dashboard) {
+                setWidgetPreference();
+            }
+        });
 
         $scope.$on('event-started', function (event, args) {
             if (args.events && args.events[0] && args.events[0].eventSnapshots) {

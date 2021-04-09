@@ -28,7 +28,6 @@
                     }
                 }), e.$on("$stateChangeSuccess", function (t, i) {
                     isCall = true;
-                   
                     if (n.addClass("hide"), $("body, html").animate({scrollTop: 0}, 1e3), n.addClass("hide"), e.clientLogFilter && e.clientLogFilter.isEnable && a) {
                         r = new Date;
                         var o = {
@@ -43,11 +42,10 @@
                 }), e.$on("$viewContentLoading", function () {
                     setTimeout(function(){
                         if(!isCall) {
-                          
                             n.addClass("hide");
                             $("body, html").animate({scrollTop: 0}, 1e3)
                         }
-                    }, 10)
+                    }, 20)
 
                     var t = new Date;
                     if (r && r.getTime() < t.getTime() && e.clientLogFilter) {
