@@ -4,11 +4,11 @@
       <div *ngIf="!editor.showPlanned">
         <div class="row">
           <div class="col-md-12" style="margin-top: -8px">
-            <button [disabled]="isTrash" (click)="assignCalendar()" *ngIf="permission.Calendar.edit.assign.runtime"
+            <button [disabled]="isTrash" (click)="assignCalendar()"
                     class="btn btn-sm btn-grey m-r-sm m-t-sm"
                     translate type="button">runtime.button.assignWorkingDayCalendar
             </button>
-            <button [disabled]="isTrash" (click)="assignHolidayCalendar()" *ngIf="permission.Calendar.edit.assign.nonworking"
+            <button [disabled]="isTrash" (click)="assignHolidayCalendar()"
                     class="btn btn-sm btn-grey m-r-sm m-t-sm"
                     translate type="button">runtime.button.assignNonWorkingDayCalendar
             </button>

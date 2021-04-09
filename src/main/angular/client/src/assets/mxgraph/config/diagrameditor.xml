@@ -108,8 +108,8 @@
       <add as="order">
         <add as="shape" value="ellipse"/>
         <add as="perimeter" value="ellipsePerimeter"/>
-        <add as="fillColor" value="#ffc04c"/>
-        <add as="strokeColor" value="#ffc04c"/>
+        <add as="fillColor" value="#ff944b"/>
+        <add as="strokeColor" value="#ff944b"/>
         <add as="gradientColor" value="white"/>
         <add as="rounded" value="1"/>
       </add>

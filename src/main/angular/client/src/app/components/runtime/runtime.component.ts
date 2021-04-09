@@ -699,7 +699,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes) {
-    this.zones = this.coreService.getTimeZoneList()
+    this.zones = this.coreService.getTimeZoneList();
     this.init();
   }
 
@@ -1061,11 +1061,11 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       let planData: any = {};
       if (value.begin) {
         planData = {
-          plannedStartTime: this.coreService.convertTimeToLocalTZ(value.begin, this.preferences.zone),
-          plannedShowTime: this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(value.begin,this.preferences.zone), this.preferences.dateFormat)
+          plannedStartTime: this.coreService.convertTimeToLocalTZ(this.preferences, value.begin),
+          plannedShowTime: this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, value.begin), this.preferences.dateFormat)
         };
         if (value.end) {
-          planData.endTime = this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(value.end,this.preferences.zone),
+          planData.endTime = this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, value.end),
             this.preferences.dateFormat);
         }
         if (value.repeat) {
@@ -1073,8 +1073,8 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
         }
       } else if (value.singleStart) {
         planData = {
-          plannedStartTime: this.coreService.convertTimeToLocalTZ(value.singleStart, this.preferences.zone),
-          plannedShowTime: this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(value.begin,this.preferences.zone), this.preferences.dateFormat)
+          plannedStartTime: this.coreService.convertTimeToLocalTZ(this.preferences, value.singleStart),
+          plannedShowTime: this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, value.begin), this.preferences.dateFormat)
         };
       }
       let date = new Date(planData.plannedStartTime).setHours(0, 0, 0, 0);

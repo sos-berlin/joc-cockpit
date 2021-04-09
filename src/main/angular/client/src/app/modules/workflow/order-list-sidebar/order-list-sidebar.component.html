@@ -31,8 +31,8 @@
       [nzSize]="'small'"
       [nzBordered]="true"
       [nzShowPagination]="false"
-      [nzData]="orders"
-      [nzPageSize]="orders.length"
+      [nzData]="orders || []"
+      [nzPageSize]="orders ? orders.length : 0"
     >
       <thead>
       <tr>
