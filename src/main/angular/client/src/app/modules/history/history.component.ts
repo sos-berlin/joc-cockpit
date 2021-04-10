@@ -2407,6 +2407,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     data.files = [];
     this.coreService.post('yade/files', obj).subscribe((res: any) => {
       data.files = res.files;
+      this.coreService.calFileTransferRowWidth(false);
     });
   }
 

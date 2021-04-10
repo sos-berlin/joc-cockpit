@@ -11,7 +11,6 @@ import {SearchPipe} from '../../../pipes/core.pipe';
   templateUrl: 'lock.component.html'
 })
 export class LockComponent implements OnInit, OnDestroy {
-
   isLoading = false;
   loading: boolean;
   schedulerIds: any = {};
@@ -39,12 +38,12 @@ export class LockComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.sideView = this.coreService.getSideView();
     this.init();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.coreService.setSideView(this.sideView);
@@ -60,7 +59,7 @@ export class LockComponent implements OnInit, OnDestroy {
     }, []);
   }
 
-  initTree() {
+  initTree(): void {
     if (this.schedulerIds.selected) {
       this.coreService.post('tree', {
         controllerId: this.schedulerIds.selected,
@@ -74,13 +73,13 @@ export class LockComponent implements OnInit, OnDestroy {
       }, () => {
         this.isLoading = true;
       });
-    } else{
+    } else {
       this.isLoading = true;
     }
   }
 
-  loadLocks() {
-    let obj = {
+  loadLocks(): void {
+    const obj = {
       folders: [],
       controllerId: this.schedulerIds.selected
     };
@@ -98,48 +97,48 @@ export class LockComponent implements OnInit, OnDestroy {
     this.getLocksList(obj);
   }
 
-  receiveAction($event) {
+  receiveAction($event): void {
     this.getLocks($event, $event.action !== 'NODE');
   }
 
-  getLocks(data, recursive) {
+  getLocks(data, recursive): void {
     data.isSelected = true;
     this.loading = true;
-    let obj = {
-      folders: [{folder: data.path, recursive: recursive}],
+    const obj = {
+      folders: [{folder: data.path, recursive}],
       controllerId: this.schedulerIds.selected,
       compact: true
     };
     this.getLocksList(obj);
   }
 
-  /** ---------------------------- Action ----------------------------------*/
+  /* ---------------------------- Action ----------------------------------*/
 
-  pageIndexChange($event) {
+  pageIndexChange($event): void {
     this.locksFilters.currentPage = $event;
   }
 
-  pageSizeChange($event) {
+  pageSizeChange($event): void {
     this.locksFilters.entryPerPage = $event;
   }
 
-  sort(propertyName) {
+  sort(propertyName): void {
     this.locksFilters.reverse = !this.locksFilters.reverse;
     this.locksFilters.filter.sortBy = propertyName;
   }
 
-  receiveMessage($event) {
+  receiveMessage($event): void {
     this.pageView = $event;
   }
 
-  private refresh(args) {
+  private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'LockStateChanged' && args.eventSnapshots[j].path) {
           if (this.locks.length > 0) {
             for (let x = 0; x < this.locks.length; x++) {
               if (this.locks[x].path === args.eventSnapshots[j].path) {
-                let obj = {
+                const obj = {
                   controllerId: this.schedulerIds.selected,
                   lockPath: this.locks[x].path
                 };
@@ -156,14 +155,13 @@ export class LockComponent implements OnInit, OnDestroy {
             }
           }
         } else if (args.eventSnapshots[j].eventType.match(/Item/) && args.eventSnapshots[j].objectType === 'LOCK') {
-
           this.initTree();
         }
       }
     }
   }
 
-  private init() {
+  private init(): void {
     this.locksFilters = this.coreService.getResourceTab().locks;
     this.coreService.getResourceTab().state = 'locks';
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
@@ -175,7 +173,7 @@ export class LockComponent implements OnInit, OnDestroy {
     this.initTree();
   }
 
-  private getLocksList(obj) {
+  private getLocksList(obj): void {
     this.coreService.post('locks', obj).subscribe((res: any) => {
       this.loading = false;
       res.locks.forEach((value) => {
@@ -189,7 +187,7 @@ export class LockComponent implements OnInit, OnDestroy {
           value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
         }
         if (this.locksFilters.expandedObjects && this.locksFilters.expandedObjects.length > 0) {
-          let index = this.locksFilters.expandedObjects.indexOf(value.id);
+          const index = this.locksFilters.expandedObjects.indexOf(value.id);
           if (index > -1) {
             value.show = true;
             this.locksFilters.expandedObjects.slice(index, 1);
@@ -203,12 +201,12 @@ export class LockComponent implements OnInit, OnDestroy {
     });
   }
 
-  searchInResult() {
+  searchInResult(): void {
     this.data = this.locksFilters.searchText ? this.searchPipe.transform(this.locks, this.locksFilters.searchText, this.searchableProperties) : this.locks;
     this.data = [...this.data];
   }
 
-  expandDetails() {
+  expandDetails(): void {
     this.data.forEach((value) => {
       value.show = true;
       value.workflows.forEach((item) => {
@@ -217,7 +215,7 @@ export class LockComponent implements OnInit, OnDestroy {
     });
   }
 
-  collapseDetails() {
+  collapseDetails(): void {
     this.data.forEach((value) => {
       value.show = false;
     });

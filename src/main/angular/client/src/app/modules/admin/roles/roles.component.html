@@ -1,51 +1,60 @@
 <div class="box p-a">
-    <div *ngFor="let role of controllerRoles; let id = index" class="box-body p-b-0">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="btn-group dropdown pull-left m-r-sm">
-                    <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" type="button"><i
-                            class="fa fa-ellipsis-h"></i></button>
-                    <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                        <ul nz-menu >
-                          <li nz-menu-item >
-                            <a (click)="editRole(role)" translate>common.button.edit</a>
-                          </li>
-                          <li nz-menu-item >
-                            <a (click)="copyRole(role)" translate>common.button.copy</a>
-                          </li>
-                          <li nz-menu-item class="bg-hover-color">
-                            <a (click)="deleteRole(role, id)" translate="">common.button.delete</a>
-                          </li>
-                        </ul>
-                    </nz-dropdown-menu>
-                </div>
-                <h5 class="text-dark">{{role.name}}
-                    <i (click)="dataService.preferences.showPanel[id] = true" [hidden]="dataService.preferences.showPanel[id]" class="cursor fa fa-caret-up m-l-xs"></i>
-                    <i (click)="dataService.preferences.showPanel[id]  = false" *ngIf="dataService.preferences.showPanel[id]"
-                       class="cursor fa fa-caret-down m-l-xs"></i>
-                </h5>
-            </div>
+  <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+    <div *ngFor="let role of controllerRoles" class="box-body p-b-0" cdkDrag>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="pos-abt" style="font-size: 16px;cursor: move" cdkDragHandle>
+            <i class="fa fa-bars" aria-hidden="true"></i>
+          </div>
+          <div class="btn-group dropdown pull-left m-l p-l-sm m-r-xs">
+            <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"
+                    type="button"><i
+              class="fa fa-ellipsis-h"></i></button>
+            <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+              <ul nz-menu>
+                <li nz-menu-item>
+                  <a (click)="editRole(role)" translate>common.button.edit</a>
+                </li>
+                <li nz-menu-item>
+                  <a (click)="copyRole(role)" translate>common.button.copy</a>
+                </li>
+                <li nz-menu-item class="bg-hover-color">
+                  <a (click)="deleteRole(role)" translate="">common.button.delete</a>
+                </li>
+              </ul>
+            </nz-dropdown-menu>
+          </div>
+          <h5 class="text-dark">{{role.name}}
+            <i (click)="collapseRole(role.name)" *ngIf="dataService.preferences.roles.has(role.name)"
+               class="cursor fa fa-caret-up m-l-xs"></i>
+            <i (click)="expandRole(role.name)" *ngIf="!dataService.preferences.roles.has(role.name)"
+               class="cursor fa fa-caret-down m-l-xs"></i>
+          </h5>
         </div>
-        <div *ngIf="dataService.preferences.showPanel[id]" class="row">
-            <div class="col-xl-1 col-lg-2 col-md-2 col-sm-4 col-xs-4"><span class="p-l-lg" translate>user.label.controllers</span></div>
-            <div class="col-lg-9 col-md-10 col-sm-8 col-xs-8">
-                <div *ngFor="let controller of role.controllers" class="role">
-                    <span class="fa fa-circle p-r-xs" style="font-size: 9px"></span>
-                    <a [routerLink]="['/users/permissions',controller.name || 'default', role.name]" class="text-primary">
-                        {{controller.name || 'default'}}
-                    </a>
-                    <i (click)="copyController(role, controller)" class="fa fa-copy m-l-xs p-l-xs"></i>
-                    <i *ngIf="controller.name" (click)="deleteController(role,controller)" class="fa fa-times m-l-xs p-l-xs"></i>
-                </div>
-            </div>
+      </div>
+      <div *ngIf="dataService.preferences.roles.has(role.name)" class="row">
+        <div class="col-xl-1 col-lg-2 col-md-2 col-sm-4 col-xs-4"><span class="p-l-lg"
+                                                                        translate>user.label.controllers</span></div>
+        <div class="col-lg-9 col-md-10 col-sm-8 col-xs-8">
+          <div *ngFor="let controller of role.controllers" class="role">
+            <span class="fa fa-circle p-r-xs" style="font-size: 9px"></span>
+            <a [routerLink]="['/users/permissions',controller.name || 'default', role.name]" class="text-primary">
+              {{controller.name || 'default'}}
+            </a>
+            <i (click)="copyController(role, controller)" class="fa fa-copy m-l-xs p-l-xs"></i>
+            <i *ngIf="controller.name" (click)="deleteController(role,controller)"
+               class="fa fa-times m-l-xs p-l-xs"></i>
+          </div>
         </div>
-        <hr *ngIf="dataService.preferences.showPanel[id]">
+      </div>
+      <hr>
     </div>
-    <div [ngClass]="{show : showMsg}" class="box-body p-b-0 hide">
-        <div class="row">
-            <div class="col-md-12 text-center">
-                <span translate>user.message.noRoleAssign</span>
-            </div>
-        </div>
+  </div>
+  <div [ngClass]="{show : showMsg}" class="box-body p-b-0 hide">
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <span translate>user.message.noRoleAssign</span>
+      </div>
     </div>
+  </div>
 </div>

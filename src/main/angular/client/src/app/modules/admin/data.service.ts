@@ -5,7 +5,7 @@ import {Subject} from 'rxjs';
 export class DataService implements OnDestroy {
 
   preferences = {
-    showPanel: [true]
+    roles: new Set()
   };
 
   // Observable string sources

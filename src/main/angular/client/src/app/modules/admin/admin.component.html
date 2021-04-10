@@ -123,7 +123,7 @@
             </a>
           </li>
         </ul>
-        <div *ngIf="route === '/users/account'" class="inline pull-right search-box-field" style="margin-top: 10px">
+        <div *ngIf="route === '/users/account'" class="inline pull-right search-box-field admin-search-bar">
           <input type="search" #input (keyup)="searchBar(input.value)"
                  placeholder="{{'common.placeholder.search' | translate}}" [(ngModel)]="searchKey">
           <i *ngIf="searchKey" class="fa fa-times search-close" (click)="searchKey = ''"></i>

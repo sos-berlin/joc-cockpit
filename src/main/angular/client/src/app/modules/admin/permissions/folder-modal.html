@@ -12,29 +12,45 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit(currentFolder)">
     <div class="modal-body p-a">
-        <div class="form-group row" [ngClass]="{'has-error' : ((folder.dirty || folder.touched) && folder.invalid)}">
-            <label class="col-sm-4 form-control-label" translate>user.label.folders</label>
-            <div class="col-sm-6">
-                <input type="text" class="form-control" name="name" placeholder="{{'user.placeholder.folderPath' | translate}}"
-                       [(ngModel)]="currentFolder.folder" [required]="folderObj.paths.length===0" #folder="ngModel"/>
-                <div *ngIf="folder.invalid && (folder.dirty || folder.touched) " class="text-danger help-block">
-                    <div *ngIf="folder.errors.required">
-                        <div translate>common.message.requiredError</div>
-                    </div>
-                </div>
+        <div class="form-group row" *ngIf="!newFolder">
+          <label class="col-sm-3 form-control-label" translate>user.label.folders</label>
+          <div class="col-sm-8" [ngClass]="{'has-error' : ((folder.dirty || folder.touched) && folder.invalid)}">
+            <input type="text" class="form-control" name="name" placeholder="{{'user.placeholder.folderPath' | translate}}"  [(ngModel)]="currentFolder.folder" [required]="folderObj.paths.length===0" #folder="ngModel"/>
+            <div *ngIf="folder.invalid && (folder.dirty || folder.touched) " class="text-danger help-block">
+              <div *ngIf="folder.errors.required">
+                <div translate>common.message.requiredError</div>
+              </div>
             </div>
-            <div class="col-sm-1 p-l-0 p-t-sm" *ngIf="newFolder"><a (click)="getFolderTree()"><i class="fa fa-folder-o fa-lg"></i></a></div>
+          </div>
         </div>
-        <div class="form-group row" *ngIf="folderObj.paths.length>0 && newFolder">
-            <div class="col-md-offset-4 col-sm-6" style="max-height: 140px; overflow: auto">
-                <div *ngFor="let path of folderObj.paths; let i = index">
-                    <span class="">{{path}}</span><i class="pull-right fa fa-remove m-l text-hover-primary" (click)="remove(i)"></i>
+        <div class="form-group row" *ngIf="newFolder">
+          <label class="col-sm-3 form-control-label" translate>user.label.folders</label>
+          <div class="col-sm-8">
+            <nz-tree-select
+              name="folder"
+              [nzNodes]="nodes"
+              [nzHideUnMatched]="true"
+              [nzDropdownStyle]="{ 'max-height': '260px' }"
+              nzShowSearch
+              [nzMultiple]="true"
+              [nzDisplayWith]="displayWith"
+              [nzPlaceHolder]="'common.placeholder.selectFromTree' | translate"
+              [(ngModel)]="folderObj.paths"
+            >
+              <ng-template #nzTreeTemplate let-node>
+                <div class="node-wrapper">
+                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
+                    <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                    {{node.title}}
+                  </div>
                 </div>
-            </div>
+              </ng-template>
+            </nz-tree-select>
+          </div>
         </div>
         <div class="form-group row">
-            <label class="col-sm-4" translate>user.label.recursive</label>
-            <div class=" col-sm-6">
+            <label class="col-sm-3" translate>user.label.recursive</label>
+            <div class="col-sm-6">
                 <label class="md-check">
                     <input type="checkbox" [(ngModel)]="currentFolder.recursive" name="recursive">
                     <i class="primary"></i><span class="m-l-xs"> </span>

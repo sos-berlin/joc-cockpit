@@ -17,6 +17,7 @@ import {NzTreeSelectModule} from 'ng-zorro-antd/tree-select';
 import {NzDatePickerModule} from 'ng-zorro-antd/date-picker';
 import {NzNoAnimationModule} from 'ng-zorro-antd/core/no-animation';
 import {NzRadioModule} from 'ng-zorro-antd/radio';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import {NzTimePickerModule} from 'ng-zorro-antd/time-picker';
 import {ChecklistModule} from 'angular-checklist';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -53,7 +54,7 @@ import {OrderVariableComponent} from '../../components/order-variable/order-vari
 
 
 const MODULES = [Shared2Module, NzTableModule, NzTabsModule, ChecklistModule, DragDropModule,
-  NzToolTipModule, NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule,
+  NzToolTipModule, NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule, NzDrawerModule,
   NzSelectModule, NzInputModule, NzMessageModule, NzCheckboxModule, NzRadioModule,
   NzTreeSelectModule, ClipboardModule, NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, OrderModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,

@@ -142,13 +142,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     this.showAndHideBtn();
   }
 
-  @HostListener('window:click', ['$event'])
-  clickHandler(event): void {
-    if (event.target && event.target.tagName === 'svg') {
-      this.sideBar = {};
-    }
-  }
-
   backClicked(): void {
     window.history.back();
   }
@@ -798,7 +791,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       _nodeCount.setAttribute('orders', JSON.stringify(orderArr));
       let x = cell.geometry.x + cell.geometry.width - 5;
       let y = cell.geometry.y - 5;
-      let countV = graph.insertVertex(parent, null, _nodeCount, x, y, 16, 16, 'order;fillColor=#007da6;strokeColor=#007da6;shadow=1');
+      let color = '#0E8A8B';
+      if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' || !this.preferences.theme) {
+        color = '#d87600';
+      }
+      let countV = graph.insertVertex(parent, null, _nodeCount, x, y, 16, 16, 'order;fillColor=' + color + ';strokeColor=' + color + ';shadow=1');
       this.countArr.push(countV);
     }
   }
@@ -821,7 +818,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             const _nodeCount = doc.createElement('Count');
             _nodeCount.setAttribute('count', orders.length);
             _nodeCount.setAttribute('orders', JSON.stringify(orders));
-            let countV = graph.insertVertex(parent, null, _nodeCount, x + 105, y, 16, 16, 'order;fillColor=#007da6;strokeColor=#007da6;shadow=1');
+            let color = '#0E8A8B';
+            if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' || !this.preferences.theme) {
+              color = '#d87600';
+            }
+            let countV = graph.insertVertex(parent, null, _nodeCount, x + 105, y, 16, 16, 'order;fillColor=' + color + ';strokeColor=' + color + ';shadow=1');
             this.countArr.push(countV);
           }
           const _edge = graph.insertEdge(parent, null, doc.createElement('Connection'), v1, node, 'dashed=1;');

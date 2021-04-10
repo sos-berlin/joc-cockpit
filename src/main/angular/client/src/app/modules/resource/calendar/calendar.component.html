@@ -18,12 +18,12 @@
                   <button class="btn btn-grey btn-sm "
                           (click)="loadCalendar('WORKINGDAYSCALENDAR')"
                           [ngClass]="{'btn-primary': calendarFilters.filter.type=='WORKINGDAYSCALENDAR'}"
-                          translate>resource.button.workingDays
+                          translate>resource.calendar.button.workingDays
                   </button>
                   <button class="btn btn-grey btn-sm "
                           (click)="loadCalendar('NONWORKINGDAYSCALENDAR')"
                           [ngClass]="{'btn-primary': calendarFilters.filter.type=='NONWORKINGDAYSCALENDAR'}"
-                          translate>resource.button.nonWorkingDays
+                          translate>resource.calendar.button.nonWorkingDays
                   </button>
                 </div>
                 <div class="btn-group dropdown">
@@ -119,13 +119,10 @@
                           <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
                             <ul nz-menu>
                               <li nz-menu-item >
-                                <a (click)="previewCalendar(calendar)" translate>resource.button.showPreview</a>
-                              </li>
-                              <li nz-menu-item [nzDisabled]="calendar.documentId">
-                                <a (click)="showDocumentation(calendar)" translate>resource.button.showDocumentation</a>
+                                <a (click)="previewCalendar(calendar)" translate>resource.calendar.button.showPreview</a>
                               </li>
                               <li nz-menu-item >
-                                <a (click)="showUsage(calendar)" translate>resource.button.showUsage</a>
+                                <a (click)="showUsage(calendar)" translate>resource.calendar.button.showUsage</a>
                               </li>
                               <li nz-menu-item >
                                 <a (click)="coreService.copyLink('calendar',calendar.path)" translate>common.button.copyLinkToObject</a>
@@ -141,8 +138,8 @@
                           [innerHtml]="calendar.type | translate | highlight : calendarFilters.searchText"></span>
                       </div>
                       <div class="text-sm text-left p-t-xs">
-                        <span *ngIf="calendar.from && calendar.to"><span translate>resource.label.validity</span> :</span>
-                        <span *ngIf="!calendar.from && calendar.to"><span translate>resource.label.validityUntil</span> : </span>
+                        <span *ngIf="calendar.from && calendar.to"><span translate>resource.calendar.label.validity</span> :</span>
+                        <span *ngIf="!calendar.from && calendar.to"><span translate>resource.calendar.label.validityUntil</span> : </span>
                         <span *ngIf="calendar.from" [innerHtml]="calendar.from | stringToDate1"></span>
                         <span *ngIf="calendar.from && calendar.to" translate>commonlabel.to </span>
                         <span [innerHtml]="calendar.to | stringToDate1"></span>
@@ -153,10 +150,10 @@
                         <a class="text-left primary-text-hover-color"
                            (click)="previewCalendar(calendar)">
                           <i class="fa fa-television text-black-lt"></i>&nbsp;
-                          <span class="text-black-lt" translate>resource.button.showPreview</span></a>
+                          <span class="text-black-lt" translate>resource.calendar.button.showPreview</span></a>
                         <a class="pull-right primary-text-hover-color"
                            (click)="showUsage(calendar)"><i class="fa fa-eye text-black-lt"></i>&nbsp;
-                          <span class="text-black-lt" translate>resource.button.showUsage</span></a>
+                          <span class="text-black-lt" translate>resource.calendar.button.showUsage</span></a>
                       </div>
                     </div>
                   </div>
@@ -200,13 +197,13 @@
                       <i *ngIf="calendarFilters.filter.sortBy == 'type' && calendarFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('from')"><a><span class="p-r-xs" translate>resource.label.validityFrom</span>
+                    <th (click)="sort('from')"><a><span class="p-r-xs" translate>resource.calendar.label.validityFrom</span>
                       <i *ngIf="calendarFilters.filter.sortBy == 'from' && !calendarFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="calendarFilters.filter.sortBy == 'from' && calendarFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('to')"><a><span class="p-r-xs" translate>resource.label.validityTo</span>
+                    <th (click)="sort('to')"><a><span class="p-r-xs" translate>resource.calendar.label.validityTo</span>
                       <i *ngIf="calendarFilters.filter.sortBy == 'to' && !calendarFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="calendarFilters.filter.sortBy == 'to' && calendarFilters.reverse"
@@ -224,13 +221,10 @@
                         <nz-dropdown-menu #option="nzDropdownMenu" role="menu" >
                           <ul nz-menu>
                             <li nz-menu-item >
-                              <a (click)="previewCalendar(calendar)" translate>resource.button.showPreview</a>
-                            </li>
-                            <li nz-menu-item [nzDisabled]="calendar.documentId">
-                              <a (click)="showDocumentation(calendar)" translate>resource.button.showDocumentation</a>
+                              <a (click)="previewCalendar(calendar)" translate>resource.calendar.button.showPreview</a>
                             </li>
                             <li nz-menu-item >
-                              <a (click)="showUsage(calendar)" translate>resource.button.showUsage</a>
+                              <a (click)="showUsage(calendar)" translate>resource.calendar.button.showUsage</a>
                             </li>
                             <li nz-menu-item >
                               <a (click)="coreService.copyLink('calendar',calendar.path)" translate>common.button.copyLinkToObject</a>
@@ -258,8 +252,8 @@
                 </nz-table>
                 <div class="w-half label-top"
                      *ngIf="ajaxTable.data.length >0"><span translate>common.label.total</span> {{data.length}}
-                  <span translate *ngIf="ajaxTable.data.length >1">resource.label.calendarsFound</span>
-                  <span translate *ngIf="ajaxTable.data.length ==1">resource.label.calendarFound</span>
+                  <span translate *ngIf="ajaxTable.data.length >1">resource.calendar.label.calendarsFound</span>
+                  <span translate *ngIf="ajaxTable.data.length ==1">resource.calendar.label.calendarFound</span>
                 </div>
               </div>
             </div>

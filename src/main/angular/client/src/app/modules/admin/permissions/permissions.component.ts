@@ -4,7 +4,6 @@ import {Subscription} from 'rxjs';
 import * as _ from 'underscore';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
-import {TreeModalComponent} from '../../../components/tree-modal/tree.component';
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../data.service';
@@ -84,15 +83,20 @@ export class FolderModalComponent implements OnInit {
   @Input() oldFolder: any;
   @Input() newFolder = false;
 
+  nodes = [];
   submitted = false;
   folderObj: any = {paths: []};
   schedulerIds: any;
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private authService: AuthService, private modalService: NgbModal) {
+  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
+    if (this.folderArr && this.folderArr.length > 0) {
+      this.folderObj.paths = this.folderArr.map((folder) => folder.folder);
+    }
+    this.getFolderTree();
   }
 
   onSubmit(obj): void {
@@ -105,16 +109,13 @@ export class FolderModalComponent implements OnInit {
         }
       }
     } else {
-      if (obj.folder) {
-        this.folderArr.push(obj);
-      }
+      this.folderArr = [];
       if (this.folderObj.paths && this.folderObj.paths.length > 0) {
         this.folderObj.paths.forEach((path) => {
           this.folderArr.push({folder: path, recursive: obj.recursive});
         });
       }
     }
-
     if (!this.userDetail.roles[this.role].folders) {
       this.userDetail.roles[this.role].folders = {};
     }
@@ -139,20 +140,20 @@ export class FolderModalComponent implements OnInit {
     });
   }
 
-  getFolderTree(): void {
-    const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.paths = _.clone(this.folderObj.paths);
-    modalRef.componentInstance.showCheckBox = true;
-    modalRef.result.then((result) => {
-      this.folderObj.paths = _.clone(result);
-    }, () => {
-
-    });
+  displayWith(data): string {
+    return data.key;
   }
 
-  remove(object) {
-    this.folderObj.paths.splice(object, 1);
+  getFolderTree(): void {
+    this.coreService.post('tree', {
+      controllerId: this.schedulerIds.selected,
+      forInventory: true
+    }).subscribe(res => {
+      this.nodes = this.coreService.prepareTree(res, true);
+      if (this.nodes.length > 0) {
+        this.nodes[0].expanded = true;
+      }
+    });
   }
 }
 

@@ -19,13 +19,13 @@
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.label.profileName</label>
       <div class=" col-sm-6">
-        <input class="form-control" placeholder="{{'fileTransfer.placeholder.profileName' | translate}}" name="profileId" [(ngModel)]="filter.profileId">
+        <input class="form-control" placeholder="{{'fileTransfer.search.placeholder.profileName' | translate}}" name="profileId" [(ngModel)]="filter.profileId">
       </div>
     </div>
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.label.mandator</label>
       <div class=" col-sm-6">
-        <input class="form-control" placeholder="{{'fileTransfer.placeholder.mandator' | translate}}" name="mandator" [(ngModel)]="filter.mandator">
+        <input class="form-control" placeholder="{{'fileTransfer.search.placeholder.mandator' | translate}}" name="mandator" [(ngModel)]="filter.mandator">
       </div>
     </div>
     <div class="form-group m-b-sm row " *ngIf="isSearch">
@@ -42,8 +42,8 @@
       <div class="col-sm-6">
         <nz-date-picker [nzPlaceHolder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat" [(ngModel)]="filter.from" name="from" ></nz-date-picker>
         <nz-time-picker class="input-time m-l time-picker" timevalidator [nzDisabled]="!filter.from" #fromTime="ngModel"
-                [(ngModel)]="filter.fromTime" name="fromTime" [nzFormat]="'HH:mm:ss'"
-                [nzPlaceHolder]="('common.placeholder.startTime' | translate) + ' (HH:MM:SS)'" ></nz-time-picker>
+                        [(ngModel)]="filter.fromTime" name="fromTime" [nzFormat]="'HH:mm:ss'"
+                        [nzPlaceHolder]="('common.placeholder.startTime' | translate) + ' (HH:MM:SS)'" ></nz-time-picker>
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.radio == 'current'">
@@ -51,20 +51,20 @@
       <div class="col-sm-6">
         <nz-date-picker [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat" [(ngModel)]="filter.to" name="to" ></nz-date-picker>
         <nz-time-picker timevalidator [nzDisabled]="!filter.to" #toTime="ngModel" [nzFormat]="'HH:mm:ss'"
-               class="input-time m-l time-picker" [(ngModel)]="filter.toTime" name="toTime"
-               [nzPlaceHolder]="('common.placeholder.endTime' | translate) + ' (HH:MM:SS)'" ></nz-time-picker>
+                        class="input-time m-l time-picker" [(ngModel)]="filter.toTime" name="toTime"
+                        [nzPlaceHolder]="('common.placeholder.endTime' | translate) + ' (HH:MM:SS)'" ></nz-time-picker>
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.radio == 'planned'" [ngClass]="{ 'has-error' : (processExc1.dirty || processExc1.touched) && processExc1.invalid}">
-        <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.processExecuted</label>
-        <div class=" col-sm-6" >
-          <input validateReqex type="text" name="planned" #processExc1="ngModel" class="form-control"
-                 placeholder="{{'common.placeholder.processExecuted' | translate}}" [(ngModel)]="filter.planned">
-          <div *ngIf="processExc1.errors && (processExc1.dirty || processExc1.touched)" class="help-block text-danger">
-            <div translate *ngIf="!processExc1.valid">common.message.invalid</div>
-          </div>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.processExecuted</label>
+      <div class=" col-sm-6" >
+        <input validateReqex type="text" name="planned" #processExc1="ngModel" class="form-control"
+               placeholder="{{'common.placeholder.processExecuted' | translate}}" [(ngModel)]="filter.planned">
+        <div *ngIf="processExc1.errors && (processExc1.dirty || processExc1.touched)" class="help-block text-danger">
+          <div translate *ngIf="!processExc1.valid">common.message.invalid</div>
         </div>
       </div>
+    </div>
     <div class="form-group row" *ngIf="isSearch">
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.controllerId</label>
       <div class=" col-sm-6">
@@ -84,11 +84,11 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 " [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.label.operations</label>
+      <label class="col-sm-4 " [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.operations</label>
       <div class="col-sm-8">
         <nz-checkbox-wrapper (nzOnChange)="operationChange($event)">
           <ng-container *ngFor="let option of operationOptions">
-            <label nz-checkbox [nzValue]="option.status" [ngModel]="option.checked" [name]="option.text"><span translate>fileTransfer.label.{{option.text}}</span></label>
+            <label nz-checkbox [nzValue]="option.status" [ngModel]="option.checked" [name]="option.text"><span translate>fileTransfer.search.label.{{option.text}}</span></label>
           </ng-container>
         </nz-checkbox-wrapper>
       </div>
@@ -96,62 +96,62 @@
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.label.sourceFileName</label>
       <div class=" col-sm-6">
-        <input class="form-control" placeholder="{{'fileTransfer.placeholder.sourceFileName' | translate}}" name="sourceFileName" [(ngModel)]="filter.sourceFileName">
+        <input class="form-control" placeholder="{{'fileTransfer.search.placeholder.sourceFileName' | translate}}" name="sourceFileName" [(ngModel)]="filter.sourceFileName">
       </div>
     </div>
     <div class="form-group row">
-        <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.label.sourceFileRegex</label>
-         <div class="col-sm-6">
-             <input class="form-control" placeholder="{{'fileTransfer.placeholder.sourceFilesRegex' | translate}}" name="sourceFilesRegex"
-                    [(ngModel)]="filter.sourceFileRegex">
-         </div>
-     </div>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.sourceFileRegex</label>
+      <div class="col-sm-6">
+        <input class="form-control" placeholder="{{'fileTransfer.search.placeholder.sourceFilesRegex' | translate}}" name="sourceFilesRegex"
+               [(ngModel)]="filter.sourceFileRegex">
+      </div>
+    </div>
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.label.targetFileName</label>
       <div class=" col-sm-6">
-        <input class="form-control" placeholder="{{'fileTransfer.placeholder.targetFileName' | translate}}" name="targetFileName" [(ngModel)]="filter.targetFileName">
+        <input class="form-control" placeholder="{{'fileTransfer.search.placeholder.targetFileName' | translate}}" name="targetFileName" [(ngModel)]="filter.targetFileName">
       </div>
     </div>
     <div class="form-group row">
-        <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.label.targetFileRegex</label>
-         <div class="col-sm-6">
-             <input class="form-control" placeholder="{{'fileTransfer.placeholder.targetFilesRegex' | translate}}" name="targetFilesRegex"
-                    [(ngModel)]="filter.targetFileRegex">
-         </div>
-     </div>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.targetFileRegex</label>
+      <div class="col-sm-6">
+        <input class="form-control" placeholder="{{'fileTransfer.search.placeholder.targetFilesRegex' | translate}}" name="targetFilesRegex"
+               [(ngModel)]="filter.targetFileRegex">
+      </div>
+    </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.label.sourceHost</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.sourceHost</label>
       <div class=" col-sm-6">
-        <input class="form-control" placeholder="{{'fileTransfer.placeholder.sourceHost' | translate}}" name="sourceHost" [(ngModel)]="filter.sourceHost">
+        <input class="form-control" placeholder="{{'fileTransfer.search.placeholder.sourceHost' | translate}}" name="sourceHost" [(ngModel)]="filter.sourceHost">
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.label.sourceProtocol</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.sourceProtocol</label>
       <div class="col-sm-6">
         <nz-select name="sourceProtocol"
                    nzMode="multiple"
                    nzAllowClear
                    nzShowSearch
-                   nzPlaceHolder="{{'fileTransfer.placeholder.sourceProtocol' | translate}}"
+                   nzPlaceHolder="{{'fileTransfer.search.placeholder.sourceProtocol' | translate}}"
                    [(ngModel)]="filter.sourceProtocol">
           <nz-option *ngFor="let option of allhosts" [nzLabel]="option" [nzValue]="option"></nz-option>
         </nz-select>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.label.targetHost</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.targetHost</label>
       <div class=" col-sm-6">
-        <input class="form-control" placeholder="{{'fileTransfer.placeholder.targetHost' | translate}}" name="targetHost" [(ngModel)]="filter.targetHost">
+        <input class="form-control" placeholder="{{'fileTransfer.search.placeholder.targetHost' | translate}}" name="targetHost" [(ngModel)]="filter.targetHost">
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.label.targetProtocol</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.targetProtocol</label>
       <div class=" col-sm-6">
         <nz-select name="targetProtocol"
                    nzMode="multiple"
                    nzAllowClear
                    nzShowSearch
-                   nzPlaceHolder="{{'fileTransfer.placeholder.targetProtocol' | translate}}"
+                   nzPlaceHolder="{{'fileTransfer.search.placeholder.targetProtocol' | translate}}"
                    [(ngModel)]="filter.targetProtocol">
           <nz-option *ngFor="let option of allhosts" [nzLabel]="option" [nzValue]="option"></nz-option>
         </nz-select>
@@ -166,7 +166,7 @@
     <div class="form-group m-t m-b-xs" *ngIf="isSearch">
       <button type="button" class="btn btn-primary btn-sm" (click)="search();" translate>common.button.search</button>
       <button type="submit" class="btn btn-default btn-sm m-l-sm" [disabled]="!myForm.form.valid || !isUnique || !filter.name || submitted">
-         <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+        <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
         {{'customization.button.saveAsCustomization' | translate}}
       </button>
       <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>common.button.cancel</button>

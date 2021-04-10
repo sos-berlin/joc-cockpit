@@ -516,11 +516,16 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   getFiles(value): void {
     let ids = [value.id];
+    value.loading = true;
     this.coreService.post('yade/files', {
       transferIds: ids,
       controllerId: value.controllerId || this.schedulerIds.selected
     }).subscribe((res: any) => {
       value.files = res.files;
+      value.loading = false;
+      this.coreService.calFileTransferRowWidth(true);
+    }, () => {
+      value.loading = false;
     });
   }
 

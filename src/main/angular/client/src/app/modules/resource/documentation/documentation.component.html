@@ -7,8 +7,8 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
-            <button *ngIf="object.mapOfCheckedId.size>0 && permission.joc.documentations.manage" class="btn btn-grey btn-sm m-l-12" (click)="exportDocument(null)"><i class="fa fa-download"></i>&nbsp; {{'resource.button.exportDocument' | translate}}</button>
-            <button *ngIf="object.mapOfCheckedId.size>0 && permission.joc.documentations.manage" class="btn btn-grey btn-sm m-l-12" (click)="deleteDocumentations(null)"><i class="fa fa-trash"></i>&nbsp; {{'resource.button.deleteDocument' | translate}}</button>
+            <button *ngIf="object.mapOfCheckedId.size>0 && permission.joc.documentations.manage" class="btn btn-grey btn-sm m-l-12" (click)="exportDocument(null)"><i class="fa fa-download"></i>&nbsp; {{'resource.documentation.button.exportDocument' | translate}}</button>
+            <button *ngIf="object.mapOfCheckedId.size>0 && permission.joc.documentations.manage" class="btn btn-grey btn-sm m-l-12" (click)="deleteDocumentations(null)"><i class="fa fa-trash"></i>&nbsp; {{'resource.documentation.button.deleteDocument' | translate}}</button>
             <div class="inline" [ngClass]="{'hide':object.mapOfCheckedId.size>0}">
               <div class="btn-group dropdown m-l-12">
                 <button class="btn btn-grey btn-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="type" [nzPlacement]="'bottomRight'" >
@@ -63,7 +63,7 @@
                   </ul>
                 </nz-dropdown-menu>
               </div>
-              <button *ngIf="permission.joc.documentations.manage" class="btn btn-grey btn-sm m-l-12" (click)="importDocument()"><i class="fa fa-upload"></i>&nbsp; {{'resource.button.importDocument' | translate}}</button>
+              <button *ngIf="permission.joc.documentations.manage" class="btn btn-grey btn-sm m-l-12" (click)="importDocument()"><i class="fa fa-upload"></i>&nbsp; {{'resource.documentation.button.importDocument' | translate}}</button>
               <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
             </div>
           </div>
@@ -125,7 +125,7 @@
                         <nz-dropdown-menu #option="nzDropdownMenu" >
                           <ul nz-menu>
                             <li nz-menu-item >
-                              <a (click)="previewDocument(document)" translate>resource.button.previewDocument</a>
+                              <a (click)="previewDocument(document)" translate>resource.documentation.button.previewDocument</a>
                             </li>
                             <li nz-menu-item  *ngIf="permission.joc.documentations.manage">
                               <a (click)="exportDocument(document)" translate>common.button.export</a>
@@ -134,7 +134,7 @@
                               <a (click)="deleteDocumentations(document)" translate>common.button.delete</a>
                             </li>
                             <li nz-menu-item >
-                              <a (click)="showDocumentUsage(document)" translate>resource.button.showUsage</a>
+                              <a (click)="showDocumentUsage(document)" translate>resource.documentation.button.showUsage</a>
                             </li>
                             <li nz-menu-item >
                               <a (click)="coreService.copyLink('document',document.path)" translate>common.button.copyLinkToObject</a>
@@ -147,7 +147,7 @@
                         <span [innerHtml]="document.type | highlight : documentFilters.searchText"></span>
                       </div>
                      <div class="text-sm text-left text-muted p-t-sm">
-                       <span translate>resource.label.lastUpdateTime </span>:
+                       <span translate>resource.documentation.label.lastUpdateTime </span>:
                        <span [innerHtml]="document.modified | stringToDate"></span>
                      </div>
                     </div>
@@ -190,7 +190,7 @@
                         (nzCheckedChange)="checkAll($event)"
                     ></th>
                     <th class="menu"><span translate>common.label.action</span></th>
-                    <th (click)="sort('name')"><a><span class="p-r-xs" translate>resource.label.documentName</span>
+                    <th (click)="sort('name')"><a><span class="p-r-xs" translate>resource.documentation.label.documentName</span>
                       <i *ngIf="documentFilters.filter.sortBy == 'name' && !documentFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="documentFilters.filter.sortBy == 'name' && documentFilters.reverse"
@@ -208,7 +208,7 @@
                       <i *ngIf="documentFilters.filter.sortBy == 'type' && documentFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('modified')"><a><span class="p-r-xs" translate>resource.label.lastUpdateTime</span>
+                    <th (click)="sort('modified')"><a><span class="p-r-xs" translate>resource.documentation.label.lastUpdateTime</span>
                       <i *ngIf="documentFilters.filter.sortBy == 'modified' && !documentFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="documentFilters.filter.sortBy == 'modified' && documentFilters.reverse"
@@ -226,7 +226,7 @@
                         <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
                           <ul nz-menu>
                             <li nz-menu-item >
-                              <a (click)="previewDocument(document)" translate>resource.button.previewDocument</a>
+                              <a (click)="previewDocument(document)" translate>resource.documentation.button.previewDocument</a>
                             </li>
                             <li nz-menu-item  *ngIf="permission.joc.documentations.manage">
                               <a (click)="exportDocument(document)" translate>common.button.export</a>
@@ -235,7 +235,7 @@
                               <a (click)="deleteDocumentations(document)" translate>common.button.delete</a>
                             </li>
                             <li nz-menu-item  >
-                              <a (click)="showDocumentUsage(document)" translate>resource.button.showUsage</a>
+                              <a (click)="showDocumentUsage(document)" translate>resource.documentation.button.showUsage</a>
                             </li>
                             <li nz-menu-item >
                               <a (click)="coreService.copyLink('document',document.path)"
@@ -254,8 +254,8 @@
                 </nz-table>
                 <div class="w-half label-top"
                      *ngIf="ajaxTable.data.length >0"><span translate>common.label.total</span> {{data.length}}
-                  <span translate *ngIf="ajaxTable.data.length >1">resource.label.documentationsFound</span>
-                  <span translate *ngIf="ajaxTable.data.length ==1">resource.label.documentationFound</span>
+                  <span translate *ngIf="ajaxTable.data.length >1">resource.documentation.label.documentationsFound</span>
+                  <span translate *ngIf="ajaxTable.data.length ==1">resource.documentation.label.documentationFound</span>
                 </div>
               </div>
             </div>

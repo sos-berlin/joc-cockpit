@@ -92,9 +92,7 @@ export class AccountModalComponent implements OnInit {
 // Main Component
 @Component({
   selector: 'app-accounts-all',
-  templateUrl: 'accounts.component.html',
-  styleUrls: ['./accounts.component.css'],
-
+  templateUrl: 'accounts.component.html'
 })
 export class AccountsComponent implements OnInit, OnDestroy {
 

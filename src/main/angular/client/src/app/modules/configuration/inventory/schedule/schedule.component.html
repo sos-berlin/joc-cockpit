@@ -182,10 +182,12 @@
       [dataObj]="data"></app-table>
   </div>
 </div>
-<div id="rightSideBar" *ngIf="isVisible && data.type" class="slideInRight">
+<nz-drawer [nzVisible]="isVisible" nzPlacement="right" (nzOnClose)="closeCalendarView()">
+  <ng-container *nzDrawerContent>
   <div class="close-btn" (click)="closeCalendarView()"></div>
   <div *ngIf="isVisible">
     <div class="text-center m-b text" ><i class="fa fa-clock-o"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm" translate>runtime.label.runTime</span></div>
     <app-run-time [schedule]="schedule" [isTrash]="isTrash" [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"></app-run-time>
   </div>
-</div>
+  </ng-container>
+</nz-drawer>

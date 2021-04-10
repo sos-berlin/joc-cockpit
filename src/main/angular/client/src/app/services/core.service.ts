@@ -430,7 +430,7 @@ export class CoreService {
       observe: 'response'
     };
     this.http.post(url, object, headers).subscribe((response: any) => {
-      console.log(response.headers.get('content-disposition'), '???', response);
+      //console.log(response.headers.get('content-disposition'), '???', response);
       saveAs(response.body, fileName || response.headers.get('content-disposition'));
       cb(true);
     }, () => {
@@ -1112,6 +1112,39 @@ export class CoreService {
         $(this).css('width', arr[count] + 'px');
       });
     }, 100);
+  }
+
+  calFileTransferRowWidth(isCheckBox): void {
+    setTimeout(() => {
+      let arr = [];
+      const dom = $('#fileTransferTable');
+      dom.find('thead tr.sub-header th.dynamic-thead').each(function() {
+        arr.push($(this).outerWidth());
+      });
+      let count = -1;
+      $('tr.file-table-row').find('th.file-table-col').each(function(i) {
+        count = count + 1;
+        if (count === 8) {
+          count = 0;
+        }
+        if (count === 0) {
+          const firstColWidth = isCheckBox ? 36 : 0;
+          $(this).css('width', (arr[0] + arr[1] - firstColWidth) + 'px');
+        } else if (count === 1) {
+          $(this).css('width', (arr[2] + arr[3]) + 'px');
+        } else if (count === 2) {
+          $(this).css('width', (arr[4] + arr[5]) + 'px');
+        } else if (count === 3) {
+          $(this).css('width', (arr[6] + arr[7]) + 'px');
+        } else if (count === 4) {
+          //$(this).css('width', (arr[8]) + 'px');
+        } else if (count === 5) {
+          //$(this).css('width', (arr[9]) + 'px');
+        } else if (count === 6) {
+          // $(this).css('width', (arr[10] + arr[11]) + 'px');
+        }
+      });
+    }, 0);
   }
 
   clone(json): any {

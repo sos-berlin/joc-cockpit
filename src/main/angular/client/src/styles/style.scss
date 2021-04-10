@@ -5112,6 +5112,16 @@ General CSS
   display: inline-table
 }
 
+.admin-search-bar{
+  margin-top: 10px;
+}
+
+@-moz-document url-prefix() {
+  .admin-search-bar {
+    margin-top: 0;
+  }
+}
+
 .search-close {
   position: absolute;
   opacity: .6;
@@ -5128,24 +5138,27 @@ General CSS
   padding-top: 10px;
 }
 
-
-#rightSideBar {
-  width: 40%;
-  position: fixed;
-  z-index: 9998;
-  top: 0;
-  right: 0;
-  height: 100%;
-  overflow-y: auto;
-  margin: auto 0;
+.ant-drawer-content-wrapper{
+  width: 40% !important;
   padding-left: 12px;
   padding-right: 12px;
-  text-align: center;
   background: var(--bg-box);
   box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.1);
 }
+.ant-drawer-wrapper-body{
+  background: var(--bg-box);
+}
+.ant-drawer-body{
+  padding: 0;
+}
+.ant-drawer-header-no-title{
+  display: none;
+}
+.cdk-global-scrollblock{
+  overflow: auto;
+}
 
-#rightSideBar .close-btn {
+.ant-drawer-content-wrapper .close-btn{
   text-align: left;
   position: relative;
   left: 12px;
@@ -5250,7 +5263,6 @@ button, html [type="button"], [type="reset"], [type="submit"] {
 }
 button[disabled], html input[disabled]{
   cursor: not-allowed;
-  opacity: .8 !important;
 }
 #full-calendar {
   margin-top: 12px;
@@ -5899,64 +5911,49 @@ tr.tr-border td {
 }
 
 .order-history-template0 {
-  background: #fafafa !important;
-}
-
-.order-history-template1 {
-  background: #f1f1f1 !important;
-}
-
-.order-history-template2 {
-  background: #f2f2f2 !important;
-}
-
-.order-history-template2 {
-  background: #f3f3f3 !important;
-}
-
-.order-history-template3 {
-  background: #f4f4f4 !important;
-}
-
-.order-history-template4 {
-  background: #f5f5f5 !important;
-}
-
-.order-history-template5 {
-  background: #f6f6f6 !important;
-}
-
-.order-history-template6 {
-  background: #f7f7f7 !important;
-}
-
-.order-history-template7 {
-  background: #f8f8f8 !important;
-}
-
-.order-history-template8 {
   background: #f9f9f9 !important;
 }
 
-.order-history-template59 {
+.order-history-template1 {
+  background: #f7f7f7 !important;
+}
+
+.order-history-template2 {
+  background: #f5f5f5 !important;
+}
+
+.order-history-template3 {
+  background: #f3f3f3 !important;
+}
+
+.order-history-template4 {
+  background: #f1f1f1 !important;
+}
+
+.order-history-template5 {
+  background: #fafafa !important;
+}
+
+.order-history-template6 {
+  background: #e9e9e9 !important;
+}
+
+.order-history-template7 {
   background: #e8e8e8 !important;
 }
 
-.order-history-template10 {
+.order-history-template8 {
   background: #e7e7e7 !important;
 }
 
-.order-history-template11 {
+.order-history-template9 {
   background: #e6e6e6 !important;
 }
 
-.order-history-template12 {
+.order-history-template10 {
   background: #e5e5e5 !important;
 }
 
-.order-history-template13 {
-  background: #e4e4e4 !important;
-}
 
 .inner-table .ant-table-small {
   border: none !important;

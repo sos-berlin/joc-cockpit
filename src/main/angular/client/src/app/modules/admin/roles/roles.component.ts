@@ -10,6 +10,7 @@ import {DataService} from '../data.service';
 import {CoreService} from '../../../services/core.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {AuthService} from '../../../components/guard';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 // Role Actions
 @Component({
@@ -195,7 +196,8 @@ export class ControllerModalComponent implements OnInit {
 
 @Component({
   selector: 'app-roles',
-  templateUrl: 'roles.component.html'
+  templateUrl: 'roles.component.html',
+  styleUrls: ['./roles.component.css']
 })
 export class RolesComponent implements OnDestroy {
   users: any = [];
@@ -203,7 +205,6 @@ export class RolesComponent implements OnDestroy {
   showMsg: any;
   roles: any = [];
   controllerRoles = [];
-  selectedControllers = [];
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
@@ -228,7 +229,6 @@ export class RolesComponent implements OnDestroy {
       });
   }
 
-
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
@@ -245,10 +245,12 @@ export class RolesComponent implements OnDestroy {
           this.selectUser(params.user);
         }
       });
+    if (this.dataService.preferences.roles.size === 0 && this.controllerRoles.length > 0) {
+      this.dataService.preferences.roles.add(this.controllerRoles[0].name);
+    }
   }
 
   selectUser(user): void {
-    this.selectedControllers = [];
     this.showMsg = false;
     if (user) {
       for (let i = 0; i < this.users.length; i++) {
@@ -266,6 +268,14 @@ export class RolesComponent implements OnDestroy {
     }
   }
 
+  expandRole(role: string): void {
+    this.dataService.preferences.roles.add(role);
+  }
+
+  collapseRole(role: string): void {
+    this.dataService.preferences.roles.delete(role);
+  }
+
   saveInfo(): void {
     const obj = {
       users: this.users,
@@ -273,7 +283,6 @@ export class RolesComponent implements OnDestroy {
       main: this.userDetail.main
     };
     this.coreService.post('authentication/shiro/store', obj).subscribe(res => {
-      // console.log(res)
       this.createRoleArray(obj);
     });
   }
@@ -315,7 +324,7 @@ export class RolesComponent implements OnDestroy {
     });
   }
 
-  deleteRole(role, index): void {
+  deleteRole(role): void {
     let isAssigned: boolean;
     let waringMessage = '';
     for (let i = 0; i < this.users.length; i++) {
@@ -335,7 +344,7 @@ export class RolesComponent implements OnDestroy {
       modalRef.result.then(() => {
         delete this.userDetail.roles[role.name];
         this.saveInfo();
-        this.dataService.preferences.showPanel.splice(index, 1);
+        this.dataService.preferences.roles.delete(role.name);
       }, () => {
 
       });
@@ -392,6 +401,16 @@ export class RolesComponent implements OnDestroy {
     }, () => {
 
     });
+  }
+
+  drop(event: CdkDragDrop<string[]>): void {
+    moveItemInArray(this.controllerRoles, event.previousIndex, event.currentIndex);
+    let roles: any = {};
+    for (let index in this.controllerRoles) {
+      roles[this.controllerRoles[index].name] = this.controllerRoles[index].mainObj;
+    }
+    this.userDetail.roles = roles;
+    this.saveInfo();
   }
 
   private createRoleArray(res): void {
