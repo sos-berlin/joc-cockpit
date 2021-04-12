@@ -5216,8 +5216,10 @@
         });
 
         $scope.$on('$stateChangeSuccess', function (event, toState, toParams) {
-            isCall = true;
-            loadView(toState, toParams);
+            if (!isCall) {
+                isCall = true;
+                loadView(toState, toParams);
+            }
         });
 
         $scope.$on('event-started', function () {

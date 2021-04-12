@@ -47,11 +47,13 @@
                         if($location.path() != '/login') {
                             if ((rejection.status == 440 || rejection.status == 401 ||
                                 (rejection.status == 420 && rejection.data.error.message && rejection.data.error.message.match(/UnknownSessionException/)))) {
-                                toasty.error({
-                                    title: 'message.sessionTimeout',
-                                    msg: 'message.sessionExpired',
-                                    timeout: 10000
-                                });
+                                if(!rejection.config.url.match('/security/login')) {
+                                    toasty.error({
+                                        title: 'message.sessionTimeout',
+                                        msg: 'message.sessionExpired',
+                                        timeout: 10000
+                                    });
+                                }
                                 $window.localStorage.$SOS$URL = $location.path();
                                 $window.localStorage.$SOS$URLPARAMS = JSON.stringify($location.search());
                                 SOSAuth.clearUser();
