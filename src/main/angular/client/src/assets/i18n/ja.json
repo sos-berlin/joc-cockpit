@@ -627,7 +627,7 @@
     "button.restart": "リスタート",
     "label.fileTransfersFound": "ファイル転送があります",
     "message.noFilesFound": "ファイル転送のファイルはありません",
-    "message.noFileFound": "ファイルはありません"
+    "message.noFileFound": "ファイルはありません",
     "tooltip.totalNumberOfFiles": "合計ファイル数",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
@@ -1546,7 +1546,7 @@
     "placeholder.selectLock": "ロックID選択",
     "placeholder.duration": "d/w/m/y/hか、hh:mm:ss、secondsで入力してください",
     "placeholder.enterPositiveNumber": "コンマ区切りで正数を入力",
-    "placeholder.expression": "条件式を入力"
+    "placeholder.expression": "条件式を入力",
     "placeholder.orderId": "オーダーID編集"
   },
   "xml": {
