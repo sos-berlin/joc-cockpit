@@ -1865,5 +1865,5 @@
   "label.mergeJobStreamWithOtherFolder": "Job-Folge mit anderem Ordner zusammenführen",
   "tab.addMissingEvents": "Fehlende Ereignisse hinzufügen",
   "tab.deleteExistingEvents": "Events löschen",
-  "message.calendarTypeCannotBeChange": "You cannot change the type of a calendar that is assigned to a job, job stream, order or schedule"
+  "message.calendarTypeCannotBeChange": "Sie können den Typ eines Kalenders nicht ändern, der einem Job, einer Job-Folge, einem Auftrag oder Zeitplan zugewiesen ist"
 }
