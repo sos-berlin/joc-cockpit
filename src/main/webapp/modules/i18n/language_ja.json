@@ -1865,5 +1865,5 @@
   "label.mergeJobStreamWithOtherFolder": "ジョブストリームを他フォルダーとマージ",
   "tab.addMissingEvents": "欠落イベントを追加",
   "tab.deleteExistingEvents": "既存イベントを削除",
-  "message.calendarTypeCannotBeChange": "You cannot change the type of a calendar that is assigned to a job, job stream, order or schedule"
+  "message.calendarTypeCannotBeChange": "ジョブ、ジョブストリーム、オーダー、スケジュールに割り当てられているカレンダーの種類は変更できません"
 }

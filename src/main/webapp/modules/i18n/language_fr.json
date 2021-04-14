@@ -1865,5 +1865,5 @@
   "label.mergeJobStreamWithOtherFolder": "Fusionner le Flot de Travaux avec un autre dossier",
   "tab.addMissingEvents": "Ajouter les Événements",
   "tab.deleteExistingEvents": "Supprimer les Événements",
-  "message.calendarTypeCannotBeChange": "You cannot change the type of a calendar that is assigned to a job, job stream, order or schedule"
+  "message.calendarTypeCannotBeChange": "Vous ne pouvez pas modifier le type de calendrier qui est attribué à une tâche, un flot de travaux, un ordre ou une planification."
 }
