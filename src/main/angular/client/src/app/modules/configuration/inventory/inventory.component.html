@@ -234,8 +234,7 @@
                   (!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.path === selectedObj.path) ||
                   (node.origin.object && node.origin.object === selectedObj.type && node.origin.path === selectedObj.path)}"
                        (click)="selectNode(node)">
-                    <i
-                      *ngIf="node.children && !node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.dailyPlan"
+                    <i *ngIf="node.children && !node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.dailyPlan"
                       nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                     <i *ngIf="node.origin.controller" nz-icon nzType="container" class="icon-color"
                        nzTheme="outline"></i>

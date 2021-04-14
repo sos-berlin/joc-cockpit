@@ -16,26 +16,28 @@
       [nzTreeTemplate]="nzTreeTemplate"
     ></nz-tree>
     <ng-template #nzTreeTemplate let-node>
-        <div class="node-wrapper">
-          <label nz-checkbox *ngIf="showCheckBox" class="p-r-sm" [(ngModel)]="node.origin.isChecked" name="{{node.key}}" (ngModelChange)="handleCheckbox(node.origin)"></label>
-          <div class="node-content-wrapper"
-               (click)="selectNode(node)">
-            <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-            {{node.origin.name || node.origin.path}}
-          </div>
+      <div class="node-wrapper">
+        <div class="node-content-wrapper"
+             (click)="selectNode(node)">
+          <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+          {{node.origin.name || node.origin.path}}
         </div>
-        <div class="m-l-md m-b-xs" *ngFor="let cal of node.origin.calendars">
-          <label nz-checkbox name="'chk-'+ {{cal.id}}" [(ngModel)]="cal.isChecked" (ngModelChange)="handleCheckbox(cal)"></label>
-          <span style="margin-top: 4px" class="p-l-sm"><i class="fa fa-calendar text-sm">&nbsp;</i>{{cal.name}}</span>
-        </div>
-      </ng-template>
+      </div>
+      <div class="m-b-xs" style="margin-left: 22px" *ngFor="let cal of node.origin.calendars">
+        <label nz-checkbox name="'chk-'+ {{cal.id}}" [(ngModel)]="cal.isChecked" (ngModelChange)="handleCheckbox(cal)"></label>
+        <span style="margin-top: 4px" class="p-l-sm"><i class="fa fa-calendar text-sm">&nbsp;</i>{{cal.name}}</span>
+      </div>
+    </ng-template>
   </div>
-  <div class="m-t-lg" *ngIf="tree.length === 0">
+  <div class="m-t-lg" *ngIf="tree.length === 0 && loading">
     <app-empty-data></app-empty-data>
+  </div>
+  <div class="m-t-lg text-center" *ngIf="!loading">
+    <nz-spin nzSimple [nzSize]="'small'"></nz-spin>
   </div>
 </div>
 <div class="modal-footer ">
-  <div *ngIf="showCheckBox || object">
+  <div *ngIf="object">
     <button type="button" class="btn btn-primary btn-sm"  (click)="submit()"
             translate>common.button.done
     </button>
@@ -44,7 +46,7 @@
       common.button.cancel
     </button>
   </div>
-  <div *ngIf="!showCheckBox && !object">
+  <div *ngIf="!object">
     <button type="button" class="btn btn-grey btn-sm " (click)="activeModal.dismiss('Cross click')"
             translate>
       common.button.close

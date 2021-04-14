@@ -3,29 +3,28 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../services/core.service';
 
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-tree-modal-content',
   templateUrl: './tree.component.html'
 })
 export class TreeModalComponent implements OnInit {
-  tree: any = [];
-
   @Input() schedulerId;
   @Input() paths: any = [];
   @Input() objects: any = [];
-  @Input() showCheckBox: boolean;
   @Input() type: string;
   @Input() object: string;
+  tree: any = [];
   isExpandAll = false;
+  loading = false;
   isSubmitted = false;
 
   constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.init();
   }
 
-  init() {
+  init(): void {
     this.coreService.post('tree', {
       controllerId: this.schedulerId,
       onlyValidObjects: true,
@@ -33,10 +32,13 @@ export class TreeModalComponent implements OnInit {
       types: this.type ? [this.type] : undefined
     }).subscribe(res => {
       this.tree = this.coreService.prepareTree(res, true);
+      this.loading = true;
       if (this.tree.length > 0) {
         this.tree[0].expanded = true;
         this.selectNode(this.tree[0]);
       }
+    }, () => {
+      this.loading = true;
     });
   }
 
@@ -46,9 +48,7 @@ export class TreeModalComponent implements OnInit {
 
   selectNode(e): void {
     const data = e.origin || e;
-    if (this.showCheckBox) {
-
-    } else if (this.object) {
+    if (this.object) {
       if (this.object === 'Calendar') {
         let obj: any = {
           path: e.key,
@@ -86,7 +86,7 @@ export class TreeModalComponent implements OnInit {
     this.isExpandAll = false;
   }
 
-  private getJSObject() {
+  private getJSObject(): void {
     const self = this;
 
     function recursive(nodes) {

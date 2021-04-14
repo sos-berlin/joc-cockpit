@@ -5154,9 +5154,6 @@ General CSS
 .ant-drawer-header-no-title{
   display: none;
 }
-.cdk-global-scrollblock{
-  overflow: auto;
-}
 
 .ant-drawer-content-wrapper .close-btn{
   text-align: left;
@@ -5239,6 +5236,14 @@ input:-webkit-autofill {
 
   .modal-dialog {
     flex-grow: 1;
+  }
+}
+
+.cdk-global-scrollblock {
+  overflow: auto;
+
+  .modal-open .modal {
+    z-index: 99998 !important;
   }
 }
 
