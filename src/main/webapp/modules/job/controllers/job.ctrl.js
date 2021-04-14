@@ -6719,6 +6719,10 @@
                 }
                 vm.importJobstreamObj.jobs = vm.importJobstreamObj.jobs.concat(vm.importJobstreamObj.jobstreams[i].jobs);
                 for (let j = 0; j < vm.importJobstreamObj.jobstreams[i].jobstreamStarters.length; j++) {
+                    if(vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].name) {
+                        vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].starterName = vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].name;
+                    }
+                    vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].name = undefined;
                     vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].jobStream = undefined;
                     vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].state = 'active';
                     for (let x = 0; x < vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].jobs.length; x++) {
@@ -13035,7 +13039,7 @@
                 jobStreams.push(obj);
             }
 
-            let name = 'jobstream-' + vm.folderPath + '-1.13.8' + '.json';
+            let name = 'jobstream-' + vm.folderPath + '-1.13.9' + '.json';
             let fileType = 'application/octet-stream';
             let data = jobStreams;
             if (typeof data === 'object') {
@@ -13047,7 +13051,7 @@
 
         vm.exportInPng = function () {
             if (vm.editor && vm.editor.graph) {
-                vm.exportSvg('jobstream-' + vm.folderPath + '-1.13.8');
+                vm.exportSvg('jobstream-' + vm.folderPath + '-1.13.9');
             }
         };
 
