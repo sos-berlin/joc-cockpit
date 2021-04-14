@@ -12989,7 +12989,7 @@
                     if (vm.workflows[i].jobStream === vm.jobStreamList[x].jobStream) {
                         for (let j = 0; j < vm.jobStreamList[x].jobstreamStarters.length; j++) {
                             let _obj = {
-                                name: vm.jobStreamList[x].jobstreamStarters[j].starterName,
+                                starterName: vm.jobStreamList[x].jobstreamStarters[j].starterName,
                                 title: vm.jobStreamList[x].jobstreamStarters[j].title || '',
                                 jobs: vm.jobStreamList[x].jobstreamStarters[j].jobs,
                                 runTime: vm.jobStreamList[x].jobstreamStarters[j].runTime,
