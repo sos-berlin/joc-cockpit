@@ -5209,17 +5209,17 @@
 
         let isCall = false;
         $scope.$on('$viewContentLoaded', function () {
-            if(!isCall) {
-                isCall = true;
-                loadView($state.current, $state.params);
-            }
+            setTimeout(function () {
+                if (!isCall) {
+                    isCall = true;
+                    loadView($state.current, $state.params);
+                }
+            }, 100);
         });
 
         $scope.$on('$stateChangeSuccess', function (event, toState, toParams) {
-            if (!isCall) {
-                isCall = true;
-                loadView(toState, toParams);
-            }
+            isCall = true;
+            loadView(toState, toParams);
         });
 
         $scope.$on('event-started', function () {

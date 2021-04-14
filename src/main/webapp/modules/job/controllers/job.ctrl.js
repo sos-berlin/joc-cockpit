@@ -6605,6 +6605,43 @@
             vm.fileLoading = false;
         }
 
+        function checkStarterName(starter, isLast, cb) {
+            ConditionService.getStarterName({
+                jobschedulerId: $scope.schedulerIds.selected,
+                starterName: starter.starterName
+            }).then(function (result) {
+                if (result.exist) {
+                    let newName = '';
+                    if (starter.starterName.match(/(^copy\([0-9]*\))+/gi)) {
+                        let tName = starter.starterName;
+                        tName = tName.split('(')[1];
+                        tName = tName.split(')')[0];
+                        tName = parseInt(tName) || 0;
+                        newName = 'copy' + '(' + (tName + 1) + ')' + 'of_';
+                    } else {
+                        newName = 'copy(1)of_';
+                    }
+                    starter.starterName = newName + starter.starterName;
+                    checkStarterName(starter, isLast, cb);
+                    return;
+                }
+                if(isLast) {
+                   // cb();
+                }
+            }, function () {
+                cb();
+            });
+        }
+
+        function checkJobStreamStarterNameRecursively(cb) {
+            for (let i = 0; i < vm.importJobstreamObj.jobstreams.length; i++) {
+                for (let j = 0; j < vm.importJobstreamObj.jobstreams[i].jobstreamStarters.length; j++) {
+                    const isLast = (vm.importJobstreamObj.jobstreams.length -1 === i) && (vm.importJobstreamObj.jobstreams[i].jobstreamStarters.length- 1 === j)
+                    checkStarterName(vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j], isLast,  cb);
+                }
+            }
+        }
+
         function checkJobStreamNameRecursively(cb) {
             let newName = '';
             for (let i = 0; i < vm.importJobstreamObj.jobstreams.length; i++) {
@@ -6681,13 +6718,15 @@
                 if (uploader && uploader.queue && uploader.queue.length > 0) {
                     uploader.queue[0].remove();
                 }
-                if (!vm.importJobstreamObj.merge && vm.importJobstreamObj.isSame) {
-                    checkJobStreamNameRecursively(function(isChange){
-                        updateStarterAndConditions(isChange);
-                    });
-                }else{
-                    updateStarterAndConditions();
-                }
+                checkJobStreamStarterNameRecursively(function() {
+                    if (!vm.importJobstreamObj.merge && vm.importJobstreamObj.isSame) {
+                        checkJobStreamNameRecursively(function (isChange) {
+                            updateStarterAndConditions(isChange);
+                        });
+                    } else {
+                        updateStarterAndConditions();
+                    }
+                });
             }, function () {
                 vm.importJobstreamObj = {};
             });
@@ -6709,20 +6748,16 @@
                     if (isChange) {
                         for (let j = 0; j < vm.importJobstreamObj.jobstreams[i].jobs.length; j++) {
                             for (let k = 0; k < vm.importJobstreamObj.jobstreams[i].jobs[j].inconditions.length; k++) {
-                                vm.importJobstreamObj.jobstreams[i].jobs[j].inconditions[k].jobStream = vm.importJobstreamObj.jobstreams[i].newJobStream;
+                                vm.importJobstreamObj.jobstreams[i].jobs[j].inconditions[k].jobStream = vm.importJobstreamObj.jobstreams[i].newJobStream || vm.importJobstreamObj.jobstreams[i].jobStream;
                             }
                             for (let k = 0; k < vm.importJobstreamObj.jobstreams[i].jobs[j].outconditions.length; k++) {
-                                vm.importJobstreamObj.jobstreams[i].jobs[j].outconditions[k].jobStream = vm.importJobstreamObj.jobstreams[i].newJobStream;
+                                vm.importJobstreamObj.jobstreams[i].jobs[j].outconditions[k].jobStream = vm.importJobstreamObj.jobstreams[i].newJobStream || vm.importJobstreamObj.jobstreams[i].jobStream;
                             }
                         }
                     }
                 }
                 vm.importJobstreamObj.jobs = vm.importJobstreamObj.jobs.concat(vm.importJobstreamObj.jobstreams[i].jobs);
                 for (let j = 0; j < vm.importJobstreamObj.jobstreams[i].jobstreamStarters.length; j++) {
-                    if(vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].name) {
-                        vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].starterName = vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].name;
-                    }
-                    vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].name = undefined;
                     vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].jobStream = undefined;
                     vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].state = 'active';
                     for (let x = 0; x < vm.importJobstreamObj.jobstreams[i].jobstreamStarters[j].jobs.length; x++) {
@@ -13039,7 +13074,7 @@
                 jobStreams.push(obj);
             }
 
-            let name = 'jobstream-' + vm.folderPath + '-1.13.9' + '.json';
+            let name = 'jobstream-' + (vm.folderPath || '/') + '-1.13.9' + '.json';
             let fileType = 'application/octet-stream';
             let data = jobStreams;
             if (typeof data === 'object') {
@@ -13051,7 +13086,7 @@
 
         vm.exportInPng = function () {
             if (vm.editor && vm.editor.graph) {
-                vm.exportSvg('jobstream-' + vm.folderPath + '-1.13.9');
+                vm.exportSvg('jobstream-' + (vm.folderPath || '/') + '-1.13.9');
             }
         };
 
