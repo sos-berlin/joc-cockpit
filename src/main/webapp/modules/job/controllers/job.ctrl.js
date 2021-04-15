@@ -6626,7 +6626,7 @@
                     return;
                 }
                 if(isLast) {
-                   // cb();
+                   cb();
                 }
             }, function () {
                 cb();
