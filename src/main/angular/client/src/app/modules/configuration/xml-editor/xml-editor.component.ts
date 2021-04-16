@@ -1,11 +1,11 @@
-import {Component, Input, OnInit, ViewChild, OnDestroy} from '@angular/core';
-import {NzFormatEmitEvent, NzTreeNode, NzFormatBeforeDropEvent} from 'ng-zorro-antd/tree';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {NzFormatBeforeDropEvent, NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd/tree';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {FileUploader} from 'ng2-file-upload';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {Subscription, of, Observable} from 'rxjs';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {Observable, of, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {ClipboardService} from 'ngx-clipboard';
 import {saveAs} from 'file-saver';
@@ -36,7 +36,7 @@ export class ShowChildModalComponent implements OnInit {
   selectedNode: any;
   isExpandAll = false;
 
-  constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
   }
 
   ngOnInit(): void {
@@ -90,16 +90,6 @@ export class ShowChildModalComponent implements OnInit {
     return text;
   }
 
-  private expandCollapseRec(node, flag): void {
-    for (let i = 0; i < node.length; i++) {
-      if (node[i].children && node[i].children.length > 0) {
-        node[i].expanded = flag;
-        this.expandCollapseRec(node[i].children, flag);
-      }
-    }
-    this.updateTree();
-  }
-
   expandAll(): void {
     this.isExpandAll = true;
     this.updateTree();
@@ -115,7 +105,6 @@ export class ShowChildModalComponent implements OnInit {
       }
     }
   }
-
 
   search(q): void {
     let count = 0;
@@ -196,7 +185,6 @@ export class ShowChildModalComponent implements OnInit {
     }
     this.updateTree();
   }
-
 
   updateTree(): void {
     this.showAllChild = [...this.showAllChild];
@@ -541,6 +529,16 @@ export class ShowChildModalComponent implements OnInit {
       }
     }
   }
+
+  private expandCollapseRec(node, flag): void {
+    for (let i = 0; i < node.length; i++) {
+      if (node[i].children && node[i].children.length > 0) {
+        node[i].expanded = flag;
+        this.expandCollapseRec(node[i].children, flag);
+      }
+    }
+    this.updateTree();
+  }
 }
 
 @Component({
@@ -563,7 +561,7 @@ export class ShowModalComponent implements OnInit {
   obj: any = {xml: ''};
   @ViewChild('codeMirror', {static: true}) cm;
 
-  constructor(public activeModal: NgbActiveModal, public coreService: CoreService,
+  constructor(public activeModal: NzModalRef, public coreService: CoreService,
               private toasterService: ToasterService, private clipboardService: ClipboardService) {
   }
 
@@ -681,8 +679,7 @@ export class ImportModalComponent implements OnInit {
   assignXsd: any;
   uploadData: any;
 
-  constructor(public activeModal: NgbActiveModal,
-              public modalService: NgbModal,
+  constructor(public activeModal: NzModalRef,
               public translate: TranslateService,
               public toasterService: ToasterService
   ) {
@@ -779,7 +776,7 @@ export class ConfirmationModalComponent {
   @Input() objectType;
   @Input() activeTab;
 
-  constructor(public activeModal: NgbActiveModal) {
+  constructor(public activeModal: NzModalRef) {
   }
 
   confirmMessage(message) {
@@ -792,7 +789,7 @@ export class ConfirmationModalComponent {
       }
     } else {
       if (this.delete || this.deleteAll) {
-        this.activeModal.dismiss();
+        this.activeModal.destroy();
       } else {
         this.assignXsd(this.self);
         this.activeModal.close('success');
@@ -811,7 +808,7 @@ export class DiffPatchModalComponent {
   @Input() draftXml;
   @Input() xmlVersionObj;
 
-  constructor(public activeModal: NgbActiveModal) {
+  constructor(public activeModal: NzModalRef) {
   }
 
   checkBoxCheck(data) {
@@ -827,7 +824,7 @@ export class DiffPatchModalComponent {
   }
 
   cancel() {
-    this.activeModal.dismiss();
+    this.activeModal.destroy();
   }
 }
 
@@ -944,11 +941,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   @ViewChild('myckeditor', {static: false}) ckeditor: any;
   @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
-  @ViewChild(PerfectScrollbarComponent, { static: false }) componentRef?: PerfectScrollbarComponent;
+  @ViewChild(PerfectScrollbarComponent, {static: false}) componentRef?: PerfectScrollbarComponent;
 
   constructor(
     public coreService: CoreService,
-    private modalService: NgbModal,
+    private modal: NzModalService,
     private dataService: DataService,
     public translate: TranslateService,
     public toasterService: ToasterService,
@@ -1043,25 +1040,32 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   deleteAllConf(): void {
     this.deleteAll = true;
     this.delete = false;
-    let modalRef = this.modalService.open(ConfirmationModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.deleteAll = true;
-    modalRef.componentInstance.objectType = this.objectType;
-    modalRef.result.then((res) => {
-      let obj = {
-        controllerId: this.schedulerIds.selected,
-        objectTypes: [this.objectType],
-      };
-      this.coreService.post('xmleditor/delete/all', obj).subscribe(() => {
-        this.tabsArray = [];
-        this.nodes = [];
-        this.selectedNode = [];
-        this.submitXsd = false;
-        this.isLoading = false;
-        this.XSDState = '';
-        this.schemaIdentifier = '';
-      });
-      this.deleteAll = false;
-    }, () => {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ConfirmationModalComponent,
+      nzComponentParams: {
+        deleteAll: true,
+        objectType: this.objectType
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        let obj = {
+          controllerId: this.schedulerIds.selected,
+          objectTypes: [this.objectType],
+        };
+        this.coreService.post('xmleditor/delete/all', obj).subscribe(() => {
+          this.tabsArray = [];
+          this.nodes = [];
+          this.selectedNode = [];
+          this.submitXsd = false;
+          this.isLoading = false;
+          this.XSDState = '';
+          this.schemaIdentifier = '';
+        });
+      }
       this.deleteAll = false;
     });
   }
@@ -1081,17 +1085,22 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   deleteConf() {
     this.delete = true;
     this.deleteAll = false;
-    let modalRef = this.modalService.open(ConfirmationModalComponent, {backdrop: 'static', size: 'sm'});
-    modalRef.componentInstance.delete = this.delete;
-    modalRef.componentInstance.deleteAll = this.deleteAll;
-    modalRef.componentInstance.objectType = this.objectType;
-    if (this.objectType !== 'NOTIFICATION') {
-      modalRef.componentInstance.activeTab = this.activeTab;
-    }
-    modalRef.result.then((res: any) => {
-      this.del();
-      this.delete = false;
-    }, () => {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ConfirmationModalComponent,
+      nzComponentParams: {
+        delete: this.delete,
+        deleteAll: this.deleteAll,
+        objectType: this.objectType,
+        activeTab: (this.objectType !== 'NOTIFICATION') ? this.activeTab : undefined
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.del();
+      }
       this.delete = false;
     });
   }
@@ -1270,17 +1279,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.reassignSchema = false;
     this.submitXsd = true;
     this.showSelectSchema = false;
-  }
-
-  // Expand all Node
-  private expandCollapseRec(node, flag) {
-    for (let i = 0; i < node.length; i++) {
-      if (node[i].children && node[i].children.length > 0) {
-        node[i].expanded = flag;
-        this.expandCollapseRec(node[i].children, flag);
-      }
-    }
-    this.updateTree();
   }
 
   expandAll() {
@@ -3006,7 +3004,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-
   // to send data in details component
   getData(event) {
     if (event && event.keyref) {
@@ -3495,13 +3492,15 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.counter = 0;
     this.getAllChild(obj.children);
     this.showAllChild.push(obj);
-    const modalRef = this.modalService.open(ShowChildModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.showAllChild = this.showAllChild;
-    modalRef.componentInstance.doc = this.doc;
-    modalRef.result.then(() => {
-
-    }, () => {
-
+    this.modal.create({
+      nzTitle: null,
+      nzContent: ShowChildModalComponent,
+      nzComponentParams: {
+        showAllChild: this.showAllChild,
+        doc: this.doc,
+      },
+      nzFooter: null,
+      nzClosable: false
     });
   }
 
@@ -4414,7 +4413,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-
   addKey(node: any) {
     for (let i = 0; i < node.length; i++) {
       node[i].key = node[i].uuid;
@@ -4440,11 +4438,19 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     } else {
       this.importObj = {assignXsd: this.objectType};
     }
-    const modalRef = this.modalService.open(ImportModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.importObj = this.importObj;
-    modalRef.componentInstance.otherSchema = this.otherSchema;
-    modalRef.componentInstance.importXsd = false;
-    modalRef.result.then((res: any) => {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ImportModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        importObj: this.importObj,
+        otherSchema: this.otherSchema,
+        importXsd: false
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(res => {
       if (res) {
         this.schemaIdentifier = this.importObj.assignXsd;
         if (this.importObj.assignXsd) {
@@ -4469,8 +4475,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           }
         }
       }
-    }, () => {
-
     });
   }
 
@@ -4522,15 +4526,21 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.isLoading = false;
       this.toasterService.pop('error', error.data.error.message);
     });
-    const modalRef = this.modalService.open(DiffPatchModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.liveXml = this.liveXml;
-    modalRef.componentInstance.draftXml = this.draftXml;
-    modalRef.componentInstance.xmlVersionObj = this.xmlVersionObj;
-    modalRef.result.then((res: any) => {
-      if (res.xmlVersionObj.liveVersion) {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: DiffPatchModalComponent,
+      nzComponentParams: {
+        liveXml: this.liveXml,
+        draftXml: this.draftXml,
+        xmlVersionObj: this.xmlVersionObj
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(res => {
+      if (res && res.xmlVersionObj.liveVersion) {
         this.del();
       }
-    }, () => {
     });
   }
 
@@ -4591,16 +4601,18 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   // open new Confirmation model
   newFile() {
     if (this.submitXsd && this.objectType === 'NOTIFICATION') {
-      const modalRef = this.modalService.open(ConfirmationModalComponent, {backdrop: 'static', size: 'sm'});
-      modalRef.componentInstance.save = this.save2;
-      modalRef.componentInstance.assignXsd = this.newXsdAssign;
-      modalRef.componentInstance.self = this;
-      modalRef.result.then((res) => {
-        this.copyItem = undefined;
-        this.nodes = [];
-        this.selectedNode = [];
-        this.newConf();
-      }, () => {
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: ConfirmationModalComponent,
+        nzComponentParams: {
+          save: this.save2,
+          assignXsd: this.newXsdAssign,
+          self: this
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
         this.copyItem = undefined;
         this.nodes = [];
         this.selectedNode = [];
@@ -4626,21 +4638,31 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   importXSD() {
     this.importXSDFile = true;
-    const modalRef = this.modalService.open(ImportModalComponent, {size: 'lg', backdrop: 'static'});
-    modalRef.componentInstance.importXsd = true;
-    modalRef.result.then((res: any) => {
-      this.uploadData = res.uploadData;
-      if (!this.ok(this.uploadData)) {
-        if (this.reassignSchema) {
-          this.changeSchema(res);
-        } else {
-          this.othersSubmit(res);
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ImportModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        importXsd: true
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(res => {
+      if (res) {
+        this.uploadData = res.uploadData;
+        if (!this.ok(this.uploadData)) {
+          if (this.reassignSchema) {
+            this.changeSchema(res);
+          } else {
+            this.othersSubmit(res);
+          }
+          this.importXSDFile = false;
         }
-        this.importXSDFile = false;
       }
-    }, () => {
       this.toasterService.clear();
     });
+
   }
 
   othersSubmit(data): void {
@@ -4717,42 +4739,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     });
   }
 
-  private createNewTab() {
-    let _tab;
-    if (this.tabsArray.length === 0) {
-      _tab = _.clone({id: -1, name: 'edit1'});
-    } else {
-      let tempName;
-      _tab = _.clone(this.tabsArray[this.tabsArray.length - 1]);
-      _tab.id = Math.sign(_.clone(_tab.id - 1)) === 1 ? -1 : _.clone(_tab.id - 1);
-      for (let i = 0; i < this.tabsArray.length; i++) {
-        if (this.tabsArray[i].name) {
-          let _arr = this.tabsArray[i].name.match(/[a-zA-Z]+/g);
-          if (_arr && _arr.length > 0 && _arr[0] === 'edit') {
-            if (!tempName) {
-              tempName = this.tabsArray[i].name;
-            }
-            if (tempName && (parseInt(this.tabsArray[i].name.match(/\d+/g)[0], 10) > parseInt(tempName.match(/\d+/g)[0], 10))) {
-              tempName = this.tabsArray[i].name;
-            }
-          }
-        }
-      }
-      if (tempName) {
-        _tab.name = _.clone('edit' + (parseInt(tempName.match(/\d+/g)[0], 10) + 1));
-      } else {
-        _tab.name = 'edit1';
-      }
-    }
-    _tab.schemaIdentifier = null;
-    this.tabsArray.push(_tab);
-    this.selectedTabIndex = this.tabsArray.length - 1;
-    this.reassignSchema = false;
-    this.activeTab = _tab;
-    // this._activeTab.isVisible = true;
-    this.readOthersXSD(_tab.id);
-  }
-
   changeLastUUid(node) {
     this.lastScrollId = _.clone(node.uuid);
   }
@@ -4769,13 +4755,21 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (!xml) {
       return;
     }
-    const modalRef = this.modalService.open(ShowModalComponent, {backdrop: 'static', size: 'lg', windowClass: 'script-editor'});
-    modalRef.componentInstance.xml = xml;
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.objectType = this.objectType;
-    modalRef.componentInstance.schemaIdentifier = this.schemaIdentifier;
-    modalRef.componentInstance.activeTab = this.activeTab;
-    modalRef.result.then((res: any) => {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ShowModalComponent,
+      nzClassName: 'lg script-editor',
+      nzComponentParams: {
+        xml: xml,
+        schedulerId: this.schedulerIds.selected,
+        objectType: this.objectType,
+        schemaIdentifier: this.schemaIdentifier,
+        activeTab: this.activeTab
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(res => {
       if (res && res.result.configurationJson) {
         let a = [];
         let arr = JSON.parse(res.result.configurationJson);
@@ -4791,38 +4785,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         this.getIndividualData(this.selectedNode, undefined);
         this.getData(this.selectedNode);
       }
-    }, () => {
-
     });
-  }
-
-  private jsonToXml() {
-    if (this.nodes.length > 0) {
-      let doc = document.implementation.createDocument('', '', null);
-      let peopleElem = doc.createElement(this.nodes[0].ref);
-      if (peopleElem) {
-        if (this.nodes[0].attributes && this.nodes[0].attributes.length > 0) {
-          for (let i = 0; i < this.nodes[0].attributes.length; i++) {
-            if (this.nodes[0].attributes[i].data) {
-              peopleElem.setAttribute(this.nodes[0].attributes[i].name, this.nodes[0].attributes[i].data);
-            }
-          }
-        }
-        if (this.nodes[0] && this.nodes[0].values && this.nodes[0].values.length >= 0) {
-          for (let i = 0; i < this.nodes[0].values.length; i++) {
-            if (this.nodes[0].values[0].data) {
-              peopleElem.createCDATASection(this.nodes[0].values[0].data);
-            }
-          }
-        }
-        if (this.nodes[0].children && this.nodes[0].children.length > 0) {
-          for (let i = 0; i < this.nodes[0].children.length; i++) {
-            this.createChildJson(peopleElem, this.nodes[0].children[i], doc.createElement(this.nodes[0].children[i].ref), doc);
-          }
-        }
-      }
-      return peopleElem;
-    }
   }
 
   createChildJson(node, childrenNode, curentNode, doc) {
@@ -5192,6 +5155,92 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
+  hidePanel(): void {
+    this.sideView.xml.show = false;
+    this.coreService.hideConfigPanel();
+  }
+
+  showPanel(): void {
+    this.sideView.xml.show = true;
+    this.coreService.showConfigPanel();
+  }
+
+  // Expand all Node
+  private expandCollapseRec(node, flag) {
+    for (let i = 0; i < node.length; i++) {
+      if (node[i].children && node[i].children.length > 0) {
+        node[i].expanded = flag;
+        this.expandCollapseRec(node[i].children, flag);
+      }
+    }
+    this.updateTree();
+  }
+
+  private createNewTab() {
+    let _tab;
+    if (this.tabsArray.length === 0) {
+      _tab = _.clone({id: -1, name: 'edit1'});
+    } else {
+      let tempName;
+      _tab = _.clone(this.tabsArray[this.tabsArray.length - 1]);
+      _tab.id = Math.sign(_.clone(_tab.id - 1)) === 1 ? -1 : _.clone(_tab.id - 1);
+      for (let i = 0; i < this.tabsArray.length; i++) {
+        if (this.tabsArray[i].name) {
+          let _arr = this.tabsArray[i].name.match(/[a-zA-Z]+/g);
+          if (_arr && _arr.length > 0 && _arr[0] === 'edit') {
+            if (!tempName) {
+              tempName = this.tabsArray[i].name;
+            }
+            if (tempName && (parseInt(this.tabsArray[i].name.match(/\d+/g)[0], 10) > parseInt(tempName.match(/\d+/g)[0], 10))) {
+              tempName = this.tabsArray[i].name;
+            }
+          }
+        }
+      }
+      if (tempName) {
+        _tab.name = _.clone('edit' + (parseInt(tempName.match(/\d+/g)[0], 10) + 1));
+      } else {
+        _tab.name = 'edit1';
+      }
+    }
+    _tab.schemaIdentifier = null;
+    this.tabsArray.push(_tab);
+    this.selectedTabIndex = this.tabsArray.length - 1;
+    this.reassignSchema = false;
+    this.activeTab = _tab;
+    // this._activeTab.isVisible = true;
+    this.readOthersXSD(_tab.id);
+  }
+
+  private jsonToXml() {
+    if (this.nodes.length > 0) {
+      let doc = document.implementation.createDocument('', '', null);
+      let peopleElem = doc.createElement(this.nodes[0].ref);
+      if (peopleElem) {
+        if (this.nodes[0].attributes && this.nodes[0].attributes.length > 0) {
+          for (let i = 0; i < this.nodes[0].attributes.length; i++) {
+            if (this.nodes[0].attributes[i].data) {
+              peopleElem.setAttribute(this.nodes[0].attributes[i].name, this.nodes[0].attributes[i].data);
+            }
+          }
+        }
+        if (this.nodes[0] && this.nodes[0].values && this.nodes[0].values.length >= 0) {
+          for (let i = 0; i < this.nodes[0].values.length; i++) {
+            if (this.nodes[0].values[0].data) {
+              peopleElem.createCDATASection(this.nodes[0].values[0].data);
+            }
+          }
+        }
+        if (this.nodes[0].children && this.nodes[0].children.length > 0) {
+          for (let i = 0; i < this.nodes[0].children.length; i++) {
+            this.createChildJson(peopleElem, this.nodes[0].children[i], doc.createElement(this.nodes[0].children[i].ref), doc);
+          }
+        }
+      }
+      return peopleElem;
+    }
+  }
+
   private del() {
     if (this.objectType !== 'NOTIFICATION' && this.activeTab.id < 0) {
       for (let i = 0; i < this.tabsArray.length; i++) {
@@ -5544,10 +5593,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.objectXml = {};
     this.objectXml.isXMLEditor = true;
     this.objectXml.xml = data;
-    const modalRef = this.modalService.open(ShowModalComponent, {size: 'lg', backdrop: 'static', windowClass: 'script-editor'});
-    modalRef.result.then(() => {
-
-    }, () => {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ShowModalComponent,
+      nzClassName: 'lg script-editor',
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
       this.objectXml = {};
       this.toasterService.clear();
     });
@@ -5622,15 +5675,5 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     } else {
       return null;
     }
-  }
-
-  hidePanel(): void {
-    this.sideView.xml.show = false;
-    this.coreService.hideConfigPanel();
-  }
-
-  showPanel(): void {
-    this.sideView.xml.show = true;
-    this.coreService.showConfigPanel();
   }
 }

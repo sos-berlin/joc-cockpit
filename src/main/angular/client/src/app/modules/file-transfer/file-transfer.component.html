@@ -208,7 +208,7 @@
       </div>
     </div>
     <div class="m-t-sm box p-a">
-      <div class="table-responsive">
+      <div class="table-responsive" id="fileTransferMainTable">
         <nz-table
           #ajaxTable
           [nzSize]="'small'"
@@ -225,7 +225,7 @@
           [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage || 500]"
         >
           <thead>
-          <tr>
+          <tr class="main-header-row">
             <th class="chk" *ngIf="permission && permission.joc && permission.joc.fileTransfer.manage"
                 [nzShowCheckbox]="true"
                 [(nzChecked)]="object.checked"
@@ -431,19 +431,19 @@
                   </tbody>
                 </nz-table>
                 <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small" [nzLoading]="transfer.loading"
-                          [nzData]="transfer.files" [nzFrontPagination]="false" [nzShowPagination]="false">
+                          [nzData]="transfer.files" [nzFrontPagination]="false" [nzShowPagination]="false" [nzWidthConfig]="transfer.widthArr">
                   <thead>
-                  <tr class="file-table-row">
+                  <tr>
                     <th class="chk" *ngIf="permission.joc.fileTransfer.manage">
                       #
                     </th>
-                    <th class="file-table-col"><span translate>fileTransfer.label.sourceFileName</span></th>
-                    <th class="file-table-col"><span translate>fileTransfer.label.sourceFilePath</span></th>
-                    <th class="file-table-col"><span translate>fileTransfer.label.targetFileName</span></th>
-                    <th class="file-table-col"><span translate>fileTransfer.label.targetFilePath</span></th>
-                    <th class="file-table-col"><span translate>fileTransfer.label.status</span></th>
-                    <th class="file-table-col"><span translate>fileTransfer.label.size</span></th>
-                    <th class="file-table-col"><span translate>fileTransfer.label.integrityHash</span></th>
+                    <th><span translate>fileTransfer.label.sourceFileName</span></th>
+                    <th><span translate>fileTransfer.label.sourceFilePath</span></th>
+                    <th><span translate>fileTransfer.label.targetFileName</span></th>
+                    <th><span translate>fileTransfer.label.targetFilePath</span></th>
+                    <th><span translate>fileTransfer.label.status</span></th>
+                    <th><span translate>fileTransfer.label.size</span></th>
+                    <th><span translate>fileTransfer.label.integrityHash</span></th>
                   </tr>
                   </thead>
                   <tbody>

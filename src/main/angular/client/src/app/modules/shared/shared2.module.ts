@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {TranslateModule} from '@ngx-translate/core';
 import {RouterModule} from '@angular/router';
-import {NgbModalModule} from '@ng-bootstrap/ng-bootstrap';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
 import {NzEmptyModule} from 'ng-zorro-antd/empty';
 import {CommonModule} from '@angular/common';
@@ -22,7 +22,7 @@ import {OrderActionComponent} from '../order-overview/order-action/order-action.
 import {EmptyDataComponent} from '../../components/empty-data/empty-data.component';
 
 
-const MODULES = [CommonModule, FormsModule, NgbModalModule, NzDropDownModule, TranslateModule,
+const MODULES = [CommonModule, FormsModule, NzModalModule, NzDropDownModule, TranslateModule,
   PerfectScrollbarModule, NzEmptyModule];
 const PIPES = [StringDatePipe, TimeInStringFormatPipe, StringTimePipe, DecodeSpacePipe, SafeHtmlPipe, SearchPipe, HighlightSearch];
 const EXPORTS = [...PIPES, EmptyDataComponent, SubLinkComponent, BreadcrumbsComponent, OrderActionComponent];

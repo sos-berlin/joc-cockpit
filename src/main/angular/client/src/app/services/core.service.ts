@@ -10,7 +10,7 @@ import {saveAs} from 'file-saver';
 import {AuthService} from '../components/guard';
 
 declare const diff_match_patch;
-declare var $;
+declare const $;
 
 @Injectable({
   providedIn: 'root'
@@ -1114,37 +1114,23 @@ export class CoreService {
     }, 100);
   }
 
-  calFileTransferRowWidth(isCheckBox): void {
-    setTimeout(() => {
-      let arr = [];
-      const dom = $('#fileTransferTable');
-      dom.find('thead tr.sub-header th.dynamic-thead').each(function() {
-        arr.push($(this).outerWidth());
-      });
-      let count = -1;
-      $('tr.file-table-row').find('th.file-table-col').each(function(i) {
-        count = count + 1;
-        if (count === 8) {
-          count = 0;
-        }
-        if (count === 0) {
-          const firstColWidth = isCheckBox ? 36 : 0;
-          $(this).css('width', (arr[0] + arr[1] - firstColWidth) + 'px');
-        } else if (count === 1) {
-          $(this).css('width', (arr[2] + arr[3]) + 'px');
-        } else if (count === 2) {
-          $(this).css('width', (arr[4] + arr[5]) + 'px');
-        } else if (count === 3) {
-          $(this).css('width', (arr[6] + arr[7]) + 'px');
-        } else if (count === 4) {
-          //$(this).css('width', (arr[8]) + 'px');
-        } else if (count === 5) {
-          //$(this).css('width', (arr[9]) + 'px');
-        } else if (count === 6) {
-          // $(this).css('width', (arr[10] + arr[11]) + 'px');
-        }
-      });
-    }, 0);
+  calFileTransferRowWidth(isCheckBox): Array<string> {
+    const arr = [];
+    const arr2 = [];
+    const dom = $('#fileTransferTable');
+    dom.find('thead tr.sub-header th.dynamic-thead').each(function() {
+      arr.push($(this).outerWidth());
+    });
+
+    const firstColWidth = isCheckBox ? 36 : 0;
+    arr2.push((arr[0] + arr[1] - firstColWidth) + 'px');
+    arr2.push((arr[2] + arr[3]) + 'px');
+    arr2.push((arr[4] + arr[5]) + 'px');
+    arr2.push((arr[6] + arr[7]) + 'px');
+    arr2.push((arr[8]) + 'px');
+    arr2.push((arr[9]) + 'px');
+    arr2.push((arr[10] + arr[11]) + 'px');
+    return arr2;
   }
 
   clone(json): any {

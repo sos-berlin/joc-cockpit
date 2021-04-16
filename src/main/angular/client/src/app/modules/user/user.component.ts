@@ -4,8 +4,8 @@ import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {FileUploader, FileUploaderOptions} from 'ng2-file-upload';
 import {ToasterService} from 'angular2-toaster';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
@@ -23,7 +23,7 @@ export class UpdateKeyModalComponent implements OnInit {
   submitted = false;
   algorithm: any = {};
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
   ngOnInit(): void {
@@ -47,7 +47,7 @@ export class UpdateKeyModalComponent implements OnInit {
       }
     }
     obj.keyAlgorithm = this.algorithm.keyAlg;
-    this.coreService.post('profile/key/store', {keys :  obj}).subscribe(res => {
+    this.coreService.post('profile/key/store', {keys: obj}).subscribe(res => {
       this.submitted = false;
       this.activeModal.close();
     }, (err) => {
@@ -72,7 +72,8 @@ export class ImportKeyModalComponent implements OnInit {
   comments: any = {};
   key = {keyAlg: 'RSA'};
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private authService: AuthService, public translate: TranslateService, public toasterService: ToasterService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService,
+              public translate: TranslateService, public toasterService: ToasterService) {
     this.uploader = new FileUploader({
       url: './api/profile/key/import',
       queueLimit: 2
@@ -186,10 +187,10 @@ export class GenerateKeyComponent {
   submitted = false;
   expiry: any = {dateValue: 'date'};
   key: any = {
-    keyAlg : 'RSA'
+    keyAlg: 'RSA'
   };
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private toasterService: ToasterService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private toasterService: ToasterService) {
   }
 
   cancel(): void {
@@ -240,7 +241,7 @@ export class UserComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(public coreService: CoreService, private dataService: DataService, public authService: AuthService, private router: Router,
-              private modalService: NgbModal, private translate: TranslateService, private toasterService: ToasterService) {
+              private modal: NzModalService, private translate: TranslateService, private toasterService: ToasterService) {
     this.subscription1 = dataService.resetProfileSetting.subscribe(res => {
       if (res) {
         this.configObj.id = parseInt(sessionStorage.preferenceId, 10);
@@ -291,7 +292,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
     this.setIds();
     this.setPreferences();
-    if(this.permission.joc && this.permission.joc.administration.certificates.view) {
+    if (this.permission.joc && this.permission.joc.administration.certificates.view) {
       this.getKeys();
     }
     this.zones = this.coreService.getTimeZoneList();
@@ -434,57 +435,87 @@ export class UserComponent implements OnInit, OnDestroy {
 
 
   pasteKey(): void {
-    const modalRef = this.modalService.open(UpdateKeyModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.securityLevel = this.securityLevel;
-    modalRef.componentInstance.paste = true;
-    modalRef.componentInstance.data = {};
-    modalRef.result.then((result) => {
-      this.getKeys();
-    }, (reason) => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: UpdateKeyModalComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        securityLevel: this.securityLevel,
+        paste: true,
+        data: {}
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.getKeys();
+      }
     });
   }
 
   showGenerateKeyModal(): void {
-    const modalRef = this.modalService.open(GenerateKeyComponent, {backdrop: 'static'});
-    modalRef.result.then((result) => {
-      this.getKeys();
-    }, (reason) => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: GenerateKeyComponent,
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.getKeys();
+      }
     });
   }
 
   importKey(): void {
-    const modalRef = this.modalService.open(ImportKeyModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.securityLevel = this.securityLevel;
-    modalRef.result.then(() => {
-      this.getKeys();
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ImportKeyModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        securityLevel: this.securityLevel
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.getKeys();
+      }
     });
   }
 
   showKey(): void {
-    const modalRef = this.modalService.open(UpdateKeyModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.securityLevel = this.securityLevel;
-    modalRef.componentInstance.data = this.keys;
-    modalRef.result.then(() => {
-
-    }, () => {
-
+    this.modal.create({
+      nzTitle: null,
+      nzContent: UpdateKeyModalComponent,
+      nzComponentParams: {
+        securityLevel: this.securityLevel,
+        data: this.keys
+      },
+      nzFooter: null,
+      nzClosable: false
     });
   }
 
   resetProfile(): void {
-    const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.title = 'resetProfile';
-    modalRef.componentInstance.message = 'resetSingleProfile';
-    modalRef.componentInstance.type = 'Reset';
-    modalRef.componentInstance.objectName = this.username;
-    modalRef.result.then(() => {
-      this._resetProfile();
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ConfirmModalComponent,
+      nzComponentParams: {
+        title: 'resetProfile',
+        message: 'resetSingleProfile',
+        type: 'Reset',
+        objectName: this.username
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this._resetProfile();
+      }
     });
   }
 

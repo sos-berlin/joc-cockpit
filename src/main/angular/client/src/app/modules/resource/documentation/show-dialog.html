@@ -4,7 +4,7 @@
         : &nbsp;
     {{document.path}}
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -24,7 +24,7 @@
               {{doc.type}} :
             </label>
             <div class="col-md-10">
-              <a class="text-hover-primary" (click)="showDocument(doc)">{{doc.path}}</a>
+              <a>{{doc.path}}</a>
             </div>
           </div>
         </div>
@@ -34,7 +34,7 @@
   </div>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')"
+  <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy('Cross click')"
           translate>common.button.close
   </button>
 </div>

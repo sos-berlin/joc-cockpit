@@ -453,7 +453,7 @@ a .text-danger:hover {
   border-color: var(--border-color)
 }
 
-.modal-content {
+.modal-content, .ant-modal-content {
   background-color: var(--bg-footer)
 }
 
@@ -947,16 +947,6 @@ span ul li a {
   color: var(--text-color);
   background-color: transparent !important;
   border: 1px solid var(--border-color)
-}
-
-.modal-open .ant-select-dropdown,
-.modal-open .ant-select-selection {
-  background-color: var(--bg-footer) !important
-}
-
-.modal-open input:-webkit-autofill, .modal-open input:-webkit-autofill:hover,
-.modal-open input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 100px var(--bg-footer) inset;
 }
 
 .ant-spin-container::after,

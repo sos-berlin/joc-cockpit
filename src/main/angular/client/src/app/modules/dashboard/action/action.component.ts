@@ -1,5 +1,5 @@
 import {Component, OnInit, Input} from '@angular/core';
-import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 
@@ -18,7 +18,7 @@ export class CommentModalComponent implements OnInit {
   required = false;
   show = false;
 
-  constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
   }
 
   ngOnInit(): void {
@@ -61,7 +61,7 @@ export class ActionComponent implements OnInit {
   schedulerIds: any;
   controllerPermission: any = {};
 
-  constructor(public modalService: NgbModal, private coreService: CoreService, private authService: AuthService) {
+  constructor(public modal: NzModalService, private coreService: CoreService, private authService: AuthService) {
   }
 
   static setControllerPermission(permissions, controllerId): any {
@@ -91,20 +91,19 @@ export class ActionComponent implements OnInit {
         name: obj.controllerId + ' (' + obj.url + ')',
         operation: (action === 'terminate' && !isFailOver) ? 'Terminate without fail-over' : action === 'terminateAndRestart' ? 'Terminate and Restart' : action === 'abortAndRestart' ? 'Abort and Restart' : action === 'terminate' ? 'Terminate' : 'Abort'
       };
-
-      const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.comments = comments;
-      modalRef.componentInstance.action = action;
-      modalRef.componentInstance.show = true;
-      modalRef.componentInstance.obj = obj;
-      modalRef.componentInstance.performAction = this.performAction;
-
-      modalRef.result.then((result) => {
-        console.log('Close...', result);
-      }, (reason) => {
-        console.log('close...', reason);
+      this.modal.create({
+        nzTitle: null,
+        nzContent: CommentModalComponent,
+        nzComponentParams: {
+          comments,
+          action,
+          show : true,
+          obj,
+          performAction : this.performAction
+        },
+        nzFooter: null,
+        nzClosable: false
       });
-
     } else {
       this.performAction(action, obj);
     }

@@ -1,6 +1,6 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit} from '@angular/core';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import * as _ from 'underscore';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TreeModalComponent} from '../tree-modal/tree.component';
 import {CoreService} from '../../services/core.service';
 import {CalendarService} from '../../services/calendar.service';
@@ -40,16 +40,16 @@ export class AddRestrictionComponent implements OnInit {
   countArr = [0, 1, 2, 3, 4];
   countArrU = [1, 2, 3, 4];
   daysOptions = [
-    { label: 'sunday', value: '0'},
-    { label: 'monday', value: '1' },
-    { label: 'tuesday', value: '2' },
-    { label: 'wednesday', value: '3' },
-    { label: 'thursday', value: '4' },
-    { label: 'friday', value: '5' },
-    { label: 'saturday', value: '6' }
+    {label: 'sunday', value: '0'},
+    {label: 'monday', value: '1'},
+    {label: 'tuesday', value: '2'},
+    {label: 'wednesday', value: '3'},
+    {label: 'thursday', value: '4'},
+    {label: 'friday', value: '5'},
+    {label: 'saturday', value: '6'}
   ];
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, public modalService: NgbModal, private calendarService: CalendarService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, public modal: NzModalService, private calendarService: CalendarService) {
   }
 
   ngOnInit(): void {
@@ -372,16 +372,18 @@ export class AddRestrictionComponent implements OnInit {
                 flag1 = true;
                 break;
               } else {
-                if (this.calendar.frequencyList[i].months)
+                if (this.calendar.frequencyList[i].months) {
                   if (_.isEqual(this.calendar.frequencyList[i].days, this.frequency.days)) {
                     for (let j = 0; j < this.frequency.months.length; j++) {
-                      if (this.calendar.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1)
+                      if (this.calendar.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1) {
                         this.calendar.frequencyList[i].months.push(this.frequency.months[j]);
+                      }
                     }
                     this.calendar.frequencyList[i].str = _.clone(this.frequency.str);
                     flag1 = true;
                     break;
                   }
+                }
               }
             } else {
               if (!this.calendar.frequencyList[i].months) {
@@ -403,16 +405,18 @@ export class AddRestrictionComponent implements OnInit {
                 flag1 = true;
                 break;
               } else {
-                if (this.calendar.frequencyList[i].months)
+                if (this.calendar.frequencyList[i].months) {
                   if (_.isEqual(this.calendar.frequencyList[i].selectedMonths, this.frequency.selectedMonths)) {
                     for (let j = 0; j < this.frequency.months.length; j++) {
-                      if (this.calendar.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1)
+                      if (this.calendar.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1) {
                         this.calendar.frequencyList[i].months.push(this.frequency.months[j]);
+                      }
                     }
                     this.calendar.frequencyList[i].str = _.clone(this.frequency.str);
                     flag1 = true;
                     break;
                   }
+                }
               }
             } else {
               if (!this.calendar.frequencyList[i].months) {
@@ -434,16 +438,18 @@ export class AddRestrictionComponent implements OnInit {
                 flag1 = true;
                 break;
               } else {
-                if (this.calendar.frequencyList[i].months)
+                if (this.calendar.frequencyList[i].months) {
                   if (_.isEqual(this.calendar.frequencyList[i].selectedMonthsU, this.frequency.selectedMonthsU)) {
                     for (let j = 0; j < this.frequency.months.length; j++) {
-                      if (this.calendar.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1)
+                      if (this.calendar.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1) {
                         this.calendar.frequencyList[i].months.push(this.frequency.months[j]);
+                      }
                     }
                     this.calendar.frequencyList[i].str = _.clone(this.frequency.str);
                     flag1 = true;
                     break;
                   }
+                }
               }
             } else {
               if (!this.calendar.frequencyList[i].months) {
@@ -461,8 +467,9 @@ export class AddRestrictionComponent implements OnInit {
               if (!_.isEqual(this.calendar.frequencyList[i].months, this.frequency.months)) {
                 if (_.isEqual(this.calendar.frequencyList[i].specificWeekDay, this.frequency.specificWeekDay) && _.isEqual(this.calendar.frequencyList[i].which, this.frequency.which)) {
                   for (let j = 0; j < this.frequency.months.length; j++) {
-                    if (this.calendar.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1)
+                    if (this.calendar.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1) {
                       this.calendar.frequencyList[i].months.push(this.frequency.months[j]);
+                    }
                   }
                   this.calendar.frequencyList[i].str = this.calendarService.freqToStr(this.calendar.frequencyList[i], this.dateFormat);
                   flag1 = true;
@@ -558,7 +565,7 @@ export class AddRestrictionComponent implements OnInit {
   }
 
   cancel() {
-    this.activeModal.close('');
+    this.activeModal.destroy();
   }
 
   private selectDate(e) {
@@ -602,7 +609,7 @@ export class PeriodComponent implements OnInit {
     'NEXTNONWORKINGDAY'
   ];
 
-  constructor(public activeModal: NgbActiveModal, private calendarService: CalendarService) {
+  constructor(public activeModal: NzModalRef, private calendarService: CalendarService) {
   }
 
   ngOnInit(): void {
@@ -668,7 +675,7 @@ export class PeriodComponent implements OnInit {
   }
 
   cancel(): void {
-    this.activeModal.dismiss();
+    this.activeModal.destroy();
   }
 }
 
@@ -694,45 +701,55 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   toDate: any;
   calendarTitle = new Date().getFullYear();
 
-  constructor(private coreService: CoreService, public modalService: NgbModal, private calendarService: CalendarService) {
+  constructor(private coreService: CoreService, public modal: NzModalService, private calendarService: CalendarService) {
 
   }
 
-  ngOnChanges(changes) {
+  ngOnChanges(changes): void {
     this.zones = this.coreService.getTimeZoneList();
     this.init();
   }
 
-  assignCalendar() {
-    const modalRef = this.modalService.open(TreeModalComponent, {
-      backdrop: 'static'
+  assignCalendar(): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: TreeModalComponent,
+      nzComponentParams: {
+        schedulerId: this.schedulerId,
+        type: 'WORKINGDAYSCALENDAR',
+        object: 'Calendar'
+      },
+      nzFooter: null,
+      nzClosable: false
     });
-    modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.type = 'WORKINGDAYSCALENDAR';
-    modalRef.componentInstance.object = 'Calendar';
-    modalRef.result.then((result) => {
-      this.calendars = this.calendars.concat(result);
-    }, () => {
-
-    });
-  }
-
-  assignHolidayCalendar() {
-    const modalRef = this.modalService.open(TreeModalComponent, {
-      backdrop: 'static'
-    });
-    modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.type = 'NONWORKINGDAYSCALENDAR';
-    modalRef.componentInstance.object = 'Calendar';
-    modalRef.result.then((result) => {
-      this.nonWorkingCalendars = this.nonWorkingCalendars.concat(result);
-      _.unique(this.nonWorkingCalendars);
-    }, () => {
-
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.calendars = this.calendars.concat(result);
+      }
     });
   }
 
-  getPeriodStr(period) {
+  assignHolidayCalendar(): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: TreeModalComponent,
+      nzComponentParams: {
+        schedulerId: this.schedulerId,
+        type: 'NONWORKINGDAYSCALENDAR',
+        object: 'Calendar'
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.nonWorkingCalendars = this.nonWorkingCalendars.concat(result);
+        _.unique(this.nonWorkingCalendars);
+      }
+    });
+  }
+
+  getPeriodStr(period): void {
     let periodStr = null;
     if (period.begin) {
       periodStr = period.begin;
@@ -803,33 +820,49 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   }
 
   addPeriodInCalendar(calendar): void {
-    const modalRef = this.modalService.open(PeriodComponent, {backdrop: 'static'});
-    modalRef.componentInstance.isNew = true;
-    modalRef.componentInstance.data = {};
-    modalRef.result.then((result) => {
-      let flag = false;
-      if (!calendar.periods) {
-        calendar.periods = [];
-      } else {
-        for (let i = 0; i < calendar.periods.length; i++) {
-          flag = this.checkPeriod(calendar.periods[i], result.period);
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: PeriodComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        isNew: true,
+        data: {}
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        let flag = false;
+        if (!calendar.periods) {
+          calendar.periods = [];
+        } else {
+          for (let i = 0; i < calendar.periods.length; i++) {
+            flag = this.checkPeriod(calendar.periods[i], result.period);
+          }
+        }
+        if (!flag) {
+          calendar.periods.push(result.period);
         }
       }
-      if (!flag) {
-        calendar.periods.push(result.period);
-      }
-    }, () => {
-
     });
   }
 
   updatePeriodInCalendar(calendar, index, period): void {
-    const modalRef = this.modalService.open(PeriodComponent, {backdrop: 'static'});
-    modalRef.componentInstance.data = period;
-    modalRef.result.then((result) => {
-      calendar.periods[index] = result.period;
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: PeriodComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        data: period
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        calendar.periods[index] = result.period;
+      }
     });
   }
 
@@ -837,7 +870,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     calendar.periods.splice(index, 1);
   }
 
-  planFromRuntime() {
+  planFromRuntime(): void {
     this.viewCalObj.calendarView = 'year';
     this.calendar = null;
     this.editor.showPlanned = true;
@@ -851,7 +884,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     this.showCalendar();
   }
 
-  showCalendar() {
+  showCalendar(): void {
     setTimeout(() => {
       $('#full-calendar').calendar({
         renderEnd: (e) => {
@@ -877,7 +910,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     }, 10);
   }
 
-  changeDate() {
+  changeDate(): void {
     let newDate = new Date();
     newDate.setHours(0, 0, 0, 0);
     let toDate: any;
@@ -894,7 +927,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       };
 
       if (this.calendar) {
-        obj.path = this.calendar.calendarName ;
+        obj.path = this.calendar.calendarName;
       } else {
         obj.calendars = this.getCalendarObj(this.calendars);
         obj.nonWorkingCalendars = this.nonWorkingCalendars;
@@ -909,7 +942,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     }
   }
 
-  getPlan() {
+  getPlan(): void {
     $('#full-calendar').data('calendar').setYearView({view: this.viewCalObj.calendarView, year: this.calendarTitle});
   }
 
@@ -923,41 +956,46 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
 
   /** --------- Begin Restriction  ----------------*/
 
-  addRestrictionInCalendar(data) {
-    const modalRef = this.modalService.open(AddRestrictionComponent, {
-      backdrop: 'static',
-      size: 'lg'
+  addRestrictionInCalendar(data): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzClassName: 'lg',
+      nzContent: AddRestrictionComponent,
+      nzComponentParams: {
+        schedulerId: this.schedulerId,
+        preferences: this.preferences,
+        data: {calendar: this.coreService.clone(data)}
+      },
+      nzFooter: null,
+      nzClosable: false
     });
-    modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.preferences = this.preferences;
-    modalRef.componentInstance.data = {calendar: this.coreService.clone(data)};
-    modalRef.result.then((result) => {
+    modal.afterClose.subscribe(result => {
       if (result) {
         this.saveRestriction(result);
       }
-    }, () => {
-
     });
   }
 
-  editRestrictionInCalendar(data, frequency) {
-    const modalRef = this.modalService.open(AddRestrictionComponent, {
-      backdrop: 'static',
-      size: 'lg'
+  editRestrictionInCalendar(data, frequency): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: AddRestrictionComponent,
+nzClassName: 'lg',
+      nzComponentParams: {
+        schedulerId: this.schedulerId,
+        preferences: this.preferences,
+        data: {
+          calendar: this.coreService.clone(data),
+          updateFrequency: this.coreService.clone(frequency)
+        }
+      },
+      nzFooter: null,
+      nzClosable: false
     });
-    modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.preferences = this.preferences;
-    modalRef.componentInstance.data = {
-      calendar: this.coreService.clone(data),
-      updateFrequency: this.coreService.clone(frequency)
-    };
-
-    modalRef.result.then((result) => {
+    modal.afterClose.subscribe(result => {
       if (result) {
         this.saveRestriction(result);
       }
-    }, (reason) => {
-
     });
   }
 
@@ -989,6 +1027,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   }
 
   private init(): void {
+
     if (this.schedule.configuration) {
       this.calendars = this.schedule.configuration.calendars;
       this.nonWorkingCalendars = this.schedule.configuration.nonWorkingCalendars;
@@ -1081,6 +1120,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       planData.startDate = date;
       planData.endDate = date;
       planData.color = 'blue';
+
       this.planItems.push(planData);
     });
   }
@@ -1102,7 +1142,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
 
   private saveRestriction(data) {
     for (let i = 0; i < this.calendars.length; i++) {
-      if (data.calendarName  === this.calendars[i].calendarName ) {
+      if (data.calendarName === this.calendars[i].calendarName) {
         this.calendars[i].frequencyList = data.frequencyList;
         break;
       }

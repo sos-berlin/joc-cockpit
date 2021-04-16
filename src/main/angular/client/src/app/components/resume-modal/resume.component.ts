@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../services/core.service';
+import {NzModalRef} from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-resume-order',
@@ -18,7 +18,7 @@ export class ResumeOrderModalComponent implements OnInit {
   comments: any = {};
   positions: any = [];
 
-  constructor(public coreService: CoreService, public activeModal: NgbActiveModal) {
+  constructor(public coreService: CoreService, private modal: NzModalRef) {
   }
 
   ngOnInit(): void {
@@ -57,14 +57,14 @@ export class ResumeOrderModalComponent implements OnInit {
     }
     this.coreService.post('orders/resume', obj).subscribe((res: any) => {
       this.submitted = false;
-      this.activeModal.close('Done');
+      this.modal.close('Done');
     }, err => {
       this.submitted = false;
     });
   }
 
   cancel(): void {
-    this.activeModal.dismiss('');
+    this.modal.destroy();
   }
 
 }

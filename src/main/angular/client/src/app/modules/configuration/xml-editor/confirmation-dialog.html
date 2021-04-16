@@ -5,7 +5,7 @@
       <span *ngIf="delete && objectType === 'NOTIFICATION'" translate>xml.label.deleteXml</span>
       <span *ngIf="delete && !deleteAll && objectType !== 'NOTIFICATION'" ><span translate>xml.button.delete</span> <span class="m-l-xs" *ngIf="objectType !== 'NOTIFICATION'">{{activeTab.name}}</span></span> ?
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>

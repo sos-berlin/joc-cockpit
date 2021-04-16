@@ -4,7 +4,7 @@
     <span *ngIf="!edit" translate>inventory.label.showJson</span>:
     <span class="text-muted">{{name}}</span>
   </h4>
-  <button type="button" class="close" (click)="activeModal.dismiss('Cross click')" aria-label="Close">
+  <button type="button" class="close" (click)="activeModal.destroy()" aria-label="Close">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -29,7 +29,7 @@
     <button type="button" class="btn btn-default btn-sm" [disabled]="isError"
             (click)="copyToClipboard()" translate>log.button.copyToClipboard
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')">
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()">
       <span *ngIf="edit" translate>common.button.cancel</span>
       <span *ngIf="!edit" translate>common.button.close</span>
     </button>

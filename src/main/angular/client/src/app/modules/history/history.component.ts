@@ -1,6 +1,6 @@
 import {Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
 import {Router} from '@angular/router';
 import {NzMessageService} from 'ng-zorro-antd/message';
@@ -14,6 +14,8 @@ import {TreeModalComponent} from '../../components/tree-modal/tree.component';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component';
 import {SearchPipe} from '../../pipes/core.pipe';
+
+declare const $;
 
 @Component({
   selector: 'app-order-history-template',
@@ -82,7 +84,7 @@ export class FilterModalComponent implements OnInit {
 
   name: string;
 
-  constructor(private authService: AuthService, public activeModal: NgbActiveModal) {
+  constructor(private authService: AuthService, public activeModal: NzModalRef) {
   }
 
   ngOnInit(): void {
@@ -105,7 +107,7 @@ export class FilterModalComponent implements OnInit {
     if (obj) {
       this.activeModal.close(obj);
     } else {
-      this.activeModal.dismiss('');
+      this.activeModal.destroy();
     }
   }
 
@@ -139,7 +141,7 @@ export class OrderSearchComponent implements OnInit {
     {label: 'incomplete', value: 'INCOMPLETE'}
   ];
 
-  constructor(private authService: AuthService, public coreService: CoreService, private modalService: NgbModal) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService) {
   }
 
   ngOnInit(): void {
@@ -155,34 +157,28 @@ export class OrderSearchComponent implements OnInit {
     }
   }
 
-  private getWorkflowTree(): void {
-    if (this.schedulerIds.selected) {
-      this.coreService.post('tree', {
-        controllerId: this.schedulerIds.selected,
-        forInventory: true,
-        types: ['WORKFLOW']
-      }).subscribe((res) => {
-        this.workflowTree = this.coreService.prepareTree(res, true);
-      });
-    }
-  }
-
   stateChange(value: string[]): void {
     this.filter.states = value;
   }
 
   getFolderTree(flag): void {
-    if (this.schedulerIds.selected) {
-      const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-      modalRef.componentInstance.paths = this.filter.paths || [];
-      modalRef.componentInstance.type = 'FOLDER';
-      modalRef.componentInstance.showCheckBox = !flag;
-      modalRef.result.then((result) => {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: TreeModalComponent,
+      nzComponentParams: {
+        schedulerId: this.schedulerIds.selected,
+        paths: this.filter.paths || [],
+        type: 'FOLDER',
+        showCheckBox: !flag
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
         this.filter.paths = result;
-      }, () => {
-      });
-    }
+      }
+    });
   }
 
   remove(path): void {
@@ -313,6 +309,18 @@ export class OrderSearchComponent implements OnInit {
   cancel(): void {
     this.onCancel.emit();
   }
+
+  private getWorkflowTree(): void {
+    if (this.schedulerIds.selected) {
+      this.coreService.post('tree', {
+        controllerId: this.schedulerIds.selected,
+        forInventory: true,
+        types: ['WORKFLOW']
+      }).subscribe((res) => {
+        this.workflowTree = this.coreService.prepareTree(res, true);
+      });
+    }
+  }
 }
 
 @Component({
@@ -347,7 +355,7 @@ export class TaskSearchComponent implements OnInit {
     {label: 'major', value: 'MAJOR'}
   ];
 
-  constructor(private authService: AuthService, public coreService: CoreService, private modalService: NgbModal) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService) {
   }
 
   ngOnInit(): void {
@@ -372,18 +380,6 @@ export class TaskSearchComponent implements OnInit {
 
   }
 
-  private getWorkflowTree(): void {
-    if (this.schedulerIds.selected) {
-      this.coreService.post('tree', {
-        controllerId: this.schedulerIds.selected,
-        forInventory: true,
-        types: ['WORKFLOW']
-      }).subscribe((res) => {
-        this.workflowTree = this.coreService.prepareTree(res, true);
-      });
-    }
-  }
-
   stateChange(value: string[]): void {
     this.filter.historyStates = value;
   }
@@ -393,17 +389,23 @@ export class TaskSearchComponent implements OnInit {
   }
 
   getFolderTree(flag): void {
-    if (this.schedulerIds.selected) {
-      const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-      modalRef.componentInstance.paths = this.filter.paths || [];
-      modalRef.componentInstance.type = 'FOLDER';
-      modalRef.componentInstance.showCheckBox = !flag;
-      modalRef.result.then((result) => {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: TreeModalComponent,
+      nzComponentParams: {
+        schedulerId: this.schedulerIds.selected,
+        paths: this.filter.paths || [],
+        type: 'FOLDER',
+        showCheckBox: !flag
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
         this.filter.paths = result;
-      }, () => {
-      });
-    }
+      }
+    });
   }
 
   remove(path): void {
@@ -536,6 +538,18 @@ export class TaskSearchComponent implements OnInit {
 
   cancel(): void {
     this.onCancel.emit();
+  }
+
+  private getWorkflowTree(): void {
+    if (this.schedulerIds.selected) {
+      this.coreService.post('tree', {
+        controllerId: this.schedulerIds.selected,
+        forInventory: true,
+        types: ['WORKFLOW']
+      }).subscribe((res) => {
+        this.workflowTree = this.coreService.prepareTree(res, true);
+      });
+    }
   }
 }
 
@@ -953,6 +967,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   yadeHistorys: any = [];
   deploymentHistorys: any = [];
   submissionHistorys: any = [];
+  widthArr = [];
   orderHistoryFilterList: any;
   jobHistoryFilterList: any;
   yadeHistoryFilterList: any;
@@ -989,7 +1004,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   ];
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
-              private dataService: DataService, private modalService: NgbModal, private searchPipe: SearchPipe,
+              private dataService: DataService, private modal: NzModalService, private searchPipe: SearchPipe,
               private message: NzMessageService, private router: Router, private translate: TranslateService, private excelService: ExcelService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -1130,66 +1145,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  private mergeOldData(): void {
-    let oldEntires = _.clone(this.data);
-    let arr = this.order.searchText ? this.searchPipe.transform(this.historys, this.order.searchText, this.orderSearchableProperties) : this.historys;
-    for (let i = 0; i < arr.length; i++) {
-      for (let j = 0; j < oldEntires.length; j++) {
-        if (arr[i].orderId === oldEntires[j].orderId) {
-          if (oldEntires[j].show) {
-            arr[i].show = true;
-            arr[i].children = oldEntires[j].children;
-            this.recursiveMerge(arr[i], 1);
-          }
-          oldEntires.splice(j, 1);
-          break;
-        }
-      }
-    }
-    this.data = arr;
-  }
-
   @HostListener('window:resize', ['$event'])
   onResize(): void {
     if (this.historyFilters.type === 'ORDER') {
       this.coreService.calRowWidth(this.historyFilters.current);
     }
-  }
-
-  private recursiveMerge(data, count): void {
-    data.loading = true;
-    let obj = {
-      controllerId: data.controllerId || this.schedulerIds.selected,
-      historyId: data.historyId
-    };
-    let perviousArr = data.children.filter((value) => {
-      return value.order;
-    });
-
-    this.coreService.post('order/history', obj).subscribe((res: any) => {
-      for (let i = 0; i < res.children.length; i++) {
-        if (res.children[i].order) {
-          for (let j = 0; j < perviousArr.length; j++) {
-            if (res.children[i].order.orderId === perviousArr[j].orderId) {
-              if (perviousArr[j].show) {
-                res.children[i].order.show = true;
-                res.children[i].order.children = perviousArr[j].children;
-                this.recursiveMerge(res.children[i].order, ++count);
-              }
-              perviousArr.splice(j, 1);
-              break;
-            }
-          }
-        }
-      }
-      data.level = count;
-      data.children = res.children;
-      data.states = res.states;
-      data.loading = false;
-      this.coreService.calRowWidth(this.historyFilters.current);
-    }, () => {
-      data.loading = false;
-    });
   }
 
   isCustomizationSelected2(flag): void {
@@ -1292,23 +1252,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  private mergeOldTaskData() {
-    let oldEntires = _.clone(this.data);
-    let arr = this.task.searchText ? this.searchPipe.transform(this.taskHistorys, this.task.searchText, this.taskSearchableProperties) : this.taskHistorys;
-    for (let i = 0; i < arr.length; i++) {
-      for (let j = 0; j < oldEntires.length; j++) {
-        if (arr[i].taskId === oldEntires[j].taskId) {
-          if (oldEntires[j].show) {
-            arr[i].show = true;
-          }
-          oldEntires.splice(j, 1);
-          break;
-        }
-      }
-    }
-    this.data = arr;
-  }
-
   isCustomizationSelected3(flag) {
     if (flag) {
       this.temp_filter3.states = _.clone(this.yade.filter.historyStates);
@@ -1360,7 +1303,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
     }
     this.convertRequestBody(obj);
-    obj.compact = true;
     this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
       this.yadeHistorys = res.transfers || [];
       if (flag) {
@@ -1369,29 +1311,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.searchInResult();
       }
       this.isLoading = true;
+      this.setHeaderWidth();
     }, () => {
       this.data = [];
       this.isLoading = true;
     });
   }
-
-  private mergeOldYadeData() {
-    let oldEntires = _.clone(this.data);
-    let arr = this.yade.searchText ? this.searchPipe.transform(this.yadeHistorys, this.yade.searchText, this.yadeSearchableProperties) : this.yadeHistorys;
-    for (let i = 0; i < arr.length; i++) {
-      for (let j = 0; j < oldEntires.length; j++) {
-        if (arr[i].yadeId === oldEntires[j].yadeId) {
-          if (oldEntires[j].show) {
-            arr[i].show = true;
-          }
-          oldEntires.splice(j, 1);
-          break;
-        }
-      }
-    }
-    this.data = arr;
-  }
-
 
   isCustomizationSelected4(flag) {
     if (flag) {
@@ -1480,38 +1405,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  private mergeDepData() {
-    let oldEntires = _.clone(this.data);
-    let arr = this.deployment.searchText ? this.searchPipe.transform(this.deploymentHistorys, this.deployment.searchText, this.deploymentSearchableProperties) : this.deploymentHistorys;
-    for (let i = 0; i < arr.length; i++) {
-      for (let j = 0; j < oldEntires.length; j++) {
-        if (arr[i].commitId === oldEntires[j].commitId) {
-          if (oldEntires[j].show) {
-            arr[i].show = true;
-            arr[i].children = oldEntires[j].children;
-          }
-          oldEntires.splice(j, 1);
-          break;
-        }
-      }
-    }
-    this.data = arr;
-  }
-
-  private convertDeployRequestBody(obj) {
-    obj.limit = parseInt(this.preferences.maxRecords, 10) || 5000;
-    obj.timeZone = this.preferences.zone;
-    if ((obj.from && typeof obj.from.getMonth === 'function') || (obj.to && typeof obj.to.getMonth === 'function')) {
-      delete obj['timeZone'];
-    }
-    if ((obj.from && typeof obj.from.getMonth === 'function')) {
-      obj.from = this.coreService.convertTimeToLocalTZ(this.preferences, obj.from);
-    }
-    if ((obj.to && typeof obj.to.getMonth === 'function')) {
-      obj.to = this.coreService.convertTimeToLocalTZ(this.preferences, obj.to);
-    }
-  }
-
   isCustomizationSelected5(flag) {
     if (flag) {
       this.temp_filter5.category = _.clone(this.submission.filter.category);
@@ -1593,23 +1486,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.data = [];
       this.isLoading = true;
     });
-  }
-
-  private mergeSubData() {
-    let oldEntires = _.clone(this.data);
-    let arr = this.submissionHistorys;
-    for (let i = 0; i < arr.length; i++) {
-      for (let j = 0; j < oldEntires.length; j++) {
-        if (arr[i].dailyPlanDate === oldEntires[j].dailyPlanDate) {
-          if (oldEntires[j].show) {
-            arr[i].show = true;
-          }
-          oldEntires.splice(j, 1);
-          break;
-        }
-      }
-    }
-    this.data = arr;
   }
 
   expandDailyPlan(history) {
@@ -1952,8 +1828,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (obj.file) {
         filter.files = [];
         let s = obj.file.replace(/,\s+/g, ',');
-        var files = s.split(',');
-        files.forEach(function(value) {
+        let files = s.split(',');
+        files.forEach((value) => {
           filter.files.push({file: value});
         });
       }
@@ -1969,11 +1845,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
         if (obj.from) {
           fromDate = new Date(obj.from);
           if (obj.fromTime) {
-
             fromDate.setHours(obj.fromTime.getHours());
             fromDate.setMinutes(obj.fromTime.getMinutes());
             fromDate.setSeconds(obj.fromTime.getSeconds());
-
           } else {
             fromDate.setHours(0);
             fromDate.setMinutes(0);
@@ -1985,11 +1859,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
         if (obj.to) {
           toDate = new Date(obj.to);
           if (obj.toTime) {
-
             toDate.setHours(obj.toTime.getHours());
             toDate.setMinutes(obj.toTime.getMinutes());
             toDate.setSeconds(obj.toTime.getSeconds());
-
           } else {
             toDate.setHours(0);
             toDate.setMinutes(0);
@@ -2008,18 +1880,15 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       if (obj.paths && obj.paths.length > 0) {
         filter.folders = [];
-        obj.paths.forEach(function(value) {
+        obj.paths.forEach((value) => {
           filter.folders.push({folder: value, recursive: true});
         });
       }
-
       if (obj.files && obj.files.length > 0) {
         filter.files = [];
-
-        obj.files.forEach(function(value) {
+        obj.files.forEach((value) => {
           filter.files.push({file: value});
         });
-
       }
       filter.timeZone = this.preferences.zone;
       if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
@@ -2035,6 +1904,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.yadeHistorys = this.setDuration(res);
         this.searchInResult();
         this.isLoading = true;
+        this.setHeaderWidth();
       }, () => {
         this.data = [];
         this.isLoading = true;
@@ -2269,32 +2139,33 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   expandDetails() {
-    this.currentData.forEach((value) => {
-      value.show = true;
-      if (this.historyFilters.type === 'DEPLOYMENT') {
-        this.showChildHistory(value);
-      } else if (this.historyFilters.type === 'SUBMISSION') {
-        value.controllers.forEach((controller) => {
-          controller.submissions.forEach((sub) => {
-            sub.show = true;
+    if (this.historyFilters.type !== 'YADE') {
+      this.currentData.forEach((value) => {
+        value.show = true;
+        if (this.historyFilters.type === 'DEPLOYMENT') {
+          this.showChildHistory(value);
+        } else if (this.historyFilters.type === 'SUBMISSION') {
+          value.controllers.forEach((controller) => {
+            controller.submissions.forEach((sub) => {
+              sub.show = true;
+            });
           });
-        });
-      }
-    });
-    if (this.historyFilters.type === 'YADE') {
-      //this.showFiles = true;
-      //this.yadeFilters.showFiles = true;
-      //this.load();
+        }
+      });
+    } else {
+      this.currentData.forEach((value) => {
+        this.showTransferFuc(value);
+      });
     }
   }
 
-  collapseDetails() {
+  collapseDetails(): void {
     this.currentData.forEach((value) => {
       value.show = false;
     });
   }
 
-  exportToExcel() {
+  exportToExcel(): void {
     let data = [];
     let fileName = 'JS7-order-history-report';
     if (this.historyFilters.type === 'TASK') {
@@ -2315,41 +2186,18 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.excelService.exportAsExcelFile(data, fileName);
   }
 
-  showAllPanelFuc(data) {
+  showAllPanelFuc(data): void {
     data.showAll = true;
     data.show = true;
     this.recursiveExpand(data, 1);
   }
 
-  private recursiveExpand(data, count) {
-    data.loading = true;
-    let obj = {
-      controllerId: data.controllerId || this.schedulerIds.selected,
-      historyId: data.historyId
-    };
-    this.coreService.post('order/history', obj).subscribe((res: any) => {
-      for (let i = 0; i < res.children.length; i++) {
-        if (res.children[i].order) {
-          res.children[i].order.show = true;
-          this.recursiveExpand(res.children[i].order, ++count);
-        }
-      }
-      data.level = count;
-      data.children = res.children;
-      data.states = res.states;
-      data.loading = false;
-      this.coreService.calRowWidth(this.historyFilters.current);
-    }, () => {
-      data.loading = false;
-    });
-  }
-
-  hideAllPanelFuc(data) {
+  hideAllPanelFuc(data): void {
     data.showAll = false;
     data.show = false;
   }
 
-  showPanelFuc(data) {
+  showPanelFuc(data): void {
     data.loading = true;
     data.show = true;
     data.children = [];
@@ -2369,12 +2217,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  hidePanelFuc(data) {
+  hidePanelFuc(data): void {
     data.show = false;
     data.showAll = false;
   }
 
-  showChildHistory(data) {
+  showChildHistory(data): void {
     data.loading = true;
     data.show = true;
     data.children = [];
@@ -2392,88 +2240,66 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  showTransferFuc(data) {
-    const obj = {
-      controllerId: data.controllerId || this.schedulerIds.selected,
-      transferIds: [data.id]
-    };
-    this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
-      data = _.extend(data, res.transfers[0]);
-      this.isLoading = true;
-    }, () => {
-      this.isLoading = true;
-    });
+  showTransferFuc(data): void {
+    const self = this;
     data.show = true;
     data.files = [];
-    this.coreService.post('yade/files', obj).subscribe((res: any) => {
+    data.widthArr = [];
+    data.loading = true;
+    this.coreService.post('yade/files', {
+      transferIds: [data.id],
+      controllerId: data.controllerId || this.schedulerIds.selected
+    }).subscribe((res: any) => {
       data.files = res.files;
-      this.coreService.calFileTransferRowWidth(false);
+      data.loading = false;
+      data.widthArr = [...data.widthArr, ...this.coreService.calFileTransferRowWidth(false)];
+      setTimeout(() => {
+        const dom = $('#fileTransferMainTable');
+        dom.find('thead tr.main-header-row th').each(function(i) {
+          $(this).css('width', self.widthArr[i] + 'px');
+        });
+      }, 0);
+    }, () => {
+      data.loading = false;
     });
   }
 
-  /* --------------------------Ignore List -----------------------*/
-
-  addJobToIgnoreList(name) {
+  addJobToIgnoreList(name): void {
     if (this.savedIgnoreList.jobs.indexOf(name) === -1) {
       this.savedIgnoreList.jobs.push(name);
       this.saveIgnoreList((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true));
     }
   }
 
-  addWorkflowToIgnoreList(name) {
+  addWorkflowToIgnoreList(name): void {
     if (this.savedIgnoreList.workflows.indexOf(name) === -1) {
       this.savedIgnoreList.workflows.push(name);
       this.saveIgnoreList((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true));
     }
   }
 
-  removeObjectFromIgnoreList() {
+  removeObjectFromIgnoreList(): void {
     this.saveIgnoreList(true);
   }
 
-  private saveIgnoreList(flag) {
-    if (this.schedulerIds.selected) {
-      if (!flag) {
-        let msg;
-        this.translate.get('history.message.addedToIgnoreList').subscribe(translatedValue => {
-          msg = translatedValue;
-        });
-        this.message.success(msg);
-      }
-      if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true)) {
-        if ((!_.isEmpty(this.jobSearch) && this.historyFilters.type === 'TASK') || (!_.isEmpty(this.orderSearch) && this.historyFilters.type === 'ORDER')) {
-          this.search(true);
-        } else {
-          this.init(false);
-        }
-      }
-      const configObj = {
-        controllerId: this.schedulerIds.selected,
-        account: this.authService.currentUserData,
-        configurationType: 'IGNORELIST',
-        id: this.ignoreListConfigId,
-        configurationItem: JSON.stringify(this.savedIgnoreList)
-      };
-      this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-        this.ignoreListConfigId = res.id;
-      });
-    }
-  }
-
-  editIgnoreList() {
+  editIgnoreList(): void {
     if ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0) || (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
-      const modalRef = this.modalService.open(EditIgnoreListComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.savedIgnoreList = this.savedIgnoreList;
-      modalRef.componentInstance.historyFilters = this.historyFilters;
-      modalRef.componentInstance.self = this;
-      modalRef.result.then(() => {
-
-      }, () => {
+      this.modal.create({
+        nzTitle: null,
+        nzContent: EditIgnoreListComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          savedIgnoreList: this.savedIgnoreList,
+          historyFilters: this.historyFilters,
+          self: this
+        },
+        nzFooter: null,
+        nzClosable: false
       });
     }
   }
 
-  enableDisableIgnoreList() {
+  enableDisableIgnoreList(): void {
     if (this.schedulerIds.selected) {
       this.savedIgnoreList.isEnable = !this.savedIgnoreList.isEnable;
       const configObj = {
@@ -2494,7 +2320,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  resetIgnoreList() {
+  resetIgnoreList(): void {
     if (this.schedulerIds.selected) {
       if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true) && this.historyFilters.type == 'ORDER' && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0))) {
         if (!_.isEmpty(this.orderSearch)) {
@@ -2525,58 +2351,72 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  createCustomization() {
+  createCustomization(): void {
     if (this.schedulerIds.selected) {
-      const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.permission = this.permission;
-      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+      const obj: any = {
+        permission: this.permission,
+        schedulerId: this.schedulerIds.selected,
+        new: true,
+        type: this.historyFilters.type
+      };
       if (this.historyFilters.type === 'ORDER') {
-        modalRef.componentInstance.allFilter = this.orderHistoryFilterList;
+        obj.allFilter = this.orderHistoryFilterList;
       } else if (this.historyFilters.type === 'TASK') {
-        modalRef.componentInstance.allFilter = this.jobHistoryFilterList;
+        obj.allFilter = this.jobHistoryFilterList;
       } else if (this.historyFilters.type === 'YADE') {
-        modalRef.componentInstance.allFilter = this.yadeHistoryFilterList;
+        obj.allFilter = this.yadeHistoryFilterList;
       } else if (this.historyFilters.type === 'DEPLOYMENT') {
-        modalRef.componentInstance.allFilter = this.deploymentHistoryFilterList;
+        obj.allFilter = this.deploymentHistoryFilterList;
       } else if (this.historyFilters.type === 'SUBMISSION') {
-        modalRef.componentInstance.allFilter = this.submissionHistoryFilterList;
+        obj.allFilter = this.submissionHistoryFilterList;
       }
-      modalRef.componentInstance.new = true;
-      modalRef.componentInstance.type = this.historyFilters.type;
-      modalRef.result.then(() => {
-
-      }, () => {
+      this.modal.create({
+        nzTitle: null,
+        nzContent: FilterModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: obj,
+        nzFooter: null,
+        nzClosable: false
       });
     }
   }
 
-  editFilters() {
-    const modalRef = this.modalService.open(EditFilterModalComponent, {backdrop: 'static'});
+  editFilters(): void {
+    const obj: any = {
+      permission: this.permission,
+      username: this.authService.currentUserData,
+      action: this.action
+    };
     if (this.historyFilters.type === 'ORDER') {
-      modalRef.componentInstance.filterList = this.orderHistoryFilterList;
-      modalRef.componentInstance.favorite = this.savedHistoryFilter.favorite;
+      obj.filterList = this.orderHistoryFilterList;
+      obj.favorite = this.savedHistoryFilter.favorite;
     } else if (this.historyFilters.type === 'TASK') {
-      modalRef.componentInstance.filterList = this.jobHistoryFilterList;
-      modalRef.componentInstance.favorite = this.savedJobHistoryFilter.favorite;
+      obj.filterList = this.jobHistoryFilterList;
+      obj.favorite = this.savedJobHistoryFilter.favorite;
     } else if (this.historyFilters.type === 'YADE') {
-      modalRef.componentInstance.filterList = this.yadeHistoryFilterList;
-      modalRef.componentInstance.favorite = this.savedYadeHistoryFilter.favorite;
+      obj.filterList = this.yadeHistoryFilterList;
+      obj.favorite = this.savedYadeHistoryFilter.favorite;
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
-      modalRef.componentInstance.filterList = this.deploymentHistoryFilterList;
-      modalRef.componentInstance.favorite = this.savedDeploymentHistoryFilter.favorite;
+      obj.filterList = this.deploymentHistoryFilterList;
+      obj.favorite = this.savedDeploymentHistoryFilter.favorite;
     } else if (this.historyFilters.type === 'SUBMISSION') {
-      modalRef.componentInstance.filterList = this.submissionHistoryFilterList;
-      modalRef.componentInstance.favorite = this.savedSubmissionHistoryFilter.favorite;
+      obj.filterList = this.submissionHistoryFilterList;
+      obj.favorite = this.savedSubmissionHistoryFilter.favorite;
     }
-    modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.username = this.authService.currentUserData;
-    modalRef.componentInstance.action = this.action;
-    modalRef.componentInstance.self = this;
-    modalRef.result.then((obj) => {
-      if (obj.type === 'EDIT') {
-        this.editFilter(obj);
-      } else if (obj.type === 'COPY') {
-        this.copyFilter(obj);
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: EditFilterModalComponent,
+      nzComponentParams: obj,
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+        if (result.type === 'EDIT') {
+          this.editFilter(result);
+        } else if (result.type === 'COPY') {
+          this.copyFilter(result);
+        }
       }
     }, () => {
     });
@@ -2850,6 +2690,209 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     this.saveService.setHistory(this.historyFilterObj);
     this.saveService.save();
+  }
+
+  private setHeaderWidth(): void {
+    const self = this;
+    setTimeout(() => {
+      self.widthArr = [];
+      const dom = $('#fileTransferMainTable');
+      dom.find('thead tr.main-header-row th').each(function() {
+        self.widthArr.push($(this).outerWidth());
+      });
+    }, 0);
+  }
+
+  private mergeOldData(): void {
+    let oldEntires = _.clone(this.data);
+    let arr = this.order.searchText ? this.searchPipe.transform(this.historys, this.order.searchText, this.orderSearchableProperties) : this.historys;
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0; j < oldEntires.length; j++) {
+        if (arr[i].orderId === oldEntires[j].orderId) {
+          if (oldEntires[j].show) {
+            arr[i].show = true;
+            arr[i].children = oldEntires[j].children;
+            this.recursiveMerge(arr[i], 1);
+          }
+          oldEntires.splice(j, 1);
+          break;
+        }
+      }
+    }
+    this.data = arr;
+  }
+
+  private recursiveMerge(data, count): void {
+    data.loading = true;
+    let obj = {
+      controllerId: data.controllerId || this.schedulerIds.selected,
+      historyId: data.historyId
+    };
+    let perviousArr = data.children.filter((value) => {
+      return value.order;
+    });
+
+    this.coreService.post('order/history', obj).subscribe((res: any) => {
+      for (let i = 0; i < res.children.length; i++) {
+        if (res.children[i].order) {
+          for (let j = 0; j < perviousArr.length; j++) {
+            if (res.children[i].order.orderId === perviousArr[j].orderId) {
+              if (perviousArr[j].show) {
+                res.children[i].order.show = true;
+                res.children[i].order.children = perviousArr[j].children;
+                this.recursiveMerge(res.children[i].order, ++count);
+              }
+              perviousArr.splice(j, 1);
+              break;
+            }
+          }
+        }
+      }
+      data.level = count;
+      data.children = res.children;
+      data.states = res.states;
+      data.loading = false;
+      this.coreService.calRowWidth(this.historyFilters.current);
+    }, () => {
+      data.loading = false;
+    });
+  }
+
+  private mergeOldTaskData() {
+    let oldEntires = _.clone(this.data);
+    let arr = this.task.searchText ? this.searchPipe.transform(this.taskHistorys, this.task.searchText, this.taskSearchableProperties) : this.taskHistorys;
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0; j < oldEntires.length; j++) {
+        if (arr[i].taskId === oldEntires[j].taskId) {
+          if (oldEntires[j].show) {
+            arr[i].show = true;
+          }
+          oldEntires.splice(j, 1);
+          break;
+        }
+      }
+    }
+    this.data = arr;
+  }
+
+  private mergeOldYadeData() {
+    let oldEntires = _.clone(this.data);
+    let arr = this.yade.searchText ? this.searchPipe.transform(this.yadeHistorys, this.yade.searchText, this.yadeSearchableProperties) : this.yadeHistorys;
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0; j < oldEntires.length; j++) {
+        if (arr[i].yadeId === oldEntires[j].yadeId) {
+          if (oldEntires[j].show) {
+            arr[i].show = true;
+          }
+          oldEntires.splice(j, 1);
+          break;
+        }
+      }
+    }
+    this.data = arr;
+  }
+
+  private mergeDepData() {
+    let oldEntires = _.clone(this.data);
+    let arr = this.deployment.searchText ? this.searchPipe.transform(this.deploymentHistorys, this.deployment.searchText, this.deploymentSearchableProperties) : this.deploymentHistorys;
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0; j < oldEntires.length; j++) {
+        if (arr[i].commitId === oldEntires[j].commitId) {
+          if (oldEntires[j].show) {
+            arr[i].show = true;
+            arr[i].children = oldEntires[j].children;
+          }
+          oldEntires.splice(j, 1);
+          break;
+        }
+      }
+    }
+    this.data = arr;
+  }
+
+  private convertDeployRequestBody(obj) {
+    obj.limit = parseInt(this.preferences.maxRecords, 10) || 5000;
+    obj.timeZone = this.preferences.zone;
+    if ((obj.from && typeof obj.from.getMonth === 'function') || (obj.to && typeof obj.to.getMonth === 'function')) {
+      delete obj['timeZone'];
+    }
+    if ((obj.from && typeof obj.from.getMonth === 'function')) {
+      obj.from = this.coreService.convertTimeToLocalTZ(this.preferences, obj.from);
+    }
+    if ((obj.to && typeof obj.to.getMonth === 'function')) {
+      obj.to = this.coreService.convertTimeToLocalTZ(this.preferences, obj.to);
+    }
+  }
+
+  /* --------------------------Actions -----------------------*/
+
+  private mergeSubData() {
+    let oldEntires = _.clone(this.data);
+    let arr = this.submissionHistorys;
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0; j < oldEntires.length; j++) {
+        if (arr[i].dailyPlanDate === oldEntires[j].dailyPlanDate) {
+          if (oldEntires[j].show) {
+            arr[i].show = true;
+          }
+          oldEntires.splice(j, 1);
+          break;
+        }
+      }
+    }
+    this.data = arr;
+  }
+
+  private recursiveExpand(data, count) {
+    data.loading = true;
+    let obj = {
+      controllerId: data.controllerId || this.schedulerIds.selected,
+      historyId: data.historyId
+    };
+    this.coreService.post('order/history', obj).subscribe((res: any) => {
+      for (let i = 0; i < res.children.length; i++) {
+        if (res.children[i].order) {
+          res.children[i].order.show = true;
+          this.recursiveExpand(res.children[i].order, ++count);
+        }
+      }
+      data.level = count;
+      data.children = res.children;
+      data.states = res.states;
+      data.loading = false;
+      this.coreService.calRowWidth(this.historyFilters.current);
+    }, () => {
+      data.loading = false;
+    });
+  }
+
+  private saveIgnoreList(flag) {
+    if (this.schedulerIds.selected) {
+      if (!flag) {
+        let msg;
+        this.translate.get('history.message.addedToIgnoreList').subscribe(translatedValue => {
+          msg = translatedValue;
+        });
+        this.message.success(msg);
+      }
+      if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true)) {
+        if ((!_.isEmpty(this.jobSearch) && this.historyFilters.type === 'TASK') || (!_.isEmpty(this.orderSearch) && this.historyFilters.type === 'ORDER')) {
+          this.search(true);
+        } else {
+          this.init(false);
+        }
+      }
+      const configObj = {
+        controllerId: this.schedulerIds.selected,
+        account: this.authService.currentUserData,
+        configurationType: 'IGNORELIST',
+        id: this.ignoreListConfigId,
+        configurationItem: JSON.stringify(this.savedIgnoreList)
+      };
+      this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+        this.ignoreListConfigId = res.id;
+      });
+    }
   }
 
   /* --------------------------Actions -----------------------*/
@@ -3669,27 +3712,31 @@ export class HistoryComponent implements OnInit, OnDestroy {
         filterObj.shared = filter.shared;
         filterObj.id = filter.id;
 
-        const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-        modalRef.componentInstance.permission = this.permission;
-        modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+        const obj: any = {};
+        obj.permission = this.permission;
+        obj.schedulerId = this.schedulerIds.selected;
         if (this.historyFilters.type === 'ORDER') {
-          modalRef.componentInstance.allFilter = this.orderHistoryFilterList;
+          obj.allFilter = this.orderHistoryFilterList;
         } else if (this.historyFilters.type === 'TASK') {
-          modalRef.componentInstance.allFilter = this.jobHistoryFilterList;
+          obj.allFilter = this.jobHistoryFilterList;
         } else if (this.historyFilters.type === 'YADE') {
-          modalRef.componentInstance.allFilter = this.yadeHistoryFilterList;
+          obj.allFilter = this.yadeHistoryFilterList;
         } else if (this.historyFilters.type === 'DEPLOYMENT') {
-          modalRef.componentInstance.allFilter = this.deploymentHistoryFilterList;
+          obj.allFilter = this.deploymentHistoryFilterList;
         } else if (this.historyFilters.type === 'SUBMISSION') {
-          modalRef.componentInstance.allFilter = this.submissionHistoryFilterList;
+          obj.allFilter = this.submissionHistoryFilterList;
         }
-        modalRef.componentInstance.filter = filterObj;
-        modalRef.componentInstance.edit = true;
-        modalRef.componentInstance.type = this.historyFilters.type;
-        modalRef.result.then(() => {
+        obj.filter = filterObj;
+        obj.edit = true;
+        obj.type = this.historyFilters.type;
 
-        }, () => {
-
+        this.modal.create({
+          nzTitle: null,
+          nzContent: FilterModalComponent,
+          nzClassName: 'lg',
+          nzComponentParams: obj,
+          nzFooter: null,
+          nzClosable: false
         });
       });
     }
@@ -3713,26 +3760,29 @@ export class HistoryComponent implements OnInit, OnDestroy {
           filterObj.name = this.coreService.checkCopyName(this.submissionHistoryFilterList, filter.name);
         }
 
-        const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-        modalRef.componentInstance.permission = this.permission;
-        modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-        modalRef.componentInstance.type = this.historyFilters.type;
+        let obj: any = {};
+        obj.permission = this.permission;
+        obj.schedulerId = this.schedulerIds.selected;
+        obj.type = this.historyFilters.type;
         if (this.historyFilters.type === 'ORDER') {
-          modalRef.componentInstance.allFilter = this.orderHistoryFilterList;
+          obj.allFilter = this.orderHistoryFilterList;
         } else if (this.historyFilters.type === 'TASK') {
-          modalRef.componentInstance.allFilter = this.jobHistoryFilterList;
+          obj.allFilter = this.jobHistoryFilterList;
         } else if (this.historyFilters.type === 'YADE') {
-          modalRef.componentInstance.allFilter = this.yadeHistoryFilterList;
+          obj.allFilter = this.yadeHistoryFilterList;
         } else if (this.historyFilters.type === 'DEPLOYMENT') {
-          modalRef.componentInstance.allFilter = this.deploymentHistoryFilterList;
+          obj.allFilter = this.deploymentHistoryFilterList;
         } else if (this.historyFilters.type === 'SUBMISSION') {
-          modalRef.componentInstance.allFilter = this.submissionHistoryFilterList;
+          obj.allFilter = this.submissionHistoryFilterList;
         }
-        modalRef.componentInstance.filter = filterObj;
-        modalRef.result.then(() => {
-
-        }, () => {
-
+        obj.filter = filterObj;
+        this.modal.create({
+          nzTitle: null,
+          nzContent: FilterModalComponent,
+          nzClassName: 'lg',
+          nzComponentParams: obj,
+          nzFooter: null,
+          nzClosable: false
         });
       });
     }

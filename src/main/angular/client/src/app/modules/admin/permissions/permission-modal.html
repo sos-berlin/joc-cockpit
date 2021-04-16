@@ -3,7 +3,7 @@
     <span *ngIf="add" translate>user.label.addPermission</span>
     <span *ngIf="!add"><span translate>user.label.editPermission</span> : {{currentPermission.permissionLabel}} </span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -18,11 +18,6 @@
                      [nzDisabled]="per.indexOf('-----')!=-1">
           </nz-option>
         </nz-select>
-<!--        <div class="input-dropdown ">
-          <input class="form-control" required="" autocomplete="off" type="text"
-                 placeholder="{{'user.placeholder.enterOrSelectPermission' | translate}}"
-                 [(ngModel)]="currentPermission.path" name="path" (blur)="checkCovered(currentPermission)">
-        </div>-->
         <div class="help-block text-danger" [ngClass]="{'m-b-sm':isCovered}" *ngIf="isCovered">
           <div translate>user.message.permissionIsAlreadyCovered</div>
         </div>
@@ -44,7 +39,7 @@
       <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
       common.button.cancel
     </button>
   </div>

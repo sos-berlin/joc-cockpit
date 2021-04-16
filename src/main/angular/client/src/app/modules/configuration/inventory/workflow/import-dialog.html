@@ -2,7 +2,7 @@
   <h4 class="modal-title">
     <span translate>workflow.label.importWorkflow</span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -65,7 +65,7 @@
       <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="submitted"></i>
       <span translate>common.button.import</span>
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
       common.button.cancel
     </button>
   </div>

@@ -2,7 +2,7 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import * as _ from 'underscore';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
@@ -29,7 +29,7 @@ export class PermissionModalComponent {
   submitted = false;
   isCovered = false;
 
-  constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
   }
 
   checkCovered(currentPermission): void {
@@ -88,7 +88,7 @@ export class FolderModalComponent implements OnInit {
   folderObj: any = {paths: []};
   schedulerIds: any;
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private authService: AuthService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -198,7 +198,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
   subscription3: Subscription;
 
-  constructor(private coreService: CoreService, private route: ActivatedRoute, private router: Router, private modalService: NgbModal, private dataService: DataService) {
+  constructor(private coreService: CoreService, private route: ActivatedRoute, private router: Router, private modal: NzModalService, private dataService: DataService) {
     this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
       if (res) {
         this.setUserData(res);
@@ -258,17 +258,24 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
   addFolder(): void {
     let folder = {folder: '', recursive: true};
-    const modalRef = this.modalService.open(FolderModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.currentFolder = folder;
-    modalRef.componentInstance.userDetail = this.userDetail;
-    modalRef.componentInstance.newFolder = true;
-    modalRef.componentInstance.master = this.controllerName;
-    modalRef.componentInstance.role = this.roleName;
-    modalRef.componentInstance.folderArr = this.folderArr;
-    modalRef.result.then((result) => {
-      this.folderArr = result;
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: FolderModalComponent,
+      nzComponentParams: {
+        currentFolder: folder,
+        userDetail: this.userDetail,
+        newFolder: true,
+        master: this.controllerName,
+        role: this.roleName,
+        folderArr: this.folderArr
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.folderArr = result;
+      }
     });
   }
 
@@ -276,80 +283,109 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     let tempFolder = _.clone(folder);
     tempFolder.folder = tempFolder.folder == '' ? '/' : tempFolder.folder;
     tempFolder.folderName = tempFolder.folder;
-    const modalRef = this.modalService.open(FolderModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.currentFolder = tempFolder;
-    modalRef.componentInstance.userDetail = this.userDetail;
-    modalRef.componentInstance.master = this.controllerName;
-    modalRef.componentInstance.role = this.roleName;
-    modalRef.componentInstance.folderArr = this.folderArr;
-    modalRef.componentInstance.oldFolder = folder;
-    modalRef.result.then((result) => {
-      this.folderArr = result;
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: FolderModalComponent,
+      nzComponentParams: {
+        currentFolder: tempFolder,
+        userDetail: this.userDetail,
+        master: this.controllerName,
+        role: this.roleName,
+        folderArr: this.folderArr,
+        oldFolder: folder
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.folderArr = result;
+      }
     });
   }
 
   deleteFolder(folder): void {
-    const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.title = 'delete';
-    modalRef.componentInstance.message = 'deleteFolder';
-    modalRef.componentInstance.type = 'Delete';
-    modalRef.componentInstance.objectName = folder.folder;
-    modalRef.result.then((result) => {
-      this.folderArr.splice(this.folderArr.indexOf(folder), 1);
-      this.saveInfo();
-    }, () => {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ConfirmModalComponent,
+      nzComponentParams: {
+        title: 'delete',
+        message: 'deleteFolder',
+        type: 'Delete',
+        objectName: folder.folder
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.folderArr.splice(this.folderArr.indexOf(folder), 1);
+        this.saveInfo();
+      }
     });
   }
 
   addPermission(): void {
     let permission = {path: '', excluded: false};
-    const modalRef = this.modalService.open(PermissionModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.currentPermission = permission;
-    modalRef.componentInstance.permissionOptions = this.permissionOptions;
-    modalRef.componentInstance.rolePermissions = this.rolePermissions;
-    modalRef.componentInstance.userDetail = this.userDetail;
-    modalRef.componentInstance.master = this.controllerName;
-    modalRef.componentInstance.role = this.roleName;
-    modalRef.componentInstance.add = true;
-    modalRef.result.then((result) => {
-
-    }, () => {
+    this.modal.create({
+      nzTitle: null,
+      nzContent: PermissionModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        currentPermission: permission,
+        permissionOptions: this.permissionOptions,
+        rolePermissions: this.rolePermissions,
+        userDetail: this.userDetail,
+        master: this.controllerName,
+        role: this.roleName,
+        add: true
+      },
+      nzFooter: null,
+      nzClosable: false
     });
   }
 
   editPermission(permission): void {
     let tempPermission = _.clone(permission);
     tempPermission.permissionLabel = permission.path;
-    const modalRef = this.modalService.open(PermissionModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.currentPermission = tempPermission;
-    modalRef.componentInstance.oldPermission = permission;
-    modalRef.componentInstance.permissionOptions = this.permissionOptions;
-    modalRef.componentInstance.rolePermissions = this.rolePermissions;
-    modalRef.componentInstance.userDetail = this.userDetail;
-    modalRef.componentInstance.master = this.controllerName;
-    modalRef.componentInstance.role = this.roleName;
-    modalRef.result.then((result) => {
-
-    }, () => {
-
+    this.modal.create({
+      nzTitle: null,
+      nzContent: PermissionModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        currentPermission: tempPermission,
+        oldPermission: permission,
+        permissionOptions: this.permissionOptions,
+        rolePermissions: this.rolePermissions,
+        userDetail: this.userDetail,
+        master: this.controllerName,
+        role: this.roleName
+      },
+      nzFooter: null,
+      nzClosable: false
     });
   }
 
   deletePermission(permission): void {
-    const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.title = 'delete';
-    modalRef.componentInstance.message = 'deletePermission';
-    modalRef.componentInstance.type = 'Delete';
-    modalRef.componentInstance.objectName = permission.path;
-    modalRef.result.then((result) => {
-      this.rolePermissions.splice(this.rolePermissions.indexOf(permission), 1);
-      this.saveInfo();
-      this.findPermissionObj(this.permissionNodes[0][0], permission.path);
-      this.updateDiagramData(this.permissionNodes[0][0]);
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ConfirmModalComponent,
+      nzComponentParams: {
+        title: 'delete',
+        message: 'deletePermission',
+        type: 'Delete',
+        objectName: permission.path
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.rolePermissions.splice(this.rolePermissions.indexOf(permission), 1);
+        this.saveInfo();
+        this.findPermissionObj(this.permissionNodes[0][0], permission.path);
+        this.updateDiagramData(this.permissionNodes[0][0]);
+      }
     });
   }
 

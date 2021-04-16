@@ -1,18 +1,19 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   Input,
-  ViewChild,
+  OnChanges,
   OnDestroy,
   OnInit,
+  Output,
   SimpleChanges,
-  Output, ElementRef,
-  ViewEncapsulation,
-  OnChanges
+  ViewChild,
+  ViewEncapsulation
 } from '@angular/core';
 import {forkJoin, Subscription} from 'rxjs';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {TranslateService} from '@ngx-translate/core';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {OrderPipe} from 'ngx-order-pipe';
 import * as _ from 'underscore';
 import {Router} from '@angular/router';
@@ -93,6 +94,15 @@ export class SelectOrderTemplatesComponent implements OnInit {
     }, () => {
       this.nodes = [];
     });
+  }
+
+  loadData(node, $event): void {
+    if (!node.origin.type) {
+      if ($event) {
+        node.isExpanded = !node.isExpanded;
+        $event.stopPropagation();
+      }
+    }
   }
 
   private generateTree(arr): void {
@@ -204,15 +214,6 @@ export class SelectOrderTemplatesComponent implements OnInit {
     }
     return tempArr;
   }
-
-  loadData(node, $event): void {
-    if (!node.origin.type) {
-      if ($event) {
-        node.isExpanded = !node.isExpanded;
-        $event.stopPropagation();
-      }
-    }
-  }
 }
 
 @Component({
@@ -231,7 +232,7 @@ export class CreatePlanModalComponent {
   schedules: any = [];
   selectedTemplates: any = {schedules: []};
 
-  constructor(public activeModal: NgbActiveModal, public  coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, public  coreService: CoreService) {
   }
 
   onSubmit(): void {
@@ -259,6 +260,10 @@ export class CreatePlanModalComponent {
     }
   }
 
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+
   private recursivelyCreate(obj): void {
     let apiArr = [];
     const dates = this.coreService.getDates(this.dateRanges[0], this.dateRanges[1]);
@@ -272,10 +277,6 @@ export class CreatePlanModalComponent {
     }, (err) => {
       this.submitted = false;
     });
-  }
-
-  cancel(): void {
-    this.activeModal.dismiss('');
   }
 }
 
@@ -303,7 +304,7 @@ export class RemovePlanModalComponent implements OnInit {
   required = false;
   comments: any = {};
 
-  constructor(public activeModal: NgbActiveModal, public  coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, public  coreService: CoreService) {
   }
 
   ngOnInit(): void {
@@ -402,6 +403,10 @@ export class RemovePlanModalComponent implements OnInit {
     this.remove(obj);
   }
 
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+
   private remove(obj) {
     this.submitted = true;
     if (this.dateRange && this.dateRange.length > 0 && !this.submissionsDelete) {
@@ -432,10 +437,6 @@ export class RemovePlanModalComponent implements OnInit {
     }, () => {
       this.submitted = false;
     });
-  }
-
-  cancel() {
-    this.activeModal.dismiss('');
   }
 }
 
@@ -577,7 +578,7 @@ export class FilterModalComponent implements OnInit {
 
   name: string;
 
-  constructor(private authService: AuthService, public activeModal: NgbActiveModal) {
+  constructor(private authService: AuthService, public activeModal: NzModalRef) {
   }
 
   ngOnInit(): void {
@@ -603,7 +604,7 @@ export class FilterModalComponent implements OnInit {
     if (obj) {
       this.activeModal.close(obj);
     } else {
-      this.activeModal.dismiss('cancel');
+      this.activeModal.destroy();
     }
   }
 
@@ -864,9 +865,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
-              private dataService: DataService, private modalService: NgbModal, private groupBy: GroupByPipe,
-              private translate: TranslateService, private searchPipe: SearchPipe, private orderPipe: OrderPipe,
-              private excelService: ExcelService, private router: Router) {
+              private dataService: DataService, private groupBy: GroupByPipe,
+              private modal: NzModalService, private translate: TranslateService, private searchPipe: SearchPipe,
+              private orderPipe: OrderPipe, private excelService: ExcelService, private router: Router) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -926,43 +927,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.loadOrderPlan();
   }
 
-  private load(date): void {
-    if (!date) {
-      this.isLoaded = false;
-    }
-    const d = date || new Date();
-    const firstDay = new Date(d.getFullYear(), d.getMonth(), 0, 0, 0, 0);
-    const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 0);
-    const obj: any = {
-      controllerId: this.schedulerIds.selected,
-      timeZone: this.preferences.zone,
-      filter: {
-        dateFrom: firstDay,
-        dateTo: lastDay
-      }
-    };
-    this.coreService.post('daily_plan/submissions', obj).subscribe((result: any) => {
-      this.submissionHistoryItems = [];
-      this.submissionHistory = [];
-      if (result.submissionHistoryItems.length > 0) {
-        for (let i = 0; i < result.submissionHistoryItems.length; i++) {
-          result.submissionHistoryItems[i].startDate = new Date(result.submissionHistoryItems[i].dailyPlanDate).setHours(0, 0, 0, 0);
-          result.submissionHistoryItems[i].endDate = result.submissionHistoryItems[i].startDate;
-          this.submissionHistoryItems.push(result.submissionHistoryItems[i]);
-          if (this.selectedDate && this.selectedDate.getTime() === result.submissionHistoryItems[i].startDate) {
-            this.submissionHistory.push(result.submissionHistoryItems[i]);
-          }
-        }
-        const calendar = $('#full-calendar').data('calendar');
-        if (calendar) {
-          calendar.setDataSource(this.submissionHistoryItems);
-        }
-      }
-    }, () => {
-
-    });
-  }
-
   getPlans(status): void {
     if (status === 'ALL') {
       this.dailyPlanFilters.filter.late = false;
@@ -1003,12 +967,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updateList(): void {
-    this.load(this.selectedDate);
-    this.loadOrderPlan();
-    this.resetCheckBox();
-  }
-
   groupByWorkflow(type): void {
     if (this.dailyPlanFilters.filter.groupBy !== type) {
       this.dailyPlanFilters.filter.groupBy = type;
@@ -1028,13 +986,21 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   createPlan(): void {
-    const modalRef = this.modalService.open(CreatePlanModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.selectedDate = this.selectedDate;
-    modalRef.componentInstance.dateRanges = this.dateRanges;
-    modalRef.result.then((res) => {
-      this.updateList();
-    }, () => {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: CreatePlanModalComponent,
+      nzComponentParams: {
+        schedulerId: this.schedulerIds.selected,
+        selectedDate: this.selectedDate,
+        dateRanges: this.dateRanges
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.updateList();
+      }
     });
   }
 
@@ -1063,16 +1029,23 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   /* ------------- Action ------------------- */
 
   deleteSubmission(): void {
-    const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.timeZone = this.preferences.zone;
-    modalRef.componentInstance.selectedDate = this.selectedDate;
-    modalRef.componentInstance.submissionsDelete = true;
-    modalRef.componentInstance.dateRange = this.dateRanges;
-    modalRef.result.then((res) => {
-      this.updateList();
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: RemovePlanModalComponent,
+      nzComponentParams: {
+        schedulerId: this.schedulerIds.selected,
+        timeZone: this.preferences.zone,
+        selectedDate: this.selectedDate,
+        submissionsDelete: true,
+        dateRange: this.dateRanges
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.updateList();
+      }
     });
   }
 
@@ -1092,41 +1065,61 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     const self = this;
 
     function openModal(requirements) {
-      const modalRef = self.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.schedulerId = self.schedulerIds.selected;
-      modalRef.componentInstance.preferences = self.preferences;
-      modalRef.componentInstance.orders = self.object.mapOfCheckedId;
-      modalRef.componentInstance.orderRequirements = requirements;
-      modalRef.result.then((res) => {
-        self.updateList();
-      }, () => {
-
+      const modal = self.modal.create({
+        nzTitle: null,
+        nzContent: ChangeParameterModalComponent,
+        nzComponentParams: {
+          schedulerId: self.schedulerIds.selected,
+          orders: self.object.mapOfCheckedId,
+          orderRequirements: requirements
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          self.updateList();
+        }
       });
     }
   }
 
   submitSelectedOrder(): void {
-    const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.orders = this.object.mapOfCheckedId;
-    modalRef.componentInstance.isSubmit = true;
-    modalRef.result.then((res) => {
-      this.updateList();
-    }, (reason) => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: RemovePlanModalComponent,
+      nzComponentParams: {
+        schedulerId: this.schedulerIds.selected,
+        orders: this.object.mapOfCheckedId,
+        isSubmit: true
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.updateList();
+      }
     });
   }
 
   submitOrder(order, workflow): void {
-    const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.order = order;
-    modalRef.componentInstance.workflow = workflow;
-    modalRef.componentInstance.isSubmit = true;
-    modalRef.result.then(() => {
-      this.updateList();
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: RemovePlanModalComponent,
+      nzComponentParams: {
+        order,
+        workflow,
+        isSubmit: true
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      console.log('[afterClose] The result is:', result);
+      if (result) {
+        this.updateList();
+      }
     });
   }
 
@@ -1197,15 +1190,23 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           comments.name = id + ', ' + comments.name;
         }
       });
-
-      const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.comments = comments;
-      modalRef.componentInstance.obj = obj;
-      modalRef.componentInstance.url = 'orders/daily_plan/cancel';
-      modalRef.result.then(() => {
-        this.updateList();
-      }, () => {
-
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+          obj,
+          url: 'orders/daily_plan/cancel'
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        console.log('[afterClose] The result is:', result);
+        if (result) {
+          this.updateList();
+        }
       });
     } else {
       this.coreService.post('orders/daily_plan/cancel', obj).subscribe(() => {
@@ -1234,89 +1235,68 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (plan && plan.value) {
       this.restCall(false, null, plan.value, 'Resume');
     } else {
-      const modalRef = this.modalService.open(ResumeOrderModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.preferences = this.preferences;
-      modalRef.componentInstance.permission = this.permission;
-      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-      modalRef.componentInstance.order = this.coreService.clone(order);
-      modalRef.result.then((result) => {
-        this.updateList();
-      }, () => {
-
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: ResumeOrderModalComponent,
+        nzComponentParams: {
+          preferences: this.preferences,
+          permission: this.permission,
+          schedulerId: this.schedulerIds.selected,
+          order: this.coreService.clone(order)
+        },
+        nzFooter: null,
+        nzClosable: false
       });
-    }
-  }
-
-  private restCall(isKill, order, multiple, type): void {
-    const obj: any = {
-      controllerId: this.schedulerIds.selected, orderIds: [], kill: isKill
-    };
-    if (multiple) {
-      multiple.forEach((value) => {
-        obj.orderIds.push(value.orderId);
-      });
-    } else {
-      obj.orderIds.push(order.orderId);
-    }
-    if (this.preferences.auditLog) {
-      let comments = {
-        radio: 'predefined',
-        type: 'Order',
-        operation: type,
-        name: ''
-      };
-      if (order) {
-        comments.name = order.orderId;
-      } else {
-        multiple.forEach((value, index) => {
-          if (index == multiple.length - 1) {
-            comments.name = comments.name + ' ' + value.orderId;
-          } else {
-            comments.name = value.orderId + ', ' + comments.name;
-          }
-        });
-      }
-      const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.comments = comments;
-      modalRef.componentInstance.obj = obj;
-      modalRef.componentInstance.url = 'orders/' + type.toLowerCase();
-      modalRef.result.then((result) => {
-        this.updateList();
-      }, () => {
-
-      });
-    } else {
-      this.coreService.post('orders/' + type.toLowerCase(), obj).subscribe(() => {
-        this.updateList();
+      modal.afterClose.subscribe(result => {
+        console.log('[afterClose] The result is:', result);
+        if (result) {
+          this.updateList();
+        }
       });
     }
   }
 
   removeSelectedOrder(): void {
-    const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.orders = this.object.mapOfCheckedId;
-    modalRef.componentInstance.timeZone = this.preferences.zone;
-    modalRef.componentInstance.selectedDate = this.selectedDate;
-    modalRef.componentInstance.dateRange = this.dateRanges;
-    modalRef.result.then((res) => {
-      this.updateList();
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: RemovePlanModalComponent,
+      nzComponentParams: {
+        schedulerId: this.schedulerIds.selected,
+        orders: this.object.mapOfCheckedId,
+        timeZone: this.preferences.zone,
+        selectedDate: this.selectedDate,
+        dateRange: this.dateRanges
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      console.log('[afterClose] The result is:', result);
+      if (result) {
+        this.updateList();
+      }
     });
   }
 
   removeOrder(order, workflow): void {
-    const modalRef = this.modalService.open(RemovePlanModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.order = order;
-    modalRef.componentInstance.workflow = workflow;
-    modalRef.componentInstance.timeZone = this.preferences.zone;
-    modalRef.componentInstance.selectedDate = this.selectedDate;
-    modalRef.result.then((res) => {
-      this.updateList();
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: RemovePlanModalComponent,
+      nzComponentParams: {
+        schedulerId: this.schedulerIds.selected,
+        order,
+        workflow,
+        timeZone: this.preferences.zone,
+        selectedDate: this.selectedDate
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      console.log('[afterClose] The result is:', result);
+      if (result) {
+        this.updateList();
+      }
     });
   }
 
@@ -1456,8 +1436,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  /* ------------- Utility Function End ------------------- */
-
   /* ------------- Advance search Begin------------------- */
   advancedSearch(): void {
     this.showSearchPanel = true;
@@ -1488,8 +1466,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     return obj;
   }
 
-  /* ------------- Advance search End------------------- */
-
   search(): void {
     this.isSearchHit = true;
     let obj: any = {
@@ -1502,6 +1478,377 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     } else {
       this.getDatesByUrl([this.searchFilter.from1, this.searchFilter.to1], (dates) => {
         this.callApi(new Date(dates[0]), new Date(dates[1]), obj);
+      });
+    }
+  }
+
+  /* ------------- Utility Function End ------------------- */
+
+  checkAll(): void {
+    let flag = false;
+    if (this.planOrders.length > 0) {
+      this.object.mapOfCheckedId.clear();
+      let orders = this.currentData;
+      if (this.dailyPlanFilters.filter.groupBy) {
+        if (this.object.checked) {
+          for (let i = 0; i < orders.length; i++) {
+            if (!orders[i].isFinished) {
+              orders[i].indeterminate = false;
+              orders[i].checked = true;
+              orders[i].value.forEach(item => {
+                this.object.mapOfCheckedId.set(item.orderId, item);
+              });
+            } else {
+              flag = true;
+            }
+          }
+        } else {
+          for (let i = 0; i < orders.length; i++) {
+            orders[i].checked = false;
+          }
+        }
+      } else {
+        if (this.object.checked) {
+          orders.forEach(item => {
+            if (item.status !== 'finished') {
+              this.object.mapOfCheckedId.set(item.orderId, item);
+            } else {
+              flag = true;
+            }
+          });
+        }
+      }
+    } else {
+      this.object.checked = false;
+    }
+    if (flag) {
+      setTimeout(() => {
+        this.object.checked = false;
+        if (this.object.mapOfCheckedId.size > 0) {
+          this.object.indeterminate = true;
+        }
+      }, 0);
+    }
+    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
+    this.checkState(this.object, this.object.mapOfCheckedId);
+  }
+
+  checkOrderTemplate(template): void {
+    template.indeterminate = false;
+    if (template.checked) {
+      for (let i = 0; i < template.value.length; i++) {
+        if (!this.object.mapOfCheckedId.has(template.value[i].orderId)) {
+          this.object.mapOfCheckedId.set(template.value[i].orderId, template.value[i]);
+        }
+      }
+    } else {
+      for (let i = 0; i < template.value.length; i++) {
+        if (this.object.mapOfCheckedId.has(template.value[i].orderId)) {
+          this.object.mapOfCheckedId.delete(template.value[i].orderId);
+        }
+      }
+    }
+    this.updateMainCheckbox();
+  }
+
+  /* ------------- Advance search End------------------- */
+
+  onItemChecked(order: any, plan: any, checked: boolean): void {
+    if (checked) {
+      this.object.mapOfCheckedId.set(order.orderId, order);
+    } else {
+      this.object.mapOfCheckedId.delete(order.orderId);
+    }
+    this.checkPlan(plan);
+  }
+
+  currentPageDataChange($event): void {
+    this.currentData = $event;
+  }
+
+  sortBy(): void {
+    this.plans = this.orderPipe.transform(this.plans, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
+    this.updateTable(this.plans);
+  }
+
+  searchInResult(): void {
+    this.updateTable(this.dailyPlanFilters.searchText ? this.searchPipe.transform(this.plans, this.dailyPlanFilters.searchText, this.searchableProperties) : this.plans);
+  }
+
+  cancel(): void {
+    this.showSearchPanel = false;
+    this.searchFilter = {};
+    if (this.isSearchHit) {
+      this.isSearchHit = false;
+      this.loadOrderPlan();
+    }
+  }
+
+  modifyOrder(order): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ModifyStartTimeModalComponent,
+      nzComponentParams: {
+        schedulerId: this.schedulerIds.selected,
+        order,
+        preferences: this.preferences
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.loadOrderPlan();
+      }
+    });
+  }
+
+  changeParameter(plan, order): void {
+    if (order) {
+      this.coreService.post('orders/variables', {
+        orderId: order.orderId,
+        controllerId: this.schedulerIds.selected
+      }).subscribe((res: any) => {
+        this.convertObjectToArray(res, order);
+        this.openModel(plan, order);
+      });
+    } else {
+      this.openModel(plan, order);
+    }
+  }
+
+  createCustomization(): void {
+    if (this.schedulerIds.selected) {
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: FilterModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          permission: this.permission,
+          allFilter: this.filterList
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(configObj => {
+        if (configObj) {
+          if (this.filterList.length === 1) {
+            this.savedFilter.selected = configObj.id;
+            this.dailyPlanFilters.selectedView = true;
+            this.selectedFiltered = configObj;
+            this.isCustomizationSelected(true);
+            this.loadOrderPlan();
+            this.saveService.setDailyPlan(this.savedFilter);
+            this.saveService.save();
+          }
+        }
+      });
+    }
+  }
+
+  editFilters(): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: EditFilterModalComponent,
+      nzComponentParams: {
+        filterList: this.filterList,
+        favorite: this.savedFilter.favorite,
+        permission: this.permission,
+        username: this.authService.currentUserData,
+        action: this.action,
+        self: this
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(obj => {
+      if (obj) {
+        if (obj.type === 'EDIT') {
+          this.editFilter(obj);
+        } else if (obj.type === 'COPY') {
+          this.copyFilter(obj);
+        }
+      }
+    });
+  }
+
+  action(type, obj, self): void {
+    if (type === 'DELETE') {
+      if (self.savedFilter.selected === obj.id) {
+        self.savedFilter.selected = undefined;
+        self.isCustomizationSelected(false);
+        self.dailyPlanFilters.selectedView = false;
+        self.selectedFiltered = undefined;
+        self.loadOrderPlan();
+      } else {
+        if (self.filterList.length === 0) {
+          self.isCustomizationSelected(false);
+          self.savedFilter.selected = undefined;
+          self.dailyPlanFilters.selectedView = false;
+          self.selectedFiltered = undefined;
+        }
+      }
+      self.saveService.setDailyPlan(self.savedFilter);
+      self.saveService.save();
+    } else if (type === 'MAKEFAV') {
+      self.savedFilter.favorite = obj.id;
+      self.dailyPlanFilters.selectedView = true;
+      self.saveService.setDailyPlan(self.savedFilter);
+      self.saveService.save();
+      self.loadOrderPlan();
+    } else if (type === 'REMOVEFAV') {
+      self.savedFilter.favorite = '';
+      self.saveService.setDailyPlan(self.savedFilter);
+      self.saveService.save();
+    }
+  }
+
+  changeFilter(filter): void {
+    if (filter) {
+      this.savedFilter.selected = filter.id;
+      this.dailyPlanFilters.selectedView = true;
+      this.coreService.post('configuration', {
+        controllerId: filter.controllerId,
+        id: filter.id
+      }).subscribe((conf: any) => {
+        this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
+        this.selectedFiltered.account = filter.account;
+        this.loadOrderPlan();
+      });
+    } else {
+      this.isCustomizationSelected(false);
+      this.savedFilter.selected = filter;
+      this.dailyPlanFilters.selectedView = false;
+      this.selectedFiltered = {};
+      this.loadOrderPlan();
+    }
+
+    this.saveService.setDailyPlan(this.savedFilter);
+    this.saveService.save();
+  }
+
+  receiveMessage($event): void {
+    if ($event === 'grid') {
+      this.isToggle = true;
+    }
+    this.pageView = $event;
+    this.resetCheckBox();
+  }
+
+  sort(key): void {
+    this.dailyPlanFilters.reverse = !this.dailyPlanFilters.reverse;
+    this.dailyPlanFilters.filter.sortBy = key;
+    this.sortBy();
+    this.resetCheckBox();
+  }
+
+  /* ---- Begin Action ------ */
+
+  pageIndexChange($event): void {
+    this.dailyPlanFilters.currentPage = $event;
+    this.resetCheckBox();
+  }
+
+  pageSizeChange($event): void {
+    this.dailyPlanFilters.entryPerPage = $event;
+    if (this.object.checked) {
+      this.checkAll();
+    }
+  }
+
+  private load(date): void {
+    if (!date) {
+      this.isLoaded = false;
+    }
+    const d = date || new Date();
+    const firstDay = new Date(d.getFullYear(), d.getMonth(), 0, 0, 0, 0);
+    const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 0);
+    const obj: any = {
+      controllerId: this.schedulerIds.selected,
+      timeZone: this.preferences.zone,
+      filter: {
+        dateFrom: firstDay,
+        dateTo: lastDay
+      }
+    };
+    this.coreService.post('daily_plan/submissions', obj).subscribe((result: any) => {
+      this.submissionHistoryItems = [];
+      this.submissionHistory = [];
+      if (result.submissionHistoryItems.length > 0) {
+        for (let i = 0; i < result.submissionHistoryItems.length; i++) {
+          result.submissionHistoryItems[i].startDate = new Date(result.submissionHistoryItems[i].dailyPlanDate).setHours(0, 0, 0, 0);
+          result.submissionHistoryItems[i].endDate = result.submissionHistoryItems[i].startDate;
+          this.submissionHistoryItems.push(result.submissionHistoryItems[i]);
+          if (this.selectedDate && this.selectedDate.getTime() === result.submissionHistoryItems[i].startDate) {
+            this.submissionHistory.push(result.submissionHistoryItems[i]);
+          }
+        }
+        const calendar = $('#full-calendar').data('calendar');
+        if (calendar) {
+          calendar.setDataSource(this.submissionHistoryItems);
+        }
+      }
+    }, () => {
+
+    });
+  }
+
+  private updateList(): void {
+    this.load(this.selectedDate);
+    this.loadOrderPlan();
+    this.resetCheckBox();
+  }
+
+  private restCall(isKill, order, multiple, type): void {
+    const obj: any = {
+      controllerId: this.schedulerIds.selected, orderIds: [], kill: isKill
+    };
+    if (multiple) {
+      multiple.forEach((value) => {
+        obj.orderIds.push(value.orderId);
+      });
+    } else {
+      obj.orderIds.push(order.orderId);
+    }
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Order',
+        operation: type,
+        name: ''
+      };
+      if (order) {
+        comments.name = order.orderId;
+      } else {
+        multiple.forEach((value, index) => {
+          if (index == multiple.length - 1) {
+            comments.name = comments.name + ' ' + value.orderId;
+          } else {
+            comments.name = value.orderId + ', ' + comments.name;
+          }
+        });
+      }
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+          obj,
+          url: 'orders/' + type.toLowerCase()
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        console.log('[afterClose] The result is:', result);
+        if (result) {
+          this.updateList();
+        }
+      });
+    } else {
+      this.coreService.post('orders/' + type.toLowerCase(), obj).subscribe(() => {
+        this.updateList();
       });
     }
   }
@@ -1524,6 +1871,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.isLoaded = true;
     });
   }
+
+  /* ---- End Action ------ */
+
+  /* ---- Begin Customization ------ */
 
   private updateTable(filterData): void {
     if (this.dailyPlanFilters.filter.groupBy) {
@@ -1644,82 +1995,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  checkAll(): void {
-    let flag = false;
-    if (this.planOrders.length > 0) {
-      this.object.mapOfCheckedId.clear();
-      let orders = this.currentData;
-      if (this.dailyPlanFilters.filter.groupBy) {
-        if (this.object.checked) {
-          for (let i = 0; i < orders.length; i++) {
-            if (!orders[i].isFinished) {
-              orders[i].indeterminate = false;
-              orders[i].checked = true;
-              orders[i].value.forEach(item => {
-                this.object.mapOfCheckedId.set(item.orderId, item);
-              });
-            } else {
-              flag = true;
-            }
-          }
-        } else {
-          for (let i = 0; i < orders.length; i++) {
-            orders[i].checked = false;
-          }
-        }
-      } else {
-        if (this.object.checked) {
-          orders.forEach(item => {
-            if (item.status !== 'finished') {
-              this.object.mapOfCheckedId.set(item.orderId, item);
-            } else {
-              flag = true;
-            }
-          });
-        }
-      }
-    } else {
-      this.object.checked = false;
-    }
-    if (flag) {
-      setTimeout(() => {
-        this.object.checked = false;
-        if (this.object.mapOfCheckedId.size > 0) {
-          this.object.indeterminate = true;
-        }
-      }, 0);
-    }
-    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
-    this.checkState(this.object, this.object.mapOfCheckedId);
-  }
-
-  checkOrderTemplate(template): void {
-    template.indeterminate = false;
-    if (template.checked) {
-      for (let i = 0; i < template.value.length; i++) {
-        if (!this.object.mapOfCheckedId.has(template.value[i].orderId)) {
-          this.object.mapOfCheckedId.set(template.value[i].orderId, template.value[i]);
-        }
-      }
-    } else {
-      for (let i = 0; i < template.value.length; i++) {
-        if (this.object.mapOfCheckedId.has(template.value[i].orderId)) {
-          this.object.mapOfCheckedId.delete(template.value[i].orderId);
-        }
-      }
-    }
-    this.updateMainCheckbox();
-  }
-
-  onItemChecked(order: any, plan: any, checked: boolean): void {
-    if (checked) {
-      this.object.mapOfCheckedId.set(order.orderId, order);
-    } else {
-      this.object.mapOfCheckedId.delete(order.orderId);
-    }
-    this.checkPlan(plan);
-  }
-
   private checkPlan(plan): void {
     if (this.dailyPlanFilters.filter.groupBy) {
       let count = 0;
@@ -1736,6 +2011,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
+  /* ---- End Customization ------ */
+
   private updateMainCheckbox(): void {
     let data = this.currentData;
     if (this.dailyPlanFilters.filter.groupBy) {
@@ -1750,42 +2027,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  currentPageDataChange($event): void {
-    this.currentData = $event;
-  }
-
-  sortBy(): void {
-    this.plans = this.orderPipe.transform(this.plans, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
-    this.updateTable(this.plans);
-  }
-
-  searchInResult(): void {
-    this.updateTable(this.dailyPlanFilters.searchText ? this.searchPipe.transform(this.plans, this.dailyPlanFilters.searchText, this.searchableProperties) : this.plans);
-  }
-
-  /* ---- Begin Action ------ */
-
-  cancel(): void {
-    this.showSearchPanel = false;
-    this.searchFilter = {};
-    if (this.isSearchHit) {
-      this.isSearchHit = false;
-      this.loadOrderPlan();
-    }
-  }
-
-  modifyOrder(order): void {
-    const modalRef = this.modalService.open(ModifyStartTimeModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.preferences = this.preferences;
-    modalRef.componentInstance.order = order;
-    modalRef.result.then((res) => {
-      this.loadOrderPlan();
-    }, () => {
-
-    });
-  }
-
   private convertObjectToArray(res, order): void {
     if (_.isEmpty(res)) {
       order.variables = [];
@@ -1793,20 +2034,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       order.variables = Object.entries(res).map(([k, v]) => {
         return {name: k, value: v};
       });
-    }
-  }
-
-  changeParameter(plan, order): void {
-    if (order) {
-      this.coreService.post('orders/variables', {
-        orderId: order.orderId,
-        controllerId: this.schedulerIds.selected
-      }).subscribe((res: any) => {
-        this.convertObjectToArray(res, order);
-        this.openModel(plan, order);
-      });
-    } else {
-      this.openModel(plan, order);
     }
   }
 
@@ -1854,154 +2081,32 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private _openModel(plan, order, orderRequirements): void {
-    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.order = order;
-    modalRef.componentInstance.plan = plan;
-    modalRef.componentInstance.orderRequirements = orderRequirements;
-    modalRef.result.then((result) => {
-      if (order && order.show) {
-        this.coreService.post('orders/variables', {
-          orderId: order.orderId,
-          controllerId: this.schedulerIds.selected
-        }).subscribe((res: any) => {
-          this.convertObjectToArray(res, order);
-        });
-      } else {
-        this.loadOrderPlan();
-      }
-    }, () => {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ChangeParameterModalComponent,
+      nzComponentParams: {
+        schedulerId: this.schedulerIds.selected,
+        order,
+        plan,
+        orderRequirements
+      },
+      nzFooter: null,
+      nzClosable: false
     });
-  }
-
-  /* ---- End Action ------ */
-
-  /* ---- Begin Customization ------ */
-
-  createCustomization(): void {
-    if (this.schedulerIds.selected) {
-      const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.permission = this.permission;
-      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-      modalRef.componentInstance.allFilter = this.filterList;
-      modalRef.componentInstance.new = true;
-      modalRef.result.then((configObj) => {
-        if (this.filterList.length === 1) {
-          this.savedFilter.selected = configObj.id;
-          this.dailyPlanFilters.selectedView = true;
-          this.selectedFiltered = configObj;
-          this.isCustomizationSelected(true);
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        if (order && order.show) {
+          this.coreService.post('orders/variables', {
+            orderId: order.orderId,
+            controllerId: this.schedulerIds.selected
+          }).subscribe((res: any) => {
+            this.convertObjectToArray(res, order);
+          });
+        } else {
           this.loadOrderPlan();
-          this.saveService.setDailyPlan(this.savedFilter);
-          this.saveService.save();
         }
-      }, () => {
-
-      });
-    }
-  }
-
-  editFilters(): void {
-    const modalRef = this.modalService.open(EditFilterModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.filterList = this.filterList;
-    modalRef.componentInstance.favorite = this.savedFilter.favorite;
-    modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.username = this.authService.currentUserData;
-    modalRef.componentInstance.action = this.action;
-    modalRef.componentInstance.self = this;
-    modalRef.result.then((obj) => {
-      if (obj.type === 'EDIT') {
-        this.editFilter(obj);
-      } else if (obj.type === 'COPY') {
-        this.copyFilter(obj);
       }
-    }, () => {
-
     });
-  }
-
-  action(type, obj, self): void {
-    if (type === 'DELETE') {
-      if (self.savedFilter.selected === obj.id) {
-        self.savedFilter.selected = undefined;
-        self.isCustomizationSelected(false);
-        self.dailyPlanFilters.selectedView = false;
-        self.selectedFiltered = undefined;
-        self.loadOrderPlan();
-      } else {
-        if (self.filterList.length === 0) {
-          self.isCustomizationSelected(false);
-          self.savedFilter.selected = undefined;
-          self.dailyPlanFilters.selectedView = false;
-          self.selectedFiltered = undefined;
-        }
-      }
-      self.saveService.setDailyPlan(self.savedFilter);
-      self.saveService.save();
-    } else if (type === 'MAKEFAV') {
-      self.savedFilter.favorite = obj.id;
-      self.dailyPlanFilters.selectedView = true;
-      self.saveService.setDailyPlan(self.savedFilter);
-      self.saveService.save();
-      self.loadOrderPlan();
-    } else if (type === 'REMOVEFAV') {
-      self.savedFilter.favorite = '';
-      self.saveService.setDailyPlan(self.savedFilter);
-      self.saveService.save();
-    }
-  }
-
-  changeFilter(filter): void {
-    if (filter) {
-      this.savedFilter.selected = filter.id;
-      this.dailyPlanFilters.selectedView = true;
-      this.coreService.post('configuration', {
-        controllerId: filter.controllerId,
-        id: filter.id
-      }).subscribe((conf: any) => {
-        this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
-        this.selectedFiltered.account = filter.account;
-        this.loadOrderPlan();
-      });
-    } else {
-      this.isCustomizationSelected(false);
-      this.savedFilter.selected = filter;
-      this.dailyPlanFilters.selectedView = false;
-      this.selectedFiltered = {};
-      this.loadOrderPlan();
-    }
-
-    this.saveService.setDailyPlan(this.savedFilter);
-    this.saveService.save();
-  }
-
-  /* ---- End Customization ------ */
-
-  receiveMessage($event): void {
-    if ($event === 'grid') {
-      this.isToggle = true;
-    }
-    this.pageView = $event;
-    this.resetCheckBox();
-  }
-
-  sort(key): void {
-    this.dailyPlanFilters.reverse = !this.dailyPlanFilters.reverse;
-    this.dailyPlanFilters.filter.sortBy = key;
-    this.sortBy();
-    this.resetCheckBox();
-  }
-
-  pageIndexChange($event): void {
-    this.dailyPlanFilters.currentPage = $event;
-    this.resetCheckBox();
-  }
-
-  pageSizeChange($event): void {
-    this.dailyPlanFilters.entryPerPage = $event;
-    if (this.object.checked) {
-      this.checkAll();
-    }
   }
 
   private resetCheckBox(): void {
@@ -2050,7 +2155,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
     if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
       this.checkSharedFilters();
-    } else{
+    } else {
       this.loadOrderPlan();
     }
     $('#full-calendar').calendar({
@@ -2249,16 +2354,18 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         } else {
           filterObj.id = filter.id;
         }
-        const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-        modalRef.componentInstance.permission = this.permission;
-        modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-        modalRef.componentInstance.allFilter = this.filterList;
-        modalRef.componentInstance.filter = filterObj;
-        modalRef.componentInstance.edit = !isCopy;
-        modalRef.result.then(() => {
-
-        }, () => {
-
+        this.modal.create({
+          nzTitle: null,
+          nzContent: FilterModalComponent,
+          nzClassName: 'lg',
+          nzComponentParams: {
+            permission: this.permission,
+            allFilter: this.filterList,
+            filter: filterObj,
+            edit: !isCopy
+          },
+          nzFooter: null,
+          nzClosable: false
         });
       });
     }

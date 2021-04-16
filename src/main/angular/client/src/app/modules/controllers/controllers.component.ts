@@ -1,10 +1,11 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 import {StartUpModalComponent} from '../start-up/start-up.component';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-agent-modal',
@@ -25,7 +26,7 @@ export class AgentModalComponent implements OnInit {
   preferences: any;
   display: any;
 
-  constructor(public coreService: CoreService, public activeModal: NgbActiveModal) {
+  constructor(public coreService: CoreService, public activeModal: NzModalRef) {
   }
 
   ngOnInit(): void {
@@ -124,20 +125,34 @@ export class AgentModalComponent implements OnInit {
   selector: 'app-controllers',
   templateUrl: './controllers.component.html'
 })
-export class ControllersComponent implements OnInit {
+export class ControllersComponent implements OnInit, OnDestroy {
   data: any = [];
   controllers: any = [];
   currentSecurityLevel: string;
   showPanel = [true];
   permission: any = {};
+  modalInstance: NzModalRef;
+  subscription: Subscription;
 
-  constructor(private coreService: CoreService, private modalService: NgbModal, private authService: AuthService,
-              private dataService: DataService) {
+  constructor(private coreService: CoreService, private modal: NzModalService,
+              private authService: AuthService, private dataService: DataService) {
+    this.subscription = dataService.closeModal.subscribe(res => {
+      if (res && this.modalInstance) {
+        this.modalInstance.close();
+        if (res === 'reload') {
+          this.getSchedulerIds();
+        }
+      }
+    });
   }
 
   ngOnInit(): void {
     this.permission = JSON.parse(this.authService.permission) || {};
     this.getData();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   getData(): void {
@@ -172,71 +187,98 @@ export class ControllersComponent implements OnInit {
   }
 
   addController(): void {
-    const modalRef = this.modalService.open(StartUpModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.isModal = true;
-    modalRef.componentInstance.new = true;
-    modalRef.componentInstance.modalRef = modalRef;
-    modalRef.result.then(() => {
-      this.getSchedulerIds();
-    }, () => {
-
+    this.modalInstance = this.modal.create({
+      nzTitle: null,
+      nzContent: StartUpModalComponent,
+      nzComponentParams: {
+        isModal: true,
+        new: true,
+        modalRef: true
+      },
+      nzFooter: null,
+      nzClosable: false,
     });
   }
 
   editController(controller): void {
     this.coreService.post('controllers/p', {controllerId: controller}).subscribe((res: any) => {
-      const modalRef = this.modalService.open(StartUpModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.isModal = true;
-      modalRef.componentInstance.controllerInfo = res.controllers;
-      modalRef.componentInstance.agents = res.agents;
-      modalRef.componentInstance.modalRef = modalRef;
-      modalRef.result.then(() => {
-        this.getSchedulerIds();
-      }, () => {
-
+      this.modalInstance = this.modal.create({
+        nzTitle: null,
+        nzContent: StartUpModalComponent,
+        nzComponentParams: {
+          isModal: true,
+          controllerInfo: res.controllers,
+          agents: res.agents,
+          modalRef: true
+        },
+        nzFooter: null,
+        nzClosable: false
       });
     });
   }
 
   deleteController(matser): void {
-    const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.title = 'delete';
-    modalRef.componentInstance.message = 'deleteController';
-    modalRef.componentInstance.type = 'Delete';
-    modalRef.componentInstance.objectName = matser;
-    modalRef.result.then((result) => {
-      this.coreService.post('controller/cleanup', {controllerId: matser}).subscribe((res: any) => {
-        this.getSchedulerIds();
-      });
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ConfirmModalComponent,
+      nzComponentParams: {
+        title: 'delete',
+        message: 'deleteController',
+        type: 'Delete',
+        objectName: matser
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.coreService.post('controller/cleanup', {controllerId: matser}).subscribe((res: any) => {
+          this.getSchedulerIds();
+        });
+      }
     });
   }
 
   addAgent(controller): void {
     this.getAgents(controller, () => {
-      const modalRef = this.modalService.open(AgentModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.controllerId = controller.controllerId;
-      modalRef.componentInstance.agents = controller.agents;
-      modalRef.componentInstance.new = true;
-      modalRef.result.then(() => {
-        this.getData();
-      }, () => {
-
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: AgentModalComponent,
+        nzAutofocus: null,
+        nzComponentParams: {
+          controllerId: controller.controllerId,
+          agents: controller.agents,
+          new: true
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.getData();
+        }
       });
     });
   }
 
   editAgent(agent, controller): void {
     this.getAgents(controller, () => {
-      const modalRef = this.modalService.open(AgentModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.controllerId = controller.controllerId;
-      modalRef.componentInstance.agents = controller.agents;
-      modalRef.componentInstance.data = agent;
-      modalRef.result.then(() => {
-        this.getData();
-      }, () => {
-
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: AgentModalComponent,
+        nzAutofocus: null,
+        nzComponentParams: {
+          controllerId: controller.controllerId,
+          agents: controller.agents,
+          data: agent
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.getData();
+        }
       });
     });
   }
@@ -286,7 +328,7 @@ export class ControllersComponent implements OnInit {
             }
           }
         }
-        if(this.currentSecurityLevel === obj.securityLevel) {
+        if (this.currentSecurityLevel === obj.securityLevel) {
           this.controllers.push(obj);
         }
       }

@@ -1,5 +1,6 @@
 import {
-  ChangeDetectionStrategy, ChangeDetectorRef,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   HostListener,
   Input,
@@ -9,7 +10,7 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {FileUploader} from 'ng2-file-upload';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
@@ -66,7 +67,7 @@ export class UpdateWorkflowComponent implements OnInit {
   workflowName: string;
   variableDeclarations = {parameters: []};
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, public toasterService: ToasterService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, public toasterService: ToasterService) {
   }
 
   ngOnInit(): void {
@@ -175,7 +176,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   subscription: Subscription;
 
-  constructor(private coreService: CoreService, private modalService: NgbModal, private ref: ChangeDetectorRef,
+  constructor(private coreService: CoreService, private modal: NzModalService, private ref: ChangeDetectorRef,
               private workflowService: WorkflowService, private dataService: DataService) {
     this.subscription = dataService.reloadWorkflowError.subscribe(res => {
       this.error = res.error;
@@ -242,12 +243,21 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   fullScreen(): void {
-    const modalRef = this.modalService.open(ScriptEditorComponent, {backdrop: 'static', size: 'lg', windowClass: 'script-editor'});
-    modalRef.componentInstance.script = this.selectedNode.job.executable.script;
-    modalRef.result.then((result) => {
-      this.selectedNode.job.executable.script = result;
-      this.ref.detectChanges();
-    }, () => {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ScriptEditorComponent,
+      nzClassName: 'lg script-editor',
+      nzComponentParams: {
+        script: this.selectedNode.job.executable.script
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.selectedNode.job.executable.script = result;
+        this.ref.detectChanges();
+      }
     });
   }
 
@@ -365,6 +375,56 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  loadData(node, type, $event): void {
+    setTimeout(() => {
+      this.onBlur();
+    }, 50);
+    if (!node.origin.type) {
+
+      if ($event) {
+        node.isExpanded = !node.isExpanded;
+        $event.stopPropagation();
+      }
+      let flag = true;
+      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
+        flag = false;
+      }
+      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
+        this.coreService.post('inventory/read/folder', {
+          path: node.key,
+          objectTypes: ['JOBCLASS']
+        }).subscribe((res: any) => {
+          let data;
+          if (type === 'JOBCLASS') {
+            data = res.jobClasses;
+          }
+          for (let i = 0; i < data.length; i++) {
+            const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
+            data[i].title = _path;
+            data[i].path = _path;
+            data[i].key = _path;
+            data[i].type = type;
+            data[i].isLeaf = true;
+          }
+          if (node.origin.children && node.origin.children.length > 0) {
+            data = data.concat(node.origin.children);
+          }
+          if (node.origin.isLeaf) {
+            node.origin.expanded = true;
+          }
+          node.origin.isLeaf = false;
+
+          node.origin.children = data;
+          this.jobClassTree = [...this.jobClassTree];
+        });
+      }
+    }
+  }
+
+  onExpand(e, type) {
+    this.loadData(e.node, type, null);
+  }
+
   private init(): void {
     this.getJobInfo();
     this.selectedNode.obj.defaultArguments = this.coreService.convertObjectToArray(this.selectedNode.obj, 'defaultArguments');
@@ -462,56 +522,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.addEnv();
     }
   }
-
-  loadData(node, type, $event): void {
-    setTimeout(() => {
-      this.onBlur();
-    }, 50);
-    if (!node.origin.type) {
-
-      if ($event) {
-        node.isExpanded = !node.isExpanded;
-        $event.stopPropagation();
-      }
-      let flag = true;
-      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
-        flag = false;
-      }
-      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        this.coreService.post('inventory/read/folder', {
-          path: node.key,
-          objectTypes: ['JOBCLASS']
-        }).subscribe((res: any) => {
-          let data;
-          if (type === 'JOBCLASS') {
-            data = res.jobClasses;
-          }
-          for (let i = 0; i < data.length; i++) {
-            const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-            data[i].title = _path;
-            data[i].path = _path;
-            data[i].key = _path;
-            data[i].type = type;
-            data[i].isLeaf = true;
-          }
-          if (node.origin.children && node.origin.children.length > 0) {
-            data = data.concat(node.origin.children);
-          }
-          if (node.origin.isLeaf) {
-            node.origin.expanded = true;
-          }
-          node.origin.isLeaf = false;
-
-          node.origin.children = data;
-          this.jobClassTree = [...this.jobClassTree];
-        });
-      }
-    }
-  }
-
-  onExpand(e, type) {
-    this.loadData(e.node, type, null);
-  }
 }
 
 @Component({
@@ -531,7 +541,7 @@ export class ScriptEditorComponent {
     mode: 'shell'
   };
 
-  constructor(public activeModal: NgbActiveModal) {
+  constructor(public activeModal: NzModalRef) {
   }
 
   onSubmit(): void {
@@ -602,6 +612,10 @@ export class ExpressionComponent implements OnInit {
     this.insertText(setText, this.cm.codeMirror.getDoc());
   }
 
+  change() {
+    this.error = !this.selectedNode.obj.predicate;
+  }
+
   // Begin inputting of clicked text into editor
   private insertText(data, doc) {
     const cursor = doc.getCursor(); // gets the line number in the cursor position
@@ -609,10 +623,6 @@ export class ExpressionComponent implements OnInit {
     cursor.ch = cursor.ch + data.length;
     this.cm.codeMirror.focus();
     doc.setCursor(cursor);
-  }
-
-  change() {
-    this.error = !this.selectedNode.obj.predicate;
   }
 }
 
@@ -625,7 +635,7 @@ export class ImportComponent implements OnInit {
   submitted = false;
   uploader: FileUploader;
 
-  constructor(public activeModal: NgbActiveModal, public translate: TranslateService, public toasterService: ToasterService) {
+  constructor(public activeModal: NzModalRef, public translate: TranslateService, public toasterService: ToasterService) {
     this.uploader = new FileUploader({
       url: '',
       queueLimit: 1
@@ -742,9 +752,452 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
-  constructor(public coreService: CoreService, public translate: TranslateService, private modalService: NgbModal,
+  constructor(public coreService: CoreService, public translate: TranslateService, private modal: NzModalService,
               public toasterService: ToasterService, private workflowService: WorkflowService, private dataService: DataService,
               private nzContextMenuService: NzContextMenuService) {
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.reload) {
+      if (this.reload) {
+        this.selectedNode = null;
+        this.init();
+        this.reload = false;
+        return;
+      }
+    }
+    if (this.workflow.actual) {
+      this.saveJSON(false);
+      this.selectedNode = null;
+    }
+    if (changes.data) {
+      if (this.data.type) {
+        this.init();
+      } else {
+        this.isLoading = false;
+        this.workflow = {};
+        this.jobs = [];
+        this.title = '';
+        this.orderRequirements = {};
+        this.dummyXml = null;
+      }
+    }
+  }
+
+  /**
+   * Constructs a new application (returns an mxEditor instance)
+   */
+  createEditor(config) {
+    let editor = null;
+    try {
+      if (!mxClient.isBrowserSupported()) {
+        mxUtils.error('Browser is not supported!', 200, false);
+      } else {
+        const node = mxUtils.load(config).getDocumentElement();
+        editor = new mxEditor(node);
+        this.editor = editor;
+        this.initEditorConf(editor, false, false);
+        const outln = document.getElementById('outlineContainer');
+        outln.innerHTML = '';
+        outln.style['border'] = '1px solid lightgray';
+        outln.style['background'] = '#FFFFFF';
+        new mxOutline(this.editor.graph, outln);
+      }
+    } catch (e) {
+      // Shows an error message if the editor cannot start
+      console.error(e);
+      throw e; // for debugging
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.data.type) {
+      this.saveJSON(false);
+      try {
+        if (this.editor) {
+          this.editor.destroy();
+          mxOutline.prototype.destroy();
+          this.editor = null;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
+
+  openDeclarationModal(): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: UpdateWorkflowComponent,
+      nzAutofocus: null,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        schedulerId: this.schedulerId,
+        orderRequirements: this.coreService.clone(this.orderRequirements),
+        isVariableOnly: true
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        let variableDeclarations = {parameters: []};
+        variableDeclarations.parameters = result.variableDeclarations.parameters.filter((value) => {
+          return !!value.name;
+        });
+        variableDeclarations.parameters = this.coreService.keyValuePair(variableDeclarations.parameters);
+        if (variableDeclarations.parameters && _.isEmpty(variableDeclarations.parameters)) {
+          delete variableDeclarations['parameters'];
+        }
+        if (JSON.stringify(this.orderRequirements) !== JSON.stringify(variableDeclarations)) {
+          this.orderRequirements = variableDeclarations;
+          this.updateOtherProperties();
+        }
+      }
+    });
+  }
+
+  addWorkflow(): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: UpdateWorkflowComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        schedulerId: this.schedulerId,
+        data: this.workflow,
+        title: this.title
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        if (result.name) {
+          this.data.name = result.name;
+          this.workflow.name = result.name;
+          this.dataService.reloadTree.next({rename: this.data});
+          this.workflow.deployed = false;
+          this.data.deployed = false;
+        }
+        if (this.title !== result.title) {
+          this.title = result.title;
+          this.updateOtherProperties();
+        }
+      }
+    });
+  }
+
+  zoomIn(): void {
+    this.closeMenu();
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.zoomIn();
+    }
+  }
+
+  zoomOut(): void {
+    this.closeMenu();
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.zoomOut();
+    }
+  }
+
+  actual(): void {
+    this.closeMenu();
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.zoomActual();
+      this.center();
+    }
+  }
+
+  fit(): void {
+    this.closeMenu();
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.fit();
+      this.center();
+    }
+  }
+
+  /**
+   * Function: redo
+   *
+   * Redoes the last change.
+   */
+  redo(): void {
+    const n = this.history.length;
+    if (this.indexOfNextAdd < n) {
+      const obj = this.history[this.indexOfNextAdd++];
+      this.reloadWorkflow(obj);
+    }
+  }
+
+  /**
+   * Function: undo
+   *
+   * Undoes the last change.
+   */
+  undo(): void {
+    if (this.indexOfNextAdd > 0) {
+      const obj = this.history[--this.indexOfNextAdd];
+      this.reloadWorkflow(obj);
+    }
+  }
+
+  expandAll(): void {
+    if (this.editor.graph.isEnabled()) {
+      const cells = this.editor.graph.getChildVertices();
+      this.editor.graph.foldCells(false, true, cells, null, null);
+    }
+  }
+
+  collapseAll(): void {
+    if (this.editor.graph.isEnabled()) {
+      const cells = this.editor.graph.getChildVertices();
+      this.editor.graph.foldCells(true, true, cells, null, null);
+    }
+  }
+
+  delete(): void {
+    if (this.editor && this.editor.graph) {
+      let cells = this.node ? [this.node.cell] : null;
+      this.editor.graph.removeCells(cells, null);
+    }
+  }
+
+  copy(node): void {
+    if (this.editor && this.editor.graph) {
+      let cell;
+      if (node) {
+        cell = node.cell;
+      } else {
+        cell = this.editor.graph.getSelectionCell();
+      }
+      if (cell) {
+        if (this.cutCell) {
+          this.changeCellStyle(this.editor.graph, this.cutCell, false);
+          this.cutCell = null;
+        }
+        this.copyId = cell.getAttribute('uuid');
+        if (this.copyId) {
+          $('#toolbar').find('img').each(function(index) {
+            if (index === 12) {
+              $(this).removeClass('disable-link');
+              $(this).attr('title', 'Copy of ' + cell.value.tagName);
+            }
+          });
+        }
+      }
+    }
+  }
+
+  cut(node): void {
+    if (this.editor && this.editor.graph) {
+      const graph = this.editor.graph;
+      let cell;
+      if (node) {
+        cell = node.cell;
+      } else {
+        cell = graph.getSelectionCell();
+      }
+      if (cell) {
+        this.copyId = null;
+        if (this.cutCell) {
+          this.changeCellStyle(graph, this.cutCell, false);
+        }
+        this.changeCellStyle(graph, cell, true);
+        this.cutCell = cell;
+        $('#toolbar').find('img').each(function(index) {
+          if (index === 12) {
+            $(this).removeClass('disable-link');
+            $(this).attr('title', cell.value.tagName);
+          }
+        });
+      }
+    }
+  }
+
+  closeMenu(): void {
+    this.node = null;
+  }
+
+  validate(): void {
+    if (this.invalidMsg && this.invalidMsg.match(/orderRequirements/)) {
+      this.openDeclarationModal();
+    } else {
+      if (!this.workflow.valid) {
+        let data = this.coreService.clone(this.workflow.configuration);
+        this.modifyJSON(data, true, true);
+      }
+    }
+  }
+
+  exportJSON(): void {
+    this.closeMenu();
+    if (this.workflow.configuration && this.workflow.configuration.instructions && this.workflow.configuration.instructions.length > 0) {
+      this.editor.graph.clearSelection();
+      const name = (this.workflow.name || 'workflow') + '.json';
+      const fileType = 'application/octet-stream';
+      let data = this.coreService.clone(this.workflow.configuration);
+      const flag = this.modifyJSON(data, true, true);
+      if (!flag) {
+        return;
+      }
+      if (typeof data === 'object') {
+        let newData: any = {};
+        if (this.orderRequirements && this.orderRequirements.parameters) {
+          newData.orderRequirements = this.orderRequirements;
+        }
+        newData.instructions = data.instructions;
+        if (this.title) {
+          newData.title = this.title;
+        }
+        newData.jobs = data.jobs;
+        data = JSON.stringify(newData, undefined, 2);
+      }
+      const blob = new Blob([data], {type: fileType});
+      saveAs(blob, name);
+    }
+  }
+
+  importJSON() {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ImportComponent,
+      nzClassName: 'lg',
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.parseWorkflowJSON(result);
+        if (result.orderRequirements) {
+          this.orderRequirements = this.coreService.clone(result.orderRequirements);
+        }
+        if (result.title) {
+          this.title = this.coreService.clone(result.title);
+        }
+        this.workflow.configuration = this.coreService.clone(result);
+        if (result.jobs && !_.isEmpty(result.jobs)) {
+          this.jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
+            return {name: k, value: v};
+          });
+        }
+        delete this.workflow.configuration['orderRequirements'];
+        delete this.workflow.configuration['title'];
+        this.history = [];
+        this.indexOfNextAdd = 0;
+        this.updateXMLJSON(false);
+        this.storeData(result);
+      }
+    });
+  }
+
+  loadData(node, type, $event): void {
+    if (!node.origin.type) {
+      if ($event) {
+        node.isExpanded = !node.isExpanded;
+        $event.stopPropagation();
+      }
+      let flag = true;
+      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
+        flag = false;
+      }
+      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
+        this.coreService.post('inventory/read/folder', {
+          path: node.key,
+          objectTypes: [type]
+        }).subscribe((res: any) => {
+          let data;
+          if (type === 'LOCK') {
+            data = res.locks;
+            for (let i = 0; i < data.length; i++) {
+              const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
+              data[i].title = data[i].name;
+              data[i].path = _path;
+              data[i].key = data[i].name;
+              data[i].type = type;
+              data[i].isLeaf = true;
+            }
+            if (node.origin.children && node.origin.children.length > 0) {
+              data = data.concat(node.origin.children);
+            }
+            if (node.origin.isLeaf) {
+              node.origin.expanded = true;
+            }
+            node.origin.isLeaf = false;
+            node.origin.children = data;
+          }
+          this.lockTree = [...this.lockTree];
+        });
+      }
+    }
+
+    if (this.selectedNode.obj.lockId1) {
+      if (this.selectedNode.obj.lockId !== this.selectedNode.obj.lockId1) {
+        this.selectedNode.obj.lockId = this.selectedNode.obj.lockId1;
+        this.getLimit();
+      }
+    } else if (node.key && !node.key.match('/')) {
+      if (this.selectedNode.obj.lockId !== node.key) {
+        this.selectedNode.obj.lockId = node.key;
+        this.getLimit();
+      }
+    }
+  }
+
+  onExpand(e, type) {
+    this.loadData(e.node, type, null);
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  beforeunload() {
+    if (this.data.type) {
+      this.saveJSON(false);
+      this.ngOnDestroy();
+    }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.centered();
+    this.checkGraphHeight();
+  }
+
+  checkGraphHeight() {
+    if (this.editor) {
+      const dom = $('.graph-container');
+      if (dom && dom.position()) {
+        let top = (dom.position().top + $('#rightPanel').position().top);
+        const ht = 'calc(100vh - ' + (top + 12) + 'px)';
+        dom.css({'height': ht, 'scroll-top': '0'});
+        $('#graph').slimscroll({height: ht, scrollTo: '0'});
+      }
+    }
+  }
+
+  validateJSON(skip) {
+    if (!this.isUpdate) {
+      this.isUpdate = true;
+      if (this.workflow.configuration && this.workflow.configuration.instructions && this.workflow.configuration.instructions.length > 0) {
+        let data = this.coreService.clone(this.workflow.configuration);
+        this.workflow.valid = this.modifyJSON(data, true, false);
+        this.saveJSON(this.workflow.valid ? data : skip ? false : 'false');
+      }
+      setTimeout(() => {
+        this.isUpdate = false;
+      }, 50);
+    }
+  }
+
+  deploy() {
+    this.dataService.reloadTree.next({deploy: this.workflow});
+  }
+
+  backToListView() {
+    this.dataService.reloadTree.next({back: this.workflow});
+  }
+
+  navToLock(lockId) {
+    this.dataService.reloadTree.next({navigate: {name: lockId, type: 'LOCK'}});
   }
 
   private init() {
@@ -788,33 +1241,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.coreService.post('agents/names', {controllerId: this.schedulerId}).subscribe((res: any) => {
           this.agents = res.agentNames ? res.agentNames.sort() : [];
         });
-      }
-    }
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.reload) {
-      if (this.reload) {
-        this.selectedNode = null;
-        this.init();
-        this.reload = false;
-        return;
-      }
-    }
-    if (this.workflow.actual) {
-      this.saveJSON(false);
-      this.selectedNode = null;
-    }
-    if (changes.data) {
-      if (this.data.type) {
-        this.init();
-      } else {
-        this.isLoading = false;
-        this.workflow = {};
-        this.jobs = [];
-        this.title = '';
-        this.orderRequirements = {};
-        this.dummyXml = null;
       }
     }
   }
@@ -875,121 +1301,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     });
   }
 
-
-  /**
-   * Constructs a new application (returns an mxEditor instance)
-   */
-  createEditor(config) {
-    let editor = null;
-    try {
-      if (!mxClient.isBrowserSupported()) {
-        mxUtils.error('Browser is not supported!', 200, false);
-      } else {
-        const node = mxUtils.load(config).getDocumentElement();
-        editor = new mxEditor(node);
-        this.editor = editor;
-        this.initEditorConf(editor, false, false);
-        const outln = document.getElementById('outlineContainer');
-        outln.innerHTML = '';
-        outln.style['border'] = '1px solid lightgray';
-        outln.style['background'] = '#FFFFFF';
-        new mxOutline(this.editor.graph, outln);
-      }
-    } catch (e) {
-      // Shows an error message if the editor cannot start
-      console.error(e);
-      throw e; // for debugging
-    }
-  }
-
-  ngOnDestroy() {
-    if (this.data.type) {
-      this.saveJSON(false);
-      try {
-        if (this.editor) {
-          this.editor.destroy();
-          mxOutline.prototype.destroy();
-          this.editor = null;
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  }
-
-  openDeclarationModal(): void {
-    const modalRef = this.modalService.open(UpdateWorkflowComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.orderRequirements = this.coreService.clone(this.orderRequirements);
-    modalRef.componentInstance.isVariableOnly = true;
-    modalRef.result.then((result) => {
-      let variableDeclarations = {parameters: []};
-      variableDeclarations.parameters = result.variableDeclarations.parameters.filter((value) => {
-        return !!value.name;
-      });
-      variableDeclarations.parameters = this.coreService.keyValuePair(variableDeclarations.parameters);
-      if (variableDeclarations.parameters && _.isEmpty(variableDeclarations.parameters)) {
-        delete variableDeclarations['parameters'];
-      }
-      if (JSON.stringify(this.orderRequirements) !== JSON.stringify(variableDeclarations)) {
-        this.orderRequirements = variableDeclarations;
-        this.updateOtherProperties();
-      }
-    }, () => {
-    });
-  }
-
-  addWorkflow(): void {
-    const modalRef = this.modalService.open(UpdateWorkflowComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.data = this.workflow;
-    modalRef.componentInstance.title = this.title;
-    modalRef.result.then((result) => {
-      if (result.name) {
-        this.data.name = result.name;
-        this.workflow.name = result.name;
-        this.dataService.reloadTree.next({rename: this.data});
-        this.workflow.deployed = false;
-        this.data.deployed = false;
-      }
-      if (this.title !== result.title) {
-        this.title = result.title;
-        this.updateOtherProperties();
-      }
-    }, () => {
-    });
-  }
-
-  zoomIn(): void {
-    this.closeMenu();
-    if (this.editor && this.editor.graph) {
-      this.editor.graph.zoomIn();
-    }
-  }
-
-  zoomOut(): void {
-    this.closeMenu();
-    if (this.editor && this.editor.graph) {
-      this.editor.graph.zoomOut();
-    }
-  }
-
-  actual(): void {
-    this.closeMenu();
-    if (this.editor && this.editor.graph) {
-      this.editor.graph.zoomActual();
-      this.center();
-    }
-  }
-
-  fit(): void {
-    this.closeMenu();
-    if (this.editor && this.editor.graph) {
-      this.editor.graph.fit();
-      this.center();
-    }
-  }
-
   private center(): void {
     let dom = document.getElementById('graph');
     let x = 0.5, y = 0.2;
@@ -1004,31 +1315,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  /**
-   * Function: redo
-   *
-   * Redoes the last change.
-   */
-  redo(): void {
-    const n = this.history.length;
-    if (this.indexOfNextAdd < n) {
-      const obj = this.history[this.indexOfNextAdd++];
-      this.reloadWorkflow(obj);
-    }
-  }
-
-  /**
-   * Function: undo
-   *
-   * Undoes the last change.
-   */
-  undo(): void {
-    if (this.indexOfNextAdd > 0) {
-      const obj = this.history[--this.indexOfNextAdd];
-      this.reloadWorkflow(obj);
-    }
-  }
-
   private reloadWorkflow(obj): void {
     this.closeMenu();
     this.workflow.configuration = JSON.parse(obj);
@@ -1040,148 +1326,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
     }
     this.updateXMLJSON(false);
-  }
-
-  expandAll(): void {
-    if (this.editor.graph.isEnabled()) {
-      const cells = this.editor.graph.getChildVertices();
-      this.editor.graph.foldCells(false, true, cells, null, null);
-    }
-  }
-
-  collapseAll(): void {
-    if (this.editor.graph.isEnabled()) {
-      const cells = this.editor.graph.getChildVertices();
-      this.editor.graph.foldCells(true, true, cells, null, null);
-    }
-  }
-
-  delete(): void {
-    if (this.editor && this.editor.graph) {
-      let cells = this.node ? [this.node.cell] : null;
-      this.editor.graph.removeCells(cells, null);
-    }
-  }
-
-  copy(node): void {
-    if (this.editor && this.editor.graph) {
-      let cell;
-      if (node) {
-        cell = node.cell;
-      } else {
-        cell = this.editor.graph.getSelectionCell();
-      }
-      if (cell) {
-        if (this.cutCell) {
-          this.changeCellStyle(this.editor.graph, this.cutCell, false);
-          this.cutCell = null;
-        }
-        this.copyId = cell.getAttribute('uuid');
-        if (this.copyId) {
-          $('#toolbar').find('img').each(function (index) {
-            if (index === 12) {
-              $(this).removeClass('disable-link');
-              $(this).attr('title', 'Copy of ' + cell.value.tagName);
-            }
-          });
-        }
-      }
-    }
-  }
-
-  cut(node): void {
-    if (this.editor && this.editor.graph) {
-      const graph = this.editor.graph;
-      let cell;
-      if (node) {
-        cell = node.cell;
-      } else {
-        cell = graph.getSelectionCell();
-      }
-      if (cell) {
-        this.copyId = null;
-        if (this.cutCell) {
-          this.changeCellStyle(graph, this.cutCell, false);
-        }
-        this.changeCellStyle(graph, cell, true);
-        this.cutCell = cell;
-        $('#toolbar').find('img').each(function (index) {
-          if (index === 12) {
-            $(this).removeClass('disable-link');
-            $(this).attr('title', cell.value.tagName);
-          }
-        });
-      }
-    }
-  }
-
-  closeMenu(): void {
-    this.node = null;
-  }
-
-  validate(): void {
-    if (this.invalidMsg && this.invalidMsg.match(/orderRequirements/)) {
-      this.openDeclarationModal();
-    } else {
-      if (!this.workflow.valid) {
-        let data = this.coreService.clone(this.workflow.configuration);
-        this.modifyJSON(data, true, true);
-      }
-    }
-  }
-
-  exportJSON(): void {
-    this.closeMenu();
-    if (this.workflow.configuration && this.workflow.configuration.instructions && this.workflow.configuration.instructions.length > 0) {
-      this.editor.graph.clearSelection();
-      const name = (this.workflow.name || 'workflow') + '.json';
-      const fileType = 'application/octet-stream';
-      let data = this.coreService.clone(this.workflow.configuration);
-      const flag = this.modifyJSON(data, true, true);
-      if (!flag) {
-        return;
-      }
-      if (typeof data === 'object') {
-        let newData: any = {};
-        if (this.orderRequirements && this.orderRequirements.parameters) {
-          newData.orderRequirements = this.orderRequirements;
-        }
-        newData.instructions = data.instructions;
-        if (this.title) {
-          newData.title = this.title;
-        }
-        newData.jobs = data.jobs;
-        data = JSON.stringify(newData, undefined, 2);
-      }
-      const blob = new Blob([data], {type: fileType});
-      saveAs(blob, name);
-    }
-  }
-
-  importJSON() {
-    const modalRef = this.modalService.open(ImportComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.result.then((result) => {
-      this.parseWorkflowJSON(result);
-      if (result.orderRequirements) {
-        this.orderRequirements = this.coreService.clone(result.orderRequirements);
-      }
-      if (result.title) {
-        this.title = this.coreService.clone(result.title);
-      }
-      this.workflow.configuration = this.coreService.clone(result);
-      if (result.jobs && !_.isEmpty(result.jobs)) {
-        this.jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
-          return {name: k, value: v};
-        });
-      }
-      delete this.workflow.configuration['orderRequirements'];
-      delete this.workflow.configuration['title'];
-      this.history = [];
-      this.indexOfNextAdd = 0;
-      this.updateXMLJSON(false);
-      this.storeData(result);
-    }, () => {
-    });
   }
 
   private parseWorkflowJSON(result) {
@@ -1205,59 +1349,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  loadData(node, type, $event): void {
-    if (!node.origin.type) {
-      if ($event) {
-        node.isExpanded = !node.isExpanded;
-        $event.stopPropagation();
-      }
-      let flag = true;
-      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
-        flag = false;
-      }
-      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        this.coreService.post('inventory/read/folder', {
-          path: node.key,
-          objectTypes: [type]
-        }).subscribe((res: any) => {
-          let data;
-          if (type === 'LOCK') {
-            data = res.locks;
-            for (let i = 0; i < data.length; i++) {
-              const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-              data[i].title = data[i].name;
-              data[i].path = _path;
-              data[i].key = data[i].name;
-              data[i].type = type;
-              data[i].isLeaf = true;
-            }
-            if (node.origin.children && node.origin.children.length > 0) {
-              data = data.concat(node.origin.children);
-            }
-            if (node.origin.isLeaf) {
-              node.origin.expanded = true;
-            }
-            node.origin.isLeaf = false;
-            node.origin.children = data;
-          }
-          this.lockTree = [...this.lockTree];
-        });
-      }
-    }
-
-    if (this.selectedNode.obj.lockId1) {
-      if (this.selectedNode.obj.lockId !== this.selectedNode.obj.lockId1) {
-        this.selectedNode.obj.lockId = this.selectedNode.obj.lockId1;
-        this.getLimit();
-      }
-    } else if (node.key && !node.key.match('/')) {
-      if (this.selectedNode.obj.lockId !== node.key) {
-        this.selectedNode.obj.lockId = node.key;
-        this.getLimit();
-      }
-    }
-  }
-
   private getLimit() {
     this.error = false;
     if (this.selectedNode.obj.lockId) {
@@ -1269,36 +1360,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           this.selectedNode.obj.limit = conf.configuration.limit || 1;
         }
       });
-    }
-  }
-
-  onExpand(e, type) {
-    this.loadData(e.node, type, null);
-  }
-
-  @HostListener('window:beforeunload', ['$event'])
-  beforeunload() {
-    if (this.data.type) {
-      this.saveJSON(false);
-      this.ngOnDestroy();
-    }
-  }
-
-  @HostListener('window:resize', ['$event'])
-  onResize() {
-    this.centered();
-    this.checkGraphHeight();
-  }
-
-  checkGraphHeight() {
-    if (this.editor) {
-      const dom = $('.graph-container');
-      if (dom && dom.position()) {
-        let top = (dom.position().top + $('#rightPanel').position().top);
-        const ht = 'calc(100vh - ' + (top + 12) + 'px)';
-        dom.css({'height': ht, 'scroll-top': '0'});
-        $('#graph').slimscroll({height: ht, scrollTo: '0'});
-      }
     }
   }
 
@@ -1438,7 +1499,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       self.checkGraphHeight();
     }, 10);
   }
-
 
   private centered() {
     if (this.editor && this.editor.graph) {
@@ -2633,7 +2693,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     let _iterateId = 0;
     const doc = mxUtils.createXmlDocument();
     if (!callFun) {
-      $('#toolbar').find('img').each(function (index) {
+      $('#toolbar').find('img').each(function(index) {
         if (index === 11) {
           $(this).addClass('disable-link');
         } else if (index === 12) {
@@ -2665,7 +2725,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          *
          * Creates the shape used to draw the preview for the given bounds.
          */
-        mxGraphHandler.prototype.createPreviewShape = function (bounds) {
+        mxGraphHandler.prototype.createPreviewShape = function(bounds) {
           let shape, image = './assets/mxgraph/images/';
           if (self.preferences.theme !== 'light' && self.preferences.theme !== 'lighter' || !self.preferences.theme) {
             image = image + 'white-';
@@ -2679,7 +2739,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           shape.pointerEvents = false;
           // Workaround for artifacts on iOS
           if (mxClient.IS_IOS) {
-            shape.getSvgScreenOffset = function () {
+            shape.getSvgScreenOffset = function() {
               return 0;
             };
           }
@@ -2721,27 +2781,27 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         const keyHandler = new mxKeyHandler(graph);
 
         // Handle Delete: delete key
-        keyHandler.bindKey(46, function () {
+        keyHandler.bindKey(46, function() {
           self.delete();
         });
 
         // Handle Undo: Ctrl + z
-        keyHandler.bindControlKey(90, function () {
+        keyHandler.bindControlKey(90, function() {
           self.undo();
         });
 
         // Handle Redo: Ctrl + y
-        keyHandler.bindControlKey(89, function () {
+        keyHandler.bindControlKey(89, function() {
           self.redo();
         });
 
         // Handle Copy: Ctrl + c
-        keyHandler.bindControlKey(67, function () {
+        keyHandler.bindControlKey(67, function() {
           self.copy(null);
         });
 
         // Handle Cut: Ctrl + x
-        keyHandler.bindControlKey(88, function () {
+        keyHandler.bindControlKey(88, function() {
           self.cut(null);
         });
 
@@ -2751,7 +2811,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             self.changeCellStyle(self.editor.graph, self.cutCell, false);
           }
           self.cutCell = null;
-          $('#toolbar').find('img').each(function (index) {
+          $('#toolbar').find('img').each(function(index) {
             if (index === 12) {
               $(this).addClass('disable-link');
             }
@@ -2773,7 +2833,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             img.style.left = (x + 5) + 'px';
             img.style.top = y + 'px';
             mxEvent.addListener(img, 'click',
-              mxUtils.bind(this, function (evt) {
+              mxUtils.bind(this, function(evt) {
                 self.node = {cell: state.cell};
                 if (self.menu) {
                   setTimeout(() => {
@@ -2794,7 +2854,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
         }
 
-        mxIconSet.prototype.destroy = function () {
+        mxIconSet.prototype.destroy = function() {
           if (this.images != null) {
             for (let i = 0; i < this.images.length; i++) {
               let img = this.images[i];
@@ -2810,7 +2870,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          *
          * Returns <isCellEditable>.
          */
-        graph.isCellEditable = function () {
+        graph.isCellEditable = function() {
           return false;
         };
 
@@ -2819,7 +2879,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          *
          * Returns <cellSelectable>.
          */
-        graph.isCellSelectable = function (cell) {
+        graph.isCellSelectable = function(cell) {
           if (!cell || self.isTrash) {
             return false;
           }
@@ -2829,7 +2889,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         // Changes fill color to red on mouseover
         graph.addMouseListener({
           currentState: null, previousStyle: null, currentHighlight: null, currentIconSet: null,
-          mouseDown: function (sender, me) {
+          mouseDown: function(sender, me) {
             if (self.isTrash) {
               return;
             }
@@ -2838,13 +2898,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               this.currentState = null;
             }
           },
-          mouseMove: function (sender, me) {
+          mouseMove: function(sender, me) {
             if (self.isTrash) {
               return;
             }
             if (me.consumed && me.getCell()) {
               self.isCellDragging = true;
-              setTimeout(function () {
+              setTimeout(function() {
                 if (self.movedCell) {
                   $('#dropContainer2').show();
                   $('#toolbar-icons').hide();
@@ -2881,7 +2941,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               return;
             }
           },
-          mouseUp: function (sender, me) {
+          mouseUp: function(sender, me) {
             if (self.isTrash) {
               return;
             }
@@ -2897,7 +2957,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               }
             }
           },
-          dragEnter: function (evt, state, cell) {
+          dragEnter: function(evt, state, cell) {
             if (state != null) {
               this.previousStyle = state.style;
               state.style = mxUtils.clone(state.style);
@@ -2921,7 +2981,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               }
             }
           },
-          dragLeave: function (evt, state) {
+          dragLeave: function(evt, state) {
             if (state != null) {
               state.style = this.previousStyle;
               if (state.style && this.currentHighlight != null) {
@@ -2955,7 +3015,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          *
          * Returns true if the given cell is moveable.
          */
-        graph.isCellMovable = function (cell) {
+        graph.isCellMovable = function(cell) {
           if (cell.value && !self.isTrash) {
             return !cell.edge && cell.value.tagName !== 'Catch' && cell.value.tagName !== 'Process' && !checkClosingCell(cell);
           } else {
@@ -2963,7 +3023,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
         };
 
-        graph.moveCells = function (cells) {
+        graph.moveCells = function(cells) {
           return cells;
         };
 
@@ -2971,7 +3031,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          * Function: handle a click event
          *
          */
-        graph.click = function (me) {
+        graph.click = function(me) {
           const evt = me.getEvent();
           let cell = me.getCell();
           const mxe = new mxEventObject(mxEvent.CLICK, 'event', evt, 'cell', cell);
@@ -3020,7 +3080,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          * Selects the default mode and resets the state of the previously selected
          * mode.
          */
-        mxToolbar.prototype.resetMode = function (forced) {
+        mxToolbar.prototype.resetMode = function(forced) {
           if (forced) {
             this.defaultMode = $('#toolbar').find('img:first-child')[0];
             this.selectedMode = $('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0];
@@ -3033,7 +3093,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         /**
          * Overrides method to provide a cell collapse/expandable on double click
          */
-        graph.dblClick = function (evt, cell) {
+        graph.dblClick = function(evt, cell) {
           if (cell != null && cell.vertex == 1) {
             if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
               const flag = cell.collapsed != true;
@@ -3046,12 +3106,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          * Overrides method to provide a cell label in the display
          * @param cell
          */
-        graph.convertValueToString = function (cell) {
+        graph.convertValueToString = function(cell) {
           return self.workflowService.convertValueToString(cell, graph);
         };
 
         // Returns the type as the tooltip for column cells
-        graph.getTooltipForCell = function (cell) {
+        graph.getTooltipForCell = function(cell) {
           return self.workflowService.getTooltipForCell(cell);
         };
 
@@ -3059,7 +3119,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          * To check drop target is valid or not on hover
          *
          */
-        mxDragSource.prototype.dragOver = function (_graph, evt) {
+        mxDragSource.prototype.dragOver = function(_graph, evt) {
           dragStart = true;
           let offset = mxUtils.getOffset(_graph.container);
           let origin = mxUtils.getScrollOrigin(_graph.container);
@@ -3145,7 +3205,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          * @param x
          * @param y
          */
-        mxDragSource.prototype.drop = function (_graph, evt, drpTargt, x, y) {
+        mxDragSource.prototype.drop = function(_graph, evt, drpTargt, x, y) {
           dropTarget = null;
           movedTarget = null;
           selectedCellsObj = null;
@@ -3351,7 +3411,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          * flag - Optional boolean which specifies if all connected edges
          * should be removed as well. Default is true.
          */
-        mxGraph.prototype.removeCells = function (cells, flag) {
+        mxGraph.prototype.removeCells = function(cells, flag) {
           if (cells == null) {
             cells = this.getDeletableCells(this.getSelectionCells());
           }
@@ -3386,7 +3446,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          * checked. Default is false.
          * evt - Optional native event that triggered the invocation.
          */
-        mxGraph.prototype.foldCells = function (collapse, recurse, cells, checkFoldable) {
+        mxGraph.prototype.foldCells = function(collapse, recurse, cells, checkFoldable) {
           graph.clearSelection();
           recurse = (recurse != null) ? recurse : true;
           this.stopEditing(false);
@@ -3409,7 +3469,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          * Adds the given vertex as a child of parent at the specified
          * x and y coordinate and fires an <addVertex> event.
          */
-        mxEditor.prototype.addVertex = function (parent, vertex, x, y) {
+        mxEditor.prototype.addVertex = function(parent, vertex, x, y) {
           let model = this.graph.getModel();
           while (parent != null && !this.graph.isValidDropTarget(parent)) {
             parent = model.getParent(parent);
@@ -3500,7 +3560,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          * @param cells
          * @param evt
          */
-        graph.isValidDropTarget = function (cell, cells, evt) {
+        graph.isValidDropTarget = function(cell, cells, evt) {
           if (cell && cell.value) {
             self.droppedCell = null;
             if (self.isCellDragging && cells && cells.length > 0) {
@@ -3645,7 +3705,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          * Implements a properties panel that uses
          * mxCellAttributeChange to change properties
          */
-        graph.getSelectionModel().addListener(mxEvent.CHANGE, function () {
+        graph.getSelectionModel().addListener(mxEvent.CHANGE, function() {
           let cell = graph.getSelectionCell();
           if (cell && (checkClosingCell(cell) ||
             cell.value.tagName === 'Connection' || cell.value.tagName === 'Process' || cell.value.tagName === 'Catch')) {
@@ -3669,7 +3729,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         WorkflowService.executeLayout(graph);
 
         const mgr = new mxAutoSaveManager(graph);
-        mgr.save = function () {
+        mgr.save = function() {
           if (self.cutCell) {
             clearClipboard();
           }
@@ -6373,28 +6433,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     return flag;
   }
 
-  validateJSON(skip) {
-    if (!this.isUpdate) {
-      this.isUpdate = true;
-      if (this.workflow.configuration && this.workflow.configuration.instructions && this.workflow.configuration.instructions.length > 0) {
-        let data = this.coreService.clone(this.workflow.configuration);
-        this.workflow.valid = this.modifyJSON(data, true, false);
-        this.saveJSON(this.workflow.valid ? data : skip ? false : 'false');
-      }
-      setTimeout(() => {
-        this.isUpdate = false;
-      }, 50);
-    }
-  }
-
-  deploy() {
-    this.dataService.reloadTree.next({deploy: this.workflow});
-  }
-
-  backToListView() {
-    this.dataService.reloadTree.next({back: this.workflow});
-  }
-
   private validateByURL(json) {
     const obj = _.clone(json);
     this.coreService.post('inventory/' + this.objectType + '/validate', obj).subscribe((res: any) => {
@@ -6484,10 +6522,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   private updateOtherProperties() {
     let data = JSON.parse(this.workflow.actual);
     this.storeData(data);
-  }
-
-  navToLock(lockId) {
-    this.dataService.reloadTree.next({navigate: {name: lockId, type: 'LOCK'}});
   }
 
   private storeData(data) {

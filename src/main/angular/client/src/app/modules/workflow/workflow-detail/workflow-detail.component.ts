@@ -1,6 +1,6 @@
-import {Component, OnInit, OnDestroy, HostListener, ViewChild} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalService} from 'ng-zorro-antd/modal';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import * as _ from 'underscore';
 import {Subscription} from 'rxjs';
@@ -70,7 +70,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
   constructor(private authService: AuthService, public coreService: CoreService, private route: ActivatedRoute,
-              private workflowService: WorkflowService, public modalService: NgbModal,
+              private workflowService: WorkflowService, public modal: NzModalService,
               private dataService: DataService, private nzContextMenuService: NzContextMenuService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -262,24 +262,111 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   }
 
   addOrder(): void {
-    const modalRef = this.modalService.open(AddOrderModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.preferences = this.preferences;
-    modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.workflow = this.workFlowJson;
-    modalRef.result.then((result) => {
-      console.log(result);
-    }, () => {
+    this.modal.create({
+      nzTitle: null,
+      nzContent: AddOrderModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        preferences: this.preferences,
+        permission: this.permission,
+        schedulerId: this.schedulerIds.selected,
+        workflow: this.workFlowJson
+      },
+      nzFooter: null,
+      nzClosable: false
     });
   }
 
   showDailyPlan(): void {
-    const modalRef = this.modalService.open(CalendarModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.path = this.workFlowJson.path;
-    modalRef.result.then((result) => {
-      console.log(result);
-    }, () => {
+    this.modal.create({
+      nzTitle: null,
+      nzContent: CalendarModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        path: this.workFlowJson.path
+      },
+      nzFooter: null,
+      nzClosable: false
     });
+  }
+
+  loadOrders(date): void {
+    this.workflowFilters.date = date;
+    this.getOrders(this.coreService.clone(this.workflow), false);
+  }
+
+  closeMenu(): void {
+    this.order = null;
+  }
+
+  showPanelFuc(order): void {
+    if (order.arguments && !order.arguments[0]) {
+      order.arguments = Object.entries(order.arguments).map(([k, v]) => {
+        return {name: k, value: v};
+      });
+    }
+    order.show = true;
+  }
+
+  modifyOrder(): void {
+    this.modal.create({
+      nzTitle: null,
+      nzContent: ModifyStartTimeModalComponent,
+      nzComponentParams: {
+        schedulerId: this.schedulerIds.selected,
+        preferences: this.preferences,
+        order: this.order
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+  }
+
+  changeParameter(): void {
+    this.coreService.post('orders/variables', {
+      orderId: this.order.orderId,
+      controllerId: this.schedulerIds.selected
+    }).subscribe((res: any) => {
+      this.order.variables = res.variables;
+      this.openModel(this.order);
+    }, () => {
+
+    });
+  }
+
+  resumeOrder(): void {
+    this.modal.create({
+      nzTitle: null,
+      nzContent: ResumeOrderModalComponent,
+      nzComponentParams: {
+        preferences: this.preferences,
+        permission: this.permission,
+        schedulerId: this.schedulerIds.selected,
+        order: this.coreService.clone(this.order)
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+  }
+
+  suspendOrder(): void {
+    this.restCall(false, 'Suspend', this.order, 'suspend');
+  }
+
+  suspendOrderWithKill(): void {
+    this.restCall(true, 'Suspend', this.order, 'suspend');
+  }
+
+  cancelOrder(): void {
+    this.restCall(false, 'Cancel', this.order, 'cancel');
+  }
+
+  cancelOrderWithKill(): void {
+    this.restCall(true, 'Cancel', this.order, 'cancel');
+  }
+
+  removeWhenTerminated(): void {
+    this.restCall(true, 'Terminate', this.order, 'remove_when_terminated');
   }
 
   private showAndHideBtn(): void {
@@ -328,8 +415,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       compact: true,
       controllerId: this.schedulerIds.selected,
       workflowIds: [{path: workflow.path, versionId: workflow.versionId}],
-      dateTo : this.workflowFilters.date !== 'ALL' ? this.workflowFilters.date : undefined,
-      timeZone : this.preferences.zone
+      dateTo: this.workflowFilters.date !== 'ALL' ? this.workflowFilters.date : undefined,
+      timeZone: this.preferences.zone
     };
     this.coreService.post('orders', obj).subscribe((res: any) => {
       this.mapObj = new Map();
@@ -351,11 +438,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       this.isWorkflowStored(workflow, isFirst);
       this.loading = true;
     });
-  }
-
-  loadOrders(date): void {
-    this.workflowFilters.date = date;
-    this.getOrders(this.coreService.clone(this.workflow), false);
   }
 
   private checkSideBar(): void {
@@ -415,11 +497,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
        * Overrides method to provide a cell label in the display
        * @param cell
        */
-      graph.convertValueToString = function (cell) {
+      graph.convertValueToString = function(cell) {
         return self.workflowService.convertValueToString(cell, graph);
       };
 
-      graph.getTooltipForCell = function (cell) {
+      graph.getTooltipForCell = function(cell) {
         return self.workflowService.getTooltipForCell(cell);
       };
 
@@ -427,14 +509,14 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       graph.addMouseListener({
         currentState: null,
         currentIconSet: null,
-        mouseDown: function (sender, me) {
+        mouseDown: function(sender, me) {
           // Hides icons on mouse down
           if (this.currentState != null) {
             this.dragLeave(me.getEvent(), this.currentState);
             this.currentState = null;
           }
         },
-        mouseMove: function (sender, me) {
+        mouseMove: function(sender, me) {
           if (this.currentState != null && me.getState() == this.currentState) {
             return;
           }
@@ -453,14 +535,14 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             }
           }
         },
-        mouseUp: function (sender, me) {
+        mouseUp: function(sender, me) {
         },
-        dragEnter: function (evt, state, cell) {
+        dragEnter: function(evt, state, cell) {
           if (this.currentIconSet == null) {
             this.currentIconSet = new mxIconSet(state);
           }
         },
-        dragLeave: function (evt, state) {
+        dragLeave: function(evt, state) {
           if (this.currentIconSet != null) {
             this.currentIconSet.destroy();
             this.currentIconSet = null;
@@ -471,7 +553,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       /**
        * Function: foldCells to collapse/expand
        */
-      mxGraph.prototype.foldCells = function (collapse, recurse, cells, checkFoldable, evt) {
+      mxGraph.prototype.foldCells = function(collapse, recurse, cells, checkFoldable, evt) {
         recurse = (recurse != null) ? recurse : true;
         if (cells == null) {
           cells = this.getFoldableCells(this.getSelectionCells(), collapse);
@@ -496,7 +578,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       /**
        * Function: handle a click event
        */
-      graph.addListener(mxEvent.CLICK, function (sender, evt) {
+      graph.addListener(mxEvent.CLICK, function(sender, evt) {
         let cell = evt.getProperty('cell'); // cell may be null
         if (cell != null) {
           if (cell.value.tagName === 'Count') {
@@ -513,7 +595,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       /**
        * Overrides method to provide a cell collapse/expandable on double click
        */
-      graph.addListener(mxEvent.DOUBLE_CLICK, function (sender, evt) {
+      graph.addListener(mxEvent.DOUBLE_CLICK, function(sender, evt) {
         let cell = evt.getProperty('cell');
         self.sideBar = {};
         if (cell != null && cell.vertex == 1) {
@@ -539,7 +621,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
           img.style.left = (x + 5) + 'px';
           img.style.top = y + 'px';
           mxEvent.addListener(img, 'click',
-            mxUtils.bind(this, function (evt) {
+            mxUtils.bind(this, function(evt) {
               let data = state.cell.getAttribute('order');
               try {
                 data = JSON.parse(data);
@@ -566,7 +648,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         }
       }
 
-      mxIconSet.prototype.destroy = function () {
+      mxIconSet.prototype.destroy = function() {
         if (this.images != null) {
           for (var i = 0; i < this.images.length; i++) {
             var img = this.images[i];
@@ -599,6 +681,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   private updatePositions(_json): void {
     const self = this;
     this.orderCountMap = new Map();
+
     function recursive(json) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -611,7 +694,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
                     if (!json.instructions[x].positions) {
                       json.instructions[x].positions = [];
                       if (json.instructions[x].position) {
-                        json.instructions[x].positions.push(JSON.stringify(json.instructions[x].position))
+                        json.instructions[x].positions.push(JSON.stringify(json.instructions[x].position));
                       }
                     }
                     json.instructions[x].positions = json.instructions[x].positions.concat(json.instructions[x].branches[i].positions);
@@ -709,10 +792,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         this.updateWorkflow(graph);
       });
     }
-  }
-
-  closeMenu(): void {
-    this.order = null;
   }
 
   private updateOrdersInGraph(isCollapse): void {
@@ -835,15 +914,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     return edge;
   }
 
-  showPanelFuc(order): void {
-    if (order.arguments && !order.arguments[0]) {
-      order.arguments = Object.entries(order.arguments).map(([k, v]) => {
-        return {name: k, value: v};
-      });
-    }
-    order.show = true;
-  }
-
   private updateWorkflow(graph): void {
     graph.getModel().beginUpdate();
     try {
@@ -860,81 +930,31 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  modifyOrder(): void {
-    const modalRef = this.modalService.open(ModifyStartTimeModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.preferences = this.preferences;
-    modalRef.componentInstance.order = this.order;
-    modalRef.result.then(() => {
-
-    }, () => {
-
-    });
-  }
-
-  changeParameter(): void {
-    this.coreService.post('orders/variables', {
-      orderId: this.order.orderId,
-      controllerId: this.schedulerIds.selected
-    }).subscribe((res: any) => {
-      this.order.variables = res.variables;
-      this.openModel(this.order);
-    }, () => {
-
-    });
-  }
-
   private openModel(order): void {
-    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.order = order;
-    modalRef.componentInstance.orderRequirements = this.orderRequirements;
-    modalRef.result.then(() => {
-      if (order && order.show) {
-        this.coreService.post('orders/variables', {
-          orderId: order.orderId,
-          controllerId: this.schedulerIds.selected
-        }).subscribe((res: any) => {
-          order.variables = res.variables;
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ChangeParameterModalComponent,
+      nzComponentParams: {
+        schedulerId: this.schedulerIds.selected,
+        order: order,
+        orderRequirements: this.orderRequirements
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        if (order && order.show) {
+          this.coreService.post('orders/variables', {
+            orderId: order.orderId,
+            controllerId: this.schedulerIds.selected
+          }).subscribe((res: any) => {
+            order.variables = res.variables;
 
-        });
+          });
+        }
       }
-    }, () => {
     });
-  }
-
-  resumeOrder(): void {
-    const modalRef = this.modalService.open(ResumeOrderModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.preferences = this.preferences;
-    modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.order = this.coreService.clone(this.order);
-    modalRef.result.then((result) => {
-      console.log(result);
-    }, () => {
-
-    });
-
-  }
-
-  suspendOrder(): void {
-    this.restCall(false, 'Suspend', this.order, 'suspend');
-  }
-
-  suspendOrderWithKill(): void {
-    this.restCall(true, 'Suspend', this.order, 'suspend');
-  }
-
-  cancelOrder(): void {
-    this.restCall(false, 'Cancel', this.order, 'cancel');
-  }
-
-  cancelOrderWithKill(): void {
-    this.restCall(true, 'Cancel', this.order, 'cancel');
-  }
-
-  removeWhenTerminated(): void {
-    this.restCall(true, 'Terminate', this.order, 'remove_when_terminated');
   }
 
   private restCall(isKill, type, order, url): void {
@@ -948,14 +968,17 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         operation: type,
         name: order.orderId
       };
-      const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.comments = comments;
-      modalRef.componentInstance.obj = obj;
-      modalRef.componentInstance.url = 'orders/' + url;
-      modalRef.result.then((result) => {
-        console.log(result);
-      }, () => {
-
+      this.modal.create({
+        nzTitle: null,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+          obj,
+          url: 'orders/' + url
+        },
+        nzFooter: null,
+        nzClosable: false
       });
     } else {
       this.coreService.post('orders/' + url, obj).subscribe(() => {

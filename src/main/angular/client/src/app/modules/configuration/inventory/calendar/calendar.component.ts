@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {DatePipe} from '@angular/common';
 import * as moment from 'moment';
 import * as _ from 'underscore';
@@ -55,31 +55,31 @@ export class FrequencyModalComponent implements OnInit {
   countArrU = [1, 2, 3, 4];
 
   daysOptions = [
-    { label: 'sunday', value: '0'},
-    { label: 'monday', value: '1' },
-    { label: 'tuesday', value: '2' },
-    { label: 'wednesday', value: '3' },
-    { label: 'thursday', value: '4' },
-    { label: 'friday', value: '5' },
-    { label: 'saturday', value: '6' }
+    {label: 'sunday', value: '0'},
+    {label: 'monday', value: '1'},
+    {label: 'tuesday', value: '2'},
+    {label: 'wednesday', value: '3'},
+    {label: 'thursday', value: '4'},
+    {label: 'friday', value: '5'},
+    {label: 'saturday', value: '6'}
   ];
 
   monthsOptions = [
-    { label: 'january', value: '1'},
-    { label: 'february', value: '2' },
-    { label: 'march', value: '3' },
-    { label: 'april', value: '4' },
-    { label: 'may', value: '5' },
-    { label: 'june', value: '6' },
-    { label: 'july', value: '7' },
-    { label: 'august', value: '8' },
-    { label: 'september', value: '9' },
-    { label: 'october', value: '10' },
-    { label: 'november', value: '11' },
-    { label: 'december', value: '12' }
+    {label: 'january', value: '1'},
+    {label: 'february', value: '2'},
+    {label: 'march', value: '3'},
+    {label: 'april', value: '4'},
+    {label: 'may', value: '5'},
+    {label: 'june', value: '6'},
+    {label: 'july', value: '7'},
+    {label: 'august', value: '8'},
+    {label: 'september', value: '9'},
+    {label: 'october', value: '10'},
+    {label: 'november', value: '11'},
+    {label: 'december', value: '12'}
   ];
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, public modalService: NgbModal,
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, public modal: NzModalService,
               private datePipe: DatePipe, private calendarService: CalendarService) {
   }
 
@@ -312,7 +312,7 @@ export class FrequencyModalComponent implements OnInit {
   onChangeMonths() {
     if (this.frequency.months) {
       this.frequency.allMonth = this.frequency.months.length == 12;
-      this.frequency.months.sort(function (a, b) {
+      this.frequency.months.sort(function(a, b) {
         return a - b;
       });
     }
@@ -430,7 +430,7 @@ export class FrequencyModalComponent implements OnInit {
     this.checkDays();
   }
 
-  checkDays(){
+  checkDays() {
     this.daysOptions = this.daysOptions.map(item => {
       return {
         ...item,
@@ -445,14 +445,14 @@ export class FrequencyModalComponent implements OnInit {
     } else {
       this.frequency.months = [];
     }
-     this.checkMonths();
+    this.checkMonths();
   }
 
   checkMonths() {
     this.monthsOptions = this.monthsOptions.map(item => {
       return {
         ...item,
-        checked: (this.frequency.months ? this.frequency.months.indexOf(item.value) > -1 :  false)
+        checked: (this.frequency.months ? this.frequency.months.indexOf(item.value) > -1 : false)
       };
     });
   }
@@ -1323,11 +1323,11 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   dateFormatM: any;
   comments: any = {radio: 'predefined'};
   editor: any = {isEnable: false, frequencyType: 'INCLUDE'};
-  isNew = true;
   objectType = 'CALENDAR';
   invalidMsg: string;
 
-  constructor(public coreService: CoreService, public modalService: NgbModal, private calendarService: CalendarService, private dataService: DataService) {
+  constructor(public coreService: CoreService, public modal: NzModalService, private calendarService: CalendarService,
+              private dataService: DataService) {
   }
 
   ngOnInit(): void {
@@ -1357,13 +1357,13 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     if (this.data.type) {
       this.saveJSON();
     }
   }
 
-  rename(inValid) {
+  rename(inValid): void {
     if (this.data.id === this.calendar.id && this.data.name !== this.calendar.name) {
       if (!inValid) {
         const data = this.coreService.clone(this.data);
@@ -1386,8 +1386,8 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  createNewFrequency() {
-    let frequency = {
+  createNewFrequency(): void {
+    const frequency = {
       tab: 'weekDays',
       dateEntity: 'DAILY',
       year: new Date().getFullYear(),
@@ -1398,40 +1398,11 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     this.openModel(frequency, null);
   }
 
-  updateFrequency(data) {
+  updateFrequency(data): void {
     this.openModel(null, data);
   }
 
-  private openModel(frequency, data) {
-    this.editor.hidePervious = !!data;
-    this.editor.showYearView = false;
-    this.editor.create = !data;
-    this.editor.update = !!data;
-    const modalRef = this.modalService.open(FrequencyModalComponent, {
-      backdrop: 'static',
-      size: 'lg'
-    });
-
-    modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.dateFormat = this.dateFormat;
-    modalRef.componentInstance.dateFormatM = this.dateFormatM;
-    modalRef.componentInstance.calendar = this.coreService.clone(this.calendar);
-    modalRef.componentInstance.editor = this.editor;
-    modalRef.componentInstance.frequency = frequency || _.clone(data);
-    modalRef.componentInstance.isRuntimeEdit = !!data;
-    if (data) {
-      modalRef.componentInstance._temp = _.clone(data);
-    }
-    modalRef.result.then((res) => {
-      if(res.calendar) {
-        this.calendar.configuration = res.calendar.configuration;
-        this.saveJSON();
-      }
-    }, () => {
-    });
-  }
-
-  removeFrequency(index) {
+  removeFrequency(index): void {
     if (this.editor.frequencyType === 'INCLUDE') {
       this.calendar.configuration.includesFrequency.splice(index, 1);
     } else {
@@ -1440,32 +1411,32 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     this.saveJSON();
   }
 
-  changeFrequencyType(type: string) {
+  changeFrequencyType(type: string): void {
     this.editor.frequencyType = type;
   }
 
-  showYearView() {
-    let frequency = {};
+  showYearView(): void {
     this.editor.showYearView = true;
-    const modalRef = this.modalService.open(FrequencyModalComponent, {
-      backdrop: 'static',
-      size: 'lg'
-    });
-    modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.dateFormat = this.dateFormat;
-    modalRef.componentInstance.dateFormatM = this.dateFormatM;
-    modalRef.componentInstance.calendar = this.calendar;
-    modalRef.componentInstance.editor = this.editor;
-    modalRef.componentInstance.frequency = frequency;
-    modalRef.componentInstance.flag = true;
-    modalRef.result.then(() => {
-
-    }, () => {
+    this.modal.create({
+      nzTitle: null,
+      nzContent: FrequencyModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        schedulerId: this.schedulerId,
+        dateFormat: this.dateFormat,
+        dateFormatM: this.dateFormatM,
+        calendar: this.calendar,
+        editor: this.editor,
+        frequency: {},
+        flag: true
+      },
+      nzFooter: null,
+      nzClosable: false
     });
   }
 
-  showCalendar(data) {
-    let frequency = {
+  showCalendar(data): void {
+    const frequency = {
       tab: 'weekDays',
       dateEntity: 'DAILY',
       year: new Date().getFullYear(),
@@ -1474,29 +1445,110 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       months: []
     };
     this.editor.showYearView = true;
-    const modalRef = this.modalService.open(FrequencyModalComponent, {
-      backdrop: 'static',
-      size: 'lg'
-    });
-    modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.dateFormat = this.dateFormat;
-    modalRef.componentInstance.dateFormatM = this.dateFormatM;
-    modalRef.componentInstance.calendar = this.calendar;
-    modalRef.componentInstance.editor = this.editor;
-    modalRef.componentInstance.frequency = frequency;
-    modalRef.componentInstance.flag = true;
-    modalRef.componentInstance.data = data;
-    modalRef.result.then(() => {
-
-    }, () => {
+    this.modal.create({
+      nzTitle: null,
+      nzContent: FrequencyModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        schedulerId: this.schedulerId,
+        dateFormat: this.dateFormat,
+        dateFormatM: this.dateFormatM,
+        calendar: this.calendar,
+        editor: this.editor,
+        frequency,
+        flag: true,
+        data
+      },
+      nzFooter: null,
+      nzClosable: false
     });
   }
 
-  backToListView() {
+  backToListView(): void {
     this.dataService.reloadTree.next({back: this.calendar});
   }
 
-  private getObject() {
+  saveJSON(): void {
+    if (this.isTrash) {
+      return;
+    }
+    let obj: any = this.generateCalendarAllObj();
+    obj.title = this.calendar.configuration.title;
+    obj.type = this.calendar.configuration.type;
+    if (this.calendar.configuration.from) {
+      obj.from = moment(this.calendar.configuration.from, this.dateFormatM).format('YYYY-MM-DD');
+    }
+    if (this.calendar.configuration.to) {
+      obj.to = moment(this.calendar.configuration.to, this.dateFormatM).format('YYYY-MM-DD');
+    }
+    if (obj.includes && _.isEmpty(obj.includes)) {
+      delete obj['includes'];
+    }
+    if (obj.excludes && _.isEmpty(obj.excludes)) {
+      delete obj['excludes'];
+    }
+    if (!_.isEqual(this.calendar.actual, JSON.stringify(this.calendar.configuration))) {
+      this.coreService.post('inventory/store', {
+        configuration: obj,
+        id: this.calendar.id,
+        valid: !!obj.includes,
+        objectType: obj.type
+      }).subscribe((res: any) => {
+        if (res.id === this.data.id && this.calendar.id === this.data.id) {
+          this.calendar.actual = JSON.stringify(this.calendar.configuration);
+          this.calendar.valid = res.valid;
+          this.data.valid = res.valid;
+          this.calendar.released = false;
+          this.data.released = false;
+          if (res.invalidMsg && !obj.includes) {
+            this.invalidMsg = 'inventory.message.includesIsMissing';
+          } else {
+            this.invalidMsg = res.invalidMsg;
+          }
+        }
+      }, () => {
+
+      });
+    }
+  }
+
+  release(): void {
+    this.dataService.reloadTree.next({release: this.calendar});
+  }
+
+  private openModel(frequency, data): void {
+    this.editor.hidePervious = !!data;
+    this.editor.showYearView = false;
+    this.editor.create = !data;
+    this.editor.update = !!data;
+
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: FrequencyModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzComponentParams: {
+        schedulerId: this.schedulerId,
+        dateFormat: this.dateFormat,
+        dateFormatM: this.dateFormatM,
+        calendar: this.coreService.clone(this.calendar),
+        editor: this.editor,
+        frequency: frequency || _.clone(data),
+        isRuntimeEdit: !!data,
+        _temp: data ? _.clone(data) : {}
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(res => {
+      if (res.calendar) {
+        this.calendar.configuration = res.calendar.configuration;
+        this.saveJSON();
+      }
+    });
+  }
+
+  private getObject(): void {
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
     this.coreService.post(URL, {
       id: this.data.id
@@ -1539,7 +1591,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
-  private convertObjToArr(data) {
+  private convertObjToArr(data): void {
     let obj = {};
     if (data.includes && !_.isEmpty(data.includes)) {
       this._convertObjToArr(data, 'includes', obj);
@@ -1549,7 +1601,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  private _convertObjToArr(data, type, obj) {
+  private _convertObjToArr(data, type, obj): void {
     const TYPE = type === 'includes' ? 'INCLUDE' : 'EXCLUDE';
     if (data[type].months && data[type].months.length > 0) {
       for (let m = 0; m < data[type].months.length; m++) {
@@ -1648,7 +1700,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  private iterateData(obj, data, month, tab, type, monthday, isUltimos) {
+  private iterateData(obj, data, month, tab, type, monthday, isUltimos): void {
     obj.tab = tab;
     obj.type = type;
     if (month) {
@@ -1662,8 +1714,9 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       for (let x = 0; x < data.days.length; x++) {
         obj.days.push(data.days[x].toString());
       }
-      if (month)
+      if (month) {
         obj.allMonth = month.months.length == 12;
+      }
       obj.startingWithW = data.from;
       obj.endOnW = data.to;
       obj.all = data.days.length == 7;
@@ -1713,7 +1766,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  private generateCalendarAllObj() {
+  private generateCalendarAllObj(): any {
     let obj = {includes: {}, excludes: {}};
     if (this.calendar.configuration.includesFrequency.length > 0) {
       for (let x = 0; x < this.calendar.configuration.includesFrequency.length; x++) {
@@ -1726,53 +1779,5 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       }
     }
     return obj;
-  }
-
-  saveJSON() {
-    if(this.isTrash) {
-      return;
-    }
-    let obj: any = this.generateCalendarAllObj();
-    obj.title = this.calendar.configuration.title;
-    obj.type = this.calendar.configuration.type;
-    if (this.calendar.configuration.from) {
-      obj.from = moment(this.calendar.configuration.from, this.dateFormatM).format('YYYY-MM-DD');
-    }
-    if (this.calendar.configuration.to) {
-      obj.to = moment(this.calendar.configuration.to, this.dateFormatM).format('YYYY-MM-DD');
-    }
-    if (obj.includes && _.isEmpty(obj.includes)) {
-      delete obj['includes'];
-    }
-    if (obj.excludes && _.isEmpty(obj.excludes)) {
-      delete obj['excludes'];
-    }
-    if (!_.isEqual(this.calendar.actual, JSON.stringify(this.calendar.configuration))) {
-      this.coreService.post('inventory/store', {
-        configuration: obj,
-        id: this.calendar.id,
-        valid: !!obj.includes,
-        objectType: obj.type
-      }).subscribe((res: any) => {
-        if (res.id === this.data.id && this.calendar.id === this.data.id) {
-          this.calendar.actual = JSON.stringify(this.calendar.configuration);
-          this.calendar.valid = res.valid;
-          this.data.valid = res.valid;
-          this.calendar.released = false;
-          this.data.released = false;
-          if (res.invalidMsg && !obj.includes) {
-            this.invalidMsg = 'inventory.message.includesIsMissing';
-          } else {
-            this.invalidMsg = res.invalidMsg;
-          }
-        }
-      }, () => {
-
-      });
-    }
-  }
-
-  release() {
-    this.dataService.reloadTree.next({release: this.calendar});
   }
 }

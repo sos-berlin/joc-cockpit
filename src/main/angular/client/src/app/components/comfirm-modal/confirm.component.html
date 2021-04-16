@@ -14,7 +14,7 @@
       </span>
     </span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy('Cross click')">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -110,7 +110,7 @@
     <span *ngIf="type === 'Remove'">{{'common.button.remove' | translate}}</span>
     <span *ngIf="type !== 'Delete' && type !== 'Remove'">{{'common.button.confirm' | translate}}</span>
   </button>
-  <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
+  <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy('Cross click')" translate>
     common.button.cancel
   </button>
 </div>

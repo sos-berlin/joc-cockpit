@@ -6,7 +6,6 @@ import {FormsModule} from '@angular/forms';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {ToasterModule} from 'angular2-toaster';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ErrorHandler, Injectable, NgModule} from '@angular/core';
 import {NZ_I18N, en_US} from 'ng-zorro-antd/i18n';
@@ -47,7 +46,6 @@ export class MyErrorHandler implements ErrorHandler {
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    NgbModule,
     LoginModule,
     ToasterModule.forRoot(),
     TranslateModule.forRoot({

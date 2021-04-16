@@ -3,7 +3,7 @@
     <span translate>workflow.label.scriptEditor</span>
   </h4>
   <button type="button" class="close" aria-label="Close"
-          (click)="activeModal.dismiss('Cross click')">
+          (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -85,7 +85,7 @@
       common.button.submit
     </button>
     <button type="button" class="btn btn-grey btn-sm"
-            (click)="activeModal.dismiss('Cross click')" translate>
+            (click)="activeModal.destroy()" translate>
       common.button.cancel
     </button>
   </div>

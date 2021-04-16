@@ -1,6 +1,6 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router, RouterEvent} from '@angular/router';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {ToasterService} from 'angular2-toaster';
 import {TranslateService} from '@ngx-translate/core';
 import * as _ from 'underscore';
@@ -29,7 +29,7 @@ export class RoleModalComponent implements OnInit {
   @Input() newRole: boolean;
   @Input() copy: boolean;
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
   ngOnInit(): void {
@@ -125,7 +125,7 @@ export class ControllerModalComponent implements OnInit {
   currentController: any = {};
   schedulerIds: any = {};
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private authService: AuthService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -209,7 +209,7 @@ export class RolesComponent implements OnDestroy {
   subscription2: Subscription;
   subscription3: Subscription;
 
-  constructor(private coreService: CoreService, private router: Router, private activeRoute: ActivatedRoute, private modalService: NgbModal,
+  constructor(private coreService: CoreService, private router: Router, private activeRoute: ActivatedRoute, private modal: NzModalService,
               private translate: TranslateService, private toasterService: ToasterService, public dataService: DataService) {
     this.subscription1 = dataService.dataAnnounced$.subscribe(res => {
       if (res) {
@@ -288,39 +288,63 @@ export class RolesComponent implements OnDestroy {
   }
 
   addRole(): void {
-    const modalRef = this.modalService.open(RoleModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.allRoles = this.roles;
-    modalRef.componentInstance.userDetail = this.userDetail;
-    modalRef.componentInstance.newRole = true;
-    modalRef.result.then((result) => {
-      this.createRoleArray(result);
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: RoleModalComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        allRoles: this.roles,
+        userDetail: this.userDetail,
+        newRole: true
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.createRoleArray(result);
+      }
     });
   }
 
   editRole(role): void {
-    const modalRef = this.modalService.open(RoleModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.oldRole = role;
-    modalRef.componentInstance.allRoles = this.roles;
-    modalRef.componentInstance.userDetail = this.userDetail;
-    modalRef.result.then((result) => {
-      this.createRoleArray(result);
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: RoleModalComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        allRoles: this.roles,
+        userDetail: this.userDetail,
+        oldRole: role
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.createRoleArray(result);
+      }
     });
   }
 
   copyRole(role): void {
-    const modalRef = this.modalService.open(RoleModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.oldRole = role;
-    modalRef.componentInstance.allRoles = this.roles;
-    modalRef.componentInstance.userDetail = this.userDetail;
-    modalRef.componentInstance.copy = true;
-    modalRef.result.then((result) => {
-      this.createRoleArray(result);
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: RoleModalComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        allRoles: this.roles,
+        userDetail: this.userDetail,
+        oldRole: role,
+        copy: true
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.createRoleArray(result);
+      }
     });
   }
 
@@ -336,17 +360,24 @@ export class RolesComponent implements OnDestroy {
       }
     }
     if (!isAssigned) {
-      const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.title = 'delete';
-      modalRef.componentInstance.message = 'deleteRole';
-      modalRef.componentInstance.type = 'Delete';
-      modalRef.componentInstance.objectName = role.name;
-      modalRef.result.then(() => {
-        delete this.userDetail.roles[role.name];
-        this.saveInfo();
-        this.dataService.preferences.roles.delete(role.name);
-      }, () => {
-
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'delete',
+          message: 'deleteRole',
+          type: 'Delete',
+          objectName: role.name
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          delete this.userDetail.roles[role.name];
+          this.saveInfo();
+          this.dataService.preferences.roles.delete(role.name);
+        }
       });
     } else {
       this.translate.get('user.message.cannotDeleteRole').subscribe(translatedValue => {
@@ -359,47 +390,67 @@ export class RolesComponent implements OnDestroy {
         timeout: 3000
       });
     }
-
   }
 
   addController(): void {
-    const modalRef = this.modalService.open(ControllerModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.controllerRoles = this.controllerRoles;
-    modalRef.componentInstance.allRoles = this.roles;
-    modalRef.componentInstance.userDetail = this.userDetail;
-    modalRef.result.then((result) => {
-      this.createRoleArray(result);
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ControllerModalComponent,
+      nzComponentParams: {
+        controllerRoles: this.controllerRoles,
+        allRoles: this.roles,
+        userDetail: this.userDetail
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.createRoleArray(result);
+      }
     });
   }
 
   copyController(role, controller): void {
-    const modalRef = this.modalService.open(ControllerModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.controllerRoles = this.controllerRoles;
-    modalRef.componentInstance.oldController = controller;
-    modalRef.componentInstance.role = role;
-    modalRef.componentInstance.allRoles = this.roles;
-    modalRef.componentInstance.copy = true;
-    modalRef.componentInstance.userDetail = this.userDetail;
-    modalRef.result.then((result) => {
-      this.createRoleArray(result);
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ControllerModalComponent,
+      nzComponentParams: {
+        controllerRoles: this.controllerRoles,
+        oldController: controller,
+        role,
+        allRoles: this.roles,
+        copy: true,
+        userDetail: this.userDetail
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.createRoleArray(result);
+      }
     });
   }
 
   deleteController(role, controller): void {
-    const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.title = 'delete';
-    modalRef.componentInstance.message = 'deleteController';
-    modalRef.componentInstance.type = 'Delete';
-    modalRef.componentInstance.objectName = controller.name || 'default';
-    modalRef.result.then(() => {
-      delete this.userDetail.roles[role.name].permissions.controllers[controller.name];
-      this.saveInfo();
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ConfirmModalComponent,
+      nzComponentParams: {
+        title: 'delete',
+        message: 'deleteController',
+        type: 'Delete',
+        objectName: controller.name || 'default'
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        delete this.userDetail.roles[role.name].permissions.controllers[controller.name];
+        this.saveInfo();
+      }
     });
   }
 
@@ -418,7 +469,7 @@ export class RolesComponent implements OnDestroy {
     this.roles = [];
     for (let role in res.roles) {
       let obj = {name: role, controllers: [{name: '', permissions: res.roles[role].permissions}], mainObj: res.roles[role]};
-      if (res.roles[role].permissions) {
+      if (res.roles[role].permissions && res.roles[role].permissions.controllers) {
         for (let controller in res.roles[role].permissions.controllers) {
           obj.controllers.push({name: controller, permissions: res.roles[role].permissions.controllers[controller]});
         }

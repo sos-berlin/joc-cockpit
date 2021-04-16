@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 
 @Component({
@@ -15,7 +15,7 @@ export class EditFilterModalComponent {
   @Input() action: any;
   @Input() self;
 
-  constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
   }
 
   editFilter(filter): void {

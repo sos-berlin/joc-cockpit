@@ -1,5 +1,5 @@
 import {Component, OnInit, Input} from '@angular/core';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 
 @Component({
@@ -10,6 +10,7 @@ export class TreeModalComponent implements OnInit {
   @Input() schedulerId;
   @Input() paths: any = [];
   @Input() objects: any = [];
+  @Input() showCheckBox: boolean;
   @Input() type: string;
   @Input() object: string;
   tree: any = [];
@@ -17,7 +18,7 @@ export class TreeModalComponent implements OnInit {
   loading = false;
   isSubmitted = false;
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
   ngOnInit(): void {
@@ -48,7 +49,9 @@ export class TreeModalComponent implements OnInit {
 
   selectNode(e): void {
     const data = e.origin || e;
-    if (this.object) {
+    if (this.showCheckBox) {
+
+    } else if (this.object) {
       if (this.object === 'Calendar') {
         let obj: any = {
           path: e.key,

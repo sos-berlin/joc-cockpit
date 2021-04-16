@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ChangeParameterModalComponent} from '../../../components/modify-modal/modify.component';
@@ -25,7 +25,7 @@ export class OrderListSidebarComponent {
     isTerminate: false
   };
 
-  constructor(public coreService: CoreService, public modalService: NgbModal) {
+  constructor(public coreService: CoreService, public modal: NzModalService) {
   }
 
 
@@ -90,13 +90,16 @@ export class OrderListSidebarComponent {
   }
 
   modifyAllOrder(): void {
-    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.orderRequirements = this.coreService.clone(this.orderRequirements);
-    modalRef.componentInstance.orderIds = Array.from(this.setOfCheckedId);
-    modalRef.result.then(() => {
-
-    }, () => {
+    this.modal.create({
+      nzTitle: null,
+      nzContent: ChangeParameterModalComponent,
+      nzComponentParams: {
+        schedulerId: this.schedulerId,
+        orderRequirements: this.coreService.clone(this.orderRequirements),
+        orderIds: Array.from(this.setOfCheckedId)
+      },
+      nzFooter: null,
+      nzClosable: false
     });
   }
 
@@ -129,14 +132,22 @@ export class OrderListSidebarComponent {
         operation,
         name: ''
       };
-      const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.comments = comments;
-      modalRef.componentInstance.obj = obj;
-      modalRef.componentInstance.url = 'orders/' + url;
-      modalRef.result.then((result) => {
-        this.resetCheckBox();
-      }, () => {
-        this.resetCheckBox();
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+          obj,
+          url: 'orders/' + url
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.resetCheckBox();
+        }
       });
     } else {
       this.coreService.post('orders/' + url, obj).subscribe(() => {

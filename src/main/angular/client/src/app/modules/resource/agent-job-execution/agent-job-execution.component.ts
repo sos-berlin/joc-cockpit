@@ -3,7 +3,6 @@ import {Subscription} from 'rxjs';
 import * as moment from 'moment';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from '../../../services/data.service';
 import {SearchPipe} from '../../../pipes/core.pipe';
 
@@ -33,7 +32,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(private authService: AuthService, public coreService: CoreService, private modalService: NgbModal,
+  constructor(private authService: AuthService, public coreService: CoreService,
               private searchPipe: SearchPipe, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);

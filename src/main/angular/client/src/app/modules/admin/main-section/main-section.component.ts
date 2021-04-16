@@ -1,8 +1,8 @@
-import {Component, OnInit, OnDestroy, Input} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import * as _ from 'underscore';
-import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {DataService} from '../data.service';
 import {CoreService} from '../../../services/core.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
@@ -20,7 +20,7 @@ export class MainSectionModalComponent implements OnInit {
   fullSection = false;
   mainText = '';
 
-  constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
   }
 
   ngOnInit(): void {
@@ -281,7 +281,7 @@ export class EditMainSectionModalComponent implements OnInit {
   @Input() oldEntry: any;
   @Input() userDetail: any;
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
   ngOnInit(): void {
@@ -380,7 +380,7 @@ export class LdapSectionModalComponent implements OnInit {
   @Input() userDetail: any;
   @Input() isldap: boolean;
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
   ngOnInit(): void {
@@ -472,7 +472,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(public coreService: CoreService, private router: Router, public modalService: NgbModal, private dataService: DataService) {
+  constructor(public coreService: CoreService, private router: Router, public modal: NzModalService, private dataService: DataService) {
     this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
       if (res) {
         this.setUserData(res);
@@ -522,73 +522,120 @@ export class MainSectionComponent implements OnInit, OnDestroy {
   }
 
   editMain(main): void {
-    const modalRef = this.modalService.open(EditMainSectionModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.oldEntry = main;
-    modalRef.componentInstance.userDetail = this.userDetail;
-    modalRef.result.then((result) => {
-      this.main = result;
-      this.main = [...this.main];
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: EditMainSectionModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        oldEntry: main,
+        userDetail: this.userDetail
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.main = result;
+        this.main = [...this.main];
+      }
     });
   }
 
   deleteMain(main): void {
-    const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.title = 'delete';
-    modalRef.componentInstance.message = 'deleteMainSection';
-    modalRef.componentInstance.type = 'Delete';
-    modalRef.componentInstance.objectName = main.entryName;
-    modalRef.result.then(() => {
-      this.main.splice(this.main.indexOf(main), 1);
-      this.saveInfo();
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ConfirmModalComponent,
+      nzComponentParams: {
+        title: 'delete',
+        message: 'deleteMainSection',
+        type: 'Delete',
+        objectName: main.entryName
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.main.splice(this.main.indexOf(main), 1);
+        this.saveInfo();
+      }
     });
   }
 
   addMainSection(): void {
-    const modalRef = this.modalService.open(MainSectionModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.userDetail = this.userDetail;
-    modalRef.result.then((result) => {
-      this.main = result;
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: MainSectionModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        userDetail: this.userDetail
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.main = result;
+      }
     });
   }
 
   editMainSection(): void {
-    const modalRef = this.modalService.open(MainSectionModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.userDetail = this.userDetail;
-    modalRef.componentInstance.isUpdate = true;
-    modalRef.result.then((result) => {
-      this.main = result;
-      this.main = [...this.main];
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: MainSectionModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        userDetail: this.userDetail,
+        isUpdate: true
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.main = result;
+        this.main = [...this.main];
+      }
     });
   }
 
   addLdapRealm(): void {
-    const modalRef = this.modalService.open(LdapSectionModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.userDetail = this.userDetail;
-    modalRef.componentInstance.isldap = true;
-    modalRef.result.then((result) => {
-      this.main = result;
-      this.main = [...this.main];
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: LdapSectionModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        userDetail: this.userDetail,
+        isldap: true
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.main = result;
+        this.main = [...this.main];
+      }
     });
   }
 
   enableJOCCluster(): void {
-    const modalRef = this.modalService.open(LdapSectionModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.userDetail = this.userDetail;
-    modalRef.result.then((result) => {
-      this.main = result;
-      this.main = [...this.main];
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: LdapSectionModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        userDetail: this.userDetail
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.main = result;
+        this.main = [...this.main];
+      }
     });
   }
 }

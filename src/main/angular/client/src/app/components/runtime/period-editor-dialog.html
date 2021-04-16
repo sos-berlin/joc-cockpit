@@ -4,7 +4,7 @@
     <span *ngIf="isNew" translate>runtime.label.addPeriod</span>
     <span *ngIf="!isNew" translate>runtime.label.editPeriod</span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>

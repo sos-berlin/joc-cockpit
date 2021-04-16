@@ -408,7 +408,7 @@
       </div>
     </div>
     <button *ngIf="!editor.showYearView" type="button" class="btn btn-primary btn-sm"
-            style="position:fixed; bottom: 85px;" [disabled]="!editor.isEnable"
+            style="bottom: 85px;" [disabled]="!editor.isEnable"
             (click)="addFrequency()">
       <span *ngIf="editor.create" translate>runtime.button.addNewFrequency</span>
       <span *ngIf="!editor.create" translate>runtime.button.updateFrequency</span>

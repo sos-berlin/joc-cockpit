@@ -15,18 +15,15 @@ import {Router} from '@angular/router';
   `
 })
 export class ToggleComponent implements OnInit {
-
   view = 'list';
   pageView: string;
   views: any = {};
-
   @Output() messageEvent = new EventEmitter<string>();
 
   constructor(public router: Router) {
-
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.views = {
       dailyPlan: this.view,
       workflow: this.view,
@@ -52,7 +49,7 @@ export class ToggleComponent implements OnInit {
     } else if (this.router.url === '/configuration/inventory') {
       // this.pageView = this.views.inventory;
       this.pageView = 'grid';
-    }  else if (this.router.url === '/workflows') {
+    } else if (this.router.url === '/workflows') {
       this.pageView = this.views.workflow;
     } else if (this.router.url.match(/orders_overview/)) {
       this.pageView = this.views.orderOverview;
@@ -71,7 +68,7 @@ export class ToggleComponent implements OnInit {
     }
   }
 
-  setView(view) {
+  setView(view): void {
     this.pageView = view;
     if (this.router.url === '/daily_plan') {
       this.views.dailyPlan = view;

@@ -1,9 +1,9 @@
-import {Component, OnInit, Input, OnDestroy} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
-import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {DataService} from '../data.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import * as _ from 'underscore';
@@ -23,10 +23,10 @@ export class AccountModalComponent implements OnInit {
   @Input() oldUser: any;
   @Input() allRoles: any;
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (this.oldUser) {
       this.currentUser = _.clone(this.oldUser);
       this.currentUser.fakePassword = '00000000';
@@ -96,7 +96,7 @@ export class AccountModalComponent implements OnInit {
 })
 export class AccountsComponent implements OnInit, OnDestroy {
 
-  loading =  true;
+  loading = true;
   preferences: any = {};
   users: any = [];
   roles: any = [];
@@ -111,7 +111,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
   subscription3: Subscription;
 
-  constructor(private router: Router, private authService: AuthService, private coreService: CoreService, private modalService: NgbModal, private dataService: DataService) {
+  constructor(private router: Router, private authService: AuthService, private coreService: CoreService, private modal: NzModalService, private dataService: DataService) {
     this.subscription1 = this.dataService.searchKeyAnnounced$.subscribe(res => {
       this.searchKey = res;
     });
@@ -176,54 +176,86 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   addUser(): void {
-    const modalRef = this.modalService.open(AccountModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.userDetail = this.userDetail;
-    modalRef.componentInstance.allRoles = this.roles;
-    modalRef.componentInstance.newUser = true;
-    modalRef.result.then((result) => {
-      this.users = result;
-      this.users = [...this.users];
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: AccountModalComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        userDetail: this.userDetail,
+        allRoles: this.roles,
+        newUser: true,
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.users = result;
+        this.users = [...this.users];
+      }
     });
   }
 
   editUser(user): void {
-    const modalRef = this.modalService.open(AccountModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.userDetail = this.userDetail;
-    modalRef.componentInstance.allRoles = this.roles;
-    modalRef.componentInstance.oldUser = user;
-    modalRef.result.then((result) => {
-      this.users = result;
-      this.users = [...this.users];
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: AccountModalComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        userDetail: this.userDetail,
+        allRoles: this.roles,
+        oldUser: user,
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.users = result;
+        this.users = [...this.users];
+      }
     });
   }
 
   copyUser(user): void {
-    const modalRef = this.modalService.open(AccountModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.userDetail = this.userDetail;
-    modalRef.componentInstance.copy = true;
-    modalRef.componentInstance.oldUser = user;
-    modalRef.result.then((result) => {
-      this.users = result;
-      this.users = [...this.users];
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: AccountModalComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        userDetail: this.userDetail,
+        copy: true,
+        oldUser: user,
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.users = result;
+        this.users = [...this.users];
+      }
     });
   }
 
   deleteUser(user, i): void {
-    const modalRef = this.modalService.open(ConfirmModalComponent);
-    modalRef.componentInstance.title = 'delete';
-    modalRef.componentInstance.message = 'deleteUser';
-    modalRef.componentInstance.type = 'Delete';
-    modalRef.componentInstance.objectName = user;
-    modalRef.result.then((result) => {
-      this.users.splice(i, 1);
-      this.saveInfo();
-    }, () => {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ConfirmModalComponent,
+      nzComponentParams: {
+        title: 'delete',
+        message: 'deleteUser',
+        type: 'Delete',
+        objectName: user,
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.users.splice(i, 1);
+        this.saveInfo();
+      }
     });
   }
 
@@ -231,5 +263,4 @@ export class AccountsComponent implements OnInit, OnDestroy {
     this.usr.reverse = !this.usr.reverse;
     this.usr.sortBy = key;
   }
-
 }

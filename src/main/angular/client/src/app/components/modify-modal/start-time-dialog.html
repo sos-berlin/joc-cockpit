@@ -3,7 +3,7 @@
     <span translate>dailyPlan.label.setStartTime</span>
     <i class="text-muted p-l-xs text">{{order.orderId}}</i>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  <button type="button" class="close" aria-label="Close" (click)="cancel()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -36,7 +36,7 @@
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
+    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>
       common.button.cancel
     </button>
   </div>

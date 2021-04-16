@@ -1,7 +1,7 @@
 import {Component, OnInit, Input} from '@angular/core';
-import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import * as moment from 'moment';
 import * as _ from 'underscore';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume.component';
@@ -11,7 +11,6 @@ import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../.
   selector: 'app-start-order',
   templateUrl: './start-order-dialog.html',
 })
-
 export class StartOrderModalComponent implements OnInit {
   @Input() schedulerId: any;
   @Input() permission: any;
@@ -26,10 +25,10 @@ export class StartOrderModalComponent implements OnInit {
   comments: any = {};
   zones = [];
 
-  constructor(public coreService: CoreService, public activeModal: NgbActiveModal) {
+  constructor(public coreService: CoreService, private modal: NzModalRef) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
     this.display = this.preferences.auditLog;
@@ -46,7 +45,7 @@ export class StartOrderModalComponent implements OnInit {
     this.order.at = 'now';
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.submitted = true;
     const obj: any = {
       controllerId: this.schedulerId,
@@ -86,7 +85,7 @@ export class StartOrderModalComponent implements OnInit {
 
     this.coreService.post('orders/add', obj).subscribe((res: any) => {
       this.submitted = false;
-      this.activeModal.close('Done');
+      this.modal.close('Done');
     }, err => {
       this.submitted = false;
     });
@@ -108,14 +107,14 @@ export class StartOrderModalComponent implements OnInit {
     this.arguments.splice(index, 1);
   }
 
-  onKeyPress($event) {
+  onKeyPress($event): void {
     if ($event.which === '13' || $event.which === 13) {
       this.addArgument();
     }
   }
 
-  cancel() {
-    this.activeModal.dismiss('');
+  cancel(): void {
+    this.modal.destroy('');
   }
 
 }
@@ -131,10 +130,10 @@ export class OrderActionComponent {
   @Input() permission: any;
   @Input() schedulerId: any;
 
-  constructor(public modalService: NgbModal, public coreService: CoreService) {
+  constructor(public coreService: CoreService, private modal: NzModalService) {
   }
 
-  startOrder(order) {
+  startOrder(order): void {
     const obj: any = {
       controllerId: this.schedulerId,
       orders: []
@@ -149,73 +148,81 @@ export class OrderActionComponent {
         operation: 'Start',
         name: order.orderId
       };
-      const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.comments = comments;
-      modalRef.componentInstance.obj = obj;
-      modalRef.componentInstance.url = 'orders/add';
-      modalRef.result.then((result) => {
-        console.log(result);
-      }, (reason) => {
-        console.log('close...', reason);
+      this.modal.create({
+        nzTitle: null,
+        nzContent: CommentModalComponent,
+nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+          obj,
+          url: 'orders/add'
+        },
+        nzFooter: null,
+        nzClosable: false
       });
     } else {
       this.coreService.post('orders/add', obj).subscribe((res: any) => {
 
-      }, err => {
+      }, () => {
 
       });
     }
   }
 
-  startOrderAt() {
-    const modalRef = this.modalService.open(StartOrderModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.preferences = this.preferences;
-    modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.order = this.order;
-    modalRef.result.then((result) => {
-      console.log(result);
-    }, (reason) => {
-      console.log('close...', reason);
+  startOrderAt(): void {
+    this.modal.create({
+      nzTitle: null,
+      nzContent: StartOrderModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzComponentParams: {
+        preferences: this.preferences,
+        permission: this.permission,
+        schedulerId: this.schedulerId,
+        order: this.order
+      },
+      nzFooter: null,
+      nzClosable: false
     });
   }
 
 
-  resumeOrder() {
-    const modalRef = this.modalService.open(ResumeOrderModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.preferences = this.preferences;
-    modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.order = this.coreService.clone(this.order);
-    modalRef.result.then((result) => {
-      console.log(result);
-    }, () => {
-
+  resumeOrder(): void {
+    this.modal.create({
+      nzTitle: null,
+      nzContent: ResumeOrderModalComponent,
+      nzComponentParams: {
+        preferences: this.preferences,
+        permission: this.permission,
+        schedulerId: this.schedulerId,
+        order: this.coreService.clone(this.order)
+      },
+      nzFooter: null,
+      nzClosable: false
     });
-
   }
 
-  suspendOrder(order) {
+  suspendOrder(order): void {
     this.restCall(false, 'Suspend', order, 'suspend');
   }
 
-  suspendOrderWithKill() {
+  suspendOrderWithKill(): void {
     this.restCall(true, 'Suspend', this.order, 'suspend');
   }
 
-  cancelOrder(order) {
-    this.restCall(false, 'Cancel', this.order, 'cancel');
+  cancelOrder(order): void {
+    this.restCall(false, 'Cancel', order, 'cancel');
   }
 
-  cancelOrderWithKill() {
+  cancelOrderWithKill(): void {
     this.restCall(true, 'Cancel', this.order, 'cancel');
   }
 
-  removeWhenTerminated() {
+  removeWhenTerminated(): void {
     this.restCall(true, 'Terminate', this.order, 'remove_when_terminated');
   }
 
-  private restCall(isKill, type, order, url) {
+  private restCall(isKill, type, order, url): void {
     const obj: any = {
       controllerId: this.schedulerId, orderIds: [order.orderId], kill: isKill
     };
@@ -226,14 +233,17 @@ export class OrderActionComponent {
         operation: type,
         name: order.orderId
       };
-      const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.comments = comments;
-      modalRef.componentInstance.obj = obj;
-      modalRef.componentInstance.url = 'orders/' + url;
-      modalRef.result.then((result) => {
-        console.log(result);
-      }, (reason) => {
-        console.log('close...', reason);
+      this.modal.create({
+        nzTitle: null,
+        nzContent: CommentModalComponent,
+nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+          obj,
+          url: 'orders/' + url
+        },
+        nzFooter: null,
+        nzClosable: false
       });
     } else {
       this.coreService.post('orders/' + url, obj).subscribe(() => {
@@ -241,28 +251,31 @@ export class OrderActionComponent {
     }
   }
 
-  modifyOrder(order) {
-    const modalRef = this.modalService.open(ModifyStartTimeModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.preferences = this.preferences;
-    modalRef.componentInstance.order = order;
-    modalRef.result.then((res) => {
-
-    }, () => {
-
+  modifyOrder(order): void {
+    this.modal.create({
+      nzTitle: null,
+      nzContent: ModifyStartTimeModalComponent,
+      nzComponentParams: {
+        schedulerId: this.schedulerId,
+        preferences: this.preferences,
+        order
+      },
+      nzFooter: null,
+      nzClosable: false
     });
   }
 
-  changeParameter(order) {
-    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.order = this.coreService.clone(order);
-    modalRef.componentInstance.orderRequirements = order.requirements;
-    modalRef.result.then((result) => {
-      if (order && order.show) {
-        console.log(result);
-      }
-    }, () => {
+  changeParameter(order): void {
+    this.modal.create({
+      nzTitle: null,
+      nzContent: ChangeParameterModalComponent,
+      nzComponentParams: {
+        schedulerId: this.schedulerId,
+        orderRequirements: order.requirements,
+        order: this.coreService.clone(order)
+      },
+      nzFooter: null,
+      nzClosable: false
     });
   }
 }

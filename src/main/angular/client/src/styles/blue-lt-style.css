@@ -336,7 +336,7 @@ input[type=search] {
   border-color: var(--bg-footer)
 }
 
-.modal-content {
+.modal-content, .ant-modal-content {
   background-color: var(--bg-footer)
 }
 
@@ -862,16 +862,6 @@ pre#pre {
 .ant-input-number, .ant-select-selection {
   color: rgba(255, 255, 255, .87);
   background-color: transparent !important;
-}
-
-.modal-open .ant-select-dropdown,
-.modal-open .ant-select-selection {
-  background-color: var(--bg-footer) !important
-}
-
-.modal-open input:-webkit-autofill, .modal-open input:-webkit-autofill:hover,
-.modal-open input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 100px var(--bg-footer) inset;
 }
 
 .ant-tabs-bar,

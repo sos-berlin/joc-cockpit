@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import * as moment from 'moment';
 import * as _ from 'underscore';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 
 @Component({
@@ -22,7 +22,7 @@ export class ChangeParameterModalComponent implements OnInit {
   variableList = [];
   submitted = false;
 
-  constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
+  constructor(private activeModal: NzModalRef, public coreService: CoreService) {
   }
 
   ngOnInit(): void {
@@ -183,7 +183,7 @@ export class ChangeParameterModalComponent implements OnInit {
   }
 
   cancel(): void {
-    this.activeModal.dismiss('');
+    this.activeModal.destroy();
   }
 }
 
@@ -198,7 +198,7 @@ export class ModifyStartTimeModalComponent implements OnInit {
   submitted = false;
   dateFormat: any;
 
-  constructor(public activeModal: NgbActiveModal, public  coreService: CoreService) {
+  constructor(private activeModal: NzModalRef, public  coreService: CoreService) {
   }
 
   ngOnInit(): void {
@@ -232,6 +232,6 @@ export class ModifyStartTimeModalComponent implements OnInit {
   }
 
   cancel(): void {
-    this.activeModal.dismiss('');
+    this.activeModal.destroy();
   }
 }

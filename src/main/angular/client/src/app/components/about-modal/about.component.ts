@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../services/core.service';
+import {NzModalRef} from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-about',
@@ -9,12 +9,12 @@ import {CoreService} from '../../services/core.service';
       <h4 class="modal-title">
         <span translate>info.button.aboutJS7</span>
       </h4>
-      <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <button type="button" class="close" aria-label="Close" (click)="modal.destroy()">
         <span aria-hidden="true" class="fa fa-times-circle"></span>
       </button>
     </div>
     <div class="modal-body p-a">
-      <div class="row" *ngIf="versionData">
+      <div class="row">
         <div class="col-sm-3">
           <img class="p-l logo-for-default" src="./assets/images/JS7-logo-default-theme.png" alt="JS7" width="100">
           <img class="p-l logo-for-light" src="./assets/images/JS7-logo-light-theme.png" alt="JS7" width="100">
@@ -43,8 +43,8 @@ import {CoreService} from '../../services/core.service';
   `
 })
 export class AboutModalComponent implements OnInit {
-  versionData: any;
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
+  versionData: any = {};
+  constructor(public modal: NzModalRef, private coreService: CoreService) {
   }
 
   ngOnInit(): void {

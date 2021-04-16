@@ -16,6 +16,7 @@
       [nzTreeTemplate]="nzTreeTemplate"
     ></nz-tree>
     <ng-template #nzTreeTemplate let-node>
+      <label nz-checkbox *ngIf="showCheckBox" class="p-r-sm" [(ngModel)]="node.origin.isChecked" name="{{node.key}}" (ngModelChange)="handleCheckbox(node.origin)"></label>
       <div class="node-wrapper">
         <div class="node-content-wrapper"
              (click)="selectNode(node)">
@@ -37,17 +38,17 @@
   </div>
 </div>
 <div class="modal-footer ">
-  <div *ngIf="object">
+  <div *ngIf="showCheckBox ||  object">
     <button type="button" class="btn btn-primary btn-sm"  (click)="submit()"
             translate>common.button.done
     </button>
-    <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="activeModal.dismiss('Cross click')"
+    <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="activeModal.destroy()"
             translate>
       common.button.cancel
     </button>
   </div>
-  <div *ngIf="!object">
-    <button type="button" class="btn btn-grey btn-sm " (click)="activeModal.dismiss('Cross click')"
+  <div *ngIf="!showCheckBox && !object">
+    <button type="button" class="btn btn-grey btn-sm " (click)="activeModal.destroy()"
             translate>
       common.button.close
     </button>

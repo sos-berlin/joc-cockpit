@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription} from 'rxjs';
 import * as _ from 'underscore';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {AuthService} from '../../components/guard';
 import {CoreService} from '../../services/core.service';
@@ -9,6 +9,8 @@ import {DataService} from '../../services/data.service';
 import {SaveService} from '../../services/save.service';
 import {SearchPipe} from '../../pipes/core.pipe';
 import {ActivatedRoute} from '@angular/router';
+
+declare const $;
 
 @Component({
   selector: 'app-modal-content',
@@ -25,7 +27,7 @@ export class FilterModalComponent implements OnInit {
   permission: any = {};
   name: string;
 
-  constructor(private authService: AuthService, public activeModal: NgbActiveModal) {
+  constructor(private authService: AuthService, public activeModal: NzModalRef) {
   }
 
   ngOnInit(): void {
@@ -48,7 +50,7 @@ export class FilterModalComponent implements OnInit {
     if (obj) {
       this.activeModal.close(obj);
     } else {
-      this.activeModal.dismiss('');
+      this.activeModal.destroy();
     }
   }
 }
@@ -230,15 +232,6 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
     this.subscription2.unsubscribe();
   }
 
-  private init(): void {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
-    }
-    this.permission = JSON.parse(this.authService.permission) || {};
-    this.getFileTransferById(7);
-  }
-
-
   getFileTransferById(transferId): void {
     let obj = {
       controllerId: this.schedulerId,
@@ -275,6 +268,13 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
     });
   }
 
+  private init(): void {
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences);
+    }
+    this.permission = JSON.parse(this.authService.permission) || {};
+    this.getFileTransferById(7);
+  }
 
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
@@ -322,13 +322,13 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   fileTransfers: any = [];
   currentData = [];
   data = [];
+  widthArr = [];
   dateFormat: any;
   temp_filter: any = {};
   searchKey: string;
   showFiles = false;
   isLoading = false;
   isLoaded = false;
-  loading = false;
   loadConfig = false;
   showSearchPanel = false;
   object: any = {
@@ -342,7 +342,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   searchableProperties = ['controllerId', 'profile', 'mandator', 'start', 'end', 'operation', 'numOfFiles', 'source', 'target'];
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
-              private searchPipe: SearchPipe, private dataService: DataService, private modalService: NgbModal) {
+              private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -399,7 +399,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   load(): void {
     this.isLoaded = true;
-    const self = this;
     this.reset();
     if (this.selectedFiltered && !_.isEmpty(this.selectedFiltered)) {
       this.isCustomizationSelected(true);
@@ -466,9 +465,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       }
       obj = this.setDateRange(obj);
     }
-    if (!this.showFiles) {
-      obj.compact = true;
-    }
     obj.timeZone = this.preferences.zone;
     if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
       delete obj['timeZone'];
@@ -482,22 +478,34 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     obj.limit = parseInt(this.preferences.maxRecords, 10);
     this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
       this.fileTransfers = res.transfers || [];
-      this.fileTransfers.forEach((transfer) => {
-        if (this.showFiles) {
+      if (this.showFiles) {
+        this.fileTransfers.forEach((transfer) => {
           transfer.show = true;
           this.getFiles(transfer);
-        }
-      });
+        });
+      }
       this.searchInResult();
       this.isLoading = true;
+      this.setHeaderWidth();
+
     }, () => this.isLoading = true);
+  }
+
+  private setHeaderWidth(): void {
+    const self = this;
+    setTimeout(() => {
+      self.widthArr = [];
+      const dom = $('#fileTransferMainTable');
+      dom.find('thead tr.main-header-row th').each(function() {
+        self.widthArr.push($(this).outerWidth());
+      });
+    }, 0);
   }
 
   getTransfer(transfer): void {
     let obj = {
       controllerId: this.schedulerIds.selected,
       transferIds: [transfer.id]
-
     };
     this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
       if (res.transfers && res.transfers.length > 0) {
@@ -516,6 +524,8 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   getFiles(value): void {
     let ids = [value.id];
+    const self = this;
+    value.widthArr = this.permission.joc.fileTransfer.manage ? ['0px'] : [];
     value.loading = true;
     this.coreService.post('yade/files', {
       transferIds: ids,
@@ -523,7 +533,15 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     }).subscribe((res: any) => {
       value.files = res.files;
       value.loading = false;
-      this.coreService.calFileTransferRowWidth(true);
+      value.widthArr = [...value.widthArr, ...this.coreService.calFileTransferRowWidth(true)];
+      setTimeout(() => {
+        const dom = $('#fileTransferMainTable');
+        dom.find('thead tr.main-header-row th').each(function(i) {
+          console.log($(this).outerWidth(), self.widthArr[i]);
+          $(this).css('width', self.widthArr[i] + 'px');
+        });
+      }, 0);
+
     }, () => {
       value.loading = false;
     });
@@ -589,14 +607,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   }
 
   showTransferFuc(value): void {
-    let obj = {
-      controllerId: value.controllerId || this.schedulerIds.selected,
-      transferIds: [value.id]
-    };
-    this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
-      value = _.extend(value, res.transfers[0]);
-      this.isLoading = true;
-    }, () => this.isLoading = true);
     value.show = true;
     this.getFiles(value);
   }
@@ -711,34 +721,11 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.coreService.post('yade/transfers', filter).subscribe((res: any) => {
       this.fileTransfers = res.transfers;
       this.searchInResult();
-      this.loading = false;
       this.isLoaded = true;
+      this.setHeaderWidth();
     }, () => {
-      this.loading = false;
       this.isLoaded = true;
     });
-  }
-
-  private init(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
-    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
-    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    this.yadeFilters = this.coreService.getYadeTab();
-    this.yadeView.current = this.preferences.fileTransfer == 'current';
-    this.savedFilter = JSON.parse(this.saveService.yadeFilters) || {};
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    if (this.yadeFilters.showFiles != undefined) {
-      this.showFiles = this.yadeFilters.showFiles;
-    } else {
-      this.showFiles = this.preferences.showFiles;
-    }
-
-    if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
-      this.checkSharedFilters();
-    } else {
-      this.loadConfig = true;
-      this.load();
-    }
   }
 
   checkSharedFilters(): void {
@@ -900,45 +887,58 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     });
   }
 
-
   /* ---- Customization Begin------ */
   createCustomization(): void {
-    const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.allFilter = this.filterList;
-    modalRef.componentInstance.new = true;
-    modalRef.result.then((configObj) => {
-      if (this.filterList.length == 1) {
-        this.savedFilter.selected = configObj.id;
-        this.yadeFilters.selectedView = true;
-        this.selectedFiltered = configObj;
-        this.isCustomizationSelected(true);
-        this.load();
-        this.saveService.setYade(this.savedFilter);
-        this.saveService.save();
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: FilterModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        permission: this.permission,
+        allFilter: this.filterList,
+        new: true
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(configObj => {
+      if (configObj) {
+        if (this.filterList.length == 1) {
+          this.savedFilter.selected = configObj.id;
+          this.yadeFilters.selectedView = true;
+          this.selectedFiltered = configObj;
+          this.isCustomizationSelected(true);
+          this.load();
+          this.saveService.setYade(this.savedFilter);
+          this.saveService.save();
+        }
       }
-    }, () => {
-
     });
   }
 
   editFilters(): void {
-    const modalRef = this.modalService.open(EditFilterModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.filterList = this.filterList;
-    modalRef.componentInstance.favorite = this.savedFilter.favorite;
-    modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.username = this.authService.currentUserData;
-    modalRef.componentInstance.action = this.action;
-    modalRef.componentInstance.self = this;
-    modalRef.result.then((obj) => {
-      if (obj.type === 'EDIT') {
-        this.editFilter(obj);
-      } else if (obj.type === 'COPY') {
-        this.copyFilter(obj);
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: EditFilterModalComponent,
+      nzComponentParams: {
+        filterList: this.filterList,
+        favorite: this.savedFilter.favorite,
+        permission: this.permission,
+        username: this.authService.currentUserData,
+        action: this.action,
+        self: this
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(obj => {
+      if (obj) {
+        if (obj.type === 'EDIT') {
+          this.editFilter(obj);
+        } else if (obj.type === 'COPY') {
+          this.copyFilter(obj);
+        }
       }
-    }, () => {
-
     });
   }
 
@@ -999,6 +999,28 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.saveService.save();
   }
 
+  private init(): void {
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    this.yadeFilters = this.coreService.getYadeTab();
+    this.yadeView.current = this.preferences.fileTransfer == 'current';
+    this.savedFilter = JSON.parse(this.saveService.yadeFilters) || {};
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    if (this.yadeFilters.showFiles != undefined) {
+      this.showFiles = this.yadeFilters.showFiles;
+    } else {
+      this.showFiles = this.preferences.showFiles;
+    }
+
+    if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
+      this.checkSharedFilters();
+    } else {
+      this.loadConfig = true;
+      this.load();
+    }
+  }
+
   private editFilter(filter): void {
     this.openFilterModal(filter, false);
   }
@@ -1017,16 +1039,18 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       } else {
         filterObj.id = filter.id;
       }
-      const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.permission = this.permission;
-      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-      modalRef.componentInstance.allFilter = this.filterList;
-      modalRef.componentInstance.filter = filterObj;
-      modalRef.componentInstance.edit = !isCopy;
-      modalRef.result.then(() => {
-
-      }, () => {
-
+      this.modal.create({
+        nzTitle: null,
+        nzContent: FilterModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          permission: this.permission,
+          allFilter: this.filterList,
+          filter: filterObj,
+          edit: !isCopy
+        },
+        nzFooter: null,
+        nzClosable: false
       });
     });
   }

@@ -1,6 +1,6 @@
-import {Component, OnInit, OnDestroy, ViewChild, Input} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {FileUploader} from 'ng2-file-upload';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
@@ -23,7 +23,7 @@ const API_URL = './api/';
 export class ShowModalComponent {
   @Input() document: any;
 
-  constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
   }
 }
 
@@ -45,7 +45,8 @@ export class ImportModalComponent implements OnInit {
   comments: any = {};
   document = {path: ''};
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, private authService: AuthService, public translate: TranslateService, public toasterService: ToasterService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService,
+              public translate: TranslateService, public toasterService: ToasterService) {
     this.uploader = new FileUploader({
       url: API_URL + 'documentations/import'
     });
@@ -118,7 +119,7 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
   path: string;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
-              private modalService: NgbModal, private dataService: DataService, private route: ActivatedRoute) {
+              private modal: NzModalService, private dataService: DataService, private route: ActivatedRoute) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       console.log(res);
     });
@@ -141,15 +142,6 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  private getDocumentationsList(obj): void {
-    this.coreService.post('documentations', obj).subscribe((res: any) => {
-      this.loading = false;
-      this.documents = res.documentations;
-    }, () => {
-      this.loading = false;
-    });
-  }
-
   /** ---------------------------- Action ----------------------------------*/
 
   previewDocument(document): void {
@@ -168,13 +160,15 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
       controllerId: this.schedulerId
     }).subscribe((res: any) => {
       documentObj.usedIn = res.objects || [];
-
-      const modalRef = this.modalService.open(ShowModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.document = documentObj;
-      modalRef.result.then(() => {
-
-      }, () => {
-
+      this.modal.create({
+        nzTitle: null,
+        nzContent: ShowModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          document: documentObj
+        },
+        nzFooter: null,
+        nzClosable: false
       });
     });
   }
@@ -213,6 +207,15 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
     });
   }
 
+  private getDocumentationsList(obj): void {
+    this.coreService.post('documentations', obj).subscribe((res: any) => {
+      this.loading = false;
+      this.documents = res.documentations;
+    }, () => {
+      this.loading = false;
+    });
+  }
+
   private deleteDocumentFn(obj, document): void {
     if (this.preferences.auditLog) {
       const comments = {
@@ -221,28 +224,36 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
         operation: 'Delete',
         name: document ? document.path : ''
       };
-
-      const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.comments = comments;
-      modalRef.componentInstance.obj = obj;
-      modalRef.componentInstance.url = 'documentations/delete';
-      modalRef.result.then(() => {
-        this.deleteDocument(obj);
-      }, () => {
-
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: CommentModalComponent,
+        nzComponentParams: {
+          comments,
+          obj,
+          url: 'documentations/delete'
+        },
+        nzFooter: null,
+        nzClosable: false
       });
-
-    } else {
-      const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.type = 'Delete';
-      modalRef.componentInstance.title = 'delete';
-      modalRef.componentInstance.message = 'deleteDocument';
-      modalRef.componentInstance.document = document;
-      modalRef.componentInstance.objectName = document.name;
-      modalRef.result.then(() => {
+      modal.afterClose.subscribe(result => {
         this.deleteDocument(obj);
-      }, () => {
-
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          type: 'Delete',
+          title: 'delete',
+          message: 'deleteDocument',
+          document: document,
+          objectName: document.name
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        this.deleteDocument(obj);
       });
     }
   }
@@ -279,7 +290,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
-              private searchPipe: SearchPipe, private modalService: NgbModal, private dataService: DataService) {
+              private searchPipe: SearchPipe, private modal: NzModalService, private dataService: DataService) {
     this.subscription = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
     });
@@ -337,31 +348,6 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     this.getDocumentationsList(obj);
   }
 
-  private init(): void {
-    this.documentFilters = this.coreService.getResourceTab().documents;
-    this.coreService.getResourceTab().state = 'documentations';
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
-    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
-    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    if (localStorage.views) {
-      this.pageView = JSON.parse(localStorage.views).documentation;
-    }
-    this.initTree();
-  }
-
-  private getDocumentationsList(obj): void {
-    this.coreService.post('documentations', obj).subscribe((res: any) => {
-      this.loading = false;
-      res.documentations.forEach((value) => {
-        value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
-      });
-      this.documents = res.documentations;
-      this.searchInResult();
-    }, () => {
-      this.loading = false;
-    });
-  }
-
   receiveAction($event): void {
     this.getDocumentations($event, $event.action !== 'NODE');
   }
@@ -377,7 +363,6 @@ export class DocumentationComponent implements OnInit, OnDestroy {
 
     this.getDocumentationsList(obj);
   }
-
 
   /** ---------------------------- Action ----------------------------------*/
 
@@ -445,13 +430,15 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       controllerId: this.schedulerIds.selected
     }).subscribe((res: any) => {
       documentObj.usedIn = res.objects || [];
-
-      const modalRef = this.modalService.open(ShowModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.document = documentObj;
-      modalRef.result.then(() => {
-
-      }, () => {
-
+      this.modal.create({
+        nzTitle: null,
+        nzContent: ShowModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          document: documentObj
+        },
+        nzFooter: null,
+        nzClosable: false
       });
     });
   }
@@ -474,17 +461,23 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   importDocument(): void {
-    const modalRef = this.modalService.open(ImportModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.display = this.preferences.auditLog;
-    modalRef.componentInstance.selectedPath = this.selectedPath;
-    modalRef.componentInstance.nodes = this.tree;
-    modalRef.result.then((res) => {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ImportModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        schedulerId: this.schedulerIds.selected,
+        display: this.preferences.auditLog,
+        selectedPath: this.selectedPath,
+        nodes: this.tree
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(res => {
       if (res === 'success') {
         this.init();
       }
-    }, () => {
-
     });
   }
 
@@ -543,6 +536,31 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     });
   }
 
+  private init(): void {
+    this.documentFilters = this.coreService.getResourceTab().documents;
+    this.coreService.getResourceTab().state = 'documentations';
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    if (localStorage.views) {
+      this.pageView = JSON.parse(localStorage.views).documentation;
+    }
+    this.initTree();
+  }
+
+  private getDocumentationsList(obj): void {
+    this.coreService.post('documentations', obj).subscribe((res: any) => {
+      this.loading = false;
+      res.documentations.forEach((value) => {
+        value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
+      });
+      this.documents = res.documentations;
+      this.searchInResult();
+    }, () => {
+      this.loading = false;
+    });
+  }
+
   private deleteDocumentFn(obj, document, arr): void {
     if (this.preferences.auditLog) {
       const comments = {
@@ -560,37 +578,37 @@ export class DocumentationComponent implements OnInit, OnDestroy {
           }
         });
       }
-
-      const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.document = document;
-      modalRef.componentInstance.documentArr = arr;
-      modalRef.componentInstance.comments = comments;
-      modalRef.componentInstance.obj = obj;
-      modalRef.componentInstance.url = 'documentations/delete';
-      modalRef.result.then(() => {
-        this.deleteDocument(obj, document);
-      }, () => {
-
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: CommentModalComponent,
+        nzComponentParams: {
+          comments,
+          obj,
+          url: 'documentations/delete'
+        },
+        nzFooter: null,
+        nzClosable: false
       });
-
+      modal.afterClose.subscribe(result => {
+        this.deleteDocument(obj, document);
+      });
     } else {
-      const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
-
-      modalRef.componentInstance.type = 'Delete';
-      if (document) {
-        modalRef.componentInstance.title = 'delete';
-        modalRef.componentInstance.message = 'deleteDocument';
-        modalRef.componentInstance.document = document;
-        modalRef.componentInstance.objectName = document.name;
-      } else {
-        modalRef.componentInstance.title = 'deleteAllDocument';
-        modalRef.componentInstance.message = 'deleteAllDocument';
-        modalRef.componentInstance.documentArr = arr;
-      }
-      modalRef.result.then(() => {
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          type: 'Delete',
+          title: document ? 'delete' : 'deleteAllDocument',
+          message: document ? 'deleteDocument' : 'deleteAllDocument',
+          document,
+          objectName: document ? document.name : undefined,
+          documentArr: document ? undefined : arr
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
         this.deleteDocument(obj, null);
-      }, () => {
-
       });
     }
   }

@@ -1,5 +1,4 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import * as _ from 'underscore';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
@@ -30,7 +29,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
 
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
-  constructor(private modalService: NgbModal, private coreService: CoreService,
+  constructor(private coreService: CoreService,
               private calendarService: CalendarService, private dataService: DataService) {
   }
 

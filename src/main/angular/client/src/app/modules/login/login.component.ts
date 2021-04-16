@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalService} from 'ng-zorro-antd/modal';
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
 import {AboutModalComponent} from '../../components/about-modal/about.component';
@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
   errorMsg = false;
   returnUrl: string;
 
-  constructor(private route: ActivatedRoute, private router: Router, private modalService: NgbModal,
+  constructor(private route: ActivatedRoute, private router: Router, private modal: NzModalService,
               public coreService: CoreService, private authService: AuthService) {
   }
 
@@ -77,11 +77,11 @@ export class LoginComponent implements OnInit {
   }
 
   about(): any {
-    const modalRef = this.modalService.open(AboutModalComponent, {
-      backdrop: 'static'
-    });
-    modalRef.result.then(() => {
-    }, () => {
+    this.modal.create({
+      nzTitle: null,
+      nzContent: AboutModalComponent,
+      nzFooter: null,
+      nzClosable: false
     });
   }
 }

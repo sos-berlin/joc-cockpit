@@ -154,7 +154,7 @@
           <label class="col-md-3"></label>
           <div class="col-md-9" [ngClass]="{'has-error' : ((suffix.dirty || suffix.touched) && suffix.invalid)}">
             <input type="text" required identifierValidation class="form-control" name="suffix" placeholder="{{'inventory.placeholder.suffix' | translate}}"
-                   #suffix="ngModel" [(ngModel)]="requestObj.suffix" [appAutofocus]="true" autocomplete="off">
+                   #suffix="ngModel" [(ngModel)]="requestObj.suffix" autocomplete="off">
             <div *ngIf="suffix.invalid && (suffix.dirty || suffix.touched)"
                  class="text-danger help-block">
               <div *ngIf="(suffix.errors && suffix.errors.required)">
@@ -168,7 +168,7 @@
           <label class="col-md-3"></label>
           <div class="col-md-9" [ngClass]="{'has-error' : ((prefix.dirty || prefix.touched) && prefix.invalid)}">
             <input type="text" required identifierValidation class="form-control" name="prefix" placeholder="{{'inventory.placeholder.prefix' | translate}}"
-                   #prefix="ngModel" [(ngModel)]="requestObj.prefix" [appAutofocus]="true" autocomplete="off">
+                   #prefix="ngModel" [(ngModel)]="requestObj.prefix" autocomplete="off">
             <div *ngIf="prefix.invalid && (prefix.dirty || prefix.touched)"
                  class="text-danger help-block">
               <div *ngIf="(prefix.errors && prefix.errors.required)">

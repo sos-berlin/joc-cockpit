@@ -1,6 +1,6 @@
-import {Component, OnInit, Input, OnDestroy, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import * as _ from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
@@ -26,7 +26,7 @@ export class FilterModalComponent implements OnInit {
   permission: any = {};
   name: string;
 
-  constructor(private authService: AuthService, public activeModal: NgbActiveModal) {
+  constructor(private authService: AuthService, public activeModal: NzModalRef) {
   }
 
   ngOnInit(): void {
@@ -51,7 +51,7 @@ export class FilterModalComponent implements OnInit {
     if (obj) {
       this.activeModal.close(obj);
     } else {
-      this.activeModal.dismiss('');
+      this.activeModal.destroy();
     }
   }
 
@@ -188,7 +188,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
-              private dataService: DataService, private modalService: NgbModal, private searchPipe: SearchPipe,
+              private dataService: DataService, private modal: NzModalService, private searchPipe: SearchPipe,
               private translate: TranslateService, private excelService: ExcelService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -205,24 +205,6 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
-  }
-
-  private init(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
-    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
-    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-
-    this.adtLog = this.coreService.getAuditLogTab();
-    if (!(this.adtLog.current || this.adtLog.current === false)) {
-      this.adtLog.current = this.preferences.currentController;
-    }
-    this.savedFilter = JSON.parse(this.saveService.auditLogFilters) || {};
-    if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
-      this.checkSharedFilters();
-    } else {
-      this.savedFilter.selected = undefined;
-      this.load(null);
-    }
   }
 
   checkSharedFilters(): void {
@@ -320,7 +302,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     if (date) {
       this.adtLog.filter.date = date;
     }
-    let obj:any = {
+    let obj: any = {
       controllerId: this.adtLog.current == true ? this.schedulerIds.selected : '',
       limit: parseInt(this.preferences.maxAuditLogRecords, 10) || 5000
     };
@@ -433,31 +415,6 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.load(null);
   }
 
-  private generateRequestObj(object, filter): any {
-    if (object.workflow) {
-      filter.orders = [];
-      if (object.orderIds) {
-        let s = object.orderIds.replace(/\s*(,|^|$)\s*/g, '$1');
-        let orderIds = s.split(',');
-        let self = this;
-        orderIds.forEach((value) => {
-          filter.orders.push({workflow: self.searchFilter.workflow, orderId: value});
-        });
-      } else {
-        filter.orders.push({workflow: object.workflow});
-      }
-    }
-    if (object.regex) {
-      filter.regex = object.regex;
-    }
-    if (object.radio == 'planned') {
-      filter = this.parseProcessExecuted(object.planned, filter);
-    } else {
-      filter = this.parseDate(object, filter);
-    }
-    return filter;
-  }
-
   search(): void {
     this.isLoaded = false;
     let filter: any = {
@@ -479,51 +436,64 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     });
   }
 
-  /* ----------------------Action --------------------- */
-
   /* ---- Customization ------ */
   createCustomization(): void {
     if (this.schedulerIds.selected) {
-      const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.permission = this.permission;
-      modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-      modalRef.componentInstance.allFilter = this.filterList;
-      modalRef.componentInstance.new = true;
-      modalRef.result.then((configObj) => {
-        if (this.filterList.length == 1) {
-          this.savedFilter.selected = configObj.id;
-          this.adtLog.selectedView = true;
-          this.selectedFiltered = configObj;
-          this.isCustomizationSelected(true);
-          this.load(null);
-          this.saveService.setAuditLog(this.savedFilter);
-          this.saveService.save();
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: FilterModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          permission: this.permission,
+          allFilter: this.filterList,
+          new: true
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe((configObj) => {
+        if (configObj) {
+          if (this.filterList.length == 1) {
+            this.savedFilter.selected = configObj.id;
+            this.adtLog.selectedView = true;
+            this.selectedFiltered = configObj;
+            this.isCustomizationSelected(true);
+            this.load(null);
+            this.saveService.setAuditLog(this.savedFilter);
+            this.saveService.save();
+          }
         }
-      }, (reason) => {
-        console.log('close...', reason);
       });
     }
   }
 
   editFilters(): void {
-    const modalRef = this.modalService.open(EditFilterModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.filterList = this.filterList;
-    modalRef.componentInstance.favorite = this.savedFilter.favorite;
-    modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.username = this.authService.currentUserData;
-    modalRef.componentInstance.action = this.action;
-    modalRef.componentInstance.self = this;
-
-    modalRef.result.then((obj) => {
-      if (obj.type === 'EDIT') {
-        this.editFilter(obj);
-      } else if (obj.type === 'COPY') {
-        this.copyFilter(obj);
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: EditFilterModalComponent,
+      nzComponentParams: {
+        filterList: this.filterList,
+        favorite: this.savedFilter.favorite,
+        permission: this.permission,
+        username: this.authService.currentUserData,
+        action: this.action,
+        self: this
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(obj => {
+      if (obj) {
+        if (obj.type === 'EDIT') {
+          this.editFilter(obj);
+        } else if (obj.type === 'COPY') {
+          this.copyFilter(obj);
+        }
       }
-    }, (reason) => {
-      console.log('close...', reason);
     });
   }
+
+  /* ----------------------Action --------------------- */
 
   action(type, obj, self): void {
     if (type === 'DELETE') {
@@ -580,6 +550,49 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
     this.saveService.setAuditLog(this.savedFilter);
     this.saveService.save();
+  }
+
+  private init(): void {
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+
+    this.adtLog = this.coreService.getAuditLogTab();
+    if (!(this.adtLog.current || this.adtLog.current === false)) {
+      this.adtLog.current = this.preferences.currentController;
+    }
+    this.savedFilter = JSON.parse(this.saveService.auditLogFilters) || {};
+    if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
+      this.checkSharedFilters();
+    } else {
+      this.savedFilter.selected = undefined;
+      this.load(null);
+    }
+  }
+
+  private generateRequestObj(object, filter): any {
+    if (object.workflow) {
+      filter.orders = [];
+      if (object.orderIds) {
+        let s = object.orderIds.replace(/\s*(,|^|$)\s*/g, '$1');
+        let orderIds = s.split(',');
+        let self = this;
+        orderIds.forEach((value) => {
+          filter.orders.push({workflow: self.searchFilter.workflow, orderId: value});
+        });
+      } else {
+        filter.orders.push({workflow: object.workflow});
+      }
+    }
+    if (object.regex) {
+      filter.regex = object.regex;
+    }
+    if (object.radio == 'planned') {
+      filter = this.parseProcessExecuted(object.planned, filter);
+    } else {
+      filter = this.parseDate(object, filter);
+    }
+    return filter;
   }
 
   private refresh(args): void {
@@ -738,16 +751,18 @@ export class AuditLogComponent implements OnInit, OnDestroy {
         } else {
           filterObj.id = filter.id;
         }
-        const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
-        modalRef.componentInstance.permission = this.permission;
-        modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-        modalRef.componentInstance.allFilter = this.filterList;
-        modalRef.componentInstance.filter = filterObj;
-        modalRef.componentInstance.edit = !isCopy;
-        modalRef.result.then((configObj) => {
-
-        }, (reason) => {
-          console.log('close...', reason);
+        this.modal.create({
+          nzTitle: null,
+          nzContent: FilterModalComponent,
+          nzClassName: 'lg',
+          nzComponentParams: {
+            permission: this.permission,
+            allFilter: this.filterList,
+            filter: filterObj,
+            edit: !isCopy
+          },
+          nzFooter: null,
+          nzClosable: false
         });
       });
     }

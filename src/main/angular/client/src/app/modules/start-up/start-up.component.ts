@@ -2,7 +2,6 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
@@ -16,7 +15,7 @@ declare const $;
 export class StartUpModalComponent implements OnInit {
   @Input() isModal: boolean;
   @Input() new: boolean;
-  @Input() modalRef: any;
+  @Input() modalRef: boolean;
   @Input() controllerInfo: any;
   @Input() agents: any;
   @Output() afterSubmit: EventEmitter<any> = new EventEmitter();
@@ -34,8 +33,8 @@ export class StartUpModalComponent implements OnInit {
   error: any;
   controllerId = '';
 
-  constructor(public coreService: CoreService, private authService: AuthService, private router: Router,
-              public translate: TranslateService, private toasterService: ToasterService, public modalService: NgbModal) {
+  constructor(public coreService: CoreService, private authService: AuthService, private router: Router, private dataService: DataService,
+              public translate: TranslateService, private toasterService: ToasterService) {
   }
 
   ngOnInit(): void {
@@ -144,7 +143,7 @@ export class StartUpModalComponent implements OnInit {
     this.coreService.post('controller/register', obj).subscribe(res => {
       this.submitted = false;
       if (this.modalRef) {
-        this.modalRef.close();
+        this.dataService.closeModal.next('reload');
       } else {
         this.afterSubmit.emit();
       }
@@ -155,7 +154,7 @@ export class StartUpModalComponent implements OnInit {
   testConnection(type, url): void {
     this.error = false;
     this.setFlag(type, true);
-    this.coreService.post('controller/test', {url: url, controllerId: this.new ? '' : this.controllerId}).subscribe((res: any) => {
+    this.coreService.post('controller/test', {url, controllerId: this.new ? '' : this.controllerId}).subscribe((res: any) => {
       this.setFlag(type, false);
       if (res && res.controller) {
         let title = '', msg = '';
@@ -192,7 +191,9 @@ export class StartUpModalComponent implements OnInit {
   }
 
   close(): void {
-    this.modalRef.dismiss();
+    if (this.modalRef) {
+      this.dataService.closeModal.next('close');
+    }
   }
 
   cancel(): void {

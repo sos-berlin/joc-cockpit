@@ -1,5 +1,5 @@
 import {Component, OnInit, Input} from '@angular/core';
-import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Router} from '@angular/router';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import * as _ from 'underscore';
@@ -28,7 +28,7 @@ export class AddOrderModalComponent implements OnInit {
   zones = [];
   variableList = [];
 
-  constructor(public coreService: CoreService, public activeModal: NgbActiveModal) {
+  constructor(public coreService: CoreService, private activeModal: NzModalRef) {
   }
 
   ngOnInit(): void {
@@ -169,7 +169,7 @@ export class AddOrderModalComponent implements OnInit {
   }
 
   cancel(): void {
-    this.activeModal.dismiss('');
+    this.activeModal.destroy();
   }
 
 }
@@ -185,7 +185,7 @@ export class WorkflowActionComponent {
   @Input() permission: any;
   @Input() schedulerId: any;
 
-  constructor(public modalService: NgbModal, public coreService: CoreService, private router: Router) {
+  constructor(public modal: NzModalService, public coreService: CoreService, private router: Router) {
   }
 
   navToDetailView(view): void {
@@ -194,25 +194,32 @@ export class WorkflowActionComponent {
   }
 
   addOrder(workflow): void {
-    const modalRef = this.modalService.open(AddOrderModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.preferences = this.preferences;
-    modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.workflow = workflow;
-    modalRef.result.then((result) => {
-      console.log(result);
-    }, () => {
-
+    this.modal.create({
+      nzTitle: null,
+      nzContent: AddOrderModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzComponentParams: {
+        preferences: this.preferences,
+        permission: this.permission,
+        schedulerId: this.schedulerId,
+        workflow
+      },
+      nzFooter: null,
+      nzClosable: false
     });
   }
 
   showDailyPlan(workflow): void {
-    const modalRef = this.modalService.open(CalendarModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.path = workflow.path;
-    modalRef.result.then((result) => {
-
-    }, () => {
-
+    this.modal.create({
+      nzTitle: null,
+      nzContent: CalendarModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        path: workflow.path
+      },
+      nzFooter: null,
+      nzClosable: false
     });
   }
 }

@@ -12,6 +12,7 @@ export class DataService implements OnDestroy {
   public isCalendarReload: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public isProfileReload: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public resetProfileSetting: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public closeModal: BehaviorSubject<string> = new BehaviorSubject<string>('');
   public reloadTree: BehaviorSubject<any> = new BehaviorSubject<any>({});
   public reloadWorkflowError: BehaviorSubject<any> = new BehaviorSubject<any>({});
   private functionSource = new Subject<string>();
@@ -55,6 +56,7 @@ export class DataService implements OnDestroy {
     this.isCalendarReload.unsubscribe();
     this.isProfileReload.unsubscribe();
     this.resetProfileSetting.unsubscribe();
+    this.closeModal.unsubscribe();
   }
 }
 

@@ -1,7 +1,7 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalService} from 'ng-zorro-antd/modal';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../data.service';
@@ -26,7 +26,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
   indeterminate = false;
   setOfCheckedId = new Set<string>();
 
-  constructor(private dataService: DataService, private modalService: NgbModal, private coreService: CoreService, private router: Router) {
+  constructor(private dataService: DataService, private modal: NzModalService, private coreService: CoreService, private router: Router) {
     this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
       this.setUserData(res);
     });
@@ -75,7 +75,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     this.checkCheckBoxState();
   }
 
-  checkCheckBoxState() {
+  checkCheckBoxState(): void {
     this.checked = this.profiles.every(item => {
       return this.setOfCheckedId.has(item.account);
     });
@@ -87,29 +87,64 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     }
   }
 
-  resetProfile(profile) {
-    const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.title = 'resetProfile';
-    modalRef.componentInstance.message = 'resetSingleProfile';
-    modalRef.componentInstance.type = 'Reset';
-    modalRef.componentInstance.objectName = profile.account;
-    modalRef.result.then(() => {
-      this.deleteProfile(profile);
-    }, () => {
-
+  resetProfile(profile): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ConfirmModalComponent,
+      nzComponentParams: {
+        title: 'resetProfile',
+        message: 'resetSingleProfile',
+        type: 'Reset',
+        objectName: profile.account
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.deleteProfile(profile);
+      }
     });
   }
 
-  resetMainProfile() {
-    const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.title = 'resetAllProfile';
-    modalRef.componentInstance.message = 'resetDefaultProfile';
-    modalRef.componentInstance.type = 'Reset';
-    modalRef.componentInstance.resetProfiles = Array.from(this.setOfCheckedId);
-    modalRef.result.then(() => {
-      this.deleteProfile(null);
-    }, () => {
+  resetMainProfile(): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ConfirmModalComponent,
+      nzComponentParams: {
+        title: 'resetAllProfile',
+        message: 'resetDefaultProfile',
+        type: 'Reset',
+        resetProfiles: Array.from(this.setOfCheckedId)
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.deleteProfile(null);
+      }
+    });
+  }
 
+  showMaster(user): void {
+    this.router.navigate(['/users/role'], {queryParams: {user}});
+  }
+
+  sort(key): void {
+    this.order = key;
+    this.reverse = !this.reverse;
+  }
+
+  saveInfo(): void {
+    let obj = {
+      users: this.users.users,
+      masters: this.users.masters,
+      main: this.users.main,
+      profiles: this.profiles
+    };
+    this.coreService.post('authentication/shiro/store', obj).subscribe(res => {
+      this.profiles = [...this.profiles];
     });
   }
 
@@ -138,27 +173,6 @@ export class ProfilesComponent implements OnInit, OnDestroy {
       this.checked = false;
       this.indeterminate = false;
       this.setOfCheckedId.clear();
-      this.profiles = [...this.profiles];
-    });
-  }
-
-  showMaster(user): void {
-    this.router.navigate(['/users/role'], {queryParams: {user}});
-  }
-
-  sort(key): void {
-    this.order = key;
-    this.reverse = !this.reverse;
-  }
-
-  saveInfo(): void {
-    let obj = {
-      users: this.users.users,
-      masters: this.users.masters,
-      main: this.users.main,
-      profiles: this.profiles
-    };
-    this.coreService.post('authentication/shiro/store', obj).subscribe(res => {
       this.profiles = [...this.profiles];
     });
   }

@@ -1,7 +1,7 @@
 import {Component, OnInit, OnDestroy, Output, EventEmitter} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalService} from 'ng-zorro-antd/modal';
 import * as _ from 'underscore';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../guard';
@@ -31,7 +31,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @Output() myLogout: EventEmitter<any> = new EventEmitter();
 
   constructor(public coreService: CoreService, private authService: AuthService,
-              private modalService: NgbModal, private router: Router, private dataService: DataService) {
+              private modal: NzModalService, private router: Router, private dataService: DataService) {
     this.subscription = dataService.isProfileReload.subscribe(res => {
       if (res) {
         this.init();
@@ -90,11 +90,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   about(): any {
-    const modalRef = this.modalService.open(AboutModalComponent, {
-      backdrop: 'static'
-    });
-    modalRef.result.then(() => {
-    }, () => {
+    this.modal.create({
+      nzTitle: null,
+      nzContent: AboutModalComponent,
+      nzFooter: null,
+      nzClosable: false
     });
   }
 

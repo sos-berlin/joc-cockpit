@@ -5,7 +5,7 @@
     <span *ngIf="!new && !edit" translate>customization.label.copyCustomization</span>
     <span *ngIf="name">: {{name}}</span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>

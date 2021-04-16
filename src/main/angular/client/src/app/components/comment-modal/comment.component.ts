@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 
 @Component({
@@ -14,7 +14,7 @@ export class CommentModalComponent implements OnInit {
   @Input() obj: any;
   @Input() url: any;
 
-  constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
   }
 
   ngOnInit(): void {

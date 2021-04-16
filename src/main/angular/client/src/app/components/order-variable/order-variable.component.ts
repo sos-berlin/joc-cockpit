@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import * as _ from 'underscore';
 import {ToasterService} from 'angular2-toaster';
 import {TranslateService} from '@ngx-translate/core';
+import {NzModalService} from 'ng-zorro-antd/modal';
 import {ChangeParameterModalComponent} from '../modify-modal/modify.component';
 import {CoreService} from '../../services/core.service';
 
@@ -16,7 +16,7 @@ export class OrderVariableComponent implements OnInit {
   @Input() permission: any;
   @Input() schedulerId: any;
 
-  constructor(public coreService: CoreService, public modalService: NgbModal,
+  constructor(public coreService: CoreService, public modal: NzModalService,
               public toasterService: ToasterService, private translate: TranslateService) {
   }
 
@@ -32,22 +32,29 @@ export class OrderVariableComponent implements OnInit {
 
   changeParameter(order, variable): void {
     this.getRequirements(order, () => {
-      const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.schedulerId = this.schedulerId;
-      modalRef.componentInstance.variable = variable;
-      modalRef.componentInstance.order = order;
-      modalRef.componentInstance.orderRequirements = order.requirements;
-      modalRef.result.then(() => {
-
-        this.coreService.post('orders/variables', {
-          orderId: order.orderId,
-          controllerId: this.schedulerId
-        }).subscribe((res: any) => {
-          order.variables = Object.entries(res).map(([k, v]) => {
-            return {name: k, value: v};
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: ChangeParameterModalComponent,
+        nzComponentParams: {
+          schedulerId: this.schedulerId,
+          variable,
+          order,
+          orderRequirements: order.requirements
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.coreService.post('orders/variables', {
+            orderId: order.orderId,
+            controllerId: this.schedulerId
+          }).subscribe((res: any) => {
+            order.variables = Object.entries(res).map(([k, v]) => {
+              return {name: k, value: v};
+            });
           });
-        });
-      }, () => {
+        }
       });
     });
   }

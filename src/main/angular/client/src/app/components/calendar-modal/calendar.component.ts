@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 
 declare const $;
@@ -14,7 +14,7 @@ declare const $;
         <span *ngIf="calendar">: </span>
         {{path}}
       </h4>
-      <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
         <span aria-hidden="true" class="fa fa-times-circle"></span>
       </button>
     </div>
@@ -50,7 +50,7 @@ declare const $;
       </div>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>common.button.close</button>
+      <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>common.button.close</button>
     </div>
   `
 })
@@ -63,7 +63,7 @@ export class CalendarModalComponent implements OnInit {
   toDate: any;
   calendarTitle = new Date().getFullYear();
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
   ngOnInit() {

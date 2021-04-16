@@ -6,6 +6,7 @@ import { LoginComponent } from './login.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
     FormsModule,
     TranslateModule,
     NzDropDownModule,
-    NzCheckboxModule
+    NzCheckboxModule,
+    NzModalModule
   ],
   declarations: [LoginComponent]
 })

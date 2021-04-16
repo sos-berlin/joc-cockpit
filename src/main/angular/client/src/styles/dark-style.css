@@ -428,7 +428,7 @@ a.text-dark:hover {
   border-color: var(--border-color)
 }
 
-.modal-content {
+.modal-content, .ant-modal-content {
   background-color: var(--bg-footer)
 }
 
@@ -928,14 +928,8 @@ span ul li a {
   background-color: transparent !important;
 }
 
-.modal-open .ant-select-dropdown,
-.modal-open .ant-select-selection {
-  background-color: var(--bg-footer) !important
-}
-
-.modal-open input:-webkit-autofill, .modal-open input:-webkit-autofill:hover,
-.modal-open input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 100px var(--bg-footer) inset;
+.ant-modal-content{
+  box-shadow: 0 4px 12px rgba(255, 255, 255,.05);
 }
 
 .ant-spin-container::after,

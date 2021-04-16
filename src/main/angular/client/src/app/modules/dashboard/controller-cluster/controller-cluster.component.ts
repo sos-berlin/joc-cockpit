@@ -1,6 +1,6 @@
 import {Component, OnInit, OnDestroy, Input, ElementRef, HostListener, ViewChild} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalService} from 'ng-zorro-antd/modal';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {Subscription} from 'rxjs';
 import * as _ from 'underscore';
@@ -42,7 +42,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
   constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService,
-              private elementRef: ElementRef, private translate: TranslateService, public modalService: NgbModal,
+              private elementRef: ElementRef, private translate: TranslateService, public modal: NzModalService,
               private nzContextMenuService: NzContextMenuService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refreshEvent(res);
@@ -720,17 +720,18 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
         name: obj.controllerId + ' (' + obj.url + ')',
         operation: (action === 'terminate' && !isFailOver) ? 'Terminate without fail-over' : action === 'terminateAndRestart' ? 'Terminate and Restart' : action === 'abortAndRestart' ? 'Abort and Restart' : action === 'terminate' ? 'Terminate' : action === 'abort' ? 'Abort' : 'Switch Over'
       };
-
-      const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.comments = comments;
-      modalRef.componentInstance.action = action;
-      modalRef.componentInstance.show = true;
-      modalRef.componentInstance.obj = obj;
-      modalRef.componentInstance.performAction = this.performAction;
-      modalRef.result.then((result) => {
-
-      }, () => {
-
+      this.modal.create({
+        nzTitle: null,
+        nzContent: CommentModalComponent,
+        nzComponentParams: {
+          comments,
+          action,
+          show : true,
+          obj,
+          performAction : this.performAction
+        },
+        nzFooter: null,
+        nzClosable: false
       });
 
     } else {

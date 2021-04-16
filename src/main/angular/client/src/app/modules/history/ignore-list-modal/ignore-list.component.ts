@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalRef} from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-ignore-list',
@@ -10,7 +10,7 @@ export class EditIgnoreListComponent {
   @Input() historyFilters: any;
   @Input() self;
 
-  constructor(public activeModal: NgbActiveModal) {
+  constructor(public activeModal: NzModalRef) {
   }
 
   removeWorkflowIgnoreList(name) {

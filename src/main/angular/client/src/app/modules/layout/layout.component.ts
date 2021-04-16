@@ -1,7 +1,6 @@
 import {Component, HostListener, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router, RouterEvent} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToasterService} from 'angular2-toaster';
 import {Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
@@ -46,7 +45,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   constructor(private coreService: CoreService, private route: ActivatedRoute, private authService: AuthService, private router: Router,
               private dataService: DataService, public translate: TranslateService, private toasterService: ToasterService,
-              private nzConfigService: NzConfigService, private modalService: NgbModal) {
+              private nzConfigService: NzConfigService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -71,8 +70,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
         if (this.loading) {
           LayoutComponent.calculateHeight();
         }
-        // close all open modals
-        this.modalService.dismissAll();
       });
   }
 
@@ -149,7 +146,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.subscription3.unsubscribe();
     this.subscription4.unsubscribe();
     this.subscription5.unsubscribe();
-    this.modalService.dismissAll();
   }
 
   @HostListener('window:resize', ['$event'])

@@ -1,5 +1,5 @@
 import {Component, OnInit, Input} from '@angular/core';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalRef} from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-ngbd-modal-content',
@@ -19,7 +19,7 @@ export class ConfirmModalComponent {
   @Input() documentArr: any;
   @Input() resetProfiles: any;
 
-  constructor(public activeModal: NgbActiveModal) {
+  constructor(public activeModal: NzModalRef) {
   }
 
   showDocument(doc): void{

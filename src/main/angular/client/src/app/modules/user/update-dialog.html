@@ -4,7 +4,7 @@
     <span *ngIf="paste && securityLevel ==='HIGH'" translate>profile.keyManagement.label.updatePublicKey</span>
     <span *ngIf="!paste" translate>profile.keyManagement.label.showKey</span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -71,7 +71,7 @@
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')">
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()">
       <span *ngIf="paste" translate>common.button.cancel</span>
       <span *ngIf="!paste" translate>common.button.close</span>
     </button>

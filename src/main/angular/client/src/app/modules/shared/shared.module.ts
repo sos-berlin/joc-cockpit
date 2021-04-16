@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
 import {OrderModule} from 'ngx-order-pipe';
-
 import {NzTableModule} from 'ng-zorro-antd/table';
 import {NzTabsModule} from 'ng-zorro-antd/tabs';
 import {NzToolTipModule} from 'ng-zorro-antd/tooltip';

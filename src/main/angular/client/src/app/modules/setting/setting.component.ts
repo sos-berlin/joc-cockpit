@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {FileUploader} from 'ng2-file-upload';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {saveAs} from 'file-saver';
 import * as _ from 'underscore';
 import {CoreService} from '../../services/core.service';
@@ -21,7 +21,7 @@ export class AddSectionComponent implements OnInit {
   setting: any = {};
   submitted = false;
 
-  constructor(public activeModal: NgbActiveModal, public translate: TranslateService,
+  constructor(public activeModal: NzModalRef, public translate: TranslateService,
               public toasterService: ToasterService) {
   }
 
@@ -60,7 +60,7 @@ export class ImportSettingComponent implements OnInit {
   submitted = false;
   uploader: FileUploader;
 
-  constructor(public activeModal: NgbActiveModal, public translate: TranslateService, public toasterService: ToasterService) {
+  constructor(public activeModal: NzModalRef, public translate: TranslateService, public toasterService: ToasterService) {
     this.uploader = new FileUploader({
       url: '',
       queueLimit: 1
@@ -139,7 +139,7 @@ export class SettingComponent implements OnInit {
     {label: 'sunday', value: 7},
   ];
 
-  constructor(public coreService: CoreService, private authService: AuthService, private modalService: NgbModal,
+  constructor(public coreService: CoreService, private authService: AuthService, private modal: NzModalService,
               private translate: TranslateService, private toasterService: ToasterService, private dataService: DataService) {
 
   }
@@ -149,6 +149,119 @@ export class SettingComponent implements OnInit {
     this.permission = JSON.parse(this.authService.permission) || {};
     this.zones = this.coreService.getTimeZoneList();
     this.loadSetting();
+  }
+
+  changeConfiguration(form, value, isJoc): void {
+    const tempSetting = this.coreService.clone(this.settings);
+    if (form && form.invalid) {
+      let msg = 'Oops';
+      this.translate.get('common.message.notValidInput').subscribe(translatedValue => {
+        msg = translatedValue;
+      });
+      this.toasterService.pop('error', msg);
+      return;
+    } else if (value && value.value && value.value.type === 'TIME') {
+      value.value.value = this.checkTime(value.value.value);
+    }
+    this.savePreferences(this.generateStoreObject(tempSetting), isJoc);
+  }
+
+  openEditField(val): void {
+    val.value.edit = true;
+    if (!val.value.value) {
+      val.value.value = [{name: ''}];
+    }
+  }
+
+  addValInArr(val): void {
+    if (val.value.value.length === 0 || val.value.value[val.value.value.length - 1].name) {
+      val.value.value.push({name: ''});
+    }
+  }
+
+  removeValInArr(val, index): void {
+    val.value.value.splice(index, 1);
+  }
+
+  removeValue(val, isJoc): void {
+    val.value.edit = false;
+    val.value.value = undefined;
+    this.changeConfiguration(null, null, isJoc);
+  }
+
+  addSection(): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: AddSectionComponent,
+      nzComponentParams: {
+        settings: this.settingArr,
+        defaultGlobals: this.defaultGlobals
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(section => {
+      if (section) {
+        this.settings[section.name] = {};
+        this.changeConfiguration(null, null, null);
+        setTimeout(() => {
+          this.loadSetting();
+        }, 100);
+      }
+    });
+  }
+
+  removeSection(section): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ConfirmModalComponent,
+      nzComponentParams: {
+        title: 'remove',
+        message: 'removeSetting',
+        type: 'Remove',
+        objectName: section.name
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+        for (let i = 0; i < this.settingArr.length; i++) {
+          if (this.settingArr[i].name === section.name) {
+            this.settingArr.splice(i, 1);
+            delete this.settings[section.name];
+            break;
+          }
+        }
+        this.changeConfiguration(null, null, null);
+      }
+    });
+  }
+
+  importSetting(): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ImportSettingComponent,
+      nzClassName: 'lg',
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.settings = result;
+        this.changeConfiguration(null, null, null);
+        this.loadSetting();
+      }
+    });
+  }
+
+  exportSetting(): void {
+    const name = 'global-setting.json';
+    const fileType = 'application/octet-stream';
+    let data = this.generateStoreObject(this.settings);
+    data = JSON.stringify(data, undefined, 2);
+    const blob = new Blob([data], {type: fileType});
+    saveAs(blob, name);
   }
 
   private loadSetting(): void {
@@ -248,21 +361,6 @@ export class SettingComponent implements OnInit {
     return time;
   }
 
-  changeConfiguration(form, value, isJoc): void {
-    const tempSetting = this.coreService.clone(this.settings);
-    if (form && form.invalid) {
-      let msg = 'Oops';
-      this.translate.get('common.message.notValidInput').subscribe(translatedValue => {
-        msg = translatedValue;
-      });
-      this.toasterService.pop('error', msg);
-      return;
-    } else if (value && value.value && value.value.type === 'TIME') {
-      value.value.value = this.checkTime(value.value.value);
-    }
-    this.savePreferences(this.generateStoreObject(tempSetting), isJoc);
-  }
-
   private generateStoreObject(setting): any {
     const tempSetting: any = {};
     for (let prop in setting) {
@@ -309,81 +407,6 @@ export class SettingComponent implements OnInit {
         }
       });
     }
-  }
-
-  openEditField(val): void {
-    val.value.edit = true;
-    if (!val.value.value) {
-      val.value.value = [{name: ''}];
-    }
-  }
-
-  addValInArr(val): void {
-    if (val.value.value.length === 0 || val.value.value[val.value.value.length - 1].name) {
-      val.value.value.push({name: ''});
-    }
-  }
-
-  removeValInArr(val, index): void {
-    val.value.value.splice(index, 1);
-  }
-
-  removeValue(val, isJoc): void {
-    val.value.edit = false;
-    val.value.value = undefined;
-    this.changeConfiguration(null, null, isJoc);
-  }
-
-  addSection(): void {
-    const modalRef = this.modalService.open(AddSectionComponent, {backdrop: 'static'});
-    modalRef.componentInstance.settings = this.settingArr;
-    modalRef.componentInstance.defaultGlobals = this.defaultGlobals;
-    modalRef.result.then((section) => {
-      this.settings[section.name] = {};
-      this.changeConfiguration(null, null, null);
-      setTimeout(() => {
-        this.loadSetting();
-      }, 100);
-    }, () => {
-    });
-  }
-
-  removeSection(section): void {
-    const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.title = 'remove';
-    modalRef.componentInstance.message = 'removeSetting';
-    modalRef.componentInstance.type = 'Remove';
-    modalRef.componentInstance.objectName = section.name;
-    modalRef.result.then(() => {
-      for (let i = 0; i < this.settingArr.length; i++) {
-        if (this.settingArr[i].name === section.name) {
-          this.settingArr.splice(i, 1);
-          delete this.settings[section.name];
-          break;
-        }
-      }
-      this.changeConfiguration(null, null, null);
-    }, () => {
-    });
-  }
-
-  importSetting(): void {
-    const modalRef = this.modalService.open(ImportSettingComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.result.then((result) => {
-      this.settings = result;
-      this.changeConfiguration(null, null, null);
-      this.loadSetting();
-    }, () => {
-    });
-  }
-
-  exportSetting(): void {
-    const name = 'global-setting.json';
-    const fileType = 'application/octet-stream';
-    let data = this.generateStoreObject(this.settings);
-    data = JSON.stringify(data, undefined, 2);
-    const blob = new Blob([data], {type: fileType});
-    saveAs(blob, name);
   }
 
   private getProperties(): void {

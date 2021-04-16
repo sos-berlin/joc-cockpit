@@ -1,11 +1,6 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {
-  CompactType,
-  DisplayGrid,
-  GridsterConfig,
-  GridType
-} from 'angular-gridster2';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {CompactType, DisplayGrid, GridsterConfig, GridType} from 'angular-gridster2';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
@@ -14,7 +9,7 @@ import {CoreService} from '../../services/core.service';
 declare const $;
 
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-widget-modal-content',
   templateUrl: './add-widget-dialog.html'
 })
 export class AddWidgetModalComponent {
@@ -23,7 +18,7 @@ export class AddWidgetModalComponent {
   @Input() addWidget;
   @Input() self;
 
-  constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
   }
 
   addWidgetFunc(widget): void {
@@ -49,7 +44,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   subscription: any;
   isLoading = false;
 
-  constructor(private authService: AuthService, public coreService: CoreService, private modalService: NgbModal,
+  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,
               private dataService: DataService) {
     this.subscription = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
@@ -143,16 +138,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   resetLayout(): void {
-    const modalRef = this.modalService.open(ConfirmModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.title = 'resetLayout';
-    modalRef.componentInstance.message = 'resetLayout';
-    modalRef.componentInstance.type = 'Reset';
-    modalRef.result.then(() => {
-      this.preferences.dashboardLayout = undefined;
-      this.initWidgets();
-      this.setWidgetPreference();
-    }, (reason) => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ConfirmModalComponent,
+      nzComponentParams: {
+        title: 'resetLayout',
+        message: 'resetLayout',
+        type: 'Reset',
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.preferences.dashboardLayout = undefined;
+        this.initWidgets();
+        this.setWidgetPreference();
+      }
     });
   }
 
@@ -179,14 +181,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   addWidgetDialog(): void {
-    const modalRef = this.modalService.open(AddWidgetModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.dashboard = this.dashboard;
-    modalRef.componentInstance.widgets = this.widgets;
-    modalRef.componentInstance.addWidget = this.addWidget;
-    modalRef.componentInstance.self = this;
-    modalRef.result.then(() => {
-
-    }, (reason) => {
+    this.modal.create({
+      nzTitle: null,
+      nzContent: AddWidgetModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        dashboard: this.dashboard,
+        widgets: this.widgets,
+        addWidget: this.addWidget,
+        self: this
+      },
+      nzFooter: null,
+      nzClosable: false
     });
   }
 

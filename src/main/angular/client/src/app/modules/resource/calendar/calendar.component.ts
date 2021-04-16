@@ -1,7 +1,7 @@
-import {Component, OnInit, Input, OnDestroy, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
-import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import * as _ from 'underscore';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -17,7 +17,7 @@ import {SearchPipe} from '../../../pipes/core.pipe';
 export class ShowModalComponent {
   @Input() calendar: any;
 
-  constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
   }
 }
 
@@ -37,21 +37,61 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
   schedulerId: string;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
-              private modalService: NgbModal, private dataService: DataService, private route: ActivatedRoute) {
+              private modal: NzModalService, private dataService: DataService, private route: ActivatedRoute) {
     this.subscription = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.init();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  private init() {
+  /** ---------------------------- Action ----------------------------------*/
+
+  showUsage(calendar) {
+    let cal = _.clone(calendar);
+    this.coreService.post('calendar/used', {
+      id: calendar.id,
+      controllerId: this.schedulerIds.selected
+    }).subscribe((res: any) => {
+      cal.usedIn = res;
+      this.modal.create({
+        nzTitle: null,
+        nzContent: ShowModalComponent,
+
+        nzComponentParams: {
+          calendar: cal
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+    });
+  }
+
+  previewCalendar(calendar) {
+    this.modal.create({
+      nzTitle: null,
+      nzContent: CalendarModalComponent,
+nzClassName: 'lg',
+      nzComponentParams: {
+        path: calendar.path,
+        calendar: true
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+  }
+
+  showDocumentation(calendar) {
+
+  }
+
+  private init(): void {
     this.path = this.route.snapshot.queryParamMap.get('path');
     this.schedulerId = this.route.snapshot.queryParamMap.get('scheduler_id');
     if (sessionStorage.preferences) {
@@ -72,39 +112,6 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
     }, () => {
       this.loading = false;
     });
-  }
-
-  /** ---------------------------- Action ----------------------------------*/
-
-  showUsage(calendar) {
-    let cal = _.clone(calendar);
-    this.coreService.post('calendar/used', {
-      id: calendar.id,
-      controllerId: this.schedulerIds.selected
-    }).subscribe((res: any) => {
-      cal.usedIn = res;
-      const modalRef = this.modalService.open(ShowModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.calendar = cal;
-      modalRef.result.then(() => {
-      }, () => {
-
-      });
-    });
-  }
-
-  previewCalendar(calendar) {
-    const modalRef = this.modalService.open(CalendarModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.path = calendar.path;
-    modalRef.componentInstance.calendar = true;
-    modalRef.result.then(() => {
-
-    }, () => {
-
-    });
-  }
-
-  showDocumentation(calendar) {
-
   }
 }
 
@@ -132,7 +139,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
-              private modalService: NgbModal, private searchPipe: SearchPipe, private dataService: DataService) {
+              private modal: NzModalService, private searchPipe: SearchPipe, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -141,12 +148,12 @@ export class CalendarComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.sideView = this.coreService.getSideView();
     this.init();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.coreService.setSideView(this.sideView);
@@ -156,7 +163,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     }
   }
 
-  initTree() {
+  initTree(): void {
     this.coreService.post('tree', {
       controllerId: this.schedulerIds.selected,
       types: ['WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR']
@@ -171,36 +178,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     });
   }
 
-  private init() {
-    this.calendarFilters = this.coreService.getResourceTab().calendars;
-    this.coreService.getResourceTab().state = 'calendars';
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
-    }
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    this.permission = JSON.parse(this.authService.permission) || {};
-    if (localStorage.views) {
-      this.pageView = JSON.parse(localStorage.views).calendar;
-    }
-    this.initTree();
-  }
-
-  private getCalendarsList(obj) {
-    this.coreService.post('calendars', obj).subscribe((res: any) => {
-      this.loading = false;
-      if (res.calendars) {
-        for (let i = 0; i < res.calendars.length; i++) {
-          res.calendars[i].path1 = res.calendars[i].path.substring(0, res.calendars[i].path.lastIndexOf('/')) || res.calendars[i].path.substring(0, res.calendars[i].path.lastIndexOf('/') + 1);
-        }
-      }
-      this.calendars = res.calendars || [];
-      this.searchInResult();
-    }, () => {
-      this.loading = false;
-    });
-  }
-
-  loadCalendar(status) {
+  loadCalendar(status): void {
     if (status && status !== 'remove') {
       this.calendarFilters.filter.type = status;
     }
@@ -224,10 +202,10 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.getCalendarsList(obj);
   }
 
-  getCalendars(data, recursive) {
+  getCalendars(data, recursive): void {
     this.loading = true;
     let obj = {
-      folders: [{folder: data.path, recursive: recursive}],
+      folders: [{folder: data.path, recursive}],
       type: this.calendarFilters.filter.type != 'ALL' ? this.calendarFilters.filter.type : undefined,
       controllerId: this.schedulerIds.selected,
       compact: true
@@ -236,26 +214,93 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.getCalendarsList(obj);
   }
 
-  receiveAction($event) {
+  receiveAction($event): void {
     this.getCalendars($event, $event.action !== 'NODE');
   }
 
   /** ---------------------------- Action ----------------------------------*/
-  pageIndexChange($event) {
+  pageIndexChange($event): void {
     this.calendarFilters.currentPage = $event;
   }
 
-  pageSizeChange($event) {
+  pageSizeChange($event): void {
     this.calendarFilters.entryPerPage = $event;
   }
 
-  sort(propertyName) {
+  sort(propertyName): void {
     this.calendarFilters.reverse = !this.calendarFilters.reverse;
     this.calendarFilters.filter.sortBy = propertyName;
   }
 
-  receiveMessage($event) {
+  receiveMessage($event): void {
     this.pageView = $event;
+  }
+
+  searchInResult() {
+    this.data = this.calendarFilters.searchText ? this.searchPipe.transform(this.calendars, this.calendarFilters.searchText, this.searchableProperties) : this.calendars;
+    this.data = [...this.data];
+  }
+
+  showUsage(calendar) {
+    let cal = _.clone(calendar);
+    this.coreService.post('calendar/used', {
+      id: calendar.id,
+      controllerId: this.schedulerIds.selected
+    }).subscribe((res: any) => {
+      cal.usedIn = res;
+      this.modal.create({
+        nzTitle: null,
+        nzContent: ShowModalComponent,
+        nzComponentParams: {
+          calendar: cal
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+    });
+  }
+
+  previewCalendar(calendar) {
+    this.modal.create({
+      nzTitle: null,
+      nzContent: CalendarModalComponent,
+nzClassName: 'lg',
+      nzComponentParams: {
+        path: calendar.path,
+        calendar: true
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+  }
+
+  private init(): void {
+    this.calendarFilters = this.coreService.getResourceTab().calendars;
+    this.coreService.getResourceTab().state = 'calendars';
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences);
+    }
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
+    if (localStorage.views) {
+      this.pageView = JSON.parse(localStorage.views).calendar;
+    }
+    this.initTree();
+  }
+
+  private getCalendarsList(obj): void {
+    this.coreService.post('calendars', obj).subscribe((res: any) => {
+      this.loading = false;
+      if (res.calendars) {
+        for (let i = 0; i < res.calendars.length; i++) {
+          res.calendars[i].path1 = res.calendars[i].path.substring(0, res.calendars[i].path.lastIndexOf('/')) || res.calendars[i].path.substring(0, res.calendars[i].path.lastIndexOf('/') + 1);
+        }
+      }
+      this.calendars = res.calendars || [];
+      this.searchInResult();
+    }, () => {
+      this.loading = false;
+    });
   }
 
   private refresh(args) {
@@ -279,9 +324,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
     }
     if (pathArr.length > 0) {
       this.coreService.post('calendars', {
-          controllerId: this.schedulerIds.selected,
-          calendarPaths: pathArr
-        }).subscribe((res: any) => {
+        controllerId: this.schedulerIds.selected,
+        calendarPaths: pathArr
+      }).subscribe((res: any) => {
         for (let x = 0; x < this.calendars.length; x++) {
           for (let y = 0; y < res.calendars.length; y++) {
             if (this.calendars[x].path === res.calendars[y].path) {
@@ -292,41 +337,5 @@ export class CalendarComponent implements OnInit, OnDestroy {
         }
       });
     }
-  }
-
-  searchInResult() {
-    this.data = this.calendarFilters.searchText ? this.searchPipe.transform(this.calendars, this.calendarFilters.searchText, this.searchableProperties) : this.calendars;
-    this.data = [...this.data];
-  }
-
-  showUsage(calendar) {
-    let cal = _.clone(calendar);
-    this.coreService.post('calendar/used', {
-      id: calendar.id,
-      controllerId: this.schedulerIds.selected
-    }).subscribe((res: any) => {
-      cal.usedIn = res;
-      const modalRef = this.modalService.open(ShowModalComponent, {backdrop: 'static'});
-      modalRef.componentInstance.calendar = cal;
-      modalRef.result.then(() => {
-      }, () => {
-
-      });
-    });
-  }
-
-  previewCalendar(calendar) {
-    const modalRef = this.modalService.open(CalendarModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.path = calendar.path;
-    modalRef.componentInstance.calendar = true;
-    modalRef.result.then(() => {
-
-    }, () => {
-
-    });
-  }
-
-  showDocumentation(calendar) {
-
   }
 }

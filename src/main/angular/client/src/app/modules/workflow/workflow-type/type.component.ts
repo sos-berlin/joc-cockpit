@@ -1,6 +1,5 @@
 import {Component, Input, Output, EventEmitter, OnChanges, SimpleChanges} from '@angular/core';
 import {CoreService} from '../../../services/core.service';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-type',
@@ -17,7 +16,7 @@ export class TypeComponent implements OnChanges {
   @Output() update: EventEmitter<any> = new EventEmitter();
   sideBar: any = {};
 
-  constructor(public coreService: CoreService, public modalService: NgbModal) {
+  constructor(public coreService: CoreService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {

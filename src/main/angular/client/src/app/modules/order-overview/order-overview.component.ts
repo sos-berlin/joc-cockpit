@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, Si
 import {Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NzModalService} from 'ng-zorro-antd/modal';
 import {OrderActionComponent} from './order-action/order-action.component';
 import {SaveService} from '../../services/save.service';
 import {SearchPipe} from '../../pipes/core.pipe';
@@ -64,6 +64,26 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
     this.subscription.unsubscribe();
   }
 
+  refresh(args): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
+          this.init();
+          break;
+        }
+      }
+    }
+  }
+
+  setFilter(state): void {
+    this.state = state;
+    this.setState.emit(this.state);
+  }
+
+  onSelect(data): void {
+    this.setFilter(data.name.toUpperCase());
+  }
+
   private init(): void {
     const obj: any = {controllerId: this.schedulerId};
     if (this.state === 'PENDING' && this.date !== 'ALL') {
@@ -77,17 +97,6 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
     }, () => {
       this.loading = false;
     });
-  }
-
-  refresh(args): void {
-    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
-      for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
-          this.init();
-          break;
-        }
-      }
-    }
   }
 
   private preparePieData(res): void {
@@ -119,15 +128,6 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
       }
     }
     this.ordersData = ordersData;
-  }
-
-  setFilter(state): void {
-    this.state = state;
-    this.setState.emit(this.state);
-  }
-
-  onSelect(data): void {
-    this.setFilter(data.name.toUpperCase());
   }
 }
 
@@ -192,7 +192,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private route: ActivatedRoute, private dataService: DataService, private searchPipe: SearchPipe,
               private translate: TranslateService, private excelService: ExcelService,
-              public modalService: NgbModal) {
+              public modal: NzModalService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -210,30 +210,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.coreService.setSideView(this.sideView);
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
-  }
-
-  private init(): void {
-    this.orderFilters = this.coreService.getOrderOverviewTab();
-    this.orderFilters.filter.state = this.route.snapshot.paramMap.get('state');
-    if (localStorage.views) {
-      this.pageView = JSON.parse(localStorage.views).orderOverview;
-    }
-    if (this.authService.permission) {
-      this.permission = JSON.parse(this.authService.permission) || {};
-    }
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    }
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    this.sideView = this.coreService.getSideView();
-    if (this.sideView.orderOverview && !this.sideView.orderOverview.show) {
-      this.hidePanel();
-    }
-
-    this.getOrders({
-      controllerId: this.schedulerIds.selected,
-      states: this.getState()
-    });
   }
 
   /** ---------------------------- Broadcast messages ----------------------------------*/
@@ -259,19 +235,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.coreService.post('orders/history', obj).subscribe((res: any) => {
       this.history = res.history;
     });
-  }
-
-  private getState(): string {
-    let state;
-    if (this.orderFilters.filter.state !== 'ALL') {
-      if (this.orderFilters.filter.state === 'COMPLETED') {
-        state = ['FINISHED', 'CANCELLED'];
-      } else {
-        state = [this.orderFilters.filter.state];
-      }
-    }
-
-    return state;
   }
 
   loadAuditLogs(): void {
@@ -317,72 +280,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       order.show = false;
     });
     this.updatePanelHeight();
-  }
-
-  private refresh(args): void {
-    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
-      for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
-          this.getOrders({
-            controllerId: this.schedulerIds.selected,
-            states: this.getState()
-          });
-          break;
-        }
-      }
-    }
-  }
-
-  private getOrders(obj): void {
-    this.reset();
-    let tempOrder = this.orders.filter((order) => {
-      return order.show;
-    });
-    if (this.orderFilters.filter.date !== 'ALL' && this.orderFilters.filter.state === 'PENDING') {
-      obj.dateTo = this.orderFilters.filter.date;
-      obj.timeZone = this.preferences.zone;
-    }
-    this.coreService.post('orders', obj).subscribe((res: any) => {
-      this.orders = res.orders;
-      if (tempOrder.length > 0) {
-        for (let i = 0; i < this.orders.length; i++) {
-          for (let j = 0; j < tempOrder.length; j++) {
-            if (this.orders[i].orderId === tempOrder[j].orderId) {
-              this.orders[i].show = true;
-              if (this.orders[i].arguments && !this.orders[i].arguments[0]) {
-                this.orders[i].arguments = Object.entries(this.orders[i].arguments).map(([k, v]) => {
-                  return {name: k, value: v};
-                });
-              }
-              tempOrder.slice(j, 1);
-              break;
-            }
-          }
-          if (tempOrder.length === 0) {
-            break;
-          }
-        }
-      }
-      if (this.showPanelObj && this.showPanelObj.orderId) {
-        let flag = true;
-        if (this.orders.length > 0) {
-          for (let i = 0; i < this.orders.length; i++) {
-            if (this.orders[i].orderId === this.showPanelObj.orderId) {
-              flag = false;
-              break;
-            }
-          }
-        }
-        if (flag) {
-          this.hideAuditPanel();
-        }
-      }
-      this.searchInResult();
-      this.loading = true;
-      this.updatePanelHeight();
-    }, () => {
-      this.loading = true;
-    });
   }
 
   changeStatus(state): void {
@@ -479,32 +376,10 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  private _updatePanelHeight(): void {
-    setTimeout(() => {
-      let ht = (parseInt($('#orderTableId table').height(), 10) + 90);
-      if (ht > 140 && ht < 150) {
-        ht += 40;
-      }
-      const el = document.getElementById('orderTableId');
-      if (el && el.scrollWidth > el.clientWidth) {
-        ht = ht + 11;
-      }
-      if (ht > 450) {
-        ht = 450;
-      }
-      if (ht < 140) {
-        ht = 142;
-      }
-      this.resizerHeight = ht + 'px';
-      $('#orderTableId').css('height', this.resizerHeight);
-    }, 5);
-  }
-
   showPanel() {
     this.sideView.orderOverview.show = true;
     this.coreService.showLeftPanel();
   }
-
 
   checkAll(value: boolean): void {
     if (value && this.orders.length > 0) {
@@ -563,15 +438,21 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   modifyAllOrder() {
     const order = this.object.mapOfCheckedId.values().next().value;
-    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.preferences = this.preferences;
-    modalRef.componentInstance.orders = this.object.mapOfCheckedId;
-    modalRef.componentInstance.orderRequirements = order.requirements;
-    modalRef.result.then(() => {
-      this.reset();
-    }, () => {
-
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ChangeParameterModalComponent,
+      nzComponentParams: {
+        schedulerId: this.schedulerIds.selected,
+        orders: this.object.mapOfCheckedId,
+        orderRequirements: order.requirements
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.reset();
+      }
     });
   }
 
@@ -618,14 +499,22 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         operation: operation,
         name: ''
       };
-      const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static', size: 'lg'});
-      modalRef.componentInstance.comments = comments;
-      modalRef.componentInstance.obj = obj;
-      modalRef.componentInstance.url = 'orders/' + url;
-      modalRef.result.then(() => {
-        this.reset();
-      }, () => {
-        this.reset();
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+          obj,
+          url: 'orders/' + url
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.reset();
+        }
       });
     } else {
       this.coreService.post('orders/' + url, obj).subscribe(() => {
@@ -638,6 +527,130 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.object.mapOfCheckedId.clear();
     this.object.checked = false;
     this.object.indeterminate = false;
+  }
+
+  private init(): void {
+    this.orderFilters = this.coreService.getOrderOverviewTab();
+    this.orderFilters.filter.state = this.route.snapshot.paramMap.get('state');
+    if (localStorage.views) {
+      this.pageView = JSON.parse(localStorage.views).orderOverview;
+    }
+    if (this.authService.permission) {
+      this.permission = JSON.parse(this.authService.permission) || {};
+    }
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    }
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.sideView = this.coreService.getSideView();
+    if (this.sideView.orderOverview && !this.sideView.orderOverview.show) {
+      this.hidePanel();
+    }
+
+    this.getOrders({
+      controllerId: this.schedulerIds.selected,
+      states: this.getState()
+    });
+  }
+
+  private getState(): string {
+    let state;
+    if (this.orderFilters.filter.state !== 'ALL') {
+      if (this.orderFilters.filter.state === 'COMPLETED') {
+        state = ['FINISHED', 'CANCELLED'];
+      } else {
+        state = [this.orderFilters.filter.state];
+      }
+    }
+
+    return state;
+  }
+
+  private refresh(args): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
+          this.getOrders({
+            controllerId: this.schedulerIds.selected,
+            states: this.getState()
+          });
+          break;
+        }
+      }
+    }
+  }
+
+  private getOrders(obj): void {
+    this.reset();
+    let tempOrder = this.orders.filter((order) => {
+      return order.show;
+    });
+    if (this.orderFilters.filter.date !== 'ALL' && this.orderFilters.filter.state === 'PENDING') {
+      obj.dateTo = this.orderFilters.filter.date;
+      obj.timeZone = this.preferences.zone;
+    }
+    this.coreService.post('orders', obj).subscribe((res: any) => {
+      this.orders = res.orders;
+      if (tempOrder.length > 0) {
+        for (let i = 0; i < this.orders.length; i++) {
+          for (let j = 0; j < tempOrder.length; j++) {
+            if (this.orders[i].orderId === tempOrder[j].orderId) {
+              this.orders[i].show = true;
+              if (this.orders[i].arguments && !this.orders[i].arguments[0]) {
+                this.orders[i].arguments = Object.entries(this.orders[i].arguments).map(([k, v]) => {
+                  return {name: k, value: v};
+                });
+              }
+              tempOrder.slice(j, 1);
+              break;
+            }
+          }
+          if (tempOrder.length === 0) {
+            break;
+          }
+        }
+      }
+      if (this.showPanelObj && this.showPanelObj.orderId) {
+        let flag = true;
+        if (this.orders.length > 0) {
+          for (let i = 0; i < this.orders.length; i++) {
+            if (this.orders[i].orderId === this.showPanelObj.orderId) {
+              flag = false;
+              break;
+            }
+          }
+        }
+        if (flag) {
+          this.hideAuditPanel();
+        }
+      }
+      this.searchInResult();
+      this.loading = true;
+      this.updatePanelHeight();
+    }, () => {
+      this.loading = true;
+    });
+  }
+
+  private _updatePanelHeight(): void {
+    setTimeout(() => {
+      let ht = (parseInt($('#orderTableId table').height(), 10) + 90);
+      if (ht > 140 && ht < 150) {
+        ht += 40;
+      }
+      const el = document.getElementById('orderTableId');
+      if (el && el.scrollWidth > el.clientWidth) {
+        ht = ht + 11;
+      }
+      if (ht > 450) {
+        ht = 450;
+      }
+      if (ht < 140) {
+        ht = 142;
+      }
+      this.resizerHeight = ht + 'px';
+      $('#orderTableId').css('height', this.resizerHeight);
+    }, 5);
   }
 
   /** ================================= End Action ============================*/
