@@ -14,7 +14,7 @@
       </span>
     </span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy('Cross click')">
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -105,12 +105,12 @@
 </div>
 <div class="modal-footer">
   <button type="button" [ngClass]="{'btn-primary' : type !== 'Delete' && type !== 'Remove'}" class="btn btn-danger btn-sm" [disabled]="count == 0"
-          (click)="activeModal.close()">
+          (click)="activeModal.close('close')">
     <span *ngIf="type === 'Delete'">{{'common.button.delete' | translate}}</span>
     <span *ngIf="type === 'Remove'">{{'common.button.remove' | translate}}</span>
     <span *ngIf="type !== 'Delete' && type !== 'Remove'">{{'common.button.confirm' | translate}}</span>
   </button>
-  <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy('Cross click')" translate>
+  <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
     common.button.cancel
   </button>
 </div>

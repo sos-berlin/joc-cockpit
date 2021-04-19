@@ -272,7 +272,7 @@ export class LabelValidator implements Validator {
       if (v == '') {
         return null;
       }
-      if (!/^([A-Z]|[a-z]|[0-9]|_|\$)([A-Z]|[a-z]|[0-9]|\$|_|,|-|#|:|!|)*$/.test(v)) {
+      if (!/^([A-Z]|[a-z]|[0-9]|_)([A-Z]|[a-z]|[0-9]|\$|_|,|-|#|:|!|)*$/.test(v)) {
         return {
           invalidIdentifier: true
         };

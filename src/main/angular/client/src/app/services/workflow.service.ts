@@ -157,7 +157,7 @@ export class WorkflowService {
   }
 
   isValidObject(str) {
-    if (/^([A-Z]|[a-z]|_|\$)([A-Z]|[a-z]|[0-9]|\$|_)*$/.test(str)) {
+    if (/^([A-Z]|[a-z]|_)([A-Z]|[a-z]|[0-9]|\$|_)*$/.test(str)) {
       return !/^(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|double|do|else|enum|extends|false|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|null|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)$/.test(str);
     } else {
       return false;
@@ -165,7 +165,7 @@ export class WorkflowService {
   }
 
   isValidLabel(str) {
-    return /^([A-Z]|[a-z]|[0-9]|_|\$)([A-Z]|[a-z]|[0-9]|\$|_|,|-|#|:|!|)*$/.test(str);
+    return /^([A-Z]|[a-z]|[0-9]|_)([A-Z]|[a-z]|[0-9]|\$|_|,|-|#|:|!|)*$/.test(str);
   }
 
   validateFields(value, type): boolean {
@@ -177,7 +177,8 @@ export class WorkflowService {
         if (typeof value.jobClass !== 'string') {
           delete value['jobClass'];
         }
-        if ((!value.executable || !value.executable.script || !value.agentId)) {
+        if (!value.executable || (!value.executable.javaClass && value.executable.TYPE === 'InternalExecutable')
+          || (!value.executable.script && value.executable.TYPE === 'ScriptExecutable') || !value.agentId) {
           return false;
         }
       }

@@ -202,6 +202,16 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  changeType(type): void {
+    if (type === 'ScriptExecutable') {
+      this.reloadScript();
+    } else {
+      if (!this.selectedNode.job.jobArguments) {
+        this.selectedNode.job.jobArguments = [];
+      }
+    }
+  }
+
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
@@ -265,7 +275,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     if (this.error && this.selectedNode && this.selectedNode.obj) {
       this.obj.label = !this.selectedNode.obj.label;
       this.obj.agent = !this.selectedNode.job.agentId;
-      this.obj.script = !this.selectedNode.job.executable.script;
+      this.obj.script = !this.selectedNode.job.executable.script && this.selectedNode.job.executable.TYPE === 'ScriptExecutable';
+      this.obj.javaClass = !this.selectedNode.job.executable.javaClass && this.selectedNode.job.executable.TYPE === 'InternalExecutable';
     } else {
       this.obj = {};
     }
@@ -319,6 +330,22 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   removeArgument(index): void {
     this.selectedNode.obj.defaultArguments.splice(index, 1);
+  }
+
+  addJobArgument(): void {
+    const param = {
+      name: '',
+      value: ''
+    };
+    if (this.selectedNode.job.jobArguments) {
+      if (!this.coreService.isLastEntryEmpty(this.selectedNode.job.jobArguments, 'name', '')) {
+        this.selectedNode.job.jobArguments.push(param);
+      }
+    }
+  }
+
+  removeJobArgument(index): void {
+    this.selectedNode.job.jobArguments.splice(index, 1);
   }
 
   addVariable(): void {
@@ -485,6 +512,14 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
 
+    if (!this.selectedNode.job.jobArguments || _.isEmpty(this.selectedNode.job.jobArguments)) {
+      this.selectedNode.job.jobArguments = [];
+    } else {
+      if (!_.isArray(this.selectedNode.job.jobArguments)) {
+        this.selectedNode.job.jobArguments = this.coreService.convertObjectToArray(this.selectedNode.job, 'jobArguments');
+      }
+    }
+
     if (!this.selectedNode.job.executable.env || _.isEmpty(this.selectedNode.job.executable.env)) {
       this.selectedNode.job.executable.env = [];
     } else {
@@ -517,6 +552,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     }
     if (this.selectedNode.job.defaultArguments && this.selectedNode.job.defaultArguments.length === 0) {
       this.addVariable();
+    }
+    if (this.selectedNode.job.jobArguments && this.selectedNode.job.jobArguments.length === 0) {
+      this.addJobArgument();
     }
     if (this.selectedNode.job.executable.env && this.selectedNode.job.executable.env.length === 0) {
       this.addEnv();
@@ -1284,7 +1322,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
 
         if (!res.configuration.instructions || res.configuration.instructions.length === 0) {
-          this.invalidMsg = 'inventory.message.emptyWorkflow';
+          this.invalidMsg = 'workflow.message.emptyWorkflow';
         } else if (!res.valid) {
           this.validateByURL(res.configuration);
         }
@@ -4317,7 +4355,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
      * Create new connection object
      * @param label
      */
-    function getConnectionNode(label: string): Object {
+    function getConnectionNode(label: string): any {
       // Create new Connection object
       const connNode = doc.createElement('Connection');
       let str = label, type = label;
@@ -4336,7 +4374,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
      * @param label
      * @param id
      */
-    function getCellNode(name: string, label: string, id: any): Object {
+    function getCellNode(name: string, label: string, id: any): any {
       // Create new node object
       const _node = doc.createElement(name);
       _node.setAttribute('label', label);
@@ -4642,6 +4680,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               if (job.defaultArguments) {
                 self.coreService.convertArrayToObject(job, 'defaultArguments', true);
               }
+              if (job.jobArguments) {
+                self.coreService.convertArrayToObject(job, 'jobArguments', true);
+              }
               if (job.executable && job.executable.env) {
                 self.coreService.convertArrayToObject(job.executable, 'env', true);
               }
@@ -4663,14 +4704,15 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               if (!_job.defaultArguments || typeof _job.defaultArguments === 'string' || _job.defaultArguments.length === 0) {
                 delete _job['defaultArguments'];
               }
-
+              if (!_job.jobArguments || typeof _job.jobArguments === 'string' || _job.jobArguments.length === 0) {
+                delete _job['jobArguments'];
+              }
               if (_job.executable && (!_job.executable.env || typeof _job.executable.env === 'string' || _job.executable.env.length === 0)) {
                 delete _job.executable['env'];
               }
               if (!_.isEqual(_job, job)) {
                 isChange = true;
               }
-
             } else {
               isChange = true;
             }
@@ -6033,13 +6075,25 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
     }
 
-
     if (job.defaultArguments) {
       if (job.executable.v1Compatible) {
         this.coreService.convertArrayToObject(job, 'defaultArguments', true);
       } else {
         delete job['defaultArguments'];
       }
+    }
+
+    if (job.jobArguments) {
+      if (job.executable.TYPE === 'InternalExecutable') {
+        this.coreService.convertArrayToObject(job, 'jobArguments', true);
+      } else {
+        delete job['jobArguments'];
+      }
+    }
+    if (job.executable.TYPE === 'InternalExecutable') {
+      delete job.executable.script;
+    } else if (job.executable.TYPE === 'ScriptExecutable') {
+      delete job.executable.javaClass;
     }
 
     if (job.executable.env) {
@@ -6197,14 +6251,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             json.instructions[x].TYPE = 'Execute.Named';
             flag = self.workflowService.validateFields(json.instructions[x], 'Node');
             if (!flag) {
-              self.invalidMsg = !json.instructions[x].label ? 'inventory.message.labelIsMissing' : 'inventory.message.nameIsNotValid';
+              self.invalidMsg = !json.instructions[x].label ? 'workflow.message.labelIsMissing' : 'workflow.message.nameIsNotValid';
               checkErr = true;
             }
             if (flag) {
               if (labels.has(json.instructions[x].label)) {
                 if (labels.get(json.instructions[x].label) !== json.instructions[x].id) {
                   flag = false;
-                  self.invalidMsg = 'inventory.message.duplicateLabel';
+                  self.invalidMsg = 'workflow.message.duplicateLabel';
                   checkErr = true;
                 }
               }
@@ -6226,14 +6280,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (json.instructions[x].TYPE === 'If') {
             if ((!json.instructions[x].predicate || !json.instructions[x].then) && isValidate) {
               flag = false;
-              self.invalidMsg = !json.instructions[x].predicate ? 'inventory.message.predicateIsMissing' : 'inventory.message.invalidIfInstruction';
+              self.invalidMsg = !json.instructions[x].predicate ? 'workflow.message.predicateIsMissing' : 'workflow.message.invalidIfInstruction';
               checkErr = true;
               if (isOpen) {
                 if (!json.instructions[x].predicate) {
                   self.openSideBar(json.instructions[x].id);
                 } else {
                   let msg = '';
-                  self.translate.get('inventory.message.invalidIfInstruction').subscribe(translatedValue => {
+                  self.translate.get('workflow.message.invalidIfInstruction').subscribe(translatedValue => {
                     msg = translatedValue;
                   });
                   self.toasterService.pop('error', msg);
@@ -6248,7 +6302,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0) && isValidate) {
               flag = false;
               checkErr = true;
-              self.invalidMsg = 'inventory.message.invalidTryInstruction';
+              self.invalidMsg = 'workflow.message.invalidTryInstruction';
               return;
             }
           }
@@ -6259,10 +6313,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0)) {
                 flag = false;
                 checkErr = true;
-                self.invalidMsg = 'inventory.message.invalidRetryInstruction';
+                self.invalidMsg = 'workflow.message.invalidRetryInstruction';
                 if (isOpen) {
                   let msg = '';
-                  self.translate.get('inventory.message.invalidRetryInstruction').subscribe(translatedValue => {
+                  self.translate.get('workflow.message.invalidRetryInstruction').subscribe(translatedValue => {
                     msg = translatedValue;
                   });
                   self.toasterService.pop('error', msg);
@@ -6284,13 +6338,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0)) {
                 flag = false;
                 checkErr = true;
-                self.invalidMsg = !json.instructions[x].lockId ? 'inventory.message.lockIdIsMissing' : 'inventory.message.invalidLockInstruction';
+                self.invalidMsg = !json.instructions[x].lockId ? 'workflow.message.lockIdIsMissing' : 'workflow.message.invalidLockInstruction';
                 if (isOpen) {
                   if (!json.instructions[x].lockId) {
                     self.openSideBar(json.instructions[x].id);
                   } else {
                     let msg = '';
-                    self.translate.get('inventory.message.invalidLockInstruction').subscribe(translatedValue => {
+                    self.translate.get('workflow.message.invalidLockInstruction').subscribe(translatedValue => {
                       msg = translatedValue;
                     });
                     self.toasterService.pop('error', msg);
@@ -6307,7 +6361,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             flag = self.workflowService.validateFields(json.instructions[x], 'Await');
             if (!flag) {
               checkErr = true;
-              self.invalidMsg = 'inventory.message.invalidAwaitInstruction';
+              self.invalidMsg = 'workflow.message.invalidAwaitInstruction';
             }
             if (!flag && isValidate) {
               if (isOpen) {
@@ -6320,7 +6374,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             flag = self.workflowService.validateFields(json.instructions[x], 'Fork');
             if (!flag) {
               checkErr = true;
-              self.invalidMsg = (!json.instructions[x].branches || json.instructions[x].branches.length < 2) ? 'inventory.message.invalidForkInstruction' : 'inventory.message.nameIsNotValid';
+              self.invalidMsg = (!json.instructions[x].branches || json.instructions[x].branches.length < 2) ? 'workflow.message.invalidForkInstruction' : 'workflow.message.nameIsNotValid';
             }
             if (!flag && isValidate) {
               if (isOpen) {
@@ -6328,7 +6382,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                   self.openSideBar(json.instructions[x].id);
                 } else {
                   let msg = '';
-                  self.translate.get('inventory.message.invalidForkInstruction').subscribe(translatedValue => {
+                  self.translate.get('workflow.message.invalidForkInstruction').subscribe(translatedValue => {
                     msg = translatedValue;
                   });
                   self.toasterService.pop('error', msg);
@@ -6403,10 +6457,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             flag = self.workflowService.validateFields(this.jobs[n].value, 'Job');
             if (!flag) {
               checkErr = true;
-              if (!this.jobs[n].value.executable.script || !this.jobs[n].value.executable.script) {
-                this.invalidMsg = 'inventory.message.scriptIsMissing';
+              if (this.jobs[n].value.executable.TYPE === 'ScriptExecutable' && !this.jobs[n].value.executable.script) {
+                this.invalidMsg = 'workflow.message.scriptIsMissing';
+              } else if (this.jobs[n].value.executable.TYPE === 'InternalExecutable' && !this.jobs[n].value.executable.javaClass) {
+                this.invalidMsg = 'workflow.message.javaClassIsMissing';
               } else if (!this.jobs[n].value.agentId) {
-                this.invalidMsg = 'inventory.message.agentIsMissing';
+                this.invalidMsg = 'workflow.message.agentIsMissing';
               }
             }
 

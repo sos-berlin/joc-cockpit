@@ -1127,7 +1127,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           }
         }
       }, (error) => {
-        this.toasterService.pop('error', error.data.error.message);
+        this.toasterService.pop('error', error.error.message);
       });
     } else {
       this.gotoErrorLocation();
@@ -1186,8 +1186,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.isLoading = false;
       this.tabsArray = [];
       this.error = true;
-      if (error.data && error.data.error) {
-        this.toasterService.pop('error', error.data.error.message);
+      if (error && error.error) {
+        this.toasterService.pop('error', error.error.message);
       }
     });
   }
@@ -4524,7 +4524,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       }
     }, (error) => {
       this.isLoading = false;
-      this.toasterService.pop('error', error.data.error.message);
+      this.toasterService.pop('error', error.error.message);
     });
     const modal = this.modal.create({
       nzTitle: null,
@@ -4688,8 +4688,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.storeXML(res.schemaIdentifier);
     }, (error) => {
       this.isLoading = false;
-      if (error.data && error.data.error) {
-        this.toasterService.pop('error', error.data.error.message);
+      if (error && error.error) {
+        this.toasterService.pop('error', error.error.message);
       }
     });
   }
@@ -5659,8 +5659,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       }
     }, (error) => {
       this.validConfig = false;
-      if (error.data && error.data.error) {
-        this.toasterService.pop('error', error.data.error.message);
+      if (error && error.error) {
+        this.toasterService.pop('error', error.error.message);
       }
     });
   }

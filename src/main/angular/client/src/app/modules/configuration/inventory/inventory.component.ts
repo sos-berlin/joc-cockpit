@@ -1154,7 +1154,7 @@ export class SetVersionComponent implements OnInit {
     this.expandCollapseRec(this.nodes);
   }
 
-  buildTree() {
+  buildTree(): void {
     this.coreService.post('inventory/deployables', {
       folder: '/',
       recursive: true,
@@ -1182,7 +1182,7 @@ export class SetVersionComponent implements OnInit {
     }
   }
 
-  getJSObject() {
+  getJSObject(): void {
     this.object.deployConfigurations = [];
     const self = this;
 
@@ -1221,7 +1221,7 @@ export class SetVersionComponent implements OnInit {
     recursive(this.nodes);
   }
 
-  setVersion() {
+  setVersion(): void {
     const obj: any = {
       auditLog: {}
     };
@@ -1251,7 +1251,7 @@ export class SetVersionComponent implements OnInit {
     }
   }
 
-  cancelSetVersion(data) {
+  cancelSetVersion(data): void {
     if (this.object.prevVersion) {
       data.version = _.clone(this.object.prevVersion);
     }
@@ -1259,21 +1259,21 @@ export class SetVersionComponent implements OnInit {
     data.setVersion = false;
   }
 
-  deleteSetVersion(data) {
+  deleteSetVersion(data): void {
     delete data.version;
   }
 
-  editVersion(data) {
+  editVersion(data): void {
     if (data.version) {
       this.object.prevVersion = _.clone(data.version);
     }
   }
 
-  applySetVersion(data) {
+  applySetVersion(data): void {
     data.setVersion = false;
   }
 
-  setIndividualVersion(data) {
+  setIndividualVersion(data): void {
     data.setVersion = true;
   }
 
@@ -1305,11 +1305,11 @@ export class SetVersionComponent implements OnInit {
     }
   }
 
-  cancel() {
+  cancel(): void {
     this.activeModal.destroy();
   }
 
-  private expandCollapseRec(node) {
+  private expandCollapseRec(node): void {
     for (let i = 0; i < node.length; i++) {
       if (node[i].children && node[i].children.length > 0) {
         const a = this.treeCtrl.getTreeNodeByKey(node[i].key);
@@ -1319,7 +1319,7 @@ export class SetVersionComponent implements OnInit {
     }
   }
 
-  private buildDeployablesTree(result) {
+  private buildDeployablesTree(result): void {
     if (result && result.length > 0) {
       const arr = _.groupBy(_.sortBy(result, 'folder'), (res) => {
         return res.folder;
@@ -1840,7 +1840,7 @@ export class CreateFolderModalComponent implements OnInit {
     }
   }
 
-  checkFolderName() {
+  checkFolderName(): void {
     this.isUnique = true;
     for (let i = 0; i < this.origin.children.length; i++) {
       if (this.folder.name === this.origin.children[i].name) {
@@ -1978,7 +1978,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.initConf(true);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.subscription3.unsubscribe();
@@ -2058,7 +2058,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }, () => this.isLoading = false);
   }
 
-  initTrashTree(path) {
+  initTrashTree(path): void {
     this.coreService.post('tree', {
       forInventoryTrash: true,
       types: ['INVENTORY']
@@ -2750,12 +2750,15 @@ export class InventoryComponent implements OnInit, OnDestroy {
     } else {
       this.modal.create({
         nzTitle: null,
-        nzContent: SingleDeployComponent,
+        nzContent: DeployComponent,
         nzClassName: releasable ? 'sm' : 'lg',
         nzComponentParams: {
-          schedulerIds: this.schedulerIds,
-          display: this.preferences.auditLog,
-          data: origin
+          schedulerIds : this.schedulerIds,
+          preferences : this.preferences,
+          display : this.preferences.auditLog,
+          path : origin.path,
+          data : origin,
+          releasable
         },
         nzFooter: null,
         nzClosable: false

@@ -120,9 +120,9 @@
       <div class="form-group row" *ngIf="selectedNode.job.executable">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.executableType</label>
         <div class="col-md-8 col-lg-9">
-          <nz-select name="executableType" [(ngModel)]="selectedNode.job.executable.TYPE">
+          <nz-select name="executableType" [(ngModel)]="selectedNode.job.executable.TYPE" (ngModelChange)="changeType($event)">
             <nz-option [nzLabel]="'workflow.label.shell' | translate" [nzValue]="'ScriptExecutable'"></nz-option>
-            <nz-option [nzLabel]="'workflow.label.java' | translate" [nzValue]="'Java'"></nz-option>
+            <nz-option [nzLabel]="'workflow.label.java' | translate" [nzValue]="'InternalExecutable'"></nz-option>
           </nz-select>
         </div>
       </div>
@@ -135,7 +135,7 @@
       <div class="form-group row">
         <div class="col-md-12">
           <nz-tabset>
-            <nz-tab [nzTitle]="'workflow.label.script' | translate" (nzClick)="reloadScript()">
+            <nz-tab [nzTitle]="'workflow.label.script' | translate" (nzClick)="reloadScript()" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE !== 'InternalExecutable'">
               <div class="row" *ngIf="isDisplay">
                 <div class="col-md-12 role">
                   <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="fullScreen()" style="right: 15px;top:1px;font-size: 16px;z-index: 999"></i>
@@ -153,7 +153,21 @@
                 </div>
               </div>
             </nz-tab>
-            <nz-tab [nzTitle]="'workflow.label.arguments' | translate" *ngIf="selectedNode.job.executable && (selectedNode.job.executable.TYPE === 'Java' ||
+            <nz-tab [nzTitle]="'workflow.label.javaClass' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'InternalExecutable'">
+              <div class="row">
+                <div class="col-md-12" [ngClass]="{'invalid': obj.javaClass || (javaClass.invalid && (javaClass.dirty && javaClass.touched))}">
+                    <input autocomplete="off" type="text" class="form-control" name="javaClass" required
+                           [(ngModel)]="selectedNode.job.executable.javaClass" #javaClass="ngModel" placeholder="{{'workflow.placeholder.javaClass' | translate}}">
+                  <div *ngIf="obj.javaClass || (javaClass.invalid && (javaClass.dirty && javaClass.touched))"
+                       class="text-danger help-block">
+                    <div *ngIf="(javaClass.errors && javaClass.errors.required) || obj.javaClass">
+                      <div translate>common.message.requiredError</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </nz-tab>
+            <nz-tab [nzTitle]="'workflow.label.arguments' | translate" *ngIf="selectedNode.job.executable && (selectedNode.job.executable.TYPE === 'InternalExecutable' ||
             (selectedNode.job.executable.TYPE === 'ScriptExecutable' && selectedNode.job.executable.v1Compatible))">
               <div class="row">
                 <div class="col-md-12" style="max-height: 450px; overflow: auto">
@@ -217,6 +231,36 @@
                     <div class="col-sm-12">
                       <a class="text-u-l" *ngIf="selectedNode.job.executable.env.length>0" (click)="addEnv()" translate>order.button.addAnotherVariable</a>
                       <a class="text-u-l" *ngIf="selectedNode.job.executable.env.length==0" (click)="addEnv()" translate>order.button.addVariable</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </nz-tab>
+            <nz-tab [nzTitle]="'workflow.label.jobArguments' | translate" *ngIf="selectedNode.job.executable && (selectedNode.job.executable.TYPE === 'InternalExecutable')">
+              <div class="row">
+                <div class="col-md-12" style="max-height: 450px; overflow: auto">
+                  <div class="form-group row m-b-0" *ngFor="let argument of selectedNode.job.jobArguments; let i = index">
+                    <div class="col-md-4 col-lg-5 m-b-sm" *ngIf="i==0" translate>common.label.name</div>
+                    <div class="col-md-8 col-lg-6 m-b-sm" *ngIf="i==0" translate>common.label.value</div>
+                    <div class="col-md-5 col-lg-5 m-b-sm" [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}">
+                      <input autocomplete="off" identifierValidation type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == selectedNode.job.jobArguments.length -1"
+                             [(ngModel)]="argument.name" #aname="ngModel" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
+                      <div *ngIf="aname.invalid && aname.errors && (aname.dirty || aname.touched)" class="text-danger help-block">
+                        <div *ngIf="aname.errors.invalidIdentifier" translate>common.message.invalid</div>
+                      </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6 m-b-sm">
+                      <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event, 'default')"
+                             [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
+                    </div>
+                    <div class="col-md-1 col-lg-1 p-l-0">
+                      <a><i (click)="removeJobArgument(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-12" *ngIf="selectedNode.job.jobArguments">
+                      <a class="text-u-l" *ngIf="selectedNode.job.jobArguments.length>0" (click)="addJobArgument()" translate>workflow.button.addAnotherArgument</a>
+                      <a class="text-u-l" *ngIf="selectedNode.job.jobArguments.length==0" (click)="addJobArgument()" translate>workflow.button.addArgument</a>
                     </div>
                   </div>
                 </div>

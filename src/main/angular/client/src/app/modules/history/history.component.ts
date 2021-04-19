@@ -3013,58 +3013,63 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private exportToExcelYade(): any {
-    let controllerId = '', workflow = '', job = '', status = '', position = '', plannedTime = '',
-      startTime = '', endTime = '', duration = '', criticality = '', returnCode = '';
+    let controllerId = '', workflow = '', job = '', status = '', profileName = '', mandator = '',
+      startTime = '', endTime = '', duration = '', operation = '', order = '', total = '', lastErrorMessage = '';
     this.translate.get('common.label.controllerId').subscribe(translatedValue => {
       controllerId = translatedValue;
     });
-    this.translate.get('history.label.workflow').subscribe(translatedValue => {
-      workflow = translatedValue;
-    });
-    this.translate.get('history.label.job').subscribe(translatedValue => {
-      job = translatedValue;
-    });
-    this.translate.get('history.label.status').subscribe(translatedValue => {
+    this.translate.get('fileTransfer.label.status').subscribe(translatedValue => {
       status = translatedValue;
     });
-    this.translate.get('history.label.position').subscribe(translatedValue => {
-      position = translatedValue;
+    this.translate.get('fileTransfer.label.profileName').subscribe(translatedValue => {
+      profileName = translatedValue;
     });
-    this.translate.get('history.label.plannedTime').subscribe(translatedValue => {
-      plannedTime = translatedValue;
+    this.translate.get('fileTransfer.label.mandator').subscribe(translatedValue => {
+      mandator = translatedValue;
     });
-    this.translate.get('history.label.startTime').subscribe(translatedValue => {
+    this.translate.get('fileTransfer.label.operation').subscribe(translatedValue => {
+      operation = translatedValue;
+    });
+    this.translate.get('fileTransfer.label.workflow').subscribe(translatedValue => {
+      workflow = translatedValue;
+    });
+    this.translate.get('fileTransfer.label.order').subscribe(translatedValue => {
+      order = translatedValue;
+    });
+    this.translate.get('fileTransfer.label.total').subscribe(translatedValue => {
+      total = translatedValue;
+    });
+    this.translate.get('fileTransfer.label.lastErrorMessage').subscribe(translatedValue => {
+      lastErrorMessage = translatedValue;
+    });
+    this.translate.get('fileTransfer.label.startTime').subscribe(translatedValue => {
       startTime = translatedValue;
     });
-    this.translate.get('history.label.endTime').subscribe(translatedValue => {
+    this.translate.get('fileTransfer.label.endTime').subscribe(translatedValue => {
       endTime = translatedValue;
     });
     this.translate.get('history.label.duration').subscribe(translatedValue => {
       duration = translatedValue;
     });
-    this.translate.get('history.label.criticality').subscribe(translatedValue => {
-      criticality = translatedValue;
-    });
-    this.translate.get('history.label.returnCode').subscribe(translatedValue => {
-      returnCode = translatedValue;
-    });
     let data = [];
-    for (let i = 0; i < this.taskHistorys.length; i++) {
+    for (let i = 0; i < this.yadeHistorys.length; i++) {
       let obj: any = {};
       if (!this.historyFilters.current) {
-        obj[controllerId] = this.taskHistorys[i].controllerId;
+        obj[controllerId] = this.yadeHistorys[i].controllerId;
       }
-      obj[job] = this.taskHistorys[i].job;
-      obj[workflow] = this.taskHistorys[i].workflow;
-      obj[position] = this.taskHistorys[i].position;
-      this.translate.get(this.taskHistorys[i].state._text).subscribe(translatedValue => {
+      this.translate.get(this.yadeHistorys[i].state._text).subscribe(translatedValue => {
         obj[status] = translatedValue;
       });
-      obj[startTime] = this.coreService.stringToDate(this.preferences, this.taskHistorys[i].startTime);
-      obj[endTime] = this.coreService.stringToDate(this.preferences, this.taskHistorys[i].endTime);
-      obj[duration] = this.coreService.calDuration(this.taskHistorys[i].startTime, this.taskHistorys[i].endTime);
-      obj[criticality] = this.taskHistorys[i].criticality;
-      obj[returnCode] = this.taskHistorys[i].exitCode;
+      obj[profileName] = this.yadeHistorys[i].profile;
+      obj[mandator] = this.yadeHistorys[i].mandator;
+      obj[operation] = this.yadeHistorys[i]._operation;
+      obj[workflow] = this.yadeHistorys[i].workflowPath;
+      obj[order] = this.yadeHistorys[i].orderId;
+      obj[total] = this.yadeHistorys[i].numOfFiles;
+      obj[lastErrorMessage] = this.yadeHistorys[i].error ? this.yadeHistorys[i].error.message : '';
+      obj[startTime] = this.coreService.stringToDate(this.preferences, this.yadeHistorys[i].start);
+      obj[endTime] = this.coreService.stringToDate(this.preferences, this.yadeHistorys[i].end);
+      obj[duration] = this.coreService.calDuration(this.yadeHistorys[i].start, this.yadeHistorys[i].end);
       data.push(obj);
     }
     return data;
@@ -3295,19 +3300,19 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.savedSubmissionHistoryFilter.selected = undefined;
     }
 
-   if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
+    if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
       this.checkSharedFilters(this.historyFilters.type);
       this.getIgnoreList();
     } else {
-     this.orderHistoryFilterList = [];
-     this.jobHistoryFilterList = [];
-     this.yadeHistoryFilterList = [];
-     this.deploymentHistoryFilterList = [];
-     this.submissionHistoryFilterList = [];
-     this.loadIgnoreList = true;
-     this.loadConfig = true;
-     this.init(false);
-   }
+      this.orderHistoryFilterList = [];
+      this.jobHistoryFilterList = [];
+      this.yadeHistoryFilterList = [];
+      this.deploymentHistoryFilterList = [];
+      this.submissionHistoryFilterList = [];
+      this.loadIgnoreList = true;
+      this.loadConfig = true;
+      this.init(false);
+    }
   }
 
   private checkCurrentTab(type, res, obj): void {

@@ -560,15 +560,15 @@ export class AddRestrictionComponent implements OnInit {
     this.checkDays();
   }
 
-  save() {
+  save(): void {
     this.activeModal.close(this.calendar);
   }
 
-  cancel() {
+  cancel(): void {
     this.activeModal.destroy();
   }
 
-  private selectDate(e) {
+  private selectDate(e): void {
     let obj = {
       startDate: e.date,
       endDate: e.date,

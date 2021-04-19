@@ -13,7 +13,7 @@ import {SearchPipe} from '../../pipes/core.pipe';
 
 @Component({
   selector: 'app-filter-content',
-  templateUrl: './filter-dialog.html',
+  templateUrl: './filter-dialog.html'
 })
 export class FilterModalComponent implements OnInit {
   @Input() allFilter;
@@ -502,7 +502,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
         self.isCustomizationSelected(false);
         self.adtLog.selectedView = false;
         self.selectedFiltered = undefined;
-        self.setDateRange(null);
+        self.setDateRange({});
         self.load();
       } else {
         if (self.filterList.length == 0) {
@@ -544,7 +544,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       this.savedFilter.selected = filter;
       this.adtLog.selectedView = false;
       this.selectedFiltered = {};
-      this.setDateRange(null);
+      this.setDateRange({});
       this.load(null);
     }
 
