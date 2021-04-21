@@ -149,8 +149,7 @@
         <span class="p-l-xs" id="btn-text" *ngIf="propertyPanelWidth > 320">{{'order.label.variables' | translate}}</span>
       </button>
     </div>
-    <div class="m-l-xs m-r-xs
-     text-left" *ngIf="selectedNode">
+    <div class="m-l-xs m-r-xs text-left" *ngIf="selectedNode">
       <div class="box-body p-t-0" *ngIf="selectedNode.type === 'Job'">
         <app-job-content [selectedNode]="selectedNode" [orderRequirements]="orderRequirements" [jobs]="jobs" [agents]="agents" [jobClassTree]="jobClassTree" [schedulerId]="schedulerId"></app-job-content>
       </div>

@@ -177,7 +177,7 @@ export class WorkflowService {
         if (typeof value.jobClass !== 'string') {
           delete value['jobClass'];
         }
-        if (!value.executable || (!value.executable.javaClass && value.executable.TYPE === 'InternalExecutable')
+        if (!value.executable || (!value.executable.className && value.executable.TYPE === 'InternalExecutable')
           || (!value.executable.script && value.executable.TYPE === 'ScriptExecutable') || !value.agentId) {
           return false;
         }

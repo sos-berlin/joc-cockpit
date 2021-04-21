@@ -103,8 +103,11 @@
             <hr *ngIf="showPanel[id]">
           </ng-container>
         </div>
-        <div *ngIf="controllers.length==0">
+        <div *ngIf="controllers.length==0 && loading">
           <app-empty-data></app-empty-data>
+        </div>
+        <div class="m-a-lg text-center" *ngIf="!loading">
+          <nz-spin nzSimple [nzSize]="'small'"></nz-spin>
         </div>
       </div>
     </div>

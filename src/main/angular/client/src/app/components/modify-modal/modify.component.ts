@@ -208,7 +208,7 @@ export class ModifyStartTimeModalComponent implements OnInit {
   disabledDate = (current: Date): boolean => {
     // Can not select days before today and today
     return moment(current.setHours(0, 0, 0, 0)).diff(new Date().setHours(0, 0, 0, 0)) < 0;
-  };
+  }
 
   onSubmit(): void {
     if (this.order.from && this.order.time) {

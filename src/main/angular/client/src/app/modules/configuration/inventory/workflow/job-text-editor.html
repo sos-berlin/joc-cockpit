@@ -153,22 +153,21 @@
                 </div>
               </div>
             </nz-tab>
-            <nz-tab [nzTitle]="'workflow.label.javaClass' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'InternalExecutable'">
+            <nz-tab [nzTitle]="'workflow.label.className' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'InternalExecutable'">
               <div class="row">
-                <div class="col-md-12" [ngClass]="{'invalid': obj.javaClass || (javaClass.invalid && (javaClass.dirty && javaClass.touched))}">
-                    <input autocomplete="off" type="text" class="form-control" name="javaClass" required
-                           [(ngModel)]="selectedNode.job.executable.javaClass" #javaClass="ngModel" placeholder="{{'workflow.placeholder.javaClass' | translate}}">
-                  <div *ngIf="obj.javaClass || (javaClass.invalid && (javaClass.dirty && javaClass.touched))"
+                <div class="col-md-12" [ngClass]="{'invalid': obj.className || (className.invalid && (className.dirty && className.touched))}">
+                    <input autocomplete="off" type="text" class="form-control" name="className" required
+                           [(ngModel)]="selectedNode.job.executable.className" #className="ngModel" placeholder="{{'workflow.placeholder.className' | translate}}">
+                  <div *ngIf="obj.className || (className.invalid && (className.dirty && className.touched))"
                        class="text-danger help-block">
-                    <div *ngIf="(javaClass.errors && javaClass.errors.required) || obj.javaClass">
+                    <div *ngIf="(className.errors && className.errors.required) || obj.className">
                       <div translate>common.message.requiredError</div>
                     </div>
                   </div>
                 </div>
               </div>
             </nz-tab>
-            <nz-tab [nzTitle]="'workflow.label.arguments' | translate" *ngIf="selectedNode.job.executable && (selectedNode.job.executable.TYPE === 'InternalExecutable' ||
-            (selectedNode.job.executable.TYPE === 'ScriptExecutable' && selectedNode.job.executable.v1Compatible))">
+            <nz-tab [nzTitle]="'workflow.label.arguments' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ScriptExecutable' && selectedNode.job.executable.v1Compatible">
               <div class="row">
                 <div class="col-md-12" style="max-height: 450px; overflow: auto">
                   <div class="form-group row m-b-0" *ngFor="let argument of selectedNode.job.defaultArguments; let i = index">
@@ -236,14 +235,47 @@
                 </div>
               </div>
             </nz-tab>
+            <nz-tab [nzTitle]="'workflow.label.arguments' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'InternalExecutable'">
+              <div class="row">
+                <div class="col-md-12" style="max-height: 450px; overflow: auto" *ngIf="selectedNode.job.executable.arguments">
+                  <div class="form-group row m-b-0" *ngFor="let argu of selectedNode.job.executable.arguments; let i = index">
+                    <div class="col-md-4 col-lg-5 m-b-sm" *ngIf="i==0" translate>common.label.name</div>
+                    <div class="col-md-8 col-lg-6 m-b-sm" *ngIf="i==0" translate>common.label.value</div>
+                    <div class="col-md-5 col-lg-5 m-b-sm " [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}">
+                      <input nz-input envVariableValidation name="name{{i}}" class="form-control" [(ngModel)]="argu.name" #ename="ngModel"
+                             placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" [nzAutocomplete]="auto" (ngModelChange)="onChange($event)">
+                      <nz-autocomplete #auto>
+                        <nz-auto-option *ngFor="let list of filteredOptions" [nzValue]="list.name">{{list.name}}</nz-auto-option>
+                      </nz-autocomplete>
+                      <div *ngIf="ename.invalid && ename.errors && (ename.dirty || ename.touched)" class="text-danger help-block">
+                        <div *ngIf="ename.errors.invalidIdentifier" translate>common.message.invalid</div>
+                      </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6 m-b-sm">
+                      <input type="text" class="form-control" [(ngModel)]="argu.value" name="value{{i}}"
+                             placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
+                    </div>
+                    <div class="col-md-1 col-lg-1 p-l-0">
+                      <a><i (click)="removeArgu(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-12">
+                      <a class="text-u-l" *ngIf="selectedNode.job.executable.arguments.length>0" (click)="addArgu()" translate>order.button.addAnotherVariable</a>
+                      <a class="text-u-l" *ngIf="selectedNode.job.executable.arguments.length==0" (click)="addArgu()" translate>order.button.addVariable</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </nz-tab>
             <nz-tab [nzTitle]="'workflow.label.jobArguments' | translate" *ngIf="selectedNode.job.executable && (selectedNode.job.executable.TYPE === 'InternalExecutable')">
               <div class="row">
                 <div class="col-md-12" style="max-height: 450px; overflow: auto">
-                  <div class="form-group row m-b-0" *ngFor="let argument of selectedNode.job.jobArguments; let i = index">
+                  <div class="form-group row m-b-0" *ngFor="let argument of selectedNode.job.executable.jobArguments; let i = index">
                     <div class="col-md-4 col-lg-5 m-b-sm" *ngIf="i==0" translate>common.label.name</div>
                     <div class="col-md-8 col-lg-6 m-b-sm" *ngIf="i==0" translate>common.label.value</div>
                     <div class="col-md-5 col-lg-5 m-b-sm" [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}">
-                      <input autocomplete="off" identifierValidation type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == selectedNode.job.jobArguments.length -1"
+                      <input autocomplete="off" identifierValidation type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == selectedNode.job.executable.jobArguments.length -1"
                              [(ngModel)]="argument.name" #aname="ngModel" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
                       <div *ngIf="aname.invalid && aname.errors && (aname.dirty || aname.touched)" class="text-danger help-block">
                         <div *ngIf="aname.errors.invalidIdentifier" translate>common.message.invalid</div>
@@ -258,9 +290,9 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <div class="col-sm-12" *ngIf="selectedNode.job.jobArguments">
-                      <a class="text-u-l" *ngIf="selectedNode.job.jobArguments.length>0" (click)="addJobArgument()" translate>workflow.button.addAnotherArgument</a>
-                      <a class="text-u-l" *ngIf="selectedNode.job.jobArguments.length==0" (click)="addJobArgument()" translate>workflow.button.addArgument</a>
+                    <div class="col-sm-12" *ngIf="selectedNode.job.executable.jobArguments">
+                      <a class="text-u-l" *ngIf="selectedNode.job.executable.jobArguments.length>0" (click)="addJobArgument()" translate>workflow.button.addAnotherArgument</a>
+                      <a class="text-u-l" *ngIf="selectedNode.job.executable.jobArguments.length==0" (click)="addJobArgument()" translate>workflow.button.addArgument</a>
                     </div>
                   </div>
                 </div>

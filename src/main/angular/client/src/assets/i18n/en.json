@@ -934,7 +934,6 @@
     "message.uriIsMissing": "URL is missing, but is required",
     "message.nameIsNotValid": "Invalid name",
     "message.invalidFile": "Not a valid {{objectType}} file",
-    "message.invalidForkInstruction": "Fork instruction must have minimum of two branches",
     "export": {
       "label.filter": "Filter",
       "label.filterType": "Filter Type",
@@ -1483,7 +1482,7 @@
     "label.syntax": "Syntax",
     "label.example": "Example",
     "label.script": "Script",
-    "label.javaClass": "Java Class",
+    "label.className": "Class Name",
     "label.taskLimit": "Task Limit",
     "label.importWorkflow": "Upload Workflow",
     "label.addNewOrderTo": "Add New Order to",
@@ -1532,7 +1531,7 @@
     "message.dropHereToRemoveInstruction": "Drop here to remove instruction",
     "message.labelIsMissing": "Label is missing, but is required",
     "message.scriptIsMissing": "Executable script is missing, but is required",
-    "message.javaClassIsMissing": "Java class is missing, but is required",
+    "message.classNameIsMissing": "Class name is missing, but is required",
     "message.duplicateLabel": "Same Label found in more then one Job",
     "message.predicateIsMissing": "Predicate is missing, but is required",
     "message.lockIdIsMissing": "Lock Id is missing, but is required",
@@ -1543,6 +1542,7 @@
     "message.invalidAwaitInstruction": "Await instruction is not valid",
     "message.agentIsMissing": "Agent is missing, but is required",
     "message.emptyWorkflow": "Workflow is empty, minimum one instruction is required",
+    "message.invalidForkInstruction": "Fork instruction must have minimum of two branches",
     "placeholder.selectAgentName": "Select Agent Name",
     "placeholder.enterJobClass": "Enter Job Class reference",
     "placeholder.enterJunction": "Enter Junction reference",
@@ -1551,7 +1551,7 @@
     "placeholder.enterPositiveNumber": "Enter only positive number separated by comma",
     "placeholder.expression": "Enter expression",
     "placeholder.orderId": "Enter Order ID",
-    "placeholder.javaClass": "Enter Class Name"
+    "placeholder.className": "Enter Class Name"
   },
   "xml": {
     "label.assignedSchema": "Assigned Schema",

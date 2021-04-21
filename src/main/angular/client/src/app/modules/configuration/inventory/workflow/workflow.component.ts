@@ -205,10 +205,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   changeType(type): void {
     if (type === 'ScriptExecutable') {
       this.reloadScript();
-    } else {
-      if (!this.selectedNode.job.jobArguments) {
-        this.selectedNode.job.jobArguments = [];
-      }
     }
   }
 
@@ -276,7 +272,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.obj.label = !this.selectedNode.obj.label;
       this.obj.agent = !this.selectedNode.job.agentId;
       this.obj.script = !this.selectedNode.job.executable.script && this.selectedNode.job.executable.TYPE === 'ScriptExecutable';
-      this.obj.javaClass = !this.selectedNode.job.executable.javaClass && this.selectedNode.job.executable.TYPE === 'InternalExecutable';
+      this.obj.className = !this.selectedNode.job.executable.className && this.selectedNode.job.executable.TYPE === 'InternalExecutable';
     } else {
       this.obj = {};
     }
@@ -337,15 +333,15 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       name: '',
       value: ''
     };
-    if (this.selectedNode.job.jobArguments) {
-      if (!this.coreService.isLastEntryEmpty(this.selectedNode.job.jobArguments, 'name', '')) {
-        this.selectedNode.job.jobArguments.push(param);
+    if (this.selectedNode.job.executable.jobArguments) {
+      if (!this.coreService.isLastEntryEmpty(this.selectedNode.job.executable.jobArguments, 'name', '')) {
+        this.selectedNode.job.executable.jobArguments.push(param);
       }
     }
   }
 
   removeJobArgument(index): void {
-    this.selectedNode.job.jobArguments.splice(index, 1);
+    this.selectedNode.job.executable.jobArguments.splice(index, 1);
   }
 
   addVariable(): void {
@@ -362,6 +358,22 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   removeVariable(index): void {
     this.selectedNode.job.defaultArguments.splice(index, 1);
+  }
+
+  addArgu(): void {
+    const param = {
+      name: '',
+      value: ''
+    };
+    if (this.selectedNode.job.executable.arguments) {
+      if (!this.coreService.isLastEntryEmpty(this.selectedNode.job.executable.arguments, 'name', '')) {
+        this.selectedNode.job.executable.arguments.push(param);
+      }
+    }
+  }
+
+  removeArgu(index): void {
+    this.selectedNode.job.executable.arguments.splice(index, 1);
   }
 
   addEnv(): void {
@@ -504,6 +516,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.returnCodes.on = 'success';
     }
 
+
     if (!this.selectedNode.job.defaultArguments || _.isEmpty(this.selectedNode.job.defaultArguments)) {
       this.selectedNode.job.defaultArguments = [];
     } else {
@@ -511,12 +524,19 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         this.selectedNode.job.defaultArguments = this.coreService.convertObjectToArray(this.selectedNode.job, 'defaultArguments');
       }
     }
-
-    if (!this.selectedNode.job.jobArguments || _.isEmpty(this.selectedNode.job.jobArguments)) {
-      this.selectedNode.job.jobArguments = [];
+    if (!this.selectedNode.job.executable.arguments || _.isEmpty(this.selectedNode.job.executable.arguments)) {
+      this.selectedNode.job.executable.arguments = [];
     } else {
-      if (!_.isArray(this.selectedNode.job.jobArguments)) {
-        this.selectedNode.job.jobArguments = this.coreService.convertObjectToArray(this.selectedNode.job, 'jobArguments');
+      if (!_.isArray(this.selectedNode.job.executable.arguments)) {
+        this.selectedNode.job.executable.arguments = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'arguments');
+      }
+    }
+
+    if (!this.selectedNode.job.executable.jobArguments || _.isEmpty(this.selectedNode.job.executable.jobArguments)) {
+      this.selectedNode.job.executable.jobArguments = [];
+    } else {
+      if (!_.isArray(this.selectedNode.job.executable.jobArguments)) {
+        this.selectedNode.job.executable.jobArguments = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'jobArguments');
       }
     }
 
@@ -553,7 +573,10 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     if (this.selectedNode.job.defaultArguments && this.selectedNode.job.defaultArguments.length === 0) {
       this.addVariable();
     }
-    if (this.selectedNode.job.jobArguments && this.selectedNode.job.jobArguments.length === 0) {
+    if (this.selectedNode.job.executable.arguments && this.selectedNode.job.executable.arguments.length === 0) {
+      this.addArgu();
+    }
+    if (this.selectedNode.job.executable.jobArguments && this.selectedNode.job.executable.jobArguments.length === 0) {
       this.addJobArgument();
     }
     if (this.selectedNode.job.executable.env && this.selectedNode.job.executable.env.length === 0) {
@@ -4680,8 +4703,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               if (job.defaultArguments) {
                 self.coreService.convertArrayToObject(job, 'defaultArguments', true);
               }
-              if (job.jobArguments) {
-                self.coreService.convertArrayToObject(job, 'jobArguments', true);
+              if (job.executable && job.executable.arguments) {
+                self.coreService.convertArrayToObject(job.executable, 'arguments', true);
+              }
+              if (job.executable && job.executable.jobArguments) {
+                self.coreService.convertArrayToObject(job.executable, 'jobArguments', true);
               }
               if (job.executable && job.executable.env) {
                 self.coreService.convertArrayToObject(job.executable, 'env', true);
@@ -4704,8 +4730,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               if (!_job.defaultArguments || typeof _job.defaultArguments === 'string' || _job.defaultArguments.length === 0) {
                 delete _job['defaultArguments'];
               }
-              if (!_job.jobArguments || typeof _job.jobArguments === 'string' || _job.jobArguments.length === 0) {
-                delete _job['jobArguments'];
+              if (_job.executable && (!_job.executable.arguments || typeof _job.executable.arguments === 'string' || _job.executable.arguments.length === 0)) {
+                delete _job.executable['arguments'];
+              }
+              if (_job.executable && (!_job.executable.jobArguments || typeof _job.executable.jobArguments === 'string' || _job.executable.jobArguments.length === 0)) {
+                delete _job.executable['jobArguments'];
               }
               if (_job.executable && (!_job.executable.env || typeof _job.executable.env === 'string' || _job.executable.env.length === 0)) {
                 delete _job.executable['env'];
@@ -6076,24 +6105,32 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
 
     if (job.defaultArguments) {
-      if (job.executable.v1Compatible) {
+      if (job.executable.v1Compatible && job.executable.TYPE === 'ScriptExecutable') {
         this.coreService.convertArrayToObject(job, 'defaultArguments', true);
       } else {
         delete job['defaultArguments'];
       }
     }
-
-    if (job.jobArguments) {
+    if (job.executable.arguments) {
       if (job.executable.TYPE === 'InternalExecutable') {
-        this.coreService.convertArrayToObject(job, 'jobArguments', true);
+        if (job.executable.arguments && _.isArray(job.executable.arguments)) {
+          this.coreService.convertArrayToObject(job.executable, 'arguments', true);
+        }
       } else {
-        delete job['jobArguments'];
+        delete job.executable['arguments'];
+      }
+    }
+    if (job.executable.jobArguments) {
+      if (job.executable.TYPE === 'InternalExecutable') {
+        this.coreService.convertArrayToObject(job.executable, 'jobArguments', true);
+      } else {
+        delete job.executable['jobArguments'];
       }
     }
     if (job.executable.TYPE === 'InternalExecutable') {
       delete job.executable.script;
     } else if (job.executable.TYPE === 'ScriptExecutable') {
-      delete job.executable.javaClass;
+      delete job.executable.className;
     }
 
     if (job.executable.env) {
@@ -6459,8 +6496,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               checkErr = true;
               if (this.jobs[n].value.executable.TYPE === 'ScriptExecutable' && !this.jobs[n].value.executable.script) {
                 this.invalidMsg = 'workflow.message.scriptIsMissing';
-              } else if (this.jobs[n].value.executable.TYPE === 'InternalExecutable' && !this.jobs[n].value.executable.javaClass) {
-                this.invalidMsg = 'workflow.message.javaClassIsMissing';
+              } else if (this.jobs[n].value.executable.TYPE === 'InternalExecutable' && !this.jobs[n].value.executable.className) {
+                this.invalidMsg = 'workflow.message.classNameIsMissing';
               } else if (!this.jobs[n].value.agentId) {
                 this.invalidMsg = 'workflow.message.agentIsMissing';
               }

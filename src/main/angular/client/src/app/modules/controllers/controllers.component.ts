@@ -132,6 +132,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   showPanel = [true];
   permission: any = {};
   modalInstance: NzModalRef;
+  loading = false;
   subscription: Subscription;
 
   constructor(private coreService: CoreService, private modal: NzModalService,
@@ -160,6 +161,8 @@ export class ControllersComponent implements OnInit, OnDestroy {
       .subscribe((data: any) => {
         this.data = data.controllerIds;
         this.getSecurity();
+      }, () => {
+        this.loading = true;
       });
   }
 
@@ -346,6 +349,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         }
       }
     }
+    this.loading = true;
   }
 
   private getSchedulerIds(): void {
