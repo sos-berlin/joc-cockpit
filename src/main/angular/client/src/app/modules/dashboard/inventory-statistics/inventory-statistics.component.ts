@@ -23,7 +23,7 @@ export class InventoryStatisticsComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.statistics = {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     if (this.schedulerIds.selected) {
@@ -34,11 +34,11 @@ export class InventoryStatisticsComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  refresh(args) {
+  refresh(args): void {
     if (!this.notAuthenticate) {
       if (args.eventSnapshots && args.eventSnapshots.length > 0) {
         for (let j = 0; j < args.eventSnapshots.length; j++) {

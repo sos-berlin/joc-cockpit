@@ -1477,6 +1477,7 @@
     "label.fileWatcher": "File Watcher",
     "label.expressionEditor": "Expression Editor",
     "label.scriptEditor": "Script Editor",
+    "label.valueEditor": "Value Editor",
     "label.functions": "Functions",
     "label.description": "Description",
     "label.syntax": "Syntax",

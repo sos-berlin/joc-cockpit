@@ -1477,6 +1477,7 @@
     "label.fileWatcher": "ファイル監視",
     "label.expressionEditor": "条件式エディター",
     "label.scriptEditor": "スクリプトエディター",
+    "label.valueEditor": "Value Editor",
     "label.functions": "ファンクション",
     "label.description": "説明",
     "label.syntax": "構文",

@@ -156,15 +156,15 @@ export class WorkflowService {
     instruction['retryDelays'] = retryDelays;
   }
 
-  isValidObject(str) {
-    if (/^([A-Z]|[a-z]|_)([A-Z]|[a-z]|[0-9]|\$|_)*$/.test(str)) {
+  isValidObject(str): boolean {
+    if (/^([a-zA-Z0-9_]+[-.]{1})*[a-zA-Z0-9_]+$/.test(str)) {
       return !/^(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|double|do|else|enum|extends|false|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|null|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)$/.test(str);
     } else {
       return false;
     }
   }
 
-  isValidLabel(str) {
+  isValidLabel(str): boolean {
     return /^([A-Z]|[a-z]|[0-9]|_)([A-Z]|[a-z]|[0-9]|\$|_|,|-|#|:|!|)*$/.test(str);
   }
 
@@ -1010,10 +1010,10 @@ export class WorkflowService {
     }
   }
 
-  convertStringToDuration(string): number {
-    if (/^((\d+)y[ ]?)?((\d+)m[ ]?)?((\d+)w[ ]?)?((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)M[ ]?)?((\d+)s[ ]?)?\s*$/.test(string)) {
+  convertStringToDuration(str): number {
+    if (/^((\d+)y[ ]?)?((\d+)m[ ]?)?((\d+)w[ ]?)?((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)M[ ]?)?((\d+)s[ ]?)?\s*$/.test(str)) {
       let seconds = 0;
-      let a = string.split(' ');
+      let a = str.split(' ');
       for (let i = 0; i < a.length; i++) {
         let frmt = a[i].charAt(a[i].length - 1);
         let val = a[i].slice(0, a[i].length - 1);
@@ -1042,11 +1042,11 @@ export class WorkflowService {
         }
       }
       return seconds;
-    } else if (/^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(string)) {
-      const a = string.split(':');
+    } else if (/^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(str)) {
+      const a = str.split(':');
       return (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
     } else {
-      return parseInt(string, 10);
+      return parseInt(str, 10);
     }
   }
 
@@ -1054,4 +1054,37 @@ export class WorkflowService {
     return (tagName === 'Fork' || tagName === 'If' || tagName === 'Retry'
       || tagName === 'Lock' || tagName === 'Try');
   }
+
+  appendSingleQuote(data, type): void {
+    if (data[type]) {
+      if (!(/[$_+]/.test(data[type]))) {
+        let startChar = data[type].substring(0, 1),
+          endChar = data[type].substring(data[type].length - 1);
+        if ((startChar === '\'' && endChar === '\'')) {
+          data[type] = '"' + data[type].substring(1, data[type].length - 1) + '"';
+        }
+        try {
+          data[type] = JSON.parse(data[type]);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+  }
+
+  checkSingleQuote(data, type): void {
+    if (data[type]) {
+      if (!(/[$_+]/.test(data[type]))) {
+        let startChar = data[type].substring(0, 1),
+          endChar = data[type].substring(data[type].length - 1);
+        if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
+
+        } else {
+          data[type] = JSON.stringify(data[type]);
+          data[type] = '\'' + data[type].substring(1, data[type].length - 1) + '\'';
+        }
+      }
+    }
+  }
+
 }

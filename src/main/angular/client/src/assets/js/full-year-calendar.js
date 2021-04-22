@@ -819,7 +819,7 @@
       months: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
       monthsShort: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
       weekShort: '週',
-      weekStart: 0
+      weekStart: 1
     }, de: {
       days: ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"],
       daysShort: ["Son", "Mon", "Die", "Mit", "Don", "Fre", "Sam"],

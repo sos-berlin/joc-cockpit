@@ -52,6 +52,23 @@ declare const $;
 const x2js = new X2JS();
 
 @Component({
+  selector: 'app-value-content',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './value-editor.html'
+})
+export class ValueEditorComponent {
+  @Input() data: any;
+
+  constructor(public activeModal: NzModalRef) {
+  }
+
+  onSubmit(): void {
+    console.log(this.data);
+    this.activeModal.close(this.data);
+  }
+}
+
+@Component({
   selector: 'app-edit-workflow-modal',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './edit-workflow-dialog.html'
@@ -67,7 +84,8 @@ export class UpdateWorkflowComponent implements OnInit {
   workflowName: string;
   variableDeclarations = {parameters: []};
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, public toasterService: ToasterService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, public toasterService: ToasterService,
+              private modal: NzModalService, private ref: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -142,6 +160,25 @@ export class UpdateWorkflowComponent implements OnInit {
     if ($event.which === '13' || $event.which === 13) {
       this.addVariable();
     }
+  }
+
+  openEditor(data): void {
+    console.log(data);
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ValueEditorComponent,
+      nzComponentParams: {
+        data: data.default
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        data.default =  result;
+        this.ref.detectChanges();
+      }
+    });
   }
 }
 
@@ -262,6 +299,25 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.selectedNode.job.executable.script = result;
+        this.ref.detectChanges();
+      }
+    });
+  }
+
+  openEditor(data): void {
+    console.log(data);
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ValueEditorComponent,
+      nzComponentParams: {
+        data: data.value
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        data.value =  result;
         this.ref.detectChanges();
       }
     });
@@ -546,20 +602,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       if (!_.isArray(this.selectedNode.job.executable.env)) {
         this.selectedNode.job.executable.env = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'env');
         this.selectedNode.job.executable.env.filter((env) => {
-          if (env.value) {
-            if (!(/[$_+]/.test(env.value))) {
-              let startChar = env.value.substring(0, 1),
-                endChar = env.value.substring(env.value.length - 1);
-              if ((startChar === '\'' && endChar === '\'')) {
-                env.value = '"' + env.value.substring(1, env.value.length - 1) + '"';
-              }
-              try {
-                env.value = JSON.parse(env.value);
-              } catch (e) {
-                console.error(e);
-              }
-            }
-          }
+          this.workflowService.appendSingleQuote(env, 'value');
         });
       }
     }
@@ -6137,18 +6180,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (job.executable.TYPE === 'ScriptExecutable') {
         if (job.executable.env && _.isArray(job.executable.env)) {
           job.executable.env.filter((env) => {
-            if (env.value) {
-              if (!(/[$_+]/.test(env.value))) {
-                let startChar = env.value.substring(0, 1),
-                  endChar = env.value.substring(env.value.length - 1);
-                if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
-
-                } else {
-                  env.value = JSON.stringify(env.value);
-                  env.value = '\'' + env.value.substring(1, env.value.length - 1) + '\'';
-                }
-              }
-            }
+            this.workflowService.checkSingleQuote(env, 'value');
           });
           this.coreService.convertArrayToObject(job.executable, 'env', true);
         }

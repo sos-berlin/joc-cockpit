@@ -252,7 +252,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         'rows': 3,
         'y': 6,
         'x': 8,
-        'name': 'agentClusterRunningTasks',
+        'name': 'agentRunningJobs',
         'visible': true,
         'message': 'message.agentClusterRunningTasks'
       }, {
@@ -260,7 +260,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         'rows': 6,
         'y': 0,
         'x': 4,
-        'name': 'js7ClusterStatus',
+        'name': 'componentStatus',
         'visible': true,
         'message': 'message.js7ClusterStatus'
       }, {
@@ -268,7 +268,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         'rows': 3,
         'y': 9,
         'x': 0,
-        'name': 'js7Status',
+        'name': 'JS7Status',
         'visible': true,
         'message': 'message.js7Status'
       }, {
@@ -310,11 +310,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       for (let i = 0; i < this.dashboardLayout.length; i++) {
         if (this.dashboardLayout[i].name === 'agentClusterStatus' && this.permission.currentController.agents.view) {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'agentClusterRunningTasks' && this.permission.currentController.agents.view) {
+        } else if (this.dashboardLayout[i].name === 'agentRunningJobs' && this.permission.currentController.agents.view) {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'js7Status' && this.permission.currentController.view) {
+        } else if (this.dashboardLayout[i].name === 'JS7Status' && this.permission.currentController.view) {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'js7ClusterStatus') {
+        } else if (this.dashboardLayout[i].name === 'componentStatus') {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'orders' && this.permission.currentController.orders.view) {
           this.widgets.push(this.dashboardLayout[i]);

@@ -1,0 +1,30 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>workflow.label.valueEditor</span>
+  </h4>
+  <button type="button" class="close" aria-label="Close"
+          (click)="activeModal.destroy()">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form (ngSubmit)="onSubmit()" spellcheck="false">
+  <div class="modal-body p-a">
+    <div class="row">
+      <div class="col-md-12">
+        <textarea nz-input name="value" [(ngModel)]="data"
+          placeholder="{{'common.placeholder.value' | translate}}"
+          [nzAutosize]="{ minRows: 5, maxRows: 15 }"
+        ></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary btn-sm" translate>
+      common.button.submit
+    </button>
+    <button type="button" class="btn btn-grey btn-sm"
+            (click)="activeModal.destroy()" translate>
+      common.button.cancel
+    </button>
+  </div>
+</form>
