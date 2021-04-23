@@ -349,7 +349,7 @@
     "placeholder.enterSecond": "HH:MM:[SS] + SECONDS",
     "placeholder.processExecuted": "now-SECONDS, today, yesterday, -1(h|d|w|M|y) or 08:00am to 08:00pm, -1(h|d|w|M|y) to -1(h|d|w|M|y)",
     "message.noDataAvailable": "no data available",
-    "message.requiredError": "This field is required",
+    "message.requiredError": "Input to this field is required",
     "message.invalid": "Invalid Input",
     "message.notValidInput": "Please enter valid Input",
     "message.noObjectFoundToDelete": "No object found",
