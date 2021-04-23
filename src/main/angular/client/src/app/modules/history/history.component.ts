@@ -977,7 +977,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   orderSearchableProperties = ['controllerId', 'orderId', 'workflow', 'state', '_text', 'orderState', 'position'];
   taskSearchableProperties = ['controllerId', 'job', 'criticality', 'request', 'workflow', 'orderId', 'position'];
   deploymentSearchableProperties = ['controllerId', 'deploymentDate', 'account', 'state'];
-  yadeSearchableProperties = ['controllerId', 'profile', 'mandator', 'start', 'end', 'operation', 'numOfFiles', 'source', 'target'];
+  yadeSearchableProperties = ['controllerId', 'profile', 'mandator', 'start', 'end', '_operation', 'numOfFiles', 'workflowPath', 'orderId'];
 
   object: any = {};
   ignoreListConfigId = 0;
@@ -2043,7 +2043,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   /**--------------- Navigate to inventory tab -------------------*/
 
-  navToWorkflowTab(workflow) {
+  navToWorkflowTab(workflow): void {
     this.coreService.getConfigurationTab().inventory.expand_to = [];
     this.coreService.getConfigurationTab().inventory.selectedObj = {
       name: workflow.substring(workflow.lastIndexOf('/') + 1),

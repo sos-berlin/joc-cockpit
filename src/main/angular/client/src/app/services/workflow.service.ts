@@ -1075,8 +1075,8 @@ export class WorkflowService {
   checkSingleQuote(data, type): void {
     if (data[type]) {
       if (!(/[$_+]/.test(data[type]))) {
-        let startChar = data[type].substring(0, 1),
-          endChar = data[type].substring(data[type].length - 1);
+        const startChar = data[type].substring(0, 1);
+        const endChar = data[type].substring(data[type].length - 1);
         if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
 
         } else {

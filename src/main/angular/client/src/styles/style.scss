@@ -3263,7 +3263,7 @@ div.order-panel div {
 pre.log {
   color: var(--text-color);
   margin-bottom: 0;
-  font-family: Lucida Console, monospace;
+  font-family: Lucida Console, monospace !important;
   font-size: 12px;
   background: 0 0;
 }

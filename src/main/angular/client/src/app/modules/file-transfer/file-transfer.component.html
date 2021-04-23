@@ -372,15 +372,21 @@
                   <span class="label cursor p-l-xs"
                         (click)="coreService.showLogWindow(null, transfer, null, transfer.controllerId, null);$event.stopPropagation()"
                         [ngClass]="coreService.getColor(transfer.state.severity,'bg')"
-                        [innerHtml]="transfer.state._text | translate"></span>
+                        [innerHtml]="transfer.state._text | translate | highlight : yadeFilters.searchText"></span>
                 </span>
               </td>
-              <td [innerHtml]="transfer.profile"></td>
-              <td [innerHtml]="transfer.mandator"></td>
-              <td [innerHtml]="transfer._operation"></td>
-              <td><span [innerHtml]="transfer.workflowPath"></span></td>
-              <td><span [innerHtml]="transfer.orderId"></span></td>
-              <td [innerHtml]="transfer.numOfFiles"></td>
+              <td [innerHtml]="transfer.profile| highlight : yadeFilters.searchText"></td>
+              <td [innerHtml]="transfer.mandator| highlight : yadeFilters.searchText"></td>
+              <td [innerHtml]="transfer._operation| highlight : yadeFilters.searchText"></td>
+              <td>
+                <span class="show-in-single-line w-full">
+                  <i (click)="navToWorkflowTab(transfer.workflowPath);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                  <span (click)="coreService.showWorkflow(transfer.workflowPath);$event.stopPropagation()"
+                        class="text-hover-primary" [innerHtml]="transfer.workflowPath | highlight : yadeFilters.searchText"></span>
+                </span>
+              </td>
+              <td><span [innerHtml]="transfer.orderId| highlight : yadeFilters.searchText"></span></td>
+              <td [innerHtml]="transfer.numOfFiles| highlight : yadeFilters.searchText"></td>
               <td class="text-danger">
                 <span *ngIf="transfer.error" [innerHtml]="transfer.error.message"></span>
               </td>

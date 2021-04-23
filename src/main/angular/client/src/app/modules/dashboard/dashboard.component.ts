@@ -52,13 +52,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   static calculateHeight(): void {
-    const dom = $('#gridster-container');
-    let top = 142;
-    if (dom.position()) {
-      top = dom.position().top;
-    }
-    const ht = 'calc(100vh - ' + top + 'px)';
-    $('.gridster').css({height: ht, 'scroll-top': '0'});
+    setTimeout(() => {
+      const dom = $('#gridster-container');
+      let top = 142;
+      if (dom.position()) {
+        top = dom.position().top;
+      }
+      const ht = 'calc(100vh - ' + top + 'px)';
+      $('.gridster').css({height: ht, 'scroll-top': '0'});
+    }, 0);
   }
 
   ngOnInit(): void {
@@ -154,6 +156,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.preferences.dashboardLayout = undefined;
         this.initWidgets();
         this.setWidgetPreference();
+        DashboardComponent.calculateHeight();
       }
     });
   }
@@ -227,9 +230,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.initConfig(false);
     this.initWidgets();
-    setTimeout(() => {
-      DashboardComponent.calculateHeight();
-    }, 0);
+    DashboardComponent.calculateHeight();
   }
 
   private initWidgets(): void {

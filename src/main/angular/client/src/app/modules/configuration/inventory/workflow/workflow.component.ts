@@ -22,6 +22,7 @@ import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {WorkflowService} from '../../../../services/workflow.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
+import {Router} from '@angular/router';
 
 // Mx-Graph Objects
 declare const mxEditor;
@@ -63,7 +64,6 @@ export class ValueEditorComponent {
   }
 
   onSubmit(): void {
-    console.log(this.data);
     this.activeModal.close(this.data);
   }
 }
@@ -163,7 +163,6 @@ export class UpdateWorkflowComponent implements OnInit {
   }
 
   openEditor(data): void {
-    console.log(data);
     const modal = this.modal.create({
       nzTitle: null,
       nzContent: ValueEditorComponent,
@@ -305,7 +304,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   openEditor(data): void {
-    console.log(data);
     const modal = this.modal.create({
       nzTitle: null,
       nzContent: ValueEditorComponent,
@@ -516,7 +514,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  onExpand(e, type) {
+  onExpand(e, type): void {
     this.loadData(e.node, type, null);
   }
 
@@ -572,7 +570,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.returnCodes.on = 'success';
     }
 
-
     if (!this.selectedNode.job.defaultArguments || _.isEmpty(this.selectedNode.job.defaultArguments)) {
       this.selectedNode.job.defaultArguments = [];
     } else {
@@ -585,6 +582,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       if (!_.isArray(this.selectedNode.job.executable.arguments)) {
         this.selectedNode.job.executable.arguments = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'arguments');
+        this.selectedNode.job.executable.arguments.filter((env) => {
+          this.workflowService.appendSingleQuote(env, 'value');
+        });
       }
     }
 
@@ -682,12 +682,12 @@ export class ExpressionComponent implements OnInit {
   constructor() {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.expression.type = 'returnCode';
     this.change();
   }
 
-  generateExpression(type, operator) {
+  generateExpression(type, operator): void {
     this.lastSelectOperator = operator;
     let setText;
     if (type == 'function') {
@@ -716,7 +716,7 @@ export class ExpressionComponent implements OnInit {
     this.insertText(setText, this.cm.codeMirror.getDoc());
   }
 
-  change() {
+  change(): void {
     this.error = !this.selectedNode.obj.predicate;
   }
 
@@ -746,7 +746,7 @@ export class ImportComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.uploader.onCompleteItem = (fileItem: any, response, status, headers) => {
       if (status === 200) {
         this.activeModal.close('success');
@@ -800,7 +800,7 @@ export class ImportComponent implements OnInit {
     }
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.submitted = true;
     setTimeout(() => {
       this.activeModal.close(this.workflow);
@@ -858,7 +858,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   constructor(public coreService: CoreService, public translate: TranslateService, private modal: NzModalService,
               public toasterService: ToasterService, private workflowService: WorkflowService, private dataService: DataService,
-              private nzContextMenuService: NzContextMenuService) {
+              private nzContextMenuService: NzContextMenuService, private router: Router) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -891,7 +891,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   /**
    * Constructs a new application (returns an mxEditor instance)
    */
-  createEditor(config) {
+  createEditor(config): void {
     let editor = null;
     try {
       if (!mxClient.isBrowserSupported()) {
@@ -914,7 +914,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     if (this.data.type) {
       this.saveJSON(false);
       try {
@@ -1116,6 +1116,37 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
         });
       }
+    }
+  }
+
+  navToWorkflowTab(): void {
+    if (this.workflow.hasDeployments) {
+      const PATH = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
+      let pathArr = [];
+      let arr = PATH.split('/');
+      let workflowFilters = this.coreService.getWorkflowTab();
+      workflowFilters.selectedkeys = [];
+      let len = arr.length - 1;
+      if (len > 1) {
+        for (let i = 0; i < len; i++) {
+          if (arr[i]) {
+            if (i > 0 && pathArr[i - 1]) {
+              pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + arr[i]);
+            } else {
+              pathArr.push('/' + arr[i]);
+            }
+          } else {
+            pathArr.push('/');
+          }
+        }
+      }
+      if (pathArr.length === 0) {
+        pathArr.push('/');
+      }
+      workflowFilters.expandedKeys = pathArr;
+      workflowFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
+      workflowFilters.expandedObjects = [PATH];
+      this.router.navigate(['/workflows']);
     }
   }
 
@@ -1323,15 +1354,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       this.getObject();
     }
     if (!this.isTrash) {
-      if (this.jobClassTree.length === 0) {
-        this.coreService.post('tree', {
-          controllerId: this.schedulerId,
-          forInventory: true,
-          types: ['JOBCLASS']
-        }).subscribe((res) => {
-          this.jobClassTree = this.coreService.prepareTree(res, true);
-        });
-      }
+
       if (this.lockTree.length === 0) {
         this.coreService.post('tree', {
           controllerId: this.schedulerId,
@@ -6157,6 +6180,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (job.executable.arguments) {
       if (job.executable.TYPE === 'InternalExecutable') {
         if (job.executable.arguments && _.isArray(job.executable.arguments)) {
+          job.executable.arguments.filter((angu) => {
+            this.workflowService.checkSingleQuote(angu, 'value');
+          });
           this.coreService.convertArrayToObject(job.executable, 'arguments', true);
         }
       } else {
@@ -6558,7 +6584,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     return flag;
   }
 
-  private validateByURL(json) {
+  private validateByURL(json): void {
     const obj = _.clone(json);
     this.coreService.post('inventory/' + this.objectType + '/validate', obj).subscribe((res: any) => {
       if (!this.invalidMsg && res.invalidMsg) {
@@ -6570,7 +6596,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     });
   }
 
-  private validatePredicate(predicate, id, isOpen) {
+  private validatePredicate(predicate, id, isOpen): void {
     this.coreService.post('inventory/validate/predicate', predicate).subscribe((res: any) => {
       if (res.invalidMsg) {
         this.invalidMsg = res.invalidMsg;
@@ -6613,7 +6639,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  private saveJSON(noValidate) {
+  private saveJSON(noValidate): void {
     if (this.selectedNode && noValidate) {
       return;
     }
@@ -6644,12 +6670,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  private updateOtherProperties() {
+  private updateOtherProperties(): void {
     let data = JSON.parse(this.workflow.actual);
     this.storeData(data);
   }
 
-  private storeData(data) {
+  private storeData(data): void {
     if (this.isTrash || !this.workflow || !this.workflow.id) {
       return;
     }
