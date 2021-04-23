@@ -506,7 +506,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   private setUserObject(preferences, conf, configObj): void {
     if (conf.configurationItem) {
-      sessionStorage.preferences = JSON.parse(JSON.stringify(conf.configurationItem));
+      const data = JSON.parse(conf.configurationItem);
+      if (sessionStorage.$SOS$FORCELOGING === 'true' || sessionStorage.$SOS$FORCELOGING === true) {
+        data.auditLog = true;
+      }
+      sessionStorage.preferences = JSON.stringify(data);
       this.reloadThemeAndLang(preferences);
     } else {
       this.setUserPreferences(preferences, configObj, false);

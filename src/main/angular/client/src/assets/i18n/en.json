@@ -551,7 +551,7 @@
     "button.deleteSubmissions": "Delete Submissions",
     "button.submitOrder": "Submit Order",
     "button.cancelAndKillTask": "Cancel/Kill Tasks",
-    "button.Cancel": "Cancel",
+    "button.cancel": "Cancel",
     "button.suspend": "Suspend",
     "button.suspendAndKillTask": "Suspend/Kill Tasks",
     "button.resume": "Resume",

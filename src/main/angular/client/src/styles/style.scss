@@ -5256,7 +5256,7 @@ input:-webkit-autofill {
 }
 
 .modal-body {
-  max-height: calc(100vh - 176px);
+  max-height: calc(100vh - 158px);
   overflow: auto;
 }
 
@@ -6936,7 +6936,13 @@ tr.tr-border td:first-child {
   border-color: var(--border-color) !important;
   background: transparent;
 }
-
+.ant-checkbox-disabled.ant-checkbox-checked .ant-checkbox-inner {
+  border-color: var(--primary) !important;
+  opacity: .8;
+}
+.ant-checkbox-disabled.ant-checkbox-checked .ant-checkbox-inner::after {
+  border-color: rgba(255, 255, 255, .87);
+}
 .ant-checkbox-inner {
   border-radius: 0;
 }

@@ -17,14 +17,15 @@ export class AddOrderModalComponent implements OnInit {
   @Input() permission: any;
   @Input() preferences: any;
   @Input() workflow: any;
-  display: any;
+
   order: any = {};
   arguments: any = [];
-  messageList: any;
   dateFormat: any;
+  display: any;
   required = false;
-  submitted = false;
+  messageList: any;
   comments: any = {};
+  submitted = false;
   zones = [];
   variableList = [];
 
@@ -136,7 +137,6 @@ export class AddOrderModalComponent implements OnInit {
     if (this.comments.ticketLink) {
       obj.auditLog.ticketLink = this.comments.ticketLink;
     }
-
     this.coreService.post('orders/add', obj).subscribe((res: any) => {
       this.submitted = false;
       this.activeModal.close('Done');

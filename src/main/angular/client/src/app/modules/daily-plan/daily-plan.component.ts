@@ -221,19 +221,36 @@ export class SelectOrderTemplatesComponent implements OnInit {
   selector: 'app-ngbd-modal-content',
   templateUrl: './create-plan-dialog.html'
 })
-export class CreatePlanModalComponent {
+export class CreatePlanModalComponent implements OnInit{
   @Input() schedulerId;
   @Input() selectedDate;
   @Input() dateRanges;
+  @Input() preferences: any;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
   objects: any = [];
   object: any = {at: 'all', overwrite: false, submitWith: false};
   plan: any;
   submitted = false;
+  dateFormat: any;
+  messageList: any;
+  display: any;
+  comments: any = {};
+  required = false;
   schedules: any = [];
   selectedTemplates: any = {schedules: []};
 
   constructor(public activeModal: NzModalRef, public  coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    this.display = this.preferences.auditLog;
+    this.comments.radio = 'predefined';
+    if (sessionStorage.comments) {
+      this.messageList = JSON.parse(sessionStorage.comments);
+    }
+    if (sessionStorage.$SOS$FORCELOGING == 'true') {
+      this.required = true;
+    }
   }
 
   onSubmit(): void {
@@ -246,13 +263,22 @@ export class CreatePlanModalComponent {
     if (this.object.at === 'template' && this.selectedTemplates.schedules.length > 0) {
       obj.selector = {schedulePaths: this.selectedTemplates.schedules};
     }
-
+    obj.auditLog = {};
+    if (this.comments.comment) {
+      obj.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      obj.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      obj.auditLog.ticketLink = this.comments.ticketLink;
+    }
     if (this.dateRanges && this.dateRanges.length > 0) {
       this.submitted = false;
       this.recursivelyCreate(obj);
     } else {
       obj.dailyPlanDate = this.coreService.getStringDate(this.selectedDate);
-      this.coreService.post('daily_plan/orders/generate', obj).subscribe((result) => {
+      this.coreService.post('daily_plan/orders/generate', obj).subscribe(() => {
         this.submitted = false;
         this.activeModal.close('Done');
       }, () => {
@@ -272,7 +298,7 @@ export class CreatePlanModalComponent {
       obj.dailyPlanDate = this.coreService.getStringDate(date);
       apiArr.push(this.coreService.post('daily_plan/orders/generate', this.coreService.clone(obj)));
     });
-    forkJoin(apiArr).subscribe((result: any) => {
+    forkJoin(apiArr).subscribe(() => {
       this.submitted = false;
       this.activeModal.close('Done');
     }, (err) => {
@@ -310,7 +336,7 @@ export class RemovePlanModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
-    // this.display = this.preferences.auditLog;
+    this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
     if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
@@ -361,6 +387,16 @@ export class RemovePlanModalComponent implements OnInit {
         });
       }
     }
+    obj.auditLog = {};
+    if (this.comments.comment) {
+      obj.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      obj.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      obj.auditLog.ticketLink = this.comments.ticketLink;
+    }
     this.coreService.post('daily_plan/orders/submit', obj).subscribe(() => {
       this.submitted = false;
       this.activeModal.close('');
@@ -408,8 +444,20 @@ export class RemovePlanModalComponent implements OnInit {
     this.activeModal.destroy();
   }
 
-  private remove(obj) {
+  private remove(obj): void {
     this.submitted = true;
+    if (!this.submissionsDelete) {
+      obj.auditLog = {};
+      if (this.comments.comment) {
+        obj.auditLog.comment = this.comments.comment;
+      }
+      if (this.comments.timeSpent) {
+        obj.auditLog.timeSpent = this.comments.timeSpent;
+      }
+      if (this.comments.ticketLink) {
+        obj.auditLog.ticketLink = this.comments.ticketLink;
+      }
+    }
     if (this.dateRange && this.dateRange.length > 0 && !this.submissionsDelete) {
       this.removeRecursively(obj);
       return;
@@ -425,7 +473,7 @@ export class RemovePlanModalComponent implements OnInit {
     });
   }
 
-  private removeRecursively(obj) {
+  private removeRecursively(obj): void {
     let apiArr = [];
     const dates = this.coreService.getDates(this.dateRange[0], this.dateRange[1]);
     dates.forEach((date) => {
@@ -1055,6 +1103,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
         selectedDate: this.selectedDate,
+        preferences: this.preferences,
         dateRanges: this.dateRanges
       },
       nzFooter: null,
@@ -1904,7 +1953,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         nzClosable: false
       });
       modal.afterClose.subscribe(result => {
-        console.log('[afterClose] The result is:', result);
         if (result) {
           this.updateList();
         }
