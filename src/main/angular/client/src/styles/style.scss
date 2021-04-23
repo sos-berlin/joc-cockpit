@@ -3263,7 +3263,7 @@ div.order-panel div {
 pre.log {
   color: var(--text-color);
   margin-bottom: 0;
-  font-family: Lucida Console, monospace;
+  font-family: Lucida Console, monospace !important;
   font-size: 12px;
   background: 0 0;
 }
@@ -5256,7 +5256,7 @@ input:-webkit-autofill {
 }
 
 .modal-body {
-  max-height: calc(100vh - 176px);
+  max-height: calc(100vh - 158px);
   overflow: auto;
 }
 
@@ -6936,7 +6936,13 @@ tr.tr-border td:first-child {
   border-color: var(--border-color) !important;
   background: transparent;
 }
-
+.ant-checkbox-disabled.ant-checkbox-checked .ant-checkbox-inner {
+  border-color: var(--primary) !important;
+  opacity: .8;
+}
+.ant-checkbox-disabled.ant-checkbox-checked .ant-checkbox-inner::after {
+  border-color: rgba(255, 255, 255, .87);
+}
 .ant-checkbox-inner {
   border-radius: 0;
 }
@@ -7382,8 +7388,6 @@ div.ace_tooltip {
   color: var(--white) !important;
   background-image: none;
   border: none;
-  left: 74px !important;
-  margin-top: -88px;
 }
 
 .hidden-btn-text {

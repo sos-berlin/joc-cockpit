@@ -54,34 +54,7 @@
           </div>
         </div>
       </div>
-      <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.jobClass</label>
-        <div class="col-md-8 col-lg-9">
-          <nz-tree-select
-            name="jobClass"
-            #treeSelectCtrl2
-            nzNoAnimation
-            [nzNodes]="jobClassTree"
-            [nzAsyncData]="true"
-            [nzHideUnMatched]="true"
-            [nzDropdownStyle]="{ 'max-height': '260px' }"
-            nzShowSearch
-            [nzPlaceHolder]="'workflow.placeholder.enterJobClass' | translate"
-            [(ngModel)]="selectedNode.job.jobClass"
-            (nzExpandChange)="onExpand($event, 'JOBCLASS')"
-          >
-            <ng-template #nzTreeTemplate let-node>
-              <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'JOBCLASS', $event);">
-                <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == selectedNode.job.jobClass">
-                  <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-                  <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                  {{node.origin.name}}
-                </div>
-              </div>
-            </ng-template>
-          </nz-tree-select>
-        </div>
-      </div>
+
       <div class="form-group row">
         <div class="col-md-4 col-lg-3" translate>workflow.label.returnCode</div>
         <div class="col-md-8 col-lg-9">
@@ -118,11 +91,11 @@
         </div>
       </div>
       <div class="form-group row" *ngIf="selectedNode.job.executable">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.executableType</label>
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.jobClass</label>
         <div class="col-md-8 col-lg-9">
           <nz-select name="executableType" [(ngModel)]="selectedNode.job.executable.TYPE" (ngModelChange)="changeType($event)">
             <nz-option [nzLabel]="'workflow.label.shell' | translate" [nzValue]="'ScriptExecutable'"></nz-option>
-            <nz-option [nzLabel]="'workflow.label.java' | translate" [nzValue]="'InternalExecutable'"></nz-option>
+            <nz-option [nzLabel]="'workflow.label.jitl' | translate" [nzValue]="'InternalExecutable'"></nz-option>
           </nz-select>
         </div>
       </div>
@@ -155,8 +128,8 @@
             </nz-tab>
             <nz-tab [nzTitle]="'workflow.label.className' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'InternalExecutable'">
               <div class="row">
-                <div class="col-md-12" [ngClass]="{'invalid': obj.className || (className.invalid && (className.dirty && className.touched))}">
-                    <input autocomplete="off" type="text" class="form-control" name="className" required
+                <div class="col-md-12" [ngClass]="{'has-error': obj.className || (className.invalid && (className.dirty && className.touched))}">
+                  <input autocomplete="off" type="text" class="form-control" name="className" required (blur)="onBlur();"
                            [(ngModel)]="selectedNode.job.executable.className" #className="ngModel" placeholder="{{'workflow.placeholder.className' | translate}}">
                   <div *ngIf="obj.className || (className.invalid && (className.dirty && className.touched))"
                        class="text-danger help-block">
@@ -183,6 +156,7 @@
                     <div class="col-md-6 col-lg-6 m-b-sm">
                       <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event, 'default')"
                              [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
+                      <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
                     </div>
                     <div class="col-md-1 col-lg-1 p-l-0">
                       <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
@@ -215,7 +189,7 @@
                     </div>
                     <div class="col-md-6 col-lg-6 m-b-sm">
                       <nz-mention [nzSuggestions]="mentionValueList" [nzNotFoundContent]="'No data found'" [nzValueWith]="valueWith" [nzPrefix]="['$']">
-                        <input nz-input nzMentionTrigger class="form-control" [(ngModel)]="env.value" name="value{{i}}"
+                        <input nz-input nzMentionTrigger autocomplete="off" class="form-control" [(ngModel)]="env.value" name="value{{i}}"
                                placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
                         <ng-container *nzMentionSuggestion="let argu">
                           <span>{{ argu.name }}</span>
@@ -254,6 +228,7 @@
                     <div class="col-md-6 col-lg-6 m-b-sm">
                       <input type="text" class="form-control" [(ngModel)]="argu.value" name="value{{i}}"
                              placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
+                      <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argu)" style="right: 13px;top:1px;"></i>
                     </div>
                     <div class="col-md-1 col-lg-1 p-l-0">
                       <a><i (click)="removeArgu(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
@@ -284,6 +259,7 @@
                     <div class="col-md-6 col-lg-6 m-b-sm">
                       <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event, 'default')"
                              [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
+                      <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
                     </div>
                     <div class="col-md-1 col-lg-1 p-l-0">
                       <a><i (click)="removeJobArgument(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
@@ -371,8 +347,9 @@
             </div>
             <div class="col-md-6 col-lg-6 m-b-sm">
               <nz-mention [nzSuggestions]="variableList" [nzNotFoundContent]="'No data found'" [nzValueWith]="valueWith" [nzPrefix]="['$']">
-                <input nz-input nzMentionTrigger class="form-control" [(ngModel)]="argument.value" name="value{{i}}"
+                <input nz-input nzMentionTrigger autocomplete="off" class="form-control" [(ngModel)]="argument.value" name="value{{i}}"
                        placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
+                <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
                 <ng-container *nzMentionSuggestion="let argu">
                   <span>{{ argu.name }}</span>
                 </ng-container>

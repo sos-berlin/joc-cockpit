@@ -1174,15 +1174,15 @@ var JSGantt = function () {
         var f = function (e, i, n) {
           var r = document.createElement("div");
           r.className = "jsgantt-task-content my-tooltip",
-            r.title = "<b>Order ID:</b>" + e.col1 + "<br/>";
+            r.title = "<b>"+t.config.orderId+":</b>" + e.col1 + "<br/>";
           if(e.repeat){
-            r.title += "Repeat every " + e.repeat + "<br/>";
+            r.title += t.config.repeatEvery + e.repeat + "<br/>";
           }
           if(e.cyclicOrder){
-            r.title += "<div class=\"m-a-sm m-t-xs\"><b>Cyclic Order</b> <br/>";
-            r.title += "<span class=\"_600 p-l-sm\" translate>Begin: </span>" + e.begin + "<br/>";
-            r.title += "<span class=\"_600 p-l-sm\" translate>End: </span>" + e.end + "<br/>";
-            r.title += "<span class=\"_600 p-l-sm\" translate>Orders: </span>" + e.cyclicOrder.count + "</div>";
+            r.title += "<div class=\"m-a-sm m-t-xs\"><b>"+t.config.cyclicOrder+"</b> <br/>";
+            r.title += "<span class=\"_600 p-l-sm\">" + t.config.begin + ": </span>" + e.begin + "<br/>";
+            r.title += "<span class=\"_600 p-l-sm\">" + t.config.end + ": </span>" + e.end + "<br/>";
+            r.title += "<span class=\"_600 p-l-sm\">" + t.config.orders + ": </span>" + e.cyclicOrder.count + "</div>";
           }
           var s = document.createAttribute("data-toggle");
           s.value = "tooltip", r.setAttributeNode(s);
@@ -1929,12 +1929,7 @@ var JSGantt = function () {
   }, function (t, e) {
     t.exports = function (t) {
       t.locale = {
-        date: {
-          fullMonth: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-          shortMonth: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-          fullDay: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-          shortDay: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-        }
+        date: {}
       }
     }
   }, function (t, e) {
@@ -5558,14 +5553,7 @@ var JSGantt = function () {
               var s = t.locale.labels, a = "<b>" + e.col1 + "</b> " + (i ? s.link_start : s.link_end) + "<br/>";
               return n && (a += "<b> " + (n = t.getTask(n)).col1 + "</b> " + (r ? s.link_start : s.link_end) + "<br/>"), a
             },
-            drag_link_class: function (e, i, n, r) {
-              var s = "";
-              return e && n && (s = " " + (t.isLinkAllowed(e, n, i, r) ? "jsgantt-link-allow" : "jsgantt-link-deny")), "jsgantt-link-tooltip" + s
-            },
-            tooltip_date_format: e.date_to_str("%Y-%m-%d"),
-            tooltip_text: function (e, i, n) {
-              return "<b>Task:</b> " + n.col1 + "<br/><b>Start date:</b> " + t.templates.tooltip_date_format(e) + "<br/><b>End date:</b> " + t.templates.tooltip_date_format(i)
-            }
+            tooltip_date_format: e.date_to_str("%Y-%m-%d")
           })
         }, initTemplate: i
       }
@@ -5948,7 +5936,12 @@ var JSGantt = function () {
           label: "Column 2",
           align: "left"
         }],
-      
+        orders: 'Orders',
+        orderId: 'Order ID',
+        repeatEvery: 'Repeat Every',
+        cyclicOrder: 'Cyclic Order',
+        begin: 'Begin',
+        end: 'End',
         step: 1,
         scrollable: !0,
         scale_unit: "day",

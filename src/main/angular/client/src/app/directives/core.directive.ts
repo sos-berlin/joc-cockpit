@@ -207,7 +207,7 @@ export class IdentifierValidator implements Validator {
       if (v == '') {
         return null;
       }
-      if (/^([a-zA-Z0-9_.]+[-|.]{1})*[a-zA-Z0-9_]+$/.test(v)) {
+      if (/^([a-zA-Z0-9_]+[-.]{1})*[a-zA-Z0-9_]+$/.test(v)) {
         if (/^(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|double|do|else|enum|extends|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)$/.test(v)) {
           return {
             invalidIdentifier: true
@@ -232,7 +232,6 @@ export class IdentifierValidator implements Validator {
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => EnvVariableValidator), multi: true}
   ]
 })
-
 export class EnvVariableValidator implements Validator {
   validate(c: AbstractControl): { [key: string]: any } {
     let v = c.value;

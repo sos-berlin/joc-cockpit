@@ -26,7 +26,7 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
     });
   }
 
-  refresh(args) {
+  refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'HistoryOrderTerminated') {
@@ -39,7 +39,7 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.orderSummary = {};
     this.taskSummary = {};
     this.filters = this.coreService.getDashboardTab().history;
@@ -57,7 +57,7 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
@@ -106,12 +106,12 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
       controllerId: this.schedulerIds.selected,
       dateFrom: this.filters.date,
       timeZone: this.preferences.zone
-    }).subscribe((res:any) => {
+    }).subscribe((res: any) => {
       this.taskSummary = res.jobs;
     });
   }
 
-  showOrderSummary(state) {
+  showOrderSummary(state): void {
     let filter = this.coreService.getHistoryTab();
     filter.type = 'ORDER';
     filter.order.filter.historyStates = state;
@@ -120,7 +120,7 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
     this.router.navigate(['/history']);
   }
 
-  showTaskSummary(state) {
+  showTaskSummary(state): void {
     let filter = this.coreService.getHistoryTab();
     filter.type = 'TASK';
     filter.task.filter.historyStates = state;

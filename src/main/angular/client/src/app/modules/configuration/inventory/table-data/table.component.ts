@@ -4,6 +4,7 @@ import {DataService} from 'src/app/services/data.service';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {ConfirmModalComponent} from '../../../../components/comfirm-modal/confirm.component';
 import {CreateObjectModalComponent} from '../inventory.component';
+import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 
 @Component({
   selector: 'app-table',
@@ -38,6 +39,7 @@ export class TableComponent {
       nzAutofocus: null,
       nzComponentParams: {
         schedulerId: this.schedulerId,
+        preferences: this.preferences,
         obj
       },
       nzFooter: null,
@@ -94,91 +96,161 @@ export class TableComponent {
     this.dataService.reloadTree.next({importJSON: data});
   }
 
-  deletePermanently(data) {
+  deletePermanently(data): void {
     this.dataService.reloadTree.next({delete: data});
   }
 
   removeObject(object): void {
-    const _path = object.path + (object.path === '/' ? '' : '/') + object.name;
-    const modal = this.modal.create({
-      nzTitle: null,
-      nzContent: ConfirmModalComponent,
-      nzComponentParams: {
-        title: 'delete',
-        message: 'deleteObject',
-        type: 'Delete',
-        objectName: _path
-      },
-      nzFooter: null,
-      nzClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.coreService.post('inventory/remove', {objects: [{id: object.id}]}).subscribe(() => {
-          for (let i = 0; i < this.dataObj.children.length; i++) {
-            if (this.dataObj.children[i].id === object.id) {
-              this.dataObj.children.splice(i, 1);
-              break;
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: object.type,
+        operation: 'Remove',
+        name: object.name
+      };
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.removeApiCall(object, {
+            auditLog: {
+              comment: result.comment,
+              timeSpent: result.timeSpent,
+              ticketLink: result.ticketLink
             }
-          }
-          this.dataObj.children = [...this.dataObj.children];
-          this.dataService.reloadTree.next({reload: true});
-        });
+          });
+        }
+      });
+    } else {
+      const _path = object.path + (object.path === '/' ? '' : '/') + object.name;
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'delete',
+          message: 'deleteObject',
+          type: 'Delete',
+          objectName: _path
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.removeApiCall(object, undefined);
+        }
+      });
+    }
+  }
+
+  private removeApiCall(object, auditLog): void {
+    this.coreService.post('inventory/remove', {objects: [{id: object.id}], auditLog}).subscribe(() => {
+      for (let i = 0; i < this.dataObj.children.length; i++) {
+        if (this.dataObj.children[i].id === object.id) {
+          this.dataObj.children.splice(i, 1);
+          break;
+        }
       }
+      this.dataObj.children = [...this.dataObj.children];
+      this.dataService.reloadTree.next({reload: true});
     });
   }
 
-  deleteDraft(object) {
+  deleteDraft(object): void {
     const _path = object.path + (object.path === '/' ? '' : '/') + object.name;
-    const modal = this.modal.create({
-      nzTitle: null,
-      nzContent: ConfirmModalComponent,
-      nzComponentParams: {
-        title: 'delete',
-        message: 'deleteDraftObject',
-        type: 'Delete',
-        objectName: _path
-      },
-      nzFooter: null,
-      nzClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        let isDraftOnly = true, isDeployObj = true;
-        if (this.objectType.match(/CALENDAR/) || this.objectType === 'SCHEDULE') {
-          isDeployObj = false;
-          if (object.hasReleases) {
-            isDraftOnly = false;
-          }
-        } else if (object.hasDeployments) {
-          isDraftOnly = false;
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: object.type,
+        operation: 'Delete',
+        name: object.name
+      };
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.deleteApiCall(object, {
+            auditLog: {
+              comment: result.comment,
+              timeSpent: result.timeSpent,
+              ticketLink: result.ticketLink
+            }
+          });
         }
-        this.coreService.post('inventory/delete_draft', {
-          objects: [{
-            id: object.id
-          }]
-        }).subscribe(() => {
-          if (isDraftOnly) {
-            for (let i = 0; i < this.dataObj.children.length; i++) {
-              if (this.dataObj.children[i].id === object.id) {
-                this.dataObj.children.splice(i, 1);
-                break;
-              }
-            }
-          } else {
-            object.valid = true;
-            if (isDeployObj) {
-              object.deployed = true;
-            } else {
-              object.released = true;
-            }
-          }
-          this.dataObj.children = [...this.dataObj.children];
-          this.dataService.reloadTree.next({reload: true});
-        });
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'delete',
+          message: 'deleteDraftObject',
+          type: 'Delete',
+          objectName: _path
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.deleteApiCall(object, undefined);
+        }
+      });
+    }
+  }
+
+  private deleteApiCall(object, auditLog): void {
+    let isDraftOnly = true, isDeployObj = true;
+    if (this.objectType.match(/CALENDAR/) || this.objectType === 'SCHEDULE') {
+      isDeployObj = false;
+      if (object.hasReleases) {
+        isDraftOnly = false;
       }
+    } else if (object.hasDeployments) {
+      isDraftOnly = false;
+    }
+    this.coreService.post('inventory/delete_draft', {
+      auditLog,
+      objects: [{
+        id: object.id
+      }]
+    }).subscribe(() => {
+      if (isDraftOnly) {
+        for (let i = 0; i < this.dataObj.children.length; i++) {
+          if (this.dataObj.children[i].id === object.id) {
+            this.dataObj.children.splice(i, 1);
+            break;
+          }
+        }
+      } else {
+        object.valid = true;
+        if (isDeployObj) {
+          object.deployed = true;
+        } else {
+          object.released = true;
+        }
+      }
+      this.dataObj.children = [...this.dataObj.children];
+      this.dataService.reloadTree.next({reload: true});
     });
   }
+
 
   restoreObject(data): void {
     this.dataService.reloadTree.next({restore: data});

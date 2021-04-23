@@ -954,7 +954,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         }
         if (flag) {
-          request.workflowIds.push({path: path, versionId: res.workflows[i].versionId});
+          request.workflowIds.push({path, versionId: res.workflows[i].versionId});
         }
         if (this.workflowFilters.expandedObjects && this.workflowFilters.expandedObjects.length > 0 &&
           this.workflowFilters.expandedObjects.indexOf(path) > -1) {

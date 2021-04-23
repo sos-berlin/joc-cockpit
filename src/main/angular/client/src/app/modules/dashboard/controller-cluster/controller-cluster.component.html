@@ -91,6 +91,8 @@
               <a (click)="switchOver()" translate>
                 dashboard.button.switchOver</a>
             </li>
+            <li nz-menu-item *ngIf="joc && !joc.current && joc.clusterNodeState._text !== 'active' && joc.componentState._text === 'unknown'">
+              <a (click)="removeFromInventory()" translate>dashboard.button.removeFromInventory</a></li>
             <li nz-menu-item *ngIf="joc && joc.current" ><a (click)="downloadJocLog()"
                    translate>dashboard.button.downloadLog</a></li>
           </ul>

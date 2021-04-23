@@ -34,7 +34,7 @@ declare const $;
 
 @Component({
   selector: 'app-select-schedule-template',
-  template: '<nz-tree-select\n' +
+  template: '<div><nz-tree-select\n' +
     '          name="template"\n' +
     '          [nzNodes]="nodes"\n' +
     '          [nzHideUnMatched]="true"\n' +
@@ -53,7 +53,7 @@ declare const $;
     '              </div>\n' +
     '            </div>\n' +
     '          </ng-template>\n' +
-    '        </nz-tree-select>'
+    '        </nz-tree-select></div>'
 })
 export class SelectOrderTemplatesComponent implements OnInit {
   @Input() schedulerId;
@@ -91,6 +91,7 @@ export class SelectOrderTemplatesComponent implements OnInit {
         return result.path;
       });
       this.generateTree(arr);
+      this.nodes = [...this.nodes];
     }, () => {
       this.nodes = [];
     });
@@ -220,19 +221,36 @@ export class SelectOrderTemplatesComponent implements OnInit {
   selector: 'app-ngbd-modal-content',
   templateUrl: './create-plan-dialog.html'
 })
-export class CreatePlanModalComponent {
+export class CreatePlanModalComponent implements OnInit{
   @Input() schedulerId;
   @Input() selectedDate;
   @Input() dateRanges;
+  @Input() preferences: any;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
   objects: any = [];
   object: any = {at: 'all', overwrite: false, submitWith: false};
   plan: any;
   submitted = false;
+  dateFormat: any;
+  messageList: any;
+  display: any;
+  comments: any = {};
+  required = false;
   schedules: any = [];
   selectedTemplates: any = {schedules: []};
 
   constructor(public activeModal: NzModalRef, public  coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    this.display = this.preferences.auditLog;
+    this.comments.radio = 'predefined';
+    if (sessionStorage.comments) {
+      this.messageList = JSON.parse(sessionStorage.comments);
+    }
+    if (sessionStorage.$SOS$FORCELOGING == 'true') {
+      this.required = true;
+    }
   }
 
   onSubmit(): void {
@@ -245,13 +263,22 @@ export class CreatePlanModalComponent {
     if (this.object.at === 'template' && this.selectedTemplates.schedules.length > 0) {
       obj.selector = {schedulePaths: this.selectedTemplates.schedules};
     }
-
+    obj.auditLog = {};
+    if (this.comments.comment) {
+      obj.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      obj.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      obj.auditLog.ticketLink = this.comments.ticketLink;
+    }
     if (this.dateRanges && this.dateRanges.length > 0) {
       this.submitted = false;
       this.recursivelyCreate(obj);
     } else {
       obj.dailyPlanDate = this.coreService.getStringDate(this.selectedDate);
-      this.coreService.post('daily_plan/orders/generate', obj).subscribe((result) => {
+      this.coreService.post('daily_plan/orders/generate', obj).subscribe(() => {
         this.submitted = false;
         this.activeModal.close('Done');
       }, () => {
@@ -271,7 +298,7 @@ export class CreatePlanModalComponent {
       obj.dailyPlanDate = this.coreService.getStringDate(date);
       apiArr.push(this.coreService.post('daily_plan/orders/generate', this.coreService.clone(obj)));
     });
-    forkJoin(apiArr).subscribe((result: any) => {
+    forkJoin(apiArr).subscribe(() => {
       this.submitted = false;
       this.activeModal.close('Done');
     }, (err) => {
@@ -309,7 +336,7 @@ export class RemovePlanModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
-    // this.display = this.preferences.auditLog;
+    this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
     if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
@@ -360,6 +387,16 @@ export class RemovePlanModalComponent implements OnInit {
         });
       }
     }
+    obj.auditLog = {};
+    if (this.comments.comment) {
+      obj.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      obj.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      obj.auditLog.ticketLink = this.comments.ticketLink;
+    }
     this.coreService.post('daily_plan/orders/submit', obj).subscribe(() => {
       this.submitted = false;
       this.activeModal.close('');
@@ -407,8 +444,20 @@ export class RemovePlanModalComponent implements OnInit {
     this.activeModal.destroy();
   }
 
-  private remove(obj) {
+  private remove(obj): void {
     this.submitted = true;
+    if (!this.submissionsDelete) {
+      obj.auditLog = {};
+      if (this.comments.comment) {
+        obj.auditLog.comment = this.comments.comment;
+      }
+      if (this.comments.timeSpent) {
+        obj.auditLog.timeSpent = this.comments.timeSpent;
+      }
+      if (this.comments.ticketLink) {
+        obj.auditLog.ticketLink = this.comments.ticketLink;
+      }
+    }
     if (this.dateRange && this.dateRange.length > 0 && !this.submissionsDelete) {
       this.removeRecursively(obj);
       return;
@@ -424,7 +473,7 @@ export class RemovePlanModalComponent implements OnInit {
     });
   }
 
-  private removeRecursively(obj) {
+  private removeRecursively(obj): void {
     let apiArr = [];
     const dates = this.coreService.getDates(this.dateRange[0], this.dateRange[1]);
     dates.forEach((date) => {
@@ -485,17 +534,79 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
 
   private init(): void {
     const self = this;
-    let workflow = '', orderId = '';
+    const lang = localStorage.$SOS$LANG;
+    let workflow = '';
+    let scheduleAndOrder = '';
+    let orders = '';
+    let orderId = '';
+    let cyclicOrder = '';
+    let begin = '';
+    let endText = '';
+    let repeatEvery = '';
     this.translate.get('dailyPlan.label.workflow').subscribe(translatedValue => {
       workflow = translatedValue;
     });
     this.translate.get('dailyPlan.label.scheduleAndOrder').subscribe(translatedValue => {
+      scheduleAndOrder = translatedValue;
+    });
+    this.translate.get('order.label.orders').subscribe(translatedValue => {
+      orders = translatedValue;
+    });
+    this.translate.get('dailyPlan.label.order').subscribe(translatedValue => {
       orderId = translatedValue;
     });
+    this.translate.get('dailyPlan.label.cyclicOrder').subscribe(translatedValue => {
+      cyclicOrder = translatedValue;
+    });
+    this.translate.get('dailyPlan.label.begin').subscribe(translatedValue => {
+      begin = translatedValue;
+    });
+    this.translate.get('dailyPlan.label.end').subscribe(translatedValue => {
+      endText = translatedValue;
+    });
+    this.translate.get('dailyPlan.label.repeatEvery').subscribe(translatedValue => {
+      repeatEvery = translatedValue;
+    });
     jsgantt.config.columns = [{name: 'col2', tree: !0, label: workflow, align: 'left'}, {
-      name: 'col1', label: orderId, width: '*', align: 'left'
+      name: 'col1', label: scheduleAndOrder, width: '*', align: 'left'
     }];
-    jsgantt.templates.task_class = function(start, end, task) {
+    jsgantt.config.orders = orders;
+    jsgantt.config.orderId = orderId;
+    jsgantt.config.repeatEvery = repeatEvery;
+    jsgantt.config.cyclicOrder = cyclicOrder;
+    jsgantt.config.begin = begin;
+    jsgantt.config.end = endText;
+
+    if (lang === 'fr') {
+      jsgantt.locale.date = {
+        fullMonth: ['Janvier', 'FÃ©vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'AoÃ»t', 'Septembre', 'Octobre', 'Novembre', 'DÃ©cembre'],
+        shortMonth: ['Jan', 'FÃ©v', 'Mar', 'Avr', 'Mai', 'Jui', 'Jul', 'Aou', 'Sep', 'Oct', 'Nov', 'DÃ©c'],
+        fullDay: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        shortDay: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
+      };
+    } else if (lang === 'ja') {
+      jsgantt.locale.date = {
+        fullMonth: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+        shortMonth: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+        fullDay: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        shortDay: ['日', '月', '火', '水', '木', '金', '土']
+      };
+    } else if (lang === 'de') {
+      jsgantt.locale.date = {
+        fullMonth: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+        shortMonth: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+        fullDay: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        shortDay: ['Son', 'Mon', 'Die', 'Mit', 'Don', 'Fre', 'Sam']
+      };
+    } else {
+      jsgantt.locale.date = {
+        fullMonth: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        shortMonth: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        fullDay: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        shortDay: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+      };
+    }
+    jsgantt.templates.task_class = function (start, end, task) {
       return task.class;
     };
     jsgantt.init(this.editor.nativeElement);
@@ -992,6 +1103,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
         selectedDate: this.selectedDate,
+        preferences: this.preferences,
         dateRanges: this.dateRanges
       },
       nzFooter: null,
@@ -1841,7 +1953,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         nzClosable: false
       });
       modal.afterClose.subscribe(result => {
-        console.log('[afterClose] The result is:', result);
         if (result) {
           this.updateList();
         }

@@ -12,7 +12,7 @@
     <div class="hide" [ngClass]="{'show': display}">
       <div class="form-group row">
         <label class="col-sm-4 " translate>common.label.selectComments</label>
-        <div class=" col-sm-6">
+        <div class=" col-sm-8">
           <nz-radio-group name="radio"  [(ngModel)]="comments.radio">
             <label nz-radio nzValue="predefined"><span translate>common.label.predefined</span></label>
             <label nz-radio nzValue="new"><span translate>common.label.individual</span></label>
@@ -46,7 +46,7 @@
               <textarea rows="3" class="form-control" maxlength="2000" name="textComment" #textComment="ngModel"
                         [required]="required && comments.radio=='new'"
                         [(ngModel)]="comments.textComment"
-                        placeholder="{{'placeholder.enterComment' | translate}}"></textarea>
+                        placeholder="{{'common.placeholder.enterComment' | translate}}"></textarea>
           <div *ngIf="textComment.invalid && (textComment.dirty || textComment.touched)"
                class="text-danger help-block">
             <div *ngIf="textComment.errors.required" translate>

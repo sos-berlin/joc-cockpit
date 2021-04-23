@@ -8,7 +8,7 @@ import {CoreService} from '../../services/core.service';
 import {DataService} from '../../services/data.service';
 import {SaveService} from '../../services/save.service';
 import {SearchPipe} from '../../pipes/core.pipe';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 declare const $;
 
@@ -339,9 +339,9 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  searchableProperties = ['controllerId', 'profile', 'mandator', 'start', 'end', 'operation', 'numOfFiles', 'source', 'target'];
+  searchableProperties = ['controllerId', 'profile', 'mandator', 'start', 'end', '_operation', 'numOfFiles', 'workflowPath', 'orderId'];
 
-  constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
+  constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private router: Router,
               private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -537,7 +537,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       setTimeout(() => {
         const dom = $('#fileTransferMainTable');
         dom.find('thead tr.main-header-row th').each(function(i) {
-          console.log($(this).outerWidth(), self.widthArr[i]);
           $(this).css('width', self.widthArr[i] + 'px');
         });
       }, 0);
@@ -1169,16 +1168,16 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
       let time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
       fromDate = new Date();
-      if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12, 10) {
-        fromDate.setHours(parseInt(time[1]) - 12, 10);
+      if (/(pm)/i.test(time[3]) && parseInt(time[1], 10) != 12) {
+        fromDate.setHours(parseInt(time[1], 10) - 12);
       } else {
         fromDate.setHours(parseInt(time[1], 10));
       }
 
       fromDate.setMinutes(parseInt(time[2], 10));
       toDate = new Date();
-      if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12, 10) {
-        toDate.setHours(parseInt(time[4]) - 12, 10);
+      if (/(pm)/i.test(time[6]) && parseInt(time[4], 10) != 12) {
+        toDate.setHours(parseInt(time[4], 10) - 12);
       } else {
         toDate.setHours(parseInt(time[4], 10));
       }
@@ -1192,6 +1191,16 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       obj.dateTo = toDate;
     }
     return obj;
+  }
+
+  navToWorkflowTab(workflow): void {
+    this.coreService.getConfigurationTab().inventory.expand_to = [];
+    this.coreService.getConfigurationTab().inventory.selectedObj = {
+      name: workflow.substring(workflow.lastIndexOf('/') + 1),
+      path: workflow.substring(0, workflow.lastIndexOf('/')) || '/',
+      type: 'WORKFLOW'
+    };
+    this.router.navigate(['/configuration/inventory']);
   }
 
 }

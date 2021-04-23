@@ -39,7 +39,7 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
     });
   }
 
-  refresh(args) {
+  refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'JobStateChanged' || args.eventSnapshots[j].eventType === 'AgentStateChanged' ||
@@ -52,7 +52,7 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     if (this.schedulerIds.selected) {
       this.getRunningTask();
@@ -62,22 +62,22 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
     this.setViewSize(window);
   }
 
-  onResize(event) {
+  onResize(event): void {
     this.setViewSize(event.target);
   }
 
-  private setViewSize(target) {
+  private setViewSize(target): void {
     const w = target.innerWidth / 12;
     this.view[0] = w * this.layout.cols - 90;
     this.view[1] = (this.layout.rows * 50 + ((this.layout.rows - 1) * 20 - 50)) - 6;
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
   }
 
-  agentClusterRunningTaskGraph(res) {
+  agentClusterRunningTaskGraph(res): void {
     this.data = [];
     for (let i = 0; i < res.agents.length; i++) {
       this.data.push({name: res.agents[i].agentName, value: res.agents[i].runningTasks});
@@ -98,7 +98,7 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSelect(event) {
-
+  onSelect(event): void {
+    console.log(event);
   }
 }

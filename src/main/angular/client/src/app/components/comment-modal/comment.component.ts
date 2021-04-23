@@ -3,7 +3,7 @@ import {NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-comment-modal-content',
   templateUrl: './comment.component.html'
 })
 export class CommentModalComponent implements OnInit {
@@ -28,21 +28,24 @@ export class CommentModalComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.submitted = true;
-    this.obj.auditLog = {
-      comment: this.comments.comment,
-      timeSpent: this.comments.timeSpent,
-      ticketLink: this.comments.ticketLink
-    };
-
-    this.postCall(this.obj);
+    if(this.url) {
+      this.submitted = true;
+      this.obj.auditLog = {
+        comment: this.comments.comment,
+        timeSpent: this.comments.timeSpent,
+        ticketLink: this.comments.ticketLink
+      };
+      this.postCall(this.obj);
+    } else{
+      this.activeModal.close(this.comments);
+    }
   }
 
   postCall(obj): void {
-    this.coreService.post(this.url, obj).subscribe(res => {
+    this.coreService.post(this.url, obj).subscribe(() => {
       this.submitted = false;
       this.activeModal.close('Close');
-    }, err => {
+    }, () => {
       this.submitted = false;
     });
   }

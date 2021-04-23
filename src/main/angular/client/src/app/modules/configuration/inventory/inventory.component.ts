@@ -15,6 +15,7 @@ import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {InventoryService} from './inventory.service';
+import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 
 @Component({
   selector: 'app-deploy-draft-modal',
@@ -1651,17 +1652,30 @@ export class UploadModalComponent implements OnInit {
 })
 export class CreateObjectModalComponent implements OnInit {
   @Input() schedulerId: any;
+  @Input() preferences: any;
   @Input() obj: any;
   @Input() copy: any;
   @Input() restore: boolean;
   submitted = false;
   settings: any = {};
+  display: any;
+  required = false;
+  messageList: any;
+  comments: any = {};
   object = {name: '', type: 'suffix', newName: '', onlyContains: false, originalName: '', suffix: '', prefix: ''};
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef) {
   }
 
   ngOnInit(): void {
+    this.display = this.preferences.auditLog;
+    this.comments.radio = 'predefined';
+    if (sessionStorage.comments) {
+      this.messageList = JSON.parse(sessionStorage.comments);
+    }
+    if (sessionStorage.$SOS$FORCELOGING == 'true') {
+      this.required = true;
+    }
     if (this.restore) {
       this.settings = JSON.parse(sessionStorage.$SOS$RESTORE);
     } else if (this.copy) {
@@ -1727,6 +1741,16 @@ export class CreateObjectModalComponent implements OnInit {
       request.newPath = obj.path + (data.noFolder ? '' : (obj.path === '/' ? '' : '/') + this.copy.name);
       request.path = this.copy.path;
     }
+    request.auditLog = {};
+    if (this.comments.comment) {
+      request.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      request.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      request.auditLog.ticketLink = this.comments.ticketLink;
+    }
     this.coreService.post('inventory/copy', request).subscribe((res) => {
       this.activeModal.close(res);
     }, () => {
@@ -1746,6 +1770,16 @@ export class CreateObjectModalComponent implements OnInit {
       request.objectType = 'FOLDER';
       request.newPath = obj.path + (data.noFolder ? '' : (obj.path === '/' ? '' : '/') + this.obj.name);
       request.path = this.obj.path;
+    }
+    request.auditLog = {};
+    if (this.comments.comment) {
+      request.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      request.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      request.auditLog.ticketLink = this.comments.ticketLink;
     }
     this.coreService.post('inventory/trash/restore', request).subscribe((res) => {
       this.activeModal.close(res);
@@ -2766,7 +2800,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  reDeployObject(node) {
+  reDeployObject(node): void {
     const origin = node.origin ? node.origin : node;
     if (origin.controller) {
       this.coreService.post('inventory/deployment/redeploy', {
@@ -2981,31 +3015,72 @@ export class InventoryComponent implements OnInit, OnDestroy {
       path = object.path;
     }
     const obj = this.getObjectArr(object, false);
-    const modal = this.modal.create({
-      nzTitle: null,
-      nzContent: ConfirmModalComponent,
-      nzComponentParams: {
-        title: 'remove',
-        message: 'removeObject',
-        type: 'Reset',
-        objectName: path,
-        countMessage: (obj.objects || object.type) ? 'removeAllObject' : undefined,
-        count: (obj.objects || object.type) ? obj.objects.length : undefined
-      },
-      nzFooter: null,
-      nzClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        if (!object.type && !object.object && !object.controller && !object.dailyPlan) {
-          this.deleteObject(path, object, node);
-        } else {
-          this.coreService.post('inventory/remove', obj).subscribe(() => {
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: object.type,
+        operation: 'Remove',
+        name: object.name
+      };
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          if (!object.type && !object.object && !object.controller && !object.dailyPlan) {
+            this.deleteObject(path, object, node, {
+              auditLog: {
+                comment: result.comment,
+                timeSpent: result.timeSpent,
+                ticketLink: result.ticketLink
+              }
+            });
+          } else {
+            obj.auditLog = {
+              comment: result.comment,
+              timeSpent: result.timeSpent,
+              ticketLink: result.ticketLink
+            };
+            this.coreService.post('inventory/remove', obj).subscribe(() => {
 
-          });
+            });
+          }
         }
-      }
-    });
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'remove',
+          message: 'removeObject',
+          type: 'Reset',
+          objectName: path,
+          countMessage: (obj.objects || object.type) ? 'removeAllObject' : undefined,
+          count: (obj.objects || object.type) ? obj.objects.length : undefined
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          if (!object.type && !object.object && !object.controller && !object.dailyPlan) {
+            this.deleteObject(path, object, node, undefined);
+          } else {
+            this.coreService.post('inventory/remove', obj).subscribe(() => {
+
+            });
+          }
+        }
+      });
+    }
   }
 
   deleteDraft(node): void {
@@ -3017,61 +3092,96 @@ export class InventoryComponent implements OnInit, OnDestroy {
       path = object.path;
     }
     const obj = this.getObjectArr(object, true);
-    const modal = this.modal.create({
-      nzTitle: null,
-      nzContent: ConfirmModalComponent,
-      nzComponentParams: {
-        title: 'delete',
-        message: 'deleteDraftObject',
-        type: 'Delete',
-        objectName: path,
-        countMessage: (obj.objects || object.type) ? 'deleteAllDraftObject' : undefined,
-        count: (obj.objects || object.type) ? obj.objects.length : undefined
-      },
-      nzFooter: null,
-      nzClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        const URL = (object.type || object.object || object.controller || object.dailyPlan) ? 'inventory/delete_draft' : 'inventory/delete_draft/folder';
-        this.coreService.post(URL, obj).subscribe(() => {
-          if (object.id) {
-            let isDraftOnly = true, isDeployObj = true;
-            if (object.type.match(/CALENDAR/) || object.type === 'SCHEDULE') {
-              isDeployObj = false;
-              if (object.hasReleases) {
-                isDraftOnly = false;
-              }
-            } else if (object.hasDeployments) {
-              isDraftOnly = false;
-            }
-            if (isDraftOnly) {
-              if (node.parentNode && node.parentNode.origin && node.parentNode.origin.children) {
-                for (let i = 0; i < node.parentNode.origin.children.length; i++) {
-                  if (node.parentNode.origin.children[i].name === object.name && node.parentNode.origin.children[i].path === object.path) {
-                    node.parentNode.origin.children.splice(i, 1);
-                    break;
-                  }
-                }
-              }
-              this.clearCopyObject(object);
-            } else {
-              object.valid = true;
-              if (isDeployObj) {
-                object.deployed = true;
-              } else {
-                object.released = true;
-              }
-              if ((this.selectedData && this.selectedData.type === object.type && this.selectedData.name === object.name
-                && this.selectedData.path === object.path)) {
-                this.selectedData.reload = true;
-              }
-            }
-            this.updateTree(false);
-          } else {
-            this.clearCopyObject(object);
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: object.type || 'Folder',
+        operation: 'Delete',
+        name: object.name
+      };
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+          obj,
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          obj.auditLog = {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          };
+          this.deleteApiCall(object, node, obj);
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'delete',
+          message: 'deleteDraftObject',
+          type: 'Delete',
+          objectName: path,
+          countMessage: (obj.objects || object.type) ? 'deleteAllDraftObject' : undefined,
+          count: (obj.objects || object.type) ? obj.objects.length : undefined
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.deleteApiCall(object, node, obj);
+        }
+      });
+    }
+  }
+
+  private deleteApiCall(object, node, obj): void {
+    const URL = (object.type || object.object || object.controller || object.dailyPlan) ? 'inventory/delete_draft' : 'inventory/delete_draft/folder';
+    this.coreService.post(URL, obj).subscribe(() => {
+      if (object.id) {
+        let isDraftOnly = true;
+        let isDeployObj = true;
+        if (object.type.match(/CALENDAR/) || object.type === 'SCHEDULE') {
+          isDeployObj = false;
+          if (object.hasReleases) {
+            isDraftOnly = false;
           }
-        });
+        } else if (object.hasDeployments) {
+          isDraftOnly = false;
+        }
+        if (isDraftOnly) {
+          if (node.parentNode && node.parentNode.origin && node.parentNode.origin.children) {
+            for (let i = 0; i < node.parentNode.origin.children.length; i++) {
+              if (node.parentNode.origin.children[i].name === object.name && node.parentNode.origin.children[i].path === object.path) {
+                node.parentNode.origin.children.splice(i, 1);
+                break;
+              }
+            }
+          }
+          this.clearCopyObject(object);
+        } else {
+          object.valid = true;
+          if (isDeployObj) {
+            object.deployed = true;
+          } else {
+            object.released = true;
+          }
+          if ((this.selectedData && this.selectedData.type === object.type && this.selectedData.name === object.name
+            && this.selectedData.path === object.path)) {
+            this.selectedData.reload = true;
+          }
+        }
+        this.updateTree(false);
+      } else {
+        this.clearCopyObject(object);
       }
     });
   }
@@ -3117,6 +3227,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       nzAutofocus: null,
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
+        preferences: this.preferences,
         obj: object,
         restore: true
       },
@@ -3338,6 +3449,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       nzAutofocus: null,
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
+        preferences: this.preferences,
         obj,
         copy: this.copyObj
       },
@@ -3467,6 +3579,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       nzAutofocus: null,
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
+        preferences: this.preferences,
         obj
       },
       nzFooter: null,
@@ -3515,8 +3628,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private deleteObject(path, object, node): void {
-    this.coreService.post('inventory/remove/folder', {path: path}).subscribe(() => {
+  private deleteObject(path, object, node, auditLog): void {
+    this.coreService.post('inventory/remove/folder', {path, auditLog}).subscribe(() => {
       object.deleted = true;
       if (node && node.parentNode && node.parentNode.origin) {
         node.parentNode.origin.children = node.parentNode.origin.children.filter((child) => {

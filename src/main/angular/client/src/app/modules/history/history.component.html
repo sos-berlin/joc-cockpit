@@ -1225,23 +1225,27 @@
                    *ngIf="transfer.show && historyFilters.current"
                    (click)="transfer.show = false;$event.stopPropagation()"></i>&nbsp;
                 <span class="label" [ngClass]="coreService.getColor(transfer.state.severity,'bg')"
-                      [innerHtml]="transfer.state._text | translate"></span>
+                      [innerHtml]="transfer.state._text | translate | highlight : yade.searchText"></span>
                 </span>
               </td>
               <td (click)="coreService.showLogWindow(null, transfer,null,null,true)"
-                  [innerHtml]="transfer.profile"></td>
+                  [innerHtml]="transfer.profile | highlight : yade.searchText"></td>
               <td (click)="coreService.showLogWindow(null, transfer,null,null,true)"
-                  [innerHtml]="transfer.mandator"></td>
+                  [innerHtml]="transfer.mandator | highlight : yade.searchText"></td>
               <td (click)="coreService.showLogWindow(null, transfer,null,null,true)"
-                  [innerHtml]="transfer._operation"></td>
+                  [innerHtml]="transfer._operation | highlight : yade.searchText"></td>
               <td (click)="coreService.showLogWindow(null, transfer,null,null,true)">
-                <span *ngIf="transfer.source" [innerHtml]="transfer.workflowPath"></span>
+                <span class="show-in-single-line w-full">
+                  <i (click)="navToWorkflowTab(transfer.workflowPath);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                  <span (click)="coreService.showWorkflow(transfer.workflowPath);$event.stopPropagation()"
+                        class="text-hover-primary" [innerHtml]="transfer.workflowPath | highlight : yade.searchText"></span>
+                </span>
               </td>
               <td (click)="coreService.showLogWindow(null, transfer,null,null,true)">
-                <span *ngIf="transfer.target" [innerHtml]="transfer.orderId"></span>
+                <span *ngIf="transfer.target" [innerHtml]="transfer.orderId | highlight : yade.searchText"></span>
               </td>
               <td (click)="coreService.showLogWindow(null, transfer,null,null,true)"
-                  [innerHtml]="transfer.numOfFiles"></td>
+                  [innerHtml]="transfer.numOfFiles | highlight : yade.searchText"></td>
               <td style="width: 20% !important;" (click)="coreService.showLogWindow(null, transfer,null,null,true)" class="text-danger">
                 <span *ngIf="transfer.error" [innerHtml]="transfer.error.message"></span>
               </td>

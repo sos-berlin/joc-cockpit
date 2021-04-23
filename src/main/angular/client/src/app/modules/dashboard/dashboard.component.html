@@ -50,13 +50,13 @@
               <div *ngIf="item.name === 'agentClusterStatus'">
                   <app-agent-status [layout]="item"></app-agent-status>
               </div>
-              <div *ngIf="item.name === 'js7ClusterStatus'">
+              <div *ngIf="item.name === 'componentStatus'">
                   <app-controller-cluster [sizeY]="item.rows" [permission]="permission"></app-controller-cluster>
               </div>
-              <div *ngIf="item.name === 'agentClusterRunningTasks'">
+              <div *ngIf="item.name === 'agentRunningJobs'">
                   <app-agent-running-task [layout]="item"></app-agent-running-task>
               </div>
-              <div *ngIf="item.name === 'js7Status'">
+              <div *ngIf="item.name === 'JS7Status'">
                   <app-scheduler-instance [sizeY]="item.rows" [permission]="permission"></app-scheduler-instance>
               </div>
               <div *ngIf="item.name === 'orders'">

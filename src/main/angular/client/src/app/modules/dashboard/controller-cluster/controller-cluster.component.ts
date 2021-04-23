@@ -775,6 +775,15 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     this.postCall('joc/cluster/switch_member', {memberId: this.joc.memberId});
   }
 
+  removeFromInventory(): void {
+    this.postCall('joc/cluster/delete_member', {memberId: this.joc.memberId});
+  }
+
+  downloadJocLog(): void {
+    this.coreService.download('joc/log', {}, 'joc.log', (res) => {
+    });
+  }
+
   private refreshEvent(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
@@ -788,11 +797,6 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
         }
       }
     }
-  }
-
-  downloadJocLog(): void {
-    this.coreService.download('joc/log', {}, 'joc.log', (res) => {
-    });
   }
 
   private onRefresh(): any {
