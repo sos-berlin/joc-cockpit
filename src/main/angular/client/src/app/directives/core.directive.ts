@@ -207,7 +207,7 @@ export class IdentifierValidator implements Validator {
       if (v == '') {
         return null;
       }
-      if (/^([a-zA-Z0-9_]+[-.]{1})*[a-zA-Z0-9_]+$/.test(v)) {
+      if (/^([a-zA-Z0-9_\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\uFF00-\uFFEF\u4E00-\u9FAF\u2605-\u2606\u2190-\u2195\u203B]+[-.]{1})*[a-zA-Z0-9_\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\uFF00-\uFFEF\u4E00-\u9FAF\u2605-\u2606\u2190-\u2195\u203B]+$/.test(v)) {
         if (/^(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|double|do|else|enum|extends|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)$/.test(v)) {
           return {
             invalidIdentifier: true
@@ -239,7 +239,7 @@ export class EnvVariableValidator implements Validator {
       if (v == '') {
         return null;
       }
-      if (/^([A-Z]|[a-z]|_|\$)([A-Z]|[a-z]|[0-9]|\$|_)*$/.test(v)) {
+      if (/^([A-Z]|[a-z]|_|\$)([A-Z]|[a-z]|[0-9]|\$|_)*$/.test(v) || /^[0-9_$\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\uFF00-\uFFEF\u4E00-\u9FAF\u2605-\u2606\u2190-\u2195\u203B]*$/.test(v)) {
         if (/^(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|double|do|else|enum|extends|false|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|null|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)$/.test(v)) {
           return {
             invalidIdentifier: true
@@ -271,7 +271,7 @@ export class LabelValidator implements Validator {
       if (v == '') {
         return null;
       }
-      if (!/^([A-Z]|[a-z]|[0-9]|_)([A-Z]|[a-z]|[0-9]|\$|_|,|-|#|:|!|)*$/.test(v)) {
+      if (!/^([A-Z\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\uFF00-\uFFEF\u4E00-\u9FAF\u2605-\u2606\u2190-\u2195\u203B]|[a-z]|[0-9]|_)([A-Z\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\uFF00-\uFFEF\u4E00-\u9FAF\u2605-\u2606\u2190-\u2195\u203B]|[a-z]|[0-9]|\$|_|,|-|#|:|!|)*$/.test(v)) {
         return {
           invalidIdentifier: true
         };

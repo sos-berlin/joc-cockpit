@@ -12,7 +12,7 @@
                 <span translate>common.label.sortBy</span>
                 <span class="text-primary">
                   <span *ngIf="locksFilters.filter.sortBy =='id'">
-                    {{'resource.lock.label.lockId' | translate}}
+                    {{'resource.lock.label.name' | translate}}
                     <i *ngIf="!locksFilters.reverse" class="fa fa-caret-up"></i>
                     <i *ngIf="locksFilters.reverse" class="fa fa-caret-down"></i>
                   </span>
@@ -26,7 +26,7 @@
               <nz-dropdown-menu #sortBy="nzDropdownMenu" >
                 <ul nz-menu>
                   <li nz-menu-item  >
-                    <a (click)="sort('id')" translate>resource.lock.label.lockId</a>
+                    <a (click)="sort('id')" translate>resource.lock.label.name</a>
                   </li>
                   <li nz-menu-item  >
                     <a (click)="sort('path')" translate>common.label.path</a>
@@ -138,7 +138,7 @@
                 >
                   <thead>
                   <tr>
-                    <th (click)="sort('id')"><a><span class="p-r-xs" translate>resource.lock.label.lockId</span>
+                    <th (click)="sort('id')"><a><span class="p-r-xs" translate>resource.lock.label.name</span>
                       <i *ngIf="locksFilters.filter.sortBy == 'id' && !locksFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="locksFilters.filter.sortBy == 'id' && locksFilters.reverse"

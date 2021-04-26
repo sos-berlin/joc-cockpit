@@ -50,13 +50,13 @@
         </div>
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((path.dirty || path.touched) && path.invalid))}">
-          <label class="col-md-4 col-lg-3  form-control-label" translate>inventory.label.workflowPath</label>
+          <label class="col-md-4 col-lg-3  form-control-label" translate>inventory.label.workflowName</label>
           <div class="col-md-8 col-lg-6 select-input-both">
             <input autocomplete="off" [readOnly]="isTrash" type="text" class="form-control"
-                   placeholder="{{'inventory.placeholder.workflowPath' | translate}}"
-                   name="path" #path="ngModel" [(ngModel)]="fileOrder.configuration.workflowPath">
+                   placeholder="{{'inventory.placeholder.workflowName' | translate}}"
+                   name="path" #path="ngModel" [(ngModel)]="fileOrder.configuration.workflowName">
             <nz-tree-select
-              name="workflowPath"
+              name="workflowName"
               [disabled]="isTrash"
               nzNoAnimation
               #treeSelectCtrl
@@ -65,13 +65,13 @@
               [nzHideUnMatched]="true"
               [nzDropdownStyle]="{ 'max-height': '260px' }"
               nzShowSearch
-              [(ngModel)]="fileOrder.configuration.workflowPath1"
+              [(ngModel)]="fileOrder.configuration.workflowName1"
               (nzExpandChange)="onExpand($event)"
             >
               <ng-template #nzTreeTemplate let-node>
                 <div style="width: 93%" class="node-wrapper" (click)="loadData(node, $event);">
                   <div class="node-content-wrapper"
-                       [class.node-content-wrapper-active]="node.origin.path == fileOrder.configuration.workflowPath">
+                       [class.node-content-wrapper-active]="node.origin.path == fileOrder.configuration.workflowName">
                     <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
                        class="w-14"></i>
                     <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
@@ -86,7 +86,7 @@
               </div>
             </div>
           </div>
-          <div *ngIf="fileOrder.configuration.workflowPath" style="position: relative; top: 2px">
+          <div *ngIf="fileOrder.configuration.workflowName" style="position: relative; top: 2px">
             <i (click)="navToWorkflow()" class="fa fa-pencil cursor"></i>
           </div>
         </div>

@@ -2404,7 +2404,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           path: data.path,
           key: (KEY + 'File_Order_Sources$')
         },
-        {name: 'Job Classes', title: 'Job Classes', object: 'JOBCLASS', children: [], path: data.path, key: (KEY + 'Job_Classes$')},
+        {name: 'Job Resources', title: 'Job Resources', object: 'JOBRESOURCE', children: [], path: data.path, key: (KEY + 'Job_Resources$')},
         {name: 'Junctions', title: 'Junctions', object: 'JUNCTION', children: [], path: data.path, key: (KEY + 'Junctions$')},
         {name: 'Locks', title: 'Locks', object: 'LOCK', children: [], path: data.path, key: (KEY + 'Locks$')}
       ];
@@ -2424,8 +2424,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           resObject = res.workflows;
         } else if (controllerObj.controllerArr[i].object === 'FILEORDERSOURCE') {
           resObject = res.fileOrderSources;
-        } else if (controllerObj.controllerArr[i].object === 'JOBCLASS') {
-          resObject = res.jobClasses;
+        } else if (controllerObj.controllerArr[i].object === 'JOBRESOURCE') {
+          resObject = res.jobResources;
         } else if (controllerObj.controllerArr[i].object === 'JUNCTION') {
           resObject = res.junctions;
         } else if (controllerObj.controllerArr[i].object === 'LOCK') {
@@ -3589,9 +3589,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (res) {
         let configuration = {};
         obj.name = res.name;
-        if (type === 'JOBCLASS') {
-          configuration = {maxProcesses: 1};
-        } else if (type === 'SCHEDULE') {
+        if (type === 'SCHEDULE') {
           configuration = {controllerId: this.schedulerIds.selected};
         } else if (type === 'LOCK') {
           configuration = {limit: 1, id: res.name};

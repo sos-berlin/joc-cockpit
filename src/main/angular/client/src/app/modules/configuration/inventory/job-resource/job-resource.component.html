@@ -1,0 +1,92 @@
+<div class="row">
+  <div class="col-md-12" *ngIf="data.type">
+    <div class="box p-a">
+      <div class="b-b p-b m-b">
+        <span class="text-left">
+          <a (click)="backToListView()"><i nz-tooltip="{{'inventory.button.backToList' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
+          <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
+        </span>
+        <div class="inline pull-right" *ngIf="!isTrash">
+          <span class="badge badge-success m-r-12" *ngIf="jobResource.valid">
+              <span translate>inventory.label.valid</span>
+          </span>
+          <span class="badge" [ngClass]="!data.deployed ? 'badge-danger':'badge-success'">
+            <span *ngIf="!data.deployed" translate>inventory.label.notDeployed</span>
+            <span *ngIf="data.deployed" translate>inventory.label.deployed</span>
+          </span>
+          <button *ngIf="permission.joc.inventory.deploy && permission.controllerDefaults.deployments.deploy" type="button" [disabled]="!jobResource.valid && !jobResource.hasDeployments" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="deploy()" >
+            <i class="fa fa-rocket p-r-xs"></i>
+            <span translate>inventory.button.deploy</span>
+          </button>
+        </div>
+      </div>
+      <form *ngIf="jobResource.configuration">
+        <div class="form-group row" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.name</label>
+          <div class="col-md-8 col-lg-6">
+            <input type="text" class="form-control" [readonly]="isTrash" [appAutofocus]="!isTrash" identifierValidation required name="name" #name="ngModel" autocomplete="off"
+                   [(ngModel)]="jobResource.name" (blur)="rename(name.invalid)">
+            <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
+              <div *ngIf="name.errors.required">
+                <div translate>common.message.requiredError</div>
+              </div>
+              <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
+          <div class="col-md-8 col-lg-6">
+            <input type="text" class="form-control" [readonly]="isTrash" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
+                   name="title" [(ngModel)]="jobResource.configuration.title" (blur)="saveJSON()">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-12 _600" translate>workflow.label.environmentVariables</label>
+        </div>
+        <div class="form-group row m-b-0">
+          <div class="col-md-12">
+            <div class="form-group row m-b-0"
+                 *ngFor="let env of jobResource.configuration.env; let i = index">
+              <div class="col-md-4 col-lg-3 m-b-sm" *ngIf="i==0" translate>common.label.name</div>
+              <div class="col-md-8 col-lg-9 m-b-sm" *ngIf="i==0" translate>common.label.value</div>
+              <div class="col-md-4 col-lg-3 m-b-sm "
+                   [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}">
+                <input type="text" envVariableValidation name="name{{i}}" class="form-control" [(ngModel)]="env.name"
+                       #ename="ngModel"
+                       placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
+                <div *ngIf="ename.invalid && ename.errors && (ename.dirty || ename.touched)"
+                     class="text-danger help-block">
+                  <div *ngIf="ename.errors.invalidIdentifier" translate>common.message.invalid</div>
+                </div>
+              </div>
+              <div class="col-md-7 col-lg-6m-b-sm">
+                <input type="text" autocomplete="off" class="form-control" [(ngModel)]="env.value" name="value{{i}}"
+                       placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
+              </div>
+              <div class="col-md-1 col-lg-1 p-l-0">
+                <a><i (click)="removeEnv(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+              </div>
+            </div>
+            <div class="form-group row" [ngClass]="{'disable-link': isTrash}">
+              <div class="col-sm-12">
+                <a class="text-u-l" *ngIf="jobResource.configuration.env.length>0" (click)="addEnv()" translate>order.button.addAnotherVariable</a>
+                <a class="text-u-l" *ngIf="jobResource.configuration.env.length==0" (click)="addEnv()" translate>order.button.addVariable</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-12" *ngIf="data.object">
+    <app-table
+      [schedulerId]="schedulerId"
+      [preferences]="preferences"
+      [permission]="permission"
+      [copyObj]="copyObj"
+      [isTrash]="isTrash"
+      [objectType]="objectType"
+      [dataObj]="data"></app-table>
+  </div>
+</div>

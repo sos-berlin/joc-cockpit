@@ -710,7 +710,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     let obj = {
       controllerId: this.schedulerIds.selected,
       url: controller.url,
-      withFailover: isFailOver,
+      withSwitchover: isFailOver,
       auditLog: {}
     };
 
@@ -743,7 +743,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     if (obj === null) {
       obj = {};
       obj.controllerId = this.schedulerIds.selected;
-      obj.withFailover = isFailOver;
+      obj.withSwitchover = isFailOver;
       obj.auditLog = {};
     }
     if (action === 'terminate') {
@@ -756,7 +756,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
       this.postCall('controller/restart', obj);
     } else if (action === 'switchover') {
       const obj1 = obj;
-      delete obj1['withFailover'];
+      delete obj1['withSwitchover'];
       this.postCall('controller/cluster/switchover', obj1);
     } else if (action === 'download') {
       this.coreService.download('controller/log', {

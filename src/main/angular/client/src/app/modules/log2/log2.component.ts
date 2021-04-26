@@ -349,8 +349,8 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
         if (dt[i].agentUrl) {
           col += 'url=' + dt[i].agentUrl + ', ';
         }
-        if (dt[i].agentPath) {
-          col += 'path=' + dt[i].agentPath + ', ';
+        if (dt[i].agentId) {
+          col += 'id=' + dt[i].agentId + ', ';
         }
         if (dt[i].agentDatetime) {
           const datetime = this.preferences.logTimezone ? this.coreService.getLogDateFormat(dt[i].agentDatetime, this.preferences.zone) : dt[i].agentDatetime;

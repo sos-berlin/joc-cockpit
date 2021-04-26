@@ -2,7 +2,8 @@
   <h4 class="modal-title" *ngIf="!copy && !restore">
     <span *ngIf="obj.type === 'WORKFLOW'" translate>inventory.label.createWorkflow</span>
     <span *ngIf="obj.type === 'FILEORDERSOURCE'" translate>inventory.label.createFileOrderSource</span>
-    <span *ngIf="obj.type === 'JOBCLASS'" translate>inventory.label.createJobClass</span>
+    <!--<span *ngIf="obj.type === 'JOBCLASS'" translate>inventory.label.createJobClass</span>-->
+    <span *ngIf="obj.type === 'JOBRESOURCE'" translate>inventory.label.createJobResource</span>
     <span *ngIf="obj.type === 'JUNCTION'" translate>inventory.label.createJunction</span>
     <span *ngIf="obj.type === 'LOCK'" translate>inventory.label.createLock</span>
     <span *ngIf="obj.type === 'SCHEDULE'" translate>inventory.label.createOrder</span>
@@ -35,7 +36,7 @@
       <div class="form-group row" *ngIf="comments.radio=='predefined'"
            [ngClass]="{'has-error' : ((comment.dirty || comment.touched) && comment.invalid)}">
         <label class="col-md-3 form-control-label" translate>common.label.selectComment</label>
-        <div class="col-md-6">
+        <div class="col-md-6" [ngClass]="{'col-md-9' : copy && copy.objectType}">
           <nz-select nzPlaceHolder="{{'common.label.selectPredefinedReason' | translate}}"
                      [(ngModel)]="comments.comment" name="comment" #comment="ngModel"
                      [required]="required && comments.radio=='predefined'">
@@ -55,7 +56,7 @@
       <div class="form-group row" *ngIf="comments.radio=='new'"
            [ngClass]="{'has-error' : ((textComment.dirty || textComment.touched) && textComment.invalid)}">
         <label class="col-md-3 " translate>common.label.comment</label>
-        <div class="col-md-6">
+        <div class="col-md-6" [ngClass]="{'col-md-9' : copy && copy.objectType}">
               <textarea rows="3" class="form-control" maxlength="2000" name="textComment" #textComment="ngModel"
                         [required]="required && comments.radio=='new'"
                         [(ngModel)]="comments.textComment"
@@ -74,7 +75,7 @@
       <div class="form-group row"
            [ngClass]="{'has-error' : ((timeSpent.dirty || timeSpent.touched) && timeSpent.invalid)}">
         <label class="col-md-3 form-control-label" translate>common.label.timeSpend</label>
-        <div class="col-md-6">
+        <div class="col-md-6" [ngClass]="{'col-md-9' : copy && copy.objectType}">
           <input type="text" pattern="[1-9[0-9]*" class="form-control" name="timeSpent" #timeSpent="ngModel"
                  placeholder="{{'common.placeholder.timeSpend' | translate}}" [(ngModel)]="comments.timeSpent">
           <div *ngIf="timeSpent.invalid && (timeSpent.dirty || timeSpent.touched)" class="text-danger m-t-xs">
@@ -87,7 +88,7 @@
       <div class="form-group row"
            [ngClass]="{'has-error' : ((ticketLink.dirty || ticketLink.touched) && ticketLink.invalid)}">
         <label class="col-md-3 form-control-label" translate>common.label.ticketLink</label>
-        <div class="col-md-6">
+        <div class="col-md-6" [ngClass]="{'col-md-9' : copy && copy.objectType}">
           <input type="text"
                  pattern="(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})"
                  class="form-control" name="ticketLink" #ticketLink="ngModel"
@@ -121,7 +122,7 @@
         <label class="col-md-3" translate>inventory.label.newName</label>
         <div class="col-md-9">
           <nz-radio-group name="type" [(ngModel)]="object.type">
-            <label nz-radio *ngIf="copy.objectType" nzValue="name"><span translate>inventory.label.specifyName</span></label>
+            <label nz-radio *ngIf="copy && copy.objectType" nzValue="name"><span translate>inventory.label.specifyName</span></label>
             <label nz-radio nzValue="prefix"><span translate>inventory.label.prefix</span></label>
             <label nz-radio nzValue="suffix"><span translate>inventory.label.suffix</span></label>
           </nz-radio-group>
@@ -129,7 +130,7 @@
       </div>
       <div class="form-group row" *ngIf="object.type === 'suffix'">
         <label class="col-md-3"></label>
-        <div class="col-md-6" [ngClass]="{'has-error' : ((suffix.dirty || suffix.touched) && suffix.invalid), 'col-md-9' : copy.objectType}">
+        <div class="col-md-6" [ngClass]="{'has-error' : ((suffix.dirty || suffix.touched) && suffix.invalid), 'col-md-9' : copy && copy.objectType}">
           <input type="text" required identifierValidation class="form-control" name="suffix" placeholder="{{'inventory.placeholder.suffix' | translate}}"
                  #suffix="ngModel" [(ngModel)]="object.suffix" [appAutofocus]="true" autocomplete="off">
           <div *ngIf="suffix.invalid && (suffix.dirty || suffix.touched)"

@@ -41,20 +41,48 @@
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.agent</label>
         <div class="col-md-8 col-lg-9"
-             [ngClass]="{'has-error' : (obj.agent || (agentId.dirty || agentId.touched) && agentId.invalid)}">
-          <nz-select nzShowSearch name="agentId" nzPlaceHolder="{{'workflow.placeholder.selectAgentName' | translate}}"
-                     [(ngModel)]="selectedNode.job.agentId" #agentId="ngModel" (ngModelChange)="onBlur();">
+             [ngClass]="{'has-error' : (obj.agent || (agentName.dirty || agentName.touched) && agentName.invalid)}">
+          <nz-select nzShowSearch name="agentName" nzPlaceHolder="{{'workflow.placeholder.selectAgentName' | translate}}"
+                     [(ngModel)]="selectedNode.job.agentName" #agentName="ngModel" (ngModelChange)="onBlur();">
             <nz-option *ngFor="let agent of agents" [nzLabel]="agent" [nzValue]="agent"></nz-option>
           </nz-select>
-          <div *ngIf="obj.agent || agentId.invalid && (agentId.dirty || agentId.touched)"
+          <div *ngIf="obj.agent || agentName.invalid && (agentName.dirty || agentName.touched)"
                class="text-danger help-block">
-            <div *ngIf="(agentId.errors && agentId.errors.required) || obj.agent">
+            <div *ngIf="(agentName.errors && agentName.errors.required) || obj.agent">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
         </div>
       </div>
-
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.jobResourceNames</label>
+        <div class="col-md-8 col-lg-9">
+          <nz-tree-select
+            name="jobResource"
+            #treeSelectCtrl2
+            nzNoAnimation
+            nzMultiple
+            [nzNodes]="jobResourcesTree"
+            [nzAsyncData]="true"
+            [nzHideUnMatched]="true"
+            [nzDropdownStyle]="{ 'max-height': '260px' }"
+            nzShowSearch
+            [nzPlaceHolder]="'workflow.placeholder.selectJobResources' | translate"
+            [(ngModel)]="selectedNode.job.jobResourceNames"
+            (nzExpandChange)="onExpand($event, 'JOBRESOURCE')"
+          >
+            <ng-template #nzTreeTemplate let-node>
+              <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'JOBRESOURCE', $event);">
+                <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == selectedNode.job.jobResourceNames">
+                  <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                  <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                  {{node.origin.name}}
+                </div>
+              </div>
+            </ng-template>
+          </nz-tree-select>
+        </div>
+      </div>
       <div class="form-group row">
         <div class="col-md-4 col-lg-3" translate>workflow.label.returnCode</div>
         <div class="col-md-8 col-lg-9">

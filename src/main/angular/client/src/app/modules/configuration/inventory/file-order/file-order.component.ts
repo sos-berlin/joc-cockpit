@@ -91,7 +91,7 @@ export class FileOrderComponent implements OnChanges, OnInit {
       this.getAgents();
       this.getWorkflows();
       if (!res.valid) {
-        if (!this.fileOrder.configuration.workflowPath) {
+        if (!this.fileOrder.configuration.workflowName) {
           this.invalidMsg = 'inventory.message.workflowIsMissing';
         } else if (!this.fileOrder.configuration.agentId) {
           this.invalidMsg = 'inventory.message.agentIsMissing';
@@ -116,7 +116,7 @@ export class FileOrderComponent implements OnChanges, OnInit {
   private setErrorMessage(res): void {
     if (res.invalidMsg) {
       this.invalidMsg = res.invalidMsg;
-      if (res.invalidMsg.match('workflowPath')) {
+      if (res.invalidMsg.match('workflowName')) {
         this.invalidMsg = 'inventory.message.workflowIsMissing';
       } else if (res.invalidMsg.match('agentId')) {
         this.invalidMsg = 'inventory.message.agentIsMissing';
@@ -166,13 +166,13 @@ export class FileOrderComponent implements OnChanges, OnInit {
         this.updateList(node);
       }
     } else {
-      if (this.fileOrder.configuration.workflowPath1) {
-        if (this.fileOrder.configuration.workflowPath !== this.fileOrder.configuration.workflowPath1) {
-          this.fileOrder.configuration.workflowPath = this.fileOrder.configuration.workflowPath1;
+      if (this.fileOrder.configuration.workflowName1) {
+        if (this.fileOrder.configuration.workflowName !== this.fileOrder.configuration.workflowName1) {
+          this.fileOrder.configuration.workflowName = this.fileOrder.configuration.workflowName1;
         }
       } else if (node.key && !node.key.match('/')) {
-        if (this.fileOrder.configuration.workflowPath !== node.key) {
-          this.fileOrder.configuration.workflowPath = node.key;
+        if (this.fileOrder.configuration.workflowName !== node.key) {
+          this.fileOrder.configuration.workflowName = node.key;
         }
       }
       setTimeout(() => {
@@ -221,7 +221,7 @@ export class FileOrderComponent implements OnChanges, OnInit {
   }
 
   navToWorkflow(): void {
-    this.dataService.reloadTree.next({navigate: {name: this.fileOrder.configuration.workflowPath, type: 'WORKFLOW'}});
+    this.dataService.reloadTree.next({navigate: {name: this.fileOrder.configuration.workflowName, type: 'WORKFLOW'}});
   }
 
   saveJSON(): void {
@@ -230,7 +230,7 @@ export class FileOrderComponent implements OnChanges, OnInit {
     }
     if (this.fileOrder.actual !== JSON.stringify(this.fileOrder.configuration)) {
       let isValid = false;
-      if (this.fileOrder.configuration.workflowPath && this.fileOrder.configuration.agentId) {
+      if (this.fileOrder.configuration.workflowName && this.fileOrder.configuration.agentId) {
         isValid = true;
       }
       this.fileOrder.configuration.id = this.fileOrder.name;

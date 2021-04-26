@@ -62,7 +62,7 @@ export class WorkflowService {
 
   create_UUID() {
     let dt = new Date().getTime();
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
       let r = (dt + Math.random() * 16) % 16 | 0;
       dt = Math.floor(dt / 16);
       return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
@@ -86,7 +86,7 @@ export class WorkflowService {
     } else if (type === 'If') {
       obj.predicate = node._predicate;
     } else if (type === 'Lock') {
-      obj.lockId = node._lockId;
+      obj.lockName = node._lockName;
       obj.count = node._count;
     } else if (type === 'Retry') {
       obj.maxTries = node._maxTries;
@@ -157,7 +157,7 @@ export class WorkflowService {
   }
 
   isValidObject(str): boolean {
-    if (/^([a-zA-Z0-9_]+[-.]{1})*[a-zA-Z0-9_]+$/.test(str)) {
+    if (/^([a-zA-Z0-9_\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\uFF00-\uFFEF\u4E00-\u9FAF\u2605-\u2606\u2190-\u2195\u203B]+[-.]{1})*[a-zA-Z0-9_\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\uFF00-\uFFEF\u4E00-\u9FAF\u2605-\u2606\u2190-\u2195\u203B]+$/.test(str)) {
       return !/^(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|double|do|else|enum|extends|false|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|null|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)$/.test(str);
     } else {
       return false;
@@ -165,7 +165,7 @@ export class WorkflowService {
   }
 
   isValidLabel(str): boolean {
-    return /^([A-Z]|[a-z]|[0-9]|_)([A-Z]|[a-z]|[0-9]|\$|_|,|-|#|:|!|)*$/.test(str);
+    return /^([A-Z\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\uFF00-\uFFEF\u4E00-\u9FAF\u2605-\u2606\u2190-\u2195\u203B]|[a-z]|[0-9]|_)([A-Z]|[a-z]|[0-9]|\$|_|,|-|#|:|!|)*$/.test(str);
   }
 
   validateFields(value, type): boolean {
@@ -194,7 +194,7 @@ export class WorkflowService {
         if (!value.count) {
           delete value['count'];
         }
-        if (!value.lockId) {
+        if (!value.lockName) {
           return false;
         }
       }
@@ -526,7 +526,7 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'Lock') {
             _node.setAttribute('label', 'lock');
-            _node.setAttribute('lockId', json.instructions[x].lockId || '');
+            _node.setAttribute('lockName', json.instructions[x].lockName || '');
             _node.setAttribute('count', json.instructions[x].count || '');
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.lock);
@@ -913,13 +913,13 @@ export class WorkflowService {
         return '<b>' + msg + '</b> : ' + (cell.getAttribute('predicate') || '-');
       } else if (cell.value.tagName === 'Lock') {
         let msg = '', limit = '';
-        this.translate.get('workflow.label.lockId').subscribe(translatedValue => {
+        this.translate.get('workflow.label.lockName').subscribe(translatedValue => {
           msg = translatedValue;
         });
         this.translate.get('workflow.label.count').subscribe(translatedValue => {
           limit = translatedValue;
         });
-        return '<b>' + msg + '</b> : ' + (cell.getAttribute('lockId') || '-') + '</br>' +
+        return '<b>' + msg + '</b> : ' + (cell.getAttribute('lockName') || '-') + '</br>' +
           '<b>' + limit + '</b> : ' + (cell.getAttribute('count') || '-');
       } else if (cell.value.tagName === 'Finish' && cell.value.tagName === 'Fail') {
         let msg = '', returnCode = '';
@@ -1086,5 +1086,4 @@ export class WorkflowService {
       }
     }
   }
-
 }

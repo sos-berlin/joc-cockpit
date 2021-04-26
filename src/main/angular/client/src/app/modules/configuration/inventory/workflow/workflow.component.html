@@ -151,7 +151,7 @@
     </div>
     <div class="m-l-xs m-r-xs text-left" *ngIf="selectedNode">
       <div class="box-body p-t-0" *ngIf="selectedNode.type === 'Job'">
-        <app-job-content [selectedNode]="selectedNode" [orderRequirements]="orderRequirements" [jobs]="jobs" [agents]="agents" [jobClassTree]="jobClassTree" [schedulerId]="schedulerId"></app-job-content>
+        <app-job-content [selectedNode]="selectedNode" [orderRequirements]="orderRequirements" [jobs]="jobs" [agents]="agents" [jobResourcesTree]="jobResourcesTree" [schedulerId]="schedulerId"></app-job-content>
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'If'">
         <app-expression-content [selectedNode]="selectedNode" [error]="error"></app-expression-content>
@@ -290,26 +290,26 @@
         </div>
       </div>
       <div class="box-body job-property-editor" *ngIf="selectedNode.type === 'Lock'">
-        <div class="form-group row" [ngClass]="{'has-error' : (error && !lockId.touched) || ((lockId.dirty || lockId.touched) && lockId.invalid)}">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.lockId</label>
+        <div class="form-group row" [ngClass]="{'has-error' : (error && !lockName.touched) || ((lockName.dirty || lockName.touched) && lockName.invalid)}">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.lockName</label>
           <div class="col-md-8 col-lg-9 select-input-both">
             <input autocomplete="off"  type="text" class="form-control" required
                    placeholder="{{'workflow.placeholder.selectLock' | translate}}"
-                   name="lockId" #lockId="ngModel" [(ngModel)]="selectedNode.obj.lockId">
+                   name="lockName" #lockName="ngModel" [(ngModel)]="selectedNode.obj.lockName">
             <nz-tree-select
-              name="lockIdSelect"
+              name="lockNameSelect"
               nzNoAnimation
               [nzNodes]="lockTree"
               [nzHideUnMatched]="true"
               [nzDropdownStyle]="{ 'max-height': '260px' }"
               nzShowSearch
               [nzAllowClear]="false"
-              [(ngModel)]="selectedNode.obj.lockId1"
+              [(ngModel)]="selectedNode.obj.lockName1"
               (nzExpandChange)="onExpand($event, 'LOCK')"
             >
               <ng-template #nzTreeTemplate let-node>
                 <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'LOCK', $event);">
-                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == selectedNode.obj.lockId">
+                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == selectedNode.obj.lockName">
                     <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                     <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
                     {{node.origin.name}}
@@ -317,15 +317,15 @@
                 </div>
               </ng-template>
             </nz-tree-select>
-            <div *ngIf="(error && !lockId.touched) || lockId.invalid && (lockId.dirty || lockId.touched)"
+            <div *ngIf="(error && !lockName.touched) || lockName.invalid && (lockName.dirty || lockName.touched)"
                  class="text-danger help-block">
-              <div *ngIf="error || (lockId.errors && lockId.errors.required)">
+              <div *ngIf="error || (lockName.errors && lockName.errors.required)">
                 <div translate>common.message.requiredError</div>
               </div>
             </div>
           </div>
-          <div *ngIf="selectedNode.obj.lockId" class="pos-abt" style="margin-top: 3px; right: 5px">
-            <i (click)="navToLock(selectedNode.obj.lockId)" class="fa fa-pencil cursor"></i>
+          <div *ngIf="selectedNode.obj.lockName" class="pos-abt" style="margin-top: 3px; right: 5px">
+            <i (click)="navToLock(selectedNode.obj.lockName)" class="fa fa-pencil cursor"></i>
           </div>
         </div>
         <div class="form-group row">

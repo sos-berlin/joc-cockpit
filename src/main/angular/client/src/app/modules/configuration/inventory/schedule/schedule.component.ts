@@ -33,7 +33,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
               private calendarService: CalendarService, private dataService: DataService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
   }
 
@@ -66,17 +66,17 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     if (this.schedule.name) {
       this.saveJSON();
     }
   }
 
-  openRuntimeEditor() {
+  openRuntimeEditor(): void {
     this.isVisible = true;
   }
 
-  closeCalendarView() {
+  closeCalendarView(): void {
     this.isVisible = false;
     setTimeout(() => {
       this.saveJSON();
@@ -128,7 +128,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           this.schedule.configuration.workflowName = node.key;
         }
       }
-      if(this.schedule.configuration.workflowName) {
+      if (this.schedule.configuration.workflowName) {
         this.getWorkflowInfo(this.schedule.configuration.workflowName);
       }
       setTimeout(() => {
@@ -137,7 +137,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  updateList(node, type) {
+  updateList(node, type): void {
     let obj: any = {
       path: node.key,
       objectTypes: [type]
@@ -151,9 +151,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       }
       for (let i = 0; i < data.length; i++) {
         const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-        data[i].title =  data[i].name;
+        data[i].title = data[i].name;
         data[i].path = _path;
-        data[i].key =  data[i].name;
+        data[i].key = data[i].name;
         data[i].type = type;
         data[i].isLeaf = true;
       }
@@ -171,11 +171,11 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
-  onExpand(e, type) {
+  onExpand(e, type): void {
     this.loadData(e.node, type, null);
   }
 
-  private getWorkflowInfo(name) {
+  private getWorkflowInfo(name): void {
     this.coreService.post('inventory/read/configuration', {
       path: name,
       objectType: 'WORKFLOW'
@@ -185,11 +185,11 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
-  navToWorkflow() {
-    this.dataService.reloadTree.next({navigate: {name: this.schedule.configuration.workflowName,  type: 'WORKFLOW'}});
+  navToWorkflow(): void {
+    this.dataService.reloadTree.next({navigate: {name: this.schedule.configuration.workflowName, type: 'WORKFLOW'}});
   }
 
-  updateVariableList() {
+  updateVariableList(): void {
     this.variableList = [];
     if (this.workflow.orderRequirements && this.workflow.orderRequirements.parameters && !_.isEmpty(this.workflow.orderRequirements.parameters)) {
       this.variableList = Object.entries(this.workflow.orderRequirements.parameters).map(([k, v]) => {
@@ -216,7 +216,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     this.updateSelectItems();
   }
 
-  checkVariableType(argument) {
+  checkVariableType(argument): void {
     let obj = this.workflow.orderRequirements.parameters[argument.name];
     if (obj) {
       argument.type = obj.type;
@@ -227,7 +227,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     this.updateSelectItems();
   }
 
-  updateSelectItems() {
+  updateSelectItems(): void {
     if (this.schedule.configuration.variables.length > 0) {
       for (let i = 0; i < this.variableList.length; i++) {
         this.variableList[i].isSelected = false;
@@ -241,7 +241,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  rename(inValid) {
+  rename(inValid): void {
     if (this.data.id === this.schedule.id && this.data.name !== this.schedule.name) {
 
       if (!inValid) {
@@ -265,15 +265,15 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  release() {
+  release(): void {
     this.dataService.reloadTree.next({release: this.schedule});
   }
 
-  backToListView() {
+  backToListView(): void {
     this.dataService.reloadTree.next({back: this.schedule});
   }
 
-  private convertObjToArr(calendar) {
+  private convertObjToArr(calendar): void {
     let obj: any = {};
     if (!calendar.frequencyList) {
       calendar.frequencyList = [];
@@ -387,7 +387,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  private getObject() {
+  private getObject(): void {
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
     this.coreService.post(URL, {
       id: this.data.id
@@ -436,7 +436,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
-  private validateJSON(json) {
+  private validateJSON(json): void {
     const obj = _.clone(json);
     obj.path = this.data.path;
     this.coreService.post('inventory/' + this.objectType + '/validate', obj).subscribe((res: any) => {
@@ -445,7 +445,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
-  private setErrorMessage(res) {
+  private setErrorMessage(res): void {
     if (res.invalidMsg) {
       if (res.invalidMsg.match('workflowName')) {
         this.invalidMsg = 'inventory.message.workflowIsMissing';
@@ -462,8 +462,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  saveJSON() {
-    if(this.isTrash) {
+  saveJSON(): void {
+    if (this.isTrash) {
       return;
     }
     let obj = this.coreService.clone(this.schedule.configuration);

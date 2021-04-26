@@ -4,7 +4,8 @@
           <span class="text-primary">{{dataObj.path}}<span *ngIf="dataObj.path !=='/'">/</span></span> -
           <span *ngIf="objectType === 'WORKFLOW'" translate>inventory.label.workflows</span>
           <span *ngIf="objectType === 'FILEORDERSOURCE'" translate>inventory.label.fileOrderSources</span>
-          <span *ngIf="objectType === 'JOBCLASS'" translate>inventory.label.jobClasses</span>
+          <!--<span *ngIf="objectType === 'JOBCLASS'" translate>inventory.label.jobClasses</span>-->
+          <span *ngIf="objectType === 'JOBRESOURCE'" translate>inventory.label.jobResources</span>
           <span *ngIf="objectType === 'JUNCTION'" translate>inventory.label.junctions</span>
           <span *ngIf="objectType === 'LOCK'" translate>inventory.label.locks</span>
           <span *ngIf="objectType === 'SCHEDULE'" translate>inventory.label.orders</span>
@@ -21,7 +22,8 @@
         <i class="fa fa-plus p-r-xs"></i>
         <span *ngIf="objectType === 'WORKFLOW'" translate>inventory.button.newWorkflow</span>
         <span *ngIf="objectType === 'FILEORDERSOURCE'" translate>inventory.button.newFileOrderSource</span>
-        <span *ngIf="objectType === 'JOBCLASS'" translate>inventory.button.newJobClass</span>
+        <!--<span *ngIf="objectType === 'JOBCLASS'" translate>inventory.button.newJobClass</span>-->
+        <span *ngIf="objectType === 'JOBRESOURCE'" translate>inventory.button.newJobResource</span>
         <span *ngIf="objectType === 'JUNCTION'" translate>inventory.button.newJunction</span>
         <span *ngIf="objectType === 'LOCK'" translate>inventory.button.newLock</span>
         <span *ngIf="objectType === 'SCHEDULE'" translate>inventory.button.newOrder</span>

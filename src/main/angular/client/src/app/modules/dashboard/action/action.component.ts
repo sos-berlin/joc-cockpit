@@ -82,7 +82,7 @@ export class ActionComponent implements OnInit {
     const obj = {
       controllerId: data.controllerId || this.schedulerIds.selected,
       url: data.url,
-      withFailover: isFailOver,
+      withSwitchover: isFailOver,
       auditLog: {}
     };
     if (this.preferences.auditLog && (action !== 'downloadLog')) {
