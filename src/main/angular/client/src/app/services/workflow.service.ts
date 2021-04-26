@@ -1055,33 +1055,28 @@ export class WorkflowService {
       || tagName === 'Lock' || tagName === 'Try');
   }
 
-  appendSingleQuote(data, type): void {
+  removeSlashToString(data, type): void {
     if (data[type]) {
       if (!(/[$_+]/.test(data[type]))) {
         let startChar = data[type].substring(0, 1),
           endChar = data[type].substring(data[type].length - 1);
-        if ((startChar === '\'' && endChar === '\'')) {
-          data[type] = '"' + data[type].substring(1, data[type].length - 1) + '"';
+        if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
+          data[type] = data[type].substring(1, data[type].length - 1);
         }
-        try {
-          data[type] = JSON.parse(data[type]);
-        } catch (e) {
-          console.error(e);
-        }
+        data[type] = data[type].replace(/\\/g, '');
       }
     }
   }
 
-  checkSingleQuote(data, type): void {
+  addSlashToString(data, type): void {
     if (data[type]) {
       if (!(/[$_+]/.test(data[type]))) {
         const startChar = data[type].substring(0, 1);
         const endChar = data[type].substring(data[type].length - 1);
         if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
-
+          data[type] = data[type].replace(/'|\\'/g, "\\'");
         } else {
-          data[type] = JSON.stringify(data[type]);
-          data[type] = '\'' + data[type].substring(1, data[type].length - 1) + '\'';
+          data[type] = "'" + data[type].replace(/'|\\'/g, "\\'") + "'";
         }
       }
     }

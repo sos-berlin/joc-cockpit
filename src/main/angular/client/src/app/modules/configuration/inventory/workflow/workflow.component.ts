@@ -583,7 +583,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       if (!_.isArray(this.selectedNode.job.executable.arguments)) {
         this.selectedNode.job.executable.arguments = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'arguments');
         this.selectedNode.job.executable.arguments.filter((env) => {
-          this.workflowService.appendSingleQuote(env, 'value');
+          this.workflowService.removeSlashToString(env, 'value');
         });
       }
     }
@@ -602,7 +602,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       if (!_.isArray(this.selectedNode.job.executable.env)) {
         this.selectedNode.job.executable.env = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'env');
         this.selectedNode.job.executable.env.filter((env) => {
-          this.workflowService.appendSingleQuote(env, 'value');
+          this.workflowService.removeSlashToString(env, 'value');
         });
       }
     }
@@ -6189,7 +6189,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (job.executable.TYPE === 'InternalExecutable') {
         if (job.executable.arguments && _.isArray(job.executable.arguments)) {
           job.executable.arguments.filter((angu) => {
-            this.workflowService.checkSingleQuote(angu, 'value');
+            this.workflowService.addSlashToString(angu, 'value');
           });
           this.coreService.convertArrayToObject(job.executable, 'arguments', true);
         }
@@ -6214,7 +6214,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (job.executable.TYPE === 'ScriptExecutable') {
         if (job.executable.env && _.isArray(job.executable.env)) {
           job.executable.env.filter((env) => {
-            this.workflowService.checkSingleQuote(env, 'value');
+            this.workflowService.addSlashToString(env, 'value');
           });
           this.coreService.convertArrayToObject(job.executable, 'env', true);
         }
