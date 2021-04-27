@@ -56,7 +56,7 @@
               <div class="col-md-8 col-lg-9 m-b-sm" *ngIf="i==0" translate>common.label.value</div>
               <div class="col-md-4 col-lg-3 m-b-sm "
                    [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}">
-                <input type="text" envVariableValidation name="name{{i}}" class="form-control" [(ngModel)]="env.name"
+                <input type="text" envVariableValidation name="name{{i}}" class="form-control" [(ngModel)]="env.name" (blur)="upperCase(env)"
                        #ename="ngModel"
                        placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
                 <div *ngIf="ename.invalid && ename.errors && (ename.dirty || ename.touched)"

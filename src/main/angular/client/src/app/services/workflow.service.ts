@@ -1055,12 +1055,12 @@ export class WorkflowService {
   removeSlashToString(data, type): void {
     if (data[type]) {
       if (!(/[$_+]/.test(data[type]))) {
+        data[type] = JSON.parse(data[type]);
         let startChar = data[type].substring(0, 1),
           endChar = data[type].substring(data[type].length - 1);
-        if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
+        if ((startChar === '"' && endChar === '"')) {
           data[type] = data[type].substring(1, data[type].length - 1);
         }
-        data[type] = data[type].replace(/\\/g, '');
       }
     }
   }
@@ -1071,10 +1071,11 @@ export class WorkflowService {
         const startChar = data[type].substring(0, 1);
         const endChar = data[type].substring(data[type].length - 1);
         if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
-          data[type] = data[type].replace(/'|\\'/g, "\\'");
+          data[type] = JSON.stringify(data[type]);
         } else {
-          data[type] = "'" + data[type].replace(/'|\\'/g, "\\'") + "'";
+          data[type] = '"' + data[type] + '"';
         }
+        data[type] = JSON.stringify(data[type]);
       }
     }
   }

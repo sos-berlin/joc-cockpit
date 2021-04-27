@@ -22,7 +22,7 @@ import {
 import {TableComponent} from './table-data/table.component';
 import {
   ExpressionComponent, ImportComponent, JobComponent, ScriptEditorComponent, UpdateWorkflowComponent,
-  WorkflowComponent, ValueEditorComponent
+  WorkflowComponent
 } from './workflow/workflow.component';
 import {ScheduleComponent} from './schedule/schedule.component';
 import {LockComponent} from './lock/lock.component';
@@ -33,7 +33,7 @@ import {JobResourceComponent} from './job-resource/job-resource.component';
 
 const COMPONENTS = [FrequencyModalComponent, ImportComponent, UpdateWorkflowComponent, SingleDeployComponent,
   DeployComponent, ExportComponent, SetVersionComponent, CreateFolderModalComponent, CreateObjectModalComponent,
-  ImportWorkflowModalComponent, JsonEditorModalComponent, UploadModalComponent, ScriptEditorComponent, ValueEditorComponent];
+  ImportWorkflowModalComponent, JsonEditorModalComponent, UploadModalComponent, ScriptEditorComponent];
 
 @NgModule({
   imports: [

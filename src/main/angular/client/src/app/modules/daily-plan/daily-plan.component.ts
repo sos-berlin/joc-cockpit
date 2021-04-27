@@ -114,13 +114,16 @@ export class SelectOrderTemplatesComponent implements OnInit {
           const pathArr = [];
           for (let i = 0; i < paths.length; i++) {
             if (paths[i]) {
-              if (i > 0 && paths[i - 1]) {
-                pathArr.push('/' + paths[i - 1] + '/' + paths[i]);
+              if (i > 0 && pathArr[i - 1]) {
+                pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + paths[i]);
               } else {
                 pathArr.push('/' + paths[i]);
               }
+            } else {
+              pathArr.push('/');
             }
           }
+
           for (let i = 0; i < pathArr.length; i++) {
             this.checkAndAddFolder(pathArr[i]);
           }
@@ -142,6 +145,14 @@ export class SelectOrderTemplatesComponent implements OnInit {
         if (!nodes[i].type) {
           if (nodes[i].path === path) {
             if (!nodes[i].children || nodes[i].children.length === 0) {
+              for (let j = 0; j < arr.length; j++) {
+                if (arr[j].name === nodes[i].name && arr[j].path === nodes[i].path) {
+                  nodes[i].key = arr[j].key;
+                  nodes[i].deleted = arr[j].deleted;
+                  arr.splice(j, 1);
+                  break;
+                }
+              }
               nodes[i].children = arr;
             } else {
               nodes[i].children = nodes[i].children.concat(arr);
@@ -162,9 +173,8 @@ export class SelectOrderTemplatesComponent implements OnInit {
     }
   }
 
-  private checkAndAddFolder(_path): void {
+  private checkAndAddFolder(mainPath): void {
     let node: any;
-
     function recursive(path, nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if (!nodes[i].type) {
@@ -179,21 +189,21 @@ export class SelectOrderTemplatesComponent implements OnInit {
       }
     }
 
-    recursive(_path, this.nodes);
+    recursive(mainPath, this.nodes);
 
     if (node) {
       let falg = false;
       for (let x = 0; x < node.children.length; x++) {
-        if (!node.children[x].type && !node.children[x].object && node.children[x].path === _path) {
+        if (!node.children[x].type && !node.children[x].object && node.children[x].path === mainPath) {
           falg = true;
           break;
         }
       }
-      if (!falg) {
+      if (!falg && mainPath.substring(mainPath.lastIndexOf('/') + 1)) {
         node.children.push({
-          name: _path.substring(_path.lastIndexOf('/') + 1),
-          path: _path,
-          key: _path,
+          name: mainPath.substring(mainPath.lastIndexOf('/') + 1),
+          path: mainPath,
+          key: mainPath,
           children: []
         });
       }
@@ -1127,7 +1137,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   navToOrderHistory(orderId): void {
-    // console.log(orderId)
     let filter = this.coreService.getHistoryTab();
     filter.type = 'ORDER';
     filter.order.selectedView = false;
@@ -1228,7 +1237,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       nzClosable: false
     });
     modal.afterClose.subscribe(result => {
-      console.log('[afterClose] The result is:', result);
       if (result) {
         this.updateList();
       }
@@ -1315,7 +1323,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         nzClosable: false
       });
       modal.afterClose.subscribe(result => {
-        console.log('[afterClose] The result is:', result);
         if (result) {
           this.updateList();
         }
@@ -1360,7 +1367,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         nzClosable: false
       });
       modal.afterClose.subscribe(result => {
-        console.log('[afterClose] The result is:', result);
         if (result) {
           this.updateList();
         }
@@ -1383,7 +1389,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       nzClosable: false
     });
     modal.afterClose.subscribe(result => {
-      console.log('[afterClose] The result is:', result);
       if (result) {
         this.updateList();
       }
@@ -1405,7 +1410,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       nzClosable: false
     });
     modal.afterClose.subscribe(result => {
-      console.log('[afterClose] The result is:', result);
       if (result) {
         this.updateList();
       }

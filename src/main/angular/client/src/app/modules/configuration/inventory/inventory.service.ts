@@ -27,7 +27,7 @@ export class InventoryService {
     return _.sortBy(arr, 'level');
   }
 
-  generateTree(arr, treeArr) {
+  generateTree(arr, treeArr): void {
     for (const [key, value] of Object.entries(arr)) {
       if (key !== '/') {
         let paths = key.split('/');
@@ -53,7 +53,7 @@ export class InventoryService {
     }
   }
 
-  private checkFolderRecur(_path, data, treeArr) {
+  private checkFolderRecur(mainPath, data, treeArr): void {
     let flag = false;
     let arr = [];
     if (data.length > 0) {
@@ -94,47 +94,7 @@ export class InventoryService {
 
     if (treeArr && treeArr[0]) {
       treeArr[0].expanded = true;
-      recursive(_path, treeArr);
-    }
-  }
-
-  private checkAndAddFolder(_path, treeArr): void {
-    let node: any;
-
-    function recursive(path, nodes) {
-      for (let i = 0; i < nodes.length; i++) {
-        if (!nodes[i].type && !nodes[i].object) {
-          if (nodes[i].path === path.substring(0, path.lastIndexOf('/') + 1) || nodes[i].path === path.substring(0, path.lastIndexOf('/'))) {
-            node = nodes[i];
-            break;
-          }
-          if (nodes[i].children) {
-            recursive(path, nodes[i].children);
-          }
-        }
-      }
-    }
-
-    recursive(_path, treeArr);
-
-    if (node) {
-      let falg = false;
-      for (let x = 0; x < node.children.length; x++) {
-        if (!node.children[x].type && !node.children[x].object && node.children[x].path === _path) {
-          falg = true;
-          break;
-        }
-      }
-      if (!falg) {
-        node.isLeaf = false;
-        node.children.push({
-          name: _path.substring(_path.lastIndexOf('/') + 1),
-          path: _path,
-          key: _path,
-          isFolder: true,
-          children: []
-        });
-      }
+      recursive(mainPath, treeArr);
     }
   }
 
@@ -189,6 +149,46 @@ export class InventoryService {
       }
     }
     return tempArr.concat(folderArr);
+  }
+
+  private checkAndAddFolder(mainPath, treeArr): void {
+    let node: any;
+
+    function recursive(path, nodes) {
+      for (let i = 0; i < nodes.length; i++) {
+        if (!nodes[i].type && !nodes[i].object) {
+          if (nodes[i].path === path.substring(0, path.lastIndexOf('/') + 1) || nodes[i].path === path.substring(0, path.lastIndexOf('/'))) {
+            node = nodes[i];
+            break;
+          }
+          if (nodes[i].children) {
+            recursive(path, nodes[i].children);
+          }
+        }
+      }
+    }
+
+    recursive(mainPath, treeArr);
+
+    if (node) {
+      let falg = false;
+      for (let x = 0; x < node.children.length; x++) {
+        if (!node.children[x].type && !node.children[x].object && node.children[x].path === mainPath) {
+          falg = true;
+          break;
+        }
+      }
+      if (!falg) {
+        node.isLeaf = false;
+        node.children.push({
+          name: mainPath.substring(mainPath.lastIndexOf('/') + 1),
+          path: mainPath,
+          key: mainPath,
+          isFolder: true,
+          children: []
+        });
+      }
+    }
   }
 
   checkHalfCheckBox(parentNode, isCheck): boolean {

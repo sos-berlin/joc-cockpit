@@ -104,6 +104,15 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     }
   }
 
+  upperCase(env): void {
+    if (env.name) {
+      env.name = env.name.toUpperCase();
+      if (!env.value) {
+        env.value = '$' + env.name.toLowerCase();
+      }
+    }
+  }
+
   saveJSON(): void {
     if (this.isTrash) {
       return;

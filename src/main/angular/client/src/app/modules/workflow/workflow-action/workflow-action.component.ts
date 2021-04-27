@@ -1,4 +1,4 @@
-import {Component, OnInit, Input} from '@angular/core';
+import {Component, OnInit, Input, ChangeDetectorRef} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Router} from '@angular/router';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
@@ -6,6 +6,7 @@ import * as _ from 'underscore';
 import * as moment from 'moment';
 import {CoreService} from '../../../services/core.service';
 import {CalendarModalComponent} from '../../../components/calendar-modal/calendar.component';
+import {ValueEditorComponent} from '../../../components/value-editor/value.component';
 
 @Component({
   selector: 'app-add-order',
@@ -29,7 +30,8 @@ export class AddOrderModalComponent implements OnInit {
   zones = [];
   variableList = [];
 
-  constructor(public coreService: CoreService, private activeModal: NzModalRef) {
+  constructor(public coreService: CoreService, private activeModal: NzModalRef,
+              private modal: NzModalService, private ref: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -173,6 +175,24 @@ export class AddOrderModalComponent implements OnInit {
     this.activeModal.destroy();
   }
 
+  openEditor(data): void {
+    console.log(data)
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ValueEditorComponent,
+      nzComponentParams: {
+        data: data.value
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        data.value =  result;
+        this.ref.detectChanges();
+      }
+    });
+  }
 }
 
 @Component({

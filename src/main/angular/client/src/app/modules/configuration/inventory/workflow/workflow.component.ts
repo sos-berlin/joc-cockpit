@@ -18,11 +18,12 @@ import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropd
 import {Subscription} from 'rxjs';
 import * as _ from 'underscore';
 import {saveAs} from 'file-saver';
+import {Router} from '@angular/router';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {WorkflowService} from '../../../../services/workflow.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
-import {Router} from '@angular/router';
+import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
 
 // Mx-Graph Objects
 declare const mxEditor;
@@ -51,22 +52,6 @@ declare const X2JS;
 declare const $;
 
 const x2js = new X2JS();
-
-@Component({
-  selector: 'app-value-content',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './value-editor.html'
-})
-export class ValueEditorComponent {
-  @Input() data: any;
-
-  constructor(public activeModal: NzModalRef) {
-  }
-
-  onSubmit(): void {
-    this.activeModal.close(this.data);
-  }
-}
 
 @Component({
   selector: 'app-edit-workflow-modal',
@@ -175,7 +160,7 @@ export class UpdateWorkflowComponent implements OnInit {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        data.default =  result;
+        data.default = result;
         this.ref.detectChanges();
       }
     });
@@ -188,6 +173,7 @@ export class UpdateWorkflowComponent implements OnInit {
   templateUrl: './job-text-editor.html'
 })
 export class JobComponent implements OnInit, OnChanges, OnDestroy {
+  @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
   @Input() schedulerId: any;
   @Input() selectedNode: any;
   @Input() jobs: any;
@@ -313,7 +299,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        data.value =  result;
+        data.value = result;
         this.ref.detectChanges();
       }
     });
@@ -462,7 +448,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   onKeyPress($event, type): void {
     if ($event.which === '13' || $event.which === 13) {
-      type === 'default' ? this.addVariable() : type === 'jobArgument' ? this.addJobArgument() : this.addArgu();
+      type === 'default' ? this.addVariable() : type === 'jobArgument' ? this.addJobArgument() : type === 'node' ? this.addArgument() : this.addArgu();
     }
   }
 
@@ -498,7 +484,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
           }
           node.origin.isLeaf = false;
           node.origin.children = data;
-          this.jobResourcesTree = [...this.jobResourcesTree];
+          setTimeout(() => {
+            this.jobResourcesTree = [...this.jobResourcesTree];
+          }, 10);
         });
       }
     }
@@ -514,16 +502,16 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     if (this.selectedNode.obj.defaultArguments && this.selectedNode.obj.defaultArguments.length == 0) {
       this.addArgument();
     }
-/*    if (this.selectedNode.job.jobResourceNames) {
-      const path = this.selectedNode.job.jobResourceNames.substring(0, this.selectedNode.job.jobResourceNames.lastIndexOf('/')) || '/';
+    if (this.selectedNode.job.jobResourceNames && this.selectedNode.job.jobResourceNames.length > 0) {
+      
       setTimeout(() => {
-        const node = this.treeSelectCtrl2.getTreeNodeByKey(path);
+        const node = this.treeSelectCtrl.getTreeNodeByKey('/');
         if (node) {
           node.isExpanded = true;
           this.loadData(node, 'JOBRESOURCE', null);
         }
       }, 10);
-    }*/
+    }
     this.onBlur();
     if (this.index === 0) {
       this.reloadScript();
@@ -2981,7 +2969,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         mxIconSet.prototype.destroy = function() {
           if (this.images != null) {
             for (let i = 0; i < this.images.length; i++) {
-              let img = this.images[i];
+              const img = this.images[i];
               img.parentNode.removeChild(img);
             }
           }

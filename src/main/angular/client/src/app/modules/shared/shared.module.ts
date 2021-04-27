@@ -50,6 +50,7 @@ import {AddRestrictionComponent, PeriodComponent, RunTimeComponent} from '../../
 import {ResumeOrderModalComponent} from '../../components/resume-modal/resume.component';
 import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../../components/modify-modal/modify.component';
 import {OrderVariableComponent} from '../../components/order-variable/order-variable.component';
+import {ValueEditorComponent} from '../../components/value-editor/value.component';
 
 
 const MODULES = [Shared2Module, NzTableModule, NzTabsModule, ChecklistModule, DragDropModule,
@@ -63,7 +64,7 @@ const PIPES = [DurationPipe, StringDateFormatePipe, ByteToSizePipe, DurationFrom
 const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, ResizableDirective, LabelValidator,
   NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, EnvVariableValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent,
-  StartUpModalComponent, TreeComponent, RunTimeComponent];
+  StartUpModalComponent, TreeComponent, RunTimeComponent, ValueEditorComponent];
 
 @NgModule({
   imports: [

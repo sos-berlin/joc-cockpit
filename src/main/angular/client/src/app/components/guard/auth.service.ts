@@ -67,6 +67,9 @@ export class AuthService {
       showViews = JSON.parse(window.sessionStorage.showViews);
     }
     const permission = JSON.parse(this.permission);
+    if(!permission){
+      return false;
+    }
     let ifPermissionPassed = false;
     switch (routePath) {
       case 'Dashboard':
