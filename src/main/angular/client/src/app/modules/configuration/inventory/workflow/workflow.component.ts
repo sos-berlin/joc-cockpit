@@ -15,7 +15,7 @@ import {FileUploader} from 'ng2-file-upload';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
-import {Subscription} from 'rxjs';
+import {forkJoin, Subscription} from 'rxjs';
 import * as _ from 'underscore';
 import {saveAs} from 'file-saver';
 import {Router} from '@angular/router';
@@ -142,8 +142,8 @@ export class UpdateWorkflowComponent implements OnInit {
   }
 
   onKeyPress($event): void {
-    $event.preventDefault();
     if ($event.which === '13' || $event.which === 13) {
+      $event.preventDefault();
       this.addVariable();
     }
   }
@@ -484,9 +484,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
           }
           node.origin.isLeaf = false;
           node.origin.children = data;
-          setTimeout(() => {
-            this.jobResourcesTree = [...this.jobResourcesTree];
-          }, 10);
+          this.jobResourcesTree = [...this.jobResourcesTree];
+          this.ref.detectChanges();
         });
       }
     }
@@ -503,18 +502,32 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.addArgument();
     }
     if (this.selectedNode.job.jobResourceNames && this.selectedNode.job.jobResourceNames.length > 0) {
-      
-      setTimeout(() => {
-        const node = this.treeSelectCtrl.getTreeNodeByKey('/');
-        if (node) {
-          node.isExpanded = true;
-          this.loadData(node, 'JOBRESOURCE', null);
-        }
-      }, 10);
+      const APIs = [];
+      let paths = [];
+      this.selectedNode.job.jobResourceNames.forEach((name) => {
+        APIs.push(this.coreService.post('inventory/path', {name, objectType: 'JOBRESOURCE', useDrafts: true}));
+      });
+      forkJoin(APIs).subscribe(results => {
+        results.forEach((item: any) => {
+          let path = item.path.substring(0, item.path.lastIndexOf('/')) || item.path.substring(0, item.path.lastIndexOf('/') + 1);
+          if (paths.indexOf(path) === -1) {
+            paths.push(path);
+            this.loadResources(path);
+          }
+        });
+      });
     }
     this.onBlur();
     if (this.index === 0) {
       this.reloadScript();
+    }
+  }
+
+  private loadResources(path): void {
+    const node = this.treeSelectCtrl.getTreeNodeByKey(path);
+    if (node) {
+      node.isExpanded = true;
+      this.loadData(node, 'JOBRESOURCE', null);
     }
   }
 

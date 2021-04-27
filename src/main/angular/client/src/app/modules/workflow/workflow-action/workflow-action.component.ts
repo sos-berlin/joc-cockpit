@@ -165,8 +165,8 @@ export class AddOrderModalComponent implements OnInit {
   }
 
   onKeyPress($event): void {
-    $event.preventDefault();
     if ($event.which === '13' || $event.which === 13) {
+      $event.preventDefault();
       this.addArgument();
     }
   }
