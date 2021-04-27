@@ -7,8 +7,12 @@
           <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
         </span>
         <div class="inline pull-right" *ngIf="!isTrash">
-          <span class="badge badge-success m-r-12" *ngIf="jobResource.valid">
-              <span translate>inventory.label.valid</span>
+          <span class="badge badge-success m-r-12" *ngIf="jobResource.configuration" [ngClass]="!jobResource.valid ? 'badge-danger':'badge-success'">
+              <span *ngIf="jobResource.valid" translate>inventory.label.valid</span>
+              <span *ngIf="!jobResource.valid">
+                <span translate>inventory.label.notValid</span>
+                <i nz-tooltip="{{invalidMsg | translate}}" class="fa fa-info-circle p-l-xs"></i>
+              </span>
           </span>
           <span class="badge" [ngClass]="!data.deployed ? 'badge-danger':'badge-success'">
             <span *ngIf="!data.deployed" translate>inventory.label.notDeployed</span>
@@ -41,7 +45,7 @@
                    name="title" [(ngModel)]="jobResource.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
-        <div class="form-group row">
+        <div class="m-b-sm row">
           <label class="col-md-12 _600" translate>workflow.label.environmentVariables</label>
         </div>
         <div class="form-group row m-b-0">
@@ -61,7 +65,7 @@
                 </div>
               </div>
               <div class="col-md-7 col-lg-6m-b-sm">
-                <input type="text" autocomplete="off" class="form-control" [(ngModel)]="env.value" name="value{{i}}"
+                <input type="text" autocomplete="off" class="form-control" [(ngModel)]="env.value" name="value{{i}}" (keypress)="onKeyPress($event)" (blur)="saveJSON()"
                        placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
               </div>
               <div class="col-md-1 col-lg-1 p-l-0">
@@ -70,7 +74,7 @@
             </div>
             <div class="form-group row" [ngClass]="{'disable-link': isTrash}">
               <div class="col-sm-12">
-                <a class="text-u-l" *ngIf="jobResource.configuration.env.length>0" (click)="addEnv()" translate>order.button.addAnotherVariable</a>
+                <a class="text-u-l" *ngIf="jobResource.configuration.env.length>0" (click)="saveJSON();addEnv()" translate>order.button.addAnotherVariable</a>
                 <a class="text-u-l" *ngIf="jobResource.configuration.env.length==0" (click)="addEnv()" translate>order.button.addVariable</a>
               </div>
             </div>

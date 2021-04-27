@@ -93,15 +93,15 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.agent</label>
           <div class="col-md-8 col-lg-6"
-               [ngClass]="{'has-error' : (agentId.dirty || agentId.touched) && agentId.invalid}">
-            <nz-select nzShowSearch name="agentId"
+               [ngClass]="{'has-error' : (agentName.dirty || agentName.touched) && agentName.invalid}">
+            <nz-select nzShowSearch name="agentName" (ngModelChange)="saveJSON()"
                        nzPlaceHolder="{{'workflow.placeholder.selectAgentName' | translate}}"
-                       [(ngModel)]="fileOrder.configuration.agentId" #agentId="ngModel">
+                       [(ngModel)]="fileOrder.configuration.agentName" #agentName="ngModel">
               <nz-option *ngFor="let agent of agents" [nzLabel]="agent" [nzValue]="agent"></nz-option>
             </nz-select>
-            <div *ngIf="agentId.invalid && (agentId.dirty || agentId.touched)"
+            <div *ngIf="agentName.invalid && (agentName.dirty || agentName.touched)"
                  class="text-danger help-block">
-              <div *ngIf="(agentId.errors && agentId.errors.required)">
+              <div *ngIf="(agentName.errors && agentName.errors.required)">
                 <div translate>common.message.requiredError</div>
               </div>
             </div>

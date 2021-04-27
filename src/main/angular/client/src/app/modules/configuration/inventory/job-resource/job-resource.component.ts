@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
 import * as _ from 'underscore';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
@@ -7,7 +7,7 @@ import {DataService} from '../../../../services/data.service';
   selector: 'app-job-resource',
   templateUrl: './job-resource.component.html'
 })
-export class JobResourceComponent implements OnChanges {
+export class JobResourceComponent implements OnChanges, OnDestroy {
   @Input() preferences: any;
   @Input() schedulerId: any;
   @Input() data: any;
@@ -17,6 +17,7 @@ export class JobResourceComponent implements OnChanges {
   @Input() isTrash: any;
 
   jobResource: any = {};
+  invalidMsg: string;
   objectType = 'JOBRESOURCE';
 
   constructor(private coreService: CoreService, private dataService: DataService) {
@@ -30,12 +31,21 @@ export class JobResourceComponent implements OnChanges {
         return;
       }
     }
+    if (this.jobResource.actual) {
+      this.saveJSON();
+    }
     if (changes.data) {
       if (this.data.type) {
         this.getObject();
       } else {
         this.jobResource = {};
       }
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.data.type) {
+      this.saveJSON();
     }
   }
 
@@ -80,12 +90,19 @@ export class JobResourceComponent implements OnChanges {
         this.jobResource.configuration.env.push(param);
       }
     }
+    this.saveJSON();
   }
 
   removeEnv(index): void {
     this.jobResource.configuration.env.splice(index, 1);
+    this.saveJSON();
   }
 
+  onKeyPress($event): void {
+    if ($event.which === '13' || $event.which === 13) {
+      this.addEnv();
+    }
+  }
 
   saveJSON(): void {
     if (this.isTrash) {
@@ -96,9 +113,10 @@ export class JobResourceComponent implements OnChanges {
       if (obj.env && _.isArray(obj.env)) {
         this.coreService.convertArrayToObject(obj, 'env', true);
       }
+      
       this.coreService.post('inventory/store', {
-        configuration: this.jobResource.configuration,
-        valid: !!this.jobResource.configuration.maxProcesses,
+        configuration: obj,
+        valid: obj.env && obj.env.length > 0,
         id: this.jobResource.id,
         objectType: this.objectType
       }).subscribe((res: any) => {
@@ -108,10 +126,24 @@ export class JobResourceComponent implements OnChanges {
           this.jobResource.deployed = false;
           this.data.valid = res.valid;
           this.data.deployed = false;
+          this.setErrorMessage(res);
         }
       }, (err) => {
         console.log(err);
       });
+    }
+  }
+
+  private setErrorMessage(res): void {
+    if (res.invalidMsg) {
+      if (res.invalidMsg.match('env: is missing')) {
+        this.invalidMsg = 'inventory.message.envIsMissing';
+      }
+      if (!this.invalidMsg) {
+        this.invalidMsg = res.invalidMsg;
+      }
+    } else {
+      this.invalidMsg = '';
     }
   }
 
@@ -134,6 +166,7 @@ export class JobResourceComponent implements OnChanges {
         this.jobResource.configuration.env = this.coreService.convertObjectToArray(this.jobResource.configuration, 'env');
       } else {
         this.jobResource.configuration.env = [];
+        this.invalidMsg = 'inventory.message.envIsMissing';
         this.addEnv();
       }
       this.jobResource.actual = JSON.stringify(res.configuration);

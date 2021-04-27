@@ -7,8 +7,12 @@
           <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
         </span>
         <div class="inline pull-right" *ngIf="!isTrash">
-          <span class="badge badge-success m-r-12" *ngIf="junction.valid">
-              <span translate>inventory.label.valid</span>
+           <span class="badge badge-success m-r-12" *ngIf="junction.configuration" [ngClass]="!junction.valid ? 'badge-danger':'badge-success'">
+              <span *ngIf="junction.valid" translate>inventory.label.valid</span>
+              <span *ngIf="!junction.valid">
+                <span translate>inventory.label.notValid</span>
+                <i nz-tooltip="{{invalidMsg | translate}}" class="fa fa-info-circle p-l-xs"></i>
+              </span>
           </span>
           <span class="badge" [ngClass]="!data.deployed ? 'badge-danger':'badge-success'">
               <span *ngIf="!data.deployed" translate>inventory.label.notDeployed</span>

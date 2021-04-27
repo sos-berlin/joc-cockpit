@@ -225,7 +225,7 @@ export class InventoryService {
   }
 
   isControllerObject(type): boolean {
-    return type === 'WORKFLOW' || type === 'JOBCLASS' || type === 'JUNCTION' || type === 'LOCK' || type === 'FILEORDERSOURCE';
+    return type === 'WORKFLOW' || type === 'JOBCLASS' || type === 'JUNCTION' || type === 'LOCK' || type === 'FILEORDERSOURCE' || type === 'JOBRESOURCE';
   }
 }
 

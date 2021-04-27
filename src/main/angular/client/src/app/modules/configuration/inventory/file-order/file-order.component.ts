@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 
@@ -21,8 +21,6 @@ export class FileOrderComponent implements OnChanges, OnInit {
   workflowTree = [];
   fileOrder: any = {};
   objectType = 'FILEORDERSOURCE';
-
-  @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
   constructor(private coreService: CoreService, private dataService: DataService) {
   }
@@ -86,15 +84,16 @@ export class FileOrderComponent implements OnChanges, OnInit {
       this.fileOrder.actual = JSON.stringify(res.configuration);
       if(!this.fileOrder.configuration.timeZone){
         this.fileOrder.configuration.timeZone = this.preferences.zone;
-
       }
       this.getAgents();
       this.getWorkflows();
       if (!res.valid) {
         if (!this.fileOrder.configuration.workflowName) {
           this.invalidMsg = 'inventory.message.workflowIsMissing';
-        } else if (!this.fileOrder.configuration.agentId) {
-          this.invalidMsg = 'inventory.message.agentIsMissing';
+        } else if (!this.fileOrder.configuration.agentName) {
+          this.invalidMsg = 'workflow.message.agentIsMissing';
+        } else if (!this.fileOrder.configuration.directory) {
+          this.invalidMsg = 'inventory.message.directoryIsMissing';
         } else {
           this.validateJSON(res.configuration);
         }
@@ -118,8 +117,10 @@ export class FileOrderComponent implements OnChanges, OnInit {
       this.invalidMsg = res.invalidMsg;
       if (res.invalidMsg.match('workflowName')) {
         this.invalidMsg = 'inventory.message.workflowIsMissing';
-      } else if (res.invalidMsg.match('agentId')) {
-        this.invalidMsg = 'inventory.message.agentIsMissing';
+      } else if (res.invalidMsg.match('agentName')) {
+        this.invalidMsg = 'workflow.message.agentIsMissing';
+      } else if (res.invalidMsg.match('directory')) {
+        this.invalidMsg = 'inventory.message.directoryIsMissing';
       }
     } else {
       this.invalidMsg = '';
@@ -230,7 +231,7 @@ export class FileOrderComponent implements OnChanges, OnInit {
     }
     if (this.fileOrder.actual !== JSON.stringify(this.fileOrder.configuration)) {
       let isValid = false;
-      if (this.fileOrder.configuration.workflowName && this.fileOrder.configuration.agentId) {
+      if (this.fileOrder.configuration.workflowName && this.fileOrder.configuration.agentName) {
         isValid = true;
       }
       this.fileOrder.configuration.id = this.fileOrder.name;

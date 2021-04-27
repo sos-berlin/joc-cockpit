@@ -3602,7 +3602,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private storeObject(obj, list, configuration): void {
-    const valid = !(obj.type.match(/CALENDAR/) || obj.type === 'SCHEDULE' || obj.type === 'WORKFLOW' || obj.type === 'FILEORDERSOURCE');
+    const valid = !(obj.type.match(/CALENDAR/) || obj.type === 'SCHEDULE' || obj.type === 'WORKFLOW' || obj.type === 'FILEORDERSOURCE' || obj.type === 'JOBRESOURCE');
     const PATH = obj.path + (obj.path === '/' ? '' : '/') + obj.name;
     if (PATH && obj.type) {
       this.coreService.post('inventory/store', {

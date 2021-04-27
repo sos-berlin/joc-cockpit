@@ -59,7 +59,7 @@
         <div class="col-md-8 col-lg-9">
           <nz-tree-select
             name="jobResource"
-            #treeSelectCtrl2
+            #treeSelectCtrl
             nzNoAnimation
             nzMultiple
             [nzNodes]="jobResourcesTree"
@@ -73,7 +73,7 @@
           >
             <ng-template #nzTreeTemplate let-node>
               <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'JOBRESOURCE', $event);">
-                <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == selectedNode.job.jobResourceNames">
+                <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
                   <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                   <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
                   {{node.origin.name}}
@@ -254,7 +254,7 @@
                       </div>
                     </div>
                     <div class="col-md-6 col-lg-6 m-b-sm">
-                      <input type="text" class="form-control" [(ngModel)]="argu.value" name="value{{i}}"
+                      <input type="text" class="form-control" [(ngModel)]="argu.value" name="value{{i}}" (keypress)="onKeyPress($event, 'argument')"
                              placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
                       <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argu)" style="right: 13px;top:1px;"></i>
                     </div>
@@ -285,7 +285,7 @@
                       </div>
                     </div>
                     <div class="col-md-6 col-lg-6 m-b-sm">
-                      <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event, 'default')"
+                      <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event, 'jobArgument')"
                              [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
                       <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
                     </div>

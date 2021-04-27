@@ -156,8 +156,8 @@
           <ng-container [ngSwitch]="argument.type">
             <ng-container *ngSwitchCase="'Number'">
               <div class="col-md-6 col-lg-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                <nz-input-number [required]="argument.isRequired" #value="ngModel" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}" [nzMin]="0" [nzStep]="1" name="value{{i}}"
-                                 [(ngModel)]="argument.value"></nz-input-number>
+                <nz-input-number [required]="argument.isRequired" #value="ngModel" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"
+                                 [nzMin]="0" [nzStep]="1" name="value{{i}}" [(ngModel)]="argument.value" (keypress)="onKeyPress($event)"></nz-input-number>
                 <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                      class="text-danger help-block">
                   <div *ngIf="value.errors.required">

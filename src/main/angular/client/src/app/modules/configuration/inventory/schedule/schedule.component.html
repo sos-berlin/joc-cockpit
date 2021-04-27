@@ -54,7 +54,7 @@
         </div>
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((path.dirty || path.touched) && path.invalid))}">
-          <label class="col-md-4 col-lg-3  form-control-label" translate>inventory.label.workflowPath</label>
+          <label class="col-md-4 col-lg-3  form-control-label" translate>inventory.label.workflowName</label>
           <div class="col-md-8 col-lg-6 select-input-both">
             <input autocomplete="off" [readOnly]="isTrash" type="text" class="form-control"
                    placeholder="{{'inventory.placeholder.workflowPath' | translate}}"
@@ -121,7 +121,7 @@
             <ng-container *ngSwitchCase="'Number'">
               <div class="col-md-7 col-lg-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                 <nz-input-number [required]="variable.isRequired" #value="ngModel" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}" [nzMin]="0" [nzStep]="1" name="value{{i}}"
-                                 [(ngModel)]="variable.value" (nzBlur)="saveJSON()"></nz-input-number>
+                                 [(ngModel)]="variable.value" (nzBlur)="saveJSON()" (keypress)="onKeyPress($event)"></nz-input-number>
                 <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                      class="text-danger help-block">
                   <div *ngIf="value.errors.required">
@@ -147,7 +147,7 @@
             </ng-container>
             <ng-container *ngSwitchDefault>
               <div class="col-md-7 col-lg-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                <input #value="ngModel" [required]="variable.isRequired" autocomplete="off" type="text" class="form-control"
+                <input #value="ngModel" [required]="variable.isRequired" autocomplete="off" type="text" class="form-control" (keypress)="onKeyPress($event)"
                        name="value{{i}}" [(ngModel)]="variable.value" (blur)="saveJSON()" placeholder="{{'common.placeholder.value' | translate}}">
                 <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                      class="text-danger help-block">

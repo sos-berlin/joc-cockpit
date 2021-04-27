@@ -102,6 +102,12 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     this.saveJSON();
   }
 
+  onKeyPress($event): void {
+    if ($event.which === '13' || $event.which === 13) {
+      this.addVariable();
+    }
+  }
+
   loadData(node, type, $event): void {
     if (!node || !node.origin) {
       return;

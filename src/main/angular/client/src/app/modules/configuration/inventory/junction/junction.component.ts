@@ -18,6 +18,7 @@ export class JunctionComponent implements OnChanges {
 
   junction: any = {};
   lifetime: string;
+  invalidMsg: string;
   objectType = 'JUNCTION';
 
   constructor(private coreService: CoreService, private workflowService: WorkflowService, private dataService: DataService) {

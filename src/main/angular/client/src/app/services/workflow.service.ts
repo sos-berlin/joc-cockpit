@@ -174,11 +174,8 @@ export class WorkflowService {
         delete value['defaultArguments'];
       }
       if (type === 'Job') {
-        if (typeof value.jobClass !== 'string') {
-          delete value['jobClass'];
-        }
         if (!value.executable || (!value.executable.className && value.executable.TYPE === 'InternalExecutable')
-          || (!value.executable.script && value.executable.TYPE === 'ScriptExecutable') || !value.agentId) {
+          || (!value.executable.script && value.executable.TYPE === 'ScriptExecutable') || !value.agentName) {
           return false;
         }
       }
@@ -224,10 +221,10 @@ export class WorkflowService {
         }
       }
       if (value.returnCodeMeaning) {
-        if (value.returnCodeMeaning.success && typeof value.returnCodeMeaning.success == 'string') {
+        if (value.returnCodeMeaning.success && typeof value.returnCodeMeaning.success === 'string') {
           value.returnCodeMeaning.success = value.returnCodeMeaning.success.split(',').map(Number);
           delete value.returnCodeMeaning['failure'];
-        } else if (value.returnCodeMeaning.failure && typeof value.returnCodeMeaning.failure == 'string') {
+        } else if (value.returnCodeMeaning.failure && typeof value.returnCodeMeaning.failure === 'string') {
           value.returnCodeMeaning.failure = value.returnCodeMeaning.failure.split(',').map(Number);
           delete value.returnCodeMeaning['success'];
         }
@@ -241,7 +238,7 @@ export class WorkflowService {
           delete value['returnCodeMeaning'];
         }
       }
-      if (value.returnCode && value.returnCode != 'null' && value.returnCode != 'undefined' && typeof value.returnCode == 'string') {
+      if (value.returnCode && value.returnCode != 'null' && value.returnCode != 'undefined' && typeof value.returnCode === 'string') {
         value.returnCode = parseInt(value.returnCode, 10);
         if (_.isNaN(value.returnCode)) {
           delete value['returnCode'];
@@ -250,7 +247,7 @@ export class WorkflowService {
         delete value['returnCode'];
       }
 
-      if (value.joinVariables && value.joinVariables != 'null' && value.joinVariables != 'undefined' && typeof value.joinVariables == 'string') {
+      if (value.joinVariables && value.joinVariables != 'null' && value.joinVariables != 'undefined' && typeof value.joinVariables === 'string') {
         value.joinVariables = value.joinVariables == 'true';
       } else {
         delete value['joinVariables'];

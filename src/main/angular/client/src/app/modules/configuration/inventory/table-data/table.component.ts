@@ -269,13 +269,13 @@ export class TableComponent {
     this.filter.sortBy = key;
   }
 
-  private store(obj, _path, configuration): void {
-    const valid = !(this.objectType.match(/CALENDAR/) || this.objectType === 'SCHEDULE' || this.objectType === 'WORKFLOW' || this.objectType === 'FILEORDERSOURCE');
+  private store(obj, path, configuration): void {
+    const valid = !(this.objectType.match(/CALENDAR/) || this.objectType === 'SCHEDULE' || this.objectType === 'WORKFLOW' || this.objectType === 'FILEORDERSOURCE' || this.objectType === 'JOBRESOURCE');
     this.coreService.post('inventory/store', {
       objectType: this.objectType === 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : this.objectType,
-      path: _path,
-      valid: valid,
-      configuration: configuration
+      path,
+      valid,
+      configuration
     }).subscribe((res: any) => {
       obj.id = res.id;
       if (this.objectType.match(/CALENDAR/)) {
