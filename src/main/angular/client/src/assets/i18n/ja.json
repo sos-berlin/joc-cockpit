@@ -162,6 +162,7 @@
     "label.ordersOverview": "オーダー",
     "label.jobs": "ジョブ",
     "label.fileTransfers": "ファイル転送",
+    "label.fileTransfer": "File Transfer",
     "label.resources": "リソース",
     "label.locks": "ロック",
     "label.lock": "ロック",

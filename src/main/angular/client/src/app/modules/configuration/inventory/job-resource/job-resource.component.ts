@@ -1,7 +1,9 @@
 import {Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
 import * as _ from 'underscore';
+import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
+import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
 
 @Component({
   selector: 'app-job-resource',
@@ -20,7 +22,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   invalidMsg: string;
   objectType = 'JOBRESOURCE';
 
-  constructor(private coreService: CoreService, private dataService: DataService) {
+  constructor(private coreService: CoreService, private dataService: DataService, private modal: NzModalService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -113,6 +115,23 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     }
   }
 
+  openEditor(data): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ValueEditorComponent,
+      nzComponentParams: {
+        data: data.value
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        data.value = result;
+      }
+    });
+  }
+
   saveJSON(): void {
     if (this.isTrash) {
       return;
@@ -122,7 +141,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       if (obj.env && _.isArray(obj.env)) {
         this.coreService.convertArrayToObject(obj, 'env', true);
       }
-      
+
       this.coreService.post('inventory/store', {
         configuration: obj,
         valid: obj.env && obj.env.length > 0,

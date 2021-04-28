@@ -67,6 +67,7 @@
               <div class="col-md-7 col-lg-6m-b-sm">
                 <input type="text" autocomplete="off" class="form-control" [(ngModel)]="env.value" name="value{{i}}" (keypress)="onKeyPress($event)" (blur)="saveJSON()"
                        placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
+                <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(env)" style="right: 13px;top:1px;"></i>
               </div>
               <div class="col-md-1 col-lg-1 p-l-0">
                 <a><i (click)="removeEnv(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>

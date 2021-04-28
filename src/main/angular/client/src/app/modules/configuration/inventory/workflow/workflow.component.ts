@@ -524,10 +524,12 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private loadResources(path): void {
-    const node = this.treeSelectCtrl.getTreeNodeByKey(path);
-    if (node) {
-      node.isExpanded = true;
-      this.loadData(node, 'JOBRESOURCE', null);
+    if(this.treeSelectCtrl) {
+      const node = this.treeSelectCtrl.getTreeNodeByKey(path);
+      if (node) {
+        node.isExpanded = true;
+        this.loadData(node, 'JOBRESOURCE', null);
+      }
     }
   }
 
@@ -6160,10 +6162,15 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (job.returnCodeMeaning && job.returnCodeMeaning.success == '0') {
         delete job.returnCodeMeaning;
       } else {
-        if (typeof job.returnCodeMeaning.success == 'string') {
+        if (job.returnCodeMeaning.succes && typeof job.returnCodeMeaning.success == 'string') {
           job.returnCodeMeaning.success = job.returnCodeMeaning.success.split(',').map(Number);
-        } else if (typeof job.returnCodeMeaning.failure == 'string') {
+          delete job.returnCodeMeaning.failure;
+        } else if (job.returnCodeMeaning.failure && typeof job.returnCodeMeaning.failure == 'string') {
           job.returnCodeMeaning.failure = job.returnCodeMeaning.failure.split(',').map(Number);
+          delete job.returnCodeMeaning.success;
+        } else if (job.returnCodeMeaning.failure == 0) {
+          job.returnCodeMeaning.failure = [0];
+          delete job.returnCodeMeaning.success;
         }
       }
     }
@@ -6178,8 +6185,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (job.executable.arguments) {
       if (job.executable.TYPE === 'InternalExecutable') {
         if (job.executable.arguments && _.isArray(job.executable.arguments)) {
-          job.executable.arguments.filter((angu) => {
-            this.workflowService.addSlashToString(angu, 'value');
+          job.executable.arguments.filter((argu) => {
+            this.workflowService.addSlashToString(argu, 'value');
           });
           this.coreService.convertArrayToObject(job.executable, 'arguments', true);
         }
@@ -6248,12 +6255,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     return isChange;
   }
 
-  private updateJobs(_graph, isFirst) {
-    if (!_graph) {
+  private updateJobs(graph, isFirst): void {
+    if (!graph) {
       return;
     }
     const enc = new mxCodec();
-    const node = enc.encode(_graph.getModel());
+    const node = enc.encode(graph.getModel());
     const xml = mxUtils.getXml(node);
     let _json: any;
     try {
@@ -6325,8 +6332,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  private modifyJSON(_json, isValidate, isOpen): boolean {
-    if (_.isEmpty(_json)) {
+  private modifyJSON(mainJson, isValidate, isOpen): boolean {
+    if (_.isEmpty(mainJson)) {
       return false;
     }
     let checkErr = false;
@@ -6540,7 +6547,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
     }
 
-    recursive(_json);
+    recursive(mainJson);
     if (!this.error || !isValidate) {
       if (isJobExist) {
         if (this.jobs.length === 0) {
@@ -6569,9 +6576,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
       }
     }
-    if (_json.instructions && (!this.error || !isValidate)) {
-      delete _json.id;
-      _json.jobs = this.coreService.keyValuePair(this.jobs);
+    if (mainJson.instructions && (!this.error || !isValidate)) {
+      delete mainJson.id;
+      mainJson.jobs = this.coreService.keyValuePair(this.jobs);
     }
     if (this.error || checkErr) {
       flag = false;

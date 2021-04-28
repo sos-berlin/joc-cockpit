@@ -198,7 +198,7 @@ export class FrequencyModalComponent implements OnInit {
           this.tempItems.push({
             startDate: this.convertStringToDate(date),
             endDate: this.convertStringToDate(date),
-            color: '#007da6'
+            color: 'blue'
           });
         });
       }
@@ -206,7 +206,7 @@ export class FrequencyModalComponent implements OnInit {
       this.frequency.nationalHoliday = _.clone(this.frequencyList[i].nationalHoliday);
       if (this._temp.nationalHoliday) {
         this._temp.nationalHoliday.forEach((date) => {
-          this.holidayList.push({date: date});
+          this.holidayList.push({date});
         });
       }
     }
@@ -245,14 +245,14 @@ export class FrequencyModalComponent implements OnInit {
     }
   }
 
-  generateFrequencyObj() {
+  generateFrequencyObj(): void {
     this.tempItems = [];
     for (let i = 0; i < this.frequencyList.length; i++) {
       this.updateFrequencyObj(i);
     }
   }
 
-  onFrequencyChange() {
+  onFrequencyChange(): void {
     if (this.frequency) {
       if (!this.frequency.isUltimos) {
         this.frequency.isUltimos = 'months';
@@ -301,7 +301,7 @@ export class FrequencyModalComponent implements OnInit {
     }
   }
 
-  onChangeDays() {
+  onChangeDays(): void {
     if (this.frequency.days) {
       this.editor.isEnable = this.frequency.days.length > 0;
       this.frequency.all = this.frequency.days.length == 7;
@@ -312,20 +312,20 @@ export class FrequencyModalComponent implements OnInit {
   onChangeMonths() {
     if (this.frequency.months) {
       this.frequency.allMonth = this.frequency.months.length == 12;
-      this.frequency.months.sort(function(a, b) {
+      this.frequency.months.sort((a, b) => {
         return a - b;
       });
     }
   }
 
-  onChangeHolidays() {
+  onChangeHolidays(): void {
     this.editor.isEnable = !!(this.frequency.nationalHoliday && this.frequency.nationalHoliday.length > 0);
     if (this.holidayList && this.frequency.nationalHoliday) {
       this.holidayDays.checked = this.holidayList.length == this.frequency.nationalHoliday.length;
     }
   }
 
-  addCalendarDates() {
+  addCalendarDates(): void {
     if (this.excludedDates.length > 0) {
       this.checkExclude(this.excludedDates);
     }
@@ -339,7 +339,7 @@ export class FrequencyModalComponent implements OnInit {
     }
   }
 
-  selectAllHolidays() {
+  selectAllHolidays(): void {
     if (this.holidayDays.checked && this.holidayList.length > 0) {
       let temp = [];
       for (let m = 0; m < this.holidayList.length; m++) {
@@ -366,7 +366,7 @@ export class FrequencyModalComponent implements OnInit {
     this.editor.isEnable = !!(this.frequency.nationalHoliday && this.frequency.nationalHoliday.length > 0);
   }
 
-  changeFrequencyObj(data) {
+  changeFrequencyObj(data): void {
     if (!data) {
       data = 'all';
     }
@@ -374,7 +374,7 @@ export class FrequencyModalComponent implements OnInit {
     this.freqObj(data, obj);
   }
 
-  changeFrequency() {
+  changeFrequency(): void {
     this.onFrequencyChange();
     if (this.frequency.tab === 'specificDays') {
       $('#calendar').calendar({
@@ -385,8 +385,8 @@ export class FrequencyModalComponent implements OnInit {
     }
   }
 
-  selectMonthDaysFunc(value) {
-    if (this.selectedMonths.indexOf(value) == -1) {
+  selectMonthDaysFunc(value): void {
+    if (this.selectedMonths.indexOf(value) === -1) {
       this.selectedMonths.push(value);
     } else {
       this.selectedMonths.splice(this.selectedMonths.indexOf(value), 1);
@@ -396,8 +396,8 @@ export class FrequencyModalComponent implements OnInit {
     this.editor.isEnable = this.selectedMonths.length > 0;
   }
 
-  selectMonthDaysUFunc(value) {
-    if (this.selectedMonthsU.indexOf(value) == -1) {
+  selectMonthDaysUFunc(value): void {
+    if (this.selectedMonthsU.indexOf(value) === -1) {
       this.selectedMonthsU.push(value);
     } else {
       this.selectedMonthsU.splice(this.selectedMonthsU.indexOf(value), 1);
@@ -407,19 +407,19 @@ export class FrequencyModalComponent implements OnInit {
     this.editor.isEnable = this.selectedMonthsU.length > 0;
   }
 
-  getSelectedMonthDays(value) {
+  getSelectedMonthDays(value): boolean {
     if (this.selectedMonths.indexOf(value) !== -1) {
       return true;
     }
   }
 
-  getSelectedMonthDaysU(value) {
+  getSelectedMonthDaysU(value): boolean {
     if (this.selectedMonthsU.indexOf(value) !== -1) {
       return true;
     }
   }
 
-  selectAllWeek() {
+  selectAllWeek(): void {
     if (this.frequency.all) {
       this.frequency.days = ['0', '1', '2', '3', '4', '5', '6'];
       this.editor.isEnable = true;
@@ -430,7 +430,7 @@ export class FrequencyModalComponent implements OnInit {
     this.checkDays();
   }
 
-  checkDays() {
+  checkDays(): void {
     this.daysOptions = this.daysOptions.map(item => {
       return {
         ...item,
@@ -439,7 +439,7 @@ export class FrequencyModalComponent implements OnInit {
     });
   }
 
-  selectAllMonth() {
+  selectAllMonth(): void {
     if (this.frequency.allMonth) {
       this.frequency.months = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
     } else {
@@ -448,7 +448,7 @@ export class FrequencyModalComponent implements OnInit {
     this.checkMonths();
   }
 
-  checkMonths() {
+  checkMonths(): void {
     this.monthsOptions = this.monthsOptions.map(item => {
       return {
         ...item,
@@ -457,11 +457,11 @@ export class FrequencyModalComponent implements OnInit {
     });
   }
 
-  getDateFormat(date) {
+  getDateFormat(date): string {
     return moment(date).format(this.dateFormatM);
   }
 
-  loadHolidayList() {
+  loadHolidayList(): void {
     this.holidayDays.checked = false;
     this.holidayList = [];
     let holidays = [];
@@ -489,7 +489,7 @@ export class FrequencyModalComponent implements OnInit {
 
   }
 
-  addFrequency() {
+  addFrequency(): void {
     this.countryField = false;
     this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
     this.setEditorEnable();
@@ -722,7 +722,7 @@ export class FrequencyModalComponent implements OnInit {
     this.checkMonths();
   }
 
-  saveFrequency() {
+  saveFrequency(): void {
     if (this.editor.frequencyType == 'INCLUDE') {
       this.calendar.configuration.includesFrequency = _.clone(this.frequencyList);
     } else {
@@ -730,7 +730,7 @@ export class FrequencyModalComponent implements OnInit {
     }
   }
 
-  editFrequency(data) {
+  editFrequency(data): void {
     this._temp = this.coreService.clone(data);
     this.frequency = this.coreService.clone(data);
 
@@ -762,7 +762,7 @@ export class FrequencyModalComponent implements OnInit {
     this.onFrequencyChange();
   }
 
-  deleteFrequency(data) {
+  deleteFrequency(data): void {
     for (let i = 0; i < this.frequencyList.length; i++) {
       if (this.frequencyList[i] == data || _.isEqual(this.frequencyList[i], data)) {
         this.frequencyList.splice(i, 1);
@@ -803,7 +803,7 @@ export class FrequencyModalComponent implements OnInit {
     }
   }
 
-  changeDate() {
+  changeDate(): void {
     let newDate = new Date();
     newDate.setHours(0, 0, 0, 0);
     let toDate: any;
@@ -822,16 +822,16 @@ export class FrequencyModalComponent implements OnInit {
       this.isCalendarLoading = true;
 
       this.coreService.post('inventory/calendar/dates', obj).subscribe((result: any) => {
-        let color = '#007da6';
+        let color = 'blue';
         if (this.calObj.frequency && this.calObj.frequency != 'all' && this.calObj.frequency.type == 'EXCLUDE') {
-          color = '#eb8814';
+          color = 'orange';
         }
         for (let i = 0; i < result.dates.length; i++) {
           let x = result.dates[i];
           let obj = {
             startDate: moment(x),
             endDate: moment(x),
-            color: color
+            color
           };
 
           this.planItems.push(obj);
@@ -842,7 +842,7 @@ export class FrequencyModalComponent implements OnInit {
             this.planItems.push({
               startDate: moment(x),
               endDate: moment(x),
-              color: '#eb8814'
+              color: 'orange'
             });
           }
         }
@@ -858,7 +858,7 @@ export class FrequencyModalComponent implements OnInit {
     }
   }
 
-  showCalendar(data) {
+  showCalendar(data): void {
     this.calendarTitle = new Date().getFullYear();
     this.frequencyList1 = [];
     if (this.calendar.configuration.includesFrequency.length > 0) {
@@ -874,7 +874,7 @@ export class FrequencyModalComponent implements OnInit {
     this.changeFrequencyObj(data);
   }
 
-  save() {
+  save(): void {
     this.saveFrequency();
     this.activeModal.close({
       editor: this.editor,
@@ -884,11 +884,11 @@ export class FrequencyModalComponent implements OnInit {
     });
   }
 
-  cancel() {
+  cancel(): void {
     this.activeModal.close('');
   }
 
-  back() {
+  back(): void {
     if (this.flag) {
       this.activeModal.close('');
     } else {
@@ -918,7 +918,7 @@ export class FrequencyModalComponent implements OnInit {
     }
   }
 
-  private convertStringToDate(date) {
+  private convertStringToDate(date): any {
     if (typeof date === 'string') {
       return moment(date);
     } else {
@@ -926,7 +926,7 @@ export class FrequencyModalComponent implements OnInit {
     }
   }
 
-  private checkExclude(dates) {
+  private checkExclude(dates): void {
     let obj = {
       tab: 'specificDays',
       type: 'EXCLUDE',
@@ -1014,7 +1014,7 @@ export class FrequencyModalComponent implements OnInit {
     let planData = {
       startDate: date,
       endDate: date,
-      color: '#007da6'
+      color: 'blue'
     };
 
     let flag = false, isFound = false, flg = false;
@@ -1027,17 +1027,17 @@ export class FrequencyModalComponent implements OnInit {
         for (let i = 0; i < this.planItems.length; i++) {
           if ((new Date(this.planItems[i].startDate).setHours(0, 0, 0, 0) == new Date(planData.startDate).setHours(0, 0, 0, 0))) {
             isFound = true;
-            if (this.planItems[i].color != '#eb8814') {
-              this.planItems[i].color = '#eb8814';
+            if (this.planItems[i].color != 'orange') {
+              this.planItems[i].color = 'orange';
               flag = true;
             } else {
-              this.planItems[i].color = '#007da6';
+              this.planItems[i].color = 'blue';
             }
             break;
           }
         }
         if (!isFound) {
-          planData.color = '#007da6';
+          planData.color = 'blue';
           this.includedDates.push(planData);
           this.planItems.push(planData);
         } else {
@@ -1085,17 +1085,17 @@ export class FrequencyModalComponent implements OnInit {
         for (let i = 0; i < this.planItems.length; i++) {
           if ((new Date(this.planItems[i].startDate).setHours(0, 0, 0, 0) == new Date(planData.startDate).setHours(0, 0, 0, 0))) {
             isFound = true;
-            if (this.planItems[i].color != '#eb8814') {
-              this.planItems[i].color = '#eb8814';
+            if (this.planItems[i].color != 'orange') {
+              this.planItems[i].color = 'orange';
             } else {
-              this.planItems[i].color = '#007da6';
+              this.planItems[i].color = 'blue';
               flag = true;
             }
             break;
           }
         }
         if (!isFound) {
-          planData.color = '#eb8814';
+          planData.color = 'orange';
           this.excludedDates.push(planData);
           this.planItems.push(planData);
         } else {
@@ -1138,7 +1138,7 @@ export class FrequencyModalComponent implements OnInit {
     let obj = {
       startDate: e.date,
       endDate: e.date,
-      color: '#007da6'
+      color: 'blue'
     };
     let flag = false;
     let index = 0;
@@ -1233,9 +1233,9 @@ export class FrequencyModalComponent implements OnInit {
     let result: any;
     this.coreService.post('inventory/calendar/dates', obj).subscribe((res) => {
       result = res;
-      let color = '#007da6';
+      let color = 'blue';
       if (data && data.type == 'EXCLUDE') {
-        color = '#eb8814';
+        color = 'orange';
       }
       this.planItems = [];
       for (let m = 0; m < result.dates.length; m++) {
@@ -1252,7 +1252,7 @@ export class FrequencyModalComponent implements OnInit {
           this.planItems.push({
             startDate: moment(x),
             endDate: moment(x),
-            color: '#eb8814'
+            color: 'orange'
           });
         }
       }

@@ -27,6 +27,7 @@
           <label class="col-sm-3 form-control-label" translate>user.label.folders</label>
           <div class="col-sm-8">
             <nz-tree-select
+              #treeSelectCtrl
               name="folder"
               [nzNodes]="nodes"
               [nzHideUnMatched]="true"
@@ -36,6 +37,7 @@
               [nzDisplayWith]="displayWith"
               [nzPlaceHolder]="'common.placeholder.selectFromTree' | translate"
               [(ngModel)]="folderObj.paths"
+              (keypress)="onKeyPress($event)"
             >
               <ng-template #nzTreeTemplate let-node>
                 <div class="node-wrapper">

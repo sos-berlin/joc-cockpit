@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {ClipboardService} from 'ngx-clipboard';
-import {TranslateService} from '@ngx-translate/core';
 import {Observable} from 'rxjs';
 import * as moment from 'moment-timezone';
 import * as _ from 'underscore';
@@ -34,7 +33,7 @@ export class CoreService {
   windowProperties: any = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
 
   constructor(private http: HttpClient, private authService: AuthService, private router: Router,
-              private clipboardService: ClipboardService, private translate: TranslateService) {
+              private clipboardService: ClipboardService) {
 
     this.tabs._workflow = {};
     this.tabs._workflow.filter = {};
@@ -430,7 +429,6 @@ export class CoreService {
       observe: 'response'
     };
     this.http.post(url, object, headers).subscribe((response: any) => {
-      //console.log(response.headers.get('content-disposition'), '???', response);
       saveAs(response.body, fileName || response.headers.get('content-disposition'));
       cb(true);
     }, () => {
@@ -792,7 +790,6 @@ export class CoreService {
     }
     let host = regEx.exec(window.location.href)[1];
     host = host + '/#/';
-
     if (objType === 'workflow' && path) {
       link = host + 'workflows/workflow?path=' + encodeURIComponent(path);
     } else if (objType === 'order' && path) {
@@ -800,7 +797,7 @@ export class CoreService {
     } else if (objType === 'lock' && path) {
       link = host + 'resources/locks/lock?path=' + encodeURIComponent(path);
     } else if (objType === 'fileTransfer' && path) {
-      link = host + 'file_transfer?id=' + encodeURIComponent(path);
+      link = host + 'file_transfer/file_transfer?id=' + path;
     } else if (objType === 'calendar' && path) {
       link = host + 'resources/calendars/calendar?path=' + encodeURIComponent(path);
     } else if (objType === 'document' && path) {
@@ -808,10 +805,6 @@ export class CoreService {
     }
     if (link !== '') {
       this.clipboardService.copyFromContent(link + '&scheduler_id=' + JSON.parse(this.authService.scheduleIds).selected);
-      let msg;
-      this.translate.get('common.message.copied').subscribe(translatedValue => {
-        msg = translatedValue;
-      });
     }
   }
 
@@ -1187,4 +1180,5 @@ export class CoreService {
     }
     return dates;
   }
+
 }

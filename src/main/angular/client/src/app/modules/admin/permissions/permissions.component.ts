@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import * as _ from 'underscore';
@@ -88,6 +88,8 @@ export class FolderModalComponent implements OnInit {
   folderObj: any = {paths: []};
   schedulerIds: any;
 
+  @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
+
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService) {
   }
 
@@ -144,6 +146,23 @@ export class FolderModalComponent implements OnInit {
     return data.key;
   }
 
+  onKeyPress($event): void {
+    if ($event.which === '13' || $event.which === 13 || $event.which === '32' || $event.which === 32) {
+      const path = $event.target.value;
+      if (this.folderObj.paths.indexOf(path) === -1) {
+        if (this.treeSelectCtrl) {
+          const node = this.treeSelectCtrl.getTreeNodeByKey(path);
+          if (node) {
+            this.folderObj.paths.push(path);
+            node.isSelected = true;
+            this.nodes = [...this.nodes];
+          }
+        }
+      }
+      $event.preventDefault();
+    }
+  }
+
   getFolderTree(): void {
     this.coreService.post('tree', {
       controllerId: this.schedulerIds.selected,
@@ -198,7 +217,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
   subscription3: Subscription;
 
-  constructor(private coreService: CoreService, private route: ActivatedRoute, private router: Router, private modal: NzModalService, private dataService: DataService) {
+  constructor(private coreService: CoreService, private route: ActivatedRoute, private router: Router,
+              private modal: NzModalService, private dataService: DataService) {
     this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
       if (res) {
         this.setUserData(res);

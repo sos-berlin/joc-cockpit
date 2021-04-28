@@ -146,7 +146,7 @@ export class AddRestrictionComponent implements OnInit {
           this.tempItems.push({
             startDate: this.convertStringToDate(date),
             endDate: this.convertStringToDate(date),
-            color: '#007da6'
+            color: 'blue'
           });
         });
       }
@@ -264,7 +264,7 @@ export class AddRestrictionComponent implements OnInit {
   }
 
   selectMonthDaysFunc(value): void {
-    if (this.selectedMonths.indexOf(value) == -1) {
+    if (this.selectedMonths.indexOf(value) === -1) {
       this.selectedMonths.push(value);
     } else {
       this.selectedMonths.splice(this.selectedMonths.indexOf(value), 1);
@@ -275,7 +275,7 @@ export class AddRestrictionComponent implements OnInit {
   }
 
   selectMonthDaysUFunc(value): void {
-    if (this.selectedMonthsU.indexOf(value) == -1) {
+    if (this.selectedMonthsU.indexOf(value) === -1) {
       this.selectedMonthsU.push(value);
     } else {
       this.selectedMonthsU.splice(this.selectedMonthsU.indexOf(value), 1);
@@ -286,13 +286,13 @@ export class AddRestrictionComponent implements OnInit {
   }
 
   getSelectedMonthDays(value): boolean {
-    if (this.selectedMonths.indexOf(value) != -1) {
+    if (this.selectedMonths.indexOf(value) !== -1) {
       return true;
     }
   }
 
   getSelectedMonthDaysU(value): boolean {
-    if (this.selectedMonthsU.indexOf(value) != -1) {
+    if (this.selectedMonthsU.indexOf(value) !== -1) {
       return true;
     }
   }
@@ -308,7 +308,7 @@ export class AddRestrictionComponent implements OnInit {
     this.checkDays();
   }
 
-  addFrequency() {
+  addFrequency(): void {
     this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
     this.setEditorEnable();
     let flag = false;
@@ -336,7 +336,7 @@ export class AddRestrictionComponent implements OnInit {
       this.editor.isEnable = false;
       return;
     }
-    if (this.frequency.tab == 'specificDays') {
+    if (this.frequency.tab === 'specificDays') {
       this.frequency.dates = [];
       for (let j = 0; j < this.tempItems.length; j++) {
         this.frequency.dates.push(this.coreService.getStringDate(this.tempItems[j].startDate));
@@ -358,7 +358,7 @@ export class AddRestrictionComponent implements OnInit {
       let flag1 = false;
       for (let i = 0; i < this.calendar.frequencyList.length; i++) {
         if (this.frequency.tab == this.calendar.frequencyList[i].tab) {
-          if (this.frequency.tab == 'weekDays') {
+          if (this.frequency.tab === 'weekDays') {
             if (this.frequency.months && this.frequency.months.length > 0) {
               if (this.frequency.months == this.calendar.frequencyList[i].months || _.isEqual(this.calendar.frequencyList[i].months, this.frequency.months)) {
                 if (_.isEqual(this.calendar.frequencyList[i].days, this.frequency.days)) {
@@ -428,7 +428,7 @@ export class AddRestrictionComponent implements OnInit {
                 break;
               }
             }
-          } else if (this.frequency.tab == 'monthDays' && this.frequency.isUltimos != 'months' && this.calendar.frequencyList[i].isUltimos !== 'months') {
+          } else if (this.frequency.tab === 'monthDays' && this.frequency.isUltimos != 'months' && this.calendar.frequencyList[i].isUltimos !== 'months') {
             if (this.frequency.months && this.frequency.months.length > 0) {
               if (this.frequency.months == this.calendar.frequencyList[i].months || _.isEqual(this.calendar.frequencyList[i].months, this.frequency.months)) {
                 this.calendar.frequencyList[i].selectedMonthsU = this.coreService.clone(this.frequency.selectedMonthsU);
@@ -462,7 +462,7 @@ export class AddRestrictionComponent implements OnInit {
                 break;
               }
             }
-          } else if (this.frequency.tab == 'specificWeekDays') {
+          } else if (this.frequency.tab === 'specificWeekDays') {
             if (this.frequency.months && this.calendar.frequencyList[i].months) {
               if (!_.isEqual(this.calendar.frequencyList[i].months, this.frequency.months)) {
                 if (_.isEqual(this.calendar.frequencyList[i].specificWeekDay, this.frequency.specificWeekDay) && _.isEqual(this.calendar.frequencyList[i].which, this.frequency.which)) {
@@ -477,7 +477,7 @@ export class AddRestrictionComponent implements OnInit {
                 }
               }
             }
-          } else if (this.frequency.tab == 'specificDays') {
+          } else if (this.frequency.tab === 'specificDays') {
             this.frequency.dates = [];
             for (let j = 0; j < this.tempItems.length; j++) {
               this.frequency.dates.push(this.coreService.getStringDate(this.tempItems[j].startDate));
@@ -487,7 +487,7 @@ export class AddRestrictionComponent implements OnInit {
             this.calendar.frequencyList[i].str = _.clone(this.frequency.str);
             flag1 = true;
             break;
-          } else if (this.frequency.tab == 'every') {
+          } else if (this.frequency.tab === 'every') {
             if (_.isEqual(this.frequency.dateEntity, this.calendar.frequencyList[i].dateEntity) && _.isEqual(this.frequency.startingWith, this.calendar.frequencyList[i].startingWith)) {
               this.calendar.frequencyList[i].str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
               this.calendar.frequencyList[i].interval = _.clone(this.frequency.interval);
@@ -500,7 +500,7 @@ export class AddRestrictionComponent implements OnInit {
       }
 
       if (!flag1) {
-        if (this.frequency.tab == 'specificDays') {
+        if (this.frequency.tab === 'specificDays') {
           this.frequency.dates = [];
           for (let i = 0; i < this.tempItems.length; i++) {
             this.frequency.dates.push(this.coreService.getStringDate(this.tempItems[i].startDate));
@@ -513,7 +513,7 @@ export class AddRestrictionComponent implements OnInit {
 
       }
     } else {
-      if (this.frequency.tab == 'specificDays') {
+      if (this.frequency.tab === 'specificDays') {
         this.frequency.dates = [];
         for (let i = 0; i < this.tempItems.length; i++) {
           this.frequency.dates.push(this.coreService.getStringDate(this.tempItems[i].startDate));
@@ -526,12 +526,12 @@ export class AddRestrictionComponent implements OnInit {
     this.editor.isEnable = false;
   }
 
-  editFrequency(data) {
+  editFrequency(data): void {
     this._temp = this.coreService.clone(data);
     this.frequency = this.coreService.clone(data);
     this.isRuntimeEdit = true;
-    if (this.frequency.tab == 'monthDays') {
-      if (this.frequency.isUltimos == 'months') {
+    if (this.frequency.tab === 'monthDays') {
+      if (this.frequency.isUltimos === 'months') {
         this.selectedMonths = [];
         for (let i = 0; i < data.selectedMonths.length; i++) {
           this.selectMonthDaysFunc(data.selectedMonths[i]);
@@ -546,15 +546,15 @@ export class AddRestrictionComponent implements OnInit {
     this.onFrequencyChange();
   }
 
-  deleteFrequency(data, index) {
+  deleteFrequency(data, index): void {
     this.calendar.frequencyList.splice(index, 1);
-    if (this.calendar.frequencyList.length == 0) {
+    if (this.calendar.frequencyList.length === 0) {
       let temp = this.coreService.clone(this.frequency);
       this.frequency = {};
       this.frequency.tab = temp.tab;
       this.frequency.isUltimos = temp.isUltimos;
     }
-    if (data.tab == 'specificDays') {
+    if (data.tab === 'specificDays') {
       this.tempItems = [];
     }
     this.checkDays();
@@ -572,7 +572,7 @@ export class AddRestrictionComponent implements OnInit {
     let obj = {
       startDate: e.date,
       endDate: e.date,
-      color: '#007da6'
+      color: 'blue'
     };
     let flag = false;
     let index = 0;
@@ -936,8 +936,9 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       this.getDates(obj, false);
     } else if (newDate.getFullYear() === this.calendarTitle) {
       this.planItems = _.clone(this.tempList);
-      if ($('#full-calendar').data('calendar')) {
-        $('#full-calendar').data('calendar').setDataSource(this.planItems);
+      const dom = $('#full-calendar');
+      if (dom.data('calendar')) {
+        dom.data('calendar').setDataSource(this.planItems);
       }
     }
   }
@@ -954,7 +955,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     this.nonWorkingCalendars.splice(index, 1);
   }
 
-  /** --------- Begin Restriction  ----------------*/
+  /* --------- Begin Restriction  ----------------*/
 
   addRestrictionInCalendar(data): void {
     const modal = this.modal.create({
@@ -980,7 +981,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     const modal = this.modal.create({
       nzTitle: null,
       nzContent: AddRestrictionComponent,
-nzClassName: 'lg',
+      nzClassName: 'lg',
       nzComponentParams: {
         schedulerId: this.schedulerId,
         preferences: this.preferences,
@@ -999,7 +1000,7 @@ nzClassName: 'lg',
     });
   }
 
-  deleteRestrictionInCalendar(data, frequency) {
+  deleteRestrictionInCalendar(data, frequency): void {
     for (let i = 0; i < data.frequencyList.length; i++) {
       if (data.frequencyList[i].str === frequency.str) {
         data.frequencyList.splice(i, 1);
@@ -1008,7 +1009,7 @@ nzClassName: 'lg',
     }
   }
 
-  /** ===================== End Restriction  ======================*/
+  /* ===================== End Restriction  ======================*/
 
   ngOnDestroy(): void {
     if (this.schedule.configuration) {
@@ -1055,14 +1056,14 @@ nzClassName: 'lg',
     }
   }
 
-  private callDates(obj, flag) {
+  private callDates(obj, flag): void {
     this.coreService.post(!this.calendar ? 'schedule/runtime' : 'inventory/calendar/dates',
       obj).subscribe((result: any) => {
       this.filterDates(result, flag);
     });
   }
 
-  private filterDates(result, flag) {
+  private filterDates(result, flag): void {
     if (result.periods) {
       this.populatePlanItems(result);
     } else {
@@ -1072,7 +1073,7 @@ nzClassName: 'lg',
           let obj = {
             startDate: this.coreService.getDate(x),
             endDate: this.coreService.getDate(x),
-            color: '#007da6'
+            color: 'blue'
           };
 
           this.planItems.push(obj);
@@ -1084,7 +1085,7 @@ nzClassName: 'lg',
           this.planItems.push({
             startDate: this.coreService.getDate(x),
             endDate: this.coreService.getDate(x),
-            color: '#eb8814'
+            color: 'orange'
           });
         }
       }
@@ -1095,7 +1096,7 @@ nzClassName: 'lg',
     $('#full-calendar').data('calendar').setDataSource(this.planItems);
   }
 
-  private populatePlanItems(res) {
+  private populatePlanItems(res): void {
     res.periods.forEach((value) => {
       let planData: any = {};
       if (value.begin) {
@@ -1140,7 +1141,7 @@ nzClassName: 'lg',
     return calendars;
   }
 
-  private saveRestriction(data) {
+  private saveRestriction(data): void {
     for (let i = 0; i < this.calendars.length; i++) {
       if (data.calendarName === this.calendars[i].calendarName) {
         this.calendars[i].frequencyList = data.frequencyList;

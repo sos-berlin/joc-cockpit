@@ -156,16 +156,18 @@ export class WorkflowService {
     instruction['retryDelays'] = retryDelays;
   }
 
-  isValidObject(str): boolean {
-    if (/^([a-zA-Z0-9_\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\uFF00-\uFFEF\u4E00-\u9FAF\u2605-\u2606\u2190-\u2195\u203B]+[-.]{1})*[a-zA-Z0-9_\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\uFF00-\uFFEF\u4E00-\u9FAF\u2605-\u2606\u2190-\u2195\u203B]+$/.test(str)) {
-      return !/^(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|double|do|else|enum|extends|false|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|null|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)$/.test(str);
+  isValidObject(v): boolean {
+    if (!v.match(/[!?~'"}\[\]{@#\/\\^$%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(v)
+      && !v.substring(0, 1).match(/[-]/) && !v.substring(v.length - 1).match(/[-]/) && !/\s/.test(v)) {
+      return !/^(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|double|do|else|enum|extends|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)$/.test(v);
     } else {
       return false;
     }
   }
 
-  isValidLabel(str): boolean {
-    return /^([A-Z\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\uFF00-\uFFEF\u4E00-\u9FAF\u2605-\u2606\u2190-\u2195\u203B]|[a-z]|[0-9]|_)([A-Z]|[a-z]|[0-9]|\$|_|,|-|#|:|!|)*$/.test(str);
+  isValidLabel(v): boolean {
+    return !v.match(/[?~'"}\[\]{@\/\\^%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(v)
+      && !v.substring(0, 1).match(/[-,/|:!#$]/) && !v.substring(v.length - 1).match(/[-,/|:!#$]/) && !/\s/.test(v);
   }
 
   validateFields(value, type): boolean {
@@ -1054,12 +1056,16 @@ export class WorkflowService {
 
   removeSlashToString(data, type): void {
     if (data[type]) {
-      if (!(/[$_+]/.test(data[type]))) {
-        data[type] = JSON.parse(data[type]);
-        let startChar = data[type].substring(0, 1),
-          endChar = data[type].substring(data[type].length - 1);
-        if ((startChar === '"' && endChar === '"')) {
-          data[type] = data[type].substring(1, data[type].length - 1);
+      let startChar = data[type].substring(0, 1);
+      if (startChar !== '$') {
+        try {
+           data[type] = JSON.parse(data[type]);
+        } catch (e) {
+          let endChar = data[type].substring(data[type].length - 1);
+          if ((startChar === '"' && endChar === '"')) {
+            data[type] = data[type].substring(1, data[type].length - 1);
+          }
+          data[type] = data[type].replace(/\\/g, '');
         }
       }
     }
@@ -1067,15 +1073,17 @@ export class WorkflowService {
 
   addSlashToString(data, type): void {
     if (data[type]) {
-      if (!(/[$_+]/.test(data[type]))) {
-        const startChar = data[type].substring(0, 1);
+      const startChar = data[type].substring(0, 1);
+      if (startChar !== '$') {
         const endChar = data[type].substring(data[type].length - 1);
-        if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
-          data[type] = JSON.stringify(data[type]);
+        if ((startChar === '\'' && endChar === '\'')) {
+          data[type] = JSON.stringify(data[type].substring(1, data[type].length - 1)).replace(/'|\\'/g, "\\'");
+          data[type] = '\'' + data[type].substring(1, data[type].length - 1) + '\'';
+        } else if ((startChar === '"' && endChar === '"')) {
+          data[type] = JSON.stringify(data[type].substring(1, data[type].length - 1)).replace(/'|\\'/g, "\\'");
         } else {
-          data[type] = '"' + data[type] + '"';
+          data[type] = JSON.stringify(data[type]).replace(/'|\\'/g, "\\'");
         }
-        data[type] = JSON.stringify(data[type]);
       }
     }
   }

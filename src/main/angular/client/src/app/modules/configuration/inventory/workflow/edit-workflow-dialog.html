@@ -37,7 +37,7 @@
       </div>
       <div cdkDropList (cdkDropListDropped)="drop($event)">
         <div class="form-group row m-b-0 m-l-12" *ngFor="let variable of variableDeclarations.parameters; let i = index" cdkDrag>
-          <div class="pos-abt" style="margin-left: -13px;font-size: 18px;margin-top: 3px;cursor: move" cdkDragHandle>
+          <div class="pos-abt" style="margin-left: -13px;font-size: 18px;margin-top: 2px;cursor: move" cdkDragHandle>
             <i class="fa fa-bars" aria-hidden="true"></i>
           </div>
           <div class="col-md-4 col-lg-4 m-b-sm" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">

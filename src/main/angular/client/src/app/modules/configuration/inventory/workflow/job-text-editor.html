@@ -219,6 +219,7 @@
                       <nz-mention [nzSuggestions]="mentionValueList" [nzNotFoundContent]="'No data found'" [nzValueWith]="valueWith" [nzPrefix]="['$']">
                         <input nz-input nzMentionTrigger autocomplete="off" class="form-control" [(ngModel)]="env.value" name="value{{i}}"
                                placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
+                        <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(env)" style="right: 13px;top:1px;"></i>
                         <ng-container *nzMentionSuggestion="let argu">
                           <span>{{ argu.name }}</span>
                         </ng-container>

@@ -207,7 +207,7 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
   fileTransfers: any = [];
   dateFormat: any;
   loading = false;
-
+  widthArr = [];
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -222,7 +222,7 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.transferId = this.route.snapshot.queryParamMap.get('transferId');
+    this.transferId = this.route.snapshot.queryParamMap.get('id');
     this.schedulerId = this.route.snapshot.queryParamMap.get('scheduler_id');
     this.init();
   }
@@ -240,15 +240,25 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
     this.coreService.post('yade/transfers', obj).subscribe((result: any) => {
       this.fileTransfers = result.transfers;
       this.loading = true;
+      this.setHeaderWidth();
     }, () => this.loading = true);
   }
 
   getFiles(value): void {
+    const self = this;
+    value.widthArr = [];
     this.coreService.post('yade/files', {
       transferIds: [value.id],
       controllerId: this.schedulerId
     }).subscribe((res: any) => {
       value.files = res.files;
+      value.widthArr = this.coreService.calFileTransferRowWidth(false);
+      setTimeout(() => {
+        const dom = $('#fileTransferMainTable');
+        dom.find('thead tr.main-header-row th').each(function(i) {
+          $(this).css('width', self.widthArr[i] + 'px');
+        });
+      }, 0);
     });
   }
 
@@ -266,6 +276,17 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
     }).subscribe((res: any) => {
 
     });
+  }
+
+  private setHeaderWidth(): void {
+    const self = this;
+    setTimeout(() => {
+      self.widthArr = [];
+      const dom = $('#fileTransferMainTable');
+      dom.find('thead tr.main-header-row th').each(function() {
+        self.widthArr.push($(this).outerWidth());
+      });
+    }, 0);
   }
 
   private init(): void {
@@ -489,17 +510,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       this.setHeaderWidth();
 
     }, () => this.isLoading = true);
-  }
-
-  private setHeaderWidth(): void {
-    const self = this;
-    setTimeout(() => {
-      self.widthArr = [];
-      const dom = $('#fileTransferMainTable');
-      dom.find('thead tr.main-header-row th').each(function() {
-        self.widthArr.push($(this).outerWidth());
-      });
-    }, 0);
   }
 
   getTransfer(transfer): void {
@@ -998,6 +1008,27 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.saveService.save();
   }
 
+  navToWorkflowTab(workflow): void {
+    this.coreService.getConfigurationTab().inventory.expand_to = [];
+    this.coreService.getConfigurationTab().inventory.selectedObj = {
+      name: workflow.substring(workflow.lastIndexOf('/') + 1),
+      path: workflow.substring(0, workflow.lastIndexOf('/')) || '/',
+      type: 'WORKFLOW'
+    };
+    this.router.navigate(['/configuration/inventory']);
+  }
+
+  private setHeaderWidth(): void {
+    const self = this;
+    setTimeout(() => {
+      self.widthArr = [];
+      const dom = $('#fileTransferMainTable');
+      dom.find('thead tr.main-header-row th').each(function() {
+        self.widthArr.push($(this).outerWidth());
+      });
+    }, 0);
+  }
+
   private init(): void {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
@@ -1027,7 +1058,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   private copyFilter(filter): void {
     this.openFilterModal(filter, true);
   }
-
   private openFilterModal(filter, isCopy): void {
     let filterObj: any = {};
     this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
@@ -1191,16 +1221,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       obj.dateTo = toDate;
     }
     return obj;
-  }
-
-  navToWorkflowTab(workflow): void {
-    this.coreService.getConfigurationTab().inventory.expand_to = [];
-    this.coreService.getConfigurationTab().inventory.selectedObj = {
-      name: workflow.substring(workflow.lastIndexOf('/') + 1),
-      path: workflow.substring(0, workflow.lastIndexOf('/')) || '/',
-      type: 'WORKFLOW'
-    };
-    this.router.navigate(['/configuration/inventory']);
   }
 
 }

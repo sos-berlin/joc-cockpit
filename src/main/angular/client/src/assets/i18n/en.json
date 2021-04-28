@@ -162,6 +162,7 @@
     "label.ordersOverview": "Orders Overview",
     "label.jobs": "Jobs",
     "label.fileTransfers": "File Transfers",
+    "label.fileTransfer": "File Transfer",
     "label.resources": "Resources",
     "label.locks": "Locks",
     "label.lock": "Lock",
