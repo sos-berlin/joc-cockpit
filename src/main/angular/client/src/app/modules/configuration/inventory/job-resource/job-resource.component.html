@@ -50,27 +50,33 @@
         </div>
         <div class="form-group row m-b-0">
           <div class="col-md-12">
-            <div class="form-group row m-b-0"
-                 *ngFor="let env of jobResource.configuration.env; let i = index">
-              <div class="col-md-4 col-lg-3 m-b-sm" *ngIf="i==0" translate>common.label.name</div>
-              <div class="col-md-8 col-lg-9 m-b-sm" *ngIf="i==0" translate>common.label.value</div>
-              <div class="col-md-4 col-lg-3 m-b-sm "
-                   [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}">
-                <input type="text" envVariableValidation name="name{{i}}" class="form-control" [(ngModel)]="env.name" (blur)="upperCase(env)"
-                       #ename="ngModel"
-                       placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
-                <div *ngIf="ename.invalid && ename.errors && (ename.dirty || ename.touched)"
-                     class="text-danger help-block">
-                  <div *ngIf="ename.errors.invalidIdentifier" translate>common.message.invalid</div>
+            <div class="form-group row m-b-0 m-l-12" *ngIf="jobResource.configuration.env.length > 0">
+              <div class="col-md-4 col-lg-3 m-b-sm" translate>common.label.name</div>
+              <div class="col-md-8 col-lg-9 m-b-sm" translate>common.label.value</div>
+            </div>
+            <div cdkDropList (cdkDropListDropped)="drop($event, jobResource.configuration.env)">
+              <div class="form-group row m-b-0 m-l-12" *ngFor="let env of jobResource.configuration.env; let i = index" cdkDrag>
+                <div class="pos-abt" style="margin-left: -13px;font-size: 18px;margin-top: 2px;cursor: move" cdkDragHandle>
+                  <i class="fa fa-bars" aria-hidden="true"></i>
                 </div>
-              </div>
-              <div class="col-md-7 col-lg-6m-b-sm">
-                <input type="text" autocomplete="off" class="form-control" [(ngModel)]="env.value" name="value{{i}}" (keypress)="onKeyPress($event)" (blur)="saveJSON()"
-                       placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
-                <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(env)" style="right: 13px;top:1px;"></i>
-              </div>
-              <div class="col-md-1 col-lg-1 p-l-0">
-                <a><i (click)="removeEnv(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                <div class="col-md-4 col-lg-3 m-b-sm "
+                     [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}">
+                  <input type="text" envVariableValidation name="name{{i}}" class="form-control" [(ngModel)]="env.name" (blur)="upperCase(env)"
+                         #ename="ngModel"
+                         placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
+                  <div *ngIf="ename.invalid && ename.errors && (ename.dirty || ename.touched)"
+                       class="text-danger help-block">
+                    <div *ngIf="ename.errors.invalidIdentifier" translate>common.message.invalid</div>
+                  </div>
+                </div>
+                <div class="col-md-7 col-lg-6m-b-sm">
+                  <input type="text" autocomplete="off" class="form-control" [(ngModel)]="env.value" name="value{{i}}" (keypress)="onKeyPress($event)" (blur)="saveJSON()"
+                         placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
+                  <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(env)" style="right: 13px;top:1px;"></i>
+                </div>
+                <div class="col-md-1 col-lg-1 p-l-0">
+                  <a><i (click)="removeEnv(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                </div>
               </div>
             </div>
             <div class="form-group row" [ngClass]="{'disable-link': isTrash}">

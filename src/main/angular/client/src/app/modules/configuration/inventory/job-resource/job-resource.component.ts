@@ -4,6 +4,7 @@ import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-job-resource',
@@ -111,8 +112,14 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       env.name = env.name.toUpperCase();
       if (!env.value) {
         env.value = '$' + env.name.toLowerCase();
+        this.saveJSON();
       }
     }
+  }
+
+  drop(event: CdkDragDrop<string[]>, list): void {
+    moveItemInArray(list, event.previousIndex, event.currentIndex);
+    this.saveJSON();
   }
 
   openEditor(data): void {

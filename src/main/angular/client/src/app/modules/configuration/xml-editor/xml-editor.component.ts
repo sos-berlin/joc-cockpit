@@ -1138,7 +1138,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  changeTab(data, isStore) {
+  tabChange($event): void {
+    this.isLoading = true;
+    this.activeTab = this.tabsArray[$event.index];
+    this.readOthersXSD(this.activeTab.id);
+    this.validConfig = false;
+  }
+
+  changeTab(data, isStore): void {
     if (this.activeTab.id !== data.id) {
       if (this.activeTab.id < 0 || isStore) {
         this.activeTab = data;
@@ -1153,11 +1160,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.validConfig = false;
   }
 
-  hideDocumentation(data) {
+  hideDocumentation(data): void {
     data.show = !data.show;
   }
 
-  othersXSD() {
+  othersXSD(): void {
     this.submitXsd = false;
     this.coreService.post('xmleditor/read', {
       controllerId: this.schedulerIds.selected,
@@ -1177,7 +1184,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         this.newFile();
       } else {
         this.tabsArray = _.clone(res.configurations);
-        this.activeTab = this.tabsArray[this.tabsArray.length - 1];
+        this.activeTab = this.tabsArray[this.selectedTabIndex];
         if (this.activeTab) {
           this.readOthersXSD(this.activeTab.id);
         }
@@ -1192,7 +1199,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     });
   }
 
-  readOthersXSD(id) {
+  readOthersXSD(id): void {
     this.nodes = [];
     this.selectedNode = [];
     this.coreService.post('xmleditor/read', {
@@ -1275,18 +1282,18 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     });
   }
 
-  cancelReassignSchema() {
+  cancelReassignSchema(): void {
     this.reassignSchema = false;
     this.submitXsd = true;
     this.showSelectSchema = false;
   }
 
-  expandAll() {
+  expandAll(): void {
     this.isExpandAll = true;
     this.updateTree();
   }
 
-  collapseAll() {
+  collapseAll(): void {
     this.isExpandAll = false;
     for (let i = 0; i < this.nodes.length; i++) {
       this.nodes[i].expanded = false;
@@ -1296,17 +1303,17 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateTree() {
+  updateTree(): void {
     this.nodes = [...this.nodes];
   }
 
   // change selected xsd value
-  changeXSD(value) {
+  changeXSD(value): void {
     this.selectedXsd = value;
   }
 
   // submit xsd to open
-  submit() {
+  submit(): void {
     if (this.selectedXsd !== '') {
       sessionStorage.$SOS$XSD = this.selectedXsd;
       this.readXML();
@@ -1315,7 +1322,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  readXML() {
+  readXML(): void {
     this.selectedXsd = this.selectedXsd.toUpperCase();
     let obj = {
       controllerId: this.schedulerIds.selected,
@@ -1400,7 +1407,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     });
   }
 
-  checkOrder(node) {
+  checkOrder(node): void {
     setTimeout(() => {
       if (node && this.childNode.length > 0) {
         if (this.childNode && this.childNode.length > 0 && node && node.children && node.children.length > 0) {
@@ -1567,7 +1574,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  scrollTreeToGivenId(id) {
+  scrollTreeToGivenId(id): void {
     if (this.lastScrollId !== id) {
       this.lastScrollId = _.clone(id);
     }
@@ -1581,7 +1588,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     });
   }
 
-  getParentToExpand(node) {
+  getParentToExpand(node): void {
     if (node.parent === '#') {
       this.autoExpand(this.nodes[0]);
 
@@ -1596,7 +1603,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  ok(conf) {
+  ok(conf): boolean {
     let dom_parser = new DOMParser();
     let dom_document = dom_parser.parseFromString(conf, 'text/xml');
     try {
@@ -1619,7 +1626,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  loadTree(xml, check) {
+  loadTree(xml, check): void {
     this.doc = new DOMParser().parseFromString(xml, 'application/xml');
     this.getRootNode(this.doc, check);
     this.xsdXML = xml;
@@ -1630,7 +1637,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.isLoading = !!check;
   }
 
-  reassignSchemaFunc() {
+  reassignSchemaFunc(): void {
     this.reassignSchema = true;
     this.submitXsd = false;
     this.showSelectSchema = true;
@@ -5179,7 +5186,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   private createNewTab() {
     let _tab;
     if (this.tabsArray.length === 0) {
-      _tab = _.clone({id: -1, name: 'edit1'});
+      _tab = {id: -1, name: 'edit1'};
     } else {
       let tempName;
       _tab = _.clone(this.tabsArray[this.tabsArray.length - 1]);
@@ -5205,10 +5212,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
     _tab.schemaIdentifier = null;
     this.tabsArray.push(_tab);
-    this.selectedTabIndex = this.tabsArray.length - 1;
     this.reassignSchema = false;
     this.activeTab = _tab;
-    // this._activeTab.isVisible = true;
+    setTimeout(() => {
+      this.selectedTabIndex = this.tabsArray.length - 1;
+    }, 0);
     this.readOthersXSD(_tab.id);
   }
 
@@ -5306,15 +5314,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
               return x.id !== this.activeTab.id;
             });
             if (this.tabsArray.length > 0) {
-              if (this.activeTab.schemaIdentifier !== undefined) {
-                // this.selectedXsd = true;
-              }
               this.selectedTabIndex = 0;
               this.changeTab(this.tabsArray[0], true);
-
             }
           }
-          // this.openXMLDialog();
         }
       } else {
         this.nodes = [];

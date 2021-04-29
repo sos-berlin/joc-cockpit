@@ -116,9 +116,8 @@
       <app-empty-data [title]="'error.message.noControllerFound'"></app-empty-data>
     </div>
     <div *ngIf="objectType !== 'NOTIFICATION' && tabsArray.length>0">
-      <nz-tabset [nzType]="'line'" [nzSelectedIndex]="selectedTabIndex" [nzTabBarGutter]="3" [nzAnimated]="false">
-        <nz-tab [nzForceRender]="true" *ngFor="let tab of tabsArray; let index= index" [nzTitle]="titleTemplate"
-                (nzClick)="changeTab(tab, false)">
+      <nz-tabset [nzType]="'line'" [nzSelectedIndex]="selectedTabIndex" [nzTabBarGutter]="3" [nzAnimated]="false" (nzSelectChange)="tabChange($event)">
+        <nz-tab [nzForceRender]="true" *ngFor="let tab of tabsArray; let index= index" [nzTitle]="titleTemplate">
           <ng-template #titleTemplate>
             <div id="{{tab.id}}" style="width: 100%">
               <span class="text-hover-primary" (click)="renameTab(tab)"

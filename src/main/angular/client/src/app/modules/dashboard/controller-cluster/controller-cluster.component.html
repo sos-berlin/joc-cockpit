@@ -65,7 +65,7 @@
               <a (click)="clusterAction('switchover',cluster, false)"
                  [ngClass]="{'disable-link': cluster._text !== 'ClusterCoupled'}"
                  translate>dashboard.button.switchOver</a></li>
-            <li nz-menu-item *ngIf="joc && joc.current && joc.clusterNodeState._text == 'active' && permission.joc.administration.controllers.manage" >
+            <li nz-menu-item *ngIf="joc && joc.current && joc.clusterNodeState && joc.clusterNodeState._text == 'active' && permission.joc.administration.controllers.manage" >
               <a (click)="restartService('cluster')" translate>dashboard.button.restartCluster</a>
             </li>
             <li nz-submenu nzTitle="{{'dashboard.button.restartService' | translate}}" *ngIf="joc && joc.current && (!joc.clusterNodeState || joc.clusterNodeState._text == 'active') && permission.joc.administration.controllers.manage">
@@ -87,7 +87,7 @@
                 </li>
               </ul>
             </li>
-            <li nz-menu-item *ngIf="joc && joc.clusterNodeState._text !== 'active' && permission.joc.administration.controllers.manage" >
+            <li nz-menu-item *ngIf="joc && joc.clusterNodeState && joc.clusterNodeState._text !== 'active' && permission.joc.administration.controllers.manage" >
               <a (click)="switchOver()" translate>
                 dashboard.button.switchOver</a>
             </li>
