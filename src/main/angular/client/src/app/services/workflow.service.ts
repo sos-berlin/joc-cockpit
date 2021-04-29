@@ -157,7 +157,7 @@ export class WorkflowService {
   }
 
   isValidObject(v): boolean {
-    if (!v.match(/[!?~'"}\[\]{@#\/\\^$%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(v)
+    if (!v.match(/[!?~'"}\[\]{@#\/\\^$%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(v) && /^(?!-)(?!.*--)/.test(v)
       && !v.substring(0, 1).match(/[-]/) && !v.substring(v.length - 1).match(/[-]/) && !/\s/.test(v)) {
       return !/^(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|double|do|else|enum|extends|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)$/.test(v);
     } else {
@@ -166,7 +166,7 @@ export class WorkflowService {
   }
 
   isValidLabel(v): boolean {
-    return !v.match(/[?~'"}\[\]{@\/\\^%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(v)
+    return !v.match(/[?~'"}\[\]{@\/\\^%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(v) && /^(?!-)(?!.*--)/.test(v)
       && !v.substring(0, 1).match(/[-,/|:!#$]/) && !v.substring(v.length - 1).match(/[-,/|:!#$]/) && !/\s/.test(v);
   }
 
@@ -1058,15 +1058,7 @@ export class WorkflowService {
     if (data[type]) {
       let startChar = data[type].substring(0, 1);
       if (startChar !== '$') {
-        try {
-           data[type] = JSON.parse(data[type]);
-        } catch (e) {
-          let endChar = data[type].substring(data[type].length - 1);
-          if ((startChar === '"' && endChar === '"')) {
-            data[type] = data[type].substring(1, data[type].length - 1);
-          }
-          data[type] = data[type].replace(/\\/g, '');
-        }
+        data[type] = data[type].replace(/\\/g, '');
       }
     }
   }

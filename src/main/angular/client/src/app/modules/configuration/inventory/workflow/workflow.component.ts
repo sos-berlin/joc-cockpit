@@ -15,7 +15,8 @@ import {FileUploader} from 'ng2-file-upload';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
-import {forkJoin, Subscription} from 'rxjs';
+import {forkJoin, of, Subscription} from 'rxjs';
+import {catchError} from 'rxjs/operators';
 import * as _ from 'underscore';
 import {saveAs} from 'file-saver';
 import {Router} from '@angular/router';
@@ -287,7 +288,11 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  openEditor(data): void {
+  drop(event: CdkDragDrop<string[]>, list): void {
+    moveItemInArray(list, event.previousIndex, event.currentIndex);
+  }
+
+  openEditor(data, flag): void {
     const modal = this.modal.create({
       nzTitle: null,
       nzContent: ValueEditorComponent,
@@ -299,6 +304,18 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
+        if(flag) {
+          const startChar = result.substring(0, 1);
+          if (startChar !== '$') {
+            const endChar = result.substring(result.length - 1);
+            if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
+
+            } else {
+              result = JSON.stringify(result).replace(/'|\\'/g, "\\'");
+            }
+            console.log(result, 'result');
+          }
+        }
         data.value = result;
         this.ref.detectChanges();
       }
@@ -505,14 +522,20 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       const APIs = [];
       let paths = [];
       this.selectedNode.job.jobResourceNames.forEach((name) => {
-        APIs.push(this.coreService.post('inventory/path', {name, objectType: 'JOBRESOURCE', useDrafts: true}));
+        APIs.push(this.coreService.post('inventory/path', {name, objectType: 'JOBRESOURCE', useDrafts: true}).pipe(
+          catchError(error => of(error))
+        ));
       });
       forkJoin(APIs).subscribe(results => {
-        results.forEach((item: any) => {
-          let path = item.path.substring(0, item.path.lastIndexOf('/')) || item.path.substring(0, item.path.lastIndexOf('/') + 1);
-          if (paths.indexOf(path) === -1) {
-            paths.push(path);
-            this.loadResources(path);
+        results.forEach((item: any, index) => {
+          if (item && item.path) {
+            let path = item.path.substring(0, item.path.lastIndexOf('/')) || item.path.substring(0, item.path.lastIndexOf('/') + 1);
+            if (paths.indexOf(path) === -1) {
+              paths.push(path);
+              this.loadResources(path);
+            }
+          } else {
+            this.selectedNode.job.jobResourceNames.splice(index, 1);
           }
         });
       });
@@ -541,7 +564,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.selectedNode.job.executable = {
         TYPE: 'ScriptExecutable',
         script: '',
-        v1Compatible: false,
         env: []
       };
     }
@@ -6175,6 +6197,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
     }
 
+    if (!job.executable.v1Compatible){
+      delete job.executable.v1Compatible;
+    }
     if (job.defaultArguments) {
       if (job.executable.v1Compatible && job.executable.TYPE === 'ScriptExecutable') {
         this.coreService.convertArrayToObject(job, 'defaultArguments', true);
