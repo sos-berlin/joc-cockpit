@@ -139,15 +139,19 @@
     <i class="fa fa-caret-right"></i>
   </div>
   <div appResizable class="sidebar sidebar-property-panel bg-white" id="property-panel">
-    <div class="text-center b-b m-a">
+    <div class="b-b m-a">
       <h5 class="p-b-xs">
-          <span translate>workflow.label.properties</span>
-          <span *ngIf="selectedNode" class="font14 text-primary p-l-xs">({{selectedNode.type | translate}})</span>
+        <span translate>workflow.label.properties</span>
+        <span *ngIf="selectedNode" class="font14 text-primary p-l-xs">({{selectedNode.type | translate}})</span>
+        <button class="btn btn-default btn-sm m-l-12 pull-right" style="margin-top: -6px" (click)="openResourceModal()" nz-tooltip="{{'inventory.label.jobResources' | translate}}">
+          <i class="icon-resources-icon icon-color"></i>
+          <span class="p-l-xs" *ngIf="propertyPanelWidth > 320">{{'inventory.label.jobResources' | translate}}</span>
+        </button>
+        <button class="btn btn-default btn-sm pull-right" style="margin-top: -6px" (click)="openDeclarationModal()" nz-tooltip="{{'workflow.label.declareVariables' | translate}}">
+          <i class="fa fa-tasks"></i>
+          <span class="p-l-xs" *ngIf="propertyPanelWidth > 320">{{'order.label.variables' | translate}}</span>
+        </button>
       </h5>
-      <button class="btn btn-default btn-sm pos-abt" style="top:10px; right: 22px" (click)="openDeclarationModal()" nz-tooltip="{{'workflow.label.declareVariables' | translate}}">
-        <i class="fa fa-tasks"></i>
-        <span class="p-l-xs" id="btn-text" *ngIf="propertyPanelWidth > 320">{{'order.label.variables' | translate}}</span>
-      </button>
     </div>
     <div class="m-l-xs m-r-xs text-left" *ngIf="selectedNode">
       <div class="box-body p-t-0" *ngIf="selectedNode.type === 'Job'">

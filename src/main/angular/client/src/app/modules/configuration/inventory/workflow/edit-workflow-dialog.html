@@ -9,7 +9,7 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a" style="overflow: visible">
-    <div class="form-group row" *ngIf="!isVariableOnly" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+    <div class="form-group row" *ngIf="!isVariableOnly && !jobResourceNames" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
       <label class="col-sm-3 form-control-label" translate>common.label.name</label>
       <div class="col-sm-6">
         <input type="text" class="form-control" identifierValidation name="name"
@@ -23,10 +23,39 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="!isVariableOnly">
+    <div class="form-group row" *ngIf="!isVariableOnly && !jobResourceNames">
       <label class="col-sm-3 form-control-label" translate>common.label.title</label>
       <div class="col-sm-6">
         <input type="text" class="form-control" name="title" placeholder="{{'common.placeholder.title' | translate}}" [(ngModel)]="title" autocomplete="off"/>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="!isVariableOnly && jobResourceNames">
+      <label class="col-sm-3 form-control-label" translate>workflow.label.jobResourceNames</label>
+      <div class="col-sm-6">
+        <nz-tree-select
+          name="jobResource"
+          #treeSelectCtrl
+          nzNoAnimation
+          nzMultiple
+          [nzAllowClear]="false"
+          [nzNodes]="jobResourcesTree"
+          [nzHideUnMatched]="true"
+          [nzDropdownStyle]="{ 'max-height': '300px' }"
+          nzShowSearch
+          [nzPlaceHolder]="'workflow.placeholder.selectJobResources' | translate"
+          [(ngModel)]="jobResourceNames"
+          (nzExpandChange)="onExpand($event)"
+        >
+          <ng-template #nzTreeTemplate let-node>
+            <div style="width: 93%" class="node-wrapper" (click)="loadData(node, $event);">
+              <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
+                <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                {{node.origin.name}}
+              </div>
+            </div>
+          </ng-template>
+        </nz-tree-select>
       </div>
     </div>
     <div *ngIf="isVariableOnly">

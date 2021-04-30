@@ -387,6 +387,12 @@
           </nz-select>
         </div>
       </div>
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 block-ellipsis-job" [nz-tooltip]="'workflow.label.failOnOutputErr' | translate" translate>workflow.label.failOnOutputErr</label>
+        <div class="col-md-8 col-lg-9">
+          <label nz-checkbox [(ngModel)]="selectedNode.job.failOnErrWritten" name="failOnErrWritten"></label>
+        </div>
+      </div>
     </div>
   </nz-tab>
   <nz-tab [nzTitle]="'workflow.tab.nodeProperties' | translate">

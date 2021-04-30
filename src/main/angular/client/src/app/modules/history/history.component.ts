@@ -3190,13 +3190,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
     return data;
   }
 
-  private refresh(args) {
+  private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'HistoryOrderTerminated' && this.isLoading && this.historyFilters.type === 'ORDER') {
+        if ((args.eventSnapshots[j].eventType === 'HistoryOrderTerminated' || args.eventSnapshots[j].eventType === 'HistoryOrderStarted') && this.isLoading && this.historyFilters.type === 'ORDER') {
           this.init(true);
           break;
-        } else if (args.eventSnapshots[j].eventType === 'HistoryTaskTerminated' && this.isLoading && this.historyFilters.type === 'TASK') {
+        } else if ((args.eventSnapshots[j].eventType === 'HistoryTaskTerminated' || args.eventSnapshots[j].eventType === 'HistoryTaskStarted') && this.isLoading && this.historyFilters.type === 'TASK') {
           this.init(true);
           break;
         } else if (args.eventSnapshots[j].eventType.match(/Deploy/) && this.isLoading && this.historyFilters.type === 'DEPLOYMENT') {

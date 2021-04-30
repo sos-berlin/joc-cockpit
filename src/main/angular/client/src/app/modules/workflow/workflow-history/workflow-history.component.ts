@@ -88,8 +88,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-       // console.log(args.eventSnapshots[j])
-        if (args.eventSnapshots[j].eventType === 'HistoryOrderTerminated' && this.index === 0) {
+        if ((args.eventSnapshots[j].eventType === 'HistoryOrderTerminated' || args.eventSnapshots[j].eventType === 'HistoryOrderStarted') && this.index === 0) {
           if (!this.workflow || !this.workflow.path) {
             this.loadOrderHistory();
             break;
@@ -97,7 +96,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
             this.loadOrderHistory();
             break;
           }
-        } else if (args.eventSnapshots[j].eventType === 'HistoryTaskTerminated' && this.index === 1) {
+        } else if ((args.eventSnapshots[j].eventType === 'HistoryTaskTerminated' || args.eventSnapshots[j].eventType === 'HistoryTaskStarted') && this.index === 1) {
           this.loadTaskHistory();
           break;
         } else if (args.eventSnapshots[j].eventType === 'AuditLogChanged' && this.index === 2) {

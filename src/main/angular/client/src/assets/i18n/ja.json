@@ -1505,6 +1505,7 @@
     "label.workflowsFound": "ワークフローがあります",
     "label.enterDateAndTime": "日時入力",
     "label.logLevel": "ログレベル",
+    "label.failOnOutputErr": "Fail on output to stderr",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",
     "button.actual": "デフォルト",

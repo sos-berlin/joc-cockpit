@@ -43,6 +43,7 @@ export class CoreService {
     this.tabs._workflow.currentPage = '1';
     this.tabs._workflow.expandedKeys = ['/'];
     this.tabs._workflow.selectedkeys = ['/'];
+    this.tabs._workflow.isCompact = true;
     this.tabs._workflow.selectedView = true;
 
     this.tabs._workflowDetail = {};
@@ -189,7 +190,7 @@ export class CoreService {
     this.tempTabs._workflow.expandedKeys = ['/'];
     this.tempTabs._workflow.selectedkeys = ['/'];
     this.tempTabs._workflow.selectedView = true;
-    this.tempTabs._workflow.showTaskPanel = undefined;
+    this.tempTabs._workflow.isCompact = true;
 
     this.tempTabs._workflowDetail = {};
     this.tempTabs._workflowDetail.date = '1d';

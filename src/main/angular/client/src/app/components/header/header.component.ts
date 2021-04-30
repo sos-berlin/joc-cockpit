@@ -23,7 +23,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   eventId: string;
   eventLoading = false;
   switchScheduler = false;
-  events: any = [];
   isLogout = false;
   selectedController: any;
   subscription: Subscription;
@@ -50,7 +49,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.getEvents();
     }
     if (sessionStorage.showViews) {
-      let showViews = JSON.parse(sessionStorage.showViews);
+      const showViews = JSON.parse(sessionStorage.showViews);
       if (!_.isEmpty(showViews)) {
         this.showViews = showViews;
       }
@@ -203,7 +202,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         }
         this.switchScheduler = false;
       }, (err) => {
-        if (!this.isLogout && err && (err.status == 420 || err.status == 434 || err.status == 504)) {
+        if (!this.isLogout && err) {
           this.timeout = setTimeout(() => {
             this.eventLoading = false;
             this.getEvents();
