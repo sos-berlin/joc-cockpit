@@ -212,9 +212,10 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.subscription2.unsubscribe();
   }
 
-  /** ---------------------------- Broadcast messages ----------------------------------*/
+  /* ---------------------------- Broadcast messages ----------------------------------*/
   receiveMessage($event): void {
     this.pageView = $event;
+    this.resetCheckBox();
   }
 
   showPanelFunc(value): void {
@@ -264,7 +265,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   expandDetails(): void {
-    for (let i = 0; i < this.currentData.length; i++) {
+    for (let i in this.currentData) {
       if (this.currentData[i].arguments && !this.currentData[i].arguments[0]) {
         this.currentData[i].arguments = Object.entries(this.currentData[i].arguments).map(([k, v]) => {
           return {name: k, value: v};
@@ -292,22 +293,24 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.getOrders({controllerId: this.schedulerIds.selected, states: this.getState()});
   }
 
-  /** ----------------------------Begin Action ----------------------------------*/
+  /* ----------------------------Begin Action ----------------------------------*/
 
   sort(key): void {
     this.orderFilters.reverse = !this.orderFilters.reverse;
     this.orderFilters.filter.sortBy = key;
-    this.object.checked = false;
+    this.resetCheckBox();
   }
 
   pageIndexChange($event): void {
     this.orderFilters.currentPage = $event;
-    this.object.checked = false;
+    this.resetCheckBox();
   }
 
   pageSizeChange($event): void {
     this.orderFilters.entryPerPage = $event;
-    this.object.checked = false;
+    if (this.object.checked) {
+      this.checkAll(true);
+    }
   }
 
   currentPageDataChange($event): void {
@@ -338,26 +341,26 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     });
 
     let data = [];
-    for (let i = 0; i < this.currentData.length; i++) {
+    for (let i = 0; i < this.data.length; i++) {
       let obj: any = {};
-      obj[order] = this.currentData[i].orderId;
-      obj[workflow] = this.currentData[i].workflowId.path;
-      obj[position] = this.currentData[i].position && this.currentData[i].position.length > 0 ? this.currentData[i].position[0] : '';
-      this.translate.get(this.currentData[i].state._text).subscribe(translatedValue => {
+      obj[order] = this.data[i].orderId;
+      obj[workflow] = this.data[i].workflowId.path;
+      obj[position] = this.data[i].position && this.data[i].position.length > 0 ? this.data[i].position[0] : '';
+      this.translate.get(this.data[i].state._text).subscribe(translatedValue => {
         obj[status] = translatedValue;
       });
-      obj[scheduledFor] = this.coreService.stringToDate(this.preferences, this.currentData[i].scheduledFor);
+      obj[scheduledFor] = this.coreService.stringToDate(this.preferences, this.data[i].scheduledFor);
       data.push(obj);
     }
     this.excelService.exportAsExcelFile(data, 'JS7-orders');
   }
 
-  hidePanel() {
+  hidePanel(): void {
     this.sideView.orderOverview.show = false;
     this.coreService.hidePanel();
   }
 
-  resetPanel() {
+  resetPanel(): void {
     const rsHt = this.saveService.resizerHeight ? JSON.parse(this.saveService.resizerHeight) || {} : {};
     if (rsHt.orderOverview) {
       delete rsHt.orderOverview;
@@ -376,7 +379,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  showPanel() {
+  showPanel(): void {
     this.sideView.orderOverview.show = true;
     this.coreService.showLeftPanel();
   }
@@ -398,11 +401,11 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     } else {
       this.object.mapOfCheckedId.delete(order.orderId);
     }
-    this.object.checked = this.object.mapOfCheckedId.size === this.currentData.length;
     this.refreshCheckedStatus();
   }
 
   refreshCheckedStatus(): void {
+    this.object.checked = this.object.mapOfCheckedId.size === this.currentData.length;
     this.object.isCancel = false;
     this.object.isModify = true;
     this.object.isSuspend = true;
@@ -436,9 +439,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
   }
 
-  modifyAllOrder() {
+  modifyAllOrder(): void {
     const order = this.object.mapOfCheckedId.values().next().value;
-    const modal = this.modal.create({
+    this.modal.create({
       nzTitle: null,
       nzContent: ChangeParameterModalComponent,
       nzComponentParams: {
@@ -449,34 +452,29 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       nzFooter: null,
       nzClosable: false
     });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.reset();
-      }
-    });
   }
 
-  terminateAllOrder() {
+  terminateAllOrder(): void {
     this._bulkOperation('Terminate', 'remove_when_terminated');
   }
 
-  suspendAllOrder() {
+  suspendAllOrder(): void {
     this._bulkOperation('Suspend', 'suspend');
   }
 
-  resumeAllOrder() {
+  resumeAllOrder(): void {
     this._bulkOperation('Resume', 'resume');
   }
 
-  startAllOrder() {
+  startAllOrder(): void {
     this._bulkOperation('Start', 'add');
   }
 
-  cancelAllOrder() {
+  cancelAllOrder() : void{
     this._bulkOperation('Cancel', 'cancel');
   }
 
-  _bulkOperation(operation, url) {
+  _bulkOperation(operation, url) : void{
     const obj: any = {
       controllerId: this.schedulerIds.selected
     };
@@ -512,21 +510,26 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         nzClosable: false
       });
       modal.afterClose.subscribe(result => {
-        if (result) {
-          this.reset();
-        }
+
       });
     } else {
       this.coreService.post('orders/' + url, obj).subscribe(() => {
-        this.reset();
+
       });
     }
   }
 
-  reset() {
-    this.object.mapOfCheckedId.clear();
-    this.object.checked = false;
-    this.object.indeterminate = false;
+  resetCheckBox(): void {
+    this.object = {
+      mapOfCheckedId: new Map(),
+      checked: false,
+      indeterminate: false,
+      isModify: false,
+      isTerminate: false,
+      isCancel: false,
+      isSuspend: false,
+      isResume: false,
+    };
   }
 
   private init(): void {
@@ -581,7 +584,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   private getOrders(obj): void {
-    this.reset();
     let tempOrder = this.orders.filter((order) => {
       return order.show;
     });
@@ -627,8 +629,21 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       this.searchInResult();
       this.loading = true;
       this.updatePanelHeight();
+      if (this.object.mapOfCheckedId.size > 0) {
+        const tempObject = new Map();
+        this.data.forEach((order) => {
+          if (this.object.mapOfCheckedId.has(order.orderId)) {
+            tempObject.set(order.orderId, order);
+          }
+        });
+        this.object.mapOfCheckedId = tempObject;
+        this.object.mapOfCheckedId.size > 0 ? this.refreshCheckedStatus() : this.resetCheckBox();
+      } else{
+        this.resetCheckBox();
+      }
     }, () => {
       this.loading = true;
+      this.resetCheckBox();
     });
   }
 

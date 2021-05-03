@@ -1336,6 +1336,9 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes.copyObj && !changes.data){
+      return;
+    }
     if (changes.reload) {
       if (this.reload) {
         this.editor.frequencyType = 'INCLUDE';

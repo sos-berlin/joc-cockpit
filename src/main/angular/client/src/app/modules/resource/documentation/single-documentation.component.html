@@ -28,11 +28,11 @@
               >
                 <thead>
                 <tr>
-                  <th class="menu"><span translate>label.action</span></th>
-                  <th><span translate>label.documentName</span></th>
-                  <th><span translate>label.path</span></th>
-                  <th><span translate>label.type</span></th>
-                  <th><span translate>label.lastUpdateTime</span></th>
+                  <th class="menu"><span translate>common.label.action</span></th>
+                  <th><span translate>resource.documentation.label.documentName</span></th>
+                  <th><span translate>common.label.path</span></th>
+                  <th><span translate>common.label.type</span></th>
+                  <th><span translate>resource.documentation.label.lastUpdateTime</span></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -45,17 +45,17 @@
                         <i class="fa fa-ellipsis-h"></i></button>
                       <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
                         <ul nz-menu>
-                          <li nz-menu-item>
-                            <a (click)="previewDocument(document)" translate>button.previewDocument</a>
+                          <li nz-menu-item >
+                            <a (click)="previewDocument(document)" translate>resource.documentation.button.previewDocument</a>
                           </li>
-                          <li nz-menu-item *ngIf="permission.Documentation.export">
-                            <a (click)="exportDocument(document)" translate>button.export</a>
+                          <li nz-menu-item  *ngIf="permission.joc.documentations.manage">
+                            <a (click)="exportDocument(document)" translate>common.button.export</a>
                           </li>
-                          <li nz-menu-item class="bg-hover-color" *ngIf="permission.Documentation.delete">
-                            <a (click)="deleteDocumentations(document)" translate>button.delete</a>
+                          <li nz-menu-item class="bg-hover-color" *ngIf="permission.joc.documentations.manage">
+                            <a (click)="deleteDocumentations()" translate>common.button.delete</a>
                           </li>
-                          <li nz-menu-item>
-                            <a (click)="showDocumentUsage(document)" translate>button.showUsage</a>
+                          <li nz-menu-item  >
+                            <a (click)="showDocumentUsage(document)" translate>resource.button.showUsage</a>
                           </li>
                         </ul>
                       </nz-dropdown-menu>

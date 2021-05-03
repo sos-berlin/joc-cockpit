@@ -250,7 +250,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
 
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
-      for (let j = 0; j < args.eventSnapshots.length; j++) {
+      for (let j in args.eventSnapshots) {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow && this.path === args.eventSnapshots[j].workflow.path) {
           this.getOrders({
             compact: true,
@@ -295,7 +295,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
       this.workflows[0].ordersSummary = {};
       this.workflows[0].numOfOrders = res.orders.length;
       if (res.orders && res.orders.length > 0) {
-        for (let j = 0; j < res.orders.length; j++) {
+        for (let j in res.orders.length) {
           const state = res.orders[j].state._text.toLowerCase();
           if (this.workflows[0].ordersSummary[state]) {
             this.workflows[0].ordersSummary[state] = this.workflows[0].ordersSummary[state] + 1;
@@ -378,7 +378,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.workflowFilters.expandedObjects = [];
-    for (let i = 0; i < this.currentData.length; i++) {
+    for (let i in this.currentData) {
       if (this.currentData[i].show) {
         this.workflowFilters.expandedObjects.push(this.currentData[i].path);
       }
@@ -433,9 +433,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.filterList = this.filterList.concat(res.configurations);
         }
         let data = [];
-        for (let i = 0; i < this.filterList.length; i++) {
+        for (let i in this.filterList) {
           let flag = true;
-          for (let j = 0; j < data.length; j++) {
+          for (let j in data) {
             if (data[j].id === this.filterList[i].id) {
               flag = false;
             }
@@ -481,17 +481,17 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       controllerId: this.schedulerIds.selected,
       workflowIds: []
     };
-    for (let i = 0; i < this.workflows.length; i++) {
+    for (const i in this.workflows) {
       const path = this.workflows[i].path;
       let flag = true;
-      for (let j = 0; j < request.workflowIds.length; j++) {
+      for (const j in request.workflowIds) {
         if (request.workflowIds[j].path === path && request.workflowIds[j].versionId === this.workflows[i].versionId) {
           flag = false;
           break;
         }
       }
       if (flag) {
-        request.workflowIds.push({path: path, versionId: this.workflows[i].versionId});
+        request.workflowIds.push({path, versionId: this.workflows[i].versionId});
       }
     }
     if (request.workflowIds.length > 0) {
@@ -525,7 +525,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
       paths = this.workflowFilters.selectedkeys;
     }
-    for (let x = 0; x < paths.length; x++) {
+    for (let x in paths) {
       obj.folders.push({folder: paths[x], recursive: false});
     }
     this.getWorkflowList(obj);
@@ -581,7 +581,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
     if (this.searchFilter.paths && this.searchFilter.paths.length > 0) {
       obj.folders = [];
-      for (let i = 0; i < this.searchFilter.paths.length; i++) {
+      for (let i in this.searchFilter.paths) {
         obj.folders.push({folder: this.searchFilter.paths[i], recursive: true});
       }
     }
@@ -697,7 +697,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.saveService.save();
   }
 
-  /** ---------------------------- Action ----------------------------------*/
+  /* ---------------------------- Action ----------------------------------*/
   sort(key): void {
     this.workflowFilters.reverse = !this.workflowFilters.reverse;
     this.workflowFilters.filter.sortBy = key;
@@ -770,7 +770,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
 
     let data = [];
-    for (let i = 0; i < this.workflows.length; i++) {
+    for (let i in this.workflows) {
       let obj: any = {};
       obj[name] = this.workflows[i].name;
       obj[path] = this.workflows[i].path;
@@ -871,12 +871,21 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
-      const workflows = [];
-      for (let j = 0; j < args.eventSnapshots.length; j++) {
+      const request = [];
+      for (const j in args.eventSnapshots) {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow) {
-          for (let i = 0; i < this.workflows.length; i++) {
+          for (const i in this.workflows) {
             if (this.workflows[i].path === args.eventSnapshots[j].workflow.path && this.workflows[i].versionId === args.eventSnapshots[j].workflow.versionId) {
-              workflows.push(args.eventSnapshots[j].workflow);
+              let flag = true;
+              for (const x in request) {
+                if (request[x].path === args.eventSnapshots[j].workflow.path && request[x].versionId === args.eventSnapshots[j].workflow.versionId) {
+                  flag = false;
+                  break;
+                }
+              }
+              if (flag) {
+                request.push(args.eventSnapshots[j].workflow);
+              }
               break;
             }
           }
@@ -885,7 +894,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.initTree();
         }
       }
-      this.updateWorkflow(workflows);
+      this.updateWorkflow(request);
     }
   }
 
@@ -939,7 +948,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         workflowIds: []
       };
       let flag = true;
-      for (let i = 0; i < res.workflows.length; i++) {
+      for (let i in res.workflows) {
         const path = res.workflows[i].path;
         res.workflows[i].name = path.substring(path.lastIndexOf('/') + 1);
         res.workflows[i].path1 = path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1);
@@ -947,7 +956,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           res.workflows[i].ordersSummary = {};
         }
         let flag = true;
-        for (let j = 0; j < request.workflowIds.length; j++) {
+        for (let j in request.workflowIds) {
           if (request.workflowIds[j].path === path && request.workflowIds[j].versionId === res.workflows[i].versionId) {
             flag = false;
             break;
@@ -1000,7 +1009,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
     this.coreService.post('orders', obj).subscribe((res: any) => {
       if (res.orders) {
-        for (let i = 0; i < this.workflows.length; i++) {
+        for (let i in this.workflows) {
           if (obj.workflowIds && obj.workflowIds.length > 0 && !_.isEmpty(this.workflows[i].ordersSummary)) {
             for (let j = 0; j < obj.workflowIds.length; j++) {
               if (this.workflows[i].path === obj.workflowIds[j].path && this.workflows[i].versionId === obj.workflowIds[j].versionId) {
@@ -1012,7 +1021,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               }
             }
           }
-          for (let j = 0; j < res.orders.length; j++) {
+          for (let j in res.orders) {
             if (this.workflows[i].path === res.orders[j].workflowId.path && this.workflows[i].versionId === res.orders[j].workflowId.versionId) {
               this.workflows[i].numOfOrders = (this.workflows[i].numOfOrders || 0) + 1;
               if (!this.workflows[i].orders) {
@@ -1041,7 +1050,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
     function traverseTree1(data) {
       if (!flag) {
-        for (let i = 0; i < data.children.length; i++) {
+        for (let i in data.children) {
           if (data.children[i].path === path) {
             flag = true;
             break;
@@ -1053,7 +1062,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
     }
 
-    for (let i = 0; i < this.tree.length; i++) {
+    for (let i in this.tree) {
       traverseTree1(this.tree[i]);
     }
     return flag;
@@ -1065,7 +1074,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.workflowFilters.selectedkeys = [];
 
     function traverseTree1(data) {
-      for (let i = 0; i < data.children.length; i++) {
+      for (let i in data.children) {
         if (!data.children[i].isLeaf) {
           self.workflowFilters.expandedKeys.push(data.children[i].path);
         }
@@ -1075,7 +1084,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
 
     function navFullTree() {
-      for (let i = 0; i < self.tree.length; i++) {
+      for (let i in self.tree) {
         if (!self.tree[i].isLeaf) {
           self.workflowFilters.expandedKeys.push(self.tree[i].path);
         }
@@ -1085,7 +1094,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
 
     function pushJob(data) {
-      for (let i = 0; i < self.workflows.length; i++) {
+      for (let i in self.workflows) {
         if (data.path === self.workflows[i].path1) {
           self.workflowFilters.selectedkeys.push(self.workflows[i].path1);
         }

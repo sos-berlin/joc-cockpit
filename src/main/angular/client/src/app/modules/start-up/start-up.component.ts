@@ -143,7 +143,7 @@ export class StartUpModalComponent implements OnInit {
     this.coreService.post('controller/register', obj).subscribe(res => {
       this.submitted = false;
       if (this.modalRef) {
-        this.dataService.closeModal.next('reload');
+        this.dataService.closeModal.next('close');
       } else {
         this.afterSubmit.emit();
       }
@@ -222,7 +222,7 @@ export class StartUpComponent implements OnInit {
   private redirect(): void {
     this.authService.save();
     this.dataService.isProfileReload.next(true);
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/controllers']);
   }
 
   getSchedulerIds(): void {

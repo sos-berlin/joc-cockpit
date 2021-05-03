@@ -385,7 +385,7 @@
     "message.requiredVariableCannotRemoved": "Diese Variable ist obligatorisch, sie kann nicht entfernt werden",
     "message.redeployFolderRecursively": "Sind Sie sicher, dass Sie alle Objekte des ausgewählten Ordners und Unterordner erneut ausrollen wollen?",
     "message.deleteDocument": "Sind Sie sicher, dass Sie diese Dokumentation löschen wollen?",
-    "message.documentNotUsed": "Diese Dokumentation wird noch nicht verwendet",
+
     "message.deleteAllDocument": "Sind Sie sicher, dass Sie alle Dokumentationen löschen wollen?",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
     "tooltip.exportInXLS": "Exportieren im xls Format",
@@ -1233,6 +1233,8 @@
     "label.agentView": "Agents",
     "label.calendars": "Calendars",
     "label.documentations": "Documentations",
+    "label.showUsage": "Show Usage",
+    "button.showUsage": "Show Usage",
     "lock": {
       "label.lock": "Lock",
       "label.deploymentDate": "Deployment Date",
@@ -1252,7 +1254,7 @@
       "label.calendarsFound": "Calendars Found",
       "label.calendarFound": "Calendar Found",
       "button.showPreview": "Show Preview",
-      "button.showUsage": "Show Usage"
+      "message.calendarNotUsed": "This Calendar is not yet used"
     },
     "documentation": {
       "label.documentation": "Documentation",
@@ -1272,7 +1274,7 @@
       "button.deleteDocument": "Delete Documentation",
       "button.showDocumentation": "Show Documentation",
       "button.previewDocument": "Preview Documentation",
-      "button.showUsage": "Show Usage"
+      "message.documentNotUsed": "Diese Dokumentation wird noch nicht verwendet"
     }
   },
   "settings": {
@@ -1432,7 +1434,7 @@
     "label.variables": "Variables",
     "label.key": "Key",
     "label.value": "Value",
-    "label.compatibleMode": "v1 Compatible",
+    "label.compatibleMode": "Compatible",
     "label.variableDeclaration": "Variable Declaration",
     "label.declareVariables": "Declare Variables",
     "label.environmentVariables": "Environment Variables",

@@ -387,16 +387,14 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        if(flag) {
+        if (flag) {
           const startChar = result.substring(0, 1);
           if (startChar !== '$') {
             const endChar = result.substring(result.length - 1);
             if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
-
             } else {
-              result = JSON.stringify(result).replace(/'|\\'/g, "\\'");
+              result = '"' + result + '"';
             }
-            console.log(result, 'result');
           }
         }
         data.value = result;
@@ -631,7 +629,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private loadResources(path): void {
-    if(this.treeSelectCtrl) {
+    if (this.treeSelectCtrl) {
       const node = this.treeSelectCtrl.getTreeNodeByKey(path);
       if (node) {
         node.isExpanded = true;
@@ -962,6 +960,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes.copyObj && !changes.data){
+      return;
+    }
     if (changes.reload) {
       if (this.reload) {
         this.selectedNode = null;
@@ -1078,7 +1079,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        console.log(result);
         if (!_.isEqual(JSON.stringify(this.jobResourceNames), JSON.stringify(result.jobResourceNames))) {
           this.jobResourceNames = result.jobResourceNames;
           this.updateOtherProperties();
@@ -6322,7 +6322,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
 
     if (!job.executable.v1Compatible) {
-      delete job.executable.v1Compatible;
+      job.executable.v1Compatible = false;
     }
     if (job.defaultArguments) {
       if (job.executable.v1Compatible && job.executable.TYPE === 'ScriptExecutable') {

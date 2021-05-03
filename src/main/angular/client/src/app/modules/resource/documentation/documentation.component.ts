@@ -182,7 +182,7 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
       this.coreService.download('documentations/export', {
         controllerId: this.schedulerId,
         filename: res.filename
-      }, res.filename, (res) => {
+      }, res.filename, () => {
 
       });
     });
@@ -236,7 +236,9 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
         nzClosable: false
       });
       modal.afterClose.subscribe(result => {
-        this.deleteDocument(obj);
+        if (result) {
+          this.deleteDocument(obj);
+        }
       });
     } else {
       const modal = this.modal.create({
@@ -246,14 +248,16 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
           type: 'Delete',
           title: 'delete',
           message: 'deleteDocument',
-          document: document,
+          document,
           objectName: document.name
         },
         nzFooter: null,
         nzClosable: false
       });
-      modal.afterClose.subscribe(result => {
-        this.deleteDocument(obj);
+      modal.afterClose.subscribe((result) => {
+        if (result) {
+          this.deleteDocument(obj);
+        }
       });
     }
   }
@@ -590,7 +594,9 @@ export class DocumentationComponent implements OnInit, OnDestroy {
         nzClosable: false
       });
       modal.afterClose.subscribe(result => {
-        this.deleteDocument(obj, document);
+        if (result) {
+          this.deleteDocument(obj, document);
+        }
       });
     } else {
       const modal = this.modal.create({
@@ -608,7 +614,9 @@ export class DocumentationComponent implements OnInit, OnDestroy {
         nzClosable: false
       });
       modal.afterClose.subscribe(result => {
-        this.deleteDocument(obj, null);
+        if (result) {
+          this.deleteDocument(obj, null);
+        }
       });
     }
   }

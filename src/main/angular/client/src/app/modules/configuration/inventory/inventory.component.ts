@@ -1,5 +1,5 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {forkJoin, Subscription} from 'rxjs';
+import {forkJoin, of, Subscription} from 'rxjs';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {FileUploader} from 'ng2-file-upload';
 import {ToasterService} from 'angular2-toaster';
@@ -16,6 +16,7 @@ import {AuthService} from '../../../components/guard';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {InventoryService} from './inventory.service';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
+import {catchError} from 'rxjs/operators';
 
 @Component({
   selector: 'app-deploy-draft-modal',
@@ -722,8 +723,12 @@ export class ExportComponent implements OnInit {
       obj.recursive = true;
       obj.withoutReleased = false;
       obj.withoutDrafts = false;
-      APIs.push(this.coreService.post('inventory/deployables', obj));
-      APIs.push(this.coreService.post('inventory/releasables', obj));
+      APIs.push(this.coreService.post('inventory/deployables', obj).pipe(
+        catchError(error => of(error))
+      ));
+      APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
+        catchError(error => of(error))
+      ));
     } else {
       if (this.exportType === 'DAILYPLAN' || this.exportType === 'SCHEDULE' || this.exportType.match('CALENDAR')) {
         this.filter.controller = false;
@@ -740,10 +745,14 @@ export class ExportComponent implements OnInit {
       if (this.exportType === 'DAILYPLAN' || this.exportType === 'SCHEDULE' || this.exportType.match('CALENDAR')) {
         obj.withoutReleased = false;
         obj.withoutDrafts = false;
-        APIs.push(this.coreService.post('inventory/releasables', obj));
+        APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
+          catchError(error => of(error))
+        ));
       } else {
         obj.withVersions = true;
-        APIs.push(this.coreService.post('inventory/deployables', obj));
+        APIs.push(this.coreService.post('inventory/deployables', obj).pipe(
+          catchError(error => of(error))
+        ));
       }
     }
     forkJoin(APIs).subscribe(res => {
@@ -751,7 +760,7 @@ export class ExportComponent implements OnInit {
       res.forEach((data: any) => {
         if (data.releasables) {
           this.actualResult = this.actualResult.concat(data.releasables);
-        } else {
+        } else if (data.deployables) {
           this.actualResult = this.actualResult.concat(data.deployables);
         }
       });

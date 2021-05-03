@@ -22,6 +22,9 @@ export class LockComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes.copyObj && !changes.data){
+      return;
+    }
     if (changes.reload) {
       if (this.reload) {
         this.getObject();

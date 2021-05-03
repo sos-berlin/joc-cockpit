@@ -1,11 +1,11 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {Subscription} from 'rxjs';
 import {CoreService} from '../../services/core.service';
 import {StartUpModalComponent} from '../start-up/start-up.component';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
-import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-agent-modal',
@@ -114,7 +114,7 @@ export class AgentModalComponent implements OnInit {
     obj.agents = [_agent];
     this.coreService.post('agents/store', obj).subscribe(res => {
       this.submitted = false;
-      this.activeModal.close();
+      this.activeModal.close('close');
     }, err => {
       this.submitted = false;
     });
@@ -133,16 +133,17 @@ export class ControllersComponent implements OnInit, OnDestroy {
   permission: any = {};
   modalInstance: NzModalRef;
   loading = false;
-  subscription: Subscription;
+  subscription1: Subscription;
+  subscription2: Subscription;
 
   constructor(private coreService: CoreService, private modal: NzModalService,
               private authService: AuthService, private dataService: DataService) {
-    this.subscription = dataService.closeModal.subscribe(res => {
+    this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
+      this.refresh(res);
+    });
+    this.subscription2 = dataService.closeModal.subscribe(res => {
       if (res && this.modalInstance) {
         this.modalInstance.close();
-        if (res === 'reload') {
-          this.getSchedulerIds();
-        }
       }
     });
   }
@@ -153,7 +154,25 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
+  }
+
+  private refresh(args): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].eventType === 'AgentChanged' || args.eventSnapshots[j].eventType === 'AgentStateChanged'
+          || ((args.eventSnapshots[j].eventType === 'ProxyCoupled' || args.eventSnapshots[j].eventType === 'ProxyDecoupled')
+            && args.eventSnapshots[j].objectType === 'AGENT')) {
+          this.getData();
+          break;
+        } else if (args.eventSnapshots[j].eventType === 'ControllerStateChanged' || ((args.eventSnapshots[j].eventType === 'ProxyCoupled'
+          || args.eventSnapshots[j].eventType === 'ProxyDecoupled') && args.eventSnapshots[j].objectType === 'CONTROLLER')) {
+          this.getSchedulerIds();
+          break;
+        }
+      }
+    }
   }
 
   getData(): void {
@@ -235,8 +254,8 @@ export class ControllersComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.coreService.post('controller/cleanup', {controllerId: matser}).subscribe((res: any) => {
-          this.getSchedulerIds();
+        this.coreService.post('controller/cleanup', {controllerId: matser}).subscribe(() => {
+
         });
       }
     });
@@ -244,7 +263,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
 
   addAgent(controller): void {
     this.getAgents(controller, () => {
-      const modal = this.modal.create({
+      this.modal.create({
         nzTitle: null,
         nzContent: AgentModalComponent,
         nzAutofocus: null,
@@ -255,11 +274,6 @@ export class ControllersComponent implements OnInit, OnDestroy {
         },
         nzFooter: null,
         nzClosable: false
-      });
-      modal.afterClose.subscribe(result => {
-        if (result) {
-          this.getData();
-        }
       });
     });
   }

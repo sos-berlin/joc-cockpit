@@ -385,7 +385,6 @@
     "message.requiredVariableCannotRemoved": "必須の変数です、削除できません",
     "message.redeployFolderRecursively": "本当に選択したフォルダー配下全てをを再配置しますか？",
     "message.deleteDocument": "本当にこのドキュメントを削除しますか",
-    "message.documentNotUsed": "このドキュメントは使われていません",
     "message.deleteAllDocument": "本当に全てのドキュメントを削除しますか?",
     "--------POPUP WINDOW MESSAGES END------------": "確認ポップアップで使用",
     "tooltip.exportInXLS": "xls形式でエキスポート",
@@ -1233,6 +1232,8 @@
     "label.agentView": "エージェント",
     "label.calendars": "カレンダー",
     "label.documentations": "ドキュメント",
+    "label.showUsage": "使用表示",
+    "button.showUsage": "使用表示",
     "lock": {
       "label.lock": "ロック",
       "label.deploymentDate": "配置日時",
@@ -1252,7 +1253,7 @@
       "label.calendarsFound": "カレンダーがあります",
       "label.calendarFound": "カレンダーがあります",
       "button.showPreview": "プレビュー表示",
-      "button.showUsage": "使用表示"
+      "message.calendarNotUsed": "This Calendar is not yet used"
     },
     "documentation": {
       "label.documentation": "ドキュメント",
@@ -1272,7 +1273,7 @@
       "button.deleteDocument": "ドキュメント削除",
       "button.showDocumentation": "ドキュメント表示",
       "button.previewDocument": "ドキュメントプレビュー",
-      "button.showUsage": "使用表示"
+      "message.documentNotUsed": "このドキュメントは使われていません"
     }
   },
   "settings": {
@@ -1432,7 +1433,7 @@
     "label.variables": "オーダー変数",
     "label.key": "キー",
     "label.value": "値",
-    "label.compatibleMode": "v1互換",
+    "label.compatibleMode": "互換",
     "label.variableDeclaration": "オーダー変数定義",
     "label.declareVariables": "オーダー変数定義",
     "label.environmentVariables": "環境変数",

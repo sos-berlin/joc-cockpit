@@ -51,9 +51,9 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  /** ---------------------------- Action ----------------------------------*/
+  /* ---------------------------- Action ----------------------------------*/
 
-  showUsage(calendar) {
+  showUsage(calendar): void {
     let cal = _.clone(calendar);
     this.coreService.post('calendar/used', {
       id: calendar.id,
@@ -73,11 +73,11 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
     });
   }
 
-  previewCalendar(calendar) {
+  previewCalendar(calendar): void {
     this.modal.create({
       nzTitle: null,
       nzContent: CalendarModalComponent,
-nzClassName: 'lg',
+      nzClassName: 'lg',
       nzComponentParams: {
         path: calendar.path,
         calendar: true
@@ -87,7 +87,7 @@ nzClassName: 'lg',
     });
   }
 
-  showDocumentation(calendar) {
+  showDocumentation(calendar): void {
 
   }
 
@@ -105,7 +105,7 @@ nzClassName: 'lg',
     });
   }
 
-  private getCalendarsList(obj) {
+  private getCalendarsList(obj): void {
     this.coreService.post('calendars', obj).subscribe((res: any) => {
       this.loading = false;
       this.calendars = res.calendars;
@@ -184,7 +184,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     }
     let obj = {
       folders: [],
-      type: this.calendarFilters.filter.type != 'ALL' ? this.calendarFilters.filter.type : undefined,
+      type: this.calendarFilters.filter.type !== 'ALL' ? this.calendarFilters.filter.type : undefined,
       controllerId: this.schedulerIds.selected,
       compact: true
     };
@@ -206,11 +206,10 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.loading = true;
     let obj = {
       folders: [{folder: data.path, recursive}],
-      type: this.calendarFilters.filter.type != 'ALL' ? this.calendarFilters.filter.type : undefined,
+      type: this.calendarFilters.filter.type !== 'ALL' ? this.calendarFilters.filter.type : undefined,
       controllerId: this.schedulerIds.selected,
       compact: true
     };
-
     this.getCalendarsList(obj);
   }
 
@@ -218,7 +217,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.getCalendars($event, $event.action !== 'NODE');
   }
 
-  /** ---------------------------- Action ----------------------------------*/
+  /* ---------------------------- Action ----------------------------------*/
   pageIndexChange($event): void {
     this.calendarFilters.currentPage = $event;
   }
@@ -236,12 +235,12 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.pageView = $event;
   }
 
-  searchInResult() {
+  searchInResult(): void {
     this.data = this.calendarFilters.searchText ? this.searchPipe.transform(this.calendars, this.calendarFilters.searchText, this.searchableProperties) : this.calendars;
     this.data = [...this.data];
   }
 
-  showUsage(calendar) {
+  showUsage(calendar): void {
     let cal = _.clone(calendar);
     this.coreService.post('calendar/used', {
       id: calendar.id,
@@ -260,11 +259,11 @@ export class CalendarComponent implements OnInit, OnDestroy {
     });
   }
 
-  previewCalendar(calendar) {
+  previewCalendar(calendar): void {
     this.modal.create({
       nzTitle: null,
       nzContent: CalendarModalComponent,
-nzClassName: 'lg',
+      nzClassName: 'lg',
       nzComponentParams: {
         path: calendar.path,
         calendar: true
@@ -303,7 +302,7 @@ nzClassName: 'lg',
     });
   }
 
-  private refresh(args) {
+  private refresh(args): void {
     const pathArr = [];
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {

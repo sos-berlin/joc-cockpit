@@ -38,6 +38,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes.copyObj && !changes.data){
+      return;
+    }
     if (changes.reload) {
       if (this.reload) {
         this.getObject();
@@ -181,16 +184,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     this.loadData(e.node, type, null);
   }
 
-  private getWorkflowInfo(name): void {
-    this.coreService.post('inventory/read/configuration', {
-      path: name,
-      objectType: 'WORKFLOW'
-    }).subscribe((conf: any) => {
-      this.workflow = conf.configuration;
-      this.updateVariableList();
-    });
-  }
-
   navToWorkflow(): void {
     this.dataService.reloadTree.next({navigate: {name: this.schedule.configuration.workflowName, type: 'WORKFLOW'}});
   }
@@ -279,6 +272,74 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     this.dataService.reloadTree.next({back: this.schedule});
   }
 
+  saveJSON(): void {
+    if (this.isTrash) {
+      return;
+    }
+    let obj = this.coreService.clone(this.schedule.configuration);
+    obj.variables = obj.variables.map(variable => ({name: variable.name, value: variable.value}));
+    if (!_.isEqual(this.schedule.actual, JSON.stringify(obj))) {
+      // this.schedule.configuration.controllerId = this.schedulerId;
+      if (obj.variables && _.isArray(obj.variables)) {
+        this.coreService.convertArrayToObject(obj, 'variables', true);
+      }
+      if (obj.calendars.length > 0) {
+        for (let i = 0; i < obj.calendars.length; i++) {
+          if (obj.calendars[i].frequencyList) {
+            if (obj.calendars[i].frequencyList.length > 0) {
+              obj.calendars[i].includes = {};
+              obj.calendars[i].frequencyList.forEach((val) => {
+                this.calendarService.generateCalendarObj(val, obj.calendars[i]);
+              });
+            }
+            delete obj.calendars[i]['frequencyList'];
+          }
+        }
+      }
+      let isValid = false;
+      if (obj.workflowName && obj.calendars.length > 0) {
+        isValid = true;
+      }
+      for (let i = 0; i < this.schedule.configuration.variables.length; i++) {
+        const argu = this.schedule.configuration.variables[i];
+        if (argu.isRequired) {
+          if (!argu.value && argu.value !== false && argu.value !== 0) {
+            isValid = false;
+            break;
+          }
+        }
+      }
+
+      this.coreService.post('inventory/store', {
+        configuration: obj,
+        valid: isValid,
+        id: this.schedule.id,
+        objectType: this.objectType
+      }).subscribe((res: any) => {
+        if (res.id === this.data.id && this.schedule.id === this.data.id) {
+          this.schedule.actual = JSON.stringify(this.schedule.configuration);
+          this.schedule.valid = res.valid;
+          this.data.valid = res.valid;
+          this.schedule.released = false;
+          this.data.released = false;
+          this.setErrorMessage(res);
+        }
+      }, (err) => {
+        console.log(err);
+      });
+    }
+  }
+
+  private getWorkflowInfo(name): void {
+    this.coreService.post('inventory/read/configuration', {
+      path: name,
+      objectType: 'WORKFLOW'
+    }).subscribe((conf: any) => {
+      this.workflow = conf.configuration;
+      this.updateVariableList();
+    });
+  }
+
   private convertObjToArr(calendar): void {
     let obj: any = {};
     if (!calendar.frequencyList) {
@@ -314,7 +375,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
                 startingWithS: monthday.from,
                 endOnS: monthday.to
               };
-              obj.str = this.calendarService.freqToStr(obj, this.dateFormat)
+              obj.str = this.calendarService.freqToStr(obj, this.dateFormat);
               calendar.frequencyList.push(obj);
             });
           } else {
@@ -329,7 +390,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
             monthday.days.forEach(day => {
               obj.selectedMonths.push(day.toString());
             });
-            obj.str = this.calendarService.freqToStr(obj, this.dateFormat)
+            obj.str = this.calendarService.freqToStr(obj, this.dateFormat);
             calendar.frequencyList.push(obj);
           }
         });
@@ -465,64 +526,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       }
     } else {
       this.invalidMsg = '';
-    }
-  }
-
-  saveJSON(): void {
-    if (this.isTrash) {
-      return;
-    }
-    let obj = this.coreService.clone(this.schedule.configuration);
-    obj.variables = obj.variables.map(variable => ({name: variable.name, value: variable.value}));
-    if (!_.isEqual(this.schedule.actual, JSON.stringify(obj))) {
-      // this.schedule.configuration.controllerId = this.schedulerId;
-      if (obj.variables && _.isArray(obj.variables)) {
-        this.coreService.convertArrayToObject(obj, 'variables', true);
-      }
-      if (obj.calendars.length > 0) {
-        for (let i = 0; i < obj.calendars.length; i++) {
-          if (obj.calendars[i].frequencyList) {
-            if (obj.calendars[i].frequencyList.length > 0) {
-              obj.calendars[i].includes = {};
-              obj.calendars[i].frequencyList.forEach((val) => {
-                this.calendarService.generateCalendarObj(val, obj.calendars[i]);
-              });
-            }
-            delete obj.calendars[i]['frequencyList'];
-          }
-        }
-      }
-      let isValid = false;
-      if (obj.workflowName && obj.calendars.length > 0) {
-        isValid = true;
-      }
-      for (let i = 0; i < this.schedule.configuration.variables.length; i++) {
-        const argu = this.schedule.configuration.variables[i];
-        if (argu.isRequired) {
-          if (!argu.value && argu.value !== false && argu.value !== 0) {
-            isValid = false;
-            break;
-          }
-        }
-      }
-
-      this.coreService.post('inventory/store', {
-        configuration: obj,
-        valid: isValid,
-        id: this.schedule.id,
-        objectType: this.objectType
-      }).subscribe((res: any) => {
-        if (res.id === this.data.id && this.schedule.id === this.data.id) {
-          this.schedule.actual = JSON.stringify(this.schedule.configuration);
-          this.schedule.valid = res.valid;
-          this.data.valid = res.valid;
-          this.schedule.released = false;
-          this.data.released = false;
-          this.setErrorMessage(res);
-        }
-      }, (err) => {
-        console.log(err);
-      });
     }
   }
 }

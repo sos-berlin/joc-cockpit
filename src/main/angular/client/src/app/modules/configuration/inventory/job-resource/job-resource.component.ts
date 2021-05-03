@@ -27,6 +27,9 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes.copyObj && !changes.data){
+      return;
+    }
     if (changes.reload) {
       if (this.reload) {
         this.getObject();
@@ -148,7 +151,6 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       if (obj.env && _.isArray(obj.env)) {
         this.coreService.convertArrayToObject(obj, 'env', true);
       }
-
       this.coreService.post('inventory/store', {
         configuration: obj,
         valid: obj.env && obj.env.length > 0,

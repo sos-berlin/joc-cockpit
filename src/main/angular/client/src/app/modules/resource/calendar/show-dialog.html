@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>common.label.showUsage</span>
+    <span translate>resource.label.showUsage</span>
     : {{calendar.path}}
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
@@ -21,7 +21,7 @@
           </div>
           <div class="row form-group" *ngIf="calendar.usedIn.orders">
             <label class="col-md-3" translate="">
-              label.orders
+              common.label.orders
             </label>
             <div class="col-md-9">
               <div *ngFor="let order of calendar.usedIn.orders;let i = index">
@@ -32,7 +32,7 @@
         </div>
         <div class="text-center text"
              *ngIf="!calendar.usedIn.orders" translate>
-          message.calendarNotUsed
+          resource.calendar.message.calendarNotUsed
         </div>
       </div>
     </div>
@@ -40,7 +40,7 @@
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()"
-          translate>button.close
+          translate>common.button.close
   </button>
 </div>
 

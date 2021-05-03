@@ -28,7 +28,7 @@ export class CommentModalComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if(this.url) {
+    if (this.url) {
       this.submitted = true;
       this.obj.auditLog = {
         comment: this.comments.comment,
@@ -36,7 +36,7 @@ export class CommentModalComponent implements OnInit {
         ticketLink: this.comments.ticketLink
       };
       this.postCall(this.obj);
-    } else{
+    } else {
       this.activeModal.close(this.comments);
     }
   }

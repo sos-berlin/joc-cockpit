@@ -82,7 +82,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     if (this.schedulerIds.selected) {
       this.getStatus();
@@ -94,18 +94,18 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription1.unsubscribe();
   }
 
-  refresh(args) {
+  refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (((args.eventSnapshots[j].eventType === 'ItemAdded' || args.eventSnapshots[j].eventType === 'ItemDeleted'
           || args.eventSnapshots[j].eventType === 'ItemChanged') && args.eventSnapshots[j].objectType === 'AGENT')
           || args.eventSnapshots[j].eventType === 'AgentStateChanged'
-          || args.eventSnapshots[j].eventType === 'ProxyCoupled'
-          || args.eventSnapshots[j].eventType === 'ProxyDecoupled') {
+          || ((args.eventSnapshots[j].eventType === 'ProxyCoupled'
+          || args.eventSnapshots[j].eventType === 'ProxyDecoupled') && args.eventSnapshots[j].objectType === 'AGENT')) {
           this.getStatus();
           break;
         }

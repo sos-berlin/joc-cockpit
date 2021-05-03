@@ -1058,7 +1058,11 @@ export class WorkflowService {
     if (data[type]) {
       let startChar = data[type].substring(0, 1);
       if (startChar !== '$') {
-        data[type] = data[type].replace(/\\/g, '');
+        try{
+          data[type] = JSON.parse(data[type]).replace(/'|\\'/g, '\\\'');
+        } catch (e) {
+          data[type] = data[type].replace(/\\/g, '');
+        }
       }
     }
   }
@@ -1068,13 +1072,14 @@ export class WorkflowService {
       const startChar = data[type].substring(0, 1);
       if (startChar !== '$') {
         const endChar = data[type].substring(data[type].length - 1);
+        data[type] = data[type].replace(/\\/g, '');
         if ((startChar === '\'' && endChar === '\'')) {
-          data[type] = JSON.stringify(data[type].substring(1, data[type].length - 1)).replace(/'|\\'/g, "\\'");
+          data[type] = JSON.stringify(data[type].substring(1, data[type].length - 1)).replace(/'|\\'/g, '\\\'');
           data[type] = '\'' + data[type].substring(1, data[type].length - 1) + '\'';
         } else if ((startChar === '"' && endChar === '"')) {
-          data[type] = JSON.stringify(data[type].substring(1, data[type].length - 1)).replace(/'|\\'/g, "\\'");
+          data[type] = JSON.stringify(data[type].substring(1, data[type].length - 1));
         } else {
-          data[type] = JSON.stringify(data[type]).replace(/'|\\'/g, "\\'");
+          data[type] = JSON.stringify(data[type]).replace(/'|\\'/g, '\\\'');
         }
       }
     }
