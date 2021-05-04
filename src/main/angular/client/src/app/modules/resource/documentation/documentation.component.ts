@@ -5,19 +5,19 @@ import {FileUploader} from 'ng2-file-upload';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {Subscription} from 'rxjs';
+import * as _ from 'underscore';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
-import * as _ from 'underscore';
 import {SearchPipe} from '../../../pipes/core.pipe';
 
 const API_URL = './api/';
 
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-show-modal-content',
   templateUrl: './show-dialog.html'
 })
 export class ShowModalComponent {
@@ -43,7 +43,7 @@ export class ImportModalComponent implements OnInit {
   required = false;
   submitted = false;
   comments: any = {};
-  document = {path: ''};
+  document = {path: '', path1: ''};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService,
               public translate: TranslateService, public toasterService: ToasterService) {
@@ -89,18 +89,28 @@ export class ImportModalComponent implements OnInit {
     };
 
     this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
-      if (response.error) {
-        this.toasterService.pop('error', response.error.code, response.error.message);
+      const res = typeof response === 'string' ? JSON.parse(response) : response;
+      if (res.error) {
+        this.toasterService.pop('error', res.error.code, res.error.message);
       }
     };
   }
 
   cancel(): void {
-    this.activeModal.close('');
+    this.activeModal.close('close');
   }
 
   displayWith(data): string {
     return data.key;
+  }
+
+  selectPath(node): void {
+    if (!node || !node.origin) {
+      return;
+    }
+    if (this.document.path !== node.key) {
+      this.document.path = node.key;
+    }
   }
 }
 
@@ -108,21 +118,18 @@ export class ImportModalComponent implements OnInit {
   selector: 'app-single-document',
   templateUrl: './single-documentation.component.html'
 })
-export class SingleDocumentationComponent implements OnInit, OnDestroy {
+export class SingleDocumentationComponent implements OnInit {
   loading: boolean;
   schedulerId: any = {};
   preferences: any = {};
   permission: any = {};
   documents: any = [];
   documentFilters: any = {};
-  subscription: Subscription;
   path: string;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
-              private modal: NzModalService, private dataService: DataService, private route: ActivatedRoute) {
-    this.subscription = dataService.eventAnnounced$.subscribe(res => {
-      console.log(res);
-    });
+              private modal: NzModalService, private route: ActivatedRoute) {
+
   }
 
   ngOnInit(): void {
@@ -138,11 +145,7 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
-
-  /** ---------------------------- Action ----------------------------------*/
+  /* ---------------------------- Action ----------------------------------*/
 
   previewDocument(document): void {
     const link = API_URL + 'documentation/preview?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId + '&controllerId=' + this.schedulerId;
@@ -178,13 +181,8 @@ export class SingleDocumentationComponent implements OnInit, OnDestroy {
     if (document) {
       obj.documentations.push(document.path);
     }
-    this.coreService.post('documentations/export/info', obj).subscribe((res: any) => {
-      this.coreService.download('documentations/export', {
-        controllerId: this.schedulerId,
-        filename: res.filename
-      }, res.filename, () => {
+    this.coreService.download('documentations/export', obj, 'documentation_' + this.schedulerId + '.zip', () => {
 
-      });
     });
   }
 
@@ -303,6 +301,9 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.sideView = this.coreService.getSideView();
     this.init();
+    if (this.documentFilters.selectedkeys && this.documentFilters.selectedkeys.length === 1) {
+      this.selectedPath = this.documentFilters.selectedkeys[0];
+    }
   }
 
   ngOnDestroy(): void {
@@ -353,6 +354,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   receiveAction($event): void {
+    this.selectedPath = $event.key;
     this.getDocumentations($event, $event.action !== 'NODE');
   }
 
@@ -368,19 +370,24 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     this.getDocumentationsList(obj);
   }
 
-  /** ---------------------------- Action ----------------------------------*/
+  /* ---------------------------- Action ----------------------------------*/
 
   pageIndexChange($event): void {
     this.documentFilters.currentPage = $event;
+    this.reset();
   }
 
   pageSizeChange($event): void {
     this.documentFilters.entryPerPage = $event;
+    if (this.object.checked) {
+      this.checkAll(true);
+    }
   }
 
   sort(propertyName): void {
     this.documentFilters.reverse = !this.documentFilters.reverse;
     this.documentFilters.filter.sortBy = propertyName;
+    this.reset();
   }
 
   searchInResult(): void {
@@ -454,13 +461,10 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     } else {
       obj.documentations = Array.from(this.object.mapOfCheckedId);
     }
-    this.coreService.post('documentations/export/info', obj).subscribe((res: any) => {
-      this.coreService.download('documentations/export', {
-        controllerId: this.schedulerIds.selected,
-        filename: res.filename
-      }, res.filename, (res) => {
-
-      });
+    this.coreService.download('documentations/export', obj, 'documentation_' + this.schedulerIds.selected + '.zip', () => {
+        if(!document){
+          this.reset();
+        }
     });
   }
 
@@ -472,7 +476,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
         display: this.preferences.auditLog,
-        selectedPath: this.selectedPath,
+        selectedPath: this.selectedPath || '/',
         nodes: this.tree
       },
       nzFooter: null,
@@ -537,7 +541,17 @@ export class DocumentationComponent implements OnInit, OnDestroy {
           });
         }
       }
+
+      this.searchInResult();
     });
+  }
+
+  private reset(): void{
+    this.object = {
+      mapOfCheckedId: new Set(),
+      checked: false,
+      indeterminate: false
+    }
   }
 
   private init(): void {
@@ -553,6 +567,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   private getDocumentationsList(obj): void {
+    this.reset();
     this.coreService.post('documentations', obj).subscribe((res: any) => {
       this.loading = false;
       res.documentations.forEach((value) => {
@@ -615,7 +630,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this.deleteDocument(obj, null);
+          this.deleteDocument(obj, document);
         }
       });
     }

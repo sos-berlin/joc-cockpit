@@ -98,7 +98,7 @@ export class UpdateWorkflowComponent implements OnInit {
         forkJoin(APIs).subscribe(results => {
           results.forEach((item: any, index) => {
             if (item && item.path) {
-              let path = item.path.substring(0, item.path.lastIndexOf('/')) || item.path.substring(0, item.path.lastIndexOf('/') + 1);
+              const path = item.path.substring(0, item.path.lastIndexOf('/')) || item.path.substring(0, item.path.lastIndexOf('/') + 1);
               if (paths.indexOf(path) === -1) {
                 paths.push(path);
                 this.loadResources(path);
@@ -224,9 +224,9 @@ export class UpdateWorkflowComponent implements OnInit {
         }).subscribe((res: any) => {
           let data = res.jobResources;
           for (let i = 0; i < data.length; i++) {
-            const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
+            const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
             data[i].title = data[i].name;
-            data[i].path = _path;
+            data[i].path = path;
             data[i].key = data[i].name;
             data[i].type = 'JOBRESOURCE';
             data[i].isLeaf = true;
@@ -375,7 +375,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     moveItemInArray(list, event.previousIndex, event.currentIndex);
   }
 
-  openEditor(data, flag): void {
+  openEditor(data): void {
     const modal = this.modal.create({
       nzTitle: null,
       nzContent: ValueEditorComponent,
@@ -387,16 +387,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        if (flag) {
-          const startChar = result.substring(0, 1);
-          if (startChar !== '$') {
-            const endChar = result.substring(result.length - 1);
-            if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
-            } else {
-              result = '"' + result + '"';
-            }
-          }
-        }
         data.value = result;
         this.ref.detectChanges();
       }
@@ -418,7 +408,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     let flag = false;
     for (let i = 0; i < this.jobs.length; i++) {
       if (this.jobs[i].name === this.selectedNode.obj.jobName) {
-        this.selectedNode.job = {...this.selectedNode.job, ..._.clone(this.jobs[i].value)};
+        this.selectedNode.job = {...this.selectedNode.job, ...this.coreService.clone(this.jobs[i].value)};
         flag = true;
         break;
       }
@@ -435,9 +425,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     }
     if (this.selectedNode.job.jobName !== this.selectedNode.obj.jobName) {
       this.selectedNode.job.jobName = this.selectedNode.obj.jobName;
-      for (let i = 0; i < this.jobs.length; i++) {
+      for (const i in this.jobs) {
         if (this.jobs[i].name === this.selectedNode.obj.jobName) {
-          this.selectedNode.job = {...this.selectedNode.job, ...this.jobs[i].value};
+          this.selectedNode.job = {...this.selectedNode.job, ...this.coreService.clone(this.jobs[i].value)};
           break;
         }
       }
@@ -567,9 +557,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         }).subscribe((res: any) => {
           let data = res.jobResources;
           for (let i = 0; i < data.length; i++) {
-            const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
+            const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
             data[i].title = data[i].name;
-            data[i].path = _path;
+            data[i].path = path;
             data[i].key = data[i].name;
             data[i].type = type;
             data[i].isLeaf = true;
@@ -596,7 +586,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   private init(): void {
     this.getJobInfo();
     this.selectedNode.obj.defaultArguments = this.coreService.convertObjectToArray(this.selectedNode.obj, 'defaultArguments');
-    if (this.selectedNode.obj.defaultArguments && this.selectedNode.obj.defaultArguments.length == 0) {
+    if (this.selectedNode.obj.defaultArguments && this.selectedNode.obj.defaultArguments.length === 0) {
       this.addArgument();
     }
     if (this.selectedNode.job.jobResourceNames && this.selectedNode.job.jobResourceNames.length > 0) {
@@ -610,7 +600,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       forkJoin(APIs).subscribe(results => {
         results.forEach((item: any, index) => {
           if (item && item.path) {
-            let path = item.path.substring(0, item.path.lastIndexOf('/')) || item.path.substring(0, item.path.lastIndexOf('/') + 1);
+            const path = item.path.substring(0, item.path.lastIndexOf('/')) || item.path.substring(0, item.path.lastIndexOf('/') + 1);
             if (paths.indexOf(path) === -1) {
               paths.push(path);
               this.loadResources(path);
@@ -818,7 +808,7 @@ export class ExpressionComponent implements OnInit {
   }
 
   // Begin inputting of clicked text into editor
-  private insertText(data, doc) {
+  private insertText(data, doc): void {
     const cursor = doc.getCursor(); // gets the line number in the cursor position
     doc.replaceRange(data, cursor);
     cursor.ch = cursor.ch + data.length;
@@ -6378,7 +6368,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (job.graceTimeout1) {
       job.graceTimeout = this.workflowService.convertStringToDuration(job.graceTimeout1);
     }
-    let flag = true, isChange = true;
+    let flag = true;
+    let isChange = true;
     for (let i = 0; i < this.jobs.length; i++) {
       if (this.jobs[i].name === job.jobName) {
         flag = false;
@@ -6844,7 +6835,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (this.title) {
       newObj.title = this.title;
     }
-
     this.coreService.post('inventory/store', {
       configuration: newObj,
       id: this.workflow.id,

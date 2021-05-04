@@ -507,6 +507,12 @@ small {
   }
 }
 
+.custom-select-box{
+  .ant-select-selection-item{
+    opacity: 0 !important;
+  }
+}
+
 .ant-picker,
 .ant-select-selector {
   padding-left: 8px !important;
@@ -5143,6 +5149,10 @@ General CSS
 @-moz-document url-prefix() {
   .admin-search-bar {
     margin-top: 0;
+  }
+
+  .rg-right{
+    right: 5px;
   }
 }
 

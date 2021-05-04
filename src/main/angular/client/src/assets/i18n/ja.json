@@ -1433,7 +1433,7 @@
     "label.variables": "オーダー変数",
     "label.key": "キー",
     "label.value": "値",
-    "label.compatibleMode": "互換",
+    "label.compatibleMode": "Compatibility",
     "label.variableDeclaration": "オーダー変数定義",
     "label.declareVariables": "オーダー変数定義",
     "label.environmentVariables": "環境変数",

@@ -1433,7 +1433,7 @@
     "label.variables": "Variables",
     "label.key": "Key",
     "label.value": "Value",
-    "label.compatibleMode": "Compatible",
+    "label.compatibleMode": "Compatibility",
     "label.variableDeclaration": "Variable Declaration",
     "label.declareVariables": "Declare Variables",
     "label.environmentVariables": "Environment Variables",

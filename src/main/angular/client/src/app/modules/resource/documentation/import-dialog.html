@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>resource.label.importDocument</span>
+    <span translate>resource.documentation.label.importDocument</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -99,18 +99,20 @@
         <div class="form-group row">
           <label class="col-sm-3 form-control-label" translate>common.label.path</label>
           <div class="col-sm-9">
+            <input autocomplete="off" type="text" class="form-control pos-abt" style="border: none; width: 90%; z-index: 99"
+                   placeholder="{{'common.placeholder.selectFromTree' | translate}}"
+                   name="path" [(ngModel)]="document.path">
             <nz-tree-select
-              name="folder"
+              name="path1"
+              class="custom-select-box"
+              [nzAllowClear]="false"
               [nzNodes]="nodes"
-              [nzHideUnMatched]="true"
               [nzDisplayWith]="displayWith"
               [nzDropdownStyle]="{ 'max-height': '260px' }"
-              nzShowSearch
-              [nzPlaceHolder]="'common.placeholder.selectFromTree' | translate"
-              [(ngModel)]="document.path"
+              [(ngModel)]="document.path1"
             >
               <ng-template #nzTreeTemplate let-node>
-                <div class="node-wrapper">
+                <div class="node-wrapper" (click)="selectPath(node);">
                   <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
                     <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                     {{node.title}}
