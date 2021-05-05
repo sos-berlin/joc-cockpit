@@ -1058,6 +1058,9 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   private copyFilter(filter): void {
     this.openFilterModal(filter, true);
   }
+
+  /* ---- End Customization ------ */
+
   private openFilterModal(filter, isCopy): void {
     let filterObj: any = {};
     this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
@@ -1083,8 +1086,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       });
     });
   }
-
-  /* ---- End Customization ------ */
 
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {

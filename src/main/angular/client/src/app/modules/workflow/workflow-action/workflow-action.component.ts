@@ -176,10 +176,10 @@ export class AddOrderModalComponent implements OnInit {
   }
 
   openEditor(data): void {
-    console.log(data)
     const modal = this.modal.create({
       nzTitle: null,
       nzContent: ValueEditorComponent,
+      nzClassName: 'lg',
       nzComponentParams: {
         data: data.value
       },

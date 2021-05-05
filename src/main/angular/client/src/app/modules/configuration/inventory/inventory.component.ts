@@ -17,6 +17,7 @@ import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.c
 import {InventoryService} from './inventory.service';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {catchError} from 'rxjs/operators';
+import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 
 @Component({
   selector: 'app-deploy-draft-modal',
@@ -1934,6 +1935,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   pageView = 'grid';
   options: any = {};
   data: any = {};
+  node: any = {};
   copyObj: any;
   selectedObj: any = {};
   selectedData: any = {};
@@ -1953,6 +1955,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
   @ViewChild('treeCtrl2', {static: false}) treeCtrl2: any;
+  @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
   constructor(
     private authService: AuthService,
@@ -1962,12 +1965,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
     private modal: NzModalService,
     private translate: TranslateService,
     private toasterService: ToasterService,
+    private nzContextMenuService: NzContextMenuService,
     private message: NzMessageService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
     this.subscription2 = dataService.reloadTree.subscribe(res => {
-      if (res) {
+      if (!_.isEmpty(res)) {
         if (res.add || res.reload) {
           this.updateTree(this.isTrash);
         } else if (res.set) {
@@ -2220,7 +2224,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  recursiveTreeUpdate(scr, dest, isTrash) {
+  recursiveTreeUpdate(scr, dest, isTrash): any {
     const self = this;
     let isFound = false;
 
@@ -2284,7 +2288,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     return scr;
   }
 
-  updateFolders(path, isTrash, cb) {
+  updateFolders(path, isTrash, cb): void {
     const self = this;
     let matchData: any;
     if ((!isTrash && this.tree.length > 0) || (isTrash && this.trashTree.length > 0)) {
@@ -2344,6 +2348,15 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
     if (!matchData && cb) {
       cb();
+    }
+  }
+
+  openMenu(node, evt): void{
+    if (this.menu) {
+      this.node = node;
+      setTimeout(() => {
+        this.nzContextMenuService.create(evt, this.menu);
+      }, 0);
     }
   }
 
@@ -3348,7 +3361,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private releaseSingleObject(data) {
+  private releaseSingleObject(data): void {
     const obj: any = {};
     if (data.deleted) {
       obj.delete = [{id: data.id}];

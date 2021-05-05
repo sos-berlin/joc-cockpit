@@ -183,6 +183,7 @@ export class UpdateWorkflowComponent implements OnInit {
     const modal = this.modal.create({
       nzTitle: null,
       nzContent: ValueEditorComponent,
+      nzClassName: 'lg',
       nzComponentParams: {
         data: data.default
       },
@@ -379,6 +380,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     const modal = this.modal.create({
       nzTitle: null,
       nzContent: ValueEditorComponent,
+      nzClassName: 'lg',
       nzComponentParams: {
         data: data.value
       },
@@ -401,6 +403,16 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.obj.className = !this.selectedNode.job.executable.className && this.selectedNode.job.executable.TYPE === 'InternalExecutable';
     } else {
       this.obj = {};
+    }
+  }
+
+  checkString(data, type): void {
+    if (data[type]) {
+      const startChar = data[type].substring(0, 1);
+      const endChar = data[type].substring(data[type].length - 1);
+      if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
+        data[type] = data[type].substring(1, data[type].length - 1);
+      }
     }
   }
 
@@ -518,6 +530,13 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.selectedNode.job.executable.env.splice(index, 1);
   }
 
+  isStringValid(data, notValid): void{
+    if (notValid) {
+      data.name = '';
+      data.value = '';
+    }
+  }
+
   upperCase(env): void {
     if (env.name) {
       env.name = env.name.toUpperCase();
@@ -535,6 +554,11 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   valueWith = (data: { name: string }) => data.name;
 
   onKeyPress($event, type): void {
+    if (type === 'jobArgument') {
+      if ($event.key === '$') {
+        $event.preventDefault();
+      }
+    }
     if ($event.which === '13' || $event.which === 13) {
       type === 'default' ? this.addVariable() : type === 'jobArgument' ? this.addJobArgument() : type === 'node' ? this.addArgument() : this.addArgu();
     }
@@ -670,7 +694,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       if (!_.isArray(this.selectedNode.job.executable.arguments)) {
         this.selectedNode.job.executable.arguments = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'arguments');
         this.selectedNode.job.executable.arguments.filter((env) => {
-          this.workflowService.removeSlashToString(env, 'value');
+          this.coreService.removeSlashToString(env, 'value');
         });
       }
     }
@@ -689,7 +713,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       if (!_.isArray(this.selectedNode.job.executable.env)) {
         this.selectedNode.job.executable.env = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'env');
         this.selectedNode.job.executable.env.filter((env) => {
-          this.workflowService.removeSlashToString(env, 'value');
+          this.coreService.removeSlashToString(env, 'value');
         });
       }
     }
@@ -995,8 +1019,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.initEditorConf(editor, false, false);
         const outln = document.getElementById('outlineContainer');
         outln.innerHTML = '';
-        outln.style.border = '1px solid lightgray';
-        outln.style.background = '#FFFFFF';
         new mxOutline(this.editor.graph, outln);
       }
     } catch (e) {
@@ -1464,7 +1486,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       this.coreService.get('workflow.json').subscribe((data) => {
         this.dummyXml = x2js.json2xml_str(data);
         this.createEditor(this.configXml);
-        this.getObject();
+        this.getWorkflowObject();
       });
 
       this.handleWindowEvents();
@@ -1473,7 +1495,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       outln.innerHTML = '';
       outln.style.border = '1px solid lightgray';
       new mxOutline(this.editor.graph, outln);
-      this.getObject();
+      this.getWorkflowObject();
     }
     if (!this.isTrash) {
       if (this.jobResourcesTree.length === 0) {
@@ -1502,7 +1524,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  private getObject(): void {
+  private getWorkflowObject(): void {
     this.error = false;
     this.history = [];
     this.indexOfNextAdd = 0;
@@ -2940,7 +2962,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  private initEditorConf(editor, isXML, callFun) {
+  private initEditorConf(editor, isXML, callFun): void {
     if (!editor) {
       return;
     }
@@ -2988,7 +3010,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          * Creates the shape used to draw the preview for the given bounds.
          */
         mxGraphHandler.prototype.createPreviewShape = function(bounds) {
-          let shape, image = './assets/mxgraph/images/';
+          let shape;
+          let image = './assets/mxgraph/images/';
           if (self.preferences.theme !== 'light' && self.preferences.theme !== 'lighter' || !self.preferences.theme) {
             image = image + 'white-';
           }
@@ -3087,7 +3110,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (state.cell && (state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'Finish' || state.cell.value.tagName === 'Fail' ||
             state.cell.value.tagName === 'Await' || state.cell.value.tagName === 'Publish' || self.workflowService.isInstructionCollapsible(state.cell.value.tagName))) {
             img = mxUtils.createImage('./assets/images/menu.svg');
-            let x = state.x - (20 * state.shape.scale), y = state.y - (8 * state.shape.scale);
+            let x = state.x - (20 * state.shape.scale);
+            let y = state.y - (8 * state.shape.scale);
             if (state.cell.value.tagName !== 'Job') {
               y = y + (state.cell.geometry.height / 2 * state.shape.scale) - 4;
               x = x + 2;
@@ -6325,7 +6349,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (job.executable.TYPE === 'InternalExecutable') {
         if (job.executable.arguments && _.isArray(job.executable.arguments)) {
           job.executable.arguments.filter((argu) => {
-            this.workflowService.addSlashToString(argu, 'value');
+            this.coreService.addSlashToString(argu, 'value');
           });
           this.coreService.convertArrayToObject(job.executable, 'arguments', true);
         }
@@ -6335,7 +6359,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     if (job.executable.jobArguments) {
       if (job.executable.TYPE === 'InternalExecutable') {
-        this.coreService.convertArrayToObject(job.executable, 'jobArguments', true);
+        if (job.executable.jobArguments && _.isArray(job.executable.jobArguments)) {
+          this.coreService.convertArrayToObject(job.executable, 'jobArguments', true);
+        }
       } else {
         delete job.executable.jobArguments;
       }
@@ -6350,7 +6376,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (job.executable.TYPE === 'ScriptExecutable') {
         if (job.executable.env && _.isArray(job.executable.env)) {
           job.executable.env.filter((env) => {
-            this.workflowService.addSlashToString(env, 'value');
+            this.coreService.addSlashToString(env, 'value');
           });
           this.coreService.convertArrayToObject(job.executable, 'env', true);
         }

@@ -1,9 +1,19 @@
-.graph-container{
+.graph-container {
   margin-left: 66px;
   overflow: auto;
+  &:hover {
+    #toolbar-icons {
+      opacity: 1;
+      -webkit-animation: fadeInDown ease-in 1;
+      -moz-animation: fadeInDown ease-in 1;
+      animation: fadeInDown ease-in 1;
+      -webkit-animation-duration: .2s;
+      -moz-animation-duration: .2s;
+      animation-duration: 0.2s;
+    }
+  }
 }
-
-.toolbar{
+.toolbar {
   margin-left: 54px;
   min-width: 330px;
 }
@@ -13,51 +23,55 @@
   cursor: default;
   background-position: 0 0;
   background-color: rgba(255, 255, 255, .9);
-  box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.06) ;
-  height: calc(100vh - 248px) ;
+  box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.06);
+  height: calc(100vh - 248px);
 }
-
 #toolbar {
   padding-top: 6px;
   padding-bottom: 6px;
   width: 52px;
   position: absolute;
 }
-#outlineContainer, #dropContainer2{
-  z-index:9;
-  position:absolute;
-  overflow:hidden;
-  top:auto;
-  right:10px;
-  width:170px;
-  height:150px;
+#outlineContainer {
+  z-index: 9;
+  position: absolute;
+  overflow: hidden;
+  top: auto;
+  right: 10px;
+  width: 170px;
+  height: 150px;
 }
 #dropContainer2 {
+  z-index: 9;
+  position: absolute;
+  overflow: hidden;
+  right: 10px;
+  height: 150px;
   opacity: 1;
-  top:52px;
+  top: 52px;
   left: 78px;
   display: none;
   border: 2px dashed #d3d3d3;
   width: 190px;
-  text-align: center
+  text-align: center;
+  div {
+    text-transform: uppercase;
+    margin: 55px auto;
+    position: relative;
+    width: 120px;
+  }
 }
- #dropContainer2 div {
-  text-transform: uppercase;
-  margin: 55px auto;
-  position: relative;
-  width: 120px
-}
-.trash-container{
+.trash-container {
   margin-left: 0 !important;
   margin-right: 0 !important;
   #outlineContainer {
     right: 12px !important;
   }
-  .bottom-btn{
+  .bottom-btn {
     right: 22px !important;
   }
 }
-#toolbar-icons{
+#toolbar-icons {
   position: absolute;
   padding: 2px 16px 0;
   text-align: center;
@@ -65,13 +79,4 @@
   z-index: 9;
   box-shadow: 0 1px 6px 1px rgba(0, 0, 0, 0.12);
   opacity: 0;
-}
-.graph-container:hover #toolbar-icons{
-  opacity: 1;
-  -webkit-animation: fadeInDown ease-in 1;
-  -moz-animation: fadeInDown ease-in 1;
-  animation: fadeInDown ease-in 1;
-  -webkit-animation-duration: .2s;
-  -moz-animation-duration: .2s;
-  animation-duration: 0.2s;
 }

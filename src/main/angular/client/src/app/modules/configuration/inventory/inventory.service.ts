@@ -4,7 +4,7 @@ import * as _ from 'underscore';
 @Injectable()
 export class InventoryService {
 
-  sortList(arr) {
+  sortList(arr): any {
     for (let i = 0; i < arr.length; i++) {
       if (arr[i].objectType === 'WORKFLOW') {
         arr[i].level = 0;

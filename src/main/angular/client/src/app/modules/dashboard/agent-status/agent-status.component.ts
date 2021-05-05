@@ -113,7 +113,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
     }
   }
 
-  groupBy(data) {
+  groupBy(data): any {
     let results = [];
     if (!(data)) return;
     data.forEach((value) => {
@@ -148,7 +148,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
     return results;
   }
 
-  prepareAgentClusterData(result) {
+  prepareAgentClusterData(result): void {
     this.agentClusters = result.agents;
     this.pieChartData = [];
     this.pieChartLabels = [];
@@ -181,7 +181,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
     }
   }
 
-  navToAgentView(color) {
+  navToAgentView(color): void {
     let state = 'DECOUPLED';
     if (color === '#7ab97a') {
       state = 'COUPLED';

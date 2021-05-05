@@ -1,10 +1,10 @@
 import {Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
 import * as _ from 'underscore';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
-import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-job-resource',
@@ -96,7 +96,6 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         this.jobResource.configuration.env.push(param);
       }
     }
-    this.saveJSON();
   }
 
   removeEnv(index): void {
@@ -104,9 +103,37 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     this.saveJSON();
   }
 
-  onKeyPress($event): void {
+  addArgu(): void {
+    const param = {
+      name: '',
+      value: ''
+    };
+    if (this.jobResource.configuration.arguments) {
+      if (!this.coreService.isLastEntryEmpty(this.jobResource.configuration.arguments, 'name', '')) {
+        this.jobResource.configuration.arguments.push(param);
+      }
+    }
+  }
+
+  removeArgu(index): void {
+    this.jobResource.configuration.arguments.splice(index, 1);
+    this.saveJSON();
+  }
+
+  onKeyPress($event, type): void {
     if ($event.which === '13' || $event.which === 13) {
-      this.addEnv();
+      if (type === 'ENV') {
+        this.addEnv();
+      } else {
+        this.addArgu();
+      }
+    }
+  }
+
+  isStringValid(data, notValid): void{
+    if (notValid) {
+      data.name = '';
+      data.value = '';
     }
   }
 
@@ -129,6 +156,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     const modal = this.modal.create({
       nzTitle: null,
       nzContent: ValueEditorComponent,
+      nzClassName: 'lg',
       nzComponentParams: {
         data: data.value
       },
@@ -146,11 +174,20 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     if (this.isTrash) {
       return;
     }
-    if (!_.isEqual(this.jobResource.actual, JSON.stringify(this.jobResource.configuration))) {
-      let obj = this.coreService.clone(this.jobResource.configuration);
-      if (obj.env && _.isArray(obj.env)) {
-        this.coreService.convertArrayToObject(obj, 'env', true);
-      }
+    const obj = this.coreService.clone(this.jobResource.configuration);
+    if (obj.env && _.isArray(obj.env)) {
+      obj.env.filter((env) => {
+        this.coreService.addSlashToString(env, 'value');
+      });
+      this.coreService.convertArrayToObject(obj, 'env', true);
+    }
+    if (obj.arguments && _.isArray(obj.arguments)) {
+      obj.arguments.filter((argu) => {
+        this.coreService.addSlashToString(argu, 'value');
+      });
+      this.coreService.convertArrayToObject(obj, 'arguments', true);
+    }
+    if (!_.isEqual(this.jobResource.actual, JSON.stringify(obj))) {
       this.coreService.post('inventory/store', {
         configuration: obj,
         valid: obj.env && obj.env.length > 0,
@@ -158,7 +195,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         objectType: this.objectType
       }).subscribe((res: any) => {
         if (res.id === this.data.id && this.jobResource.id === this.data.id) {
-          this.jobResource.actual = JSON.stringify(this.jobResource.configuration);
+          this.jobResource.actual = JSON.stringify(obj);
           this.jobResource.valid = res.valid;
           this.jobResource.deployed = false;
           this.data.valid = res.valid;
@@ -199,14 +236,26 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       this.jobResource = res;
       this.jobResource.path1 = this.data.path;
       this.jobResource.name = this.data.name;
+      this.jobResource.actual = JSON.stringify(res.configuration);
       if (this.jobResource.configuration.env) {
         this.jobResource.configuration.env = this.coreService.convertObjectToArray(this.jobResource.configuration, 'env');
+        this.jobResource.configuration.env.filter((env) => {
+          this.coreService.removeSlashToString(env, 'value');
+        });
       } else {
         this.jobResource.configuration.env = [];
         this.invalidMsg = 'inventory.message.envIsMissing';
         this.addEnv();
       }
-      this.jobResource.actual = JSON.stringify(res.configuration);
+      if (this.jobResource.configuration.arguments) {
+        this.jobResource.configuration.arguments = this.coreService.convertObjectToArray(this.jobResource.configuration, 'arguments');
+        this.jobResource.configuration.arguments.filter((argu) => {
+          this.coreService.removeSlashToString(argu, 'value');
+        });
+      } else {
+        this.jobResource.configuration.arguments = [];
+        this.addArgu();
+      }
     });
   }
 }

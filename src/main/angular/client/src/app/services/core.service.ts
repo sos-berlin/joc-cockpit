@@ -1182,4 +1182,59 @@ export class CoreService {
     return dates;
   }
 
+  removeSlashToString(data, type): void {
+    if (data[type]) {
+      if (data[type] === 'true' || data[type] === 'false') {
+      } else if (/^\d+$/.test(data[type])) {
+      } else {
+        const startChar = data[type].substring(0, 1);
+        if (startChar !== '$') {
+          const endChar = data[type].substring(data[type].length - 1);
+          let mainStr = data[type].substring(1, data[type].length - 1);
+          if ((startChar === '"' && endChar === '"')) {
+            if (/^\d+$/.test(mainStr)) {
+              return;
+            } else if (mainStr === 'true' || mainStr === 'false') {
+              return;
+            } else if (mainStr.substring(0, 1) === '$') {
+              mainStr = mainStr.substring(1, data[type].length);
+              if (!mainStr.match(/[!?~'"}\[\]{@#\/\\^$%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(mainStr) && /^(?!-)(?!.*--)/.test(mainStr) && !/\s/.test(mainStr)) {
+                return;
+              }
+            }
+          }
+          try {
+            data[type] = JSON.parse(data[type]);
+          } catch (e) {
+            if ((startChar === '"' && endChar === '"')) {
+              data[type] = mainStr;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  addSlashToString(data, type): void {
+    if (data[type]) {
+      if (data[type] === 'true' || data[type] === 'false') {
+      } else if (/^\d+$/.test(data[type])) {
+      } else {
+        const startChar = data[type].substring(0, 1);
+        if (startChar !== '$') {
+          const endChar = data[type].substring(data[type].length - 1);
+          if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
+          } else {
+            data[type] = '"' + data[type] + '"';
+          }
+        } else {
+          const mainStr = data[type].substring(1, data[type].length);
+          if (!mainStr.match(/[!?~'"}\[\]{@#\/\\^$%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(mainStr) && /^(?!-)(?!.*--)/.test(mainStr) && !/\s/.test(mainStr)) {
+          } else {
+            data[type] = '"' + data[type] + '"';
+          }
+        }
+      }
+    }
+  }
 }

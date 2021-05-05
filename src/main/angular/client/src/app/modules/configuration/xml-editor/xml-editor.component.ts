@@ -1421,7 +1421,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           }
         }
       }
-      this.getNodeRulesData(node);
+      if(node) {
+        this.getNodeRulesData(node);
+      }
     }, 10);
   }
 
@@ -2217,7 +2219,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       parent.origin.expanded = true;
       this.updateTree();
     }
-    return parent.origin;
+    return parent ? parent.origin : parent;
   }
 
   async expandParentNodesOfSelectedNode(node) {

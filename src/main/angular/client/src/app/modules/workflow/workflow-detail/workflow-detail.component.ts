@@ -146,14 +146,14 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     window.history.back();
   }
 
-  /** ---------------------------- Broadcast messages ----------------------------------*/
+  /* ---------------------------- Broadcast messages ----------------------------------*/
 
-  isWorkflowStored(_json, isFirst): void {
+  isWorkflowStored(json, isFirst): void {
     if (isFirst) {
-      this.workFlowJson = _json;
-      this.workFlowJson.name = _json.path.substring(_json.path.lastIndexOf('/') + 1);
-      if (_json && !_.isEmpty(_json)) {
-        if (_json && !_.isEmpty(_json)) {
+      this.workFlowJson = json;
+      this.workFlowJson.name = json.path.substring(json.path.lastIndexOf('/') + 1);
+      if (json && !_.isEmpty(json)) {
+        if (json && !_.isEmpty(json)) {
           this.initEditorConf(this.editor, true);
           setTimeout(() => {
             this.actual();
@@ -678,7 +678,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }, 50);
   }
 
-  private updatePositions(_json): void {
+  private updatePositions(mainJson): void {
     const self = this;
     this.orderCountMap = new Map();
 
@@ -782,7 +782,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       }
     }
 
-    recursive(_json);
+    recursive(mainJson);
   }
 
   private updateXMLJSON(): void {
