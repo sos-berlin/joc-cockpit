@@ -1,5 +1,6 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import * as _ from 'underscore';
+import {Subscription} from 'rxjs';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {CalendarService} from '../../../../services/calendar.service';
@@ -27,10 +28,21 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   workflow: any = {};
   variableList = [];
 
+  indexOfNextAdd = 0;
+  history = [];
+  subscription: Subscription;
+
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
   constructor(private coreService: CoreService,
               private calendarService: CalendarService, private dataService: DataService) {
+    this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
+      if (res === 'REDO') {
+        this.redo();
+      } else if (res === 'UNDO') {
+        this.undo();
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -70,6 +82,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy(): void {
+    this.subscription.unsubscribe();
     if (this.schedule.name) {
       this.saveJSON();
     }
@@ -272,14 +285,38 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     this.dataService.reloadTree.next({back: this.schedule});
   }
 
+  /**
+   * Function: redo
+   *
+   * Redoes the last change.
+   */
+  redo(): void {
+    const n = this.history.length;
+    if (this.indexOfNextAdd < n) {
+      const obj = this.history[this.indexOfNextAdd++];
+      this.schedule.configuration = JSON.parse(obj);
+    }
+  }
+
+  /**
+   * Function: undo
+   *
+   * Undoes the last change.
+   */
+  undo(): void {
+    if (this.indexOfNextAdd > 0) {
+      const obj = this.history[--this.indexOfNextAdd];
+      this.schedule.configuration = JSON.parse(obj);
+    }
+  }
+
   saveJSON(): void {
     if (this.isTrash) {
       return;
     }
     let obj = this.coreService.clone(this.schedule.configuration);
     obj.variables = obj.variables.map(variable => ({name: variable.name, value: variable.value}));
-    if (!_.isEqual(this.schedule.actual, JSON.stringify(obj))) {
-      // this.schedule.configuration.controllerId = this.schedulerId;
+    if (this.schedule.actual && !_.isEqual(this.schedule.actual, JSON.stringify(obj))) {
       if (obj.variables && _.isArray(obj.variables)) {
         this.coreService.convertArrayToObject(obj, 'variables', true);
       }
@@ -309,7 +346,11 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           }
         }
       }
-
+      if (this.history.length === 20) {
+        this.history.shift();
+      }
+      this.history.push(JSON.stringify(this.schedule.configuration));
+      this.indexOfNextAdd = this.history.length - 1;
       this.coreService.post('inventory/store', {
         configuration: obj,
         valid: isValid,
@@ -325,7 +366,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           this.setErrorMessage(res);
         }
       }, (err) => {
-        console.log(err);
+        console.error(err);
       });
     }
   }
@@ -459,6 +500,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     this.coreService.post(URL, {
       id: this.data.id
     }).subscribe((res: any) => {
+      this.history = [];
+      this.indexOfNextAdd = 0;
       if (res.configuration) {
         delete res.configuration['TYPE'];
         delete res.configuration['path'];
@@ -466,7 +509,12 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       } else {
         res.configuration = {};
       }
-
+      if (this.data.released !== res.released){
+        this.data.released = res.released;
+      }
+      if (this.data.valid !== res.valid){
+        this.data.valid = res.valid;
+      }
       this.schedule = this.coreService.clone(res);
       this.schedule.path1 = this.data.path;
       this.schedule.name = this.data.name;
@@ -489,6 +537,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.schedule.configuration.variables = [];
       }
       this.schedule.actual = JSON.stringify(this.schedule.configuration);
+      this.history.push(this.schedule.actual);
       if (!res.valid) {
         if (!this.schedule.configuration.workflowName) {
           this.invalidMsg = 'inventory.message.workflowIsMissing';

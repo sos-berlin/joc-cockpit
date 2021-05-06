@@ -283,6 +283,7 @@ export class RolesComponent implements OnDestroy {
       main: this.userDetail.main
     };
     this.coreService.post('authentication/shiro/store', obj).subscribe(res => {
+      this.dataService.announceFunction('RELOAD');
       this.createRoleArray(obj);
     });
   }

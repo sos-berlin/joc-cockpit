@@ -518,6 +518,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
 
     this.coreService.post('authentication/shiro/store', obj).subscribe(() => {
       this.main = [...this.main];
+      this.dataService.announceFunction('RELOAD');
     });
   }
 
@@ -576,6 +577,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.main = result;
+        this.main = [...this.main];
       }
     });
   }

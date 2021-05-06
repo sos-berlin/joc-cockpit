@@ -5,7 +5,7 @@ import {SaveService} from '../services/save.service';
 declare const $;
 
 @Directive({
-  selector: '[timevalidator][ngModel]',
+  selector: '[timevalidator]',
   providers: [NgModel]
 })
 export class TimeValidatorDirective {
@@ -14,7 +14,7 @@ export class TimeValidatorDirective {
   }
 
   @HostListener('input', ['$event.target'])
-  onInputChange(target) {
+  onInputChange(target): void {
     if (target.value) {
       if (target.value.length === 2 && /^([0-2][0-9])?$/i.test(target.value)) {
         if (target.value >= 24) {
@@ -37,7 +37,7 @@ export class TimeValidatorDirective {
   }
 
   @HostListener('focusout', ['$event.target'])
-  onFocusout(target) {
+  onFocusout(target): void {
     if (target.value) {
       if (target.value.substring(0, 2) === 24) {
         this.model.valueAccessor.writeValue('24:00:00');
@@ -57,12 +57,11 @@ export class TimeValidatorDirective {
 }
 
 @Directive({
-  selector: '[validateReqex][formControlName],[validateReqex][formControl],[validateReqex][ngModel]',
+  selector: '[validateReqex]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => RegexValidator), multi: true}
   ]
 })
-
 export class RegexValidator implements Validator {
   validate(c: AbstractControl): { [key: string]: any } {
     let v = c.value;
@@ -89,7 +88,7 @@ export class RegexValidator implements Validator {
 }
 
 @Directive({
-  selector: '[validateDailyPlanReqex][formControlName],[validateDailyPlanReqex][formControl],[validateDailyPlanReqex][ngModel]',
+  selector: '[validateDailyPlanReqex]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => DailyPlanRegexValidator), multi: true}
   ]
@@ -113,7 +112,7 @@ export class DailyPlanRegexValidator implements Validator {
 }
 
 @Directive({
-  selector: '[validTimeReqex][formControlName],[validTimeReqex][formControl],[validTimeReqex][ngModel]',
+  selector: '[validTimeReqex]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => TimeRegexValidator), multi: true}
   ]
@@ -139,7 +138,7 @@ export class TimeRegexValidator implements Validator {
 }
 
 @Directive({
-  selector: '[validateNumberArrayReqex][formControlName],[validateNumberArrayReqex][formControl],[validateNumberArrayReqex][ngModel]',
+  selector: '[validateNumberArrayReqex]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => NumberArrayRegexValidator), multi: true}
   ]
@@ -167,7 +166,7 @@ export class NumberArrayRegexValidator implements Validator {
 }
 
 @Directive({
-  selector: '[validateDurtionReqex][formControlName],[validateDurtionReqex][formControl],[validateDurtionReqex][ngModel]',
+  selector: '[validateDurtionReqex]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => DurationRegexValidator), multi: true}
   ]
@@ -195,7 +194,7 @@ export class DurationRegexValidator implements Validator {
 }
 
 @Directive({
-  selector: '[identifierValidation][formControlName],[identifierValidation][formControl],[identifierValidation][ngModel]',
+  selector: '[identifierValidation]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => IdentifierValidator), multi: true}
   ]
@@ -229,7 +228,7 @@ export class IdentifierValidator implements Validator {
 }
 
 @Directive({
-  selector: '[envVariableValidation][formControlName],[envVariableValidation][formControl],[envVariableValidation][ngModel]',
+  selector: '[envVariableValidation]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => EnvVariableValidator), multi: true}
   ]
@@ -262,7 +261,7 @@ export class EnvVariableValidator implements Validator {
 }
 
 @Directive({
-  selector: '[labelValidation][formControlName],[labelValidation][formControl],[labelValidation][ngModel]',
+  selector: '[labelValidation]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => LabelValidator), multi: true}
   ]
@@ -390,7 +389,7 @@ export class AutofocusDirective implements AfterViewInit {
   constructor(private el: ElementRef) {
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     if (this.appAutoFocus) {
       setTimeout(() => {
         if (this.el.nativeElement.attributes.class.value.match('input-number')) {
@@ -412,7 +411,7 @@ export class XMLAutofocusDirective implements AfterViewInit, OnChanges {
 
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     setTimeout(() => {
       if (this.name.node) {
         if (this.name.type === 'attribute' && this.name.node) {
@@ -432,7 +431,7 @@ export class XMLAutofocusDirective implements AfterViewInit, OnChanges {
     }, 0);
   }
 
-  ngOnChanges() {
+  ngOnChanges(): void {
     setTimeout(() => {
       if (this.name.node) {
         if (this.name.type === 'attribute' && this.name.node) {

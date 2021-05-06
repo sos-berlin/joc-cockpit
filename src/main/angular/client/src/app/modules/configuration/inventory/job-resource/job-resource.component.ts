@@ -1,5 +1,6 @@
 import {Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
 import * as _ from 'underscore';
+import {Subscription} from 'rxjs';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../../services/core.service';
@@ -23,11 +24,22 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   invalidMsg: string;
   objectType = 'JOBRESOURCE';
 
+  indexOfNextAdd = 0;
+  history = [];
+  subscription: Subscription;
+
   constructor(private coreService: CoreService, private dataService: DataService, private modal: NzModalService) {
+    this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
+      if (res === 'REDO') {
+        this.redo();
+      } else if (res === 'UNDO') {
+        this.undo();
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.copyObj && !changes.data){
+    if (changes.copyObj && !changes.data) {
       return;
     }
     if (changes.reload) {
@@ -50,7 +62,8 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.data.type) {
+    this.subscription.unsubscribe();
+    if (this.jobResource.name) {
       this.saveJSON();
     }
   }
@@ -84,6 +97,31 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
 
   backToListView(): void {
     this.dataService.reloadTree.next({back: this.jobResource});
+  }
+
+  /**
+   * Function: redo
+   *
+   * Redoes the last change.
+   */
+  redo(): void {
+    const n = this.history.length;
+    if (this.indexOfNextAdd < n) {
+      const obj = this.history[this.indexOfNextAdd++];
+      this.jobResource.configuration = JSON.parse(obj);
+    }
+  }
+
+  /**
+   * Function: undo
+   *
+   * Undoes the last change.
+   */
+  undo(): void {
+    if (this.indexOfNextAdd > 0) {
+      const obj = this.history[--this.indexOfNextAdd];
+      this.jobResource.configuration = JSON.parse(obj);
+    }
   }
 
   addEnv(): void {
@@ -175,19 +213,25 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       return;
     }
     const obj = this.coreService.clone(this.jobResource.configuration);
-    if (obj.env && _.isArray(obj.env)) {
-      obj.env.filter((env) => {
-        this.coreService.addSlashToString(env, 'value');
-      });
-      this.coreService.convertArrayToObject(obj, 'env', true);
-    }
-    if (obj.arguments && _.isArray(obj.arguments)) {
-      obj.arguments.filter((argu) => {
-        this.coreService.addSlashToString(argu, 'value');
-      });
-      this.coreService.convertArrayToObject(obj, 'arguments', true);
-    }
-    if (!_.isEqual(this.jobResource.actual, JSON.stringify(obj))) {
+    if (this.jobResource.actual && !_.isEqual(this.jobResource.actual, JSON.stringify(obj))) {
+      if (obj.env && _.isArray(obj.env)) {
+        obj.env.filter((env) => {
+          this.coreService.addSlashToString(env, 'value');
+        });
+        this.coreService.convertArrayToObject(obj, 'env', true);
+      }
+      if (obj.arguments && _.isArray(obj.arguments)) {
+        obj.arguments.filter((argu) => {
+          this.coreService.addSlashToString(argu, 'value');
+        });
+        this.coreService.convertArrayToObject(obj, 'arguments', true);
+      }
+    
+      if (this.history.length === 20) {
+        this.history.shift();
+      }
+      this.history.push(JSON.stringify(this.jobResource.configuration));
+      this.indexOfNextAdd = this.history.length - 1;
       this.coreService.post('inventory/store', {
         configuration: obj,
         valid: obj.env && obj.env.length > 0,
@@ -195,7 +239,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         objectType: this.objectType
       }).subscribe((res: any) => {
         if (res.id === this.data.id && this.jobResource.id === this.data.id) {
-          this.jobResource.actual = JSON.stringify(obj);
+          this.jobResource.actual = JSON.stringify(this.jobResource.configuration);
           this.jobResource.valid = res.valid;
           this.jobResource.deployed = false;
           this.data.valid = res.valid;
@@ -226,6 +270,8 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     this.coreService.post(URL, {
       id: this.data.id,
     }).subscribe((res: any) => {
+      this.history = [];
+      this.indexOfNextAdd = 0;
       if (res.configuration) {
         delete res.configuration['TYPE'];
         delete res.configuration['path'];
@@ -233,10 +279,16 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       } else {
         res.configuration = {};
       }
+      if (this.data.deployed !== res.deployed){
+        this.data.deployed = res.deployed;
+      }
+      if (this.data.valid !== res.valid){
+        this.data.valid = res.valid;
+      }
       this.jobResource = res;
       this.jobResource.path1 = this.data.path;
       this.jobResource.name = this.data.name;
-      this.jobResource.actual = JSON.stringify(res.configuration);
+      
       if (this.jobResource.configuration.env) {
         this.jobResource.configuration.env = this.coreService.convertObjectToArray(this.jobResource.configuration, 'env');
         this.jobResource.configuration.env.filter((env) => {
@@ -256,6 +308,8 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         this.jobResource.configuration.arguments = [];
         this.addArgu();
       }
+      this.jobResource.actual = JSON.stringify(res.configuration);
+      this.history.push(this.jobResource.actual);
     });
   }
 }

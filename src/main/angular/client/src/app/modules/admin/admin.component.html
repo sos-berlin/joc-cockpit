@@ -17,7 +17,7 @@
               </button>
               <nz-dropdown-menu #account="nzDropdownMenu" >
                 <ul nz-menu >
-                  <li nz-menu-item  *ngFor="let user of users | orderBy: 'name'">
+                  <li nz-menu-item  *ngFor="let user of userObj.users | orderBy: 'name'">
                     <a  [ngClass]="{orange: selectedUser === user.user}"
                        (click)="selectUser(user.user)">
                       <span>{{user.user | decodeSpace}}</span>
@@ -124,9 +124,11 @@
           </li>
         </ul>
         <div *ngIf="route === '/users/account'" class="inline pull-right search-box-field admin-search-bar">
-          <input type="search" #input (keyup)="searchBar(input.value)"
-                 placeholder="{{'common.placeholder.search' | translate}}" [(ngModel)]="searchKey">
-          <i *ngIf="searchKey" class="fa fa-times search-close" (click)="searchKey = ''"></i>
+          <label>
+            <input type="search" #input (keyup)="searchBar(input.value)"
+                   placeholder="{{'common.placeholder.search' | translate}}" [(ngModel)]="searchKey">
+            <i *ngIf="searchKey" class="fa fa-times search-close" (click)="searchKey = ''"></i>
+          </label>
         </div>
       </div>
     </div>

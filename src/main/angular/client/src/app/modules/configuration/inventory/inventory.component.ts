@@ -1954,7 +1954,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
   objectHistory = [];
 
   @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
-  @ViewChild('treeCtrl2', {static: false}) treeCtrl2: any;
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
   constructor(
@@ -1976,11 +1975,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.updateTree(this.isTrash);
         } else if (res.set) {
           if (this.treeCtrl && !this.isTrash) {
-            this.selectedData = res.set;
-            this.setSelectedObj(this.selectedObj.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
-          } else if (this.treeCtrl2 && this.isTrash) {
-            this.selectedData = res.set;
-            this.setSelectedObj(this.selectedObj.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
+            if (!this.isTrash) {
+              this.selectedData = res.set;
+              this.setSelectedObj(this.selectedObj.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
+            } else if (this.isTrash) {
+              this.selectedData = res.set;
+              this.setSelectedObj(this.selectedObj.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
+            }
           }
         } else if (res.cut) {
           this.cut(res);
@@ -2031,6 +2032,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.subscription3.unsubscribe();
     this.coreService.setSideView(this.sideView);
     this.dataService.reloadTree.next(null);
+    this.dataService.announceFunction('');
     this.coreService.tabs._configuration.state = 'inventory';
     this.inventoryConfig.expand_to = this.getExpandPaths();
     if (!this.isTrash) {
@@ -2351,7 +2353,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  openMenu(node, evt): void{
+  openMenu(node, evt): void {
     if (this.menu) {
       this.node = node;
       setTimeout(() => {
@@ -2426,7 +2428,14 @@ export class InventoryComponent implements OnInit, OnDestroy {
           path: data.path,
           key: (KEY + 'File_Order_Sources$')
         },
-        {name: 'Job Resources', title: 'Job Resources', object: 'JOBRESOURCE', children: [], path: data.path, key: (KEY + 'Job_Resources$')},
+        {
+          name: 'Job Resources',
+          title: 'Job Resources',
+          object: 'JOBRESOURCE',
+          children: [],
+          path: data.path,
+          key: (KEY + 'Job_Resources$')
+        },
         {name: 'Junctions', title: 'Junctions', object: 'JUNCTION', children: [], path: data.path, key: (KEY + 'Junctions$')},
         {name: 'Locks', title: 'Locks', object: 'LOCK', children: [], path: data.path, key: (KEY + 'Locks$')}
       ];
@@ -2809,11 +2818,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
         nzContent: DeployComponent,
         nzClassName: releasable ? 'sm' : 'lg',
         nzComponentParams: {
-          schedulerIds : this.schedulerIds,
-          preferences : this.preferences,
-          display : this.preferences.auditLog,
-          path : origin.path,
-          data : origin,
+          schedulerIds: this.schedulerIds,
+          preferences: this.preferences,
+          display: this.preferences.auditLog,
+          path: origin.path,
+          data: origin,
           releasable
         },
         nzFooter: null,
@@ -2892,7 +2901,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this.storeData(obj.showJson, result);
+          this.storeData(obj.showJson, result, false);
         }
       });
     });
@@ -2916,7 +2925,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.storeData(obj, result);
+        this.storeData(obj, result, !!this.type);
       }
     });
   }
@@ -2925,7 +2934,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.coreService.post('inventory/read/configuration', {
       id: obj.id,
     }).subscribe((res: any) => {
-      const name = obj.name + '.json';
+      const name = obj.name + (obj.type ? '_' + obj.type.toLowerCase() : '') + '.json';
       const fileType = 'application/octet-stream';
       delete res.configuration.TYPE;
       const data = JSON.stringify(res.configuration, undefined, 2);
@@ -3342,12 +3351,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private backToListView(): void {
-    let parent: any;
-    if (this.isTrash) {
-      parent = this.treeCtrl2.getTreeNodeByKey(this.selectedObj.path);
-    } else {
-      parent = this.treeCtrl.getTreeNodeByKey(this.selectedObj.path);
-    }
+    const parent = this.treeCtrl.getTreeNodeByKey(this.selectedObj.path);
     if (parent && parent.origin.children) {
       const index = (this.selectedObj.type === 'CALENDAR' || this.selectedObj.type === 'SCHEDULE') ? 1 : 0;
       const child = parent.origin.children[index];
@@ -3372,7 +3376,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  private storeData(obj, result): void {
+  private storeData(obj, result, reload): void {
     this.coreService.post('inventory/store', {
       configuration: result,
       valid: true,
@@ -3385,6 +3389,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
         this.selectedData.valid = res.valid;
         this.selectedData.deployed = res.deployed;
         this.selectedData.released = res.released;
+        if (reload) {
+          this.selectedData.reload = true;
+        }
         setTimeout(() => {
           this.type = obj.objectType || obj.type;
         }, 5);
@@ -3713,4 +3720,28 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.selectedData = {};
     this.selectedObj = {};
   }
+
+  /* ------------- Object based operations Begin---------- */
+
+  undo(): void {
+    this.dataService.announceFunction('UNDO');
+  }
+
+  redo(): void {
+    this.dataService.announceFunction('REDO');
+  }
+
+  download(): void {
+    if (this.selectedObj && this.selectedObj.id) {
+      this.exportJSON(this.selectedObj);
+    }
+  }
+
+  upload(): void {
+    if (this.selectedObj && this.selectedObj.id) {
+      this.importJSON(this.selectedObj);
+    }
+  }
+
+  /* ------------- Object based operations End---------- */
 }

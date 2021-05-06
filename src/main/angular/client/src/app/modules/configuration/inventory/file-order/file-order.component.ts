@@ -1,4 +1,6 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {Subscription} from 'rxjs';
+import * as _ from 'underscore';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 
@@ -6,7 +8,7 @@ import {DataService} from '../../../../services/data.service';
   selector: 'app-file-order',
   templateUrl: './file-order.component.html'
 })
-export class FileOrderComponent implements OnChanges, OnInit {
+export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   @Input() preferences: any;
   @Input() schedulerId: any;
   @Input() data: any;
@@ -22,7 +24,18 @@ export class FileOrderComponent implements OnChanges, OnInit {
   fileOrder: any = {};
   objectType = 'FILEORDERSOURCE';
 
+  indexOfNextAdd = 0;
+  history = [];
+  subscription: Subscription;
+
   constructor(private coreService: CoreService, private dataService: DataService) {
+    this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
+      if (res === 'REDO') {
+        this.redo();
+      } else if (res === 'UNDO') {
+        this.undo();
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -47,6 +60,13 @@ export class FileOrderComponent implements OnChanges, OnInit {
 
   ngOnInit(): void {
     this.zones = this.coreService.getTimeZoneList();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+    if (this.fileOrder.name) {
+      this.saveJSON();
+    }
   }
 
   private getAgents(): void {
@@ -74,6 +94,8 @@ export class FileOrderComponent implements OnChanges, OnInit {
     this.coreService.post(URL, {
       id: this.data.id
     }).subscribe((res: any) => {
+      this.history = [];
+      this.indexOfNextAdd = 0;
       if (res.configuration) {
         delete res.configuration['TYPE'];
         delete res.configuration['path'];
@@ -81,11 +103,18 @@ export class FileOrderComponent implements OnChanges, OnInit {
       } else {
         res.configuration = {};
       }
+      if (this.data.deployed !== res.deployed){
+        this.data.deployed = res.deployed;
+      }
+      if (this.data.valid !== res.valid){
+        this.data.valid = res.valid;
+      }
       this.fileOrder = res;
       this.fileOrder.path1 = this.data.path;
       this.fileOrder.name = this.data.name;
       this.fileOrder.actual = JSON.stringify(res.configuration);
-      if(!this.fileOrder.configuration.timeZone){
+      this.history.push(this.fileOrder.actual);
+      if (!this.fileOrder.configuration.timeZone){
         this.fileOrder.configuration.timeZone = this.preferences.zone;
       }
       this.getAgents();
@@ -224,20 +253,55 @@ export class FileOrderComponent implements OnChanges, OnInit {
     this.dataService.reloadTree.next({back: this.fileOrder});
   }
 
+  /**
+   * Function: redo
+   *
+   * Redoes the last change.
+   */
+  redo(): void {
+    const n = this.history.length;
+    if (this.indexOfNextAdd < n) {
+      const obj = this.history[this.indexOfNextAdd++];
+      this.fileOrder.configuration = JSON.parse(obj);
+    }
+  }
+
+  /**
+   * Function: undo
+   *
+   * Undoes the last change.
+   */
+  undo(): void {
+    if (this.indexOfNextAdd > 0) {
+      const obj = this.history[--this.indexOfNextAdd];
+      this.fileOrder.configuration = JSON.parse(obj);
+    }
+  }
+
   navToWorkflow(): void {
     this.dataService.reloadTree.next({navigate: {name: this.fileOrder.configuration.workflowName, type: 'WORKFLOW'}});
+  }
+
+  changeValue($event, type): void{
+    this.fileOrder.configuration[type] = $event;
+    this.saveJSON();
   }
 
   saveJSON(): void {
     if (this.isTrash) {
       return;
     }
-    if (this.fileOrder.actual !== JSON.stringify(this.fileOrder.configuration)) {
+    if (this.fileOrder.actual && !_.isEqual(this.fileOrder.actual, JSON.stringify(this.fileOrder.configuration))) {
       let isValid = false;
       if (this.fileOrder.configuration.workflowName && this.fileOrder.configuration.agentName) {
         isValid = true;
       }
       this.fileOrder.configuration.id = this.fileOrder.name;
+      if (this.history.length === 20) {
+        this.history.shift();
+      }
+      this.history.push(JSON.stringify(this.fileOrder.configuration));
+      this.indexOfNextAdd = this.history.length - 1;
       this.coreService.post('inventory/store', {
         configuration: this.fileOrder.configuration,
         valid: isValid,
