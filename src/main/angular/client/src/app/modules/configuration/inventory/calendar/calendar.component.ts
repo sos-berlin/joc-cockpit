@@ -3,6 +3,7 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {DatePipe} from '@angular/common';
 import * as moment from 'moment';
 import * as _ from 'underscore';
+import {Subscription} from 'rxjs';
 import {CalendarService} from '../../../../services/calendar.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
@@ -83,7 +84,7 @@ export class FrequencyModalComponent implements OnInit {
               private datePipe: DatePipe, private calendarService: CalendarService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     setTimeout(() => {
       this.isVisible = true;
     }, 0);
@@ -102,7 +103,9 @@ export class FrequencyModalComponent implements OnInit {
     this.frequency.nationalHoliday = [];
 
     for (let x in countryList) {
-      this.countryListArr.push({code: x, name: countryList[x]});
+      if (countryList[x]) {
+        this.countryListArr.push({code: x, name: countryList[x]});
+      }
     }
     if (this.flag) {
       if (this.data) {
@@ -899,7 +902,7 @@ export class FrequencyModalComponent implements OnInit {
     this.includedDates = [];
   }
 
-  private updateFrequencyData(index) {
+  private updateFrequencyData(index): void {
     if (index !== null) {
       for (let j = 0; j < this.frequency.months.length; j++) {
         if (this.frequencyList[index].months.indexOf(this.frequency.months[j]) == -1) {
@@ -968,7 +971,7 @@ export class FrequencyModalComponent implements OnInit {
     }
   }
 
-  private checkInclude(dates) {
+  private checkInclude(dates): void {
     let obj = {
       tab: 'specificDays',
       type: 'INCLUDE',
@@ -1010,7 +1013,7 @@ export class FrequencyModalComponent implements OnInit {
     }
   }
 
-  private checkDate(date) {
+  private checkDate(date): void {
     let planData = {
       startDate: date,
       endDate: date,
@@ -1134,7 +1137,7 @@ export class FrequencyModalComponent implements OnInit {
     $('#full-calendar').data('calendar').setDataSource(this.planItems);
   }
 
-  private selectDate(e) {
+  private selectDate(e): void {
     let obj = {
       startDate: e.date,
       endDate: e.date,
@@ -1158,7 +1161,7 @@ export class FrequencyModalComponent implements OnInit {
     $('#calendar').data('calendar').setDataSource(this.tempItems);
   }
 
-  private freqObj(data, obj) {
+  private freqObj(data, obj): void {
     this.isCalendarLoading = true;
     this.planItems = [];
     obj.calendar = {};
@@ -1282,11 +1285,10 @@ export class FrequencyModalComponent implements OnInit {
 
     }, () => {
       this.isCalendarLoading = false;
-
     });
   }
 
-  private generateCalendarAllObj() {
+  private generateCalendarAllObj(): any {
     let obj = {includes: {}, excludes: {}};
     if (this.calendar.configuration.includesFrequency.length > 0) {
       for (let i = 0; i < this.calendar.configuration.includesFrequency.length; i++) {
@@ -1326,8 +1328,19 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   objectType = 'CALENDAR';
   invalidMsg: string;
 
+  indexOfNextAdd = 0;
+  history = [];
+  subscription: Subscription;
+
   constructor(public coreService: CoreService, public modal: NzModalService, private calendarService: CalendarService,
               private dataService: DataService) {
+    this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
+      if (res === 'REDO') {
+        this.redo();
+      } else if (res === 'UNDO') {
+        this.undo();
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -1361,7 +1374,8 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy(): void {
-    if (this.data.type) {
+    this.subscription.unsubscribe();
+    if (this.calendar.name) {
       this.saveJSON();
     }
   }
@@ -1491,6 +1505,11 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       delete obj['excludes'];
     }
     if (!_.isEqual(this.calendar.actual, JSON.stringify(this.calendar.configuration))) {
+      if (this.history.length === 20) {
+        this.history.shift();
+      }
+      this.history.push(JSON.stringify(this.calendar.configuration));
+      this.indexOfNextAdd = this.history.length - 1;
       this.coreService.post('inventory/store', {
         configuration: obj,
         id: this.calendar.id,
@@ -1551,15 +1570,48 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
+  /**
+   * Function: redo
+   *
+   * Redoes the last change.
+   */
+  redo(): void {
+    const n = this.history.length;
+    if (this.indexOfNextAdd < n) {
+      const obj = this.history[this.indexOfNextAdd++];
+      this.calendar.configuration = JSON.parse(obj);
+    }
+  }
+
+  /**
+   * Function: undo
+   *
+   * Undoes the last change.
+   */
+  undo(): void {
+    if (this.indexOfNextAdd > 0) {
+      const obj = this.history[--this.indexOfNextAdd];
+      this.calendar.configuration = JSON.parse(obj);
+    }
+  }
+
   private getObject(): void {
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
     this.coreService.post(URL, {
       id: this.data.id
     }).subscribe((res: any) => {
+      this.history = [];
+      this.indexOfNextAdd = 0;
       if (res.configuration) {
         delete res.configuration['path'];
       } else {
         res.configuration = {};
+      }
+      if (this.data.released !== res.released){
+        this.data.released = res.released;
+      }
+      if (this.data.valid !== res.valid){
+        this.data.valid = res.valid;
       }
       this.calendar = res;
       this.calendar.path1 = this.data.path;
@@ -1586,6 +1638,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         this.calendar.configuration.from = new Date();
       }
       this.calendar.actual = JSON.stringify(this.calendar.configuration);
+      this.history.push(this.calendar.actual);
       if (!res.valid) {
         this.invalidMsg = 'inventory.message.includesIsMissing';
       } else {

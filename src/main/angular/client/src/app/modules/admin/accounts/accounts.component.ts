@@ -158,8 +158,8 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
     this.coreService.post('authentication/shiro/store', obj).subscribe(res => {
       this.users = [...this.users];
-    }, err => {
-
+      this.userDetail = res;
+      this.dataService.announceData('RELOAD');
     });
   }
 
@@ -238,7 +238,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteUser(user, i): void {
+  deleteUser(user): void {
     const modal = this.modal.create({
       nzTitle: null,
       nzContent: ConfirmModalComponent,
@@ -253,7 +253,9 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.users.splice(i, 1);
+        this.users = this.users.filter((item) => {
+          return item.user !== user;
+        });
         this.saveInfo();
       }
     });

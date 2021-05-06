@@ -77,6 +77,38 @@
         </a>
       </div>
     </div>
+    <div class="col-md-2" *ngIf="!isTrash && type && type !== 'WORKFLOW'">
+      <div class="inline pull-right" >
+        <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
+          <li class="nav-item" [nz-tooltip]="'workflow.button.undo' | translate" >
+            <a class="nav-link"
+               (click)="undo()">
+              <span class="nav-text"> <i nz-icon nzType="undo" nzTheme="outline"></i></span>
+            </a>
+          </li>
+          <li class="nav-item" [nz-tooltip]="'workflow.button.redo' | translate" *ngIf="!isTrash">
+            <a class="nav-link"
+               (click)="redo()">
+              <span class="nav-text"> <i nz-icon nzType="redo" nzTheme="outline"></i></span>
+            </a>
+          </li>
+          <li class="nav-item dropdown-separator" *ngIf="!isTrash">
+            <span class="separator"></span>
+          </li>
+          <li class="nav-item" [nz-tooltip]="'inventory.button.download' | translate" *ngIf="!isTrash">
+            <a class="nav-link"
+               (click)="download()">
+              <span class="nav-text">  <i nz-icon nzType="download" nzTheme="outline"></i></span>
+            </a>
+          </li>
+          <li class="nav-item" [nz-tooltip]="'inventory.button.upload' | translate" *ngIf="!isTrash">
+            <a class="nav-link" (click)="upload()">
+              <span class="nav-text">  <i nz-icon nzType="upload" nzTheme="outline"></i></span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </div>
 

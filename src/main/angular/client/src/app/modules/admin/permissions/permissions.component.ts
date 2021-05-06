@@ -402,7 +402,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.rolePermissions.splice(this.rolePermissions.indexOf(permission), 1);
-        this.saveInfo();
+        this.updatePermissionList();
         this.findPermissionObj(this.permissionNodes[0][0], permission.path);
         this.updateDiagramData(this.permissionNodes[0][0]);
       }
@@ -689,6 +689,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       roles: this.roles,
       main: this.userDetail.main
     }).subscribe(res => {
+      this.dataService.announceFunction('RELOAD');
     });
   }
 

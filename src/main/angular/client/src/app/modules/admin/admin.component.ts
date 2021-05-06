@@ -18,8 +18,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   isJOCClusterEnable = true;
   selectedUser: string;
   route: string;
-  userObj: any;
-  users: any;
+  userObj: any = {};
   pageView: string;
   searchKey: string;
   subscription1: Subscription;
@@ -36,6 +35,8 @@ export class AdminComponent implements OnInit, OnDestroy {
         this.isButtonShow = true;
       } else if (res === 'IS_RESET_PROFILES_FALSE') {
         this.isButtonShow = false;
+      }else if (res === 'RELOAD') {
+        this.getUsersData(false);
       }
     });
   }
@@ -46,7 +47,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     if (localStorage.views) {
       this.pageView = JSON.parse(localStorage.views).permission;
     }
-    this.getUsersData();
+    this.getUsersData(true);
     if (!this.route) {
       this.checkUrl(this.router);
     }
@@ -128,27 +129,28 @@ export class AdminComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getUsersData(): void {
+  private getUsersData(flag): void {
     this.coreService.post('authentication/shiro', {}).subscribe(res => {
       this.userObj = res;
-      this.users = this.userObj.users;
-      this.dataService.announceData(this.userObj);
-      this.checkLdapConf();
-    }, () => {
-
+      if (flag) {
+        this.dataService.announceData(this.userObj);
+        this.checkLdapConf();
+      }
     });
   }
 
   private checkLdapConf(): void {
     if (this.userObj.main && this.userObj.main.length > 1) {
-      for (let i = 0; i < this.userObj.main.length; i++) {
-        if ((this.userObj.main[i].entryName === 'sessionDAO' && this.userObj.main[i].entryValue === 'com.sos.auth.shiro.SOSDistributedSessionDAO') ||
-          (this.userObj.main[i].entryName === 'securityManager.sessionManager.sessionDAO' && this.userObj.main[i].entryValue === '$sessionDAO')) {
-          this.isJOCClusterEnable = false;
-        }
-        if ((this.userObj.main[i].entryName === 'ldapRealm' && this.userObj.main[i].entryValue === 'com.sos.auth.shiro.SOSLdapAuthorizingRealm') ||
-          (this.userObj.main[i].entryName === 'securityManager.sessionManager.sessionDAO' && this.userObj.main[i].entryValue === '$sessionDAO')) {
-          this.isLdapRealmEnable = false;
+      for (let i in this.userObj.main) {
+        if (this.userObj.main[i]) {
+          if ((this.userObj.main[i].entryName === 'sessionDAO' && this.userObj.main[i].entryValue === 'com.sos.auth.shiro.SOSDistributedSessionDAO') ||
+            (this.userObj.main[i].entryName === 'securityManager.sessionManager.sessionDAO' && this.userObj.main[i].entryValue === '$sessionDAO')) {
+            this.isJOCClusterEnable = false;
+          }
+          if ((this.userObj.main[i].entryName === 'ldapRealm' && this.userObj.main[i].entryValue === 'com.sos.auth.shiro.SOSLdapAuthorizingRealm') ||
+            (this.userObj.main[i].entryName === 'securityManager.sessionManager.sessionDAO' && this.userObj.main[i].entryValue === '$sessionDAO')) {
+            this.isLdapRealmEnable = false;
+          }
         }
       }
     }

@@ -1534,6 +1534,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       id: this.data.id
     }).subscribe((res: any) => {
       if (this.data.id === res.id) {
+        if (this.data.deployed !== res.deployed){
+          this.data.deployed = res.deployed;
+        }
+        if (this.data.valid !== res.valid){
+          this.data.valid = res.valid;
+        }
         this.jobs = [];
         this.orderRequirements = {};
         this.jobResourceNames = [];
@@ -6336,7 +6342,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
 
     if (!job.executable.v1Compatible) {
-      job.executable.v1Compatible = false;
+      if(job.executable.TYPE === 'ScriptExecutable') {
+        job.executable.v1Compatible = false;
+      } else {
+        delete job.executable.v1Compatible;
+      }
     }
     if (job.defaultArguments) {
       if (job.executable.v1Compatible && job.executable.TYPE === 'ScriptExecutable') {
