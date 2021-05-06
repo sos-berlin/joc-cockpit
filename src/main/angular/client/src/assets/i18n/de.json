@@ -1111,7 +1111,7 @@
       "label.importPublicKey": "Öffentlichen Schlüssel importieren",
       "label.generateKey": "Schlüssel erzeugen",
       "label.setExpiryDate": "Ablaufdatum setzen",
-      "label.expire": "Ablauf",
+      "label.expire": "Ablauffrist",
       "label.neverExpire": "Läuft nie ab",
       "label.noKeyPresent": "Kein Schlüssel vorhanden",
       "message.noKeyFound": "Kein Schlüssel vorhanden",
