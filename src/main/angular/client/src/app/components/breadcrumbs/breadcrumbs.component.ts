@@ -13,13 +13,14 @@ export class BreadcrumbsComponent implements OnInit, OnDestroy {
   breadcrumbs: any;
   subscription: Subscription;
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
+  constructor(private router: Router, private activatedRoute: ActivatedRoute) {
+    this.subscription = router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => this.breadcrumbs = this.createBreadcrumbs(this.activatedRoute.root));
+  }
 
   ngOnInit(): void {
     this.breadcrumbs = this.createBreadcrumbs(this.activatedRoute.root);
-    this.subscription = this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(() => this.breadcrumbs = this.createBreadcrumbs(this.activatedRoute.root));
   }
 
   ngOnDestroy(): void{

@@ -6322,7 +6322,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   private updateJobProperties(data): boolean {
     const job = this.coreService.clone(data.job);
     if (!job.executable) {
-      return;
+      return false;
     }
     if (job.returnCodeMeaning) {
       if (job.returnCodeMeaning && job.returnCodeMeaning.success == '0') {
@@ -6342,7 +6342,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
 
     if (!job.executable.v1Compatible) {
-      if(job.executable.TYPE === 'ScriptExecutable') {
+      if (job.executable.TYPE === 'ScriptExecutable') {
         job.executable.v1Compatible = false;
       } else {
         delete job.executable.v1Compatible;

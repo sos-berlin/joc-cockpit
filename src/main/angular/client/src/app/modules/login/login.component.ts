@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit {
   submitted = false;
   rememberMe = false;
   errorMsg = false;
-  returnUrl: string;
+  returnUrl = '';
 
   constructor(private route: ActivatedRoute, private router: Router, private modal: NzModalService,
               public coreService: CoreService, private authService: AuthService) {
@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  onSubmit(values): void {
+  onSubmit(values: any): void {
     this.submitted = true;
     this.errorMsg = false;
     this.coreService.post('authentication/login', values).subscribe((data) => {

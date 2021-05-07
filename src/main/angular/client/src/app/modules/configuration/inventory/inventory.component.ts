@@ -5,7 +5,7 @@ import {FileUploader} from 'ng2-file-upload';
 import {ToasterService} from 'angular2-toaster';
 import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
 import {TranslateService} from '@ngx-translate/core';
-import * as _ from 'underscore';
+import {isEmpty, sortBy, groupBy, isArray, clone, extend, isEqual} from 'underscore';
 import {ClipboardService} from 'ngx-clipboard';
 import {saveAs} from 'file-saver';
 import {NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd/tree';
@@ -88,7 +88,7 @@ export class SingleDeployComponent implements OnInit {
         }
 
         if (this.deployablesObject[i].deleted) {
-          if (!_.isEmpty(obj)) {
+          if (!isEmpty(obj)) {
             self.object.delete.push(obj);
           } else if (objDep.configuration) {
             self.object.delete.deployConfigurations.push(objDep);
@@ -136,7 +136,7 @@ export class SingleDeployComponent implements OnInit {
       obj.auditLog.ticketLink = this.comments.ticketLink;
     }
 
-    if (_.isEmpty(obj.store) && _.isEmpty(obj.delete)) {
+    if (isEmpty(obj.store) && isEmpty(obj.delete)) {
       this.submitted = false;
       return;
     }
@@ -498,12 +498,12 @@ export class DeployComponent implements OnInit {
         obj.auditLog.ticketLink = this.comments.ticketLink;
       }
     }
-    if (!this.releasable && _.isEmpty(obj.store) && _.isEmpty(obj.delete)) {
+    if (!this.releasable && isEmpty(obj.store) && isEmpty(obj.delete)) {
       this.submitted = false;
       return;
     } else {
       if (this.releasable) {
-        if (_.isEmpty(obj) || (_.isEmpty(obj.update) && _.isEmpty(obj.delete))) {
+        if (isEmpty(obj) || (isEmpty(obj.update) && isEmpty(obj.delete))) {
           this.submitted = false;
           return;
         }
@@ -528,7 +528,7 @@ export class DeployComponent implements OnInit {
       for (let i = 0; i < this.nodes[0].children.length; i++) {
         if (this.nodes[0].children[i].type && this.nodes[0].children[i].checked) {
           if (this.releasable) {
-            if (!_.isArray(obj.delete)) {
+            if (!isArray(obj.delete)) {
               obj.delete = [];
             }
             obj.delete.push({id: this.nodes[0].children[i].key});
@@ -620,7 +620,7 @@ export class DeployComponent implements OnInit {
 
   private buildDeployablesTree(result): void {
     if (result && result.length > 0) {
-      const arr = _.groupBy(_.sortBy(result, 'folder'), (res) => {
+      const arr = groupBy(sortBy(result, 'folder'), (res) => {
         return res.folder;
       });
       this.inventoryService.generateTree(arr, this.nodes);
@@ -1110,7 +1110,7 @@ export class ExportComponent implements OnInit {
 
   private buildDeployablesTree(result) {
     if (result && result.length > 0) {
-      const arr = _.groupBy(_.sortBy(result, 'folder'), (res) => {
+      const arr = groupBy(sortBy(result, 'folder'), (res) => {
         return res.folder;
       });
       this.inventoryService.generateTree(arr, this.nodes);
@@ -1264,7 +1264,7 @@ export class SetVersionComponent implements OnInit {
 
   cancelSetVersion(data): void {
     if (this.object.prevVersion) {
-      data.version = _.clone(this.object.prevVersion);
+      data.version = clone(this.object.prevVersion);
     }
     this.object.prevVersion = undefined;
     data.setVersion = false;
@@ -1276,7 +1276,7 @@ export class SetVersionComponent implements OnInit {
 
   editVersion(data): void {
     if (data.version) {
-      this.object.prevVersion = _.clone(data.version);
+      this.object.prevVersion = clone(data.version);
     }
   }
 
@@ -1332,7 +1332,7 @@ export class SetVersionComponent implements OnInit {
 
   private buildDeployablesTree(result): void {
     if (result && result.length > 0) {
-      const arr = _.groupBy(_.sortBy(result, 'folder'), (res) => {
+      const arr = groupBy(sortBy(result, 'folder'), (res) => {
         return res.folder;
       });
       this.inventoryService.generateTree(arr, this.nodes);
@@ -1822,7 +1822,7 @@ export class CreateFolderModalComponent implements OnInit {
       if (this.origin.object || this.origin.controller || this.origin.dailyPlan) {
         this.folder.deepRename = 'replace';
       } else if (this.origin.type) {
-        this.folder.name = _.clone(this.origin.name);
+        this.folder.name = clone(this.origin.name);
       } else if (this.origin.path === '/') {
         this.folder.deepRename = 'replace';
       }
@@ -1970,7 +1970,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.refresh(res);
     });
     this.subscription2 = dataService.reloadTree.subscribe(res => {
-      if (!_.isEmpty(res)) {
+      if (!isEmpty(res)) {
         if (res.add || res.reload) {
           this.updateTree(this.isTrash);
         } else if (res.set) {
@@ -2065,7 +2065,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           });
         }
       } else {
-        if (!_.isEmpty(this.inventoryConfig.expand_to)) {
+        if (!isEmpty(this.inventoryConfig.expand_to)) {
           this.tree = this.mergeTree(tree, this.inventoryConfig.expand_to);
           this.inventoryConfig.expand_to = undefined;
           this.selectedObj = this.inventoryConfig.selectedObj || {};
@@ -2082,7 +2082,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           } else {
             this.isLoading = false;
           }
-        } else if (!_.isEmpty(this.inventoryConfig.selectedObj)) {
+        } else if (!isEmpty(this.inventoryConfig.selectedObj)) {
           this.tree = tree;
           this.selectedObj = this.inventoryConfig.selectedObj;
           this.recursivelyExpandTree();
@@ -2472,7 +2472,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
               controllerObj.controllerArr[i].children[index].path = res.path;
               controllerObj.controllerArr[i].children[index].title = child.name;
             });
-            controllerObj.controllerArr[i].children = _.sortBy(controllerObj.controllerArr[i].children, 'name');
+            controllerObj.controllerArr[i].children = sortBy(controllerObj.controllerArr[i].children, 'name');
           }
         } else {
           controllerObj.controllerArr[i].children = [];
@@ -2496,7 +2496,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
               dailyPlanObj.dailyPlanArr[i].children[index].path = res.path;
               dailyPlanObj.dailyPlanArr[i].children[index].title = child.name;
             });
-            dailyPlanObj.dailyPlanArr[i].children = _.sortBy(dailyPlanObj.dailyPlanArr[i].children, 'name');
+            dailyPlanObj.dailyPlanArr[i].children = sortBy(dailyPlanObj.dailyPlanArr[i].children, 'name');
           }
         } else {
           dailyPlanObj.dailyPlanArr[i].children = [];
@@ -2558,18 +2558,18 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.initTrashTree(null);
       if (this.type) {
         this.tempObjSelection = {
-          type: _.clone(this.type),
+          type: clone(this.type),
           selectedData: this.coreService.clone(this.selectedData),
-          selectedObj: _.clone(this.selectedObj)
+          selectedObj: clone(this.selectedObj)
         };
       }
       this.clearSelection();
     } else {
       this.clearSelection();
       if (this.tempObjSelection.type) {
-        this.type = _.clone(this.tempObjSelection.type);
+        this.type = clone(this.tempObjSelection.type);
         this.selectedData = this.coreService.clone(this.tempObjSelection.selectedData);
-        this.selectedObj = _.clone(this.tempObjSelection.selectedObj);
+        this.selectedObj = clone(this.tempObjSelection.selectedObj);
         this.tempObjSelection = {};
       }
     }
@@ -2608,7 +2608,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   backToObject(): void {
     if (this.indexOfNextAdd > 0) {
       --this.indexOfNextAdd;
-      this.selectedObj = _.clone(this.objectHistory[this.indexOfNextAdd]);
+      this.selectedObj = clone(this.objectHistory[this.indexOfNextAdd]);
       this.objectHistory.splice(this.indexOfNextAdd, 1);
       this.recursivelyExpandTree();
     }
@@ -2624,9 +2624,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   newObject(node, type): void {
     let list;
-    if (node instanceof NzTreeNode) {
-      node.isExpanded = true;
-    }
     if (node.origin.controller || node.origin.dailyPlan) {
       node.origin.expanded = true;
       for (let i = 0; i < node.origin.children.length; i++) {
@@ -3522,7 +3519,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     let flag = true;
     if (this.objectHistory.length > 0) {
       const x = this.objectHistory[this.objectHistory.length - 1];
-      if (_.isEqual(JSON.stringify(this.selectedObj), JSON.stringify(x))) {
+      if (isEqual(JSON.stringify(this.selectedObj), JSON.stringify(x))) {
         flag = false;
       }
     }
@@ -3553,7 +3550,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           dest.children[i].hasReleases = sour[j].hasReleases;
           dest.children[i].hasDeployments = sour[j].hasDeployments;
           dest.children[i].valid = sour[j].valid;
-          dest.children[i] = _.extend(dest.children[i], sour[j]);
+          dest.children[i] = extend(dest.children[i], sour[j]);
           dest.children[i].match = true;
           sour.splice(j, 1);
           break;
@@ -3591,7 +3588,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         });
       }
     }
-    dest.children = _.sortBy(dest.children, 'name');
+    dest.children = sortBy(dest.children, 'name');
   }
 
   private createObject(type, list, path): void {

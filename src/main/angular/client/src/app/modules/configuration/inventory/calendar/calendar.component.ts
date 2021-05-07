@@ -298,24 +298,23 @@ export class FrequencyModalComponent implements OnInit {
         this.editor.isEnable = this.tempItems.length > 0;
       }
 
-      if (this.frequency.months && this.frequency.months.length > 0) {
-        this.checkMonths();
-      }
+      this.checkMonths();
+      this.onChangeDays();
     }
   }
 
   onChangeDays(): void {
     if (this.frequency.days) {
       this.editor.isEnable = this.frequency.days.length > 0;
-      this.frequency.all = this.frequency.days.length == 7;
-      this.frequency.days.sort();
+      this.frequency.all = this.frequency.days.length === 7;
+      this.frequency.days = this.frequency.days.sort();
     }
   }
 
-  onChangeMonths() {
+  onChangeMonths(): void {
     if (this.frequency.months) {
-      this.frequency.allMonth = this.frequency.months.length == 12;
-      this.frequency.months.sort((a, b) => {
+      this.frequency.allMonth = this.frequency.months.length === 12;
+      this.frequency.months = this.frequency.months.sort((a, b) => {
         return a - b;
       });
     }
@@ -411,15 +410,11 @@ export class FrequencyModalComponent implements OnInit {
   }
 
   getSelectedMonthDays(value): boolean {
-    if (this.selectedMonths.indexOf(value) !== -1) {
-      return true;
-    }
+    return this.selectedMonths.indexOf(value) !== -1;
   }
 
   getSelectedMonthDaysU(value): boolean {
-    if (this.selectedMonthsU.indexOf(value) !== -1) {
-      return true;
-    }
+    return this.selectedMonthsU.indexOf(value) !== -1;
   }
 
   selectAllWeek(): void {
@@ -749,18 +744,24 @@ export class FrequencyModalComponent implements OnInit {
       this.holidayDays.checked = false;
     }
     this.isRuntimeEdit = true;
-    if (this.frequency.tab == 'monthDays') {
-      if (this.frequency.isUltimos == 'months') {
+    if (this.frequency.tab === 'monthDays') {
+      if (this.frequency.isUltimos === 'months') {
         this.selectedMonths = [];
-        for (let i = 0; i < data.selectedMonths.length; i++) {
-          this.selectMonthDaysFunc(data.selectedMonths[i]);
+        for (const i in data.selectedMonths) {
+          if (data.selectedMonths[i]) {
+            this.selectMonthDaysFunc(data.selectedMonths[i]);
+          }
         }
       } else {
         this.selectedMonthsU = [];
-        for (let i = 0; i < data.selectedMonthsU.length; i++) {
-          this.selectMonthDaysUFunc(data.selectedMonthsU[i]);
+        for (const i in data.selectedMonthsU) {
+          if (data.selectedMonthsU[i]) {
+            this.selectMonthDaysUFunc(data.selectedMonthsU[i]);
+          }
         }
       }
+    } else if (this.frequency.tab === 'weekDays') {
+      this.checkDays();
     }
     this.onFrequencyChange();
   }
@@ -1493,10 +1494,10 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     obj.title = this.calendar.configuration.title;
     obj.type = this.calendar.configuration.type;
     if (this.calendar.configuration.from) {
-      obj.from = moment(this.calendar.configuration.from, this.dateFormatM).format('YYYY-MM-DD');
+      obj.from = moment(new Date(this.calendar.configuration.from), this.dateFormatM).format('YYYY-MM-DD');
     }
     if (this.calendar.configuration.to) {
-      obj.to = moment(this.calendar.configuration.to, this.dateFormatM).format('YYYY-MM-DD');
+      obj.to = moment(new Date(this.calendar.configuration.to), this.dateFormatM).format('YYYY-MM-DD');
     }
     if (obj.includes && _.isEmpty(obj.includes)) {
       delete obj['includes'];
@@ -1563,7 +1564,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       nzClosable: false
     });
     modal.afterClose.subscribe(res => {
-      if (res.calendar) {
+      if (res && res.calendar) {
         this.calendar.configuration = res.calendar.configuration;
         this.saveJSON();
       }

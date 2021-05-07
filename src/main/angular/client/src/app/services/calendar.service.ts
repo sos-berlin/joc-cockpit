@@ -1,16 +1,13 @@
 import {Injectable, OnInit} from '@angular/core';
 import {DatePipe} from '@angular/common';
-import * as _ from 'underscore';
+import {groupBy, isArray, toArray} from 'underscore';
 import * as moment from 'moment';
 
 @Injectable()
-export class CalendarService implements OnInit {
+export class CalendarService {
   preferences: any = {};
 
   constructor(private datePipe: DatePipe) {
-  }
-
-  ngOnInit() {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
@@ -26,11 +23,12 @@ export class CalendarService implements OnInit {
 
   getMonths(month): string {
     let str = '';
-    if (!month)
-      return;
+    if (!month) {
+      return '';
+    }
 
     let months = month;
-    if (!_.isArray(month)) {
+    if (!isArray(month)) {
       months = month.toString().split(' ');
     }
     if (months.length == 12) {
@@ -77,10 +75,10 @@ export class CalendarService implements OnInit {
 
   getWeekDays(day): string {
     if (!day) {
-      return;
+      return '';
     }
     let days = day;
-    if (!_.isArray(day)) {
+    if (!isArray(day)) {
       days = day.toString().split(' ');
     }
     if (days.length === 7) {
@@ -119,7 +117,7 @@ export class CalendarService implements OnInit {
 
   getSpecificDay(day): string {
     if (!day) {
-      return;
+      return '';
     }
     if (day == 1) {
       return '1st';
@@ -137,6 +135,8 @@ export class CalendarService implements OnInit {
       return '3rd last';
     } else if (day == -4) {
       return '4th last';
+    } else{
+      return '';
     }
   }
 
@@ -146,7 +146,7 @@ export class CalendarService implements OnInit {
       return month;
     }
     let months = month;
-    if (!_.isArray(month)) {
+    if (!isArray(month)) {
       months = month.toString().split(' ').sort(this.compareNumbers);
     }
     for (let i = 0; i < months.length; i++) {
@@ -181,7 +181,7 @@ export class CalendarService implements OnInit {
   freqToStr(data: any, dataFormat: string): string {
     let self = this;
     let str = '';
-    if (data.months && _.isArray(data.months)) {
+    if (data.months && isArray(data.months)) {
       str = self.getMonths(data.months);
     }
     if (data.tab === 'weekDays') {
@@ -231,10 +231,10 @@ export class CalendarService implements OnInit {
       } else {
         str = data.interval + 'th ';
       }
-      let repetitions = data.dateEntity === 'DAILY' ? 'day' : data.dateEntity === 'WEEKLY' ? 'week' : data.dateEntity === 'MONTHLY' ? 'month' : 'year';
+      const repetitions = data.dateEntity === 'DAILY' ? 'day' : data.dateEntity === 'WEEKLY' ? 'week' : data.dateEntity === 'MONTHLY' ? 'month' : 'year';
       if (data.startingWith) {
-        let formattedDate = moment(data.startingWith, 'DD-MM-YYYY');
-        return 'Every ' + str + repetitions + ' starting with day ' + this.datePipe.transform(formattedDate, dataFormat);
+        // let formattedDate = moment(data.startingWith, 'DD-MM-YYYY');
+        return 'Every ' + str + repetitions + ' starting with day ' + this.datePipe.transform(new Date(data.startingWith), dataFormat);
       } else {
         return 'Every ' + str + repetitions;
       }
@@ -249,8 +249,8 @@ export class CalendarService implements OnInit {
           }
         });
       }
-      return str;
     }
+    return str;
   }
 
   generateCalendarObj(data, obj): any {
@@ -258,7 +258,7 @@ export class CalendarService implements OnInit {
     let arr = [];
     let from, to;
     const type = (!data.type || data.type === 'INCLUDE') ? 'includes' : 'excludes';
-    if (data.months && _.isArray(data.months) && data.months.length > 0) {
+    if (data.months && isArray(data.months) && data.months.length > 0) {
       if (!obj[type].months)
         obj[type].months = [];
 
@@ -269,7 +269,7 @@ export class CalendarService implements OnInit {
         if (data.endOnW) {
           to = moment(data.endOnW).format('YYYY-MM-DD');
         }
-        arr.push({days: data.days.map(Number), from: from, to: to});
+        arr.push({days: data.days.map(Number), from, to});
         obj[type].months.push({months: data.months.map(Number), weekdays: arr});
       } else if (data.tab === 'monthDays') {
         if (data.startingWithM) {
@@ -279,10 +279,10 @@ export class CalendarService implements OnInit {
           to = moment(data.endOnM).format('YYYY-MM-DD');
         }
         if (data.isUltimos === 'months') {
-          arr.push({days: data.selectedMonths.map(Number), from: from, to: to});
+          arr.push({days: data.selectedMonths.map(Number), from, to});
           obj[type].months.push({months: data.months.map(Number), monthdays: arr});
         } else {
-          arr.push({days: data.selectedMonthsU.map(Number), from: from, to: to});
+          arr.push({days: data.selectedMonthsU.map(Number), from, to});
           obj[type].months.push({months: data.months.map(Number), ultimos: arr});
         }
       } else if (data.tab === 'specificWeekDays') {
@@ -297,7 +297,7 @@ export class CalendarService implements OnInit {
           weekOfMonth: Math.abs(data.which)
         });
         let arrObj = [];
-        arrObj.push({weeklyDays: arr, from: from, to: to});
+        arrObj.push({weeklyDays: arr, from, to});
         if (data.which > 0) {
           obj[type].months.push({months: data.months.map(Number), monthdays: arrObj});
         } else {
@@ -314,7 +314,7 @@ export class CalendarService implements OnInit {
         if (data.endOnW) {
           to = moment(data.endOnW).format('YYYY-MM-DD');
         }
-        obj[type].weekdays.push({days: data.days.map(Number), from: from, to: to});
+        obj[type].weekdays.push({days: data.days.map(Number), from, to});
       } else if (data.tab === 'monthDays') {
         if (data.isUltimos === 'months') {
           if (!obj[type].monthdays) {
@@ -327,7 +327,7 @@ export class CalendarService implements OnInit {
           if (data.endOnM) {
             to = moment(data.endOnM).format('YYYY-MM-DD');
           }
-          obj[type].monthdays.push({days: data.selectedMonths.map(Number), from: from, to: to});
+          obj[type].monthdays.push({days: data.selectedMonths.map(Number), from, to});
         } else {
           if (!obj[type].ultimos)
             obj[type].ultimos = [];
@@ -338,7 +338,7 @@ export class CalendarService implements OnInit {
           if (data.endOnM) {
             to = moment(data.endOnM).format('YYYY-MM-DD');
           }
-          obj[type].ultimos.push({days: data.selectedMonthsU.map(Number), from: from, to: to});
+          obj[type].ultimos.push({days: data.selectedMonthsU.map(Number), from, to});
         }
       } else if (data.tab === 'specificWeekDays') {
         arr.push({
@@ -356,11 +356,11 @@ export class CalendarService implements OnInit {
           if (!obj[type].monthdays) {
             obj[type].monthdays = [];
           }
-          obj[type].monthdays.push({weeklyDays: arr, from: from, to: to});
+          obj[type].monthdays.push({weeklyDays: arr, from, to});
         } else {
           if (!obj[type].ultimos)
             obj[type].ultimos = [];
-          obj[type].ultimos.push({weeklyDays: arr, from: from, to: to});
+          obj[type].ultimos.push({weeklyDays: arr, from, to});
         }
       } else if (data.tab === 'specificDays') {
         if (!obj[type].dates)
@@ -372,7 +372,7 @@ export class CalendarService implements OnInit {
       } else if (data.tab === 'every') {
         if (!obj[type].repetitions)
           obj[type].repetitions = [];
-        let obj1:any = {
+        let obj1: any = {
           repetition: data.dateEntity,
           step: data.interval || 1,
         };
@@ -394,7 +394,7 @@ export class CalendarService implements OnInit {
         if (obj[type].holidays.length > 0) {
           obj[type].holidays[0].dates = obj[type].holidays[0].dates.concat(dates);
         } else {
-          obj[type].holidays.push({dates: dates});
+          obj[type].holidays.push({dates});
         }
       }
     }
@@ -402,30 +402,14 @@ export class CalendarService implements OnInit {
     return obj;
   }
 
-  groupByDates(arrayOfDates) {
-    let datesObj = _.groupBy(arrayOfDates, (el) => {
+  groupByDates(arrayOfDates): any {
+    const datesObj = groupBy(arrayOfDates, (el) => {
       return moment(el.toString()).format('YYYY');
     });
-    return _.toArray(datesObj);
+    return toArray(datesObj);
   }
 
-  stringMonthsNumber(month) {
-    return month
-      .replace('january', '1')
-      .replace('february', '2')
-      .replace('march', '3')
-      .replace('april', '4')
-      .replace('may', '5')
-      .replace('june', '6')
-      .replace('july', '7')
-      .replace('august', '8')
-      .replace('september', '9')
-      .replace('october', '10')
-      .replace('november', '11')
-      .replace('december', '11');
-  }
-
-  getTimeInString(time) {
+  getTimeInString(time): string {
     if (time.toString().substring(0, 2) === '00' && time.toString().substring(3, 5) === '00') {
       return time.toString().substring(6, time.length) + ' seconds';
     } else if (time.toString().substring(0, 2) === '00') {
@@ -437,7 +421,7 @@ export class CalendarService implements OnInit {
     }
   }
 
-  getTimeFromDate(t) {
+  getTimeFromDate(t): string {
     let tf = this.preferences.dateFormat;
     let x = 'HH:mm:ss';
     if ((tf.match(/HH:mm:ss/gi) || tf.match(/HH:mm/gi) || tf.match(/hh:mm:ss A/gi) || tf.match(/hh:mm A/gi)) != null) {
@@ -455,7 +439,7 @@ export class CalendarService implements OnInit {
     return time;
   }
 
-  getTimeFromNumber(totalSeconds) {
+  getTimeFromNumber(totalSeconds): string {
     let hours: any = Math.floor(totalSeconds / 3600);
     totalSeconds %= 3600;
     let minutes: any = Math.floor(totalSeconds / 60);
@@ -480,7 +464,7 @@ export class CalendarService implements OnInit {
     return time;
   }
 
-  compareNumbers(a, b) {
+  compareNumbers(a, b): any {
     return a - b;
   }
 

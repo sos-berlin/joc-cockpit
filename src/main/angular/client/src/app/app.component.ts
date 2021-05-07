@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {ToasterConfig} from 'angular2-toaster';
 import {TranslateService} from '@ngx-translate/core';
 import {DataService} from './services/data.service';
-declare const $;
+declare const $: any;
 
 @Component({
   selector: 'app-root',

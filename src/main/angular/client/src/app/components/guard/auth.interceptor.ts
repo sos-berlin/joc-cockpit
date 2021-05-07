@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpEvent, HttpInterceptor, HttpHandler, HttpRequest} from '@angular/common/http';
+import {HttpEvent, HttpInterceptor, HttpHandler} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {tap} from 'rxjs/operators';
 import {AuthService} from './auth.service';
@@ -16,7 +16,7 @@ export class AuthInterceptor implements HttpInterceptor {
               private logService: LoggingService, private translate: TranslateService, private toasterService: ToasterService) {
   }
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(req: any, next: HttpHandler): Observable<HttpEvent<any>> {
     if (req.method === 'POST') {
       req = req.clone({
         url: './api/' + req.url,
@@ -34,16 +34,16 @@ export class AuthInterceptor implements HttpInterceptor {
         });
       }
       if (!req.url.match('touch')) {
-        req['requestTimeStamp'] = new Date().getTime();
+        req.requestTimeStamp = new Date().getTime();
         this.logService.debug('START LOADING ' + req.url);
       }
       return next.handle(req).pipe(
         tap((event: any) => {
           if (!req.url.match('touch') && event.url) {
-            const message = 'ELAPSED TIME FOR ' + req.url + ' RESPONSE : ' + ((new Date().getTime() - req['requestTimeStamp']) / 1000) + 's';
+            const message = 'ELAPSED TIME FOR ' + req.url + ' RESPONSE : ' + ((new Date().getTime() - req.requestTimeStamp) / 1000) + 's';
             this.logService.debug(message);
           }
-        }, err => {
+        }, (err: any) => {
           if ((err.status === 401 || err.status === 440 || (err.status === 420 && err.error.error && (err.error.error.message.match(/UnknownSessionException/) || err.error.error.message.match(/user is null/))))) {
             if (!this.router.url.match('/login') && !req.url.match('authentication/login')) {
               let title = '';
@@ -61,7 +61,8 @@ export class AuthInterceptor implements HttpInterceptor {
               if (url && url.match(/returnUrl/)) {
                 url = url.substring(0, url.indexOf('returnUrl'));
               }
-              return this.router.navigate(['login'], {queryParams: {returnUrl: url}});
+              this.router.navigate(['login'], {queryParams: {returnUrl: url}});
+              return;
             }
           } else if (err.status && err.status !== 434) {
             if (err.error.error) {

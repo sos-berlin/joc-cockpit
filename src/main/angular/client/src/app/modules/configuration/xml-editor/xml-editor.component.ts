@@ -798,36 +798,6 @@ export class ConfirmationModalComponent {
   }
 }
 
-
-@Component({
-  selector: 'app-diff-modal',
-  templateUrl: './diff-dialog.html'
-})
-export class DiffPatchModalComponent {
-  @Input() liveXml;
-  @Input() draftXml;
-  @Input() xmlVersionObj;
-
-  constructor(public activeModal: NzModalRef) {
-  }
-
-  checkBoxCheck(data) {
-    if (data === 'liveVersion') {
-      this.xmlVersionObj = {draftVersion: false, liveVersion: true};
-    } else {
-      this.xmlVersionObj = {draftVersion: true, liveVersion: false};
-    }
-  }
-
-  ok() {
-    this.activeModal.close({xmlVersionObj: this.xmlVersionObj});
-  }
-
-  cancel() {
-    this.activeModal.destroy();
-  }
-}
-
 @Component({
   selector: 'app-xml',
   templateUrl: './xml-editor.component.html',
@@ -1466,7 +1436,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
     let valueType = this.getValueFromType(node.ref, node.parent);
 
-    if (valueType) {
+    if (valueType && valueType.length > 0) {
       if (node.values && node.values.length > 0) {
         for (let i = 0; i < valueType.length; i++) {
           for (let j = 0; j < node.values.length; j++) {
@@ -2000,7 +1970,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     return this.getAttrsFromType(attribute);
   }
 
-  getAttrsFromType(node) {
+  getAttrsFromType(node): Array<any> {
     let select = xpath.useNamespaces({
       'xs': 'http://www.w3.org/2001/XMLSchema'
     });
@@ -2021,11 +1991,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         attribute.values = value;
       }
       attrArr.push(attribute);
-      return attrArr;
     }
+    return attrArr;
   }
 
-  getAttrsValueFromType(attr, node): any {
+  getAttrsValueFromType(attr, node): Array<any> {
     let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     // tslint:disable-next-line: max-line-length
     let valueTypePath = '//xs:complexType[@name=\'' + node.type + '\']/xs:simpleContent/xs:extension/xs:attribute[@name=\'' + attr.name + '\']/xs:simpleType/xs:restriction/xs:enumeration';
@@ -2041,11 +2011,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         }
         valueArr.push(value);
       }
-      return valueArr;
     }
+    return valueArr;
   }
 
-  getValFromDefault(node): any {
+  getValFromDefault(node): Array<any> {
     let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     let attrTypePath = '/xs:schema/xs:element[@name=\'' + node.ref + '\']/@default';
     let ele = select(attrTypePath, this.doc);
@@ -2099,7 +2069,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     return this.getTypeValue(attribute);
   }
 
-  getTypeValue(node) {
+  getTypeValue(node): Array<any> {
     if (node.type !== 'xs:boolean') {
       let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
       let extensionTypePath = '/xs:schema/xs:complexType[@name=\'' + node.type + '\']/xs:simpleContent/xs:extension/@*';
@@ -2131,8 +2101,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         if (!(_.isEmpty(value))) {
           valueArr.push(value);
         }
-        return valueArr;
       }
+      return valueArr;
     } else {
       let _value;
       let _valueArr = [];
@@ -2142,12 +2112,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       if (!_.isEmpty(_value)) {
         _valueArr.push(_value);
       }
-
       return _valueArr;
     }
   }
 
-  checkText(node) {
+  checkText(node): any {
     let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     let text: any = {};
     let documentationPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:annotation/xs:documentation/@*';
@@ -2231,19 +2200,20 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  getFirstNotEmptyAttribute(attrs) {
+  getFirstNotEmptyAttribute(attrs): string {
+    let str = '';
     if (attrs && attrs.length > 0) {
       for (let i = 0; i < attrs.length; i++) {
         if (attrs[i].data) {
-          return attrs[i].name + '=' + attrs[i].data;
+          str = attrs[i].name + '=' + attrs[i].data;
+          break;
         }
       }
-    } else {
-      return '';
     }
+    return str;
   }
 
-  checkAttrsText(node) {
+  checkAttrsText(node): void {
     let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     let textAttrsPath = '/xs:schema/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:attribute[@name=\''
       + node.name + '\']/xs:annotation/xs:documentation';
@@ -2828,6 +2798,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         }
       }
     }
+    return '';
   }
 
   printArray(rootchildrensattrArr) {
@@ -2935,6 +2906,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         } else if (dropNode.children.length === 0) {
           this.dropCheck = {status: true, dropNode: dropNode.ref};
           return of(true);
+        } else{
+          return of(false);
         }
       } else if (dragNode.maxOccurs === undefined) {
         if (dropNode.children.length > 0) {
@@ -2947,9 +2920,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
               return of(false);
             }
           }
+          return of(false);
         } else if (dropNode.children.length === 0) {
           this.dropCheck = {status: true, dropNode: dropNode.ref};
           return of(true);
+        } else{
+          return of(false);
         }
       } else {
         this.dropCheck = {status: false, dropNode: undefined};
@@ -4505,55 +4481,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     });
   }
 
-  hideError() {
+  hideError(): void {
     this.error = false;
   }
 
-  showDiff() {
-    this.xmlVersionObj = {draftVersion: true, liveVersion: false};
-    this.draftXml = this.prevXML;
-    let liveVersion;
-    this.coreService.post('xmleditor/read', {
-      controllerId: this.schedulerIds.selected,
-      objectType: this.objectType,
-      forceLive: true
-    }).subscribe((res: any) => {
-      if (res.validation && res.validation.validated) {
-        this.validConfig = true;
-      }
-      if (res.configuration) {
-        this.schemaIdentifier = res.schemaIdentifier;
-        liveVersion = res.configuration;
-        this.liveXml = this.coreService.diff(this.draftXml, res.configuration);
-      } else {
-        this.submitXsd = false;
-        this.isLoading = false;
-        this.XSDState = res.state;
-        this.XSDState = Object.assign(this.XSDState, {warning: res.warning});
-      }
-    }, (error) => {
-      this.isLoading = false;
-      this.toasterService.pop('error', error.error.message);
-    });
-    const modal = this.modal.create({
-      nzTitle: null,
-      nzContent: DiffPatchModalComponent,
-      nzComponentParams: {
-        liveXml: this.liveXml,
-        draftXml: this.draftXml,
-        xmlVersionObj: this.xmlVersionObj
-      },
-      nzFooter: null,
-      nzClosable: false
-    });
-    modal.afterClose.subscribe(res => {
-      if (res && res.xmlVersionObj.liveVersion) {
-        this.del();
-      }
-    });
-  }
-
-  getAutoFocus(index, node, type) {
+  getAutoFocus(index, node, type): any {
     if (node) {
       if (type === 'attribute' && node) {
         if (this.errorName && this.errorName === node.name) {
@@ -5161,6 +5093,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   passwordLabel(password: any): string {
     if (password !== undefined) {
       return '********';
+    } else {
+      return '';
     }
   }
 

@@ -111,7 +111,7 @@
                   <div class="box card">
                     <div class="box-body">
                       <label class="pos-abt">
-                        <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(document.path)" (nzCheckedChange)="onItemChecked(document, $event)"></label>
+                        <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(document.name)" (nzCheckedChange)="onItemChecked(document, $event)"></label>
                       </label>
                       <div class="text-left block-ellipsis m-l-md">
                         <span class="text-left">
@@ -137,7 +137,7 @@
                               <a (click)="showDocumentUsage(document)" translate>resource.button.showUsage</a>
                             </li>
                             <li nz-menu-item >
-                              <a (click)="coreService.copyLink('document',document.path)" translate>common.button.copyLinkToObject</a>
+                              <a (click)="coreService.copyLink('document',document.name)" translate>common.button.copyLinkToObject</a>
                             </li>
                           </ul>
                         </nz-dropdown-menu>
@@ -218,7 +218,7 @@
                   </thead>
                   <tbody>
                   <tr *ngFor="let document of ajaxTable.data | orderBy: documentFilters.filter.sortBy:documentFilters.reverse">
-                    <td [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(document.path)" (nzCheckedChange)="onItemChecked(document, $event)"></td>
+                    <td [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(document.name)" (nzCheckedChange)="onItemChecked(document, $event)"></td>
                     <td>
                       <div class="btn-group dropdown">
                         <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option2">
@@ -238,7 +238,7 @@
                               <a (click)="showDocumentUsage(document)" translate>resource.button.showUsage</a>
                             </li>
                             <li nz-menu-item >
-                              <a (click)="coreService.copyLink('document',document.path)"
+                              <a (click)="coreService.copyLink('document',document.name)"
                                 translate>common.button.copyLinkToObject</a>
                             </li>
                           </ul>

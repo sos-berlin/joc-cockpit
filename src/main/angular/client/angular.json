@@ -1,11 +1,20 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": false
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
     "joc-cockpit": {
       "projectType": "application",
       "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        },
+        "@schematics/angular:application": {
+          "strict": true
+        }
       },
       "root": "",
       "sourceRoot": "src",
@@ -36,8 +45,8 @@
               "src/theme.less",
               "node_modules/codemirror/lib/codemirror.css",
               "node_modules/font-awesome/css/font-awesome.css",
+              "node_modules/angular2-toaster/toaster.min.css",
               "src/styles/bootstrap.scss",
-              "src/styles/toaster.scss",
               "src/styles/jsgantt.scss",
               "src/styles/full-year-calendar.scss",
               "src/styles/style.scss",
@@ -54,7 +63,6 @@
               "src/assets/js/xml2json.min.js",
               "src/assets/js/holiday.js",
               "src/assets/js/jsgantt.js",
-              "src/assets/js/diff_match_patch.js",
               "src/assets/js/full-year-calendar.js",
               "node_modules/mxgraph/javascript/mxClient.min.js"
             ],
@@ -89,7 +97,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -171,8 +178,5 @@
       }
     }
   },
-  "defaultProject": "joc-cockpit",
-  "cli": {
-    "analytics": false
-  }
+  "defaultProject": "joc-cockpit"
 }

@@ -170,7 +170,7 @@
            *ngIf="XSDState && (XSDState.warning && XSDState.warning.code === 'XMLEDITOR-401')">{{XSDState.warning.code | translate}}</div>
       <div class="text-center h6 text-uppercase hide show" *ngIf="XSDState && ((XSDState.message && XSDState.message.code === 'XMLEDITOR-105') || (XSDState.warning &&
             XSDState.warning.code === '401'))">
-        <app-empty-data [title]="XSDState.message.code"></app-empty-data>
+        <app-empty-data [title]="'xml.message.noConfigurationFound'"></app-empty-data>
       </div>
     </div>
     <div class="inline w-full" [ngClass]="submitXsd ? 'show': 'hide'"
@@ -321,12 +321,6 @@
           </nav>
           <div *ngIf="selectedNode && selectedNode.ref" class="col-12">
             <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref}}
-              <span class="text-dark text-sm _400"
-                    *ngIf="XSDState && XSDState.message && XSDState.message.code && XSDState.message.code != 'XMLEDITOR-106'">
-                  - {{XSDState.message.code | translate}}
-                <a class="m-l-xs" *ngIf="XSDState.message.code=== 'XMLEDITOR-103'" (click)="showDiff()">
-                  <i class="fa fa-columns text"></i></a>
-                </span>
               <span class="text-dark text-sm _400" *ngIf="XSDState && XSDState.modified"> -
                   <b *ngIf="!isDeploy && XSDState && XSDState.message && (XSDState.message.code !== 'XMLEDITOR-102')"
                      translate>xml.label.autoSaveAt</b>

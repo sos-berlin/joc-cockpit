@@ -9,13 +9,12 @@ import {
   ImportModalComponent,
   ShowChildModalComponent,
   ShowModalComponent,
-  XmlEditorComponent,
-  DiffPatchModalComponent
+  XmlEditorComponent
 } from './xml-editor.component';
 
 import { XMLAutofocusDirective } from 'src/app/directives/core.directive';
 
-const COMPONENTS = [ImportModalComponent, DiffPatchModalComponent, ShowModalComponent,
+const COMPONENTS = [ImportModalComponent, ShowModalComponent,
   ShowChildModalComponent, ConfirmationModalComponent];
 
 @NgModule({

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import * as _ from 'underscore';
+import {sortBy, groupBy} from 'underscore';
 
 @Injectable()
 export class InventoryService {
@@ -24,7 +24,7 @@ export class InventoryService {
         arr[i].level = 7;
       }
     }
-    return _.sortBy(arr, 'level');
+    return sortBy(arr, 'level');
   }
 
   generateTree(arr, treeArr): void {
@@ -99,7 +99,7 @@ export class InventoryService {
   }
 
   private createTempArray(arr): any {
-    let x = _.groupBy(arr, (res) => {
+    let x = groupBy(arr, (res) => {
       return res.objectType;
     });
     let tempArr = [], folderArr = [];

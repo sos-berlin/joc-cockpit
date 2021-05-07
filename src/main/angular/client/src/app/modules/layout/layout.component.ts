@@ -10,7 +10,7 @@ import {DataService} from '../../services/data.service';
 import {AuthService} from '../../components/guard';
 import {HeaderComponent} from '../../components/header/header.component';
 
-declare const $;
+declare const $: any;
 
 @Component({
   selector: 'app-layout',
@@ -22,10 +22,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
   permission: any;
   selectedScheduler: any = {};
   selectedController: any = {};
-  remainingSessionTime: string;
+  remainingSessionTime = '';
   interval: any;
   tabsMap = new Map();
-  currentTime: string;
+  currentTime = '';
   subscription1: any = Subscription;
   subscription2: any = Subscription;
   subscription3: any = Subscription;
@@ -40,8 +40,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
   count = 0;
   count2 = 0;
 
-  @ViewChild(HeaderComponent, {static: false}) child;
-  @ViewChild('customTpl', {static: true}) customTpl;
+  @ViewChild(HeaderComponent, {static: false}) child: any;
+  @ViewChild('customTpl', {static: true}) customTpl: any;
 
   constructor(private coreService: CoreService, private route: ActivatedRoute, private authService: AuthService, private router: Router,
               private dataService: DataService, public translate: TranslateService, private toasterService: ToasterService,
@@ -91,7 +91,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  static setControllerPermission(permissions, controllerIds): any {
+  static setControllerPermission(permissions: any, controllerIds: any): any {
     if (permissions.controllers && controllerIds.selected && permissions.controllers[controllerIds.selected]) {
       return permissions.controllers[controllerIds.selected];
     } else {
@@ -180,7 +180,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  changeScheduler(controller): void {
+  changeScheduler(controller: string): void {
     if (this.schedulerIds.selected === controller) {
       return;
     }
@@ -199,7 +199,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
             this.coreService.setDefaultTab();
           }
           this.authService.setIds(res);
-          let permission = JSON.parse(this.authService.permission);
+          const permission = JSON.parse(this.authService.permission);
           permission.currentController = LayoutComponent.setControllerPermission(permission, this.schedulerIds);
           this.authService.setPermission(permission);
           this.authService.save();
@@ -219,7 +219,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     });
   }
 
-  logout(timeout): void {
+  logout(timeout: any): void {
     this.isLogout = true;
     this.child.isLogout = true;
     this.coreService.post('authentication/logout', {}).subscribe(() => {
@@ -229,7 +229,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     });
   }
 
-  reloadThemeAndLang(preferences): void {
+  reloadThemeAndLang(preferences: any): void {
     preferences = JSON.parse(sessionStorage.preferences);
     $('#style-color').attr('href', './styles/' + preferences.theme + '-style.css');
     localStorage.$SOS$THEME = preferences.theme;
@@ -261,10 +261,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
           sessionStorage.defaultProfile = result.defaultProfileAccount;
           sessionStorage.$SOS$COPY = JSON.stringify(result.copy);
           sessionStorage.$SOS$RESTORE = JSON.stringify(result.restore);
-          if(result.import) {
+          if (result.import) {
             sessionStorage.$SOS$IMPORT = JSON.stringify(result.import);
           }
-          
+
           if (!this.loading) {
             this.init();
           }
@@ -364,7 +364,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  private loadInit(isError): void {
+  private loadInit(isError: boolean): void {
     this.sessionTimeout = parseInt(this.authService.sessionTimeout, 10);
     if (!this.authService.permissionCheck(this.router.url)) {
       this.router.navigate(['/error']);
@@ -386,11 +386,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }, 10);
   }
 
-  private _logout(timeout): void {
+  private _logout(timeout: any): void {
     this.authService.clearUser();
     this.authService.clearStorage();
     if (timeout) {
-      sessionStorage.setItem('$SOS$CONTROLLER', null);
+      sessionStorage.removeItem('$SOS$CONTROLLER');
       const returnUrl = this.router.url;
       let queryParams = {queryParams: {returnUrl}};
       if (!returnUrl || returnUrl.match(/login/)) {
@@ -400,7 +400,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       }
       this.router.navigate(['login'], queryParams);
     } else {
-      localStorage.setItem('logging', null);
+      localStorage.removeItem('logging');
       this.coreService.setDefaultTab();
       sessionStorage.clear();
       this.router.navigate(['login']);
@@ -429,10 +429,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.currentTime = this.coreService.stringToDate(this.preferences, new Date());
       if (this.sessionTimeout > 0) {
         --this.count;
-        let s = Math.floor((this.count) % 60),
-          m = Math.floor((this.count / (60)) % 60),
-          h = Math.floor((this.count / (60 * 60)) % 24),
-          d = Math.floor(this.count / (60 * 60 * 24));
+        const s = Math.floor((this.count) % 60);
+        const m = Math.floor((this.count / (60)) % 60);
+        const h = Math.floor((this.count / (60 * 60)) % 24);
+        const d = Math.floor(this.count / (60 * 60 * 24));
 
         const x = m > 9 ? m : '0' + m;
         const y = s > 9 ? s : '0' + s;
@@ -455,7 +455,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  private setUserPreferences(preferences, configObj, reload): void {
+  private setUserPreferences(preferences: any, configObj: any, reload: boolean): void {
     if (sessionStorage.preferenceId === 0 || sessionStorage.preferenceId == '0') {
       const timezone = this.coreService.getTimeZone();
       if (timezone) {
@@ -504,7 +504,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.isProfileLoaded = false;
   }
 
-  private setUserObject(preferences, conf, configObj): void {
+  private setUserObject(preferences: any, conf: any, configObj: any): void {
     if (conf.configurationItem) {
       const data = JSON.parse(conf.configurationItem);
       if (sessionStorage.$SOS$FORCELOGING === 'true' || sessionStorage.$SOS$FORCELOGING === true) {
@@ -517,7 +517,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getUserProfileConfiguration(id, user, reload: boolean): void {
+  private getUserProfileConfiguration(id: string, user: string, reload: boolean): void {
     if (id) {
       const configObj = {
         controllerId: id,
@@ -558,7 +558,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
           sessionStorage.settingId = res1.configurations[0].id;
           sessionStorage.clientLogFilter = res1.configurations[0].configurationItem;
         } else {
-          let clientLogFilter = {
+          const clientLogFilter = {
             status: ['info', 'debug', 'error', 'warn'],
             isEnable: false
           };
@@ -569,9 +569,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  private saveSettingConf(flag): void {
+  private saveSettingConf(flag: boolean): void {
     if ((sessionStorage.settingId || flag) && this.authService.currentUserData) {
-      let configObj = {
+      const configObj = {
         controllerId: this.schedulerIds.selected,
         account: this.authService.currentUserData,
         configurationType: 'SETTING',
@@ -584,7 +584,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updateTitle(res): void {
+  private updateTitle(res: any): void {
     if (!res) {
       return;
     }

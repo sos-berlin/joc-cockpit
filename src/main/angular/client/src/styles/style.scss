@@ -4684,7 +4684,8 @@ div.min-ht-widget-controller-status {
   min-height: 300px !important;
 }
 
-#toast-container > div {
+
+.toast-container > div {
   min-width: 300px;
   width: auto;
   max-width: 500px;
@@ -6355,6 +6356,11 @@ tr.tr-border td:first-child {
   color: var(--black);
 }
 
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn{
+  text-shadow: none;
+  color: var(--text-color);
+}
+
 .ant-table-placeholder {
   background: transparent;
   border-top: none;
@@ -6367,7 +6373,9 @@ tr.tr-border td:first-child {
 .ant-tabs-ink-bar {
   background-color: var(--secondary);
 }
-
+.ant-tabs-tab {
+  margin: 0 32px 0 0;
+}
 .ant-tabs-nav .ant-tabs-tab {
   padding: 12px;
   font-weight: 400;
@@ -7026,6 +7034,10 @@ tr.tr-border td:first-child {
 .ant-empty-image {
   max-height: 28px;
   margin-bottom: 5px;
+}
+
+.ant-empty-description{
+  margin-bottom: 0;
 }
 
 .ant-pagination-item {

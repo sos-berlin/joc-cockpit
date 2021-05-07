@@ -13,7 +13,7 @@ export class StringDatePipe implements PipeTransform {
     if (sessionStorage.preferences) {
       const n = JSON.parse(sessionStorage.preferences);
       if (!n.zone) {
-        return;
+        return '';
       }
       return moment(date).tz(n.zone).format(n.dateFormat);
     } else {
@@ -33,7 +33,7 @@ export class StringTimePipe implements PipeTransform {
     if (sessionStorage.preferences) {
       const n = JSON.parse(sessionStorage.preferences);
       if (!n.zone) {
-        return;
+        return '';
       }
       return moment(date).tz(n.zone).format('HH:mm:ss');
     } else {
@@ -53,7 +53,7 @@ export class StringDateFormatePipe implements PipeTransform {
       }
       const n = JSON.parse(sessionStorage.preferences);
       if (!n.zone) {
-        return;
+        return '';
       }
       if (n.dateFormat.match('HH:mm')) {
         n.dateFormat = n.dateFormat.replace('HH:mm', '');
@@ -72,6 +72,8 @@ export class StringDateFormatePipe implements PipeTransform {
       }
       n.dateFormat = n.dateFormat.trim();
       return moment(t).tz(n.zone).format(n.dateFormat);
+    } else{
+      return '';
     }
   }
 }
@@ -88,7 +90,7 @@ export class TimeInStringFormatPipe implements PipeTransform {
       }
       const r = JSON.parse(sessionStorage.preferences);
       if (!r.zone) {
-        return;
+        return '';
       }
       let n = moment(new Date()).tz(r.zone);
       t = moment(t).tz(r.zone);
@@ -100,9 +102,10 @@ export class TimeInStringFormatPipe implements PipeTransform {
       }
       o = Math.abs(o);
       if (o >= 1e3) {
-        const i = parseInt(((o / 1e3) % 60).toString(), 10),
-          a = parseInt(((o / 6e4) % 60).toString(), 10), s = parseInt(((o / 36e5) % 24).toString(), 10),
-          f = parseInt((o / 864e5).toString(), 10);
+        const i = parseInt(((o / 1e3) % 60).toString(), 10);
+        const a = parseInt(((o / 6e4) % 60).toString(), 10);
+        const s = parseInt(((o / 36e5) % 24).toString(), 10);
+        const f = parseInt((o / 864e5).toString(), 10);
         let i1 = i > 9 ? i : '0' + i;
         let a1 = a > 9 ? a : '0' + a;
         let s1 = s > 9 ? s : '0' + s;
@@ -128,6 +131,8 @@ export class TimeInStringFormatPipe implements PipeTransform {
         }
       }
       return '1sec';
+    } else{
+      return '';
     }
   }
 }
@@ -165,7 +170,9 @@ export class DurationPipe implements PipeTransform {
 export class ConvertTimePipe implements PipeTransform {
   transform(e: any): string {
     e = parseInt(e, 10);
-    let t = (e % 60), n = (e / 60 % 60), r = (e / 3600 % 24);
+    let t = (e % 60);
+    let n = (e / 60 % 60);
+    let r = (e / 3600 % 24);
     let r1 = r > 9 ? r : '0' + r;
     let n1 = n > 9 ? n : '0' + n;
     let t1 = t > 9 ? t : '0' + t;
@@ -184,13 +191,18 @@ export class DurationFromCurrentPipe implements PipeTransform {
       r = moment(r).tz(o.zone);
       let i: number = Math.abs(moment(r).diff(n));
       if (i >= 1e3) {
-        let a = (i / 1e3 % 60), s = (i / 6e4 % 60), f = (i / 36e5 % 24), u = (i / 864e5);
+        let a = (i / 1e3 % 60);
+        let s = (i / 6e4 % 60);
+        let f = (i / 36e5 % 24);
+        let u = (i / 864e5);
         let a1 = a > 9 ? a : '0' + a;
         let s1 = s > 9 ? s : '0' + s;
         let f1 = f > 9 ? f : '0' + f;
         return 0 == u && 0 != f1 ? f1 + ':' + s1 + ':' + a1 + 'h' : 0 == f1 && 0 != s1 ? s1 + ':' + a1 + 'min' : 0 == u && 0 == f1 && 0 == s1 ? a1 + 'sec' : u > 1 ? u + 'days' : u + 'day';
       }
       return 'never';
+    } else{
+      return '';
     }
   }
 }
@@ -240,7 +252,7 @@ export class SafeHtmlPipe implements PipeTransform {
   constructor(private sanitized: DomSanitizer) {
   }
 
-  transform(value) {
+  transform(value): any {
     return this.sanitized.bypassSecurityTrustHtml(value);
   }
 }
@@ -287,7 +299,7 @@ export class SearchPipe implements PipeTransform {
       return false;
     }
 
-    return items.filter(function (item) {
+    return items.filter((item) => {
       return checkInside(item, searchKey);
     });
   }

@@ -255,7 +255,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
      */
     graph.convertValueToString = (cell) => {
       if (!self.preferences.zone) {
-        return;
+        return '';
       }
       let data = cell.getAttribute('data');
       if (data && data != 'undefined') {
@@ -421,6 +421,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
           '<div class="text-left p-t-sm p-l-sm"><div class="block-ellipsis-cluster"><span class="text-black-dk" >' + labelClusterState + '</span>: <span class = "text-sm ' + colorClass + '" title="' + status + '"> ' + status + '</span></div><span style="position: absolute;right: 6px;top:11px"><div class="btn-group dropdown " >' +
           '<a class="more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h cluster-action-menu"></i></a></div></span></div></div>';
       }
+      return '';
     };
 
     /**

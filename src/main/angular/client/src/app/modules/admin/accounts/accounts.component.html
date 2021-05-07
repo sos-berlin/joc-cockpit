@@ -35,7 +35,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let user of ajaxTable.data | orderBy: usr.sortBy:usr.reverse:false; let i = index">
+      <tr *ngFor="let user of ajaxTable.data | orderBy: usr.sortBy:usr.reverse:false;">
         <td>
           <div class="btn-group dropdown pull-left m-r-sm">
             <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
@@ -48,7 +48,7 @@
                   <a (click)="copyUser(user)" translate>common.button.copy</a>
                 </li>
                 <li nz-menu-item  class="bg-hover-color" [ngClass]="{'disable-link' :username==user.user}">
-                  <a  (click)="deleteUser(user.user,i)" translate="">common.button.delete</a>
+                  <a  (click)="deleteUser(user.user)" translate="">common.button.delete</a>
                 </li>
               </ul>
             </nz-dropdown-menu>

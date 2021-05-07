@@ -4,9 +4,11 @@
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.name</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-          <input type="text" identifierValidation [appAutofocus]="true" autocomplete="off" required class="form-control"
-                 placeholder="{{'common.placeholder.name' | translate}}" name="name" #name="ngModel" (blur)="checkJobInfo()"
-                 [(ngModel)]="selectedNode.obj.jobName">
+          <label class="w-full">
+            <input type="text" identifierValidation [appAutofocus]="true" autocomplete="off" required class="form-control"
+                   placeholder="{{'common.placeholder.name' | translate}}" name="name" #name="ngModel" (blur)="checkJobInfo()"
+                   [(ngModel)]="selectedNode.obj.jobName">
+          </label>
           <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)"
                class="text-danger help-block">
             <div *ngIf="name.errors.required">
@@ -19,8 +21,10 @@
       <div class="form-group row" >
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.label</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : (obj.label || errorMsg || (label.dirty || label.touched) && label.invalid)}">
-          <input type="text" labelValidation required autocomplete="off" (blur)="onBlur();errorMsg=''" maxlength="30" class="form-control"
-                 name="label" #label="ngModel" [(ngModel)]="selectedNode.obj.label" [appAutofocus]="!!(obj.label || errorMsg)">
+          <label class="w-full">
+            <input type="text" labelValidation required autocomplete="off" (blur)="onBlur();errorMsg=''" maxlength="30" class="form-control"
+                   name="label" #label="ngModel" [(ngModel)]="selectedNode.obj.label" [appAutofocus]="!!(obj.label || errorMsg)">
+          </label>
           <div *ngIf="obj.label || errorMsg || label.invalid && (label.dirty || label.touched)"
                class="text-danger help-block">
             <div *ngIf="label.errors && label.errors.invalidIdentifier" translate>common.message.invalid</div>
@@ -34,8 +38,10 @@
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.title</label>
         <div class="col-md-8 col-lg-9">
-          <input type="text" autocomplete="off" maxlength="255" class="form-control" [(ngModel)]="selectedNode.job.title"
-                 placeholder="{{'common.placeholder.title' | translate}}" name="title">
+          <label class="w-full">
+            <input type="text" autocomplete="off" [maxLength]="255" class="form-control" [(ngModel)]="selectedNode.job.title"
+                   placeholder="{{'common.placeholder.title' | translate}}" name="title">
+          </label>
         </div>
       </div>
       <div class="form-group row">
@@ -96,9 +102,11 @@
         <label class="col-md-4 col-lg-3 form-control-label"></label>
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : ((success.dirty || success.touched) && success.invalid)}">
-          <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex
-                 placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
-                 name="success" #success="ngModel" [(ngModel)]="selectedNode.job.returnCodeMeaning.success">
+          <label class="w-full">
+            <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex
+                   placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
+                   name="success" #success="ngModel" [(ngModel)]="selectedNode.job.returnCodeMeaning.success">
+          </label>
           <div *ngIf="success.invalid && (success.dirty || success.touched)"
                class="text-danger help-block">
             <div *ngIf="success.errors.validateNumberArrayRegex" translate>common.message.invalid</div>
@@ -109,9 +117,11 @@
         <label class="col-md-4 col-lg-3 form-control-label"></label>
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : ((failure.dirty || failure.touched) && failure.invalid)}">
-          <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex
-                 placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
-                 #failure="ngModel" name="failure" [(ngModel)]="selectedNode.job.returnCodeMeaning.failure">
+          <label class="w-full">
+            <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex
+                   placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
+                   #failure="ngModel" name="failure" [(ngModel)]="selectedNode.job.returnCodeMeaning.failure">
+          </label>
           <div *ngIf="failure.invalid && (failure.dirty || failure.touched)"
                class="text-danger help-block">
             <div *ngIf="failure.errors.validateNumberArrayRegex" translate>common.message.invalid</div>
@@ -159,8 +169,10 @@
             <nz-tab [nzTitle]="'workflow.label.className' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'InternalExecutable'">
               <div class="row">
                 <div class="col-md-12" [ngClass]="{'has-error': obj.className || (className.invalid && (className.dirty && className.touched))}">
-                  <input autocomplete="off" type="text" class="form-control" name="className" required (blur)="onBlur();"
-                           [(ngModel)]="selectedNode.job.executable.className" #className="ngModel" placeholder="{{'workflow.placeholder.className' | translate}}">
+                  <label class="w-full">
+                    <input autocomplete="off" type="text" class="form-control" name="className" required (blur)="onBlur();"
+                             [(ngModel)]="selectedNode.job.executable.className" #className="ngModel" placeholder="{{'workflow.placeholder.className' | translate}}">
+                  </label>
                   <div *ngIf="obj.className || (className.invalid && (className.dirty && className.touched))"
                        class="text-danger help-block">
                     <div *ngIf="(className.errors && className.errors.required) || obj.className">
@@ -183,15 +195,19 @@
                         <i class="fa fa-bars" aria-hidden="true"></i>
                       </div>
                       <div class="col-md-5 col-lg-5 m-b-sm" [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}">
-                        <input autocomplete="off" identifierValidation type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == selectedNode.job.defaultArguments.length -1"
-                               [(ngModel)]="argument.name" #aname="ngModel" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" (blur)="isStringValid(argument, aname.invalid)">
+                        <label class="w-full">
+                          <input autocomplete="off" identifierValidation type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == selectedNode.job.defaultArguments.length -1"
+                                 [(ngModel)]="argument.name" #aname="ngModel" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" (blur)="isStringValid(argument, aname.invalid)">
+                        </label>
                         <div *ngIf="aname.invalid && aname.errors && (aname.dirty || aname.touched)" class="text-danger help-block">
                           <div *ngIf="aname.errors.invalidIdentifier" translate>common.message.invalid</div>
                         </div>
                       </div>
                       <div class="col-md-6 col-lg-6 m-b-sm">
-                        <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event, 'default')"
-                               [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
+                        <label class="w-full">
+                          <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event, 'default')"
+                                 [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
+                        </label>
                         <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
                       </div>
                       <div class="col-md-1 col-lg-1 p-l-0">
@@ -221,8 +237,10 @@
                         <i class="fa fa-bars" aria-hidden="true"></i>
                       </div>
                       <div class="col-md-5 col-lg-5 m-b-sm " [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}">
-                        <input nz-input envVariableValidation name="name{{i}}" class="form-control" [(ngModel)]="env.name" #ename="ngModel" (blur)="isStringValid(env, ename.invalid);upperCase(env)"
-                               placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" [nzAutocomplete]="auto" (ngModelChange)="onChange($event)">
+                        <label class="w-full">
+                          <input nz-input envVariableValidation name="name{{i}}" class="form-control" [(ngModel)]="env.name" #ename="ngModel" (blur)="isStringValid(env, ename.invalid);upperCase(env)"
+                                 placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" [nzAutocomplete]="auto" (ngModelChange)="onChange($event)">
+                        </label>
                         <nz-autocomplete #auto>
                           <nz-auto-option *ngFor="let list of filteredOptions" [nzValue]="list.name">{{list.name}}</nz-auto-option>
                         </nz-autocomplete>
@@ -232,8 +250,10 @@
                       </div>
                       <div class="col-md-6 col-lg-6 m-b-sm">
                         <nz-mention [nzSuggestions]="mentionValueList" [nzNotFoundContent]="'No data found'" [nzValueWith]="valueWith" [nzPrefix]="['$']">
-                          <input nz-input nzMentionTrigger autocomplete="off" class="form-control" [(ngModel)]="env.value" name="value{{i}}"
-                                 placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
+                          <label class="w-full">
+                            <input nz-input nzMentionTrigger autocomplete="off" class="form-control" [(ngModel)]="env.value" name="value{{i}}"
+                                   placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
+                          </label>
                           <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(env)" style="right: 13px;top:1px;"></i>
                           <ng-container *nzMentionSuggestion="let argu">
                             <span>{{ argu.name }}</span>
@@ -267,8 +287,10 @@
                         <i class="fa fa-bars" aria-hidden="true"></i>
                       </div>
                       <div class="col-md-5 col-lg-5 m-b-sm " [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}">
-                        <input nz-input identifierValidation name="name{{i}}" class="form-control" [(ngModel)]="argu.name" #ename="ngModel" (blur)="isStringValid(argu, ename.invalid)"
-                               placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" [nzAutocomplete]="auto" (ngModelChange)="onChange($event)">
+                        <label class="w-full">
+                          <input nz-input identifierValidation name="name{{i}}" class="form-control" [(ngModel)]="argu.name" #ename="ngModel" (blur)="isStringValid(argu, ename.invalid)"
+                                 placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" [nzAutocomplete]="auto" (ngModelChange)="onChange($event)">
+                        </label>
                         <nz-autocomplete #auto>
                           <nz-auto-option *ngFor="let list of filteredOptions" [nzValue]="list.name">{{list.name}}</nz-auto-option>
                         </nz-autocomplete>
@@ -277,8 +299,10 @@
                         </div>
                       </div>
                       <div class="col-md-6 col-lg-6 m-b-sm">
-                        <input type="text" class="form-control" [(ngModel)]="argu.value" name="value{{i}}" (keypress)="onKeyPress($event, 'argument')"
-                               placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
+                        <label class="w-full">
+                          <input type="text" class="form-control" [(ngModel)]="argu.value" name="value{{i}}" (keypress)="onKeyPress($event, 'argument')"
+                                 placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
+                        </label>
                         <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argu)" style="right: 13px;top:1px;"></i>
                       </div>
                       <div class="col-md-1 col-lg-1 p-l-0">
@@ -308,15 +332,19 @@
                         <i class="fa fa-bars" aria-hidden="true"></i>
                       </div>
                       <div class="col-md-5 col-lg-5 m-b-sm" [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}">
-                        <input autocomplete="off" identifierValidation type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == selectedNode.job.executable.jobArguments.length -1"
-                               [(ngModel)]="argument.name" #aname="ngModel" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" (blur)="isStringValid(argument, aname.invalid)">
+                        <label class="w-full">
+                          <input autocomplete="off" identifierValidation type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == selectedNode.job.executable.jobArguments.length -1"
+                                [(ngModel)]="argument.name" #aname="ngModel" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" (blur)="isStringValid(argument, aname.invalid)">
+                        </label>
                         <div *ngIf="aname.invalid && aname.errors && (aname.dirty || aname.touched)" class="text-danger help-block">
                           <div *ngIf="aname.errors.invalidIdentifier" translate>common.message.invalid</div>
                         </div>
                       </div>
                       <div class="col-md-6 col-lg-6 m-b-sm">
-                        <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (blur)="checkString(argument, 'value')" (keypress)="onKeyPress($event, 'jobArgument')"
-                               [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
+                        <label class="w-full">
+                         <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (blur)="checkString(argument, 'value')" (keypress)="onKeyPress($event, 'jobArgument')"
+                                [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
+                        </label>
                         <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
                       </div>
                       <div class="col-md-1 col-lg-1 p-l-0">
@@ -355,15 +383,19 @@
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.timeout</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
-          <input autocomplete="off" #timeout="ngModel" type="text" class="form-control" name="timeout" placeholder="{{'workflow.placeholder.duration' | translate}}"
-                 validateDurtionReqex [(ngModel)]="selectedNode.job.timeout1">
+          <label class="w-full">
+            <input autocomplete="off" #timeout="ngModel" type="text" class="form-control" name="timeout" placeholder="{{'workflow.placeholder.duration' | translate}}"
+                   validateDurtionReqex [(ngModel)]="selectedNode.job.timeout1">
+          </label>
         </div>
       </div>
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.graceTimeout</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((graceTimeout.dirty || graceTimeout.touched) && graceTimeout.invalid)}">
-          <input autocomplete="off" #graceTimeout="ngModel" type="text" class="form-control" name="graceTimeout" placeholder="{{'workflow.placeholder.duration' | translate}}"
-                 validateDurtionReqex  [(ngModel)]="selectedNode.job.graceTimeout1">
+          <label class="w-full">
+            <input autocomplete="off" #graceTimeout="ngModel" type="text" class="form-control" name="graceTimeout" placeholder="{{'workflow.placeholder.duration' | translate}}"
+                   validateDurtionReqex  [(ngModel)]="selectedNode.job.graceTimeout1">
+          </label>
         </div>
       </div>
       <div class="form-group row">
@@ -410,16 +442,20 @@
                 <i class="fa fa-bars" aria-hidden="true"></i>
               </div>
               <div class="col-md-5 col-lg-5 m-b-sm" [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}">
-                <input autocomplete="off" identifierValidation type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == selectedNode.obj.defaultArguments.length -1"
-                       [(ngModel)]="argument.name" #aname="ngModel" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" (blur)="isStringValid(argument, aname.invalid)">
+                <label class="w-full">
+                  <input autocomplete="off" identifierValidation type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == selectedNode.obj.defaultArguments.length -1"
+                        [(ngModel)]="argument.name" #aname="ngModel" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" (blur)="isStringValid(argument, aname.invalid)">
+                </label>
                 <div *ngIf="aname.invalid && aname.errors && (aname.dirty || aname.touched)" class="text-danger help-block">
                   <div *ngIf="aname.errors.invalidIdentifier" translate>common.message.invalid</div>
                 </div>
               </div>
               <div class="col-md-6 col-lg-6 m-b-sm">
                 <nz-mention [nzSuggestions]="variableList" [nzNotFoundContent]="'No data found'" [nzValueWith]="valueWith" [nzPrefix]="['$']">
-                  <input nz-input nzMentionTrigger autocomplete="off" class="form-control" [(ngModel)]="argument.value" name="value{{i}}" (keypress)="onKeyPress($event, 'node')"
-                         placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
+                  <label class="w-full">
+                    <input nz-input nzMentionTrigger autocomplete="off" class="form-control" [(ngModel)]="argument.value" name="value{{i}}" (keypress)="onKeyPress($event, 'node')"
+                           placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
+                  </label>
                   <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
                   <ng-container *nzMentionSuggestion="let argu">
                     <span>{{ argu.name }}</span>

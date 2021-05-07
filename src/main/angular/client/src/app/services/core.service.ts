@@ -4,12 +4,12 @@ import {Router} from '@angular/router';
 import {ClipboardService} from 'ngx-clipboard';
 import {Observable} from 'rxjs';
 import * as moment from 'moment-timezone';
-import * as _ from 'underscore';
+import {isEmpty, sortBy, isNumber, object} from 'underscore';
 import {saveAs} from 'file-saver';
 import {AuthService} from '../components/guard';
 
-declare const diff_match_patch;
-declare const $;
+declare const diff_match_patch: any;
+declare const $: any;
 
 @Injectable({
   providedIn: 'root'
@@ -411,19 +411,19 @@ export class CoreService {
     return this.tabs._yade;
   }
 
-  get(url): Observable<any> {
+  get(url: string): Observable<any> {
     return this.http.get<any>(url);
   }
 
-  post(url, object): Observable<any> {
+  post(url: string, object: any): Observable<any> {
     return this.http.post(url, object);
   }
 
-  log(url, object, headers): Observable<any> {
+  log(url: string, object: any, headers: any): Observable<any> {
     return this.http.post(url, object, headers);
   }
 
-  download(url, object, fileName, cb): void {
+  download(url: string, object: any, fileName: string, cb: any): void {
     const headers: any = {
       Accept: 'application/octet-stream',
       responseType: 'blob',
@@ -458,6 +458,8 @@ export class CoreService {
       return type === 'text' ? 'yellow-green' : type === 'border' ? 'yellow-green-box' : 'bg-yellow-green';
     } else if (d === 9) {
       return type === 'text' ? 'chocolate' : type === 'border' ? 'chocolate-box' : 'bg-chocolate';
+    } else {
+      return '';
     }
   }
 
@@ -482,10 +484,12 @@ export class CoreService {
       return isHover ? 'rgba(204,204,0, .7)' : '#cccc00';
     } else if (d === 9) {
       return isHover ? 'rgba(243,120,145, .7)' : '#f37891';
+    } else {
+      return '';
     }
   }
 
-  getDateFormat(dateFormat): string {
+  getDateFormat(dateFormat: string): string {
     if (!dateFormat) {
       return '';
     }
@@ -520,7 +524,7 @@ export class CoreService {
     return dateFormat;
   }
 
-  setSideView(view): void {
+  setSideView(view: any): void {
     if (view) {
       window.sessionStorage.$SOS$SIDEVIEW = JSON.stringify(view);
       this.sideView = view;
@@ -561,7 +565,7 @@ export class CoreService {
     $('#xmlLeftSidePanel').removeClass('sidebar-hover-effect');
   }
 
-  prepareTree(actualData, isLeaf): any {
+  prepareTree(actualData: any, isLeaf: boolean): any {
     if (actualData.folders && actualData.folders.length > 0) {
       let output = [{
         name: actualData.folders[0].path,
@@ -574,7 +578,7 @@ export class CoreService {
       }];
 
       this.recursive(actualData.folders[0], output[0].children, isLeaf);
-      output[0].children = _.sortBy(output[0].children, (i) => {
+      output[0].children = sortBy(output[0].children, (i: any) => {
         return i.name.toLowerCase();
       });
       return output;
@@ -583,7 +587,7 @@ export class CoreService {
     }
   }
 
-  showLogWindow(order, task, job, id, transfer): void {
+  showLogWindow(order: any, task: any, job: any, id: string, transfer: any): void {
     if (!order && !task) {
       return;
     }
@@ -632,12 +636,13 @@ export class CoreService {
     }
   }
 
-  parseProcessExecuted(regex): any {
+  parseProcessExecuted(regex: string): any {
     let date;
     if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(regex)) {
       const fromDate = new Date();
       date = new Date();
-      const seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2], 10);
+      const arr = /^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex);
+      const seconds = arr && arr.length > 1 ? parseInt(arr[2], 10) : 0;
       date.setSeconds(fromDate.getSeconds() - seconds);
     } else if (/^\s*[-,+](\d+)([shdwMy])\s*$/.test(regex)) {
       date = regex;
@@ -651,14 +656,21 @@ export class CoreService {
     return date;
   }
 
-  parseProcessExecutedRegex(regex, obj): any {
-    let fromDate, toDate, date, arr;
+  parseProcessExecutedRegex(regex: string, obj: any): any {
+    let fromDate;
+    let toDate;
+    let date;
+    let arr;
     if (/^\s*(-)\s*(\d+)([shdwMy])\s*$/.test(regex)) {
-      fromDate = /^\s*(-)\s*(\d+)([shdwMy])\s*$/.exec(regex)[0];
+      fromDate = /^\s*(-)\s*(\d+)([shdwMy])\s*$/.exec(regex);
+      if (fromDate) {
+        fromDate = fromDate[0];
+      }
     } else if (/^\s*(now\s*-)\s*(\d+)\s*$/i.test(regex)) {
       fromDate = new Date();
       toDate = new Date();
-      let seconds = parseInt(/^\s*(now\s*-)\s*(\d+)\s*$/i.exec(regex)[2], 10);
+      const arr2 = /^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex);
+      const seconds = arr2 && arr2.length > 1 ? parseInt(arr2[2], 10) : 0;
       fromDate.setSeconds(toDate.getSeconds() - seconds);
     } else if (/^\s*(Today)\s*$/i.test(regex)) {
       fromDate = '0d';
@@ -671,29 +683,29 @@ export class CoreService {
       toDate = new Date();
     } else if (/^\s*(-)(\d+)([shdwMy])\s*to\s*(-)(\d+)([shdwMy])\s*$/.test(regex)) {
       date = /^\s*(-)(\d+)([shdwMy])\s*to\s*(-)(\d+)([shdwMy])\s*$/.exec(regex);
-      arr = date[0].split('to');
+      arr = date ? date[0].split('to') : [];
       fromDate = arr[0].trim();
       toDate = arr[1].trim();
     } else if (/^\s*(-)(\d+)([shdwMy])\s*to\s*(-)(\d+)([shdwMy])\s*[-,+](\d+)([shdwMy])\s*$/.test(regex)) {
       date = /^\s*(-)(\d+)([shdwMy])\s*to\s*(-)(\d+)([shdwMy])\s*[-,+](\d+)([shdwMy])\s*$/.exec(regex);
-      arr = date[0].split('to');
+      arr = date ? date[0].split('to') : [];
       fromDate = arr[0].trim();
       toDate = arr[1].trim();
     } else if (/^\s*(-)(\d+)([shdwMy])\s*[-,+](\d+)([shdwMy])\s*to\s*(-)(\d+)([shdwMy])\s*$/.test(regex)) {
       date = /^\s*(-)(\d+)([shdwMy])\s*[-,+](\d+)([shdwMy])\s*to\s*(-)(\d+)([shdwMy])\s*$/.exec(regex);
-      arr = date[0].split('to');
+      arr = date ? date[0].split('to') : [];
       fromDate = arr[0].trim();
       toDate = arr[1].trim();
     } else if (/^\s*(-)(\d+)([shdwMy])\s*[-,+](\d+)([shdwMy])\s*to\s*(-)(\d+)([shdwMy])\s*[-,+](\d+)([shdwMy])\s*$/.test(regex)) {
       date = /^\s*(-)(\d+)([shdwMy])\s*[-,+](\d+)([shdwMy])\s*to\s*(-)(\d+)([shdwMy])\s*[-,+](\d+)([shdwMy])\s*$/.exec(regex);
-      arr = date[0].split('to');
+      arr = date ? date[0].split('to') : [];
       fromDate = arr[0].trim();
       toDate = arr[1].trim();
     } else if (/^\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*to\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*$/.test(regex)) {
-      let reg = /^\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*to\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*$/i.exec(regex);
-      let arr = reg[0].split('to');
-      let fromTime = moment(arr[0].trim(), 'HH:mm:ss:a');
-      let toTime = moment(arr[1].trim(), 'HH:mm:ss:a');
+      const reg = /^\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*to\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*$/i.exec(regex);
+      const arr = reg ? reg[0].split('to') : [];
+      const fromTime = moment(arr[0].trim(), 'HH:mm:ss:a');
+      const toTime = moment(arr[1].trim(), 'HH:mm:ss:a');
 
       fromDate = moment.utc(fromTime);
       toDate = moment.utc(toTime);
@@ -707,20 +719,17 @@ export class CoreService {
     return obj;
   }
 
-  mergeHostAndProtocol(hosts, protocols): Array<any> {
-    let arr = [];
+  mergeHostAndProtocol(hosts: Array<any>, protocols: Array<any>): Array<any> {
+    const arr: any = [];
     if (protocols.length < hosts.length) {
       hosts.forEach((value, index) => {
         if (protocols.length > 0) {
           if (protocols.length < hosts.length) {
-            if (protocols.length == 1) {
+            if (protocols.length === 1) {
               arr.push({host: value, protocol: protocols[0]});
             } else {
-              for (let x = 0; x < protocols.length; x++) {
-                if (protocols.length >= index) {
-                  arr.push({host: value, protocol: protocols[index]});
-                }
-                break;
+              if (protocols.length >= index) {
+                arr.push({host: value, protocol: protocols[index]});
               }
             }
           }
@@ -733,14 +742,11 @@ export class CoreService {
       protocols.forEach((value, index) => {
         if (hosts.length > 0) {
           if (hosts.length < protocols.length) {
-            if (hosts.length == 1) {
+            if (hosts.length === 1) {
               arr.push({protocol: value, host: hosts[0]});
             } else {
-              for (let x = 0; x < hosts.length; x++) {
-                if (hosts.length >= index) {
-                  arr.push({protocol: value, host: hosts[index]});
-                }
-                break;
+              if (hosts.length >= index) {
+                arr.push({protocol: value, host: hosts[index]});
               }
             }
 
@@ -752,10 +758,12 @@ export class CoreService {
       });
     } else {
       hosts.forEach((value, index) => {
-        for (let x = 0; x < protocols.length; x++) {
-          arr.push({host: value, protocol: protocols[x]});
-          protocols.splice(index, 1);
-          break;
+        for (const x in protocols) {
+          if (protocols[x]) {
+            arr.push({host: value, protocol: protocols[x]});
+            protocols.splice(index, 1);
+            break;
+          }
         }
       });
     }
@@ -763,27 +771,27 @@ export class CoreService {
   }
 
   checkCopyName(list: any, name: string): string {
-    let _temp = '';
+    let temp = '';
     if (/.+\((\d+)\)$/.test(name)) {
-      _temp = name;
+      temp = name;
     } else {
-      _temp = name + '(1)';
+      temp = name + '(1)';
     }
 
     function recursion(): void {
       for (let j = 0; j < list.length; j++) {
-        if (list[j].name == _temp) {
-          _temp = _temp.replace(/\(\d+\)$/, '(' + (parseInt(/\((\d+)\)$/.exec(_temp)[1], 10) + 1) + ')');
+        if (list[j].name == temp) {
+          temp = temp.replace(/\(\d+\)$/, '(' + (parseInt(/\((\d+)\)$/.exec(temp)[1], 10) + 1) + ')');
           recursion();
         }
       }
     }
 
     recursion();
-    return _temp;
+    return temp;
   }
 
-  copyLink(objType, path): void {
+  copyLink(objType: string, path: string): void {
     let link = '';
     const regEx = /(.+)\/#/;
     if (!regEx.test(window.location.href)) {
@@ -809,7 +817,7 @@ export class CoreService {
     }
   }
 
-  navToInventoryTab(path, type): void {
+  navToInventoryTab(path: string, type: string): void {
     const config = this.getConfigurationTab();
     config.inventory.isTrash = false;
     config.inventory.expand_to = [];
@@ -831,7 +839,7 @@ export class CoreService {
     });
   }
 
-  isLastEntryEmpty(list, key1, key2): boolean {
+  isLastEntryEmpty(list: Array<any>, key1: string, key2: string): boolean {
     let flag = false;
     if (list && list.length > 0) {
       const x = list[list.length - 1];
@@ -846,7 +854,7 @@ export class CoreService {
   }
 
   // To convert date string into moment date format
-  toMomentDateFormat(date): any {
+  toMomentDateFormat(date: any): any {
     return moment(date, 'DD.MM.YYYY');
   }
 
@@ -879,7 +887,7 @@ export class CoreService {
     }
   }
 
-  xsdAnyURIValidation(value): boolean {
+  xsdAnyURIValidation(value: string): boolean {
     return /^((ht|f)tp(s?)\:\/\/)?(www.|[a-zA-Z].)[a-zA-Z0-9\-\.]+\.(com|edu|gov|mil|net|org|biz|info|name|museum|us|ca|uk)(\:[0-9]+)*(\/($|[a-zA-Z0-9\.\,\;\?\'\\\+&amp;%\$#\=~_\-]+))*$/.test(value)
       || /^(?:(<protocol>http(?:s?)|ftp)(?:\:\/\/))(?:(<usrpwd>\w+\:\w+)(?:\@))?(<domain>[^/\r\n\:]+)?(<port>\:\d+)?(<path>(?:\/.*)*\/)?(<filename>.*?\.(<ext>\w{2,4}))?(<qrystr>\??(?:\w+\=[^\#]+)(?:\&?\w+\=\w+)*)*(<bkmrk>\#.{})?$/.test(value)
       || /^([a-zA-Z]\:|\\\\[^\/\\:*?"<>|]+\\[^\/\\:*?"<>|]+)(\\[^\/\\:*?"<>|]+)+(|([a-zA-Z0-9]{0,*}))$/.test(value)
@@ -888,7 +896,7 @@ export class CoreService {
       || /^((mailto:){0,1}([A-Za-z0-9]{0,}(\@){0,1}([a-zA-Z0-9]{0,})(\.{0,1}(com|edu|gov|mil|net|org|biz|info|name|museum|us|ca|uk))))$/.test(value);
   }
 
-  diff(data1, data2): any {
+  diff(data1: any, data2: any): any {
     const dmp = new diff_match_patch();
     const a = dmp.diff_main(data1, data2, false);
     let b = dmp.diff_prettyHtml(a);
@@ -897,7 +905,7 @@ export class CoreService {
     return b;
   }
 
-  private recursive(data, output, isLeaf): void {
+  private recursive(data: any, output: any, isLeaf: boolean): void {
     if (data.folders && data.folders.length > 0) {
       for (let i = 0; i < data.folders.length; i++) {
         output.push({
@@ -911,7 +919,7 @@ export class CoreService {
         });
         if (data.folders[i].folders && data.folders[i].folders.length > 0) {
           this.recursive(data.folders[i], output[i].children, isLeaf);
-          output[i].children = _.sortBy(output[i].children, (x) => {
+          output[i].children = sortBy(output[i].children, (x) => {
             return x.name.toLowerCase();
           });
         }
@@ -919,7 +927,7 @@ export class CoreService {
     }
   }
 
-  downloadLog(data, id): void {
+  downloadLog(data: any, id: string): void {
     let url = 'order/log/download';
     let obj: any;
     let name;
@@ -969,7 +977,6 @@ export class CoreService {
       }
     }
   }
-
   getName(list, name, key, type): string {
     if (list.length === 0) {
       return name;
@@ -987,44 +994,43 @@ export class CoreService {
         }
       }
       large++;
-      if (!_.isNumber(large) || isNaN(large)) {
+      if (!isNumber(large) || isNaN(large)) {
         large = 0;
       }
       return (type + large);
     }
   }
-
-  getLogDateFormat(date, zone): string {
+  getLogDateFormat(date: any, zone: string): string {
     return moment(date).tz(zone).format('YYYY-MM-DD HH:mm:ss.SSSZ');
   }
 
-  getDateByFormat(date, zone, format): string {
+  getDateByFormat(date: any, zone: string, format: string): string {
     if (zone) {
       return moment(date).tz(zone).format(format);
     }
     return moment(date).format(format);
   }
 
-  getStringDate(date): string {
+  getStringDate(date: any): string {
     if (!date) {
       return moment().format('YYYY-MM-DD');
     }
     return moment(date).format('YYYY-MM-DD');
   }
 
-  convertTimeToLocalTZ(preferences, date): any {
+  convertTimeToLocalTZ(preferences: any, date: any): any {
     return moment(date).tz(preferences.zone);
   }
 
-  getUTC(date): any {
+  getUTC(date: any): any {
     return moment.utc(date);
   }
 
-  getDate(date): any {
+  getDate(date: any): any {
     return moment(date);
   }
 
-  stringToDate(preferences, date): string {
+  stringToDate(preferences: any, date: any): string {
     if (!date) {
       return '-';
     }
@@ -1034,12 +1040,12 @@ export class CoreService {
     return moment(date).tz(preferences.zone).format(preferences.dateFormat);
   }
 
-  getTimeDiff(preferences, date): number {
+  getTimeDiff(preferences: any, date: any): number {
     if (!date) {
       return 0;
     }
     if (!preferences.zone) {
-      return;
+      return 0;
     }
     return moment(moment(date).tz(preferences.zone)).diff(moment());
   }
@@ -1067,7 +1073,7 @@ export class CoreService {
 
   }
 
-  getTimeFromDate(t, tf: string): string {
+  getTimeFromDate(t: any, tf: string): string {
     let x = 'HH:mm:ss';
     if ((tf.match(/HH:mm:ss/gi) || tf.match(/HH:mm/gi) || tf.match(/hh:mm:ss A/gi) || tf.match(/hh:mm A/gi)) != null) {
       const result = (tf.match(/HH:mm:ss/gi) || tf.match(/HH:mm/gi) || tf.match(/hh:mm:ss A/gi) || tf.match(/hh:mm A/gi)) + '';
@@ -1084,7 +1090,7 @@ export class CoreService {
     return time;
   }
 
-  calRowWidth(currentView): void {
+  calRowWidth(currentView: boolean): void {
     setTimeout(() => {
       let arr = currentView != null ? [53] : [];
       if (!currentView) {
@@ -1108,8 +1114,8 @@ export class CoreService {
     }, 100);
   }
 
-  calFileTransferRowWidth(isCheckBox): Array<string> {
-    const arr = [];
+  calFileTransferRowWidth(isCheckBox: boolean): Array<string> {
+    const arr: Array<number> = [];
     const arr2 = [];
     const dom = $('#fileTransferTable');
     dom.find('thead tr.sub-header th.dynamic-thead').each(function() {
@@ -1127,16 +1133,16 @@ export class CoreService {
     return arr2;
   }
 
-  clone(json): any {
+  clone(json: any): any {
     return JSON.parse(JSON.stringify(json));
   }
 
-  convertObjectToArray(obj, type): Array<object> {
-    let arrObject = [];
-    if (!obj[type] || _.isEmpty(obj[type])) {
+  convertObjectToArray(obj: any, type: string): Array<object> {
+    let arrObject: Array<any> = [];
+    if (!obj[type] || isEmpty(obj[type])) {
       obj[type] = [];
     }
-    if (obj[type] && !_.isEmpty(obj[type])) {
+    if (obj[type] && !isEmpty(obj[type])) {
       arrObject = Object.entries(obj[type]).map(([k, v]) => {
         return {name: k, value: v};
       });
@@ -1144,7 +1150,7 @@ export class CoreService {
     return arrObject;
   }
 
-  convertArrayToObject(obj, type, isDelete): void {
+  convertArrayToObject(obj: any, type: string, isDelete: boolean): void {
     if (obj[type]) {
       if (obj[type].length > 0 && this.isLastEntryEmpty(obj[type], 'name', '')) {
         obj[type].splice(obj[type].length - 1, 1);
@@ -1161,20 +1167,20 @@ export class CoreService {
     }
   }
 
-  keyValuePair(argu): any {
-    return _.object(argu.map((val) => {
+  keyValuePair(argu: any): any {
+    return object(argu.map((val) => {
       return [val.name, val.value];
     }));
   }
 
-  getDates(startDate, endDate): any {
-    let dates = [],
-      currentDate = startDate,
-      addDays = function(days) {
-        const date = new Date(this.valueOf());
-        date.setDate(date.getDate() + days);
-        return date;
-      };
+  getDates(startDate: any, endDate: string): any {
+    let dates = [];
+    let currentDate = startDate;
+    let addDays = function(days) {
+      const date = new Date(this.valueOf());
+      date.setDate(date.getDate() + days);
+      return date;
+    };
     while (currentDate <= endDate) {
       dates.push(currentDate);
       currentDate = addDays.call(currentDate, 1);
@@ -1182,7 +1188,7 @@ export class CoreService {
     return dates;
   }
 
-  removeSlashToString(data, type): void {
+  removeSlashToString(data: any, type: string): void {
     if (data[type]) {
       if (data[type] === 'true' || data[type] === 'false') {
       } else if (/^\d+$/.test(data[type])) {
@@ -1217,7 +1223,7 @@ export class CoreService {
     }
   }
 
-  addSlashToString(data, type): void {
+  addSlashToString(data: any, type: string): void {
     if (data[type]) {
       if (data[type] === 'true' || data[type] === 'false') {
       } else if (/^\d+$/.test(data[type])) {

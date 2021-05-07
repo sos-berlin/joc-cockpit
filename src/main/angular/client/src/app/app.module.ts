@@ -1,29 +1,29 @@
+import {ErrorHandler, Injectable, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
+import {en_US, NZ_I18N} from 'ng-zorro-antd/i18n';
 import {registerLocaleData} from '@angular/common';
-
-import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
+import en from '@angular/common/locales/en';
 import {FormsModule} from '@angular/forms';
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {ToasterModule} from 'angular2-toaster';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {ErrorHandler, Injectable, NgModule} from '@angular/core';
-import {NZ_I18N, en_US} from 'ng-zorro-antd/i18n';
-import en from '@angular/common/locales/en';
 import {NzMessageService} from 'ng-zorro-antd/message';
-
+import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {AppRoutingModule} from './app-routing.module';
+import {LoginModule} from './modules/login/login.module';;
 import {AppComponent} from './app.component';
-import {AuthInterceptor} from './components/guard';
 import {AboutModalComponent} from './components/about-modal/about.component';
-import {LoginModule} from './modules/login/login.module';
+import {AuthInterceptor} from './components/guard';
 import {LoggingService} from './services/logging.service';
+
 
 registerLocaleData(en);
 
-export function createTranslateLoader(http: HttpClient): any {
+export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader  {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
+
 @Injectable()
 export class MyErrorHandler implements ErrorHandler {
   constructor(private loggingService: LoggingService) {
@@ -51,7 +51,7 @@ export class MyErrorHandler implements ErrorHandler {
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: (createTranslateLoader),
+        useFactory: HttpLoaderFactory,
         deps: [HttpClient]
       }
     })

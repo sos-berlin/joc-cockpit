@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 
-declare const $;
+declare const $: any;
 
 @Component({
   selector: 'app-calendar-view',
@@ -58,7 +58,7 @@ export class CalendarModalComponent implements OnInit {
   @Input() path: string;
   @Input() calendar: boolean;
   calendarView = 'year';
-  isCalendarLoading: boolean;
+  isCalendarLoading = false;
   planItems = [];
   toDate: any;
   calendarTitle = new Date().getFullYear();
@@ -66,11 +66,11 @@ export class CalendarModalComponent implements OnInit {
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.showCalendar();
   }
 
-  changeDate() {
+  changeDate(): void {
     let newDate = new Date();
     newDate.setHours(0, 0, 0, 0);
     let toDate: any;
@@ -102,11 +102,11 @@ export class CalendarModalComponent implements OnInit {
     }
   }
 
-  getPlan() {
+  getPlan(): void {
     $('#full-calendar').data('calendar').setYearView({view: this.calendarView, year: this.calendarTitle});
   }
 
-  private showCalendar() {
+  private showCalendar(): void {
     $('#full-calendar').calendar({
       renderEnd: (e) => {
         this.calendarTitle = e.currentYear;

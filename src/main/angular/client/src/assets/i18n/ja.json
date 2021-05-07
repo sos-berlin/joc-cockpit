@@ -1633,6 +1633,7 @@
     "message.wouldYouLikeToDeleteThisConfiguration": "このコンフィグレーションを削除しますか?",
     "message.validateSuccessfully": "XMLドキュメントを確認できました",
     "message.successfullyDeployed": "ジョブ定義は配置されました",
-    "message.deleteAllDraft": "本当に全てのXML下書きを削除しますか?"
+    "message.deleteAllDraft": "本当に全てのXML下書きを削除しますか?",
+    "message.noConfigurationFound": "No configuration found"
   }
 }

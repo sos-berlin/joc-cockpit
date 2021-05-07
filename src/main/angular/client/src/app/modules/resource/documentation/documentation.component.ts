@@ -5,7 +5,6 @@ import {FileUploader} from 'ng2-file-upload';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {Subscription} from 'rxjs';
-import * as _ from 'underscore';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
@@ -124,7 +123,6 @@ export class SingleDocumentationComponent implements OnInit {
   preferences: any = {};
   permission: any = {};
   documents: any = [];
-  documentFilters: any = {};
   path: string;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
@@ -148,7 +146,7 @@ export class SingleDocumentationComponent implements OnInit {
   /* ---------------------------- Action ----------------------------------*/
 
   previewDocument(document): void {
-    const link = API_URL + 'documentation/preview?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId + '&controllerId=' + this.schedulerId;
+    const link = API_URL + 'documentation/preview?documentation=' + encodeURIComponent(document.name) + '&accessToken=' + this.authService.accessTokenId + '&controllerId=' + this.schedulerId;
     if (this.preferences.isDocNewWindow === 'newWindow') {
       window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no', true);
     } else {
@@ -157,9 +155,9 @@ export class SingleDocumentationComponent implements OnInit {
   }
 
   showDocumentUsage(document): void {
-    const documentObj = _.clone(document);
+    const documentObj = this.coreService.clone(document);
     this.coreService.post('documentation/used', {
-      documentation: document.path,
+      documentation: document.name,
       controllerId: this.schedulerId
     }).subscribe((res: any) => {
       documentObj.usedIn = res.objects || [];
@@ -179,7 +177,7 @@ export class SingleDocumentationComponent implements OnInit {
   exportDocument(document): void {
     const obj = {controllerId: this.schedulerId, documentations: []};
     if (document) {
-      obj.documentations.push(document.path);
+      obj.documentations.push(document.name);
     }
     this.coreService.download('documentations/export', obj, 'documentation_' + this.schedulerId + '.zip', () => {
 
@@ -220,7 +218,7 @@ export class SingleDocumentationComponent implements OnInit {
         radio: 'predefined',
         type: 'Documentation',
         operation: 'Delete',
-        name: document ? document.path : ''
+        name: document ? document.name : ''
       };
       const modal = this.modal.create({
         nzTitle: null,
@@ -362,7 +360,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     data.isSelected = true;
     this.loading = true;
     const obj = {
-      folders: [{folder: data.path, recursive}],
+      folders: [{folder: data.name, recursive}],
       controllerId: this.schedulerIds.selected,
       compact: true
     };
@@ -403,7 +401,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     if (value && this.documents.length > 0) {
       this.documents.slice((this.preferences.entryPerPage * (this.documentFilters.currentPage - 1)), (this.preferences.entryPerPage * this.documentFilters.currentPage))
         .forEach(item => {
-          this.object.mapOfCheckedId.add(item.path);
+          this.object.mapOfCheckedId.add(item.name);
         });
     } else {
       this.object.mapOfCheckedId.clear();
@@ -411,11 +409,11 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     this.refreshCheckedStatus();
   }
 
-  onItemChecked(order: any, checked: boolean): void {
+  onItemChecked(document: any, checked: boolean): void {
     if (checked) {
-      this.object.mapOfCheckedId.add(order.path);
+      this.object.mapOfCheckedId.add(document.name);
     } else {
-      this.object.mapOfCheckedId.delete(order.path);
+      this.object.mapOfCheckedId.delete(document.name);
     }
     this.object.checked = this.object.mapOfCheckedId.size === this.documents.slice((this.preferences.entryPerPage * (this.documentFilters.currentPage - 1)), (this.preferences.entryPerPage * this.documentFilters.currentPage)).length;
     this.refreshCheckedStatus();
@@ -426,7 +424,8 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   previewDocument(document): void {
-    const link = API_URL + 'documentation/preview?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId + '&controllerId=' + this.schedulerIds.selected;
+    const link = API_URL + 'documentation/preview?documentation=' + encodeURIComponent(document.name) + '&accessToken=' + this.authService.accessTokenId + '&controllerId=' + this.schedulerIds.selected;
+    console.log(link)
     if (this.preferences.isDocNewWindow === 'newWindow') {
       window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no', true);
     } else {
@@ -435,9 +434,9 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   showDocumentUsage(document): void {
-    const documentObj = _.clone(document);
+    const documentObj = this.coreService.clone(document);
     this.coreService.post('documentation/used', {
-      documentation: document.path,
+      documentation: document.name,
       controllerId: this.schedulerIds.selected
     }).subscribe((res: any) => {
       documentObj.usedIn = res.objects || [];
@@ -457,7 +456,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   exportDocument(document): void {
     const obj = {controllerId: this.schedulerIds.selected, documentations: []};
     if (document) {
-      obj.documentations.push(document.path);
+      obj.documentations.push(document.name);
     } else {
       obj.documentations = Array.from(this.object.mapOfCheckedId);
     }
@@ -495,33 +494,36 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       documentations: []
     };
     if (document) {
-      obj.documentations.push(document.path);
+      obj.documentations.push(document.name);
     } else {
       obj.documentations = Array.from(this.object.mapOfCheckedId);
     }
-    const documentObj = _.clone(document);
+    const documentObj = this.coreService.clone(document);
     if (document) {
       documentObj.delete = true;
       this.coreService.post('documentation/used', {
-        documentation: documentObj.path,
+        documentation: documentObj.name,
         controllerId: this.schedulerIds.selected
       }).subscribe((res: any) => {
         documentObj.usedIn = res.objects || [];
         this.deleteDocumentFn(obj, documentObj, null);
       });
     } else {
-      const documentArr = _.clone(this.object.mapOfCheckedId);
-      for (let i = 0; i < documentArr.length; i++) {
+      const documentArr: any = [];
+      let i = 0;
+      this.object.mapOfCheckedId.forEach((value) => {
+        documentArr.push({name: value});
         this.coreService.post('documentation/used', {
-          documentation: documentArr[i].path,
+          documentation: value,
           controllerId: this.schedulerIds.selected
         }).subscribe((res: any) => {
           documentArr[i].usedIn = res.objects || [];
           if (i === documentArr.length - 1) {
             this.deleteDocumentFn(obj, null, documentArr);
           }
+          ++i;
         });
-      }
+      });
     }
   }
 
@@ -529,7 +531,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     this.coreService.post('documentations/delete', obj).subscribe(res => {
       if (document) {
         for (let i = 0; i < this.documents.length; i++) {
-          if (this.documents[i].path === document.path) {
+          if (this.documents[i].name === document.name) {
             this.documents.splice(i, 1);
             break;
           }
@@ -537,11 +539,11 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       } else {
         if (this.object.mapOfCheckedId.size > 0) {
           this.documents = this.documents.filter((item) => {
-            return !this.object.mapOfCheckedId.has(item.path);
+            return !this.object.mapOfCheckedId.has(item.name);
           });
         }
       }
-
+      this.reset();
       this.searchInResult();
     });
   }
@@ -586,7 +588,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
         radio: 'predefined',
         type: 'Documentation',
         operation: 'Delete',
-        name: document ? document.path : ''
+        name: document ? document.name : ''
       };
       if (!document) {
         this.object.mapOfCheckedId.forEach((value, index) => {

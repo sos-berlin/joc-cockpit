@@ -2,7 +2,7 @@ import {Component, OnInit, OnDestroy, Output, EventEmitter} from '@angular/core'
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {NzModalService} from 'ng-zorro-antd/modal';
-import * as _ from 'underscore';
+import {isEmpty} from 'underscore';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../guard';
 import {DataService} from '../../services/data.service';
@@ -50,7 +50,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
     if (sessionStorage.showViews) {
       const showViews = JSON.parse(sessionStorage.showViews);
-      if (!_.isEmpty(showViews)) {
+      if (!isEmpty(showViews)) {
         this.showViews = showViews;
       }
     }
@@ -60,11 +60,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (sessionStorage.$SOS$CONTROLLER && JSON.parse(sessionStorage.$SOS$CONTROLLER)) {
       this.selectedController = JSON.parse(sessionStorage.$SOS$CONTROLLER) || {};
     }
-    if (_.isEmpty(this.selectedController)) {
+    if (isEmpty(this.selectedController)) {
       const interval = setInterval(() => {
         if (sessionStorage.$SOS$CONTROLLER && JSON.parse(sessionStorage.$SOS$CONTROLLER)) {
           this.selectedController = JSON.parse(sessionStorage.$SOS$CONTROLLER) || {};
-          if (!_.isEmpty(this.selectedController)) {
+          if (!isEmpty(this.selectedController)) {
             clearInterval(interval);
           }
         }

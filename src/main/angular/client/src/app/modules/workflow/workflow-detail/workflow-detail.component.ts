@@ -936,7 +936,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       nzContent: ChangeParameterModalComponent,
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
-        order: order,
+        order,
         orderRequirements: this.orderRequirements
       },
       nzFooter: null,

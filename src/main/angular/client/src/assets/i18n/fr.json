@@ -1633,6 +1633,7 @@
     "message.wouldYouLikeToDeleteThisConfiguration": "Would you like to delete this configuration?",
     "message.validateSuccessfully": "XML document validated successfully",
     "message.successfullyDeployed": "Configuration successfully deployed",
-    "message.deleteAllDraft": "Are you sure you want to delete all XML drafts?"
+    "message.deleteAllDraft": "Are you sure you want to delete all XML drafts?",
+    "message.nocCnfigurationFound": "No configuration found"
   }
 }
