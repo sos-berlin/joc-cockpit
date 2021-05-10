@@ -152,8 +152,7 @@
     </div>
     <div class="form-group row" *ngIf="permission.Order.change.parameter">
       <div class="col-sm-12">
-        <a class="text-u-l" *ngIf="arguments.length>0" (click)="addArgument()" translate>order.button.addAnotherVariable</a>
-        <a class="text-u-l" *ngIf="arguments.length==0" (click)="addArgument()" translate>order.button.addVariable</a>
+        <a class="text-u-l" (click)="addArgument()" translate>order.button.addVariable</a>
       </div>
     </div>
   </div>

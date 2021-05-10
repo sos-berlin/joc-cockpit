@@ -4,7 +4,7 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
 import {Router} from '@angular/router';
 import {NzMessageService} from 'ng-zorro-antd/message';
-import * as _ from 'underscore';
+import {isEmpty, clone} from 'underscore';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
@@ -99,7 +99,7 @@ export class FilterModalComponent implements OnInit {
       };
     } else {
       this.filter.radio = 'planned';
-      this.name = _.clone(this.filter.name);
+      this.name = clone(this.filter.name);
     }
   }
 
@@ -136,9 +136,9 @@ export class OrderSearchComponent implements OnInit {
   isUnique = true;
   workflowTree = [];
   checkOptions = [
-    {label: 'successful', value: 'SUCCESSFUL'},
-    {label: 'failed', value: 'FAILED'},
-    {label: 'incomplete', value: 'INCOMPLETE'}
+    {label: 'successful', value: 'SUCCESSFUL', checked: false},
+    {label: 'failed', value: 'FAILED', checked: false},
+    {label: 'incomplete', value: 'INCOMPLETE', checked: false}
   ];
 
   constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService) {
@@ -161,9 +161,9 @@ export class OrderSearchComponent implements OnInit {
     this.filter.states = value;
   }
 
-  getFolderTree(flag): void {
+  getFolderTree(flag: boolean): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: TreeModalComponent,
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
@@ -345,14 +345,14 @@ export class TaskSearchComponent implements OnInit {
   isUnique = true;
   workflowTree = [];
   checkOptions = [
-    {label: 'successful', value: 'SUCCESSFUL'},
-    {label: 'failed', value: 'FAILED'},
-    {label: 'incomplete', value: 'INCOMPLETE'}
+    {label: 'successful', value: 'SUCCESSFUL', checked: false},
+    {label: 'failed', value: 'FAILED', checked: false},
+    {label: 'incomplete', value: 'INCOMPLETE', checked: false}
   ];
   criticalities = [
-    {label: 'normal', value: 'NORMAL'},
-    {label: 'minor', value: 'MINOR'},
-    {label: 'major', value: 'MAJOR'}
+    {label: 'normal', value: 'NORMAL', checked: false},
+    {label: 'minor', value: 'MINOR', checked: false},
+    {label: 'major', value: 'MAJOR', checked: false}
   ];
 
   constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService) {
@@ -388,9 +388,9 @@ export class TaskSearchComponent implements OnInit {
     this.filter.criticality = value;
   }
 
-  getFolderTree(flag): void {
+  getFolderTree(flag: boolean): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: TreeModalComponent,
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
@@ -683,8 +683,8 @@ export class SubmissionSearchComponent implements OnInit {
   submitted = false;
   isUnique = true;
   checkOptions = [
-    {label: 'submitted', value: 'SUBMITTED'},
-    {label: 'notSubmitted', value: 'NOT_SUBMITTED'}
+    {label: 'submitted', value: 'SUBMITTED', checked: false},
+    {label: 'notSubmitted', value: 'NOT_SUBMITTED', checked: false}
   ];
 
   constructor(public coreService: CoreService, private authService: AuthService) {
@@ -808,16 +808,16 @@ export class YadeSearchComponent implements OnInit {
   targetProtocol: any = [];
 
   stateOptions = [
-    {status: 'SUCCESSFUL', text: 'successful'},
-    {status: 'FAILED', text: 'failed'},
-    {status: 'INCOMPLETE', text: 'incomplete'}
+    {status: 'SUCCESSFUL', text: 'successful', checked: false},
+    {status: 'FAILED', text: 'failed', checked: false},
+    {status: 'INCOMPLETE', text: 'incomplete', checked: false}
   ];
 
   operationOptions = [
-    {status: 'COPY', text: 'copy'},
+    {status: 'COPY', text: 'copy', checked: false},
     {status: 'MOVE', text: 'move'},
-    {status: 'GETLIST', text: 'getList'},
-    {status: 'RENAME', text: 'rename'}
+    {status: 'GETLIST', text: 'getList', checked: false},
+    {status: 'RENAME', text: 'rename', checked: false}
   ];
 
   constructor(public coreService: CoreService, private authService: AuthService) {
@@ -1027,7 +1027,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.init(true);
   }
 
-  orderParseDate(obj): void {
+  orderParseDate(obj): any {
     if (this.selectedFiltered1.regex) {
       obj.regex = this.selectedFiltered1.regex;
     }
@@ -1053,14 +1053,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   isCustomizationSelected1(flag): void {
     if (flag) {
-      this.temp_filter1.historyStates = _.clone(this.order.filter.historyStates);
-      this.temp_filter1.date = _.clone(this.order.filter.date);
+      this.temp_filter1.historyStates = clone(this.order.filter.historyStates);
+      this.temp_filter1.date = clone(this.order.filter.date);
       this.order.filter.historyStates = '';
       this.order.filter.date = '';
     } else {
       if (this.temp_filter1.historyStates) {
-        this.order.filter.historyStates = _.clone(this.temp_filter1.historyStates);
-        this.order.filter.date = _.clone(this.temp_filter1.date);
+        this.order.filter.historyStates = clone(this.temp_filter1.historyStates);
+        this.order.filter.date = clone(this.temp_filter1.date);
       } else {
         this.order.filter.historyStates = 'ALL';
         this.order.filter.date = 'today';
@@ -1068,7 +1068,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  setOrderDateRange(filter): void {
+  setOrderDateRange(filter): any {
     if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true')
       && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0))) {
       filter.excludeOrders = [];
@@ -1120,7 +1120,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       });
     }
 
-    if (this.selectedFiltered1 && !_.isEmpty(this.selectedFiltered1)) {
+    if (this.selectedFiltered1 && !isEmpty(this.selectedFiltered1)) {
       this.isCustomizationSelected1(true);
       obj = this.orderParseDate(obj);
     } else {
@@ -1154,14 +1154,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   isCustomizationSelected2(flag): void {
     if (flag) {
-      this.temp_filter2.historyStates = _.clone(this.task.filter.historyStates);
-      this.temp_filter2.date = _.clone(this.task.filter.date);
+      this.temp_filter2.historyStates = clone(this.task.filter.historyStates);
+      this.temp_filter2.date = clone(this.task.filter.date);
       this.task.filter.historyStates = '';
       this.task.filter.date = '';
     } else {
       if (this.temp_filter2.historyStates) {
-        this.task.filter.historyStates = _.clone(this.temp_filter2.historyStates);
-        this.task.filter.date = _.clone(this.temp_filter2.date);
+        this.task.filter.historyStates = clone(this.temp_filter2.historyStates);
+        this.task.filter.date = clone(this.temp_filter2.date);
       } else {
         this.task.filter.historyStates = 'ALL';
         this.task.filter.date = 'today';
@@ -1169,7 +1169,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  jobParseDate(obj): void {
+  jobParseDate(obj): any {
     if (this.selectedFiltered2.regex) {
       obj.regex = this.selectedFiltered2.regex;
     }
@@ -1192,7 +1192,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     return obj;
   }
 
-  setTaskDateRange(filter): void {
+  setTaskDateRange(filter): any {
     if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true') && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
       filter.excludeJobs = [];
       this.savedIgnoreList.jobs.forEach((job) => {
@@ -1227,7 +1227,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         obj.excludeJobs.push({job: job});
       });
     }
-    if (this.selectedFiltered2 && !_.isEmpty(this.selectedFiltered2)) {
+    if (this.selectedFiltered2 && !isEmpty(this.selectedFiltered2)) {
       this.isCustomizationSelected2(true);
       obj = this.jobParseDate(obj);
     } else {
@@ -1254,14 +1254,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   isCustomizationSelected3(flag) {
     if (flag) {
-      this.temp_filter3.states = _.clone(this.yade.filter.historyStates);
-      this.temp_filter3.date = _.clone(this.yade.filter.date);
+      this.temp_filter3.states = clone(this.yade.filter.historyStates);
+      this.temp_filter3.date = clone(this.yade.filter.date);
       this.yade.filter.historyStates = '';
       this.yade.filter.date = '';
     } else {
       if (this.temp_filter3.states) {
-        this.yade.filter.historyStates = _.clone(this.temp_filter3.historyStates);
-        this.yade.filter.date = _.clone(this.temp_filter3.date);
+        this.yade.filter.historyStates = clone(this.temp_filter3.historyStates);
+        this.yade.filter.date = clone(this.temp_filter3.date);
       } else {
         this.yade.filter.historyStates = 'ALL';
         this.yade.filter.date = 'today';
@@ -1292,7 +1292,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.data = [];
     }
 
-    if (this.selectedFiltered3 && !_.isEmpty(this.selectedFiltered3)) {
+    if (this.selectedFiltered3 && !isEmpty(this.selectedFiltered3)) {
       this.isCustomizationSelected3(true);
       //obj = this.yadeParseDate(obj);
     } else {
@@ -1318,16 +1318,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  isCustomizationSelected4(flag) {
+  isCustomizationSelected4(flag): void {
     if (flag) {
-      this.temp_filter4.state = _.clone(this.deployment.filter.state);
-      this.temp_filter4.date = _.clone(this.deployment.filter.date);
+      this.temp_filter4.state = clone(this.deployment.filter.state);
+      this.temp_filter4.date = clone(this.deployment.filter.date);
       this.deployment.filter.state = '';
       this.deployment.filter.date = '';
     } else {
       if (this.temp_filter4.state) {
-        this.deployment.filter.state = _.clone(this.temp_filter4.state);
-        this.deployment.filter.date = _.clone(this.temp_filter4.date);
+        this.deployment.filter.state = clone(this.temp_filter4.state);
+        this.deployment.filter.date = clone(this.temp_filter4.date);
       } else {
         this.deployment.filter.state = 'ALL';
         this.deployment.filter.date = 'today';
@@ -1335,7 +1335,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  deploymentParseDate(obj, data, flag) {
+  deploymentParseDate(obj, data, flag): any {
     obj.state = (data.state && data.state !== 'ALL') ? data.state : undefined;
     obj.operation = (data.operation && data.operation !== 'ALL') ? data.operation : undefined;
     obj.deployType = data.deployType ? data.deployType : undefined;
@@ -1383,7 +1383,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         delete obj['controllerId'];
       }
     }
-    if (this.selectedFiltered4 && !_.isEmpty(this.selectedFiltered4)) {
+    if (this.selectedFiltered4 && !isEmpty(this.selectedFiltered4)) {
       this.isCustomizationSelected4(true);
       obj = this.deploymentParseDate(obj, this.selectedFiltered4, true);
     } else {
@@ -1405,16 +1405,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  isCustomizationSelected5(flag) {
+  isCustomizationSelected5(flag): void {
     if (flag) {
-      this.temp_filter5.category = _.clone(this.submission.filter.category);
-      this.temp_filter5.date = _.clone(this.submission.filter.date);
+      this.temp_filter5.category = clone(this.submission.filter.category);
+      this.temp_filter5.date = clone(this.submission.filter.date);
       this.submission.filter.category = '';
       this.submission.filter.date = '';
     } else {
       if (this.temp_filter5.category) {
-        this.submission.filter.category = _.clone(this.temp_filter5.category);
-        this.submission.filter.date = _.clone(this.temp_filter5.date);
+        this.submission.filter.category = clone(this.temp_filter5.category);
+        this.submission.filter.date = clone(this.temp_filter5.date);
       } else {
         this.submission.filter.category = 'ALL';
         this.submission.filter.date = 'today';
@@ -1461,7 +1461,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         delete obj['controllerId'];
       }
     }
-    if (this.selectedFiltered5 && !_.isEmpty(this.selectedFiltered5)) {
+    if (this.selectedFiltered5 && !isEmpty(this.selectedFiltered5)) {
       this.isCustomizationSelected5(true);
       if (this.selectedFiltered5.type && this.selectedFiltered5.type.length === 1) {
         obj.submitted = this.selectedFiltered5.type[0] === 'SUBMITTED';
@@ -2138,15 +2138,15 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.data = [...this.data];
   }
 
-  expandDetails() {
+  expandDetails(): void {
     if (this.historyFilters.type !== 'YADE') {
-      this.currentData.forEach((value) => {
+      this.currentData.forEach((value: any) => {
         value.show = true;
         if (this.historyFilters.type === 'DEPLOYMENT') {
           this.showChildHistory(value);
         } else if (this.historyFilters.type === 'SUBMISSION') {
-          value.controllers.forEach((controller) => {
-            controller.submissions.forEach((sub) => {
+          value.controllers.forEach((controller: any) => {
+            controller.submissions.forEach((sub: any) => {
               sub.show = true;
             });
           });
@@ -2160,7 +2160,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   collapseDetails(): void {
-    this.currentData.forEach((value) => {
+    this.currentData.forEach((value: any) => {
       value.show = false;
     });
   }
@@ -2186,18 +2186,18 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.excelService.exportAsExcelFile(data, fileName);
   }
 
-  showAllPanelFuc(data): void {
+  showAllPanelFuc(data: any): void {
     data.showAll = true;
     data.show = true;
     this.recursiveExpand(data, 1);
   }
 
-  hideAllPanelFuc(data): void {
+  hideAllPanelFuc(data: any): void {
     data.showAll = false;
     data.show = false;
   }
 
-  showPanelFuc(data): void {
+  showPanelFuc(data: any): void {
     data.loading = true;
     data.show = true;
     data.children = [];
@@ -2217,12 +2217,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  hidePanelFuc(data): void {
+  hidePanelFuc(data: any): void {
     data.show = false;
     data.showAll = false;
   }
 
-  showChildHistory(data): void {
+  showChildHistory(data: any): void {
     data.loading = true;
     data.show = true;
     data.children = [];
@@ -2240,7 +2240,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  showTransferFuc(data): void {
+  showTransferFuc(data: any): void {
     const self = this;
     data.show = true;
     data.files = [];
@@ -2285,7 +2285,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   editIgnoreList(): void {
     if ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0) || (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
       this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: EditIgnoreListComponent,
         nzClassName: 'lg',
         nzComponentParams: {
@@ -2312,7 +2312,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
         this.ignoreListConfigId = res.id;
       });
-      if ((!_.isEmpty(this.jobSearch) && this.historyFilters.type === 'TASK') || (!_.isEmpty(this.orderSearch) && this.historyFilters.type === 'ORDER')) {
+      if ((!isEmpty(this.jobSearch) && this.historyFilters.type === 'TASK') || (!isEmpty(this.orderSearch) && this.historyFilters.type === 'ORDER')) {
         this.search(true);
       } else {
         this.init(false);
@@ -2323,13 +2323,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
   resetIgnoreList(): void {
     if (this.schedulerIds.selected) {
       if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true) && this.historyFilters.type == 'ORDER' && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0))) {
-        if (!_.isEmpty(this.orderSearch)) {
+        if (!isEmpty(this.orderSearch)) {
           this.search(true);
         } else {
           this.init(false);
         }
       } else if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true) && this.historyFilters.type != 'ORDER' && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
-        if (!_.isEmpty(this.jobSearch)) {
+        if (!isEmpty(this.jobSearch)) {
           this.search(true);
         } else {
           this.init(false);
@@ -2371,7 +2371,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         obj.allFilter = this.submissionHistoryFilterList;
       }
       this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: FilterModalComponent,
         nzClassName: 'lg',
         nzComponentParams: obj,
@@ -2404,7 +2404,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       obj.favorite = this.savedSubmissionHistoryFilter.favorite;
     }
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: EditFilterModalComponent,
       nzComponentParams: obj,
       nzFooter: null,
@@ -2704,7 +2704,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private mergeOldData(): void {
-    let oldEntires = _.clone(this.data);
+    let oldEntires = clone(this.data);
     let arr = this.order.searchText ? this.searchPipe.transform(this.historys, this.order.searchText, this.orderSearchableProperties) : this.historys;
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < oldEntires.length; j++) {
@@ -2759,7 +2759,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private mergeOldTaskData() {
-    let oldEntires = _.clone(this.data);
+    let oldEntires = clone(this.data);
     let arr = this.task.searchText ? this.searchPipe.transform(this.taskHistorys, this.task.searchText, this.taskSearchableProperties) : this.taskHistorys;
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < oldEntires.length; j++) {
@@ -2776,7 +2776,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private mergeOldYadeData() {
-    let oldEntires = _.clone(this.data);
+    let oldEntires = clone(this.data);
     let arr = this.yade.searchText ? this.searchPipe.transform(this.yadeHistorys, this.yade.searchText, this.yadeSearchableProperties) : this.yadeHistorys;
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < oldEntires.length; j++) {
@@ -2793,7 +2793,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private mergeDepData() {
-    let oldEntires = _.clone(this.data);
+    let oldEntires = clone(this.data);
     let arr = this.deployment.searchText ? this.searchPipe.transform(this.deploymentHistorys, this.deployment.searchText, this.deploymentSearchableProperties) : this.deploymentHistorys;
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < oldEntires.length; j++) {
@@ -2827,7 +2827,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   /* --------------------------Actions -----------------------*/
 
   private mergeSubData() {
-    let oldEntires = _.clone(this.data);
+    let oldEntires = clone(this.data);
     let arr = this.submissionHistorys;
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < oldEntires.length; j++) {
@@ -2876,7 +2876,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.message.success(msg);
       }
       if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true)) {
-        if ((!_.isEmpty(this.jobSearch) && this.historyFilters.type === 'TASK') || (!_.isEmpty(this.orderSearch) && this.historyFilters.type === 'ORDER')) {
+        if ((!isEmpty(this.jobSearch) && this.historyFilters.type === 'TASK') || (!isEmpty(this.orderSearch) && this.historyFilters.type === 'ORDER')) {
           this.search(true);
         } else {
           this.init(false);
@@ -3736,7 +3736,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         obj.type = this.historyFilters.type;
 
         this.modal.create({
-          nzTitle: null,
+          nzTitle: undefined,
           nzContent: FilterModalComponent,
           nzClassName: 'lg',
           nzComponentParams: obj,
@@ -3747,7 +3747,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private copyFilter(filter) {
+  private copyFilter(filter: any): void {
     if (this.schedulerIds.selected) {
       let filterObj: any = {};
       this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
@@ -3782,7 +3782,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         }
         obj.filter = filterObj;
         this.modal.create({
-          nzTitle: null,
+          nzTitle: undefined,
           nzContent: FilterModalComponent,
           nzClassName: 'lg',
           nzComponentParams: obj,

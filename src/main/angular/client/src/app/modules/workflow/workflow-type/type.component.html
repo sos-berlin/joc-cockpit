@@ -56,7 +56,37 @@
       </a>
       <div *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'ImplicitEnd'
        || instruction.TYPE === 'Publish' || instruction.TYPE === 'Await'" [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction.TYPE === 'ImplicitEnd'}">
-        {{instruction.jobName || (instruction.TYPE | translate)}}
+        <div class="btn-group dropdown" style="margin-left: -9px" *ngIf="instruction.TYPE === 'Job'">
+          <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
+                  type="button">
+            <i class="fa fa-ellipsis-h"></i>
+          </button>
+          <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
+            <ul nz-menu>
+              <li nz-menu-item>
+                <a (click)="showConfiguration(instruction);">
+                  <span translate>common.button.showConfiguration</span>
+                </a>
+              </li>
+              <li nz-menu-item>
+                <a (click)="assignDocumentation(instruction);">
+                  <span translate>common.button.assignDocumentation</span>
+                </a>
+              </li>
+              <li nz-menu-item>
+                <a (click)="unassignDocumentation(instruction);">
+                  <span translate>common.button.unassignDocumentation</span>
+                </a>
+              </li>
+              <li nz-menu-item>
+                <a (click)="viewDocumentation(instruction);">
+                  <span translate>common.button.viewDocumentation</span>
+                </a>
+              </li>
+            </ul>
+          </nz-dropdown-menu>
+        </div>
+        <a [ngClass]="{'cursor': instruction.TYPE === 'Job'}" (click)="showConfiguration(instruction)">{{instruction.jobName || (instruction.TYPE | translate)}}</a>
         <span class="m-l-md" *ngIf="instruction.orders && instruction.orders.length> 0">
          <ng-template ngFor let-order [ngForOf]="instruction.orders | orderBy : 'scheduledFor': true | slice:0:3">
             <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>

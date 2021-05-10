@@ -177,7 +177,7 @@ export class AddOrderModalComponent implements OnInit {
 
   openEditor(data): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ValueEditorComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -216,7 +216,7 @@ export class WorkflowActionComponent {
 
   addOrder(workflow): void {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: AddOrderModalComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
@@ -233,7 +233,7 @@ export class WorkflowActionComponent {
 
   showDailyPlan(workflow): void {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: CalendarModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {

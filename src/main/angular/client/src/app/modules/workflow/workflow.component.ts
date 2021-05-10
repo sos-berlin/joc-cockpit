@@ -4,7 +4,7 @@ import {Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
-import * as _ from 'underscore';
+import {isEmpty, isArray, clone} from 'underscore';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {TreeModalComponent} from '../../components/tree-modal/tree.component';
@@ -47,7 +47,7 @@ export class FilterModalComponent implements OnInit {
         path: []
       };
     } else {
-      this.name = _.clone(this.filter.name);
+      this.name = clone(this.filter.name);
     }
   }
 
@@ -88,7 +88,7 @@ export class SearchComponent implements OnInit {
 
   getFolderTree(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: TreeModalComponent,
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
@@ -101,7 +101,7 @@ export class SearchComponent implements OnInit {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        if (_.isArray(result)) {
+        if (isArray(result)) {
           this.filter.paths = result;
         }
       }
@@ -378,7 +378,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.workflowFilters.expandedObjects = [];
-    for (let i in this.currentData) {
+    for (const i in this.currentData) {
       if (this.currentData[i].show) {
         this.workflowFilters.expandedObjects.push(this.currentData[i].path);
       }
@@ -592,7 +592,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   createCustomization(): void {
     if (this.schedulerIds.selected) {
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: FilterModalComponent,
         nzClassName: 'lg',
         nzComponentParams: {
@@ -620,7 +620,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   editFilters(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: EditFilterModalComponent,
       nzComponentParams: {
         filterList: this.filterList,
@@ -829,7 +829,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   updatePanelHeight(): void {
     let rsHt = this.saveService.resizerHeight ? JSON.parse(this.saveService.resizerHeight) || {} : {};
-    if (rsHt.workflow && !_.isEmpty(rsHt.workflow)) {
+    if (rsHt.workflow && !isEmpty(rsHt.workflow)) {
       if (rsHt.workflow[this.currentPath]) {
         this.resizerHeight = rsHt.workflow[this.currentPath];
         $('#workflowTableId').css('height', this.resizerHeight);
@@ -1010,7 +1010,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.coreService.post('orders', obj).subscribe((res: any) => {
       if (res.orders) {
         for (let i in this.workflows) {
-          if (obj.workflowIds && obj.workflowIds.length > 0 && !_.isEmpty(this.workflows[i].ordersSummary)) {
+          if (obj.workflowIds && obj.workflowIds.length > 0 && !isEmpty(this.workflows[i].ordersSummary)) {
             for (let j = 0; j < obj.workflowIds.length; j++) {
               if (this.workflows[i].path === obj.workflowIds[j].path && this.workflows[i].versionId === obj.workflowIds[j].versionId) {
                 this.workflows[i].numOfOrders = 0;
@@ -1123,7 +1123,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         filterObj.id = filter.id;
       }
       this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: FilterModalComponent,
         nzClassName: 'lg',
         nzComponentParams: {

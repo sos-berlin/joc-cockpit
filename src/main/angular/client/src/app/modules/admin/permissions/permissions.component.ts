@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
-import * as _ from 'underscore';
+import {isEqual, clone} from 'underscore';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {AuthService} from '../../../components/guard';
@@ -49,7 +49,7 @@ export class PermissionModalComponent {
       this.rolePermissions.push(obj);
     } else {
       for (let i = 0; i < this.rolePermissions.length; i++) {
-        if (this.oldPermission === this.rolePermissions[i] || _.isEqual(this.oldPermission, this.rolePermissions[i])) {
+        if (this.oldPermission === this.rolePermissions[i] || isEqual(this.oldPermission, this.rolePermissions[i])) {
           this.rolePermissions[i] = obj;
           break;
         }
@@ -105,7 +105,7 @@ export class FolderModalComponent implements OnInit {
     this.submitted = true;
     if (!this.newFolder) {
       for (let i = 0; i < this.folderArr.length; i++) {
-        if (this.oldFolder === this.folderArr[i] || _.isEqual(this.oldFolder, this.folderArr[i])) {
+        if (this.oldFolder === this.folderArr[i] || isEqual(this.oldFolder, this.folderArr[i])) {
           this.folderArr[i] = obj;
           break;
         }
@@ -279,7 +279,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   addFolder(): void {
     let folder = {folder: '', recursive: true};
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: FolderModalComponent,
       nzComponentParams: {
         currentFolder: folder,
@@ -300,11 +300,11 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   editFolder(folder): void {
-    let tempFolder = _.clone(folder);
+    let tempFolder = clone(folder);
     tempFolder.folder = tempFolder.folder == '' ? '/' : tempFolder.folder;
     tempFolder.folderName = tempFolder.folder;
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: FolderModalComponent,
       nzComponentParams: {
         currentFolder: tempFolder,
@@ -326,7 +326,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
   deleteFolder(folder): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ConfirmModalComponent,
       nzComponentParams: {
         title: 'delete',
@@ -348,7 +348,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   addPermission(): void {
     let permission = {path: '', excluded: false};
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: PermissionModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -366,10 +366,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   editPermission(permission): void {
-    let tempPermission = _.clone(permission);
+    let tempPermission = clone(permission);
     tempPermission.permissionLabel = permission.path;
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: PermissionModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -388,7 +388,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
   deletePermission(permission): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ConfirmModalComponent,
       nzComponentParams: {
         title: 'delete',
@@ -417,7 +417,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       this.folderArr = this.roles[this.roleName].folders ? (this.roles[this.roleName].folders.joc || []) : [];
       this.rolePermissions = this.roles[this.roleName].permissions ? [...this.roles[this.roleName].permissions.controllerDefaults, ...this.roles[this.roleName].permissions.joc] : [];
     }
-    this.originalPermission = _.clone(this.rolePermissions);
+    this.originalPermission = clone(this.rolePermissions);
   }
 
   preparePermissionJSON(): void {
@@ -695,12 +695,12 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
   updatePermissionList(): void {
     this.unSelectedNode(this.permissionNodes[0][0], true);
-    this.checkPermissionList(this.permissionNodes[0][0], _.clone(this.rolePermissions));
+    this.checkPermissionList(this.permissionNodes[0][0], clone(this.rolePermissions));
     this.updateDiagramData(this.permissionNodes[0][0]);
     if (this.controllerName) {
-      this.roles[this.roleName].permissions.controllers[this.controllerName] = _.clone(this.rolePermissions);
+      this.roles[this.roleName].permissions.controllers[this.controllerName] = clone(this.rolePermissions);
     } else {
-      this.roles[this.roleName].permissions.joc = _.clone(this.rolePermissions);
+      this.roles[this.roleName].permissions.joc = clone(this.rolePermissions);
       this.roles[this.roleName].permissions.controllerDefaults = [];
     }
     this.saveInfo();
@@ -709,14 +709,14 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   undoPermission(): void {
     this.rolePermissions = this.previousPermission[this.previousPermission.length - 1];
     this.previousPermission.splice(this.previousPermission.length - 1, 1);
-    if (_.isEqual(this.originalPermission, this.rolePermissions)) {
+    if (isEqual(this.originalPermission, this.rolePermissions)) {
       this.isReset = false;
     }
     this.updatePermissionList();
   }
 
   resetPermission(): void {
-    this.rolePermissions = _.clone(this.originalPermission);
+    this.rolePermissions = clone(this.originalPermission);
     this.previousPermission = [];
     this.updatePermissionList();
     this.isReset = false;
@@ -814,7 +814,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     self.root = json;
     self.root.x0 = 0;
     self.root.y0 = 0;
-    let _pList = _.clone(self.rolePermissions);
+    let _pList = clone(self.rolePermissions);
     self.checkPermissionList(self.root, _pList);
 
     draw(self.root, 0);
@@ -1185,7 +1185,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
 
     function selectPermission(permission_node) {
-      let _previousPermissionObj = _.clone(self.rolePermissions);
+      let _previousPermissionObj = clone(self.rolePermissions);
       if (!permission_node.greyed && permission_node.name != 'sos') {
         permission_node.selected = !permission_node.selected;
 
@@ -1214,7 +1214,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
 
     function toggleExclude(permission_node) {
-      let _previousPermissionObj = _.clone(self.rolePermissions);
+      let _previousPermissionObj = clone(self.rolePermissions);
       if (!permission_node.greyedBtn && permission_node.name != 'sos') {
         permission_node.excluded = !permission_node.excluded;
         permission_node.excludedParent = !permission_node.excludedParent;

@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
-import * as _ from 'underscore';
+import {isEqual, isArray, clone} from 'underscore';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {DataService} from '../data.service';
 import {CoreService} from '../../../services/core.service';
@@ -285,18 +285,18 @@ export class EditMainSectionModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.entry = _.clone(this.oldEntry);
+    this.entry = clone(this.oldEntry);
     this.existingEntry = this.oldEntry.entryName;
     if (this.entry.entryValue.length > 0) {
       this.entry.entryValue.forEach((val) => {
-        this.entryValue.push({value: _.clone(val)});
+        this.entryValue.push({value: clone(val)});
       });
     } else {
       this.entryValue.push({value: ''});
     }
     if (this.entry.entryComment.length > 0) {
       this.entry.entryComment.forEach((val) => {
-        this.entryComment.push({value: _.clone(val)});
+        this.entryComment.push({value: clone(val)});
       });
     } else {
       this.entryComment.push({value: ''});
@@ -329,7 +329,7 @@ export class EditMainSectionModalComponent implements OnInit {
     }
 
     this.userDetail.main.forEach((val, index) => {
-      if (_.isEqual(this.oldEntry, val)) {
+      if (isEqual(this.oldEntry, val)) {
         this.userDetail.main[index] = this.entry;
       }
     });
@@ -432,7 +432,7 @@ export class LdapSectionModalComponent implements OnInit {
           entryComment: []
         }];
     }
-    this.mainSection = _.clone(mainSection);
+    this.mainSection = clone(mainSection);
   }
 
   onSubmit(): void {
@@ -440,8 +440,8 @@ export class LdapSectionModalComponent implements OnInit {
     if (this.isldap) {
       for (let i = 0; i < this.mainSection.length; i++) {
         if (this.mainSection[i].entryName === 'ldapRealm.contextFactory.url') {
-          if (!_.isArray(this.mainSection[i].entryValue)) {
-            const value = _.clone(this.mainSection[i].entryValue);
+          if (!isArray(this.mainSection[i].entryValue)) {
+            const value = clone(this.mainSection[i].entryValue);
             this.mainSection[i].entryValue = [value];
           }
           break;
@@ -524,7 +524,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
 
   editMain(main): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: EditMainSectionModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -544,7 +544,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
 
   deleteMain(main): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ConfirmModalComponent,
       nzComponentParams: {
         title: 'delete',
@@ -565,7 +565,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
 
   addMainSection(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: MainSectionModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -584,7 +584,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
 
   editMainSection(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: MainSectionModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -604,7 +604,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
 
   addLdapRealm(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: LdapSectionModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -624,7 +624,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
 
   enableJOCCluster(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: LdapSectionModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {

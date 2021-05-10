@@ -16,10 +16,12 @@ import {NzTreeSelectModule} from 'ng-zorro-antd/tree-select';
 import {NzDatePickerModule} from 'ng-zorro-antd/date-picker';
 import {NzNoAnimationModule} from 'ng-zorro-antd/core/no-animation';
 import {NzRadioModule} from 'ng-zorro-antd/radio';
-import { NzDrawerModule } from 'ng-zorro-antd/drawer';
+import {NzDrawerModule} from 'ng-zorro-antd/drawer';
 import {NzTimePickerModule} from 'ng-zorro-antd/time-picker';
 import {ChecklistModule} from 'angular-checklist';
-import { DragDropModule } from '@angular/cdk/drag-drop';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import {CodemirrorModule} from '@ctrl/ngx-codemirror';
+import {Shared2Module} from './shared2.module';
 import {ToggleComponent} from '../../components/toggle/toggle.component';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
@@ -44,7 +46,6 @@ import {
   TimeValidatorDirective, TimeRegexValidator, LabelValidator, EnvVariableValidator
 } from '../../directives/core.directive';
 import {StartUpModalComponent} from '../start-up/start-up.component';
-import {Shared2Module} from './shared2.module';
 import {CalendarModalComponent} from '../../components/calendar-modal/calendar.component';
 import {AddRestrictionComponent, PeriodComponent, RunTimeComponent} from '../../components/runtime/runtime.component';
 import {ResumeOrderModalComponent} from '../../components/resume-modal/resume.component';
@@ -52,11 +53,10 @@ import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../.
 import {OrderVariableComponent} from '../../components/order-variable/order-variable.component';
 import {ValueEditorComponent} from '../../components/value-editor/value.component';
 
-
 const MODULES = [Shared2Module, NzTableModule, NzTabsModule, ChecklistModule, DragDropModule,
   NzToolTipModule, NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule, NzDrawerModule,
   NzSelectModule, NzInputModule, NzMessageModule, NzCheckboxModule, NzRadioModule,
-  NzTreeSelectModule, ClipboardModule, NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, OrderModule];
+  NzTreeSelectModule, ClipboardModule, NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, OrderModule, CodemirrorModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, TreeModalComponent, PeriodComponent, AddRestrictionComponent,
   ResumeOrderModalComponent, ChangeParameterModalComponent, OrderVariableComponent, ModifyStartTimeModalComponent];

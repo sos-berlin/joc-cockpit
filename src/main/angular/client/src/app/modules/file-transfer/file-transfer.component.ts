@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription} from 'rxjs';
-import * as _ from 'underscore';
+import {isEmpty, clone} from 'underscore';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {AuthService} from '../../components/guard';
@@ -42,7 +42,7 @@ export class FilterModalComponent implements OnInit {
       };
     } else {
       this.filter.radio = 'planned';
-      this.name = _.clone(this.filter.name);
+      this.name = clone(this.filter.name);
     }
   }
 
@@ -79,16 +79,16 @@ export class SearchComponent implements OnInit {
   targetProtocol: any = [];
 
   stateOptions = [
-    {status: 'SUCCESSFUL', text: 'successful'},
-    {status: 'FAILED', text: 'failed'},
-    {status: 'INCOMPLETE', text: 'incomplete'}
+    {status: 'SUCCESSFUL', text: 'successful', checked: false},
+    {status: 'FAILED', text: 'failed', checked: false},
+    {status: 'INCOMPLETE', text: 'incomplete', checked: false}
   ];
 
   operationOptions = [
-    {status: 'COPY', text: 'copy'},
-    {status: 'MOVE', text: 'move'},
-    {status: 'GETLIST', text: 'getList'},
-    {status: 'RENAME', text: 'rename'}
+    {status: 'COPY', text: 'copy', checked: false},
+    {status: 'MOVE', text: 'move', checked: false},
+    {status: 'GETLIST', text: 'getList', checked: false},
+    {status: 'RENAME', text: 'rename', checked: false}
   ];
 
   constructor(private authService: AuthService, public coreService: CoreService) {
@@ -421,13 +421,13 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   load(): void {
     this.isLoaded = true;
     this.reset();
-    if (this.selectedFiltered && !_.isEmpty(this.selectedFiltered)) {
+    if (this.selectedFiltered && !isEmpty(this.selectedFiltered)) {
       this.isCustomizationSelected(true);
     }
     let obj: any = {
       controllerId: this.yadeView.current == true ? this.schedulerIds.selected : ''
     };
-    if (this.selectedFiltered && !_.isEmpty(this.selectedFiltered)) {
+    if (this.selectedFiltered && !isEmpty(this.selectedFiltered)) {
       if (this.selectedFiltered.states && this.selectedFiltered.states.length > 0) {
         obj.states = this.selectedFiltered.states;
       }
@@ -1137,14 +1137,14 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   private isCustomizationSelected(flag): void {
     if (flag) {
-      this.temp_filter.states = _.clone(this.yadeFilters.filter.states);
-      this.temp_filter.date = _.clone(this.yadeFilters.filter.date);
+      this.temp_filter.states = clone(this.yadeFilters.filter.states);
+      this.temp_filter.date = clone(this.yadeFilters.filter.date);
       this.yadeFilters.filter.states = '';
       this.yadeFilters.filter.date = '';
     } else {
       if (this.temp_filter.states) {
-        this.yadeFilters.filter.states = _.clone(this.temp_filter.states);
-        this.yadeFilters.filter.date = _.clone(this.temp_filter.date);
+        this.yadeFilters.filter.states = clone(this.temp_filter.states);
+        this.yadeFilters.filter.date = clone(this.temp_filter.date);
       } else {
         this.yadeFilters.filter.states = 'ALL';
         this.yadeFilters.filter.date = 'today';

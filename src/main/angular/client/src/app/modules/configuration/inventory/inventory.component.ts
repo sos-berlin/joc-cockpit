@@ -2698,7 +2698,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       origin = node.origin ? node.origin : node;
     }
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ExportComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -2714,7 +2714,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   import(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ImportWorkflowModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -2732,7 +2732,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   importDeploy(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ImportWorkflowModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -2752,7 +2752,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   setVersion(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: SetVersionComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -2768,9 +2768,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  createFolder(node): void {
+  createFolder(node: any): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: CreateFolderModalComponent,
       nzAutofocus: null,
       nzComponentParams: {
@@ -2799,7 +2799,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         origin.path = origin.path.substring(0, origin.path.lastIndexOf('/')) || '/';
       }
       this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: SingleDeployComponent,
         nzComponentParams: {
           schedulerIds: this.schedulerIds,
@@ -2811,7 +2811,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       });
     } else {
       this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: DeployComponent,
         nzClassName: releasable ? 'sm' : 'lg',
         nzComponentParams: {
@@ -2828,7 +2828,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  reDeployObject(node): void {
+  reDeployObject(node: any): void {
     const origin = node.origin ? node.origin : node;
     if (origin.controller) {
       this.coreService.post('inventory/deployment/redeploy', {
@@ -2839,7 +2839,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       });
     } else {
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: ConfirmModalComponent,
         nzComponentParams: {
           title: 'redeploy',
@@ -2876,12 +2876,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  showJson(obj): void {
+  showJson(obj: any): void {
     this.coreService.post('inventory/read/configuration', {
       id: obj.showJson.id,
     }).subscribe((res: any) => {
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: JsonEditorModalComponent,
         nzAutofocus: null,
         nzClassName: 'lg',
@@ -2904,13 +2904,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  editJson(data, isEdit): void {
+  editJson(data: any, isEdit: boolean): void {
     this.showJson({showJson: data, edit: isEdit});
   }
 
-  importJSON(obj): void {
+  importJSON(obj: any): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: UploadModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -2931,7 +2931,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.coreService.post('inventory/read/configuration', {
       id: obj.id,
     }).subscribe((res: any) => {
-      const name = obj.name + (obj.type ? '_' + obj.type.toLowerCase() : '') + '.json';
+      const name = obj.name + (obj.type ? '.' + obj.type.toLowerCase() : '') + '.json';
       const fileType = 'application/octet-stream';
       delete res.configuration.TYPE;
       const data = JSON.stringify(res.configuration, undefined, 2);
@@ -2940,10 +2940,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  renameObject(node): void {
+  renameObject(node: any): void {
     if (this.permission && this.permission.joc && this.permission.joc.inventory.manage) {
       this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: CreateFolderModalComponent,
         nzAutofocus: null,
         nzComponentParams: {
@@ -3051,7 +3051,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         name: object.name
       };
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
         nzComponentParams: {
@@ -3084,7 +3084,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       });
     } else {
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: ConfirmModalComponent,
         nzComponentParams: {
           title: 'remove',
@@ -3121,14 +3121,14 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
     const obj = this.getObjectArr(object, true);
     if (this.preferences.auditLog) {
-      let comments = {
+      const comments = {
         radio: 'predefined',
         type: object.type || 'Folder',
         operation: 'Delete',
         name: object.name
       };
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
         nzComponentParams: {
@@ -3150,7 +3150,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       });
     } else {
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: ConfirmModalComponent,
         nzComponentParams: {
           title: 'delete',
@@ -3214,14 +3214,14 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  deletePermanently(node): void {
+  deletePermanently(node: any): void {
     let object = node;
     if (node instanceof NzTreeNode) {
       object = node.origin;
     }
     const obj = this.getObjectArr(object, false);
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ConfirmModalComponent,
       nzComponentParams: {
         title: 'delete',
@@ -3244,13 +3244,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  restoreObject(node): void {
+  restoreObject(node: any): void {
     let object = node;
     if (node instanceof NzTreeNode) {
       object = node.origin;
     }
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: CreateObjectModalComponent,
       nzAutofocus: null,
       nzComponentParams: {
@@ -3264,7 +3264,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  receiveMessage($event): void {
+  receiveMessage($event: any): void {
     this.pageView = $event;
   }
 
@@ -3468,9 +3468,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private openObjectNameModal(obj, cb): void {
+  private openObjectNameModal(obj: any, cb: any): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: CreateObjectModalComponent,
       nzAutofocus: null,
       nzComponentParams: {
@@ -3600,7 +3600,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       path
     };
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: CreateObjectModalComponent,
       nzAutofocus: null,
       nzComponentParams: {

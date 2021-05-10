@@ -56,10 +56,10 @@ export class LoggingComponent implements OnInit, OnDestroy {
   permission: any = {};
   subscription: Subscription;
   checkOptions = [
-    { label: 'info', value: 'info'},
-    { label: 'error', value: 'error' },
-    { label: 'warn', value: 'warn' },
-    { label: 'debug', value: 'debug' }
+    { label: 'info', value: 'info', checked: false },
+    { label: 'error', value: 'error', checked: false },
+    { label: 'warn', value: 'warn', checked: false },
+    { label: 'debug', value: 'debug', checked: false }
   ];
 
   constructor(private coreService: CoreService, private authService: AuthService,
@@ -112,7 +112,7 @@ export class LoggingComponent implements OnInit, OnDestroy {
 
   saveSettingConf(): void {
     if (this.schedulerIds && this.schedulerIds.selected) {
-      let configObj = {
+      const configObj = {
         controllerId: this.schedulerIds.selected,
         account: this.permission.user,
         configurationType: 'SETTING',

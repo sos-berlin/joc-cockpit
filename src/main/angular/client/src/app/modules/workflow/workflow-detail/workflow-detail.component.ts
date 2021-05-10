@@ -2,7 +2,7 @@ import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/co
 import {ActivatedRoute} from '@angular/router';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
-import * as _ from 'underscore';
+import {isEmpty, sortBy} from 'underscore';
 import {Subscription} from 'rxjs';
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
@@ -13,6 +13,7 @@ import {DataService} from '../../../services/data.service';
 import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../../../components/modify-modal/modify.component';
+import {ScriptModalComponent} from '../script-modal/script-modal.component';
 
 declare const mxEditor;
 declare const mxUtils;
@@ -48,6 +49,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   pageView: any;
   editor: any;
   order: any;
+  job: any;
   selectedPath: string;
   workflowFilters: any = {};
   vertixMap = new Map();
@@ -152,8 +154,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     if (isFirst) {
       this.workFlowJson = json;
       this.workFlowJson.name = json.path.substring(json.path.lastIndexOf('/') + 1);
-      if (json && !_.isEmpty(json)) {
-        if (json && !_.isEmpty(json)) {
+      if (json && !isEmpty(json)) {
+        if (json && !isEmpty(json)) {
           this.initEditorConf(this.editor, true);
           setTimeout(() => {
             this.actual();
@@ -263,7 +265,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   addOrder(): void {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: AddOrderModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -279,7 +281,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   showDailyPlan(): void {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: CalendarModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -297,9 +299,10 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   closeMenu(): void {
     this.order = null;
+    this.job = null;
   }
 
-  showPanelFuc(order): void {
+  showPanelFuc(order: any): void {
     if (order.arguments && !order.arguments[0]) {
       order.arguments = Object.entries(order.arguments).map(([k, v]) => {
         return {name: k, value: v};
@@ -310,7 +313,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   modifyOrder(): void {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ModifyStartTimeModalComponent,
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
@@ -336,7 +339,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   resumeOrder(): void {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ResumeOrderModalComponent,
       nzComponentParams: {
         preferences: this.preferences,
@@ -422,7 +425,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       this.mapObj = new Map();
       this.workflow.orders = res.orders;
       if (res.orders) {
-        res.orders = _.sortBy(res.orders, 'scheduledFor');
+        res.orders = sortBy(res.orders, 'scheduledFor');
         for (let j = 0; j < res.orders.length; j++) {
           let arr = [res.orders[j]];
           if (this.mapObj.has(JSON.stringify(res.orders[j].position))) {
@@ -587,6 +590,9 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
               isVisible: true,
               orders: JSON.parse(orders)
             };
+          } else if (cell.value.tagName === 'Job'){
+            console.log(cell.value);
+            self.showConfiguration(cell.value.getAttribute('jobName'));
           }
           evt.consume();
         }
@@ -611,7 +617,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       function mxIconSet(state) {
         this.images = [];
         let img;
-        if (state.cell && (state.cell.value.tagName === 'Order')) {
+        if (state.cell && (state.cell.value.tagName === 'Order' || state.cell.value.tagName === 'Job')) {
           img = mxUtils.createImage('./assets/images/menu.svg');
           let x = state.x - (20 * state.shape.scale), y = state.y - (8 * state.shape.scale);
           if (state.cell.value.tagName !== 'Job') {
@@ -622,13 +628,23 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
           img.style.top = y + 'px';
           mxEvent.addListener(img, 'click',
             mxUtils.bind(this, function(evt) {
-              let data = state.cell.getAttribute('order');
-              try {
+              self.order = null;
+              self.job = null;
+              let data;
+              if(state.cell.value.tagName === 'Order') {
+                data = state.cell.getAttribute('order');
                 data = JSON.parse(data);
+              } else{
+                data = {jobName: state.cell.value.getAttribute('jobName')};
+              }
+              try {
                 if (self.menu) {
-
                   setTimeout(() => {
-                    self.order = data;
+                    if(data.jobName) {
+                      self.job = data;
+                    } else {
+                      self.order = data;
+                    }
                     self.nzContextMenuService.create(evt, self.menu);
                   }, 0);
                 }
@@ -787,7 +803,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   private updateXMLJSON(): void {
     let graph = this.editor.graph;
-    if (!_.isEmpty(this.workFlowJson)) {
+    if (!isEmpty(this.workFlowJson)) {
       this.workflowService.convertTryToRetry(this.workFlowJson, () => {
         this.updateWorkflow(graph);
       });
@@ -930,9 +946,9 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  private openModel(order): void {
+  private openModel(order: any): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ChangeParameterModalComponent,
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
@@ -962,14 +978,14 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       controllerId: this.schedulerIds.selected, orderIds: [order.orderId], kill: isKill
     };
     if (this.preferences.auditLog) {
-      let comments = {
+      const comments = {
         radio: 'predefined',
         type: 'Order',
         operation: type,
         name: order.orderId
       };
       this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
         nzComponentParams: {
@@ -984,5 +1000,38 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       this.coreService.post('orders/' + url, obj).subscribe(() => {
       });
     }
+  }
+
+  /* --------- Job action menu operations ----------------*/
+
+  showConfiguration(jobName): void {
+    const job = this.workflow.jobs[jobName];
+    const data = job.executable.TYPE === 'ScriptExecutable' ? job.executable.script : job.executable.className;
+    if (job && job.executable) {
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: ScriptModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          data,
+          jobName,
+          isScript: job.executable.TYPE === 'ScriptExecutable'
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+    }
+  }
+
+  assignDocumentation(): void{
+
+  }
+
+  unassignDocumentation(): void{
+
+  }
+
+  viewDocumentation(): void{
+
   }
 }

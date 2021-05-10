@@ -210,7 +210,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
 
   addController(): void {
     this.modalInstance = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: StartUpModalComponent,
       nzComponentParams: {
         isModal: true,
@@ -225,7 +225,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   editController(controller): void {
     this.coreService.post('controllers/p', {controllerId: controller}).subscribe((res: any) => {
       this.modalInstance = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: StartUpModalComponent,
         nzComponentParams: {
           isModal: true,
@@ -241,7 +241,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
 
   deleteController(matser): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ConfirmModalComponent,
       nzComponentParams: {
         title: 'delete',
@@ -264,7 +264,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   addAgent(controller): void {
     this.getAgents(controller, () => {
       this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: AgentModalComponent,
         nzAutofocus: null,
         nzComponentParams: {
@@ -281,7 +281,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   editAgent(agent, controller): void {
     this.getAgents(controller, () => {
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: AgentModalComponent,
         nzAutofocus: null,
         nzComponentParams: {

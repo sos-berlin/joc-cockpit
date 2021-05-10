@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
-import * as _ from 'underscore';
+import {isEqual} from 'underscore';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
@@ -149,7 +149,7 @@ export class LockComponent implements OnChanges, OnDestroy {
     if(this.isTrash) {
       return;
     }
-    if (!_.isEqual(this.lock.actual, JSON.stringify(this.lock.configuration))) {
+    if (!isEqual(this.lock.actual, JSON.stringify(this.lock.configuration))) {
       if (this.history.length === 20) {
         this.history.shift();
       }

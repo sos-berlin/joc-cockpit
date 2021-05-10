@@ -3,7 +3,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {Subscription} from 'rxjs';
-import * as _ from 'underscore';
+import {isEmpty} from 'underscore';
 import {CommentModalComponent} from '../action/action.component';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -97,11 +97,11 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     if (sessionStorage.$SOS$CONTROLLER && JSON.parse(sessionStorage.$SOS$CONTROLLER)) {
       this.selectedController = JSON.parse(sessionStorage.$SOS$CONTROLLER) || {};
     }
-    if (_.isEmpty(this.selectedController)) {
+    if (isEmpty(this.selectedController)) {
       const interval = setInterval(() => {
         if (sessionStorage.$SOS$CONTROLLER && JSON.parse(sessionStorage.$SOS$CONTROLLER)) {
           this.selectedController = JSON.parse(sessionStorage.$SOS$CONTROLLER) || {};
-          if (!_.isEmpty(this.selectedController)) {
+          if (!isEmpty(this.selectedController)) {
             clearInterval(interval);
           }
         }

@@ -360,7 +360,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     data.isSelected = true;
     this.loading = true;
     const obj = {
-      folders: [{folder: data.name, recursive}],
+      folders: [{folder: data.path, recursive}],
       controllerId: this.schedulerIds.selected,
       compact: true
     };

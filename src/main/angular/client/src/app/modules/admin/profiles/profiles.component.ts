@@ -89,7 +89,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
 
   resetProfile(profile): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ConfirmModalComponent,
       nzComponentParams: {
         title: 'resetProfile',
@@ -109,7 +109,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
 
   resetMainProfile(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ConfirmModalComponent,
       nzComponentParams: {
         title: 'resetAllProfile',

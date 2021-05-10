@@ -1,0 +1,35 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>workflow.label.showConfiguration</span>
+    <i class="text-muted p-l-xs text">{{jobName}}</i>
+  </h4>
+  <button type="button" class="close" aria-label="Close"
+          (click)="activeModal.destroy()">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form spellcheck="false">
+  <div class="modal-body p-a" style="min-height: 112px">
+    <div class="row">
+      <div class="col-md-12" *ngIf="isScript">
+        <div class="b-a">
+          <ngx-codemirror name="cm" [(ngModel)]="data" [options]="cmOption"></ngx-codemirror>
+        </div>
+      </div>
+      <div class="col-md-12" *ngIf="!isScript">
+        <div class="form-group row">
+          <label class="col-sm-3 form-control-label" translate>workflow.label.className</label>
+          <div class=" col-sm-8">
+            <input nz-input name="data" [(ngModel)]="data" readonly>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-grey btn-sm"
+            (click)="activeModal.destroy()" translate>
+      common.button.close
+    </button>
+  </div>
+</form>

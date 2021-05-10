@@ -3,7 +3,7 @@ import {ActivatedRoute, NavigationEnd, Router, RouterEvent} from '@angular/route
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {ToasterService} from 'angular2-toaster';
 import {TranslateService} from '@ngx-translate/core';
-import * as _ from 'underscore';
+import {isEqual, clone} from 'underscore';
 import {filter} from 'rxjs/operators';
 import {Subscription} from 'rxjs';
 import {DataService} from '../data.service';
@@ -34,7 +34,7 @@ export class RoleModalComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.oldRole) {
-      this.currentRole = _.clone(this.oldRole.mainObj);
+      this.currentRole = clone(this.oldRole.mainObj);
       this.oldName = this.oldRole.name;
       if (!this.copy) {
         this.currentRole.role = this.oldRole.name;
@@ -86,7 +86,7 @@ export class RoleModalComponent implements OnInit {
         }
       }
       for (let i = 0; i < this.allRoles.length; i++) {
-        if (this.allRoles[i] === this.oldName || _.isEqual(this.allRoles[i], this.oldName)) {
+        if (this.allRoles[i] === this.oldName || isEqual(this.allRoles[i], this.oldName)) {
           this.allRoles.splice(i, 1);
           this.allRoles.push(obj.role);
           break;
@@ -131,7 +131,7 @@ export class ControllerModalComponent implements OnInit {
   ngOnInit(): void {
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     if (this.oldController) {
-      this.currentController = _.clone(this.oldController);
+      this.currentController = clone(this.oldController);
       this.allRoles = this.allRoles.filter((role) => {
         return this.role.name !== role;
       });
@@ -290,7 +290,7 @@ export class RolesComponent implements OnDestroy {
 
   addRole(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: RoleModalComponent,
       nzAutofocus: null,
       nzComponentParams: {
@@ -310,7 +310,7 @@ export class RolesComponent implements OnDestroy {
 
   editRole(role): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: RoleModalComponent,
       nzAutofocus: null,
       nzComponentParams: {
@@ -330,7 +330,7 @@ export class RolesComponent implements OnDestroy {
 
   copyRole(role): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: RoleModalComponent,
       nzAutofocus: null,
       nzComponentParams: {
@@ -362,7 +362,7 @@ export class RolesComponent implements OnDestroy {
     }
     if (!isAssigned) {
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: ConfirmModalComponent,
         nzComponentParams: {
           title: 'delete',
@@ -395,7 +395,7 @@ export class RolesComponent implements OnDestroy {
 
   addController(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ControllerModalComponent,
       nzComponentParams: {
         controllerRoles: this.controllerRoles,
@@ -414,7 +414,7 @@ export class RolesComponent implements OnDestroy {
 
   copyController(role, controller): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ControllerModalComponent,
       nzComponentParams: {
         controllerRoles: this.controllerRoles,
@@ -436,7 +436,7 @@ export class RolesComponent implements OnDestroy {
 
   deleteController(role, controller): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ConfirmModalComponent,
       nzComponentParams: {
         title: 'delete',

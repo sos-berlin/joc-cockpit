@@ -1,9 +1,11 @@
 import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {isEmpty} from 'underscore';
+import {Subscription} from 'rxjs';
+import {ClipboardService} from 'ngx-clipboard';
 import {AuthService} from '../../components/guard';
 import {CoreService} from '../../services/core.service';
-import {ActivatedRoute} from '@angular/router';
-import * as _ from 'underscore';
-import {Subscription} from 'rxjs';
+
 declare const $;
 
 @Component({
@@ -42,20 +44,21 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
   taskCount = 1;
   @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
 
-  constructor(private route: ActivatedRoute, private authService: AuthService, public coreService: CoreService) {
+  constructor(private route: ActivatedRoute, private authService: AuthService, public coreService: CoreService,
+              private clipboardService: ClipboardService) {
   }
 
-  static calculateHeight() {
+  static calculateHeight(): void {
     const $header = $('.upper-header').height() || 30;
     $('.log').css('margin-top', $header + ' px');
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize() {
+  onResize(): void {
     Log2Component.calculateHeight();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
@@ -83,14 +86,14 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     this.init();
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     if (!this.scrolled && this.dataBody.nativeElement) {
       this.dataBody.nativeElement.scrollTop = this.dataBody.nativeElement.scrollHeight;
       this.scrolled = true;
     }
   }
 
-  scrollBottom() {
+  scrollBottom(): void {
     const pre = this.dataBody.nativeElement;
     $('#pp').scroll(() => {
       if (!this.scrolled) {
@@ -106,7 +109,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  init() {
+  init(): void {
     this.loading = true;
     if (this.route.snapshot.queryParams['historyId']) {
       this.orderId = this.route.snapshot.queryParams['orderId'];
@@ -117,7 +120,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  loadOrderLog() {
+  loadOrderLog(): void {
     this.workflow = this.route.snapshot.queryParams['workflow'];
     const order: any = {};
     order.controllerId = this.route.snapshot.queryParams['schedulerId'];
@@ -144,7 +147,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  showHideTask(id, res) {
+  showHideTask(id, res): void {
     const x: any = document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
       const element = x[i];
@@ -158,7 +161,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
             responseType: 'text' as 'json',
             observe: 'response' as 'response'
           }).subscribe((res1: any) => {
-            if(res1) {
+            if (res1) {
               this.renderData(res1.body, 'tx_log_' + (i + 1));
               document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-down');
               document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-up');
@@ -169,6 +172,8 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
                 obj.tasks.push({taskId: jobs.taskId, eventId: res1.headers.get('X-Log-Event-Id')});
                 this.runningTaskLog(obj, 'tx_log_' + (i + 1));
               }
+            } else{
+              this.loading = false;
             }
           });
         } else {
@@ -340,7 +345,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
       }
       const datetime = this.preferences.logTimezone ? this.coreService.getLogDateFormat(dt[i].controllerDatetime, this.preferences.zone) : dt[i].controllerDatetime;
       col = (datetime + ' <span style="width: 64px;display: inline-block;">[' + dt[i].logLevel + ']</span> ' +
-        '[' + dt[i].logEvent + '] ' + (dt[i].orderId ? ('id=' + dt[i].orderId) : '') + ( dt[i].position ? ', pos=' + dt[i].position : '') + '');
+        '[' + dt[i].logEvent + '] ' + (dt[i].orderId ? ('id=' + dt[i].orderId) : '') + (dt[i].position ? ', pos=' + dt[i].position : '') + '');
       if (dt[i].job) {
         col += ', Job=' + dt[i].job;
       }
@@ -353,12 +358,12 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
           col += 'id=' + dt[i].agentId + ', ';
         }
         if (dt[i].agentDatetime) {
-          const datetime = this.preferences.logTimezone ? this.coreService.getLogDateFormat(dt[i].agentDatetime, this.preferences.zone) : dt[i].agentDatetime;
-          col += 'time=' + datetime;
+          const dateTime = this.preferences.logTimezone ? this.coreService.getLogDateFormat(dt[i].agentDatetime, this.preferences.zone) : dt[i].agentDatetime;
+          col += 'time=' + dateTime;
         }
         col += ')';
       }
-      if (dt[i].error && !_.isEmpty(dt[i].error)) {
+      if (dt[i].error && !isEmpty(dt[i].error)) {
         col += ', Error (status=' + dt[i].error.errorState;
         if (dt[i].error.errorCode) {
           col += ', code=' + dt[i].error.errorCode;
@@ -419,7 +424,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     const timestampRegex = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].(\d)+([+,-])(\d+)(:\d+)*/;
     ('\n' + res).replace(/\r?\n([^\r\n]+((\[)(error|info\s?|fatal\s?|warn\s?|debug\d?|trace|stdout|stderr)(\])||([a-z0-9:\/\\]))[^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
       let div = window.document.createElement('div'); // Now create a div element and append it to a non-appended span.
-      if(timestampRegex.test(match)) {
+      if (timestampRegex.test(match)) {
         let arr = match.split(/\s+\[/);
         let date;
         if (arr && arr.length > 0) {
@@ -540,7 +545,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
           responseType: 'text' as 'json',
           observe: 'response' as 'response'
         }).subscribe((res: any) => {
-          if(res) {
+          if (res) {
             this.renderData(res.body, 'tx_log_' + (i + 1));
             document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-down');
             document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-up');
@@ -557,7 +562,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  collapseAll() {
+  collapseAll(): void {
     const x: any = document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
       const a = document.getElementById('tx_log_' + (i + 1));
@@ -579,6 +584,10 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     if (this.canceller) {
       this.canceller.unsubscribe();
     }
+  }
+
+  copy(): void {
+    this.clipboardService.copyFromContent(this.dataBody.nativeElement.innerText);
   }
 
   downloadLog(): void {
@@ -617,7 +626,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
       } else {
         this.sheetContent += 'div.fatal {display: block;}\n';
       }
-    }  else if (type === 'DETAIL') {
+    } else if (type === 'DETAIL') {
       if (!this.object.checkBoxs.detail) {
         this.sheetContent += 'div.detail {display: none;}\n';
       } else {
@@ -678,14 +687,14 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
    * Save the user preference of log filter
    *
    */
-  saveUserPreference() {
+  saveUserPreference(): void {
     this.preferences.logFilter = this.object.checkBoxs;
-    let configObj: any = {
+    const configObj: any = {
       controllerId: this.schedulerIds.selected,
       account: this.authService.currentUserData,
       configurationType: 'PROFILE',
       id: window.sessionStorage.preferenceId,
-      configurationItem : JSON.stringify(this.preferences)
+      configurationItem: JSON.stringify(this.preferences)
     };
     sessionStorage.setItem('changedPreferences', configObj.configurationItem);
     this.coreService.post('configuration/save', configObj).subscribe(res => {

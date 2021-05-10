@@ -108,6 +108,7 @@ export class CalendarModalComponent implements OnInit {
 
   private showCalendar(): void {
     $('#full-calendar').calendar({
+      language: localStorage.$SOS$LANG,
       renderEnd: (e) => {
         this.calendarTitle = e.currentYear;
         if (this.toDate) {

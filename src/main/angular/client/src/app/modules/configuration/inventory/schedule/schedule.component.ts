@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
-import * as _ from 'underscore';
+import {isEmpty, isArray, isEqual, clone} from 'underscore';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
@@ -203,7 +203,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
 
   updateVariableList(): void {
     this.variableList = [];
-    if (this.workflow.orderRequirements && this.workflow.orderRequirements.parameters && !_.isEmpty(this.workflow.orderRequirements.parameters)) {
+    if (this.workflow.orderRequirements && this.workflow.orderRequirements.parameters && !isEmpty(this.workflow.orderRequirements.parameters)) {
       this.variableList = Object.entries(this.workflow.orderRequirements.parameters).map(([k, v]) => {
         const val: any = v;
         let isExist = false;
@@ -316,8 +316,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
     let obj = this.coreService.clone(this.schedule.configuration);
     obj.variables = obj.variables.map(variable => ({name: variable.name, value: variable.value}));
-    if (this.schedule.actual && !_.isEqual(this.schedule.actual, JSON.stringify(obj))) {
-      if (obj.variables && _.isArray(obj.variables)) {
+    if (this.schedule.actual && !isEqual(this.schedule.actual, JSON.stringify(obj))) {
+      if (obj.variables && isArray(obj.variables)) {
         this.coreService.convertArrayToObject(obj, 'variables', true);
       }
       if (obj.calendars.length > 0) {
@@ -386,7 +386,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     if (!calendar.frequencyList) {
       calendar.frequencyList = [];
     }
-    if (calendar.includes && !_.isEmpty(calendar.includes)) {
+    if (calendar.includes && !isEmpty(calendar.includes)) {
       if (calendar.includes.weekdays && calendar.includes.weekdays.length > 0) {
         calendar.includes.weekdays.forEach(weekday => {
           obj = {
@@ -553,7 +553,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private validateJSON(json): void {
-    const obj = _.clone(json);
+    const obj = clone(json);
     obj.path = this.data.path;
     this.coreService.post('inventory/' + this.objectType + '/validate', obj).subscribe((res: any) => {
       this.setErrorMessage(res);

@@ -38,7 +38,7 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
 
   subscription: Subscription;
 
-  constructor(public coreService: CoreService, private dataService: DataService) {
+  constructor(public coreService: CoreService, private dataService: DataService, private translate: TranslateService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -106,6 +106,11 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
       if (res[prop] > 0) {
         let obj: any = {};
         obj.name = prop;
+        try {
+          this.translate.get(prop.toUpperCase()).subscribe(translatedValue => {
+            obj.name = translatedValue;
+          });
+        } catch (e){}
         obj.value = res[prop];
         ordersData.push(obj);
         if (prop === 'pending') {

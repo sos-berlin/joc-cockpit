@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import * as moment from 'moment';
-import * as _ from 'underscore';
+import {isEmpty, isArray, object} from 'underscore';
 import {NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 
@@ -29,13 +29,13 @@ export class ChangeParameterModalComponent implements OnInit {
     if (this.variable) {
       this.variables = Object.assign(this.variables, [this.coreService.clone(this.variable)]);
     } else if (this.order && (this.order.variables)) {
-      if (!_.isArray(this.order.variables)) {
+      if (!isArray(this.order.variables)) {
         this.order.variables = this.coreService.convertObjectToArray(this.order, 'variables');
       } else {
         this.variables = this.coreService.clone(this.order.variables);
       }
     } else if (this.order && (this.order.arguments)) {
-      if (!_.isArray(this.order.arguments)) {
+      if (!isArray(this.order.arguments)) {
         this.order.arguments = this.coreService.convertObjectToArray(this.order, 'variables');
       } else {
         this.variables = this.coreService.clone(this.order.arguments);
@@ -48,7 +48,7 @@ export class ChangeParameterModalComponent implements OnInit {
   }
 
   updateVariableList(): void {
-    if (this.orderRequirements && this.orderRequirements.parameters && !_.isEmpty(this.orderRequirements.parameters)) {
+    if (this.orderRequirements && this.orderRequirements.parameters && !isEmpty(this.orderRequirements.parameters)) {
       this.variableList = Object.entries(this.orderRequirements.parameters).map(([k, v]) => {
         const val: any = v;
         let isExist = false;
@@ -146,7 +146,7 @@ export class ChangeParameterModalComponent implements OnInit {
         argu.splice(argu.length - 1, 1);
       }
       if (argu.length > 0) {
-        obj.variables = _.object(argu.map((val) => {
+        obj.variables = object(argu.map((val) => {
           if (!val.value && val.value !== false && val.value !== 0) {
             this.removeVariables.push({name: val.name, value: val.value});
           }

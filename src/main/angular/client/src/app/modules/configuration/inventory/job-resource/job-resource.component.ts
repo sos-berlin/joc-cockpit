@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
-import * as _ from 'underscore';
+import {isArray, isEqual} from 'underscore';
 import {Subscription} from 'rxjs';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -213,20 +213,20 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       return;
     }
     const obj = this.coreService.clone(this.jobResource.configuration);
-    if (this.jobResource.actual && !_.isEqual(this.jobResource.actual, JSON.stringify(obj))) {
-      if (obj.env && _.isArray(obj.env)) {
+    if (this.jobResource.actual && !isEqual(this.jobResource.actual, JSON.stringify(obj))) {
+      if (obj.env && isArray(obj.env)) {
         obj.env.filter((env) => {
           this.coreService.addSlashToString(env, 'value');
         });
         this.coreService.convertArrayToObject(obj, 'env', true);
       }
-      if (obj.arguments && _.isArray(obj.arguments)) {
+      if (obj.arguments && isArray(obj.arguments)) {
         obj.arguments.filter((argu) => {
           this.coreService.addSlashToString(argu, 'value');
         });
         this.coreService.convertArrayToObject(obj, 'arguments', true);
       }
-    
+
       if (this.history.length === 20) {
         this.history.shift();
       }
@@ -288,7 +288,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       this.jobResource = res;
       this.jobResource.path1 = this.data.path;
       this.jobResource.name = this.data.name;
-      
+
       if (this.jobResource.configuration.env) {
         this.jobResource.configuration.env = this.coreService.convertObjectToArray(this.jobResource.configuration, 'env');
         this.jobResource.configuration.env.filter((env) => {

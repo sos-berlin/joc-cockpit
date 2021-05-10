@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {CoreService} from '../../services/core.service';
 import {NzModalRef} from 'ng-zorro-antd/modal';
+import {CoreService} from '../../services/core.service';
 
 @Component({
   selector: 'app-resume-order',

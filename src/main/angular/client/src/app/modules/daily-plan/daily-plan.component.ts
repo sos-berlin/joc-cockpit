@@ -757,16 +757,16 @@ export class SearchComponent implements OnInit {
   schedules = [];
   workflowTree = [];
   checkOptions = [
-    {status: 'ALL', text: 'all'},
-    {status: 'PLANNED', text: 'planned'},
-    {status: 'PENDING', text: 'pending'},
-    {status: 'INPROGRESS', text: 'incomplete'},
-    {status: 'RUNNING', text: 'running'},
-    {status: 'SUSPENDED', text: 'suspended'},
-    {status: 'WAITING', text: 'waiting'},
-    {status: 'BLOCKED', text: 'blocked'},
-    {status: 'FAILED', text: 'failed'},
-    {status: 'FINISHED', text: 'finished'}
+    {status: 'ALL', text: 'all', checked: false},
+    {status: 'PLANNED', text: 'planned', checked: false},
+    {status: 'PENDING', text: 'pending', checked: false},
+    {status: 'INPROGRESS', text: 'incomplete', checked: false},
+    {status: 'RUNNING', text: 'running', checked: false},
+    {status: 'SUSPENDED', text: 'suspended', checked: false},
+    {status: 'WAITING', text: 'waiting', checked: false},
+    {status: 'BLOCKED', text: 'blocked', checked: false},
+    {status: 'FAILED', text: 'failed', checked: false},
+    {status: 'FINISHED', text: 'finished', checked: false}
   ];
 
   constructor(private authService: AuthService, public coreService: CoreService) {
@@ -1112,7 +1112,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   createPlan(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: CreatePlanModalComponent,
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
@@ -1155,7 +1155,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   deleteSubmission(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: RemovePlanModalComponent,
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
@@ -1191,7 +1191,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
     function openModal(requirements) {
       self.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: ChangeParameterModalComponent,
         nzComponentParams: {
           schedulerId: self.schedulerIds.selected,
@@ -1206,7 +1206,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   submitSelectedOrder(): void {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: RemovePlanModalComponent,
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
@@ -1220,7 +1220,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   submitOrder(order, workflow): void {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: RemovePlanModalComponent,
       nzComponentParams: {
         order,
@@ -1299,7 +1299,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         }
       });
       this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
         nzComponentParams: {
@@ -1338,7 +1338,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.restCall(false, null, plan.value, 'Resume');
     } else {
       this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: ResumeOrderModalComponent,
         nzComponentParams: {
           preferences: this.preferences,
@@ -1354,7 +1354,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   removeSelectedOrder(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: RemovePlanModalComponent,
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
@@ -1375,7 +1375,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   removeOrder(order, workflow): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: RemovePlanModalComponent,
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
@@ -1677,7 +1677,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   modifyOrder(order): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ModifyStartTimeModalComponent,
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
@@ -1711,7 +1711,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   createCustomization(): void {
     if (this.schedulerIds.selected) {
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: FilterModalComponent,
         nzClassName: 'lg',
         nzComponentParams: {
@@ -1739,7 +1739,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   editFilters(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: EditFilterModalComponent,
       nzComponentParams: {
         filterList: this.filterList,
@@ -1919,7 +1919,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         });
       }
       this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
         nzComponentParams: {
@@ -2168,7 +2168,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   private _openModel(plan, order, orderRequirements): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ChangeParameterModalComponent,
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
@@ -2453,7 +2453,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           filterObj.id = filter.id;
         }
         this.modal.create({
-          nzTitle: null,
+          nzTitle: undefined,
           nzContent: FilterModalComponent,
           nzClassName: 'lg',
           nzComponentParams: {

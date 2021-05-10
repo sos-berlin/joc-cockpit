@@ -2,7 +2,7 @@ import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import * as _ from 'underscore';
+import {clone} from 'underscore';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
@@ -54,7 +54,7 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
   /* ---------------------------- Action ----------------------------------*/
 
   showUsage(calendar): void {
-    let cal = _.clone(calendar);
+    let cal = clone(calendar);
     this.coreService.post('calendar/used', {
       id: calendar.id,
       controllerId: this.schedulerIds.selected
@@ -241,7 +241,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   showUsage(calendar): void {
-    let cal = _.clone(calendar);
+    let cal = clone(calendar);
     this.coreService.post('calendar/used', {
       id: calendar.id,
       controllerId: this.schedulerIds.selected

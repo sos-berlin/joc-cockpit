@@ -8,13 +8,16 @@
                           log.label.logs
                         </span>
                     </div>
-                    <button type="button" class="btn btn-grey btn-sm m-l-12" (click)="cancel()">
-                        <i class="fa fa-times"></i>&nbsp;
-                        <span translate>common.button.cancel</span>
-                    </button>
+                    <button type="button" class="btn btn-sm btn-grey m-l-12" (click)="copy()" translate>
+                      <i class="fa fa-copy"></i>&nbsp;
+                      log.button.copyToClipboard</button>
                     <button type="button" class="btn btn-grey btn-sm m-l-12" (click)="downloadLog()">
                         <i class="fa fa-download"></i>&nbsp;
                         <span translate>common.button.download</span>
+                    </button>
+                    <button type="button" class="btn btn-grey btn-sm m-l-12" (click)="cancel()">
+                      <i class="fa fa-times"></i>&nbsp;
+                      <span translate>common.button.cancel</span>
                     </button>
                 </div>
             </div>
@@ -25,7 +28,7 @@
 <div class="padding p-b-0">
     <div class="row m-t-xs">
         <div class="col-md-12">
-            <h5 class=" _300 m-t-sm">
+            <h5 class="_300 m-t-sm">
                 <span *ngIf="orderId">{{workflow}} - <i class="text-muted">{{orderId}}</i></span>
                 <span *ngIf="taskId"><span *ngIf="job">{{job}} </span> <span *ngIf="!job" translate>common.label.taskId </span> - <i class="text-muted">{{taskId}}</i></span>
             </h5>

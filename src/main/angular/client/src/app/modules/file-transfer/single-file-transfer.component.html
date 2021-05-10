@@ -144,8 +144,7 @@
                     <tr>
                       <td *ngIf="permission.joc.fileTransfer.manage" [nzShowCheckbox]="true"
                           [nzDisabled]="transfer.state._text=='SUCCESSFUL'"
-                          [(nzChecked)]="file.checked"
-                          (nzCheckedChange)="checkALLFilesFnc(transfer, $event)">
+                          [(nzChecked)]="file.checked">
                       </td>
                       <td>{{file.sourceName}}</td>
                       <td>{{file.sourcePath}}</td>

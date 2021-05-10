@@ -90,7 +90,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   about(): any {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: AboutModalComponent,
       nzFooter: null,
       nzClosable: false

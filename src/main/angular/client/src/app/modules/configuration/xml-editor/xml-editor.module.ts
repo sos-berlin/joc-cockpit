@@ -2,7 +2,6 @@ import {NgModule} from '@angular/core';
 import {XmlEditorRoutingModule} from './xml-editor-routing.module';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import {FileUploadModule} from 'ng2-file-upload';
-import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {SharedModule} from '../../shared/shared.module';
 import {
   ConfirmationModalComponent,
@@ -22,8 +21,7 @@ const COMPONENTS = [ImportModalComponent, ShowModalComponent,
     XmlEditorRoutingModule,
     SharedModule,
     FileUploadModule,
-    CKEditorModule,
-    CodemirrorModule
+    CKEditorModule
   ],
   declarations: [
     XmlEditorComponent,

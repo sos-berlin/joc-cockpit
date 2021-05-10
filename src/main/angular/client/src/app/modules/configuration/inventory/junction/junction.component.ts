@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
-import * as _ from 'underscore';
+import {isEqual} from 'underscore';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
@@ -158,7 +158,7 @@ export class JunctionComponent implements OnChanges, OnDestroy {
     if (this.lifetime) {
       this.junction.configuration.lifetime = this.workflowService.convertStringToDuration(this.lifetime);
     }
-    if (!_.isEqual(this.junction.actual, JSON.stringify(this.junction.configuration))) {
+    if (!isEqual(this.junction.actual, JSON.stringify(this.junction.configuration))) {
       if (this.history.length === 20) {
         this.history.shift();
       }

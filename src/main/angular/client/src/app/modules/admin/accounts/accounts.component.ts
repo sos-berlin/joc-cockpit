@@ -1,12 +1,12 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
+import {isEqual, clone} from 'underscore';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {DataService} from '../data.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
-import * as _ from 'underscore';
 
 @Component({
   selector: 'app-ngbd-modal-content',
@@ -28,7 +28,7 @@ export class AccountModalComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.oldUser) {
-      this.currentUser = _.clone(this.oldUser);
+      this.currentUser = clone(this.oldUser);
       this.currentUser.fakePassword = '00000000';
       this.currentUser.userName = this.currentUser.user;
       if (this.copy) {
@@ -70,7 +70,7 @@ export class AccountModalComponent implements OnInit {
       this.userDetail.users.push(data);
     } else {
       for (let i = 0; i < this.userDetail.users.length; i++) {
-        if (this.userDetail.users[i] === this.oldUser || _.isEqual(this.userDetail.users[i], this.oldUser)) {
+        if (this.userDetail.users[i] === this.oldUser || isEqual(this.userDetail.users[i], this.oldUser)) {
           this.userDetail.users[i].user = obj.user;
           this.userDetail.users[i].password = obj.password;
           this.userDetail.users[i].roles = obj.roles;
@@ -177,7 +177,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
   addUser(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: AccountModalComponent,
       nzAutofocus: null,
       nzComponentParams: {
@@ -198,7 +198,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
   editUser(user): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: AccountModalComponent,
       nzAutofocus: null,
       nzComponentParams: {
@@ -219,7 +219,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
   copyUser(user): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: AccountModalComponent,
       nzAutofocus: null,
       nzComponentParams: {
@@ -240,7 +240,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
   deleteUser(user): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ConfirmModalComponent,
       nzComponentParams: {
         title: 'delete',

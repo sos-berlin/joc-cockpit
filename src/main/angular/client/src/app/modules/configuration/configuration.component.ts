@@ -3,7 +3,7 @@ import {NavigationEnd, Router, RouterEvent} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
 
-declare const $;
+declare const $: any;
 
 @Component({
   selector: 'app-configuration',

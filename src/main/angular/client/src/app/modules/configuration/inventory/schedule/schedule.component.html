@@ -164,8 +164,7 @@
         </div>
         <div class="form-group row" [ngClass]="{'disable-link': isTrash}">
           <div class="col-sm-12" *ngIf="variableList.length > schedule.configuration.variables.length">
-            <a class="text-u-l" *ngIf="schedule.configuration.variables.length>0" (click)="addVariable()" translate>order.button.addAnotherVariable</a>
-            <a class="text-u-l" *ngIf="schedule.configuration.variables.length==0" (click)="addVariable()" translate>order.button.addVariable</a>
+            <a class="text-u-l" (click)="addVariable()" translate>order.button.addVariable</a>
           </div>
         </div>
       </form>

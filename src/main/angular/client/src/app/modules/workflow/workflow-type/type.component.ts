@@ -1,5 +1,7 @@
 import {Component, Input, Output, EventEmitter, OnChanges, SimpleChanges} from '@angular/core';
+import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
+import {ScriptModalComponent} from '../script-modal/script-modal.component';
 
 @Component({
   selector: 'app-type',
@@ -16,7 +18,7 @@ export class TypeComponent implements OnChanges {
   @Output() update: EventEmitter<any> = new EventEmitter();
   sideBar: any = {};
 
-  constructor(public coreService: CoreService) {
+  constructor(public coreService: CoreService, private modal: NzModalService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -39,18 +41,18 @@ export class TypeComponent implements OnChanges {
     }
   }
 
-  toggleFunc(json, flag) {
+  toggleFunc(json, flag): void {
     for (let i = 0; i < json.instructions.length; i++) {
       json.instructions[i].show = flag;
     }
   }
 
-  collapse(node) {
+  collapse(node): void {
     node.show = !node.show;
     this.update.emit();
   }
 
-  recursiveUpdate(node, flag) {
+  recursiveUpdate(node, flag): void {
     function recursive(json) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -109,11 +111,11 @@ export class TypeComponent implements OnChanges {
     recursive(node);
   }
 
-  showOrders(data) {
+  showOrders(data): void {
     const self = this;
     this.sideBar = {
       orders: [],
-      data: data
+      data
     };
     if (data.orders) {
       this.sideBar.orders = data.orders || [];
@@ -180,19 +182,19 @@ export class TypeComponent implements OnChanges {
     this.sideBar.isVisible = true;
   }
 
-  expandNode(node) {
+  expandNode(node): void {
     node.show = true;
     this.recursiveUpdate(node, true);
   }
 
-  collapseNode(node) {
+  collapseNode(node): void {
     node.show = false;
     this.recursiveUpdate(node, false);
   }
 
-  private updateOrder() {
+  private updateOrder(): void {
     const self = this;
-    let mapObj = new Map();
+    const mapObj = new Map();
 
     function recursive(json) {
       if (json.instructions) {
@@ -266,7 +268,7 @@ export class TypeComponent implements OnChanges {
     }
   }
 
-  private checkOrders(instruction, mapObj) {
+  private checkOrders(instruction, mapObj): void {
     if (instruction.position) {
       delete instruction['orders'];
       let _order = mapObj.get(JSON.stringify(instruction.position));
@@ -282,5 +284,40 @@ export class TypeComponent implements OnChanges {
     } else {
       instruction.count = 0;
     }
+  }
+
+  /* --------- Job action menu operations ----------------*/
+
+  showConfiguration(instruction): void {
+    if (instruction.TYPE === 'Job') {
+      const job = this.configuration.jobs[instruction.jobName];
+      const data = job.executable.TYPE === 'ScriptExecutable' ? job.executable.script : job.executable.className;
+      if (job && job.executable) {
+        this.modal.create({
+          nzTitle: undefined,
+          nzContent: ScriptModalComponent,
+          nzClassName: 'lg',
+          nzComponentParams: {
+            data,
+            jobName: instruction.jobName,
+            isScript: job.executable.TYPE === 'ScriptExecutable'
+          },
+          nzFooter: null,
+          nzClosable: false
+        });
+      }
+    }
+  }
+
+  assignDocumentation(instruction): void{
+
+  }
+
+  unassignDocumentation(instruction): void{
+
+  }
+
+  viewDocumentation(instruction): void{
+
   }
 }

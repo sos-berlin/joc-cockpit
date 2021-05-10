@@ -4937,6 +4937,9 @@ tr.disabled-row td:not(.menu) {
   user-select: none;
   background: 0 0;
 }
+.rg-right {
+  width: 16px;
+}
 
 .rg-bottom span {
   position: absolute;
@@ -5094,11 +5097,11 @@ General CSS
   bottom: 20px;
   border-radius: 50%;
   transition: all .3s;
-  box-shadow: 2px 2px 5px var(--background-color);
+  box-shadow: 1px 1px 8px var(--text-color);
   cursor: pointer;
   z-index: 9999;
   padding: 2px 10px;
-  background: 0 0;
+  background: var(--background-color);
   right: 22px;
   font-size: 22px
 }

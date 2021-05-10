@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
 import {FileUploadModule} from 'ng2-file-upload';
-import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {NzMentionModule} from 'ng-zorro-antd/mention';
 import {NzAutocompleteModule} from 'ng-zorro-antd/auto-complete';
 import {NgJsonEditorModule} from 'ang-jsoneditor';
@@ -40,7 +39,6 @@ const COMPONENTS = [FrequencyModalComponent, ImportComponent, UpdateWorkflowComp
     InventoryRoutingModule,
     SharedModule,
     FileUploadModule,
-    CodemirrorModule,
     NzMentionModule,
     NzAutocompleteModule,
     NgJsonEditorModule,

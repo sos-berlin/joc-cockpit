@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import * as _ from 'underscore';
+import {isEqual, object} from 'underscore';
 import {ToasterService} from 'angular2-toaster';
 import {TranslateService} from '@ngx-translate/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -33,7 +33,7 @@ export class OrderVariableComponent implements OnInit {
   changeParameter(order, variable): void {
     this.getRequirements(order, () => {
       const modal = this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: ChangeParameterModalComponent,
         nzComponentParams: {
           schedulerId: this.schedulerId,
@@ -72,12 +72,12 @@ export class OrderVariableComponent implements OnInit {
         this.coreService.post('daily_plan/orders/modify', {
           controllerId: this.schedulerId,
           orderIds: [order.orderId],
-          removeVariables: _.object([variable].map((val) => {
+          removeVariables: object([variable].map((val) => {
             return [val.name, val.value];
           }))
         }).subscribe((result) => {
           for (let i = 0; i < order.variables.length; i++) {
-            if (_.isEqual(order.variables[i], variable)) {
+            if (isEqual(order.variables[i], variable)) {
               order.variables.splice(i, 1);
               break;
             }

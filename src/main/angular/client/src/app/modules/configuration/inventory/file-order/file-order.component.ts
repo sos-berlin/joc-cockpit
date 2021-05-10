@@ -1,6 +1,6 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {Subscription} from 'rxjs';
-import * as _ from 'underscore';
+import {isEqual} from 'underscore';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 
@@ -291,7 +291,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     if (this.isTrash) {
       return;
     }
-    if (this.fileOrder.actual && !_.isEqual(this.fileOrder.actual, JSON.stringify(this.fileOrder.configuration))) {
+    if (this.fileOrder.actual && !isEqual(this.fileOrder.actual, JSON.stringify(this.fileOrder.configuration))) {
       let isValid = false;
       if (this.fileOrder.configuration.workflowName && this.fileOrder.configuration.agentName) {
         isValid = true;

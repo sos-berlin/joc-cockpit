@@ -12,13 +12,11 @@ declare const $;
   templateUrl: './add-restriction-dialog.html'
 })
 export class AddRestrictionComponent implements OnInit {
-
   @Input() schedulerId: any;
   @Input() preferences: any;
   @Input() data: any = {};
 
   Math = Math;
-  calObj: any = {};
   selectedMonths: any = [];
   selectedMonthsU: any = [];
   tempItems: any = [];
@@ -40,13 +38,13 @@ export class AddRestrictionComponent implements OnInit {
   countArr = [0, 1, 2, 3, 4];
   countArrU = [1, 2, 3, 4];
   daysOptions = [
-    {label: 'sunday', value: '0'},
-    {label: 'monday', value: '1'},
-    {label: 'tuesday', value: '2'},
-    {label: 'wednesday', value: '3'},
-    {label: 'thursday', value: '4'},
-    {label: 'friday', value: '5'},
-    {label: 'saturday', value: '6'}
+    {label: 'sunday', value: '0', checked: false},
+    {label: 'monday', value: '1', checked: false},
+    {label: 'tuesday', value: '2', checked: false},
+    {label: 'wednesday', value: '3', checked: false},
+    {label: 'thursday', value: '4', checked: false},
+    {label: 'friday', value: '5', checked: false},
+    {label: 'saturday', value: '6', checked: false}
   ];
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, public modal: NzModalService, private calendarService: CalendarService) {
@@ -185,6 +183,7 @@ export class AddRestrictionComponent implements OnInit {
     }
     if (this.frequency.tab === 'specificDays') {
       $('#calendar').calendar({
+        language: localStorage.$SOS$LANG,
         clickDay: (e) => {
           this.selectDate(e);
         }
@@ -256,6 +255,7 @@ export class AddRestrictionComponent implements OnInit {
     this.onFrequencyChange();
     if (this.frequency.tab === 'specificDays') {
       $('#calendar').calendar({
+        language: localStorage.$SOS$LANG,
         clickDay: (e) => {
           this.selectDate(e);
         }
@@ -708,7 +708,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
 
   assignCalendar(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: TreeModalComponent,
       nzComponentParams: {
         schedulerId: this.schedulerId,
@@ -727,7 +727,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
 
   assignHolidayCalendar(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: TreeModalComponent,
       nzComponentParams: {
         schedulerId: this.schedulerId,
@@ -818,7 +818,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
 
   addPeriodInCalendar(calendar): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: PeriodComponent,
       nzAutofocus: null,
       nzComponentParams: {
@@ -847,7 +847,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
 
   updatePeriodInCalendar(calendar, index, period): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: PeriodComponent,
       nzAutofocus: null,
       nzComponentParams: {
@@ -884,6 +884,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   showCalendar(): void {
     setTimeout(() => {
       $('#full-calendar').calendar({
+        language: localStorage.$SOS$LANG,
         renderEnd: (e) => {
           this.calendarTitle = e.currentYear;
           if (this.toDate) {
@@ -891,7 +892,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
           }
         }
       });
-      let obj: any = {
+      const obj: any = {
         dateFrom: this.coreService.getStringDate(null),
         dateTo: this.calendarTitle + '-12-31'
       };
@@ -956,7 +957,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
 
   addRestrictionInCalendar(data): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzClassName: 'lg',
       nzContent: AddRestrictionComponent,
       nzComponentParams: {
@@ -976,7 +977,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
 
   editRestrictionInCalendar(data, frequency): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: AddRestrictionComponent,
       nzClassName: 'lg',
       nzComponentParams: {

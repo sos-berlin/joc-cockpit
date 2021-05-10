@@ -13,11 +13,6 @@ const routes: Routes = [
         data: {breadcrumb: 'breadcrumb.label.agents'}
       },
       {
-        path: 'agent_job_executions',
-        loadChildren: () => import('./agent-job-execution/agent-job-execution.module').then(m => m.AgentJobExecutionModule),
-        data: {breadcrumb: 'breadcrumb.label.agentJobExecutions'}
-      },
-      {
         path: 'locks',
         loadChildren: () => import('./lock/lock.module').then(m => m.LockModule),
         data: {breadcrumb: 'breadcrumb.label.locks'}},

@@ -39,7 +39,7 @@
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.title</label>
         <div class="col-md-8 col-lg-9">
           <label class="w-full">
-            <input type="text" autocomplete="off" [maxLength]="255" class="form-control" [(ngModel)]="selectedNode.job.title"
+            <input type="text" autocomplete="off" [maxLength]="255" class="form-control" [(ngModel)]="selectedNode.job.title" (blur)="saveToHistory();"
                    placeholder="{{'common.placeholder.title' | translate}}" name="title">
           </label>
         </div>
@@ -92,7 +92,7 @@
       <div class="form-group row">
         <div class="col-md-4 col-lg-3" translate>workflow.label.returnCode</div>
         <div class="col-md-8 col-lg-9">
-          <nz-radio-group [(ngModel)]="returnCodes.on">
+          <nz-radio-group [(ngModel)]="returnCodes.on" (ngModelChange)="saveToHistory();">
             <label nz-radio nzValue="success" (click)="selectedNode.job.returnCodeMeaning.success = selectedNode.job.returnCodeMeaning.failure;selectedNode.job.returnCodeMeaning.failure = ''"><span translate>workflow.label.onSuccess</span></label>
             <label nz-radio nzValue="failure" (click)="selectedNode.job.returnCodeMeaning.failure = selectedNode.job.returnCodeMeaning.success;selectedNode.job.returnCodeMeaning.success = ''"><span translate>workflow.label.onFailure</span></label>
           </nz-radio-group>
@@ -103,7 +103,7 @@
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : ((success.dirty || success.touched) && success.invalid)}">
           <label class="w-full">
-            <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex
+            <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex (blur)="saveToHistory();"
                    placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
                    name="success" #success="ngModel" [(ngModel)]="selectedNode.job.returnCodeMeaning.success">
           </label>
@@ -118,7 +118,7 @@
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : ((failure.dirty || failure.touched) && failure.invalid)}">
           <label class="w-full">
-            <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex
+            <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex (blur)="saveToHistory();"
                    placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
                    #failure="ngModel" name="failure" [(ngModel)]="selectedNode.job.returnCodeMeaning.failure">
           </label>
@@ -140,7 +140,7 @@
       <div class="form-group row" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ScriptExecutable'">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.compatibleMode</label>
         <div class="col-md-8 col-lg-9">
-          <nz-select name="v1Compatible" nzAllowClear [(ngModel)]="selectedNode.job.executable.v1Compatible">
+          <nz-select name="v1Compatible" nzAllowClear [(ngModel)]="selectedNode.job.executable.v1Compatible" (ngModelChange)="saveToHistory();">
             <nz-option [nzLabel]="'workflow.label.branch1.x' | translate" [nzValue]="true"></nz-option>
           </nz-select>
         </div>
@@ -154,7 +154,7 @@
                   <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="fullScreen()" style="right: 15px;top:1px;font-size: 16px;z-index: 999"></i>
                   <div class="b-a" [ngClass]="{'invalid': obj.script || (script.invalid && (script.dirty && script.touched))}">
                     <ngx-codemirror required #script="ngModel" [(ngModel)]="selectedNode.job.executable.script"
-                                    [options]="cmOption" (focusChange)="focusChange()"
+                                    [options]="cmOption" (focusChange)="focusChange()" (focusout)="saveToHistory()"
                     ></ngx-codemirror>
                   </div>
                   <div *ngIf="obj.script || (script.invalid && (script.dirty && script.touched))"
@@ -217,8 +217,7 @@
                   </div>
                   <div class="form-group row">
                     <div class="col-sm-12" *ngIf="selectedNode.job.defaultArguments">
-                      <a class="text-u-l" *ngIf="selectedNode.job.defaultArguments.length>0" (click)="addVariable()" translate>workflow.button.addAnotherArgument</a>
-                      <a class="text-u-l" *ngIf="selectedNode.job.defaultArguments.length==0" (click)="addVariable()" translate>workflow.button.addArgument</a>
+                      <a class="text-u-l" (click)="addVariable();saveToHistory()" translate>workflow.button.addArgument</a>
                     </div>
                   </div>
                 </div>
@@ -267,8 +266,7 @@
                   </div>
                   <div class="form-group row">
                     <div class="col-sm-12">
-                      <a class="text-u-l" *ngIf="selectedNode.job.executable.env.length>0" (click)="addEnv()" translate>order.button.addAnotherVariable</a>
-                      <a class="text-u-l" *ngIf="selectedNode.job.executable.env.length==0" (click)="addEnv()" translate>order.button.addVariable</a>
+                      <a class="text-u-l" (click)="addEnv();saveToHistory()" translate>order.button.addVariable</a>
                     </div>
                   </div>
                 </div>
@@ -312,8 +310,7 @@
                   </div>
                   <div class="form-group row">
                     <div class="col-sm-12">
-                      <a class="text-u-l" *ngIf="selectedNode.job.executable.arguments.length>0" (click)="addArgu()" translate>order.button.addAnotherVariable</a>
-                      <a class="text-u-l" *ngIf="selectedNode.job.executable.arguments.length==0" (click)="addArgu()" translate>order.button.addVariable</a>
+                      <a class="text-u-l" (click)="addArgu();saveToHistory()" translate>order.button.addVariable</a>
                     </div>
                   </div>
                 </div>
@@ -354,8 +351,7 @@
                   </div>
                   <div class="form-group row">
                     <div class="col-sm-12" *ngIf="selectedNode.job.executable.jobArguments">
-                      <a class="text-u-l" *ngIf="selectedNode.job.executable.jobArguments.length>0" (click)="addJobArgument()" translate>workflow.button.addAnotherArgument</a>
-                      <a class="text-u-l" *ngIf="selectedNode.job.executable.jobArguments.length==0" (click)="addJobArgument()" translate>workflow.button.addArgument</a>
+                      <a class="text-u-l" (click)="addJobArgument();saveToHistory()" translate>workflow.button.addArgument</a>
                     </div>
                   </div>
                 </div>
@@ -469,8 +465,7 @@
           </div>
           <div class="form-group row" >
             <div class="col-sm-12" *ngIf="selectedNode.obj.defaultArguments">
-              <a class="text-u-l" *ngIf="selectedNode.obj.defaultArguments.length>0" (click)="addArgument()" translate>workflow.button.addAnotherArgument</a>
-              <a class="text-u-l" *ngIf="selectedNode.obj.defaultArguments.length==0" (click)="addArgument()" translate>workflow.button.addArgument</a>
+              <a class="text-u-l" (click)="addArgument();saveToHistory()" translate>workflow.button.addArgument</a>
             </div>
           </div>
         </div>

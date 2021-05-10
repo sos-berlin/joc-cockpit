@@ -120,7 +120,9 @@ export class AdminComponent implements OnInit, OnDestroy {
     if (val.url) {
       this.route = val.url;
       if (this.route.match('/users')) {
-        this.dataService.announceData(this.userObj);
+        if (this.userObj && this.userObj.users) {
+          this.dataService.announceData(this.userObj);
+        }
         this.activeRoute.queryParams
           .subscribe(params => {
             this.selectedUser = params.user;

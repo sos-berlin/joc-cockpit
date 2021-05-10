@@ -1,7 +1,8 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import * as _ from 'underscore';
+import {isEmpty} from 'underscore';
 import {Subscription} from 'rxjs';
+import {ClipboardService} from 'ngx-clipboard';
 import {AuthService} from '../../components/guard';
 import {CoreService} from '../../services/core.service';
 
@@ -43,7 +44,8 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
   taskCount = 1;
   @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
 
-  constructor(private route: ActivatedRoute, private authService: AuthService, public coreService: CoreService) {
+  constructor(private route: ActivatedRoute, private authService: AuthService, public coreService: CoreService,
+              private clipboardService: ClipboardService) {
 
   }
 
@@ -134,6 +136,8 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
         if (!res.complete && !this.isCancel) {
           this.runningOrderLog({historyId: order.historyId, controllerId: order.controllerId, eventId: res.eventId});
         }
+      } else{
+        this.loading = false;
       }
     }, (err) => {
       window.document.getElementById('logs').innerHTML = '';
@@ -172,6 +176,8 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
                 obj.tasks.push({taskId: jobs.taskId, eventId: res1.headers.get('X-Log-Event-Id')});
                 this.runningTaskLog(obj, 'tx_log_' + (i + 1));
               }
+            } else{
+              this.loading = false;
             }
           });
         } else {
@@ -209,6 +215,8 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
           obj.tasks.push({taskId: jobs.taskId, eventId: res.headers.get('X-Log-Event-Id')});
           this.runningTaskLog(obj, false);
         }
+      } else{
+        this.loading = false;
       }
     }, (err) => {
       window.document.getElementById('logs').innerHTML = '';
@@ -359,12 +367,12 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
           col += 'id=' + dt[i].agentId + ', ';
         }
         if (dt[i].agentDatetime) {
-          const datetime = this.preferences.logTimezone ? this.coreService.getLogDateFormat(dt[i].agentDatetime, this.preferences.zone) : dt[i].agentDatetime;
-          col += 'time=' + datetime;
+          const dateTime = this.preferences.logTimezone ? this.coreService.getLogDateFormat(dt[i].agentDatetime, this.preferences.zone) : dt[i].agentDatetime;
+          col += 'time=' + dateTime;
         }
         col += ')';
       }
-      if (dt[i].error && !_.isEmpty(dt[i].error)) {
+      if (dt[i].error && !isEmpty(dt[i].error)) {
         col += ', Error (status=' + dt[i].error.errorState;
         if (dt[i].error.errorCode) {
           col += ', code=' + dt[i].error.errorCode;
@@ -526,12 +534,6 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
       return '';
     });
 
-    if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter') {
-      setTimeout(() => {
-        $('.log_info').css('color', 'white');
-      }, 100);
-    }
-
   }
 
   expandAll(): void {
@@ -558,13 +560,15 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
               obj.tasks.push({taskId: jobs.taskId, eventId: res.headers.get('X-Log-Event-Id')});
               this.runningTaskLog(obj, 'tx_log_' + (i + 1));
             }
+          } else {
+            this.loading = false;
           }
         });
       }
     }
   }
 
-  collapseAll() {
+  collapseAll(): void {
     const x: any = document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
       const a = document.getElementById('tx_log_' + (i + 1));
@@ -586,6 +590,10 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.canceller) {
       this.canceller.unsubscribe();
     }
+  }
+
+  copy(): void {
+    this.clipboardService.copyFromContent(this.dataBody.nativeElement.innerText);
   }
 
   downloadLog(): void {

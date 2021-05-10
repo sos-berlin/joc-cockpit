@@ -5,14 +5,14 @@ export class SaveService {
 
   props = ['workflowFilters', 'jobFilters', 'yadeFilters', 'historyFilters', 'auditLogFilters', 'ignoreList', 'dailyPlanFilters', 'resizerHeight'];
   propsPrefix = '$SOS$';
-  workflowFilters;
-  jobFilters;
-  yadeFilters;
-  historyFilters;
-  auditLogFilters;
-  ignoreList;
-  dailyPlanFilters;
-  resizerHeight;
+  workflowFilters: any;
+  jobFilters: any;
+  yadeFilters: any;
+  historyFilters: any;
+  auditLogFilters: any;
+  ignoreList: any;
+  dailyPlanFilters: any;
+  resizerHeight: any;
 
   constructor() {
     const self = this;
@@ -29,45 +29,45 @@ export class SaveService {
   }
 
 
-  setWorkflow(workflow): void {
+  setWorkflow(workflow: any): void {
     this.workflowFilters = JSON.stringify(workflow);
   }
 
-  setJob(job): void {
+  setJob(job: any): void {
     this.jobFilters = JSON.stringify(job);
   }
 
-  setYade(yade): void {
+  setYade(yade: any): void {
     this.yadeFilters = JSON.stringify(yade);
   }
 
-  setHistory(history): void {
+  setHistory(history: any): void {
     this.historyFilters = JSON.stringify(history);
   }
 
-  setAuditLog(filter): void {
+  setAuditLog(filter: any): void {
     this.auditLogFilters = JSON.stringify(filter);
   }
 
-  setIgnoreList(ignoreList): void {
+  setIgnoreList(ignoreList: any): void {
     this.ignoreList = JSON.stringify(ignoreList);
   }
 
-  setDailyPlan(dailyPlan): void {
+  setDailyPlan(dailyPlan: any): void {
     this.dailyPlanFilters = JSON.stringify(dailyPlan);
   }
 
-  setResizerHeight(resizer): void {
+  setResizerHeight(resizer: any): void {
     this.resizerHeight = JSON.stringify(resizer);
   }
 
-  private _save(storage, name, value): void {
+  private _save(storage: any, name: any, value: any): void {
     let key = this.propsPrefix + name;
     if (value == null) value = '';
     storage[key] = value;
   }
 
-  private load(name): any {
+  private load(name: any): any {
     let key = this.propsPrefix + name;
     return localStorage[key] || null;
   }

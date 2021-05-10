@@ -313,7 +313,7 @@ export class ResizableDirective implements OnInit {
           handles: 's',
           resize: (e, x) => {
             if (this.type) {
-              let rsHt = JSON.parse(this.saveService.resizerHeight) || {};
+              const rsHt = JSON.parse(this.saveService.resizerHeight) || {};
               if (rsHt[this.type] && typeof rsHt[this.type] === 'object') {
                 rsHt[this.type][this.path] = x.size.height;
               } else {
@@ -348,9 +348,9 @@ export class ResizableDirective implements OnInit {
             $('.sidebar-close').css({right: wt + 'px'});
             localStorage.propertyPanelWidth = wt;
             if (wt > 349) {
-              $('#btn-text').show();
+              $('.btn-text-with-icon').show();
             } else {
-              $('#btn-text').hide();
+              $('.btn-text-with-icon').hide();
             }
           }
         });
@@ -368,7 +368,7 @@ export class ResizableDirective implements OnInit {
           minWidth: 22,
           maxWidth: 1024,
           resize: (e, x) => {
-            let wt = dom.width();
+            const wt = dom.width();
             $('#rightPanel').css({'margin-left': wt + 18 + 'px'});
             if (this.sideView) {
               this.sideView.width = wt;
@@ -408,32 +408,19 @@ export class XMLAutofocusDirective implements AfterViewInit, OnChanges {
   @Input() name;
 
   constructor(private el: ElementRef) {
-
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      if (this.name.node) {
-        if (this.name.type === 'attribute' && this.name.node) {
-          if (this.name.errorName && this.name.errorName.e === this.name.node.name) {
-            this.el.nativeElement.focus();
-          } else if (((this.name.errorName && this.name.errorName.e !== this.name.node.ref) || !this.name.errorName) && this.name.pos == 0) {
-            this.el.nativeElement.focus();
-          }
-        } else if (this.name.type === 'value' && this.name.node) {
-          if (this.name.errorName && this.name.errorName.e === this.name.node.ref) {
-            this.el.nativeElement.focus();
-          } else if (this.name.node && !this.name.node.attributes) {
-            this.el.nativeElement.focus();
-          }
-        }
-      }
-    }, 0);
+    this.init();
   }
 
   ngOnChanges(): void {
+    this.init();
+  }
+
+  private init(): void {
     setTimeout(() => {
-      if (this.name.node) {
+      if (this.name && this.name.node) {
         if (this.name.type === 'attribute' && this.name.node) {
           if (this.name.errorName && this.name.errorName.e === this.name.node.name) {
             this.el.nativeElement.focus();

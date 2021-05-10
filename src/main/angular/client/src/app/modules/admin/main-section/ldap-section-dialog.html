@@ -18,7 +18,6 @@
                 <input type="text" class="form-control" disabled [(ngModel)]="param.entryName" name="entryName{{pIndex+1}}"
                        placeholder="{{'common.placeholder.name' | translate}} {{pIndex+1}}">
             </div>
-
             <div class="col-sm-6 m-b-sm">
                 <input type="text" class="form-control" [disabled]="param.entryName != 'ldapRealm.contextFactory.url'" name="value{{pIndex+1}}"
                        [(ngModel)]="param.entryValue" placeholder="{{'common.placeholder.value' | translate}} {{pIndex+1}}">

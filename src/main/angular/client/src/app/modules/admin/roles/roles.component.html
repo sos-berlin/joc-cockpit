@@ -33,9 +33,9 @@
         </div>
       </div>
       <div *ngIf="dataService.preferences.roles.has(role.name)" class="row">
-        <div class="col-xl-1 col-lg-2 col-md-2 col-sm-4 col-xs-4"><span class="p-l-lg"
+        <div class="col-xl-1 col-lg-3 col-md-4 col-sm-4"><span class="p-l-lg"
                                                                         translate>user.label.controllers</span></div>
-        <div class="col-lg-9 col-md-10 col-sm-8 col-xs-8">
+        <div class="col-xl-11 col-lg-3 col-md-4 col-sm-8">
           <div *ngFor="let controller of role.controllers" class="role">
             <span class="fa fa-circle p-r-xs" style="font-size: 9px"></span>
             <a [routerLink]="['/users/permissions',controller.name || 'default', role.name]" class="text-primary">

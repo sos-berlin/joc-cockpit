@@ -364,14 +364,12 @@
                              *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:string' && !node.refer"
                              [ngClass]="error && errorName === node.name? 'invalid': ''"
                              [required]="node.use ==='required'"
-                             [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
                              xmlAutofocus>
                       <input class="form-control w-full" id="{{node.name}}" type="text"
                              [(ngModel)]="node.data"
                              (blur)="validateAttr(node.data, node)"
                              (focus)="hideError()"
                              (change)="submitData(node.data, node)"
-                             [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
                              *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:NCName'"
                              [ngClass]="error && errorName === node.name? 'invalid': ''"
                              [required]="node.use ==='required'"
@@ -382,7 +380,6 @@
                              (blur)="validateAttr(node.data, node)"
                              (change)="submitData(node.data, node)"
                              (focus)="hideError()"
-                             [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
                              xmlAutofocus
                              *ngIf="node.values && node.values.length==0 && node.name && node.name !== 'password' && !node.type && !node.refer"
                              [ngClass]="error && errorName === node.name? 'invalid': ''"
@@ -397,7 +394,6 @@
                              [required]="node.use ==='required'" class="form-control"
                              placeholder="{{!node.text ? 'Example input' : ''}}"
                              type="{{!node.pShow ? 'password' : 'text'}}"
-                             [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
                              xmlAutofocus>
                       <i class="fa password-hide-icon" [ngClass]="!node.pShow ? 'fa-eye' : 'fa-eye-slash'"
                          (click)="showPassword(node)"
@@ -412,7 +408,6 @@
                              *ngIf="node.name && node.type === 'xs:NMTOKEN' && !node.refer"
                              [ngClass]="error && errorName === node.name? 'invalid': ''"
                              [required]="node.use ==='required'"
-                             [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
                              xmlAutofocus>
                       <input id="{{node.name}}" type="url"
                              [(ngModel)]="node.data"
@@ -423,7 +418,6 @@
                              [ngClass]="error && errorName === node.name? 'invalid': ''"
                              [required]="node.use ==='required'" class="form-control w-full"
                              title="{{node.name}} should not contain spaces"
-                             [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
                              xmlAutofocus>
                       <nz-select class="w-full"
                                  [(ngModel)]="node.data"
@@ -443,7 +437,6 @@
                                        *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:integer'"
                                        [ngClass]="error && errorName === node.name? 'invalid': ''"
                                        id="{{node.name}}" required
-                                       [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
                                        xmlAutofocus>
                       </nz-input-number>
                       <nz-input-number class="w-full"
@@ -454,7 +447,6 @@
                                        *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:positiveInteger'"
                                        [ngClass]="error && errorName === node.name? 'invalid': ''"
                                        id="{{node.name}}" required [nzMin]="0"
-                                       [name]="{pos: i, node: node, type: 'attribute', errorName: errorName}"
                                        xmlAutofocus>
                       </nz-input-number>
                       <label class="md-check w"
@@ -511,7 +503,6 @@
                            *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.values[0].base == 'password'"
                            [ngClass]="error && errorName == selectedNode.ref ? 'invalid': ''"
                            [(ngModel)]="selectedNode.values[0].data"
-                           [name]="{pos: 0, node: selectedNode, type: 'value', errorName: errorName}"
                            class="form-control" id="{{selectedNode.ref}}"
                            type="{{!selectedNode.values[0].pShow ? 'password' : 'text'}}"
                            value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}"
@@ -522,7 +513,6 @@
                        *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.values[0].base == 'password'"></i>
                     <textarea id="{{selectedNode.values[0].uuid}}"
                               [(ngModel)]="selectedNode.values[0].data"
-                              [name]="{pos: 0, node: selectedNode, type: 'value', errorName: errorName}"
                               (keydown)="checkForTab(selectedNode.values[0].uuid); autosize(selectedNode.values[0].uuid)"
                               (blur)="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                               (change)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
