@@ -24,23 +24,23 @@ export class LoggingService {
   // *************************
   // Public methods
   // *************************
-  debug(msg: string) {
+  debug(msg: string): void {
     this.writeToLog(msg, LogLevel.Debug);
   }
 
-  info(msg: string) {
+  info(msg: string): void {
     this.writeToLog(msg, LogLevel.Info);
   }
 
-  warn(msg: string) {
+  warn(msg: string): void {
     this.writeToLog(msg, LogLevel.Warn);
   }
 
-  error(msg: string) {
+  error(msg: string): void {
     this.writeToLog(msg, LogLevel.Error);
   }
 
-  log(msg: string) {
+  log(msg: string): void {
     this.writeToLog(msg, LogLevel.All);
   }
 
@@ -58,7 +58,7 @@ export class LoggingService {
     return ret;
   }
 
-  private writeToLog(msg: string, level: LogLevel) {
+  private writeToLog(msg: string, level: LogLevel): void {
     if (this.shouldLog(level)) {
       let entry = {
         message: msg,
@@ -71,13 +71,13 @@ export class LoggingService {
         values = localStorage.getItem(this.location) ? JSON.parse(localStorage.getItem(this.location)) || [] : [];
         // Add new log entry to array
         values.push(entry);
-        if ((1024 * 200) - unescape(encodeURIComponent(JSON.stringify(values))).length < 0) {
+        if (values.length > 20 && ((1024 * 200) - unescape(encodeURIComponent(JSON.stringify(values))).length < 0)) {
           values.splice(1, 100);
         }
         localStorage.setItem(this.location, JSON.stringify(values));
       } catch (ex) {
         // Display error in console
-        console.log(ex);
+        console.error(ex);
       }
     }
   }

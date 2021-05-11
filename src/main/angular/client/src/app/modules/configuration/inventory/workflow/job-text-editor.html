@@ -1,3 +1,19 @@
+<div class="pos-abt" style="top: 9px; right: 18px">
+  <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
+    <li class="nav-item" [nz-tooltip]="'workflow.button.undo' | translate" >
+      <a class="nav-link" [ngClass]="{'disable-link': history.length === 0}"
+         (click)="undo()">
+        <span class="nav-text"> <i nz-icon nzType="undo" nzTheme="outline"></i></span>
+      </a>
+    </li>
+    <li class="nav-item" [nz-tooltip]="'workflow.button.redo' | translate">
+      <a class="nav-link" [ngClass]="{'disable-link': history.length === 0 || indexOfNextAdd > history.length}"
+         (click)="redo()">
+        <span class="nav-text"> <i nz-icon nzType="redo" nzTheme="outline"></i></span>
+      </a>
+    </li>
+  </ul>
+</div>
 <nz-tabset [(nzSelectedIndex)]="index" [nzAnimated]="false" (nzSelectChange)="tabChange($event)">
   <nz-tab [nzTitle]="'workflow.tab.jobProperties' | translate">
     <div class="job-property-editor" *ngIf="index === 0">

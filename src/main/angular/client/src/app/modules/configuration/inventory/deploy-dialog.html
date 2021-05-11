@@ -116,7 +116,7 @@
             <label translate>inventory.label.handleRecursively</label>
           </div>
           <div class="col-md-6">
-            <label nz-checkbox [(ngModel)]="object.isRecursive" name="isRecursive"></label>
+            <label nz-checkbox [(ngModel)]="object.isRecursive" name="isRecursive" (ngModelChange)="handleRecursive()"></label>
           </div>
         </div>
         <div class="row m-b-sm" *ngIf="!isDeleted && !isRemove">

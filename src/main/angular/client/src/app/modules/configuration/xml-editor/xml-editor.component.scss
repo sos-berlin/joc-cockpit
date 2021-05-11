@@ -1,6 +1,6 @@
 
 span ul li a {
-  color: #007da6;
+  color: var(--primary);
   &:active, &:hover {
     text-decoration: underline;
   }

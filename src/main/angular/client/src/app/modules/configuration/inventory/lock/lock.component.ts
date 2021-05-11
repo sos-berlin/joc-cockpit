@@ -1,11 +1,12 @@
-import {Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
-import {isEqual} from 'underscore';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
+import {isEmpty, isEqual} from 'underscore';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 
 @Component({
   selector: 'app-lock',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './lock.component.html'
 })
 export class LockComponent implements OnChanges, OnDestroy {
@@ -22,10 +23,19 @@ export class LockComponent implements OnChanges, OnDestroy {
 
   indexOfNextAdd = 0;
   history = [];
-  subscription: Subscription;
+  subscription1: Subscription;
+  subscription2: Subscription;
 
-  constructor(private coreService: CoreService, private dataService: DataService) {
-    this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
+  constructor(private coreService: CoreService, private dataService: DataService,
+              private ref: ChangeDetectorRef) {
+    this.subscription1 = dataService.reloadTree.subscribe(res => {
+      if (res && !isEmpty(res)) {
+        if (res.reloadTree && this.lock.actual) {
+          this.ref.detectChanges();
+        }
+      }
+    });
+    this.subscription2 = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'REDO') {
         this.redo();
       } else if (res === 'UNDO') {
@@ -35,7 +45,7 @@ export class LockComponent implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.copyObj && !changes.data){
+    if (changes.copyObj && !changes.data) {
       return;
     }
     if (changes.reload) {
@@ -50,12 +60,14 @@ export class LockComponent implements OnChanges, OnDestroy {
         this.getObject();
       } else {
         this.lock = {};
+        this.ref.detectChanges();
       }
     }
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
     if (this.lock.name) {
       this.saveJSON();
     }
@@ -68,17 +80,17 @@ export class LockComponent implements OnChanges, OnDestroy {
     }).subscribe((res: any) => {
       this.history = [];
       this.indexOfNextAdd = 0;
-      if(res.configuration) {
+      if (res.configuration) {
         delete res.configuration['TYPE'];
         delete res.configuration['path'];
         delete res.configuration['versionId'];
-      } else{
+      } else {
         res.configuration = {};
       }
-      if (this.data.deployed !== res.deployed){
+      if (this.data.deployed !== res.deployed) {
         this.data.deployed = res.deployed;
       }
-      if (this.data.valid !== res.valid){
+      if (this.data.valid !== res.valid) {
         this.data.valid = res.valid;
       }
       this.lock = res;
@@ -86,6 +98,7 @@ export class LockComponent implements OnChanges, OnDestroy {
       this.lock.name = this.data.name;
       this.lock.actual = JSON.stringify(res.configuration);
       this.history.push(this.lock.actual);
+      this.ref.detectChanges();
     });
   }
 
@@ -105,9 +118,11 @@ export class LockComponent implements OnChanges, OnDestroy {
           this.dataService.reloadTree.next({rename: data});
         }, (err) => {
           this.lock.name = this.data.name;
+          this.ref.detectChanges();
         });
       } else {
         this.lock.name = this.data.name;
+        this.ref.detectChanges();
       }
     }
   }
@@ -130,6 +145,7 @@ export class LockComponent implements OnChanges, OnDestroy {
     if (this.indexOfNextAdd < n) {
       const obj = this.history[this.indexOfNextAdd++];
       this.lock.configuration = JSON.parse(obj);
+      this.ref.detectChanges();
     }
   }
 
@@ -142,11 +158,12 @@ export class LockComponent implements OnChanges, OnDestroy {
     if (this.indexOfNextAdd > 0) {
       const obj = this.history[--this.indexOfNextAdd];
       this.lock.configuration = JSON.parse(obj);
+      this.ref.detectChanges();
     }
   }
 
   saveJSON(): void {
-    if(this.isTrash) {
+    if (this.isTrash) {
       return;
     }
     if (!isEqual(this.lock.actual, JSON.stringify(this.lock.configuration))) {
@@ -167,6 +184,7 @@ export class LockComponent implements OnChanges, OnDestroy {
           this.lock.valid = this.lock.configuration.limit > -1;
           this.lock.deployed = false;
           this.data.deployed = false;
+          this.ref.detectChanges();
         }
       }, (err) => {
         console.log(err);

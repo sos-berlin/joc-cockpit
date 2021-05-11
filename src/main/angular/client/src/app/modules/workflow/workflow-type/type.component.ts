@@ -9,6 +9,7 @@ import {ScriptModalComponent} from '../script-modal/script-modal.component';
 })
 export class TypeComponent implements OnChanges {
   @Input() configuration;
+  @Input() jobs;
   @Input() expandAll;
   @Input() orders;
   @Input() preferences: any;
@@ -206,8 +207,8 @@ export class TypeComponent implements OnChanges {
                 if (json.instructions[x].branches[i].instructions) {
                   self.checkOrders(json.instructions[x].branches[i], mapObj);
                   recursive(json.instructions[x].branches[i]);
-                  if (json.instructions[x].branches[i].count) {
-                    json.instructions[x].count = (json.instructions[x].count || 0) + json.instructions[x].branches[i].count;
+                  if (json.instructions[x].branches[i].orderCount) {
+                    json.instructions[x].orderCount = (json.instructions[x].orderCount || 0) + json.instructions[x].branches[i].orderCount;
                   }
                 }
               }
@@ -222,20 +223,20 @@ export class TypeComponent implements OnChanges {
               self.checkOrders(json.instructions[x].catch, mapObj);
               recursive(json.instructions[x].catch);
             }
-            json.instructions[x].count = (json.instructions[x].count || 0) + json.instructions[x].catch.count;
+            json.instructions[x].orderCount = (json.instructions[x].orderCount || 0) + json.instructions[x].catch.orderCount;
           }
           if (json.instructions[x].then && json.instructions[x].then.instructions) {
             self.checkOrders(json.instructions[x].then, mapObj);
             recursive(json.instructions[x].then);
-            json.instructions[x].count = (json.instructions[x].count || 0) + json.instructions[x].then.count;
+            json.instructions[x].orderCount = (json.instructions[x].orderCount || 0) + json.instructions[x].then.orderCount;
           }
           if (json.instructions[x].else && json.instructions[x].else.instructions) {
             self.checkOrders(json.instructions[x].else, mapObj);
             recursive(json.instructions[x].else);
-            json.instructions[x].count = (json.instructions[x].count || 0) + json.instructions[x].else.count;
+            json.instructions[x].orderCount = (json.instructions[x].orderCount || 0) + json.instructions[x].else.orderCount;
           }
-          if (json.instructions[x].count) {
-            json.count = (json.count || 0) + json.instructions[x].count;
+          if (json.instructions[x].orderCount) {
+            json.orderCount = (json.orderCount || 0) + json.instructions[x].orderCount;
           }
         }
       } else {
@@ -244,8 +245,8 @@ export class TypeComponent implements OnChanges {
             if (json.branches[i].instructions) {
               self.checkOrders(json.branches[i], mapObj);
               recursive(json.branches[i]);
-              if (json.branches[i].count) {
-                json.count = (json.count || 0) + json.branches[i].count;
+              if (json.branches[i].orderCount) {
+                json.orderCount = (json.orderCount || 0) + json.branches[i].orderCount;
               }
             }
           }
@@ -274,15 +275,15 @@ export class TypeComponent implements OnChanges {
       let _order = mapObj.get(JSON.stringify(instruction.position));
       if (_order) {
         instruction.orders = _order;
-        if (!instruction.count) {
-          instruction.count = 0;
+        if (!instruction.orderCount) {
+          instruction.orderCount = 0;
         }
-        instruction.count = _order.length;
+        instruction.orderCount = _order.length;
       } else {
-        instruction.count = 0;
+        instruction.orderCount = 0;
       }
     } else {
-      instruction.count = 0;
+      instruction.orderCount = 0;
     }
   }
 
@@ -290,7 +291,7 @@ export class TypeComponent implements OnChanges {
 
   showConfiguration(instruction): void {
     if (instruction.TYPE === 'Job') {
-      const job = this.configuration.jobs[instruction.jobName];
+      const job = this.jobs[instruction.jobName];
       const data = job.executable.TYPE === 'ScriptExecutable' ? job.executable.script : job.executable.className;
       if (job && job.executable) {
         this.modal.create({

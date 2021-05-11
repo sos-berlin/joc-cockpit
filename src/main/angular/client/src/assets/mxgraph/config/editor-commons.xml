@@ -54,14 +54,14 @@
       </Try>
     </add>
     <add as="Fail">
-      <Fail label="fail" outcme="">
+      <Fail label="fail">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
       </Fail>
     </add>
     <add as="Finish">
-      <Finish label="finish" outcme="">
+      <Finish label="finish">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>

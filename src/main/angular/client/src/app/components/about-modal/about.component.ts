@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 import {NzModalRef} from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-about',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="modal-header">
       <h4 class="modal-title">
@@ -44,12 +45,13 @@ import {NzModalRef} from 'ng-zorro-antd/modal';
 })
 export class AboutModalComponent implements OnInit {
   versionData: any = {};
-  constructor(public modal: NzModalRef, private coreService: CoreService) {
+  constructor(public modal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
     this.coreService.get('version.json').subscribe((data) => {
       this.versionData = data;
+      this.ref.detectChanges();
     });
   }
 }

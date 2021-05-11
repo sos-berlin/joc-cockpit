@@ -12,11 +12,7 @@
               <span *ngIf="validConfig" translate>xml.label.validate</span>
               <span *ngIf="!validConfig" translate>xml.label.nonValidate</span>
             </span>
-            <span class="custom-icon badge m-l-12" [ngClass]="isDeploy ? 'badge-success' : 'badge-danger'"
-                  *ngIf="submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105' && objectType === 'NOTIFICATION'">
-              <span *ngIf="isDeploy" translate>xml.label.deployed</span>
-              <span *ngIf="!isDeploy" translate>xml.label.notDeployed</span>
-            </span>
+
             <button class="btn btn-sm btn-grey m-l-12" (click)="newFile()">
               <i class="fa fa-file m-r-xs"></i>
               <span translate>xml.button.new</span>
@@ -55,11 +51,7 @@
               <i class="fa fa-check m-r-xs"></i>
               <span translate>xml.button.validate</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType === 'NOTIFICATION' && submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"  [disabled]="isDeploy"
-                    (click)="deployXML()">
-              <i class="fa fa-rocket m-r-xs"></i>
-              <span translate>xml.button.deploy</span>
-            </button>
+
           </div>
         </div>
       </div>
@@ -352,7 +344,7 @@
                 </div>
                 <div *ngFor="let node of selectedNode.attributes; let i= index" class="form-group">
                   <div class="row m-t">
-                    <div class="col-md-4 col-lg-3 text-dark form-control-label"><label
+                    <div class="col-md-4 col-lg-3 text-dark " [ngClass]="{'form-control-label' : !(node.values && node.values.length==0 && node.name && node.type === 'xs:boolean')}"><label
                       *ngIf="node.name && node.id">{{node.name}}
                       <sup *ngIf="node.use ==='required' || !node.use" class="text-danger text-sm">*</sup></label></div>
                     <div class="col-sm-5">
@@ -484,7 +476,7 @@
                       ><a translate>xml.button.gotoRefElement</a></span>
                       <span [ngClass]="(node.refer || node.refElement) ? 'm-l-xs' : ''"
                             *ngIf="node.text && node.text.doc && node.text.doc[0] && node.text.doc[0].innerHTML"
-                            id="{{node.id}}" [nz-tooltip]="node.text.doc[0].innerHTML">
+                            id="{{node.id}}" data-toggle="tooltip" data-placement="bottom" (mouseover)="getpos(node.id)" title="{{node.text.doc[0].innerHTML}}">
                           <i class="fa fa-info-circle m-t-sm"></i>
                       </span>
                     </div>
@@ -493,11 +485,11 @@
               </div>
               <div class="box p-a val" *ngIf="selectedNode.values && selectedNode.values.length>0">
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label"><span translate>xml.label.value</span>
+                  <div class="col-md-4 col-lg-3 form-control-label"><span translate>xml.label.value</span>
                     <sup *ngIf="!(selectedNode.values && selectedNode.values[0].use)"
                          class="text-danger text-sm">*</sup>
                   </div>
-                  <div class="col-sm-5">
+                  <div class="col-md-8 col-lg-6">
                     <input (blur)="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                            (change)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                            *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.values[0].base == 'password'"
@@ -511,9 +503,10 @@
                        (click)="showPassword(selectedNode.values[0])"
                        [ngClass]="!selectedNode.values[0].pShow ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true"
                        *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.values[0].base == 'password'"></i>
-                    <textarea id="{{selectedNode.values[0].uuid}}"
+                    <textarea nz-input id="{{selectedNode.values[0].uuid}}"
                               [(ngModel)]="selectedNode.values[0].data"
-                              (keydown)="checkForTab(selectedNode.values[0].uuid); autosize(selectedNode.values[0].uuid)"
+                              (keydown)="checkForTab(selectedNode.values[0].uuid);"
+                              [nzAutosize]="{ minRows: 3}"
                               (blur)="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                               (change)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                               *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'password')  && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Body'"
@@ -522,11 +515,20 @@
                               class="form-control"
                               rows="1"></textarea>
                     <div *ngIf="selectedNode.ref === 'Body' && selectedNode.values[0]" class="form-group has-feedback">
-                      <ckeditor #myckeditor="ngModel" [editor]="Editor" (change)="onChange(myContent, selectedNode)"
-                                [(ngModel)]="myContent" name="myckeditor" class="ckEditor"
-                                [ngClass]="error ? addCkCss(selectedNode.uuid) : removeCkCss(selectedNode.uuid)"></ckeditor>
-                      <div *ngIf="myckeditor.invalid && myckeditor.touched" class="help-block" translate>
-                        xml.message.requiredField
+                      <div class="NgxEditor__Wrapper">
+                        <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
+                        <ngx-editor
+                          required
+                          #myckeditor="ngModel"
+                          [editor]="editor"
+                          [ngModel]="myContent"
+                          [disabled]="false"
+                          [placeholder]="'common.placeholder.value' | translate"
+                          (ngModelChange)="onChange($event, selectedNode)"
+                        ></ngx-editor>
+                        <div *ngIf="myckeditor.invalid && myckeditor.touched" class="help-block" translate>
+                          xml.message.requiredField
+                        </div>
                       </div>
                     </div>
                     <nz-select [(ngModel)]="selectedNode.values[0].data"

@@ -201,7 +201,7 @@
                     <i class="fa fa-lg fa-angle-double-up p-l-xs" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="collapseAll()"></i>
                   </span>
                 </div>
-                <app-type [configuration]="workFlowJson" [orderRequirements]="orderRequirements" [permission]="permission" [preferences]="preferences"
+                <app-type [configuration]="workFlowJson" [jobs]="workFlowJson.jobs" [orderRequirements]="orderRequirements" [permission]="permission" [preferences]="preferences"
                           [schedulerId]="schedulerIds.selected" [expandAll]="isExpandAll"
                           [orders]="workflow.orders"></app-type>
                 <div class="rg-bottom"><span></span></div>

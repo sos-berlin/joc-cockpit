@@ -4,7 +4,7 @@ import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-comment-modal',
   templateUrl: './dialog.html',
 })
 export class CommentModalComponent implements OnInit {
@@ -92,7 +92,7 @@ export class ActionComponent implements OnInit {
         operation: (action === 'terminate' && !isFailOver) ? 'Terminate without fail-over' : action === 'terminateAndRestart' ? 'Terminate and Restart' : action === 'abortAndRestart' ? 'Abort and Restart' : action === 'terminate' ? 'Terminate' : 'Abort'
       };
       this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzComponentParams: {
           comments,

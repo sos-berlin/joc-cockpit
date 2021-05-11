@@ -8,7 +8,6 @@ import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/h
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {ToasterModule} from 'angular2-toaster';
-import {NzMessageService} from 'ng-zorro-antd/message';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {AppRoutingModule} from './app-routing.module';
 import {LoginModule} from './modules/login/login.module';
@@ -30,7 +29,7 @@ export class MyErrorHandler implements ErrorHandler {
   }
 
   handleError(error: any): void {
-    console.log(error);
+    console.error(error);
     this.loggingService.error(error.stack || error.message);
   }
 }
@@ -65,8 +64,7 @@ export class MyErrorHandler implements ErrorHandler {
     },
     {
       provide: NZ_I18N, useValue: en_US
-    },
-    NzMessageService],
+    }],
   bootstrap: [AppComponent]
 })
 export class AppModule {

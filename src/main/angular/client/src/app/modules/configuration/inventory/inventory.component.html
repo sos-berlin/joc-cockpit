@@ -86,22 +86,22 @@
               <span class="nav-text"> <i nz-icon nzType="undo" nzTheme="outline"></i></span>
             </a>
           </li>
-          <li class="nav-item" [nz-tooltip]="'workflow.button.redo' | translate" *ngIf="!isTrash">
+          <li class="nav-item" [nz-tooltip]="'workflow.button.redo' | translate">
             <a class="nav-link"
                (click)="redo()">
               <span class="nav-text"> <i nz-icon nzType="redo" nzTheme="outline"></i></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="!isTrash">
+          <li class="nav-item dropdown-separator">
             <span class="separator"></span>
           </li>
-          <li class="nav-item" [nz-tooltip]="'inventory.button.download' | translate" *ngIf="!isTrash">
+          <li class="nav-item" [nz-tooltip]="'inventory.button.download' | translate">
             <a class="nav-link"
                (click)="download()">
               <span class="nav-text">  <i nz-icon nzType="download" nzTheme="outline"></i></span>
             </a>
           </li>
-          <li class="nav-item" [nz-tooltip]="'inventory.button.upload' | translate" *ngIf="!isTrash">
+          <li class="nav-item" [nz-tooltip]="'inventory.button.upload' | translate">
             <a class="nav-link" (click)="upload()">
               <span class="nav-text">  <i nz-icon nzType="upload" nzTheme="outline"></i></span>
             </a>

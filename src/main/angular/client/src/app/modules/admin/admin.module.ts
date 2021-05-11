@@ -1,4 +1,5 @@
 import {NgModule} from '@angular/core';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 import {AdminRoutingModule} from './admin-routing.module';
 import {AdminComponent} from './admin.component';
 import {SharedModule} from '../shared/shared.module';
@@ -15,6 +16,7 @@ import {ProfilesComponent} from './profiles/profiles.component';
 @NgModule({
   imports: [
     AdminRoutingModule,
+    DragDropModule,
     SharedModule
   ],
   declarations: [

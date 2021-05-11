@@ -1,8 +1,9 @@
 import {NgModule} from '@angular/core';
 import {ImportKeyModalComponent, UpdateKeyModalComponent, UserComponent, GenerateKeyComponent} from './user.component';
+import {FileUploadModule} from 'ng2-file-upload';
+import {NzTabsModule} from 'ng-zorro-antd/tabs';
 import { SharedModule } from '../shared/shared.module';
 import {UserRoutingModule} from './user-routing.module';
-import {FileUploadModule} from 'ng2-file-upload';
 
 @NgModule({
   declarations: [
@@ -13,6 +14,7 @@ import {FileUploadModule} from 'ng2-file-upload';
   ],
   imports: [
     SharedModule,
+    NzTabsModule,
     UserRoutingModule,
     FileUploadModule
   ]

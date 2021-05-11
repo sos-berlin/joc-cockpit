@@ -116,24 +116,6 @@ button.close {
   color: darkcyan;
 }
 
-.documents a[href*="http:"] {
-  color: #1395BE !important;
-}
-
-.documents a[href*="https:"] {
-  color: #1395BE !important;
-}
-
-.ck .ck-link_selected {
-  color: #1395BE;
-  text-decoration: underline;
-}
-
-.ck-content a {
-  color: #1395BE;
-  text-decoration: underline;
-}
-
 .ant-picker-header > button:hover,
 .ant-dropdown-menu-item .ant-dropdown-menu-submenu-arrow-icon, .ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-arrow-icon,
 .cluster-rect, .connection, .cluster, .icon-color, .ant-tree li,

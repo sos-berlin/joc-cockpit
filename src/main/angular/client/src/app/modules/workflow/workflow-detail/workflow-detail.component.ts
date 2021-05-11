@@ -19,7 +19,6 @@ declare const mxEditor;
 declare const mxUtils;
 declare const mxEvent;
 declare const mxClient;
-declare const mxObjectCodec;
 declare const mxEdgeHandler;
 declare const mxGraphHandler;
 declare const mxGraph;
@@ -178,16 +177,12 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       if (!mxClient.isBrowserSupported()) {
         mxUtils.error('Browser is not supported!', 200, false);
       } else {
-        mxObjectCodec.allowEval = true;
         const node = mxUtils.load(config).getDocumentElement();
         editor = new mxEditor(node);
         this.editor = editor;
         this.initEditorConf(editor, null);
-        mxObjectCodec.allowEval = false;
         const outln = document.getElementById('outlineContainer');
-        outln.style['border'] = '1px solid lightgray';
         new mxOutline(editor.graph, outln);
-        editor.graph.allowAutoPanning = true;
       }
     } catch (e) {
       // Shows an error message if the editor cannot start
@@ -591,7 +586,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
               orders: JSON.parse(orders)
             };
           } else if (cell.value.tagName === 'Job'){
-            console.log(cell.value);
             self.showConfiguration(cell.value.getAttribute('jobName'));
           }
           evt.consume();

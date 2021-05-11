@@ -10,8 +10,7 @@ import {AboutModalComponent} from '../about-modal/about.component';
 
 @Component({
   selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  templateUrl: './header.component.html'
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   preferences: any = {};
@@ -19,7 +18,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   permission: any = {};
   username = '';
   showViews: any = {};
-  timeout: any;
   eventId: string;
   eventLoading = false;
   switchScheduler = false;
@@ -85,7 +83,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
-    clearTimeout(this.timeout);
   }
 
   about(): any {
@@ -203,10 +200,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.switchScheduler = false;
       }, (err) => {
         if (!this.isLogout && err) {
-          this.timeout = setTimeout(() => {
+          setTimeout(() => {
             this.eventLoading = false;
             this.getEvents();
-            clearTimeout(this.timeout);
           }, 1000);
         }
       });

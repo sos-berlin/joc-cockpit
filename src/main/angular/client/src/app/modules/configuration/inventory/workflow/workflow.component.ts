@@ -88,27 +88,27 @@ export class UpdateWorkflowComponent implements OnInit {
       });
     }
     if (this.jobResourceNames && this.jobResourceNames.length > 0) {
-        const APIs = [];
-        let paths = [];
-        this.jobResourceNames.forEach((name) => {
-          APIs.push(this.coreService.post('inventory/path', {name, objectType: 'JOBRESOURCE', useDrafts: true}).pipe(
-            catchError(error => of(error))
-          ));
-        });
-        forkJoin(APIs).subscribe(results => {
-          results.forEach((item: any, index) => {
-            if (item && item.path) {
-              const path = item.path.substring(0, item.path.lastIndexOf('/')) || item.path.substring(0, item.path.lastIndexOf('/') + 1);
-              if (paths.indexOf(path) === -1) {
-                paths.push(path);
-                this.loadResources(path);
-              }
-            } else {
-              this.jobResourceNames.splice(index, 1);
-              this.ref.detectChanges();
+      const APIs = [];
+      let paths = [];
+      this.jobResourceNames.forEach((name) => {
+        APIs.push(this.coreService.post('inventory/path', {name, objectType: 'JOBRESOURCE', useDrafts: true}).pipe(
+          catchError(error => of(error))
+        ));
+      });
+      forkJoin(APIs).subscribe(results => {
+        results.forEach((item: any, index) => {
+          if (item && item.path) {
+            const path = item.path.substring(0, item.path.lastIndexOf('/')) || item.path.substring(0, item.path.lastIndexOf('/') + 1);
+            if (paths.indexOf(path) === -1) {
+              paths.push(path);
+              this.loadResources(path);
             }
-          });
+          } else {
+            this.jobResourceNames.splice(index, 1);
+            this.ref.detectChanges();
+          }
         });
+      });
 
     }
     if (!this.jobResourceNames && this.variableDeclarations.parameters && this.variableDeclarations.parameters.length === 0) {
@@ -124,7 +124,7 @@ export class UpdateWorkflowComponent implements OnInit {
       }).subscribe(() => {
         this.activeModal.close({name: this.workflowName, title: this.title});
       });
-    } else if (this.jobResourceNames){
+    } else if (this.jobResourceNames) {
       this.activeModal.close({jobResourceNames: this.jobResourceNames});
     } else {
       if (this.variableDeclarations.parameters && this.variableDeclarations.parameters.length > 0) {
@@ -295,10 +295,11 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
           this.errorMsg = '';
         }
       } else {
-        if (res.redo) {
-          this.redo();
-        } else if (res.undo) {
-          this.undo();
+        if (res.change && res.change.current && this.selectedNode && this.selectedNode.job) {
+          this.jobs = res.change.jobs;
+          this.selectedNode.job = {...this.selectedNode.job, ...this.coreService.clone(res.change.current.value)};
+          this.setJobProperties();
+          this.ref.detectChanges();
         }
       }
     });
@@ -337,6 +338,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     const arr = this.selectedNode.obj.defaultArguments.filter(option => option.name);
     this.mentionValueList = [...this.variableList, ...arr];
     this.filteredOptions = [...this.variableList, ...arr];
+    this.ref.detectChanges();
   }
 
   reloadScript(): void {
@@ -1012,6 +1014,7 @@ export class ImportComponent implements OnInit {
 
 @Component({
   selector: 'app-workflow',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss']
 })
@@ -1056,11 +1059,20 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   objectType = 'WORKFLOW';
   invalidMsg: string;
 
+  subscription: Subscription;
+
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
   constructor(public coreService: CoreService, public translate: TranslateService, private modal: NzModalService,
               public toasterService: ToasterService, private workflowService: WorkflowService, private dataService: DataService,
-              private nzContextMenuService: NzContextMenuService, private router: Router) {
+              private nzContextMenuService: NzContextMenuService, private router: Router, private ref: ChangeDetectorRef) {
+    this.subscription = dataService.reloadTree.subscribe(res => {
+      if (res && !isEmpty(res)) {
+        if (res.reloadTree && this.workflow.actual) {
+          this.ref.detectChanges();
+        }
+      }
+    });
   }
 
   private static parseWorkflowJSON(result): void {
@@ -1085,7 +1097,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.copyObj && !changes.data){
+    if (changes.copyObj && !changes.data) {
       return;
     }
     if (changes.reload) {
@@ -1111,6 +1123,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.jobResourceNames = [];
         this.orderRequirements = {};
         this.dummyXml = null;
+        this.ref.detectChanges();
       }
     }
   }
@@ -1140,17 +1153,18 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   ngOnDestroy(): void {
+    this.subscription.unsubscribe();
     if (this.data.type) {
       this.saveJSON(false);
-      try {
-        if (this.editor) {
-          this.editor.destroy();
-          mxOutline.prototype.destroy();
-          this.editor = null;
-        }
-      } catch (e) {
-        console.error(e);
+    }
+    try {
+      if (this.editor) {
+        this.editor.destroy();
+        mxOutline.prototype.destroy();
+        this.editor = null;
       }
+    } catch (e) {
+      console.error(e);
     }
   }
 
@@ -1236,6 +1250,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           this.title = result.title;
           this.updateOtherProperties();
         }
+        this.ref.detectChanges();
       }
     });
   }
@@ -1276,24 +1291,19 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
    * Redoes the last change.
    */
   redo(): void {
-    if (!this.selectedNode) {
-      // use first future state as next present ...
-      if (this.history.future.length > 0) {
-        const next = this.history.future[0];
-        // ... and remove from future
-        const newFuture = this.history.future.slice(1);
-        this.history = {
-          // push present into past for undo
-          past: [this.history.present, ...this.history.past],
-          present: next,
-          future: newFuture,
-          type: 'redo'
-        };
-        this.reloadWorkflow(next);
-      }
-    } else if (this.selectedNode.job) {
-      this.dataService.reloadWorkflowError.next({undo: false});
-      this.dataService.reloadWorkflowError.next({redo: true});
+    // use first future state as next present ...
+    if (this.history.future.length > 0) {
+      const next = this.history.future[0];
+      // ... and remove from future
+      const newFuture = this.history.future.slice(1);
+      this.history = {
+        // push present into past for undo
+        past: [this.history.present, ...this.history.past],
+        present: next,
+        future: newFuture,
+        type: 'redo'
+      };
+      this.reloadWorkflow(next);
     }
   }
 
@@ -1303,24 +1313,19 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
    * Undoes the last change.
    */
   undo(): void {
-    if (!this.selectedNode) {
-      // use first past state as next present ...
-      if (this.history.past.length > 0) {
-        const previous = this.history.past[0];
-        // ... and remove from past
-        const newPast = this.history.past.slice(1);
-        this.history = {
-          past: newPast,
-          present: previous,
-          // push present into future for redo
-          future: [this.history.present, ...this.history.future],
-          type: 'undo'
-        };
-        this.reloadWorkflow(previous);
-      }
-    } else if (this.selectedNode.job) {
-      this.dataService.reloadWorkflowError.next({redo: false});
-      this.dataService.reloadWorkflowError.next({undo: true});
+    // use first past state as next present ...
+    if (this.history.past.length > 0) {
+      const previous = this.history.past[0];
+      // ... and remove from past
+      const newPast = this.history.past.slice(1);
+      this.history = {
+        past: newPast,
+        present: previous,
+        // push present into future for redo
+        future: [this.history.present, ...this.history.future],
+        type: 'undo'
+      };
+      this.reloadWorkflow(previous);
     }
   }
 
@@ -1546,6 +1551,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             node.origin.children = data;
           }
           this.lockTree = [...this.lockTree];
+          this.ref.detectChanges();
         });
       }
     }
@@ -1722,6 +1728,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.isLoading = false;
         this.history.present = this.workflow.actual;
         this.updateJobs(this.editor.graph, true);
+        this.ref.detectChanges();
       }
     }, () => {
       this.isLoading = false;
@@ -1745,15 +1752,37 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   private reloadWorkflow(obj): void {
     this.closeMenu();
+    const data = this.coreService.clone(this.workflow.configuration);
+    this.modifyJSON(data, false, false);
     this.workflow.configuration = JSON.parse(obj);
+    let flag = false;
     if (this.workflow.configuration.jobs) {
       if (this.workflow.configuration.jobs && !isEmpty(this.workflow.configuration.jobs)) {
-        this.jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
+        const jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
           return {name: k, value: v};
         });
+        if (!isEqual(JSON.stringify(this.jobs), JSON.stringify(jobs))) {
+          this.jobs = jobs;
+          flag = true;
+        }
       }
     }
-    this.updateXMLJSON(false);
+    if (!isEqual(JSON.stringify(JSON.parse(obj).instructions), JSON.stringify(data.instructions))) {
+      this.updateXMLJSON(false);
+    }
+    if (this.selectedNode && this.selectedNode.job && flag) {
+      let isCheck = true;
+      for (const i in this.jobs) {
+        if (this.jobs[i].name === this.selectedNode.job.jobName) {
+          isCheck = false;
+          this.dataService.reloadWorkflowError.next({change: {jobs: this.jobs, current: this.jobs[i]}});
+          break;
+        }
+      }
+      if (isCheck) {
+          this.selectedNode = null;
+      }
+    }
   }
 
   private getLimit(): void {
@@ -5180,6 +5209,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           self.getLimit();
         }
       }
+      self.ref.detectChanges();
     }
 
     /**
@@ -6885,7 +6915,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.invalidMsg = res.invalidMsg;
       }
       this.workflow.valid = res.valid;
-
+      this.ref.detectChanges();
     }, () => {
     });
   }
@@ -7011,6 +7041,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         if (!this.invalidMsg && res.invalidMsg) {
           this.invalidMsg = res.invalidMsg;
         }
+        this.ref.detectChanges();
       }
     }, (err) => {
       this.isStore = false;

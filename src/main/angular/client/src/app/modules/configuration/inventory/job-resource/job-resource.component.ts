@@ -1,5 +1,5 @@
-import {Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
-import {isArray, isEqual} from 'underscore';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
+import {isArray, isEmpty, isEqual} from 'underscore';
 import {Subscription} from 'rxjs';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -9,6 +9,7 @@ import {ValueEditorComponent} from '../../../../components/value-editor/value.co
 
 @Component({
   selector: 'app-job-resource',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './job-resource.component.html'
 })
 export class JobResourceComponent implements OnChanges, OnDestroy {
@@ -26,10 +27,19 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
 
   indexOfNextAdd = 0;
   history = [];
-  subscription: Subscription;
+  subscription1: Subscription;
+  subscription2: Subscription;
 
-  constructor(private coreService: CoreService, private dataService: DataService, private modal: NzModalService) {
-    this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
+  constructor(private coreService: CoreService, private dataService: DataService,
+              private modal: NzModalService, private ref: ChangeDetectorRef) {
+    this.subscription1 = dataService.reloadTree.subscribe(res => {
+      if (res && !isEmpty(res)) {
+        if (res.reloadTree && this.jobResource.actual) {
+          this.ref.detectChanges();
+        }
+      }
+    });
+    this.subscription2 = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'REDO') {
         this.redo();
       } else if (res === 'UNDO') {
@@ -57,12 +67,14 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         this.getObject();
       } else {
         this.jobResource = {};
+        this.ref.detectChanges();
       }
     }
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
     if (this.jobResource.name) {
       this.saveJSON();
     }
@@ -84,9 +96,11 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
           this.dataService.reloadTree.next({rename: data});
         }, () => {
           this.jobResource.name = this.data.name;
+          this.ref.detectChanges();
         });
       } else {
         this.jobResource.name = this.data.name;
+        this.ref.detectChanges();
       }
     }
   }
@@ -109,6 +123,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     if (this.indexOfNextAdd < n) {
       const obj = this.history[this.indexOfNextAdd++];
       this.jobResource.configuration = JSON.parse(obj);
+      this.ref.detectChanges();
     }
   }
 
@@ -121,6 +136,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     if (this.indexOfNextAdd > 0) {
       const obj = this.history[--this.indexOfNextAdd];
       this.jobResource.configuration = JSON.parse(obj);
+      this.ref.detectChanges();
     }
   }
 
@@ -132,12 +148,14 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     if (this.jobResource.configuration.env) {
       if (!this.coreService.isLastEntryEmpty(this.jobResource.configuration.env, 'name', '')) {
         this.jobResource.configuration.env.push(param);
+        this.ref.detectChanges();
       }
     }
   }
 
   removeEnv(index): void {
     this.jobResource.configuration.env.splice(index, 1);
+    this.ref.detectChanges();
     this.saveJSON();
   }
 
@@ -149,12 +167,14 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     if (this.jobResource.configuration.arguments) {
       if (!this.coreService.isLastEntryEmpty(this.jobResource.configuration.arguments, 'name', '')) {
         this.jobResource.configuration.arguments.push(param);
+        this.ref.detectChanges();
       }
     }
   }
 
   removeArgu(index): void {
     this.jobResource.configuration.arguments.splice(index, 1);
+    this.ref.detectChanges();
     this.saveJSON();
   }
 
@@ -187,6 +207,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
 
   drop(event: CdkDragDrop<string[]>, list): void {
     moveItemInArray(list, event.previousIndex, event.currentIndex);
+    this.ref.detectChanges();
     this.saveJSON();
   }
 
@@ -263,6 +284,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     } else {
       this.invalidMsg = '';
     }
+    this.ref.detectChanges();
   }
 
   private getObject(): void {
@@ -310,6 +332,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       }
       this.jobResource.actual = JSON.stringify(res.configuration);
       this.history.push(this.jobResource.actual);
+      this.ref.detectChanges();
     });
   }
 }

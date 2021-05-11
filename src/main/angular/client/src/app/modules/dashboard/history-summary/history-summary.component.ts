@@ -20,7 +20,8 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
   notAuthenticate2 = false;
   subscription: Subscription;
 
-  constructor(private authService: AuthService, private coreService: CoreService, private router: Router, private dataService: DataService) {
+  constructor(private authService: AuthService, private coreService: CoreService,
+              private router: Router, private dataService: DataService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -28,12 +29,21 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
 
   refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
-      for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'HistoryOrderTerminated') {
-          this.getSummary();
-        }
-        if (args.eventSnapshots[j].eventType === 'HistoryTaskTerminated') {
-          this.getTaskSummary();
+      let flag1 = false;
+      let flag2 = false;
+      for (const j in args.eventSnapshots) {
+        if (args.eventSnapshots[j]) {
+          if (args.eventSnapshots[j].eventType === 'HistoryOrderTerminated' && !flag1) {
+            flag1 = true;
+            this.getSummary();
+          }
+          if (args.eventSnapshots[j].eventType === 'HistoryTaskTerminated' && !flag2) {
+            flag2 = true;
+            this.getTaskSummary();
+          }
+          if (flag1 && flag2) {
+            break;
+          }
         }
       }
     }
@@ -112,7 +122,7 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
   }
 
   showOrderSummary(state): void {
-    let filter = this.coreService.getHistoryTab();
+    const filter = this.coreService.getHistoryTab();
     filter.type = 'ORDER';
     filter.order.filter.historyStates = state;
     filter.order.selectedView = false;
@@ -121,7 +131,7 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
   }
 
   showTaskSummary(state): void {
-    let filter = this.coreService.getHistoryTab();
+    const filter = this.coreService.getHistoryTab();
     filter.type = 'TASK';
     filter.task.filter.historyStates = state;
     filter.task.selectedView = false;

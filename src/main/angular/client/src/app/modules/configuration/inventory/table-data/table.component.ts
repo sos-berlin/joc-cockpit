@@ -1,16 +1,19 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
 import {CoreService} from 'src/app/services/core.service';
 import {DataService} from 'src/app/services/data.service';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {ConfirmModalComponent} from '../../../../components/comfirm-modal/confirm.component';
 import {CreateObjectModalComponent} from '../inventory.component';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
+import {isEmpty} from 'underscore';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-table',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './table.component.html'
 })
-export class TableComponent {
+export class TableComponent implements OnDestroy{
   @Input() schedulerId: any;
   @Input() preferences: any;
   @Input() permission: any;
@@ -22,7 +25,21 @@ export class TableComponent {
   searchKey: any;
   filter: any = {sortBy: 'name', reverse: false};
 
-  constructor(public coreService: CoreService, private dataService: DataService, private modal: NzModalService) {
+  subscription: Subscription;
+
+  constructor(public coreService: CoreService, private dataService: DataService,
+              private modal: NzModalService, private ref: ChangeDetectorRef) {
+    this.subscription = dataService.reloadTree.subscribe(res => {
+      if (res && !isEmpty(res)) {
+        if (res.reloadTree) {
+          this.ref.detectChanges();
+        }
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   add(): void {
@@ -161,6 +178,7 @@ export class TableComponent {
       }
       this.dataObj.children = [...this.dataObj.children];
       this.dataService.reloadTree.next({reload: true});
+      this.ref.detectChanges();
     });
   }
 
@@ -248,6 +266,7 @@ export class TableComponent {
       }
       this.dataObj.children = [...this.dataObj.children];
       this.dataService.reloadTree.next({reload: true});
+      this.ref.detectChanges();
     });
   }
 
@@ -286,6 +305,7 @@ export class TableComponent {
       this.dataObj.children.push(obj);
       this.dataObj.children = [...this.dataObj.children];
       this.dataService.reloadTree.next({add: true});
+      this.ref.detectChanges();
     });
   }
 

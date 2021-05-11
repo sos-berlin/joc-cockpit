@@ -836,76 +836,8 @@ span ul li a {
   background: var(--box-color);
 }
 
-.ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable, .ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners {
-  background-color: var(--background-color);
-  border-color: #65707d;
-  color: white;
-}
-
-#property-panel .ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable, #property-panel .ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners {
-  background-color: var(--bg-box) !important;
-  border-color: var(--border-color);
-  color: rgba(255, 255, 255, 0.89);
-}
-
-.ck-rounded-corners .ck.ck-editor__top .ck-sticky-panel .ck-toolbar, .ck.ck-editor__top .ck-sticky-panel .ck-toolbar.ck-rounded-corners {
-  background-color: rgba(189, 189, 189, 0.1);
-  border-color: #65707d;
-  color: var(--white);
-}
-
-.ck.ck-reset_all, .ck.ck-reset_all * {
-  color: var(--white);
-}
-
-.ck.ck-button:not(.ck-disabled):active, a.ck.ck-button:not(.ck-disabled):active,
-.ck.ck-button:not(.ck-disabled):hover, a.ck.ck-button:not(.ck-disabled):hover,
-.ck.ck-button:active, .ck.ck-button:focus, a.ck.ck-button:active, a.ck.ck-button:focus {
-  background-color: transparent;
-}
-
-.ck-rounded-corners .ck.ck-dropdown .ck-dropdown__panel .ck-list, .ck.ck-dropdown .ck-dropdown__panel .ck-list.ck-rounded-corners {
-  background-color: var(--background-color);
-  border-color: var(--background-color);
-}
-
-.ck.ck-dropdown__panel {
-  border: 1px solid var(--background-color);
-}
-
-.ck.ck-list__item .ck-button:hover:not(.ck-disabled),
-.ck.ck-button:not(.ck-disabled):active, a.ck.ck-button:not(.ck-disabled):active {
-  color: var(--background-color);
-}
-
-.ck.ck-list__item .ck-button.ck-on {
-  background-color: var(--primary);
-  color: var(--white);
-}
-
-.ck.ck-button.ck-on, a.ck.ck-button.ck-on {
-  background-color: var(--primary);
-}
-
-.documents a[href*="http:"], .documents a[href*="https:"] {
-  color: var(--primary) !important;
-}
-
 .arrow-down-ac:last-child:after, .arrow-down:last-child:after {
   color: var(--bg-box);
-}
-
-.ck-content a {
-  color: var(--primary);
-  text-decoration: underline;
-}
-
-.ck.ck-link-form, .ck.ck-link-actions {
-  background: var(--background-color);
-}
-
-.ck.ck-link-actions .ck-button.ck-link-actions__preview .ck-button__label {
-  color: var(--white) !important;
 }
 
 .ant-dropdown-menu {

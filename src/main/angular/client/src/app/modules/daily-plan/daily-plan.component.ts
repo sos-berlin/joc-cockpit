@@ -15,7 +15,7 @@ import {forkJoin, of, Subscription} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {OrderPipe} from 'ngx-order-pipe';
-import * as _ from 'underscore';
+import {isEmpty, groupBy, sortBy, clone} from 'underscore';
 import {Router} from '@angular/router';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {GroupByPipe, SearchPipe} from '../../pipes/core.pipe';
@@ -88,7 +88,7 @@ export class SelectOrderTemplatesComponent implements OnInit {
         };
         treeObj.push(obj);
       }
-      const arr = _.groupBy(_.sortBy(treeObj, 'path'), (result) => {
+      const arr = groupBy(sortBy(treeObj, 'path'), (result) => {
         return result.path;
       });
       this.generateTree(arr);
@@ -720,7 +720,7 @@ export class FilterModalComponent implements OnInit {
       };
     } else {
       this.filter.radio = 'planned';
-      this.name = _.clone(this.filter.name);
+      this.name = clone(this.filter.name);
     }
   }
 
@@ -988,7 +988,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
-              private dataService: DataService, private groupBy: GroupByPipe,
+              private dataService: DataService, private groupByPipe: GroupByPipe,
               private modal: NzModalService, private translate: TranslateService, private searchPipe: SearchPipe,
               private orderPipe: OrderPipe, private excelService: ExcelService, private router: Router) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
@@ -1096,7 +1096,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (this.dailyPlanFilters.filter.groupBy !== type) {
       this.dailyPlanFilters.filter.groupBy = type;
       if (type) {
-        this.planOrders = this.groupBy.transform(this.plans, type === 'WORKFLOW' ? 'workflowPath' : 'schedulePath');
+        this.planOrders = this.groupByPipe.transform(this.plans, type === 'WORKFLOW' ? 'workflowPath' : 'schedulePath');
       } else {
         this.planOrders = this.plans.slice();
       }
@@ -1967,7 +1967,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       if (this.planOrders && this.planOrders.length > 0) {
         tempArr = this.coreService.clone(this.planOrders);
       }
-      this.planOrders = this.groupBy.transform(filterData, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW' ? 'workflowPath' : 'schedulePath');
+      this.planOrders = this.groupByPipe.transform(filterData, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW' ? 'workflowPath' : 'schedulePath');
       if (this.dailyPlanFilters.filter.sortBy === 'orderId') {
         this.planOrders = this.orderPipe.transform(this.planOrders,
           this.dailyPlanFilters.filter.groupBy === 'ORDER' ? 'schedulePath' : this.dailyPlanFilters.filter.sortBy,
@@ -2114,7 +2114,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private convertObjectToArray(res, order): void {
-    if (_.isEmpty(res)) {
+    if (isEmpty(res)) {
       order.variables = [];
     } else {
       order.variables = Object.entries(res).map(([k, v]) => {
@@ -2289,11 +2289,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   private isCustomizationSelected(flag): void {
     if (flag) {
-      this.temp_filter.status = _.clone(this.dailyPlanFilters.filter.status);
+      this.temp_filter.status = clone(this.dailyPlanFilters.filter.status);
       this.dailyPlanFilters.filter.status = '';
     } else {
       if (this.temp_filter.status) {
-        this.dailyPlanFilters.filter.status = _.clone(this.temp_filter.status);
+        this.dailyPlanFilters.filter.status = clone(this.temp_filter.status);
       } else {
         this.dailyPlanFilters.filter.status = 'ALL';
       }

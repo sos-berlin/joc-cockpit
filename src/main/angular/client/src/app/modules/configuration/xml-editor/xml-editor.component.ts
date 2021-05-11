@@ -3,17 +3,17 @@ import {NzFormatBeforeDropEvent, NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-a
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {FileUploader} from 'ng2-file-upload';
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import {Editor, Toolbar} from 'ngx-editor';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Observable, of, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {ClipboardService} from 'ngx-clipboard';
 import {saveAs} from 'file-saver';
+import {PerfectScrollbarComponent} from 'ngx-perfect-scrollbar';
 import {isEmpty, isArray, isEqual, sortBy, clone} from 'underscore';
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
-import {PerfectScrollbarComponent} from 'ngx-perfect-scrollbar';
 
 declare const require;
 declare const vkbeautify;
@@ -78,7 +78,7 @@ export class ShowChildModalComponent implements OnInit {
     this.selectedNode.doc = this.checkText(data.ref);
   }
 
-  checkText(node): void {
+  checkText(node): any {
     let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     let text: any = {};
     let documentationPath2 = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:annotation/xs:documentation';
@@ -569,11 +569,11 @@ export class ShowModalComponent implements OnInit {
     this.obj.xml = this.xml;
   }
 
-  copyToClipboard() {
+  copyToClipboard(): void {
     this.clipboardService.copyFromContent(this.obj.xml);
   }
 
-  validateXML() {
+  validateXML(): void {
     let obj: any = {
       controllerId: this.schedulerId,
       objectType: this.objectType,
@@ -596,11 +596,11 @@ export class ShowModalComponent implements OnInit {
     });
   }
 
-  cancel() {
+  cancel(): void {
     this.activeModal.close();
   }
 
-  execCommand(type) {
+  execCommand(type): void {
     this.cm.codeMirror.execCommand(type);
   }
 
@@ -628,7 +628,7 @@ export class ShowModalComponent implements OnInit {
     });
   }
 
-  private highlightLineNo(num) {
+  private highlightLineNo(num): void {
     let lNum = clone(num);
     let dom: any = document.getElementsByClassName('CodeMirror-code');
     if (dom && dom[0]) {
@@ -750,7 +750,7 @@ export class ImportModalComponent implements OnInit {
   }
 
   // submit data
-  onSubmit() {
+  onSubmit(): void {
     if (!this.importXsd) {
       this.activeModal.close({uploadData: this.uploadData, importObj: this.importObj});
     } else {
@@ -758,8 +758,8 @@ export class ImportModalComponent implements OnInit {
     }
   }
 
-  cancel() {
-    this.activeModal.close('');
+  cancel(): void {
+    this.activeModal.destroy();
   }
 }
 
@@ -779,7 +779,7 @@ export class ConfirmationModalComponent {
   constructor(public activeModal: NzModalRef) {
   }
 
-  confirmMessage(message) {
+  confirmMessage(message): void {
     if (message === 'yes') {
       if (!this.delete && this.save) {
         this.save(this.self);
@@ -804,7 +804,6 @@ export class ConfirmationModalComponent {
   styleUrls: ['./xml-editor.component.scss']
 })
 export class XmlEditorComponent implements OnInit, OnDestroy {
-  public Editor = ClassicEditor;
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
@@ -818,8 +817,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   counting = 0;
   autoAddCount = 0;
   copyItem: any = {};
-  cutData: boolean;
-  checkRule: boolean;
+  cutData = false;
+  checkRule = true;
   choice = true;
   dropCheck: any = {status: false, dropNode: undefined};
   selectedNode: any;
@@ -871,8 +870,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   importXSDFile: boolean;
   sideView: any = {};
   uploadData: any;
-  xmlVersionObj: any;
-  draftXml: any;
   liveXml: any;
   selectedTabIndex = 0;
   counter: number;
@@ -908,8 +905,16 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       {name: 'styles', items: ['Font', 'FontSize']},
     ], allowedContent: true
   };
+  editor: Editor;
+  toolbar: Toolbar = [
+    ['bold', 'italic'],
+    ['underline', 'strike'],
+    ['blockquote'],
+    ['ordered_list', 'bullet_list'],
+    [{heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']}],
+    ['align_left', 'align_center', 'align_right', 'align_justify']
+  ];
 
-  @ViewChild('myckeditor', {static: false}) ckeditor: any;
   @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
   @ViewChild(PerfectScrollbarComponent, {static: false}) componentRef?: PerfectScrollbarComponent;
 
@@ -936,6 +941,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.isLoading = false;
       return;
     }
+    this.editor = new Editor();
     this.sideView = this.coreService.getSideView();
     if (this.sideView.xml && !this.sideView.xml.show) {
       this.hidePanel();
@@ -991,6 +997,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.editor.destroy();
     if (this.submitXsd && !this.objectXml.xml && !this.isStore) {
       this.storeXML(undefined);
     }
@@ -1073,39 +1080,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       }
       this.delete = false;
     });
-  }
-
-  deployXML() {
-    this.autoValidate();
-    this._xml = this._showXml();
-    if (isEmpty(this.nonValidattribute)) {
-      this.coreService.post('xmleditor/deploy', {
-        controllerId: this.schedulerIds.selected,
-        objectType: this.objectType,
-        configuration: this._xml,
-        configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
-      }).subscribe((res: any) => {
-        if (res.validationError) {
-          this.showError(res.validationError);
-        } else {
-          this.prevXML = this._xml;
-          this.isDeploy = true;
-          this.XSDState = Object.assign({}, {message: res.message});
-          this.validConfig = true;
-          if (res.deployed) {
-            this.XSDState.modified = res.deployed;
-          }
-        }
-      }, (error) => {
-        this.toasterService.pop('error', error.error.message);
-      });
-    } else {
-      this.gotoErrorLocation();
-      this.popToast(this.nonValidattribute);
-      if (this.nonValidattribute.name) {
-        this.validateAttr('', this.nonValidattribute);
-      }
-    }
   }
 
   tabChange($event): void {
@@ -3703,7 +3677,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   // details meathod
-  onChange(event, nodes) {
+  onChange(event, nodes): void {
     if (!(/[a-zA-Z0-9_]+.*$/.test(event))) {
       this.error = true;
     } else {
@@ -3711,7 +3685,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         const x = event.replace(/<[^>]+>/gm);
         if (x !== 'undefined&nbsp;undefined') {
           nodes.values[0] = Object.assign(nodes.values[0], {data: event});
-          event = '';
           this.myContent = nodes.values[0].data;
           this.error = false;
         } else {
@@ -4526,19 +4499,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     });
   }
 
-  autosize(evt) {
-    if (evt) {
-      let el = document.getElementById(evt);
-      if (el !== null) {
-        setTimeout(() => {
-          el.style.cssText = 'padding:4px 8px; overflow:hidden;height:' + el.scrollHeight + 'px';
-        }, 0);
-      }
-    }
-  }
-
   // open new Confirmation model
-  newFile() {
+  newFile(): void {
     if (this.submitXsd && this.objectType === 'NOTIFICATION') {
       const modal = this.modal.create({
         nzTitle: undefined,
@@ -4575,7 +4537,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  importXSD() {
+  importXSD(): void {
     this.importXSDFile = true;
     const modal = this.modal.create({
       nzTitle: undefined,
@@ -4633,7 +4595,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     });
   }
 
-  changeSchema(data) {
+  changeSchema(data): void {
     this.isLoading = true;
     let obj;
     let xml = this._showXml();
@@ -4688,8 +4650,18 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     self.submitXsd = false;
   }
 
+  getpos(id) {
+    $('[data-toggle="tooltip"]').tooltip({
+      trigger: 'hover focus manual',
+      html: true,
+      delay: {'show': 500, 'hide': 200}
+    });
+    const a = '#' + id;
+    $(a).tooltip('show');
+  }
+
   // create Xml from Json
-  showXml() {
+  showXml(): void {
     const xml = this._showXml();
     if (!xml) {
       return;
@@ -5066,18 +5038,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         return data.data;
       }
     }
-  }
-
-  addCkCss(id) {
-    setTimeout(() => {
-      $(('#') + id + (' .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused)')).addClass('invalid');
-    }, 1);
-  }
-
-  removeCkCss(id) {
-    setTimeout(() => {
-      $(('#') + id + (' .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused)')).removeClass('invalid');
-    }, 1);
   }
 
   addContent(data): void {

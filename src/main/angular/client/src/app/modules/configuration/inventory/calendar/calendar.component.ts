@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {DatePipe} from '@angular/common';
 import * as moment from 'moment';
@@ -1335,11 +1335,19 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
 
   indexOfNextAdd = 0;
   history = [];
-  subscription: Subscription;
+  subscription1: Subscription;
+  subscription2: Subscription;
 
   constructor(public coreService: CoreService, public modal: NzModalService, private calendarService: CalendarService,
-              private dataService: DataService) {
-    this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
+              private dataService: DataService, private ref: ChangeDetectorRef) {
+    this.subscription1 = dataService.reloadTree.subscribe(res => {
+      if (res && !isEmpty(res)) {
+        if (res.reloadTree && this.calendar.actual) {
+          this.ref.detectChanges();
+        }
+      }
+    });
+    this.subscription2 = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'REDO') {
         this.redo();
       } else if (res === 'UNDO') {
@@ -1374,12 +1382,14 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         this.getObject();
       } else {
         this.calendar = {};
+        this.ref.detectChanges();
       }
     }
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
     if (this.calendar.name) {
       this.saveJSON();
     }
@@ -1532,9 +1542,8 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
           } else {
             this.invalidMsg = res.invalidMsg;
           }
+          this.ref.detectChanges();
         }
-      }, () => {
-
       });
     }
   }
@@ -1585,6 +1594,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     if (this.indexOfNextAdd < n) {
       const obj = this.history[this.indexOfNextAdd++];
       this.calendar.configuration = JSON.parse(obj);
+      this.ref.detectChanges();
     }
   }
 
@@ -1597,6 +1607,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     if (this.indexOfNextAdd > 0) {
       const obj = this.history[--this.indexOfNextAdd];
       this.calendar.configuration = JSON.parse(obj);
+      this.ref.detectChanges();
     }
   }
 
@@ -1649,6 +1660,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       } else {
         this.invalidMsg = '';
       }
+      this.ref.detectChanges();
     });
   }
 

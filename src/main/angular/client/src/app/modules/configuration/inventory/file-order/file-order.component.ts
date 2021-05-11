@@ -1,11 +1,12 @@
-import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {isEqual} from 'underscore';
+import {isEmpty, isEqual} from 'underscore';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 
 @Component({
   selector: 'app-file-order',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './file-order.component.html'
 })
 export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
@@ -26,10 +27,18 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
 
   indexOfNextAdd = 0;
   history = [];
-  subscription: Subscription;
+  subscription1: Subscription;
+  subscription2: Subscription;
 
-  constructor(private coreService: CoreService, private dataService: DataService) {
-    this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
+  constructor(private coreService: CoreService, private dataService: DataService, private ref: ChangeDetectorRef) {
+    this.subscription1 = dataService.reloadTree.subscribe(res => {
+      if (res && !isEmpty(res)) {
+        if (res.reloadTree && this.fileOrder.actual) {
+          this.ref.detectChanges();
+        }
+      }
+    });
+    this.subscription2 = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'REDO') {
         this.redo();
       } else if (res === 'UNDO') {
@@ -54,6 +63,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         this.getObject();
       } else {
         this.fileOrder = {};
+        this.ref.detectChanges();
       }
     }
   }
@@ -63,7 +73,8 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
     if (this.fileOrder.name) {
       this.saveJSON();
     }
@@ -132,6 +143,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       } else {
         this.invalidMsg = '';
       }
+      this.ref.detectChanges();
     });
   }
 
@@ -157,6 +169,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     } else {
       this.invalidMsg = '';
     }
+    this.ref.detectChanges();
   }
 
   rename(inValid): void {
@@ -175,9 +188,11 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
           this.dataService.reloadTree.next({rename: data});
         }, (err) => {
           this.fileOrder.name = this.data.name;
+          this.ref.detectChanges();
         });
       } else {
         this.fileOrder.name = this.data.name;
+        this.ref.detectChanges();
       }
     }
   }
@@ -263,6 +278,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     if (this.indexOfNextAdd < n) {
       const obj = this.history[this.indexOfNextAdd++];
       this.fileOrder.configuration = JSON.parse(obj);
+      this.ref.detectChanges();
     }
   }
 
@@ -275,6 +291,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     if (this.indexOfNextAdd > 0) {
       const obj = this.history[--this.indexOfNextAdd];
       this.fileOrder.configuration = JSON.parse(obj);
+      this.ref.detectChanges();
     }
   }
 

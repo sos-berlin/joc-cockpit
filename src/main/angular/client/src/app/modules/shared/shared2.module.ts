@@ -16,7 +16,6 @@ import {
   StringTimePipe,
   TimeInStringFormatPipe
 } from '../../pipes/core.pipe';
-import {SubLinkComponent} from '../resource/sub-link/sub-link.component';
 import {BreadcrumbsComponent} from '../../components/breadcrumbs/breadcrumbs.component';
 import {OrderActionComponent} from '../order-overview/order-action/order-action.component';
 import {EmptyDataComponent} from '../../components/empty-data/empty-data.component';
@@ -24,7 +23,7 @@ import {EmptyDataComponent} from '../../components/empty-data/empty-data.compone
 const MODULES = [CommonModule, FormsModule, NzModalModule, NzDropDownModule, TranslateModule,
   PerfectScrollbarModule, NzEmptyModule];
 const PIPES = [StringDatePipe, TimeInStringFormatPipe, StringTimePipe, DecodeSpacePipe, SafeHtmlPipe, SearchPipe, HighlightSearch];
-const EXPORTS = [...PIPES, EmptyDataComponent, SubLinkComponent, BreadcrumbsComponent, OrderActionComponent];
+const EXPORTS = [...PIPES, EmptyDataComponent, BreadcrumbsComponent, OrderActionComponent];
 
 @NgModule({
   imports: [

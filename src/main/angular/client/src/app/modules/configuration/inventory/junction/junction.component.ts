@@ -1,5 +1,5 @@
-import {Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
-import {isEqual} from 'underscore';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
+import {isEmpty, isEqual} from 'underscore';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
@@ -7,6 +7,7 @@ import {WorkflowService} from '../../../../services/workflow.service';
 
 @Component({
   selector: 'app-junction',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './junction.component.html'
 })
 export class JunctionComponent implements OnChanges, OnDestroy {
@@ -25,10 +26,19 @@ export class JunctionComponent implements OnChanges, OnDestroy {
 
   indexOfNextAdd = 0;
   history = [];
-  subscription: Subscription;
+  subscription1: Subscription;
+  subscription2: Subscription;
 
-  constructor(private coreService: CoreService, private workflowService: WorkflowService, private dataService: DataService) {
-    this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
+  constructor(private coreService: CoreService, private workflowService: WorkflowService,
+              private dataService: DataService, private ref: ChangeDetectorRef) {
+    this.subscription1 = dataService.reloadTree.subscribe(res => {
+      if (res && !isEmpty(res)) {
+        if (res.reloadTree && this.junction.actual) {
+          this.ref.detectChanges();
+        }
+      }
+    });
+    this.subscription2 = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'REDO') {
         this.redo();
       } else if (res === 'UNDO') {
@@ -53,12 +63,14 @@ export class JunctionComponent implements OnChanges, OnDestroy {
         this.getObject();
       } else {
         this.junction = {};
+        this.ref.detectChanges();
       }
     }
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
     if (this.junction.name) {
       this.saveJSON();
     }
@@ -88,10 +100,11 @@ export class JunctionComponent implements OnChanges, OnDestroy {
       this.junction.path1 = this.data.path;
       this.junction.name = this.data.name;
       if (res.configuration.lifetime) {
-        this.lifetime = this.workflowService.convertDurationToString(res.configuration.lifetime)
+        this.lifetime = this.workflowService.convertDurationToString(res.configuration.lifetime);
       }
       this.junction.actual = JSON.stringify(res.configuration);
       this.history.push(this.junction.actual);
+      this.ref.detectChanges();
     });
   }
 
@@ -111,9 +124,11 @@ export class JunctionComponent implements OnChanges, OnDestroy {
           this.dataService.reloadTree.next({rename: data});
         }, () => {
           this.junction.name = this.data.name;
+          this.ref.detectChanges();
         });
       } else {
         this.junction.name = this.data.name;
+        this.ref.detectChanges();
       }
     }
   }
@@ -136,6 +151,7 @@ export class JunctionComponent implements OnChanges, OnDestroy {
     if (this.indexOfNextAdd < n) {
       const obj = this.history[this.indexOfNextAdd++];
       this.junction.configuration = JSON.parse(obj);
+      this.ref.detectChanges();
     }
   }
 
@@ -148,6 +164,7 @@ export class JunctionComponent implements OnChanges, OnDestroy {
     if (this.indexOfNextAdd > 0) {
       const obj = this.history[--this.indexOfNextAdd];
       this.junction.configuration = JSON.parse(obj);
+      this.ref.detectChanges();
     }
   }
 
@@ -174,6 +191,7 @@ export class JunctionComponent implements OnChanges, OnDestroy {
           this.junction.actual = JSON.stringify(this.junction.configuration);
           this.junction.deployed = false;
           this.data.deployed = false;
+          this.ref.detectChanges();
         }
       });
     }

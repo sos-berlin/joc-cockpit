@@ -1,9 +1,7 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
 import {LayoutComponent} from './layout.component';
-import {LogComponent} from '../log/log.component';
 import {DashboardComponent} from '../dashboard/dashboard.component';
-import {UserComponent} from '../user/user.component';
 import {AuthGuard} from '../../components/guard';
 
 const routes: Routes = [
@@ -77,7 +75,8 @@ const routes: Routes = [
       },
       {
         path: 'user',
-        component: UserComponent,
+        loadChildren: () => import('./../user/user.module').then(m => m.UserModule),
+        canActivate: [AuthGuard],
         data: {
           breadcrumb: 'breadcrumb.label.userProfile'
         }
@@ -94,7 +93,11 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: {breadcrumb: 'breadcrumb.label.setting'}
       },
-      {path: 'log', component: LogComponent, data: {breadcrumb: 'breadcrumb.label.log'}},
+      {
+        path: 'log',
+        loadChildren: () => import('./../log/log.module').then(m => m.LogModule),
+        canActivate: [AuthGuard],
+        data: {breadcrumb: 'breadcrumb.label.log'}},
       {
         path: 'users',
         loadChildren: () => import('./../admin/admin.module').then(m => m.AdminModule),

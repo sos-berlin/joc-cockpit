@@ -5673,29 +5673,23 @@ pre#pre {
   background-color: var(--bg-orange);
   color: white;
 }
-
-.ck-editor__main .ck-content {
-  height: 250px;
-  color: var(--text-color);
+.NgxEditor__Wrapper, .NgxEditor__Wrapper .NgxEditor__MenuBar{
+  border-radius: 0 !important;
+  border: 1px solid var(--border-color)  !important;
 }
-
-.ck-file-dialog-button, .ck-dropdown {
-  display: none !important;
+.NgxEditor {
+  background: var(--bg-box) !important;
+  color: var(--text-color) !important;
 }
-
-.ck-heading-dropdown {
-  display: inline-block !important;
+.NgxEditor__Dropdown .NgxEditor__Dropdown--Text, .NgxEditor__Dropdown .NgxEditor__Dropdown--DropdownMenu{
+  color: rgb(0, 0, 0);
+  font-weight: 600;
 }
-
 /***
  End Workflow and XMl editor css
 ***/
 .tree-viewport::-webkit-scrollbar {
   width: 10px;
-}
-
-.ck-content ul {
-  list-style-type: disc !important;
 }
 
 .ngx-charts text {
@@ -6740,10 +6734,6 @@ tr.tr-border td:first-child {
   padding: 0 !important;
 }
 
-.has-error .ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable, .has-error .ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners {
-  border-color: #a94442;
-}
-
 .h-sm {
   height: 22px;
 }
@@ -7143,7 +7133,7 @@ tr.tr-border td:first-child {
   margin-left: 8px;
   color: var(--white) !important;
   background-color: var(--primary) !important;
-  padding: 1px 3px;
+  padding: 1px 5px;
   font-weight: bold;
   font-size: 10px;
   border-radius: 50%;
@@ -7431,16 +7421,6 @@ div.ace_tooltip {
 
 .documents a[href*="https:"] {
   color: var(--primary) !important;
-}
-
-.ck .ck-link_selected {
-  color: var(--primary);
-  text-decoration: underline;
-}
-
-.ck-content a {
-  color: var(--primary);
-  text-decoration: underline;
 }
 
 .icon-bg {

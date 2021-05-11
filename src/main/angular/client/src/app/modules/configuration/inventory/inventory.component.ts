@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {forkJoin, of, Subscription} from 'rxjs';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {FileUploader} from 'ng2-file-upload';
@@ -174,6 +174,7 @@ export class SingleDeployComponent implements OnInit {
 
 @Component({
   selector: 'app-deploy-draft-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './deploy-dialog.html'
 })
 export class DeployComponent implements OnInit {
@@ -203,7 +204,7 @@ export class DeployComponent implements OnInit {
   messageList: any;
   isDeleted = false;
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService,
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef,
               private authService: AuthService, private inventoryService: InventoryService) {
   }
 
@@ -219,6 +220,10 @@ export class DeployComponent implements OnInit {
       this.required = true;
     }
     this.buildTree();
+  }
+
+  handleRecursive(): void{
+    this.ref.detectChanges();
   }
 
   expandAll(): void {
@@ -237,11 +242,13 @@ export class DeployComponent implements OnInit {
     }
 
     recursive(this.nodes);
+    this.ref.detectChanges();
   }
 
   collapseAll(): void {
     this.isExpandAll = false;
     this.expandCollapseRec(this.nodes);
+    this.ref.detectChanges();
   }
 
   checkBoxChange(e: NzFormatEmitEvent): void {
@@ -581,6 +588,7 @@ export class DeployComponent implements OnInit {
         this.preselected(this.nodes[0]);
         this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
       }
+      this.ref.detectChanges();
     }, 0);
   }
 
@@ -1460,6 +1468,7 @@ export class ImportWorkflowModalComponent implements OnInit {
 
 @Component({
   selector: 'app-json-editor',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './json-editor-dialog.html'
 })
 export class JsonEditorModalComponent implements OnInit {
@@ -1478,7 +1487,7 @@ export class JsonEditorModalComponent implements OnInit {
   @ViewChild('editor', {static: false}) editor: JsonEditorComponent;
 
   constructor(public coreService: CoreService, private clipboardService: ClipboardService, public activeModal: NzModalRef,
-              private translate: TranslateService, private message: NzMessageService) {
+              private translate: TranslateService, private message: NzMessageService, private ref: ChangeDetectorRef) {
     this.options.mode = 'code';
     this.options.onEditable = () => {
       return this.edit;
@@ -1530,10 +1539,11 @@ export class JsonEditorModalComponent implements OnInit {
   private parseErrorMsg(res, cb): void {
     let flag = true;
     if (!res.valid) {
-      flag = !!res.invalidMsg.match(/label/);
+      flag = false;
       this.errorMsg = res.invalidMsg;
     }
     this.isError = !flag;
+    this.ref.detectChanges();
     cb(flag);
   }
 
@@ -1658,6 +1668,7 @@ export class UploadModalComponent implements OnInit {
 
 @Component({
   selector: 'app-create-object-template',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './create-object-dialog.html'
 })
 export class CreateObjectModalComponent implements OnInit {
@@ -1674,7 +1685,7 @@ export class CreateObjectModalComponent implements OnInit {
   comments: any = {};
   object = {name: '', type: 'suffix', newName: '', onlyContains: false, originalName: '', suffix: '', prefix: ''};
 
-  constructor(private coreService: CoreService, public activeModal: NzModalRef) {
+  constructor(private coreService: CoreService, public activeModal: NzModalRef, private ref: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -1698,6 +1709,7 @@ export class CreateObjectModalComponent implements OnInit {
       this.object.suffix = this.settings.suffix;
       this.object.prefix = this.settings.prefix;
     }
+    this.ref.detectChanges();
   }
 
   onSubmit(): void {
@@ -1733,6 +1745,7 @@ export class CreateObjectModalComponent implements OnInit {
         });
       }, () => {
         this.submitted = false;
+        this.ref.detectChanges();
       });
     }
   }
@@ -1765,6 +1778,7 @@ export class CreateObjectModalComponent implements OnInit {
       this.activeModal.close(res);
     }, () => {
       this.submitted = false;
+      this.ref.detectChanges();
     });
   }
 
@@ -1795,12 +1809,14 @@ export class CreateObjectModalComponent implements OnInit {
       this.activeModal.close(res);
     }, () => {
       this.submitted = false;
+      this.ref.detectChanges();
     });
   }
 }
 
 @Component({
   selector: 'app-create-folder-template',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './create-folder-dialog.html'
 })
 export class CreateFolderModalComponent implements OnInit {
@@ -1814,7 +1830,7 @@ export class CreateFolderModalComponent implements OnInit {
   isValid = true;
   folder = {error: false, name: '', deepRename: 'rename', search: '', replace: ''};
 
-  constructor(private coreService: CoreService, public activeModal: NzModalRef) {
+  constructor(private coreService: CoreService, public activeModal: NzModalRef,  private ref: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -1827,6 +1843,7 @@ export class CreateFolderModalComponent implements OnInit {
         this.folder.deepRename = 'replace';
       }
     }
+    this.ref.detectChanges();
   }
 
   onSubmit(): void {
@@ -1847,6 +1864,7 @@ export class CreateFolderModalComponent implements OnInit {
         });
       }, () => {
         this.submitted = false;
+        this.ref.detectChanges();
       });
     } else {
       if (this.origin.name !== this.folder.name) {
@@ -1877,6 +1895,7 @@ export class CreateFolderModalComponent implements OnInit {
           this.activeModal.close('DONE');
         }, () => {
           this.submitted = false;
+          this.ref.detectChanges();
         });
       } else {
         this.activeModal.close('NO');
@@ -1892,6 +1911,7 @@ export class CreateFolderModalComponent implements OnInit {
         break;
       }
     }
+    this.ref.detectChanges();
   }
 
   isValidObject(str): void {
@@ -1903,6 +1923,7 @@ export class CreateFolderModalComponent implements OnInit {
     } else {
       this.isValid = false;
     }
+    this.ref.detectChanges();
   }
 
   private getObjectArr(object): any {
@@ -1970,7 +1991,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.refresh(res);
     });
     this.subscription2 = dataService.reloadTree.subscribe(res => {
-      if (!isEmpty(res)) {
+      if (res && !isEmpty(res)) {
         if (res.add || res.reload) {
           this.updateTree(this.isTrash);
         } else if (res.set) {
@@ -3696,8 +3717,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.trashTree = [...this.trashTree];
     } else {
       this.tree = [...this.tree];
-      if (this.selectedData && this.selectedData.children) {
-        this.selectedData.children = [...this.selectedData.children];
+      if (this.selectedData && this.type) {
+        if (this.selectedData.children) {
+          this.selectedData.children = [...this.selectedData.children];
+        }
+        this.dataService.reloadTree.next({reloadTree: this.selectedData});
       }
     }
   }

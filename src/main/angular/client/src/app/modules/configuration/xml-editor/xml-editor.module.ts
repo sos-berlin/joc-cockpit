@@ -1,7 +1,9 @@
 import {NgModule} from '@angular/core';
 import {XmlEditorRoutingModule} from './xml-editor-routing.module';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import {NgxEditorModule} from 'ngx-editor';
 import {FileUploadModule} from 'ng2-file-upload';
+import {NzTabsModule} from 'ng-zorro-antd/tabs';
+import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {SharedModule} from '../../shared/shared.module';
 import {
   ConfirmationModalComponent,
@@ -10,8 +12,7 @@ import {
   ShowModalComponent,
   XmlEditorComponent
 } from './xml-editor.component';
-
-import { XMLAutofocusDirective } from 'src/app/directives/core.directive';
+import {XMLAutofocusDirective} from '../../../directives/core.directive';
 
 const COMPONENTS = [ImportModalComponent, ShowModalComponent,
   ShowChildModalComponent, ConfirmationModalComponent];
@@ -20,8 +21,10 @@ const COMPONENTS = [ImportModalComponent, ShowModalComponent,
   imports: [
     XmlEditorRoutingModule,
     SharedModule,
+    CodemirrorModule,
+    NzTabsModule,
     FileUploadModule,
-    CKEditorModule
+    NgxEditorModule
   ],
   declarations: [
     XmlEditorComponent,

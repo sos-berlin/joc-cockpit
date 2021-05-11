@@ -1,4 +1,14 @@
-import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import {isEmpty, isArray, isEqual, clone} from 'underscore';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../../services/core.service';
@@ -7,6 +17,7 @@ import {CalendarService} from '../../../../services/calendar.service';
 
 @Component({
   selector: 'app-schedule',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './schedule.component.html',
 })
 export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
@@ -30,13 +41,22 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
 
   indexOfNextAdd = 0;
   history = [];
-  subscription: Subscription;
+  subscription1: Subscription;
+  subscription2: Subscription;
 
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
   constructor(private coreService: CoreService,
-              private calendarService: CalendarService, private dataService: DataService) {
-    this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
+              private calendarService: CalendarService, private dataService: DataService,
+              private ref: ChangeDetectorRef) {
+    this.subscription1 = dataService.reloadTree.subscribe(res => {
+      if (res && !isEmpty(res)) {
+        if (res.reloadTree && this.schedule.actual) {
+          this.ref.detectChanges();
+        }
+      }
+    });
+    this.subscription2 = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'REDO') {
         this.redo();
       } else if (res === 'UNDO') {
@@ -73,16 +93,19 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
             types: ['WORKFLOW']
           }).subscribe((res) => {
             this.workflowTree = this.coreService.prepareTree(res, true);
+            this.ref.detectChanges();
           });
         }
       } else {
         this.schedule = {};
+        this.ref.detectChanges();
       }
     }
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
     if (this.schedule.name) {
       this.saveJSON();
     }
@@ -251,6 +274,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         }
       }
     }
+    this.ref.detectChanges();
   }
 
   rename(inValid): void {
@@ -270,9 +294,11 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           this.dataService.reloadTree.next({rename: data});
         }, (err) => {
           this.schedule.name = this.data.name;
+          this.ref.detectChanges();
         });
       } else {
         this.schedule.name = this.data.name;
+        this.ref.detectChanges();
       }
     }
   }
@@ -295,6 +321,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     if (this.indexOfNextAdd < n) {
       const obj = this.history[this.indexOfNextAdd++];
       this.schedule.configuration = JSON.parse(obj);
+      this.ref.detectChanges();
     }
   }
 
@@ -307,6 +334,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     if (this.indexOfNextAdd > 0) {
       const obj = this.history[--this.indexOfNextAdd];
       this.schedule.configuration = JSON.parse(obj);
+      this.ref.detectChanges();
     }
   }
 
@@ -549,6 +577,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       } else {
         this.invalidMsg = '';
       }
+      this.ref.detectChanges();
     });
   }
 
@@ -576,5 +605,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     } else {
       this.invalidMsg = '';
     }
+    this.ref.detectChanges();
   }
 }

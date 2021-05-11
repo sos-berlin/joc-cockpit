@@ -38,7 +38,20 @@
       <a class="hover"
         *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Lock'">
         <i (click)="collapse(instruction)" class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.show || expandAll)}"></i>
-        <i class="_600">{{instruction.TYPE}}</i>
+        <i *ngIf="instruction.TYPE !== 'Lock'" class="_600">{{instruction.TYPE}}</i>
+        <i *ngIf="instruction.TYPE === 'Lock'" class="_600" [nz-tooltip]="lockItemTemplate">{{instruction.TYPE}}</i>
+        <ng-template #lockItemTemplate>
+          <div>
+            <div class="p-l-sm">
+              <span translate> workflow.label.name </span>:
+              <span class="_600"> {{instruction.lockName |  translate}}</span>
+            </div>
+            <div class="p-l-sm">
+              <span translate> workflow.label.count </span>:
+              <span class="_600" >{{instruction.count}}</span>
+            </div>
+          </div>
+        </ng-template>
         <span class="expand-collapse-btn">
           <i class="fa fa-lg fa-angle-double-down" (click)="expandNode(instruction)"></i>
           <i class="fa fa-lg fa-angle-double-up p-l-xs" (click)="collapseNode(instruction)"></i>
@@ -52,7 +65,7 @@
             <span class="remaining-order-count-span">{{instruction.orders.length - 3}}</span>
           </span>
         </span>
-        <span class="order-count" (click)="showOrders(instruction)" *ngIf="instruction.count > 0 && (!instruction.show && !expandAll)">{{instruction.count}}</span>
+        <span class="order-count" (click)="showOrders(instruction)" *ngIf="instruction.orderCount > 0 && (!instruction.show && !expandAll)">{{instruction.orderCount}}</span>
       </a>
       <div *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'ImplicitEnd'
        || instruction.TYPE === 'Publish' || instruction.TYPE === 'Await'" [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction.TYPE === 'ImplicitEnd'}">
@@ -113,10 +126,10 @@
                 <span class="remaining-order-count-span">{{branch.orders.length - 3}}</span>
               </span>
             </span>
-            <span class="order-count" (click)="showOrders(branch)" *ngIf="branch.count > 0 && (!branch.show && !expandAll)"> {{branch.count}}</span>
+            <span class="order-count" (click)="showOrders(branch)" *ngIf="branch.orderCount > 0 && (!branch.show && !expandAll)"> {{branch.orderCount}}</span>
             <div class="p-l" *ngIf="branch.instructions && (branch.show || expandAll)">
               <app-type [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
-                        [configuration]="branch" [orderRequirements]="orderRequirements" [expandAll]="expandAll"></app-type>
+                        [configuration]="branch" [jobs]="jobs" [orderRequirements]="orderRequirements" [expandAll]="expandAll"></app-type>
             </div>
           </div>
         </div>
@@ -124,7 +137,7 @@
       <div *ngIf="instruction.TYPE === 'If' && (instruction.show || expandAll)">
         <div *ngIf="instruction.then && instruction.then.instructions">
           <app-type [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
-                    [configuration]="instruction.then" [orderRequirements]="orderRequirements" [expandAll]="expandAll"></app-type>
+                    [configuration]="instruction.then" [jobs]="jobs" [orderRequirements]="orderRequirements" [expandAll]="expandAll"></app-type>
           <div class="p-l-md">
             <a class="m-l" *ngIf="instruction.else" (click)="collapse(instruction.else)">
               <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.else.show || expandAll)}"></i>
@@ -139,17 +152,17 @@
                 <span class="remaining-order-count-span">{{instruction.else.orders.length - 3}}</span>
               </span>
             </span>
-            <span class="order-count" (click)="showOrders(instruction.else)" *ngIf="instruction.else && instruction.else.count > 0 && (!instruction.else.show && !expandAll)">{{instruction.else.count}}</span>
+            <span class="order-count" (click)="showOrders(instruction.else)" *ngIf="instruction.else && instruction.else.orderCount > 0 && (!instruction.else.show && !expandAll)">{{instruction.else.orderCount}}</span>
             <div class="p-l" *ngIf="instruction.else && (instruction.else.show || expandAll)">
               <app-type [permission]="permission" [orderRequirements]="orderRequirements" [preferences]="preferences" [schedulerId]="schedulerId"
-                        [configuration]="instruction.else" [expandAll]="expandAll" *ngIf="instruction.else.instructions"></app-type>
+                        [configuration]="instruction.else" [jobs]="jobs" [expandAll]="expandAll" *ngIf="instruction.else.instructions"></app-type>
             </div>
           </div>
         </div>
       </div>
       <div *ngIf="instruction.TYPE === 'Try' && (instruction.show || expandAll)">
           <app-type [permission]="permission" [orderRequirements]="orderRequirements" [preferences]="preferences" [schedulerId]="schedulerId"
-                    [configuration]="instruction" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
+                    [configuration]="instruction" [jobs]="jobs" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
           <div class="p-l-md">
             <a class="m-l" *ngIf="instruction.catch" (click)="collapse(instruction.catch)">
               <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.catch.show || expandAll)}"></i>
@@ -164,23 +177,23 @@
                 <span class="remaining-order-count-span">{{instruction.catch.orders.length - 3}}</span>
               </span>
             </span>
-            <span class="order-count" (click)="showOrders(instruction.catch)" *ngIf="instruction.catch && instruction.catch.count > 0 && (!instruction.catch.show && !expandAll)">{{instruction.catch.count}}</span>
+            <span class="order-count" (click)="showOrders(instruction.catch)" *ngIf="instruction.catch && instruction.catch.orderCount > 0 && (!instruction.catch.show && !expandAll)">{{instruction.catch.orderCount}}</span>
             <div class="m-l" *ngIf="instruction.catch && (instruction.catch.show || expandAll)">
               <app-type [permission]="permission" [orderRequirements]="orderRequirements" [preferences]="preferences" [schedulerId]="schedulerId"
-                        [configuration]="instruction.catch" [expandAll]="expandAll" *ngIf="instruction.catch.instructions"></app-type>
+                        [configuration]="instruction.catch" [jobs]="jobs" [expandAll]="expandAll" *ngIf="instruction.catch.instructions"></app-type>
             </div>
           </div>
       </div>
       <div *ngIf="instruction.TYPE === 'Retry' && (instruction.show || expandAll)">
         <div>
           <app-type [permission]="permission" [orderRequirements]="orderRequirements" [preferences]="preferences" [schedulerId]="schedulerId"
-                    [configuration]="instruction" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
+                    [configuration]="instruction" [jobs]="jobs" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
         </div>
       </div>
       <div *ngIf="instruction.TYPE === 'Lock' && (instruction.show || expandAll)">
         <div>
           <app-type [permission]="permission" [orderRequirements]="orderRequirements" [preferences]="preferences" [schedulerId]="schedulerId"
-                    [configuration]="instruction" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
+                    [configuration]="instruction" [jobs]="jobs" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
         </div>
       </div>
     </li>

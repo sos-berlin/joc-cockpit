@@ -3,12 +3,14 @@ import {
   CalendarComponent,
   ShowModalComponent, SingleCalendarComponent
 } from './calendar.component';
-import {SharedModule} from '../../shared/shared.module';
+import {ResourceSharedModule} from '../resource-shared.module';
 import {CalendarRoutingModule} from './calendar-routing.module';
+import {SharedModule} from '../../shared/shared.module';
 
 @NgModule({
   imports: [
     SharedModule,
+    ResourceSharedModule,
     CalendarRoutingModule
   ],
   declarations: [CalendarComponent, SingleCalendarComponent, ShowModalComponent]

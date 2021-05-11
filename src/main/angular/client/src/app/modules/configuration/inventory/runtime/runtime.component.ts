@@ -1,9 +1,9 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit} from '@angular/core';
 import {isEmpty, unique, isArray, isEqual, clone} from 'underscore';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {TreeModalComponent} from '../tree-modal/tree.component';
-import {CoreService} from '../../services/core.service';
-import {CalendarService} from '../../services/calendar.service';
+import {TreeModalComponent} from '../../../../components/tree-modal/tree.component';
+import {CoreService} from '../../../../services/core.service';
+import {CalendarService} from '../../../../services/calendar.service';
 
 declare const $;
 

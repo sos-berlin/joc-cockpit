@@ -141,7 +141,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   resetLayout(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ConfirmModalComponent,
       nzComponentParams: {
         title: 'resetLayout',
