@@ -94,10 +94,10 @@
                   <li nz-menu-item *ngIf="permission.joc.inventory.manage">
                     <a (click)="renameObject(data);" translate>inventory.button.rename</a></li>
                   <li nz-menu-divider *ngIf="permission.joc.inventory.manage">
-                  <li nz-menu-item *ngIf="permission.joc.inventory.deploy && permission.controllerDefaults.deployments.deploy && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE'" [nzDisabled]="!data.hasDeployments && !data.valid">
+                  <li nz-menu-item *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE'" [nzDisabled]="!data.hasDeployments && !data.valid">
                     <a (click)="deployObject(data)" translate>inventory.button.deploy</a>
                   </li>
-                  <li nz-menu-item *ngIf="permission.joc.inventory.deploy && permission.controllerDefaults.deployments.deploy && objectType === 'CALENDAR' || objectType === 'SCHEDULE'" [nzDisabled]="!data.valid">
+                  <li nz-menu-item *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType === 'CALENDAR' || objectType === 'SCHEDULE'" [nzDisabled]="!data.valid">
                     <a (click)="releaseObject(data)" translate>inventory.button.release</a>
                   </li>
                   <li nz-menu-divider>

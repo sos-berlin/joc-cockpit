@@ -18,7 +18,7 @@
               <span *ngIf="!data.deployed" translate>inventory.label.notDeployed</span>
               <span *ngIf="data.deployed" translate>inventory.label.deployed</span>
           </span>
-          <button *ngIf="permission.joc.inventory.deploy && permission.controllerDefaults.deployments.deploy" type="button" [disabled]="!junction.valid && !junction.hasDeployments" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="deploy()" >
+          <button *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" type="button" [disabled]="!junction.valid && !junction.hasDeployments" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="deploy()" >
             <i class="fa fa-rocket p-r-xs"></i>
             <span translate>inventory.button.deploy</span>
           </button>

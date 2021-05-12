@@ -37,7 +37,6 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   editor: any;
   controller: any;
   cluster: any;
-  interval: any;
   joc: any;
   configXml = './assets/mxgraph/config/diagram.xml';
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
@@ -82,9 +81,6 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
     try {
       if (this.editor) {
         this.editor.destroy();
@@ -98,28 +94,15 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
 
   init(): void {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
-    if (sessionStorage.$SOS$CONTROLLER && JSON.parse(sessionStorage.$SOS$CONTROLLER)) {
-      this.selectedController = JSON.parse(sessionStorage.$SOS$CONTROLLER) || {};
-    }
-    if (isEmpty(this.selectedController)) {
-      this.interval = setInterval(() => {
-        if (sessionStorage.$SOS$CONTROLLER && JSON.parse(sessionStorage.$SOS$CONTROLLER)) {
-          this.selectedController = JSON.parse(sessionStorage.$SOS$CONTROLLER) || {};
-          if (!isEmpty(this.selectedController)) {
-            clearInterval(this.interval);
-          }
-        }
-        if (sessionStorage.preferences && JSON.parse(sessionStorage.preferences)) {
-          this.preferences = JSON.parse(sessionStorage.preferences) || {};
-        }
-      }, 100);
-    }
     this.getClusterStatusData();
   }
 
   getClusterStatusData(): void {
     this.coreService.post('controller/components', {controllerId: this.schedulerIds.selected}).subscribe((res: any) => {
       this.clusterStatusData = res;
+      if (this.clusterStatusData.controllers && this.clusterStatusData.controllers.length > 0) {
+        this.selectedController.role = this.clusterStatusData.controllers[0].role;
+      }
       if (this.editor) {
         this.createWorkflowDiagram(this.editor.graph);
       } else {
@@ -731,9 +714,9 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
         nzComponentParams: {
           comments,
           action,
-          show : true,
+          show: true,
           obj,
-          performAction : this.performAction
+          performAction: this.performAction
         },
         nzFooter: null,
         nzClosable: false
