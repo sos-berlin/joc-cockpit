@@ -941,7 +941,7 @@
     "placeholder.pattern": "Muster angeben",
     "message.workflowIsMissing": "Auftragsablauf ist erforderlich",
     "message.directoryIsMissing": "Verzeichnis ist erforderlich",
-    "message.envIsMissing": "Umgebungsvariable ist erforderlich",
+    "message.envOrArgumentIsMissing": "Any one of argument or environment variables is required",
     "message.calendarIsMissing": "Arbeitstagekalender ist erforderlich",
     "message.startTimeIsMissing": "Periode fehlt im Kalender",
     "message.includesIsMissing": "Einschließende Startzeitregel ist erforderlich",
@@ -1251,6 +1251,8 @@
       "label.lockFound": "Sperre gefunden"
     },
     "calendar": {
+      "label.validity": "Gültigkeit",
+      "label.validityUntil": "Gültig bis",
       "label.validityFrom": "Gültigkeit ab",
       "label.validityTo": "Gültigkeit bis",
       "button.workingDays": "Arbeitstage",

@@ -5126,7 +5126,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                   delete job.returnCodeMeaning;
                 }
               }
-              if (!isEqual(_job, job)) {
+              if (!isEqual(JSON.stringify(_job), JSON.stringify(job))) {
                 isChange = true;
               }
             } else {

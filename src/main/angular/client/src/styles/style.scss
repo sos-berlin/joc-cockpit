@@ -5156,7 +5156,7 @@ General CSS
   }
 
   .rg-right{
-    right: 1px;
+    width: 17px;
   }
 }
 
@@ -5676,6 +5676,11 @@ pre#pre {
 .NgxEditor__Wrapper, .NgxEditor__Wrapper .NgxEditor__MenuBar{
   border-radius: 0 !important;
   border: 1px solid var(--border-color)  !important;
+}
+.NgxEditor__Wrapper .NgxEditor__MenuBar{
+  border-top: none  !important;
+  border-left: none  !important;
+  border-right: none  !important;
 }
 .NgxEditor {
   background: var(--bg-box) !important;

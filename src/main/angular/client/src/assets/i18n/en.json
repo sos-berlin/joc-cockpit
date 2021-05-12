@@ -941,7 +941,7 @@
     "placeholder.pattern": "Enter the pattern",
     "message.workflowIsMissing": "Workflow is missing, but is required",
     "message.directoryIsMissing": "Directory is missing, but is required",
-    "message.envIsMissing": "Environment variables is missing, but is required",
+    "message.envOrArgumentIsMissing": "Any one of argument or environment variables is required",
     "message.calendarIsMissing": "Working day calendar is missing, but is required",
     "message.startTimeIsMissing": "Period is missing in calendar",
     "message.includesIsMissing": "Included frequency is missing, but is required",
@@ -1251,6 +1251,8 @@
       "label.lockFound": "Lock found"
     },
     "calendar": {
+      "label.validity": "Validity",
+      "label.validityUntil": "Valid until",
       "label.validityFrom": "Validity From",
       "label.validityTo": "Validity To",
       "button.workingDays": "Working Days",

@@ -941,7 +941,7 @@
     "placeholder.pattern": "パターンを入力",
     "message.workflowIsMissing": "ワークフローが必要です",
     "message.directoryIsMissing": "必要なディレクトリがありません",
-    "message.envIsMissing": "必要な環境変数がありません",
+    "message.envOrArgumentIsMissing": "Any one of argument or environment variables is required",
     "message.calendarIsMissing": "営業日カレンダーが必要です",
     "message.startTimeIsMissing": "カレンダーに開始時間が必要です",
     "message.includesIsMissing": "含む周期が必要です",
@@ -1251,6 +1251,8 @@
       "label.lockFound": "ロックがあります"
     },
     "calendar": {
+      "label.validity": "有効範囲",
+      "label.validityUntil": "有効期限",
       "label.validityFrom": "有効期間開始",
       "label.validityTo": "有効期間終了",
       "button.workingDays": "営業日",

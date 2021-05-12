@@ -192,7 +192,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     }
   }
 
-  isStringValid(data, notValid): void{
+  isStringValid(data, notValid): void {
     if (notValid) {
       data.name = '';
       data.value = '';
@@ -261,7 +261,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       }
       this.coreService.post('inventory/store', {
         configuration: obj,
-        valid: true,
+        valid: (obj.env && obj.env.length > 0 || obj.arguments && obj.arguments.length > 0),
         id: this.jobResource.id,
         objectType: this.objectType
       }).subscribe((res: any) => {
@@ -282,7 +282,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   private setErrorMessage(res): void {
     if (res.invalidMsg) {
       if (res.invalidMsg.match('env: is missing')) {
-        this.invalidMsg = 'inventory.message.envIsMissing';
+        this.invalidMsg = 'inventory.message.envOrArgumentIsMissing';
       }
       if (!this.invalidMsg) {
         this.invalidMsg = res.invalidMsg;
@@ -307,10 +307,10 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       } else {
         res.configuration = {};
       }
-      if (this.data.deployed !== res.deployed){
+      if (this.data.deployed !== res.deployed) {
         this.data.deployed = res.deployed;
       }
-      if (this.data.valid !== res.valid){
+      if (this.data.valid !== res.valid) {
         this.data.valid = res.valid;
       }
       this.jobResource = res;
@@ -334,6 +334,9 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       } else {
         this.jobResource.configuration.arguments = [];
         this.addArgu(true);
+      }
+      if (!res.valid) {
+        this.invalidMsg = 'inventory.message.envOrArgumentIsMissing';
       }
       this.jobResource.actual = JSON.stringify(res.configuration);
       this.history.push(this.jobResource.actual);
