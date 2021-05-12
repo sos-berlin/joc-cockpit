@@ -1500,6 +1500,7 @@ export class JsonEditorModalComponent implements OnInit {
         this.isError = true;
         this.errorMsg = '';
       }
+      this.ref.detectChanges();
     };
   }
 
@@ -1532,6 +1533,7 @@ export class JsonEditorModalComponent implements OnInit {
         this.activeModal.close(this.editor.get());
       }
       this.submitted = false;
+      this.ref.detectChanges();
     });
 
   }
@@ -1914,9 +1916,10 @@ export class CreateFolderModalComponent implements OnInit {
     this.ref.detectChanges();
   }
 
-  isValidObject(str): void {
+  isValidObject(str: string): void {
     this.isValid = true;
-    if (/^([a-zA-Z0-9_.]+[-|.|\/]{1})*[a-zA-Z0-9_]+$/.test(str)) {
+    if (!str.match(/[!?~'"}\[\]{@:;#\/\\^$%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(str) && /^(?!-)(?!.*--)/.test(str)
+      && !str.substring(0, 1).match(/[-]/) && !str.substring(str.length - 1).match(/[-]/) && !/\s/.test(str)) {
       if (/^(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|double|do|else|enum|extends|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)$/.test(str)) {
         this.isValid = false;
       }
@@ -2808,6 +2811,23 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
+  private getAllowedControllerOnly(): any {
+    const obj = clone(this.schedulerIds);
+    obj.controllerIds = obj.controllerIds.filter((id) => {
+      let flag = true;
+      if (this.permission.controllers) {
+        console.log(this.permission.controllers[id]);
+        if (this.permission.controllers[id]) {
+          if (!this.permission.controllers[id].deployments.deploy) {
+            flag = false;
+          }
+        }
+      }
+      return flag;
+    });
+    return obj;
+  }
+
   deployObject(node, releasable): void {
     const origin = node.origin ? node.origin : node;
     if (releasable && origin.id) {
@@ -2819,11 +2839,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (!node.origin) {
         origin.path = origin.path.substring(0, origin.path.lastIndexOf('/')) || '/';
       }
+
       this.modal.create({
         nzTitle: undefined,
         nzContent: SingleDeployComponent,
         nzComponentParams: {
-          schedulerIds: this.schedulerIds,
+          schedulerIds: this.getAllowedControllerOnly(),
           display: this.preferences.auditLog,
           data: origin
         },
@@ -2836,7 +2857,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         nzContent: DeployComponent,
         nzClassName: releasable ? 'sm' : 'lg',
         nzComponentParams: {
-          schedulerIds: this.schedulerIds,
+          schedulerIds: this.getAllowedControllerOnly(),
           preferences: this.preferences,
           display: this.preferences.auditLog,
           path: origin.path,
@@ -3010,7 +3031,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           obj.path = this.copyObj.path;
         }
         if (this.copyObj.path === obj.newPath) {
-          this.copyObj = null;
+          this.copyObj = undefined;
           return;
         } else {
           const pathArr = [];
@@ -3049,7 +3070,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             this.selectedData = obj;
             this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
           });
-          this.copyObj = null;
+          this.copyObj = undefined;
         });
       }
     }
@@ -3403,7 +3424,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }).subscribe((res: any) => {
       obj.valid = res.valid;
       if (obj.id === this.selectedObj.id) {
-        this.type = null;
+        this.type = undefined;
         this.selectedData.valid = res.valid;
         this.selectedData.deployed = res.deployed;
         this.selectedData.released = res.released;
@@ -3732,12 +3753,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.clearSelection();
     }
     if (this.copyObj && this.copyObj.type === obj.type && this.copyObj.name === obj.name && this.copyObj.path === obj.path) {
-      this.copyObj = null;
+      this.copyObj = undefined;
     }
   }
 
   private clearSelection(): void {
-    this.type = null;
+    this.type = undefined;
     this.selectedData = {};
     this.selectedObj = {};
   }

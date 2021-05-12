@@ -29,9 +29,9 @@ import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../.
 import {ResumeOrderModalComponent} from '../../components/resume-modal/resume.component';
 import {catchError} from 'rxjs/operators';
 
-declare const JSGantt;
-declare let jsgantt;
-declare const $;
+declare const JSGantt: any;
+declare let jsgantt: any;
+declare const $: any;
 
 @Component({
   selector: 'app-select-schedule-template',
@@ -314,7 +314,7 @@ export class CreatePlanModalComponent implements OnInit{
     forkJoin(apiArr).subscribe(() => {
       this.submitted = false;
       this.activeModal.close('Done');
-    }, (err) => {
+    }, () => {
       this.submitted = false;
     });
   }

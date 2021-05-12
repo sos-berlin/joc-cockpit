@@ -84,6 +84,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     if (this.agents.length === 0) {
       this.coreService.post('agents/names', {controllerId: this.schedulerId}).subscribe((res: any) => {
         this.agents = res.agentNames ? res.agentNames.sort() : [];
+        this.ref.detectChanges();
       });
     }
   }

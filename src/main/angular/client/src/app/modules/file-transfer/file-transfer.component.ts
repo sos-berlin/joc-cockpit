@@ -132,7 +132,7 @@ export class SearchComponent implements OnInit {
 
   onSubmit(result): void {
     this.submitted = true;
-    let configObj = {
+    const configObj = {
       controllerId: this.schedulerIds.selected,
       account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
@@ -144,7 +144,7 @@ export class SearchComponent implements OnInit {
     };
     let fromDate: any;
     let toDate: any;
-    let obj: any = {};
+    const obj: any = {};
     obj.regex = result.regex;
     obj.paths = result.paths;
     obj.jobChain = result.jobChain;
@@ -233,7 +233,7 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
   }
 
   getFileTransferById(transferId): void {
-    let obj = {
+    const obj = {
       controllerId: this.schedulerId,
       transferIds: [transferId]
     };
@@ -273,7 +273,7 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
     this.coreService.post('yade/transfers/restart', {
       transferIds: [data.id],
       controllerId: this.schedulerId
-    }).subscribe((res: any) => {
+    }).subscribe(() => {
 
     });
   }
@@ -488,7 +488,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     }
     obj.timeZone = this.preferences.zone;
     if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-      delete obj['timeZone'];
+      delete obj.timeZone;
     }
     if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
       obj.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, obj.dateFrom);
@@ -513,7 +513,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   }
 
   getTransfer(transfer): void {
-    let obj = {
+    const obj = {
       controllerId: this.schedulerIds.selected,
       transferIds: [transfer.id]
     };
@@ -533,7 +533,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   }
 
   getFiles(value): void {
-    let ids = [value.id];
+    const ids = [value.id];
     const self = this;
     value.widthArr = this.permission.joc.fileTransfer.manage ? ['0px'] : [];
     value.loading = true;
@@ -559,7 +559,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   checkAll(value: boolean): void {
     if (this.currentData.length > 0) {
       this.object.mapOfCheckedId.clear();
-      let data = this.currentData;
+      const data = this.currentData;
       data.forEach(item => {
         if (item.state._text !== 'SUCCESSFUL') {
           item.indeterminate = false;
@@ -684,7 +684,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       filter = this.parseProcessExecuted(this.searchFilter.planned, filter);
     } else {
       if (this.searchFilter.radio == 'current' && this.searchFilter.from) {
-        let fromDate = new Date(this.searchFilter.from);
+        const fromDate = new Date(this.searchFilter.from);
         if (this.searchFilter.fromTime) {
           fromDate.setHours(this.searchFilter.fromTime.getHours());
           fromDate.setMinutes(this.searchFilter.fromTime.getMinutes());
@@ -698,7 +698,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         filter.dateFrom = fromDate;
       }
       if (this.searchFilter.radio == 'current' && this.searchFilter.to) {
-        let toDate = new Date(this.searchFilter.to);
+        const toDate = new Date(this.searchFilter.to);
         if (this.searchFilter.toTime) {
           toDate.setHours(this.searchFilter.toTime.getHours());
           toDate.setMinutes(this.searchFilter.toTime.getMinutes());
@@ -719,7 +719,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
     filter.timeZone = this.preferences.zone;
     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-      delete filter['timeZone'];
+      delete filter.timeZone;
     }
     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
       filter.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateFrom);
@@ -767,7 +767,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         if (res.configurations && res.configurations.length > 0) {
           this.filterList = this.filterList.concat(res.configurations);
         }
-        let data = [];
+        const data = [];
         for (let i = 0; i < this.filterList.length; i++) {
           let flag = true;
           for (let j = 0; j < data.length; j++) {
@@ -810,8 +810,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         this.savedFilter.selected = undefined;
         this.load();
       }
-
-    }, (err) => {
+    }, () => {
       this.loadConfig = true;
       this.savedFilter.selected = undefined;
       this.load();
@@ -838,7 +837,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.coreService.post('yade/transfers/restart', {
       transferIds: this.object.mapOfCheckedId.keys(),
       controllerId: this.schedulerIds.selected
-    }).subscribe((res: any) => {
+    }).subscribe(() => {
 
     });
   }
@@ -847,7 +846,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.coreService.post('yade/transfers/restart', {
       transferIds: [data.id],
       controllerId: this.schedulerIds.selected
-    }).subscribe((res: any) => {
+    }).subscribe(() => {
 
     });
   }
@@ -880,7 +879,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   }
 
   saveAsFilter(): void {
-    let configObj = {
+    const configObj = {
       controllerId: this.schedulerIds.selected,
       account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
@@ -1152,7 +1151,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     }
   }
 
-  private parseProcessExecuted(regex, obj): void {
+  private parseProcessExecuted(regex, obj): any {
     let fromDate, toDate, date, arr;
 
     if (/^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
@@ -1161,7 +1160,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
       fromDate = new Date();
       toDate = new Date();
-      let seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2], 10);
+      const seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2], 10);
       fromDate.setSeconds(toDate.getSeconds() - seconds);
     } else if (/^\s*(Today)\s*$/i.test(regex)) {
       fromDate = '0d';
@@ -1197,7 +1196,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       toDate = arr[1].trim();
 
     } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
-      let time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
+      const time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
       fromDate = new Date();
       if (/(pm)/i.test(time[3]) && parseInt(time[1], 10) != 12) {
         fromDate.setHours(parseInt(time[1], 10) - 12);

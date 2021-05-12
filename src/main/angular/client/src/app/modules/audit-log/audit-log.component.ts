@@ -96,7 +96,7 @@ export class SearchComponent implements OnInit {
 
   onSubmit(result): void {
     this.submitted = true;
-    let configObj = {
+    const configObj = {
       controllerId: this.schedulerIds.selected,
       account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
@@ -108,7 +108,7 @@ export class SearchComponent implements OnInit {
     };
     let fromDate: any;
     let toDate: any;
-    let obj: any = {};
+    const obj: any = {};
     obj.regex = result.regex;
     obj.paths = result.paths;
     obj.workflow = result.workflow;
@@ -149,7 +149,7 @@ export class SearchComponent implements OnInit {
         this.onCancel.emit(configObj);
       }
       this.submitted = false;
-    }, err => {
+    }, () => {
       this.submitted = false;
     });
   }
@@ -208,7 +208,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   checkSharedFilters(): void {
-    let obj = {
+    const obj = {
       controllerId: this.schedulerIds.selected,
       configurationType: 'CUSTOMIZATION',
       objectType: this.objectType,
@@ -225,7 +225,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   getCustomizations(): void {
-    let obj = {
+    const obj = {
       controllerId: this.schedulerIds.selected,
       account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
@@ -236,7 +236,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
         if (res.configurations && res.configurations.length > 0) {
           this.filterList = this.filterList.concat(res.configurations);
         }
-        let data = [];
+        const data = [];
         for (let i = 0; i < this.filterList.length; i++) {
           let flag = true;
           for (let j = 0; j < data.length; j++) {
@@ -301,6 +301,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   load(date): void {
     if (date) {
       this.adtLog.filter.date = date;
+      this.isLoaded = false;
     }
     let obj: any = {
       controllerId: this.adtLog.current == true ? this.schedulerIds.selected : '',
@@ -317,7 +318,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       this.auditLogs = res.auditLog;
       this.searchInResult();
       this.isLoaded = true;
-    }, (err) => {
+    }, () => {
       this.isLoaded = true;
     });
   }
@@ -374,9 +375,9 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.translate.get('auditLog.label.ticketLink').subscribe(translatedValue => {
       ticketLink = translatedValue;
     });
-    let data = [];
+    const data = [];
     for (let i = 0; i < this.auditLogs.length; i++) {
-      let obj: any = {};
+      const obj: any = {};
       if (!this.adtLog.current) {
         obj[controllerId] = this.auditLogs[i].orderId;
       }
@@ -574,9 +575,9 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     if (object.workflow) {
       filter.orders = [];
       if (object.orderIds) {
-        let s = object.orderIds.replace(/\s*(,|^|$)\s*/g, '$1');
-        let orderIds = s.split(',');
-        let self = this;
+        const s = object.orderIds.replace(/\s*(,|^|$)\s*/g, '$1');
+        const orderIds = s.split(',');
+        const self = this;
         orderIds.forEach((value) => {
           filter.orders.push({workflow: self.searchFilter.workflow, orderId: value});
         });
@@ -606,7 +607,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setDateRange(filter): void {
+  private setDateRange(filter): any {
     if (this.adtLog.filter.date == 'all') {
 
     } else if (this.adtLog.filter.date == 'today') {
@@ -618,7 +619,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     return filter;
   }
 
-  private parseProcessExecuted(regex, obj): void {
+  private parseProcessExecuted(regex, obj): any {
     let fromDate;
     let toDate;
 
@@ -628,7 +629,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
       fromDate = new Date();
       toDate = new Date();
-      let seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2], 10);
+      const seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2], 10);
       fromDate.setSeconds(toDate.getSeconds() - seconds);
     } else if (/^\s*(Today)\s*$/i.test(regex)) {
       fromDate = '0d';
@@ -640,31 +641,31 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       fromDate = new Date();
       toDate = new Date();
     } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      let date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      let arr = date[0].split('to');
+      const date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+      const arr = date[0].split('to');
       fromDate = arr[0].trim();
       toDate = arr[1].trim();
 
     } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      let date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      let arr = date[0].split('to');
+      const date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
+      const arr = date[0].split('to');
       fromDate = arr[0].trim();
       toDate = arr[1].trim();
 
     } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      let date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      let arr = date[0].split('to');
+      const date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+      const arr = date[0].split('to');
       fromDate = arr[0].trim();
       toDate = arr[1].trim();
 
     } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      let date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      let arr = date[0].split('to');
+      const date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
+      const arr = date[0].split('to');
       fromDate = arr[0].trim();
       toDate = arr[1].trim();
 
     } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
-      let time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
+      const time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
       fromDate = new Date();
       if (/(pm)/i.test(time[3]) && parseInt(time[1], 10) != 12) {
         fromDate.setHours(parseInt(time[1], 10) - 12);
@@ -691,12 +692,12 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     return obj;
   }
 
-  private parseDate(auditSearch, filter): void {
+  private parseDate(auditSearch, filter): any {
 
     if (auditSearch.from) {
-      let fromDate = new Date(auditSearch.from);
+      const fromDate = new Date(auditSearch.from);
       if (auditSearch.fromTime) {
-        let fromTime = new Date(auditSearch.fromTime);
+        const fromTime = new Date(auditSearch.fromTime);
         fromDate.setHours(fromTime.getHours());
         fromDate.setMinutes(fromTime.getMinutes());
         fromDate.setSeconds(fromTime.getSeconds());
@@ -709,9 +710,9 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       filter.dateFrom = fromDate;
     }
     if (auditSearch.to) {
-      let toDate = new Date(auditSearch.to);
+      const toDate = new Date(auditSearch.to);
       if (auditSearch.toTime) {
-        let toTime = new Date(auditSearch.toTime);
+        const toTime = new Date(auditSearch.toTime);
         toDate.setHours(toTime.getHours());
         toDate.setMinutes(toTime.getMinutes());
         toDate.setSeconds(toTime.getSeconds());
@@ -727,7 +728,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     }
 
     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-      delete filter['timeZone'];
+      delete filter.timeZone;
     }
     return filter;
   }

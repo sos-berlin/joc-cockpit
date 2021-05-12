@@ -2,7 +2,7 @@ import {Component, OnInit, Input, Output, EventEmitter,
   HostListener, OnChanges, SimpleChanges} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 
-declare const $;
+declare const $: any;
 
 @Component({
   selector: 'app-tree-nagivation',
@@ -35,20 +35,20 @@ export class TreeComponent implements OnInit, OnChanges {
         }
         $('.sticky').css('top', top + 2);
         const ht = window.innerHeight - top;
-        if (ht > 400) {
-          $('.tree-block').height((ht - 20 + $(window).scrollTop()) + 'px');
-        }
         if (count < 5) {
           if (top < 139 && top > 92) {
             setTimeout(() => {
               recursiveCheck();
-            }, 5);
+            }, 10);
           } else {
-            let intval = setInterval(() => {
+            setTimeout(() => {
               recursiveCheck();
-              clearInterval(intval);
             }, 100);
           }
+          return;
+        }
+        if (ht > 400) {
+          $('.tree-block').height((ht - 20 + $(window).scrollTop()) + 'px');
         }
       };
       recursiveCheck();

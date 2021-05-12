@@ -261,7 +261,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       }
       this.coreService.post('inventory/store', {
         configuration: obj,
-        valid: obj.env && obj.env.length > 0,
+        valid: true,
         id: this.jobResource.id,
         objectType: this.objectType
       }).subscribe((res: any) => {
@@ -324,7 +324,6 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         });
       } else {
         this.jobResource.configuration.env = [];
-        this.invalidMsg = 'inventory.message.envIsMissing';
         this.addEnv(true);
       }
       if (this.jobResource.configuration.arguments) {

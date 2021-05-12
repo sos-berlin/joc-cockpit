@@ -41,7 +41,7 @@ export class OrderTemplateComponent {
     data.loading = true;
     data.show = true;
     data.steps = [];
-    let obj = {
+    const obj = {
       controllerId: data.controllerId || this.schedulerId,
       historyId: data.historyId
     };
@@ -130,7 +130,6 @@ export class OrderSearchComponent implements OnInit {
   @Output() onSearch: EventEmitter<any> = new EventEmitter();
 
   dateFormat: any;
-  dateFormatM: any;
   existingName: any;
   submitted = false;
   isUnique = true;
@@ -216,7 +215,7 @@ export class OrderSearchComponent implements OnInit {
         flag = false;
       }
       if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        let obj: any = {
+        const obj: any = {
           path: node.key,
           objectTypes: ['WORKFLOW']
         };
@@ -246,7 +245,7 @@ export class OrderSearchComponent implements OnInit {
 
   onSubmit(result): void {
     this.submitted = true;
-    let configObj = {
+    const configObj = {
       controllerId: this.schedulerIds.selected,
       account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
@@ -258,7 +257,7 @@ export class OrderSearchComponent implements OnInit {
     };
     let fromDate: any;
     let toDate: any;
-    let obj: any = {};
+    const obj: any = {};
     obj.regex = result.regex;
     obj.paths = result.paths;
     obj.workflowPaths = result.workflowPaths;
@@ -297,7 +296,7 @@ export class OrderSearchComponent implements OnInit {
         this.onCancel.emit(configObj);
       }
       this.submitted = false;
-    }, err => {
+    }, () => {
       this.submitted = false;
     });
   }
@@ -339,7 +338,7 @@ export class TaskSearchComponent implements OnInit {
   @Output() onSearch: EventEmitter<any> = new EventEmitter();
 
   dateFormat: any;
-  dateFormatM: any;
+
   existingName: any;
   submitted = false;
   isUnique = true;
@@ -443,7 +442,7 @@ export class TaskSearchComponent implements OnInit {
         flag = false;
       }
       if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        let obj: any = {
+        const obj: any = {
           path: node.key,
           objectTypes: ['WORKFLOW']
         };
@@ -473,7 +472,7 @@ export class TaskSearchComponent implements OnInit {
 
   onSubmit(result): void {
     this.submitted = true;
-    let configObj = {
+    const configObj = {
       controllerId: this.schedulerIds.selected,
       account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
@@ -485,7 +484,7 @@ export class TaskSearchComponent implements OnInit {
     };
     let fromDate: any;
     let toDate: any;
-    let obj: any = {};
+    const obj: any = {};
     obj.regex = result.regex;
     obj.paths = result.paths;
     obj.workflowPaths = result.workflowPaths;
@@ -527,7 +526,7 @@ export class TaskSearchComponent implements OnInit {
         this.onCancel.emit(configObj);
       }
       this.submitted = false;
-    }, err => {
+    }, () => {
       this.submitted = false;
     });
   }
@@ -569,7 +568,7 @@ export class DeploymentSearchComponent implements OnInit {
   @Output() onSearch: EventEmitter<any> = new EventEmitter();
 
   dateFormat: any;
-  dateFormatM: any;
+
   existingName: any;
   submitted = false;
   isUnique = true;
@@ -598,7 +597,7 @@ export class DeploymentSearchComponent implements OnInit {
 
   onSubmit(result): void {
     this.submitted = true;
-    let configObj = {
+    const configObj = {
       controllerId: this.schedulerIds.selected,
       account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
@@ -610,7 +609,7 @@ export class DeploymentSearchComponent implements OnInit {
     };
     let fromDate: any;
     let toDate: any;
-    let obj: any = {};
+    const obj: any = {};
     obj.deployType = result.deployType;
     obj.operation = result.operation;
     obj.state = result.state;
@@ -648,7 +647,7 @@ export class DeploymentSearchComponent implements OnInit {
         this.onCancel.emit(configObj);
       }
       this.submitted = false;
-    }, err => {
+    }, () => {
       this.submitted = false;
     });
   }
@@ -678,7 +677,7 @@ export class SubmissionSearchComponent implements OnInit {
   @Output() onSearch: EventEmitter<any> = new EventEmitter();
 
   dateFormat: any;
-  dateFormatM: any;
+
   existingName: any;
   submitted = false;
   isUnique = true;
@@ -721,7 +720,7 @@ export class SubmissionSearchComponent implements OnInit {
 
   onSubmit(result): void {
     this.submitted = true;
-    let configObj = {
+    const configObj = {
       controllerId: this.schedulerIds.selected,
       account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
@@ -733,7 +732,7 @@ export class SubmissionSearchComponent implements OnInit {
     };
     let fromDate: any;
     let toDate: any;
-    let obj: any = {};
+    const obj: any = {};
     obj.name = result.name;
     if (result.radio != 'current') {
       if (result.from1) {
@@ -768,7 +767,7 @@ export class SubmissionSearchComponent implements OnInit {
         this.onCancel.emit(configObj);
       }
       this.submitted = false;
-    }, err => {
+    }, () => {
       this.submitted = false;
     });
   }
@@ -799,7 +798,7 @@ export class YadeSearchComponent implements OnInit {
   @Output() onSearch: EventEmitter<any> = new EventEmitter();
 
   dateFormat: any;
-  dateFormatM: any;
+
   existingName: any;
   submitted = false;
   isUnique = true;
@@ -854,7 +853,7 @@ export class YadeSearchComponent implements OnInit {
 
   onSubmit(result): void {
     this.submitted = true;
-    let configObj = {
+    const configObj = {
       controllerId: this.schedulerIds.selected,
       account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
@@ -866,7 +865,7 @@ export class YadeSearchComponent implements OnInit {
     };
     let fromDate: any;
     let toDate: any;
-    let obj: any = {};
+    const obj: any = {};
     obj.regex = result.regex;
     obj.paths = result.paths;
     obj.workflow = result.workflow;
@@ -903,7 +902,7 @@ export class YadeSearchComponent implements OnInit {
         this.onCancel.emit(configObj);
       }
       this.submitted = false;
-    }, err => {
+    }, () => {
       this.submitted = false;
     });
   }
@@ -1090,7 +1089,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     obj.limit = parseInt(this.preferences.maxRecords, 10) || 5000;
     obj.timeZone = this.preferences.zone;
     if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-      delete obj['timeZone'];
+      delete obj.timeZone;
     }
     if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
       obj.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, obj.dateFrom);
@@ -1196,7 +1195,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true') && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
       filter.excludeJobs = [];
       this.savedIgnoreList.jobs.forEach((job) => {
-        filter.excludeJobs.push({job: job});
+        filter.excludeJobs.push({job});
       });
     }
     if (this.task.filter.date == 'today') {
@@ -1224,7 +1223,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
       obj.excludeJobs = [];
       this.savedIgnoreList.jobs.forEach((job) => {
-        obj.excludeJobs.push({job: job});
+        obj.excludeJobs.push({job});
       });
     }
     if (this.selectedFiltered2 && !isEmpty(this.selectedFiltered2)) {
@@ -1343,11 +1342,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
       obj = this.coreService.parseProcessExecutedRegex(data.planned, obj);
       if (obj.dateFrom) {
         obj.from = obj.dateFrom;
-        delete obj['dateFrom'];
+        delete obj.dateFrom;
       }
       if (obj.dateTo) {
         obj.to = obj.dateTo;
-        delete obj['dateTo'];
+        delete obj.dateTo;
       }
     }
     return obj;
@@ -1380,7 +1379,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.data = [];
     } else {
       if (!obj.controllerId) {
-        delete obj['controllerId'];
+        delete obj.controllerId;
       }
     }
     if (this.selectedFiltered4 && !isEmpty(this.selectedFiltered4)) {
@@ -1458,7 +1457,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.data = [];
     } else {
       if (!obj.controllerId) {
-        delete obj['controllerId'];
+        delete obj.controllerId;
       }
     }
     if (this.selectedFiltered5 && !isEmpty(this.selectedFiltered5)) {
@@ -1693,7 +1692,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
         filter.excludeJobs = [];
         this.savedIgnoreList.jobs.forEach((job) => {
-          filter.excludeJobs.push({job: job});
+          filter.excludeJobs.push({job});
         });
       }
 
@@ -1814,7 +1813,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
         filter.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateTo);
       }
-      this.coreService.post('daily_plan/history', {filter: filter, controllerId: this.schedulerIds.selected}).subscribe((res: any) => {
+      this.coreService.post('daily_plan/history', {filter, controllerId: this.schedulerIds.selected}).subscribe((res: any) => {
         this.submissionHistorys = res.dailyPlans;
         this.searchInResult();
         this.isLoading = true;
@@ -1827,8 +1826,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.yade.filter.date = '';
       if (obj.file) {
         filter.files = [];
-        let s = obj.file.replace(/,\s+/g, ',');
-        let files = s.split(',');
+        const s = obj.file.replace(/,\s+/g, ',');
+        const files = s.split(',');
         files.forEach((value) => {
           filter.files.push({file: value});
         });
@@ -2041,7 +2040,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.init(false);
   }
 
-  /**--------------- Navigate to inventory tab -------------------*/
+  /*--------------- Navigate to inventory tab -------------------*/
 
   navToWorkflowTab(workflow): void {
     this.coreService.getConfigurationTab().inventory.expand_to = [];
@@ -2053,7 +2052,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.router.navigate(['/configuration/inventory']);
   }
 
-  navToInventoryTab(data) {
+  navToInventoryTab(data): void {
     if (data.operation === 'UPDATE') {
       this.coreService.getConfigurationTab().inventory.expand_to = [];
       this.coreService.getConfigurationTab().inventory.selectedObj = {
@@ -2065,7 +2064,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**--------------- sorting and pagination -------------------*/
+  /*--------------- sorting and pagination -------------------*/
   sort(propertyName): void {
     this.order.reverse = !this.order.reverse;
     this.order.filter.sortBy = propertyName;
@@ -2091,7 +2090,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.submission.filter.sortBy = propertyName;
   }
 
-  pageIndexChange($event) {
+  pageIndexChange($event): void {
     if (this.historyFilters.type === 'ORDER') {
       this.order.currentPage = $event;
     } else if (this.historyFilters.type === 'TASK') {
@@ -2105,7 +2104,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  pageSizeChange($event) {
+  pageSizeChange($event): void {
     if (this.historyFilters.type === 'ORDER') {
       this.order.entryPerPage = $event;
     } else if (this.historyFilters.type === 'TASK') {
@@ -2119,11 +2118,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  currentPageDataChange($event) {
+  currentPageDataChange($event): void {
     this.currentData = $event;
   }
 
-  searchInResult() {
+  searchInResult(): void {
     if (this.historyFilters.type === 'ORDER') {
       this.data = this.order.searchText ? this.searchPipe.transform(this.historys, this.order.searchText, this.orderSearchableProperties) : this.historys;
     } else if (this.historyFilters.type === 'TASK') {
@@ -2202,7 +2201,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     data.show = true;
     data.children = [];
     data.states = [];
-    let obj = {
+    const obj = {
       controllerId: data.controllerId || this.schedulerIds.selected,
       historyId: data.historyId
     };
@@ -2338,7 +2337,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.savedIgnoreList.workflows = [];
       this.savedIgnoreList.jobs = [];
       this.savedIgnoreList.isEnable = false;
-      let configObj = {
+      const configObj = {
         controllerId: this.schedulerIds.selected,
         account: this.authService.currentUserData,
         configurationType: 'IGNORELIST',
@@ -2585,7 +2584,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  changeFilter(filter) {
+  changeFilter(filter): void {
     if (this.historyFilters.type === 'ORDER') {
       if (filter) {
         this.savedHistoryFilter.selected = filter.id;
@@ -2704,8 +2703,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private mergeOldData(): void {
-    let oldEntires = clone(this.data);
-    let arr = this.order.searchText ? this.searchPipe.transform(this.historys, this.order.searchText, this.orderSearchableProperties) : this.historys;
+    const oldEntires = clone(this.data);
+    const arr = this.order.searchText ? this.searchPipe.transform(this.historys, this.order.searchText, this.orderSearchableProperties) : this.historys;
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < oldEntires.length; j++) {
         if (arr[i].orderId === oldEntires[j].orderId) {
@@ -2724,11 +2723,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   private recursiveMerge(data, count): void {
     data.loading = true;
-    let obj = {
+    const obj = {
       controllerId: data.controllerId || this.schedulerIds.selected,
       historyId: data.historyId
     };
-    let perviousArr = data.children.filter((value) => {
+    const perviousArr = data.children.filter((value) => {
       return value.order;
     });
 
@@ -2758,9 +2757,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  private mergeOldTaskData() {
-    let oldEntires = clone(this.data);
-    let arr = this.task.searchText ? this.searchPipe.transform(this.taskHistorys, this.task.searchText, this.taskSearchableProperties) : this.taskHistorys;
+  private mergeOldTaskData(): void {
+    const oldEntires = clone(this.data);
+    const arr = this.task.searchText ? this.searchPipe.transform(this.taskHistorys, this.task.searchText, this.taskSearchableProperties) : this.taskHistorys;
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < oldEntires.length; j++) {
         if (arr[i].taskId === oldEntires[j].taskId) {
@@ -2775,9 +2774,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.data = arr;
   }
 
-  private mergeOldYadeData() {
-    let oldEntires = clone(this.data);
-    let arr = this.yade.searchText ? this.searchPipe.transform(this.yadeHistorys, this.yade.searchText, this.yadeSearchableProperties) : this.yadeHistorys;
+  private mergeOldYadeData(): void {
+    const oldEntires = clone(this.data);
+    const arr = this.yade.searchText ? this.searchPipe.transform(this.yadeHistorys, this.yade.searchText, this.yadeSearchableProperties) : this.yadeHistorys;
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < oldEntires.length; j++) {
         if (arr[i].yadeId === oldEntires[j].yadeId) {
@@ -2793,8 +2792,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private mergeDepData() {
-    let oldEntires = clone(this.data);
-    let arr = this.deployment.searchText ? this.searchPipe.transform(this.deploymentHistorys, this.deployment.searchText, this.deploymentSearchableProperties) : this.deploymentHistorys;
+    const oldEntires = clone(this.data);
+    const arr = this.deployment.searchText ? this.searchPipe.transform(this.deploymentHistorys, this.deployment.searchText, this.deploymentSearchableProperties) : this.deploymentHistorys;
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < oldEntires.length; j++) {
         if (arr[i].commitId === oldEntires[j].commitId) {
@@ -2814,7 +2813,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     obj.limit = parseInt(this.preferences.maxRecords, 10) || 5000;
     obj.timeZone = this.preferences.zone;
     if ((obj.from && typeof obj.from.getMonth === 'function') || (obj.to && typeof obj.to.getMonth === 'function')) {
-      delete obj['timeZone'];
+      delete obj.timeZone;
     }
     if ((obj.from && typeof obj.from.getMonth === 'function')) {
       obj.from = this.coreService.convertTimeToLocalTZ(this.preferences, obj.from);
@@ -2826,9 +2825,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   /* --------------------------Actions -----------------------*/
 
-  private mergeSubData() {
-    let oldEntires = clone(this.data);
-    let arr = this.submissionHistorys;
+  private mergeSubData(): void {
+    const oldEntires = clone(this.data);
+    const arr = this.submissionHistorys;
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < oldEntires.length; j++) {
         if (arr[i].dailyPlanDate === oldEntires[j].dailyPlanDate) {
@@ -2843,9 +2842,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.data = arr;
   }
 
-  private recursiveExpand(data, count) {
+  private recursiveExpand(data, count): void {
     data.loading = true;
-    let obj = {
+    const obj = {
       controllerId: data.controllerId || this.schedulerIds.selected,
       historyId: data.historyId
     };
@@ -2866,7 +2865,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  private saveIgnoreList(flag) {
+  private saveIgnoreList(flag): void {
     if (this.schedulerIds.selected) {
       if (!flag) {
         let msg;
@@ -2930,9 +2929,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.translate.get('history.label.duration').subscribe(translatedValue => {
       duration = translatedValue;
     });
-    let data = [];
+    const data = [];
     for (let i = 0; i < this.historys.length; i++) {
-      let obj: any = {};
+      const obj: any = {};
       if (!this.historyFilters.current) {
         obj[controllerId] = this.historys[i].controllerId;
       }
@@ -2990,9 +2989,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.translate.get('history.label.returnCode').subscribe(translatedValue => {
       returnCode = translatedValue;
     });
-    let data = [];
+    const data = [];
     for (let i = 0; i < this.taskHistorys.length; i++) {
-      let obj: any = {};
+      const obj: any = {};
       if (!this.historyFilters.current) {
         obj[controllerId] = this.taskHistorys[i].controllerId;
       }
@@ -3013,7 +3012,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private exportToExcelYade(): any {
-    let controllerId = '', workflow = '', job = '', status = '', profileName = '', mandator = '',
+    let controllerId = '', workflow = '', status = '', profileName = '', mandator = '',
       startTime = '', endTime = '', duration = '', operation = '', order = '', total = '', lastErrorMessage = '';
     this.translate.get('common.label.controllerId').subscribe(translatedValue => {
       controllerId = translatedValue;
@@ -3051,9 +3050,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.translate.get('history.label.duration').subscribe(translatedValue => {
       duration = translatedValue;
     });
-    let data = [];
+    const data = [];
     for (let i = 0; i < this.yadeHistorys.length; i++) {
-      let obj: any = {};
+      const obj: any = {};
       if (!this.historyFilters.current) {
         obj[controllerId] = this.yadeHistorys[i].controllerId;
       }
@@ -3089,9 +3088,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.translate.get('history.label.state').subscribe(translatedValue => {
       state = translatedValue;
     });
-    let data = [];
+    const data = [];
     for (let i = 0; i < this.deploymentHistorys.length; i++) {
-      let obj: any = {};
+      const obj: any = {};
       if (!this.historyFilters.current) {
         obj[controllerId] = this.deploymentHistorys[i].controllerId;
       }
@@ -3152,30 +3151,30 @@ export class HistoryComponent implements OnInit, OnDestroy {
       df = df.replace('|', '');
     }
     df = df.trim();
-    let data = [];
+    const data = [];
     for (let i = 0; i < this.submissionHistorys.length; i++) {
-      let obj: any = {};
+      const obj: any = {};
       obj[dailyPlanDate] = this.coreService.getDateByFormat(this.submissionHistorys[i].dailyPlanDate, this.preferences.zone, df);
       data.push(obj);
       for (let j = 0; j < this.submissionHistorys[i].controllers.length; j++) {
         if (!this.historyFilters.current) {
-          let obj1: any = {};
+          const obj1: any = {};
           obj1[controllerId] = this.submissionHistorys[i].controllers[j].controllerId;
           data.push(obj1);
         }
         for (let k = 0; k < this.submissionHistorys[i].controllers[j].submissions.length; k++) {
           for (let m = 0; m < this.submissionHistorys[i].controllers[j].submissions[k].warnMessages.length; m++) {
-            let obj1: any = {};
+            const obj1: any = {};
             obj1[warnMessages] = this.submissionHistorys[i].controllers[j].submissions[k].warnMessages[m];
             data.push(obj1);
           }
           for (let m = 0; m < this.submissionHistorys[i].controllers[j].submissions[k].errorMessages.length; m++) {
-            let obj1: any = {};
+            const obj1: any = {};
             obj1[errorMessages] = this.submissionHistorys[i].controllers[j].submissions[k].errorMessages[m];
             data.push(obj1);
           }
           for (let m = 0; m < this.submissionHistorys[i].controllers[j].submissions[k].orderIds.length; m++) {
-            let obj1: any = {};
+            const obj1: any = {};
             obj1[orderId] = this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].orderId;
             obj1[workflow] = this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].workflowPath;
             obj1[scheduledFor] = this.coreService.stringToDate(this.preferences, this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].scheduledFor);
@@ -3332,7 +3331,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   private init(flag): void {
     if (this.loadConfig && this.loadIgnoreList) {
-      let obj = {
+      const obj = {
         controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''
       };
       if (!flag) {
@@ -3356,7 +3355,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   /* --------------------------Customizations Begin-----------------------*/
 
   private checkSharedFilters(type): void {
-    let obj = {
+    const obj = {
       controllerId: this.schedulerIds.selected,
       configurationType: 'CUSTOMIZATION',
       objectType: type === 'ORDER' ? 'ORDER_HISTORY' : type === 'TASK' ? 'TASK_HISTORY' : type === 'YADE' ? 'YADE_HISTORY' : type === 'DEPLOYMENT' ? 'DEPLOYMENT_HISTORY' : 'SUBMISSION_HISTORY',
@@ -3365,7 +3364,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (this.permission.joc.administration.customization.view) {
       this.coreService.post('configurations', obj).subscribe((res: any) => {
         this.checkCurrentTab(type, res, obj);
-      }, (err) => {
+      }, () => {
         this.checkCurrentTab(type, null, obj);
       });
     } else {
@@ -3400,7 +3399,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private checkOrderCustomization(result): void {
     if (this.orderHistoryFilterList && this.orderHistoryFilterList.length > 0) {
       if (result.configurations && result.configurations.length > 0) {
-        let data = [];
+        const data = [];
 
         for (let i = 0; i < this.orderHistoryFilterList.length; i++) {
           let flag = true;
@@ -3454,7 +3453,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private checkTaskCustomization(result): void {
     if (this.jobHistoryFilterList && this.jobHistoryFilterList.length > 0) {
       if (result.configurations && result.configurations.length > 0) {
-        let data = [];
+        const data = [];
 
         for (let i = 0; i < this.jobHistoryFilterList.length; i++) {
           let flag = true;
@@ -3507,7 +3506,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private checkYadeCustomization(result): void {
     if (this.yadeHistoryFilterList && this.yadeHistoryFilterList.length > 0) {
       if (result.configurations && result.configurations.length > 0) {
-        let data = [];
+        const data = [];
 
         for (let i = 0; i < this.yadeHistoryFilterList.length; i++) {
           let flag = true;
@@ -3536,7 +3535,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           this.coreService.post('configuration', {
             controllerId: this.yadeHistoryFilterList[i].controllerId,
             id: this.yadeHistoryFilterList[i].id
-          }).subscribe((conf: any) => {
+          }).subscribe(() => {
             this.loadConfig = true;
             this.selectedFiltered3 = JSON.parse(result.configuration.configurationItem);
             this.selectedFiltered3.account = this.yadeHistoryFilterList[i].account;
@@ -3561,7 +3560,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private checkDeploymentCustomization(result): void {
     if (this.deploymentHistoryFilterList && this.deploymentHistoryFilterList.length > 0) {
       if (result.configurations && result.configurations.length > 0) {
-        let data = [];
+        const data = [];
 
         for (let i = 0; i < this.deploymentHistoryFilterList.length; i++) {
           let flag = true;
@@ -3614,7 +3613,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private checkSubmissionCustomization(result): void {
     if (this.submissionHistoryFilterList && this.submissionHistoryFilterList.length > 0) {
       if (result.configurations && result.configurations.length > 0) {
-        let data = [];
+        const data = [];
 
         for (let i = 0; i < this.submissionHistoryFilterList.length; i++) {
           let flag = true;
@@ -3666,7 +3665,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   private getIgnoreList(): void {
     if (this.schedulerIds.selected) {
-      let configObj = {
+      const configObj = {
         controllerId: this.schedulerIds.selected,
         account: this.authService.currentUserData,
         configurationType: 'IGNORELIST'
@@ -3709,7 +3708,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     return histories.history || [];
   }
 
-  private editFilter(filter) {
+  private editFilter(filter): void {
     if (this.schedulerIds.selected) {
       let filterObj: any = {};
       this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
@@ -3765,7 +3764,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           filterObj.name = this.coreService.checkCopyName(this.submissionHistoryFilterList, filter.name);
         }
 
-        let obj: any = {};
+        const obj: any = {};
         obj.permission = this.permission;
         obj.schedulerId = this.schedulerIds.selected;
         obj.type = this.historyFilters.type;

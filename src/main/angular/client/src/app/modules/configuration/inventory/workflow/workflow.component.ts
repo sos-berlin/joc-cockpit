@@ -807,7 +807,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   redo(): void {
     const n = this.history.length;
     if (this.indexOfNextAdd < n) {
-      let obj = this.history[this.indexOfNextAdd++];
+      const obj = this.history[this.indexOfNextAdd++];
       this.restoreData(obj);
     }
   }
@@ -819,7 +819,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
    */
   undo(): void {
     if (this.indexOfNextAdd > 0) {
-      let obj = this.history[--this.indexOfNextAdd];
+      const obj = this.history[--this.indexOfNextAdd];
       this.restoreData(obj);
     }
   }
@@ -5109,17 +5109,22 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               if (isEmpty(job.executable.login)){
                 delete job.executable.login;
               }
-              if (!_job.defaultArguments || typeof _job.defaultArguments === 'string' || _job.defaultArguments.length === 0) {
-                delete _job.defaultArguments;
+              if (!job.defaultArguments || typeof job.defaultArguments === 'string' || job.defaultArguments.length === 0) {
+                delete job.defaultArguments;
               }
-              if (_job.executable && (!_job.executable.arguments || typeof _job.executable.arguments === 'string' || _job.executable.arguments.length === 0)) {
-                delete _job.executable.arguments;
+              if (job.executable && (!job.executable.arguments || typeof job.executable.arguments === 'string' || job.executable.arguments.length === 0)) {
+                delete job.executable.arguments;
               }
-              if (_job.executable && (!_job.executable.jobArguments || typeof _job.executable.jobArguments === 'string' || _job.executable.jobArguments.length === 0)) {
-                delete _job.executable.jobArguments;
+              if (job.executable && (!job.executable.jobArguments || typeof job.executable.jobArguments === 'string' || job.executable.jobArguments.length === 0)) {
+                delete job.executable.jobArguments;
               }
-              if (_job.executable && (!_job.executable.env || typeof _job.executable.env === 'string' || _job.executable.env.length === 0)) {
-                delete _job.executable.env;
+              if (job.executable && (!job.executable.env || typeof job.executable.env === 'string' || job.executable.env.length === 0)) {
+                delete job.executable.env;
+              }
+              if (job.returnCodeMeaning) {
+                if (job.returnCodeMeaning && job.returnCodeMeaning.success == '0') {
+                  delete job.returnCodeMeaning;
+                }
               }
               if (!isEqual(_job, job)) {
                 isChange = true;
@@ -6475,6 +6480,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (!job.executable) {
       return false;
     }
+    if (isEmpty(job.executable.login)){
+      delete job.executable.login;
+    }
     if (job.returnCodeMeaning) {
       if (job.returnCodeMeaning && job.returnCodeMeaning.success == '0') {
         delete job.returnCodeMeaning;
@@ -6529,6 +6537,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     if (job.executable.TYPE === 'InternalExecutable') {
       delete job.executable.script;
+      delete job.executable.login;
     } else if (job.executable.TYPE === 'ScriptExecutable') {
       delete job.executable.className;
     }

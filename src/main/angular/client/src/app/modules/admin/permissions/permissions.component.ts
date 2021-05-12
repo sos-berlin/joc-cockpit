@@ -430,7 +430,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         let obj = {
           id: ++this.count,
           name: nodes[j],
-          path: this.permissionArr[i].substring(0, this.permissionArr[i].indexOf(nodes[j])),
+          path: this.permissionArr[i].substring(0, this.permissionArr[i].lastIndexOf(nodes[j])),
           icon: j < nodes.length - 1 ? './assets/images/minus.png' : '',
           _parents: j < nodes.length - 1 ? [] : null
         };
@@ -611,7 +611,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         for (let j = 0; j < permission_node._parents.length; j++) {
           for (let i = 0; i < list.length; i++) {
             if (list[i].path.match(permission_node._parents[j].path + permission_node._parents[j].name)) {
-              permission_node._parents[j].isSelected = !(permission_node._parents[j].path + '' + permission_node._parents[j].name == 'sos:products:joc_cockpit:event' && list[i].path == 'sos:products:joc_cockpit:event_action' || (permission_node._parents[j].path + '' + permission_node._parents[j].name == 'sos:products:joc_cockpit:event_action' && list[i].path == 'sos:products:joc_cockpit:event'));
+              permission_node._parents[j].isSelected = true;
             }
             if (list[i].path == (permission_node._parents[j].path + '' + permission_node._parents[j].name)) {
               permission_node._parents[j].greyed = false;
@@ -630,7 +630,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       } else {
         for (let i = 0; i < list.length; i++) {
           if (list[i].path.match(permission_node.path + permission_node.name)) {
-            permission_node.isSelected = !(permission_node.path + '' + permission_node.name == 'sos:products:joc_cockpit:event' && list[i].path == 'sos:products:joc_cockpit:event_action' || (permission_node.path + '' + permission_node.name == 'sos:products:joc_cockpit:event_action' && list[i].path == 'sos:products:joc_cockpit:event'));
+            permission_node.isSelected = true;
           }
           if (list[i].path == (permission_node.path + '' + permission_node.name)) {
             permission_node.greyed = false;

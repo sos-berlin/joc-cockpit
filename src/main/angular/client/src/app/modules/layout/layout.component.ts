@@ -20,8 +20,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
   preferences: any = {};
   schedulerIds: any;
   permission: any;
-  selectedScheduler: any = {};
-  selectedController: any = {};
   remainingSessionTime = '';
   interval: any;
   tabsMap = new Map();
@@ -105,10 +103,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
         if (args.eventSnapshots[j].eventType === 'ProblemEvent' && args.eventSnapshots[j].message) {
           if (args.eventSnapshots[j].accessToken === this.authService.accessTokenId) {
             this.toasterService.pop('error', '', args.eventSnapshots[j].message);
+            break;
           }
-        } else if (args.eventSnapshots[j].eventType === 'ControllerStateChanged') {
-          this.loadScheduleDetail();
-          break;
         }
       }
     }
@@ -167,19 +163,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  loadScheduleDetail(): void {
-    if (sessionStorage.$SOS$CONTROLLER && sessionStorage.$SOS$CONTROLLER !== 'null') {
-      this.selectedController = JSON.parse(sessionStorage.$SOS$CONTROLLER);
-      this.selectedScheduler.scheduler = this.selectedController;
-      if (this.selectedScheduler && this.selectedScheduler.scheduler) {
-        document.title = 'JS7 : ' + this.selectedScheduler.scheduler.controllerId;
-      }
-    }
-    if (this.schedulerIds && this.schedulerIds.selected) {
-      this.getVolatileData(false);
-    }
-  }
-
   changeScheduler(controller: string): void {
     if (this.schedulerIds.selected === controller) {
       return;
@@ -191,6 +174,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.coreService.post('controller/switch', {controllerId: this.schedulerIds.selected}).subscribe(() => {
       this.coreService.post('controller/ids', {}).subscribe((res) => {
         if (res) {
+          document.title = 'JS7:' + this.schedulerIds.selected;
           let previousData = this.tabsMap.get(controller);
           if (previousData) {
             previousData = JSON.parse(previousData);
@@ -357,8 +341,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
       }, 100);
       return;
     }
-
-    this.loadScheduleDetail();
     if (!this.loading) {
       this.loadInit(false);
     }
@@ -380,6 +362,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.loadSettingConfiguration();
     this.count = this.sessionTimeout / 1000;
     this.calculateTime();
+    if (this.schedulerIds && this.schedulerIds.selected) {
+      document.title = 'JS7:' + this.schedulerIds.selected;
+    }
     this.nzConfigService.set('empty', {nzDefaultEmptyContent: this.customTpl});
     setTimeout(() => {
       LayoutComponent.calculateHeight();
@@ -452,7 +437,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
           this.logout('timeout');
         }
       }
-    }, 1000);
+    }, 3000);
   }
 
   private setUserPreferences(preferences: any, configObj: any, reload: boolean): void {
@@ -460,8 +445,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
       const timezone = this.coreService.getTimeZone();
       if (timezone) {
         preferences.zone = timezone;
-      } else {
-        preferences.zone = this.selectedController.timeZone;
       }
       preferences.locale = 'en';
       preferences.dateFormat = 'DD.MM.YYYY HH:mm:ss';
@@ -584,27 +567,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updateTitle(res: any): void {
-    if (!res) {
-      return;
-    }
-    this.selectedController = res.controller;
-    this.selectedScheduler.scheduler = this.selectedController;
-    if (this.selectedScheduler && this.selectedScheduler.scheduler) {
-      document.title = 'JS7:' + this.selectedScheduler.scheduler.controllerId;
-    }
-    sessionStorage.$SOS$CONTROLLER = JSON.stringify(this.selectedController);
-  }
-
-  private getVolatileData(flag: boolean): void {
-    this.coreService.post('controller', {controllerId: this.schedulerIds.selected}).subscribe(res => {
-      this.updateTitle(res);
-      this.child.switchSchedulerController();
-    });
-  }
-
   private reloadUI(): void {
-    this.getVolatileData(true);
     this.child.reloadSettings();
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, true);

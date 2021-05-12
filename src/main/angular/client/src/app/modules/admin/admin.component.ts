@@ -143,7 +143,7 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   private checkLdapConf(): void {
     if (this.userObj.main && this.userObj.main.length > 1) {
-      for (let i in this.userObj.main) {
+      for (const i in this.userObj.main) {
         if (this.userObj.main[i]) {
           if ((this.userObj.main[i].entryName === 'sessionDAO' && this.userObj.main[i].entryValue === 'com.sos.auth.shiro.SOSDistributedSessionDAO') ||
             (this.userObj.main[i].entryName === 'securityManager.sessionManager.sessionDAO' && this.userObj.main[i].entryValue === '$sessionDAO')) {

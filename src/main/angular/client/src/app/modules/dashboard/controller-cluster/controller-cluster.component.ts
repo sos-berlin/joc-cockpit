@@ -9,16 +9,16 @@ import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 
-declare const mxEditor;
-declare const mxUtils;
-declare const mxEvent;
-declare const mxClient;
-declare const mxEdgeHandler;
-declare const mxGraphHandler;
-declare const mxGraph;
-declare const mxConstants;
-declare const mxPoint;
-declare const $;
+declare const mxEditor: any;
+declare const mxUtils: any;
+declare const mxEvent: any;
+declare const mxClient: any;
+declare const mxEdgeHandler: any;
+declare const mxGraphHandler: any;
+declare const mxGraph: any;
+declare const mxConstants: any;
+declare const mxPoint: any;
+declare const $: any;
 
 @Component({
   selector: 'app-controller-cluster',
@@ -37,6 +37,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   editor: any;
   controller: any;
   cluster: any;
+  interval: any;
   joc: any;
   configXml = './assets/mxgraph/config/diagram.xml';
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
@@ -81,10 +82,13 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
     try {
       if (this.editor) {
         this.editor.destroy();
-        this.editor = null;
+        this.editor = undefined;
         $('[data-toggle="popover"]').popover('hide');
       }
     } catch (e) {
@@ -98,11 +102,11 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
       this.selectedController = JSON.parse(sessionStorage.$SOS$CONTROLLER) || {};
     }
     if (isEmpty(this.selectedController)) {
-      const interval = setInterval(() => {
+      this.interval = setInterval(() => {
         if (sessionStorage.$SOS$CONTROLLER && JSON.parse(sessionStorage.$SOS$CONTROLLER)) {
           this.selectedController = JSON.parse(sessionStorage.$SOS$CONTROLLER) || {};
           if (!isEmpty(this.selectedController)) {
-            clearInterval(interval);
+            clearInterval(this.interval);
           }
         }
         if (sessionStorage.preferences && JSON.parse(sessionStorage.preferences)) {

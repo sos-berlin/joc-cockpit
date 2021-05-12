@@ -998,12 +998,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.editor.destroy();
+    this.subscription.unsubscribe();
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+    this.coreService.setSideView(this.sideView);
     if (this.submitXsd && !this.objectXml.xml && !this.isStore) {
       this.storeXML(undefined);
     }
-    this.subscription.unsubscribe();
-    this.coreService.setSideView(this.sideView);
-    clearInterval(this.intervalId);
     this.coreService.tabs._configuration.state = (this.objectType === 'YADE' || !this.objectType) ? 'file_transfer' : this.objectType.toLowerCase();
   }
 
@@ -4434,7 +4436,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     });
   }
 
-  getXsdSchema() {
+  getXsdSchema(): void {
     let obj = {
       controllerId: this.schedulerIds.selected,
       objectType: this.objectType,
@@ -4513,7 +4515,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         nzFooter: null,
         nzClosable: false
       });
-      modal.afterClose.subscribe(result => {
+      modal.afterClose.subscribe(() => {
         this.copyItem = undefined;
         this.nodes = [];
         this.selectedNode = [];
@@ -5235,7 +5237,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     });
   }
 
-  private showError(error) {
+  private showError(error): void {
     let iNode = {
       eleName: error.elementName,
       elePos: error.elementPosition.split('-')
@@ -5246,7 +5248,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.toasterService.pop('error', error.message);
   }
 
-  private gotoInfectedElement(node, nodes) {
+  private gotoInfectedElement(node, nodes): void {
     for (let j = 0; j < nodes.length; j++) {
       if (node.elePos[0] == j + 1) {
         nodes[j].expanded = true;

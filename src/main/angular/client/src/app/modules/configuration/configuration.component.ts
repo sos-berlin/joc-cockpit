@@ -11,11 +11,13 @@ declare const $: any;
 })
 export class ConfigurationComponent implements OnInit, OnDestroy {
   subscription: Subscription;
+  flag = true;
 
   constructor(private router: Router) {
     this.subscription = router.events
       .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd)).subscribe((e) => {
         setTimeout(() => {
+          this.flag = false;
           this.calcHeight();
         }, 5);
       });
@@ -23,7 +25,9 @@ export class ConfigurationComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     setTimeout(() => {
-      this.calcHeight();
+      if (this.flag) {
+        this.calcHeight();
+      }
     }, 10);
   }
 
@@ -55,18 +59,19 @@ export class ConfigurationComponent implements OnInit, OnDestroy {
         if (this.router.url.match('inventory')) {
           top = top - 22;
         }
-        $('.tree-block').height('calc(100vh - ' + (top + 24) + 'px' + ')');
         if (count < 5) {
-          if (top < 170 && flag) {
+          if (top < 165 && flag) {
             setTimeout(() => {
               recursiveCheck();
-            }, 5);
+            }, 20);
           } else {
             setTimeout(() => {
               recursiveCheck();
             }, 100);
           }
+          return;
         }
+        $('.tree-block').height('calc(100vh - ' + (top + 24) + 'px' + ')');
       };
       recursiveCheck();
     }

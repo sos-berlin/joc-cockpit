@@ -431,7 +431,7 @@
           </nz-select>
         </div>
       </div>
-      <div class="form-group row">
+      <div class="form-group row" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ScriptExecutable'">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.credentialKey</label>
         <div class="col-md-8 col-lg-9">
           <label class="w-full">
@@ -440,7 +440,7 @@
           </label>
         </div>
       </div>
-      <div class="form-group row">
+      <div class="form-group row" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ScriptExecutable'">
         <label class="col-md-4 col-lg-3 block-ellipsis-job" [nz-tooltip]="'workflow.label.loadUserProfile' | translate" translate>workflow.label.loadUserProfile</label>
         <div class="col-md-8 col-lg-9">
           <label nz-checkbox [(ngModel)]="selectedNode.job.executable.login.withUserProfile" name="loadUserProfile"></label>
