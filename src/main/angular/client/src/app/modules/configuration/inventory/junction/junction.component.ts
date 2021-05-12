@@ -151,7 +151,7 @@ export class JunctionComponent implements OnChanges, OnDestroy {
     if (this.indexOfNextAdd < n) {
       const obj = this.history[this.indexOfNextAdd++];
       this.junction.configuration = JSON.parse(obj);
-      this.ref.detectChanges();
+      this.saveJSON(true);
     }
   }
 
@@ -164,11 +164,11 @@ export class JunctionComponent implements OnChanges, OnDestroy {
     if (this.indexOfNextAdd > 0) {
       const obj = this.history[--this.indexOfNextAdd];
       this.junction.configuration = JSON.parse(obj);
-      this.ref.detectChanges();
+      this.saveJSON(true);
     }
   }
 
-  saveJSON(): void {
+  saveJSON(flag = false): void {
     if (this.isTrash) {
       return;
     }
@@ -176,11 +176,13 @@ export class JunctionComponent implements OnChanges, OnDestroy {
       this.junction.configuration.lifetime = this.workflowService.convertStringToDuration(this.lifetime);
     }
     if (!isEqual(this.junction.actual, JSON.stringify(this.junction.configuration))) {
-      if (this.history.length === 20) {
-        this.history.shift();
+      if (flag) {
+        if (this.history.length === 20) {
+          this.history.shift();
+        }
+        this.history.push(JSON.stringify(this.junction.configuration));
+        this.indexOfNextAdd = this.history.length - 1;
       }
-      this.history.push(JSON.stringify(this.junction.configuration));
-      this.indexOfNextAdd = this.history.length - 1;
       this.coreService.post('inventory/store', {
         configuration: this.junction.configuration,
         valid: true,
@@ -193,6 +195,8 @@ export class JunctionComponent implements OnChanges, OnDestroy {
           this.data.deployed = false;
           this.ref.detectChanges();
         }
+      }, (err) => {
+        this.ref.detectChanges();
       });
     }
   }

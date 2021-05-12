@@ -145,7 +145,7 @@ export class LockComponent implements OnChanges, OnDestroy {
     if (this.indexOfNextAdd < n) {
       const obj = this.history[this.indexOfNextAdd++];
       this.lock.configuration = JSON.parse(obj);
-      this.ref.detectChanges();
+      this.saveJSON(true);
     }
   }
 
@@ -158,20 +158,22 @@ export class LockComponent implements OnChanges, OnDestroy {
     if (this.indexOfNextAdd > 0) {
       const obj = this.history[--this.indexOfNextAdd];
       this.lock.configuration = JSON.parse(obj);
-      this.ref.detectChanges();
+      this.saveJSON(true);
     }
   }
 
-  saveJSON(): void {
+  saveJSON(flag = false): void {
     if (this.isTrash) {
       return;
     }
     if (!isEqual(this.lock.actual, JSON.stringify(this.lock.configuration))) {
-      if (this.history.length === 20) {
-        this.history.shift();
+      if (!flag) {
+        if (this.history.length === 20) {
+          this.history.shift();
+        }
+        this.history.push(JSON.stringify(this.lock.configuration));
+        this.indexOfNextAdd = this.history.length - 1;
       }
-      this.history.push(JSON.stringify(this.lock.configuration));
-      this.indexOfNextAdd = this.history.length - 1;
       this.coreService.post('inventory/store', {
         configuration: this.lock.configuration,
         valid: this.lock.configuration.limit > -1,
@@ -187,7 +189,7 @@ export class LockComponent implements OnChanges, OnDestroy {
           this.ref.detectChanges();
         }
       }, (err) => {
-        console.log(err);
+        this.ref.detectChanges();
       });
     }
   }

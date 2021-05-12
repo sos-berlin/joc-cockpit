@@ -432,6 +432,21 @@
         </div>
       </div>
       <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.credentialKey</label>
+        <div class="col-md-8 col-lg-9">
+          <label class="w-full">
+            <input autocomplete="off" type="text" class="form-control" name="credentialKey" placeholder="{{'workflow.placeholder.enterCredentialKey' | translate}}"
+                    [(ngModel)]="selectedNode.job.executable.login.credentialKey">
+          </label>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 block-ellipsis-job" [nz-tooltip]="'workflow.label.loadUserProfile' | translate" translate>workflow.label.loadUserProfile</label>
+        <div class="col-md-8 col-lg-9">
+          <label nz-checkbox [(ngModel)]="selectedNode.job.executable.login.withUserProfile" name="loadUserProfile"></label>
+        </div>
+      </div>
+      <div class="form-group row">
         <label class="col-md-4 col-lg-3 block-ellipsis-job" [nz-tooltip]="'workflow.label.failOnOutputErr' | translate" translate>workflow.label.failOnOutputErr</label>
         <div class="col-md-8 col-lg-9">
           <label nz-checkbox [(ngModel)]="selectedNode.job.failOnErrWritten" name="failOnErrWritten"></label>

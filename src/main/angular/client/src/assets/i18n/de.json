@@ -1437,6 +1437,8 @@
     "label.key": "Schlüssel",
     "label.value": "Wert",
     "label.compatibleMode": "Kompatibilität",
+    "label.credentialKey": "Credential Key",
+    "label.loadUserProfile": "Load User Profile",
     "label.variableDeclaration": "Variablendeklaration",
     "label.declareVariables": "Variablen deklarieren",
     "label.environmentVariables": "Umgebungsvariablen",
@@ -1569,7 +1571,8 @@
     "placeholder.expression": "Ausdruck angeben",
     "placeholder.orderId": "Auftragskennung angeben",
     "placeholder.className": "Name der Klasse angeben",
-    "placeholder.selectJobResources": "Job-Resosurce auswählen"
+    "placeholder.selectJobResources": "Job-Resosurce auswählen",
+    "placeholder.enterCredentialKey": "Enter credential key from Windows Credential Manager"
   },
   "xml": {
     "label.assignedSchema": "Zugewiesenes Schema",

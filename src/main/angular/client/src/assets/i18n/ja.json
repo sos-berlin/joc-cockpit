@@ -1437,6 +1437,8 @@
     "label.key": "キー",
     "label.value": "値",
     "label.compatibleMode": "v1互換",
+    "label.credentialKey": "Credential Key",
+    "label.loadUserProfile": "Load User Profile",
     "label.variableDeclaration": "オーダー変数定義",
     "label.declareVariables": "オーダー変数定義",
     "label.environmentVariables": "環境変数",
@@ -1569,7 +1571,8 @@
     "placeholder.expression": "条件式を入力",
     "placeholder.orderId": "オーダーID編集",
     "placeholder.className": "クラス名を入力",
-    "placeholder.selectJobResources": "ジョブリソースを選択"
+    "placeholder.selectJobResources": "ジョブリソースを選択",
+    "placeholder.enterCredentialKey": "Enter credential key from Windows Credential Manager"
   },
   "xml": {
     "label.assignedSchema": "適用スキーマ",

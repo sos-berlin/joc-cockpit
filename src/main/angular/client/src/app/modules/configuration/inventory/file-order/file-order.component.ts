@@ -278,7 +278,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     if (this.indexOfNextAdd < n) {
       const obj = this.history[this.indexOfNextAdd++];
       this.fileOrder.configuration = JSON.parse(obj);
-      this.ref.detectChanges();
+      this.saveJSON(true);
     }
   }
 
@@ -291,7 +291,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     if (this.indexOfNextAdd > 0) {
       const obj = this.history[--this.indexOfNextAdd];
       this.fileOrder.configuration = JSON.parse(obj);
-      this.ref.detectChanges();
+      this.saveJSON(true);
     }
   }
 
@@ -304,7 +304,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     this.saveJSON();
   }
 
-  saveJSON(): void {
+  saveJSON(flag = false): void {
     if (this.isTrash) {
       return;
     }
@@ -313,12 +313,13 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       if (this.fileOrder.configuration.workflowName && this.fileOrder.configuration.agentName) {
         isValid = true;
       }
-      this.fileOrder.configuration.id = this.fileOrder.name;
-      if (this.history.length === 20) {
-        this.history.shift();
+      if (!flag) {
+        if (this.history.length === 20) {
+          this.history.shift();
+        }
+        this.history.push(JSON.stringify(this.fileOrder.configuration));
+        this.indexOfNextAdd = this.history.length - 1;
       }
-      this.history.push(JSON.stringify(this.fileOrder.configuration));
-      this.indexOfNextAdd = this.history.length - 1;
       this.coreService.post('inventory/store', {
         configuration: this.fileOrder.configuration,
         valid: isValid,
@@ -334,7 +335,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
           this.setErrorMessage(res);
         }
       }, (err) => {
-        console.log(err);
+        this.ref.detectChanges();
       });
     }
   }

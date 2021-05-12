@@ -716,6 +716,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.selectedNode.job.executable = {
         TYPE: 'ScriptExecutable',
         script: '',
+        login: {},
         env: []
       };
     }
@@ -772,6 +773,10 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
           this.coreService.removeSlashToString(env, 'value');
         });
       }
+    }
+
+    if (!this.selectedNode.job.executable.login) {
+      this.selectedNode.job.executable.login = {};
     }
 
     if (this.selectedNode.job.timeout) {
@@ -5100,6 +5105,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 if (job.returnCodeMeaning.success === '' && !job.returnCodeMeaning.failure) {
                   job.returnCodeMeaning = {};
                 }
+              }
+              if (isEmpty(job.executable.login)){
+                delete job.executable.login;
               }
               if (!_job.defaultArguments || typeof _job.defaultArguments === 'string' || _job.defaultArguments.length === 0) {
                 delete _job.defaultArguments;

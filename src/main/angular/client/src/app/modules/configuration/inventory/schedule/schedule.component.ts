@@ -213,6 +213,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       if (type === 'WORKFLOW') {
         this.workflowTree = [...this.workflowTree];
       }
+      this.ref.detectChanges();
     });
   }
 
@@ -321,7 +322,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     if (this.indexOfNextAdd < n) {
       const obj = this.history[this.indexOfNextAdd++];
       this.schedule.configuration = JSON.parse(obj);
-      this.ref.detectChanges();
+      this.saveJSON(true);
     }
   }
 
@@ -334,11 +335,11 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     if (this.indexOfNextAdd > 0) {
       const obj = this.history[--this.indexOfNextAdd];
       this.schedule.configuration = JSON.parse(obj);
-      this.ref.detectChanges();
+      this.saveJSON(true);
     }
   }
 
-  saveJSON(): void {
+  saveJSON(flag = false): void {
     if (this.isTrash) {
       return;
     }
@@ -374,11 +375,13 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           }
         }
       }
-      if (this.history.length === 20) {
-        this.history.shift();
+      if (!flag) {
+        if (this.history.length === 20) {
+          this.history.shift();
+        }
+        this.history.push(JSON.stringify(this.schedule.configuration));
+        this.indexOfNextAdd = this.history.length - 1;
       }
-      this.history.push(JSON.stringify(this.schedule.configuration));
-      this.indexOfNextAdd = this.history.length - 1;
       this.coreService.post('inventory/store', {
         configuration: obj,
         valid: isValid,
@@ -394,7 +397,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           this.setErrorMessage(res);
         }
       }, (err) => {
-        console.error(err);
+        this.ref.detectChanges();
       });
     }
   }

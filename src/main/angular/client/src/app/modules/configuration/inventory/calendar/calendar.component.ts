@@ -1411,9 +1411,11 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
           this.dataService.reloadTree.next({rename: data});
         }, (err) => {
           this.calendar.name = this.data.name;
+          this.ref.detectChanges();
         });
       } else {
         this.calendar.name = this.data.name;
+        this.ref.detectChanges();
       }
     }
   }
@@ -1500,7 +1502,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     this.dataService.reloadTree.next({back: this.calendar});
   }
 
-  saveJSON(): void {
+  saveJSON(flag = false): void {
     if (this.isTrash) {
       return;
     }
@@ -1520,11 +1522,13 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       delete obj['excludes'];
     }
     if (!isEqual(this.calendar.actual, JSON.stringify(this.calendar.configuration))) {
-      if (this.history.length === 20) {
-        this.history.shift();
+      if (!flag) {
+        if (this.history.length === 20) {
+          this.history.shift();
+        }
+        this.history.push(JSON.stringify(this.calendar.configuration));
+        this.indexOfNextAdd = this.history.length - 1;
       }
-      this.history.push(JSON.stringify(this.calendar.configuration));
-      this.indexOfNextAdd = this.history.length - 1;
       this.coreService.post('inventory/store', {
         configuration: obj,
         id: this.calendar.id,
@@ -1544,6 +1548,8 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
           }
           this.ref.detectChanges();
         }
+      }, (err) => {
+        this.ref.detectChanges();
       });
     }
   }
@@ -1594,7 +1600,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     if (this.indexOfNextAdd < n) {
       const obj = this.history[this.indexOfNextAdd++];
       this.calendar.configuration = JSON.parse(obj);
-      this.ref.detectChanges();
+      this.saveJSON(true);
     }
   }
 
@@ -1607,7 +1613,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     if (this.indexOfNextAdd > 0) {
       const obj = this.history[--this.indexOfNextAdd];
       this.calendar.configuration = JSON.parse(obj);
-      this.ref.detectChanges();
+      this.saveJSON(true);
     }
   }
 

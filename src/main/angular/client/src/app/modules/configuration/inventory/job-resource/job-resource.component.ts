@@ -123,7 +123,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     if (this.indexOfNextAdd < n) {
       const obj = this.history[this.indexOfNextAdd++];
       this.jobResource.configuration = JSON.parse(obj);
-      this.ref.detectChanges();
+      this.saveJSON(true);
     }
   }
 
@@ -136,11 +136,11 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     if (this.indexOfNextAdd > 0) {
       const obj = this.history[--this.indexOfNextAdd];
       this.jobResource.configuration = JSON.parse(obj);
-      this.ref.detectChanges();
+      this.saveJSON(true);
     }
   }
 
-  addEnv(): void {
+  addEnv(flag = false): void {
     const param = {
       name: '',
       value: ''
@@ -148,7 +148,9 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     if (this.jobResource.configuration.env) {
       if (!this.coreService.isLastEntryEmpty(this.jobResource.configuration.env, 'name', '')) {
         this.jobResource.configuration.env.push(param);
-        this.ref.detectChanges();
+        if (!flag) {
+          this.ref.detectChanges();
+        }
       }
     }
   }
@@ -159,7 +161,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     this.saveJSON();
   }
 
-  addArgu(): void {
+  addArgu(flag = false): void {
     const param = {
       name: '',
       value: ''
@@ -167,7 +169,9 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     if (this.jobResource.configuration.arguments) {
       if (!this.coreService.isLastEntryEmpty(this.jobResource.configuration.arguments, 'name', '')) {
         this.jobResource.configuration.arguments.push(param);
-        this.ref.detectChanges();
+        if (!flag) {
+          this.ref.detectChanges();
+        }
       }
     }
   }
@@ -229,7 +233,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     });
   }
 
-  saveJSON(): void {
+  saveJSON(flag = false): void {
     if (this.isTrash) {
       return;
     }
@@ -248,11 +252,13 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         this.coreService.convertArrayToObject(obj, 'arguments', true);
       }
 
-      if (this.history.length === 20) {
-        this.history.shift();
+      if (!flag) {
+        if (this.history.length === 20) {
+          this.history.shift();
+        }
+        this.history.push(JSON.stringify(this.jobResource.configuration));
+        this.indexOfNextAdd = this.history.length - 1;
       }
-      this.history.push(JSON.stringify(this.jobResource.configuration));
-      this.indexOfNextAdd = this.history.length - 1;
       this.coreService.post('inventory/store', {
         configuration: obj,
         valid: obj.env && obj.env.length > 0,
@@ -268,7 +274,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
           this.setErrorMessage(res);
         }
       }, (err) => {
-        console.log(err);
+        this.ref.detectChanges();
       });
     }
   }
@@ -319,7 +325,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       } else {
         this.jobResource.configuration.env = [];
         this.invalidMsg = 'inventory.message.envIsMissing';
-        this.addEnv();
+        this.addEnv(true);
       }
       if (this.jobResource.configuration.arguments) {
         this.jobResource.configuration.arguments = this.coreService.convertObjectToArray(this.jobResource.configuration, 'arguments');
@@ -328,7 +334,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         });
       } else {
         this.jobResource.configuration.arguments = [];
-        this.addArgu();
+        this.addArgu(true);
       }
       this.jobResource.actual = JSON.stringify(res.configuration);
       this.history.push(this.jobResource.actual);

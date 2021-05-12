@@ -1437,6 +1437,8 @@
     "label.key": "Key",
     "label.value": "Value",
     "label.compatibleMode": "Compatibility",
+    "label.credentialKey": "Credential Key",
+    "label.loadUserProfile": "Load User Profile",
     "label.variableDeclaration": "Variable Declaration",
     "label.declareVariables": "Declare Variables",
     "label.environmentVariables": "Environment Variables",
@@ -1569,7 +1571,8 @@
     "placeholder.expression": "Enter expression",
     "placeholder.orderId": "Enter Order ID",
     "placeholder.className": "Enter Class Name",
-    "placeholder.selectJobResources": "Select Job Resources"
+    "placeholder.selectJobResources": "Select Job Resources",
+    "placeholder.enterCredentialKey": "Enter credential key from Windows Credential Manager"
   },
   "xml": {
     "label.assignedSchema": "Assigned Schema",
