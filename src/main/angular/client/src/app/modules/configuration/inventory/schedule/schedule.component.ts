@@ -117,6 +117,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
 
   closeCalendarView(): void {
     this.isVisible = false;
+    this.ref.detectChanges();
     setTimeout(() => {
       this.saveJSON();
     }, 10);

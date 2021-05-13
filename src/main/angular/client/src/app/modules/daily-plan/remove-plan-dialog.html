@@ -10,8 +10,8 @@
     </span>
     <span *ngIf="dateRange && dateRange.length > 0">
       :
-      <i class="text-muted">{{dateRange[0] | stringToDate1}}</i> -
-      <i class="text-muted">{{dateRange[1] | stringToDate1}}</i>
+      <i class="text-muted">{{dateRange[0] | stringToDate1:true}}</i> -
+      <i class="text-muted">{{dateRange[1] | stringToDate1:true}}</i>
     </span>
     <span *ngIf="order">
       <span *ngIf="isSubmit" translate>dailyPlan.label.submitOrder</span>

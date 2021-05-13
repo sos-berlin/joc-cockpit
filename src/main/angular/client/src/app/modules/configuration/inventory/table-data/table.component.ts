@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy} from '@angular/core';
 import {CoreService} from 'src/app/services/core.service';
 import {DataService} from 'src/app/services/data.service';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -31,7 +31,7 @@ export class TableComponent implements OnDestroy{
               private modal: NzModalService, private ref: ChangeDetectorRef) {
     this.subscription = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
-        if (res.reloadTree) {
+        if (res.reloadTree && this.dataObj && this.dataObj.children) {
           this.ref.detectChanges();
         }
       }
@@ -75,8 +75,8 @@ export class TableComponent implements OnDestroy{
         } else if (obj.type === 'WORKINGDAYSCALENDAR' || obj.type === 'NONWORKINGDAYSCALENDAR') {
           configuration = {type: obj.type};
         }
-        const _path = this.dataObj.path + (this.dataObj.path === '/' ? '' : '/') + res.name;
-        this.store(obj, _path, configuration);
+        const path = this.dataObj.path + (this.dataObj.path === '/' ? '' : '/') + res.name;
+        this.store(obj, path, configuration);
       }
     });
   }
@@ -119,7 +119,7 @@ export class TableComponent implements OnDestroy{
 
   removeObject(object): void {
     if (this.preferences.auditLog) {
-      let comments = {
+      const comments = {
         radio: 'predefined',
         type: object.type,
         operation: 'Remove',
@@ -185,7 +185,7 @@ export class TableComponent implements OnDestroy{
   deleteDraft(object): void {
     const _path = object.path + (object.path === '/' ? '' : '/') + object.name;
     if (this.preferences.auditLog) {
-      let comments = {
+      const comments = {
         radio: 'predefined',
         type: object.type,
         operation: 'Delete',
@@ -234,7 +234,8 @@ export class TableComponent implements OnDestroy{
   }
 
   private deleteApiCall(object, auditLog): void {
-    let isDraftOnly = true, isDeployObj = true;
+    let isDraftOnly = true;
+    let isDeployObj = true;
     if (this.objectType.match(/CALENDAR/) || this.objectType === 'SCHEDULE') {
       isDeployObj = false;
       if (object.hasReleases) {

@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit} from '@angular/core';
 import {isEmpty, unique, isArray, isEqual, clone} from 'underscore';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TreeModalComponent} from '../../../../components/tree-modal/tree.component';
@@ -697,8 +697,8 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   toDate: any;
   calendarTitle = new Date().getFullYear();
 
-  constructor(private coreService: CoreService, public modal: NzModalService, private calendarService: CalendarService) {
-
+  constructor(private coreService: CoreService, public modal: NzModalService,
+              private calendarService: CalendarService, private ref: ChangeDetectorRef) {
   }
 
   ngOnChanges(changes): void {
@@ -721,6 +721,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.calendars = this.calendars.concat(result);
+        this.ref.detectChanges();
       }
     });
   }
@@ -741,6 +742,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       if (result) {
         this.nonWorkingCalendars = this.nonWorkingCalendars.concat(result);
         unique(this.nonWorkingCalendars);
+        this.ref.detectChanges();
       }
     });
   }
@@ -841,6 +843,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
         if (!flag) {
           calendar.periods.push(result.period);
         }
+        this.ref.detectChanges();
       }
     });
   }
@@ -859,12 +862,14 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         calendar.periods[index] = result.period;
+        this.ref.detectChanges();
       }
     });
   }
 
   removePeriodInCalendar(calendar, index): void {
     calendar.periods.splice(index, 1);
+    this.ref.detectChanges();
   }
 
   planFromRuntime(): void {
@@ -1092,6 +1097,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       this.tempList = clone(this.planItems);
     }
     $('#full-calendar').data('calendar').setDataSource(this.planItems);
+    this.ref.detectChanges();
   }
 
   private populatePlanItems(res: any): void {
@@ -1143,6 +1149,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     for (let i = 0; i < this.calendars.length; i++) {
       if (data.calendarName === this.calendars[i].calendarName) {
         this.calendars[i].frequencyList = data.frequencyList;
+        this.ref.detectChanges();
         break;
       }
     }

@@ -46,14 +46,14 @@ export class StringTimePipe implements PipeTransform {
   name: 'stringToDate1'
 })
 export class StringDateFormatePipe implements PipeTransform {
-  transform(t: string): string {
+  transform(t: string, skip = false): string {
     if (sessionStorage.preferences) {
       if (!t) {
         return '-';
       }
       const n = JSON.parse(sessionStorage.preferences);
       if (!n.zone) {
-        return '';
+        return t;
       }
       if (n.dateFormat.match('HH:mm')) {
         n.dateFormat = n.dateFormat.replace('HH:mm', '');
@@ -71,9 +71,14 @@ export class StringDateFormatePipe implements PipeTransform {
         n.dateFormat = n.dateFormat.replace('|', '');
       }
       n.dateFormat = n.dateFormat.trim();
-      return moment(t).tz(n.zone).format(n.dateFormat);
-    } else{
-      return '';
+      
+      if (skip) {
+        return moment(t).format(n.dateFormat);
+      } else {
+        return moment(t).tz(n.zone).format(n.dateFormat);
+      }
+    } else {
+      return t;
     }
   }
 }
