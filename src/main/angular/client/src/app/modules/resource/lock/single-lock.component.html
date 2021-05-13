@@ -1,0 +1,163 @@
+<div class="white box-shadow sub-header">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="padding">
+        <div class="text-right ">
+          <div class="pull-left">
+            <app-breadcrumbs></app-breadcrumbs>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="scroll-y max-ht2">
+  <div class="padding p-b-0 p-l-0">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="box p-a m-t-xs">
+          <div class="table-responsive">
+            <nz-table
+              #ajaxTable
+              [nzSize]="'small'"
+              [nzBordered]="true"
+              [nzShowPagination]="false"
+              [nzData]="locks"
+              [nzLoading]="loading"
+              [nzShowSizeChanger]="false"
+            >
+              <thead>
+              <tr>
+                <th><span translate>resource.lock.label.name</span></th>
+                <th><span class="p-r-xs" translate>common.label.path</span></th>
+                <th rowspan="2"><span class="p-r-xs" translate>resource.lock.label.deploymentDate</span></th>
+                <th rowspan="2"><span class="p-r-xs" translate>common.label.status</span></th>
+                <th><span class="p-r-xs" translate>resource.lock.label.acquiredLockCount</span></th>
+                <th><span class="p-r-xs" translate>resource.lock.label.ordersHoldingLocks</span></th>
+                <th><span class="p-r-xs" translate>resource.lock.label.ordersWaitingForLocks</span></th>
+                <th><span class="p-r-xs" translate>resource.lock.label.limit</span></th>
+              </tr>
+              </thead>
+              <tbody>
+              <ng-template ngFor let-lock [ngForOf]="ajaxTable.data">
+                <tr [ngClass]="{'light-bg':lock.show}">
+                  <td>
+                        <span class="show-in-single-line w-full">
+                          <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                             *ngIf="!lock.show"
+                             (click)="lock.show = true;"></i>
+                          <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+                             *ngIf="lock.show"
+                             (click)="lock.show = false;"></i>
+                          <a>
+                            <span [innerHtml]="lock.id"></span>
+                            <i *ngIf="lock.title"> - </i>
+                            <i class="text-muted" [innerHtml]="lock.title"></i>
+                          </a>
+                        </span>
+                  </td>
+                  <td><span [innerHtml]="lock.path"></span></td>
+                  <td>
+                    <span [innerHtml]="lock.versionDate | stringToDate"></span>
+                  </td>
+                  <td>
+                    <a class="label" *ngIf="lock.state" [ngClass]="coreService.getColor(lock.state.severity, 'bg')"
+                       [innerHtml]="lock.state._text | translate"></a>
+                  </td>
+                  <td>{{lock.acquiredLockCount || '0'}}</td>
+                  <td>{{lock.ordersHoldingLocks || '0'}}</td>
+                  <td>{{lock.ordersWaitingForLocks || '0'}}</td>
+                  <td [innerHtml]="lock.limit"></td>
+                </tr>
+                <tr *ngIf="lock.show">
+                  <td colspan="8" style="padding:0 !important;" class="order-history-template0">
+                    <nz-table class="m-a-0 inner-table" #nestedWorkflowsTable [nzSize]="'small'"
+                              [nzData]="lock.workflows" [nzShowPagination]="false">
+              <thead>
+              <tr>
+                <th colspan="8" class="text-left"><span translate>order.label.workflow</span></th>
+              </tr>
+              </thead>
+              <tbody>
+              <ng-template ngFor let-workflow
+                           [ngForOf]="nestedWorkflowsTable.data">
+                <tr>
+                  <td colspan="8">
+                    <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                       *ngIf="!workflow.show"
+                       (click)="workflow.show = true;"></i>
+                    <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+                       *ngIf="workflow.show"
+                       (click)="workflow.show = false;"></i>
+                    <i (click)="coreService.navToInventoryTab(workflow.path, 'WORKFLOW');"
+                       class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+                    <a class="text-hover-primary"
+                       (click)="coreService.showWorkflow(workflow.path);">{{workflow.path}} </a>
+                  </td>
+                </tr>
+                <ng-container *ngIf="workflow.show">
+                  <ng-container *ngIf="workflow.ordersWaitingForLocks && workflow.ordersWaitingForLocks.length > 0">
+                    <tr>
+                      <td colspan="8" class="custom-th">
+                        <span class="p-l">{{'resource.lock.label.ordersWaitingForLocks' | translate}}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="3" class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
+                      <td colspan="3" class="custom-th"><span translate>order.label.position</span></td>
+                      <td class="custom-th"><span translate>order.label.state</span></td>
+                      <td class="custom-th"><span translate>order.label.scheduledFor</span></td>
+                    </tr>
+                    <tr *ngFor="let item of workflow.ordersWaitingForLocks">
+                      <td colspan="3"><span class="p-l">{{item.order.orderId}}</span></td>
+                      <td colspan="3">
+                                      <span *ngIf="item.order.position && item.order.position.length>0">
+                                        {{item.order.position | json}}
+                                      </span>
+                      </td>
+                      <td><span class="label"
+                                [ngClass]="coreService.getColor(item.order.state.severity,'bg')">{{item.order.state._text | translate}}</span>
+                      </td>
+                      <td>{{item.order.scheduledFor | stringToDate}}</td>
+                    </tr>
+                  </ng-container>
+                  <ng-container *ngIf="workflow.ordersHoldingLocks && workflow.ordersHoldingLocks.length > 0">
+                    <tr>
+                      <td colspan="8" class="custom-th">
+                        <span class="p-l">{{'resource.lock.label.ordersHoldingLocks' | translate}}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="3" class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
+                      <td colspan="3" class="custom-th"><span translate>order.label.position</span></td>
+                      <td class="custom-th"><span translate>order.label.state</span></td>
+                      <td class="custom-th"><span translate>order.label.scheduledFor</span></td>
+                    </tr>
+                    <tr *ngFor="let item of workflow.ordersHoldingLocks">
+                      <td colspan="3"><span class="p-l">{{item.order.orderId}}</span></td>
+                      <td colspan="3">
+                                      <span *ngIf="item.order.position && item.order.position.length>0">
+                                        {{item.order.position | json}}
+                                      </span>
+                      </td>
+                      <td><span class="label"
+                                [ngClass]="coreService.getColor(item.order.state.severity,'bg')">{{item.order.state._text | translate}}</span>
+                      </td>
+                      <td>{{item.order.scheduledFor | stringToDate}}</td>
+                    </tr>
+                  </ng-container>
+                </ng-container>
+              </ng-template>
+              </tbody>
+            </nz-table>
+            </td>
+            </tr>
+            </ng-template>
+            </tbody>
+            </nz-table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

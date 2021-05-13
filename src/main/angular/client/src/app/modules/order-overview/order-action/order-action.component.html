@@ -38,9 +38,9 @@
         <a (click)="removeWhenTerminated()"
            translate>order.button.leaveWorkflow</a>
       </li>
-<!--      <li nz-menu-item>
-        <a (click)="coreService.copyLink('order',order.orderId)" translate>common.button.copyLinkToObject</a>
-      </li>-->
+      <li nz-menu-item *ngIf="order.state && (order.state._text !== 'PLANNED' && order.state._text !== 'PENDING')">
+        <a (click)="coreService.copyLink('order',order.orderId, order.workflowId.path)" translate>common.button.copyLinkToObject</a>
+      </li>
     </ul>
   </nz-dropdown-menu>
 </div>

@@ -119,7 +119,7 @@ export class ImportModalComponent implements OnInit {
 })
 export class SingleDocumentationComponent implements OnInit {
   loading: boolean;
-  schedulerId: any = {};
+  controllerId: any = {};
   preferences: any = {};
   permission: any = {};
   documents: any = [];
@@ -131,14 +131,14 @@ export class SingleDocumentationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.path = this.route.snapshot.queryParamMap.get('path');
-    this.schedulerId = this.route.snapshot.queryParamMap.get('scheduler_id');
+    this.path = this.route.snapshot.queryParamMap.get('name');
+    this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
     }
     this.permission = JSON.parse(this.authService.permission) || {};
     this.getDocumentationsList({
-      controllerId: this.schedulerId,
+      controllerId: this.controllerId,
       documentations: [this.path]
     });
   }
@@ -146,7 +146,7 @@ export class SingleDocumentationComponent implements OnInit {
   /* ---------------------------- Action ----------------------------------*/
 
   previewDocument(document): void {
-    const link = API_URL + 'documentation/preview?documentation=' + encodeURIComponent(document.name) + '&accessToken=' + this.authService.accessTokenId + '&controllerId=' + this.schedulerId;
+    const link = API_URL + 'documentation/preview?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId + '&controllerId=' + this.controllerId;
     if (this.preferences.isDocNewWindow === 'newWindow') {
       window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no', true);
     } else {
@@ -157,8 +157,8 @@ export class SingleDocumentationComponent implements OnInit {
   showDocumentUsage(document): void {
     const documentObj = this.coreService.clone(document);
     this.coreService.post('documentation/used', {
-      documentation: document.name,
-      controllerId: this.schedulerId
+      documentation: document.path,
+      controllerId: this.controllerId
     }).subscribe((res: any) => {
       documentObj.usedIn = res.objects || [];
       this.modal.create({
@@ -175,23 +175,23 @@ export class SingleDocumentationComponent implements OnInit {
   }
 
   exportDocument(document): void {
-    const obj = {controllerId: this.schedulerId, documentations: []};
+    const obj = {controllerId: this.controllerId, documentations: []};
     if (document) {
       obj.documentations.push(document.name);
     }
-    this.coreService.download('documentations/export', obj, 'documentation_' + this.schedulerId + '.zip', () => {
+    this.coreService.download('documentations/export', obj, 'documentation_' + this.controllerId + '.zip', () => {
 
     });
   }
 
-  deleteDocumentations(): void {
+  deleteDocumentation(document): void {
     const obj: any = {
-      controllerId: this.schedulerId,
+      controllerId: this.controllerId,
       documentations: [this.path]
     };
     this.coreService.post('documentation/used', {
-      documentation: this.path,
-      controllerId: this.schedulerId
+      documentation: document.path,
+      controllerId: this.controllerId
     }).subscribe((res: any) => {
       this.deleteDocumentFn(obj, {usedIn: res.objects || [], path: this.path});
     });
@@ -424,8 +424,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   previewDocument(document): void {
-    const link = API_URL + 'documentation/preview?documentation=' + encodeURIComponent(document.name) + '&accessToken=' + this.authService.accessTokenId + '&controllerId=' + this.schedulerIds.selected;
-    console.log(link)
+    const link = API_URL + 'documentation/preview?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId + '&controllerId=' + this.schedulerIds.selected;
     if (this.preferences.isDocNewWindow === 'newWindow') {
       window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no', true);
     } else {
@@ -436,7 +435,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   showDocumentUsage(document): void {
     const documentObj = this.coreService.clone(document);
     this.coreService.post('documentation/used', {
-      documentation: document.name,
+      documentation: document.path,
       controllerId: this.schedulerIds.selected
     }).subscribe((res: any) => {
       documentObj.usedIn = res.objects || [];
@@ -502,7 +501,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     if (document) {
       documentObj.delete = true;
       this.coreService.post('documentation/used', {
-        documentation: documentObj.name,
+        documentation: documentObj.path,
         controllerId: this.schedulerIds.selected
       }).subscribe((res: any) => {
         documentObj.usedIn = res.objects || [];

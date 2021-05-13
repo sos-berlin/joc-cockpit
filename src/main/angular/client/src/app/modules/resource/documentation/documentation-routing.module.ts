@@ -6,7 +6,7 @@ const routes: Routes = [
   {
     path: '', component: DocumentationComponent
   }, {
-    path: 'document',
+    path: 'documentation',
     component: SingleDocumentationComponent,
     data: {breadcrumb: 'breadcrumb.label.documentation'}
   }

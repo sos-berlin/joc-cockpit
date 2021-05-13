@@ -2,7 +2,7 @@ import {Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output}
 import {Subscription} from 'rxjs';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {isEmpty, clone} from 'underscore';
 import {DataService} from '../../services/data.service';
@@ -916,6 +916,103 @@ export class YadeSearchComponent implements OnInit {
   }
 }
 
+@Component({
+  selector: 'app-single-history',
+  templateUrl: './single-history.component.html'
+})
+export class SingleHistoryComponent implements OnInit, OnDestroy {
+  loading: boolean;
+  controllerId: any = {};
+  preferences: any = {};
+  permission: any = {};
+  history: any = [];
+  orderId: string;
+  workflowPath: string;
+  subscription: Subscription;
+
+  constructor(private authService: AuthService, public coreService: CoreService, private router: Router,
+              private dataService: DataService, private route: ActivatedRoute) {
+    this.subscription = dataService.eventAnnounced$.subscribe(res => {
+      this.refresh(res);
+    });
+  }
+
+  ngOnInit(): void {
+    this.orderId = this.route.snapshot.queryParamMap.get('orderId');
+    this.workflowPath = this.route.snapshot.queryParamMap.get('workflow');
+    this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences);
+    }
+    this.permission = JSON.parse(this.authService.permission) || {};
+    this.getOrderHistory();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  private getOrderHistory(): void {
+    this.coreService.post('orders/history', {
+      controllerId: this.controllerId,
+      orders: [{workflowPath: this.workflowPath, orderId: this.orderId}]
+    }).subscribe((res: any) => {
+      this.loading = false;
+      this.history = res.history;
+    }, () => {
+      this.loading = false;
+    });
+  }
+
+  private refresh(args): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if ((args.eventSnapshots[j].eventType === 'HistoryOrderTerminated' || args.eventSnapshots[j].eventType === 'HistoryOrderStarted')) {
+          console.log('???', args.eventSnapshots[j])
+          this.getOrderHistory();
+          break;
+        }
+      }
+    }
+  }
+
+  /* --------------------------Actions -----------------------*/
+
+  navToWorkflowTab(workflow): void {
+    this.coreService.getConfigurationTab().inventory.expand_to = [];
+    this.coreService.getConfigurationTab().inventory.selectedObj = {
+      name: workflow.substring(workflow.lastIndexOf('/') + 1),
+      path: workflow.substring(0, workflow.lastIndexOf('/')) || '/',
+      type: 'WORKFLOW'
+    };
+    this.router.navigate(['/configuration/inventory']);
+  }
+
+  showPanelFuc(data: any): void {
+    data.loading = true;
+    data.show = true;
+    data.children = [];
+    data.states = [];
+    const obj = {
+      controllerId: this.controllerId,
+      historyId: data.historyId
+    };
+    this.coreService.post('order/history', obj).subscribe((res: any) => {
+      data.level = 1;
+      data.children = res.children;
+      data.states = res.states;
+      data.loading = false;
+    }, () => {
+      data.loading = false;
+    });
+  }
+
+  hidePanelFuc(data: any): void {
+    data.show = false;
+    data.showAll = false;
+  }
+
+}
 
 @Component({
   selector: 'app-history',

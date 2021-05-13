@@ -32,8 +32,8 @@
                 <th><span translate>common.label.name</span></th>
                 <th><span translate>common.label.path</span></th>
                 <th><span translate>common.label.type</span></th>
-                <th><span translate>resource.label.validityFrom</span></th>
-                <th><span translate>resource.label.validityTo</span></th>
+                <th><span translate>resource.calendar.label.validityFrom</span></th>
+                <th><span translate>resource.calendar.label.validityTo</span></th>
               </tr>
               </thead>
               <tbody>
@@ -48,13 +48,13 @@
                     <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                       <ul nz-menu>
                         <li nz-menu-item>
-                          <a (click)="previewCalendar(calendar)" translate>button.showPreview</a>
+                          <a (click)="previewCalendar(calendar)" translate>resource.calendar.button.showPreview</a>
                         </li>
                         <li nz-menu-item [nzDisabled]="calendar.documentId">
-                          <a (click)="showDocumentation(calendar)" translate>button.showDocumentation</a>
+                          <a (click)="showDocumentation(calendar)" translate>common.button.showDocumentation</a>
                         </li>
                         <li nz-menu-item>
-                          <a (click)="showUsage(calendar)" translate>button.showUsage</a>
+                          <a (click)="showUsage(calendar)" translate>resource.button.showUsage</a>
                         </li>
                       </ul>
                     </nz-dropdown-menu>

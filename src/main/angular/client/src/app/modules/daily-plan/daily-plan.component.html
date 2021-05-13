@@ -63,6 +63,9 @@
                   *ngIf="permission.currentController.orders.modify && value.state && (value.state._text === 'PLANNED' || value.state._text === 'PENDING')">
                 <a (click)="changeParameter(null, value)" translate>dailyPlan.button.setParameters</a>
               </li>
+              <li nz-menu-item *ngIf="value.state && (value.state._text !== 'PLANNED' && value.state._text !== 'PENDING')">
+                <a (click)="coreService.copyLink('order',value.orderId, value.workflowPath)" translate>common.button.copyLinkToObject</a>
+              </li>
             </ul>
           </nz-dropdown-menu>
         </div>

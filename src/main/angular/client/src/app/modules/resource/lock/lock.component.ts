@@ -1,10 +1,90 @@
 import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
+import {ActivatedRoute} from '@angular/router';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 import {SearchPipe} from '../../../pipes/core.pipe';
+
+@Component({
+  selector: 'app-single-lock',
+  templateUrl: './single-lock.component.html'
+})
+export class SingleLockComponent implements OnInit, OnDestroy {
+  loading: boolean;
+  controllerId: any = {};
+  preferences: any = {};
+  permission: any = {};
+  locks: any = [];
+  path: string;
+  subscription: Subscription;
+
+  constructor(private authService: AuthService, public coreService: CoreService,
+              private dataService: DataService, private route: ActivatedRoute) {
+    this.subscription = dataService.eventAnnounced$.subscribe(res => {
+      this.refresh(res);
+    });
+  }
+
+  ngOnInit(): void {
+    this.path = this.route.snapshot.queryParamMap.get('path');
+    this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences);
+    }
+    this.permission = JSON.parse(this.authService.permission) || {};
+    this.getLocksList({
+      controllerId: this.controllerId,
+      lockPaths: [this.path]
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  private getLocksList(obj): void {
+    this.coreService.post('locks', obj).subscribe((res: any) => {
+      this.loading = false;
+      res.locks.forEach((value) => {
+        value.id = value.lock.path.substring(value.lock.path.lastIndexOf('/') + 1);
+        value.state = value.lock.state;
+        value.versionDate = value.lock.versionDate;
+        value.path = value.lock.path;
+        value.limit = value.lock.limit;
+        value.title = value.lock.title;
+      });
+      this.locks = res.locks;
+    }, () => {
+      this.loading = false;
+    });
+  }
+
+  private refresh(args): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].eventType === 'LockStateChanged' && args.eventSnapshots[j].path && this.path === args.eventSnapshots[j].path) {
+          const obj = {
+            controllerId: this.controllerId,
+            lockPath: this.path
+          };
+          this.coreService.post('lock', obj).subscribe((res: any) => {
+            const lock = res.lock;
+            if (lock) {
+              this.locks[0].acquiredLockCount = lock.acquiredLockCount;
+              this.locks[0].ordersHoldingLocksCount = lock.ordersHoldingLocksCount;
+              this.locks[0].ordersWaitingForLocksCount = lock.ordersWaitingForLocksCount;
+              this.locks[0].workflows = lock.workflows;
+            }
+          });
+          break;
+        }
+      }
+    }
+  }
+
+}
 
 @Component({
   selector: 'app-lock',

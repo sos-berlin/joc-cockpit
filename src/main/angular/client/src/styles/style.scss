@@ -5274,10 +5274,6 @@ input:-webkit-autofill {
   overflow: auto;
 }
 
-.cdk-global-scrollblock {
-  overflow: auto;
-}
-
 ul {
   list-style-type: none;
 }
@@ -6078,35 +6074,43 @@ aside.sidebar-hover-effect {
 }
 
 .ant-select-selection-placeholder {
-  color: var(--placholder-color)
+  color: var(--placholder-color);
+  opacity: .55;
 }
 
 .ant-picker-input > input::placeholder {
-  color: var(--placholder-color)
+  color: var(--placholder-color);
+  opacity: .55;
 }
 
 .ant-picker-input-placeholder > input {
-  color: var(--placholder-color)
+  color: var(--placholder-color);
+  opacity: .55;
 }
 
 .ant-input-affix-wrapper::placeholder {
-  color: var(--placholder-color)
+  color: var(--placholder-color);
+  opacity: .55;
 }
 
 .ant-input::placeholder {
-  color: var(--placholder-color)
+  color: var(--placholder-color);
+  opacity: .55;
 }
 
 .ant-input-number::placeholder {
-  color: var(--placholder-color)
+  color: var(--placholder-color);
+  opacity: .55;
 }
 
 .ant-input-number-input::placeholder {
-  color: var(--placholder-color)
+  color: var(--placholder-color);
+  opacity: .55;
 }
 
 .ant-mention-wrapper .ant-mention-editor::placeholder {
-  color: var(--placholder-color)
+  color: var(--placholder-color);
+  opacity: .55;
 }
 
 ::placeholder {
@@ -6341,7 +6345,7 @@ tr.tr-border td:first-child {
 
 .ant-picker-panel-container {
   background: var(--bg-box);
-  box-shadow: 0 2px 8px rgb(0 0 0 / 15%);
+  box-shadow: 0 2px 8px var(--box-shadow);
 }
 
 .ant-pagination-item, .ant-pagination-item-active {

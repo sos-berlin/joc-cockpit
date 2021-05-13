@@ -150,6 +150,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   isSizeChange: boolean;
   resizerHeight: any = 200;
   sideView: any = {};
+  selectedIndex = 0;
   showPanelObj: any;
   pageView: any;
   subscription1: Subscription;
@@ -223,13 +224,25 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.resetCheckBox();
   }
 
-  showPanelFunc(value): void {
+  showPanelFunc(value: any): void {
     this.showPanelObj = value;
-    this.loadOrderHistory();
+    if (this.selectedIndex === 0) {
+      this.loadOrderHistory();
+    } else {
+      this.loadAuditLogs();
+    }
   }
 
   hideAuditPanel(): void {
-    this.showPanelObj = '';
+    this.showPanelObj = undefined;
+  }
+
+  tabChange($event): void {
+    if ($event.index === 0) {
+      this.loadOrderHistory();
+    } else {
+      this.loadAuditLogs();
+    }
   }
 
   loadOrderHistory(): void {
@@ -244,13 +257,18 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   loadAuditLogs(): void {
+    this.showPanelObj.loading = true;
     let obj = {
       controllerId: this.schedulerIds.selected,
-      orders: [{workflowPath: this.showPanelObj.workflowId.path, orderId: this.showPanelObj.orderId}],
+      objectTypes: ['ORDER'],
+      objectNames: [this.showPanelObj.orderId],
       limit: this.preferences.maxAuditLogPerObject
     };
     this.coreService.post('audit_log', obj).subscribe((res: any) => {
       this.auditLogs = res.auditLog;
+      this.showPanelObj.loading = false;
+    }, () => {
+      this.showPanelObj.loading = false;
     });
   }
 
@@ -576,14 +594,32 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      let flag1 = false;
+      let flag2 = false;
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
           this.getOrders({
             controllerId: this.schedulerIds.selected,
             states: this.getState()
           });
-          break;
+          if (!this.showPanelObj) {
+            break;
+          }
         }
+        if (this.showPanelObj) {
+          if ((args.eventSnapshots[j].eventType === 'HistoryOrderTerminated' || args.eventSnapshots[j].eventType === 'HistoryOrderStarted') && this.selectedIndex === 0) {
+            if (args.eventSnapshots[j].workflow && args.eventSnapshots[j].workflow.path === this.showPanelObj.workflowId.path) {
+              flag1 = true;
+            }
+          } else if (args.eventSnapshots[j].eventType === 'AuditLogChanged' && this.selectedIndex === 2) {
+            flag2 = true;
+          }
+        }
+      }
+      if (flag1) {
+        this.loadOrderHistory();
+      } else if (flag2) {
+        this.loadAuditLogs();
       }
     }
   }
@@ -673,5 +709,5 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     }, 5);
   }
 
-  /** ================================= End Action ============================*/
+  /* ================================= End Action ============================*/
 }

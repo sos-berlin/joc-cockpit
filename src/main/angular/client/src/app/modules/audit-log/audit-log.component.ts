@@ -77,6 +77,22 @@ export class SearchComponent implements OnInit {
   existingName: any;
   submitted = false;
   isUnique = true;
+  objectTypes = ['WORKFLOW',
+    'JOBCLASS',
+    'JOBRESOURCE',
+    'LOCK',
+    'JUNCTION',
+    'FILEORDERSOURCE',
+    'WORKINGDAYSCALENDAR',
+    'NONWORKINGDAYSCALENDAR',
+    'SCHEDULE',
+    'ORDER'];
+  categories = ['INVENTORY',
+    'CONTROLLER',
+    'DAILYPLAN',
+    'DEPLOYMENT',
+    'DOCUMENTATIONS',
+    'CERTIFICATES'];
 
   constructor(public coreService: CoreService, private authService: AuthService) {
   }
@@ -109,13 +125,13 @@ export class SearchComponent implements OnInit {
     let fromDate: any;
     let toDate: any;
     const obj: any = {};
-    obj.regex = result.regex;
-    obj.paths = result.paths;
-    obj.workflow = result.workflow;
-    obj.orderId = result.orderId;
-    obj.job = result.job;
-    obj.state = result.state;
     obj.name = result.name;
+    obj.comment = result.comment;
+    obj.ticketLink = result.ticketLink;
+    obj.objectTypes = result.objectTypes;
+    obj.objectNames = result.objectNames;
+    obj.categories = result.categories;
+    obj.account = result.account;
     if (result.radio != 'current') {
       if (result.from1) {
         fromDate = this.coreService.parseProcessExecuted(result.from1);
@@ -572,21 +588,27 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   private generateRequestObj(object, filter): any {
-    if (object.workflow) {
-      filter.orders = [];
-      if (object.orderIds) {
-        const s = object.orderIds.replace(/\s*(,|^|$)\s*/g, '$1');
-        const orderIds = s.split(',');
-        const self = this;
-        orderIds.forEach((value) => {
-          filter.orders.push({workflow: self.searchFilter.workflow, orderId: value});
-        });
-      } else {
-        filter.orders.push({workflow: object.workflow});
-      }
+    if (object.objectNames) {
+      const s = object.objectNames.replace(/\s*(,|^|$)\s*/g, '$1');
+      filter.objectNames = s.split(',');
     }
-    if (object.regex) {
-      filter.regex = object.regex;
+    if (object.comment) {
+      filter.comment = object.comment;
+    }
+    if (object.ticketLink) {
+      filter.ticketLink = object.ticketLink;
+    }
+    if (object.objectTypes) {
+      filter.objectTypes = object.objectTypes;
+    }
+    if (object.categories) {
+      filter.categories = object.categories;
+    }
+    if (object.account) {
+      filter.account = object.account;
+    }
+    if (object.controllerId) {
+      filter.controllerId = object.controllerId;
     }
     if (object.radio == 'planned') {
       filter = this.parseProcessExecuted(object.planned, filter);

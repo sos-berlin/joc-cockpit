@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {ResourceSharedModule} from '../resource-shared.module';
-import {LockComponent} from './lock.component';
+import {LockComponent, SingleLockComponent} from './lock.component';
 import {LockRoutingModule} from './lock-routing.module';
 import {SharedModule} from '../../shared/shared.module';
 
@@ -10,7 +10,7 @@ import {SharedModule} from '../../shared/shared.module';
     ResourceSharedModule,
     LockRoutingModule
   ],
-  declarations: [LockComponent]
+  declarations: [LockComponent, SingleLockComponent]
 })
 export class LockModule {
 }

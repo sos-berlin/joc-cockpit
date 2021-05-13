@@ -360,8 +360,8 @@
                     </ul>
                   </div>
                   <div class="box-body p-t-0 b-t">
-                    <nz-tabset>
-                      <nz-tab [nzTitle]="'history.label.orderHistory' | translate" (nzClick)="loadOrderHistory()">
+                    <nz-tabset [(nzSelectedIndex)]="selectedIndex" (nzSelectChange)="tabChange($event)">
+                      <nz-tab [nzTitle]="'history.label.orderHistory' | translate">
                         <nz-table
                           #orderHistoryTable
                           [nzSize]="'small'"
@@ -409,13 +409,14 @@
                           </tbody>
                         </nz-table>
                       </nz-tab>
-                      <nz-tab [nzTitle]="'auditLog.label.auditLog' | translate" (nzClick)="loadAuditLogs()">
+                      <nz-tab [nzTitle]="'auditLog.label.auditLog' | translate">
                         <nz-table
                           #auditTable
                           [nzSize]="'small'"
                           [nzBordered]="true"
                           [nzShowPagination]="false"
                           [nzData]="auditLogs"
+                          [nzLoading]="showPanelObj.loading"
                         >
                           <thead>
                           <tr>

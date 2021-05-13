@@ -1,6 +1,7 @@
 import {NgModule} from '@angular/core';
 import {
   HistoryComponent,
+  SingleHistoryComponent,
   FilterModalComponent,
   OrderSearchComponent,
   TaskSearchComponent,
@@ -17,6 +18,7 @@ import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component
   ],
   declarations: [
     HistoryComponent,
+    SingleHistoryComponent,
     FilterModalComponent,
     OrderTemplateComponent,
     EditIgnoreListComponent,

@@ -28,13 +28,12 @@ export class ShowModalComponent {
 })
 export class SingleCalendarComponent implements OnInit, OnDestroy {
   loading: boolean;
-  schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
   calendars: any = [];
   subscription: Subscription;
   path: string;
-  schedulerId: string;
+  controllerId: string;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
               private modal: NzModalService, private dataService: DataService, private route: ActivatedRoute) {
@@ -57,7 +56,7 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
     let cal = clone(calendar);
     this.coreService.post('calendar/used', {
       id: calendar.id,
-      controllerId: this.schedulerIds.selected
+      controllerId: this.controllerId
     }).subscribe((res: any) => {
       cal.usedIn = res;
       this.modal.create({
@@ -93,15 +92,14 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
 
   private init(): void {
     this.path = this.route.snapshot.queryParamMap.get('path');
-    this.schedulerId = this.route.snapshot.queryParamMap.get('scheduler_id');
+    this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
     }
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
     this.getCalendarsList({
-      controllerId: this.schedulerId,
-      calendars: [this.path]
+      controllerId: this.controllerId,
+      calendarPaths: [this.path]
     });
   }
 

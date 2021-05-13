@@ -1,10 +1,14 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
-import {LockComponent} from './lock.component';
+import {LockComponent, SingleLockComponent} from './lock.component';
 
 const routes: Routes = [
   {
     path: '', component: LockComponent
+  }, {
+    path: 'lock',
+    component: SingleLockComponent,
+    data: {breadcrumb: 'breadcrumb.label.lock'}
   }
 ];
 

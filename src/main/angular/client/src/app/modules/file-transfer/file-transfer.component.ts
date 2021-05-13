@@ -200,7 +200,7 @@ export class SearchComponent implements OnInit {
   templateUrl: './single-file-transfer.component.html'
 })
 export class SingleFileTransferComponent implements OnInit, OnDestroy {
-  schedulerId: any;
+  controllerId: any;
   transferId: any;
   preferences: any = {};
   permission: any = {};
@@ -223,7 +223,7 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.transferId = this.route.snapshot.queryParamMap.get('id');
-    this.schedulerId = this.route.snapshot.queryParamMap.get('scheduler_id');
+    this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
     this.init();
   }
 
@@ -234,7 +234,7 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
 
   getFileTransferById(transferId): void {
     const obj = {
-      controllerId: this.schedulerId,
+      controllerId: this.controllerId,
       transferIds: [transferId]
     };
     this.coreService.post('yade/transfers', obj).subscribe((result: any) => {
@@ -249,7 +249,7 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
     value.widthArr = [];
     this.coreService.post('yade/files', {
       transferIds: [value.id],
-      controllerId: this.schedulerId
+      controllerId: this.controllerId
     }).subscribe((res: any) => {
       value.files = res.files;
       value.widthArr = this.coreService.calFileTransferRowWidth(false);
@@ -272,7 +272,7 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
   restart(data): void {
     this.coreService.post('yade/transfers/restart', {
       transferIds: [data.id],
-      controllerId: this.schedulerId
+      controllerId: this.controllerId
     }).subscribe(() => {
 
     });

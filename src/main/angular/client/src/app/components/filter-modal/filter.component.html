@@ -3,13 +3,13 @@
     <span translate>customization.label.editCustomizations</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy('Cross click')">
-    <span aria-hidden="true">&times;</span>
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
-<div class="modal-body p-a" style="min-height: 300px">
+<div class="modal-body p-a" style="min-height: 180px">
   <div class="row">
     <div class="col-sm-12">
-      <table class="table table-hover table-bordered ">
+      <table class="table table-hover table-bordered">
         <thead>
         <tr>
           <th><span translate>common.label.srNo</span></th>
@@ -21,7 +21,7 @@
         <tbody>
         <tr class="start-on-hover" *ngFor="let filter of filterList | orderBy:'name'; let i = index">
           <td>{{i+1}}</td>
-          <td>
+          <td nowrap>
             <a [nz-tooltip]="'customization.tooltip.useDefault' | translate" *ngIf="favorite == filter.id"
                (click)="removeFavorite()" class="fa fa-star text-primary fa-lg m-r-xs"></a>
             <a [nz-tooltip]="'customization.tooltip.useDefault' | translate" *ngIf="favorite !=filter.id"

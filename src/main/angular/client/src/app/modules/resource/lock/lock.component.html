@@ -91,6 +91,17 @@
                           <span [innerHtml]="lock.id | highlight : locksFilters.searchText"></span>
                         </span>
                       </div>
+                      <div class="btn-group dropdown pull-right abt-dropdown ">
+                        <a class=" more-option text-black-lt" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option2" nzPlacement="bottomRight">
+                          <i class="text fa fa-ellipsis-h"></i></a>
+                        <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
+                          <ul nz-menu>
+                            <li nz-menu-item >
+                              <a (click)="coreService.copyLink('lock',lock.path)" translate>common.button.copyLinkToObject</a>
+                            </li>
+                          </ul>
+                        </nz-dropdown-menu>
+                      </div>
                       <div class="text-sm text-left text-muted p-t-sm block-ellipsis" style="width: 99%">
                         <span translate>resource.lock.label.deploymentDate </span>:
                         <span class="text-black-dk" [innerHtml]="lock.versionDate | stringToDate | highlight : locksFilters.searchText"></span>
@@ -138,6 +149,7 @@
                 >
                   <thead>
                   <tr>
+                    <th nzWidth="55px"><span translate>common.label.action</span></th>
                     <th (click)="sort('id')"><a><span class="p-r-xs" translate>resource.lock.label.name</span>
                       <i *ngIf="locksFilters.filter.sortBy == 'id' && !locksFilters.reverse"
                          class="fa fa-caret-up "></i>
@@ -194,6 +206,20 @@
                   <ng-template ngFor let-lock
                                [ngForOf]="ajaxTable.data | orderBy: locksFilters.filter.sortBy:locksFilters.reverse">
                     <tr [ngClass]="{'light-bg':lock.show}">
+                      <td>
+                        <div class="btn-group dropdown">
+                          <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" type="button">
+                            <i class="fa fa-ellipsis-h"></i>
+                          </button>
+                          <nz-dropdown-menu #option="nzDropdownMenu" role="menu" >
+                            <ul nz-menu>
+                              <li nz-menu-item >
+                                <a (click)="coreService.copyLink('lock',lock.path)" translate>common.button.copyLinkToObject</a>
+                              </li>
+                            </ul>
+                          </nz-dropdown-menu>
+                        </div>
+                      </td>
                       <td>
                         <span class="show-in-single-line w-full">
                           <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"

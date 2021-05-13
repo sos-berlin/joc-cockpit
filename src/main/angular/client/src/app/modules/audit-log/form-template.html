@@ -57,7 +57,7 @@
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.search.label.searchRegExInComment</label>
       <div class="col-sm-6">
         <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.searchRegExInComment' | translate}}"
-               [(ngModel)]="filter.regex" name="regex">
+               [(ngModel)]="filter.comment" name="regex">
       </div>
     </div>
     <div class="form-group row">
@@ -76,17 +76,40 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.label.workflow</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.search.label.objectTypes</label>
       <div class="col-sm-6" >
-        <input autocomplete="off" type="text" class="form-control" placeholder="{{'inventory.placeholder.workflowPath' | translate}}"
-               [(ngModel)]="filter.workflow" name="workflow">
+        <nz-select
+          nzMode="multiple"
+          nzShowSearch
+          [nzPlaceHolder]="'auditLog.search.placeholder.objectTypes' | translate"
+          name="type"
+          [(ngModel)]="filter.objectTypes">
+          <ng-container *ngFor="let type of objectTypes">
+            <nz-option [nzValue]="type" [nzLabel]="type"></nz-option>
+          </ng-container>
+        </nz-select>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.search.label.orderIds</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.search.label.objectNames</label>
       <div class="col-sm-6" >
-        <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.enterOrderIds' | translate}}"
-               [(ngModel)]="filter.orderIds" name="orderid">
+        <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.enterObjectNames' | translate}}"
+               [(ngModel)]="filter.objectNames" name="orderid">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.search.label.categories</label>
+      <div class="col-sm-6" >
+        <nz-select
+          nzMode="multiple"
+          nzShowSearch
+          [nzPlaceHolder]="'auditLog.search.placeholder.categories' | translate"
+          name="categories"
+          [(ngModel)]="filter.categories">
+          <ng-container *ngFor="let category of categories">
+            <nz-option [nzValue]="category" [nzLabel]="category"></nz-option>
+          </ng-container>
+        </nz-select>
       </div>
     </div>
     <div class="form-group row">

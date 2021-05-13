@@ -1,0 +1,103 @@
+<div class="white box-shadow sub-header">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="padding">
+        <div class="text-right ">
+          <div class="pull-left">
+            <app-breadcrumbs></app-breadcrumbs>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="scroll-y max-ht">
+  <div class="padding p-b-0">
+    <div class="m-t-sm box p-a">
+      <div class="table-responsive">
+        <nz-table
+          #ajaxOrderTable
+          [nzSize]="'small'"
+          [nzBordered]="true"
+          [nzShowPagination]="false"
+          [nzData]="history"
+          [nzLoading]="loading"
+          [nzShowSizeChanger]="false"
+        >
+          <thead>
+          <tr>
+            <th><span class="p-r-xs" translate>history.label.orderId</span></th>
+            <th><span class="p-r-xs" translate>history.label.workflow</span></th>
+            <th><span class="p-r-xs" translate>history.label.position</span></th>
+            <th><span class="p-r-xs" translate>history.label.status</span></th>
+            <th><span class="p-r-xs" translate>history.label.orderState</span></th>
+            <th><span class="p-r-xs" translate>history.label.plannedTime</span></th>
+            <th><span class="p-r-xs" translate>history.label.startTime</span></th>
+            <th><span class="p-r-xs" translate>history.label.endTime</span></th>
+            <th><span class="p-r-xs" translate>history.label.duration</span></th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-template ngFor let-history [ngForOf]="ajaxOrderTable.data">
+            <tr class="cursor">
+              <td>
+                <span class="show-in-single-line w-full"
+                      (click)="coreService.showLogWindow(history,null,null,null,null)">
+                  <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                     *ngIf="!history.show"
+                     (click)="showPanelFuc(history);$event.stopPropagation()"></i>
+                  <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+                     *ngIf="history.show"
+                     (click)="hidePanelFuc(history);$event.stopPropagation()"></i>
+                  <i class="cursor fa fa-download text-hover-primary p-r-xs"
+                     (click)="coreService.downloadLog(history, controllerId);$event.stopPropagation()"></i>
+                  <span [innerHtml]="history.orderId"></span>
+                </span>
+              </td>
+              <td (click)="coreService.showLogWindow(history,null, null, controllerId, null)">
+                <span class="show-in-single-line w-full">
+                  <i (click)="navToWorkflowTab(history.workflow);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                  <span (click)="coreService.showWorkflow(history.workflow);$event.stopPropagation()"
+                        class="text-hover-primary" [innerHtml]="history.workflow"></span>
+                </span>
+              </td>
+              <td (click)="coreService.showLogWindow(history,null, null, controllerId, null)">
+                <span [innerHtml]="history.position"></span>
+              </td>
+              <td (click)="coreService.showLogWindow(history,null, null, controllerId, null)">
+                <span *ngIf="history.state" class="label" [ngClass]="coreService.getColor(history.state.severity,'bg')"
+                      [innerHtml]="history.state._text | translate"></span>
+              </td>
+              <td (click)="coreService.showLogWindow(history,null, null, controllerId, null)">
+                <span *ngIf="history.orderState" class="label" [ngClass]="coreService.getColor(history.orderState.severity,'bg')"
+                      [innerHtml]="history.orderState._text | translate"></span>
+              </td>
+              <td (click)="coreService.showLogWindow(history,null, null, controllerId, null)"
+                  [innerHtml]="history.plannedTime | stringToDate"></td>
+              <td (click)="coreService.showLogWindow(history,null, null, controllerId, null)"
+                  [innerHtml]="history.startTime | stringToDate"></td>
+              <td (click)="coreService.showLogWindow(history,null, null, controllerId, null)"
+                  [innerHtml]="history.endTime | stringToDate"></td>
+              <td (click)="coreService.showLogWindow(history,null, null, controllerId, null)"
+                  [innerHtml]="history.startTime | duration:history.endTime"></td>
+            </tr>
+            <tr *ngIf="history.show && history.arguments">
+              <td></td>
+              <td colspan="10">
+                <app-order-variable [order]="history" [type]="'arguments'" [schedulerId]="controllerId"></app-order-variable>
+              </td>
+            </tr>
+            <tr *ngIf="history.show">
+              <td colspan="11" style="padding:0 !important;">
+              <app-order-history-template class="order-history-template0" style="display: block" [history]="history" [schedulerId]="controllerId"
+                                          [historyView]="{}"
+              ></app-order-history-template>
+              </td>
+            </tr>
+          </ng-template>
+          </tbody>
+        </nz-table>
+      </div>
+    </div>
+  </div>
+</div>

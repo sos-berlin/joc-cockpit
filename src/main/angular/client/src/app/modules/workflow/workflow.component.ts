@@ -167,7 +167,7 @@ export class SearchComponent implements OnInit {
 })
 export class SingleWorkflowComponent implements OnInit, OnDestroy {
   loading = true;
-  schedulerId: any;
+  controllerId: any;
   preferences: any = {};
   permission: any = {};
   resizerHeight: any = 150;
@@ -196,14 +196,14 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.path = this.route.snapshot.queryParamMap.get('path');
-    this.schedulerId = this.route.snapshot.queryParamMap.get('scheduler_id');
+    this.path = this.route.snapshot.queryParamMap.get('name');
+    this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
     }
     this.permission = JSON.parse(this.authService.permission) || {};
     this.getWorkflowList({
-      controllerId: this.schedulerId,
+      controllerId: this.controllerId,
       workflowId: {path: this.path}
     });
   }
@@ -216,7 +216,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
     this.date = date;
     const request = {
       compact: true,
-      controllerId: this.schedulerId,
+      controllerId: this.controllerId,
       workflowIds: []
     };
     const path = this.workflows[0].path;
@@ -250,13 +250,14 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
 
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
-      for (let j in args.eventSnapshots) {
+      for (const j in args.eventSnapshots) {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow && this.path === args.eventSnapshots[j].workflow.path) {
           this.getOrders({
             compact: true,
-            controllerId: this.schedulerId,
+            controllerId:  this.controllerId,
             workflowIds: args.eventSnapshots[j].workflow
           });
+          break;
         }
       }
     }
@@ -267,7 +268,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
       this.loading = false;
       const request = {
         compact: true,
-        controllerId: this.schedulerId,
+        controllerId: this.controllerId,
         workflowIds: []
       };
       const path = res.workflow.path;

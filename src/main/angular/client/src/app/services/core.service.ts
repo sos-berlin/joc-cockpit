@@ -791,7 +791,7 @@ export class CoreService {
     return temp;
   }
 
-  copyLink(objType: string, path: string): void {
+  copyLink(objType: string, name: string, workflow: string = ''): void {
     let link = '';
     const regEx = /(.+)\/#/;
     if (!regEx.test(window.location.href)) {
@@ -799,21 +799,21 @@ export class CoreService {
     }
     let host = regEx.exec(window.location.href)[1];
     host = host + '/#/';
-    if (objType === 'workflow' && path) {
-      link = host + 'workflows/workflow?path=' + encodeURIComponent(path);
-    } else if (objType === 'order' && path) {
-      link = host + 'order?orderId=' + encodeURIComponent(path);
-    } else if (objType === 'lock' && path) {
-      link = host + 'resources/locks/lock?path=' + encodeURIComponent(path);
-    } else if (objType === 'fileTransfer' && path) {
-      link = host + 'file_transfer/file_transfer?id=' + path;
-    } else if (objType === 'calendar' && path) {
-      link = host + 'resources/calendars/calendar?path=' + encodeURIComponent(path);
-    } else if (objType === 'document' && path) {
-      link = host + 'resources/documentations/documentation?path=' + encodeURIComponent(path);
+    if (objType === 'workflow' && name) {
+      link = host + 'workflows/workflow?name=' + encodeURIComponent(name);
+    } else if (objType === 'order' && name) {
+      link = host + 'history/order?orderId=' + encodeURIComponent(name) + '&workflow=' + encodeURIComponent(workflow);
+    } else if (objType === 'lock' && name) {
+      link = host + 'resources/locks/lock?path=' + encodeURIComponent(name);
+    } else if (objType === 'fileTransfer' && name) {
+      link = host + 'file_transfer/file_transfer?id=' + name;
+    } else if (objType === 'calendar' && name) {
+      link = host + 'resources/calendars/calendar?path=' + encodeURIComponent(name);
+    } else if (objType === 'document' && name) {
+      link = host + 'resources/documentations/documentation?name=' + encodeURIComponent(name);
     }
     if (link !== '') {
-      this.clipboardService.copyFromContent(link + '&scheduler_id=' + JSON.parse(this.authService.scheduleIds).selected);
+      this.clipboardService.copyFromContent(link + '&controllerId=' + JSON.parse(this.authService.scheduleIds).selected);
     }
   }
 
@@ -827,7 +827,6 @@ export class CoreService {
       type
     };
     this.router.navigate(['/configuration/inventory']);
-
   }
 
   showWorkflow(workflow): void {
@@ -977,6 +976,7 @@ export class CoreService {
       }
     }
   }
+
   getName(list, name, key, type): string {
     if (list.length === 0) {
       return name;
@@ -1000,6 +1000,7 @@ export class CoreService {
       return (type + large);
     }
   }
+
   getLogDateFormat(date: any, zone: string): string {
     return moment(date).tz(zone).format('YYYY-MM-DD HH:mm:ss.SSSZ');
   }
@@ -1234,6 +1235,7 @@ export class CoreService {
           const endChar = data[type].substring(data[type].length - 1);
           if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
           } else {
+            data[type] = data[type].replace(/\\([\s\S])|(")/g, "\\$1$2");
             data[type] = '"' + data[type] + '"';
           }
         } else {
@@ -1244,6 +1246,8 @@ export class CoreService {
           }
         }
       }
+    } else if (data[type] === '') {
+      data[type] = '"' + data[type] + '"';
     }
   }
 }

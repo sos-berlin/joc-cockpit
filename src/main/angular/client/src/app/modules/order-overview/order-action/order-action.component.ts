@@ -1,6 +1,6 @@
 import {Component, OnInit, Input} from '@angular/core';
 import * as moment from 'moment';
-import * as _ from 'underscore';
+import {object, map, values} from 'underscore';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
@@ -69,7 +69,7 @@ export class StartOrderModalComponent implements OnInit {
       }
     }
     if (this.arguments.length > 0) {
-      order.arguments = _.object(_.map(this.arguments, _.values));
+      order.arguments = object(map(this.arguments, values));
     }
     obj.orders.push(order);
     obj.auditLog = {};
@@ -83,7 +83,7 @@ export class StartOrderModalComponent implements OnInit {
       obj.auditLog.ticketLink = this.comments.ticketLink;
     }
 
-    this.coreService.post('orders/add', obj).subscribe((res: any) => {
+    this.coreService.post('orders/add', obj).subscribe(() => {
       this.submitted = false;
       this.modal.close('Done');
     }, err => {
@@ -109,14 +109,14 @@ export class StartOrderModalComponent implements OnInit {
 
   onKeyPress($event): void {
     if ($event.which === '13' || $event.which === 13) {
+      $event.preventDefault();
       this.addArgument();
     }
   }
 
   cancel(): void {
-    this.modal.destroy('');
+    this.modal.destroy();
   }
-
 }
 
 @Component({
@@ -124,7 +124,6 @@ export class StartOrderModalComponent implements OnInit {
   templateUrl: './order-action.component.html'
 })
 export class OrderActionComponent {
-
   @Input() order: any;
   @Input() preferences: any;
   @Input() permission: any;
@@ -142,16 +141,16 @@ export class OrderActionComponent {
     _order.scheduledFor = 'now';
     obj.orders.push(_order);
     if (this.preferences.auditLog) {
-      let comments = {
+      const comments = {
         radio: 'predefined',
         type: 'Order',
         operation: 'Start',
         name: order.orderId
       };
       this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: CommentModalComponent,
-nzClassName: 'lg',
+        nzClassName: 'lg',
         nzComponentParams: {
           comments,
           obj,
@@ -171,7 +170,7 @@ nzClassName: 'lg',
 
   startOrderAt(): void {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: StartOrderModalComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
@@ -189,7 +188,7 @@ nzClassName: 'lg',
 
   resumeOrder(): void {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ResumeOrderModalComponent,
       nzComponentParams: {
         preferences: this.preferences,
@@ -234,9 +233,9 @@ nzClassName: 'lg',
         name: order.orderId
       };
       this.modal.create({
-        nzTitle: null,
+        nzTitle: undefined,
         nzContent: CommentModalComponent,
-nzClassName: 'lg',
+        nzClassName: 'lg',
         nzComponentParams: {
           comments,
           obj,
@@ -253,7 +252,7 @@ nzClassName: 'lg',
 
   modifyOrder(order): void {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ModifyStartTimeModalComponent,
       nzComponentParams: {
         schedulerId: this.schedulerId,
@@ -267,7 +266,7 @@ nzClassName: 'lg',
 
   changeParameter(order): void {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ChangeParameterModalComponent,
       nzComponentParams: {
         schedulerId: this.schedulerId,
