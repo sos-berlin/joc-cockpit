@@ -1648,6 +1648,6 @@
     "message.validateSuccessfully": "XML Dokument erfolgreich validiert",
     "message.successfullyDeployed": "Konfiguration erfolgreich ausgerollt",
     "message.deleteAllDraft": "Sind Sie sicher, dass Sie alle Entwürfe für XML Dokumente löschen möchten?",
-    "message.noConfigurationFound": "No configuration found"
+    "message.noConfigurationFound": "Keine Konfiguration gefunden"
   }
 }
