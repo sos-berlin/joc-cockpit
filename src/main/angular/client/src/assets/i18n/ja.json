@@ -147,12 +147,12 @@
     "search": {
       "label.searchRegExInComment": "正規表現",
       "label.ticketLink": "チケットリンク",
-      "label.objectTypes": "Object Types",
-      "label.objectNames": "Object Names",
-      "label.categories": "Categories",
-      "placeholder.objectTypes": "Select object types",
-      "placeholder.enterObjectNames": "Enter multiple name separated by comma",
-      "placeholder.categories": "Select categories",
+      "label.objectTypes": "オブジェクトタイプ",
+      "label.objectNames": "オブジェクト名",
+      "label.categories": "カテゴリー",
+      "placeholder.objectTypes": "オブジェクトタイプ選択",
+      "placeholder.enterObjectNames": "コンマ区切りでオブジェクト名を入力",
+      "placeholder.categories": "カテゴリー選択",
       "placeholder.enterAccount": "アカウントを入力",
       "placeholder.ticketLink": "チケットリンクを入力",
       "placeholder.searchRegExInComment": "正規表現で入力"
