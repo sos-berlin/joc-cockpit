@@ -147,12 +147,12 @@
     "search": {
       "label.searchRegExInComment": "Regulärer Ausdruck",
       "label.ticketLink": "Ticket Link",
-      "label.objectTypes": "Object Types",
-      "label.objectNames": "Object Names",
-      "label.categories": "Categories",
-      "placeholder.objectTypes": "Select object types",
-      "placeholder.enterObjectNames": "Enter multiple name separated by comma",
-      "placeholder.categories": "Select categories",
+      "label.objectTypes": "Objekttypen",
+      "label.objectNames": "Objektnamen",
+      "label.categories": "Kategorien",
+      "placeholder.objectTypes": "Objekttyp auswählen",
+      "placeholder.enterObjectNames": "Mehrere Namen durch Komma getrennt angeben",
+      "placeholder.categories": "Kategorien auswählen",
       "placeholder.enterAccount": "Konto angeben",
       "placeholder.ticketLink": "Ticket Link angeben",
       "placeholder.searchRegExInComment": "Regulären Ausdruck für Suche in Begründungen angeben"

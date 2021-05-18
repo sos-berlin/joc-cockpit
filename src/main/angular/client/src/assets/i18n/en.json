@@ -151,7 +151,7 @@
       "label.objectNames": "Object Names",
       "label.categories": "Categories",
       "placeholder.objectTypes": "Select object types",
-      "placeholder.enterObjectNames": "Enter multiple name separated by comma",
+      "placeholder.enterObjectNames": "Enter multiple names separated by comma",
       "placeholder.categories": "Select categories",
       "placeholder.enterAccount": "Enter account",
       "placeholder.ticketLink": "Enter ticket link",

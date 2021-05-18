@@ -147,13 +147,13 @@
     "search": {
       "label.searchRegExInComment": "Expression régulière",
       "label.ticketLink": "Lien vers le ticket",
-      "label.objectTypes": "Object Types",
-      "label.objectNames": "Object Names",
-      "label.categories": "Categories",
-      "placeholder.objectTypes": "Select object types",
+      "label.objectTypes": "Types d'objets",
+      "label.objectNames": "Noms des objets",
+      "label.categories": "Catégories",
+      "placeholder.objectTypes": "Sélectionner le type d'objet",
       "placeholder.enterObjectNames": "Entrez plusieurs noms séparés par une virgule",
+      "placeholder.categories": "Catégories",
       "placeholder.enterAccount": "Entrez le compte",
-      "placeholder.enterAccount": "Entez le compte",      
       "placeholder.ticketLink": "Entrez le lien du ticket",
       "placeholder.searchRegExInComment": "Entrez une expression régulière pour rechercher un commentaire"
     },
@@ -1579,7 +1579,7 @@
     "placeholder.expression": "Entrez l'expression",
     "placeholder.orderId": "Entrez l'ID de l'Ordre",
     "placeholder.className": "Entrez le Nom de la Classe",
-    "placeholder.selectJobResources": "Sélectionnez les Ressources de la taĉhe"
+    "placeholder.selectJobResources": "Sélectionnez les Ressources de la taĉhe",
     "placeholder.enterCredentialKey": "Enter credential key from Windows Credential Manager"
   },
   "xml": {
