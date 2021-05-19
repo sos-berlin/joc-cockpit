@@ -10,8 +10,10 @@ import {TreeComponent} from '../../../components/tree-navigation/tree.component'
 import {CalendarModalComponent} from '../../../components/calendar-modal/calendar.component';
 import {SearchPipe} from '../../../pipes/core.pipe';
 
+declare const $: any;
+
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-show-modal-content',
   templateUrl: './show-dialog.html'
 })
 export class ShowModalComponent {
@@ -32,7 +34,7 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
   permission: any = {};
   calendars: any = [];
   subscription: Subscription;
-  path: string;
+  name: string;
   controllerId: string;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
@@ -91,7 +93,7 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
   }
 
   private init(): void {
-    this.path = this.route.snapshot.queryParamMap.get('path');
+    this.name = this.route.snapshot.queryParamMap.get('name');
     this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
@@ -99,7 +101,7 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
     this.permission = JSON.parse(this.authService.permission) || {};
     this.getCalendarsList({
       controllerId: this.controllerId,
-      calendarPaths: [this.path]
+      calendarPaths: [this.name]
     });
   }
 
@@ -159,6 +161,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
       this.calendarFilters.expandedKeys = this.child.defaultExpandedKeys;
       this.calendarFilters.selectedkeys = this.child.defaultSelectedKeys;
     }
+    $('.scroll-y').remove();
   }
 
   initTree(): void {

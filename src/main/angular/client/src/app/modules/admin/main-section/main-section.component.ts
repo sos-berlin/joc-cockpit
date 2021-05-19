@@ -474,7 +474,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
 
   constructor(public coreService: CoreService, private router: Router, public modal: NzModalService, private dataService: DataService) {
     this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
-      if (res) {
+      if (res && res.users) {
         this.setUserData(res);
       }
     });
@@ -506,7 +506,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
     this.main = res.main;
     setTimeout(() => {
       this.loading = false;
-    }, 400);
+    }, 300);
   }
 
   saveInfo(): void {

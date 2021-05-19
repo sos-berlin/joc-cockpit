@@ -15,9 +15,9 @@ import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 
-declare const require;
-declare const vkbeautify;
-declare const $;
+declare const require: any;
+declare const vkbeautify: any;
+declare const $: any;
 
 const xpath = require('xpath');
 const convert = require('xml-js');
@@ -759,7 +759,7 @@ export class ImportModalComponent implements OnInit {
   }
 
   cancel(): void {
-    this.activeModal.destroy();
+    this.activeModal.close('');
   }
 }
 
@@ -946,7 +946,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (this.sideView.xml && !this.sideView.xml.show) {
       this.hidePanel();
     }
-    let url = this.router.url.split('/')[2];
+    const url = this.router.url.split('/')[2];
     this.objectType = url.toUpperCase();
     if (this.objectType === 'FILE_TRANSFER') {
       this.objectType = 'YADE';
@@ -1007,6 +1007,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.storeXML(undefined);
     }
     this.coreService.tabs._configuration.state = (this.objectType === 'YADE' || !this.objectType) ? 'file_transfer' : this.objectType.toLowerCase();
+    $('.scroll-y').remove();
   }
 
   contextMenu(node: any): void {
@@ -1155,6 +1156,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }).subscribe((res: any) => {
       if (res.validation && res.validation.validated) {
         this.validConfig = true;
+      } else {
+        if (res.configuration && res.configuration.validation && res.configuration.validation.validated) {
+          this.validConfig = true;
+        }
       }
       if (!res.configuration) {
         this.showSelectSchema = true;
@@ -1275,6 +1280,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.coreService.post('xmleditor/read', obj).subscribe((res: any) => {
       if (res.validation && res.validation.validated) {
         this.validConfig = true;
+      } else {
+        if (res.configuration && res.configuration.validation && res.configuration.validation.validated) {
+          this.validConfig = true;
+        }
       }
       this.schemaIdentifier = res.schemaIdentifier;
       this.path = res.schema;
@@ -2166,9 +2175,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   async expandParentNodesOfSelectedNode(node) {
-    if (node.parent !== '#') {
+    if (node && node.parent !== '#') {
       let tempParentNode: any = await this.getParentNode(node);
-      if (tempParentNode.parent !== '#') {
+      if (tempParentNode && tempParentNode.parent !== '#') {
         await this.expandParentNodesOfSelectedNode(tempParentNode);
       }
     }
@@ -2775,12 +2784,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  printArray(rootchildrensattrArr) {
+  printArray(rootchildrensattrArr): void {
     this.nodes.push(rootchildrensattrArr);
     this.printArraya(true);
   }
 
-  printArraya(flag) {
+  printArraya(flag): void {
     if (!flag) {
       this.autoAddCount = 0;
     }
@@ -2823,7 +2832,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.nonValidattribute = {};
   }
 
-  autoValidateRecursion(child) {
+  autoValidateRecursion(child): boolean {
     if (child && child.attributes && child.attributes.length > 0) {
       for (let i = 0; i < child.attributes.length; i++) {
         if (child.attributes[i].use === 'required') {
@@ -2880,7 +2889,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         } else if (dropNode.children.length === 0) {
           this.dropCheck = {status: true, dropNode: dropNode.ref};
           return of(true);
-        } else{
+        } else {
           return of(false);
         }
       } else if (dragNode.maxOccurs === undefined) {
@@ -2898,7 +2907,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         } else if (dropNode.children.length === 0) {
           this.dropCheck = {status: true, dropNode: dropNode.ref};
           return of(true);
-        } else{
+        } else {
           return of(false);
         }
       } else {
@@ -2917,7 +2926,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (dropNode.ref === dragNode.parent) {
       let count = 0;
       if (dragNode.maxOccurs === 'unbounded') {
-        this.dropCheck = {status: true, dropNode: dropNode, dragNode: dragNode};
+        this.dropCheck = {status: true, dropNode, dragNode};
       } else if (dragNode.maxOccurs !== 'unbounded' && dragNode.maxOccurs !== undefined) {
         if (dropNode.children.length > 0) {
           for (let i = 0; i < dropNode.children.length; i++) {
@@ -2926,24 +2935,24 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             }
           }
           if (dragNode.maxOccurs !== count) {
-            this.dropCheck = {status: dragNode.maxOccurs !== count, dropNode: dropNode, dragNode: dragNode};
+            this.dropCheck = {status: dragNode.maxOccurs !== count, dropNode, dragNode};
           } else {
             this.dropCheck = {status: dragNode.maxOccurs !== count, dropNode: undefined, dragNode: undefined};
           }
         } else if (dropNode.children.length === 0) {
-          this.dropCheck = {status: true, dropNode: dropNode, dragNode: dragNode};
+          this.dropCheck = {status: true, dropNode, dragNode};
         }
       } else if (dragNode.maxOccurs === undefined) {
         if (dropNode.children.length > 0) {
           if (dropNode.children.length > 0) {
             if (dragNode.ref !== dropNode.children[0].ref) {
-              this.dropCheck = {status: dragNode.ref !== dropNode.children[0].ref, dropNode: dropNode, dragNode: dragNode};
+              this.dropCheck = {status: dragNode.ref !== dropNode.children[0].ref, dropNode, dragNode};
             } else {
               this.dropCheck = {status: dragNode.ref !== dropNode.children[0].ref, dropNode: undefined, dragNode: undefined};
             }
           }
         } else if (dropNode.children.length === 0) {
-          this.dropCheck = {status: true, dropNode: dropNode, dragNode: dragNode};
+          this.dropCheck = {status: true, dropNode, dragNode};
         }
       } else {
         this.dropCheck = {status: false, dropNode: undefined, dragNode: undefined};
@@ -2954,7 +2963,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   // drop data
-  dropData(arg: NzFormatBeforeDropEvent) {
+  dropData(arg: NzFormatBeforeDropEvent): void {
     let from = arg.dragNode.origin;
     let to = arg.node.origin;
     if (this.dropCheck.status && this.dropCheck && this.dropCheck.dropNode && this.dropCheck.dropNode.ref === to.ref) {
@@ -2964,7 +2973,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   // to send data in details component
-  getData(event) {
+  getData(event): void {
     if (event && event.keyref) {
       for (let i = 0; i < event.attributes.length; i++) {
         if (event.attributes[i].name === event.keyref) {
@@ -3154,9 +3163,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           }
         }
       } else {
-        if (this.nodes[0].nodes) {
-          for (let i = 0; i < this.nodes[0].nodes.length; i++) {
-            this.deleteKeyRefData(this.nodes[0].nodes[i], node);
+        if (this.nodes[0].children) {
+          for (let i = 0; i < this.nodes[0].children.length; i++) {
+            this.deleteKeyRefData(this.nodes[0].children[i], node);
           }
         }
       }
@@ -3238,7 +3247,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   // Copy Node
-  copyNode(node) {
+  copyNode(node): void {
     this.copyItem = undefined;
     this.cutData = false;
     for (let key in node) {
@@ -3346,8 +3355,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
                 if (node.children[j].attributes[k].name === 'profile_id' && node.children[j].attributes[k].data) {
                   if (node.children[j].attributes[k].data.match(/-copy[0-9]+/i)) {
                     tName = node.children[j].attributes[k].data;
+
+                    break;
                   }
-                  break;
                 }
               }
             }
@@ -3372,7 +3382,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         }
       }
     }
-    node.children.push(this.coreService.clone(copyData));
+    node.children.push(Object.assign({}, copyData));
     node.children = sortBy(node.children, 'order');
     this.cutData = false;
     this.checkRule = true;
@@ -4817,7 +4827,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       if (this.errorName && this.errorName === this.selectedNode.ref) {
         this.getAutoFocus(0, this.selectedNode, 'value');
       }
-      if (this.nodes[0].expanded === false || this.nodes[0].expanded === undefined) {
+      if (this.nodes[0] && (this.nodes[0].expanded === false || this.nodes[0].expanded === undefined)) {
         this.nodes[0].expanded = true;
         this.autoExpand(this.nodes[0]);
       }
@@ -5413,7 +5423,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             }
             tempa[key].push(Object.assign({}, temp));
           }
-        } else if (key === 'nodes' && node[key].length > 0) {
+        } else if (key === 'children' && node[key].length > 0) {
           for (let i = 0; i < node[key].length; i++) {
             let a = this.copyNodeRecursion(node[key][i]);
             tempa[key].push(a);
@@ -5516,6 +5526,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.coreService.post('xmleditor/read', obj).subscribe((res: any) => {
       if (res.validation && res.validation.validated) {
         this.validConfig = true;
+      } else {
+        if (res.configuration && res.configuration.validation && res.configuration.validation.validated) {
+          this.validConfig = true;
+        }
       }
       this.schemaIdentifier = res.schemaIdentifier;
       if (res.schema) {

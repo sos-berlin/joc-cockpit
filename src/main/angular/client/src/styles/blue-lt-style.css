@@ -31,6 +31,8 @@
   --date-selected-exclude-hover: rgba(36, 148, 191, 0.66);
   --range-hover: rgba(36, 148, 191, .55);
   --range-start: rgba(36, 148, 191, .95);
+  --btn-secondary: rgba(36, 148, 191, .87);
+  --btn-secondary-hover: rgb(36, 148, 191);
 }
 
 .bg-blue-color {

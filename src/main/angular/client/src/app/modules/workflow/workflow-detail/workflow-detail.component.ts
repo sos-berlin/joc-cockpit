@@ -84,9 +84,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     this.workflowFilters = this.coreService.getWorkflowDetailTab();
     this.pageView = this.workflowFilters.pageView;
     this.init();
-
     const dom = $('#graph');
-    let ht = 'calc(100vh - 172px)';
+    let ht = 'calc(100vh - 322px)';
     if (this.workflowFilters.panelSize > 0) {
       ht = this.workflowFilters.panelSize + 'px';
     }
@@ -419,6 +418,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     this.coreService.post('orders', obj).subscribe((res: any) => {
       this.mapObj = new Map();
       this.workflow.orders = res.orders;
+      this.workflow.numOfOrders = res.orders.length;
+      this.workflow.ordersSummary = {};
       if (res.orders) {
         res.orders = sortBy(res.orders, 'scheduledFor');
         for (let j = 0; j < res.orders.length; j++) {
@@ -427,6 +428,12 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             arr = arr.concat(this.mapObj.get(JSON.stringify(res.orders[j].position)));
           }
           this.mapObj.set(JSON.stringify(res.orders[j].position), arr);
+          const state = res.orders[j].state._text.toLowerCase();
+          if (this.workflow.ordersSummary[state]) {
+            this.workflow.ordersSummary[state] = this.workflow.ordersSummary[state] + 1;
+          } else {
+            this.workflow.ordersSummary[state] = 1;
+          }
         }
       }
       this.isWorkflowStored(workflow, isFirst);

@@ -80,7 +80,7 @@
   "WORKFLOW": "Workflow",
   "FILEORDERSOURCE": "Source d'ordre de fichier",
   "JOBCLASS": "Catégorie de Tâche",
-  "JOBRESOURCE": "Resource de Job",                              
+  "JOBRESOURCE": "Resource de Job",
   "JUNCTION": "Junction",
   "LOCK": "Verrou",
   "WORKINGDAYSCALENDAR": "calendrier des jours ouvrés",
@@ -133,8 +133,7 @@
   "auditLog": {
     "label.auditLog": "Journal d'audit",
     "label.requestBody": "Request Body",
-    "label.workflow": "Workflow",
-    "label.orderId": "ID Ordre",
+    "label.category": "Category",
     "label.created": "Créé",
     "label.account": "compte",
     "label.request": "Demande",
@@ -145,17 +144,17 @@
     "label.auditLogsFound": "Entrées du journal d'audit trouvées",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
-      "label.searchRegExInComment": "Expression régulière",
+      "label.reason": "Reason",
       "label.ticketLink": "Lien vers le ticket",
       "label.objectTypes": "Types d'objets",
-      "label.objectNames": "Noms des objets",
+      "label.objectName": "Object Name",
       "label.categories": "Catégories",
       "placeholder.objectTypes": "Sélectionner le type d'objet",
-      "placeholder.enterObjectNames": "Entrez plusieurs noms séparés par une virgule",
+      "placeholder.enterObjectName": "Enter pattern to search name",
       "placeholder.categories": "Catégories",
       "placeholder.enterAccount": "Entrez le compte",
-      "placeholder.ticketLink": "Entrez le lien du ticket",
-      "placeholder.searchRegExInComment": "Entrez une expression régulière pour rechercher un commentaire"
+      "placeholder.ticketLink": "Enter pattern to search ticket link",
+      "placeholder.enterReason": "Enter pattern to search reason"
     },
     "--------ADVANCE SEARCH END------------": ""
   },
@@ -671,7 +670,7 @@
     "--------ADVANCE SEARCH END------------": ""
   },
   "filters": {
-    "button.All": "Tous",
+    "button.all": "Tous",
     "button.today": "Aujourd'hui",
     "button.yesterday": "Hier",
     "button.last1": "Dernière heure",
@@ -1014,6 +1013,7 @@
     "button.resume": "Reprendre",
     "button.leaveWorkflow": "Quitter le Workflow",
     "button.addVariable": "Ajouter une Variable",
+    "button.modifyVariable": "Modify Variable",
     "message.noVariableAvailable": "aucune variable disponible"
   },
   "profile": {
@@ -1446,7 +1446,7 @@
     "label.value": "Valeur",
     "label.compatibleMode": "Compatibilité",
     "label.credentialKey": "Credential Key",
-    "label.loadUserProfile": "Load User Profile",    
+    "label.loadUserProfile": "Load User Profile",
     "label.variableDeclaration": "Déclaration de Variable",
     "label.declareVariables": "Déclaration des Variables",
     "label.environmentVariables": "Variables d'Environnement",
@@ -1487,6 +1487,7 @@
     "label.retry": "Retry",
     "label.maxTries": "Max. Essaie",
     "label.delay": "Délai",
+    "label.fileOrders": "Ordres des Fichiers",
     "label.retryEnd": "Retry-End",
     "label.lock": "Verrou",
     "label.locklockName": "Nom du Verrou",

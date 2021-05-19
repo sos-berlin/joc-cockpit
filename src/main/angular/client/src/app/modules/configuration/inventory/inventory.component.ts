@@ -19,6 +19,8 @@ import {CommentModalComponent} from '../../../components/comment-modal/comment.c
 import {catchError} from 'rxjs/operators';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 
+declare const $: any;
+
 @Component({
   selector: 'app-deploy-draft-modal',
   templateUrl: './single-deploy-dialog.html'
@@ -1845,6 +1847,9 @@ export class CreateFolderModalComponent implements OnInit {
         this.folder.deepRename = 'replace';
       }
     }
+    if (this.rename && !this.folder.name) {
+      this.folder.name = this.origin.name;
+    }
     this.ref.detectChanges();
   }
 
@@ -1918,8 +1923,9 @@ export class CreateFolderModalComponent implements OnInit {
 
   isValidObject(str: string): void {
     this.isValid = true;
-    if (!str.match(/[!?~'"}\[\]{@:;#\/\\^$%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(str) && /^(?!-)(?!.*--)/.test(str)
-      && !str.substring(0, 1).match(/[-]/) && !str.substring(str.length - 1).match(/[-]/) && !/\s/.test(str)) {
+    if (!str.match(/[!?~'"}\[\]{@:;#\\^$%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(str) && /^(?!-)(?!.*--)/.test(str)
+      && !str.substring(0, 1).match(/[-]/) && !str.substring(str.length - 1).match(/[-]/) && !/\s/.test(str)
+      && !str.endsWith('/') && !/\/{2,}/g.test(str)) {
       if (/^(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|double|do|else|enum|extends|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)$/.test(str)) {
         this.isValid = false;
       }
@@ -2064,6 +2070,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
     this.inventoryConfig.copyObj = this.copyObj;
     this.inventoryConfig.isTrash = this.isTrash;
+    $('.scroll-y').remove();
   }
 
   initTree(path, mainPath): void {
@@ -2290,11 +2297,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
                   }
                 }
                 if (arr.length > 0) {
-                  if (scrTree[j].children) {
-                    scrTree[j].children = arr.concat(scrTree[j].children);
-                  } else {
-                    scrTree[j].children = arr;
-                  }
+                  scrTree[j].children = arr.concat(scrTree[j].children || []);
                 }
               }
               if (scrTree[j].children && destTree[i].children && !destTree[i].object) {
@@ -2749,7 +2752,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(path => {
       if (path) {
-        this.initTree(path, null);
+        setTimeout(() => {
+          if (this.tree && this.tree.length > 0) {
+            this.initTree(path, null);
+          }
+        }, 250);
       }
     });
   }

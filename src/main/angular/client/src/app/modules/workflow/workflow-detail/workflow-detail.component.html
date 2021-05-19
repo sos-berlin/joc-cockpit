@@ -123,6 +123,109 @@
 <div class="scroll-y max-ht">
   <div class="padding p-b-0">
     <div class="row m-t-sm">
+      <div class="col-md-12">
+        <div class="box p-a">
+          <div class="table-responsive">
+            <nz-table
+              #ajaxTable
+              [nzSize]="'small'"
+              [nzBordered]="true"
+              [nzShowPagination]="false"
+              [nzData]="[workflow]"
+              [nzLoading]="!loading"
+              [nzShowSizeChanger]="false"
+            >
+              <thead>
+              <tr>
+                <th rowspan="2"><span class="p-r-xs" translate>common.label.path</span></th>
+                <th rowspan="2"><span class="p-r-xs" translate>inventory.label.deploymentDate</span></th>
+                <th rowspan="2"><span class="p-r-xs" translate>common.label.status</span></th>
+                <th rowspan="2"><span class="p-r-xs" translate>workflow.label.noOfOrders</span></th>
+                <th colspan="8"><span translate>workflow.label.order</span></th>
+              </tr>
+              <tr>
+                <th><span translate>common.label.pending</span></th>
+                <th><span translate>common.label.incomplete</span></th>
+                <th><span translate>common.label.running</span></th>
+                <th><span translate>common.label.suspended</span></th>
+                <th><span translate>common.label.waiting</span></th>
+                <th><span translate>common.label.blocked</span></th>
+                <th><span translate>common.label.failed</span></th>
+                <th><span translate>common.label.completed</span></th>
+              </tr>
+              </thead>
+              <tbody>
+              <ng-template ngFor let-item
+                           [ngForOf]="ajaxTable.data">
+                <tr [ngClass]="{'light-bg':item.show}">
+                  <td>
+                    <span class="show-in-single-line">
+                      <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                         *ngIf="!item.show" (click)="item.show = true"></i>
+                      <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" *ngIf="item.show"
+                         (click)="item.show = false"></i>
+                      <a class="text-dark">
+                        <span [innerHtml]="item.path"></span>
+                        <i *ngIf="item.title"> - </i>
+                        <i class="text-muted">{{item.title}}</i>
+                      </a>
+                    </span>
+                  </td>
+                  <td>
+                    <span [innerHtml]="item.versionDate | stringToDate"></span>
+                  </td>
+                  <td>
+                    <label class="label" *ngIf="item.state" [ngClass]="coreService.getColor(item.state.severity, 'bg')"
+                       [innerHtml]="item.state._text | translate"></label>
+                  </td>
+                  <td>
+                    <span [innerHtml]="item.numOfOrders || 0"></span>
+                  </td>
+                  <td>
+                    <span *ngIf="item.ordersSummary" [innerHtml]="item.ordersSummary.pending || 0"></span>
+                  </td>
+                  <td>
+                    <span *ngIf="item.ordersSummary" [innerHtml]="item.ordersSummary.inprogress || 0"></span>
+                  </td>
+                  <td>
+                    <span *ngIf="item.ordersSummary" [innerHtml]="item.ordersSummary.running || 0"></span>
+                  </td>
+                  <td>
+                    <span *ngIf="item.ordersSummary" [innerHtml]="item.ordersSummary.suspended || 0"></span>
+                  </td>
+                  <td>
+                    <span *ngIf="item.ordersSummary" [innerHtml]="item.ordersSummary.waiting || 0"></span>
+                  </td>
+                  <td>
+                    <span *ngIf="item.ordersSummary" [innerHtml]="item.ordersSummary.blocked || 0"></span>
+                  </td>
+                  <td>
+                    <span *ngIf="item.ordersSummary" [innerHtml]="item.ordersSummary.failed || 0"></span>
+                  </td>
+                  <td>
+                    <span *ngIf="item.ordersSummary" [innerHtml]="item.ordersSummary.terminated || 0"></span>
+                  </td>
+                </tr>
+                <tr *ngIf="item.show && item.fileOrderSources && item.fileOrderSources.length>0">
+                  <td colspan="14">
+                    <div class="text-sm" *ngFor="let order of item.fileOrderSources; let i = index">
+                      <span *ngIf="i==0">{{'workflow.label.fileOrders' | translate}} |&nbsp;</span>
+                      <span>{{'inventory.label.directory' | translate}}:</span>
+                      {{order.directory}}&nbsp;
+                      <span *ngIf="order.pattern">{{'inventory.label.pattern' | translate}}:</span>
+                      {{order.pattern}}&nbsp;
+                      <span *ngIf="order.delay">{{'workflow.label.delay' | translate}}:</span>
+                      {{order.delay}}&nbsp;
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+              </tbody>
+            </nz-table>
+
+          </div>
+        </div>
+      </div>
       <div class="col-lg-12">
         <div class="hide" [ngClass]="{'show': loading}">
           <div [hidden]="pageView !== 'grid' || !workFlowJson.instructions">

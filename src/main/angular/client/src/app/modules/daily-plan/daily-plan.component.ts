@@ -229,7 +229,7 @@ export class SelectOrderTemplatesComponent implements OnInit {
 }
 
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-create-plan-modal-content',
   templateUrl: './create-plan-dialog.html'
 })
 export class CreatePlanModalComponent implements OnInit{
@@ -1011,6 +1011,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.dailyPlanFilters.selectedDate = this.selectedDate;
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    $('.scroll-y').remove();
   }
 
   loadOrderPlan(): void {

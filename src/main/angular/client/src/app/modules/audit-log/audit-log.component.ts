@@ -129,7 +129,7 @@ export class SearchComponent implements OnInit {
     obj.comment = result.comment;
     obj.ticketLink = result.ticketLink;
     obj.objectTypes = result.objectTypes;
-    obj.objectNames = result.objectNames;
+    obj.objectName = result.objectName;
     obj.categories = result.categories;
     obj.account = result.account;
     if (result.radio != 'current') {
@@ -198,7 +198,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   savedFilter: any = {};
   filterList: any = [];
   data = [];
-  searchableProperties = ['controllerId', 'orderId', 'account', 'request', 'workflow', 'created', 'comment', 'ticketLink'];
+  searchableProperties = ['controllerId', 'category', 'account', 'request', 'created', 'comment', 'ticketLink'];
 
   subscription1: Subscription;
   subscription2: Subscription;
@@ -343,6 +343,20 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.load(null);
   }
 
+  showDetail(auditLog): void {
+    auditLog.show = true;
+    if (!auditLog.isLoaded) {
+      this.coreService.post('audit_log/details', {
+        auditLogId: auditLog.id
+      }).subscribe((res: any) => {
+        auditLog.details = res.auditLogDetails;
+        auditLog.isLoaded = true;
+      }, () => {
+        auditLog.isLoaded = true;
+      });
+    }
+  }
+
   sort(propertyName): void {
     this.adtLog.reverse = !this.adtLog.reverse;
     this.adtLog.filter.sortBy = propertyName;
@@ -362,7 +376,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   exportToExcel(): void {
-    let created = '', controllerId = '', workflow = '', orderId = '', account = '',
+    let created = '', controllerId = '', category = '', account = '',
       request = '', comment = '', timeSpend = '', ticketLink = '';
     this.translate.get('auditLog.label.created').subscribe(translatedValue => {
       created = translatedValue;
@@ -376,11 +390,8 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.translate.get('auditLog.label.request').subscribe(translatedValue => {
       request = translatedValue;
     });
-    this.translate.get('auditLog.label.workflow').subscribe(translatedValue => {
-      workflow = translatedValue;
-    });
-    this.translate.get('auditLog.label.orderId').subscribe(translatedValue => {
-      orderId = translatedValue;
+    this.translate.get('auditLog.label.category').subscribe(translatedValue => {
+      category = translatedValue;
     });
     this.translate.get('auditLog.label.comment').subscribe(translatedValue => {
       comment = translatedValue;
@@ -395,13 +406,12 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     for (let i = 0; i < this.auditLogs.length; i++) {
       const obj: any = {};
       if (!this.adtLog.current) {
-        obj[controllerId] = this.auditLogs[i].orderId;
+        obj[controllerId] = this.auditLogs[i].controllerId;
       }
       obj[created] = this.coreService.stringToDate(this.preferences, this.auditLogs[i].created);
       obj[account] = this.auditLogs[i].account;
       obj[request] = this.auditLogs[i].request;
-      obj[workflow] = this.auditLogs[i].workflow;
-      obj[orderId] = this.auditLogs[i].orderId;
+      obj[category] = this.auditLogs[i].category;
       obj[comment] = this.auditLogs[i].comment;
       obj[timeSpend] = this.auditLogs[i].timeSpend;
       obj[ticketLink] = this.auditLogs[i].ticketLink;
@@ -588,9 +598,8 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   private generateRequestObj(object, filter): any {
-    if (object.objectNames) {
-      const s = object.objectNames.replace(/\s*(,|^|$)\s*/g, '$1');
-      filter.objectNames = s.split(',');
+    if (object.objectName) {
+      filter.objectName = object.objectName;
     }
     if (object.comment) {
       filter.comment = object.comment;

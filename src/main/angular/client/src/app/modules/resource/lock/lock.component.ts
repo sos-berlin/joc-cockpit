@@ -7,6 +7,8 @@ import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 import {SearchPipe} from '../../../pipes/core.pipe';
 
+declare const $: any;
+
 @Component({
   selector: 'app-single-lock',
   templateUrl: './single-lock.component.html'
@@ -17,7 +19,7 @@ export class SingleLockComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
   locks: any = [];
-  path: string;
+  name: string;
   subscription: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService,
@@ -28,7 +30,7 @@ export class SingleLockComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.path = this.route.snapshot.queryParamMap.get('path');
+    this.name = this.route.snapshot.queryParamMap.get('name');
     this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
@@ -36,7 +38,7 @@ export class SingleLockComponent implements OnInit, OnDestroy {
     this.permission = JSON.parse(this.authService.permission) || {};
     this.getLocksList({
       controllerId: this.controllerId,
-      lockPaths: [this.path]
+      lockPaths: [this.name]
     });
   }
 
@@ -64,10 +66,10 @@ export class SingleLockComponent implements OnInit, OnDestroy {
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'LockStateChanged' && args.eventSnapshots[j].path && this.path === args.eventSnapshots[j].path) {
+        if (args.eventSnapshots[j].eventType === 'LockStateChanged' && args.eventSnapshots[j].path && args.eventSnapshots[j].path.indexOf(this.name) > -1) {
           const obj = {
             controllerId: this.controllerId,
-            lockPath: this.path
+            lockPath: this.name
           };
           this.coreService.post('lock', obj).subscribe((res: any) => {
             const lock = res.lock;
@@ -137,6 +139,7 @@ export class LockComponent implements OnInit, OnDestroy {
       }
       return ids;
     }, []);
+    $('.scroll-y').remove();
   }
 
   initTree(): void {

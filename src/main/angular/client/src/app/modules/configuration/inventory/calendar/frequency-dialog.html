@@ -414,13 +414,13 @@
     </button>
   </div>
   <div class="modal-footer">
-    <button *ngIf="!editor.showYearView" type="submit" class="btn btn-default btn-sm">
+    <button *ngIf="!editor.showYearView" type="submit" class="btn btn-default btn-secondary btn-sm">
       <span translate>common.button.close</span>
     </button>
     <button *ngIf="!editor.showYearView" type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()"
             translate>common.button.cancel
     </button>
-    <button *ngIf="editor.showYearView" type="button" class="btn btn-default btn-sm" (click)="addCalendarDates()">
+    <button *ngIf="editor.showYearView" type="button" class="btn btn-default btn-secondary btn-sm" (click)="addCalendarDates()">
       <span translate>common.button.close</span>
     </button>
     <button *ngIf="editor.showYearView" type="button" class="btn btn-grey btn-sm m-l-sm" (click)="back()"

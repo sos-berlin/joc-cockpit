@@ -143,15 +143,15 @@
       <h5 class="p-b-xs">
         <span translate>workflow.label.properties</span>
         <span *ngIf="selectedNode" class="font14 text-primary p-l-xs">({{selectedNode.type | translate}})</span>
-        <button class="btn btn-default btn-sm m-l-12 pull-right" style="margin-top: -6px" *ngIf="!selectedNode || selectedNode.type !== 'Job'"
+        <button class="btn btn-default btn-sm m-l-12 pull-right" style="margin-top: -6px"
                 (click)="openResourceModal()" nz-tooltip="{{'inventory.label.jobResources' | translate}}">
           <i class="icon-resources-icon icon-color"></i>
-          <span class="p-l-xs btn-text-with-icon" *ngIf="propertyPanelWidth > 320">{{'inventory.label.jobResources' | translate}}</span>
+          <span class="p-l-xs btn-text-with-icon" *ngIf="propertyPanelWidth > 320 && (!selectedNode || selectedNode.type !== 'Job')">{{'inventory.label.jobResources' | translate}}</span>
         </button>
-        <button class="btn btn-default btn-sm pull-right" style="margin-top: -6px" *ngIf="!selectedNode || selectedNode.type !== 'Job'"
+        <button class="btn btn-default btn-sm pull-right" style="margin-top: -6px"
                 (click)="openDeclarationModal()" nz-tooltip="{{'workflow.label.declareVariables' | translate}}">
           <i class="fa fa-tasks"></i>
-          <span class="p-l-xs btn-text-with-icon" *ngIf="propertyPanelWidth > 320">{{'order.label.variables' | translate}}</span>
+          <span class="p-l-xs btn-text-with-icon" *ngIf="propertyPanelWidth > 320 && (!selectedNode || selectedNode.type !== 'Job')">{{'order.label.variables' | translate}}</span>
         </button>
       </h5>
     </div>

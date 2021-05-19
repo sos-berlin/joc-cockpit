@@ -116,7 +116,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       this.searchKey = res;
     });
     this.subscription2 = this.dataService.dataAnnounced$.subscribe(res => {
-      if (res) {
+      if (res && res.users) {
         this.setUserData(res);
       }
     });
@@ -158,7 +158,6 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
     this.coreService.post('authentication/shiro/store', obj).subscribe(res => {
       this.users = [...this.users];
-      this.userDetail = res;
       this.dataService.announceData('RELOAD');
     });
   }
