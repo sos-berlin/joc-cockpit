@@ -133,8 +133,7 @@
   "auditLog": {
     "label.auditLog": "Audit Log",
     "label.requestBody": "Request Body",
-    "label.workflow": "Workflow",
-    "label.orderId": "Order ID",
+    "label.category": "Category",
     "label.created": "Created",
     "label.account": "Account",
     "label.request": "Request",
@@ -145,17 +144,17 @@
     "label.auditLogsFound": "Audit Log entries found",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
-      "label.searchRegExInComment": "Regular Expression",
+      "label.reason": "Reason",
       "label.ticketLink": "Ticket Link",
       "label.objectTypes": "Object Types",
-      "label.objectNames": "Object Names",
+      "label.objectName": "Object Name",
       "label.categories": "Categories",
       "placeholder.objectTypes": "Select object types",
-      "placeholder.enterObjectNames": "Enter multiple names separated by comma",
+      "placeholder.enterObjectName": "Enter pattern to search name",
       "placeholder.categories": "Select categories",
       "placeholder.enterAccount": "Enter account",
-      "placeholder.ticketLink": "Enter ticket link",
-      "placeholder.searchRegExInComment": "Enter regular expression to search comment"
+      "placeholder.ticketLink": "Enter pattern to search ticket link",
+      "placeholder.enterReason": "Enter pattern to search reason"
     },
     "--------ADVANCE SEARCH END------------": ""
   },
@@ -1014,6 +1013,7 @@
     "button.resume": "Resume",
     "button.leaveWorkflow": "Leave Workflow",
     "button.addVariable": "Add Variable",
+    "button.modifyVariable": "Modify Variable",
     "message.noVariableAvailable": "no variable available"
   },
   "profile": {
@@ -1487,6 +1487,7 @@
     "label.retry": "Retry",
     "label.maxTries": "Max. Tries",
     "label.delay": "Delay",
+    "label.fileOrders": "File Orders",
     "label.retryEnd": "Retry-End",
     "label.lock": "Lock",
     "label.locklockName": "Lock Name",

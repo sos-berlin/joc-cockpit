@@ -13,6 +13,8 @@ import {CommentModalComponent} from '../../../components/comment-modal/comment.c
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {SearchPipe} from '../../../pipes/core.pipe';
 
+declare const $: any;
+
 const API_URL = './api/';
 
 @Component({
@@ -311,6 +313,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       this.documentFilters.expandedKeys = this.child.defaultExpandedKeys;
       this.documentFilters.selectedkeys = this.child.defaultSelectedKeys;
     }
+    $('.scroll-y').remove();
   }
 
   initTree(): void {

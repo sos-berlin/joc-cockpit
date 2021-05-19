@@ -31,6 +31,8 @@
   --date-selected-exclude-hover: rgba(19, 149, 190, 0.55);
   --range-hover: rgba(36, 148, 191, .6);
   --range-start: rgb(36, 148, 191);
+  --btn-secondary: rgba(36, 148, 191, .87);
+  --btn-secondary-hover: rgb(36, 148, 191);
 }
 
 body {

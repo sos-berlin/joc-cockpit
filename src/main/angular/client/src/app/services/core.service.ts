@@ -804,11 +804,11 @@ export class CoreService {
     } else if (objType === 'order' && name) {
       link = host + 'history/order?orderId=' + encodeURIComponent(name) + '&workflow=' + encodeURIComponent(workflow);
     } else if (objType === 'lock' && name) {
-      link = host + 'resources/locks/lock?path=' + encodeURIComponent(name);
+      link = host + 'resources/locks/lock?name=' + encodeURIComponent(name);
     } else if (objType === 'fileTransfer' && name) {
       link = host + 'file_transfer/file_transfer?id=' + name;
     } else if (objType === 'calendar' && name) {
-      link = host + 'resources/calendars/calendar?path=' + encodeURIComponent(name);
+      link = host + 'resources/calendars/calendar?name=' + encodeURIComponent(name);
     } else if (objType === 'document' && name) {
       link = host + 'resources/documentations/documentation?name=' + encodeURIComponent(name);
     }
@@ -1235,14 +1235,18 @@ export class CoreService {
           const endChar = data[type].substring(data[type].length - 1);
           if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
           } else {
-            data[type] = data[type].replace(/\\([\s\S])|(")/g, "\\$1$2");
+            data[type] = data[type].replace(/\\([\s\S])|(")/g, '\\$1$2');
             data[type] = '"' + data[type] + '"';
           }
         } else {
           const mainStr = data[type].substring(1, data[type].length);
-          if (!mainStr.match(/[!?~'"}\[\]{@#\/\\^$%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(mainStr) && /^(?!-)(?!.*--)/.test(mainStr) && !/\s/.test(mainStr)) {
+          if (mainStr.startsWith('{') && mainStr.substring(mainStr.length - 1, mainStr.length) === '}') {
           } else {
-            data[type] = '"' + data[type] + '"';
+            if (!mainStr.match(/[!?~'"}\[\]{@#\/\\^$%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(mainStr)
+              && /^(?!-)(?!.*--)/.test(mainStr) && !/\s/.test(mainStr)) {
+            } else {
+              data[type] = '"' + data[type] + '"';
+            }
           }
         }
       }

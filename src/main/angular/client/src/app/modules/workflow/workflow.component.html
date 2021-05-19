@@ -102,7 +102,7 @@
   <div class="padding p-b-0 p-l-0">
     <div class="row m-t-sm">
       <div class="col-lg-12">
-        <div appResizable [sideView]="sideView" id="leftPanel" class="sticky leftPanel resource">
+        <div appResizable [sideView]="sideView" id="leftPanel" class="sticky leftPanel">
           <div *ngIf="tree.length>0">
             <app-tree-nagivation [tree]="tree" [sideView]="sideView.workflow"
                                  [defaultSelectedKeys]="workflowFilters.selectedkeys"
@@ -434,6 +434,19 @@
                       </td>
                        <td *ngIf="!workflowFilters.isCompact">
                         <span [innerHtml]="workflow.ordersSummary.terminated || 0"></span>
+                      </td>
+                    </tr>
+                    <tr *ngIf="workflow.show && workflow.fileOrderSources && workflow.fileOrderSources.length>0">
+                      <td colspan="14">
+                        <div class="text-sm" *ngFor="let order of workflow.fileOrderSources; let i = index">
+                          <span *ngIf="i==0">{{'workflow.label.fileOrders' | translate}} |&nbsp;</span>
+                          <span>{{'inventory.label.directory' | translate}}:</span>
+                          {{order.directory}}&nbsp;
+                          <span *ngIf="order.pattern">{{'inventory.label.pattern' | translate}}:</span>
+                          {{order.pattern}}&nbsp;
+                          <span *ngIf="order.delay">{{'workflow.label.delay' | translate}}:</span>
+                          {{order.delay}}&nbsp;
+                        </div>
                       </td>
                     </tr>
                     <tr *ngIf="workflow.show">

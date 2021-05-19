@@ -12,7 +12,6 @@ import {ValueEditorComponent} from '../../../components/value-editor/value.compo
   selector: 'app-add-order',
   templateUrl: './add-order-dialog.html',
 })
-
 export class AddOrderModalComponent implements OnInit {
   @Input() schedulerId: any;
   @Input() permission: any;

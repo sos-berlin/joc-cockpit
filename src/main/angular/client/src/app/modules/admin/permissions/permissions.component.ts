@@ -13,7 +13,7 @@ declare var d3: any;
 
 // Permission Modal
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-permission-modal-content',
   templateUrl: 'permission-modal.html'
 })
 export class PermissionModalComponent {
@@ -220,7 +220,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   constructor(private coreService: CoreService, private route: ActivatedRoute, private router: Router,
               private modal: NzModalService, private dataService: DataService) {
     this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
-      if (res) {
+      if (res && res.users) {
         this.setUserData(res);
       }
     });

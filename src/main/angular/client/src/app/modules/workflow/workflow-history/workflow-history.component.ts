@@ -209,7 +209,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     const obj = {
       controllerId: this.schedulerIds.selected,
       objectTypes: ['WORKFLOW'],
-      objectNames: [this.workflow.path],
+      objectName: this.workflow.path,
       limit: this.preferences.maxAuditLogPerObject
     };
     this.coreService.post('audit_log', obj).subscribe((res: any) => {

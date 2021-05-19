@@ -133,8 +133,7 @@
   "auditLog": {
     "label.auditLog": "Prüfprotokoll",
     "label.requestBody": "Inhalt der Anfrage",
-    "label.workflow": "Auftragsablauf",
-    "label.orderId": "Auftragskennung",
+    "label.category": "Category",
     "label.created": "Erstellt",
     "label.account": "Konto",
     "label.request": "Anfrage",
@@ -145,17 +144,17 @@
     "label.auditLogsFound": "Prüfprotokoll Einträge gefunden",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
-      "label.searchRegExInComment": "Regulärer Ausdruck",
+      "label.reason": "Reason",
       "label.ticketLink": "Ticket Link",
       "label.objectTypes": "Objekttypen",
-      "label.objectNames": "Objektnamen",
+      "label.objectName": "Object Name",
       "label.categories": "Kategorien",
       "placeholder.objectTypes": "Objekttyp auswählen",
-      "placeholder.enterObjectNames": "Mehrere Namen durch Komma getrennt angeben",
+      "placeholder.enterObjectName": "Enter pattern to search name",
       "placeholder.categories": "Kategorien auswählen",
       "placeholder.enterAccount": "Konto angeben",
-      "placeholder.ticketLink": "Ticket Link angeben",
-      "placeholder.searchRegExInComment": "Regulären Ausdruck für Suche in Begründungen angeben"
+      "placeholder.ticketLink": "Enter pattern to search ticket link",
+      "placeholder.enterReason": "Enter pattern to search reason"
     },
     "--------ADVANCE SEARCH END------------": ""
   },
@@ -1014,6 +1013,7 @@
     "button.resume": "Fortsetzen",
     "button.leaveWorkflow": "Auftragsablauf verlassen",
     "button.addVariable": "Variable hinzufügen",
+    "button.modifyVariable": "Modify Variable",
     "message.noVariableAvailable": "keine Variablen vorhanden"
   },
   "profile": {
@@ -1487,6 +1487,7 @@
     "label.retry": "Retry",
     "label.maxTries": "Max. Anzahl Wiederholungen",
     "label.delay": "Verzögerung",
+    "label.fileOrders": "Dateiaufträge",
     "label.retryEnd": "Retry-Ende",
     "label.lock": "Lock",
     "label.lockName": "Name der Sperre",

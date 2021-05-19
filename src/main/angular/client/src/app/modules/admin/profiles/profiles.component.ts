@@ -28,7 +28,9 @@ export class ProfilesComponent implements OnInit, OnDestroy {
 
   constructor(private dataService: DataService, private modal: NzModalService, private coreService: CoreService, private router: Router) {
     this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
-      this.setUserData(res);
+      if (res && res.users) {
+        this.setUserData(res);
+      }
     });
 
     this.subscription2 = this.dataService.functionAnnounced$.subscribe(res => {

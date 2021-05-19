@@ -212,7 +212,7 @@ export class RolesComponent implements OnDestroy {
   constructor(private coreService: CoreService, private router: Router, private activeRoute: ActivatedRoute, private modal: NzModalService,
               private translate: TranslateService, private toasterService: ToasterService, public dataService: DataService) {
     this.subscription1 = dataService.dataAnnounced$.subscribe(res => {
-      if (res) {
+      if (res && res.users) {
         this.setUsersData(res);
       }
     });

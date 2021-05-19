@@ -261,7 +261,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     let obj = {
       controllerId: this.schedulerIds.selected,
       objectTypes: ['ORDER'],
-      objectNames: [this.showPanelObj.orderId],
+      objectName: this.showPanelObj.orderId,
       limit: this.preferences.maxAuditLogPerObject
     };
     this.coreService.post('audit_log', obj).subscribe((res: any) => {

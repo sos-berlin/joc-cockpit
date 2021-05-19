@@ -17,7 +17,7 @@ import {WorkflowService} from '../../services/workflow.service';
 import {ExcelService} from '../../services/excel.service';
 import {SearchPipe} from '../../pipes/core.pipe';
 
-declare const $;
+declare const $: any;
 
 @Component({
   selector: 'app-ngbd-modal-content',
@@ -388,6 +388,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.workflowFilters.expandedKeys = this.child.defaultExpandedKeys;
       this.workflowFilters.selectedkeys = this.child.defaultSelectedKeys;
     }
+    $('.scroll-y').remove();
   }
 
   /* ---------------------------- Broadcast messages ----------------------------------*/

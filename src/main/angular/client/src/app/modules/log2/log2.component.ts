@@ -224,7 +224,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  runningTaskLog(obj, orderTaskFlag) {
+  runningTaskLog(obj, orderTaskFlag): void {
     if (obj.eventId) {
       this.coreService.post('task/log/running', obj).subscribe((res: any) => {
         if (res && res.tasks) {
@@ -240,7 +240,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  runningOrderLog(obj) {
+  runningOrderLog(obj): void {
     if (obj.eventId) {
       this.coreService.post('order/log/running', obj).subscribe((res: any) => {
         if (res) {
@@ -255,7 +255,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  jsonToString(json) {
+  jsonToString(json): void {
     if (!json) {
       return;
     }
@@ -475,7 +475,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
           div.className += ' hide-block';
         }
       } else if (prefix.search(/\[stderr\]/i) > -1) {
-        div.className += ' stderr';
+        div.className += ' stderr log_stderr';
         if (!this.object.checkBoxs.stderr) {
           div.className += ' hide-block';
         }

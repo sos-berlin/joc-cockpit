@@ -54,9 +54,9 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.search.label.searchRegExInComment</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.search.label.reason</label>
       <div class="col-sm-6">
-        <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.searchRegExInComment' | translate}}"
+        <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.enterReason' | translate}}"
                [(ngModel)]="filter.comment" name="regex">
       </div>
     </div>
@@ -91,10 +91,10 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.search.label.objectNames</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.search.label.objectName</label>
       <div class="col-sm-6" >
-        <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.enterObjectNames' | translate}}"
-               [(ngModel)]="filter.objectNames" name="orderid">
+        <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.enterObjectName' | translate}}"
+               [(ngModel)]="filter.objectName" name="objectName">
       </div>
     </div>
     <div class="form-group row">

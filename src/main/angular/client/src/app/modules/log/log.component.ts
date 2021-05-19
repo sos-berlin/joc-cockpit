@@ -484,7 +484,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
           div.className += ' hide-block';
         }
       } else if (prefix.search(/\[stderr\]/i) > -1) {
-        div.className += ' stderr';
+        div.className += ' stderr log_stderr';
         if (!this.object.checkBoxs.stderr) {
           div.className += ' hide-block';
         }

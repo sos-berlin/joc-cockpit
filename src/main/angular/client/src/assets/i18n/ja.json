@@ -133,8 +133,7 @@
   "auditLog": {
     "label.auditLog": "操作ログ",
     "label.requestBody": "リクエスト内容",
-    "label.workflow": "ワークフロー",
-    "label.orderId": "オーダーID",
+    "label.category": "Category",
     "label.created": "日時",
     "label.account": "アカウント",
     "label.request": "リクエスト",
@@ -145,17 +144,17 @@
     "label.auditLogsFound": "操作ログがあります",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
-      "label.searchRegExInComment": "正規表現",
+      "label.reason": "Reason",
       "label.ticketLink": "チケットリンク",
       "label.objectTypes": "オブジェクトタイプ",
-      "label.objectNames": "オブジェクト名",
+      "label.objectName": "Object Name",
       "label.categories": "カテゴリー",
       "placeholder.objectTypes": "オブジェクトタイプ選択",
-      "placeholder.enterObjectNames": "コンマ区切りでオブジェクト名を入力",
+      "placeholder.enterObjectName": "Enter pattern to search name",
       "placeholder.categories": "カテゴリー選択",
       "placeholder.enterAccount": "アカウントを入力",
-      "placeholder.ticketLink": "チケットリンクを入力",
-      "placeholder.searchRegExInComment": "正規表現で入力"
+      "placeholder.ticketLink": "Enter pattern to search ticket link",
+      "placeholder.enterReason": "Enter pattern to search reason"
     },
     "--------ADVANCE SEARCH END------------": ""
   },
@@ -1014,6 +1013,7 @@
     "button.resume": "回復",
     "button.leaveWorkflow": "ワークフローを離れる",
     "button.addVariable": "変数追加",
+    "button.modifyVariable": "Modify Variable",
     "message.noVariableAvailable": "変数はありません"
   },
   "profile": {
@@ -1487,6 +1487,7 @@
     "label.retry": "Retry",
     "label.maxTries": "最大トライ数",
     "label.delay": "遅延",
+    "label.fileOrders": "ファイルオーダー",
     "label.retryEnd": "Retry-End",
     "label.lock": "Lock",
     "label.lockName": "Lock Name",

@@ -129,7 +129,7 @@
           <a class="rollback" *ngIf="isTrash" (click)="switchToTrash()">
             <i nz-icon [nzType]="'rollback'" nzTheme="outline"></i>
           </a>
-          <div class="tree-block">
+          <perfect-scrollbar class="tree-block">
             <div class="fade-in" [ngClass]="{'m-t': isTrash}">
               <nz-tree
                 #treeCtrl
@@ -206,7 +206,7 @@
             <div class="m-t-lg" *ngIf="isTrash && isTreeLoaded && tree.length === 0">
               <app-empty-data></app-empty-data>
             </div>
-          </div>
+          </perfect-scrollbar>
           <div class="rg-right" [ngClass]="{'bg-white' : isTrash}"><span></span></div>
         </div>
       </div>

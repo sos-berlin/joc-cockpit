@@ -28,6 +28,8 @@
   --date-selected-exclude-hover: rgba(255, 163, 102, 0.66);
   --range-hover: rgba(255, 140, 0, .55);
   --range-start: rgba(255, 140, 0, .85);
+  --btn-secondary: rgba(255, 140, 0, .87);
+  --btn-secondary-hover: rgb(255, 140, 0);
 }
 
 body {

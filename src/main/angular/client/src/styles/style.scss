@@ -47,6 +47,8 @@
   --date-selected-exclude-hover: rgba(255, 163, 102, 0.66);
   --range-hover: rgba(255, 140, 0, .55);
   --range-start: rgba(255, 140, 0, .85);
+  --btn-secondary: rgba(255, 140, 0, .87);
+  --btn-secondary-hover: rgb(255, 140, 0);
 }
 
 /***
@@ -4702,9 +4704,13 @@ div.min-ht-widget-controller-status {
 }
 
 .btn-secondary {
-  color: #373a3c;
-  background-color: #ccc;
-  border-color: #ccc;
+  background-color: var(--btn-secondary) !important;
+  border-color: var(--btn-secondary) !important;
+  color: var(--white) !important;
+  &:hover {
+    background-color: var(--btn-secondary-hover) !important;
+    border-color: var(--btn-secondary-hover) !important;
+  }
 }
 
 tr.disabled-row td:not(.menu) {
@@ -4956,7 +4962,7 @@ tr.disabled-row td:not(.menu) {
   border-left: 1px solid #ccc;
   border-right: 1px solid #ccc;
   top: 41%;
-  margin: -10px 0 0 3px;
+  margin: -10px 0 0 4px;
   height: 20px;
   width: 7px;
 }
@@ -4964,7 +4970,7 @@ tr.disabled-row td:not(.menu) {
 .rg-bottom span {
   border-width: 1px 0;
   left: 50%;
-  margin: 3px 0 0 -10px;
+  margin: 4px 0 0 -10px;
   width: 20px;
   height: 7px;
 }
@@ -4981,7 +4987,6 @@ tr.disabled-row td:not(.menu) {
   left: 0;
   right: auto;
   background-color: var(--white) !important;
-
   span {
     top: 50%;
   }
@@ -6114,15 +6119,16 @@ aside.sidebar-hover-effect {
 }
 
 ::placeholder {
-  color: var(--placholder-color)
+  color: var(--placholder-color);
+  opacity: .55;
 }
 
 :-moz-placeholder {
-  color: var(--placholder-color)
+  color: var(--placholder-color);
 }
 
 ::-moz-placeholder {
-  color: var(--placholder-color)
+  color: var(--placholder-color);
 }
 
 :-ms-input-placeholder {
