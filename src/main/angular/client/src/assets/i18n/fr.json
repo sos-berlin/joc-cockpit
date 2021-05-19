@@ -553,7 +553,7 @@
     "button.setParameter": "Modifier la Variable",
     "button.setParameters": "Modifier les Variables",
     "button.removeParameter": "Supprimer le Paramètre",
-    "button.groupByWorkflow": "Regouper par Workflow",
+    "button.groupByWorkflow": "Regrouper par Workflow",
     "button.deployOrder": "Soumettre l'Ordre",
     "button.undeployOrder": "Supprimer l'Ordre envoyé",
     "button.removeOrder": "Supprimer l'Ordre",
