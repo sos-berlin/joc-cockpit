@@ -13,12 +13,12 @@ export class EditIgnoreListComponent {
   constructor(public activeModal: NzModalRef) {
   }
 
-  removeWorkflowIgnoreList(name) {
+  removeWorkflowIgnoreList(name): void {
     this.savedIgnoreList.workflows.splice(this.savedIgnoreList.workflows.indexOf(name), 1);
     this.self.removeObjectFromIgnoreList();
   }
 
-  removeJobIgnoreList(name) {
+  removeJobIgnoreList(name): void {
     this.savedIgnoreList.jobs.splice(this.savedIgnoreList.jobs.indexOf(name), 1);
     this.self.removeObjectFromIgnoreList();
   }

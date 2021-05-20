@@ -8,6 +8,9 @@ const routes: Routes = [
   },
   {
     path: 'order', component: SingleHistoryComponent,  data: {breadcrumb: 'breadcrumb.label.order'}
+  },
+  {
+    path: 'deployment', component: SingleHistoryComponent,  data: {breadcrumb: 'breadcrumb.label.deployment'}
   }
 ];
 

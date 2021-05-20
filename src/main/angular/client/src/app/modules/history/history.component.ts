@@ -928,6 +928,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
   history: any = [];
   orderId: string;
   workflowPath: string;
+  commitId: string;
   subscription: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private router: Router,
@@ -940,12 +941,17 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.orderId = this.route.snapshot.queryParamMap.get('orderId');
     this.workflowPath = this.route.snapshot.queryParamMap.get('workflow');
+    this.commitId = this.route.snapshot.queryParamMap.get('commitId');
     this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
     }
     this.permission = JSON.parse(this.authService.permission) || {};
-    this.getOrderHistory();
+    if (this.workflowPath) {
+      this.getOrderHistory();
+    } else if (this.commitId) {
+      this.getDeploymentHistory();
+    }
   }
 
   ngOnDestroy(): void {
@@ -964,12 +970,43 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
     });
   }
 
+  private getDeploymentHistory(): void {
+    const obj = {
+      detailFilter: {
+        controllerId: this.controllerId,
+        commitId: this.commitId
+      }
+    };
+    this.coreService.post('inventory/deployment/history', obj).subscribe((res: any) => {
+      const obj = {
+        controllerId: '',
+        deploymentDate: '',
+        state: '',
+        account: '',
+        children: res.depHistory
+      };
+      if (res.depHistory.length > 0) {
+        obj.deploymentDate = res.depHistory[0].deploymentDate;
+        obj.controllerId = res.depHistory[0].controllerId || this.controllerId;
+        obj.account = res.depHistory[0].account;
+        obj.state = res.depHistory[0].state;
+      }
+      this.history = [obj];
+      this.loading = false;
+    }, () => {
+      this.loading = false;
+    });
+  }
+
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if ((args.eventSnapshots[j].eventType === 'HistoryOrderTerminated' || args.eventSnapshots[j].eventType === 'HistoryOrderStarted')) {
-          console.log('???', args.eventSnapshots[j])
+        if ((args.eventSnapshots[j].eventType === 'HistoryOrderTerminated' || args.eventSnapshots[j].eventType === 'HistoryOrderStarted') && this.orderId) {
+          console.log('???', args.eventSnapshots[j]);
           this.getOrderHistory();
+          break;
+        } else if (args.eventSnapshots[j].eventType.match(/Deploy/) && this.commitId) {
+          this.getDeploymentHistory();
           break;
         }
       }
@@ -986,6 +1023,18 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
       type: 'WORKFLOW'
     };
     this.router.navigate(['/configuration/inventory']);
+  }
+
+  navToInventoryTab(data): void {
+    if (data.operation === 'UPDATE') {
+      this.coreService.getConfigurationTab().inventory.expand_to = [];
+      this.coreService.getConfigurationTab().inventory.selectedObj = {
+        name: data.path.substring(data.path.lastIndexOf('/') + 1),
+        path: data.folder,
+        type: data.deployType.toUpperCase()
+      };
+      this.router.navigate(['/configuration/inventory']);
+    }
   }
 
   showPanelFuc(data: any): void {
@@ -1165,13 +1214,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   setOrderDateRange(filter): any {
-    if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true')
-      && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0))) {
-      filter.excludeOrders = [];
-      this.savedIgnoreList.workflows.forEach((workflow) => {
-        filter.excludeOrders.push({workflowPath: workflow});
-      });
-    }
     if (this.order.filter.date == 'today') {
       filter.dateFrom = '0d';
       filter.dateTo = '0d';
@@ -1210,10 +1252,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
 
     if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true') && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0))) {
-      obj.excludeOrders = [];
-      this.savedIgnoreList.workflows.forEach((workflow) => {
-        obj.excludeOrders.push({workflowPath: workflow});
-      });
+      obj.excludeWorkflows = this.savedIgnoreList.workflows;
     }
 
     if (this.selectedFiltered1 && !isEmpty(this.selectedFiltered1)) {
@@ -1289,12 +1328,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   setTaskDateRange(filter): any {
-    if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true') && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
-      filter.excludeJobs = [];
-      this.savedIgnoreList.jobs.forEach((job) => {
-        filter.excludeJobs.push({job});
-      });
-    }
     if (this.task.filter.date == 'today') {
       filter.dateFrom = '0d';
       filter.dateTo = '0d';
@@ -1318,10 +1351,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true')
       && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
-      obj.excludeJobs = [];
-      this.savedIgnoreList.jobs.forEach((job) => {
-        obj.excludeJobs.push({job});
-      });
+      obj.excludeJobs = this.savedIgnoreList.jobs;
     }
     if (this.selectedFiltered2 && !isEmpty(this.selectedFiltered2)) {
       this.isCustomizationSelected2(true);
@@ -1697,10 +1727,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         filter.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateTo);
       }
       if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true') && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0))) {
-        filter.excludeOrders = [];
-        this.savedIgnoreList.workflows.forEach((workflow) => {
-          filter.excludeOrders.push({workflowPath: workflow});
-        });
+        filter.excludeWorkflows = this.savedIgnoreList.workflows;
       }
       this.coreService.post('orders/history', filter).subscribe((res: any) => {
         this.historys = this.setDuration(res);
@@ -1787,10 +1814,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true')
         && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
-        filter.excludeJobs = [];
-        this.savedIgnoreList.jobs.forEach((job) => {
-          filter.excludeJobs.push({job});
-        });
+        filter.excludeJobs = this.savedIgnoreList.jobs;
       }
 
       this.coreService.post('tasks/history', filter).subscribe((res: any) => {
@@ -2360,9 +2384,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  addJobToIgnoreList(name): void {
-    if (this.savedIgnoreList.jobs.indexOf(name) === -1) {
-      this.savedIgnoreList.jobs.push(name);
+  addJobToIgnoreList(name, workflow): void {
+    const obj = {
+      workflowPath: workflow,
+      job: name ? name : undefined
+    };
+    if (this.savedIgnoreList.jobs.indexOf(obj) === -1) {
+      this.savedIgnoreList.jobs.push(obj);
       this.saveIgnoreList((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true));
     }
   }

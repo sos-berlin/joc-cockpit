@@ -509,11 +509,13 @@ export class DeployComponent implements OnInit {
     }
     if (!this.releasable && isEmpty(obj.store) && isEmpty(obj.delete)) {
       this.submitted = false;
+      this.ref.detectChanges();
       return;
     } else {
       if (this.releasable) {
         if (isEmpty(obj) || (isEmpty(obj.update) && isEmpty(obj.delete))) {
           this.submitted = false;
+          this.ref.detectChanges();
           return;
         }
       }
@@ -524,6 +526,7 @@ export class DeployComponent implements OnInit {
       this.activeModal.close('ok');
     }, () => {
       this.submitted = false;
+      this.ref.detectChanges();
     });
   }
 
@@ -557,6 +560,7 @@ export class DeployComponent implements OnInit {
         this.activeModal.close('ok');
       }, () => {
         this.submitted = false;
+        this.ref.detectChanges();
       });
     }
   }

@@ -1022,11 +1022,11 @@
                     <ul nz-menu>
                       <li nz-menu-item >
                         <a [ngClass]="{'disable-link':(schedulerIds.selected != jobHistory.controllerId && jobHistory.controllerId)}"
-                          (click)="addJobToIgnoreList(jobHistory.job)" translate>history.button.addJobToIgnoreList</a>
+                          (click)="addJobToIgnoreList(jobHistory.job, jobHistory.workflow)" translate>history.button.addJobToIgnoreList</a>
                       </li>
                       <li nz-menu-item >
                         <a [ngClass]="{'disable-link':(schedulerIds.selected != jobHistory.controllerId && jobHistory.controllerId)}"
-                          (click)="addWorkflowToIgnoreList(jobHistory.workflow)"
+                          (click)="addJobToIgnoreList(null, jobHistory.workflow)"
                           translate>history.button.addWorkflowToIgnoreList</a>
                       </li>
                     </ul>

@@ -46,7 +46,7 @@ export class OrderVariableComponent implements OnInit {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this.coreService.post('orders/variables', {
+          this.coreService.post('daily_plan/orders/variables', {
             orderId: order.orderId,
             controllerId: this.schedulerId
           }).subscribe((res: any) => {

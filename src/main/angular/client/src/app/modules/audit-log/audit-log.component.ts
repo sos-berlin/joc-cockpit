@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {isEmpty, clone} from 'underscore';
@@ -205,7 +206,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private modal: NzModalService, private searchPipe: SearchPipe,
-              private translate: TranslateService, private excelService: ExcelService) {
+              private translate: TranslateService, private excelService: ExcelService, private router: Router) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -332,251 +333,25 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     }
     this.coreService.post('audit_log', obj).subscribe((res: any) => {
       this.auditLogs = res.auditLog;
+      if (!date) {
+        this.data.forEach((item) => {
+          if (item.show) {
+            for (const i in this.auditLogs) {
+              if (item.id === this.auditLogs[i].id) {
+                this.auditLogs[i].show = true;
+                this.auditLogs[i].isLoaded = true;
+                this.auditLogs[i].details = item.details;
+                break;
+              }
+            }
+          }
+        });
+      }
       this.searchInResult();
       this.isLoaded = true;
     }, () => {
       this.isLoaded = true;
     });
-  }
-
-  changeController(): void {
-    this.load(null);
-  }
-
-  showDetail(auditLog): void {
-    auditLog.show = true;
-    if (!auditLog.isLoaded) {
-      this.coreService.post('audit_log/details', {
-        auditLogId: auditLog.id
-      }).subscribe((res: any) => {
-        auditLog.details = res.auditLogDetails;
-        auditLog.isLoaded = true;
-      }, () => {
-        auditLog.isLoaded = true;
-      });
-    }
-  }
-
-  sort(propertyName): void {
-    this.adtLog.reverse = !this.adtLog.reverse;
-    this.adtLog.filter.sortBy = propertyName;
-  }
-
-  pageIndexChange($event): void {
-    this.adtLog.currentPage = $event;
-  }
-
-  pageSizeChange($event): void {
-    this.adtLog.entryPerPage = $event;
-  }
-
-  searchInResult(): void {
-    this.data = this.adtLog.searchText ? this.searchPipe.transform(this.auditLogs, this.adtLog.searchText, this.searchableProperties) : this.auditLogs;
-    this.data = [...this.data];
-  }
-
-  exportToExcel(): void {
-    let created = '', controllerId = '', category = '', account = '',
-      request = '', comment = '', timeSpend = '', ticketLink = '';
-    this.translate.get('auditLog.label.created').subscribe(translatedValue => {
-      created = translatedValue;
-    });
-    this.translate.get('common.label.controllerId').subscribe(translatedValue => {
-      controllerId = translatedValue;
-    });
-    this.translate.get('auditLog.label.account').subscribe(translatedValue => {
-      account = translatedValue;
-    });
-    this.translate.get('auditLog.label.request').subscribe(translatedValue => {
-      request = translatedValue;
-    });
-    this.translate.get('auditLog.label.category').subscribe(translatedValue => {
-      category = translatedValue;
-    });
-    this.translate.get('auditLog.label.comment').subscribe(translatedValue => {
-      comment = translatedValue;
-    });
-    this.translate.get('auditLog.label.timeSpend').subscribe(translatedValue => {
-      timeSpend = translatedValue;
-    });
-    this.translate.get('auditLog.label.ticketLink').subscribe(translatedValue => {
-      ticketLink = translatedValue;
-    });
-    const data = [];
-    for (let i = 0; i < this.auditLogs.length; i++) {
-      const obj: any = {};
-      if (!this.adtLog.current) {
-        obj[controllerId] = this.auditLogs[i].controllerId;
-      }
-      obj[created] = this.coreService.stringToDate(this.preferences, this.auditLogs[i].created);
-      obj[account] = this.auditLogs[i].account;
-      obj[request] = this.auditLogs[i].request;
-      obj[category] = this.auditLogs[i].category;
-      obj[comment] = this.auditLogs[i].comment;
-      obj[timeSpend] = this.auditLogs[i].timeSpend;
-      obj[ticketLink] = this.auditLogs[i].ticketLink;
-
-      data.push(obj);
-    }
-    this.excelService.exportAsExcelFile(data, 'JS7-audit-logs');
-  }
-
-  /* ----------------------Advance Search --------------------- */
-  advancedSearch(): void {
-    this.showSearchPanel = true;
-    this.searchFilter = {
-      radio: 'current',
-      planned: 'today',
-      from: new Date(),
-      to: new Date(),
-      toTime: new Date()
-    };
-  }
-
-  cancel(): void {
-    if (!this.adtLog.filter.date) {
-      this.adtLog.filter.date = 'today';
-    }
-    this.showSearchPanel = false;
-    this.searchFilter = {};
-    this.load(null);
-  }
-
-  search(): void {
-    this.isLoaded = false;
-    let filter: any = {
-      controllerId: this.adtLog.current == true ? this.schedulerIds.selected : '',
-      limit: parseInt(this.preferences.maxAuditLogRecords, 10),
-      account: this.searchFilter.account ? this.searchFilter.account : undefined,
-      timeZone: this.preferences.zone
-    };
-
-    this.adtLog.filter.date = '';
-    filter = this.generateRequestObj(this.searchFilter, filter);
-    this.coreService.post('audit_log', filter).subscribe((res: any) => {
-      this.auditLogs = res.auditLog;
-      this.searchInResult();
-      this.isLoaded = true;
-    }, (err) => {
-      console.log(err);
-      this.isLoaded = true;
-    });
-  }
-
-  /* ---- Customization ------ */
-  createCustomization(): void {
-    if (this.schedulerIds.selected) {
-      const modal = this.modal.create({
-        nzTitle: undefined,
-        nzContent: FilterModalComponent,
-        nzClassName: 'lg',
-        nzComponentParams: {
-          permission: this.permission,
-          allFilter: this.filterList,
-          new: true
-        },
-        nzFooter: null,
-        nzClosable: false
-      });
-      modal.afterClose.subscribe((configObj) => {
-        if (configObj) {
-          if (this.filterList.length == 1) {
-            this.savedFilter.selected = configObj.id;
-            this.adtLog.selectedView = true;
-            this.selectedFiltered = configObj;
-            this.isCustomizationSelected(true);
-            this.load(null);
-            this.saveService.setAuditLog(this.savedFilter);
-            this.saveService.save();
-          }
-        }
-      });
-    }
-  }
-
-  editFilters(): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: EditFilterModalComponent,
-      nzComponentParams: {
-        filterList: this.filterList,
-        favorite: this.savedFilter.favorite,
-        permission: this.permission,
-        username: this.authService.currentUserData,
-        action: this.action,
-        self: this
-      },
-      nzFooter: null,
-      nzClosable: false
-    });
-    modal.afterClose.subscribe(obj => {
-      if (obj) {
-        if (obj.type === 'EDIT') {
-          this.editFilter(obj);
-        } else if (obj.type === 'COPY') {
-          this.copyFilter(obj);
-        }
-      }
-    });
-  }
-
-  /* ----------------------Action --------------------- */
-
-  action(type, obj, self): void {
-    if (type === 'DELETE') {
-      if (self.savedFilter.selected == obj.id) {
-        self.savedFilter.selected = undefined;
-        self.isCustomizationSelected(false);
-        self.adtLog.selectedView = false;
-        self.selectedFiltered = undefined;
-        self.setDateRange({});
-        self.load();
-      } else {
-        if (self.filterList.length == 0) {
-          self.isCustomizationSelected(false);
-          self.savedFilter.selected = undefined;
-          self.adtLog.selectedView = false;
-          self.selectedFiltered = undefined;
-        }
-      }
-      self.saveService.setAuditLog(self.savedFilter);
-      self.saveService.save();
-    } else if (type === 'MAKEFAV') {
-      self.savedFilter.favorite = obj.id;
-      self.adtLog.selectedView = true;
-      self.saveService.setAuditLog(self.savedFilter);
-      self.saveService.save();
-      self.load();
-    } else if (type === 'REMOVEFAV') {
-      self.savedFilter.favorite = '';
-      self.saveService.setAuditLog(self.savedFilter);
-      self.saveService.save();
-    }
-  }
-
-  changeFilter(filter): void {
-    if (filter) {
-      this.savedFilter.selected = filter.id;
-      this.adtLog.selectedView = true;
-      this.coreService.post('configuration', {
-        controllerId: filter.controllerId,
-        id: filter.id
-      }).subscribe((conf: any) => {
-        this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
-        this.selectedFiltered.account = filter.account;
-        this.load(null);
-      });
-    } else {
-      this.isCustomizationSelected(false);
-      this.savedFilter.selected = filter;
-      this.adtLog.selectedView = false;
-      this.selectedFiltered = {};
-      this.setDateRange({});
-      this.load(null);
-    }
-
-    this.saveService.setAuditLog(this.savedFilter);
-    this.saveService.save();
   }
 
   private init(): void {
@@ -762,6 +537,257 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       delete filter.timeZone;
     }
     return filter;
+  }
+
+  /* ----------------------Action --------------------- */
+  action(type, obj, self): void {
+    if (type === 'DELETE') {
+      if (self.savedFilter.selected == obj.id) {
+        self.savedFilter.selected = undefined;
+        self.isCustomizationSelected(false);
+        self.adtLog.selectedView = false;
+        self.selectedFiltered = undefined;
+        self.setDateRange({});
+        self.load();
+      } else {
+        if (self.filterList.length == 0) {
+          self.isCustomizationSelected(false);
+          self.savedFilter.selected = undefined;
+          self.adtLog.selectedView = false;
+          self.selectedFiltered = undefined;
+        }
+      }
+      self.saveService.setAuditLog(self.savedFilter);
+      self.saveService.save();
+    } else if (type === 'MAKEFAV') {
+      self.savedFilter.favorite = obj.id;
+      self.adtLog.selectedView = true;
+      self.saveService.setAuditLog(self.savedFilter);
+      self.saveService.save();
+      self.load();
+    } else if (type === 'REMOVEFAV') {
+      self.savedFilter.favorite = '';
+      self.saveService.setAuditLog(self.savedFilter);
+      self.saveService.save();
+    }
+  }
+
+  changeController(): void {
+    this.load(null);
+  }
+
+  navToDeploymentHistory(auditLog): void {
+    if (auditLog.commitId) {
+      console.log(auditLog);
+      this.router.navigate(['/history/deployment'], {
+        queryParams: {
+          commitId: auditLog.commitId,
+          controllerId: (!auditLog.controllerId || auditLog.controllerId === '-') ? this.schedulerIds.selected : auditLog.controllerId
+        }
+      });
+    }
+  }
+
+  showDetail(auditLog): void {
+    auditLog.show = true;
+    if (!auditLog.isLoaded) {
+      this.coreService.post('audit_log/details', {
+        auditLogId: auditLog.id
+      }).subscribe((res: any) => {
+        auditLog.details = res.auditLogDetails;
+        auditLog.isLoaded = true;
+      }, () => {
+        auditLog.isLoaded = true;
+      });
+    }
+  }
+
+  sort(propertyName): void {
+    this.adtLog.reverse = !this.adtLog.reverse;
+    this.adtLog.filter.sortBy = propertyName;
+  }
+
+  pageIndexChange($event): void {
+    this.adtLog.currentPage = $event;
+  }
+
+  pageSizeChange($event): void {
+    this.adtLog.entryPerPage = $event;
+  }
+
+  searchInResult(): void {
+    this.data = this.adtLog.searchText ? this.searchPipe.transform(this.auditLogs, this.adtLog.searchText, this.searchableProperties) : this.auditLogs;
+    this.data = [...this.data];
+  }
+
+  exportToExcel(): void {
+    let created = '', controllerId = '', category = '', account = '',
+      request = '', comment = '', timeSpend = '', ticketLink = '';
+    this.translate.get('auditLog.label.created').subscribe(translatedValue => {
+      created = translatedValue;
+    });
+    this.translate.get('common.label.controllerId').subscribe(translatedValue => {
+      controllerId = translatedValue;
+    });
+    this.translate.get('auditLog.label.account').subscribe(translatedValue => {
+      account = translatedValue;
+    });
+    this.translate.get('auditLog.label.request').subscribe(translatedValue => {
+      request = translatedValue;
+    });
+    this.translate.get('auditLog.label.category').subscribe(translatedValue => {
+      category = translatedValue;
+    });
+    this.translate.get('auditLog.label.comment').subscribe(translatedValue => {
+      comment = translatedValue;
+    });
+    this.translate.get('auditLog.label.timeSpend').subscribe(translatedValue => {
+      timeSpend = translatedValue;
+    });
+    this.translate.get('auditLog.label.ticketLink').subscribe(translatedValue => {
+      ticketLink = translatedValue;
+    });
+    const data = [];
+    for (let i = 0; i < this.auditLogs.length; i++) {
+      const obj: any = {};
+      if (!this.adtLog.current) {
+        obj[controllerId] = this.auditLogs[i].controllerId;
+      }
+      obj[created] = this.coreService.stringToDate(this.preferences, this.auditLogs[i].created);
+      obj[account] = this.auditLogs[i].account;
+      obj[request] = this.auditLogs[i].request;
+      obj[category] = this.auditLogs[i].category;
+      obj[comment] = this.auditLogs[i].comment;
+      obj[timeSpend] = this.auditLogs[i].timeSpend;
+      obj[ticketLink] = this.auditLogs[i].ticketLink;
+
+      data.push(obj);
+    }
+    this.excelService.exportAsExcelFile(data, 'JS7-audit-logs');
+  }
+
+  /* ----------------------Advance Search --------------------- */
+  advancedSearch(): void {
+    this.showSearchPanel = true;
+    this.searchFilter = {
+      radio: 'current',
+      planned: 'today',
+      from: new Date(),
+      to: new Date(),
+      toTime: new Date()
+    };
+  }
+
+  cancel(): void {
+    if (!this.adtLog.filter.date) {
+      this.adtLog.filter.date = 'today';
+    }
+    this.showSearchPanel = false;
+    this.searchFilter = {};
+    this.load(null);
+  }
+
+  search(): void {
+    this.isLoaded = false;
+    let filter: any = {
+      controllerId: this.adtLog.current == true ? this.schedulerIds.selected : '',
+      limit: parseInt(this.preferences.maxAuditLogRecords, 10),
+      account: this.searchFilter.account ? this.searchFilter.account : undefined,
+      timeZone: this.preferences.zone
+    };
+
+    this.adtLog.filter.date = '';
+    filter = this.generateRequestObj(this.searchFilter, filter);
+    this.coreService.post('audit_log', filter).subscribe((res: any) => {
+      this.auditLogs = res.auditLog;
+      this.searchInResult();
+      this.isLoaded = true;
+    }, (err) => {
+      console.log(err);
+      this.isLoaded = true;
+    });
+  }
+
+  /* ---- Customization ------ */
+  createCustomization(): void {
+    if (this.schedulerIds.selected) {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: FilterModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          permission: this.permission,
+          allFilter: this.filterList,
+          new: true
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe((configObj) => {
+        if (configObj) {
+          if (this.filterList.length == 1) {
+            this.savedFilter.selected = configObj.id;
+            this.adtLog.selectedView = true;
+            this.selectedFiltered = configObj;
+            this.isCustomizationSelected(true);
+            this.load(null);
+            this.saveService.setAuditLog(this.savedFilter);
+            this.saveService.save();
+          }
+        }
+      });
+    }
+  }
+
+  editFilters(): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: EditFilterModalComponent,
+      nzComponentParams: {
+        filterList: this.filterList,
+        favorite: this.savedFilter.favorite,
+        permission: this.permission,
+        username: this.authService.currentUserData,
+        action: this.action,
+        self: this
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(obj => {
+      if (obj) {
+        if (obj.type === 'EDIT') {
+          this.editFilter(obj);
+        } else if (obj.type === 'COPY') {
+          this.copyFilter(obj);
+        }
+      }
+    });
+  }
+
+  changeFilter(filter): void {
+    if (filter) {
+      this.savedFilter.selected = filter.id;
+      this.adtLog.selectedView = true;
+      this.coreService.post('configuration', {
+        controllerId: filter.controllerId,
+        id: filter.id
+      }).subscribe((conf: any) => {
+        this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
+        this.selectedFiltered.account = filter.account;
+        this.load(null);
+      });
+    } else {
+      this.isCustomizationSelected(false);
+      this.savedFilter.selected = filter;
+      this.adtLog.selectedView = false;
+      this.selectedFiltered = {};
+      this.setDateRange({});
+      this.load(null);
+    }
+
+    this.saveService.setAuditLog(this.savedFilter);
+    this.saveService.save();
   }
 
   private editFilter(filter): void {

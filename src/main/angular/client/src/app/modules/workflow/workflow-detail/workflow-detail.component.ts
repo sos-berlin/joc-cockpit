@@ -15,17 +15,17 @@ import {CommentModalComponent} from '../../../components/comment-modal/comment.c
 import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../../../components/modify-modal/modify.component';
 import {ScriptModalComponent} from '../script-modal/script-modal.component';
 
-declare const mxEditor;
-declare const mxUtils;
-declare const mxEvent;
-declare const mxClient;
-declare const mxEdgeHandler;
-declare const mxGraphHandler;
-declare const mxGraph;
-declare const mxImage;
-declare const mxOutline;
-declare const mxConstants;
-declare const mxEventObject;
+declare const mxEditor: any;
+declare const mxUtils: any;
+declare const mxEvent: any;
+declare const mxClient: any;
+declare const mxEdgeHandler: any;
+declare const mxGraphHandler: any;
+declare const mxGraph: any;
+declare const mxImage: any;
+declare const mxOutline: any;
+declare const mxConstants: any;
+declare const mxEventObject: any;
 
 declare const $;
 
@@ -71,7 +71,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
   constructor(private authService: AuthService, public coreService: CoreService, private route: ActivatedRoute,
-              private workflowService: WorkflowService, public modal: NzModalService,
+              public workflowService: WorkflowService, public modal: NzModalService,
               private dataService: DataService, private nzContextMenuService: NzContextMenuService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -320,7 +320,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   }
 
   changeParameter(): void {
-    this.coreService.post('orders/variables', {
+    this.coreService.post('daily_plan/orders/variables', {
       orderId: this.order.orderId,
       controllerId: this.schedulerIds.selected
     }).subscribe((res: any) => {
@@ -367,16 +367,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   }
 
   private showAndHideBtn(): void {
-    if (document.body.scrollHeight > document.body.clientHeight) {
-      if (window.scrollY > 50) {
-        $('.scrollBottom-btn').hide();
-        $('.scrolltop-btn').show();
-      } else {
-        $('.scrollBottom-btn').show();
-        $('.scrolltop-btn').hide();
-      }
-    } else {
+    if (window.scrollY > 50) {
       $('.scrollBottom-btn').hide();
+      $('.scrolltop-btn').show();
+    } else {
+      $('.scrollBottom-btn').show();
       $('.scrolltop-btn').hide();
     }
   }
@@ -427,6 +422,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
           if (this.mapObj.has(JSON.stringify(res.orders[j].position))) {
             arr = arr.concat(this.mapObj.get(JSON.stringify(res.orders[j].position)));
           }
+          for (const o in res.orders[j].position) {
+            if (/^(try+)/.test(res.orders[j].position[o])) {
+              res.orders[j].position[o] = 'try+0';
+            }
+          }
           this.mapObj.set(JSON.stringify(res.orders[j].position), arr);
           const state = res.orders[j].state._text.toLowerCase();
           if (this.workflow.ordersSummary[state]) {
@@ -443,6 +443,13 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       this.isWorkflowStored(workflow, isFirst);
       this.loading = true;
     });
+  }
+
+  viewOrders(workflow): void {
+    this.sideBar = {
+      isVisible: true,
+      orders: workflow.orders
+    };
   }
 
   private checkSideBar(): void {
@@ -592,7 +599,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
               isVisible: true,
               orders: JSON.parse(orders)
             };
-          } else if (cell.value.tagName === 'Job'){
+          } else if (cell.value.tagName === 'Job') {
             self.showConfiguration(cell.value.getAttribute('jobName'));
           }
           evt.consume();
@@ -632,16 +639,16 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
               self.order = null;
               self.job = null;
               let data;
-              if(state.cell.value.tagName === 'Order') {
+              if (state.cell.value.tagName === 'Order') {
                 data = state.cell.getAttribute('order');
                 data = JSON.parse(data);
-              } else{
+              } else {
                 data = {jobName: state.cell.value.getAttribute('jobName')};
               }
               try {
                 if (self.menu) {
                   setTimeout(() => {
-                    if(data.jobName) {
+                    if (data.jobName) {
                       self.job = data;
                     } else {
                       self.order = data;
@@ -962,7 +969,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         if (order && order.show) {
-          this.coreService.post('orders/variables', {
+          this.coreService.post('daily_plan/orders/variables', {
             orderId: order.orderId,
             controllerId: this.schedulerIds.selected
           }).subscribe((res: any) => {
@@ -1024,15 +1031,15 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  assignDocumentation(): void{
+  assignDocumentation(): void {
 
   }
 
-  unassignDocumentation(): void{
+  unassignDocumentation(): void {
 
   }
 
-  viewDocumentation(): void{
+  viewDocumentation(): void {
 
   }
 }

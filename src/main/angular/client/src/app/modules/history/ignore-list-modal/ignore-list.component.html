@@ -14,8 +14,9 @@
           <thead>
           <tr>
             <th>
-              <span *ngIf="historyFilters.type == 'ORDER'" translate>history.label.workflow</span>
-              <span *ngIf="historyFilters.type == 'TASK'" translate>history.label.task</span>
+              <span translate>history.label.workflow</span>
+              <span *ngIf="historyFilters.type == 'TASK'">/</span>
+              <span *ngIf="historyFilters.type == 'TASK'" translate>history.label.job</span>
             </th>
             <th><span translate>common.label.action</span></th>
           </tr>
@@ -26,7 +27,7 @@
             <td><a class="text-u-l text-danger" (click)="removeWorkflowIgnoreList(workflow)" translate>common.button.remove</a></td>
           </tr>
           <tr *ngFor="let job of savedIgnoreList.jobs" [hidden]="historyFilters.type !== 'TASK'">
-            <td>{{job}}</td>
+            <td>{{job.workflowPath}}<i *ngIf="job.job">,</i> {{job.job}}</td>
             <td><a class="text-u-l text-danger" (click)="removeJobIgnoreList(job)" translate>common.button.remove</a></td>
           </tr>
           </tbody>

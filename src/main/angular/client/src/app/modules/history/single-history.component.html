@@ -14,7 +14,7 @@
 <div class="scroll-y max-ht">
   <div class="padding p-b-0">
     <div class="m-t-sm box p-a">
-      <div class="table-responsive">
+      <div class="table-responsive" *ngIf="workflowPath">
         <nz-table
           #ajaxOrderTable
           [nzSize]="'small'"
@@ -92,6 +92,76 @@
               <app-order-history-template class="order-history-template0" style="display: block" [history]="history" [schedulerId]="controllerId"
                                           [historyView]="{}"
               ></app-order-history-template>
+              </td>
+            </tr>
+          </ng-template>
+          </tbody>
+        </nz-table>
+      </div>
+      <div class="table-responsive" *ngIf="commitId">
+        <nz-table
+          #ajaxTable
+          [nzSize]="'small'"
+          [nzBordered]="true"
+          [nzShowPagination]="false"
+          [nzData]="history"
+          [nzLoading]="loading"
+          [nzShowSizeChanger]="false"
+        >
+          <thead>
+          <tr>
+            <th width="25%"><span translate>common.label.controllerId</span></th>
+            <th width="25%"><span  translate>history.label.deploymentDate</span></th>
+            <th width="25%"><span  translate>common.label.account</span></th>
+            <th width="25%"><span  translate>history.label.state</span></th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-template ngFor let-depHistory [ngForOf]="ajaxTable.data">
+            <tr>
+              <td>
+                <span [innerHtml]="depHistory.controllerId"></span>
+              </td>
+              <td>
+                  <span [innerHtml]="depHistory.deploymentDate | stringToDate"></span>
+              </td>
+              <td><span [innerHtml]="depHistory.account"></span></td>
+              <td><span class="label" [ngClass]="{'bg-dark-blue' : depHistory.state=== 'DEPLOYED', 'bg-orange' : depHistory.state=== 'NOT_DEPLOYED'}" [innerHtml]="depHistory.state | translate"></span></td>
+            </tr>
+            <tr *ngIf="depHistory.errorMessage">
+              <td colspan="4"><span class="text-danger">{{depHistory.errorMessage}}</span></td>
+            </tr>
+            <tr>
+              <td colspan="4" style="padding:0 !important;" class="order-history-template0">
+                <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small"
+                          [nzData]="depHistory.children" [nzShowPagination]="false" [nzFrontPagination]="false">
+                  <thead>
+                  <tr>
+                    <th width="24.95%"><span translate>history.label.deployType</span></th>
+                    <th width="24.97%"><span translate>common.label.path</span></th>
+                    <th width="24.95%"><span translate>history.label.operation</span></th>
+                    <th width="24.95%"><span translate>history.label.date</span></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let child of innerChildTable.data">
+                    <td><span [innerHtml]="child.deployType | translate"></span></td>
+                    <td>
+                      <span class="show-in-single-line w-full">
+                        <i *ngIf="child.operation === 'UPDATE'"
+                           (click)="navToInventoryTab(child);$event.stopPropagation()"
+                           class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                        <span
+                          [ngClass]="(child.deployType === 'Workflow' && child.operation === 'UPDATE') ? 'text-hover-primary' : ''"
+                          (click)="coreService.showWorkflow(child.path);$event.stopPropagation()"
+                          [innerHtml]="child.path"></span>
+                      </span>
+                    </td>
+                    <td><span [innerHtml]="child.operation | translate"></span></td>
+                    <td [innerHtml]="child.deploymentDate | stringToDate"></td>
+                  </tr>
+                  </tbody>
+                </nz-table>
               </td>
             </tr>
           </ng-template>

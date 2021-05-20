@@ -7,6 +7,8 @@ import {StringDatePipe} from '../pipes/core.pipe';
 declare const mxHierarchicalLayout: any;
 declare const mxTooltipHandler: any;
 declare const mxUtils: any;
+declare const saveSvgAsPng: any;
+declare const $: any;
 
 @Injectable()
 export class WorkflowService {
@@ -1052,5 +1054,26 @@ export class WorkflowService {
   isInstructionCollapsible(tagName: string): boolean {
     return (tagName === 'Fork' || tagName === 'If' || tagName === 'Retry'
       || tagName === 'Lock' || tagName === 'Try');
+  }
+
+  exportInPng(name): void {
+    const dom = $('#graph');
+    let ht = $(document).height();
+    let wt = $(document).width();
+    if (wt < dom.first()[0].scrollWidth) {
+      wt = dom.first()[0].scrollWidth;
+    }
+    if (ht < dom.first()[0].scrollHeight) {
+      ht = dom.first()[0].scrollHeight;
+    }
+    let bg = dom.css('background-color');
+    bg = bg.substring(0, bg.length - 4);
+    saveSvgAsPng(dom.first()[0].firstChild, name + '.png', {
+      backgroundColor:  bg + '1)',
+      height: ht + 200,
+      width: wt + 200,
+      left: -50,
+      top: -80
+    });
   }
 }

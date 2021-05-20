@@ -14,18 +14,18 @@
             </button>
             <button *ngIf="permission.joc.inventory.manage" class="btn btn-sm btn-grey m-l-12"
                     (click)="exportObject(null)">
-              <i class="fa fa-download"></i>&nbsp;
+              <i nz-icon nzType="export" nzTheme="outline"></i>&nbsp;
               <span translate>inventory.button.export</span>
             </button>
             <button *ngIf="permission.joc.inventory.manage" class="btn btn-sm btn-grey m-l-12"
                     (click)="import()">
-              <i class="fa fa-upload"></i>&nbsp;
+              <i nz-icon nzType="import" nzTheme="outline"></i>&nbsp;
               <span translate>inventory.button.import</span>
             </button>
             <button
               *ngIf="securityLevel === 'HIGH' && permission.joc.inventory.manage && permission.joc.inventory.deploy && permission.controllerDefaults.deployments.deploy"
               class="btn btn-sm btn-grey m-l-12" (click)="importDeploy()">
-              <i class="fa fa-upload"></i>&nbsp;
+              <i nz-icon nzType="import" nzTheme="outline"></i>&nbsp;
               <span translate>inventory.button.importAndDeploy</span>
             </button>
           </div>

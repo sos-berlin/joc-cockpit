@@ -133,6 +133,7 @@
   "auditLog": {
     "label.auditLog": "Prüfprotokoll",
     "label.requestBody": "Inhalt der Anfrage",
+    "label.details": "Details Object",
     "label.category": "Category",
     "label.created": "Erstellt",
     "label.account": "Konto",
@@ -178,6 +179,7 @@
     "label.documentation": "Dokumentation",
     "label.history": "Historie",
     "label.order": "Auftrag",
+    "label.deployment": "Deployment",
     "label.auditLog": "Prüfprotokoll",
     "label.configuration": "Konfiguration",
     "label.manageControllersAndAgents": "Controller und Agenten verwalten",
@@ -1542,6 +1544,7 @@
     "button.showGraphicalView": "Graphische Ansicht zeigen",
     "button.showDailyPlan": "Tagesplan anzeigen",
     "button.addOrder": "Auftrag hinzufügen",
+    "button.exportInPng": "Export In Png",
     "tab.jobProperties": "Job-Eigenschaften",
     "tab.jobOptions": "Job-Optionen",
     "tab.nodeProperties": "Knoten-Eigenschaften",

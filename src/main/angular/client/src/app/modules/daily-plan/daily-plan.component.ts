@@ -1398,7 +1398,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   addDetailsOfOrder(plan): void {
     plan.show = plan.show === undefined || plan.show === false;
     if (plan.show) {
-      this.coreService.post('orders/variables', {
+      this.coreService.post('daily_plan/orders/variables', {
         orderId: plan.orderId,
         controllerId: this.schedulerIds.selected
       }).subscribe((res: any) => {
@@ -1697,7 +1697,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   changeParameter(plan, order): void {
     if (order) {
-      this.coreService.post('orders/variables', {
+      this.coreService.post('daily_plan/orders/variables', {
         orderId: order.orderId,
         controllerId: this.schedulerIds.selected
       }).subscribe((res: any) => {
@@ -2183,7 +2183,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         if (order && order.show) {
-          this.coreService.post('orders/variables', {
+          this.coreService.post('daily_plan/orders/variables', {
             orderId: order.orderId,
             controllerId: this.schedulerIds.selected
           }).subscribe((res: any) => {

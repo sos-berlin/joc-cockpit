@@ -133,6 +133,7 @@
   "auditLog": {
     "label.auditLog": "操作ログ",
     "label.requestBody": "リクエスト内容",
+    "label.details": "Details Object",
     "label.category": "Category",
     "label.created": "日時",
     "label.account": "アカウント",
@@ -178,6 +179,7 @@
     "label.documentation": "ドキュメント",
     "label.history": "履歴",
     "label.order": "オーダー",
+    "label.deployment": "Deployment",
     "label.auditLog": "操作ログ",
     "label.configuration": "ジョブ定義",
     "label.manageControllersAndAgents": "コントローラー・エージェント管理",
@@ -1542,6 +1544,7 @@
     "button.showGraphicalView": "グラフィカル表示",
     "button.showDailyPlan": "実行計画表示",
     "button.addOrder": "オーダー追加",
+    "button.exportInPng": "Export In Png",
     "tab.jobProperties": "ジョブプロパティ",
     "tab.jobOptions": "ジョブオプション",
     "tab.nodeProperties": "ノードプロパティ",

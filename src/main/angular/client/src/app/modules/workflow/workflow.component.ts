@@ -293,10 +293,16 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
     }
     obj.timeZone = this.preferences.zone;
     this.coreService.post('orders', obj).subscribe((res: any) => {
+      this.workflows[0].orders = res.orders;
       this.workflows[0].ordersSummary = {};
       this.workflows[0].numOfOrders = res.orders.length;
       if (res.orders && res.orders.length > 0) {
-        for (let j in res.orders.length) {
+        for (let j in res.orders) {
+          for (const o in res.orders[j].position) {
+            if (/^(try+)/.test(res.orders[j].position[o])) {
+              res.orders[j].position[o] = 'try+0';
+            }
+          }
           const state = res.orders[j].state._text.toLowerCase();
           if (this.workflows[0].ordersSummary[state]) {
             this.workflows[0].ordersSummary[state] = this.workflows[0].ordersSummary[state] + 1;
@@ -1028,6 +1034,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               this.workflows[i].numOfOrders = (this.workflows[i].numOfOrders || 0) + 1;
               if (!this.workflows[i].orders) {
                 this.workflows[i].orders = [];
+              }
+              for (const o in res.orders[j].position) {
+                if (/^(try+)/.test(res.orders[j].position[o])) {
+                  res.orders[j].position[o] = 'try+0';
+                }
               }
               this.workflows[i].orders.push(res.orders[j]);
               const state = res.orders[j].state._text.toLowerCase();

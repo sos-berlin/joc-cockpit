@@ -133,6 +133,7 @@
   "auditLog": {
     "label.auditLog": "Journal d'audit",
     "label.requestBody": "Request Body",
+    "label.details": "Details Object",
     "label.category": "Category",
     "label.created": "Créé",
     "label.account": "compte",
@@ -178,6 +179,7 @@
     "label.documentation": "Documentation",
     "label.history": "Historique",
     "label.order": "Order",
+    "label.deployment": "Deployment",
     "label.auditLog": "Journal d'Audit",
     "label.configuration": "Configuration",
     "label.manageControllersAndAgents": "Gérer les Contrôleurs et les Agents",
@@ -1542,6 +1544,7 @@
     "button.showGraphicalView": "Afficher la vue graphique",
     "button.showDailyPlan": "Afficher le Plan Quotidien",
     "button.addOrder": "Ajouter un Ordre",
+    "button.exportInPng": "Export In Png",
     "tab.jobProperties": "Propriétés de Tâche",
     "tab.jobOptions": "Options de Tâche",
     "tab.nodeProperties": "Propriétés du Nœud",

@@ -109,6 +109,15 @@
               <span class="nav-text">  <i nz-icon nzType="upload" nzTheme="outline"></i></span>
             </a>
           </li>
+          <li class="nav-item dropdown-separator">
+            <span class="separator"></span>
+          </li>
+          <li class="nav-item" [nz-tooltip]="'workflow.button.exportInPng' | translate">
+            <a class="nav-link"
+               (click)="workflowService.exportInPng(data.name)">
+              <span class="nav-text">  <i nz-icon nzType="export" nzTheme="outline"></i></span>
+            </a>
+          </li>
         </ul>
       </div>
       <div id="outlineContainer"></div>

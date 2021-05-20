@@ -1732,8 +1732,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.checkGraphHeight();
         this.isLoading = false;
         this.history.present = this.workflow.actual;
-        this.updateJobs(this.editor.graph, true);
-        this.ref.detectChanges();
+        if (this.editor) {
+          this.updateJobs(this.editor.graph, true);
+          this.ref.detectChanges();
+        }
       }
     }, () => {
       this.isLoading = false;
