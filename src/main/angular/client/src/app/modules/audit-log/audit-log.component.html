@@ -197,18 +197,18 @@
             <tbody>
             <ng-template ngFor let-auditLog [ngForOf]="ajaxTable.data | orderBy: adtLog.filter.sortBy:adtLog.reverse">
               <tr (click)="navToDeploymentHistory(auditLog)" [ngClass]="{'primary-text-hover-color cursor': auditLog.commitId}">
-                <td *ngIf="!adtLog.current">
+                <td *ngIf="!adtLog.current" (click)="$event.stopPropagation()">
                   <i class="cursor fa fa-caret-down fa-lg" *ngIf="!auditLog.show"
-                     (click)="showDetail(auditLog)"></i>
+                     (click)="showDetail(auditLog);$event.stopPropagation()"></i>
                   <i class="cursor fa fa-caret-up fa-lg" *ngIf="auditLog.show"
-                     (click)="auditLog.show = false"></i>&nbsp;
+                     (click)="auditLog.show = false;$event.stopPropagation()"></i>&nbsp;
                   <span [innerHtml]="auditLog.controllerId | highlight : adtLog.searchText"></span>
                 </td>
-                <td nowrap>
+                <td nowrap (click)="$event.stopPropagation()">
                   <i class="cursor fa fa-caret-down fa-lg"
-                     *ngIf="!auditLog.show && adtLog.current" (click)="showDetail(auditLog)"></i>
+                     *ngIf="!auditLog.show && adtLog.current" (click)="showDetail(auditLog);$event.stopPropagation()"></i>
                   <i class="cursor fa fa-caret-up fa-lg"
-                     *ngIf="auditLog.show && adtLog.current" (click)="auditLog.show = false"></i>&nbsp;
+                     *ngIf="auditLog.show && adtLog.current" (click)="auditLog.show = false;$event.stopPropagation()"></i>&nbsp;
                   <span [innerHtml]="auditLog.created | stringToDate | highlight : adtLog.searchText"></span></td>
                 <td><span [innerHtml]="auditLog.account | highlight : adtLog.searchText"></span></td>
                 <td><span [innerHtml]="auditLog.request | highlight : adtLog.searchText"></span></td>

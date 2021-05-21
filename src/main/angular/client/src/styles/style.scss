@@ -2947,6 +2947,14 @@ body div.mxPopupMenu {
   background: var(--menu-hover);
 }
 
+.move-icon {
+  opacity: 0;
+}
+
+.move-on-hover:hover .move-icon {
+  opacity: .7;
+}
+
 div.order-panel {
   margin-top: 24px;
 }

@@ -179,7 +179,7 @@ export class CoreService {
     this.tabs._configuration = {};
     this.tabs._configuration.state = 'inventory';
     this.tabs._configuration.inventory = {};
-    this.tabs._configuration.inventory.deployedMessages = [];
+    this.tabs._configuration.copiedParamObjects = {};
 
     this.tempTabs._workflow = {};
     this.tempTabs._workflow.filter = {};
@@ -325,7 +325,7 @@ export class CoreService {
     this.tempTabs._configuration = {};
     this.tempTabs._configuration.state = 'inventory';
     this.tempTabs._configuration.inventory = {};
-    this.tempTabs._configuration.inventory.deployedMessages = [];
+    this.tempTabs._configuration.copiedParamObjects = {};
 
     this.dashboard._dashboard = {};
     this.dashboard._dashboard.order = {};
@@ -832,8 +832,8 @@ export class CoreService {
   showWorkflow(workflow): void {
     this.router.navigate(['/workflows/workflow'], {
       queryParams: {
-        path: workflow,
-        scheduler_id: JSON.parse(this.authService.scheduleIds).selected
+        name: workflow,
+        controllerId: JSON.parse(this.authService.scheduleIds).selected
       }
     });
   }

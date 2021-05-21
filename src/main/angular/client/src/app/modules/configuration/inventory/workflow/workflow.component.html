@@ -6,7 +6,7 @@
           <div class="inline m-b" *ngIf="workflow.path">
             <div style="position: relative; top: 3px">
               <a (click)="backToListView()"><i nz-tooltip="{{'inventory.button.backToList' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
-              <span class="_600" [ngClass]="{'cursor text-hover-primary': workflow.hasDeployments}" (click)="navToWorkflowTab()">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
+              <span class="_600" [ngClass]="{'cursor text-hover-primary': workflow.hasDeployments || data.deployed}" (click)="navToWorkflowTab()">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
               <span class="text-muted _400" *ngIf="title"> - {{title}}</span>
               <a class="p-l-xs" (click)="addWorkflow()" *ngIf="!isTrash">
                 <i nz-icon nzType="edit" nzTheme="outline"></i>
@@ -113,8 +113,7 @@
             <span class="separator"></span>
           </li>
           <li class="nav-item" [nz-tooltip]="'workflow.button.exportInPng' | translate">
-            <a class="nav-link"
-               (click)="workflowService.exportInPng(data.name)">
+            <a class="nav-link" (click)="workflowService.exportInPng(data.name)">
               <span class="nav-text">  <i nz-icon nzType="export" nzTheme="outline"></i></span>
             </a>
           </li>

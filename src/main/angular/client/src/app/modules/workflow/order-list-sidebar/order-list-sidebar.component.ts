@@ -77,7 +77,7 @@ export class OrderListSidebarComponent {
     this.checked = this.orders.every(item => {
       return this.setOfCheckedId.has(item.orderId);
     });
-    this.indeterminate = this.orders.some(item => this.setOfCheckedId.has(item.orderId)) && !this.checked;
+    this.indeterminate = this.setOfCheckedId.size > 0 && !this.checked;
   }
 
   showPanelFuc(order): void {

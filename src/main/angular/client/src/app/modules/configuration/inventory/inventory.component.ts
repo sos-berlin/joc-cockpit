@@ -1122,7 +1122,7 @@ export class ExportComponent implements OnInit {
     recursive(this.nodes);
   }
 
-  private buildDeployablesTree(result) {
+  private buildDeployablesTree(result): void {
     if (result && result.length > 0) {
       const arr = groupBy(sortBy(result, 'folder'), (res) => {
         return res.folder;
@@ -1902,8 +1902,8 @@ export class CreateFolderModalComponent implements OnInit {
         }
 
         this.submitted = false;
-        this.coreService.post(URL, obj).subscribe(() => {
-          this.activeModal.close('DONE');
+        this.coreService.post(URL, obj).subscribe((res) => {
+          this.activeModal.close(res);
         }, () => {
           this.submitted = false;
           this.ref.detectChanges();
@@ -2606,7 +2606,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  mergeTree(scr, dest): void {
+  mergeTree(scr, dest): any {
     function checkPath(obj) {
       for (let i = 0; i < dest.length; i++) {
         if (dest[i].name === obj.name && dest[i].path === obj.path) {
@@ -2827,7 +2827,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
     obj.controllerIds = obj.controllerIds.filter((id) => {
       let flag = true;
       if (this.permission.controllers) {
-        console.log(this.permission.controllers[id]);
         if (this.permission.controllers[id]) {
           if (!this.permission.controllers[id].deployments.deploy) {
             flag = false;
@@ -3395,8 +3394,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
         }
         node.origin.loading = false;
         node.origin.expanded = true;
-        this.updateTree(this.isTrash);
       }
+      this.updateTree(this.isTrash);
     }, false);
   }
 

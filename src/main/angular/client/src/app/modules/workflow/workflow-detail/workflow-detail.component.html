@@ -108,13 +108,13 @@
               <tbody>
               <ng-template ngFor let-item
                            [ngForOf]="ajaxTable.data">
-                <tr [ngClass]="{'light-bg':item.show}">
+                <tr>
                   <td>
                     <span class="show-in-single-line">
                       <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
-                         *ngIf="!item.show && item.fileOrderSources && item.fileOrderSources.length>0" (click)="item.show = true"></i>
-                      <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" *ngIf="item.show"
-                         (click)="item.show = false"></i>
+                         *ngIf="item.hide && item.fileOrderSources && item.fileOrderSources.length>0" (click)="item.hide = false"></i>
+                      <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" *ngIf="!item.hide"
+                         (click)="item.hide = true"></i>
                       <a class="text-dark">
                         <i (click)="coreService.navToInventoryTab(item.path, 'WORKFLOW');"
                              class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
@@ -159,7 +159,7 @@
                     <span *ngIf="item.ordersSummary" [innerHtml]="item.ordersSummary.terminated || 0"></span>
                   </td>
                 </tr>
-                <tr *ngIf="item.show && item.fileOrderSources">
+                <tr *ngIf="!item.hide && item.fileOrderSources">
                   <td colspan="14">
                     <div class="text-sm" *ngFor="let order of item.fileOrderSources; let i = index">
                       <span *ngIf="i==0">{{'workflow.label.fileOrders' | translate}} |&nbsp;</span>
@@ -279,16 +279,6 @@
                     <li nz-menu-item>
                       <a (click)="showConfiguration(job.jobName);">
                         <span translate>common.button.showConfiguration</span>
-                      </a>
-                    </li>
-                    <li nz-menu-item>
-                      <a (click)="assignDocumentation();">
-                        <span translate>common.button.assignDocumentation</span>
-                      </a>
-                    </li>
-                    <li nz-menu-item>
-                      <a (click)="unassignDocumentation();">
-                        <span translate>common.button.unassignDocumentation</span>
                       </a>
                     </li>
                     <li nz-menu-item>

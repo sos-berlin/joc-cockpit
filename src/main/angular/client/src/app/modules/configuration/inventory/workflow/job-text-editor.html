@@ -193,16 +193,39 @@
               </div>
             </nz-tab>
             <nz-tab [nzTitle]="'workflow.label.arguments' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ScriptExecutable' && selectedNode.job.executable.v1Compatible">
+              <div class="pos-abt" style="right: 24px; margin-top:-6px">
+                <button type="button" class="btn btn-grey btn-sm" [disabled]="object.setOfCheckedArgu.size === 0"
+                        nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('defaultArguments')" translate>
+                  <i class="fa fa-scissors"></i>
+                </button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="object.setOfCheckedEnv.size === 0"
+                        nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('defaultArguments')" translate>
+                  <i class="fa fa-copy"></i>
+                </button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="!copiedParamObjects.data"
+                        nz-tooltip="{{'common.button.paste' | translate}}" (click)="pasteParam(selectedNode.job.defaultArguments)" translate>
+                  <i class="fa fa-paste"></i>
+                </button>
+              </div>
               <div class="row">
-                <div class="col-md-12" style="max-height: calc(100vh - 675px); overflow: auto">
-                  <div class="form-group row m-b-0 m-l-12">
+                <div class="col-md-12" *ngIf="selectedNode.job.defaultArguments.length > 0">
+                  <div class="pos-abt m-t-n-xxs" style="margin-left: 11px">
+                    <label nz-checkbox [(nzChecked)]="object.checked5" [nzIndeterminate]="object.indeterminate5" (nzCheckedChange)="onAllChecked(selectedNode.job.defaultArguments,'defaultArguments', $event)"></label>
+                  </div>
+                  <div class="form-group row m-b-0 m-l-md">
                     <div class="col-md-4 col-lg-5 m-b-sm" translate>common.label.name</div>
                     <div class="col-md-8 col-lg-6 m-b-sm" translate>common.label.value</div>
                   </div>
+                </div>
+                <div class="col-md-12" style="max-height: calc(100vh - 675px); overflow: auto">
                   <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.job.defaultArguments)">
-                    <div class="form-group row m-b-0 m-l-12" *ngFor="let argument of selectedNode.job.defaultArguments; let i = index" cdkDrag>
-                      <div class="pos-abt" style="margin-left: -13px;font-size: 18px;margin-top: 2px;cursor: move" cdkDragHandle>
+                    <div class="form-group row m-b-0 m-l-md move-on-hover" *ngFor="let argument of selectedNode.job.defaultArguments; let i = index" cdkDrag>
+                      <div class="pos-abt move-icon" style="margin-left: -31px;font-size: 18px;margin-top: 2px;cursor: move;">
                         <i class="fa fa-bars" aria-hidden="true"></i>
+                      </div>
+                      <div class="pos-abt" style="margin-left: -12px;">
+                        <label class="m-t-xs" nz-checkbox [nzDisabled]="!argument.name" [nzChecked]="object.setOfCheckedDefaultArgu.has(argument.name)"
+                               (nzCheckedChange)="onItemChecked(selectedNode.job.defaultArguments, 'defaultArguments', argument.name, $event)" ></label>
                       </div>
                       <div class="col-md-5 col-lg-5 m-b-sm" [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}">
                         <label class="w-full">
@@ -221,7 +244,8 @@
                         <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
                       </div>
                       <div class="col-md-1 col-lg-1 p-l-0">
-                        <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                        <i *ngIf="object.setOfCheckedDefaultArgu.has(argument.name) && copiedParamObjects.operation === 'CUT'" class="fa fa-scissors m-t-sm"></i>
+                        <a *ngIf="!(object.setOfCheckedDefaultArgu.has(argument.name) && copiedParamObjects.operation === 'CUT')"><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                       </div>
                     </div>
                   </div>
@@ -234,16 +258,39 @@
               </div>
             </nz-tab>
             <nz-tab [nzTitle]="'workflow.label.environmentVariables' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ScriptExecutable'">
+              <div class="pos-abt" style="right: 24px; margin-top:-6px">
+                <button type="button" class="btn btn-grey btn-sm" [disabled]="object.setOfCheckedArgu.size === 0"
+                        nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('env')" translate>
+                  <i class="fa fa-scissors"></i>
+                </button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="object.setOfCheckedEnv.size === 0"
+                        nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('env')" translate>
+                  <i class="fa fa-copy"></i>
+                </button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="!copiedParamObjects.data"
+                        nz-tooltip="{{'common.button.paste' | translate}}" (click)="pasteParam(selectedNode.job.executable.env)" translate>
+                  <i class="fa fa-paste"></i>
+                </button>
+              </div>
               <div class="row">
-                <div class="col-md-12" style="max-height: calc(100vh - 675px); overflow: auto" *ngIf="selectedNode.job.executable.env">
-                  <div class="form-group row m-b-0 m-l-12">
-                    <div class="col-md-4 col-lg-5 m-b-sm" translate>common.label.name</div>
-                    <div class="col-md-8 col-lg-6 m-b-sm" translate>common.label.value</div>
-                  </div>
+                <div class="col-md-12" *ngIf="selectedNode.job.executable.env.length > 0">
+                    <div class="pos-abt m-t-n-xxs" style="margin-left: 11px">
+                      <label nz-checkbox [(nzChecked)]="object.checked3" [nzIndeterminate]="object.indeterminate3" (nzCheckedChange)="onAllChecked(selectedNode.job.executable.env,'env', $event)"></label>
+                    </div>
+                    <div class="form-group row m-b-0 m-l-md">
+                      <div class="col-md-4 col-lg-5 m-b-sm" translate>common.label.name</div>
+                      <div class="col-md-8 col-lg-6 m-b-sm" translate>common.label.value</div>
+                    </div>
+                </div>
+                <div class="col-md-12" style="max-height: calc(100vh - 675px); overflow: auto">
                   <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.job.executable.env)">
-                    <div class="form-group row m-b-0 m-l-12" *ngFor="let env of selectedNode.job.executable.env; let i = index" cdkDrag>
-                      <div class="pos-abt" style="margin-left: -13px;font-size: 18px;margin-top: 2px;cursor: move" cdkDragHandle>
+                    <div class="form-group row m-b-0 m-l-md move-on-hover" *ngFor="let env of selectedNode.job.executable.env; let i = index" cdkDrag>
+                      <div class="pos-abt move-icon" style="margin-left: -31px;font-size: 18px;margin-top: 2px;cursor: move;">
                         <i class="fa fa-bars" aria-hidden="true"></i>
+                      </div>
+                      <div class="pos-abt" style="margin-left: -12px;">
+                        <label class="m-t-xs" nz-checkbox [nzDisabled]="!env.name" [nzChecked]="object.setOfCheckedEnv.has(env.name)"
+                               (nzCheckedChange)="onItemChecked(selectedNode.job.executable.env, 'env', env.name, $event)" ></label>
                       </div>
                       <div class="col-md-5 col-lg-5 m-b-sm " [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}">
                         <label class="w-full">
@@ -270,7 +317,8 @@
                         </nz-mention>
                       </div>
                       <div class="col-md-1 col-lg-1 p-l-0">
-                        <a><i (click)="removeEnv(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                        <i *ngIf="object.setOfCheckedEnv.has(env.name) && copiedParamObjects.operation === 'CUT'" class="fa fa-scissors m-t-sm"></i>
+                        <a *ngIf="!(object.setOfCheckedEnv.has(env.name) && copiedParamObjects.operation === 'CUT')"><i (click)="removeEnv(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                       </div>
                     </div>
                   </div>
@@ -283,16 +331,39 @@
               </div>
             </nz-tab>
             <nz-tab [nzTitle]="'workflow.label.arguments' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'InternalExecutable'">
+              <div class="pos-abt" style="right: 24px; margin-top:-6px">
+                <button type="button" class="btn btn-grey btn-sm" [disabled]="object.setOfCheckedArgu.size === 0"
+                        nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('arguments')" translate>
+                  <i class="fa fa-scissors"></i>
+                </button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="object.setOfCheckedEnv.size === 0"
+                        nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('arguments')" translate>
+                  <i class="fa fa-copy"></i>
+                </button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="!copiedParamObjects.data"
+                        nz-tooltip="{{'common.button.paste' | translate}}" (click)="pasteParam(selectedNode.job.executable.arguments)" translate>
+                  <i class="fa fa-paste"></i>
+                </button>
+              </div>
               <div class="row">
-                <div class="col-md-12" style="max-height: calc(100vh - 675px); overflow: auto" *ngIf="selectedNode.job.executable.arguments">
-                  <div class="form-group row m-b-0 m-l-12">
-                    <div class="col-md-4 col-lg-5 m-b-sm" translate>common.label.name</div>
-                    <div class="col-md-8 col-lg-6 m-b-sm" translate>common.label.value</div>
-                  </div>
+                <div class="col-md-12" *ngIf="selectedNode.job.executable.arguments.length > 0">
+                    <div class="pos-abt m-t-n-xxs" style="margin-left: 11px">
+                      <label nz-checkbox [(nzChecked)]="object.checked1" [nzIndeterminate]="object.indeterminate1" (nzCheckedChange)="onAllChecked(selectedNode.job.executable.arguments,'arguments', $event)"></label>
+                    </div>
+                    <div class="form-group row m-b-0 m-l-md">
+                      <div class="col-md-4 col-lg-5 m-b-sm" translate>common.label.name</div>
+                      <div class="col-md-8 col-lg-6 m-b-sm" translate>common.label.value</div>
+                    </div>
+                </div>
+                <div class="col-md-12" style="max-height: calc(100vh - 675px); overflow: auto">
                   <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.job.executable.arguments)">
-                    <div class="form-group row m-b-0 m-l-12" *ngFor="let argu of selectedNode.job.executable.arguments; let i = index" cdkDrag>
-                      <div class="pos-abt" style="margin-left: -13px;font-size: 18px;margin-top: 2px;cursor: move" cdkDragHandle>
+                    <div class="form-group row m-b-0 m-l-md move-on-hover" *ngFor="let argu of selectedNode.job.executable.arguments; let i = index" cdkDrag>
+                      <div class="pos-abt move-icon" style="margin-left: -31px;font-size: 18px;margin-top: 2px;cursor: move;">
                         <i class="fa fa-bars" aria-hidden="true"></i>
+                      </div>
+                      <div class="pos-abt" style="margin-left: -12px;">
+                        <label class="m-t-xs" nz-checkbox [nzDisabled]="!argu.name" [nzChecked]="object.setOfCheckedArgu.has(argu.name)"
+                               (nzCheckedChange)="onItemChecked(selectedNode.job.executable.arguments,'arguments', argu.name, $event)" ></label>
                       </div>
                       <div class="col-md-5 col-lg-5 m-b-sm " [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}">
                         <label class="w-full">
@@ -314,7 +385,8 @@
                         <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argu)" style="right: 13px;top:1px;"></i>
                       </div>
                       <div class="col-md-1 col-lg-1 p-l-0">
-                        <a><i (click)="removeArgu(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                        <i *ngIf="object.setOfCheckedArgu.has(argu.name) && copiedParamObjects.operation === 'CUT'" class="fa fa-scissors m-t-sm"></i>
+                        <a *ngIf="!(object.setOfCheckedArgu.has(argu.name) && copiedParamObjects.operation === 'CUT')"><i (click)="removeArgu(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                       </div>
                     </div>
                   </div>
@@ -327,16 +399,39 @@
               </div>
             </nz-tab>
             <nz-tab [nzTitle]="'workflow.label.jobArguments' | translate" *ngIf="selectedNode.job.executable && (selectedNode.job.executable.TYPE === 'InternalExecutable')">
+              <div class="pos-abt" style="right: 24px; margin-top:-6px">
+                <button type="button" class="btn btn-grey btn-sm" [disabled]="object.setOfCheckedArgu.size === 0"
+                        nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('jobArguments')" translate>
+                  <i class="fa fa-scissors"></i>
+                </button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="object.setOfCheckedEnv.size === 0"
+                        nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('jobArguments')" translate>
+                  <i class="fa fa-copy"></i>
+                </button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="!copiedParamObjects.data"
+                        nz-tooltip="{{'common.button.paste' | translate}}" (click)="pasteParam(selectedNode.job.executable.jobArguments)" translate>
+                  <i class="fa fa-paste"></i>
+                </button>
+              </div>
               <div class="row">
+                <div class="col-md-12" *ngIf="selectedNode.job.executable.jobArguments.length > 0">
+                    <div class="pos-abt m-t-n-xxs" style="margin-left: 11px">
+                      <label nz-checkbox [(nzChecked)]="object.checked2" [nzIndeterminate]="object.indeterminate2" (nzCheckedChange)="onAllChecked(selectedNode.job.executable.jobArguments,'jobArguments', $event)"></label>
+                    </div>
+                    <div class="form-group row m-b-0 m-l-md">
+                      <div class="col-md-4 col-lg-5 m-b-sm" translate>common.label.name</div>
+                      <div class="col-md-8 col-lg-6 m-b-sm" translate>common.label.value</div>
+                    </div>
+                </div>
                 <div class="col-md-12" style="max-height: calc(100vh - 675px); overflow: auto">
-                  <div class="form-group row m-b-0 m-l-12">
-                    <div class="col-md-4 col-lg-5 m-b-sm" translate>common.label.name</div>
-                    <div class="col-md-8 col-lg-6 m-b-sm" translate>common.label.value</div>
-                  </div>
                   <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.job.executable.jobArguments)">
-                    <div class="form-group row m-b-0 m-l-12" *ngFor="let argument of selectedNode.job.executable.jobArguments; let i = index" cdkDrag>
-                      <div class="pos-abt" style="margin-left: -13px;font-size: 18px;margin-top: 2px;cursor: move" cdkDragHandle>
+                    <div class="form-group row m-b-0 m-l-md move-on-hover" *ngFor="let argument of selectedNode.job.executable.jobArguments; let i = index" cdkDrag>
+                      <div class="pos-abt move-icon" style="margin-left: -31px;font-size: 18px;margin-top: 2px;cursor: move;">
                         <i class="fa fa-bars" aria-hidden="true"></i>
+                      </div>
+                      <div class="pos-abt" style="margin-left: -12px;">
+                        <label class="m-t-xs" nz-checkbox [nzDisabled]="!argument.name" [nzChecked]="object.setOfCheckedJobArgu.has(argument.name)"
+                               (nzCheckedChange)="onItemChecked(selectedNode.job.executable.jobArguments,'jobArguments', argument.name, $event)" ></label>
                       </div>
                       <div class="col-md-5 col-lg-5 m-b-sm" [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}">
                         <label class="w-full">
@@ -355,7 +450,8 @@
                         <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
                       </div>
                       <div class="col-md-1 col-lg-1 p-l-0">
-                        <a><i (click)="removeJobArgument(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                        <i *ngIf="object.setOfCheckedJobArgu.has(argument.name) && copiedParamObjects.operation === 'CUT'" class="fa fa-scissors m-t-sm"></i>
+                        <a *ngIf="!(object.setOfCheckedJobArgu.has(argument.name) && copiedParamObjects.operation === 'CUT')"><i (click)="removeJobArgument(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                       </div>
                     </div>
                   </div>
@@ -449,43 +545,66 @@
     </div>
   </nz-tab>
   <nz-tab [nzTitle]="'workflow.tab.nodeProperties' | translate">
-    <div class="job-property-editor" *ngIf="index === 2">
+    <div class="job-property-editor">
+      <div class="pos-abt" style="right: 24px; margin-top:-6px">
+        <button type="button" class="btn btn-grey btn-sm" [disabled]="object.setOfCheckedArgu.size === 0"
+                nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('nodeArguments')" translate>
+          <i class="fa fa-scissors"></i>
+        </button>
+        <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="object.setOfCheckedEnv.size === 0"
+                nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('nodeArguments')" translate>
+          <i class="fa fa-copy"></i>
+        </button>
+        <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="!copiedParamObjects.data"
+                nz-tooltip="{{'common.button.paste' | translate}}" (click)="pasteParam(selectedNode.obj.defaultArguments)" translate>
+          <i class="fa fa-paste"></i>
+        </button>
+      </div>
       <div class="form-group row">
-        <label class="col-md-12 _600">{{'workflow.label.arguments' | translate}}</label>
-        <div class="col-md-12" style="max-height: calc(100vh - 312px); overflow: auto;">
-          <div class="form-group row m-b-0 m-l-12">
+        <div class="col-md-12" *ngIf="selectedNode.obj.defaultArguments.length > 0">
+          <div class="pos-abt m-t-n-xxs" style="margin-left: 11px">
+            <label nz-checkbox [(nzChecked)]="object.checked4" [nzIndeterminate]="object.indeterminate4" (nzCheckedChange)="onAllChecked(selectedNode.obj.defaultArguments,'nodeArguments', $event)"></label>
+          </div>
+          <div class="form-group row m-b-0 m-l-md">
             <div class="col-md-4 col-lg-5 m-b-sm" translate>common.label.name</div>
             <div class="col-md-8 col-lg-6 m-b-sm" translate>common.label.value</div>
           </div>
+        </div>
+        <div class="col-md-12" style="max-height: calc(100vh - 312px); overflow: auto;">
           <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.obj.defaultArguments)">
-              <div class="form-group row m-b-0 m-l-12" *ngFor="let argument of selectedNode.obj.defaultArguments; let i = index" cdkDrag>
-                <div class="pos-abt" style="margin-left: -13px;font-size: 18px;margin-top: 2px;cursor: move" cdkDragHandle>
-                <i class="fa fa-bars" aria-hidden="true"></i>
-              </div>
-              <div class="col-md-5 col-lg-5 m-b-sm" [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}">
-                <label class="w-full">
-                  <input autocomplete="off" identifierValidation type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == selectedNode.obj.defaultArguments.length -1"
-                        [(ngModel)]="argument.name" #aname="ngModel" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" (blur)="isStringValid(argument, aname.invalid)">
-                </label>
-                <div *ngIf="aname.invalid && aname.errors && (aname.dirty || aname.touched)" class="text-danger help-block">
-                  <div *ngIf="aname.errors.invalidIdentifier" translate>common.message.invalid</div>
+              <div class="form-group row m-b-0 m-l-md move-on-hover" *ngFor="let argument of selectedNode.obj.defaultArguments; let i = index" cdkDrag>
+                <div class="pos-abt move-icon" style="margin-left: -31px;font-size: 18px;margin-top: 2px;cursor: move;">
+                  <i class="fa fa-bars" aria-hidden="true"></i>
                 </div>
-              </div>
-              <div class="col-md-6 col-lg-6 m-b-sm">
-                <nz-mention [nzSuggestions]="variableList" [nzNotFoundContent]="'No data found'" [nzValueWith]="valueWith" [nzPrefix]="['$']">
+                <div class="pos-abt" style="margin-left: -12px;">
+                  <label class="m-t-xs" nz-checkbox [nzDisabled]="!argument.name" [nzChecked]="object.setOfCheckedNodeArgu.has(argument.name)"
+                         (nzCheckedChange)="onItemChecked(selectedNode.obj.defaultArguments, 'nodeArguments', argument.name, $event)" ></label>
+                </div>
+                <div class="col-md-5 col-lg-5 m-b-sm" [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}">
                   <label class="w-full">
-                    <input nz-input nzMentionTrigger autocomplete="off" class="form-control" [(ngModel)]="argument.value" name="value{{i}}" (keypress)="onKeyPress($event, 'node')"
-                           placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
+                    <input autocomplete="off" identifierValidation type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == selectedNode.obj.defaultArguments.length -1"
+                          [(ngModel)]="argument.name" #aname="ngModel" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" (blur)="isStringValid(argument, aname.invalid)">
                   </label>
-                  <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
-                  <ng-container *nzMentionSuggestion="let argu">
-                    <span>{{ argu.name }}</span>
-                  </ng-container>
-                </nz-mention>
-              </div>
-              <div class="col-md-1 col-lg-1 p-l-0">
-                <a><i (click)="removeArgument(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
-              </div>
+                  <div *ngIf="aname.invalid && aname.errors && (aname.dirty || aname.touched)" class="text-danger help-block">
+                    <div *ngIf="aname.errors.invalidIdentifier" translate>common.message.invalid</div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-lg-6 m-b-sm">
+                  <nz-mention [nzSuggestions]="variableList" [nzNotFoundContent]="'No data found'" [nzValueWith]="valueWith" [nzPrefix]="['$']">
+                    <label class="w-full">
+                      <input nz-input nzMentionTrigger autocomplete="off" class="form-control" [(ngModel)]="argument.value" name="value{{i}}" (keypress)="onKeyPress($event, 'node')"
+                             placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
+                    </label>
+                    <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
+                    <ng-container *nzMentionSuggestion="let argu">
+                      <span>{{ argu.name }}</span>
+                    </ng-container>
+                  </nz-mention>
+                </div>
+                <div class="col-md-1 col-lg-1 p-l-0">
+                  <i *ngIf="object.setOfCheckedNodeArgu.has(argument.name) && copiedParamObjects.operation === 'CUT'" class="fa fa-scissors m-t-sm"></i>
+                  <a *ngIf="!(object.setOfCheckedNodeArgu.has(argument.name) && copiedParamObjects.operation === 'CUT')"><i (click)="removeArgument(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                </div>
             </div>
           </div>
           <div class="form-group row" >

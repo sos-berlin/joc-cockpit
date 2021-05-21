@@ -27,6 +27,15 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
 
   indexOfNextAdd = 0;
   history = [];
+  object = {
+    checked1: false,
+    indeterminate1: false,
+    setOfCheckedArgu: new Set<string>(),
+    checked2: false,
+    indeterminate2: false,
+    setOfCheckedEnv: new Set<string>()
+  };
+  copiedParamObjects: any = {};
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -35,6 +44,16 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.jobResource.actual) {
+          if (this.data.deployed !== this.jobResource.deployed || this.data.valid !== this.jobResource.valid) {
+            this.object = {
+              checked1: false,
+              indeterminate1: false,
+              setOfCheckedArgu: new Set<string>(),
+              checked2: false,
+              indeterminate2: false,
+              setOfCheckedEnv: new Set<string>()
+            };
+          }
           this.ref.detectChanges();
         }
       }
@@ -60,6 +79,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       }
     }
     if (this.jobResource.actual) {
+      this.cutOperation();
       this.saveJSON();
     }
     if (changes.data) {
@@ -73,6 +93,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.cutOperation();
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     if (this.jobResource.name) {
@@ -211,8 +232,113 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
 
   drop(event: CdkDragDrop<string[]>, list): void {
     moveItemInArray(list, event.previousIndex, event.currentIndex);
-    this.ref.detectChanges();
     this.saveJSON();
+  }
+
+  onAllChecked(type: string, isChecked: boolean): void {
+    this.jobResource.configuration[type].forEach(item => this.updateCheckedSet(type, item.name, isChecked));
+  }
+
+  onItemChecked(type: string, name: string, checked: boolean): void {
+    this.updateCheckedSet(type, name, checked);
+  }
+
+  updateCheckedSet(type: string, name: string, checked: boolean): void {
+    if (type === 'arguments') {
+      if(name) {
+        if (checked) {
+          this.object.setOfCheckedArgu.add(name);
+        } else {
+          this.object.setOfCheckedArgu.delete(name);
+        }
+      }
+      this.object.checked1 = this.jobResource.configuration.arguments.every(item => {
+        return this.object.setOfCheckedArgu.has(item.name);
+      });
+      this.object.indeterminate1 = this.object.setOfCheckedArgu.size > 0 && !this.object.checked1;
+    } else {
+      if(name) {
+        if (checked) {
+          this.object.setOfCheckedEnv.add(name);
+        } else {
+          this.object.setOfCheckedEnv.delete(name);
+        }
+      }
+      this.object.checked2 = this.jobResource.configuration.env.every(item => {
+        return this.object.setOfCheckedEnv.has(item.name);
+      });
+      this.object.indeterminate2 = this.object.setOfCheckedEnv.size > 0 && !this.object.checked2;
+    }
+  }
+
+  cutParam(type): void {
+    this.cutCopyOperation(type, 'CUT');
+  }
+
+  copyParam(type): void {
+   this.cutCopyOperation(type, 'COPY');
+  }
+
+  private cutOperation(): void {
+    if (this.copiedParamObjects.operation === 'CUT' && this.jobResource.configuration[this.copiedParamObjects.type]) {
+      this.jobResource.configuration[this.copiedParamObjects.type] = this.jobResource.configuration[this.copiedParamObjects.type].filter(item => {
+        if (this.copiedParamObjects.type === 'arguments') {
+          return !this.object.setOfCheckedArgu.has(item.name);
+        } else {
+          return !this.object.setOfCheckedEnv.has(item.name);
+        }
+      });
+    }
+  }
+
+  private cutCopyOperation(type, operation): void {
+    const arr = this.jobResource.configuration[type].filter(item => {
+      if (type === 'arguments') {
+        return this.object.setOfCheckedArgu.has(item.name);
+      } else {
+        return this.object.setOfCheckedEnv.has(item.name);
+      }
+    });
+    this.copiedParamObjects = {operation, type, data: arr, name: this.data.name};
+    this.coreService.tabs._configuration.copiedParamObjects = this.copiedParamObjects;
+  }
+
+  pasteParam(type: string): void {
+    const arr = this.getPasteParam(this.jobResource.configuration[type], this.copiedParamObjects.data);
+    if (arr.length > 0) {
+      this.jobResource.configuration[type] = this.jobResource.configuration[type].concat(arr);
+    }
+    if (this.copiedParamObjects.operation === 'CUT' && this.jobResource.configuration[this.copiedParamObjects.type]) {
+      this.cutOperation();
+      if (this.copiedParamObjects.type === 'arguments') {
+        this.object.setOfCheckedArgu = new Set<string>();
+        this.object.checked1 = false;
+        this.object.indeterminate1 = false;
+      } else {
+        this.object.setOfCheckedEnv = new Set<string>();
+        this.object.checked2 = false;
+        this.object.indeterminate2 = false;
+      }
+      this.copiedParamObjects = {};
+      this.coreService.tabs._configuration.copiedParamObjects = this.copiedParamObjects;
+    }
+    this.saveJSON();
+  }
+
+  /**
+   * Function: To paste param fom one job param to another param list
+   */
+  private getPasteParam(sour, target): any {
+    const temp = this.coreService.clone(target);
+    for (let i = 0; i < sour.length; i++) {
+      for (let j = 0; j < temp.length; j++) {
+        if (sour[i].name === temp[j].name) {
+          temp.splice(j, 1);
+          break;
+        }
+      }
+    }
+    return temp;
   }
 
   openEditor(data): void {
@@ -294,12 +420,21 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   }
 
   private getObject(): void {
+    this.copiedParamObjects = this.coreService.getConfigurationTab().copiedParamObjects;
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
     this.coreService.post(URL, {
       id: this.data.id,
     }).subscribe((res: any) => {
       this.history = [];
       this.indexOfNextAdd = 0;
+      this.object = {
+        checked1: false,
+        indeterminate1: false,
+        setOfCheckedArgu: new Set<string>(),
+        checked2: false,
+        indeterminate2: false,
+        setOfCheckedEnv: new Set<string>()
+      };
       if (res.configuration) {
         delete res.configuration['TYPE'];
         delete res.configuration['path'];

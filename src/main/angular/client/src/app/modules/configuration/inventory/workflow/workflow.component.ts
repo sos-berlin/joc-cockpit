@@ -279,9 +279,27 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     autoRefresh: true,
     mode: 'shell'
   };
+  object = {
+    checked1: false,
+    indeterminate1: false,
+    setOfCheckedArgu: new Set<string>(),
+    checked2: false,
+    indeterminate2: false,
+    setOfCheckedJobArgu: new Set<string>(),
+    checked3: false,
+    indeterminate3: false,
+    setOfCheckedEnv: new Set<string>(),
+    checked4: false,
+    indeterminate4: false,
+    setOfCheckedNodeArgu: new Set<string>(),
+    checked5: false,
+    indeterminate5: false,
+    setOfCheckedDefaultArgu: new Set<string>()
+  };
   variableList = [];
   filteredOptions = [];
   mentionValueList = [];
+  copiedParamObjects: any = {};
   subscription: Subscription;
 
   constructor(private coreService: CoreService, private modal: NzModalService, private ref: ChangeDetectorRef,
@@ -394,6 +412,178 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   drop(event: CdkDragDrop<string[]>, list: Array<any>): void {
     moveItemInArray(list, event.previousIndex, event.currentIndex);
     this.saveToHistory();
+  }
+
+  onAllChecked(list: Array<any>, type: string, isChecked: boolean): void {
+    list.forEach(item => this.updateCheckedSet(list, type, item.name, isChecked));
+  }
+
+  onItemChecked(list: Array<any>, type: string, name: string, checked: boolean): void {
+    this.updateCheckedSet(list, type, name, checked);
+  }
+
+  updateCheckedSet(list: Array<any>, type: string, name: string, checked: boolean): void {
+    if (type === 'arguments') {
+      if(name) {
+        if (checked) {
+          this.object.setOfCheckedArgu.add(name);
+        } else {
+          this.object.setOfCheckedArgu.delete(name);
+        }
+      }
+      this.object.checked1 = list.every(item => {
+        return this.object.setOfCheckedArgu.has(item.name);
+      });
+      this.object.indeterminate1 = this.object.setOfCheckedArgu.size > 0 && !this.object.checked1;
+    } else if (type === 'jobArguments') {
+      if(name) {
+        if (checked) {
+          this.object.setOfCheckedJobArgu.add(name);
+        } else {
+          this.object.setOfCheckedJobArgu.delete(name);
+        }
+      }
+      this.object.checked2 = list.every(item => {
+        return this.object.setOfCheckedJobArgu.has(item.name);
+      });
+      this.object.indeterminate2 = this.object.setOfCheckedJobArgu.size > 0 && !this.object.checked2;
+    } else if (type === 'env') {
+      if(name) {
+        if (checked) {
+          this.object.setOfCheckedEnv.add(name);
+        } else {
+          this.object.setOfCheckedEnv.delete(name);
+        }
+      }
+      this.object.checked3 = list.every(item => {
+        return this.object.setOfCheckedEnv.has(item.name);
+      });
+      this.object.indeterminate3 = this.object.setOfCheckedEnv.size > 0 && !this.object.checked3;
+    } else if (type === 'nodeArguments') {
+      if(name) {
+        if (checked) {
+          this.object.setOfCheckedNodeArgu.add(name);
+        } else {
+          this.object.setOfCheckedNodeArgu.delete(name);
+        }
+      }
+      this.object.checked4 = list.every(item => {
+        return this.object.setOfCheckedNodeArgu.has(item.name);
+      });
+      this.object.indeterminate4 = this.object.setOfCheckedNodeArgu.size > 0 && !this.object.checked4;
+    } else {
+      if(name) {
+        if (checked) {
+          this.object.setOfCheckedDefaultArgu.add(name);
+        } else {
+          this.object.setOfCheckedDefaultArgu.delete(name);
+        }
+      }
+      this.object.checked5 = list.every(item => {
+        return this.object.setOfCheckedDefaultArgu.has(item.name);
+      });
+      this.object.indeterminate5 = this.object.setOfCheckedDefaultArgu.size > 0 && !this.object.checked5;
+    }
+  }
+
+  cutParam(type): void {
+    this.cutCopyOperation(type, 'CUT');
+  }
+
+  copyParam(type): void {
+    this.cutCopyOperation(type, 'COPY');
+  }
+
+  private cutOperation(): void {
+    let list = this.getList(this.copiedParamObjects.type);
+    if (this.copiedParamObjects.operation === 'CUT' && list && list.length > 0) {
+      list = list.filter(item => {
+        if (this.copiedParamObjects.type === 'arguments') {
+          return !this.object.setOfCheckedArgu.has(item.name);
+        } else if (this.copiedParamObjects.type === 'jobArguments') {
+          return !this.object.setOfCheckedJobArgu.has(item.name);
+        } else if (this.copiedParamObjects.type === 'env') {
+          return !this.object.setOfCheckedEnv.has(item.name);
+        } else if (this.copiedParamObjects.type === 'nodeArguments') {
+          return !this.object.setOfCheckedNodeArgu.has(item.name);
+        } else {
+          return !this.object.setOfCheckedDefaultArgu.has(item.name);
+        }
+      });
+    }
+  }
+
+  private cutCopyOperation(type, operation): void {
+    let list = this.getList(type);
+    const arr = list.filter(item => {
+      if (type === 'arguments') {
+        return this.object.setOfCheckedArgu.has(item.name);
+      } else if (type === 'jobArguments') {
+        return this.object.setOfCheckedJobArgu.has(item.name);
+      } else if (type === 'env') {
+        return this.object.setOfCheckedEnv.has(item.name);
+      } else if (type === 'nodeArguments') {
+        return this.object.setOfCheckedNodeArgu.has(item.name);
+      } else {
+        return this.object.setOfCheckedDefaultArgu.has(item.name);
+      }
+    });
+    this.copiedParamObjects = {operation, type, data: arr, name: this.selectedNode.obj.jobName};
+    this.coreService.tabs._configuration.copiedParamObjects = this.copiedParamObjects;
+  }
+
+  private getList(type): Array<any> {
+    let list = [];
+    if (type === 'arguments') {
+      list = this.selectedNode.job.executable.arguments;
+    } else if (type === 'jobArguments') {
+      list = this.selectedNode.job.executable.jobArguments;
+    } else if (type === 'env') {
+      list = this.selectedNode.job.executable.env;
+    } else if (type === 'nodeArguments') {
+      list = this.selectedNode.obj.defaultArguments;
+    } else {
+      list = this.selectedNode.job.defaultArguments;
+    }
+    return list;
+  }
+
+  pasteParam(list: Array<any>): void {
+    const arr = this.getPasteParam(list, this.copiedParamObjects.data);
+    if (arr.length > 0) {
+      list = list.concat(arr);
+    }
+    let arrList = this.getList(this.copiedParamObjects.type);
+    if (this.copiedParamObjects.operation === 'CUT' && arrList && arrList.length > 0) {
+      this.cutOperation();
+      if (this.copiedParamObjects.type === 'arguments') {
+        this.object.setOfCheckedArgu = new Set<string>();
+        this.object.checked1 = false;
+        this.object.indeterminate1 = false;
+      } else {
+        this.object.setOfCheckedEnv = new Set<string>();
+        this.object.checked2 = false;
+        this.object.indeterminate2 = false;
+      }
+      this.copiedParamObjects = {};
+      this.coreService.tabs._configuration.copiedParamObjects = this.copiedParamObjects;
+    }
+  }
+
+  /**
+   * Function: To paste param fom one job param to another param list
+   */
+  private getPasteParam(sour, target): any {
+    const temp = this.coreService.clone(target);
+    for (let i = 0; i < sour.length; i++) {
+      for (let j = 0; j < temp.length; j++) {
+        if (sour[i].name === temp[j].name) {
+          temp.splice(j, 1);
+          break;
+        }
+      }
+    }
+    return temp;
   }
 
   openEditor(data: any): void {
@@ -662,6 +852,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private init(): void {
+    this.copiedParamObjects = this.coreService.getConfigurationTab().copiedParamObjects;
+    console.log(this.copiedParamObjects)
     this.getJobInfo();
     this.selectedNode.obj.defaultArguments = this.coreService.convertObjectToArray(this.selectedNode.obj, 'defaultArguments');
     if (this.selectedNode.obj.defaultArguments && this.selectedNode.obj.defaultArguments.length === 0) {
@@ -1069,7 +1261,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
   constructor(public coreService: CoreService, public translate: TranslateService, private modal: NzModalService,
-              public toasterService: ToasterService, private workflowService: WorkflowService, private dataService: DataService,
+              public toasterService: ToasterService, public workflowService: WorkflowService, private dataService: DataService,
               private nzContextMenuService: NzContextMenuService, private router: Router, private ref: ChangeDetectorRef) {
     this.subscription = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
@@ -1152,8 +1344,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
     } catch (e) {
       // Shows an error message if the editor cannot start
+      mxUtils.alert('Cannot start application: ' + e.message);
       console.error(e);
-      throw e; // for debugging
     }
   }
 
@@ -1408,7 +1600,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   navToWorkflowTab(): void {
-    if (this.workflow.hasDeployments) {
+    if (this.workflow.hasDeployments || this.data.deployed) {
       const PATH = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
       const pathArr = [];
       const arr = PATH.split('/');
@@ -1631,7 +1823,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   private init(): void {
     if (!this.dummyXml) {
-      this.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 310;
+      this.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 460;
       this.loadConfig();
       this.coreService.get('workflow.json').subscribe((data) => {
         this.dummyXml = x2js.json2xml_str(data);
@@ -1913,7 +2105,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
     const panel = $('.property-panel');
     $('.sidebar-open', panel).click(() => {
-      self.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 310;
+      self.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 460;
       $('#outlineContainer').css({right: self.propertyPanelWidth + 10 + 'px'});
       $('.graph-container').css({'margin-right': self.propertyPanelWidth + 'px'});
       $('.toolbar').css({'margin-right': (self.propertyPanelWidth - 12) + 'px'});

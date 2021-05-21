@@ -310,14 +310,6 @@ export class TypeComponent implements OnChanges {
     }
   }
 
-  assignDocumentation(instruction): void{
-
-  }
-
-  unassignDocumentation(instruction): void{
-
-  }
-
   viewDocumentation(instruction): void{
 
   }

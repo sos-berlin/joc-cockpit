@@ -186,7 +186,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     } catch (e) {
       // Shows an error message if the editor cannot start
       mxUtils.alert('Cannot start application: ' + e.message);
-      throw e; // for debugging
+      console.error(e);
     }
   }
 
@@ -1029,14 +1029,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         nzClosable: false
       });
     }
-  }
-
-  assignDocumentation(): void {
-
-  }
-
-  unassignDocumentation(): void {
-
   }
 
   viewDocumentation(): void {
