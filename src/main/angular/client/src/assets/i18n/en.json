@@ -1544,7 +1544,7 @@
     "button.showGraphicalView": "Show graphical view",
     "button.showDailyPlan": "Show Daily Plan",
     "button.addOrder": "Add Order",
-    "button.exportInPng": "Export In Png",
+    "button.exportInPng": "Export to PNG format",
     "tab.jobProperties": "Job Properties",
     "tab.jobOptions": "Job Options",
     "tab.nodeProperties": "Node Properties",
