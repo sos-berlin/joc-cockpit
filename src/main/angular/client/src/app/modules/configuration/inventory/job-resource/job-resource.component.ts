@@ -292,6 +292,15 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   }
 
   private cutCopyOperation(type, operation): void {
+    if (type === 'arguments') {
+      this.object.checked2 = false;
+      this.object.indeterminate2 = false;
+      this.object.setOfCheckedEnv.clear();
+    } else {
+      this.object.checked1 = false;
+      this.object.indeterminate1 = false;
+      this.object.setOfCheckedArgu.clear();
+    }
     const arr = this.jobResource.configuration[type].filter(item => {
       if (type === 'arguments') {
         return this.object.setOfCheckedArgu.has(item.name);
@@ -306,6 +315,9 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   pasteParam(type: string): void {
     const arr = this.getPasteParam(this.jobResource.configuration[type], this.copiedParamObjects.data);
     if (arr.length > 0) {
+      this.jobResource.configuration[type] = this.jobResource.configuration[type].filter((item) => {
+        return !!item.name;
+      });
       this.jobResource.configuration[type] = this.jobResource.configuration[type].concat(arr);
     }
     if (this.copiedParamObjects.operation === 'CUT' && this.jobResource.configuration[this.copiedParamObjects.type]) {

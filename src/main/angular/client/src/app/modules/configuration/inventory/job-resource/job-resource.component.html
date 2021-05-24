@@ -58,7 +58,7 @@
                           nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('arguments')" translate>
                     <i class="fa fa-copy"></i>
                   </button>
-                  <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="!copiedParamObjects.data"
+                  <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="!copiedParamObjects.data || object.setOfCheckedArgu.size > 0"
                           nz-tooltip="{{'common.button.paste' | translate}}" (click)="pasteParam('arguments')" translate>
                     <i class="fa fa-paste"></i>
                   </button>
@@ -99,8 +99,8 @@
                           <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argu)" style="right: 13px;top:1px;"></i>
                         </div>
                         <div class="col-md-1 col-lg-1 p-l-0">
-                          <i *ngIf="object.setOfCheckedArgu.has(argu.name) && copiedParamObjects.operation === 'CUT'" class="fa fa-scissors m-t-sm"></i>
-                          <a *ngIf="!(object.setOfCheckedArgu.has(argu.name) && copiedParamObjects.operation === 'CUT')"><i (click)="removeArgu(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                          <i *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name)" class="fa fa-scissors m-t-sm"></i>
+                          <a *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name))"><i (click)="removeArgu(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                         </div>
                       </div>
                     </div>
@@ -114,7 +114,7 @@
               </nz-tab>
               <nz-tab [nzTitle]="'workflow.label.environmentVariables' | translate">
                 <div class="pos-abt" style="right: 12px; top:8px">
-                  <button type="button" class="btn btn-grey btn-sm" [disabled]="object.setOfCheckedArgu.size === 0"
+                  <button type="button" class="btn btn-grey btn-sm" [disabled]="object.setOfCheckedEnv.size === 0"
                           nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('env')" translate>
                     <i class="fa fa-scissors"></i>
                   </button>
@@ -122,7 +122,7 @@
                           nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('env')" translate>
                     <i class="fa fa-copy"></i>
                   </button>
-                  <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="!copiedParamObjects.data"
+                  <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="!copiedParamObjects.data || object.setOfCheckedEnv.size > 0"
                           nz-tooltip="{{'common.button.paste' | translate}}" (click)="pasteParam('env')" translate>
                     <i class="fa fa-paste"></i>
                   </button>
@@ -163,8 +163,8 @@
                           <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(env)" style="right: 13px;top:1px;"></i>
                         </div>
                         <div class="col-md-1 col-lg-1 p-l-0">
-                          <i *ngIf="object.setOfCheckedEnv.has(env.name) && copiedParamObjects.operation === 'CUT'" class="fa fa-scissors m-t-sm"></i>
-                          <a *ngIf="!(object.setOfCheckedEnv.has(env.name) && copiedParamObjects.operation === 'CUT')"><i (click)="removeEnv(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                          <i *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name)" class="fa fa-scissors m-t-sm"></i>
+                          <a *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name))"><i (click)="removeEnv(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                         </div>
                       </div>
                     </div>

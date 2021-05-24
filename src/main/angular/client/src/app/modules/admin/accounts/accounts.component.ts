@@ -158,7 +158,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
     this.coreService.post('authentication/shiro/store', obj).subscribe(res => {
       this.users = [...this.users];
-      this.dataService.announceData('RELOAD');
+      this.dataService.announceFunction('RELOAD');
     });
   }
 

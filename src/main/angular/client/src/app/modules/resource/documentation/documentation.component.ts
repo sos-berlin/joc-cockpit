@@ -29,7 +29,7 @@ export class ShowModalComponent {
 }
 
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-import-modal-content',
   templateUrl: './import-dialog.html'
 })
 export class ImportModalComponent implements OnInit {
@@ -98,7 +98,7 @@ export class ImportModalComponent implements OnInit {
   }
 
   cancel(): void {
-    this.activeModal.close('close');
+    this.activeModal.destroy();
   }
 
   displayWith(data): string {
@@ -113,6 +113,63 @@ export class ImportModalComponent implements OnInit {
       this.document.path = node.key;
     }
   }
+}
+
+@Component({
+  selector: 'app-edit-modal-content',
+  templateUrl: './edit-dialog.html'
+})
+export class EditModalComponent implements OnInit {
+  @Input() schedulerId: any;
+  @Input() display: any;
+  @Input() document: any;
+  messageList: any;
+  required = false;
+  submitted = false;
+  comments: any = {};
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    this.comments.radio = 'predefined';
+    if (sessionStorage.comments) {
+      this.messageList = JSON.parse(sessionStorage.comments);
+    }
+    if (sessionStorage.$SOS$FORCELOGING == 'true') {
+      this.required = true;
+    }
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    const obj: any = {
+      documentation: this.document.path,
+      assignReference: this.document.assignReference
+    };
+    obj.auditLog = {};
+    if (this.comments.comment) {
+      obj.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      obj.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      obj.auditLog.ticketLink = this.comments.ticketLink;
+    }
+
+    this.coreService.post('documentation/edit ', obj).subscribe(() => {
+      this.submitted = false;
+      this.activeModal.close(this.document);
+    }, err => {
+      this.submitted = false;
+    });
+  }
+
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+
 }
 
 @Component({
@@ -148,7 +205,7 @@ export class SingleDocumentationComponent implements OnInit {
   /* ---------------------------- Action ----------------------------------*/
 
   previewDocument(document): void {
-    const link = API_URL + 'documentation/preview?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId + '&controllerId=' + this.controllerId;
+    const link = API_URL + 'documentation/show?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId + '&controllerId=' + this.controllerId;
     if (this.preferences.isDocNewWindow === 'newWindow') {
       window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no', true);
     } else {
@@ -283,9 +340,9 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   data: any = [];
   documentFilters: any = {};
   sideView: any = {};
-  documentTypes = ['ALL', 'HTML', 'XML', 'XSL', 'XSD', 'JAVASCRIPT', 'JSON', 'CSS', 'MARKDOWN', 'GIF', 'JPEG', 'PNG'];
+  documentTypes = ['ALL', 'PDF', 'HTML', 'XML', 'XSL', 'XSD', 'JAVASCRIPT', 'JSON', 'CSS', 'MARKDOWN', 'GIF', 'JPEG', 'PNG'];
   selectedPath: string;
-  searchableProperties = ['name', 'type', 'path'];
+  searchableProperties = ['name', 'type', 'assignReference', 'path'];
 
   subscription: Subscription;
 
@@ -426,8 +483,28 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
   }
 
+  editDocument(document): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: EditModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        schedulerId: this.schedulerIds.selected,
+        display: this.preferences.auditLog,
+        document: this.coreService.clone(document),
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(res => {
+      if (res) {
+        document.assignReference = res.assignReference;
+      }
+    });
+  }
+
   previewDocument(document): void {
-    const link = API_URL + 'documentation/preview?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId + '&controllerId=' + this.schedulerIds.selected;
+    const link = API_URL + 'documentation/show?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId + '&controllerId=' + this.schedulerIds.selected;
     if (this.preferences.isDocNewWindow === 'newWindow') {
       window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no', true);
     } else {
@@ -484,7 +561,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       nzClosable: false
     });
     modal.afterClose.subscribe(res => {
-      if (res === 'success') {
+      if (res) {
         this.init();
       }
     });

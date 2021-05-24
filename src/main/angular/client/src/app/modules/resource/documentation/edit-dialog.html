@@ -1,19 +1,31 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>resource.documentation.label.importDocument</span>
+    <span translate>resource.documentation.label.editDocument</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
-<form #myForm="ngForm">
-  <div class="modal-body p-a" style="min-height: 300px">
-    <div class="row">
-      <div class="col-md-12 hide" [ngClass]="{'show': display}">
+<form #myForm="ngForm" (ngSubmit)="onSubmit()">
+  <div class="modal-body p-a" style="min-height: 180px">
+      <div class="form-group row">
+        <label class="col-sm-3" translate>resource.documentation.label.documentName</label>
+        <div class="col-sm-6">
+          {{document.path}}
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-sm-3 form-control-label" translate>resource.documentation.label.reference</div>
+        <div class="col-sm-6">
+          <input type="text" class="form-control" name="assignReference"
+                 placeholder="{{'resource.documentation.placeholder.assignReference' | translate}}" [(ngModel)]="document.assignReference">
+        </div>
+      </div>
+      <div class="hide" [ngClass]="{'show': display}">
         <div class="form-group row">
           <label class="col-sm-3 " translate>common.label.selectComments</label>
-          <div class=" col-sm-9">
-            <nz-radio-group name="radio"  [(ngModel)]="comments.radio">
+          <div class="col-sm-6">
+            <nz-radio-group name="radio" [(ngModel)]="comments.radio">
               <label nz-radio nzValue="predefined"><span translate>common.label.predefined</span></label>
               <label nz-radio nzValue="new"><span translate>common.label.individual</span></label>
             </nz-radio-group>
@@ -22,7 +34,7 @@
         <div class="form-group row" *ngIf="comments.radio=='predefined'"
              [ngClass]="{'has-error' : ((comment.dirty || comment.touched) && comment.invalid)}">
           <label class="col-sm-3 form-control-label" translate>common.label.selectComment</label>
-          <div class="col-sm-9">
+          <div class="col-sm-6">
             <nz-select nzPlaceHolder="{{'common.label.selectPredefinedReason' | translate}}"
                     [(ngModel)]="comments.comment" name="comment" #comment="ngModel"
                     [required]="required && comments.radio=='predefined'">
@@ -42,7 +54,7 @@
         <div class="form-group row" *ngIf="comments.radio=='new'"
              [ngClass]="{'has-error' : ((textComment.dirty || textComment.touched) && textComment.invalid)}">
           <label class="col-sm-3 " translate>common.label.comment</label>
-          <div class=" col-sm-9">
+          <div class="col-sm-6">
             <textarea rows="3" class="form-control" maxlength="2000" name="textComment" #textComment="ngModel"
                       [required]="required && comments.radio=='new'"
                       [(ngModel)]="comments.textComment"
@@ -61,7 +73,7 @@
         <div class="form-group row"
              [ngClass]="{'has-error' : ((timeSpent.dirty || timeSpent.touched) && timeSpent.invalid)}">
           <label class="col-sm-3 form-control-label" translate>common.label.timeSpend</label>
-          <div class="col-sm-9">
+          <div class="col-sm-6">
             <input type="text" pattern="[1-9[0-9]*" class="form-control" name="timeSpent" #timeSpent="ngModel"
                    placeholder="{{'common.placeholder.timeSpend' | translate}}" [(ngModel)]="comments.timeSpent">
             <div *ngIf="timeSpent.invalid && (timeSpent.dirty || timeSpent.touched)" class="text-danger m-t-xs">
@@ -74,7 +86,7 @@
         <div class="form-group row"
              [ngClass]="{'has-error' : ((ticketLink.dirty || ticketLink.touched) && ticketLink.invalid)}">
           <label class="col-sm-3 form-control-label" translate>common.label.ticketLink</label>
-          <div class="col-sm-9">
+          <div class="col-sm-6">
             <input type="text"
                    pattern="(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})"
                    class="form-control" name="ticketLink" #ticketLink="ngModel"
@@ -89,91 +101,13 @@
           </div>
         </div>
       </div>
-      <div class="col-md-12">
-        <div class="form-group row">
-          <label class="col-sm-3 form-control-label" translate>common.label.path</label>
-          <div class="col-sm-9">
-            <input autocomplete="off" type="text" class="form-control pos-abt" style="border: none; width: 90%; z-index: 99"
-                   placeholder="{{'common.placeholder.selectFromTree' | translate}}"
-                   name="path" [(ngModel)]="document.path">
-            <nz-tree-select
-              name="path1"
-              class="custom-select-box"
-              [nzAllowClear]="false"
-              [nzNodes]="nodes"
-              [nzDisplayWith]="displayWith"
-              [nzDropdownStyle]="{ 'max-height': '260px' }"
-              [(ngModel)]="document.path1"
-            >
-              <ng-template #nzTreeTemplate let-node>
-                <div class="node-wrapper" (click)="selectPath(node);">
-                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
-                    <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-                    {{node.title}}
-                  </div>
-                </div>
-              </ng-template>
-            </nz-tree-select>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-12" *ngIf="uploader.queue.length === 0">
-          <div ng2FileDrop [uploader]="uploader" class="drop-box-full">
-            <div><i class="icon-upload-icon"></i></div>
-            <div translate>common.button.dragAndDropFileToUpload</div>
-          </div>
-          <div class="p-t-sm" [hidden]="uploader.queue.length>0">
-            <div class="upload-btn-wrapper">
-              <button type="button" class="btn btn-grey btn-sm" >
-                <span translate>common.button.chooseFileToUpload</span>
-              </button>
-              <input type="file" ng2FileSelect [uploader]="uploader">
-            </div>
-          </div>
-      </div>
-      <div class="col-md-12">
-        <div class="table-responsive" *ngIf="uploader.queue.length>0"
-             style="min-height: 250px; max-height: 600px; overflow: auto">
-          <table class="table table-hover table-bordered  ">
-            <thead>
-            <tr>
-              <th><span translate>common.label.name</span></th>
-              <th><span translate>common.label.size</span></th>
-              <th><span translate>common.label.progress</span></th>
-              <th><span translate>common.label.status</span></th>
-              <th *ngIf="uploader.queue[0].isError"><span translate>common.label.action</span></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let item of uploader.queue">
-              <td><strong>{{item.file.name }}</strong></td>
-              <td nowrap>{{ item.file.size / 1024 / 1024 | number:'.2' }} MB</td>
-              <td nowrap>
-                <div class="progress" style="margin-bottom: 0;">
-                  <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
-                </div>
-              </td>
-              <td>
-                <span class="text-success" *ngIf="item.isSuccess"><i class="fa fa-check"></i></span>
-                <span class="text-warn" *ngIf="item.isCancel"><i class="fa fa-ban"></i></span>
-                <span class="text-danger" *ngIf="item.isError"><i class="fa fa-exclamation-triangle"></i></span>
-              </td>
-              <td *ngIf="item.isError">
-                <a class="text-hover-color" (click)="item.remove();"><i class="fa fa-remove"></i></a>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
   </div>
-  <div class="modal-footer" *ngIf="uploader.queue.length>0">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || !document.path" (click)="uploader.uploadAll();" >
-      <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="uploader.isUploading"></i>
-      {{'common.button.import' | translate}}
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted" >
+      <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="submitted"></i>
+      {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="uploader.queue[0].remove();cancel()" translate>
+    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>
       common.button.cancel
     </button>
   </div>

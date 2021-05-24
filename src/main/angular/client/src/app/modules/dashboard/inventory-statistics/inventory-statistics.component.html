@@ -3,53 +3,55 @@
     <h3 translate>dashboard.label.inventory</h3>
   </div>
   <div class="box-body" style="overflow: auto" [ngStyle]="{'max-height':(ybody * 55 +((ybody -1) *20 -50)) +'px'}">
-    <div class="row text-center" *ngIf="!notAuthenticate && isLoaded">
-      <div class="col-lg-3 col-md-6">
-        <div class="icon-bg">
-          <i nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
-          <div class="text">
-            <div class="count">
-              {{statistics.numOfWorkflows || 0}}
+    <table class="w-full" *ngIf="!notAuthenticate && isLoaded">
+      <tr class="text-center">
+        <td width="25%">
+          <div class="icon-bg">
+            <i nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
+            <div class="text">
+              <div class="count">
+                {{statistics.numOfWorkflows || 0}}
+              </div>
+              {{'dashboard.label.workflows' | translate}}
             </div>
-            {{'dashboard.label.workflows' | translate}}
           </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-md-6">
-        <div class="icon-bg">
-          <i nz-icon nzType="menu-unfold" class="icon-color" nzTheme="outline"></i>
-          <div class="text">
-            <div class="count">
-              {{statistics.numOfJobs || 0}}
+        </td>
+        <td width="25%">
+          <div class="icon-bg">
+            <i nz-icon nzType="menu-unfold" class="icon-color" nzTheme="outline"></i>
+            <div class="text">
+              <div class="count">
+                {{statistics.numOfJobs || 0}}
+              </div>
+              {{'dashboard.label.jobs' | translate}}
             </div>
-            {{'dashboard.label.jobs' | translate}}
           </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-md-6">
-        <div class="icon-bg">
-          <i nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
-          <div class="text">
-            <div class="count">
-              {{statistics.numOfLocks || 0}}
+        </td>
+        <td width="25%">
+          <div class="icon-bg">
+            <i nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
+            <div class="text">
+              <div class="count">
+                {{statistics.numOfLocks || 0}}
+              </div>
+              {{'dashboard.label.locks' | translate}}
             </div>
-            {{'dashboard.label.locks' | translate}}
           </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-md-6">
-        <div class="icon-bg">
-          <i nz-icon nzType="schedule" class="icon-color" nzTheme="outline"></i>
-          <div class="text">
-            <div class="count">
-              {{statistics.numOfSchedules || 0}}
+        </td>
+        <td width="25%">
+          <div class="icon-bg">
+            <i nz-icon nzType="schedule" class="icon-color" nzTheme="outline"></i>
+            <div class="text">
+              <div class="count">
+                {{statistics.numOfSchedules || 0}}
+              </div>
+              {{'dashboard.label.schedules' | translate}}
             </div>
-            {{'dashboard.label.schedules' | translate}}
-          </div>
 
-        </div>
-      </div>
-    </div>
+          </div>
+        </td>
+      </tr>
+    </table>
     <div *ngIf="notAuthenticate" class="vert-middle"
          [ngStyle]="{'height':(ybody * 55 + ((ybody -1) *20 -50) - 25) +'px'}">
       <div>

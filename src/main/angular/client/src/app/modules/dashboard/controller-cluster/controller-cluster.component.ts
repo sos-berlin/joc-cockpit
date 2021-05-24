@@ -293,7 +293,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
         return '<div class="' + className + '">' +
           '<span class="m-t-n-xxs fa fa-stop text-success success-node"></span>' +
           '<div class="text-left p-t-sm p-l-sm "><i class="fa fa-database"></i><span class="p-l-sm"> ' + data.dbms +
-          '</span></div><div class="text-sm text-left p-t-xs p-b-xs p-l-sm ">' +
+          '</span></div><div class="text-sm text-left p-t-xs p-b-xs p-l-sm block-ellipsis-cluster" title="'+ data.version +'">' +
           '<span>' + data.version + '</span></div></div>';
       } else if (cell.value.tagName === 'JOCCockpit') {
         className += ' joc';

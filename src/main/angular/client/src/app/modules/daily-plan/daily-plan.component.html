@@ -454,15 +454,15 @@
               <div class="calendar-sm m-t-0" [ngClass]="{'grab' :isCalendarClick }" id="full-calendar"></div>
             </div>
             <div class="text-center m-t">
-              <button *ngIf="permission.joc.dailyPlan.manage" [disabled]="isPastDate" class="btn btn-grey btn-sm" (click)="createPlan()">
+              <button *ngIf="permission.joc.dailyPlan.manage" [disabled]="isPastDate" class="btn btn-grey btn-sm m-b-sm" (click)="createPlan()">
                 <i class="fa fa-plus"></i>&nbsp;
                 <span translate>dailyPlan.button.createPlan</span>
               </button>
-              <button *ngIf="permission.joc.dailyPlan.manage" class="btn btn-grey btn-sm m-l-xs" (click)="deleteSubmission()">
+              <button *ngIf="permission.joc.dailyPlan.manage" class="btn btn-grey btn-sm m-l-xs m-b-sm" (click)="deleteSubmission()">
                 <i class="fa fa-trash"></i>&nbsp;
                 <span translate>dailyPlan.button.deleteSubmissions</span>
               </button>
-              <div class="m-t p-a-sm p-l-0" *ngIf="submissionHistory.length > 0 && dateRanges.length == 0">
+              <div class="m-t-sm p-a-sm p-l-0" *ngIf="submissionHistory.length > 0 && dateRanges.length == 0">
                 <div class="_600 m-b-sm text-left p-l" style="font-size: 14px">
                   <a class="text-hover-primary" (click)="navToHistory()"
                      translate>dailyPlan.label.submissionHistory</a>
@@ -478,7 +478,7 @@
                   </li>
                 </ul>
               </div>
-              <div class="m-t p-a-sm p-l-0" *ngIf="dateRanges.length > 0">
+              <div class="m-t-sm p-a-sm p-l-0" *ngIf="dateRanges.length > 0">
                 <div class="_600 m-b-sm text-left p-l" style="font-size: 14px">
                   <a translate>common.label.dateRange</a>
                 </div>

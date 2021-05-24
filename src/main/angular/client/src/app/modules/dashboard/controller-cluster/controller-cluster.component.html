@@ -82,8 +82,8 @@
                 <li nz-menu-item >
                   <a (click)="restartService('monitor')">{{'dashboard.button.monitorService' | translate}}</a>
                 </li>
-                <li nz-menu-item >
-                  <a (click)="restartService('restart')">{{'dashboard.button.restartService' | translate}}</a>
+                <li nz-menu-item nzDisabled>
+                  <a (click)="restartService('restart')">{{'dashboard.button.restartServiceName' | translate}}</a>
                 </li>
               </ul>
             </li>

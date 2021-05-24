@@ -79,15 +79,16 @@ export class SearchComponent implements OnInit {
   submitted = false;
   isUnique = true;
   objectTypes = ['WORKFLOW',
+    'FILEORDERSOURCE',
     'JOBCLASS',
     'JOBRESOURCE',
-    'LOCK',
     'JUNCTION',
-    'FILEORDERSOURCE',
+    'LOCK',
+    'SCHEDULE',
     'WORKINGDAYSCALENDAR',
     'NONWORKINGDAYSCALENDAR',
-    'SCHEDULE',
-    'ORDER'];
+    'ORDER',
+    'DOCUMENTATION'];
   categories = ['INVENTORY',
     'CONTROLLER',
     'DAILYPLAN',

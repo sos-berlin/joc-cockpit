@@ -54,6 +54,40 @@
             </div>
           </div>
         </div>
+        <div class="form-group row"
+             [ngClass]="{ 'has-error' : (((path.dirty || path.touched) && path.invalid))}">
+          <label class="col-md-4 col-lg-3  form-control-label" translate>inventory.label.documentation</label>
+          <div class="col-md-8 col-lg-6 select-input-both">
+            <input autocomplete="off" [readOnly]="isTrash" type="text" class="form-control"
+                   placeholder="{{'inventory.placeholder.documentationName' | translate}}"
+                   name="documentationPath" #path="ngModel" [(ngModel)]="lock.configuration.documentationName">
+            <nz-tree-select
+              name="documentationName"
+              [disabled]="isTrash"
+              nzNoAnimation
+              #treeSelectCtrl
+              [nzAllowClear]="true"
+              [nzNodes]="documentationTree"
+              [nzHideUnMatched]="true"
+              [nzDropdownStyle]="{ 'max-height': '260px' }"
+              nzShowSearch
+              [(ngModel)]="lock.configuration.documentationName1"
+              (nzExpandChange)="onExpand($event)"
+            >
+              <ng-template #nzTreeTemplate let-node>
+                <div style="width: 93%" class="node-wrapper" (click)="loadData(node, $event);">
+                  <div class="node-content-wrapper"
+                       [class.node-content-wrapper-active]="node.origin.path == lock.configuration.documentationName">
+                    <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+                       class="w-14"></i>
+                    <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                    {{node.origin.name}}
+                  </div>
+                </div>
+              </ng-template>
+            </nz-tree-select>
+          </div>
+        </div>
       </form>
     </div>
   </div>

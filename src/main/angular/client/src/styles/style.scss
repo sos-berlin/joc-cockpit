@@ -509,8 +509,8 @@ small {
   }
 }
 
-.custom-select-box{
-  .ant-select-selection-item{
+.custom-select-box {
+  .ant-select-selection-item {
     opacity: 0 !important;
   }
 }
@@ -2303,12 +2303,6 @@ pre.log {
   font-weight: 600;
 }
 
-.hard-coded {
-  font-weight: 600;
-  font-style: italic;
-  font-family: Roboto, sans-serif;
-}
-
 .text-right {
   text-align: right;
 }
@@ -2347,14 +2341,6 @@ pre.log {
 
 .text-2x {
   font-size: 2em;
-}
-
-.text-3x {
-  font-size: 3em;
-}
-
-.text-4x {
-  font-size: 4em;
 }
 
 .l-h {
@@ -3782,6 +3768,9 @@ li > a > i.remove {
   margin: .5em;
   padding-left: 0.5em;
 }
+.m-t-n-6 {
+  margin-top: -6px;
+}
 
 .m-t-n-35 {
   margin-top: -26px !important;
@@ -4042,7 +4031,7 @@ input[type=search] {
 }
 
 .block-ellipsis-cluster {
-  width: 89%;
+  width: 96%;
 }
 
 .btn-grey, .list-group-item.active > .label, .nav-pills > .active > a > .label {
@@ -4383,19 +4372,6 @@ a[href]:hover span.text-white {
   margin-bottom: 12px;
 }
 
-.kbs, .kbs-right {
-  background-color: #f7f7f7;
-  color: #333;
-  display: inline-block;
-  font-family: inherit;
-  font-size: 13px;
-  line-height: 18px;
-  min-width: 2em;
-  padding: .1em .6em;
-  text-shadow: 0 1px 0 var(--white);
-  vertical-align: bottom;
-}
-
 .app {
   height: 100%;
 }
@@ -4715,6 +4691,7 @@ div.min-ht-widget-controller-status {
   background-color: var(--btn-secondary) !important;
   border-color: var(--btn-secondary) !important;
   color: var(--white) !important;
+
   &:hover {
     background-color: var(--btn-secondary-hover) !important;
     border-color: var(--btn-secondary-hover) !important;
@@ -4951,6 +4928,7 @@ tr.disabled-row td:not(.menu) {
   user-select: none;
   background: 0 0;
 }
+
 .rg-right {
   width: 16px;
 }
@@ -4995,6 +4973,7 @@ tr.disabled-row td:not(.menu) {
   left: 0;
   right: auto;
   background-color: var(--white) !important;
+
   span {
     top: 50%;
   }
@@ -5168,7 +5147,7 @@ General CSS
     margin-top: 0;
   }
 
-  .rg-right{
+  .rg-right {
     width: 17px;
   }
 }
@@ -5311,78 +5290,6 @@ button[disabled], html input[disabled] {
 
 .reverse {
   top: auto !important;
-}
-
-.arrow-down {
-  top: 57px;
-  border-radius: 1px;
-  font-size: 12px;
-  border-bottom: 1px solid rgba(0, 0, 0, .1);
-  -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .1)
-}
-
-.arrow-down:last-child:after {
-  display: block;
-  width: 0;
-  height: 0;
-  position: absolute;
-  left: 8px;
-  border: 9px outset transparent;
-  content: '\f0d7';
-  font-family: FontAwesome;
-  font-size: 28px;
-  color: white;
-  bottom: 7px;
-}
-
-.arrow-down a:last-child:after {
-  border-bottom: 9px solid var(--white);
-  bottom: -18px
-}
-
-.arrow-down {
-  font-size: 12px
-}
-
-.arrow-down a:first-child {
-  margin-bottom: -1px
-}
-
-.arrow-down-ac {
-  top: 57px;
-  border-radius: 1px;
-  font-size: 12px;
-  border-bottom: 1px solid rgba(0, 0, 0, .1);
-  -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .1)
-}
-
-.arrow-down-ac:last-child:after {
-  display: block;
-  width: 0;
-  height: 0;
-  position: absolute;
-  left: unset;
-  border: 9px outset transparent;
-  content: '\f0d7';
-  font-family: FontAwesome;
-  font-size: 28px;
-  bottom: 7px;
-  right: 28px;
-}
-
-.arrow-down-ac a:last-child:after {
-  border-bottom: 9px solid var(--white);
-  bottom: -18px
-}
-
-.arrow-down-ac {
-  font-size: 12px
-}
-
-.arrow-down-ac a:first-child {
-  margin-bottom: -1px
 }
 
 .invalid {
@@ -5536,13 +5443,13 @@ body tr.mxPopupMenuItemHover {
 }
 
 .property-panel .sidebar-open, .property-panel .sidebar-close {
+  z-index: 999;
   top: 0;
   right: 0;
   padding: 26px 6px;
   cursor: pointer;
   position: absolute;
   background: url(../assets/images/left-tips.svg) center no-repeat;
-  z-index: 999;
 }
 
 .property-panel .sidebar-close i {
@@ -5682,23 +5589,28 @@ pre#pre {
   background-color: var(--bg-orange);
   color: white;
 }
-.NgxEditor__Wrapper, .NgxEditor__Wrapper .NgxEditor__MenuBar{
+
+.NgxEditor__Wrapper, .NgxEditor__Wrapper .NgxEditor__MenuBar {
   border-radius: 0 !important;
-  border: 1px solid var(--border-color)  !important;
+  border: 1px solid var(--border-color) !important;
 }
-.NgxEditor__Wrapper .NgxEditor__MenuBar{
-  border-top: none  !important;
-  border-left: none  !important;
-  border-right: none  !important;
+
+.NgxEditor__Wrapper .NgxEditor__MenuBar {
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
 }
+
 .NgxEditor {
   background: var(--bg-box) !important;
   color: var(--text-color) !important;
 }
-.NgxEditor__Dropdown .NgxEditor__Dropdown--Text, .NgxEditor__Dropdown .NgxEditor__Dropdown--DropdownMenu{
+
+.NgxEditor__Dropdown .NgxEditor__Dropdown--Text, .NgxEditor__Dropdown .NgxEditor__Dropdown--DropdownMenu {
   color: rgb(0, 0, 0);
   font-weight: 600;
 }
+
 /***
  End Workflow and XMl editor css
 ***/
@@ -6376,7 +6288,7 @@ tr.tr-border td:first-child {
   color: var(--black);
 }
 
-.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn{
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
   text-shadow: none;
   color: var(--text-color);
 }
@@ -6393,9 +6305,11 @@ tr.tr-border td:first-child {
 .ant-tabs-ink-bar {
   background-color: var(--secondary);
 }
+
 .ant-tabs-tab {
   margin: 0 32px 0 0;
 }
+
 .ant-tabs-nav .ant-tabs-tab {
   padding: 12px;
   font-weight: 400;
@@ -6424,12 +6338,15 @@ tr.tr-border td:first-child {
 /** ----- Code Mirror ----------- ****/
 
 .CodeMirror-gutters {
-  background: var(--bg-box) !important
+  background: var(--bg-box) !important;
 }
 
 .CodeMirror {
   background: 0 0 !important;
-  height: auto !important
+  height: auto !important;
+  pre {
+    font-family: monospace !important;
+  }
 }
 
 .CodeMirror-scroll {
@@ -6970,13 +6887,16 @@ tr.tr-border td:first-child {
   border-color: var(--border-color) !important;
   background: transparent;
 }
+
 .ant-checkbox-disabled.ant-checkbox-checked .ant-checkbox-inner {
   border-color: var(--primary) !important;
   opacity: .8;
 }
+
 .ant-checkbox-disabled.ant-checkbox-checked .ant-checkbox-inner::after {
   border-color: rgba(255, 255, 255, .87);
 }
+
 .ant-checkbox-inner {
   border-radius: 0;
 }
@@ -7052,7 +6972,7 @@ tr.tr-border td:first-child {
   margin-bottom: 5px;
 }
 
-.ant-empty-description{
+.ant-empty-description {
   margin-bottom: 0;
 }
 
