@@ -82,9 +82,9 @@ export class LockComponent implements OnChanges, OnDestroy {
       this.indexOfNextAdd = 0;
       this.getDocumentations();
       if (res.configuration) {
-        delete res.configuration['TYPE'];
-        delete res.configuration['path'];
-        delete res.configuration['versionId'];
+        delete res.configuration.TYPE;
+        delete res.configuration.path;
+        delete res.configuration.versionId;
       } else {
         res.configuration = {};
       }
@@ -147,10 +147,10 @@ export class LockComponent implements OnChanges, OnDestroy {
     this.coreService.post('documentations', obj).subscribe((res: any) => {
       let data = res.documentations;
       for (let i = 0; i < data.length; i++) {
-        const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-        data[i].title = data[i].name;
-        data[i].path = _path;
-        data[i].key = data[i].name;
+        const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
+        data[i].title = data[i].assignReference || data[i].name;
+        data[i].path = path;
+        data[i].key = data[i].assignReference || data[i].name;
         data[i].type = 'DOCUMENTATION';
         data[i].isLeaf = true;
       }
@@ -163,6 +163,7 @@ export class LockComponent implements OnChanges, OnDestroy {
       node.origin.isLeaf = false;
       node.origin.children = data;
       this.documentationTree = [...this.documentationTree];
+      this.ref.detectChanges();
     });
   }
 

@@ -5138,8 +5138,13 @@ General CSS
   display: inline-table
 }
 
+.search-box-field{
+  margin-bottom: 6px;
+}
+
 .admin-search-bar {
   margin-top: 10px;
+  margin-bottom: 0;
 }
 
 @-moz-document url-prefix() {
@@ -5158,6 +5163,19 @@ General CSS
   margin-left: -12px;
   margin-top: 3px;
   cursor: pointer
+}
+
+.tree-search-clear{
+  position: absolute;
+  font-size: 11px;
+  opacity: 0;
+  top: 10px;
+  right: 25px;
+  background: var(--bg-box);
+  cursor: pointer;
+}
+.select-input-both:hover .tree-search-clear {
+  opacity: .6;
 }
 
 .search-close:hover {
@@ -5263,6 +5281,10 @@ input:-webkit-autofill {
 
 .modal-body {
   max-height: calc(100vh - 158px);
+  overflow: auto;
+}
+
+.cdk-global-scrollblock {
   overflow: auto;
 }
 
@@ -5743,24 +5765,20 @@ pre#pre {
 }
 
 .select-input-both {
-
   .ant-select {
     position: absolute;
     top: 0;
     padding-right: 25px;
-
     .ant-select-selector {
       background: transparent !important;
       color: transparent !important;
       border: none;
     }
   }
-
   .ant-select-open .ant-select-selector {
     box-shadow: none !important;
     color: var(--text-color) !important;
   }
-
   .ant-select-open {
     box-shadow: none !important;
     border: 1px solid var(--hover-primary);
@@ -5768,6 +5786,12 @@ pre#pre {
     padding-right: 0;
     width: 97%;
     height: 29px;
+  }
+}
+
+.doc-in-workflow {
+  .ant-select-open {
+    width: 94% !important;
   }
 }
 

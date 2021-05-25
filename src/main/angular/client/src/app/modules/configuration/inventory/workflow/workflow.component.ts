@@ -62,10 +62,12 @@ const x2js = new X2JS();
 export class UpdateWorkflowComponent implements OnInit {
   @Input() schedulerId: string;
   @Input() data: any;
+  @Input() documentationName: string;
   @Input() title: string;
   @Input() orderRequirements;
   @Input() jobResourceNames;
   @Input() jobResourcesTree = [];
+  @Input() documentationTree = [];
   @Input() isVariableOnly;
 
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
@@ -73,6 +75,7 @@ export class UpdateWorkflowComponent implements OnInit {
   allowedDatatype = ['String', 'Number', 'Boolean'];
   workflowName: string;
   variableDeclarations = {parameters: []};
+  document = {name: ''};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, public toasterService: ToasterService,
               private modal: NzModalService, private ref: ChangeDetectorRef) {
@@ -134,7 +137,7 @@ export class UpdateWorkflowComponent implements OnInit {
           }
         });
       }
-      this.activeModal.close({title: this.title, variableDeclarations: this.variableDeclarations});
+      this.activeModal.close({title: this.title, documentationName: this.documentationName, variableDeclarations: this.variableDeclarations});
     }
   }
 
@@ -203,12 +206,12 @@ export class UpdateWorkflowComponent implements OnInit {
       const node = this.treeSelectCtrl.getTreeNodeByKey(path);
       if (node) {
         node.isExpanded = true;
-        this.loadData(node, null);
+        this.loadData(node, 'JOBRESOURCE', null);
       }
     }
   }
 
-  loadData(node, $event): void {
+  loadData(node, type, $event): void {
     if (!node.origin.type) {
       if ($event) {
         node.isExpanded = !node.isExpanded;
@@ -219,17 +222,25 @@ export class UpdateWorkflowComponent implements OnInit {
         flag = false;
       }
       if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        this.coreService.post('inventory/read/folder', {
+        let obj: any = {
           path: node.key,
-          objectTypes: ['JOBRESOURCE']
-        }).subscribe((res: any) => {
-          let data = res.jobResources;
+          objectTypes: [type]
+        };
+        if (type === 'DOCUMENTATION') {
+          obj = {
+            folder: [{folder: node.key}],
+            onlyWithAssignReference: true
+          };
+        }
+        const URL = type === 'DOCUMENTATION' ? 'documentations' : 'inventory/read/folder';
+        this.coreService.post(URL, obj).subscribe((res: any) => {
+          let data = res.jobResources || res.documentations;
           for (let i = 0; i < data.length; i++) {
             const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-            data[i].title = data[i].name;
+            data[i].title = data[i].assignReference || data[i].name;
             data[i].path = path;
-            data[i].key = data[i].name;
-            data[i].type = 'JOBRESOURCE';
+            data[i].key = data[i].assignReference || data[i].name;
+            data[i].type = type;
             data[i].isLeaf = true;
           }
           if (node.origin.children && node.origin.children.length > 0) {
@@ -240,15 +251,31 @@ export class UpdateWorkflowComponent implements OnInit {
           }
           node.origin.isLeaf = false;
           node.origin.children = data;
-          this.jobResourcesTree = [...this.jobResourcesTree];
+          if (type === 'DOCUMENTATION') {
+            this.documentationTree = [...this.documentationTree];
+          } else {
+            this.jobResourcesTree = [...this.jobResourcesTree];
+          }
           this.ref.detectChanges();
         });
+      }
+    } else {
+      if (type === 'DOCUMENTATION') {
+        if (this.document.name) {
+          if (this.documentationName !== this.document.name) {
+            this.documentationName = this.document.name;
+          }
+        } else if (node.key && !node.key.match('/')) {
+          if (this.documentationName !== node.key) {
+            this.documentationName = node.key;
+          }
+        }
       }
     }
   }
 
-  onExpand(e): void {
-    this.loadData(e.node, null);
+  onExpand(e, type): void {
+    this.loadData(e.node, type, null);
   }
 }
 
@@ -263,6 +290,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   @Input() selectedNode: any;
   @Input() jobs: any;
   @Input() jobResourcesTree = [];
+  @Input() documentationTree = [];
   @Input() orderRequirements;
   @Input() agents = [];
   history = [];
@@ -527,7 +555,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  private reset(): void{
+  private reset(): void {
     this.object = {
       checked1: false,
       indeterminate1: false,
@@ -930,16 +958,24 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         flag = false;
       }
       if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        this.coreService.post('inventory/read/folder', {
+        let request: any = {
           path: node.key,
-          objectTypes: ['JOBRESOURCE']
-        }).subscribe((res: any) => {
-          let data = res.jobResources;
+          objectTypes: [type]
+        };
+        if (type === 'DOCUMENTATION') {
+          request = {
+            folder: [{folder: node.key}],
+            onlyWithAssignReference: true
+          };
+        }
+        const URL = type === 'DOCUMENTATION' ? 'documentations' : 'inventory/read/folder';
+        this.coreService.post(URL, request).subscribe((res: any) => {
+          let data = res.documentations || res.jobResources;
           for (let i = 0; i < data.length; i++) {
             const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-            data[i].title = data[i].name;
+            data[i].title = data[i].assignReference || data[i].name;
             data[i].path = path;
-            data[i].key = data[i].name;
+            data[i].key = data[i].assignReference || data[i].name;
             data[i].type = type;
             data[i].isLeaf = true;
           }
@@ -951,12 +987,29 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
           }
           node.origin.isLeaf = false;
           node.origin.children = data;
-          this.jobResourcesTree = [...this.jobResourcesTree];
+          if (type === 'DOCUMENTATION') {
+            this.documentationTree = [...this.documentationTree];
+          } else {
+            this.jobResourcesTree = [...this.jobResourcesTree];
+          }
           this.ref.detectChanges();
         });
       }
     } else {
-      this.saveToHistory();
+      if (type === 'DOCUMENTATION') {
+        if (this.selectedNode.job.documentationName1) {
+          if (this.selectedNode.job.documentationName !== this.selectedNode.job.documentationName1) {
+            this.selectedNode.job.documentationName = this.selectedNode.job.documentationName1;
+          }
+        } else if (node.key && !node.key.match('/')) {
+          if (this.selectedNode.job.documentationName !== node.key) {
+            this.selectedNode.job.documentationName = node.key;
+          }
+        }
+      }
+      setTimeout(() => {
+        this.saveToHistory();
+      }, 10);
     }
   }
 
@@ -1338,6 +1391,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   agents = [];
   jobResourcesTree = [];
+  documentationTree = [];
   lockTree = [];
   configXml = './assets/mxgraph/config/diagrameditor.xml';
   editor: any;
@@ -1351,6 +1405,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   selectedNode: any;
   node: any;
   title = '';
+  documentationName = '';
   jobs: any = [];
   jobResourceNames: any = [];
   orderRequirements: any = {};
@@ -1429,6 +1484,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.workflow = {};
         this.jobs = [];
         this.title = '';
+        this.documentationName = '';
         this.jobResourceNames = [];
         this.orderRequirements = {};
         this.dummyXml = null;
@@ -1540,8 +1596,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       nzAutofocus: null,
       nzComponentParams: {
         schedulerId: this.schedulerId,
+        documentationTree: this.documentationTree,
         data: this.workflow,
-        title: this.title
+        title: this.title,
+        documentationName: this.documentationName,
       },
       nzFooter: null,
       nzClosable: false
@@ -1555,11 +1613,18 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           this.workflow.deployed = false;
           this.data.deployed = false;
         }
+        let flag = false;
         if (this.title !== result.title) {
           this.title = result.title;
+          flag = true;
+        }
+        if (this.documentationName !== result.documentationName) {
+          this.documentationName = result.documentationName;
+          flag = true;
+        }
+        if (flag) {
           this.updateOtherProperties();
         }
-        this.ref.detectChanges();
       }
     });
   }
@@ -1777,6 +1842,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         if (this.title) {
           newData.title = this.title;
         }
+        if (this.documentationName){
+          newData.documentationName = this.documentationName;
+        }
         if (this.jobResourceNames.length > 0) {
           newData.jobResourceNames = this.jobResourceNames;
         }
@@ -1805,6 +1873,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         if (result.title) {
           this.title = this.coreService.clone(result.title);
         }
+        if (result.documentationName){
+          this.documentationName = this.coreService.clone(result.documentationName);
+        }
         if (result.jobResourceNames) {
           this.jobResourceNames = this.coreService.clone(result.jobResourceNames);
         }
@@ -1817,6 +1888,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         delete this.workflow.configuration.orderRequirements;
         delete this.workflow.configuration.jobResourceNames;
         delete this.workflow.configuration.title;
+        delete this.workflow.configuration.documentationName;
         this.history = {past: [], present: {}, future: [], type: 'new'};
         this.updateXMLJSON(false);
         this.storeData(result);
@@ -1970,6 +2042,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           this.lockTree = this.coreService.prepareTree(res, true);
         });
       }
+      if (this.documentationTree.length === 0) {
+        this.coreService.post('tree', {
+          onlyWithAssignReference: true,
+          types: ['DOCUMENTATION']
+        }).subscribe((res) => {
+          this.documentationTree = this.coreService.prepareTree(res, true);
+        });
+      }
       if (this.agents.length === 0) {
         this.coreService.post('agents/names', {controllerId: this.schedulerId}).subscribe((res: any) => {
           this.agents = res.agentNames ? res.agentNames.sort() : [];
@@ -2010,9 +2090,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         if (res.configuration.jobResourceNames) {
           this.jobResourceNames = this.coreService.clone(res.configuration.jobResourceNames);
         }
+        this.documentationName = res.configuration.documentationName;
         this.title = res.configuration.title;
         delete res.configuration.orderRequirements;
         delete res.configuration.jobResourceNames;
+        delete res.configuration.documentationName;
         delete res.configuration.title;
         this.workflow = res;
         this.workflow.actual = JSON.stringify(res.configuration);
@@ -2091,7 +2173,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
       }
       if (isCheck) {
-          this.selectedNode = null;
+        this.selectedNode = null;
       }
     }
   }
@@ -5413,7 +5495,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                   job.returnCodeMeaning = {};
                 }
               }
-              if (job.executable && isEmpty(job.executable.login)){
+              if (job.executable && isEmpty(job.executable.login)) {
                 delete job.executable.login;
               }
               if (!job.defaultArguments || typeof job.defaultArguments === 'string' || job.defaultArguments.length === 0) {
@@ -6814,7 +6896,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (!job.executable) {
       return false;
     }
-    if (isEmpty(job.executable.login)){
+    if (isEmpty(job.executable.login)) {
       delete job.executable.login;
     }
     if (job.returnCodeMeaning) {
@@ -7372,6 +7454,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     if (this.title) {
       newObj.title = this.title;
+    }
+    if (this.documentationName) {
+      newObj.documentationName = this.documentationName;
     }
     this.coreService.post('inventory/store', {
       configuration: newObj,

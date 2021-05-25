@@ -111,7 +111,8 @@
                   <div class="box card">
                     <div class="box-body">
                       <label class="pos-abt">
-                        <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(document.name)" (nzCheckedChange)="onItemChecked(document, $event)"></label>
+                        <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(document.name)"
+                               (nzCheckedChange)="onItemChecked(document, $event)"></label>
                       </label>
                       <div class="text-left block-ellipsis m-l-md">
                         <span class="text-left">
@@ -120,36 +121,44 @@
                         </span>
                       </div>
                       <div class="btn-group dropdown pull-right abt-dropdown">
-                        <a class=" more-option text-black-lt" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" nzPlacement="bottomRight">
+                        <a class=" more-option text-black-lt" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"
+                           nzPlacement="bottomRight">
                           <i class="text fa fa-ellipsis-h"></i></a>
-                        <nz-dropdown-menu #option="nzDropdownMenu" >
+                        <nz-dropdown-menu #option="nzDropdownMenu">
                           <ul nz-menu>
-                            <li nz-menu-item >
+                            <li nz-menu-item *ngIf="permission.joc.documentations.manage">
+                              <a (click)="editDocument(document)" translate>resource.documentation.button.editDocument</a>
+                            </li>
+                            <li nz-menu-item>
                               <a (click)="previewDocument(document)" translate>resource.documentation.button.previewDocument</a>
                             </li>
-                            <li nz-menu-item  *ngIf="permission.joc.documentations.manage">
+                            <li nz-menu-item *ngIf="permission.joc.documentations.manage">
                               <a (click)="exportDocument(document)" translate>common.button.export</a>
                             </li>
                             <li nz-menu-item class="bg-hover-color" *ngIf="permission.joc.documentations.manage">
                               <a (click)="deleteDocumentations(document)" translate>common.button.delete</a>
                             </li>
-                            <li nz-menu-item >
+                            <li nz-menu-item>
                               <a (click)="showDocumentUsage(document)" translate>resource.button.showUsage</a>
                             </li>
-                            <li nz-menu-item >
+                            <li nz-menu-item>
                               <a (click)="coreService.copyLink('document',document.name)" translate>common.button.copyLinkToObject</a>
                             </li>
                           </ul>
                         </nz-dropdown-menu>
                       </div>
                       <div class="text-sm  text-left text-muted p-t-sm">
+                        <span translate>resource.documentation.label.reference </span>:
+                        <span [innerHtml]="document.assignReference | highlight : documentFilters.searchText"></span>
+                      </div>
+                      <div class="text-sm  text-left text-muted p-t-sm">
                         <span translate>common.label.type </span>:
                         <span [innerHtml]="document.type | highlight : documentFilters.searchText"></span>
                       </div>
-                     <div class="text-sm text-left text-muted p-t-sm">
-                       <span translate>resource.documentation.label.lastUpdateTime </span>:
-                       <span [innerHtml]="document.modified | stringToDate"></span>
-                     </div>
+                      <div class="text-sm text-left text-muted p-t-sm">
+                        <span translate>resource.documentation.label.lastUpdateTime </span>:
+                        <span [innerHtml]="document.modified | stringToDate"></span>
+                      </div>
                     </div>
                     <div class="box-footer b-t" >
                       <a class="text-left primary-text-hover-color " *ngIf="permission.joc.documentations.manage" (click)="exportDocument(document)">
@@ -202,6 +211,12 @@
                       <i *ngIf="documentFilters.filter.sortBy == 'path' && documentFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
+                    <th (click)="sort('assignReference')"><a><span class="p-r-xs" translate>resource.documentation.label.reference</span>
+                      <i *ngIf="documentFilters.filter.sortBy == 'assignReference' && !documentFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="documentFilters.filter.sortBy == 'assignReference' && documentFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
                     <th (click)="sort('type')"><a><span class="p-r-xs" translate>common.label.type</span>
                       <i *ngIf="documentFilters.filter.sortBy == 'type' && !documentFilters.reverse"
                          class="fa fa-caret-up "></i>
@@ -225,6 +240,9 @@
                           <i class="fa fa-ellipsis-h"></i></button>
                         <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
                           <ul nz-menu>
+                            <li nz-menu-item *ngIf="permission.joc.documentations.manage">
+                              <a (click)="editDocument(document)" translate>resource.documentation.button.editDocument</a>
+                            </li>
                             <li nz-menu-item >
                               <a (click)="previewDocument(document)" translate>resource.documentation.button.previewDocument</a>
                             </li>
@@ -247,6 +265,7 @@
                     </td>
                     <td [innerHtml]="document.name | highlight : documentFilters.searchText"></td>
                     <td [innerHtml]="document.path | highlight : documentFilters.searchText"></td>
+                    <td [innerHtml]="document.assignReference | highlight : documentFilters.searchText"></td>
                     <td [innerHtml]="document.type | highlight : documentFilters.searchText"></td>
                     <td [innerHtml]="document.modified | stringToDate"></td>
                   </tr>

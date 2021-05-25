@@ -142,7 +142,7 @@
           <label nz-checkbox [(ngModel)]="exportObj.forSigning" name="forSigning" (ngModelChange)="onchangeSigning()"></label>
         </div>
       </div>
-      <div class="m-b-sm row" *ngIf="exportType === 'BOTH'">
+      <div class="form-group row" *ngIf="exportType === 'BOTH'">
         <div class="col-md-3">
           <label translate>inventory.export.label.filterType</label>
         </div>
@@ -155,7 +155,7 @@
           </label>
         </div>
       </div>
-      <div class="m-b-sm row">
+      <div class="form-group row">
         <div class="col-md-3">
           <label translate>inventory.export.label.filter</label>
         </div>

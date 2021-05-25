@@ -33,8 +33,6 @@ export class ShowModalComponent {
   templateUrl: './import-dialog.html'
 })
 export class ImportModalComponent implements OnInit {
-
-  @Input() schedulerId: any;
   @Input() display: any;
   @Input() selectedPath: any;
   @Input() nodes: any;
@@ -66,7 +64,6 @@ export class ImportModalComponent implements OnInit {
     this.uploader.onBeforeUploadItem = (item: any) => {
       const obj: any = {
         folder: this.document.path,
-        controllerId: this.schedulerId,
         accessToken: this.authService.accessTokenId,
         name: item.file.name
       };
@@ -120,7 +117,6 @@ export class ImportModalComponent implements OnInit {
   templateUrl: './edit-dialog.html'
 })
 export class EditModalComponent implements OnInit {
-  @Input() schedulerId: any;
   @Input() display: any;
   @Input() document: any;
   messageList: any;
@@ -186,7 +182,6 @@ export class SingleDocumentationComponent implements OnInit {
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
               private modal: NzModalService, private route: ActivatedRoute) {
-
   }
 
   ngOnInit(): void {
@@ -204,8 +199,27 @@ export class SingleDocumentationComponent implements OnInit {
 
   /* ---------------------------- Action ----------------------------------*/
 
+  editDocument(document): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: EditModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        display: this.preferences.auditLog,
+        document: this.coreService.clone(document),
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(res => {
+      if (res) {
+        document.assignReference = res.assignReference;
+      }
+    });
+  }
+
   previewDocument(document): void {
-    const link = API_URL + 'documentation/show?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId + '&controllerId=' + this.controllerId;
+    const link = API_URL + 'documentation/show?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId;
     if (this.preferences.isDocNewWindow === 'newWindow') {
       window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no', true);
     } else {
@@ -216,8 +230,7 @@ export class SingleDocumentationComponent implements OnInit {
   showDocumentUsage(document): void {
     const documentObj = this.coreService.clone(document);
     this.coreService.post('documentation/used', {
-      documentation: document.path,
-      controllerId: this.controllerId
+      documentation: document.path
     }).subscribe((res: any) => {
       documentObj.usedIn = res.objects || [];
       this.modal.create({
@@ -234,24 +247,23 @@ export class SingleDocumentationComponent implements OnInit {
   }
 
   exportDocument(document): void {
-    const obj = {controllerId: this.controllerId, documentations: []};
+    const obj = {documentations: []};
     if (document) {
       obj.documentations.push(document.name);
     }
-    this.coreService.download('documentations/export', obj, 'documentation_' + this.controllerId + '.zip', () => {
+    this.coreService.download('documentations/export', obj, 'documentations.zip', () => {
 
     });
   }
 
   deleteDocumentation(document): void {
-    const obj: any = {
-      controllerId: this.controllerId,
-      documentations: [this.path]
-    };
     this.coreService.post('documentation/used', {
-      documentation: document.path,
-      controllerId: this.controllerId
+      documentation: document.path
     }).subscribe((res: any) => {
+      const obj: any = {
+        controllerId: this.controllerId,
+        documentations: [this.path]
+      };
       this.deleteDocumentFn(obj, {usedIn: res.objects || [], path: this.path});
     });
   }
@@ -489,7 +501,6 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       nzContent: EditModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
-        schedulerId: this.schedulerIds.selected,
         display: this.preferences.auditLog,
         document: this.coreService.clone(document),
       },
@@ -504,7 +515,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   previewDocument(document): void {
-    const link = API_URL + 'documentation/show?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId + '&controllerId=' + this.schedulerIds.selected;
+    const link = API_URL + 'documentation/show?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId;
     if (this.preferences.isDocNewWindow === 'newWindow') {
       window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no', true);
     } else {
@@ -515,8 +526,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   showDocumentUsage(document): void {
     const documentObj = this.coreService.clone(document);
     this.coreService.post('documentation/used', {
-      documentation: document.path,
-      controllerId: this.schedulerIds.selected
+      documentation: document.path
     }).subscribe((res: any) => {
       documentObj.usedIn = res.objects || [];
       this.modal.create({
@@ -533,13 +543,13 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   exportDocument(document): void {
-    const obj = {controllerId: this.schedulerIds.selected, documentations: []};
+    const obj = {documentations: []};
     if (document) {
       obj.documentations.push(document.name);
     } else {
       obj.documentations = Array.from(this.object.mapOfCheckedId);
     }
-    this.coreService.download('documentations/export', obj, 'documentation_' + this.schedulerIds.selected + '.zip', () => {
+    this.coreService.download('documentations/export', obj, 'documentations.zip', () => {
         if(!document){
           this.reset();
         }
@@ -552,7 +562,6 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       nzContent: ImportModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
-        schedulerId: this.schedulerIds.selected,
         display: this.preferences.auditLog,
         selectedPath: this.selectedPath || '/',
         nodes: this.tree
@@ -581,8 +590,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     if (document) {
       documentObj.delete = true;
       this.coreService.post('documentation/used', {
-        documentation: documentObj.path,
-        controllerId: this.schedulerIds.selected
+        documentation: documentObj.path
       }).subscribe((res: any) => {
         documentObj.usedIn = res.objects || [];
         this.deleteDocumentFn(obj, documentObj, null);

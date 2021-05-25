@@ -48,6 +48,41 @@
                    name="title" [(ngModel)]="fileOrder.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.documentation</label>
+          <div class="col-md-8 col-lg-6 select-input-both">
+            <input autocomplete="off" [readOnly]="isTrash" type="text" class="form-control"
+                   placeholder="{{'inventory.placeholder.documentationName' | translate}}"
+                   name="documentationPath" #path="ngModel" [(ngModel)]="fileOrder.configuration.documentationName">
+            <nz-tree-select
+              name="documentationName"
+              [disabled]="isTrash"
+              nzNoAnimation
+              #treeSelectCtrl
+              [nzAllowClear]="false"
+              [nzNodes]="documentationTree"
+              [nzHideUnMatched]="true"
+              [nzDropdownStyle]="{ 'max-height': '300px' }"
+              nzShowSearch
+              [(ngModel)]="fileOrder.configuration.documentationName1"
+              (nzExpandChange)="onExpand($event, 'DOCUMENTATION')"
+            >
+              <ng-template #nzTreeTemplate let-node>
+                <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'DOCUMENTATION', $event);">
+                  <div class="node-content-wrapper"
+                       [class.node-content-wrapper-active]="node.origin.path == fileOrder.configuration.documentationName">
+                    <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+                       class="w-14"></i>
+                    <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                    {{node.origin.key}}
+                  </div>
+                </div>
+              </ng-template>
+            </nz-tree-select>
+            <i class="tree-search-clear" (click)="fileOrder.configuration.documentationName = '';fileOrder.configuration.documentationName1='';saveJSON()"
+               *ngIf="fileOrder.configuration.documentationName" nz-icon nzType="close-circle" nzTheme="outline"></i>
+          </div>
+        </div>
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((path.dirty || path.touched) && path.invalid))}">
           <label class="col-md-4 col-lg-3  form-control-label" translate>inventory.label.workflowName</label>
@@ -63,13 +98,13 @@
               [nzAllowClear]="false"
               [nzNodes]="workflowTree"
               [nzHideUnMatched]="true"
-              [nzDropdownStyle]="{ 'max-height': '260px' }"
+              [nzDropdownStyle]="{ 'max-height': '300px' }"
               nzShowSearch
               [(ngModel)]="fileOrder.configuration.workflowName1"
-              (nzExpandChange)="onExpand($event)"
+              (nzExpandChange)="onExpand($event, 'WORKFLOW')"
             >
               <ng-template #nzTreeTemplate let-node>
-                <div style="width: 93%" class="node-wrapper" (click)="loadData(node, $event);">
+                <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'WORKFLOW', $event);">
                   <div class="node-content-wrapper"
                        [class.node-content-wrapper-active]="node.origin.path == fileOrder.configuration.workflowName">
                     <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"

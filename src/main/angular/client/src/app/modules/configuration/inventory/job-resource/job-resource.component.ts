@@ -24,7 +24,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   jobResource: any = {};
   invalidMsg: string;
   objectType = 'JOBRESOURCE';
-
+  documentationTree = [];
   indexOfNextAdd = 0;
   history = [];
   object = {
@@ -124,6 +124,81 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         this.ref.detectChanges();
       }
     }
+  }
+
+  private getDocumentations(): void {
+    if (this.documentationTree.length === 0) {
+      this.coreService.post('tree', {
+        onlyWithAssignReference: true,
+        types: ['DOCUMENTATION']
+      }).subscribe((res) => {
+        this.documentationTree = this.coreService.prepareTree(res, true);
+      });
+    }
+  }
+
+  updateList(node): void {
+    const obj = {
+      folder: [{folder: node.key}],
+      onlyWithAssignReference: true
+    };
+    this.coreService.post('documentations', obj).subscribe((res: any) => {
+      let data = res.documentations;
+      for (let i = 0; i < data.length; i++) {
+        const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
+        data[i].title = data[i].assignReference || data[i].name;
+        data[i].path = path;
+        data[i].key = data[i].assignReference || data[i].name;
+        data[i].type = 'DOCUMENTATION';
+        data[i].isLeaf = true;
+      }
+      if (node.origin.children && node.origin.children.length > 0) {
+        data = data.concat(node.origin.children);
+      }
+      if (node.origin.isLeaf) {
+        node.origin.expanded = true;
+      }
+      node.origin.isLeaf = false;
+      node.origin.children = data;
+      this.documentationTree = [...this.documentationTree];
+      this.ref.detectChanges();
+    });
+  }
+
+  loadData(node, $event): void {
+    if (!node || !node.origin) {
+      return;
+    }
+    if (!node.origin.type) {
+      if ($event) {
+        node.isExpanded = !node.isExpanded;
+        $event.stopPropagation();
+      }
+      let flag = true;
+      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
+        flag = false;
+      }
+      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
+        this.updateList(node);
+      }
+    } else {
+      if (this.jobResource.configuration.documentationName1) {
+        if (this.jobResource.configuration.documentationName !== this.jobResource.configuration.documentationName1) {
+          this.jobResource.configuration.documentationName = this.jobResource.configuration.documentationName1;
+        }
+      } else if (node.key && !node.key.match('/')) {
+        if (this.jobResource.configuration.documentationName !== node.key) {
+          this.jobResource.configuration.documentationName = node.key;
+        }
+      }
+      setTimeout(() => {
+        this.saveJSON();
+      }, 10);
+    }
+  }
+
+  onExpand(e): void {
+    this.loadData(e.node, null);
   }
 
   deploy(): void {
@@ -245,7 +320,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
 
   updateCheckedSet(type: string, name: string, checked: boolean): void {
     if (type === 'arguments') {
-      if(name) {
+      if (name) {
         if (checked) {
           this.object.setOfCheckedArgu.add(name);
         } else {
@@ -257,7 +332,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       });
       this.object.indeterminate1 = this.object.setOfCheckedArgu.size > 0 && !this.object.checked1;
     } else {
-      if(name) {
+      if (name) {
         if (checked) {
           this.object.setOfCheckedEnv.add(name);
         } else {
@@ -439,6 +514,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     }).subscribe((res: any) => {
       this.history = [];
       this.indexOfNextAdd = 0;
+      this.getDocumentations();
       this.object = {
         checked1: false,
         indeterminate1: false,
@@ -448,9 +524,9 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         setOfCheckedEnv: new Set<string>()
       };
       if (res.configuration) {
-        delete res.configuration['TYPE'];
-        delete res.configuration['path'];
-        delete res.configuration['versionId'];
+        delete res.configuration.TYPE;
+        delete res.configuration.path;
+        delete res.configuration.versionId;
       } else {
         res.configuration = {};
       }

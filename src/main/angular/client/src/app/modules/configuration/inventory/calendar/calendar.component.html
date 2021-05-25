@@ -50,6 +50,41 @@
               </div>
             </div>
             <div class="form-group row">
+              <label class="col-md-4 col-lg-3  form-control-label" translate>inventory.label.documentation</label>
+              <div class="col-md-8 col-lg-6 select-input-both">
+                <input autocomplete="off" [readOnly]="isTrash" type="text" class="form-control"
+                       placeholder="{{'inventory.placeholder.documentationName' | translate}}"
+                       name="documentationPath" #path="ngModel" [(ngModel)]="calendar.configuration.documentationName">
+                <nz-tree-select
+                  name="documentationName"
+                  [disabled]="isTrash"
+                  nzNoAnimation
+                  #treeSelectCtrl
+                  [nzAllowClear]="false"
+                  [nzNodes]="documentationTree"
+                  [nzHideUnMatched]="true"
+                  [nzDropdownStyle]="{ 'max-height': '300px' }"
+                  nzShowSearch
+                  [(ngModel)]="calendar.configuration.documentationName1"
+                  (nzExpandChange)="onExpand($event)"
+                >
+                  <ng-template #nzTreeTemplate let-node>
+                    <div style="width: 93%" class="node-wrapper" (click)="loadData(node, $event);">
+                      <div class="node-content-wrapper"
+                           [class.node-content-wrapper-active]="node.origin.path == calendar.configuration.documentationName">
+                        <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+                           class="w-14"></i>
+                        <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                        {{node.origin.key}}
+                      </div>
+                    </div>
+                  </ng-template>
+                </nz-tree-select>
+                <i class="tree-search-clear" (click)="calendar.configuration.documentationName = '';calendar.configuration.documentationName1='';saveJSON()"
+                   *ngIf="calendar.configuration.documentationName" nz-icon nzType="close-circle" nzTheme="outline"></i>
+              </div>
+            </div>
+            <div class="form-group row">
               <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.type</label>
               <div class="col-md-8 col-lg-6">
                 <nz-select [(ngModel)]="calendar.configuration.type" [nzDisabled]="isTrash" name="cType" (ngModelChange)="saveJSON()">
@@ -97,7 +132,7 @@
               <span translate>runtime.button.showYearView</span>
             </button>
           </div>
-          <div class="col-md-12 col-lg-9" style="max-height: calc(100vh - 514px); overflow: auto">
+          <div class="col-md-12 col-lg-9" style="max-height: calc(100vh - 554px); overflow: auto">
             <div class="table-responsive">
               <table class="table table-hover table-bordered ">
                 <thead>

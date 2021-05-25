@@ -38,7 +38,7 @@ export class CoreService {
     this.tabs._workflow = {};
     this.tabs._workflow.filter = {};
     this.tabs._workflow.filter.date = '1d';
-    this.tabs._workflow.filter.sortBy = 'name';
+    this.tabs._workflow.filter.sortBy = 'versionDate';
     this.tabs._workflow.reverse = false;
     this.tabs._workflow.currentPage = '1';
     this.tabs._workflow.expandedKeys = ['/'];
@@ -184,7 +184,7 @@ export class CoreService {
     this.tempTabs._workflow = {};
     this.tempTabs._workflow.filter = {};
     this.tempTabs._workflow.filter.date = '1d';
-    this.tempTabs._workflow.filter.sortBy = 'name';
+    this.tempTabs._workflow.filter.sortBy = 'versionDate';
     this.tempTabs._workflow.reverse = false;
     this.tempTabs._workflow.currentPage = '1';
     this.tempTabs._workflow.expandedKeys = ['/'];
@@ -415,21 +415,21 @@ export class CoreService {
     return this.http.get<any>(url);
   }
 
-  post(url: string, object: any): Observable<any> {
-    return this.http.post(url, object);
+  post(url: string, options: any): Observable<any> {
+    return this.http.post(url, options);
   }
 
-  log(url: string, object: any, headers: any): Observable<any> {
-    return this.http.post(url, object, headers);
+  log(url: string, options: any, headers: any): Observable<any> {
+    return this.http.post(url, options, headers);
   }
 
-  download(url: string, object: any, fileName: string, cb: any): void {
+  download(url: string, options: any, fileName: string, cb: any): void {
     const headers: any = {
       Accept: 'application/octet-stream',
       responseType: 'blob',
       observe: 'response'
     };
-    this.http.post(url, object, headers).subscribe((response: any) => {
+    this.http.post(url, options, headers).subscribe((response: any) => {
       saveAs(response.body, fileName || response.headers.get('content-disposition'));
       cb(true);
     }, () => {

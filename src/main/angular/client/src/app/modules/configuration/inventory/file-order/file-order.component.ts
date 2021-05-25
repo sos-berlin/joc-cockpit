@@ -24,7 +24,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   workflowTree = [];
   fileOrder: any = {};
   objectType = 'FILEORDERSOURCE';
-
+  documentationTree = [];
   indexOfNextAdd = 0;
   history = [];
   subscription1: Subscription;
@@ -108,6 +108,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     }).subscribe((res: any) => {
       this.history = [];
       this.indexOfNextAdd = 0;
+      this.getDocumentations();
       if (res.configuration) {
         delete res.configuration['TYPE'];
         delete res.configuration['path'];
@@ -198,7 +199,18 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-  loadData(node, $event): void {
+  private getDocumentations(): void {
+    if (this.documentationTree.length === 0) {
+      this.coreService.post('tree', {
+        onlyWithAssignReference: true,
+        types: ['DOCUMENTATION']
+      }).subscribe((res) => {
+        this.documentationTree = this.coreService.prepareTree(res, true);
+      });
+    }
+  }
+
+  loadData(node, type, $event): void {
     if (!node || !node.origin) {
       return;
     }
@@ -212,16 +224,28 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         flag = false;
       }
       if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        this.updateList(node);
+        this.updateList(node, type);
       }
     } else {
-      if (this.fileOrder.configuration.workflowName1) {
-        if (this.fileOrder.configuration.workflowName !== this.fileOrder.configuration.workflowName1) {
-          this.fileOrder.configuration.workflowName = this.fileOrder.configuration.workflowName1;
+      if (type === 'DOCUMENTATION') {
+        if (this.fileOrder.configuration.documentationName1) {
+          if (this.fileOrder.configuration.documentationName !== this.fileOrder.configuration.documentationName1) {
+            this.fileOrder.configuration.documentationName = this.fileOrder.configuration.documentationName1;
+          }
+        } else if (node.key && !node.key.match('/')) {
+          if (this.fileOrder.configuration.documentationName !== node.key) {
+            this.fileOrder.configuration.documentationName = node.key;
+          }
         }
-      } else if (node.key && !node.key.match('/')) {
-        if (this.fileOrder.configuration.workflowName !== node.key) {
-          this.fileOrder.configuration.workflowName = node.key;
+      } else{
+        if (this.fileOrder.configuration.workflowName1) {
+          if (this.fileOrder.configuration.workflowName !== this.fileOrder.configuration.workflowName1) {
+            this.fileOrder.configuration.workflowName = this.fileOrder.configuration.workflowName1;
+          }
+        } else if (node.key && !node.key.match('/')) {
+          if (this.fileOrder.configuration.workflowName !== node.key) {
+            this.fileOrder.configuration.workflowName = node.key;
+          }
         }
       }
       setTimeout(() => {
@@ -230,19 +254,26 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-  updateList(node): void {
+  updateList(node, type): void {
     let obj: any = {
       path: node.key,
-      objectTypes: ['WORKFLOW']
+      objectTypes: [type]
     };
-    this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
-      let data = res.workflows;
+    if (type === 'DOCUMENTATION') {
+      obj = {
+        folder: [{folder: node.key}],
+        onlyWithAssignReference: true
+      };
+    }
+    const URL = type === 'DOCUMENTATION' ? 'documentations' : 'inventory/read/folder';
+    this.coreService.post(URL, obj).subscribe((res: any) => {
+      let data = res.workflows || res.documentations;
       for (let i = 0; i < data.length; i++) {
-        const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-        data[i].title = data[i].name;
-        data[i].path = _path;
-        data[i].key = data[i].name;
-        data[i].type = 'WORKFLOW';
+        const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
+        data[i].title = data[i].assignReference || data[i].name;
+        data[i].path = path;
+        data[i].key = data[i].assignReference || data[i].name;
+        data[i].type = type;
         data[i].isLeaf = true;
       }
       if (node.origin.children && node.origin.children.length > 0) {
@@ -253,12 +284,16 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       }
       node.origin.isLeaf = false;
       node.origin.children = data;
-      this.workflowTree = [...this.workflowTree];
+      if (type === 'DOCUMENTATION') {
+        this.documentationTree = [...this.documentationTree];
+      } else {
+        this.workflowTree = [...this.workflowTree];
+      }
     });
   }
 
-  onExpand(e): void {
-    this.loadData(e.node, null);
+  onExpand(e, type): void {
+    this.loadData(e.node, type, null);
   }
 
   deploy(): void {

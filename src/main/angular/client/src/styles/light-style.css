@@ -163,6 +163,10 @@ button.close {
   color: rgba(0, 0, 0, .85);
 }
 
+.ant-picker-panel-container {
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+
 div.jsoneditor-tree button.jsoneditor-button {
   background: transparent url(../assets/images/jsoneditor-icons.svg);
   background-position: 0 -48px;

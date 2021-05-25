@@ -631,7 +631,7 @@
                           <span *ngIf="!keys.keyID && !keys.keyAlgorithm" translate>
                             profile.keyManagement.message.noKeyFound
                           </span>
-                          <div class="inline pull-right" style="margin-bottom: 2px">
+                          <div class="inline pull-right m-t-n-xs" style="margin-bottom: 2px">
                             <button *ngIf="permission.joc.administration.certificates.manage" class="btn btn-sm btn-grey m-l-12" (click)="pasteKey()"
                                     [nz-tooltip]="'profile.keyManagement.tooltip.updateKey' | translate">
                               <i class="fa fa-paste"></i>

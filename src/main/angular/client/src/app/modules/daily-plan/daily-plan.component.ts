@@ -285,7 +285,6 @@ export class CreatePlanModalComponent implements OnInit{
       obj.auditLog.ticketLink = this.comments.ticketLink;
     }
     if (this.dateRanges && this.dateRanges.length > 0) {
-      this.submitted = false;
       this.recursivelyCreate(obj);
     } else {
       obj.dailyPlanDate = this.coreService.getStringDate(this.selectedDate);

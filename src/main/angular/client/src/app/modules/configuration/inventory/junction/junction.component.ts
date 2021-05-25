@@ -23,7 +23,7 @@ export class JunctionComponent implements OnChanges, OnDestroy {
   lifetime: string;
   invalidMsg: string;
   objectType = 'JUNCTION';
-
+  documentationTree = [];
   indexOfNextAdd = 0;
   history = [];
   subscription1: Subscription;
@@ -83,10 +83,11 @@ export class JunctionComponent implements OnChanges, OnDestroy {
     }).subscribe((res: any) => {
       this.history = [];
       this.indexOfNextAdd = 0;
+      this.getDocumentations();
       if (res.configuration) {
-        delete res.configuration['TYPE'];
-        delete res.configuration['path'];
-        delete res.configuration['versionId'];
+        delete res.configuration.TYPE;
+        delete res.configuration.path;
+        delete res.configuration.versionId;
       } else {
         res.configuration = {};
       }
@@ -132,6 +133,82 @@ export class JunctionComponent implements OnChanges, OnDestroy {
       }
     }
   }
+
+  private getDocumentations(): void {
+    if (this.documentationTree.length === 0) {
+      this.coreService.post('tree', {
+        onlyWithAssignReference: true,
+        types: ['DOCUMENTATION']
+      }).subscribe((res) => {
+        this.documentationTree = this.coreService.prepareTree(res, true);
+      });
+    }
+  }
+
+  updateList(node): void {
+    const obj = {
+      folder: [{folder: node.key}],
+      onlyWithAssignReference: true
+    };
+    this.coreService.post('documentations', obj).subscribe((res: any) => {
+      let data = res.documentations;
+      for (let i = 0; i < data.length; i++) {
+        const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
+        data[i].title = data[i].assignReference || data[i].name;
+        data[i].path = path;
+        data[i].key = data[i].assignReference || data[i].name;
+        data[i].type = 'DOCUMENTATION';
+        data[i].isLeaf = true;
+      }
+      if (node.origin.children && node.origin.children.length > 0) {
+        data = data.concat(node.origin.children);
+      }
+      if (node.origin.isLeaf) {
+        node.origin.expanded = true;
+      }
+      node.origin.isLeaf = false;
+      node.origin.children = data;
+      this.documentationTree = [...this.documentationTree];
+      this.ref.detectChanges();
+    });
+  }
+
+  loadData(node, $event): void {
+    if (!node || !node.origin) {
+      return;
+    }
+    if (!node.origin.type) {
+      if ($event) {
+        node.isExpanded = !node.isExpanded;
+        $event.stopPropagation();
+      }
+      let flag = true;
+      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
+        flag = false;
+      }
+      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
+        this.updateList(node);
+      }
+    } else {
+      if (this.junction.configuration.documentationName1) {
+        if (this.junction.configuration.documentationName !== this.junction.configuration.documentationName1) {
+          this.junction.configuration.documentationName = this.junction.configuration.documentationName1;
+        }
+      } else if (node.key && !node.key.match('/')) {
+        if (this.junction.configuration.documentationName !== node.key) {
+          this.junction.configuration.documentationName = node.key;
+        }
+      }
+      setTimeout(() => {
+        this.saveJSON();
+      }, 10);
+    }
+  }
+
+  onExpand(e): void {
+    this.loadData(e.node, null);
+  }
+
 
   deploy(): void {
     this.dataService.reloadTree.next({deploy: this.junction});

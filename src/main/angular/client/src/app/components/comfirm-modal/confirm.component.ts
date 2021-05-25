@@ -1,8 +1,8 @@
-import {Component, OnInit, Input} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {NzModalRef} from 'ng-zorro-antd/modal';
 
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-confirm-modal-content',
   templateUrl: './confirm.component.html'
 })
 export class ConfirmModalComponent {
@@ -13,16 +13,10 @@ export class ConfirmModalComponent {
   @Input() count: number;
   @Input() type: any;
   @Input() objectName: any;
-  @Input() calendar: any;
-  @Input() calendarArr: any;
   @Input() document: any;
   @Input() documentArr: any;
   @Input() resetProfiles: any;
 
   constructor(public activeModal: NzModalRef) {
-  }
-
-  showDocument(doc): void{
-
   }
 }

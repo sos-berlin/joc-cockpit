@@ -1,7 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title">
     <span translate>resource.label.showUsage</span>
-        : &nbsp;
+    : &nbsp;
     {{document.path}}
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
@@ -9,32 +9,32 @@
   </button>
 </div>
 
-<div class="modal-body">
-  <div class="p-a">
-    <div class="row">
-      <div class=" col-sm-12">
-        <div class="p-l-sm" *ngIf="document.usedIn.length>0">
-          <div class="row m-b">
-            <div class="col-md-12">
-              <span class="text _600" translate>resource.documentation.label.documentationUsedIn</span> : -
-            </div>
-          </div>
-          <div class="row" *ngFor="let doc of document.usedIn">
-            <label class="col-md-2 _600">
-              {{doc.type}} :
-            </label>
-            <div class="col-md-10">
-              <a>{{doc.path}}</a>
-            </div>
+<div class="modal-body p-a">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="p-l-sm" *ngIf="document.usedIn.length>0">
+        <div class="row m-b">
+          <div class="col-md-12">
+            <span class="text _600" translate>resource.documentation.label.documentationUsedIn</span> : -
           </div>
         </div>
-        <div class="text-center text" *ngIf="!document.usedIn || document.usedIn.length ==0" translate>resource.documentation.message.documentNotUsed</div>
+        <div class="row" *ngFor="let doc of document.usedIn">
+          <label class="col-md-3 _600">
+            {{doc.type | translate}} :
+          </label>
+          <div class="col-md-9">
+            <a>{{doc.path}}</a>
+          </div>
+        </div>
+      </div>
+      <div class="text-center text" *ngIf="!document.usedIn || document.usedIn.length ==0" translate>
+        resource.documentation.message.documentNotUsed
       </div>
     </div>
   </div>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy('Cross click')"
+  <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()"
           translate>common.button.close
   </button>
 </div>

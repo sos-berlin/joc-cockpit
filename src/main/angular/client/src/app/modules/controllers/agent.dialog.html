@@ -13,7 +13,7 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
     <div class="form-group row" *ngIf="!new">
-      <label class="col-sm-3 form-control-label" translate>agent.label.agentId</label>
+      <label class="col-sm-3" translate>agent.label.agentId</label>
       <div class="col-sm-8">
         {{agent.agentId}}
       </div>
@@ -55,7 +55,6 @@
       <div class="p-l-0 m-l-0 col-sm-1" *ngIf="agentNameAliases.length > 1 && agentNameAliases.length - 1 !== i" style="padding-top: 6px"><i (click)="removeAlise(i)" class="cursor text-muted text-hover-color fa fa-times"></i></div>
       <div class="p-l-0 m-l-0 col-sm-1" *ngIf="agentNameAliases.length - 1 == i" style="padding-top: 6px"><i (click)="addAlise()" class="cursor text-muted fa fa-plus"></i></div>
     </div>
-
     <div class="form-group row">
       <label class="col-sm-3 form-control-label" translate>agent.label.url</label>
       <div class=" col-sm-8" [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}">

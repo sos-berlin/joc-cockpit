@@ -46,6 +46,41 @@
           </div>
         </div>
         <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.documentation</label>
+          <div class="col-md-8 col-lg-6 select-input-both">
+            <input autocomplete="off" [readOnly]="isTrash" type="text" class="form-control"
+                   placeholder="{{'inventory.placeholder.documentationName' | translate}}"
+                   name="documentationPath" #path="ngModel" [(ngModel)]="jobResource.configuration.documentationName">
+            <nz-tree-select
+              name="documentationName"
+              [disabled]="isTrash"
+              nzNoAnimation
+              #treeSelectCtrl
+              [nzAllowClear]="false"
+              [nzNodes]="documentationTree"
+              [nzHideUnMatched]="true"
+              [nzDropdownStyle]="{ 'max-height': '260px' }"
+              nzShowSearch
+              [(ngModel)]="jobResource.configuration.documentationName1"
+              (nzExpandChange)="onExpand($event)"
+            >
+              <ng-template #nzTreeTemplate let-node>
+                <div style="width: 93%" class="node-wrapper" (click)="loadData(node, $event);">
+                  <div class="node-content-wrapper"
+                       [class.node-content-wrapper-active]="node.origin.path == jobResource.configuration.documentationName">
+                    <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+                       class="w-14"></i>
+                    <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                    {{node.origin.key}}
+                  </div>
+                </div>
+              </ng-template>
+            </nz-tree-select>
+            <i class="tree-search-clear" (click)="jobResource.configuration.documentationName = '';jobResource.configuration.documentationName1='';saveJSON()"
+               *ngIf="jobResource.configuration.documentationName" nz-icon nzType="close-circle" nzTheme="outline"></i>
+          </div>
+        </div>
+        <div class="form-group row">
           <div class="col-md-12">
             <nz-tabset>
               <nz-tab [nzTitle]="'workflow.label.arguments' | translate">
@@ -73,7 +108,7 @@
                       <div class="col-md-8 col-lg-9 m-b-sm" translate>common.label.value</div>
                     </div>
                   </div>
-                  <div class="col-md-12" style="max-height: calc(100vh - 488px); overflow: auto">
+                  <div class="col-md-12" style="max-height: calc(100vh - 522px); overflow: auto">
                     <div cdkDropList (cdkDropListDropped)="drop($event, jobResource.configuration.arguments)">
                       <div class="form-group row m-b-0 m-l-md move-on-hover" *ngFor="let argu of jobResource.configuration.arguments; let i = index" cdkDrag>
                         <div class="pos-abt move-icon" style="margin-left: -31px;font-size: 18px;margin-top: 2px;cursor: move;">
@@ -137,7 +172,7 @@
                       <div class="col-md-8 col-lg-9 m-b-sm" translate>common.label.value</div>
                     </div>
                   </div>
-                  <div class="col-md-12" style="max-height: calc(100vh - 488px); overflow: auto">
+                  <div class="col-md-12" style="max-height: calc(100vh - 522px); overflow: auto">
                     <div cdkDropList (cdkDropListDropped)="drop($event, jobResource.configuration.env)">
                       <div class="form-group row m-b-0 m-l-md move-on-hover" *ngFor="let env of jobResource.configuration.env; let i = index" cdkDrag>
                         <div class="pos-abt move-icon" style="margin-left: -31px;font-size: 18px;margin-top: 2px;cursor: move;">

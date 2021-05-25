@@ -52,6 +52,41 @@
                    name="title" [(ngModel)]="schedule.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.documentation</label>
+          <div class="col-md-8 col-lg-6 select-input-both">
+            <input autocomplete="off" [readOnly]="isTrash" type="text" class="form-control"
+                   placeholder="{{'inventory.placeholder.documentationName' | translate}}"
+                   name="documentationPath" #path="ngModel" [(ngModel)]="schedule.configuration.documentationName">
+            <nz-tree-select
+              name="documentationName"
+              [disabled]="isTrash"
+              nzNoAnimation
+              #treeSelectCtrl
+              [nzAllowClear]="false"
+              [nzNodes]="documentationTree"
+              [nzHideUnMatched]="true"
+              [nzDropdownStyle]="{ 'max-height': '300px' }"
+              nzShowSearch
+              [(ngModel)]="schedule.configuration.documentationName1"
+              (nzExpandChange)="onExpand($event, 'DOCUMENTATION')"
+            >
+              <ng-template #nzTreeTemplate let-node>
+                <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'DOCUMENTATION', $event);">
+                  <div class="node-content-wrapper"
+                       [class.node-content-wrapper-active]="node.origin.path == schedule.configuration.documentationName">
+                    <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+                       class="w-14"></i>
+                    <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                    {{node.origin.key}}
+                  </div>
+                </div>
+              </ng-template>
+            </nz-tree-select>
+            <i class="tree-search-clear" (click)="schedule.configuration.documentationName = '';schedule.configuration.documentationName1='';saveJSON()"
+               *ngIf="schedule.configuration.documentationName" nz-icon nzType="close-circle" nzTheme="outline"></i>
+          </div>
+        </div>
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((path.dirty || path.touched) && path.invalid))}">
           <label class="col-md-4 col-lg-3  form-control-label" translate>inventory.label.workflowName</label>
@@ -67,7 +102,7 @@
               [nzAllowClear]="false"
               [nzNodes]="workflowTree"
               [nzHideUnMatched]="true"
-              [nzDropdownStyle]="{ 'max-height': '260px' }"
+              [nzDropdownStyle]="{ 'max-height': '300px' }"
               nzShowSearch
               [(ngModel)]="schedule.configuration.workflowName1"
               (nzExpandChange)="onExpand($event, 'WORKFLOW')"
@@ -92,7 +127,7 @@
             <i (click)="navToWorkflow()" class="fa fa-pencil cursor"></i>
           </div>
         </div>
-        <div class="m-b-sm row">
+        <div class="form-group row">
           <label class="col-md-4 col-lg-3" translate>inventory.label.planOrderAutomatically</label>
           <div class="col-md-8 col-lg-6">
             <label nz-checkbox [nzDisabled]="isTrash" [(ngModel)]="schedule.configuration.planOrderAutomatically" (ngModelChange)="saveJSON()" name="planOrderAutomatically"></label>

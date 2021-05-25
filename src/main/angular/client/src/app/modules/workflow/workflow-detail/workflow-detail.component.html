@@ -113,7 +113,7 @@
                     <span class="show-in-single-line">
                       <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
                          *ngIf="item.hide && item.fileOrderSources && item.fileOrderSources.length>0" (click)="item.hide = false"></i>
-                      <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" *ngIf="!item.hide"
+                      <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" *ngIf="!item.hide && item.fileOrderSources && item.fileOrderSources.length>0"
                          (click)="item.hide = true"></i>
                       <a class="text-dark">
                         <i (click)="coreService.navToInventoryTab(item.path, 'WORKFLOW');"

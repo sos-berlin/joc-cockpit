@@ -54,6 +54,39 @@
           </label>
         </div>
       </div>
+      <div class="form-group row doc-in-workflow">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.documentation</label>
+        <div class="col-md-8 col-lg-9 select-input-both">
+          <input autocomplete="off" type="text" class="form-control"
+                 placeholder="{{'inventory.placeholder.documentationName' | translate}}"
+                 name="documentationPath" #path="ngModel" [(ngModel)]="selectedNode.job.documentationName">
+          <nz-tree-select
+            name="documentationName"
+            nzNoAnimation
+            #treeSelectCtrl
+            [nzAllowClear]="false"
+            [nzNodes]="documentationTree"
+            [nzHideUnMatched]="true"
+            [nzDropdownStyle]="{ 'max-height': '300px' }"
+            nzShowSearch
+            [(ngModel)]="selectedNode.job.documentationName1"
+            (nzExpandChange)="onExpand($event, 'DOCUMENTATION')"
+          >
+            <ng-template #nzTreeTemplate let-node>
+              <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'DOCUMENTATION', $event);">
+                <div class="node-content-wrapper"
+                     [class.node-content-wrapper-active]="node.origin.path == selectedNode.job.documentationName">
+                  <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+                     class="w-14"></i>
+                  <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                  {{node.origin.key}}
+                </div>
+              </div>
+            </ng-template>
+          </nz-tree-select>
+          <i class="tree-search-clear" (click)="selectedNode.job.documentationName = '';selectedNode.job.documentationName1=''" *ngIf="selectedNode.job.documentationName" nz-icon nzType="close-circle" nzTheme="outline"></i>
+        </div>
+      </div>
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.agent</label>
         <div class="col-md-8 col-lg-9"
@@ -147,14 +180,6 @@
           </nz-select>
         </div>
       </div>
-      <div class="form-group row" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ScriptExecutable'">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.compatibleMode</label>
-        <div class="col-md-8 col-lg-9">
-          <nz-select name="v1Compatible" nzAllowClear [(ngModel)]="selectedNode.job.executable.v1Compatible" (ngModelChange)="saveToHistory();">
-            <nz-option [nzLabel]="'workflow.label.branch1.x' | translate" [nzValue]="true"></nz-option>
-          </nz-select>
-        </div>
-      </div>
       <div class="form-group row">
         <div class="col-md-12">
           <nz-tabset>
@@ -217,7 +242,7 @@
                     <div class="col-md-8 col-lg-6 m-b-sm" translate>common.label.value</div>
                   </div>
                 </div>
-                <div class="col-md-12" style="max-height: calc(100vh - 788px); overflow: auto">
+                <div class="col-md-12" style="max-height: calc(100vh - 760px); overflow: auto">
                   <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.job.defaultArguments)">
                     <div class="form-group row m-b-0 m-l-md move-on-hover" *ngFor="let argument of selectedNode.job.defaultArguments; let i = index" cdkDrag>
                       <div class="pos-abt move-icon" style="margin-left: -31px;font-size: 18px;margin-top: 2px;cursor: move;">
@@ -282,7 +307,7 @@
                       <div class="col-md-8 col-lg-6 m-b-sm" translate>common.label.value</div>
                     </div>
                 </div>
-                <div class="col-md-12" style="max-height: calc(100vh - 788px); overflow: auto">
+                <div class="col-md-12" style="max-height: calc(100vh - 760px); overflow: auto">
                   <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.job.executable.env)">
                     <div class="form-group row m-b-0 m-l-md move-on-hover" *ngFor="let env of selectedNode.job.executable.env; let i = index" cdkDrag>
                       <div class="pos-abt move-icon" style="margin-left: -31px;font-size: 18px;margin-top: 2px;cursor: move;">
@@ -355,7 +380,7 @@
                       <div class="col-md-8 col-lg-6 m-b-sm" translate>common.label.value</div>
                     </div>
                 </div>
-                <div class="col-md-12" style="max-height: calc(100vh - 788px); overflow: auto">
+                <div class="col-md-12" style="max-height: calc(100vh - 760px); overflow: auto">
                   <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.job.executable.arguments)">
                     <div class="form-group row m-b-0 m-l-md move-on-hover" *ngFor="let argu of selectedNode.job.executable.arguments; let i = index" cdkDrag>
                       <div class="pos-abt move-icon" style="margin-left: -31px;font-size: 18px;margin-top: 2px;cursor: move;">
@@ -423,7 +448,7 @@
                       <div class="col-md-8 col-lg-6 m-b-sm" translate>common.label.value</div>
                     </div>
                 </div>
-                <div class="col-md-12" style="max-height: calc(100vh - 788px); overflow: auto">
+                <div class="col-md-12" style="max-height: calc(100vh - 760px); overflow: auto">
                   <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.job.executable.jobArguments)">
                     <div class="form-group row m-b-0 m-l-md move-on-hover" *ngFor="let argument of selectedNode.job.executable.jobArguments; let i = index" cdkDrag>
                       <div class="pos-abt move-icon" style="margin-left: -31px;font-size: 18px;margin-top: 2px;cursor: move;">
@@ -498,6 +523,14 @@
             <input autocomplete="off" #graceTimeout="ngModel" type="text" class="form-control" name="graceTimeout" placeholder="{{'workflow.placeholder.duration' | translate}}"
                    validateDurtionReqex  [(ngModel)]="selectedNode.job.graceTimeout1">
           </label>
+        </div>
+      </div>
+      <div class="form-group row" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ScriptExecutable'">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.compatibleMode</label>
+        <div class="col-md-8 col-lg-9">
+          <nz-select name="v1Compatible" nzAllowClear [(ngModel)]="selectedNode.job.executable.v1Compatible" (ngModelChange)="saveToHistory();">
+            <nz-option [nzLabel]="'workflow.label.branch1.x' | translate" [nzValue]="true"></nz-option>
+          </nz-select>
         </div>
       </div>
       <div class="form-group row">

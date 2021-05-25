@@ -11,7 +11,7 @@
   <div class="modal-body p-a" style="overflow: visible">
     <div class="form-group row" *ngIf="!isVariableOnly && !jobResourceNames" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
       <label class="col-sm-3 form-control-label" translate>common.label.name</label>
-      <div class="col-sm-6">
+      <div class="col-sm-8">
         <input type="text" class="form-control" identifierValidation name="name"
                [(ngModel)]="workflowName" required #name="ngModel" [appAutofocus]="true" autocomplete="off"
                />
@@ -25,8 +25,41 @@
     </div>
     <div class="form-group row" *ngIf="!isVariableOnly && !jobResourceNames">
       <label class="col-sm-3 form-control-label" translate>common.label.title</label>
-      <div class="col-sm-6">
+      <div class="col-sm-8">
         <input type="text" class="form-control" name="title" placeholder="{{'common.placeholder.title' | translate}}" [(ngModel)]="title" autocomplete="off"/>
+      </div>
+    </div>
+    <div class="form-group row doc-in-workflow" *ngIf="!isVariableOnly && !jobResourceNames">
+      <label class="col-sm-3 form-control-label" translate>inventory.label.documentation</label>
+      <div class="col-sm-8 select-input-both">
+        <input autocomplete="off" type="text" class="form-control"
+               placeholder="{{'inventory.placeholder.documentationName' | translate}}"
+               name="documentationPath" #path="ngModel" [(ngModel)]="documentationName">
+        <nz-tree-select
+          name="documentationName"
+          nzNoAnimation
+          #treeSelectCtrl
+          [nzAllowClear]="false"
+          [nzNodes]="documentationTree"
+          [nzHideUnMatched]="true"
+          [nzDropdownStyle]="{ 'max-height': '300px' }"
+          nzShowSearch
+          [(ngModel)]="document.name"
+          (nzExpandChange)="onExpand($event, 'DOCUMENTATION')"
+        >
+          <ng-template #nzTreeTemplate let-node>
+            <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'DOCUMENTATION', $event);">
+              <div class="node-content-wrapper"
+                   [class.node-content-wrapper-active]="node.origin.path == documentationName">
+                <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+                   class="w-14"></i>
+                <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                {{node.origin.key}}
+              </div>
+            </div>
+          </ng-template>
+        </nz-tree-select>
+        <i class="tree-search-clear" (click)="documentationName = '';document.name=''" *ngIf="documentationName" nz-icon nzType="close-circle" nzTheme="outline"></i>
       </div>
     </div>
     <div class="form-group row" *ngIf="!isVariableOnly && jobResourceNames">
@@ -44,10 +77,10 @@
           nzShowSearch
           [nzPlaceHolder]="'workflow.placeholder.selectJobResources' | translate"
           [(ngModel)]="jobResourceNames"
-          (nzExpandChange)="onExpand($event)"
+          (nzExpandChange)="onExpand($event, 'JOBRESOURCE')"
         >
           <ng-template #nzTreeTemplate let-node>
-            <div style="width: 93%" class="node-wrapper" (click)="loadData(node, $event);">
+            <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'JOBRESOURCE', $event);">
               <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
                 <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                 <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>

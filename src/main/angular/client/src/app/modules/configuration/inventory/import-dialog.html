@@ -14,7 +14,7 @@
         <div class="form-group row">
           <label class="col-sm-3 " translate>common.label.selectComments</label>
           <div class=" col-sm-9">
-            <nz-radio-group name="radio"  [(ngModel)]="comments.radio">
+            <nz-radio-group name="radio" [(ngModel)]="comments.radio">
               <label nz-radio nzValue="predefined"><span translate>common.label.predefined</span></label>
               <label nz-radio nzValue="new"><span translate>common.label.individual</span></label>
             </nz-radio-group>
@@ -27,7 +27,7 @@
             <nz-select nzPlaceHolder="{{'common.label.selectPredefinedReason' | translate}}"
                        [(ngModel)]="comments.comment" name="comment" #comment="ngModel"
                        [required]="required && comments.radio=='predefined'">
-              <nz-option [nzValue]="''" [nzLabel]="'label.selectPredefinedReason' | translate"></nz-option>
+              <nz-option [nzValue]="''" [nzLabel]="'common.label.selectPredefinedReason' | translate"></nz-option>
               <nz-option *ngFor="let list of messageList" [nzLabel]="list" [nzValue]="list"></nz-option>
             </nz-select>
             <div *ngIf="comment.invalid && (comment.dirty || comment.touched)" class="text-danger m-t-xs">
@@ -47,7 +47,7 @@
             <textarea rows="3" class="form-control" maxlength="2000" name="textComment" #textComment="ngModel"
                       [required]="required && comments.radio=='new'"
                       [(ngModel)]="comments.textComment"
-                      placeholder="{{'placeholder.enterComment' | translate}}"
+                      placeholder="{{'common.placeholder.enterComment' | translate}}"
             ></textarea>
             <div *ngIf="textComment.invalid && (textComment.dirty || textComment.touched)"
                  class="text-danger help-block">
@@ -121,7 +121,7 @@
             <input type="text" name="folder" class="form-control" [(ngModel)]="requestObj.targetFolder" placeholder="{{'inventory.placeholder.enterFolderPath' | translate}}">
           </div>
         </div>
-        <div class="row">
+        <div class="form-group row">
           <label class="col-md-3 form-control-label">
             <label translate>inventory.label.fileFormat</label>
           </label>
@@ -132,7 +132,7 @@
             </nz-select>
           </div>
         </div>
-        <div class="m-t-sm row">
+        <div class="form-group row">
           <label class="col-md-3">
             <label translate>inventory.label.overwrite</label>
           </label>
@@ -140,7 +140,7 @@
             <label nz-checkbox name="overwrite" [(ngModel)]="requestObj.overwrite"></label>
           </div>
         </div>
-        <div class="m-b-sm row" *ngIf="!requestObj.overwrite">
+        <div class="form-group row" *ngIf="!requestObj.overwrite">
           <label class="col-md-3" translate>inventory.label.objectName</label>
           <div class="col-md-9">
             <nz-radio-group name="type" [(ngModel)]="requestObj.type">
