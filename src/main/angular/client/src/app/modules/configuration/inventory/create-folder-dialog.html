@@ -79,7 +79,7 @@
           inventory.label.search
         </label>
         <div class="col-md-6" [ngClass]="{'has-error' :  ((search.dirty || search.touched) && search.invalid)}">
-          <input type="text" placeholder="Enter value which need to replace" class="form-control" name="search" required
+          <input type="text" placeholder="{{'inventory.placeholder.valueWhichNeedToReplace' | translate}}" class="form-control" name="search" required
                  #search="ngModel" [(ngModel)]="folder.search" autocomplete="off">
           <div *ngIf="search.invalid && (search.dirty || search.touched)"
                class="text-danger help-block">
@@ -94,7 +94,7 @@
           inventory.label.replace
         </label>
         <div class="col-md-6" [ngClass]="{'has-error' :  ((replace.dirty || replace.touched) && replace.invalid)}">
-          <input type="text" placeholder="Enter value replace by" class="form-control" name="replace" required
+          <input type="text" placeholder="{{'inventory.placeholder.valueReplaceBy' | translate}}" class="form-control" name="replace" required
                  #replace="ngModel" [(ngModel)]="folder.replace" autocomplete="off">
           <div *ngIf="replace.invalid && (replace.dirty || replace.touched)"
                class="text-danger help-block">

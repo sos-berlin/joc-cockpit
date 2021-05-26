@@ -6,7 +6,7 @@ import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 
-declare const $;
+declare const $: any;
 
 @Component({
   selector: 'app-widget-modal-content',
@@ -52,14 +52,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   static calculateHeight(): void {
+    let top = 134;
     setTimeout(() => {
       const dom = $('#gridster-container');
-      let top = 142;
       if (dom.position()) {
-        top = dom.position().top;
+        if (dom.position().top < 100 || dom.position().top > 133) {
+          top = dom.position().top;
+        }
       }
-      const ht = 'calc(100vh - ' + top + 'px)';
-      $('.gridster').css({height: ht, 'scroll-top': '0'});
+      $('.gridster').css({height: 'calc(100vh - ' + top + 'px)', 'scroll-top': '0'});
     }, 0);
   }
 

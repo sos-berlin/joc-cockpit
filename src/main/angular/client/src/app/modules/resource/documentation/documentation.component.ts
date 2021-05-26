@@ -352,7 +352,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   data: any = [];
   documentFilters: any = {};
   sideView: any = {};
-  documentTypes = ['ALL', 'PDF', 'HTML', 'XML', 'XSL', 'XSD', 'JAVASCRIPT', 'JSON', 'CSS', 'MARKDOWN', 'GIF', 'JPEG', 'PNG'];
+  documentTypes = ['PDF', 'HTML', 'XML', 'XSL', 'XSD', 'JAVASCRIPT', 'JSON', 'CSS', 'MARKDOWN', 'GIF', 'JPEG', 'PNG'];
   selectedPath: string;
   searchableProperties = ['name', 'type', 'assignReference', 'path'];
 
@@ -517,7 +517,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   previewDocument(document): void {
     const link = API_URL + 'documentation/show?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId;
     if (this.preferences.isDocNewWindow === 'newWindow') {
-      window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no', true);
+      window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no');
     } else {
       window.open(link, '_blank');
     }

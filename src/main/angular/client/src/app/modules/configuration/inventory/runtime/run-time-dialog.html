@@ -89,7 +89,7 @@
                   </table>
                 </div>
                 <div *ngIf="calendars.length==0 && nonWorkingCalendars.length==0" class="text-center">
-                  <span translate>runtime.message.noFrequencyCalendarFound</span>
+                  <app-empty-data title="runtime.message.noFrequencyCalendarFound"></app-empty-data>
                 </div>
               </div>
             </div>

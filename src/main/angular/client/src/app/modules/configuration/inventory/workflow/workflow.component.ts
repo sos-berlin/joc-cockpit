@@ -137,7 +137,11 @@ export class UpdateWorkflowComponent implements OnInit {
           }
         });
       }
-      this.activeModal.close({title: this.title, documentationName: this.documentationName, variableDeclarations: this.variableDeclarations});
+      this.activeModal.close({
+        title: this.title,
+        documentationName: this.documentationName,
+        variableDeclarations: this.variableDeclarations
+      });
     }
   }
 
@@ -255,6 +259,9 @@ export class UpdateWorkflowComponent implements OnInit {
             this.documentationTree = [...this.documentationTree];
           } else {
             this.jobResourcesTree = [...this.jobResourcesTree];
+          }
+          if (this.jobResourceNames && this.jobResourceNames.length > 0) {
+            this.jobResourceNames = [...this.jobResourceNames];
           }
           this.ref.detectChanges();
         });
@@ -991,6 +998,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
             this.documentationTree = [...this.documentationTree];
           } else {
             this.jobResourcesTree = [...this.jobResourcesTree];
+            if (this.selectedNode.job.jobResourceNames && this.selectedNode.job.jobResourceNames.length > 0) {
+              this.selectedNode.job.jobResourceNames = [...this.selectedNode.job.jobResourceNames];
+            }
           }
           this.ref.detectChanges();
         });
@@ -1842,7 +1852,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         if (this.title) {
           newData.title = this.title;
         }
-        if (this.documentationName){
+        if (this.documentationName) {
           newData.documentationName = this.documentationName;
         }
         if (this.jobResourceNames.length > 0) {
@@ -1873,7 +1883,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         if (result.title) {
           this.title = this.coreService.clone(result.title);
         }
-        if (result.documentationName){
+        if (result.documentationName) {
           this.documentationName = this.coreService.clone(result.documentationName);
         }
         if (result.jobResourceNames) {

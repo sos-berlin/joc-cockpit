@@ -6,8 +6,7 @@ import {
   OnChanges,
   OnDestroy,
   OnInit,
-  SimpleChanges,
-  ViewChild
+  SimpleChanges
 } from '@angular/core';
 import {isEmpty, isArray, isEqual, clone} from 'underscore';
 import {Subscription} from 'rxjs';
@@ -43,8 +42,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   history = [];
   subscription1: Subscription;
   subscription2: Subscription;
-
-  @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
   constructor(private coreService: CoreService,
               private calendarService: CalendarService, private dataService: DataService,

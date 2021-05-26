@@ -111,6 +111,7 @@
                       <div>
                         <div class="text-left block-ellipsis">
                           <span class="text-sm fa" [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'fa-calendar-check-o': 'fa-calendar-times-o'"></span>&nbsp;
+                          <i *ngIf="calendar.documentationName" (click)="coreService.showDocumentation(calendar.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
                           <a class="text-primary-hover" (click)="previewCalendar(calendar)" [nz-tooltip]="calendar.title" [innerHtml]="calendar.name | highlight : calendarFilters.searchText"></a>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
@@ -235,7 +236,8 @@
                       </div>
                     </td>
                     <td>
-                        <a (click)="previewCalendar(calendar)" class="text-primary-hover text-dark">
+                      <i *ngIf="calendar.documentationName" (click)="coreService.showDocumentation(calendar.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                      <a (click)="previewCalendar(calendar)" class="text-primary-hover text-dark">
                           <span [innerHTML]="calendar.name | highlight : calendarFilters.searchText"></span>
                         </a>
                         <span *ngIf="calendar.title">-</span>

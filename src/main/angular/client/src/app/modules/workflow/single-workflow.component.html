@@ -72,7 +72,8 @@
                          (click)="hidePanelFuc(workflow)"></i>
                       <i class="cursor fa fa-list p-l-xs" (click)="navToDetailView('list', workflow)"></i>
                       <i class="cursor fa fa-th p-l-xs p-r-xs" (click)="navToDetailView('grid', workflow)"></i>
-                      <a class="text-dark">{{workflow.name}}</a>
+                      <i *ngIf="workflow.documentationName" (click)="coreService.showDocumentation(workflow.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                      <span class="text-dark">{{workflow.name}}</span>
                       <span *ngIf="workflow.title">-</span>
                       <i class="text-muted">{{workflow.title}}</i>
                     </span>

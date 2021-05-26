@@ -88,6 +88,7 @@
                       <div class="text-left block-ellipsis">
                         <span class="text-left">
                           <i class="fa fa-lock text-sm "></i>&nbsp;
+                          <i *ngIf="lock.documentationName" (click)="coreService.showDocumentation(lock.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
                           <span [innerHtml]="lock.id | highlight : locksFilters.searchText"></span>
                         </span>
                       </div>
@@ -228,11 +229,10 @@
                           <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
                              *ngIf="lock.show"
                              (click)="lock.show = false;"></i>
-                          <a>
-                            <span [innerHtml]="lock.id | highlight : locksFilters.searchText"></span>
-                            <i *ngIf="lock.title"> - </i>
-                            <i class="text-muted" [innerHtml]="lock.title | highlight : locksFilters.searchText"></i>
-                          </a>
+                          <i *ngIf="lock.documentationName" (click)="coreService.showDocumentation(lock.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                          <span [innerHtml]="lock.id | highlight : locksFilters.searchText"></span>
+                          <i *ngIf="lock.title"> - </i>
+                          <i class="text-muted" [innerHtml]="lock.title | highlight : locksFilters.searchText"></i>
                         </span>
                       </td>
                       <td><span [innerHtml]="lock.path | highlight : locksFilters.searchText"></span></td>
@@ -240,8 +240,8 @@
                         <span [innerHtml]="lock.versionDate | stringToDate | highlight : locksFilters.searchText"></span>
                       </td>
                       <td>
-                        <a class="label" *ngIf="lock.state" [ngClass]="coreService.getColor(lock.state.severity, 'bg')"
-                           [innerHtml]="lock.state._text | translate | highlight : locksFilters.searchText"></a>
+                        <span class="label" *ngIf="lock.state" [ngClass]="coreService.getColor(lock.state.severity, 'bg')"
+                           [innerHtml]="lock.state._text | translate | highlight : locksFilters.searchText"></span>
                       </td>
                       <td>{{lock.acquiredLockCount || '0'}}</td>
                       <td>{{lock.ordersHoldingLocks || '0'}}</td>

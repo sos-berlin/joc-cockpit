@@ -12,7 +12,6 @@ declare const $: any;
 
 @Injectable()
 export class WorkflowService {
-  // Declare Map object to store fork and join Ids
   public merge = '';
   public finish = '';
   public fail = '';
@@ -65,14 +64,14 @@ export class WorkflowService {
   create_UUID(): string {
     let dt = new Date().getTime();
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      let r = (dt + Math.random() * 16) % 16 | 0;
+      const r = (dt + Math.random() * 16) % 16 | 0;
       dt = Math.floor(dt / 16);
-      return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
     });
   }
 
   createObject(type: string, node: any): any {
-    let obj: any = {
+    const obj: any = {
       id: node._id,
       uuid: node._uuid,
       TYPE: type
@@ -123,13 +122,13 @@ export class WorkflowService {
   }
 
   convertTryInstruction(instruction: any): void {
-    let catchObj = clone(instruction.catch);
+    const catchObj = clone(instruction.catch);
     instruction.try = {
       instructions: instruction.instructions
     };
-    delete instruction['instructions'];
-    delete instruction['catch'];
-    instruction['catch'] = catchObj;
+    delete instruction.instructions;
+    delete instruction.catch;
+    instruction.catch = catchObj;
   }
 
   convertRetryToTryCatch(instruction: any): void {
@@ -143,19 +142,19 @@ export class WorkflowService {
         }
       ]
     };
-    if (typeof instruction.retryDelays == 'string') {
+    if (typeof instruction.retryDelays === 'string') {
       instruction.retryDelays = instruction.retryDelays.split(',').map(Number);
     }
     const catchObj = clone(instruction.catch);
     const retryDelays = clone(instruction.retryDelays);
     const maxTries = clone(instruction.maxTries);
-    delete instruction['instructions'];
-    delete instruction['catch'];
-    delete instruction['retryDelays'];
-    delete instruction['maxTries'];
-    instruction['catch'] = catchObj;
-    instruction['maxTries'] = parseInt(maxTries, 10);
-    instruction['retryDelays'] = retryDelays;
+    delete instruction.instructions;
+    delete instruction.catch;
+    delete instruction.retryDelays;
+    delete instruction.maxTries;
+    instruction.catch = catchObj;
+    instruction.maxTries = parseInt(maxTries, 10);
+    instruction.retryDelays = retryDelays;
   }
 
   isValidObject(v: string): boolean {
@@ -175,7 +174,7 @@ export class WorkflowService {
   validateFields(value: any, type: string): boolean {
     if (value) {
       if (value.defaultArguments && isEmpty(value.defaultArguments)) {
-        delete value['defaultArguments'];
+        delete value.defaultArguments;
       }
       if (type === 'Job') {
         if (!value.executable || (!value.executable.className && value.executable.TYPE === 'InternalExecutable')
@@ -193,7 +192,7 @@ export class WorkflowService {
       }
       if (type === 'Lock') {
         if (!value.count) {
-          delete value['count'];
+          delete value.count;
         }
         if (!value.lockName) {
           return false;
@@ -227,41 +226,41 @@ export class WorkflowService {
       if (value.returnCodeMeaning) {
         if (value.returnCodeMeaning.success && typeof value.returnCodeMeaning.success === 'string') {
           value.returnCodeMeaning.success = value.returnCodeMeaning.success.split(',').map(Number);
-          delete value.returnCodeMeaning['failure'];
+          delete value.returnCodeMeaning.failure;
         } else if (value.returnCodeMeaning.failure && typeof value.returnCodeMeaning.failure === 'string') {
           value.returnCodeMeaning.failure = value.returnCodeMeaning.failure.split(',').map(Number);
-          delete value.returnCodeMeaning['success'];
+          delete value.returnCodeMeaning.success;
         }
         if (value.returnCodeMeaning.failure === '') {
-          delete value.returnCodeMeaning['failure'];
+          delete value.returnCodeMeaning.failure;
         }
         if (value.returnCodeMeaning.success === '' && !value.returnCodeMeaning.failure) {
           value.returnCodeMeaning = {};
         }
         if (isEmpty(value.returnCodeMeaning)) {
-          delete value['returnCodeMeaning'];
+          delete value.returnCodeMeaning;
         }
       }
       if (value.returnCode && value.returnCode != 'null' && value.returnCode != 'undefined' && typeof value.returnCode === 'string') {
         value.returnCode = parseInt(value.returnCode, 10);
         if (isNaN(value.returnCode)) {
-          delete value['returnCode'];
+          delete value.returnCode;
         }
       } else {
-        delete value['returnCode'];
+        delete value.returnCode;
       }
 
       if (value.joinVariables && value.joinVariables != 'null' && value.joinVariables != 'undefined' && typeof value.joinVariables === 'string') {
         value.joinVariables = value.joinVariables == 'true';
       } else {
-        delete value['joinVariables'];
+        delete value.joinVariables;
       }
 
       if (value.timeout1) {
-        delete value['timeout1'];
+        delete value.timeout1;
       }
       if (value.graceTimeout1) {
-        delete value['graceTimeout1'];
+        delete value.graceTimeout1;
       }
       if (typeof value.taskLimit === 'string') {
         value.taskLimit = parseInt(value.taskLimit, 10);
@@ -272,22 +271,21 @@ export class WorkflowService {
       if (typeof value.timeout === 'string') {
         value.timeout = parseInt(value.timeout, 10);
         if (isNaN(value.timeout)) {
-          delete value['timeout'];
+          delete value.timeout;
         }
       }
       if (typeof value.graceTimeout === 'string') {
         value.graceTimeout = parseInt(value.graceTimeout, 10);
         if (isNaN(value.graceTimeout)) {
-          delete value['graceTimeout'];
+          delete value.graceTimeout;
         }
       }
     }
     return true;
   }
 
-  convertTryToRetry(_json: any, cb: any): void {
+  convertTryToRetry(mainJson: any, cb: any, jobs = {}): void {
     let count = 1;
-
     function recursive(json: any) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -296,6 +294,10 @@ export class WorkflowService {
           }
           if (json.instructions[x].TYPE === 'Execute.Named') {
             json.instructions[x].TYPE = 'Job';
+            if (!isEmpty(jobs) && !json.instructions[x].documentationName) {
+              const job = jobs[json.instructions[x].jobName];
+              json.instructions[x].documentationName =  job ? job.documentationName : null;
+            }
           }
           if (json.instructions[x].TYPE === 'Try') {
             let isRetry = false;
@@ -305,14 +307,14 @@ export class WorkflowService {
                 json.instructions[x].TYPE = 'Retry';
                 json.instructions[x].instructions = json.instructions[x].try.instructions;
                 isRetry = true;
-                delete json.instructions[x]['try'];
-                delete json.instructions[x]['catch'];
+                delete json.instructions[x].try;
+                delete json.instructions[x].catch;
               }
             }
             if (!isRetry) {
               if (json.instructions[x].try) {
                 json.instructions[x].instructions = json.instructions[x].try.instructions || [];
-                delete json.instructions[x]['try'];
+                delete json.instructions[x].try;
               }
               if (json.instructions[x].catch) {
                 if (!json.instructions[x].catch.instructions) {
@@ -326,7 +328,7 @@ export class WorkflowService {
           if (json.instructions[x].TYPE === 'Lock') {
             if (json.instructions[x].lockedWorkflow) {
               json.instructions[x].instructions = json.instructions[x].lockedWorkflow.instructions;
-              delete json.instructions[x]['lockedWorkflow'];
+              delete json.instructions[x].lockedWorkflow;
             }
           }
           if (json.instructions[x].instructions) {
@@ -346,7 +348,7 @@ export class WorkflowService {
           if (json.instructions[x].branches) {
             json.instructions[x].branches = json.instructions[x].branches.filter((branch: any) => {
               branch.instructions = branch.workflow.instructions;
-              delete branch['workflow'];
+              delete branch.workflow;
               return (branch.instructions && branch.instructions.length > 0);
             });
             for (let i = 0; i < json.instructions[x].branches.length; i++) {
@@ -359,28 +361,28 @@ export class WorkflowService {
       }
     }
 
-    recursive(_json);
+    recursive(mainJson);
     if (cb) {
       cb();
     }
   }
 
-  createWorkflow(_json: any, editor: any, mapObj: any): void {
+  createWorkflow(mainJson: any, editor: any, mapObj: any): void {
     mapObj.nodeMap = new Map();
     if (mapObj.vertixMap) {
       mapObj.vertixMap = new Map();
     }
-    let graph = editor.graph;
+    const graph = editor.graph;
     const self = this;
     const doc = mxUtils.createXmlDocument();
-    let vertexMap = new Map();
+    const vertexMap = new Map();
     const defaultParent = graph.getDefaultParent();
 
-    function connectWithDummyNodes(json: any) {
+    function connectWithDummyNodes(json: any): void {
       if (json.instructions && json.instructions.length > 0) {
-        let _node = doc.createElement('Process');
+        const _node = doc.createElement('Process');
         _node.setAttribute('title', 'start');
-        let v1 = graph.insertVertex(defaultParent, null, _node, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;');
+        const v1 = graph.insertVertex(defaultParent, null, _node, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;');
 
         const start = vertexMap.get(json.instructions[0].uuid);
         const last = json.instructions[json.instructions.length - 1];
@@ -388,26 +390,26 @@ export class WorkflowService {
         if (last.TYPE !== 'ImplicitEnd') {
           let end = vertexMap.get(last.uuid);
           if (self.isInstructionCollapsible(last.TYPE)) {
-            let targetId = mapObj.nodeMap.get(last.id);
+            const targetId = mapObj.nodeMap.get(last.id);
             if (targetId) {
               end = graph.getModel().getCell(targetId);
             }
           }
-          let _node2 = doc.createElement('Process');
+          const _node2 = doc.createElement('Process');
           _node2.setAttribute('title', 'end');
-          let v2 = graph.insertVertex(defaultParent, null, _node2, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;');
+          const v2 = graph.insertVertex(defaultParent, null, _node2, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;');
 
           connectInstruction(end, v2, '', '', defaultParent);
         }
       }
     }
 
-    function recursive(json: any, type: any, parent: any) {
+    function recursive(json: any, type: any, parent: any): void {
       if (json.instructions) {
         let v1, endNode;
         for (let x = 0; x < json.instructions.length; x++) {
           let v2;
-          let _node = doc.createElement(json.instructions[x].TYPE);
+          const _node = doc.createElement(json.instructions[x].TYPE);
           if (json.instructions[x].position) {
             _node.setAttribute('position', JSON.stringify(json.instructions[x].position));
           }
@@ -418,6 +420,9 @@ export class WorkflowService {
             _node.setAttribute('jobName', json.instructions[x].jobName);
             _node.setAttribute('label', json.instructions[x].label || '');
             _node.setAttribute('uuid', json.instructions[x].uuid);
+            if(json.instructions[x].documentationName) {
+              _node.setAttribute('documentationName', json.instructions[x].documentationName);
+            }
             if (json.instructions[x].defaultArguments && typeof json.instructions[x].defaultArguments === 'object') {
               _node.setAttribute('defaultArguments', JSON.stringify(json.instructions[x].defaultArguments));
             } else {
@@ -429,7 +434,7 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'Finish') {
             _node.setAttribute('label', 'finish');
-            const outcome = json.instructions[x].outcome || {'TYPE': 'Succeeded', result: ''};
+            const outcome = json.instructions[x].outcome || {TYPE: 'Succeeded', result: ''};
             _node.setAttribute('outcome', JSON.stringify(outcome));
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.finish);
@@ -438,7 +443,7 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'Fail') {
             _node.setAttribute('label', 'fail');
-            const outcome = json.instructions[x].outcome || {'TYPE': 'Failed', result: ''};
+            const outcome = json.instructions[x].outcome || {TYPE: 'Failed', result: ''};
             _node.setAttribute('outcome', JSON.stringify(outcome));
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.fail);
@@ -552,7 +557,7 @@ export class WorkflowService {
             node.setAttribute('label', 'catch');
             node.setAttribute('targetId', v1.id);
             node.setAttribute('uuid', json.instructions[x].uuid);
-            let cv1 = graph.insertVertex(v1, null, node, 0, 0, 110, 40, (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) ?
+            const cv1 = graph.insertVertex(v1, null, node, 0, 0, 110, 40, (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) ?
               'catch' : 'dashRectangle');
             if (mapObj.vertixMap && json.instructions[x].catch.position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].catch.position), cv1);
@@ -612,7 +617,7 @@ export class WorkflowService {
           }
 
           if (x > 0) {
-            let prev = json.instructions[x - 1];
+            const prev = json.instructions[x - 1];
             if (prev.TYPE !== 'Fork' && prev.TYPE !== 'If' && prev.TYPE !== 'Try' && prev.TYPE !== 'Retry' && prev.TYPE !== 'Lock' && vertexMap.get(prev.uuid)) {
               connectInstruction(vertexMap.get(prev.uuid), v1, type, type, parent);
             }
@@ -621,7 +626,7 @@ export class WorkflowService {
       }
     }
 
-    function connectInstruction(source: any, target: any, label: any, type: any, parent: any) {
+    function connectInstruction(source: any, target: any, label: any, type: any, parent: any): void {
       // Create new Connection object
       const connNode = doc.createElement('Connection');
       let str = label;
@@ -634,13 +639,13 @@ export class WorkflowService {
       graph.insertEdge(parent, null, connNode, source, target);
     }
 
-    function joinFork(branches: any, target: any, parent: any) {
-      let _node = doc.createElement('Join');
+    function joinFork(branches: any, target: any, parent: any): any {
+      const _node = doc.createElement('Join');
       _node.setAttribute('label', 'join');
       if (target.id) {
         _node.setAttribute('targetId', target.id);
       }
-      let v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.merge);
+      const v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.merge);
       mapObj.nodeMap.set(target.id.toString(), v1.id.toString());
       if (isArray(branches)) {
         for (let i = 0; i < branches.length; i++) {
@@ -665,13 +670,13 @@ export class WorkflowService {
       return v1;
     }
 
-    function endIf(branches: any, target: any, parent: any) {
-      let _node = doc.createElement('EndIf');
+    function endIf(branches: any, target: any, parent: any): any {
+      const _node = doc.createElement('EndIf');
       _node.setAttribute('label', 'ifEnd');
       if (target.id) {
         _node.setAttribute('targetId', target.id);
       }
-      let v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, 'if');
+      const v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, 'if');
       mapObj.nodeMap.set(target.id.toString(), v1.id.toString());
       let flag = true;
       if (branches.then && branches.then.instructions) {
@@ -705,13 +710,13 @@ export class WorkflowService {
       return v1;
     }
 
-    function endLock(branches: any, targetId: any, parent: any) {
-      let _node = doc.createElement('EndLock');
+    function endLock(branches: any, targetId: any, parent: any): any {
+      const _node = doc.createElement('EndLock');
       _node.setAttribute('label', 'lockEnd');
       if (targetId) {
         _node.setAttribute('targetId', targetId);
       }
-      let v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.closeLock);
+      const v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.closeLock);
       mapObj.nodeMap.set(targetId.toString(), v1.id.toString());
 
       if (branches.instructions && branches.instructions.length > 0) {
@@ -731,13 +736,13 @@ export class WorkflowService {
       return v1;
     }
 
-    function endRetry(branches: any, targetId: any, parent: any) {
-      let _node = doc.createElement('EndRetry');
+    function endRetry(branches: any, targetId: any, parent: any): any {
+      const _node = doc.createElement('EndRetry');
       _node.setAttribute('label', 'retryEnd');
       if (targetId) {
         _node.setAttribute('targetId', targetId);
       }
-      let v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, 'retry');
+      const v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, 'retry');
       mapObj.nodeMap.set(targetId.toString(), v1.id.toString());
 
       if (branches.instructions && branches.instructions.length > 0) {
@@ -757,13 +762,13 @@ export class WorkflowService {
       return v1;
     }
 
-    function endTry(x: any, targetId: any, parent: any) {
-      let _node = doc.createElement('EndTry');
+    function endTry(x: any, targetId: any, parent: any): any {
+      const _node = doc.createElement('EndTry');
       _node.setAttribute('label', 'tryEnd');
       if (targetId) {
         _node.setAttribute('targetId', targetId);
       }
-      let v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, 'try');
+      const v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, 'try');
       mapObj.nodeMap.set(targetId.toString(), v1.id.toString());
 
       connectInstruction(x, v1, 'endTry', 'endTry', parent);
@@ -786,12 +791,12 @@ export class WorkflowService {
       }
     }
 
-    recursive(_json, '', defaultParent);
-    connectWithDummyNodes(_json);
+    recursive(mainJson, '', defaultParent);
+    connectWithDummyNodes(mainJson);
   }
 
   public convertValueToString(cell: any, graph: any): string {
-    function truncate(input: string) {
+    function truncate(input: string): string {
       if (input.length > 22) {
         return input.substring(0, 22) + '...';
       } else {
@@ -802,7 +807,7 @@ export class WorkflowService {
     let str = '';
     if (mxUtils.isNode(cell.value)) {
       if (cell.value.tagName === 'Process') {
-        let title = cell.getAttribute('title');
+        const title = cell.getAttribute('title');
         if (title != null && title.length > 0) {
           this.translate.get('workflow.label.' + title).subscribe(translatedValue => {
             str = translatedValue;
@@ -811,14 +816,19 @@ export class WorkflowService {
         }
         return '';
       } else if (cell.value.tagName === 'Job') {
-        let lb = cell.getAttribute('label');
+        const lb = cell.getAttribute('label');
         if (lb) {
           const edge = graph.getOutgoingEdges(cell)[0];
           if (edge) {
             edge.setAttribute('label', lb);
           }
         }
-        return '<div class="workflow-title">' + truncate(cell.getAttribute('jobName')) + '</div>';
+        const docName = cell.getAttribute('documentationName');
+        let className = 'hide';
+        if (docName) {
+          className = 'show-block';
+        }
+        return '<div class="workflow-title"><i id="doc-type" class="cursor fa fa-book p-r-xs ' + className + '"></i>' + truncate(cell.getAttribute('jobName')) + '</div>';
       } else if (cell.value.tagName === 'Order') {
         let data = cell.getAttribute('order');
         data = JSON.parse(data);
@@ -840,10 +850,10 @@ export class WorkflowService {
         str = str + '</div>';
         return str;
       } else if (cell.value.tagName === 'Count') {
-        let count = cell.getAttribute('count');
+        const count = cell.getAttribute('count');
         return '<i class="text-white text-xs cursor">' + count + '</i>';
       } else {
-        let x = cell.getAttribute('label');
+        const x = cell.getAttribute('label');
         if (x) {
           if (cell.value.tagName === 'Connection') {
             if (x === 'then' || x === 'else') {
@@ -992,7 +1002,7 @@ export class WorkflowService {
   }
 
   convertDurationToString(time: any): string {
-    let seconds = Number(time);
+    const seconds = Number(time);
     const y = Math.floor(seconds / (3600 * 365 * 24));
     const m = Math.floor((seconds % (3600 * 365 * 24)) / (3600 * 30 * 24));
     const w = Math.floor(((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) / (3600 * 7 * 24));
@@ -1014,7 +1024,7 @@ export class WorkflowService {
   convertStringToDuration(str: string): number {
     if (/^((\d+)y[ ]?)?((\d+)m[ ]?)?((\d+)w[ ]?)?((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)M[ ]?)?((\d+)s[ ]?)?\s*$/.test(str)) {
       let seconds = 0;
-      let a = str.split(' ');
+      const a = str.split(' ');
       for (let i = 0; i < a.length; i++) {
         const frmt: string = a[i].charAt(a[i].length - 1);
         const val: number = Number(a[i].slice(0, a[i].length - 1));

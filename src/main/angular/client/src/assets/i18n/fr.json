@@ -948,6 +948,8 @@
     "placeholder.prefix": "Entrer le préfixe",
     "placeholder.directory": "Entrer le répertoire",
     "placeholder.pattern": "Entrer le modèle",
+    "placeholder.valueWhichNeedToReplace": "Enter value which need to replace",
+    "placeholder.valueReplaceBy": "Enter value replace by",
     "message.workflowIsMissing": "Le Workflow est absent, mais il est nécessaire",
     "message.directoryIsMissing": "Le répertoire est absent, mais il est nécessaire",
     "message.envOrArgumentIsMissing": "Les variables d'environnement ou les arguments sont manquantes, mais sont nécessaires",

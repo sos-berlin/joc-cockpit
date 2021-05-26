@@ -948,6 +948,8 @@
     "placeholder.prefix": "接頭語を入力",
     "placeholder.directory": "ディレクトリーを入力",
     "placeholder.pattern": "パターンを入力",
+    "placeholder.valueWhichNeedToReplace": "Enter value which need to replace",
+    "placeholder.valueReplaceBy": "Enter value replace by",
     "message.workflowIsMissing": "ワークフローが必要です",
     "message.directoryIsMissing": "必要なディレクトリがありません",
     "message.envOrArgumentIsMissing": "必要な環境変数または引数がありません",

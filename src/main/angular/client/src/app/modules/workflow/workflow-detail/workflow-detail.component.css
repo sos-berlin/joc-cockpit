@@ -45,4 +45,5 @@
   right: 10px;
   width: 170px;
   height: 150px;
+  border: 1px solid var(--border-color);
 }

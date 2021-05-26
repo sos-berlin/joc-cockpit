@@ -57,12 +57,11 @@
           <div class="col-md-8 col-lg-6 select-input-both">
             <input autocomplete="off" [readOnly]="isTrash" type="text" class="form-control"
                    placeholder="{{'inventory.placeholder.documentationName' | translate}}"
-                   name="documentationPath" #path="ngModel" [(ngModel)]="schedule.configuration.documentationName">
+                   name="documentationPath" [(ngModel)]="schedule.configuration.documentationName">
             <nz-tree-select
               name="documentationName"
               [disabled]="isTrash"
               nzNoAnimation
-              #treeSelectCtrl
               [nzAllowClear]="false"
               [nzNodes]="documentationTree"
               [nzHideUnMatched]="true"
@@ -88,14 +87,14 @@
           </div>
         </div>
         <div class="form-group row"
-             [ngClass]="{ 'has-error' : (((path.dirty || path.touched) && path.invalid))}">
+             [ngClass]="{ 'has-error' : (((workflowName.dirty || workflowName.touched) && workflowName.invalid))}">
           <label class="col-md-4 col-lg-3  form-control-label" translate>inventory.label.workflowName</label>
           <div class="col-md-8 col-lg-6 select-input-both">
             <input autocomplete="off" [readOnly]="isTrash" type="text" class="form-control"
                    placeholder="{{'inventory.placeholder.workflowPath' | translate}}"
-                   name="path" #path="ngModel" [(ngModel)]="schedule.configuration.workflowName">
+                   name="workflowName" #workflowName="ngModel" [(ngModel)]="schedule.configuration.workflowName">
             <nz-tree-select
-              name="workflowName"
+              name="workflowName1"
               [disabled]="isTrash"
               nzNoAnimation
               #treeSelectCtrl
@@ -117,8 +116,8 @@
               </div>
             </ng-template>
           </nz-tree-select>
-            <div *ngIf="path.invalid && (path.dirty || path.touched)" class="text-danger help-block">
-              <div *ngIf="path.errors.required">
+            <div *ngIf="workflowName.invalid && (workflowName.dirty || workflowName.touched)" class="text-danger help-block">
+              <div *ngIf="workflowName.errors.required">
                 <div translate>common.message.requiredError</div>
               </div>
             </div>

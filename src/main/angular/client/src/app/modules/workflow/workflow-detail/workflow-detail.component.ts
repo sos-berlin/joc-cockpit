@@ -521,14 +521,14 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       graph.addMouseListener({
         currentState: null,
         currentIconSet: null,
-        mouseDown: function(sender, me) {
+        mouseDown: function (sender, me) {
           // Hides icons on mouse down
           if (this.currentState != null) {
             this.dragLeave(me.getEvent(), this.currentState);
             this.currentState = null;
           }
         },
-        mouseMove: function(sender, me) {
+        mouseMove: function (sender, me) {
           if (this.currentState != null && me.getState() == this.currentState) {
             return;
           }
@@ -547,14 +547,14 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             }
           }
         },
-        mouseUp: function(sender, me) {
+        mouseUp: function (sender, me) {
         },
-        dragEnter: function(evt, state, cell) {
+        dragEnter: function (evt, state, cell) {
           if (this.currentIconSet == null) {
             this.currentIconSet = new mxIconSet(state);
           }
         },
-        dragLeave: function(evt, state) {
+        dragLeave: function (evt, state) {
           if (this.currentIconSet != null) {
             this.currentIconSet.destroy();
             this.currentIconSet = null;
@@ -600,7 +600,12 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
               orders: JSON.parse(orders)
             };
           } else if (cell.value.tagName === 'Job') {
-            self.showConfiguration(cell.value.getAttribute('jobName'));
+            let event = evt.getProperty('event');
+            if (event && event.target && event.target.getAttribute('id')) {
+              self.coreService.showDocumentation(cell.value.getAttribute('documentationName'), self.preferences);
+            } else {
+              self.showConfiguration(cell.value.getAttribute('jobName'));
+            }
           }
           evt.consume();
         }
@@ -609,7 +614,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       /**
        * Overrides method to provide a cell collapse/expandable on double click
        */
-      graph.addListener(mxEvent.DOUBLE_CLICK, function(sender, evt) {
+      graph.addListener(mxEvent.DOUBLE_CLICK, function (sender, evt) {
         let cell = evt.getProperty('cell');
         self.sideBar = {};
         if (cell != null && cell.vertex == 1) {
@@ -635,7 +640,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
           img.style.left = (x + 5) + 'px';
           img.style.top = y + 'px';
           mxEvent.addListener(img, 'click',
-            mxUtils.bind(this, function(evt) {
+            mxUtils.bind(this, function (evt) {
               self.order = null;
               self.job = null;
               let data;
@@ -643,7 +648,9 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
                 data = state.cell.getAttribute('order');
                 data = JSON.parse(data);
               } else {
-                data = {jobName: state.cell.value.getAttribute('jobName')};
+                const jobName = state.cell.value.getAttribute('jobName');
+                const documentationName = state.cell.value.getAttribute('documentationName');
+                data = {jobName, documentationName};
               }
               try {
                 if (self.menu) {
@@ -814,7 +821,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     if (!isEmpty(this.workFlowJson)) {
       this.workflowService.convertTryToRetry(this.workFlowJson, () => {
         this.updateWorkflow(graph);
-      });
+      }, this.workflow.jobs);
     }
   }
 
@@ -941,7 +948,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   private updateWorkflow(graph): void {
     graph.getModel().beginUpdate();
     try {
-      let mapObj = {nodeMap: this.nodeMap, vertixMap: this.vertixMap};
+      const mapObj = {nodeMap: this.nodeMap, vertixMap: this.vertixMap};
       this.workflowService.createWorkflow(this.workFlowJson, this.editor, mapObj);
       this.nodeMap = mapObj.nodeMap;
       this.vertixMap = mapObj.vertixMap;
@@ -1029,9 +1036,5 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         nzClosable: false
       });
     }
-  }
-
-  viewDocumentation(): void {
-
   }
 }

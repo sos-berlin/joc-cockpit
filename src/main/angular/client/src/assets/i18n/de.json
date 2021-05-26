@@ -948,6 +948,8 @@
     "placeholder.prefix": "Präfix angeben",
     "placeholder.directory": "Verzeichnis angeben",
     "placeholder.pattern": "Muster angeben",
+    "placeholder.valueWhichNeedToReplace": "Enter value which need to replace",
+    "placeholder.valueReplaceBy": "Enter value replace by",
     "message.workflowIsMissing": "Arbeitsablauf ist erforderlich",
     "message.directoryIsMissing": "Verzeichnis ist erforderlich",
     "message.envOrArgumentIsMissing": "Any one of argument or environment variables is required",

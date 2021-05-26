@@ -42,19 +42,16 @@
               <ng-template ngFor let-lock [ngForOf]="ajaxTable.data">
                 <tr [ngClass]="{'light-bg':lock.show}">
                   <td>
-                        <span class="show-in-single-line w-full">
-                          <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
-                             *ngIf="!lock.show"
-                             (click)="lock.show = true;"></i>
-                          <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
-                             *ngIf="lock.show"
-                             (click)="lock.show = false;"></i>
-                          <a>
-                            <span [innerHtml]="lock.id"></span>
-                            <i *ngIf="lock.title"> - </i>
-                            <i class="text-muted" [innerHtml]="lock.title"></i>
-                          </a>
-                        </span>
+                    <span class="show-in-single-line w-full">
+                      <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                         *ngIf="!lock.show" (click)="lock.show = true;"></i>
+                      <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+                         *ngIf="lock.show" (click)="lock.show = false;"></i>
+                      <i *ngIf="lock.documentationName" (click)="coreService.showDocumentation(lock.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                      <span [innerHtml]="lock.id"></span>
+                      <i *ngIf="lock.title"> - </i>
+                      <i class="text-muted" [innerHtml]="lock.title"></i>
+                    </span>
                   </td>
                   <td><span [innerHtml]="lock.path"></span></td>
                   <td>

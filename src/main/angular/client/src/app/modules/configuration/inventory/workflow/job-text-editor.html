@@ -59,11 +59,10 @@
         <div class="col-md-8 col-lg-9 select-input-both">
           <input autocomplete="off" type="text" class="form-control"
                  placeholder="{{'inventory.placeholder.documentationName' | translate}}"
-                 name="documentationPath" #path="ngModel" [(ngModel)]="selectedNode.job.documentationName">
+                 name="documentationPath" [(ngModel)]="selectedNode.job.documentationName">
           <nz-tree-select
             name="documentationName"
             nzNoAnimation
-            #treeSelectCtrl
             [nzAllowClear]="false"
             [nzNodes]="documentationTree"
             [nzHideUnMatched]="true"

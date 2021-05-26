@@ -13,13 +13,19 @@
               <div class="btn-group dropdown m-l-12">
                 <button class="btn btn-grey btn-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="type" [nzPlacement]="'bottomRight'" >
                   <span translate>common.label.type</span>&nbsp;
-                  <span class="text-primary" [innerHTML]="documentFilters.filter.type"></span>
+                  <span class="text-primary" *ngIf="documentFilters.filter.type === 'ALL'" translate>common.label.all</span>
+                  <span class="text-primary" *ngIf="documentFilters.filter.type !== 'ALL'" [innerHTML]="documentFilters.filter.type"></span>
                   <span>
                     <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
                   </span>
                 </button>
                 <nz-dropdown-menu #type="nzDropdownMenu" >
                   <ul nz-menu>
+                    <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': documentFilters.filter.type == 'ALL'}">
+                      <a (click)="documentFilters.filter.type = 'ALL';loadDocument();">
+                        <span translate>common.label.all</span>
+                      </a>
+                    </li>
                     <li nz-menu-item  *ngFor="let type of documentTypes" [ngClass]="{'ant-select-dropdown-menu-item-active': documentFilters.filter.type == type}">
                       <a (click)="documentFilters.filter.type = type;loadDocument();">
                         <span>{{type}}</span>

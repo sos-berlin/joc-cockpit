@@ -174,6 +174,7 @@
                           <span class="text-sm fa fa-sitemap"></span>&nbsp;
                           <i class="cursor fa fa-list" (click)="navToDetailView('list', workflow)"></i>
                           <i class="cursor fa fa-th p-l-xs p-r-xs" (click)="navToDetailView('grid', workflow)"></i>
+                          <i *ngIf="workflow.documentationName" (click)="coreService.showDocumentation(workflow.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
                           <span [nz-tooltip]="workflow.title" [innerHtml]="workflow.name | highlight : workflowFilters.searchText"></span>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
@@ -387,6 +388,7 @@
                              (click)="hidePanelFuc(workflow)"></i>
                           <i class="cursor fa fa-list p-l-xs" (click)="navToDetailView('list', workflow)"></i>
                           <i class="cursor fa fa-th p-l-xs p-r-xs" (click)="navToDetailView('grid', workflow)"></i>
+                          <i *ngIf="workflow.documentationName" (click)="coreService.showDocumentation(workflow.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
                           <a class="text-dark" (click)="showPanelFunc(workflow)">
                             <span [innerHtml]="workflow.name | highlight : workflowFilters.searchText"></span>
                             <i *ngIf="workflow.title"> - </i>

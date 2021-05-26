@@ -50,9 +50,6 @@
                         <li nz-menu-item>
                           <a (click)="previewCalendar(calendar)" translate>resource.calendar.button.showPreview</a>
                         </li>
-        <!--                <li nz-menu-item [nzDisabled]="calendar.documentId">
-                          <a (click)="showDocumentation(calendar)" translate>common.button.showDocumentation</a>
-                        </li>-->
                         <li nz-menu-item>
                           <a (click)="showUsage(calendar)" translate>resource.button.showUsage</a>
                         </li>
@@ -61,6 +58,7 @@
                   </div>
                 </td>
                 <td>
+                  <i *ngIf="calendar.documentationName" (click)="coreService.showDocumentation(calendar.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
                   <a (click)="previewCalendar(calendar)" class="text-primary-hover text-dark">{{calendar.name}}</a>
                   <span *ngIf="calendar.title">-</span>
                   <i class="text-muted">{{calendar.title}}</i>

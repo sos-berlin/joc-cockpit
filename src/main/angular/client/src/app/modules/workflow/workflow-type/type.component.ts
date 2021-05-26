@@ -34,6 +34,7 @@ export class TypeComponent implements OnChanges {
       if (this.configuration.TYPE) {
         for (let i = 0; i < this.configuration.instructions.length; i++) {
           this.configuration.instructions[i].show = true;
+          this.getDocumentationInfo(this.configuration.instructions[i]);
         }
       }
     }
@@ -45,19 +46,33 @@ export class TypeComponent implements OnChanges {
   toggleFunc(json, flag): void {
     for (let i = 0; i < json.instructions.length; i++) {
       json.instructions[i].show = flag;
+      if (flag) {
+        this.getDocumentationInfo(json.instructions[i]);
+      }
     }
   }
 
   collapse(node): void {
     node.show = !node.show;
+    if (node.show && node.instructions) {
+      for (const x in node.instructions) {
+        if (node.instructions[x]) {
+          this.getDocumentationInfo(node.instructions[x]);
+        }
+      }
+    }
     this.update.emit();
   }
 
   recursiveUpdate(node, flag): void {
+    const self = this;
     function recursive(json) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
           json.instructions[x].show = flag;
+          if (flag) {
+            self.getDocumentationInfo(json.instructions[x]);
+          }
           if (json.instructions[x].TYPE === 'Fork') {
             if (json.instructions[x].branches) {
               for (let i = 0; i < json.instructions[x].branches.length; i++) {
@@ -310,7 +325,10 @@ export class TypeComponent implements OnChanges {
     }
   }
 
-  viewDocumentation(instruction): void{
-
+  getDocumentationInfo(instruction): void {
+    if (instruction.TYPE === 'Job' && !instruction.documentationName) {
+      const job = this.jobs[instruction.jobName];
+      instruction.documentationName =  job ? job.documentationName : null;
+    }
   }
 }

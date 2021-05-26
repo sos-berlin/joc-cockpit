@@ -50,7 +50,7 @@
           <div class="col-md-8 col-lg-6 select-input-both">
             <input autocomplete="off" [readOnly]="isTrash" type="text" class="form-control"
                    placeholder="{{'inventory.placeholder.documentationName' | translate}}"
-                   name="documentationPath" #path="ngModel" [(ngModel)]="jobResource.configuration.documentationName">
+                   name="documentationPath" [(ngModel)]="jobResource.configuration.documentationName">
             <nz-tree-select
               name="documentationName"
               [disabled]="isTrash"

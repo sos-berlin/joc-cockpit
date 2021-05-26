@@ -636,6 +636,16 @@ export class CoreService {
     }
   }
 
+  showDocumentation(document: string, preferences: any): void {
+    console.log(document);
+    const link = './api/documentation/show?documentation=' + encodeURIComponent(document) + '&accessToken=' + this.authService.accessTokenId;
+    if (preferences.isDocNewWindow === 'newWindow') {
+      window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no');
+    } else {
+      window.open(link, '_blank');
+    }
+  }
+
   parseProcessExecuted(regex: string): any {
     let date;
     if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(regex)) {
