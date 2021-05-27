@@ -78,6 +78,9 @@
                               <li nz-menu-item >
                                 <a (click)="editAgent(agent, controller)" translate>common.button.edit</a>
                               </li>
+                              <li nz-menu-item >
+                                <a (click)="resetAgent(agent, controller)" translate>agent.button.reset</a>
+                              </li>
                               <li nz-menu-item *ngIf="!agent.disabled">
                                 <a (click)="disableAgent(agent, controller)" translate>agent.button.disable</a>
                               </li>

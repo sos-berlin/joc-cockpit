@@ -121,8 +121,10 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
       let label: string;
       if (value.state._text === 'COUPLED') {
         label = 'agent.label.coupled';
-      } else if (value.state._text === 'DECOUPLED') {
-        label = 'agent.label.decoupled';
+      } else if (value.state._text === 'RESETTING') {
+        label = 'agent.label.resetting';
+      } else if (value.state._text === 'RESET') {
+        label = 'agent.label.reset';
       } else if (value.state._text === 'UNKNOWN') {
         label = 'agent.label.unknown';
       } else {
@@ -182,7 +184,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
   }
 
   navToAgentView(color): void {
-    let state = 'DECOUPLED';
+    let state = 'RESET';
     if (color === '#7ab97a') {
       state = 'COUPLED';
     } else if (color === '#ef486a') {

@@ -15,8 +15,11 @@
                 <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': agentsFilters.filter.state=='COUPLED'}"
                         (click)="loadAgents('COUPLED')" translate>agent.button.coupled
                 </button>
-                <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': agentsFilters.filter.state=='DECOUPLED'}"
-                        (click)="loadAgents('DECOUPLED')" translate>agent.button.decoupled
+                <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': agentsFilters.filter.state=='RESETTING'}"
+                        (click)="loadAgents('RESETTING')" translate>agent.button.resetting
+                </button>
+                <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': agentsFilters.filter.state=='RESET'}"
+                        (click)="loadAgents('RESET')" translate>agent.button.reset
                 </button>
                 <button class="btn btn-grey btn-sm"
                         [ngClass]="{'btn-primary': agentsFilters.filter.state=='COUPLINGFAILED'}"
@@ -100,15 +103,14 @@
               <div class="box card" [ngClass]="coreService.getColor(cluster.state.severity,'border')">
                 <div class="box-body">
                   <div>
-                        <span class="text-left ">
-                          <span class="fa fa-stop pos-abt m-t-xs text-xs"
-                                [ngClass]="coreService.getColor(cluster.state.severity,'text')"></span>&nbsp;
-                          <i class="fa fa-server m-l m-r-xs" style="position: relative;top:1px"></i>&nbsp;
-                          <span
-                            [nz-tooltip]="cluster.path"
-                            class="text text-ellipsis1"
-                            [innerHtml]="cluster.agentId | highlight : agentsFilters.searchText"></span>
-                        </span>
+                    <span class="text-left ">
+                      <span class="fa fa-stop pos-abt m-t-xs text-xs"
+                            [ngClass]="coreService.getColor(cluster.state.severity,'text')"></span>&nbsp;
+                      <i class="fa fa-server m-l m-r-xs" style="position: relative;top:1px"></i>&nbsp;
+                      <span [nz-tooltip]="cluster.path"
+                        class="text text-ellipsis1"
+                        [innerHtml]="cluster.agentId | highlight : agentsFilters.searchText"></span>
+                    </span>
                   </div>
                   <div class="text-sm text-left text-muted p-t-sm">
                     <span translate>agent.label.agentName</span>:
@@ -190,10 +192,8 @@
                     </td>
                     <td><span [innerHtml]="cluster.agentName | highlight : agentsFilters.searchText"></span></td>
                     <td>
-                        <span [nz-tooltip]="cluster.errorMessage" class="label"
-                              [ngClass]="coreService.getColor(cluster.state.severity,'bg')">
-                          <span
-                            [innerHtml]="cluster.state._text | translate | highlight : agentsFilters.searchText"></span>
+                        <span [nz-tooltip]="cluster.errorMessage" class="label" [ngClass]="coreService.getColor(cluster.state.severity,'bg')">
+                          <span [innerHtml]="cluster.state._text | translate | highlight : agentsFilters.searchText"></span>
                         </span>
                     </td>
                     <td>
@@ -219,8 +219,8 @@
                               {{order.position | json}}
                             </span>
                         </td>
-                        <td><span class="label"
-                                  [ngClass]="coreService.getColor(order.state.severity,'bg')">{{order.state._text | translate}}</span>
+                        <td>
+                          <span class="label" [ngClass]="coreService.getColor(order.state.severity,'bg')">{{order.state._text | translate}}</span>
                         </td>
                         <td>{{order.scheduledFor | stringToDate}}</td>
                       </tr>

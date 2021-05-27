@@ -48,7 +48,7 @@ export class ConfigurationComponent implements OnInit, OnDestroy {
           top = 96;
         }
         if (this.router.url.match(/file_transfer/) || this.router.url.match(/other/)) {
-          top = top + 40;
+          top = top + 44;
         }
         $('.sticky').css('top', top + 2);
         const sidebar = $('#sidebar');

@@ -3261,6 +3261,9 @@ div.order-panel div {
   top: 0;
   margin-top: 0;
 }
+.mono-font {
+  font-family: monospace !important;
+}
 
 pre.log {
   color: var(--text-color);
@@ -4973,7 +4976,6 @@ tr.disabled-row td:not(.menu) {
   left: 0;
   right: auto;
   background-color: var(--white) !important;
-
   span {
     top: 50%;
   }

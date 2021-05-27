@@ -42,3 +42,7 @@ strong{
   top: -20px;
   right: 15px
 }
+.documents{
+  max-height: calc(100vh - 408px);
+  overflow: auto;
+}

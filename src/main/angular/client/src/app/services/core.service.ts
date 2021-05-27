@@ -39,7 +39,7 @@ export class CoreService {
     this.tabs._workflow.filter = {};
     this.tabs._workflow.filter.date = '1d';
     this.tabs._workflow.filter.sortBy = 'versionDate';
-    this.tabs._workflow.reverse = false;
+    this.tabs._workflow.reverse = true;
     this.tabs._workflow.currentPage = '1';
     this.tabs._workflow.expandedKeys = ['/'];
     this.tabs._workflow.selectedkeys = ['/'];
@@ -185,7 +185,7 @@ export class CoreService {
     this.tempTabs._workflow.filter = {};
     this.tempTabs._workflow.filter.date = '1d';
     this.tempTabs._workflow.filter.sortBy = 'versionDate';
-    this.tempTabs._workflow.reverse = false;
+    this.tempTabs._workflow.reverse = true;
     this.tempTabs._workflow.currentPage = '1';
     this.tempTabs._workflow.expandedKeys = ['/'];
     this.tempTabs._workflow.selectedkeys = ['/'];

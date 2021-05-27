@@ -504,8 +504,7 @@ export class RemovePlanModalComponent implements OnInit {
 @Component({
   encapsulation: ViewEncapsulation.None,
   selector: 'app-gantt',
-  template: `
-    <div #jsgantt class='jsgantt-chart'></div>`,
+  template: `<div #jsgantt class='jsgantt-chart'></div>`,
 })
 export class GanttComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('jsgantt', {static: true}) editor: ElementRef;

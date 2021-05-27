@@ -6,6 +6,7 @@ import {StartUpModalComponent} from '../start-up/start-up.component';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
+import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 
 @Component({
   selector: 'app-agent-modal',
@@ -131,6 +132,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   currentSecurityLevel: string;
   showPanel = [true];
   permission: any = {};
+  preferences: any = {};
   modalInstance: NzModalRef;
   loading = false;
   subscription1: Subscription;
@@ -150,6 +152,9 @@ export class ControllersComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.permission = JSON.parse(this.authService.permission) || {};
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    }
     this.getData();
   }
 
@@ -298,6 +303,38 @@ export class ControllersComponent implements OnInit, OnDestroy {
         }
       });
     });
+  }
+
+  resetAgent(agent, controller): void {
+    console.log(agent, controller);
+    const obj = {
+      controllerId: controller.controllerId,
+      agentId: agent.agentId
+    };
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Agent',
+        operation: 'Reset',
+        name: agent.agentId
+      };
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+          obj,
+          url: 'agent/reset'
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+    } else {
+      this.coreService.post('agent/reset', obj).subscribe(res => {
+
+      });
+    }
   }
 
   disableAgent(agent, controller): void {

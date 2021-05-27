@@ -663,7 +663,6 @@ export class ShowModalComponent implements OnInit {
   templateUrl: './import-dialog.html'
 })
 export class ImportModalComponent implements OnInit {
-
   @Input() schedulerId: any;
   @Input() display: any;
   @Input() selectedPath: any;
@@ -822,6 +821,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   choice = true;
   dropCheck: any = {status: false, dropNode: undefined};
   selectedNode: any;
+  selectedNodeDoc: any;
   selectedXsd = '';
   submitXsd = false;
   submitted;
@@ -835,14 +835,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   errorName;
   tempArr: any = [];
   text;
-  subscription: Subscription;
   validConfig = false;
   nonValidattribute: any = {};
   keyRefNodes;
   keyNodes;
   breadCrumbArray: any = [];
   refElement;
-  // new
   objectType;
   XSDState: any = {};
   schemaIdentifier;
@@ -883,6 +881,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   notValidUrl: string;
   uniqueName: string;
   onlyNumbers: string;
+  subscription1: Subscription;
+  subscription2: Subscription;
   config: any = {
     toolbar: [
       {name: 'document', items: ['Source']},
@@ -928,12 +928,49 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     private authService: AuthService
   ) {
     this.myContent = '';
-    this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
+    this.subscription1 = this.dataService.functionAnnounced$.subscribe(res => {
       this.gotoErrorLocation();
+    });
+    this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
+      this.init();
     });
   }
 
   ngOnInit(): void {
+    this.init();
+    this.translate.get('xml.message.requiredField').subscribe(translatedValue => {
+      this.requiredField = translatedValue;
+    });
+    this.translate.get('xml.message.uniqueError').subscribe(translatedValue => {
+      this.uniqueName = translatedValue;
+    });
+    this.translate.get('xml.message.spaceNotAllowed').subscribe(translatedValue => {
+      this.spaceNotAllowed = translatedValue;
+    });
+    this.translate.get('xml.message.cannotAddBlankSpace').subscribe(translatedValue => {
+      this.cannotAddBlankSpace = translatedValue;
+    });
+    this.translate.get('xml.message.onlyPositiveNumbers').subscribe(translatedValue => {
+      this.onlyPositiveNumbers = translatedValue;
+    });
+    this.translate.get('xml.message.cannotNegative').subscribe(translatedValue => {
+      this.cannotNegative = translatedValue;
+    });
+    this.translate.get('xml.message.colonNotAllowed').subscribe(translatedValue => {
+      this.colonNotAllowed = translatedValue;
+    });
+    this.translate.get('xml.message.onlyNumbers').subscribe(translatedValue => {
+      this.onlyNumbers = translatedValue;
+    });
+    this.translate.get('xml.message.notValidUrl').subscribe(translatedValue => {
+      this.notValidUrl = translatedValue;
+    });
+  }
+
+  private init(): void{
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
@@ -967,38 +1004,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       }
     }, 30000);
 
-    this.translate.get('xml.message.requiredField').subscribe(translatedValue => {
-      this.requiredField = translatedValue;
-    });
-    this.translate.get('xml.message.uniqueError').subscribe(translatedValue => {
-      this.uniqueName = translatedValue;
-    });
-    this.translate.get('xml.message.spaceNotAllowed').subscribe(translatedValue => {
-      this.spaceNotAllowed = translatedValue;
-    });
-    this.translate.get('xml.message.cannotAddBlankSpace').subscribe(translatedValue => {
-      this.cannotAddBlankSpace = translatedValue;
-    });
-    this.translate.get('xml.message.onlyPositiveNumbers').subscribe(translatedValue => {
-      this.onlyPositiveNumbers = translatedValue;
-    });
-    this.translate.get('xml.message.cannotNegative').subscribe(translatedValue => {
-      this.cannotNegative = translatedValue;
-    });
-    this.translate.get('xml.message.colonNotAllowed').subscribe(translatedValue => {
-      this.colonNotAllowed = translatedValue;
-    });
-    this.translate.get('xml.message.onlyNumbers').subscribe(translatedValue => {
-      this.onlyNumbers = translatedValue;
-    });
-    this.translate.get('xml.message.notValidUrl').subscribe(translatedValue => {
-      this.notValidUrl = translatedValue;
-    });
   }
 
   ngOnDestroy(): void {
     this.editor.destroy();
-    this.subscription.unsubscribe();
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
@@ -1039,7 +1050,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         this.coreService.post('xmleditor/delete/all', obj).subscribe(() => {
           this.tabsArray = [];
           this.nodes = [];
-          this.selectedNode = [];
+          this.selectedNode = {};
           this.submitXsd = false;
           this.isLoading = false;
           this.XSDState = '';
@@ -1148,7 +1159,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   readOthersXSD(id): void {
     this.nodes = [];
-    this.selectedNode = [];
+    this.selectedNode = {};
     this.coreService.post('xmleditor/read', {
       controllerId: this.schedulerIds.selected,
       objectType: this.objectType,
@@ -1197,6 +1208,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
               this.handleNodeToExpandAtOnce(this.nodes, null, _tempArrToExpand);
             }
             this.selectedNode = this.nodes[0];
+            this.selectedNodeDoc = this.checkText(this.nodes[0]);
             this.XSDState = {modified: res.configuration.modified};
             this.storeXML(undefined);
             this.printArraya(false);
@@ -1313,10 +1325,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           this.counting = jsonArray.lastUuid;
           this.nodes = a;
           this.getIndividualData(this.nodes[0], undefined);
-          this.selectedNode = this.nodes[0];
         }
         this.isLoading = false;
         this.selectedNode = this.nodes[0];
+        this.selectedNodeDoc = this.checkText(this.nodes[0]);
         this.selectedNode.expanded = true;
         this.autoExpand(this.selectedNode);
         if (_tempArrToExpand && _tempArrToExpand.length > 0) {
@@ -1387,7 +1399,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         for (let i = 0; i < attrs.length; i++) {
           for (let j = 0; j < node.attributes.length; j++) {
             this.checkAttrsValue(attrs[i]);
-            this.checkAttrsText(attrs[i]);
             if (attrs[i].name === node.attributes[j].name) {
               attrs[i] = Object.assign(attrs[i], node.attributes[j]);
             }
@@ -1587,7 +1598,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.xsdXML = xml;
     this.xpath();
     this.AddKeyReferencing();
-    this.selectedNode = this.nodes[0];
     this.getData(this.nodes[0]);
     this.isLoading = !!check;
   }
@@ -1624,16 +1634,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (attrs.length > 0) {
       temp.attributes = [];
       for (let i = 0; i < attrs.length; i++) {
-        this.checkAttrsText(attrs[i]);
         attrs[i].id = this.counting;
         this.counting++;
         temp.attributes.push(attrs[i]);
       }
     }
-    let text = this.checkText(temp.ref);
-    if (text) {
-      temp.text = text;
-    }
+
     if (!check) {
       child = this.checkChildNode(temp, undefined);
 
@@ -2099,35 +2105,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  checkText(node): any {
-    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    let text: any = {};
-    let documentationPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:annotation/xs:documentation/@*';
-    let element = select(documentationPath, this.doc);
-    if (element.length > 0) {
-      for (let i = 0; i < element.length; i++) {
-        let a = element[i].nodeName;
-        let b = element[i].nodeValue[0].innerHTML;
-        text = Object.assign(text, this._defineProperty({}, a, b));
-      }
-    } else {
-      let documentationPath1 = '/xs:schema/xs:element[@ref=\'' + node + '\']/xs:annotation/xs:documentation/@*';
-      let element1 = select(documentationPath1, this.doc);
-      for (let i = 0; i < element1.length; i++) {
-        let a = element1[i].nodeName;
-        let b = element1[i].nodeValue[0].innerHTML;
-        text = Object.assign(text, this._defineProperty({}, a, b));
-      }
-    }
-    let documentationPath2 = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:annotation/xs:documentation';
-    let element2 = select(documentationPath2, this.doc);
-    if (element2.length > 0) {
-      text.doc = element2[0].innerHTML;
-    }
-    text.parent = node;
-    return text;
-  }
-
   checkDupProfileId(value, tag) {
     if (tag.name === 'profile_id' && this.selectedNode.ref == 'Profile') {
       let tempParentNode: any = this.getParentNode(this.selectedNode);
@@ -2194,32 +2171,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       }
     }
     return str;
-  }
-
-  checkAttrsText(node): void {
-    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    let textAttrsPath = '/xs:schema/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:attribute[@name=\''
-      + node.name + '\']/xs:annotation/xs:documentation';
-    let element = select(textAttrsPath, this.doc);
-    let text: any = {};
-    if (element.length > 0) {
-      text.doc = element;
-      node.text = text;
-    }
-    if (element.length === 0) {
-      let textAttrsPath2 = '/xs:schema/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name=\''
-        + node.name + '\']/xs:annotation/xs:documentation';
-      text.doc = select(textAttrsPath2, this.doc);
-      node.text = text;
-      if (text.length <= 0) {
-        let textAttrsPath1 = '/xs:schema/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:complexContent/xs:extension/xs:attribute[@name=\''
-          + node.name + '\']/xs:annotation/xs:documentation';
-        text.doc = select(textAttrsPath1, this.doc);
-        if (text.doc) {
-          node.text = text;
-        }
-      }
-    }
   }
 
   addTypeChildNode(node, parent, data) {
@@ -2335,7 +2286,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   addChild(child, nodeArr, check, index) {
     setTimeout(() => {
       let attrs = this.checkAttributes(child.ref);
-      let text = this.checkText(child.ref);
       let value = this.getValues(child.ref);
       let attrsType: any = this.getAttrFromType(child.ref, child.parent);
       let valueType = this.getValueFromType(child.ref, child.parent);
@@ -2375,15 +2325,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       if (attrsType !== undefined) {
         this.attachTypeAttrs(attrsType, nodeArr.children);
       }
-      if (!isEmpty(text)) {
-        this.addText(text, nodeArr.children);
-      }
+
       // this.autoExpand(nodeArr);
       this.printArraya(false);
       if (child) {
-        this.selectedNode = child;
         this.getData(this.selectedNode);
-
         if (this.nodes.length > 0) {
           this.scrollTreeToGivenId(this.selectedNode.uuid);
         }
@@ -2410,18 +2356,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  addText(text, child) {
-    if (child.length > 0) {
-      for (let i = 0; i < child.length; i++) {
-        if (text && text.parent === child[i].ref) {
-          if (!child[i].text) {
-            child[i].text = text;
-            child[i].show = !child[i].attributes && !child[i].values;
-          }
-        }
-      }
-    }
-  }
 
   attachTypeAttrs(attrs, child) {
     for (let i = 0; i < child.length; i++) {
@@ -2429,7 +2363,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         if (!child[i].attributes) {
           child[i].attributes = [];
           for (let j = 0; j < attrs.length; j++) {
-            this.checkAttrsText(attrs[i]);
             this.checkAttrsValue(attrs[j]);
             attrs[j].id = this.counting;
             if (attrs[j].default) {
@@ -2441,7 +2374,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           this.printArraya(false);
         } else {
           for (let j = 0; j < attrs.length; j++) {
-            this.checkAttrsText(attrs[i]);
             this.checkAttrsValue(attrs[j]);
             attrs[j].id = this.counting;
             if (attrs[j].default) {
@@ -2460,7 +2392,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (!child.attribute) {
       child.attributes = [];
       for (let j = 0; j < attrs.length; j++) {
-        this.checkAttrsText(attrs[j]);
         attrs[j].id = this.counting;
         this.counting++;
         if (!attrs[j].data) {
@@ -2983,11 +2914,44 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       }
     }
     this.selectedNode = event;
+    this.selectedNodeDoc = this.checkText(event);
     this.breadCrumbArray = [];
     if (event) {
       this.createBreadCrumb(event);
       this.breadCrumbArray.reverse();
     }
+  }
+
+  checkText(node: any): any {
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let text: any = {};
+    let documentationPath = '/xs:schema/xs:element[@name=\'' + node.ref + '\']/xs:annotation/xs:documentation/@*';
+    let element = select(documentationPath, this.doc);
+    if (element.length > 0) {
+      for (let i = 0; i < element.length; i++) {
+        let a = element[i].nodeName;
+        let b = element[i].nodeValue[0].innerHTML;
+        text = Object.assign(text, this._defineProperty({}, a, b));
+      }
+    } else {
+      let documentationPath1 = '/xs:schema/xs:element[@ref=\'' + node.ref + '\']/xs:annotation/xs:documentation/@*';
+      let element1 = select(documentationPath1, this.doc);
+      for (let i = 0; i < element1.length; i++) {
+        let a = element1[i].nodeName;
+        let b = element1[i].nodeValue[0].innerHTML;
+        text = Object.assign(text, this._defineProperty({}, a, b));
+      }
+    }
+    let documentationPath2 = '/xs:schema/xs:element[@name=\'' + node.ref + '\']/xs:annotation/xs:documentation';
+    let element2 = select(documentationPath2, this.doc);
+    if (element2.length > 0) {
+      text.doc = element2[0].innerHTML;
+    }
+    if (node.show === undefined || node.show === null) {
+      node.show = !node.attributes && !node.values;
+    }
+    text.parent = node;
+    return text;
   }
 
   // BreadCrumb
@@ -3087,6 +3051,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
     if (this.selectedNode.ref === node.ref) {
       this.selectedNode = this.nodes[0];
+      this.selectedNodeDoc = this.checkText(this.nodes[0]);
       this.getIndividualData(this.selectedNode, undefined);
     }
   }
@@ -3388,6 +3353,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.checkRule = true;
     this.printArraya(false);
     this.selectedNode = copyData;
+    this.selectedNodeDoc = this.checkText(copyData);
     this.getIndividualData(this.selectedNode, undefined);
     this.scrollTreeToGivenId(this.selectedNode.uuid);
   }
@@ -4255,7 +4221,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             if (this.nodes[0].attributes[i].name === this.nodes[0].keyReference) {
               if (node.data === this.nodes[0].attributes[i].data) {
                 this.getData(this.nodes[0]);
-                this.selectedNode = this.nodes[0];
                 this.refElement = node;
               }
             }
@@ -4282,7 +4247,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             if (child.attributes[i].name === child.keyReference) {
               if (node.data === child.attributes[i].data) {
                 this.getData(child);
-                this.selectedNode = child;
                 this.refElement = node;
               }
             }
@@ -4308,7 +4272,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             if (this.nodes[0].attributes[i].name === this.nodes[0].keyref) {
               if (node.data === this.nodes[0].attributes[i].data) {
                 this.getData(this.nodes[0]);
-                this.selectedNode = this.nodes[0];
               }
             }
           }
@@ -4323,7 +4286,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             if (this.nodes[0].attributes[i].name === this.nodes[0].keyref) {
               if (node.data === this.nodes[0].attributes[i].data) {
                 this.getData(this.nodes[0]);
-                this.selectedNode = this.nodes[0];
               }
             }
           }
@@ -4348,7 +4310,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           for (let i = 0; i < child.attributes.length; i++) {
             if (child.attributes[i].name === child.keyref) {
               if (node.data === child.attributes[i].data) {
-                this.selectedNode = child;
                 this.getData(child);
               }
             }
@@ -4363,7 +4324,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           for (let i = 0; i < child.attributes.length; i++) {
             if (child.attributes[i].name === child.keyref) {
               if (node.data === child.attributes[i].data) {
-                this.selectedNode = child;
                 this.getData(child);
               }
             }
@@ -4489,7 +4449,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  showPassword(data) {
+  showPassword(data): void {
     data.pShow = !data.pShow;
   }
 
@@ -4704,9 +4664,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         let x = {state: {message: res.result.message}};
         this.XSDState = x.state;
         this.prevXML = '';
-        this.selectedNode = this.nodes[0];
-        this.getIndividualData(this.selectedNode, undefined);
-        this.getData(this.selectedNode);
+        this.getIndividualData(this.nodes[0], undefined);
+        this.getData(this.nodes[0]);
       }
     });
   }
@@ -4822,7 +4781,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   gotoErrorLocation(): void {
     if (this.errorLocation && this.errorLocation.ref) {
       this.getData(this.errorLocation);
-      this.selectedNode = this.errorLocation;
       this.errorLocation = {};
       if (this.errorName && this.errorName === this.selectedNode.ref) {
         this.getAutoFocus(0, this.selectedNode, 'value');
@@ -5197,6 +5155,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             this.getIndividualData(this.nodes[0], undefined);
             this.isLoading = false;
             this.selectedNode = this.nodes[0];
+            this.selectedNodeDoc = this.checkText(this.nodes[0]);
             this.XSDState = res.state;
             this.submitXsd = true;
             this.isDeploy = res.state.deployed;
@@ -5270,6 +5229,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           this.autoExpand(nodes[j]);
           nodes[j].expanded = true;
           this.selectedNode = nodes[j];
+          this.selectedNodeDoc = this.checkText(this.nodes[0]);
         }
         break;
       }
@@ -5485,6 +5445,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.nodes = a;
       this.getIndividualData(this.nodes[0], undefined);
       this.selectedNode = this.nodes[0];
+      this.selectedNodeDoc = this.checkText(this.nodes[0]);
       this.isLoading = false;
       this.submitXsd = true;
       this.isDeploy = true;

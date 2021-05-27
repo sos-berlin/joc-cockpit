@@ -138,8 +138,7 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
 
 @Component({
   selector: 'app-order-overview',
-  templateUrl: './order-overview.component.html',
-  styleUrls: ['./order-overview.component.css']
+  templateUrl: './order-overview.component.html'
 })
 export class OrderOverviewComponent implements OnInit, OnDestroy {
   loading: boolean;

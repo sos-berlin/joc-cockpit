@@ -166,7 +166,7 @@
       </div>
     </div>
     <div class="inline w-full" [ngClass]="submitXsd ? 'show': 'hide'"
-         [ngStyle]="{'margin-top': objectType !== 'NOTIFICATION' ? '-7px' : '12px'}">
+         [ngStyle]="{'margin-top': objectType !== 'NOTIFICATION' ? '-3px' : '12px'}">
       <div appResizable [sideView]="sideView.xml" class="sticky leftPanel editor" id="xmlLeftSidePanel" [ngStyle]="{'width': sideView.xml ? sideView.xml.width +'px' : 'auto'}">
         <div class="pl-20 m-l-xs editor-tree">
           <div class="row" *ngIf="nodes.length > 0">
@@ -322,18 +322,20 @@
             </div>
           </div>
           <div class="col-12">
-            <div class="box p-a documents" *ngIf="selectedNode && selectedNode.text">
-              <div class="text _600"><span translate>xml.label.documentation</span>
-                <i id="expandIcon" class="fa fa-lg pull-left p-t-xs pointer"
-                   (click)="hideDocumentation(selectedNode)"
-                   [ngClass]="selectedNode.show ? 'fa-caret-up' : 'fa-caret-down'"
-                   aria-hidden="true"></i></div>
-              <span id="doc" *ngIf="selectedNode.show">
+            <div class="p-a box documents" *ngIf="selectedNode && selectedNodeDoc">
+                <div class="text _600">
+                  <span translate>xml.label.documentation</span>
+                  <i id="expandIcon" class="fa fa-lg pull-left p-t-xs pointer"
+                     (click)="hideDocumentation(selectedNode)"
+                     [ngClass]="selectedNode.show ? 'fa-caret-up' : 'fa-caret-down'"
+                     aria-hidden="true"></i>
+                </div>
+                <div id="doc" *ngIf="selectedNode.show">
                   <hr>
-                  <div *ngIf="selectedNode && selectedNode.text">
-                    <div [innerHTML]="selectedNode.text.doc | safeHtml"></div>
+                  <div *ngIf="selectedNode && selectedNodeDoc">
+                    <div [innerHTML]="selectedNodeDoc.doc | safeHtml"></div>
                   </div>
-                </span>
+                </div>
             </div>
           </div>
           <div class="col-12" id="attr">

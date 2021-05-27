@@ -8,9 +8,7 @@ import {SearchPipe} from '../../../pipes/core.pipe';
 // Main Component
 @Component({
   selector: 'app-agent-cluster',
-  templateUrl: 'agent.component.html',
-  styleUrls: ['./agent.component.css'],
-
+  templateUrl: 'agent.component.html'
 })
 export class AgentComponent implements OnInit, OnDestroy {
   loading: boolean;
@@ -35,16 +33,16 @@ export class AgentComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.init();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
   }
 
-  private init() {
+  private init(): void {
     this.agentsFilters = this.coreService.getResourceTab().agents;
     this.coreService.getResourceTab().state = 'agent';
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
@@ -53,18 +51,18 @@ export class AgentComponent implements OnInit, OnDestroy {
     if (localStorage.views) {
       this.pageView = JSON.parse(localStorage.views).agent;
     }
-    if(this.schedulerIds.selected) {
+    if (this.schedulerIds.selected) {
       this.loadAgents(null);
     }
   }
 
-  searchInResult() {
+  searchInResult(): void {
     this.data = this.agentsFilters.searchText ? this.searchPipe.transform(this.agentClusters, this.agentsFilters.searchText, this.searchableProperties) : this.agentClusters;
     this.data = [...this.data];
   }
 
-  private getAgentClassList(obj) {
-   // this.loading = false;
+  private getAgentClassList(obj): void {
+    // this.loading = false;
     this.coreService.post('agents', obj).subscribe((result: any) => {
       this.loading = false;
       this.agentClusters = result.agents;
@@ -74,7 +72,7 @@ export class AgentComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadAgents(status) {
+  loadAgents(status): void {
     if (status) {
       this.agentsFilters.filter.state = status;
     }
@@ -90,44 +88,41 @@ export class AgentComponent implements OnInit, OnDestroy {
     this.getAgentClassList(obj);
   }
 
-  /** ---------------------------- Broadcast messages ----------------------------------*/
-  receiveMessage($event) {
+  /* ---------------------------- Broadcast messages ----------------------------------*/
+  receiveMessage($event): void {
     this.pageView = $event;
   }
 
-  private refresh(args) {
-    for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId == this.schedulerIds.selected) {
-        if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
-          for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args.eventSnapshots[j].eventType === 'AgentAdded' || args.eventSnapshots[j].eventType === 'AgentUpdated' ||
-              args[i].eventSnapshots[j].eventType == 'JobStateChanged') {
-              this.init();
-              break;
-            }
-          }
+  private refresh(args): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].eventType === 'AgentAdded' || args.eventSnapshots[j].eventType === 'AgentUpdated' ||
+          args.eventSnapshots[j].eventType === 'JobStateChanged' || args.eventSnapshots[j].eventType === 'AgentStateChanged' ||
+          args.eventSnapshots[j].eventType === 'ProxyCoupled' ||
+          args.eventSnapshots[j].eventType === 'ProxyDecoupled') {
+          this.init();
+          break;
         }
-        break;
       }
     }
   }
 
-  /** ---------------------------- Action ----------------------------------*/
+  /* ---------------------------- Action ----------------------------------*/
 
-  pageIndexChange($event) {
+  pageIndexChange($event): void {
     this.agentsFilters.currentPage = $event;
   }
 
-  pageSizeChange($event) {
+  pageSizeChange($event): void {
     this.agentsFilters.entryPerPage = $event;
   }
 
-  sort(propertyName) {
+  sort(propertyName): void {
     this.agentsFilters.reverse = !this.agentsFilters.reverse;
     this.agentsFilters.filter.sortBy = propertyName;
   }
 
-  expandDetails() {
+  expandDetails(): void {
     const ids = [];
     this.data.forEach((value) => {
       value.show = true;
@@ -150,16 +145,16 @@ export class AgentComponent implements OnInit, OnDestroy {
     });
   }
 
-  collapseDetails() {
+  collapseDetails(): void {
     this.data.forEach((value) => {
       value.show = false;
     });
   }
 
-  showAgents(cluster) {
+  showAgents(cluster): void {
     cluster.show = true;
     cluster.loading = true;
-    this.coreService.post('agents', {controllerId: this.schedulerIds.selected, agents:[cluster.agentId]}).subscribe((result: any) => {
+    this.coreService.post('agents', {controllerId: this.schedulerIds.selected, agents: [cluster.agentId]}).subscribe((result: any) => {
       cluster.orders = result.agents[0].orders;
       cluster.loading = false;
     }, () => {
@@ -167,7 +162,7 @@ export class AgentComponent implements OnInit, OnDestroy {
     });
   }
 
-  hideAgents(cluster) {
+  hideAgents(cluster): void {
     cluster.show = false;
   }
 }
