@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NzFormatBeforeDropEvent, NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd/tree';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
@@ -687,7 +687,7 @@ export class ImportModalComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.comments.radio = 'predefined';
     if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
@@ -848,7 +848,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   isDeploy = false;
   isStore = false;
   path;
-  prevXML;
   recreateJsonFlag;
   lastScrollId;
   _xml;
@@ -871,7 +870,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   liveXml: any;
   selectedTabIndex = 0;
   counter: number;
-  intervalId: any;
   requiredField: string;
   spaceNotAllowed: string;
   cannotAddBlankSpace: string;
@@ -968,9 +966,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   private init(): void{
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
@@ -998,24 +993,22 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     } else {
       this.othersXSD();
     }
-    this.intervalId = setInterval(() => {
-      if (this.submitXsd && !this.objectXml.xml && !this.isStore) {
-        this.storeXML(undefined);
-      }
-    }, 30000);
+  }
 
+  @HostListener('window:beforeunload', ['$event'])
+  beforeunload(): void {
+    if (this.submitXsd && !this.objectXml.xml && !this.isStore) {
+      this.storeXML();
+    }
   }
 
   ngOnDestroy(): void {
     this.editor.destroy();
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
     this.coreService.setSideView(this.sideView);
     if (this.submitXsd && !this.objectXml.xml && !this.isStore) {
-      this.storeXML(undefined);
+      this.storeXML();
     }
     this.coreService.tabs._configuration.state = (this.objectType === 'YADE' || !this.objectType) ? 'file_transfer' : this.objectType.toLowerCase();
     $('.scroll-y').remove();
@@ -1073,7 +1066,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   //delete config
-  deleteConf() {
+  deleteConf(tab) {
     this.delete = true;
     this.deleteAll = false;
     const modal = this.modal.create({
@@ -1083,14 +1076,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         delete: this.delete,
         deleteAll: this.deleteAll,
         objectType: this.objectType,
-        activeTab: (this.objectType !== 'NOTIFICATION') ? this.activeTab : undefined
+        activeTab: (this.objectType !== 'NOTIFICATION') ? tab : undefined
       },
       nzFooter: null,
       nzClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.del();
+        this.del(tab);
       }
       this.delete = false;
     });
@@ -1098,22 +1091,25 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   tabChange($event): void {
     this.isLoading = true;
-    this.activeTab = this.tabsArray[$event.index];
-    this.readOthersXSD(this.activeTab.id);
-    this.validConfig = false;
+    this.storeXML();
+    setTimeout(() => {
+      if(this.tabsArray.length > 0) {
+        this.activeTab = this.tabsArray[$event.index];
+        this.readOthersXSD(this.activeTab.id);
+        this.validConfig = false;
+      }
+    }, 0);
   }
 
   changeTab(data, isStore): void {
     if (this.activeTab.id !== data.id) {
       if (this.activeTab.id < 0 || isStore) {
+        this.storeXML();
+      }
+      setTimeout(() => {
         this.activeTab = data;
         this.readOthersXSD(data.id);
-      } else {
-        this.storeXML(() => {
-          this.activeTab = data;
-          this.readOthersXSD(data.id);
-        });
-      }
+      }, 0);
     }
     this.validConfig = false;
   }
@@ -1189,7 +1185,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           this.path = res.configuration.schema;
           this.schemaIdentifier = res.configuration.schemaIdentifier;
           this.submitXsd = true;
-          this.prevXML = this.removeComment(res.configuration.configuration);
           if (res.configuration.configurationJson) {
             let _tempArrToExpand = [];
             let a;
@@ -1204,13 +1199,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             } else {
               this.counting = a.lastUuid;
               this.nodes = [a];
-              this.getIndividualData(this.nodes[0], undefined);
               this.handleNodeToExpandAtOnce(this.nodes, null, _tempArrToExpand);
             }
             this.selectedNode = this.nodes[0];
             this.selectedNodeDoc = this.checkText(this.nodes[0]);
+            this.getIndividualData(this.selectedNode, undefined);
             this.XSDState = {modified: res.configuration.modified};
-            this.storeXML(undefined);
             this.printArraya(false);
             if (_tempArrToExpand && _tempArrToExpand.length > 0) {
               setTimeout(() => {
@@ -1306,7 +1300,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
       if (res.configurationJson) {
         let _tempArrToExpand = [];
-        this.prevXML = this.removeComment(res.configuration);
         let jsonArray;
         try {
           jsonArray = JSON.parse(res.configurationJson);
@@ -1324,11 +1317,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           let a = [jsonArray];
           this.counting = jsonArray.lastUuid;
           this.nodes = a;
-          this.getIndividualData(this.nodes[0], undefined);
         }
         this.isLoading = false;
         this.selectedNode = this.nodes[0];
         this.selectedNodeDoc = this.checkText(this.nodes[0]);
+        this.getIndividualData(this.selectedNode, undefined);
         this.selectedNode.expanded = true;
         this.autoExpand(this.selectedNode);
         if (_tempArrToExpand && _tempArrToExpand.length > 0) {
@@ -1348,7 +1341,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           this.submitXsd = true;
           this.isDeploy = res.state.deployed;
           this.XSDState.modified = res.modified;
-          this.prevXML = this.removeComment(res.configuration);
           this.loadTree(this.path, true);
           setTimeout(() => {
             this.createJsonfromXml(res.configuration);
@@ -1399,6 +1391,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         for (let i = 0; i < attrs.length; i++) {
           for (let j = 0; j < node.attributes.length; j++) {
             this.checkAttrsValue(attrs[i]);
+            this.checkAttrsText(attrs[i]);
             if (attrs[i].name === node.attributes[j].name) {
               attrs[i] = Object.assign(attrs[i], node.attributes[j]);
             }
@@ -1577,9 +1570,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         || dom_document.documentElement.nodeName === 'parsererror') {
         if (dom_document.documentElement.getElementsByTagName('parsererror').length > 0) {
           let a: any = dom_document.documentElement.getElementsByTagName('parsererror')[0];
-          this.toasterService.pop('error', 'Invalid xml ' + a.innerText);
+          this.toasterService.pop('error', 'Invalid xml ', a.innerText);
         } else {
-          this.toasterService.pop('error', 'Invalid xml ' + dom_document.documentElement.firstChild.nodeValue);
+          this.toasterService.pop('error', 'Invalid xml ', dom_document.documentElement.firstChild.nodeValue);
         }
         return true;
       } else {
@@ -1614,7 +1607,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  getRootNode(doc, check) {
+  getRootNode(doc, check): void {
     let temp: any;
     let attrs: any;
     let child: any;
@@ -1634,6 +1627,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (attrs.length > 0) {
       temp.attributes = [];
       for (let i = 0; i < attrs.length; i++) {
+        this.checkAttrsText(attrs[i]);
         attrs[i].id = this.counting;
         this.counting++;
         temp.attributes.push(attrs[i]);
@@ -2173,6 +2167,31 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     return str;
   }
 
+  checkAttrsText(node): void {
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let textAttrsPath = '/xs:schema/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:attribute[@name=\''
+      + node.name + '\']/xs:annotation/xs:documentation';
+    let element = select(textAttrsPath, this.doc);
+    let text: any = {};
+    if (element.length > 0) {
+      text.doc = element;
+      node.text = text;
+    } else if (element.length === 0) {
+      let textAttrsPath2 = '/xs:schema/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute[@name=\''
+        + node.name + '\']/xs:annotation/xs:documentation';
+      text.doc = select(textAttrsPath2, this.doc);
+      node.text = text;
+      if (text.length <= 0) {
+        let textAttrsPath1 = '/xs:schema/xs:element[@name=\'' + node.parent + '\']/xs:complexType/xs:complexContent/xs:extension/xs:attribute[@name=\''
+          + node.name + '\']/xs:annotation/xs:documentation';
+        text.doc = select(textAttrsPath1, this.doc);
+        if (text.doc) {
+          node.text = text;
+        }
+      }
+    }
+  }
+
   addTypeChildNode(node, parent, data) {
     let parentNode;
     let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
@@ -2363,6 +2382,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         if (!child[i].attributes) {
           child[i].attributes = [];
           for (let j = 0; j < attrs.length; j++) {
+            this.checkAttrsText(attrs[i]);
             this.checkAttrsValue(attrs[j]);
             attrs[j].id = this.counting;
             if (attrs[j].default) {
@@ -2374,6 +2394,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           this.printArraya(false);
         } else {
           for (let j = 0; j < attrs.length; j++) {
+            this.checkAttrsText(attrs[i]);
             this.checkAttrsValue(attrs[j]);
             attrs[j].id = this.counting;
             if (attrs[j].default) {
@@ -2392,6 +2413,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (!child.attribute) {
       child.attributes = [];
       for (let j = 0; j < attrs.length; j++) {
+        this.checkAttrsText(attrs[j]);
         attrs[j].id = this.counting;
         this.counting++;
         if (!attrs[j].data) {
@@ -2903,8 +2925,17 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
+  private removeDocs(): void {
+    if(this.selectedNode && this.selectedNode.attributes){
+      for (const i in this.selectedNode.attributes) {
+        delete this.selectedNode.attributes[i].text;
+      }
+    }
+  }
+
   // to send data in details component
   getData(event): void {
+    this.removeDocs();
     if (event && event.keyref) {
       for (let i = 0; i < event.attributes.length; i++) {
         if (event.attributes[i].name === event.keyref) {
@@ -2923,34 +2954,16 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   checkText(node: any): any {
-    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     let text: any = {};
-    let documentationPath = '/xs:schema/xs:element[@name=\'' + node.ref + '\']/xs:annotation/xs:documentation/@*';
-    let element = select(documentationPath, this.doc);
+    const documentationPath = '/xs:schema/xs:element[@name=\'' + node.ref + '\']/xs:annotation/xs:documentation';
+    const element = select(documentationPath, this.doc);
     if (element.length > 0) {
-      for (let i = 0; i < element.length; i++) {
-        let a = element[i].nodeName;
-        let b = element[i].nodeValue[0].innerHTML;
-        text = Object.assign(text, this._defineProperty({}, a, b));
-      }
-    } else {
-      let documentationPath1 = '/xs:schema/xs:element[@ref=\'' + node.ref + '\']/xs:annotation/xs:documentation/@*';
-      let element1 = select(documentationPath1, this.doc);
-      for (let i = 0; i < element1.length; i++) {
-        let a = element1[i].nodeName;
-        let b = element1[i].nodeValue[0].innerHTML;
-        text = Object.assign(text, this._defineProperty({}, a, b));
-      }
-    }
-    let documentationPath2 = '/xs:schema/xs:element[@name=\'' + node.ref + '\']/xs:annotation/xs:documentation';
-    let element2 = select(documentationPath2, this.doc);
-    if (element2.length > 0) {
-      text.doc = element2[0].innerHTML;
+      text.doc = element[0].innerHTML;
     }
     if (node.show === undefined || node.show === null) {
       node.show = !node.attributes && !node.values;
     }
-    text.parent = node;
     return text;
   }
 
@@ -3358,7 +3371,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.scrollTreeToGivenId(this.selectedNode.uuid);
   }
 
-  renameTab(tab) {
+  renameTab(tab): void {
     if (this.schemaIdentifier) {
       tab.rename = true;
       this.oldName = clone(tab.name);
@@ -4533,7 +4546,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           this.importXSDFile = false;
         }
       }
-      this.toasterService.clear();
     });
 
   }
@@ -4556,9 +4568,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.loadTree(res.schema, false);
       this.submitXsd = true;
       this.isDeploy = false;
-      this.prevXML = '';
       this.isLoading = false;
-      this.storeXML(res.schemaIdentifier);
+      this.storeXML();
     }, (error) => {
       this.isLoading = false;
       if (error && error.error) {
@@ -4600,9 +4611,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.isDeploy = false;
       this.activeTab.schemaIdentifier = res.schemaIdentifier;
       this.showSelectSchema = false;
-      this.prevXML = '';
       this.schemaIdentifier = res.schemaIdentifier;
-      this.storeXML(res.schemaIdentifier);
+      this.storeXML();
       this.path = res.schemaIdentifier;
       this.selectedXsd = res.schemaIdentifier;
       this.isLoading = false;
@@ -4663,7 +4673,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         this.submitXsd = true;
         let x = {state: {message: res.result.message}};
         this.XSDState = x.state;
-        this.prevXML = '';
         this.getIndividualData(this.nodes[0], undefined);
         this.getData(this.nodes[0]);
       }
@@ -4706,15 +4715,13 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   downloadSchema(objType, schemaIdentifier): void {
-    let obj: any = {
-      controllerId: this.schedulerIds.selected,
-      objectType: objType
-    };
+    let link = './api/xmleditor/schema/download?controllerId='
+      + this.schedulerIds.selected + '&objectType=' + objType +
+      '&accessToken=' + this.authService.accessTokenId;
     if (objType !== 'NOTIFICATION') {
-      obj.schemaIdentifier = schemaIdentifier;
+      link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier);
     }
-    this.coreService.download('xmleditor/schema/download', obj, (schemaIdentifier || objType) + '.xsd', (res) => {
-    });
+    $('#tmpFrame').attr('src', link);
   }
 
   showXSD(objType, schemaIdentifier): void {
@@ -5113,10 +5120,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  private del() {
-    if (this.objectType !== 'NOTIFICATION' && this.activeTab.id < 0) {
+  private del(tab) {
+    if (this.objectType !== 'NOTIFICATION' && tab.id < 0) {
       for (let i = 0; i < this.tabsArray.length; i++) {
-        if (this.tabsArray[i].id === this.activeTab.id) {
+        if (this.tabsArray[i].id === tab.id) {
           this.tabsArray.splice(i, 1);
           break;
         }
@@ -5131,7 +5138,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       objectType: this.objectType,
     };
     if (this.objectType !== 'NOTIFICATION') {
-      obj.id = this.activeTab.id;
+      obj.id = tab.id;
     }
     this.coreService.post('xmleditor/delete', obj).subscribe((res: any) => {
       if (res.configuration) {
@@ -5152,17 +5159,16 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             this.counting = arr.lastUuid;
             this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
             this.nodes = a;
-            this.getIndividualData(this.nodes[0], undefined);
             this.isLoading = false;
             this.selectedNode = this.nodes[0];
             this.selectedNodeDoc = this.checkText(this.nodes[0]);
+            this.getIndividualData(this.selectedNode, undefined);
             this.XSDState = res.state;
             this.submitXsd = true;
             this.isDeploy = res.state.deployed;
             if (res.state.deployed) {
               this.validConfig = true;
             }
-            this.prevXML = this.removeComment(res.configuration);
             this.copyItem = undefined;
           }, (err) => {
             this.isLoading = false;
@@ -5176,7 +5182,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           this.XSDState = res.state;
           if (this.objectType !== 'NOTIFICATION') {
             this.tabsArray = this.tabsArray.filter(x => {
-              return x.id !== this.activeTab.id;
+              return x.id !== tab.id;
             });
             if (this.tabsArray.length > 0) {
               this.selectedTabIndex = 0;
@@ -5192,7 +5198,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         if (this.objectType !== 'NOTIFICATION') {
           this.schemaIdentifier = undefined;
           this.tabsArray = this.tabsArray.filter(x => {
-            return x.id !== this.activeTab.id;
+            return x.id !== tab.id;
           });
           if (this.tabsArray.length > 0) {
             this.selectedTabIndex = 0;
@@ -5236,7 +5242,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  private storeXML(cb): void {
+  private storeXML(): void {
     if (!this.permission || !this.permission.joc ||
       (!this.permission.joc.fileTransfer.manage && this.objectType === 'YADE') ||
       (!this.permission.joc.notification.manage && this.objectType === 'NOTIFICATION') ||
@@ -5248,62 +5254,42 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (!this._xml) {
       return;
     }
-    let eRes;
-    if (this.prevXML && this._xml) {
-      eRes = this.compare(this.prevXML.toString(), this._xml.toString());
-    }
-    if (!eRes) {
-      this.isStore = true;
-      if (this.objectType === 'NOTIFICATION') {
-        this.coreService.post('xmleditor/store', {
-          controllerId: this.schedulerIds.selected,
-          objectType: this.objectType,
-          configuration: this._xml,
-          configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
-        }).subscribe((res: any) => {
-          this.isDeploy = false;
-          this.isStore = false;
+    this.removeDocs();
+    this.isStore = true;
+    if (this.objectType === 'NOTIFICATION') {
+      this.coreService.post('xmleditor/store', {
+        controllerId: this.schedulerIds.selected,
+        objectType: this.objectType,
+        configuration: this._xml,
+        configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
+      }).subscribe((res: any) => {
+        this.isStore = false;
+      }, (error) => {
+        this.isStore = false;
+        this.toasterService.pop('error', error.error.message);
+      });
+    } else {
+      this.coreService.post('xmleditor/store', {
+        controllerId: this.schedulerIds.selected,
+        objectType: this.objectType,
+        configuration: this._xml,
+        configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
+        id: this.activeTab.id,
+        name: this.activeTab.name,
+        schemaIdentifier: this.schemaIdentifier,
+        schema: this.path
+      }).subscribe((res: any) => {
+        this.isStore = false;
+        if (this.activeTab.id < 0) {
           this.XSDState = Object.assign({}, {message: res.message});
           this.XSDState.modified = res.modified;
-          this.prevXML = this._xml;
-        }, (error) => {
-          this.isStore = false;
-          this.toasterService.pop('error', error.error.message);
-        });
-      } else {
-        this.coreService.post('xmleditor/store', {
-          controllerId: this.schedulerIds.selected,
-          objectType: this.objectType,
-          configuration: this._xml,
-          configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
-          id: this.activeTab.id,
-          name: this.activeTab.name,
-          schemaIdentifier: this.schemaIdentifier,
-          schema: this.path
-        }).subscribe((res: any) => {
-          this.isDeploy = false;
-          this.isStore = false;
-          this.XSDState = Object.assign({}, {message: res.message});
-          this.XSDState.modified = res.modified;
-          this.prevXML = this._xml;
           this.activeTab.id = res.id;
-          if (cb) {
-            this.storeXML(undefined);
-          }
-        }, (error) => {
-          this.isStore = false;
-          this.toasterService.pop('error', error.error.message);
-        });
-      }
-    } else if (cb) {
-      cb();
+        }
+      }, (error) => {
+        this.isStore = false;
+        this.toasterService.pop('error', error.error.message);
+      });
     }
-  }
-
-  private compare(str1, str2) {
-    let a = str1.replace(/\s/g, '');
-    let b = str2.replace(/\s/g, '');
-    return isEqual(a, b);
   }
 
   private getNodeRulesData(node) {
@@ -5436,22 +5422,20 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
     this.coreService.post('xmleditor/xml2json', obj).subscribe((res: any) => {
       this.validConfig = false;
-      let a = [];
       let arr = JSON.parse(res.configurationJson);
-      a.push(arr);
+      let a = [arr];
       this.counting = arr.lastUuid;
       this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
       this.addKey(a);
       this.nodes = a;
-      this.getIndividualData(this.nodes[0], undefined);
       this.selectedNode = this.nodes[0];
       this.selectedNodeDoc = this.checkText(this.nodes[0]);
+      this.getIndividualData(this.selectedNode, undefined);
       this.isLoading = false;
       this.submitXsd = true;
       this.isDeploy = true;
       this.XSDState = {};
-      this.prevXML = '';
-      this.storeXML(undefined);
+      this.storeXML();
     }, () => {
       this.importObj = {};
       this.isLoading = false;
@@ -5470,7 +5454,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       nzFooter: null,
       nzClosable: false
     });
-    modal.afterClose.subscribe(result => {
+    modal.afterClose.subscribe(() => {
       this.objectXml = {};
       this.toasterService.clear();
     });
@@ -5500,8 +5484,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         this.isDeploy = false;
         this.XSDState = res.state;
         this.XSDState.modified = res.modified;
-        this.prevXML = '';
-        this.storeXML(undefined);
+        this.storeXML();
       }
     }, (err) => {
       this.submitXsd = false;

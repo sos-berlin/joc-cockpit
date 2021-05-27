@@ -139,13 +139,13 @@
       </div>
     </div>
     <div>
-       <div class="form-group row m-b-0 m-l-sm" *ngIf="arguments.length > 0">
+       <div class="form-group row m-b-0 m-l-12" *ngIf="arguments.length > 0">
         <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
         <div class="col-md-4 col-lg-8 m-b-sm" translate>common.label.value</div>
       </div>
       <div cdkDropList (cdkDropListDropped)="drop($event)">
-        <div class="form-group row m-b-0 m-l-sm move-on-hover" *ngFor="let argument of arguments; let i=index" cdkDrag>
-          <div class="pos-abt move-icon" style="margin-left: -10px;font-size: 18px;margin-top: 3px;cursor: move" cdkDragHandle>
+        <div class="form-group row m-b-0 m-l-12" *ngFor="let argument of arguments; let i=index" cdkDrag>
+          <div class="pos-abt" style="margin-left: -13px;font-size: 18px;margin-top: 3px;cursor: move" cdkDragHandle>
             <i class="fa fa-bars" aria-hidden="true"></i>
           </div>
           <div class="col-sm-4 m-b-sm">
