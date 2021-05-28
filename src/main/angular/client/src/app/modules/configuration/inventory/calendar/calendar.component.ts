@@ -1433,7 +1433,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
 
   updateList(node): void {
     const obj = {
-      folder: [{folder: node.key}],
+      folders: [{folder: node.key, recursive: false}],
       onlyWithAssignReference: true
     };
     this.coreService.post('documentations', obj).subscribe((res: any) => {
@@ -1584,6 +1584,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     let obj: any = this.generateCalendarAllObj();
     obj.title = this.calendar.configuration.title;
     obj.type = this.calendar.configuration.type;
+    obj.documentationName = this.calendar.configuration.documentationName;
     if (this.calendar.configuration.from) {
       obj.from = moment(new Date(this.calendar.configuration.from), this.dateFormatM).format('YYYY-MM-DD');
     }

@@ -82,7 +82,7 @@
               [nzSize]="'small'"
               [nzBordered]="true"
               [nzShowPagination]="false"
-              [nzData]="[workflow]"
+              [nzData]="workflow.path ? [workflow] : []"
               [nzLoading]="!loading"
               [nzShowSizeChanger]="false"
             >
@@ -308,9 +308,6 @@
                 <div class="rg-bottom"><span></span></div>
               </div>
             </div>
-          </div>
-          <div *ngIf="!workFlowJson.instructions" class="text text-center text-uppercase p-a-md">
-            <app-empty-data></app-empty-data>
           </div>
           <div class="scrolltop-btn">
             <a (click)="scrollTop()">

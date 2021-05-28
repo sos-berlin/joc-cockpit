@@ -232,7 +232,7 @@ export class UpdateWorkflowComponent implements OnInit {
         };
         if (type === 'DOCUMENTATION') {
           obj = {
-            folder: [{folder: node.key}],
+            folders: [{folder: node.key, recursive: false}],
             onlyWithAssignReference: true
           };
         }
@@ -971,7 +971,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         };
         if (type === 'DOCUMENTATION') {
           request = {
-            folder: [{folder: node.key}],
+            folders: [{folder: node.key, recursive: false}],
             onlyWithAssignReference: true
           };
         }

@@ -141,7 +141,7 @@ export class LockComponent implements OnChanges, OnDestroy {
 
   updateList(node): void {
     const obj = {
-      folder: [{folder: node.key}],
+      folders: [{folder: node.key, recursive: false}],
       onlyWithAssignReference: true
     };
     this.coreService.post('documentations', obj).subscribe((res: any) => {

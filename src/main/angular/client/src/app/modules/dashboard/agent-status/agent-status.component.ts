@@ -165,7 +165,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
   }
 
   getStatus(): void {
-    this.coreService.post('agents', {controllerId: this.schedulerIds.selected, compact: true}).subscribe(res => {
+    this.coreService.post('agents', {controllerId: this.schedulerIds.selected, compact: true, onlyEnabledAgents: true}).subscribe(res => {
       this.isLoaded = true;
       this.prepareAgentClusterData(res);
     }, (err) => {

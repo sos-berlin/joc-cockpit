@@ -2075,6 +2075,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.inventoryConfig.copyObj = this.copyObj;
     this.inventoryConfig.isTrash = this.isTrash;
     $('.scroll-y').remove();
+    this.modal.closeAll();
   }
 
   initTree(path, mainPath): void {

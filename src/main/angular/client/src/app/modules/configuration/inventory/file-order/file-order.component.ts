@@ -261,7 +261,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     };
     if (type === 'DOCUMENTATION') {
       obj = {
-        folder: [{folder: node.key}],
+        folders: [{folder: node.key, recursive: false}],
         onlyWithAssignReference: true
       };
     }

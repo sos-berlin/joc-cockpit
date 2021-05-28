@@ -249,7 +249,7 @@ export class SingleDocumentationComponent implements OnInit {
   exportDocument(document): void {
     const obj = {documentations: []};
     if (document) {
-      obj.documentations.push(document.name);
+      obj.documentations.push(document.path);
     }
     this.coreService.download('documentations/export', obj, 'documentations.zip', () => {
 
@@ -289,7 +289,7 @@ export class SingleDocumentationComponent implements OnInit {
         radio: 'predefined',
         type: 'Documentation',
         operation: 'Delete',
-        name: document ? document.name : ''
+        name: document ? document.path : ''
       };
       const modal = this.modal.create({
         nzTitle: null,
@@ -316,7 +316,7 @@ export class SingleDocumentationComponent implements OnInit {
           title: 'delete',
           message: 'deleteDocument',
           document,
-          objectName: document.name
+          objectName: document.path
         },
         nzFooter: null,
         nzClosable: false
@@ -356,13 +356,17 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   selectedPath: string;
   searchableProperties = ['name', 'type', 'assignReference', 'path'];
 
-  subscription: Subscription;
+  subscription1: Subscription;
+  subscription2: Subscription;
 
   @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
               private searchPipe: SearchPipe, private modal: NzModalService, private dataService: DataService) {
-    this.subscription = dataService.refreshAnnounced$.subscribe(() => {
+    this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
+      this.refresh(res);
+    });
+    this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
     });
   }
@@ -376,13 +380,35 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
     this.coreService.setSideView(this.sideView);
     if (this.child) {
       this.documentFilters.expandedKeys = this.child.defaultExpandedKeys;
       this.documentFilters.selectedkeys = this.child.defaultSelectedKeys;
     }
     $('.scroll-y').remove();
+  }
+
+  private refresh(args): void {
+    const pathArr = [];
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].eventType === 'DocumentationUpdated' && args.eventSnapshots[j].path) {
+          if (this.documents.length > 0) {
+            for (let x = 0; x < this.documents.length; x++) {
+              if (this.documents[x].path === args.eventSnapshots[j].path) {
+                pathArr.push(args.eventSnapshots[j].path);
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+    if (pathArr.length > 0) {
+      console.log('>>>>>', pathArr)
+    }
   }
 
   initTree(): void {
@@ -473,7 +499,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     if (value && this.documents.length > 0) {
       this.documents.slice((this.preferences.entryPerPage * (this.documentFilters.currentPage - 1)), (this.preferences.entryPerPage * this.documentFilters.currentPage))
         .forEach(item => {
-          this.object.mapOfCheckedId.add(item.name);
+          this.object.mapOfCheckedId.add(item.path);
         });
     } else {
       this.object.mapOfCheckedId.clear();
@@ -483,9 +509,9 @@ export class DocumentationComponent implements OnInit, OnDestroy {
 
   onItemChecked(document: any, checked: boolean): void {
     if (checked) {
-      this.object.mapOfCheckedId.add(document.name);
+      this.object.mapOfCheckedId.add(document.path);
     } else {
-      this.object.mapOfCheckedId.delete(document.name);
+      this.object.mapOfCheckedId.delete(document.path);
     }
     this.object.checked = this.object.mapOfCheckedId.size === this.documents.slice((this.preferences.entryPerPage * (this.documentFilters.currentPage - 1)), (this.preferences.entryPerPage * this.documentFilters.currentPage)).length;
     this.refreshCheckedStatus();
@@ -545,7 +571,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   exportDocument(document): void {
     const obj = {documentations: []};
     if (document) {
-      obj.documentations.push(document.name);
+      obj.documentations.push(document.path);
     } else {
       obj.documentations = Array.from(this.object.mapOfCheckedId);
     }
@@ -582,7 +608,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       documentations: []
     };
     if (document) {
-      obj.documentations.push(document.name);
+      obj.documentations.push(document.path);
     } else {
       obj.documentations = Array.from(this.object.mapOfCheckedId);
     }
@@ -618,7 +644,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     this.coreService.post('documentations/delete', obj).subscribe(res => {
       if (document) {
         for (let i = 0; i < this.documents.length; i++) {
-          if (this.documents[i].name === document.name) {
+          if (this.documents[i].path === document.path) {
             this.documents.splice(i, 1);
             break;
           }
@@ -626,7 +652,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       } else {
         if (this.object.mapOfCheckedId.size > 0) {
           this.documents = this.documents.filter((item) => {
-            return !this.object.mapOfCheckedId.has(item.name);
+            return !this.object.mapOfCheckedId.has(item.path);
           });
         }
       }
@@ -640,7 +666,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       mapOfCheckedId: new Set(),
       checked: false,
       indeterminate: false
-    }
+    };
   }
 
   private init(): void {
@@ -675,7 +701,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
         radio: 'predefined',
         type: 'Documentation',
         operation: 'Delete',
-        name: document ? document.name : ''
+        name: document ? document.path : ''
       };
       if (!document) {
         this.object.mapOfCheckedId.forEach((value, index) => {
@@ -711,7 +737,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
           title: document ? 'delete' : 'deleteAllDocument',
           message: document ? 'deleteDocument' : 'deleteAllDocument',
           document,
-          objectName: document ? document.name : undefined,
+          objectName: document ? document.path : undefined,
           documentArr: document ? undefined : arr
         },
         nzFooter: null,

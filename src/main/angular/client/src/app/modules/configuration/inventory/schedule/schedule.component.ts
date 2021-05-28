@@ -209,7 +209,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     };
     if (type === 'DOCUMENTATION') {
       obj = {
-        folder: [{folder: node.key}],
+        folders: [{folder: node.key, recursive: false}],
         onlyWithAssignReference: true
       };
     }

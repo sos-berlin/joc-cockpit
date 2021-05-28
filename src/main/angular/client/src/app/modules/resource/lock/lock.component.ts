@@ -53,6 +53,7 @@ export class SingleLockComponent implements OnInit, OnDestroy {
         value.id = value.lock.path.substring(value.lock.path.lastIndexOf('/') + 1);
         value.state = value.lock.state;
         value.versionDate = value.lock.versionDate;
+        value.documentationName = value.lock.documentationName;
         value.path = value.lock.path;
         value.limit = value.lock.limit;
         value.title = value.lock.title;
@@ -265,6 +266,7 @@ export class LockComponent implements OnInit, OnDestroy {
         value.versionDate = value.lock.versionDate;
         value.path = value.lock.path;
         value.limit = value.lock.limit;
+        value.documentationName = value.lock.documentationName;
         value.title = value.lock.title;
         if (value.path) {
           value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);

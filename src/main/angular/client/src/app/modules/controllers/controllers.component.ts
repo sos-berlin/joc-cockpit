@@ -169,7 +169,13 @@ export class ControllersComponent implements OnInit, OnDestroy {
         if (args.eventSnapshots[j].eventType === 'AgentChanged' || args.eventSnapshots[j].eventType === 'AgentStateChanged'
           || ((args.eventSnapshots[j].eventType === 'ProxyCoupled' || args.eventSnapshots[j].eventType === 'ProxyDecoupled')
             && args.eventSnapshots[j].objectType === 'AGENT')) {
-          this.getData();
+          if (this.controllers.length > 0) {
+            for (let i = 0; i < this.showPanel.length; i++) {
+              if (this.controllers[i]) {
+                this.getAgents(this.controllers[i], null);
+              }
+            }
+          }
           break;
         } else if (args.eventSnapshots[j].eventType === 'ControllerStateChanged' || ((args.eventSnapshots[j].eventType === 'ProxyCoupled'
           || args.eventSnapshots[j].eventType === 'ProxyDecoupled') && args.eventSnapshots[j].objectType === 'CONTROLLER')) {
@@ -191,7 +197,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   getAgents(controller, cb): void {
-    if (controller && !controller.agents) {
+    if (controller) {
       controller.loading = true;
       this.coreService.post('agents/p', {
         controllerId: controller.controllerId

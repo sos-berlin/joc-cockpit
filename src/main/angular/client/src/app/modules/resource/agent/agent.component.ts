@@ -44,6 +44,9 @@ export class AgentComponent implements OnInit, OnDestroy {
 
   private init(): void {
     this.agentsFilters = this.coreService.getResourceTab().agents;
+    if(!this.agentsFilters.expandedObjects){
+      this.agentsFilters.expandedObjects = [];
+    }
     this.coreService.getResourceTab().state = 'agent';
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
@@ -62,9 +65,17 @@ export class AgentComponent implements OnInit, OnDestroy {
   }
 
   private getAgentClassList(obj): void {
-    // this.loading = false;
     this.coreService.post('agents', obj).subscribe((result: any) => {
       this.loading = false;
+      if (this.agentsFilters.expandedObjects && this.agentsFilters.expandedObjects.length > 0) {
+        result.agents.forEach((value) => {
+          const index = this.agentsFilters.expandedObjects.indexOf(value.agentId);
+          if (index > -1) {
+            value.show = true;
+            this.agentsFilters.expandedObjects.slice(index, 1);
+          }
+        });
+      }
       this.agentClusters = result.agents;
       this.searchInResult();
     }, () => {
@@ -72,19 +83,21 @@ export class AgentComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadAgents(status): void {
+  loadAgents(status, flag = false): void {
     if (status) {
       this.agentsFilters.filter.state = status;
     }
     const obj = {
       states: this.agentsFilters.filter.state !== 'ALL' ? [this.agentsFilters.filter.state] : undefined,
       controllerId: this.schedulerIds.selected,
-      compact: true,
+      compact: this.agentsFilters.expandedObjects.length === 0,
       onlyEnabledAgents: true
     };
 
-    this.agentClusters = [];
-    this.loading = true;
+    if (!flag) {
+      this.agentClusters = [];
+      this.loading = true;
+    }
     this.getAgentClassList(obj);
   }
 
@@ -100,7 +113,7 @@ export class AgentComponent implements OnInit, OnDestroy {
           args.eventSnapshots[j].eventType === 'JobStateChanged' || args.eventSnapshots[j].eventType === 'AgentStateChanged' ||
           args.eventSnapshots[j].eventType === 'ProxyCoupled' ||
           args.eventSnapshots[j].eventType === 'ProxyDecoupled') {
-          this.init();
+          this.loadAgents(null, true);
           break;
         }
       }
@@ -128,6 +141,7 @@ export class AgentComponent implements OnInit, OnDestroy {
       value.show = true;
       value.loading = true;
       ids.push(value.agentId);
+      this.agentsFilters.expandedObjects = ids;
     });
     this.coreService.post('agents', {controllerId: this.schedulerIds.selected, agents: ids}).subscribe((result: any) => {
       this.data.forEach((value) => {
@@ -146,6 +160,7 @@ export class AgentComponent implements OnInit, OnDestroy {
   }
 
   collapseDetails(): void {
+    this.agentsFilters.expandedObjects = [];
     this.data.forEach((value) => {
       value.show = false;
     });
@@ -153,6 +168,7 @@ export class AgentComponent implements OnInit, OnDestroy {
 
   showAgents(cluster): void {
     cluster.show = true;
+    this.agentsFilters.expandedObjects.push(cluster.agentId);
     cluster.loading = true;
     this.coreService.post('agents', {controllerId: this.schedulerIds.selected, agents: [cluster.agentId]}).subscribe((result: any) => {
       cluster.orders = result.agents[0].orders;
@@ -163,6 +179,7 @@ export class AgentComponent implements OnInit, OnDestroy {
   }
 
   hideAgents(cluster): void {
+    this.agentsFilters.expandedObjects.splice(this.agentsFilters.expandedObjects.indexOf(cluster.agentId), 1);
     cluster.show = false;
   }
 }

@@ -395,6 +395,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.workflowFilters.selectedkeys = this.child.defaultSelectedKeys;
     }
     $('.scroll-y').remove();
+    this.modal.closeAll();
   }
 
   /* ---------------------------- Broadcast messages ----------------------------------*/
@@ -929,8 +930,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         }],
         types: ['WORKFLOW']
       }).subscribe(res => {
-        this.filteredTreeData(this.coreService.prepareTree(res, true));
-        this.loadWorkflow();
+        this.tree = this.coreService.prepareTree(res, true);
+        if (this.tree.length) {
+          this.loadWorkflow();
+        }
         this.isLoading = true;
       }, () => {
         this.isLoading = true;
@@ -938,10 +941,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     } else {
       this.isLoading = true;
     }
-  }
-
-  private filteredTreeData(output): void {
-    this.tree = output;
   }
 
   private getWorkflowList(obj): void {

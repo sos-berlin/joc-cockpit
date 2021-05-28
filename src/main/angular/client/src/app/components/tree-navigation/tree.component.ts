@@ -114,12 +114,14 @@ export class TreeComponent implements OnInit, OnChanges {
       e.isExpanded = !e.isExpanded;
     }
     this.defaultSelectedKeys = [e.origin.key];
-    if (e.isExpanded) {
-      if (this.defaultExpandedKeys.indexOf(e.origin.key) === -1) {
-        this.defaultExpandedKeys.push(e.origin.key);
+    if (this.preferences.expandOption === 'both' && !e.origin.isLeaf) {
+      if (e.isExpanded) {
+        if (this.defaultExpandedKeys.indexOf(e.origin.key) === -1) {
+          this.defaultExpandedKeys.push(e.origin.key);
+        }
+      } else {
+        this.defaultExpandedKeys.splice(this.defaultExpandedKeys.indexOf(e.origin.key), 1);
       }
-    } else {
-      this.defaultExpandedKeys.splice(this.defaultExpandedKeys.indexOf(e.origin.key), 1);
     }
     e.origin.action = 'NODE';
     this.messageEvent.emit(e.origin);
