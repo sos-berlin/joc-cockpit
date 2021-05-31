@@ -8,26 +8,30 @@
           </div>
           <div class="inline">
             <span class="badge" [ngClass]="validConfig ? 'badge-success':'badge-danger'"
-                  *ngIf="submitXsd && XSDState && (XSDState.message && XSDState.message.code !== 'XMLEDITOR-105' || !XSDState.message)">
+                  *ngIf="nodes && nodes.length > 0">
               <span *ngIf="validConfig" translate>xml.label.validate</span>
               <span *ngIf="!validConfig" translate>xml.label.nonValidate</span>
             </span>
-
+            <span class="custom-icon badge m-l-12" [ngClass]="isDeploy ? 'badge-success' : 'badge-danger'"
+                  *ngIf="objectType === 'NOTIFICATION' && nodes && nodes.length > 0">
+              <span *ngIf="isDeploy" translate>xml.label.deployed</span>
+              <span *ngIf="!isDeploy" translate>xml.label.notDeployed</span>
+            </span>
             <button class="btn btn-sm btn-grey m-l-12" (click)="newFile()">
               <i class="fa fa-file m-r-xs"></i>
               <span translate>xml.button.new</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType === 'NOTIFICATION' && submitXsd && XSDState && XSDState.message && XSDState.message.code !== 'XMLEDITOR-105'"
+            <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType === 'NOTIFICATION' && nodes && nodes.length > 0"
               (click)="deleteConf()">
               <i class="fa fa-trash-o m-r-xs"></i>
               <span translate>xml.button.delete</span>
             </button>
-            <button *ngIf="objectType !== 'NOTIFICATION' && submitXsd"
+            <button *ngIf="objectType !== 'NOTIFICATION' && nodes && nodes.length > 0"
               (click)="reassignSchemaFunc()" class="btn btn-sm btn-grey m-l-12">
               <i class="fa fa-recycle m-r-xs"></i>
               <span translate>xml.button.reassignSchema</span>
             </button>
-            <button *ngIf="submitXsd && objectType !== 'NOTIFICATION'"
+            <button *ngIf="nodes && nodes.length > 0 && objectType !== 'NOTIFICATION'"
                     class="btn btn-sm btn-grey m-l-12" (click)="deleteAllConf()">
               <i class="fa fa-trash m-r-xs"></i>
               <span translate>xml.button.deleteAll</span>
@@ -36,22 +40,26 @@
               <i class="fa fa-upload m-r-xs"></i>
               <span translate>xml.button.import</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" *ngIf="submitXsd && XSDState && (XSDState.message && XSDState.message.code !== 'XMLEDITOR-105' || !XSDState.message)"
+            <button class="btn btn-sm btn-grey m-l-12" *ngIf="nodes && nodes.length > 0"
                     (click)="save()">
               <i class="fa fa-download m-r-xs"></i>
               <span translate>xml.button.export</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" *ngIf="submitXsd && XSDState && (XSDState.message && XSDState.message.code !== 'XMLEDITOR-105' || !XSDState.message)"
+            <button class="btn btn-sm btn-grey m-l-12" *ngIf="nodes && nodes.length > 0"
                     (click)="showXml()">
               <i class="fa fa-pencil m-r-xs"></i>
               <span translate>xml.button.editXML</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" *ngIf="submitXsd && XSDState && (XSDState.message && XSDState.message.code !== 'XMLEDITOR-105' || !XSDState.message)"
+            <button class="btn btn-sm btn-grey m-l-12" *ngIf="nodes && nodes.length > 0"
                     (click)="validate()">
               <i class="fa fa-check m-r-xs"></i>
               <span translate>xml.button.validate</span>
             </button>
-
+            <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType === 'NOTIFICATION' && nodes && nodes.length > 0"  [disabled]="isDeploy"
+                    (click)="deployXML()">
+              <i class="fa fa-rocket m-r-xs"></i>
+              <span translate>xml.button.deploy</span>
+            </button>
           </div>
         </div>
       </div>
@@ -259,14 +267,19 @@
                         <table style="padding: 3px;" *ngIf="node.origin && node.origin.attributes">
                           <tr *ngFor="let item of node.origin.attributes">
                             <td style="padding: 3px;"> <span> {{item.name}}</span></td>
-                            <td
-                              style="padding: 3px;">{{(item.data && item.name !== 'password') ? item.data : passwordLabel(item.data)}}</td>
+                            <td style="padding: 3px;">{{(item.data && item.name !== 'password') ? item.data : passwordLabel(item.data)}}</td>
+                          </tr>
+                        </table>
+                        <table style="padding: 3px;" *ngIf="node.origin && node.origin.values">
+                          <tr *ngFor="let item of node.origin.values">
+                            <td style="padding: 3px;"> <span> {{item.name}}</span></td>
+                            <td style="padding: 3px;" [innerHTML]="(item.data && item.name !== 'password') ? item.data : passwordLabel(item.data)"></td>
                           </tr>
                         </table>
                       </ng-template>
                       <span (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
                             [ngClass]="cutData && node.origin.uuid === copyItem.uuid? 'disabled' : ''"
-                            [nz-tooltip]="(node.origin.attributes && node.origin.attributes.length>0) ? htmlContent : ''">{{node.origin.ref}}
+                            [nz-tooltip]="((node.origin.attributes && node.origin.attributes.length>0) || (node.origin.values && node.origin.values.length>0)) ? htmlContent : ''">{{node.origin.ref}}
                       </span>
                       <span class="text-sm pl-2"
                             (click)="getData(node.origin); getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
@@ -275,13 +288,13 @@
                       </span>
                       <span class="text-sm pl-2"
                             (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
-                            [ngClass]="(getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && node.origin.values[0].base !== 'password') ? 'inline': 'hide'">
-                        {{removeTag(node.origin)}}
+                            *ngIf="(getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && node.origin.values[0].base !== 'password')">
+                        {{node.origin.values[0].base === 'html' ? removeTag(node.origin.values[0]) : node.origin.values[0].data}}
                       </span>
                       <span class="text-sm pl-2"
                             (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
-                            [ngClass]="(getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && (node.origin.values[0].parent === 'Password' || node.origin.values[0].base === 'password')) ? 'inline': 'hide'">
-                        {{passwordLabel(node.origin)}}
+                            *ngIf="(getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && (node.origin.values[0].parent === 'Password' || node.origin.values[0].base === 'password'))">
+                        {{passwordLabel(node.origin.values[0].data)}}
                       </span>
                     </span>
                   </div>
@@ -516,6 +529,7 @@
                       <div class="NgxEditor__Wrapper">
                         <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
                         <ngx-editor
+                          name="myContent"
                           required
                           #myckeditor="ngModel"
                           [editor]="editor"
