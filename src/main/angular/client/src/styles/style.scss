@@ -3765,6 +3765,9 @@ li > a > i.remove {
   .checkbox, .checkbox-inline, .control-label, .form-control-feedback, .help-block, .radio, .radio-inline, &.checkbox label, &.checkbox-inline label, &.radio label, &.radio-inline label {
     color: #a94442;
   }
+  .NgxEditor{
+    border-color: #a94442 !important;
+  }
 }
 
 .contextmenu-item {
@@ -4766,14 +4769,9 @@ tr.disabled-row td:not(.menu) {
   overflow: hidden;
 }
 
-.node-drop-slot {
-  display: block;
-  height: 2px;
-
-  &.is-dragging-over {
-    background: #ddffee;
-    height: 20px;
-    border: 2px dotted #888;
+.drop-target {
+  .isDropable {
+    background: var(--row-selected);
   }
 }
 
@@ -5628,6 +5626,7 @@ pre#pre {
 .NgxEditor {
   background: var(--bg-box) !important;
   color: var(--text-color) !important;
+  border-radius: 0 !important;
 }
 
 .NgxEditor__Dropdown .NgxEditor__Dropdown--Text, .NgxEditor__Dropdown .NgxEditor__Dropdown--DropdownMenu {
@@ -6739,12 +6738,6 @@ tr.tr-border td:first-child {
   .ant-tree-indent-unit {
     width: 20px;
   }
-}
-
-.ant-tree-node-content-wrapper[draggable='true'] {
-  line-height: unset;
-  border-top: none;
-  border-bottom: none;
 }
 
 .ant-tree .ant-tree-node-content-wrapper {

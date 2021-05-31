@@ -205,17 +205,19 @@
                 [nzTreeTemplate]="nzTreeTemplate"
               ></nz-tree>
               <ng-template #nzTreeTemplate let-node>
-                <div id="{{node.key}}" class="node-wrapper" [attr.draggable]="true" [attr.aria-grabbed]="true"
+                <div id="{{node.key}}" class="node-wrapper" [ngClass]="{'isDropable': dropCheck.status}"
+                     [attr.draggable]="true"
+                     [attr.aria-grabbed]="true"
                      [class.draggable]="true">
-                         <span *ngIf="node.children && node.children.length>0"
-                               [class.toggle-children-wrapper-expanded]="node.isExpanded"
-                               [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
-                               (click)="openFolder(node)" class="w-11 cursor">
-                            <i *ngIf="!node.isExpanded" nz-icon nzType="caret-right" nzTheme="outline"></i>
-                            <i *ngIf="node.isExpanded" nz-icon nzType="caret-down" nzTheme="outline"></i>
-                        </span>
+                  <span *ngIf="node.children && node.children.length>0"
+                        [class.toggle-children-wrapper-expanded]="node.isExpanded"
+                        [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
+                        (click)="openFolder(node)" class="w-11 cursor">
+                    <i *ngIf="!node.isExpanded" nz-icon nzType="caret-right" nzTheme="outline"></i>
+                    <i *ngIf="node.isExpanded" nz-icon nzType="caret-down" nzTheme="outline"></i>
+                  </span>
                   <span
-                    *ngIf="(!node.children || node.children.length === 0) && node.origin.nodes && node.origin.nodes.length === 0"
+                    *ngIf="(!node.children || node.children.length === 0) && node.origin.children && node.origin.children.length === 0"
                     class="w-11">
                     <span class="fa fa-lg"></span>
                   </span>
@@ -503,7 +505,7 @@
                   <div class="col-md-8 col-lg-6">
                     <input (blur)="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                            (change)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
-                           *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.values[0].base == 'password'"
+                           *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.values[0].base == 'password'"
                            [ngClass]="error && errorName == selectedNode.ref ? 'invalid': ''"
                            [(ngModel)]="selectedNode.values[0].data"
                            class="form-control" id="{{selectedNode.ref}}"
@@ -513,7 +515,7 @@
                     <i class="fa password-hide-icon"
                        (click)="showPassword(selectedNode.values[0])"
                        [ngClass]="!selectedNode.values[0].pShow ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true"
-                       *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.values[0].base == 'password'"></i>
+                       *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.values[0].base == 'password'"></i>
                     <textarea nz-input id="{{selectedNode.values[0].uuid}}"
                               [(ngModel)]="selectedNode.values[0].data"
                               (keydown)="checkForTab(selectedNode.values[0].uuid);"
@@ -525,7 +527,8 @@
                               xmlAutofocus
                               class="form-control"
                               rows="1"></textarea>
-                    <div *ngIf="selectedNode.ref === 'Body' && selectedNode.values[0]" class="form-group has-feedback">
+                    <div *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].base === 'html'" class="form-group"
+                    [ngClass]="{'has-error': myckeditor.invalid && (myckeditor.touched || myckeditor.dirty)}">
                       <div class="NgxEditor__Wrapper">
                         <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
                         <ngx-editor
@@ -538,9 +541,9 @@
                           [placeholder]="'common.placeholder.value' | translate"
                           (ngModelChange)="onChange($event, selectedNode)"
                         ></ngx-editor>
-                        <div *ngIf="myckeditor.invalid && myckeditor.touched" class="help-block" translate>
-                          xml.message.requiredField
-                        </div>
+                      </div>
+                      <div *ngIf="myckeditor.invalid && (myckeditor.touched || myckeditor.dirty)" class="help-block" translate>
+                        xml.message.requiredField
                       </div>
                     </div>
                     <nz-select [(ngModel)]="selectedNode.values[0].data"

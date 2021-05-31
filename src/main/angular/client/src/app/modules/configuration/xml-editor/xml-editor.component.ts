@@ -825,7 +825,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   cutData = false;
   checkRule = true;
   choice = true;
-  dropCheck: any = {status: false, dropNode: undefined};
+  dropCheck: any = {status: false};
   selectedNode: any;
   selectedNodeDoc: any;
   selectedXsd = '';
@@ -1063,7 +1063,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (data instanceof NzTreeNode) {
       data.isExpanded = !data.isExpanded;
     } else {
-      let node = data.node;
+      const node = data.node;
       if (node) {
         node.isExpanded = !node.isExpanded;
       }
@@ -1675,7 +1675,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
       if (child && child.length > 0) {
         for (let i = 0; i < child.length; i++) {
-          if (child[i].minOccurs === undefined) {
+          if (child[i].minOccurs == undefined) {
             if (!temp.children) {
               temp.children = [];
             }
@@ -1748,8 +1748,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  checkChildNode(showAllChild, data) {
-    let node = showAllChild.ref;
+  checkChildNode(_nodes, data) {
+    let node = _nodes.ref;
     let parentNode;
     if (!data) {
       this.childNode = [];
@@ -1948,7 +1948,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             this.addTypeChildNode(typeElement[0].attributes[i].nodeValue, parentNode, data);
           }
           if (typeElement[0].attributes[i].nodeValue === 'xs:boolean') {
-            nodes = Object.assign(nodes, {values: []});
+            _nodes = Object.assign(_nodes, {values: []});
             let temp: any = {};
             for (let j = 0; j < typeElement[0].attributes.length; j++) {
               let a = typeElement[0].attributes[j].nodeName;
@@ -1962,7 +1962,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
               temp = Object.assign(temp, this._defineProperty({}, a, b));
             }
             temp.parent = node;
-            nodes.values.push(temp);
+            _nodes.values.push(temp);
           }
         }
       }
@@ -2136,7 +2136,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   checkDupProfileId(value, tag) {
-    if (tag.name === 'profile_id' && this.selectedNode.ref == 'Profile') {
+    if (tag.name === 'profile_id' && this.selectedNode.ref === 'Profile') {
       let tempParentNode: any = this.getParentNode(this.selectedNode);
       if (tempParentNode && tempParentNode.children && tempParentNode.children.length > 0) {
         for (let i = 0; i < tempParentNode.children.length; i++) {
@@ -2396,7 +2396,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       let getCh = this.checkChildNode(child, undefined);
       if (getCh) {
         for (let i = 0; i < getCh.length; i++) {
-          if (getCh[i].minOccurs === undefined || getCh[i].minOccurs === 1) {
+          if (getCh[i].minOccurs === undefined || getCh[i].minOccurs === 1 || getCh[i].minOccurs === '1') {
             if (!getCh[i].choice) {
               getCh[i].children = [];
               this.autoAddCount++;
@@ -2703,7 +2703,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       valueArr.push(value);
     }
 
-
     return valueArr;
   }
 
@@ -2717,7 +2716,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  getCustomCss(node, parentNode) {
+  getCustomCss(node, parentNode): string {
     let count = 0;
     if (this.choice) {
       if (node.maxOccurs === 'unbounded') {
@@ -2850,110 +2849,83 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   // drag and drop check
   dragAndDropRules(arg: NzFormatBeforeDropEvent): Observable<boolean> {
-    let dropNode = arg.node.origin;
-    let dragNode = arg.dragNode.origin;
-    if (dropNode.ref === dragNode.parent) {
-      let count = 0;
-      if (dragNode.maxOccurs === 'unbounded') {
-        this.dropCheck = {status: true, dropNode: dropNode.ref};
-        return of(true);
-      } else if (dragNode.maxOccurs !== 'unbounded' && dragNode.maxOccurs !== undefined) {
-        if (dropNode.children.length > 0) {
-          for (let i = 0; i < dropNode.children.length; i++) {
-            if (dragNode.ref === dropNode.children[i].ref) {
-              count++;
+    const dropNode = arg.node.origin;
+    const dragNode = arg.dragNode.origin;
+    let status = false;
+    if (dragNode && dropNode) {
+      if (dropNode.ref === dragNode.parent) {
+        let count = 0;
+        if (dragNode.maxOccurs === 'unbounded') {
+          status = true;
+        } else if (dragNode.maxOccurs !== 'unbounded' && dragNode.maxOccurs !== undefined) {
+          if (dropNode.children.length > 0) {
+            for (let i = 0; i < dropNode.children.length; i++) {
+              if (dragNode.ref === dropNode.children[i].ref) {
+                count++;
+              }
             }
+            if (dragNode.maxOccurs !== count) {
+              status = dragNode.maxOccurs !== count;
+            }
+          } else if (dropNode.children.length === 0) {
+            status = true;
           }
-          if (dragNode.maxOccurs !== count) {
-            this.dropCheck = {status: dragNode.maxOccurs !== count, dropNode: dropNode.ref};
-            return of(true);
-          } else {
-            this.dropCheck = {status: dragNode.maxOccurs !== count, dropNode: undefined};
-            return of(false);
+        } else if (dragNode.maxOccurs === undefined) {
+          if (dropNode.children.length > 0) {
+            if (dragNode.ref !== dropNode.children[0].ref) {
+              status = dragNode.ref !== dropNode.children[0].ref;
+            }
+          } else if (dropNode.children.length === 0) {
+            status = true;
           }
-        } else if (dropNode.children.length === 0) {
-          this.dropCheck = {status: true, dropNode: dropNode.ref};
-          return of(true);
-        } else {
-          return of(false);
         }
-      } else if (dragNode.maxOccurs === undefined) {
-        if (dropNode.children.length > 0) {
+      }
+    }
+    return of(status);
+  }
+
+  dragOverRules(arg: NzFormatEmitEvent): void {
+    const dropNode = arg.node.origin;
+    const dragNode = arg.dragNode.origin;
+    this.dropCheck = {status: false};
+    if (dragNode && dropNode) {
+      if (dropNode.ref === dragNode.parent) {
+        let count = 0;
+        if (dragNode.maxOccurs === 'unbounded') {
+          this.dropCheck = {status: true, dropNode: dropNode.ref};
+        } else if (dragNode.maxOccurs !== 'unbounded' && dragNode.maxOccurs !== undefined) {
+          if (dropNode.children.length > 0) {
+            for (let i = 0; i < dropNode.children.length; i++) {
+              if (dragNode.ref === dropNode.children[i].ref) {
+                count++;
+              }
+            }
+            if (dragNode.maxOccurs !== count) {
+              this.dropCheck = {status: dragNode.maxOccurs !== count, dropNode: dropNode.ref};
+            }
+          } else if (dropNode.children.length === 0) {
+            this.dropCheck = {status: true, dropNode: dropNode.ref};
+          }
+        } else if (dragNode.maxOccurs === undefined) {
           if (dropNode.children.length > 0) {
             if (dragNode.ref !== dropNode.children[0].ref) {
               this.dropCheck = {status: dragNode.ref !== dropNode.children[0].ref, dropNode: dropNode.ref};
-              return of(true);
-            } else {
-              this.dropCheck = {status: dragNode.ref !== dropNode.children[0].ref, dropNode: undefined};
-              return of(false);
             }
+          } else if (dropNode.children.length === 0) {
+            this.dropCheck = {status: true, dropNode: dropNode.ref};
           }
-          return of(false);
-        } else if (dropNode.children.length === 0) {
-          this.dropCheck = {status: true, dropNode: dropNode.ref};
-          return of(true);
-        } else {
-          return of(false);
         }
-      } else {
-        this.dropCheck = {status: false, dropNode: undefined};
-        return of(false);
       }
-    } else {
-      this.dropCheck = {status: false, dropNode: undefined};
-      return of(false);
-    }
-  }
-
-  dragOverRules(arg: NzFormatBeforeDropEvent) {
-    let dropNode = arg.node.origin;
-    let dragNode = arg.dragNode.origin;
-    if (dropNode.ref === dragNode.parent) {
-      let count = 0;
-      if (dragNode.maxOccurs === 'unbounded') {
-        this.dropCheck = {status: true, dropNode, dragNode};
-      } else if (dragNode.maxOccurs !== 'unbounded' && dragNode.maxOccurs !== undefined) {
-        if (dropNode.children.length > 0) {
-          for (let i = 0; i < dropNode.children.length; i++) {
-            if (dragNode.ref === dropNode.children[i].ref) {
-              count++;
-            }
-          }
-          if (dragNode.maxOccurs !== count) {
-            this.dropCheck = {status: dragNode.maxOccurs !== count, dropNode, dragNode};
-          } else {
-            this.dropCheck = {status: dragNode.maxOccurs !== count, dropNode: undefined, dragNode: undefined};
-          }
-        } else if (dropNode.children.length === 0) {
-          this.dropCheck = {status: true, dropNode, dragNode};
-        }
-      } else if (dragNode.maxOccurs === undefined) {
-        if (dropNode.children.length > 0) {
-          if (dropNode.children.length > 0) {
-            if (dragNode.ref !== dropNode.children[0].ref) {
-              this.dropCheck = {status: dragNode.ref !== dropNode.children[0].ref, dropNode, dragNode};
-            } else {
-              this.dropCheck = {status: dragNode.ref !== dropNode.children[0].ref, dropNode: undefined, dragNode: undefined};
-            }
-          }
-        } else if (dropNode.children.length === 0) {
-          this.dropCheck = {status: true, dropNode, dragNode};
-        }
-      } else {
-        this.dropCheck = {status: false, dropNode: undefined, dragNode: undefined};
-      }
-    } else {
-      this.dropCheck = {status: false, dropNode: undefined, dragNode: undefined};
     }
   }
 
   // drop data
-  dropData(arg: NzFormatBeforeDropEvent): void {
-    let from = arg.dragNode.origin;
-    let to = arg.node.origin;
-    if (this.dropCheck.status && this.dropCheck && this.dropCheck.dropNode && this.dropCheck.dropNode.ref === to.ref) {
-      this.removeNode(this.dropCheck.dragNode);
-      from.parentId = to.uuid;
+  dropData(arg: NzFormatEmitEvent): void {
+    const dragNode = arg.dragNode.origin;
+    const dropNode = arg.node.origin;
+    if (this.dropCheck.status && this.dropCheck.dropNode === dropNode.ref) {
+      this.removeNode(dragNode);
+      dragNode.parentId = dropNode.uuid;
     }
   }
 
@@ -2993,7 +2965,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (element.length > 0) {
       text.doc = element[0].innerHTML;
     }
-    if (node.show === undefined || node.show === null) {
+    if (node.show == undefined || node.show == null) {
       node.show = !node.attributes && !node.values;
     }
     setTimeout(() => {
@@ -3008,7 +2980,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   // BreadCrumb
   createBreadCrumb(node): void {
-    if (this.nodes[0] && this.nodes[0].ref === node.parent && this.nodes[0].uuid === node.parentId) {
+    if (this.nodes[0] && this.nodes[0].ref === node.parent && this.nodes[0].uuid == node.parentId) {
       this.breadCrumbArray.push(this.nodes[0]);
     } else {
       if (this.nodes[0] && this.nodes[0].children && this.nodes[0].children.length > 0) {
@@ -3020,7 +2992,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   createBreadCrumbRecursion(node, nodes): void {
-    if (nodes && nodes.ref === node.parent && nodes.uuid === node.parentId) {
+    if (nodes && nodes.ref === node.parent && nodes.uuid == node.parentId) {
       this.breadCrumbArray.push(nodes);
       this.createBreadCrumb(nodes);
     } else {
@@ -3109,7 +3081,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   getParent(node, list) {
-    if (node.parentId === list.uuid && list.parent === '#') {
+    if (node.parentId == list.uuid && list.parent === '#') {
       this.deleteData(list.children, node, list);
     } else {
       if (list.children) {
@@ -3127,7 +3099,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   deleteData(parentNode, node, parent) {
     if (parentNode) {
       for (let i = 0; i < parentNode.length; i++) {
-        if (node.ref === parentNode[i].ref && node.uuid === parentNode[i].uuid) {
+        if (node.ref === parentNode[i].ref && node.uuid == parentNode[i].uuid) {
           parentNode.splice(i, 1);
           this.updateTree();
           this.printArraya(false);
@@ -3235,7 +3207,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   // searchNode
   searchAndRemoveNode(node) {
-    if (node.parent === this.nodes[0].ref && node.parentId === this.nodes[0].uuid) {
+    if (node.parent === this.nodes[0].ref && node.parentId == this.nodes[0].uuid) {
       for (let i = 0; i < this.nodes[0].children.length; i++) {
         if (node.uuid === this.nodes[0].children[i].uuid) {
           this.nodes[0].children.splice(i, 1);
@@ -3673,7 +3645,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  attachKeyReferencing(key) {
+  attachKeyReferencing(key): void {
     if (key.name) {
       if (this.nodes[0].ref === key.name && this.nodes[0].keyReference) {
         for (let i = 0; i < this.nodes[0].attributes.length; i++) {
@@ -3690,7 +3662,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  attachKeyReferencingRecursion(key, child) {
+  attachKeyReferencingRecursion(key, child): void {
     if (key.name) {
       if (child.ref === key.name && child.keyReference && child.attributes) {
         for (let i = 0; i < child.attributes.length; i++) {
@@ -3937,7 +3909,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  stopPressingSpace(id) {
+  stopPressingSpace(id): void {
     $('#' + id).keypress((e) => {
       if (e.key === ' ' || e.key === 'Spacebar') {
         e.preventDefault();
@@ -4200,7 +4172,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
 // validation for node value property
-  validValue(value, ref, tag) {
+  validValue(value, ref, tag): void {
     if (/^\s*$/.test(value)) {
       this.error = true;
       this.text = this.requiredField;
@@ -4252,10 +4224,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       if (childNode[i].ref === refer) {
         if (childNode[i].keyReference) {
           temp = childNode[i].keyReference;
-          for (let j = 0; j < childNode[i].attributes.length; j++) {
-            if (childNode[i].attributes[j].name === temp) {
-              if (childNode[i].attributes[j] && childNode[i].attributes[j].data) {
-                this.tempArr.push(childNode[i].attributes[j].data);
+          if (childNode[i].attributes) {
+            for (let j = 0; j < childNode[i].attributes.length; j++) {
+              if (childNode[i].attributes[j].name === temp) {
+                if (childNode[i].attributes[j] && childNode[i].attributes[j].data) {
+                  this.tempArr.push(childNode[i].attributes[j].data);
+                }
               }
             }
           }
@@ -4509,8 +4483,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     data.pShow = !data.pShow;
   }
 
-  checkForTab(id) {
-    $(document).delegate('#' + id, 'keydown', function(e) {
+  checkForTab(id): void {
+    $(document).delegate('#' + id, 'keydown', function (e) {
       let keyCode = e.keyCode || e.which;
       if (keyCode == 9) {
         e.preventDefault();
@@ -5377,7 +5351,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   private scrollTree(id, cb): void {
     const dom = $('#' + id);
-    if (dom && dom.offset()) {
+    if (dom && dom.offset() && this.componentRef) {
       this.componentRef.directiveRef.scrollToTop((dom.offset().top - 348), 500);
     } else {
       if (cb) {
