@@ -48,6 +48,8 @@ declare const mxEventObject;
 declare const mxToolbar;
 declare const mxCellHighlight;
 declare const mxImageShape;
+declare const mxRhombus;
+declare const mxLabel;
 declare const mxKeyHandler;
 declare const X2JS;
 declare const $;
@@ -3567,13 +3569,19 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          */
         mxGraphHandler.prototype.createPreviewShape = function(bounds) {
           let shape;
-          let image = './assets/mxgraph/images/';
-          if (self.preferences.theme !== 'light' && self.preferences.theme !== 'lighter' || !self.preferences.theme) {
-            image = image + 'white-';
+          const originalShape = graph.getView().getState(this.cell).shape;
+          if (this.cell.value.tagName === 'Job') {
+            shape = new mxLabel(originalShape.bounds, originalShape.fill, originalShape.stroke, originalShape.strokewidth);
+            shape.image = originalShape.image;
+          } else if (this.cell.value.tagName === 'If' || this.cell.value.tagName.match(/try/)) {
+            shape = new mxRhombus(originalShape.bounds, originalShape.fill, originalShape.stroke, originalShape.strokewidth);
+          } else {
+            shape = new mxImageShape(originalShape.bounds, originalShape.image, originalShape.fill, originalShape.stroke);
           }
-          image = image + this.cell.value.tagName.toLowerCase() + '.png';
-          shape = new mxImageShape(bounds, image);
-          shape.isRounded = true;
+          shape.isRounded = originalShape.isRounded;
+          shape.gradient = originalShape.gradient;
+          shape.boundingBox = originalShape.boundingBox;
+          shape.style = originalShape.style;
           shape.dialect = (this.graph.dialect != mxConstants.DIALECT_SVG) ?
             mxConstants.DIALECT_VML : mxConstants.DIALECT_SVG;
           shape.init(this.graph.getView().getOverlayPane());
@@ -4413,7 +4421,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               self.movedCell = cells;
               const tagName = cell.value.tagName;
               if (tagName === 'Connection' || self.workflowService.isInstructionCollapsible(tagName) || tagName === 'Catch') {
-                if (tagName === 'Connection') {
+                if (tagName === 'Connection' && cell.source && cell.target) {
                   let sourceId = cell.source.id;
                   let targetId = cell.target.id;
                   if (checkClosingCell(cell.source)) {
@@ -4548,8 +4556,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
          * Implements a properties panel that uses
          * mxCellAttributeChange to change properties
          */
-        graph.getSelectionModel().addListener(mxEvent.CHANGE, function() {
-          const cell = graph.getSelectionCell();
+        graph.getSelectionModel().addListener(mxEvent.CHANGE, function(evt) {
+          let cell;
+          if (evt.cells && evt.cells.length > 0) {
+            cell = evt.cells[0];
+          }
           if (cell && (checkClosingCell(cell) ||
             cell.value.tagName === 'Connection' || cell.value.tagName === 'Process' || cell.value.tagName === 'Catch')) {
             graph.clearSelection();

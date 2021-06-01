@@ -124,6 +124,7 @@ export class ControllerModalComponent implements OnInit {
   isUnique = true;
   currentController: any = {};
   schedulerIds: any = {};
+  name = '';
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService) {
   }
@@ -140,6 +141,9 @@ export class ControllerModalComponent implements OnInit {
         controller: '',
         role: ''
       };
+    }
+    if (this.copy) {
+      this.name = this.currentController.name || 'default';
     }
   }
 
@@ -165,32 +169,38 @@ export class ControllerModalComponent implements OnInit {
   }
 
   onSubmit(obj): void {
-    this.submitted = true;
-    if (!this.userDetail.roles[obj.role].permissions) {
-      this.userDetail.roles[obj.role].permissions = {
-        joc: [{
-          path: 'sos:products:joc',
-          excluded: false
-        }],
-        controllerDefaults: [],
-        controllers: {}
-      };
+    if (obj.role) {
+      this.submitted = true;
+      if (!this.userDetail.roles[obj.role].permissions) {
+        this.userDetail.roles[obj.role].permissions = {
+          joc: [{
+            path: 'sos:products:joc',
+            excluded: false
+          }],
+          controllerDefaults: [],
+          controllers: {}
+        };
+      }
+      if (!this.copy) {
+        this.userDetail.roles[obj.role].permissions.controllers[obj.controller] = [];
+      } else {
+        if (obj.name) {
+          this.userDetail.roles[obj.role].permissions.controllers[obj.name] = obj.permissions;
+        } else {
+          this.userDetail.roles[obj.role].permissions.controllerDefaults = this.oldController.permissions.controllerDefaults;
+        }
+      }
+      this.coreService.post('authentication/shiro/store', {
+        users: this.userDetail.users,
+        roles: this.userDetail.roles,
+        main: this.userDetail.main
+      }).subscribe(() => {
+        this.submitted = false;
+        this.activeModal.close(this.userDetail);
+      }, () => {
+        this.submitted = false;
+      });
     }
-    if (!this.copy) {
-      this.userDetail.roles[obj.role].permissions.controllers[obj.controller] = [];
-    } else {
-      this.userDetail.roles[obj.role].permissions.controllers[obj.name] = obj.permissions;
-    }
-    this.coreService.post('authentication/shiro/store', {
-      users: this.userDetail.users,
-      roles: this.userDetail.roles,
-      main: this.userDetail.main
-    }).subscribe(() => {
-      this.submitted = false;
-      this.activeModal.close(this.userDetail);
-    }, () => {
-      this.submitted = false;
-    });
   }
 }
 

@@ -818,7 +818,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   nodes: any = [];
   showAllChild: any = [];
   xsdXML: any;
-  isNext = false;
   counting = 0;
   autoAddCount = 0;
   copyItem: any = {};
@@ -883,6 +882,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   notValidUrl: string;
   uniqueName: string;
   onlyNumbers: string;
+  beforeDrop;
   subscription1: Subscription;
   subscription2: Subscription;
   config: any = {
@@ -967,6 +967,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.translate.get('xml.message.notValidUrl').subscribe(translatedValue => {
       this.notValidUrl = translatedValue;
     });
+    this.beforeDrop = (arg: NzFormatBeforeDropEvent): Observable<boolean> => {
+      return of(false);
+    };
   }
 
   private init(): void {
@@ -1061,7 +1064,17 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   openFolder(data: NzTreeNode | NzFormatEmitEvent): void {
     if (data instanceof NzTreeNode) {
-      data.isExpanded = !data.isExpanded;
+      if (!data.isExpanded) {
+        if (data.origin.children.length > 20) {
+          data.origin.loading = true;
+          setTimeout(() => {
+            delete data.origin.loading;
+          }, 100);
+        }
+      }
+      setTimeout(() => {
+        data.isExpanded = !data.isExpanded;
+      }, 0);
     } else {
       const node = data.node;
       if (node) {
@@ -1130,14 +1143,17 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  tabChange($event): void {
-    this.isLoading = true;
-    this.storeXML(this.activeTab);
-    if (this.activeTab.id !== this.tabsArray[$event.index].id) {
+  tabChange(tab, index): void {
+    this.selectedTabIndex = index;
+    if(this.activeTab.id > -1 && this.activeTab.id !== tab.id) {
+      this.isLoading = true;
+      this.storeXML(this.activeTab);
+    }
+    if (this.activeTab.id !== tab.id) {
       setTimeout(() => {
         if (this.tabsArray.length > 0) {
           this.breadCrumbArray = [];
-          this.activeTab = this.tabsArray[$event.index];
+          this.activeTab = tab;
           this.readOthersXSD(this.activeTab.id);
           this.validConfig = false;
         }
@@ -1238,7 +1254,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             } else {
               this.counting = a.lastUuid;
               this.nodes = [a];
-              this.handleNodeToExpandAtOnce(this.nodes, null, _tempArrToExpand);
+              this.handleNodeToExpandAtOnce(this.nodes, _tempArrToExpand);
             }
             this.selectedNode = this.nodes[0];
             this.getIndividualData(this.selectedNode, undefined);
@@ -1247,12 +1263,13 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             this.printArraya(false);
             if (_tempArrToExpand && _tempArrToExpand.length > 0) {
               setTimeout(() => {
-                for (let i = 0; i < _tempArrToExpand.length; i++) {
+                for (const i in _tempArrToExpand) {
                   _tempArrToExpand[i].expanded = true;
+                  delete _tempArrToExpand[i].loading;
                 }
-              }, 10);
+                this.nodes = [...this.nodes];
+              }, 0);
             }
-
           } else {
             this.nodes = [];
             this.loadTree(res.configuration.schema, true);
@@ -1335,7 +1352,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.XSDState.modified = res.modified;
       this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
       if (res.configurationJson) {
-        let _tempArrToExpand = [];
         this.prevXML = this.removeComment(res.configuration);
         let jsonArray;
         try {
@@ -1346,8 +1362,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         }
         this.recreateJsonFlag = res.recreateJson;
         if (!res.recreateJson) {
-          this.nodes = [];
-          this.handleNodeToExpandAtOnce(jsonArray.node, undefined, _tempArrToExpand);
           this.nodes = jsonArray.node;
           this.counting = clone(jsonArray.nodesCount);
         } else {
@@ -1359,16 +1373,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         this.selectedNode = this.nodes[0];
         this.getIndividualData(this.selectedNode, undefined);
         this.selectedNodeDoc = this.checkText(this.nodes[0]);
-        this.selectedNode.expanded = true;
-        this.autoExpand(this.selectedNode);
-        if (_tempArrToExpand && _tempArrToExpand.length > 0) {
-          setTimeout(() => {
-            for (let i = 0; i < _tempArrToExpand.length; i++) {
-              _tempArrToExpand[i].expanded = true;
-              this.autoExpand(_tempArrToExpand[i]);
-            }
-          }, 10);
-        }
         this.printArraya(false);
       } else if (res.configuration) {
         if (!this.ok(res.configuration)) {
@@ -2847,44 +2851,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  // drag and drop check
-  dragAndDropRules(arg: NzFormatBeforeDropEvent): Observable<boolean> {
-    const dropNode = arg.node.origin;
-    const dragNode = arg.dragNode.origin;
-    let status = false;
-    if (dragNode && dropNode) {
-      if (dropNode.ref === dragNode.parent) {
-        let count = 0;
-        if (dragNode.maxOccurs === 'unbounded') {
-          status = true;
-        } else if (dragNode.maxOccurs !== 'unbounded' && dragNode.maxOccurs !== undefined) {
-          if (dropNode.children.length > 0) {
-            for (let i = 0; i < dropNode.children.length; i++) {
-              if (dragNode.ref === dropNode.children[i].ref) {
-                count++;
-              }
-            }
-            if (dragNode.maxOccurs !== count) {
-              status = dragNode.maxOccurs !== count;
-            }
-          } else if (dropNode.children.length === 0) {
-            status = true;
-          }
-        } else if (dragNode.maxOccurs === undefined) {
-          if (dropNode.children.length > 0) {
-            if (dragNode.ref !== dropNode.children[0].ref) {
-              status = dragNode.ref !== dropNode.children[0].ref;
-            }
-          } else if (dropNode.children.length === 0) {
-            status = true;
-          }
-        }
-      }
-    }
-    return of(status);
-  }
-
-  dragOverRules(arg: NzFormatEmitEvent): void {
+  dragEnter(arg: NzFormatEmitEvent): void {
+    arg.event.preventDefault();
+    arg.event.stopPropagation();
     const dropNode = arg.node.origin;
     const dragNode = arg.dragNode.origin;
     this.dropCheck = {status: false};
@@ -2900,17 +2869,20 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
                 count++;
               }
             }
-            if (dragNode.maxOccurs !== count) {
-              this.dropCheck = {status: dragNode.maxOccurs !== count, dropNode: dropNode.ref};
-            }
+            this.dropCheck = {status: dragNode.maxOccurs != count, dropNode: dropNode.ref};
           } else if (dropNode.children.length === 0) {
             this.dropCheck = {status: true, dropNode: dropNode.ref};
           }
         } else if (dragNode.maxOccurs === undefined) {
           if (dropNode.children.length > 0) {
-            if (dragNode.ref !== dropNode.children[0].ref) {
-              this.dropCheck = {status: dragNode.ref !== dropNode.children[0].ref, dropNode: dropNode.ref};
+            let flag = true;
+            for (let i = 0; i < dropNode.children.length; i++) {
+              if (dragNode.ref === dropNode.children[i].ref) {
+                flag = false;
+                break;
+              }
             }
+            this.dropCheck = {status: flag, dropNode: dropNode.ref};
           } else if (dropNode.children.length === 0) {
             this.dropCheck = {status: true, dropNode: dropNode.ref};
           }
@@ -2924,9 +2896,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     const dragNode = arg.dragNode.origin;
     const dropNode = arg.node.origin;
     if (this.dropCheck.status && this.dropCheck.dropNode === dropNode.ref) {
-      this.removeNode(dragNode);
+      this.removeNode(this.coreService.clone(dragNode));
       dragNode.parentId = dropNode.uuid;
+      dropNode.children.push(dragNode);
     }
+    arg.event.preventDefault();
+    arg.event.stopPropagation();
   }
 
   private removeDocs(): void {
@@ -3070,7 +3045,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.dRefFlag = 0;
     if (node.parent === '#') {
     } else {
-      this.isNext = false;
       this.getParent(node, this.nodes[0]);
     }
     if (this.selectedNode.ref === node.ref) {
@@ -3104,7 +3078,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           this.updateTree();
           this.printArraya(false);
           this.getData(parent);
-          this.isNext = false;
         }
       }
       if (node.keyReference) {
@@ -4419,9 +4392,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             this.isLoading = true;
             if (this.objectType !== 'NOTIFICATION') {
               if (this.tabsArray.length === 0) {
-                let _tab = clone({id: -1, name: 'edit1', schemaIdentifier: this.schemaIdentifier});
+                let _tab = {id: -1, name: 'edit1', schemaIdentifier: this.schemaIdentifier};
                 this.tabsArray.push(_tab);
-                this.activeTab = this.tabsArray[0];
+                this.activeTab = _tab;
               }
               this.getXsdSchema();
             } else {
@@ -4729,7 +4702,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   // save xml
-  save() {
+  save(): void {
     const xml = this._showXml();
     const name = this.nodes[0].ref + '.xml';
     const fileType = 'application/xml';
@@ -5217,8 +5190,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       if (this.activeTab.id === tab.id) {
         if (this.tabsArray.length > 0) {
           flag = true;
-          this.selectedTabIndex = 0;
-          this.changeTab(this.tabsArray[0]);
+          this.selectedTabIndex = this.tabsArray.length - 1;
+          this.changeTab(this.tabsArray[this.selectedTabIndex]);
         }
       }
     }
@@ -5365,20 +5338,17 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     return d.replace(/(\\n)/g, '');
   }
 
-  private handleNodeToExpandAtOnce(nodes, path, tempArrToExpand): void {
+  private handleNodeToExpandAtOnce(nodes, tempArrToExpand): void {
     for (let i = 0; i < nodes.length; i++) {
       if (nodes[i].expanded) {
-        if (!path) {
-          nodes[i].path = nodes[i].parent + '/' + nodes[i].ref;
-        } else {
-          nodes[i].path = path + '/' + nodes[i].ref;
-        }
         if (nodes[i].children && nodes[i].children.length) {
-          if (nodes[i].path.split('/').length === 10) {
+          if (nodes[i].children.length > 10) {
             tempArrToExpand.push(nodes[i]);
             nodes[i].expanded = false;
+            nodes[i].loading = true;
+            break;
           }
-          this.handleNodeToExpandAtOnce(nodes[i].children, nodes[i].path, tempArrToExpand);
+          this.handleNodeToExpandAtOnce(nodes[i].children, tempArrToExpand);
         }
       }
     }

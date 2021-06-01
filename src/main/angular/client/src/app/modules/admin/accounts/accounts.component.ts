@@ -9,7 +9,7 @@ import {DataService} from '../data.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-user-modal-content',
   templateUrl: './user-dialog.html'
 })
 export class AccountModalComponent implements OnInit {
@@ -84,9 +84,11 @@ export class AccountModalComponent implements OnInit {
       this.activeModal.close(this.userDetail.users);
     }, err => {
       this.submitted = false;
+      this.userDetail.users = this.userDetail.users.filter((user) => {
+        return user.user !== obj.user;
+      });
     });
   }
-
 }
 
 // Main Component
@@ -158,6 +160,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
     this.coreService.post('authentication/shiro/store', obj).subscribe(res => {
       this.users = [...this.users];
+      this.userDetail = res;
       this.dataService.announceFunction('RELOAD');
     });
   }
