@@ -695,13 +695,15 @@ export class WorkflowService {
       if (branches.else && branches.else.instructions) {
         flag = false;
         const x = branches.else.instructions[branches.else.instructions.length - 1];
-        let endNode;
-        if (self.isInstructionCollapsible(x.TYPE)) {
-          endNode = graph.getModel().getCell(mapObj.nodeMap.get(x.id));
-        } else {
-          endNode = vertexMap.get(x.uuid);
+        if (x) {
+          let endNode;
+          if (self.isInstructionCollapsible(x.TYPE)) {
+            endNode = graph.getModel().getCell(mapObj.nodeMap.get(x.id));
+          } else {
+            endNode = vertexMap.get(x.uuid);
+          }
+          connectInstruction(endNode, v1, 'endIf', 'endIf', parent);
         }
-        connectInstruction(endNode, v1, 'endIf', 'endIf', parent);
       }
 
       if (flag) {

@@ -1370,6 +1370,7 @@ export class ImportWorkflowModalComponent implements OnInit {
   signatureAlgorithm: string;
   comments: any = {};
   settings: any = {};
+  hasBaseDropZoneOver: any;
   requestObj: any = {
     overwrite: false,
     format: 'ZIP',
@@ -1446,6 +1447,10 @@ export class ImportWorkflowModalComponent implements OnInit {
         this.toasterService.pop('error', res.error.code, res.error.message);
       }
     };
+  }
+
+  fileOverBase(e:any): void {
+    this.hasBaseDropZoneOver = e;
   }
 
   // CALLBACKS

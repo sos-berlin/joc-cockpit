@@ -173,6 +173,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
   resizerHeight: any = 150;
   workflows: any = [];
   path: any;
+  versionId: any;
   showPanel: any;
   sideBar: any = {};
   date = '1d';
@@ -196,7 +197,8 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.path = this.route.snapshot.queryParamMap.get('name');
+    this.path = this.route.snapshot.queryParamMap.get('path');
+    this.versionId = this.route.snapshot.queryParamMap.get('versionId');
     this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
@@ -204,7 +206,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
     this.permission = JSON.parse(this.authService.permission) || {};
     this.getWorkflowList({
       controllerId: this.controllerId,
-      workflowId: {path: this.path}
+      workflowId: {path: this.path, versionId: this.versionId ? this.versionId : undefined}
     });
   }
 
@@ -251,7 +253,8 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (const j in args.eventSnapshots) {
-        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow && this.path === args.eventSnapshots[j].workflow.path) {
+        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow
+          && this.path === args.eventSnapshots[j].workflow.path && args.eventSnapshots[j].workflow === this.versionId) {
           this.getOrders({
             compact: true,
             controllerId:  this.controllerId,

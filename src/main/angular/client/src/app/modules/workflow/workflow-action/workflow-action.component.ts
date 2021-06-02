@@ -2,7 +2,7 @@ import {Component, OnInit, Input, ChangeDetectorRef} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Router} from '@angular/router';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import * as _ from 'underscore';
+import {isEmpty} from 'underscore';
 import * as moment from 'moment';
 import {CoreService} from '../../../services/core.service';
 import {CalendarModalComponent} from '../../../components/calendar-modal/calendar.component';
@@ -52,7 +52,7 @@ export class AddOrderModalComponent implements OnInit {
   }
 
   updateVariableList(): void {
-    if (this.workflow.orderRequirements && this.workflow.orderRequirements.parameters && !_.isEmpty(this.workflow.orderRequirements.parameters)) {
+    if (this.workflow.orderRequirements && this.workflow.orderRequirements.parameters && !isEmpty(this.workflow.orderRequirements.parameters)) {
       this.variableList = Object.entries(this.workflow.orderRequirements.parameters).map(([k, v]) => {
         const val: any = v;
         if (!val.default && val.default !== false && val.default !== 0) {

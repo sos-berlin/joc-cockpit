@@ -839,10 +839,11 @@ export class CoreService {
     this.router.navigate(['/configuration/inventory']);
   }
 
-  showWorkflow(workflow): void {
+  showWorkflow(workflow, versionId = null): void {
     this.router.navigate(['/workflows/workflow'], {
       queryParams: {
-        name: workflow,
+        path: workflow,
+        versionId,
         controllerId: JSON.parse(this.authService.scheduleIds).selected
       }
     });

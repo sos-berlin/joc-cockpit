@@ -26,7 +26,7 @@
               <i class="fa fa-trash-o m-r-xs"></i>
               <span translate>xml.button.delete</span>
             </button>
-            <button *ngIf="objectType !== 'NOTIFICATION' && nodes && nodes.length > 0"
+            <button *ngIf="objectType === 'OTHER' && nodes && nodes.length > 0"
               (click)="reassignSchemaFunc()" class="btn btn-sm btn-grey m-l-12">
               <i class="fa fa-recycle m-r-xs"></i>
               <span translate>xml.button.reassignSchema</span>
@@ -111,7 +111,7 @@
     </div>
   </div>
   </div>
-  <div class="scroll-y max-ht2">
+  <div class="scroll-y max-ht2" style="min-height: 100px">
     <div class="m-t-lg" *ngIf="!isLoading && !schedulerIds.selected">
       <app-empty-data [title]="'error.message.noControllerFound'"></app-empty-data>
     </div>
@@ -134,7 +134,7 @@
       </nz-tabset>
     </div>
     <div class="center-block open" [ngClass]="!submitXsd ? 'show': 'hide'" *ngIf="!isLoading">
-      <div *ngIf="objectType !== 'NOTIFICATION' && tabsArray.length>0">
+      <div *ngIf="objectType === 'OTHER' && tabsArray.length>0">
         <div class="col-md-offset-2 col-md-8 m-t-md" *ngIf="showSelectSchema">
           <h1 class="text-center"><strong translate>xml.label.assignSchema</strong></h1>
           <hr>
@@ -194,7 +194,7 @@
               <nz-tree
                 #treeCtrl
                 nzNoAnimation
-                nzDraggable
+                [nzDraggable]="!isFirefox"
                 nzBlockNode
                 (nzOnDragEnter)="dragEnter($event)"
                 [nzBeforeDrop]="beforeDrop"

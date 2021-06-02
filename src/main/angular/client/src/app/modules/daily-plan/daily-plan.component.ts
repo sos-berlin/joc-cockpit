@@ -544,7 +544,6 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private init(): void {
-    const self = this;
     const lang = localStorage.$SOS$LANG;
     let workflow = '';
     let scheduleAndOrder = '';
@@ -645,8 +644,8 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
               col1: plans[i].value[j].orderId,
               col2: this.groupBy === 'WORKFLOW' ? '' : plans[i].value[j].workflowPath,
               plannedDate: this.coreService.getDateByFormat(plans[i].value[j].plannedDate, this.preferences.zone, 'YYYY-MM-DD HH:mm:ss'),
-              begin: (plans[i].value[j].cyclicOrder && plans[i].value[j].cyclicOrder.firstStart) ? this.coreService.getDateByFormat(plans[i].value[j].cyclicOrder.firstStart, self.preferences.zone, 'YYYY-MM-DD HH:mm:ss') : '',
-              end: (plans[i].value[j].cyclicOrder && plans[i].value[j].cyclicOrder.lastStart) ? this.coreService.getDateByFormat(plans[i].value[j].cyclicOrder.lastStart, self.preferences.zone, 'YYYY-MM-DD HH:mm:ss') : '',
+              begin: (plans[i].value[j].cyclicOrder && plans[i].value[j].cyclicOrder.firstStart) ? this.coreService.getDateByFormat(plans[i].value[j].cyclicOrder.firstStart, this.preferences.zone, 'YYYY-MM-DD HH:mm:ss') : '',
+              end: (plans[i].value[j].cyclicOrder && plans[i].value[j].cyclicOrder.lastStart) ? this.coreService.getDateByFormat(plans[i].value[j].cyclicOrder.lastStart, this.preferences.zone, 'YYYY-MM-DD HH:mm:ss') : '',
               repeat: plans[i].value[j].period.repeat,
               class: this.coreService.getColor(plans[i].value[j].state.severity, 'bg'),
               duration: dur > 60 ? (dur / (60 * 60)) : 1,
@@ -666,9 +665,9 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
           id: (j + 1),
           col1: this.data[j].orderId,
           col2: this.groupBy === 'WORKFLOW' ? '' : this.data[j].workflowPath,
-          plannedDate: this.coreService.getDateByFormat(this.data[j].plannedDate, self.preferences.zone, 'YYYY-MM-DD HH:mm:ss'),
-          begin: (this.data[j].cyclicOrder && this.data[j].cyclicOrder.firstStart) ? this.coreService.getDateByFormat(self.data[j].cyclicOrder.firstStart, null, 'YYYY-MM-DD HH:mm:ss') : '',
-          end: (this.data[j].cyclicOrder && this.data[j].cyclicOrder.lastStart) ? this.coreService.getDateByFormat(self.data[j].cyclicOrder.lastStart, null, 'YYYY-MM-DD HH:mm:ss') : '',
+          plannedDate: this.coreService.getDateByFormat(this.data[j].plannedDate, this.preferences.zone, 'YYYY-MM-DD HH:mm:ss'),
+          begin: (this.data[j].cyclicOrder && this.data[j].cyclicOrder.firstStart) ? this.coreService.getDateByFormat(this.data[j].cyclicOrder.firstStart, null, 'YYYY-MM-DD HH:mm:ss') : '',
+          end: (this.data[j].cyclicOrder && this.data[j].cyclicOrder.lastStart) ? this.coreService.getDateByFormat(this.data[j].cyclicOrder.lastStart, null, 'YYYY-MM-DD HH:mm:ss') : '',
           repeat: this.data[j].period.repeat,
           class: this.coreService.getColor(this.data[j].state.severity, 'bg'),
           duration: dur > 60 ? (dur / (60 * 60)) : 1,
@@ -1175,6 +1174,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   modifySelectedOrder(): void {
+    const self = this;
     let order = this.object.mapOfCheckedId.values().next().value;
     if (order.requirements) {
       openModal(order.requirements);
@@ -1187,12 +1187,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         openModal(order.requirements);
       });
     }
-    const self = this;
-
     function openModal(requirements) {
       self.modal.create({
         nzTitle: undefined,
         nzContent: ChangeParameterModalComponent,
+        nzClassName: 'lg',
         nzComponentParams: {
           schedulerId: self.schedulerIds.selected,
           orders: self.object.mapOfCheckedId,
@@ -1397,11 +1396,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   addDetailsOfOrder(plan): void {
     plan.show = plan.show === undefined || plan.show === false;
     if (plan.show) {
-      this.coreService.post('daily_plan/orders/variables', {
+      this.coreService.post('daily_plan/order/variables', {
         orderId: plan.orderId,
         controllerId: this.schedulerIds.selected
       }).subscribe((res: any) => {
-        this.convertObjectToArray(res, plan);
+        this.convertObjectToArray(res.variables, plan);
       }, err => {
       });
     }
@@ -1679,6 +1678,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ModifyStartTimeModalComponent,
+      nzClassName: 'lg',
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
         order,
@@ -1696,11 +1696,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   changeParameter(plan, order): void {
     if (order) {
-      this.coreService.post('daily_plan/orders/variables', {
+      this.coreService.post('daily_plan/order/variables', {
         orderId: order.orderId,
         controllerId: this.schedulerIds.selected
       }).subscribe((res: any) => {
-        this.convertObjectToArray(res, order);
+        this.convertObjectToArray(res.variables, order);
         this.openModel(plan, order);
       });
     } else {
@@ -2170,6 +2170,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ChangeParameterModalComponent,
+      nzClassName: 'lg',
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
         order,
@@ -2182,11 +2183,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         if (order && order.show) {
-          this.coreService.post('daily_plan/orders/variables', {
+          this.coreService.post('daily_plan/order/variables', {
             orderId: order.orderId,
             controllerId: this.schedulerIds.selected
           }).subscribe((res: any) => {
-            this.convertObjectToArray(res, order);
+            this.convertObjectToArray(res.variables, order);
           });
         } else {
           this.loadOrderPlan();
@@ -2346,17 +2347,16 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
     if (this.savedFilter.selected) {
       let flag = true;
-      const self = this;
       this.filterList.forEach((value) => {
-        if (value.id === self.savedFilter.selected) {
+        if (value.id === this.savedFilter.selected) {
           flag = false;
-          self.coreService.post('configuration', {
+          this.coreService.post('configuration', {
             controllerId: value.controllerId,
             id: value.id
           }).subscribe((conf: any) => {
-            self.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
-            self.selectedFiltered.account = value.account;
-            self.loadOrderPlan();
+            this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
+            this.selectedFiltered.account = value.account;
+            this.loadOrderPlan();
           });
         }
       });

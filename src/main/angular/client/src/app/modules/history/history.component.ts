@@ -1002,7 +1002,6 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if ((args.eventSnapshots[j].eventType === 'HistoryOrderTerminated' || args.eventSnapshots[j].eventType === 'HistoryOrderStarted') && this.orderId) {
-          console.log('???', args.eventSnapshots[j]);
           this.getOrderHistory();
           break;
         } else if (args.eventSnapshots[j].eventType.match(/Deploy/) && this.commitId) {
@@ -1493,9 +1492,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.historyFilters.type = 'DEPLOYMENT';
     if (!obj) {
       if (!this.deploymentHistoryFilterList && this.schedulerIds.selected) {
-        //  this.checkSharedFilters('DEPLOYMENT');
-        this.deploymentHistoryFilterList = [];
-        // return;
+        this.data = [];
+        this.checkSharedFilters('DEPLOYMENT');
+        return;
       }
       if (this.historyFilters.current == true) {
         obj = {controllerId: this.schedulerIds.selected};
@@ -1571,9 +1570,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.historyFilters.type = 'SUBMISSION';
     if (!obj) {
       if (!this.submissionHistoryFilterList && this.schedulerIds.selected) {
-        //  this.checkSharedFilters('SUBMISSION');
-        this.submissionHistoryFilterList = [];
-        //  return;
+        this.data = [];
+        this.checkSharedFilters('SUBMISSION');
+        return;
       }
       if (this.historyFilters.current == true) {
         obj = {controllerId: this.schedulerIds.selected};

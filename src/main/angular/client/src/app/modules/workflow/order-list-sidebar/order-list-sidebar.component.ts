@@ -93,6 +93,7 @@ export class OrderListSidebarComponent {
     this.modal.create({
       nzTitle: null,
       nzContent: ChangeParameterModalComponent,
+      nzClassName: 'lg',
       nzComponentParams: {
         schedulerId: this.schedulerId,
         orderRequirements: this.coreService.clone(this.orderRequirements),

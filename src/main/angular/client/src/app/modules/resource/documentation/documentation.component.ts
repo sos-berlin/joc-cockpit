@@ -41,6 +41,7 @@ export class ImportModalComponent implements OnInit {
   messageList: any;
   required = false;
   submitted = false;
+  hasBaseDropZoneOver: any;
   comments: any = {};
   document = {path: '', path1: ''};
 
@@ -92,6 +93,10 @@ export class ImportModalComponent implements OnInit {
         this.toasterService.pop('error', res.error.code, res.error.message);
       }
     };
+  }
+
+  fileOverBase(e: any): void {
+    this.hasBaseDropZoneOver = e;
   }
 
   cancel(): void {

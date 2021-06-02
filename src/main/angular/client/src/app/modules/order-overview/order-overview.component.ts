@@ -466,6 +466,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.modal.create({
       nzTitle: null,
       nzContent: ChangeParameterModalComponent,
+      nzClassName: 'lg',
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
         orders: this.object.mapOfCheckedId,

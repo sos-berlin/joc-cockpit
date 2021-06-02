@@ -309,6 +309,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     this.modal.create({
       nzTitle: undefined,
       nzContent: ModifyStartTimeModalComponent,
+      nzClassName: 'lg',
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
         preferences: this.preferences,
@@ -320,7 +321,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   }
 
   changeParameter(): void {
-    this.coreService.post('daily_plan/orders/variables', {
+    this.coreService.post('daily_plan/order/variables', {
       orderId: this.order.orderId,
       controllerId: this.schedulerIds.selected
     }).subscribe((res: any) => {
@@ -965,6 +966,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ChangeParameterModalComponent,
+      nzClassName: 'lg',
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
         order,
@@ -976,12 +978,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         if (order && order.show) {
-          this.coreService.post('daily_plan/orders/variables', {
+          this.coreService.post('daily_plan/order/variables', {
             orderId: order.orderId,
             controllerId: this.schedulerIds.selected
           }).subscribe((res: any) => {
             order.variables = res.variables;
-
           });
         }
       }

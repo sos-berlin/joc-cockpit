@@ -35,6 +35,7 @@ export class OrderVariableComponent implements OnInit {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ChangeParameterModalComponent,
+        nzClassName: 'lg',
         nzComponentParams: {
           schedulerId: this.schedulerId,
           variable,
@@ -46,11 +47,11 @@ export class OrderVariableComponent implements OnInit {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this.coreService.post('daily_plan/orders/variables', {
+          this.coreService.post('daily_plan/order/variables', {
             orderId: order.orderId,
             controllerId: this.schedulerId
           }).subscribe((res: any) => {
-            order.variables = Object.entries(res).map(([k, v]) => {
+            order.variables = Object.entries(res.variables).map(([k, v]) => {
               return {name: k, value: v};
             });
           });

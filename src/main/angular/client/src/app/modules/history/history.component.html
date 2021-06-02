@@ -423,11 +423,11 @@
               </nz-dropdown-menu>
             </div>
             <div class="btn-group dropdown" *ngIf="permission.joc && permission.joc.administration.customization.view">
-              <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered1.account" nz-dropdown
+              <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered4.account" nz-dropdown
                       nzTrigger="click" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'" type="button"
                       translate>
                 {{'customization.label.customizations' | translate}} <span class="text-primary"
-                                                                           [innerHtml]="selectedFiltered1.name"></span>
+                                                                           [innerHtml]="selectedFiltered4.name"></span>
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
               <nz-dropdown-menu #customization="nzDropdownMenu">
@@ -531,11 +531,11 @@
               </nz-dropdown-menu>
             </div>
             <div class="btn-group dropdown" *ngIf="permission.joc && permission.joc.administration.customization.view">
-              <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered1.account" nz-dropdown
+              <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered5.account" nz-dropdown
                       nzTrigger="click" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'" type="button"
                       translate>
                 {{'customization.label.customizations' | translate}} <span class="text-primary"
-                                                                           [innerHtml]="selectedFiltered1.name"></span>
+                                                                           [innerHtml]="selectedFiltered5.name"></span>
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
               <nz-dropdown-menu #customization="nzDropdownMenu">

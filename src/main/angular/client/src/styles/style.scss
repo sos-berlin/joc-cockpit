@@ -4580,23 +4580,19 @@ svg text {
 .drop-box-full {
   margin: 10px 2px;
   background: transparent;
-  border: 2px dashed #cccccc;
+  border: 2px dashed var(--border-color);
   height: 250px;
   text-align: center;
-
-  &:hover {
-    margin: 10px 2px;
-    opacity: .8;
-    border: 2px dashed #0096c8;
-    height: 250px;
-    text-align: center;
-  }
-
   i {
     position: relative;
     top: 25px;
     font-size: 110px;
   }
+}
+
+.nv-file-over {
+  opacity: .7;
+  border-color: var(--primary) !important;
 }
 
 .m-m-p-7 {

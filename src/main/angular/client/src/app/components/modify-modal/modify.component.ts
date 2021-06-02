@@ -36,7 +36,7 @@ export class ChangeParameterModalComponent implements OnInit {
       }
     } else if (this.order && (this.order.arguments)) {
       if (!isArray(this.order.arguments)) {
-        this.order.arguments = this.coreService.convertObjectToArray(this.order, 'variables');
+        this.order.arguments = this.coreService.convertObjectToArray(this.order, 'arguments');
       } else {
         this.variables = this.coreService.clone(this.order.arguments);
       }
@@ -65,6 +65,8 @@ export class ChangeParameterModalComponent implements OnInit {
         if (!isExist && !this.variable) {
           if (!val.default && val.default !== false && val.default !== 0) {
             this.variables.push({name: k, type: val.type, isRequired: true});
+          } else {
+            this.variables.push({name: k, value: val.default, default: val.default});
           }
         }
         return {name: k, value: v};
@@ -94,7 +96,7 @@ export class ChangeParameterModalComponent implements OnInit {
           if (this.variableList[i].name === this.variables[j].name) {
             this.variableList[i].isSelected = true;
             this.variables[j].type = this.variableList[i].value.type;
-            if (!this.variableList[i].default && this.variableList[i].default !== false && this.variableList[i].default !== 0) {
+            if (!this.variableList[i].value.default && this.variableList[i].value.default !== false && this.variableList[i].value.default !== 0) {
               this.variables[j].isRequired = true;
             }
             break;
@@ -197,12 +199,15 @@ export class ModifyStartTimeModalComponent implements OnInit {
   @Input() preferences: any;
   submitted = false;
   dateFormat: any;
-
+  dateType: any = {at : 'date'};
+  zones = [];
   constructor(private activeModal: NzModalRef, public  coreService: CoreService) {
   }
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.zones = this.coreService.getTimeZoneList();
+    this.dateType.timeZone = this.preferences.zone;
   }
 
   disabledDate = (current: Date): boolean => {

@@ -15,6 +15,7 @@ import {NzDatePickerModule} from 'ng-zorro-antd/date-picker';
 import {NzNoAnimationModule} from 'ng-zorro-antd/core/no-animation';
 import {NzRadioModule} from 'ng-zorro-antd/radio';
 import {NzTimePickerModule} from 'ng-zorro-antd/time-picker';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 import {Shared2Module} from './shared2.module';
 import {ToggleComponent} from '../../components/toggle/toggle.component';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
@@ -46,7 +47,7 @@ import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../.
 import {OrderVariableComponent} from '../../components/order-variable/order-variable.component';
 import {ValueEditorComponent} from '../../components/value-editor/value.component';
 
-const MODULES = [Shared2Module, NzTableModule,
+const MODULES = [Shared2Module, NzTableModule, DragDropModule,
   NzToolTipModule, NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule,
   NzSelectModule, NzInputModule, NzMessageModule, NzCheckboxModule, NzRadioModule,
   NzTreeSelectModule, NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, OrderModule];

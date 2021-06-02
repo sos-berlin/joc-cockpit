@@ -254,6 +254,7 @@ export class OrderActionComponent {
     this.modal.create({
       nzTitle: undefined,
       nzContent: ModifyStartTimeModalComponent,
+      nzClassName: 'lg',
       nzComponentParams: {
         schedulerId: this.schedulerId,
         preferences: this.preferences,
@@ -268,6 +269,7 @@ export class OrderActionComponent {
     this.modal.create({
       nzTitle: undefined,
       nzContent: ChangeParameterModalComponent,
+      nzClassName: 'lg',
       nzComponentParams: {
         schedulerId: this.schedulerId,
         orderRequirements: order.requirements,

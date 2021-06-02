@@ -69,6 +69,7 @@ export class ImportKeyModalComponent implements OnInit {
   messageList: any;
   required = false;
   submitted = false;
+  hasBaseDropZoneOver: any;
   comments: any = {};
   key = {keyAlg: 'RSA'};
 
@@ -125,6 +126,10 @@ export class ImportKeyModalComponent implements OnInit {
         this.toasterService.pop('error', res.error.code, res.error.message);
       }
     };
+  }
+
+  fileOverBase(e:any): void {
+    this.hasBaseDropZoneOver = e;
   }
 
   // CALLBACKS

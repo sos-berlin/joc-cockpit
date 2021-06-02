@@ -306,7 +306,7 @@
                       <td>
                         <span class="show-in-single-line">
                           <i (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-                          <a class="text-hover-primary" (click)="coreService.showWorkflow(order.workflowId.path);">
+                          <a class="text-hover-primary" (click)="coreService.showWorkflow(order.workflowId.path, order.workflowId.versionId);">
                             <span [innerHtml]="order.workflowId.path | highlight : orderFilters.searchText"></span>
                           </a>
                         </span>

@@ -1315,6 +1315,7 @@ export class ExpressionComponent implements OnInit {
 export class ImportComponent implements OnInit {
   workflow: any;
   submitted = false;
+  hasBaseDropZoneOver: any;
   uploader: FileUploader;
 
   constructor(public activeModal: NzModalRef, public translate: TranslateService, public toasterService: ToasterService) {
@@ -1337,6 +1338,10 @@ export class ImportComponent implements OnInit {
         this.toasterService.pop('error', res.error.code, res.error.message);
       }
     };
+  }
+
+  fileOverBase(e:any): void {
+    this.hasBaseDropZoneOver = e;
   }
 
   // CALLBACKS
@@ -1413,6 +1418,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   droppedCell: any;
   movedCell: any;
   isCellDragging = false;
+  display = false;
   propertyPanelWidth: number;
   selectedNode: any;
   node: any;
@@ -3563,13 +3569,125 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         mxUndoManager.prototype.size = 1;
 
         /**
+         * Function: mouseMove
+         *
+         * Handles the event by highlighting possible drop targets and updating the
+         * preview.
+         */
+        mxGraphHandler.prototype.mouseMove = function(sender, me) {
+          if (!me.isConsumed() && graph.isMouseDown && this.cell != null &&
+            this.first != null && this.bounds != null && !this.suspended) {
+            // Stops moving if a multi touch event is received
+            if (mxEvent.isMultiTouchEvent(me.getEvent())) {
+              this.reset();
+              return;
+            }
+            let delta = this.getDelta(me);
+            let tol = graph.tolerance;
+            if (this.shape != null || this.livePreviewActive || Math.abs(delta.x) > tol || Math.abs(delta.y) > tol) {
+              // Highlight is used for highlighting drop targets
+              if (this.highlight == null) {
+                this.highlight = new mxCellHighlight(this.graph,
+                  mxConstants.DROP_TARGET_COLOR, 3);
+              }
+
+              let clone = graph.isCloneEvent(me.getEvent()) && graph.isCellsCloneable() && this.isCloneEnabled();
+              let gridEnabled = graph.isGridEnabledEvent(me.getEvent());
+              let cell = me.getCell();
+              let hideGuide = true;
+              let target = null;
+              this.cloning = clone;
+
+              if (graph.isDropEnabled() && this.highlightEnabled) {
+                // Contains a call to getCellAt to find the cell under the mouse
+                target = graph.getDropTarget(this.cells, me.getEvent(), cell, clone);
+              }
+
+              let state = graph.getView().getState(target);
+
+              if (state != null && (clone || this.isValidDropTarget(target, me))) {
+                if (this.target != target) {
+                  this.target = target;
+                  this.setHighlightColor(mxConstants.DROP_TARGET_COLOR);
+                }
+
+              } else {
+                this.target = null;
+                this.setHighlightColor('#ff0000');
+              }
+
+              if (state != null) {
+                this.highlight.highlight(state);
+              } else {
+                this.highlight.hide();
+              }
+
+              if (this.guide != null && this.useGuidesForEvent(me)) {
+                delta = this.guide.move(this.bounds, delta, gridEnabled, clone);
+                hideGuide = false;
+              } else {
+                delta = this.graph.snapDelta(delta, this.bounds, !gridEnabled, false, false);
+              }
+
+              if (this.guide != null && hideGuide) {
+                this.guide.hide();
+              }
+
+              // Constrained movement if shift key is pressed
+              if (graph.isConstrainedEvent(me.getEvent())) {
+                if (Math.abs(delta.x) > Math.abs(delta.y)) {
+                  delta.y = 0;
+                } else {
+                  delta.x = 0;
+                }
+              }
+              this.checkPreview();
+              if (this.currentDx != delta.x || this.currentDy != delta.y) {
+                this.currentDx = delta.x;
+                this.currentDy = delta.y;
+                this.updatePreview();
+              }
+            }
+            this.updateHint(me);
+            this.consumeMouseEvent(mxEvent.MOUSE_MOVE, me);
+            // Cancels the bubbling of events to the container so
+            // that the droptarget is not reset due to an mouseMove
+            // fired on the container with no associated state.
+            mxEvent.consume(me.getEvent());
+          } else if ((this.isMoveEnabled() || this.isCloneEnabled()) && this.updateCursor && !me.isConsumed() &&
+            (me.getState() != null || me.sourceState != null) && !graph.isMouseDown) {
+            let cursor = graph.getCursorForMouseEvent(me);
+            if (cursor == null && graph.isEnabled() && graph.isCellMovable(me.getCell())) {
+              if (graph.getModel().isEdge(me.getCell())) {
+                cursor = mxConstants.CURSOR_MOVABLE_EDGE;
+              } else {
+                cursor = mxConstants.CURSOR_MOVABLE_VERTEX;
+              }
+            }
+            // Sets the cursor on the original source state under the mouse
+            // instead of the event source state which can be the parent
+            if (cursor != null && me.sourceState != null) {
+              me.sourceState.setCursor(cursor);
+            }
+          }
+        };
+
+        /**
          * Function: createPreviewShape
          *
          * Creates the shape used to draw the preview for the given bounds.
          */
         mxGraphHandler.prototype.createPreviewShape = function(bounds) {
           let shape;
+          const selectionCell = graph.getSelectionCell();
+          if (selectionCell && selectionCell.id !== this.cell.id) {
+            this.cell = selectionCell;
+            this.cells = [this.cell];
+          }
+          self.movedCell = this.cell;
           const originalShape = graph.getView().getState(this.cell).shape;
+          originalShape.bounds.y = originalShape.bounds.y - 12;
+          this.pBounds = originalShape.bounds;
           if (this.cell.value.tagName === 'Job') {
             shape = new mxLabel(originalShape.bounds, originalShape.fill, originalShape.stroke, originalShape.strokewidth);
             shape.image = originalShape.image;
@@ -3753,13 +3871,21 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               return;
             }
             if (me.consumed && me.getCell()) {
-              self.isCellDragging = true;
-              setTimeout(function() {
+              if (!self.display) {
+                if (!self.isCellDragging) {
+                  const cell = me.getCell();
+                  const selectedCell = graph.getSelectionCell();
+                  if (selectedCell && selectedCell.id !== cell.id) {
+                    graph.setSelectionCell(cell);
+                  }
+                }
+                self.isCellDragging = true;
                 if (self.movedCell) {
+                  self.display = true;
                   $('#dropContainer2').show();
                   $('#toolbar-icons').hide();
                 }
-              }, 10);
+              }
             }
             if (this.currentState != null && me.getState() == this.currentState) {
               return;
@@ -3851,11 +3977,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
         });
 
-        function detachedInstruction(target, cell) {
+        function detachedInstruction(target, cell): void {
           if (target && target.getAttribute('class') === 'dropContainer' && cell) {
             self.droppedCell = null;
-            self.editor.graph.removeCells(cell, null);
+            self.editor.graph.removeCells([cell], null);
           }
+          self.display = false;
           $('#dropContainer2').hide();
           $('#toolbar-icons').show();
         }
@@ -4415,29 +4542,34 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (cell && cell.value) {
             self.droppedCell = null;
             if (self.isCellDragging && cells && cells.length > 0) {
-              if (!cells[0]) {
+              if (!self.movedCell) {
                 return;
               }
-              self.movedCell = cells;
               const tagName = cell.value.tagName;
               if (tagName === 'Connection' || self.workflowService.isInstructionCollapsible(tagName) || tagName === 'Catch') {
-                if (tagName === 'Connection' && cell.source && cell.target) {
-                  let sourceId = cell.source.id;
-                  let targetId = cell.target.id;
-                  if (checkClosingCell(cell.source)) {
-                    sourceId = cell.source.value.getAttribute('targetId');
-                  } else if (cell.source.value.tagName === 'Process' && cell.source.getAttribute('title') === 'start') {
-                    sourceId = 'start';
+                if (tagName === 'Connection') {
+                  if (cell.source && cell.target) {
+                    let sourceId = cell.source.id;
+                    let targetId = cell.target.id;
+                    if (checkClosingCell(cell.source)) {
+                      sourceId = cell.source.value.getAttribute('targetId');
+                    } else if (cell.source.value.tagName === 'Process' && cell.source.getAttribute('title') === 'start') {
+                      sourceId = 'start';
+                    }
+                    if (checkClosingCell(cell.target)) {
+                      targetId = cell.target.value.getAttribute('targetId');
+                    } else if (cell.target.value.tagName === 'Process' && cell.target.getAttribute('title') === 'start') {
+                      targetId = 'start';
+                    }
+                    self.droppedCell = {
+                      target: {source: sourceId, target: targetId},
+                      cell: self.movedCell,
+                      type: cell.value.getAttribute('type')
+                    };
+                    return mxGraph.prototype.isValidDropTarget.apply(this, arguments);
                   }
-                  if (checkClosingCell(cell.target)) {
-                    targetId = cell.target.value.getAttribute('targetId');
-                  } else if (cell.target.value.tagName === 'Process' && cell.target.getAttribute('title') === 'start') {
-                    targetId = 'start';
-                  }
-                  self.droppedCell = {target: {source: sourceId, target: targetId}, cell: cells[0], type: cell.value.getAttribute('type')};
-                  return mxGraph.prototype.isValidDropTarget.apply(this, arguments);
                 } else {
-                  self.droppedCell = {target: cell.id, cell: cells[0]};
+                  self.droppedCell = {target: cell.id, cell: self.movedCell};
                   return true;
                 }
               } else {
@@ -6655,7 +6787,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
     function checkParent(object1, object2): boolean {
       let flag = true;
-
       function recurviseCheck(json) {
         if (json.instructions) {
           for (let x = 0; x < json.instructions.length; x++) {
