@@ -60,7 +60,7 @@
             <div class="box white">
                 <div class="box-body p-a-0">
                     <pre id="logs" #dataBody *ngIf="!error" class="log p-a" style="overflow: auto"></pre>
-                    <div class="log text-center" *ngIf="error">
+                    <div class="log text-center p-b-md" *ngIf="error">
                         <div class="text-dark p-t" style="font-size: 38px;margin-bottom: -8px" ><span [innerHtml]="errStatus"></span></div>
                         <div class="text-lg text-muted" *ngIf="errStatus">{{'log.label.error' | translate}}!</div>
                         <div class="text m-t" [innerHtml]="error"></div>
@@ -70,9 +70,8 @@
         </div>
     </div>
 </div>
-
-  <div class="spinner" *ngIf="loading">
-    <div class="cssload-inner cssload-one"></div>
-    <div class="cssload-inner cssload-two"></div>
-    <div class="cssload-inner cssload-three"></div>
-  </div>
+<div class="spinner" *ngIf="loading">
+  <div class="cssload-inner cssload-one"></div>
+  <div class="cssload-inner cssload-two"></div>
+  <div class="cssload-inner cssload-three"></div>
+</div>

@@ -29,7 +29,7 @@
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.name</label>
           <div class="col-md-8 col-lg-6">
-            <input type="text" required identifierValidation class="form-control" [readonly]="isTrash" [appAutofocus]="!isTrash"
+            <input type="text" required identifierValidation class="form-control" [readonly]="isTrash || !permission.joc.inventory.manage" [appAutofocus]="!isTrash"
                    name="name" [(ngModel)]="junction.name" #name="ngModel" autocomplete="off" (blur)="rename(name.invalid)">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
               <div *ngIf="name.errors.required">
@@ -42,19 +42,19 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
           <div class="col-md-8 col-lg-6">
-            <input type="text" class="form-control" [readonly]="isTrash" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
+            <input type="text" class="form-control" [readonly]="isTrash || !permission.joc.inventory.manage" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
                    name="title" [(ngModel)]="junction.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.documentation</label>
           <div class="col-md-8 col-lg-6 select-input-both">
-            <input autocomplete="off" [readOnly]="isTrash" type="text" class="form-control"
+            <input autocomplete="off" [readOnly]="isTrash || !permission.joc.inventory.manage" type="text" class="form-control"
                    placeholder="{{'inventory.placeholder.documentationName' | translate}}"
                    name="documentationPath" [(ngModel)]="junction.configuration.documentationName">
             <nz-tree-select
               name="documentationName"
-              [disabled]="isTrash"
+              [disabled]="isTrash || !permission.joc.inventory.manage"
               nzNoAnimation
               #treeSelectCtrl
               [nzAllowClear]="true"
@@ -85,7 +85,7 @@
              [ngClass]="{ 'has-error' : (((lt.dirty || lt.touched) && lt.invalid))}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.lifetime</label>
           <div class="col-md-8 col-lg-6">
-            <input autocomplete="off" [readonly]="isTrash" #lt="ngModel" required type="text" class="form-control" name="lt"
+            <input autocomplete="off" [readonly]="isTrash || !permission.joc.inventory.manage" #lt="ngModel" required type="text" class="form-control" name="lt"
                    placeholder="{{'workflow.placeholder.duration' | translate}}" (blur)="saveJSON()"
                    validateDurtionReqex [(ngModel)]="lifetime">
             <div *ngIf="lt.invalid && (lt.dirty || lt.touched)" class="text-danger help-block">

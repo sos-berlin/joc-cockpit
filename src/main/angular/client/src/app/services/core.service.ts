@@ -594,27 +594,27 @@ export class CoreService {
     this.refreshParent();
 
     const preferenceObj = JSON.parse(sessionStorage.preferences);
-    const schedulerId = id || JSON.parse(this.authService.scheduleIds).selected;
+    const controllerId = id || JSON.parse(this.authService.scheduleIds).selected;
     let url = '';
 
     if (order && order.historyId && order.orderId) {
-      url = '?historyId=' + encodeURIComponent(order.historyId) + '&orderId=' + encodeURIComponent(order.orderId) + '&workflow=' + encodeURIComponent(order.workflow) + '&schedulerId=' + schedulerId;
+      url = '?historyId=' + encodeURIComponent(order.historyId) + '&orderId=' + encodeURIComponent(order.orderId) + '&workflow=' + encodeURIComponent(order.workflow) + '&controllerId=' + controllerId;
     } else if (task && task.taskId) {
       if (transfer) {
         if (task.job) {
-          url = '?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(task.job) + '&schedulerId=' + schedulerId;
+          url = '?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(task.job) + '&controllerId=' + controllerId;
         } else if (job) {
-          url = '?taskId=' + encodeURIComponent(task.taskId) + '&job=' + job + '&schedulerId=' + schedulerId;
+          url = '?taskId=' + encodeURIComponent(task.taskId) + '&job=' + job + '&controllerId=' + controllerId;
         } else {
-          url = '?taskId=' + encodeURIComponent(task.taskId) + '&schedulerId=' + schedulerId;
+          url = '?taskId=' + encodeURIComponent(task.taskId) + '&controllerId=' + controllerId;
         }
       } else {
         if (task.job) {
-          url = '?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(task.job) + '&schedulerId=' + schedulerId;
+          url = '?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(task.job) + '&controllerId=' + controllerId;
         } else if (job) {
-          url = '?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(job) + '&schedulerId=' + schedulerId;
+          url = '?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(job) + '&controllerId=' + controllerId;
         } else {
-          url = '?taskId=' + encodeURIComponent(task.taskId) + '&schedulerId=' + schedulerId;
+          url = '?taskId=' + encodeURIComponent(task.taskId) + '&controllerId=' + controllerId;
         }
       }
     } else {
@@ -632,7 +632,7 @@ export class CoreService {
       window.open('#/log' + url, '_blank');
     } else {
       const data = order || task || job || transfer;
-      this.downloadLog(data, schedulerId);
+      this.downloadLog(data, controllerId);
     }
   }
 
@@ -886,9 +886,11 @@ export class CoreService {
     try {
       if (typeof this.newWindow != 'undefined' && this.newWindow != null && this.newWindow.closed == false) {
         if (this.newWindow.sessionStorage.changedPreferences) {
-          let preferences = JSON.parse(sessionStorage.preferences);
-          preferences.logFilter = JSON.parse(this.newWindow.sessionStorage.changedPreferences).logFilter;
-          window.sessionStorage.preferences = JSON.stringify(preferences);
+          if (this.newWindow.sessionStorage.controllerId === JSON.parse(this.authService.scheduleIds).selected) {
+            const preferences = JSON.parse(sessionStorage.preferences);
+            preferences.logFilter = JSON.parse(this.newWindow.sessionStorage.changedPreferences).logFilter;
+            window.sessionStorage.preferences = JSON.stringify(preferences);
+          }
         }
         this.newWindow.close();
       }

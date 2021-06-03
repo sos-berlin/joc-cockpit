@@ -216,18 +216,25 @@ export class ModifyStartTimeModalComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.order.from && this.order.time) {
-      this.order.from.setHours(moment(this.order.time).hours());
-      this.order.from.setMinutes(moment(this.order.time).minutes());
-      this.order.from.setSeconds(moment(this.order.time).seconds());
-      this.order.from.setMilliseconds(0);
+    let obj: any = {
+      controllerId: this.schedulerId,
+      orderIds: [this.order.orderId]
+    };
+    if (this.dateType.at === 'now') {
+      obj.scheduledFor = 'now';
+    } else if (this.dateType.at === 'later') {
+      obj.scheduledFor = 'now + ' + this.order.atTime;
+    } else {
+      if (this.order.from && this.order.time) {
+        this.order.from.setHours(moment(this.order.time).hours());
+        this.order.from.setMinutes(moment(this.order.time).minutes());
+        this.order.from.setSeconds(moment(this.order.time).seconds());
+        this.order.from.setMilliseconds(0);
+      }
+      obj.scheduledFor = moment(this.order.from).format('YYYY-MM-DD HH:mm:ss');
+      obj.timeZone = this.dateType.timeZone;
     }
     this.submitted = true;
-    let obj = {
-      controllerId: this.schedulerId,
-      orderIds: [this.order.orderId],
-      startTime: moment.utc(this.order.from)
-    };
     this.coreService.post('daily_plan/orders/modify', obj).subscribe((result) => {
       this.submitted = false;
       this.activeModal.close('Done');

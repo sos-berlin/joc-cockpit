@@ -1566,7 +1566,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       nzClosable: false
     });
     modal.afterClose.subscribe(result => {
-      if (result) {
+      if (result && this.permission.joc.inventory.manage) {
         const variableDeclarations = {parameters: []};
         variableDeclarations.parameters = result.variableDeclarations.parameters.filter((value) => {
           return !!value.name;
@@ -1598,7 +1598,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       nzClosable: false
     });
     modal.afterClose.subscribe(result => {
-      if (result) {
+      if (result && this.permission.joc.inventory.manage) {
         if (!isEqual(JSON.stringify(this.jobResourceNames), JSON.stringify(result.jobResourceNames))) {
           this.jobResourceNames = result.jobResourceNames;
           this.updateOtherProperties();
@@ -1623,7 +1623,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       nzClosable: false
     });
     modal.afterClose.subscribe(result => {
-      if (result) {
+      if (result && this.permission.joc.inventory.manage) {
         if (result.name) {
           this.data.name = result.name;
           this.workflow.name = result.name;
@@ -3604,19 +3604,44 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               }
 
               let state = graph.getView().getState(target);
-
+              var highlight = false;
               if (state != null && (clone || this.isValidDropTarget(target, me))) {
                 if (this.target != target) {
                   this.target = target;
                   this.setHighlightColor(mxConstants.DROP_TARGET_COLOR);
                 }
-
+                highlight = true;
               } else {
                 this.target = null;
-                this.setHighlightColor('#ff0000');
+              }
+              if (self.droppedCell && self.droppedCell.target) {
+                if (!target && !cell) {
+                  self.droppedCell = null;
+                } else if (!self.droppedCell.type) {
+                  if (target && cell && target.id !== cell.id) {
+                    self.droppedCell.target = cell.id;
+                  }
+                }
+                if (this.cells.length > 0 && cell && this.cells[0].id != cell.id) {
+                  if (target && target.id != cell.id) {
+                    state = graph.getView().getState(cell);
+                  }
+                }
               }
 
-              if (state != null) {
+              if (state != null && highlight) {
+                if (state.cell.value.tagName === 'Connection' || self.workflowService.isInstructionCollapsible(state.cell.value.tagName) || state.cell.value.tagName === 'Catch') {
+                  if (state.cell.value.tagName !== 'Connection') {
+                    if (state.cell.value.tagName !== 'Fork') {
+                      const len = graph.getOutgoingEdges(state.cell).length;
+                      if (len > 0) {
+                        this.setHighlightColor('#ff0000');
+                      }
+                    }
+                  }
+                } else {
+                  this.setHighlightColor('#ff0000');
+                }
                 this.highlight.highlight(state);
               } else {
                 this.highlight.hide();
@@ -3686,7 +3711,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
           self.movedCell = this.cell;
           const originalShape = graph.getView().getState(this.cell).shape;
-          originalShape.bounds.y = originalShape.bounds.y - 12;
           this.pBounds = originalShape.bounds;
           if (this.cell.value.tagName === 'Job') {
             shape = new mxLabel(originalShape.bounds, originalShape.fill, originalShape.stroke, originalShape.strokewidth);
@@ -5594,7 +5618,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
      * Updates the properties panel
      */
     function selectionChanged(): void {
-      if (self.selectedNode) {
+      if (self.selectedNode && self.permission.joc.inventory.manage) {
         self.cutOperation();
         self.error = false;
         self.dataService.reloadWorkflowError.next({error: self.error});
@@ -5768,8 +5792,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
 
     /**
-     * Funtion: Copy/paste the instruction to given target
-     * @param target
+     * Funtion: paste the instruction to given target
      */
     function pasteInstruction(target) {
       let source = target.id;
@@ -5934,6 +5957,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             json.instructions[x].uuid = undefined;
             if (json.instructions[x].TYPE === 'Job') {
               json.instructions[x].jobName = getJob(json.instructions[x].jobName);
+              json.instructions[x].label = json.instructions[x].jobName;
             }
             if (json.instructions[x].instructions) {
               recursion(json.instructions[x]);
@@ -7593,7 +7617,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private storeData(data): void {
-    if (this.isTrash || !this.workflow || !this.workflow.id) {
+    if (this.isTrash || !this.workflow || !this.workflow.id || !this.permission.joc.inventory.manage) {
       return;
     }
     let newObj: any = {};

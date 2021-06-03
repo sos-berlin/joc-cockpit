@@ -341,7 +341,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   saveJSON(flag = false): void {
-    if (this.isTrash) {
+    if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
     if (this.fileOrder.actual && !isEqual(this.fileOrder.actual, JSON.stringify(this.fileOrder.configuration))) {

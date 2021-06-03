@@ -35,7 +35,7 @@
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.orderTemplateName</label>
           <div class="col-md-8 col-lg-6">
-            <input autocomplete="off" [readOnly]="isTrash" identifierValidation required class="form-control" [appAutofocus]="!isTrash" placeholder="{{'inventory.placeholder.orderName' | translate}}"
+            <input autocomplete="off" [readOnly]="isTrash || !permission.joc.inventory.manage" identifierValidation required class="form-control" [appAutofocus]="!isTrash" placeholder="{{'inventory.placeholder.orderName' | translate}}"
                    name="name" [(ngModel)]="schedule.name" #name="ngModel" (blur)="rename(name.invalid)">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
               <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
@@ -48,19 +48,19 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
           <div class="col-md-8 col-lg-6">
-            <input type="text" [readOnly]="isTrash" class="form-control" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
+            <input type="text" [readOnly]="isTrash || !permission.joc.inventory.manage" class="form-control" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
                    name="title" [(ngModel)]="schedule.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.documentation</label>
           <div class="col-md-8 col-lg-6 select-input-both">
-            <input autocomplete="off" [readOnly]="isTrash" type="text" class="form-control"
+            <input autocomplete="off" [readOnly]="isTrash || !permission.joc.inventory.manage" type="text" class="form-control"
                    placeholder="{{'inventory.placeholder.documentationName' | translate}}"
                    name="documentationPath" [(ngModel)]="schedule.configuration.documentationName">
             <nz-tree-select
               name="documentationName"
-              [disabled]="isTrash"
+              [disabled]="isTrash || !permission.joc.inventory.manage"
               nzNoAnimation
               [nzAllowClear]="false"
               [nzNodes]="documentationTree"
@@ -90,12 +90,12 @@
              [ngClass]="{ 'has-error' : (((workflowName.dirty || workflowName.touched) && workflowName.invalid))}">
           <label class="col-md-4 col-lg-3  form-control-label" translate>inventory.label.workflowName</label>
           <div class="col-md-8 col-lg-6 select-input-both">
-            <input autocomplete="off" [readOnly]="isTrash" type="text" class="form-control"
+            <input autocomplete="off" [readOnly]="isTrash || !permission.joc.inventory.manage" type="text" class="form-control"
                    placeholder="{{'inventory.placeholder.workflowName' | translate}}"
                    name="workflowName" #workflowName="ngModel" [(ngModel)]="schedule.configuration.workflowName">
             <nz-tree-select
               name="workflowName1"
-              [disabled]="isTrash"
+              [disabled]="isTrash || !permission.joc.inventory.manage"
               nzNoAnimation
               #treeSelectCtrl
               [nzAllowClear]="false"
@@ -129,13 +129,13 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3" translate>inventory.label.planOrderAutomatically</label>
           <div class="col-md-8 col-lg-6">
-            <label nz-checkbox [nzDisabled]="isTrash" [(ngModel)]="schedule.configuration.planOrderAutomatically" (ngModelChange)="saveJSON()" name="planOrderAutomatically"></label>
+            <label nz-checkbox [nzDisabled]="isTrash || !permission.joc.inventory.manage" [(ngModel)]="schedule.configuration.planOrderAutomatically" (ngModelChange)="saveJSON()" name="planOrderAutomatically"></label>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-md-4 col-lg-3" translate>inventory.label.submitOrderToControllerWhenPlanned</label>
           <div class="col-md-8 col-lg-6">
-            <label nz-checkbox [nzDisabled]="isTrash" [(ngModel)]="schedule.configuration.submitOrderToControllerWhenPlanned" (ngModelChange)="saveJSON()" name="submitOrderToControllerWhenPlanned"></label>
+            <label nz-checkbox [nzDisabled]="isTrash || !permission.joc.inventory.manage" [(ngModel)]="schedule.configuration.submitOrderToControllerWhenPlanned" (ngModelChange)="saveJSON()" name="submitOrderToControllerWhenPlanned"></label>
           </div>
         </div>
         <div class="form-group row" *ngIf="variableList.length || schedule.configuration.variables.length">
@@ -145,7 +145,7 @@
           <div class="col-md-4 col-lg-3 m-b-sm" *ngIf="i==0" translate>common.label.name</div>
           <div class="col-md-8 col-lg-9 m-b-sm" *ngIf="i==0" translate>common.label.value</div>
           <div class="col-md-4 col-lg-3 m-b-sm">
-            <nz-select nzShowSearch name="name{{i}}" nzPlaceHolder="{{'common.placeholder.selectVariable' | translate}}"
+            <nz-select nzShowSearch name="name{{i}}" [nzDisabled]="isTrash || !permission.joc.inventory.manage" nzPlaceHolder="{{'common.placeholder.selectVariable' | translate}}"
                        [(ngModel)]="variable.name" (ngModelChange)="checkVariableType(variable)">
               <nz-option *ngFor="let list of variableList" [nzDisabled]="list.isSelected" [nzLabel]="list.name"
                          [nzValue]="list.name"></nz-option>
@@ -154,7 +154,7 @@
           <ng-container [ngSwitch]="variable.type">
             <ng-container *ngSwitchCase="'Number'">
               <div class="col-md-7 col-lg-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                <nz-input-number [required]="variable.isRequired" #value="ngModel" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}" [nzMin]="0" [nzStep]="1" name="value{{i}}"
+                <nz-input-number [nzDisabled]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired" #value="ngModel" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}" [nzMin]="0" [nzStep]="1" name="value{{i}}"
                                  [(ngModel)]="variable.value" (nzBlur)="saveJSON()" (keypress)="onKeyPress($event)"></nz-input-number>
                 <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                      class="text-danger help-block">
@@ -166,7 +166,7 @@
             </ng-container>
             <ng-container *ngSwitchCase="'Boolean'">
               <div class="col-md-7 col-lg-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                <nz-select #value="ngModel" [required]="variable.isRequired" (nzBlur)="saveJSON()" name="value{{i}}" [(ngModel)]="variable.value">
+                <nz-select #value="ngModel" [nzDisabled]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired" (nzBlur)="saveJSON()" name="value{{i}}" [(ngModel)]="variable.value">
                   <nz-option [nzValue]="" [nzLabel]="'common.placeholder.selectValue' | translate"></nz-option>
                   <nz-option [nzLabel]="'true'" [nzValue]="true"></nz-option>
                   <nz-option [nzLabel]="'false'" [nzValue]="false"></nz-option>
@@ -181,7 +181,7 @@
             </ng-container>
             <ng-container *ngSwitchDefault>
               <div class="col-md-7 col-lg-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                <input #value="ngModel" [required]="variable.isRequired" autocomplete="off" type="text" class="form-control" (keypress)="onKeyPress($event)"
+                <input #value="ngModel" [readOnly]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired" autocomplete="off" type="text" class="form-control" (keypress)="onKeyPress($event)"
                        name="value{{i}}" [(ngModel)]="variable.value" (blur)="saveJSON()" placeholder="{{'common.placeholder.value' | translate}}">
                 <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                      class="text-danger help-block">
@@ -193,10 +193,10 @@
             </ng-container>
           </ng-container>
           <div class="col-md-1 col-lg-1 p-l-0" *ngIf="!variable.isRequired">
-            <a [ngClass]="{'disable-link': isTrash}"><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+            <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
           </div>
         </div>
-        <div class="form-group row" [ngClass]="{'disable-link': isTrash}">
+        <div class="form-group row" [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}">
           <div class="col-sm-12" *ngIf="variableList.length > schedule.configuration.variables.length">
             <a class="text-u-l" (click)="addVariable()" translate>order.button.addVariable</a>
           </div>
@@ -220,7 +220,7 @@
   <div class="close-btn" (click)="closeCalendarView()"></div>
   <div *ngIf="isVisible">
     <div class="text-center m-b text" ><i class="fa fa-clock-o"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm" translate>runtime.label.runTime</span></div>
-    <app-run-time [schedule]="schedule" [isTrash]="isTrash" [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"></app-run-time>
+    <app-run-time [schedule]="schedule" [isTrash]="isTrash || !permission.joc.inventory.manage" [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"></app-run-time>
   </div>
   </ng-container>
 </nz-drawer>

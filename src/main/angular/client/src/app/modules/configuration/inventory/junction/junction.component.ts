@@ -246,7 +246,7 @@ export class JunctionComponent implements OnChanges, OnDestroy {
   }
 
   saveJSON(flag = false): void {
-    if (this.isTrash) {
+    if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
     if (this.lifetime) {

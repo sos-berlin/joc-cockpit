@@ -44,22 +44,22 @@
         </thead>
         <tbody>
         <tr *ngFor="let ch of innerChildTaskTable.data">
-          <td (click)="coreService.showLogWindow(null,ch, null, null, null)">
+          <td (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null)">
             <span [ngStyle]="{'padding-left': 6 + (8 * history.level) + 'px'}">{{ch.job}}</span>
           </td>
-          <td (click)="coreService.showLogWindow(null,ch, null, null, null)">{{ch.position}}</td>
-          <td (click)="coreService.showLogWindow(null,ch,null,null,null)">
+          <td (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null)">{{ch.position}}</td>
+          <td (click)="coreService.showLogWindow(null,ch,null,ch.controllerId,null)">
               <span *ngIf="ch.state" class="label" [ngClass]="coreService.getColor(ch.state.severity,'bg')"
                     [innerHtml]="ch.state._text | translate"></span>
           <td
-            (click)="coreService.showLogWindow(null,ch, null, null, null)">{{ch.startTime | stringToDate}}</td>
+            (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null)">{{ch.startTime | stringToDate}}</td>
           <td
-            (click)="coreService.showLogWindow(null,ch, null, null, null)">{{ch.endTime | stringToDate}}</td>
+            (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null)">{{ch.endTime | stringToDate}}</td>
           <td
-            (click)="coreService.showLogWindow(null,ch, null, null, null)">{{ch.startTime | duration:ch.endTime}}</td>
+            (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null)">{{ch.startTime | duration:ch.endTime}}</td>
           <td
-            (click)="coreService.showLogWindow(null,ch, null, null, null)">{{ch.criticality | translate}}</td>
-          <td (click)="coreService.showLogWindow(null,ch, null, null, null)">{{ch.exitCode}}</td>
+            (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null)">{{ch.criticality | translate}}</td>
+          <td (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null)">{{ch.exitCode}}</td>
         </tr>
         </tbody>
       </nz-table>
@@ -70,7 +70,7 @@
         <tr class="tr-border cursor" [ngClass]="{'light-bg':child.order.show}">
           <td>
             <span class="show-in-single-line w-full" [ngStyle]="{'padding-left': 8 * history.level + 'px'}"
-                  (click)="coreService.showLogWindow(child.order,null,null,null,null)">
+                  (click)="coreService.showLogWindow(child.order,null,null,child.order.controllerId,null)">
               <i class="cursor fa fa-caret-down fa-lg  p-l-xs p-r-xs"
                  *ngIf="!child.order.show"
                  (click)="showPanelFuc(child.order, history.level);$event.stopPropagation()"></i>

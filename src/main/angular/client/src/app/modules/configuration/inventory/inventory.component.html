@@ -77,7 +77,7 @@
         </a>
       </div>
     </div>
-    <div class="col-md-2" *ngIf="!isTrash && type && type !== 'WORKFLOW'">
+    <div class="col-md-2" *ngIf="!isTrash && type && type !== 'WORKFLOW' && permission.joc.inventory.manage">
       <div class="inline pull-right" >
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
           <li class="nav-item" [nz-tooltip]="'workflow.button.undo' | translate" >

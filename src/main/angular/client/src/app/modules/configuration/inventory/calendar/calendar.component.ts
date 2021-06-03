@@ -1578,7 +1578,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   saveJSON(flag = false): void {
-    if (this.isTrash) {
+    if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
     let obj: any = this.generateCalendarAllObj();

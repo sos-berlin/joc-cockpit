@@ -96,7 +96,7 @@
         </thead>
         <tbody>
         <ng-template ngFor let-history [ngForOf]="taskHistoryTable.data | orderBy: 'startTime':true">
-          <tr (click)="coreService.showLogWindow(null, history, null, null, null)" class="cursor" [ngClass]="{'light-bg':history.show}">
+          <tr (click)="coreService.showLogWindow(null, history, null, history.controllerId, null)" class="cursor" [ngClass]="{'light-bg':history.show}">
             <td>
                <span class="show-in-single-line">
                   <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"

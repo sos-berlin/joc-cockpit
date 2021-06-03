@@ -18,6 +18,7 @@ export class TypeComponent implements OnChanges {
   @Input() orderRequirements: any;
   @Output() update: EventEmitter<any> = new EventEmitter();
   sideBar: any = {};
+  isFirst = false;
 
   constructor(public coreService: CoreService, private modal: NzModalService) {
   }
@@ -31,7 +32,8 @@ export class TypeComponent implements OnChanges {
       }
     }
     if (changes.configuration) {
-      if (this.configuration.TYPE) {
+      if (this.configuration.TYPE === 'Workflow') {
+        this.isFirst = true;
         for (let i = 0; i < this.configuration.instructions.length; i++) {
           this.configuration.instructions[i].show = true;
           this.getDocumentationInfo(this.configuration.instructions[i]);

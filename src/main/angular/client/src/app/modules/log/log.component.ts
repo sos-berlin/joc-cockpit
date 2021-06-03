@@ -13,9 +13,7 @@ declare const $;
   templateUrl: './log.component.html'
 })
 export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
-  schedulerIds: any = {};
   preferences: any = {};
-  permission: any = {};
   loading = false;
   isCancel = false;
   errStatus = '';
@@ -36,12 +34,16 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
   subscriber: Subscription;
   orderId: any;
   taskId: any;
+  historyId: any;
   workflow: any;
   job: any;
   canceller: any;
   scrolled = false;
   isExpandCollapse = false;
   taskCount = 1;
+  preferenceId: any;
+  controllerId: string;
+
   @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
 
   constructor(private route: ActivatedRoute, private authService: AuthService, public coreService: CoreService,
@@ -66,28 +68,32 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
+    this.controllerId = this.route.snapshot.queryParams.controllerId;
+    this.preferenceId = window.sessionStorage.preferenceId;
     if (this.authService.scheduleIds) {
-      this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+      const ids = JSON.parse(this.authService.scheduleIds);
+      if (ids && ids.selected != this.controllerId) {
+        const configObj = {
+          controllerId: this.controllerId,
+          account: this.authService.currentUserData,
+          configurationType: 'PROFILE'
+        };
+        this.coreService.post('configurations', configObj).subscribe((res: any) => {
+          if (res.configurations && res.configurations.length > 0) {
+            const conf = res.configurations[0];
+            this.preferences = JSON.parse(conf.configurationItem);
+            this.preferenceId = conf.id;
+            this.init();
+          } else {
+            this.init();
+          }
+        }, () => {
+          this.init();
+        });
+      }
+    } else {
+      this.init();
     }
-    if (this.authService.permission) {
-      this.permission = JSON.parse(this.authService.permission) || {};
-    }
-    if (!this.preferences.logFilter) {
-      this.preferences.logFilter = {
-        scheduler: true,
-        stdout: true,
-        stderr: true,
-        info: true,
-        debug: false,
-        fatal: true,
-        error: true,
-        warn: true,
-        trace: true,
-        detail: false
-      };
-    }
-    this.object.checkBoxs = this.preferences.logFilter;
-    this.init();
   }
 
   ngAfterViewInit(): void {
@@ -114,8 +120,24 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   init(): void {
+    if (!this.preferences.logFilter) {
+      this.preferences.logFilter = {
+        scheduler: true,
+        stdout: true,
+        stderr: true,
+        info: true,
+        debug: false,
+        fatal: true,
+        error: true,
+        warn: true,
+        trace: true,
+        detail: false
+      };
+    }
     this.loading = true;
+    this.object.checkBoxs = this.preferences.logFilter;
     if (this.route.snapshot.queryParams.historyId) {
+      this.historyId = parseInt(this.route.snapshot.queryParams.historyId, 10);
       this.orderId = this.route.snapshot.queryParams.orderId;
       this.loadOrderLog();
     } else if (this.route.snapshot.queryParams.taskId) {
@@ -127,14 +149,14 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
   loadOrderLog(): void {
     this.workflow = this.route.snapshot.queryParams.workflow;
     const order: any = {};
-    order.controllerId = this.route.snapshot.queryParams.schedulerId;
-    order.historyId = parseInt(this.route.snapshot.queryParams.historyId, 10);
+    order.controllerId = this.controllerId;
+    order.historyId = this.historyId;
     this.canceller = this.coreService.post('order/log', order).subscribe((res: any) => {
       if (res) {
         this.jsonToString(res);
-        this.showHideTask(this.route.snapshot.queryParams.schedulerId, res);
+        this.showHideTask(this.controllerId, res);
         if (!res.complete && !this.isCancel) {
-          this.runningOrderLog({historyId: order.historyId, controllerId: order.controllerId, eventId: res.eventId});
+          this.runningOrderLog({historyId: order.historyId, controllerId: this.controllerId, eventId: res.eventId});
         }
       } else{
         this.loading = false;
@@ -172,8 +194,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
               a.classList.remove('hide');
               a.classList.add('show');
               if (res1.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
-                const obj = {controllerId: jobs.controllerId, tasks: []};
-                obj.tasks.push({taskId: jobs.taskId, eventId: res1.headers.get('X-Log-Event-Id')});
+                const obj = {controllerId: this.controllerId, taskId: res.headers.get('x-log-task-id') || jobs.taskId, eventId: res.headers.get('x-log-event-id')};
                 this.runningTaskLog(obj, 'tx_log_' + (i + 1));
               }
             } else{
@@ -201,7 +222,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
   loadJobLog(): void {
     this.job = this.route.snapshot.queryParams.job;
     const jobs: any = {};
-    jobs.controllerId = this.route.snapshot.queryParams.schedulerId;
+    jobs.controllerId = this.controllerId;
     jobs.taskId = this.taskId;
 
     this.canceller = this.coreService.log('task/log', jobs, {
@@ -211,8 +232,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
       if (res) {
         this.renderData(res.body, false);
         if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
-          const obj = {controllerId: jobs.controllerId, tasks: []};
-          obj.tasks.push({taskId: jobs.taskId, eventId: res.headers.get('X-Log-Event-Id')});
+          const obj = {controllerId: this.controllerId, taskId: res.headers.get('x-log-task-id') || jobs.taskId, eventId: res.headers.get('x-log-event-id')};
           this.runningTaskLog(obj, false);
         }
       } else{
@@ -234,12 +254,12 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     if (obj.eventId) {
       this.coreService.post('task/log/running', obj).subscribe((res: any) => {
         if (res) {
-          for (let i = 0; i < res.tasks.length; i++) {
-            this.renderData(res.tasks[i].log, orderTaskFlag);
-            if (!res.tasks[i].complete && !this.isCancel) {
-              obj.tasks[i].eventId = res.tasks[i].eventId;
-              this.runningTaskLog(obj, orderTaskFlag);
+          this.renderData(res.log, orderTaskFlag);
+          if (!res.complete && !this.isCancel) {
+            if (res.eventId || res.headers.get('x-log-event-id')) {
+              obj.eventId = res.eventId || res.headers.get('x-log-event-id');
             }
+            this.runningTaskLog(obj, orderTaskFlag);
           }
         }
       });
@@ -251,12 +271,10 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
       this.coreService.post('order/log/running', obj).subscribe((res: any) => {
         if (res) {
           this.jsonToString(res);
-          if (!res.complet && !this.isCancel) {
+          if (!res.complete && !this.isCancel) {
             obj.eventId = res.eventId;
             this.runningOrderLog(obj);
-            this.showHideTask(this.route.snapshot.queryParams.schedulerId, res);
-          } else {
-            const x: any = document.getElementsByClassName('tx_order');
+            this.showHideTask(this.controllerId, res);
           }
         }
       });
@@ -538,10 +556,9 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
 
   expandAll(): void {
     const x: any = document.getElementsByClassName('tx_order');
-    const arr: any = [];
     for (let i = 0; i < x.length; i++) {
       const jobs: any = {};
-      jobs.controllerId = this.route.snapshot.queryParams.schedulerId;
+      jobs.controllerId = this.controllerId;
       jobs.taskId = document.getElementById('tx_id_' + (i + 1)).innerText;
       const a = document.getElementById('tx_log_' + (i + 1));
       if (a.classList.contains('hide')) {
@@ -556,8 +573,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
             a.classList.remove('hide');
             a.classList.add('show');
             if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
-              const obj = {controllerId: jobs.controllerId, tasks: []};
-              obj.tasks.push({taskId: jobs.taskId, eventId: res.headers.get('X-Log-Event-Id')});
+              const obj = {controllerId: this.controllerId, taskId: res.headers.get('x-log-task-id') || jobs.taskId, eventId: res.headers.get('x-log-event-id')};
               this.runningTaskLog(obj, 'tx_log_' + (i + 1));
             }
           } else {
@@ -598,18 +614,17 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
 
   downloadLog(): void {
     this.cancel();
-    const schedulerId = this.route.snapshot.queryParams.schedulerId;
     let obj: any;
-    if (this.route.snapshot.queryParams.orderId) {
+    if (this.orderId) {
       obj = {
-        historyId: this.route.snapshot.queryParams.historyId
+        historyId: this.historyId
       };
-    } else if (this.route.snapshot.queryParams.taskId) {
+    } else if (this.taskId) {
       obj = {
-        taskId: this.route.snapshot.queryParams.taskId
+        taskId: this.taskId
       };
     }
-    this.coreService.downloadLog(obj, schedulerId);
+    this.coreService.downloadLog(obj, this.controllerId);
   }
 
   checkLogLevel(type): void {
@@ -696,14 +711,15 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
   saveUserPreference(): void {
     this.preferences.logFilter = this.object.checkBoxs;
     const configObj: any = {
-      controllerId: this.schedulerIds.selected,
+      controllerId: this.controllerId,
       account: this.authService.currentUserData,
       configurationType: 'PROFILE',
-      id: parseInt(window.sessionStorage.preferenceId, 10)
+      id: this.preferenceId
     };
     window.sessionStorage.preferences = JSON.stringify(this.preferences);
+    sessionStorage.setItem('controllerId', this.controllerId);
     configObj.configurationItem = JSON.stringify(this.preferences);
-    this.coreService.post('configuration/save', configObj).subscribe(res => {
+    this.coreService.post('configuration/save', configObj).subscribe(() => {
 
     });
   }

@@ -369,7 +369,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   saveJSON(flag = false): void {
-    if (this.isTrash) {
+    if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
     let obj = this.coreService.clone(this.schedule.configuration);

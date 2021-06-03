@@ -25,7 +25,7 @@
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.name</label>
           <div class="col-md-8 col-lg-6">
-            <input type="text" required identifierValidation [readonly]="isTrash" [appAutofocus]="!isTrash" class="form-control" (blur)="rename(name.invalid)"
+            <input type="text" required identifierValidation [readonly]="isTrash || !permission.joc.inventory.manage" [appAutofocus]="!isTrash" class="form-control" (blur)="rename(name.invalid)"
                    name="name" [(ngModel)]="lock.name" #name="ngModel" autocomplete="off">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
               <div *ngIf="name.errors.required">
@@ -38,19 +38,19 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
           <div class="col-md-8 col-lg-6">
-            <input type="text" [readonly]="isTrash" class="form-control" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
+            <input type="text" [readonly]="isTrash || !permission.joc.inventory.manage" class="form-control" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
                    name="title" [(ngModel)]="lock.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.documentation</label>
           <div class="col-md-8 col-lg-6 select-input-both">
-            <input autocomplete="off" [readOnly]="isTrash" type="text" class="form-control"
+            <input autocomplete="off" [readOnly]="isTrash || !permission.joc.inventory.manage" type="text" class="form-control"
                    placeholder="{{'inventory.placeholder.documentationName' | translate}}"
                    name="documentationPath" [(ngModel)]="lock.configuration.documentationName">
             <nz-tree-select
               name="documentationName"
-              [disabled]="isTrash"
+              [disabled]="isTrash || !permission.joc.inventory.manage"
               nzNoAnimation
               #treeSelectCtrl
               [nzAllowClear]="false"
@@ -80,7 +80,7 @@
         <div class="form-group row" [ngClass]="{ 'has-error' : (((limit.dirty || limit.touched) && limit.invalid))}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.limit</label>
           <div class="col-md-8 col-lg-6">
-            <nz-input-number [nzDisabled]="isTrash" required [nzMin]="0" [nzStep]="1" [nzPlaceHolder]="'inventory.placeholder.enterLimit' | translate"
+            <nz-input-number [nzDisabled]="isTrash || !permission.joc.inventory.manage" required [nzMin]="0" [nzStep]="1" [nzPlaceHolder]="'inventory.placeholder.enterLimit' | translate"
                              name="limit" #limit="ngModel" [(ngModel)]="lock.configuration.limit" (nzBlur)="saveJSON()"></nz-input-number>
             <div *ngIf="limit.invalid && (limit.dirty || limit.touched)" class="text-danger help-block">
               <div *ngIf="limit.errors.required">

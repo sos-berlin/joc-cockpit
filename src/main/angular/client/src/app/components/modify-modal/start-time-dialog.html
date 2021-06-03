@@ -19,6 +19,27 @@
           </div>
         </div>
         <div class="form-group row">
+          <label class="col-sm-4" translate>common.label.startTime</label>
+          <div class="col-sm-8">
+            <nz-radio-group name="at" [(ngModel)]="dateType.at">
+              <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
+              <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
+              <label nz-radio nzValue="later"><span translate>common.label.relativeDate</span></label>
+            </nz-radio-group>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="dateType.at == 'later'">
+          <label class="col-sm-4 form-control-label" translate>common.label.time</label>
+
+          <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
+            <input validTimeReqex type="text" #time="ngModel" class="form-control" [required]="dateType.at == 'now'"
+                   name="atTime" [(ngModel)]="order.atTime" placeholder="{{'common.placeholder.enterSecond' | translate}}">
+            <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
+              <div translate *ngIf="!time.valid">common.message.invalid</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="dateType.at == 'date'">
           <label class="col-sm-4 form-control-label" translate>workflow.label.enterDateAndTime</label>
           <div class="col-sm-6">
             <nz-date-picker [nzDisabledDate]="disabledDate" [required]="true" [nzPlaceHolder]="dateFormat | uppercase" [nzFormat]="dateFormat" [(ngModel)]="order.from"

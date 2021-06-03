@@ -239,7 +239,7 @@ export class LockComponent implements OnChanges, OnDestroy {
   }
 
   saveJSON(flag = false): void {
-    if (this.isTrash) {
+    if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
     if (!isEqual(this.lock.actual, JSON.stringify(this.lock.configuration))) {

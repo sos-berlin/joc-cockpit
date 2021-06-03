@@ -596,6 +596,11 @@ small {
   border-color: var(--border-color);
 }
 
+.form-control:disabled, .form-control[readonly] {
+  cursor: not-allowed;
+  border-color: var(--border-color) !important;
+}
+
 .form-control {
   border-radius: 0;
   background: transparent;
@@ -5400,11 +5405,32 @@ button[disabled], html input[disabled] {
 #graph {
   background-image: url('../assets/images/grid.svg');
 }
-
+img.mxToolbarItem {
+  border-width: 1px;
+}
+select.mxToolbarCombo {
+  vertical-align: top;
+  border-style: inset;
+  border-width: 2px;
+}
+div.mxToolbarComboContainer {
+  padding: 2px;
+}
+img.mxToolbarMode {
+  border-width: 0;
+}
+img.mxToolbarModeSelected {
+  border: 1px solid var(--border-color);
+  background: #e6f7ff;
+}
 body div.mxPopupMenu {
   background: var(--bg-box);
 }
-
+.mxDisabled {
+  filter:alpha(opacity=20) !important;
+  opacity: 0.2 !important;
+  cursor:default !important;
+}
 body table.mxPopupMenu {
   border-collapse: collapse;
   margin: 0;
@@ -6098,6 +6124,14 @@ input {
   width: 100%;
 }
 
+.ant-input-number-disabled{
+  background: transparent;
+}
+
+.ant-input-number-disabled:hover{
+  border-color: var(--border-color) !important;
+}
+
 .ant-input-number,
 .ant-select-selection,
 .ant-input {
@@ -6175,6 +6209,9 @@ tr.tr-border td:first-child {
 .ant-picker.ant-picker-disabled {
   background: transparent;
   border-color: var(--border-color)
+}
+.ant-picker-disabled:hover {
+  border-color: var(--border-color) !important;
 }
 
 .ant-input-number-handler-up-inner,
@@ -6910,6 +6947,9 @@ tr.tr-border td:first-child {
 
 .ant-checkbox-disabled.ant-checkbox-checked .ant-checkbox-inner::after {
   border-color: rgba(255, 255, 255, .87);
+}
+.ant-checkbox-disabled:hover .ant-checkbox-inner, .ant-checkbox-disabled:hover .ant-checkbox-inner:hover {
+  border-color: var(--border-color) !important;
 }
 
 .ant-checkbox-inner {

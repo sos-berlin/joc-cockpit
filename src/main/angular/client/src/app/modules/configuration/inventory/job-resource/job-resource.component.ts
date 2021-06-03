@@ -447,7 +447,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   }
 
   saveJSON(flag = false): void {
-    if (this.isTrash) {
+    if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
     const obj = this.coreService.clone(this.jobResource.configuration);
