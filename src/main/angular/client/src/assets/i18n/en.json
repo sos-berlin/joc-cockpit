@@ -1298,7 +1298,7 @@
       "button.showDocumentation": "Show Documentation",
       "button.previewDocument": "Preview Documentation",
       "button.editDocument": "Edit Documentation",
-      "placeholder.assignReference": "Assignment Reference of a documentation",
+      "placeholder.assignReference": "Assign documentation reference",
       "message.documentNotUsed": "This Documentation is not yet used"
     }
   },
