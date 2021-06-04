@@ -21,7 +21,6 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
   error: any;
   object: any = {
     checkBoxs: [],
-    debug: 'Debug'
   };
   isDeBugLevel = false;
   isFatalLevel = false;
@@ -90,6 +89,8 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
         }, () => {
           this.init();
         });
+      } else {
+        this.init();
       }
     } else {
       this.init();
@@ -120,7 +121,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   init(): void {
-    if (!this.preferences.logFilter) {
+    if (!this.preferences.logFilter || this.preferences.logFilter.length === 0) {
       this.preferences.logFilter = {
         scheduler: true,
         stdout: true,
@@ -158,7 +159,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
         if (!res.complete && !this.isCancel) {
           this.runningOrderLog({historyId: order.historyId, controllerId: this.controllerId, eventId: res.eventId});
         }
-      } else{
+      } else {
         this.loading = false;
       }
     }, (err) => {
@@ -194,10 +195,14 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
               a.classList.remove('hide');
               a.classList.add('show');
               if (res1.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
-                const obj = {controllerId: this.controllerId, taskId: res.headers.get('x-log-task-id') || jobs.taskId, eventId: res.headers.get('x-log-event-id')};
+                const obj = {
+                  controllerId: this.controllerId,
+                  taskId: res.headers.get('x-log-task-id') || jobs.taskId,
+                  eventId: res.headers.get('x-log-event-id')
+                };
                 this.runningTaskLog(obj, 'tx_log_' + (i + 1));
               }
-            } else{
+            } else {
               this.loading = false;
             }
           });
@@ -232,10 +237,14 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
       if (res) {
         this.renderData(res.body, false);
         if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
-          const obj = {controllerId: this.controllerId, taskId: res.headers.get('x-log-task-id') || jobs.taskId, eventId: res.headers.get('x-log-event-id')};
+          const obj = {
+            controllerId: this.controllerId,
+            taskId: res.headers.get('x-log-task-id') || jobs.taskId,
+            eventId: res.headers.get('x-log-event-id')
+          };
           this.runningTaskLog(obj, false);
         }
-      } else{
+      } else {
         this.loading = false;
       }
     }, (err) => {
@@ -254,10 +263,13 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     if (obj.eventId) {
       this.coreService.post('task/log/running', obj).subscribe((res: any) => {
         if (res) {
-          this.renderData(res.log, orderTaskFlag);
+          if (res.log) {
+            this.renderData(res.log, orderTaskFlag);
+          }
           if (!res.complete && !this.isCancel) {
-            if (res.eventId || res.headers.get('x-log-event-id')) {
-              obj.eventId = res.eventId || res.headers.get('x-log-event-id');
+            if (res.eventId) {
+              obj.eventId = res.eventId;
+              obj.taskId = res.taskId;
             }
             this.runningTaskLog(obj, orderTaskFlag);
           }
@@ -270,10 +282,14 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     if (obj.eventId) {
       this.coreService.post('order/log/running', obj).subscribe((res: any) => {
         if (res) {
-          this.jsonToString(res);
+          if(res.logEvents) {
+            this.jsonToString(res);
+          }
           if (!res.complete && !this.isCancel) {
-            obj.eventId = res.eventId;
-            this.runningOrderLog(obj);
+            if (res.eventId) {
+              obj.eventId = res.eventId;
+              this.runningOrderLog(obj);
+            }
             this.showHideTask(this.controllerId, res);
           }
         }
@@ -573,7 +589,11 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
             a.classList.remove('hide');
             a.classList.add('show');
             if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
-              const obj = {controllerId: this.controllerId, taskId: res.headers.get('x-log-task-id') || jobs.taskId, eventId: res.headers.get('x-log-event-id')};
+              const obj = {
+                controllerId: this.controllerId,
+                taskId: res.headers.get('x-log-task-id') || jobs.taskId,
+                eventId: res.headers.get('x-log-event-id')
+              };
               this.runningTaskLog(obj, 'tx_log_' + (i + 1));
             }
           } else {

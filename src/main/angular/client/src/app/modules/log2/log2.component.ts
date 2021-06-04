@@ -85,6 +85,8 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
         }, () => {
           this.init();
         });
+      } else {
+        this.init();
       }
     } else {
       this.init();
@@ -115,7 +117,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
   }
 
   init(): void {
-    if (!this.preferences.logFilter) {
+    if (!this.preferences.logFilter || this.preferences.logFilter.length === 0) {
       this.preferences.logFilter = {
         scheduler: true,
         stdout: true,
@@ -130,9 +132,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
       };
     }
     this.loading = true;
-    if (this.preferences.logFilter) {
-      this.object.checkBoxs = this.preferences.logFilter;
-    }
+    this.object.checkBoxs = this.preferences.logFilter;
     if (this.route.snapshot.queryParams.historyId) {
       this.historyId = parseInt(this.route.snapshot.queryParams.historyId, 10);
       this.orderId = this.route.snapshot.queryParams.orderId;
@@ -220,7 +220,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  loadJobLog() {
+  loadJobLog(): void {
     this.job = this.route.snapshot.queryParams.job;
     const jobs: any = {};
     jobs.controllerId = this.controllerId;
@@ -257,10 +257,13 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     if (obj.eventId) {
       this.coreService.post('task/log/running', obj).subscribe((res: any) => {
         if (res) {
-          this.renderData(res.log, orderTaskFlag);
+          if (res.log) {
+            this.renderData(res.log, orderTaskFlag);
+          }
           if (!res.complete && !this.isCancel) {
-            if (res.eventId || res.headers.get('x-log-event-id')) {
-              obj.eventId = res.eventId || res.headers.get('x-log-event-id');
+            if (res.eventId) {
+              obj.eventId = res.eventId;
+              obj.taskId = res.taskId;
             }
             this.runningTaskLog(obj, orderTaskFlag);
           }
@@ -273,10 +276,14 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     if (obj.eventId) {
       this.coreService.post('order/log/running', obj).subscribe((res: any) => {
         if (res) {
-          this.jsonToString(res);
+          if (res.logEvents) {
+            this.jsonToString(res);
+          }
           if (!res.complete && !this.isCancel) {
-            obj.eventId = res.eventId;
-            this.runningOrderLog(obj);
+            if (res.eventId) {
+              obj.eventId = res.eventId;
+              this.runningOrderLog(obj);
+            }
             this.showHideTask(this.controllerId, res);
           }
         }
