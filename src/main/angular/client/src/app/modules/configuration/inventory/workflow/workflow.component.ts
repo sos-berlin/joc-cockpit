@@ -2427,10 +2427,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         let _failInstructions = clone(objects.Fail);
         let _finishInstructions = clone(objects.Finish);
         const dummyNodesId = [];
-        for (let i = 0; i < objects.Process.length; i++) {
+        for (let i in objects.Process) {
           dummyNodesId.push(objects.Process[i]._id);
         }
-        for (let i = 0; i < connection.length; i++) {
+        for (let i in connection) {
           if (dummyNodesId.indexOf(connection[i].mxCell._source) > -1) {
 
             continue;
@@ -3633,8 +3633,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 if (state.cell.value.tagName === 'Connection' || self.workflowService.isInstructionCollapsible(state.cell.value.tagName) || state.cell.value.tagName === 'Catch') {
                   if (state.cell.value.tagName !== 'Connection') {
                     if (state.cell.value.tagName !== 'Fork') {
-                      const len = graph.getOutgoingEdges(state.cell).length;
-                      if (len > 0) {
+                      const edges = graph.getOutgoingEdges(state.cell);
+                      if ((state.cell.value.tagName !== 'If' && edges.length === 1 && !checkClosingCell(edges[0].target))
+                        || (state.cell.value.tagName === 'If' && edges.length === 2)) {
                         this.setHighlightColor('#ff0000');
                       }
                     }
@@ -3896,7 +3897,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
             if (me.consumed && me.getCell()) {
               if (!self.display) {
-                if (!self.isCellDragging) {
+                if (!self.isCellDragging && !dragStart) {
                   const cell = me.getCell();
                   const selectedCell = graph.getSelectionCell();
                   if (selectedCell && selectedCell.id !== cell.id) {
@@ -4130,7 +4131,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (_graph.autoScroll && (this.autoscroll == null || this.autoscroll)) {
             _graph.scrollPointToVisible(x, y, _graph.autoExtend);
           }
-
           if ($('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
             mxToolbar.prototype.resetMode(true);
           }
@@ -5314,7 +5314,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       const vertices = graph.getChildVertices(graph.getDefaultParent());
       if (vertices.length > 3) {
         graph.setEnabled(true);
-
       }
     }
 
@@ -5794,7 +5793,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     /**
      * Funtion: paste the instruction to given target
      */
-    function pasteInstruction(target) {
+    function pasteInstruction(target): void {
       let source = target.id;
       if (target.value.tagName === 'Connection') {
         if (checkClosingCell(target.source)) {
@@ -5803,8 +5802,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           source = target.source.id;
         }
       }
-      let copyObject: any, targetObject: any, targetIndex = 0, isCatch = false;
 
+      let copyObject: any, targetObject: any, targetIndex = 0, isCatch = false;
       function getObject(json) {
         if (json.instructions) {
           for (let x = 0; x < json.instructions.length; x++) {
@@ -5901,6 +5900,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
         }
         self.updateXMLJSON(true);
+        if (copyObject.id) {
+          setTimeout(() => {
+            graph.setSelectionCell(graph.getModel().getCell(copyObject.id));
+            customizedChangeEvent();
+          }, 0);
+        }
       }
     }
 
@@ -5917,6 +5922,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               let num = arr[arr.length - 1];
               num = parseInt(num, 10) || 0;
               tName = name.substring(0, name.lastIndexOf('_copy')) + '_copy' + '_' + (num + 1);
+            } else {
+              tName = name + '_copy_1';
             }
             str = tName;
             jobs.splice(i, 1);
@@ -5932,9 +5939,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
     function getJob(name): string {
       let job: any = {};
-      let newName, flag = true, tName;
-      tName = name + '_copy_1';
-      newName = checkCopyName(tName);
+      let newName;
+      let flag = true;
+      newName = checkCopyName(name);
       for (let i = 0; i < self.jobs.length; i++) {
         if (newName === self.jobs[i].name) {
           flag = false;
@@ -5988,6 +5995,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
       if (copyObject.TYPE === 'Job') {
         copyObject.jobName = getJob(copyObject.jobName);
+        copyObject.label = copyObject.jobName;
       } else if (copyObject.TYPE === 'Fork') {
         if (copyObject.branches) {
           for (let i = 0; i < copyObject.branches.length; i++) {
@@ -6003,12 +6011,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         if (copyObject.else && copyObject.else.instructions) {
           recursion(copyObject.else);
         }
-      } else if (copyObject.TYPE === 'Retry') {
-        recursion(copyObject.instructions);
-      } else if (copyObject.TYPE === 'Lock') {
-        recursion(copyObject.instructions);
-      } else if (copyObject.TYPE === 'Try') {
-        recursion(copyObject.instructions);
+      } else if (copyObject.TYPE === 'Retry' || copyObject.TYPE === 'Try' || copyObject.TYPE === 'Lock') {
+        recursion(copyObject);
       }
     }
 
@@ -6430,9 +6434,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         num = 0;
       } else {
         for (let i = 0; i < branchs.length; i++) {
-          const _label = branchs[i].getAttribute('label');
-          if (_label) {
-            const count = _label.match(/\d+/)[0];
+          const label = branchs[i].getAttribute('label');
+          if (label) {
+            const arr = label.match(/\d+/);
+            const count = (arr && arr.length > 0) ? arr[0] : 0;
             if (num < count) {
               num = count;
             }

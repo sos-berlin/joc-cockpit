@@ -368,43 +368,41 @@ export class DeployComponent implements OnInit {
           }
           if (objDep.configuration) {
             if (nodes[i].deleted) {
-              if (objDep.configuration) {
-                if (objDep.configuration.objectType === 'FOLDER') {
-                  objDep.configuration.recursive = true;
-                }
-                self.object.deleteObj.deployConfigurations.push(objDep);
+              if (objDep.configuration.objectType === 'FOLDER') {
+                objDep.configuration.recursive = true;
               }
+              self.object.deleteObj.deployConfigurations.push(objDep);
             } else {
-              if (objDep.configuration) {
-                if (nodes[i].isFolder) {
-                  let check1 = false, check2 = false, isEmpty = false;
-                  if (nodes[i].children && nodes[i].children.length > 0) {
-                    for (let j = 0; j < nodes[i].children.length; j++) {
-                      if (nodes[i].children[j].type) {
-                        isEmpty = true;
-                        if ((nodes[i].children[j].deployId || nodes[i].children[j].deploymentId) && !check1) {
-                          check1 = true;
-                          self.object.store.deployConfigurations.push(objDep);
-                        } else if (!check2) {
-                          check2 = true;
-                          self.object.store.draftConfigurations.push(objDep);
-                        }
-                        if (check1 && check2) {
-                          break;
-                        }
+              if (nodes[i].isFolder) {
+                let check1 = false;
+                let check2 = false;
+                let isEmpty = false;
+                if (nodes[i].children && nodes[i].children.length > 0) {
+                  for (let j = 0; j < nodes[i].children.length; j++) {
+                    if (nodes[i].children[j].type) {
+                      isEmpty = true;
+                      if ((nodes[i].children[j].deployId || nodes[i].children[j].deployed || nodes[i].children[j].deploymentId) && !check1) {
+                        check1 = true;
+                        self.object.store.deployConfigurations.push(objDep);
+                      } else if (!check2) {
+                        check2 = true;
+                        self.object.store.draftConfigurations.push(objDep);
+                      }
+                      if (check1 && check2) {
+                        break;
                       }
                     }
                   }
-                  if (!isEmpty) {
-                    self.object.store.deployConfigurations.push(objDep);
-                    self.object.store.draftConfigurations.push(objDep);
-                  }
+                }
+                if (!isEmpty) {
+                  self.object.store.deployConfigurations.push(objDep);
+                  self.object.store.draftConfigurations.push(objDep);
+                }
+              } else {
+                if (objDep.configuration.commitId) {
+                  self.object.store.deployConfigurations.push(objDep);
                 } else {
-                  if (objDep.configuration.commitId) {
-                    self.object.store.deployConfigurations.push(objDep);
-                  } else {
-                    self.object.store.draftConfigurations.push(objDep);
-                  }
+                  self.object.store.draftConfigurations.push(objDep);
                 }
               }
             }

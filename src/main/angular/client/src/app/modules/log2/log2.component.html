@@ -20,11 +20,15 @@
       <label *ngIf="isTraceLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.trace" (ngModelChange)="checkLogLevel('Trace')"><span translate>log.label.trace</span></label>
       <label *ngIf="isDetailLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.detail" (ngModelChange)="checkLogLevel('DETAIL')"><span translate>log.label.detail</span></label>
 
-      <a class="m-r m-l pull-right" (click)="cancel()">
+      <a class="m-r m-l pull-right" *ngIf="!isCancel && !finished" (click)="cancel()">
         <i class="fa fa-times"></i>&nbsp;
         <span translate>common.button.cancel</span>
       </a>
-      <a class="m-l text-primary pull-right" (click)="downloadLog()">
+      <a class="m-r m-l pull-right" *ngIf="finished || isCancel" (click)="reloadLog()">
+        <i class="fa fa-refresh"></i>&nbsp;
+        <span translate>workflow.button.reload</span>
+      </a>
+      <a class="m-l pull-right" (click)="downloadLog()">
         <i class="fa fa-download"></i>&nbsp;
         <span translate>common.button.download</span>
       </a>

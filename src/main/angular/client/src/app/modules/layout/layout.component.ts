@@ -413,7 +413,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       }
       this.currentTime = this.coreService.stringToDate(this.preferences, new Date());
       if (this.sessionTimeout > 0) {
-        --this.count;
+        this.count = this.count - 3;
         const s = Math.floor((this.count) % 60);
         const m = Math.floor((this.count / (60)) % 60);
         const h = Math.floor((this.count / (60 * 60)) % 24);

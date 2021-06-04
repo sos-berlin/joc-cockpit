@@ -23,6 +23,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   switchScheduler = false;
   isLogout = false;
   selectedController: any;
+  timeout: any;
   subscription: Subscription;
 
   @Output() myLogout: EventEmitter<any> = new EventEmitter();
@@ -83,6 +84,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+    }
   }
 
   about(): any {
@@ -200,10 +204,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.switchScheduler = false;
       }, (err) => {
         if (!this.isLogout && err) {
-          setTimeout(() => {
-            this.eventLoading = false;
-            this.getEvents();
-          }, 1000);
+          if (err.status == 420 && err.error && err.error.error && err.error.error.message.match(/ExpiredSessionException/)) {
+
+          } else {
+            this.timeout = setTimeout(() => {
+              this.eventLoading = false;
+              this.getEvents();
+            }, 1000);
+          }
         }
       });
     }

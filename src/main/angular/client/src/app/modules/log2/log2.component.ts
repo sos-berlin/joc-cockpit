@@ -17,6 +17,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
   preferences: any = {};
   loading = false;
   isCancel = false;
+  finished = false;
   errStatus = '';
   sheetContent = '';
   error: any;
@@ -154,9 +155,12 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
         this.showHideTask(this.controllerId, res);
         if (!res.complete && !this.isCancel) {
           this.runningOrderLog({historyId: order.historyId, controllerId: this.controllerId, eventId: res.eventId});
+        } else{
+          this.finished = true;
         }
       } else {
         this.loading = false;
+        this.finished = true;
       }
     }, (err) => {
       window.document.getElementById('logs').innerHTML = '';
@@ -167,6 +171,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
       }
       this.errStatus = err.status;
       this.loading = false;
+      this.finished = true;
     });
   }
 
@@ -200,6 +205,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
               }
             } else {
               this.loading = false;
+              this.finished = true;
             }
           });
         } else {
@@ -239,7 +245,11 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
             eventId: res.headers.get('x-log-event-id')
           };
           this.runningTaskLog(obj, false);
+        } else{
+          this.finished = true;
         }
+      } else{
+        this.loading = false;
       }
     }, (err) => {
       window.document.getElementById('logs').innerHTML = '';
@@ -250,6 +260,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
       }
       this.errStatus = err.status;
       this.loading = false;
+      this.finished = true;
     });
   }
 
@@ -266,6 +277,8 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
               obj.taskId = res.taskId;
             }
             this.runningTaskLog(obj, orderTaskFlag);
+          } else{
+            this.finished = true;
           }
         }
       });
@@ -285,6 +298,8 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
               this.runningOrderLog(obj);
             }
             this.showHideTask(this.controllerId, res);
+          } else{
+            this.finished = true;
           }
         }
       });
@@ -626,6 +641,19 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
 
   copy(): void {
     this.clipboardService.copyFromContent(this.dataBody.nativeElement.innerText);
+  }
+
+  reloadLog(): void {
+    this.isCancel = false;
+    this.finished = false;
+    if (this.route.snapshot.queryParams.historyId) {
+      this.historyId = parseInt(this.route.snapshot.queryParams.historyId, 10);
+      this.orderId = this.route.snapshot.queryParams.orderId;
+      this.loadOrderLog();
+    } else if (this.route.snapshot.queryParams.taskId) {
+      this.taskId = parseInt(this.route.snapshot.queryParams.taskId, 10);
+      this.loadJobLog();
+    }
   }
 
   downloadLog(): void {

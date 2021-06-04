@@ -1222,6 +1222,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: RemovePlanModalComponent,
       nzComponentParams: {
+        schedulerId: this.schedulerIds.selected,
         order,
         workflow,
         isSubmit: true

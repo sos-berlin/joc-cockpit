@@ -557,9 +557,9 @@ export class WorkflowService {
             node.setAttribute('label', 'catch');
             node.setAttribute('targetId', v1.id);
             node.setAttribute('uuid', json.instructions[x].uuid);
-            const cv1 = graph.insertVertex(v1, null, node, 0, 0, 110, 40, (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) ?
+            const cv1 = graph.insertVertex(v1, null, node, 0, 0, 110, 40, (json.instructions[x].catch && json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) ?
               'catch' : 'dashRectangle');
-            if (mapObj.vertixMap && json.instructions[x].catch.position) {
+            if (mapObj.vertixMap && json.instructions[x].catch && json.instructions[x].catch.position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].catch.position), cv1);
             }
             let _id = v1;

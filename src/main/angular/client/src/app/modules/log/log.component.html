@@ -15,7 +15,11 @@
                         <i class="fa fa-download"></i>&nbsp;
                         <span translate>common.button.download</span>
                     </button>
-                    <button type="button" class="btn btn-grey btn-sm m-l-12" (click)="cancel()">
+                    <button type="button" class="btn btn-grey btn-sm m-l-12" *ngIf="finished || isCancel"  (click)="reloadLog()">
+                      <i class="fa fa-refresh"></i>&nbsp;
+                      <span translate>common.button.reload</span>
+                    </button>
+                    <button type="button" class="btn btn-grey btn-sm m-l-12" *ngIf="!isCancel && !finished" (click)="cancel()">
                       <i class="fa fa-times"></i>&nbsp;
                       <span translate>common.button.cancel</span>
                     </button>
