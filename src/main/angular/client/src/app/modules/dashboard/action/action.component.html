@@ -60,7 +60,7 @@
           <a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}"
             (click)="clusterAction('abortAndRestart', controller, false)" translate>dashboard.button.abortAndRestart</a>
         </li>
-        <li nz-menu-item *ngIf="controller"><a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}"
+        <li nz-menu-item *ngIf="controller && controllerPermission && controllerPermission.getLog"><a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}"
             (click)="clusterAction('downloadLog', controller, false)"
               translate>dashboard.button.downloadLog</a>
         </li>

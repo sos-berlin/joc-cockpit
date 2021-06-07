@@ -58,7 +58,7 @@
               <a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}" (click)="clusterAction('abortAndRestart', controller, false)"
                  translate>dashboard.button.abortAndRestart</a></li>
 
-            <li nz-menu-item *ngIf="controller">
+            <li nz-menu-item *ngIf="controller && permission.currentController && permission.currentController.getLog">
               <a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}" (click)="clusterAction('download', controller, false)"
                  translate>dashboard.button.downloadLog</a></li>
             <li nz-menu-item *ngIf="permission.currentController && permission.currentController.switchOver && cluster">
@@ -87,13 +87,13 @@
                 </li>
               </ul>
             </li>
-            <li nz-menu-item *ngIf="joc && joc.clusterNodeState && joc.clusterNodeState._text !== 'active' && permission.joc.administration.controllers.manage" >
+            <li nz-menu-item *ngIf="joc && joc.clusterNodeState && joc.clusterNodeState._text !== 'active' && permission.joc && permission.joc.administration.controllers.manage" >
               <a (click)="switchOver()" translate>
                 dashboard.button.switchOver</a>
             </li>
             <li nz-menu-item *ngIf="joc && !joc.current && joc.clusterNodeState._text !== 'active' && joc.componentState._text === 'unknown'">
               <a (click)="removeFromInventory()" translate>dashboard.button.removeFromInventory</a></li>
-            <li nz-menu-item *ngIf="joc && joc.current" ><a (click)="downloadJocLog()"
+            <li nz-menu-item *ngIf="joc && joc.current && permission.joc && permission.joc.getLog" ><a (click)="downloadJocLog()"
                    translate>dashboard.button.downloadLog</a></li>
           </ul>
       </nz-dropdown-menu>

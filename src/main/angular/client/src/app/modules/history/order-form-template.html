@@ -63,21 +63,14 @@
         </nz-select>
       </div>
     </div>
-    <div class="form-group row" [ngClass]="{'has-error' : ((regex.dirty || regex.touched) && regex.invalid)}">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.regexAndChooseTree</label>
+    <div class="row" [ngClass]="{'form-group': !(filter.paths && filter.paths.length>0)}">
+      <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>common.label.folders</label>
       <div class=" col-sm-6">
-        <input autocomplete="off" type="text" class="form-control" name="regex" #regex="ngModel"
-               placeholder="{{'common.placeholder.regexAndChooseTree' | translate}}" [(ngModel)]="filter.regex">
-        <div class="help-block text-danger" *ngIf="(regex.dirty || regex.touched) && regex.invalid">
-          <div translate>common.message.invalid</div>
-        </div>
-        <div class="inside-input-field">
-          <a (click)="getFolderTree(false)"><i class="fa fa-folder-o fa-lg"></i></a>
-        </div>
+        <a (click)="getFolderTree(false)"><i class="fa fa-folder-o fa-lg"></i></a>
       </div>
     </div>
-    <div class="form-group row" *ngIf="filter.paths && filter.paths.length>0">
-      <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>common.label.folders</label>
+    <div class="form-group row m-t-sm" *ngIf="filter.paths && filter.paths.length>0">
+      <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}"></label>
       <div class="col-sm-6" style="max-height: 140px; overflow: auto">
         <div *ngFor="let path of filter.paths">
           <span class="">{{path}}</span>
@@ -111,6 +104,13 @@
             </div>
           </ng-template>
         </nz-tree-select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>history.label.orderId</label>
+      <div class="col-sm-6">
+        <input autocomplete="off" type="text" name="orderId" class="form-control"
+               placeholder="{{'workflow.placeholder.orderId' | translate}}" [(ngModel)]="filter.orderId">
       </div>
     </div>
     <div class="form-group row">

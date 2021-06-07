@@ -44,7 +44,7 @@ export class AgentComponent implements OnInit, OnDestroy {
 
   private init(): void {
     this.agentsFilters = this.coreService.getResourceTab().agents;
-    if(!this.agentsFilters.expandedObjects){
+    if (!this.agentsFilters.expandedObjects){
       this.agentsFilters.expandedObjects = [];
     }
     this.coreService.getResourceTab().state = 'agent';

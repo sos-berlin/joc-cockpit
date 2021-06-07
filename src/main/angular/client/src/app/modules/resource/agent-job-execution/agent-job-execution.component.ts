@@ -1,16 +1,16 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {Router} from '@angular/router';
+import {Component, OnInit, OnDestroy, Input, Output, EventEmitter} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {isEmpty, clone} from 'underscore';
+import {CoreService} from '../../../services/core.service';
+import {AuthService} from '../../../components/guard';
+import {DataService} from '../../../services/data.service';
+import * as moment from 'moment';
+import {SearchPipe} from '../../../pipes/core.pipe';
 import {TranslateService} from '@ngx-translate/core';
-import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
-import {ExcelService} from '../../services/excel.service';
-import {CoreService} from '../../services/core.service';
-import {SaveService} from '../../services/save.service';
-import {AuthService} from '../../components/guard';
-import {DataService} from '../../services/data.service';
-import {SearchPipe} from '../../pipes/core.pipe';
+import {ExcelService} from '../../../services/excel.service';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {clone, isEmpty} from 'underscore';
+import {EditFilterModalComponent} from '../../../components/filter-modal/filter.component';
+import {SaveService} from '../../../services/save.service';
 
 @Component({
   selector: 'app-filter-content',
@@ -78,29 +78,25 @@ export class SearchComponent implements OnInit {
   existingName: any;
   submitted = false;
   isUnique = true;
-  objectTypes = ['WORKFLOW',
-    'FILEORDERSOURCE',
-    'JOBCLASS',
-    'JOBRESOURCE',
-    'JUNCTION',
-    'LOCK',
-    'SCHEDULE',
-    'WORKINGDAYSCALENDAR',
-    'NONWORKINGDAYSCALENDAR',
-    'ORDER',
-    'DOCUMENTATION'];
-  categories = ['INVENTORY',
-    'CONTROLLER',
-    'DAILYPLAN',
-    'DEPLOYMENT',
-    'DOCUMENTATIONS',
-    'CERTIFICATES'];
+  agentIds = [];
 
   constructor(public coreService: CoreService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.getAgentIds();
+  }
+
+  private getAgentIds(): void {
+    this.coreService.post('agents', {
+      controllerId: this.schedulerIds.selected,
+      compact: true
+    }).subscribe((result: any) => {
+      this.agentIds = result.agents.map((item) => {
+        return item.agentId;
+      });
+    });
   }
 
   checkFilterName(): void {
@@ -118,7 +114,7 @@ export class SearchComponent implements OnInit {
       controllerId: this.schedulerIds.selected,
       account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
-      objectType: 'AUDITLOG',
+      objectType: 'AGENTCLUSTER',
       name: result.name,
       shared: result.shared,
       id: result.id || 0,
@@ -128,12 +124,8 @@ export class SearchComponent implements OnInit {
     let toDate: any;
     const obj: any = {};
     obj.name = result.name;
-    obj.comment = result.comment;
-    obj.ticketLink = result.ticketLink;
-    obj.objectTypes = result.objectTypes;
-    obj.objectName = result.objectName;
-    obj.categories = result.categories;
-    obj.account = result.account;
+    obj.agentIds = result.agentIds;
+    obj.urls = result.urls;
     if (result.radio != 'current') {
       if (result.from1) {
         fromDate = this.coreService.parseProcessExecuted(result.from1);
@@ -172,42 +164,44 @@ export class SearchComponent implements OnInit {
     });
   }
 
-  search() {
+  search(): void {
     this.onSearch.emit();
   }
 
-  cancel() {
+  cancel(): void {
     this.onCancel.emit();
   }
 }
 
 @Component({
-  selector: 'app-audit-log',
-  templateUrl: './audit-log.component.html'
+  selector: 'app-agent-job-execution',
+  templateUrl: 'agent-job-execution.component.html'
 })
-export class AuditLogComponent implements OnInit, OnDestroy {
-  objectType = 'AUDITLOG';
+export class AgentJobExecutionComponent implements OnInit, OnDestroy {
+  objectType = 'AGENTCLUSTER';
+  isLoading = false;
+  showSearchPanel = false;
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
-  adtLog: any = {};
-  auditLogs: any = [];
-  isLoaded = false;
-  showSearchPanel = false;
-  searchFilter: any = {};
-  temp_filter: any = {};
+  agentTasks: any = [];
+  agentFilters: any = {};
+  totalJobExecution: any;
+  totalNumOfJobs: any;
+  dateFormat: any;
+  data = [];
   selectedFiltered: any = {};
+  temp_filter: any = {};
+  searchFilter: any = {};
   savedFilter: any = {};
   filterList: any = [];
-  data = [];
-  searchableProperties = ['controllerId', 'category', 'account', 'request', 'created', 'comment', 'ticketLink'];
+  searchableProperties = ['agentId', 'url', 'numOfSuccessfulTasks', 'numOfJobs'];
 
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
-              private dataService: DataService, private modal: NzModalService, private searchPipe: SearchPipe,
-              private translate: TranslateService, private excelService: ExcelService, private router: Router) {
+  constructor(private authService: AuthService, public coreService: CoreService, private searchPipe: SearchPipe, private saveService: SaveService,
+              private dataService: DataService, private modal: NzModalService, private translate: TranslateService, private excelService: ExcelService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -225,6 +219,24 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.subscription2.unsubscribe();
   }
 
+  private init(): void {
+    this.agentFilters = this.coreService.getResourceTab().agentJobExecution;
+    this.coreService.getResourceTab().state = 'agentJobExecutions';
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    if (!(this.agentFilters.current || this.agentFilters.current === false)) {
+      this.agentFilters.current = this.preferences.currentController;
+    }
+    this.savedFilter = JSON.parse(this.saveService.agentFilters) || {};
+    if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
+      this.checkSharedFilters();
+    } else {
+      this.savedFilter.selected = undefined;
+      this.loadAgentTasks(null);
+    }
+  }
   checkSharedFilters(): void {
     const obj = {
       controllerId: this.schedulerIds.selected,
@@ -282,146 +294,48 @@ export class AuditLogComponent implements OnInit, OnDestroy {
             }).subscribe((conf: any) => {
               this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
               this.selectedFiltered.account = value.account;
-              this.load(null);
+              this.loadAgentTasks(null);
             }, () => {
               this.savedFilter.selected = undefined;
-              this.load(null);
+              this.loadAgentTasks(null);
             });
           }
         });
         if (flag) {
           this.savedFilter.selected = undefined;
-          this.load(null);
+          this.loadAgentTasks(null);
         }
       } else {
         this.savedFilter.selected = undefined;
-        this.load(null);
+        this.loadAgentTasks(null);
       }
     }, () => {
       this.savedFilter.selected = undefined;
-      this.load(null);
+      this.loadAgentTasks(null);
     });
   }
 
   isCustomizationSelected(flag): void {
     if (flag) {
-      this.temp_filter = clone(this.adtLog.filter.date);
-      this.adtLog.filter.date = '';
+      this.temp_filter = clone(this.agentFilters.filter.date);
+      this.agentFilters.filter.date = '';
     } else {
       if (this.temp_filter) {
-        this.adtLog.filter.date = clone(this.temp_filter);
+        this.agentFilters.filter.date = clone(this.temp_filter);
       } else {
-        this.adtLog.filter.date = 'today';
-      }
-    }
-  }
-
-  load(date): void {
-    if (date) {
-      this.adtLog.filter.date = date;
-      this.isLoaded = false;
-    }
-    let obj: any = {
-      controllerId: this.adtLog.current == true ? this.schedulerIds.selected : '',
-      limit: parseInt(this.preferences.maxAuditLogRecords, 10) || 5000
-    };
-    if (this.selectedFiltered && !isEmpty(this.selectedFiltered)) {
-      this.isCustomizationSelected(true);
-      obj = this.generateRequestObj(this.selectedFiltered, obj);
-    } else {
-      obj = this.setDateRange(obj);
-      obj.timeZone = this.preferences.zone;
-    }
-    this.coreService.post('audit_log', obj).subscribe((res: any) => {
-      this.auditLogs = res.auditLog;
-      if (!date) {
-        this.data.forEach((item) => {
-          if (item.show) {
-            for (const i in this.auditLogs) {
-              if (item.id === this.auditLogs[i].id) {
-                this.auditLogs[i].show = true;
-                this.auditLogs[i].isLoaded = true;
-                this.auditLogs[i].details = item.details;
-                break;
-              }
-            }
-          }
-        });
-      }
-      this.searchInResult();
-      this.isLoaded = true;
-    }, () => {
-      this.isLoaded = true;
-    });
-  }
-
-  private init(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
-    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
-    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-
-    this.adtLog = this.coreService.getAuditLogTab();
-    if (!(this.adtLog.current || this.adtLog.current === false)) {
-      this.adtLog.current = this.preferences.currentController;
-    }
-    this.savedFilter = JSON.parse(this.saveService.auditLogFilters) || {};
-    if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
-      this.checkSharedFilters();
-    } else {
-      this.savedFilter.selected = undefined;
-      this.load(null);
-    }
-  }
-
-  private generateRequestObj(object, filter): any {
-    if (object.objectName) {
-      filter.objectName = object.objectName;
-    }
-    if (object.comment) {
-      filter.comment = object.comment;
-    }
-    if (object.ticketLink) {
-      filter.ticketLink = object.ticketLink;
-    }
-    if (object.objectTypes) {
-      filter.objectTypes = object.objectTypes;
-    }
-    if (object.categories) {
-      filter.categories = object.categories;
-    }
-    if (object.account) {
-      filter.account = object.account;
-    }
-    if (object.controllerId) {
-      filter.controllerId = object.controllerId;
-    }
-    if (object.radio == 'planned') {
-      filter = this.parseProcessExecuted(object.planned, filter);
-    } else {
-      filter = this.parseDate(object, filter);
-    }
-    return filter;
-  }
-
-  private refresh(args): void {
-    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
-      for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'AuditLogChanged') {
-          this.load(null);
-          break;
-        }
+        this.agentFilters.filter.date = 'today';
       }
     }
   }
 
   private setDateRange(filter): any {
-    if (this.adtLog.filter.date == 'all') {
+    if (this.agentFilters.filter.date == 'all') {
 
-    } else if (this.adtLog.filter.date == 'today') {
+    } else if (this.agentFilters.filter.date == 'today') {
       filter.dateFrom = '0d';
       filter.dateTo = '0d';
     } else {
-      filter.dateFrom = this.adtLog.filter.date;
+      filter.dateFrom = this.agentFilters.filter.date;
     }
     return filter;
   }
@@ -499,12 +413,12 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     return obj;
   }
 
-  private parseDate(auditSearch, filter): any {
+  private parseDate(agentSearch, filter): any {
 
-    if (auditSearch.from) {
-      const fromDate = new Date(auditSearch.from);
-      if (auditSearch.fromTime) {
-        const fromTime = new Date(auditSearch.fromTime);
+    if (agentSearch.from) {
+      const fromDate = new Date(agentSearch.from);
+      if (agentSearch.fromTime) {
+        const fromTime = new Date(agentSearch.fromTime);
         fromDate.setHours(fromTime.getHours());
         fromDate.setMinutes(fromTime.getMinutes());
         fromDate.setSeconds(fromTime.getSeconds());
@@ -516,10 +430,10 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       fromDate.setMilliseconds(0);
       filter.dateFrom = fromDate;
     }
-    if (auditSearch.to) {
-      const toDate = new Date(auditSearch.to);
-      if (auditSearch.toTime) {
-        const toTime = new Date(auditSearch.toTime);
+    if (agentSearch.to) {
+      const toDate = new Date(agentSearch.to);
+      if (agentSearch.toTime) {
+        const toTime = new Date(agentSearch.toTime);
         toDate.setHours(toTime.getHours());
         toDate.setMinutes(toTime.getMinutes());
         toDate.setSeconds(toTime.getSeconds());
@@ -540,175 +454,196 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     return filter;
   }
 
-  /* ----------------------Action --------------------- */
-  action(type, obj, self): void {
-    if (type === 'DELETE') {
-      if (self.savedFilter.selected == obj.id) {
-        self.savedFilter.selected = undefined;
-        self.isCustomizationSelected(false);
-        self.adtLog.selectedView = false;
-        self.selectedFiltered = undefined;
-        self.setDateRange({});
-        self.load();
-      } else {
-        if (self.filterList.length == 0) {
-          self.isCustomizationSelected(false);
-          self.savedFilter.selected = undefined;
-          self.adtLog.selectedView = false;
-          self.selectedFiltered = undefined;
-        }
-      }
-      self.saveService.setAuditLog(self.savedFilter);
-      self.saveService.save();
-    } else if (type === 'MAKEFAV') {
-      self.savedFilter.favorite = obj.id;
-      self.adtLog.selectedView = true;
-      self.saveService.setAuditLog(self.savedFilter);
-      self.saveService.save();
-      self.load();
-    } else if (type === 'REMOVEFAV') {
-      self.savedFilter.favorite = '';
-      self.saveService.setAuditLog(self.savedFilter);
-      self.saveService.save();
+  loadAgentTasks(date: string): void {
+    if (date) {
+      this.agentFilters.filter.date = date;
+      this.isLoading = false;
     }
-  }
-
-  changeController(): void {
-    this.load(null);
-  }
-
-  navToDeploymentHistory(auditLog): void {
-    if (auditLog.commitId) {
-      console.log(auditLog);
-      this.router.navigate(['/history/deployment'], {
-        queryParams: {
-          commitId: auditLog.commitId,
-          controllerId: (!auditLog.controllerId || auditLog.controllerId === '-') ? this.schedulerIds.selected : auditLog.controllerId
-        }
-      });
+    let obj: any = {
+      controllerId: this.agentFilters.current === true ? this.schedulerIds.selected : '',
+      timeZone: this.preferences.zone
+    };
+    if (this.selectedFiltered && !isEmpty(this.selectedFiltered)) {
+      this.isCustomizationSelected(true);
+      obj = this.generateRequestObj(this.selectedFiltered, obj);
+    } else {
+      obj = this.setDateRange(obj);
+      obj.timeZone = this.preferences.zone;
     }
+    this.coreService.post('agents/report', obj).subscribe((res: any) => {
+      this.agentTasks = res.agents || [];
+      this.searchInResult();
+      this.totalJobExecution = res.totalNumOfSuccessfulTasks;
+      this.totalNumOfJobs = res.totalNumOfJobs;
+      this.isLoading = true;
+    }, () => {
+      this.isLoading = true;
+      this.agentTasks = [];
+    });
   }
 
-  showDetail(auditLog): void {
-    auditLog.show = true;
-    if (!auditLog.isLoaded) {
-      this.coreService.post('audit_log/details', {
-        auditLogId: auditLog.id
-      }).subscribe((res: any) => {
-        auditLog.details = res.auditLogDetails;
-        auditLog.isLoaded = true;
-      }, () => {
-        auditLog.isLoaded = true;
-      });
+  private generateRequestObj(object, filter): any {
+    if (object.urls) {
+      filter.urls = object.urls.split(',');
     }
-  }
-
-  sort(propertyName): void {
-    this.adtLog.reverse = !this.adtLog.reverse;
-    this.adtLog.filter.sortBy = propertyName;
-  }
-
-  pageIndexChange($event): void {
-    this.adtLog.currentPage = $event;
-  }
-
-  pageSizeChange($event): void {
-    this.adtLog.entryPerPage = $event;
+    if (object.agentIds) {
+      filter.agentIds = object.agentIds;
+    }
+    if (object.controllerId) {
+      filter.controllerId = object.controllerId;
+    }
+    if (object.radio == 'planned') {
+      filter = this.parseProcessExecuted(object.planned, filter);
+    } else {
+      filter = this.parseDate(object, filter);
+    }
+    return filter;
   }
 
   searchInResult(): void {
-    this.data = this.adtLog.searchText ? this.searchPipe.transform(this.auditLogs, this.adtLog.searchText, this.searchableProperties) : this.auditLogs;
+    this.data = this.agentFilters.searchText ? this.searchPipe.transform(this.agentTasks, this.agentFilters.searchText, this.searchableProperties) : this.agentTasks;
     this.data = [...this.data];
   }
 
-  exportToExcel(): void {
-    let created = '', controllerId = '', category = '', account = '',
-      request = '', comment = '', timeSpend = '', ticketLink = '';
-    this.translate.get('auditLog.label.created').subscribe(translatedValue => {
-      created = translatedValue;
-    });
-    this.translate.get('common.label.controllerId').subscribe(translatedValue => {
-      controllerId = translatedValue;
-    });
-    this.translate.get('auditLog.label.account').subscribe(translatedValue => {
-      account = translatedValue;
-    });
-    this.translate.get('auditLog.label.request').subscribe(translatedValue => {
-      request = translatedValue;
-    });
-    this.translate.get('auditLog.label.category').subscribe(translatedValue => {
-      category = translatedValue;
-    });
-    this.translate.get('auditLog.label.comment').subscribe(translatedValue => {
-      comment = translatedValue;
-    });
-    this.translate.get('auditLog.label.timeSpend').subscribe(translatedValue => {
-      timeSpend = translatedValue;
-    });
-    this.translate.get('auditLog.label.ticketLink').subscribe(translatedValue => {
-      ticketLink = translatedValue;
-    });
-    const data = [];
-    for (let i = 0; i < this.auditLogs.length; i++) {
-      const obj: any = {};
-      if (!this.adtLog.current) {
-        obj[controllerId] = this.auditLogs[i].controllerId;
-      }
-      obj[created] = this.coreService.stringToDate(this.preferences, this.auditLogs[i].created);
-      obj[account] = this.auditLogs[i].account;
-      obj[request] = this.auditLogs[i].request;
-      obj[category] = this.auditLogs[i].category;
-      obj[comment] = this.auditLogs[i].comment;
-      obj[timeSpend] = this.auditLogs[i].timeSpend;
-      obj[ticketLink] = this.auditLogs[i].ticketLink;
-
-      data.push(obj);
-    }
-    this.excelService.exportAsExcelFile(data, 'JS7-audit-logs');
-  }
-
-  /* ----------------------Advance Search --------------------- */
   advancedSearch(): void {
     this.showSearchPanel = true;
     this.searchFilter = {
       radio: 'current',
       planned: 'today',
       from: new Date(),
+      fromTime: new Date(),
       to: new Date(),
       toTime: new Date()
     };
   }
 
   cancel(): void {
-    if (!this.adtLog.filter.date) {
-      this.adtLog.filter.date = 'today';
+    if (!this.agentFilters.filter.date) {
+      this.agentFilters.filter.date = 'today';
     }
     this.showSearchPanel = false;
     this.searchFilter = {};
-    this.load(null);
+    this.loadAgentTasks(null);
   }
 
   search(): void {
-    this.isLoaded = false;
+    this.isLoading = false;
     let filter: any = {
-      controllerId: this.adtLog.current == true ? this.schedulerIds.selected : '',
-      limit: parseInt(this.preferences.maxAuditLogRecords, 10),
-      account: this.searchFilter.account ? this.searchFilter.account : undefined,
+      controllerId: this.searchFilter.controllerId || '',
       timeZone: this.preferences.zone
     };
-
-    this.adtLog.filter.date = '';
+    this.agentFilters.filter.date = '';
     filter = this.generateRequestObj(this.searchFilter, filter);
-    this.coreService.post('audit_log', filter).subscribe((res: any) => {
-      this.auditLogs = res.auditLog;
+    console.log(filter, this.searchFilter);
+    this.coreService.post('agents/report', filter).subscribe((res: any) => {
+      this.agentTasks = res.agents || [];
       this.searchInResult();
-      this.isLoaded = true;
+      this.totalJobExecution = res.totalNumOfSuccessfulTasks;
+      this.totalNumOfJobs = res.totalNumOfJobs;
+      this.isLoading = true;
     }, () => {
-      this.isLoaded = true;
+      this.isLoading = true;
+      this.agentTasks = [];
     });
   }
 
-  /* ---- Customization ------ */
+  /* ---------------------------- Action ----------------------------------*/
+
+  pageIndexChange($event): void {
+    this.agentFilters.currentPage = $event;
+  }
+
+  pageSizeChange($event): void {
+    this.agentFilters.entryPerPage = $event;
+  }
+
+  sort(propertyName): void {
+    this.agentFilters.reverse = !this.agentFilters.reverse;
+    this.agentFilters.filter.sortBy = propertyName;
+  }
+
+  changeController(): void {
+    this.loadAgentTasks(null);
+  }
+
+  exportToExcel(): void {
+    let controllerId = '', agentId = '', url = '',
+      numOfSuccessfulTasks = '', numOfJobs = '';
+    this.translate.get('common.label.controllerId').subscribe(translatedValue => {
+      controllerId = translatedValue;
+    });
+    this.translate.get('agent.label.agentId').subscribe(translatedValue => {
+      agentId = translatedValue;
+    });
+    this.translate.get('agent.label.url').subscribe(translatedValue => {
+      url = translatedValue;
+    });
+    this.translate.get('resource.agentJobExecution.label.numberOfSuccessfullyExecutedTask').subscribe(translatedValue => {
+      numOfSuccessfulTasks = translatedValue;
+    });
+    this.translate.get('resource.agentJobExecution.label.numberOfJobsExecuted').subscribe(translatedValue => {
+      numOfJobs = translatedValue;
+    });
+    const data = [];
+    for (let i = 0; i < this.agentTasks.length; i++) {
+      const obj: any = {};
+      if (!this.agentFilters.current) {
+        obj[controllerId] = this.agentTasks[i].controllerId;
+      }
+      obj[agentId] = this.agentTasks[i].agentId;
+      obj[url] = this.agentTasks[i].url;
+      obj[numOfSuccessfulTasks] = this.agentTasks[i].numOfSuccessfulTasks;
+      obj[numOfJobs] = this.agentTasks[i].numOfJobs;
+
+      data.push(obj);
+    }
+    this.excelService.exportAsExcelFile(data, 'JS7-agent-job-execution');
+  }
+
+  private refresh(args): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].eventType === 'JobStateChanged') {
+          this.loadAgentTasks(null);
+          break;
+        }
+      }
+    }
+  }
+
+  /* ----------------------Customization --------------------- */
+  action(type, obj, self): void {
+    if (type === 'DELETE') {
+      if (self.savedFilter.selected == obj.id) {
+        self.savedFilter.selected = undefined;
+        self.isCustomizationSelected(false);
+        self.agentFilters.selectedView = false;
+        self.selectedFiltered = undefined;
+        self.setDateRange({});
+        self.loadAgentTasks();
+      } else {
+        if (self.filterList.length == 0) {
+          self.isCustomizationSelected(false);
+          self.savedFilter.selected = undefined;
+          self.agentFilters.selectedView = false;
+          self.selectedFiltered = undefined;
+        }
+      }
+      self.saveService.setAgent(self.savedFilter);
+      self.saveService.save();
+    } else if (type === 'MAKEFAV') {
+      self.savedFilter.favorite = obj.id;
+      self.agentFilters.selectedView = true;
+      self.saveService.setAgent(self.savedFilter);
+      self.saveService.save();
+      self.loadAgentTasks();
+    } else if (type === 'REMOVEFAV') {
+      self.savedFilter.favorite = '';
+      self.saveService.setAgent(self.savedFilter);
+      self.saveService.save();
+    }
+  }
+
   createCustomization(): void {
     if (this.schedulerIds.selected) {
       const modal = this.modal.create({
@@ -727,11 +662,11 @@ export class AuditLogComponent implements OnInit, OnDestroy {
         if (configObj) {
           if (this.filterList.length == 1) {
             this.savedFilter.selected = configObj.id;
-            this.adtLog.selectedView = true;
+            this.agentFilters.selectedView = true;
             this.selectedFiltered = configObj;
             this.isCustomizationSelected(true);
-            this.load(null);
-            this.saveService.setAuditLog(this.savedFilter);
+            this.loadAgentTasks(null);
+            this.saveService.setAgent(this.savedFilter);
             this.saveService.save();
           }
         }
@@ -768,25 +703,25 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   changeFilter(filter): void {
     if (filter) {
       this.savedFilter.selected = filter.id;
-      this.adtLog.selectedView = true;
+      this.agentFilters.selectedView = true;
       this.coreService.post('configuration', {
         controllerId: filter.controllerId,
         id: filter.id
       }).subscribe((conf: any) => {
         this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
         this.selectedFiltered.account = filter.account;
-        this.load(null);
+        this.loadAgentTasks(null);
       });
     } else {
       this.isCustomizationSelected(false);
       this.savedFilter.selected = filter;
-      this.adtLog.selectedView = false;
+      this.agentFilters.selectedView = false;
       this.selectedFiltered = {};
       this.setDateRange({});
-      this.load(null);
+      this.loadAgentTasks(null);
     }
 
-    this.saveService.setAuditLog(this.savedFilter);
+    this.saveService.setAgent(this.savedFilter);
     this.saveService.save();
   }
 
@@ -825,4 +760,6 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       });
     }
   }
+
 }
+

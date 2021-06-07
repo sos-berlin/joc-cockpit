@@ -68,17 +68,13 @@
         </nz-select>
       </div>
     </div>
-    <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.regexAndChooseTree</label>
+    <div class="row" [ngClass]="{'form-group': !(filter.paths && filter.paths.length>0)}">
+      <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>common.label.folders</label>
       <div class=" col-sm-6">
-        <input autocomplete="off" type="text" class="form-control" name="regex"
-               placeholder="{{'common.placeholder.regexAndChooseTree' | translate}}" [(ngModel)]="filter.regex">
-        <div class="inside-input-field">
           <a (click)="getFolderTree(false)"><i class="fa fa-folder-o fa-lg"></i></a>
-        </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="filter.paths && filter.paths.length>0">
+    <div class="form-group row m-t-sm" *ngIf="filter.paths && filter.paths.length>0">
       <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>common.label.folders</label>
       <div class="col-sm-6" style="max-height: 140px; overflow: auto">
         <div *ngFor="let path of filter.paths">
@@ -113,6 +109,13 @@
             </div>
           </ng-template>
         </nz-tree-select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>history.label.job</label>
+      <div class="col-sm-6">
+        <input autocomplete="off" type="text" name="jobName" class="form-control"
+               placeholder="{{'history.placeholder.jobName' | translate}}" [(ngModel)]="filter.jobName">
       </div>
     </div>
     <div class="m-b-sm row">

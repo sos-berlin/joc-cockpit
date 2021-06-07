@@ -766,6 +766,7 @@
     "button.expandAll": "Expand All",
     "button.collapseAll": "Collapse All",
     "placeholder.selectDeployType": "Choose object type",
+    "placeholder.jobName": "Enter job name",
     "message.ignoreListIsEmpty": "Ignore List is empty!",
     "message.noOrderHistoryFound": "no Order History entries found",
     "message.addedToIgnoreList": "Added To Ignore List",
@@ -1104,6 +1105,8 @@
       "label.modify": "modify",
       "label.cancel": "cancel",
       "label.switchOver": "switch-over",
+      "label.downloadLog": "download log",
+      "label.jocCockpit": "JOC Cockpit",
       "label.suspendResume": "suspend and resume"
     },
     "keyManagement": {
@@ -1250,10 +1253,23 @@
   "resource": {
     "label.locks": "Locks",
     "label.agentView": "Agents",
+    "label.agentJobExecution": "Agent Job Execution",
     "label.calendars": "Calendars",
     "label.documentations": "Documentations",
     "label.showUsage": "Show Usage",
     "button.showUsage": "Show Usage",
+    "agentJobExecution": {
+      "label.numberOfJobsExecuted": "Number of Jobs executed",
+      "label.numberOfSuccessfullyExecutedTask": "Number of successfully executed Tasks",
+      "label.agentTaskFound": "Agent Task entry found",
+      "label.agentTasksFound": "Agent Task entries found",
+      "label.totalNumberOfExecutions": "Total number of task executions",
+      "label.totalNumberOfJobExecutions": "Total number of Job executions",
+      "label.agentIds": "Agent IDs",
+      "label.agentUrls": "Agent Urls",
+      "placeholder.selectAgentIds": "Select Agent IDs",
+      "placeholder.enterAgentUrls": "Enter Agent urls separated by comma"
+    },
     "lock": {
       "label.lock": "Lock",
       "label.deploymentDate": "Deployment Date",

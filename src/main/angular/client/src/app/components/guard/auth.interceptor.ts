@@ -44,7 +44,8 @@ export class AuthInterceptor implements HttpInterceptor {
             this.logService.debug(message);
           }
         }, (err: any) => {
-          if ((err.status === 401 || err.status === 440 || (err.status === 420 && err.error.error && (err.error.error.message.match(/UnknownSessionException/) || err.error.error.message.match(/user is null/))))) {
+          if ((err.status === 401 || err.status === 440 || (err.status === 420 && err.error.error && (err.error.error.message.match(/UnknownSessionException/)
+            || err.error.error.message.match(/user is null/))))) {
             if (!this.router.url.match('/login') && !req.url.match('authentication/login')) {
               let title = '';
               let msg = '';
@@ -64,7 +65,7 @@ export class AuthInterceptor implements HttpInterceptor {
               this.router.navigate(['login'], {queryParams: {returnUrl: url}});
               return;
             }
-          } else if (err.status && err.status !== 434) {
+          } else if (err.status && err.status !== 434 && err.status !== 502) {
             if (err.error.error) {
               if (err.error.error.message && err.error.error.message.match('JocObjectAlreadyExistException')) {
                 this.toasterService.pop('error', '', err.error.error.message.replace(/JocObjectAlreadyExistException:/, ''));

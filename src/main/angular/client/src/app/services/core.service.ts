@@ -146,7 +146,7 @@ export class CoreService {
     this.tabs._resource.agentJobExecution = {};
     this.tabs._resource.agentJobExecution.filter = {};
     this.tabs._resource.agentJobExecution.filter.date = 'today';
-    this.tabs._resource.agentJobExecution.filter.sortBy = 'agent';
+    this.tabs._resource.agentJobExecution.filter.sortBy = 'agentId';
     this.tabs._resource.agentJobExecution.reverse = false;
     this.tabs._resource.agentJobExecution.currentPage = '1';
     this.tabs._resource.locks = {};
@@ -292,7 +292,7 @@ export class CoreService {
     this.tempTabs._resource.agentJobExecution = {};
     this.tempTabs._resource.agentJobExecution.filter = {};
     this.tempTabs._resource.agentJobExecution.filter.date = 'today';
-    this.tempTabs._resource.agentJobExecution.filter.sortBy = 'agent';
+    this.tempTabs._resource.agentJobExecution.filter.sortBy = 'agentId';
     this.tempTabs._resource.agentJobExecution.reverse = false;
     this.tempTabs._resource.agentJobExecution.currentPage = '1';
     this.tempTabs._resource.locks = {};

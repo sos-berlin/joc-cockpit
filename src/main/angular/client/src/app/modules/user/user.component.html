@@ -504,7 +504,15 @@
                       translate>profile.permission.label.deploy</span></span>
                   </div>
                 </div>
-                 <div class="row m-t">
+                <div class="row m-t">
+                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.permission.label.jocCockpit</span></div>
+                  <div class="row col-md-8 col-lg-9">
+                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.joc.getLog}"></i>&nbsp; <span
+                      translate>profile.permission.label.downloadLog</span></span>
+                  </div>
+                </div>
+                <div class="row m-t">
                   <div class="col-md-4 col-lg-3"><span class="text-dark"
                                                        translate>profile.permission.label.js7Controller</span>
                   </div>
@@ -521,6 +529,9 @@
                     <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
                                                             [ngClass]="{'fa-times text-black-lt': !permission.currentController.switchOver}"></i>&nbsp; <span
                       translate>profile.permission.label.switchOver</span></span>
+                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.currentController.getLog}"></i>&nbsp; <span
+                      translate>profile.permission.label.downloadLog</span></span>
                   </div>
                 </div>
                 <div class="row m-t">

@@ -258,7 +258,7 @@ export class OrderSearchComponent implements OnInit {
     let fromDate: any;
     let toDate: any;
     const obj: any = {};
-    obj.regex = result.regex;
+    obj.orderId = result.orderId;
     obj.paths = result.paths;
     obj.workflowPaths = result.workflowPaths;
     obj.states = result.states;
@@ -485,10 +485,9 @@ export class TaskSearchComponent implements OnInit {
     let fromDate: any;
     let toDate: any;
     const obj: any = {};
-    obj.regex = result.regex;
     obj.paths = result.paths;
     obj.workflowPaths = result.workflowPaths;
-    obj.job = result.job;
+    obj.jobName = result.jobName;
     obj.state = result.state;
     obj.name = result.name;
     obj.criticality = result.criticality;
@@ -1172,8 +1171,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   orderParseDate(obj): any {
-    if (this.selectedFiltered1.regex) {
-      obj.regex = this.selectedFiltered1.regex;
+    if (this.selectedFiltered1.orderId) {
+      obj.orderId = this.selectedFiltered1.orderId;
     }
     if (this.selectedFiltered1.paths && this.selectedFiltered1.paths.length > 0) {
       obj.folders = [];
@@ -1304,8 +1303,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   jobParseDate(obj): any {
-    if (this.selectedFiltered2.regex) {
-      obj.regex = this.selectedFiltered2.regex;
+    if (this.selectedFiltered2.jobName) {
+      obj.jobName = this.selectedFiltered2.jobName;
     }
     if (this.selectedFiltered2.state && this.selectedFiltered2.state.length > 0) {
       obj.historyStates = this.selectedFiltered2.state;
@@ -1676,8 +1675,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
         }
       }
 
-      if (obj.regex) {
-        filter.regex = obj.regex;
+      if (obj.orderId) {
+        filter.orderId = obj.orderId;
       }
       if (obj.controllerId) {
         filter.controllerId = obj.controllerId;
@@ -1784,8 +1783,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
         }
       }
 
-      if (obj.regex) {
-        filter.regex = obj.regex;
+      if (obj.jobName) {
+        filter.jobName = obj.jobName;
       }
       if (obj.controllerId) {
         filter.controllerId = obj.controllerId;
@@ -2031,7 +2030,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  advancedSearch() {
+  advancedSearch(): void {
     this.showSearchPanel = true;
     this.object.paths = [];
     this.object.orders = [];
@@ -2080,7 +2079,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     };
   }
 
-  cancel() {
+  cancel(): void {
     this.loadHistory(null, null);
   }
 

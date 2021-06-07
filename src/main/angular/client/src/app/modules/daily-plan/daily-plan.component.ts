@@ -1139,12 +1139,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.router.navigate(['/history']);
   }
 
-  navToOrderHistory(orderId): void {
-    let filter = this.coreService.getHistoryTab();
-    filter.type = 'ORDER';
-    filter.order.selectedView = false;
-    filter.order.filter.date = 'today';
-    this.router.navigate(['/history']);
+  navToOrderHistory(data): void {
+    this.router.navigate(['/history/order'], {
+      queryParams: {
+        orderId: data.orderId,
+        workflow: data.workflowPath,
+        controllerId: JSON.parse(this.authService.scheduleIds).selected
+      }
+    });
   }
 
   /* --------------- Navigate End-------------------*/

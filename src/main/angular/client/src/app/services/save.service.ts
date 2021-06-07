@@ -3,12 +3,13 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class SaveService {
 
-  props = ['workflowFilters', 'jobFilters', 'yadeFilters', 'historyFilters', 'auditLogFilters', 'ignoreList', 'dailyPlanFilters', 'resizerHeight'];
+  props = ['workflowFilters', 'jobFilters', 'yadeFilters', 'historyFilters', 'auditLogFilters', 'agentFilters', 'ignoreList', 'dailyPlanFilters', 'resizerHeight'];
   propsPrefix = '$SOS$';
   workflowFilters: any;
   jobFilters: any;
   yadeFilters: any;
   historyFilters: any;
+  agentFilters: any;
   auditLogFilters: any;
   ignoreList: any;
   dailyPlanFilters: any;
@@ -47,6 +48,10 @@ export class SaveService {
 
   setAuditLog(filter: any): void {
     this.auditLogFilters = JSON.stringify(filter);
+  }
+
+  setAgent(filter: any): void {
+    this.agentFilters = JSON.stringify(filter);
   }
 
   setIgnoreList(ignoreList: any): void {

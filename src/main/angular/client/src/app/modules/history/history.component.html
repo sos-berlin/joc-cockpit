@@ -836,6 +836,9 @@
                         <a (click)="hideAllPanelFuc(history)"
                            translate>history.button.collapseAll</a>
                       </li>
+                      <li nz-menu-item>
+                        <a (click)="coreService.copyLink('order',history.orderId, history.workflow)" translate>common.button.copyLinkToObject</a>
+                      </li>
                     </ul>
                   </nz-dropdown-menu>
                 </div>
