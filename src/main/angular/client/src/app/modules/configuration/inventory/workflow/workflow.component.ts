@@ -1440,6 +1440,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   skipXMLToJSONConversion = false;
   objectType = 'WORKFLOW';
   invalidMsg: string;
+  inventoryConf: any;
 
   subscription: Subscription;
 
@@ -1491,6 +1492,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
     }
     if (this.workflow.actual) {
+      this.saveCopyInstruction();
       this.saveJSON(false);
       this.selectedNode = null;
     }
@@ -1538,6 +1540,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
     if (this.data.type) {
+      this.saveCopyInstruction();
       this.saveJSON(false);
     }
     try {
@@ -1548,6 +1551,26 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
     } catch (e) {
       console.error(e);
+    }
+  }
+
+  private saveCopyInstruction(): void {
+    if (this.copyId) {
+      let obj = this.getObject(this.workflow.configuration);
+      if (obj.TYPE) {
+        if (obj.TYPE === 'Job') {
+          for (let i in this.jobs) {
+            if (this.jobs[i] && this.jobs[i].name === obj.jobName) {
+              obj.jobObject = this.jobs[i].value;
+              break;
+            }
+          }
+        }
+        delete obj.id;
+        delete obj.uuid;
+        this.copyId = null;
+        this.inventoryConf.copiedInstuctionObject = obj;
+      }
     }
   }
 
@@ -1757,12 +1780,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
         this.copyId = cell.getAttribute('uuid');
         if (this.copyId) {
-          $('#toolbar').find('img').each(function(index) {
-            if (index === 12) {
-              $(this).removeClass('disable-link');
-              $(this).attr('title', 'Copy of ' + cell.value.tagName);
-            }
-          });
+          this.updateToolbar('copy', cell);
         }
       }
     }
@@ -1784,14 +1802,23 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
         this.changeCellStyle(graph, cell, true);
         this.cutCell = cell;
-        $('#toolbar').find('img').each(function(index) {
-          if (index === 12) {
-            $(this).removeClass('disable-link');
-            $(this).attr('title', cell.value.tagName);
-          }
-        });
+        this.updateToolbar('cut', cell);
       }
     }
+  }
+
+  private updateToolbar(operation, cell, name = ''): void {
+    $('#toolbar').find('img').each(function(index) {
+      if (index === 12) {
+        if (!cell && !name) {
+          $(this).addClass('disable-link');
+          $(this).attr('title', '');
+        } else {
+          $(this).removeClass('disable-link');
+          $(this).attr('title', (operation === 'copy' ? 'Copy of ' : '') + (cell ? cell.value.tagName : name));
+        }
+      }
+    });
   }
 
   navToWorkflowTab(): void {
@@ -2024,6 +2051,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private init(): void {
+    this.inventoryConf = this.coreService.getConfigurationTab();
     if (!this.dummyXml) {
       this.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 460;
       this.loadConfig();
@@ -2077,6 +2105,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private getWorkflowObject(): void {
+    if (!this.inventoryConf.copiedInstuctionObject || !this.inventoryConf.copiedInstuctionObject.TYPE) {
+      this.updateToolbar('copy', null);
+    } else {
+      this.updateToolbar('copy', null, this.inventoryConf.copiedInstuctionObject.TYPE);
+    }
     this.error = false;
     this.history = {past: [], present: {}, future: [], type: 'new'};
     this.isLoading = true;
@@ -2227,7 +2260,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     const graph = this.editor.graph;
     if (!isEmpty(this.workflow.configuration)) {
       if (noConversion) {
-        this.updateWorkflow(graph);
+        this.workflowService.checkEmptyObjects(this.workflow.configuration, () => {
+          this.updateWorkflow(graph);
+        });
       } else {
         this.workflowService.convertTryToRetry(this.workflow.configuration, () => {
           this.updateWorkflow(graph);
@@ -4373,7 +4408,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
             if (dragElement) {
               if (dragElement.match('paste')) {
-                if (self.copyId) {
+                if (self.copyId || (self.inventoryConf.copiedInstuctionObject && self.inventoryConf.copiedInstuctionObject.TYPE)) {
                   pasteInstruction(drpTargt);
                 } else if (self.cutCell) {
                   createClickInstruction(dragElement, drpTargt);
@@ -5804,6 +5839,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
 
       let copyObject: any, targetObject: any, targetIndex = 0, isCatch = false;
+      if(!self.copyId) {
+        copyObject = self.coreService.clone(self.inventoryConf.copiedInstuctionObject);
+        delete copyObject.jobObject;
+      }
       function getObject(json) {
         if (json.instructions) {
           for (let x = 0; x < json.instructions.length; x++) {
@@ -5952,6 +5991,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
       }
       if (flag) {
+        if (self.inventoryConf.copiedInstuctionObject && self.inventoryConf.copiedInstuctionObject.jobName === name) {
+          job = {name: newName, value: self.inventoryConf.copiedInstuctionObject.jobObject};
+        }
+        if (!job.name) {
+          job = {name: newName, value: {}};
+        }
         self.jobs.push(job);
       }
       return newName;
@@ -6914,7 +6959,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         const booleanObj = {
           isMatch: false
         };
-
         if (targetObject && dropObject) {
           if (targetObject.instructions) {
             const sourceObj = dropObject.instructions[index];
@@ -6931,7 +6975,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             if (dropObject && dropObject.instructions) {
               dropObject.instructions.splice(index, 1);
             }
-
             if ((connection.source === 'start')) {
               targetObject.instructions.splice(0, 0, sourceObj);
             } else {
@@ -7037,6 +7080,42 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (callFun) {
       selectionChanged();
     }
+  }
+
+  private getObject(mainJson): any {
+    const self = this;
+    let obj: any = {};
+
+    function recursion(json): void {
+      if (json.instructions) {
+        for (let x = 0; x < json.instructions.length; x++) {
+          if (json.instructions[x].uuid == self.copyId) {
+            obj = self.coreService.clone(json.instructions[x]);
+          }
+          if (json.instructions[x].instructions) {
+            recursion(json.instructions[x]);
+          }
+          if (json.instructions[x].catch) {
+            if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+              recursion(json.instructions[x].catch);
+            }
+          }
+          if (json.instructions[x].then) {
+            recursion(json.instructions[x].then);
+          }
+          if (json.instructions[x].else) {
+            recursion(json.instructions[x].else);
+          }
+          if (json.instructions[x].branches) {
+            for (let i = 0; i < json.instructions[x].branches.length; i++) {
+              recursion(json.instructions[x].branches[i]);
+            }
+          }
+        }
+      }
+    }
+    recursion(mainJson);
+    return obj;
   }
 
   private cutOperation(): void {

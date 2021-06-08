@@ -928,6 +928,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
   orderId: string;
   workflowPath: string;
   commitId: string;
+  dailyPlanDate: string;
   subscription: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private router: Router,
@@ -941,6 +942,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
     this.orderId = this.route.snapshot.queryParamMap.get('orderId');
     this.workflowPath = this.route.snapshot.queryParamMap.get('workflow');
     this.commitId = this.route.snapshot.queryParamMap.get('commitId');
+    this.dailyPlanDate = this.route.snapshot.queryParamMap.get('dailyPlanDate');
     this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
@@ -950,6 +952,8 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
       this.getOrderHistory();
     } else if (this.commitId) {
       this.getDeploymentHistory();
+    } else if (this.dailyPlanDate){
+      this.getSubmissionHistory();
     }
   }
 
@@ -991,6 +995,22 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
         obj.state = res.depHistory[0].state;
       }
       this.history = [obj];
+      this.loading = false;
+    }, () => {
+      this.loading = false;
+    });
+  }
+
+  private getSubmissionHistory(): void {
+    const obj = {
+      controllerId: this.controllerId,
+      filter: {
+        controllerId: this.controllerId,
+        dateFrom: this.dailyPlanDate
+      }
+    };
+    this.coreService.post('daily_plan/history', obj).subscribe((res: any) => {
+      this.history = res.dailyPlans;
       this.loading = false;
     }, () => {
       this.loading = false;

@@ -935,6 +935,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   submissionHistoryItems: any = [];
   planOrders: any = [];
   isLoaded = false;
+  isRefreshed = false;
   dailyPlanFilters: any = {filter: {}};
   pageView: string;
   savedFilter: any = {};
@@ -1038,8 +1039,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.coreService.post('daily_plan/orders', obj).subscribe((res: any) => {
         this.filterData(res.plannedOrderItems);
         this.isLoaded = true;
+        this.isRefreshed = false;
       }, () => {
         this.isLoaded = true;
+        this.isRefreshed = false;
         this.resetCheckBox();
       });
     }
@@ -1775,7 +1778,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   private updateList(): void {
     this.load(this.selectedDate);
-    this.loadOrderPlan();
   }
 
   private restCall(isKill, order, multiple, type): void {
@@ -2163,8 +2165,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType.match(/WorkflowStateChanged/)) {
-          this.updateList();
+        if (args.eventSnapshots[j].eventType.match(/WorkflowStateChanged/) && !this.isRefreshed) {
+          this.isRefreshed = true;
+          this.loadOrderPlan();
           break;
         }
       }

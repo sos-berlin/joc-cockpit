@@ -11,6 +11,9 @@ const routes: Routes = [
   },
   {
     path: 'deployment', component: SingleHistoryComponent,  data: {breadcrumb: 'breadcrumb.label.deployment'}
+  },
+  {
+    path: 'daily_plan', component: SingleHistoryComponent,  data: {breadcrumb: 'breadcrumb.label.dailyPlan'}
   }
 ];
 

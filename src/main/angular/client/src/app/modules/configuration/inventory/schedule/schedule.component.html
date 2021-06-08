@@ -146,7 +146,7 @@
           <div class="col-md-8 col-lg-9 m-b-sm" *ngIf="i==0" translate>common.label.value</div>
           <div class="col-md-4 col-lg-3 m-b-sm">
             <nz-select nzShowSearch name="name{{i}}" [nzDisabled]="isTrash || !permission.joc.inventory.manage" nzPlaceHolder="{{'common.placeholder.selectVariable' | translate}}"
-                       [(ngModel)]="variable.name" (ngModelChange)="checkVariableType(variable)">
+                       [(ngModel)]="variable.name" (ngModelChange)="checkVariableType(variable);saveJSON()">
               <nz-option *ngFor="let list of variableList" [nzDisabled]="list.isSelected" [nzLabel]="list.name"
                          [nzValue]="list.name"></nz-option>
             </nz-select>
@@ -198,7 +198,7 @@
         </div>
         <div class="form-group row" [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}">
           <div class="col-sm-12" *ngIf="variableList.length > schedule.configuration.variables.length">
-            <a class="text-u-l" (click)="addVariable()" translate>order.button.addVariable</a>
+            <a class="text-u-l" (click)="addVariable()" translate>order.button.modifyVariable</a>
           </div>
         </div>
       </form>

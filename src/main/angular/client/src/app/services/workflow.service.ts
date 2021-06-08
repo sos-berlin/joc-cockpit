@@ -284,6 +284,56 @@ export class WorkflowService {
     return true;
   }
 
+  checkEmptyObjects(mainJson: any, cb: any): void {
+    function recursive(json: any) {
+      if (json.instructions) {
+        for (let x = 0; x < json.instructions.length; x++) {
+          if (json.instructions[x].instructions) {
+            recursive(json.instructions[x]);
+          }
+          if (json.instructions[x].catch) {
+            if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+              recursive(json.instructions[x].catch);
+            }
+          }
+          if (json.instructions[x].then) {
+            if (json.instructions[x].then.instructions) {
+              recursive(json.instructions[x].then);
+            } else {
+              delete json.instructions[x].then;
+            }
+          }
+          if (json.instructions[x].else) {
+            if (json.instructions[x].else.instructions) {
+              recursive(json.instructions[x].else);
+            } else {
+              delete json.instructions[x].else;
+            }
+          }
+          if (json.instructions[x].branches) {
+            json.instructions[x].branches = json.instructions[x].branches.filter((branch: any) => {
+              return (branch.instructions && branch.instructions.length > 0);
+            });
+            if (json.instructions[x].branches.length > 0) {
+              for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                if (json.instructions[x].branches[i]) {
+                  recursive(json.instructions[x].branches[i]);
+                }
+              }
+            } else {
+              delete json.instructions[x].branches;
+            }
+          }
+        }
+      }
+    }
+
+    recursive(mainJson);
+    if (cb) {
+      cb();
+    }
+  }
+
   convertTryToRetry(mainJson: any, cb: any, jobs = {}): void {
     let count = 1;
     function recursive(json: any) {

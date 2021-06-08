@@ -550,6 +550,19 @@ small {
   opacity: .7;
 }
 
+.ant-select-single .ant-select-selector .ant-select-selection-search{
+  left: 8px;
+}
+.ant-select-multiple {
+  .ant-select-selection-search {
+    left: 8px;
+  }
+
+  .ant-select-selection-search {
+    margin-inline-start: 1px;
+  }
+}
+
 .ant-select-item-empty {
   color: var(--text-color);
 }
@@ -5827,6 +5840,7 @@ pre#pre {
   border: none;
   background: var(--bg-box) !important;
   color: var(--text-color);
+  margin: 4px;
 
   .ant-select-tree-treenode,
   .ant-select-tree-node-content-wrapper {

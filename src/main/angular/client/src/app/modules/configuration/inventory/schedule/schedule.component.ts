@@ -130,7 +130,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.schedule.configuration.variables.push(param);
       }
     }
-    this.saveJSON();
   }
 
   removeVariable(index): void {
@@ -404,30 +403,32 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           }
         }
       }
-      if (!flag) {
-        if (this.history.length === 20) {
-          this.history.shift();
+      if (this.schedule.actual && !isEqual(this.schedule.actual, JSON.stringify(obj))) {
+        if (!flag) {
+          if (this.history.length === 20) {
+            this.history.shift();
+          }
+          this.history.push(JSON.stringify(this.schedule.configuration));
+          this.indexOfNextAdd = this.history.length - 1;
         }
-        this.history.push(JSON.stringify(this.schedule.configuration));
-        this.indexOfNextAdd = this.history.length - 1;
+        this.coreService.post('inventory/store', {
+          configuration: obj,
+          valid: isValid,
+          id: this.schedule.id,
+          objectType: this.objectType
+        }).subscribe((res: any) => {
+          if (res.id === this.data.id && this.schedule.id === this.data.id) {
+            this.schedule.actual = JSON.stringify(obj);
+            this.schedule.valid = res.valid;
+            this.data.valid = res.valid;
+            this.schedule.released = false;
+            this.data.released = false;
+            this.setErrorMessage(res);
+          }
+        }, (err) => {
+          this.ref.detectChanges();
+        });
       }
-      this.coreService.post('inventory/store', {
-        configuration: obj,
-        valid: isValid,
-        id: this.schedule.id,
-        objectType: this.objectType
-      }).subscribe((res: any) => {
-        if (res.id === this.data.id && this.schedule.id === this.data.id) {
-          this.schedule.actual = JSON.stringify(this.schedule.configuration);
-          this.schedule.valid = res.valid;
-          this.data.valid = res.valid;
-          this.schedule.released = false;
-          this.data.released = false;
-          this.setErrorMessage(res);
-        }
-      }, (err) => {
-        this.ref.detectChanges();
-      });
     }
   }
 
@@ -577,6 +578,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.data.valid = res.valid;
       }
       this.schedule = this.coreService.clone(res);
+      this.schedule.actual = JSON.stringify(this.schedule.configuration);
       this.schedule.path1 = this.data.path;
       this.schedule.name = this.data.name;
       if (!this.schedule.configuration.calendars) {
@@ -597,7 +599,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       } else {
         this.schedule.configuration.variables = [];
       }
-      this.schedule.actual = JSON.stringify(this.schedule.configuration);
       this.history.push(this.schedule.actual);
       if (!res.valid) {
         if (!this.schedule.configuration.workflowName) {

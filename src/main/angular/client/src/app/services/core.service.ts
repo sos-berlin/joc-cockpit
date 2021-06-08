@@ -180,6 +180,7 @@ export class CoreService {
     this.tabs._configuration.state = 'inventory';
     this.tabs._configuration.inventory = {};
     this.tabs._configuration.copiedParamObjects = {};
+    this.tabs._configuration.copiedInstuctionObject = {};
 
     this.tempTabs._workflow = {};
     this.tempTabs._workflow.filter = {};
@@ -326,6 +327,7 @@ export class CoreService {
     this.tempTabs._configuration.state = 'inventory';
     this.tempTabs._configuration.inventory = {};
     this.tempTabs._configuration.copiedParamObjects = {};
+    this.tempTabs._configuration.copiedInstuctionObject = {};
 
     this.dashboard._dashboard = {};
     this.dashboard._dashboard.order = {};

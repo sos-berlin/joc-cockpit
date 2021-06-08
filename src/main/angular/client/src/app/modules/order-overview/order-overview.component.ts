@@ -142,6 +142,7 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
 })
 export class OrderOverviewComponent implements OnInit, OnDestroy {
   loading: boolean;
+  isLoaded: boolean;
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
@@ -493,7 +494,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this._bulkOperation('Start', 'add');
   }
 
-  cancelAllOrder() : void{
+  cancelAllOrder(): void{
     this._bulkOperation('Cancel', 'cancel');
   }
 
@@ -594,14 +595,12 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      let flag = false;
       let flag1 = false;
       let flag2 = false;
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
-          this.getOrders({
-            controllerId: this.schedulerIds.selected,
-            states: this.getState()
-          });
+          flag = true;
           if (!this.showPanelObj) {
             break;
           }
@@ -616,11 +615,29 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
           }
         }
       }
+      if (flag && this.isLoaded) {
+        this.isLoaded = false;
+        this.refreshView({count:0});
+      }
       if (flag1) {
         this.loadOrderHistory();
       } else if (flag2) {
         this.loadAuditLogs();
       }
+    }
+  }
+
+  private refreshView(obj): void {
+    if (!this.actionChild.isVisible || obj.count === 20) {
+      this.getOrders({
+        controllerId: this.schedulerIds.selected,
+        states: this.getState()
+      });
+    } else {
+      setTimeout(() => {
+        obj.count = obj.count + 1;
+        this.refreshView(obj);
+      }, 500);
     }
   }
 
@@ -633,6 +650,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       obj.timeZone = this.preferences.zone;
     }
     this.coreService.post('orders', obj).subscribe((res: any) => {
+      this.isLoaded = true;
       this.orders = res.orders;
       if (tempOrder.length > 0) {
         for (let i = 0; i < this.orders.length; i++) {
@@ -683,6 +701,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         this.resetCheckBox();
       }
     }, () => {
+      this.isLoaded = true;
       this.loading = true;
       this.resetCheckBox();
     });

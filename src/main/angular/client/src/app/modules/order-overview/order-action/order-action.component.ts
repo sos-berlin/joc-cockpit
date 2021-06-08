@@ -128,6 +128,7 @@ export class OrderActionComponent {
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
+  isVisible: boolean;
 
   constructor(public coreService: CoreService, private modal: NzModalService) {
   }
@@ -185,6 +186,9 @@ export class OrderActionComponent {
     });
   }
 
+  change(value: boolean): void {
+    this.isVisible = value;
+  }
 
   resumeOrder(): void {
     this.modal.create({

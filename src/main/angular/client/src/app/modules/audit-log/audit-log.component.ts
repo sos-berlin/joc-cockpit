@@ -579,13 +579,19 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
   navToDeploymentHistory(auditLog): void {
     if (auditLog.commitId) {
-      console.log(auditLog);
       this.router.navigate(['/history/deployment'], {
         queryParams: {
           commitId: auditLog.commitId,
           controllerId: (!auditLog.controllerId || auditLog.controllerId === '-') ? this.schedulerIds.selected : auditLog.controllerId
         }
       });
+    } else{
+/*      this.router.navigate(['/history/daily_plan'], {
+        queryParams: {
+          dailyPlanDate: JSON.parse(auditLog.parameters).dailyPlanDate,
+          controllerId: (!auditLog.controllerId || auditLog.controllerId === '-') ? this.schedulerIds.selected : auditLog.controllerId
+        }
+      });*/
     }
   }
 
