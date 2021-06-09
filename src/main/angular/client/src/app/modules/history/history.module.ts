@@ -10,12 +10,14 @@ import {
 import {HistoryRoutingModule} from './history-routing.module';
 import {SharedModule} from '../shared/shared.module';
 import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component';
+import {FileTransferService} from '../../services/file-transfer.service';
 
 @NgModule({
   imports: [
     SharedModule,
     HistoryRoutingModule
   ],
+  providers: [FileTransferService],
   declarations: [
     HistoryComponent,
     SingleHistoryComponent,

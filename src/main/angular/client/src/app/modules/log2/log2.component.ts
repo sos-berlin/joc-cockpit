@@ -16,6 +16,7 @@ declare const $;
 export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
   preferences: any = {};
   loading = false;
+  isLoading = false;
   isCancel = false;
   finished = false;
   errStatus = '';
@@ -152,16 +153,17 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     this.canceller = this.coreService.post('order/log', order).subscribe((res: any) => {
       if (res) {
         this.jsonToString(res);
-        this.showHideTask(this.controllerId, res);
         if (!res.complete && !this.isCancel) {
           this.runningOrderLog({historyId: order.historyId, controllerId: this.controllerId, eventId: res.eventId});
         } else{
           this.finished = true;
+          this.showHideTask();
         }
       } else {
         this.loading = false;
         this.finished = true;
       }
+      this.isLoading = false;
     }, (err) => {
       window.document.getElementById('logs').innerHTML = '';
       if (err.data && err.data.error) {
@@ -172,16 +174,17 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
       this.errStatus = err.status;
       this.loading = false;
       this.finished = true;
+      this.isLoading = false;
     });
   }
 
-  showHideTask(id, res): void {
+  showHideTask(): void {
     const x: any = document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
       const element = x[i];
       element.childNodes[0].addEventListener('click', () => {
         const jobs: any = {};
-        jobs.controllerId = id;
+        jobs.controllerId = this.controllerId;
         jobs.taskId = document.getElementById('tx_id_' + (i + 1)).innerText;
         const a = document.getElementById('tx_log_' + (i + 1));
         if (a.classList.contains('hide')) {
@@ -198,8 +201,8 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
               if (res1.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
                 const obj = {
                   controllerId: this.controllerId,
-                  taskId: res.headers.get('x-log-task-id') || jobs.taskId,
-                  eventId: res.headers.get('x-log-event-id')
+                  taskId: res1.headers.get('x-log-task-id') || jobs.taskId,
+                  eventId: res1.headers.get('x-log-event-id')
                 };
                 this.runningTaskLog(obj, 'tx_log_' + (i + 1));
               }
@@ -220,9 +223,8 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
       });
     }
 
-    if (res.complete) {
-      const z: any = document.getElementsByClassName('tx_order');
-      z[z.length - 1].childNodes[0].click();
+    if (x && x.length > 0) {
+      x[x.length - 1].childNodes[0].click();
     }
   }
 
@@ -251,6 +253,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
       } else{
         this.loading = false;
       }
+      this.isLoading = false;
     }, (err) => {
       window.document.getElementById('logs').innerHTML = '';
       if (err.data && err.data.error) {
@@ -261,6 +264,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
       this.errStatus = err.status;
       this.loading = false;
       this.finished = true;
+      this.isLoading = false;
     });
   }
 
@@ -297,9 +301,9 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
               obj.eventId = res.eventId;
               this.runningOrderLog(obj);
             }
-            this.showHideTask(this.controllerId, res);
           } else{
             this.finished = true;
+            this.showHideTask();
           }
         }
       });
@@ -644,8 +648,11 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
   }
 
   reloadLog(): void {
+    this.isLoading  = true;
     this.isCancel = false;
     this.finished = false;
+    this.taskCount = 1;
+    document.getElementById('logs').innerHTML = '';
     if (this.route.snapshot.queryParams.historyId) {
       this.historyId = parseInt(this.route.snapshot.queryParams.historyId, 10);
       this.orderId = this.route.snapshot.queryParams.orderId;

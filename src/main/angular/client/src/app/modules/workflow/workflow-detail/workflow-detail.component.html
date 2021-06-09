@@ -323,7 +323,7 @@
       </div>
     </div>
     <div class="row m-t">
-      <div class="col-md-12" *ngIf="loading && workFlowJson && workFlowJson.name">
+      <div class="col-md-12" *ngIf="loading && workFlowJson && workFlowJson.name && permission && permission.joc && (permission.currentController.orders.view || permission.joc.auditLog.view)">
         <div class="box white">
           <div class="box-header">
             <span class="text">{{workFlowJson.path}} <i *ngIf="workFlowJson.title">-</i> <i

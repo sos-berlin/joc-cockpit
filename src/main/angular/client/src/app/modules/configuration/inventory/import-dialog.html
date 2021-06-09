@@ -137,7 +137,7 @@
             <label translate>inventory.label.overwrite</label>
           </label>
           <div class="col-md-9">
-            <label nz-checkbox name="overwrite" [(ngModel)]="requestObj.overwrite"></label>
+            <label nz-checkbox name="overwrite" (nzCheckedChange)="checkedChange($event)" [(ngModel)]="requestObj.overwrite"></label>
           </div>
         </div>
         <div class="form-group row" *ngIf="!requestObj.overwrite">
@@ -222,7 +222,7 @@
                 <span class="text-danger" *ngIf="item.isError"><i class="fa fa-exclamation-triangle"></i></span>
               </td>
               <td *ngIf="item.isError">
-                <a class="text-hover-color" (click)="item.remove();"><i class="fa fa-remove"></i></a>
+                <a class="text-hover-color" (click)="item.remove();uploader.isUploading = false;"><i class="fa fa-remove"></i></a>
               </td>
             </tr>
             </tbody>

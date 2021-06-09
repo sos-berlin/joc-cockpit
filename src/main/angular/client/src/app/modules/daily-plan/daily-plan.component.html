@@ -54,7 +54,7 @@
                   *ngIf="permission.currentController.orders.suspendResume && value.state && (value.state._text === 'SUSPENDED' || value.state._text === 'FAILED')">
                 <a (click)="resumeOrder(value, null )" translate>dailyPlan.button.resume</a>
               </li>
-              <li nz-menu-item [nzDisabled]="(value.period && value.period.repeat) || (value.state && value.state._text === 'FINISHED')"
+              <li nz-menu-item [nzDisabled]="(!!(value.period && value.period.repeat) || (value.state && value.state._text === 'FINISHED'))"
                   *ngIf="permission.currentController.orders.modify && value.state && (value.state._text === 'PLANNED' || value.state._text === 'PENDING')">
                 <a (click)="modifyOrder(value)" translate>dailyPlan.button.setStartTime</a>
               </li>

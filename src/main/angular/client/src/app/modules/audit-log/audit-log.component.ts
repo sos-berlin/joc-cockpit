@@ -586,12 +586,12 @@ export class AuditLogComponent implements OnInit, OnDestroy {
         }
       });
     } else{
-/*      this.router.navigate(['/history/daily_plan'], {
+      this.router.navigate(['/history/daily_plan'], {
         queryParams: {
-          dailyPlanDate: JSON.parse(auditLog.parameters).dailyPlanDate,
+          auditLogId: auditLog.id,
           controllerId: (!auditLog.controllerId || auditLog.controllerId === '-') ? this.schedulerIds.selected : auditLog.controllerId
         }
-      });*/
+      });
     }
   }
 

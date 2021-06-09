@@ -17,7 +17,7 @@
                     </button>
                     <button type="button" class="btn btn-grey btn-sm m-l-12" *ngIf="finished || isCancel"  (click)="reloadLog()">
                       <i class="fa fa-refresh"></i>&nbsp;
-                      <span translate>common.button.reload</span>
+                      <span translate>workflow.button.reload</span>
                     </button>
                     <button type="button" class="btn btn-grey btn-sm m-l-12" *ngIf="!isCancel && !finished" (click)="cancel()">
                       <i class="fa fa-times"></i>&nbsp;
@@ -74,7 +74,7 @@
         </div>
     </div>
 </div>
-<div class="spinner" *ngIf="loading">
+<div class="spinner" *ngIf="loading || isLoading">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>

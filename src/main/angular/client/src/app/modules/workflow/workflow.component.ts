@@ -284,13 +284,18 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
       if (request.workflowIds.length > 0) {
         this.getOrders(request);
       }
-      this.showPanel = this.workflows[0];
+      if (this.permission && this.permission.joc && (this.permission.currentController.orders.view || this.permission.joc.auditLog.view)) {
+        this.showPanel = this.workflows[0];
+      }
     }, () => {
       this.loading = false;
     });
   }
 
   private getOrders(obj): void {
+    if(this.permission && !this.permission.currentController.orders.view){
+      return;
+    }
     if (this.date !== 'ALL') {
       obj.dateTo = this.date;
     }
@@ -733,7 +738,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   showPanelFunc(value): void {
-    this.showPanel = value;
+    if (this.permission && this.permission.joc && (this.permission.currentController.orders.view || this.permission.joc.auditLog.view)) {
+      this.showPanel = value;
+    }
   }
 
   exportToExcel(): void {
@@ -884,6 +891,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       const request = [];
+      let flag = false;
+      let reload = true;
       for (const j in args.eventSnapshots) {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow) {
           for (const i in this.workflows) {
@@ -903,10 +912,19 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         }
         if (args.eventSnapshots[j].objectType === 'WORKFLOW' && (args.eventSnapshots[j].eventType.match(/Item/))) {
-          this.initTree();
+          let path = args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/')) || args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/') + 1);
+          if (this.child && this.child.defaultSelectedKeys.length > 0 && this.child.defaultSelectedKeys.indexOf(path) > -1) {
+            reload = false;
+          }
+          flag = true;
         }
       }
-      this.updateWorkflow(request);
+      if (flag) {
+        this.initTree(reload);
+      }
+      if (request && request.length > 0) {
+        this.updateWorkflow(request);
+      }
     }
   }
 
@@ -923,7 +941,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     //this.checkSharedFilters();
   }
 
-  private initTree(): void {
+  private initTree(reload = false): void {
     if (this.schedulerIds.selected) {
       this.coreService.post('tree', {
         controllerId: this.schedulerIds.selected,
@@ -934,7 +952,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         types: ['WORKFLOW']
       }).subscribe(res => {
         this.tree = this.coreService.prepareTree(res, true);
-        if (this.tree.length) {
+        if (this.tree.length && !reload) {
           this.loadWorkflow();
         }
         this.isLoading = true;
@@ -1010,7 +1028,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   private getOrders(obj): void {
-    if (!obj.workflowIds || obj.workflowIds.length === 0) {
+    if (!obj.workflowIds || obj.workflowIds.length === 0 || (this.permission && !this.permission.currentController.orders.view)){
       return;
     }
     if (this.workflowFilters.filter.date !== 'ALL') {

@@ -249,7 +249,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     const obj = {
       controllerId: this.schedulerIds.selected,
       orders: [{workflowPath: this.showPanelObj.workflowId.path, orderId: this.showPanelObj.orderId}],
-      limit: this.preferences.maxAuditLogPerObject
+      limit: this.preferences.maxHistoryPerOrder
     };
     this.coreService.post('orders/history', obj).subscribe((res: any) => {
       this.history = res.history;

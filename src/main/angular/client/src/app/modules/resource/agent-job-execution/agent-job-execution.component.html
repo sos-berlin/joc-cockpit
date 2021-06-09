@@ -196,7 +196,7 @@
                 <tr>
                   <td *ngIf="!agentFilters.current"><span [innerHtml]="agentTask.controllerId | highlight : agentFilters.searchText"></span></td>
                   <td><span [innerHtml]="agentTask.agentId | highlight : agentFilters.searchText"></span></td>
-                  <td><a target="_blank" href="{{agentTask.url}}" class="text-hover-primary"
+                  <td><a target="_blank" href="{{agentTask.url+'/agent/api'}}" class="text-hover-primary"
                          [innerHtml]="agentTask.url | highlight : agentFilters.searchText"></a></td>
                   <td><span [innerHtml]="agentTask.numOfSuccessfulTasks | highlight : agentFilters.searchText"></span></td>
                   <td><span [innerHtml]="agentTask.numOfJobs | highlight : agentFilters.searchText"></span></td>

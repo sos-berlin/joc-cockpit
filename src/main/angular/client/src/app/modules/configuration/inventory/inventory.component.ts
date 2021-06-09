@@ -1364,7 +1364,6 @@ export class ImportWorkflowModalComponent implements OnInit {
   uploader: FileUploader;
   messageList: any;
   required = false;
-  submitted = false;
   signatureAlgorithm: string;
   comments: any = {};
   settings: any = {};
@@ -1423,10 +1422,12 @@ export class ImportWorkflowModalComponent implements OnInit {
         obj.signatureAlgorithm = this.signatureAlgorithm;
         obj.controllerId = this.schedulerIds.selected;
       }
-      if (this.requestObj.type === 'suffix') {
-        obj.suffix = this.requestObj.suffix;
-      } else if (this.requestObj.type === 'prefix') {
-        obj.prefix = this.requestObj.prefix;
+      if (!this.requestObj.overwrite) {
+        if (this.requestObj.type === 'suffix') {
+          obj.suffix = this.requestObj.suffix;
+        } else if (this.requestObj.type === 'prefix') {
+          obj.prefix = this.requestObj.prefix;
+        }
       }
       obj.format = this.requestObj.format;
       item.file.name = encodeURIComponent(item.file.name);
@@ -1447,7 +1448,15 @@ export class ImportWorkflowModalComponent implements OnInit {
     };
   }
 
-  fileOverBase(e:any): void {
+  checkedChange(isChecked: boolean): void {
+    if (isChecked) {
+      this.requestObj.type = 'suffix';
+      this.requestObj.suffix = '';
+      this.requestObj.prefix = '';
+    }
+  }
+
+  fileOverBase(e: any): void {
     this.hasBaseDropZoneOver = e;
   }
 
@@ -2333,6 +2342,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         if (path && data.path && (path === data.path)) {
           self.updateObjects(data, isTrash, (children) => {
             if (children.length > 0) {
+              let folders = data.children;
               if (data.children.length > 1 && data.children[0].controller) {
                 const index = data.children[0].controller ? 1 : 0;
                 const index2 = data.children[1].dailyPlan ? 1 : 0;
@@ -2340,6 +2350,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
                 data.children.splice(1, index2, children[1]);
               } else {
                 data.children = children;
+                if (folders.length > 0 && !folders[0].controller) {
+                  data.children = data.children.concat(folders);
+                }
               }
             }
             self.updateTree(isTrash);
@@ -2764,7 +2777,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           if (this.tree && this.tree.length > 0) {
             this.initTree(path, null);
           }
-        }, 250);
+        }, 800);
       }
     });
   }

@@ -9,6 +9,7 @@ import {DataService} from '../../services/data.service';
 import {SaveService} from '../../services/save.service';
 import {SearchPipe} from '../../pipes/core.pipe';
 import {ActivatedRoute, Router} from '@angular/router';
+import {FileTransferService} from '../../services/file-transfer.service';
 
 declare const $;
 
@@ -97,6 +98,22 @@ export class SearchComponent implements OnInit {
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.allhosts = this.coreService.getProtocols();
+    if (this.filter.states && this.filter.states.length > 0) {
+      this.stateOptions = this.stateOptions.map(item => {
+        return {
+          ...item,
+          checked: this.filter.states.indexOf(item.status) > -1
+        };
+      });
+    }
+    if (this.filter.operations && this.filter.operations.length > 0) {
+      this.operationOptions = this.operationOptions.map(item => {
+        return {
+          ...item,
+          checked: this.filter.operations.indexOf(item.status) > -1
+        };
+      });
+    }
   }
 
   checkFilterName(): void {
@@ -136,22 +153,17 @@ export class SearchComponent implements OnInit {
       controllerId: this.schedulerIds.selected,
       account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
-      objectType: 'DAILYPLAN',
+      objectType: 'YADE',
       name: result.name,
       shared: result.shared,
-      id: 0,
+      id: result.id || 0,
       configurationItem: {}
     };
     let fromDate: any;
     let toDate: any;
-    const obj: any = {};
-    obj.regex = result.regex;
-    obj.paths = result.paths;
-    obj.jobChain = result.jobChain;
-    obj.orderId = result.orderId;
-    obj.job = result.job;
-    obj.state = result.state;
-    obj.name = result.name;
+    const obj: any = this.coreService.clone(result);
+    delete obj.shared;
+    delete obj.radio;
     if (result.radio != 'current') {
       if (result.from1) {
         fromDate = this.coreService.parseProcessExecuted(result.from1);
@@ -362,8 +374,8 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   searchableProperties = ['controllerId', 'profile', 'mandator', 'start', 'end', '_operation', 'numOfFiles', 'workflowPath', 'orderId'];
 
-  constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private router: Router,
-              private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService) {
+  constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private fileTransferService: FileTransferService,
+              private router: Router, private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -425,60 +437,11 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       this.isCustomizationSelected(true);
     }
     let obj: any = {
-      controllerId: this.yadeView.current == true ? this.schedulerIds.selected : ''
+      controllerId: this.yadeView.current == true ? this.schedulerIds.selected : '',
+      limit : parseInt(this.preferences.maxRecords, 10)
     };
     if (this.selectedFiltered && !isEmpty(this.selectedFiltered)) {
-      if (this.selectedFiltered.states && this.selectedFiltered.states.length > 0) {
-        obj.states = this.selectedFiltered.states;
-      }
-      if (this.selectedFiltered.profileId) {
-        this.selectedFiltered.profileId = this.selectedFiltered.profileId.replace(/\s*(,|^|$)\s*/g, '$1');
-        obj.profiles = this.selectedFiltered.profileId.split(',');
-      }
-      if (this.selectedFiltered.mandator) {
-        obj.mandator = this.selectedFiltered.mandator;
-      }
-      if (this.selectedFiltered.operations && this.selectedFiltered.operations.length > 0) {
-        obj.operations = this.selectedFiltered.operations;
-      }
-      if (this.selectedFiltered.sourceFileName) {
-        this.selectedFiltered.sourceFileName = this.selectedFiltered.sourceFileName.replace(/\s*(,|^|$)\s*/g, '$1');
-        obj.sourceFiles = this.selectedFiltered.sourceFileName.split(',');
-      }
-      if (this.selectedFiltered.targetFileName) {
-        this.selectedFiltered.targetFileName = this.selectedFiltered.targetFileName.replace(/\s*(,|^|$)\s*/g, '$1');
-        obj.targetFiles = this.selectedFiltered.targetFileName.split(',');
-      }
-      if (this.selectedFiltered.sourceHost || this.selectedFiltered.sourceProtocol) {
-        let hosts = [];
-        let protocols = [];
-        if (this.selectedFiltered.sourceHost) {
-          this.selectedFiltered.sourceHost = this.selectedFiltered.sourceHost.replace(/\s*(,|^|$)\s*/g, '$1');
-          hosts = this.selectedFiltered.sourceHost.split(',');
-        }
-        if (this.selectedFiltered.sourceProtocol) {
-          this.selectedFiltered.sourceProtocol = this.selectedFiltered.sourceProtocol.replace(/\s*(,|^|$)\s*/g, '$1');
-          protocols = this.selectedFiltered.sourceProtocol.split(',');
-        }
-        obj.sources = this.coreService.mergeHostAndProtocol(hosts, protocols);
-      }
-      if (this.selectedFiltered.targetHost || this.selectedFiltered.targetProtocol) {
-        let hosts = [];
-        let protocols = [];
-        if (this.selectedFiltered.targetHost) {
-          this.selectedFiltered.targetHost = this.selectedFiltered.targetHost.replace(/\s*(,|^|$)\s*/g, '$1');
-          hosts = this.selectedFiltered.targetHost.split(',');
-        }
-        if (this.selectedFiltered.targetProtocol) {
-          this.selectedFiltered.targetProtocol = this.selectedFiltered.targetProtocol.replace(/\s*(,|^|$)\s*/g, '$1');
-          protocols = this.selectedFiltered.targetProtocol.split(',');
-        }
-        obj.targets = this.coreService.mergeHostAndProtocol(hosts, protocols);
-      }
-
-      if (this.selectedFiltered.planned) {
-        obj = this.parseProcessExecuted(this.selectedFiltered.planned, obj);
-      }
+      this.fileTransferService.getRequestForSearch(this.selectedFiltered, obj, this.preferences);
     } else {
       if (this.yadeFilters.filter.states && this.yadeFilters.filter.states != 'ALL') {
         obj.states = [];
@@ -496,7 +459,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
       obj.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, obj.dateTo);
     }
-    obj.limit = parseInt(this.preferences.maxRecords, 10);
     this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
       this.fileTransfers = res.transfers || [];
       if (this.showFiles) {
@@ -630,103 +592,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.yadeFilters.filter.states = '';
     this.yadeFilters.filter.date = '';
 
-    if (this.searchFilter.states && this.searchFilter.states.length > 0) {
-      filter.states = this.searchFilter.states;
-    }
-    if (this.searchFilter.operations && this.searchFilter.operations.length > 0) {
-      filter.operations = this.searchFilter.operations;
-    }
-    if (this.searchFilter.profileId) {
-      this.searchFilter.profileId = this.searchFilter.profileId.replace(/\s*(,|^|$)\s*/g, '$1');
-      filter.profiles = this.searchFilter.profileId.split(',');
-    }
-
-    if (this.searchFilter.mandator) {
-      filter.mandator = this.searchFilter.mandator;
-    }
-
-    if (this.searchFilter.sourceFileName) {
-      this.searchFilter.sourceFileName = this.searchFilter.sourceFileName.replace(/\s*(,|^|$)\s*/g, '$1');
-      filter.sourceFiles = this.searchFilter.sourceFileName.split(',');
-    }
-    if (this.searchFilter.targetFileName) {
-      this.searchFilter.targetFileName = this.searchFilter.targetFileName.replace(/\s*(,|^|$)\s*/g, '$1');
-      filter.targetFiles = this.searchFilter.targetFileName.split(',');
-    }
-    if (this.searchFilter.sourceHost || this.searchFilter.sourceProtocol) {
-      let hosts = [];
-      let protocols = [];
-      if (this.searchFilter.sourceHost) {
-        this.searchFilter.sourceHost = this.searchFilter.sourceHost.replace(/\s*(,|^|$)\s*/g, '$1');
-        hosts = this.searchFilter.sourceHost.split(',');
-      }
-      if (this.searchFilter.sourceProtocol) {
-
-        protocols = this.searchFilter.sourceProtocol;
-      }
-      filter.sources = this.coreService.mergeHostAndProtocol(hosts, protocols);
-
-    }
-    if (this.searchFilter.targetHost || this.searchFilter.targetProtocol) {
-      let hosts = [];
-      let protocols = [];
-      if (this.searchFilter.targetHost) {
-        this.searchFilter.targetHost = this.searchFilter.targetHost.replace(/\s*(,|^|$)\s*/g, '$1');
-        hosts = this.searchFilter.targetHost.split(',');
-      }
-      if (this.searchFilter.targetProtocol) {
-
-        protocols = this.searchFilter.targetProtocol;
-      }
-      filter.targets = this.coreService.mergeHostAndProtocol(hosts, protocols);
-    }
-    if (this.searchFilter.radio == 'planned') {
-      filter = this.parseProcessExecuted(this.searchFilter.planned, filter);
-    } else {
-      if (this.searchFilter.radio == 'current' && this.searchFilter.from) {
-        const fromDate = new Date(this.searchFilter.from);
-        if (this.searchFilter.fromTime) {
-          fromDate.setHours(this.searchFilter.fromTime.getHours());
-          fromDate.setMinutes(this.searchFilter.fromTime.getMinutes());
-          fromDate.setSeconds(this.searchFilter.fromTime.getSeconds());
-        } else {
-          fromDate.setHours(0);
-          fromDate.setMinutes(0);
-          fromDate.setSeconds(0);
-        }
-        fromDate.setMilliseconds(0);
-        filter.dateFrom = fromDate;
-      }
-      if (this.searchFilter.radio == 'current' && this.searchFilter.to) {
-        const toDate = new Date(this.searchFilter.to);
-        if (this.searchFilter.toTime) {
-          toDate.setHours(this.searchFilter.toTime.getHours());
-          toDate.setMinutes(this.searchFilter.toTime.getMinutes());
-          toDate.setSeconds(this.searchFilter.toTime.getSeconds());
-        } else {
-          toDate.setHours(0);
-          toDate.setMinutes(0);
-          toDate.setSeconds(0);
-        }
-        toDate.setMilliseconds(0);
-        filter.dateTo = toDate;
-      }
-    }
-
-    if (this.searchFilter.controllerId) {
-      filter.controllerId = this.searchFilter.controllerId;
-    }
-
-    filter.timeZone = this.preferences.zone;
-    if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-      delete filter.timeZone;
-    }
-    if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-      filter.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateFrom);
-    }
-    if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-      filter.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateTo);
-    }
+    this.fileTransferService.getRequestForSearch(this.searchFilter, filter, this.preferences);
     this.coreService.post('yade/transfers', filter).subscribe((res: any) => {
       this.fileTransfers = res.transfers;
       this.searchInResult();
@@ -859,9 +725,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       planned: 'today',
       from: new Date(),
       to: new Date(),
-      toTime: new Date(),
-      paths: [],
-      state: []
+      toTime: new Date()
     };
   }
 
@@ -1149,78 +1013,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         this.yadeFilters.filter.date = 'today';
       }
     }
-  }
-
-  private parseProcessExecuted(regex, obj): any {
-    let fromDate, toDate, date, arr;
-
-    if (/^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      fromDate = /^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.exec(regex)[0];
-
-    } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
-      fromDate = new Date();
-      toDate = new Date();
-      const seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2], 10);
-      fromDate.setSeconds(toDate.getSeconds() - seconds);
-    } else if (/^\s*(Today)\s*$/i.test(regex)) {
-      fromDate = '0d';
-      toDate = '0d';
-    } else if (/^\s*(Yesterday)\s*$/i.test(regex)) {
-      fromDate = '-1d';
-      toDate = '0d';
-    } else if (/^\s*(now)\s*$/i.test(regex)) {
-      fromDate = new Date();
-      toDate = new Date();
-    } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      arr = date[0].split('to');
-      fromDate = arr[0].trim();
-      toDate = arr[1].trim();
-
-    } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      arr = date[0].split('to');
-      fromDate = arr[0].trim();
-      toDate = arr[1].trim();
-
-    } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      arr = date[0].split('to');
-      fromDate = arr[0].trim();
-      toDate = arr[1].trim();
-
-    } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      arr = date[0].split('to');
-      fromDate = arr[0].trim();
-      toDate = arr[1].trim();
-
-    } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
-      const time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
-      fromDate = new Date();
-      if (/(pm)/i.test(time[3]) && parseInt(time[1], 10) != 12) {
-        fromDate.setHours(parseInt(time[1], 10) - 12);
-      } else {
-        fromDate.setHours(parseInt(time[1], 10));
-      }
-
-      fromDate.setMinutes(parseInt(time[2], 10));
-      toDate = new Date();
-      if (/(pm)/i.test(time[6]) && parseInt(time[4], 10) != 12) {
-        toDate.setHours(parseInt(time[4], 10) - 12);
-      } else {
-        toDate.setHours(parseInt(time[4], 10));
-      }
-      toDate.setMinutes(parseInt(time[5], 10));
-    }
-
-    if (fromDate) {
-      obj.dateFrom = fromDate;
-    }
-    if (toDate) {
-      obj.dateTo = toDate;
-    }
-    return obj;
   }
 
 }

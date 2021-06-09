@@ -14,6 +14,7 @@ import {TreeModalComponent} from '../../components/tree-modal/tree.component';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component';
 import {SearchPipe} from '../../pipes/core.pipe';
+import {FileTransferService} from '../../services/file-transfer.service';
 
 declare const $;
 
@@ -257,12 +258,9 @@ export class OrderSearchComponent implements OnInit {
     };
     let fromDate: any;
     let toDate: any;
-    const obj: any = {};
-    obj.orderId = result.orderId;
-    obj.paths = result.paths;
-    obj.workflowPaths = result.workflowPaths;
-    obj.states = result.states;
-    obj.name = result.name;
+    const obj: any = this.coreService.clone(result);
+    delete obj.shared;
+    delete obj.radio;
     if (result.radio != 'current') {
       if (result.from1) {
         fromDate = this.coreService.parseProcessExecuted(result.from1);
@@ -272,20 +270,17 @@ export class OrderSearchComponent implements OnInit {
       }
     }
 
-    if (result.radio) {
-      if (fromDate) {
-        obj.from1 = fromDate;
-      } else {
-        obj.from1 = '0d';
-      }
-      if (toDate) {
-        obj.to1 = toDate;
-      } else {
-        obj.to1 = '0d';
-      }
+    if (fromDate) {
+      obj.from1 = fromDate;
     } else {
-      obj.planned = result.planned;
+      obj.from1 = '0d';
     }
+    if (toDate) {
+      obj.to1 = toDate;
+    } else {
+      obj.to1 = '0d';
+    }
+
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
       configObj.id = res.id;
@@ -484,14 +479,9 @@ export class TaskSearchComponent implements OnInit {
     };
     let fromDate: any;
     let toDate: any;
-    const obj: any = {};
-    obj.paths = result.paths;
-    obj.workflowPaths = result.workflowPaths;
-    obj.jobName = result.jobName;
-    obj.state = result.state;
-    obj.name = result.name;
-    obj.criticality = result.criticality;
-    obj.historyStates = result.historyStates;
+    const obj: any = this.coreService.clone(result);
+    delete obj.shared;
+    delete obj.radio;
     if (result.radio != 'current') {
       if (result.from1) {
         fromDate = this.coreService.parseProcessExecuted(result.from1);
@@ -500,20 +490,15 @@ export class TaskSearchComponent implements OnInit {
         toDate = this.coreService.parseProcessExecuted(result.to1);
       }
     }
-
-    if (result.radio) {
-      if (fromDate) {
-        obj.from1 = fromDate;
-      } else {
-        obj.from1 = '0d';
-      }
-      if (toDate) {
-        obj.to1 = toDate;
-      } else {
-        obj.to1 = '0d';
-      }
+    if (fromDate) {
+      obj.from1 = fromDate;
     } else {
-      obj.planned = result.planned;
+      obj.from1 = '0d';
+    }
+    if (toDate) {
+      obj.to1 = toDate;
+    } else {
+      obj.to1 = '0d';
     }
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
@@ -608,11 +593,9 @@ export class DeploymentSearchComponent implements OnInit {
     };
     let fromDate: any;
     let toDate: any;
-    const obj: any = {};
-    obj.deployType = result.deployType;
-    obj.operation = result.operation;
-    obj.state = result.state;
-    obj.name = result.name;
+    const obj: any = this.coreService.clone(result);
+    delete obj.shared;
+    delete obj.radio;
     if (result.radio != 'current') {
       if (result.from1) {
         fromDate = this.coreService.parseProcessExecuted(result.from1);
@@ -621,21 +604,17 @@ export class DeploymentSearchComponent implements OnInit {
         toDate = this.coreService.parseProcessExecuted(result.to1);
       }
     }
-
-    if (result.radio) {
-      if (fromDate) {
-        obj.from1 = fromDate;
-      } else {
-        obj.from1 = '0d';
-      }
-      if (toDate) {
-        obj.to1 = toDate;
-      } else {
-        obj.to1 = '0d';
-      }
+    if (fromDate) {
+      obj.from1 = fromDate;
     } else {
-      obj.planned = result.planned;
+      obj.from1 = '0d';
     }
+    if (toDate) {
+      obj.to1 = toDate;
+    } else {
+      obj.to1 = '0d';
+    }
+
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
       configObj.id = res.id;
@@ -731,8 +710,9 @@ export class SubmissionSearchComponent implements OnInit {
     };
     let fromDate: any;
     let toDate: any;
-    const obj: any = {};
-    obj.name = result.name;
+    const obj: any = this.coreService.clone(result);
+    delete obj.shared;
+    delete obj.radio;
     if (result.radio != 'current') {
       if (result.from1) {
         fromDate = this.coreService.parseProcessExecuted(result.from1);
@@ -742,19 +722,16 @@ export class SubmissionSearchComponent implements OnInit {
       }
     }
 
-    if (result.radio) {
-      if (fromDate) {
-        obj.from1 = fromDate;
-      } else {
-        obj.from1 = '0d';
-      }
-      if (toDate) {
-        obj.to1 = toDate;
-      } else {
-        obj.to1 = '0d';
-      }
+
+    if (fromDate) {
+      obj.from1 = fromDate;
     } else {
-      obj.planned = result.planned;
+      obj.from1 = '0d';
+    }
+    if (toDate) {
+      obj.to1 = toDate;
+    } else {
+      obj.to1 = '0d';
     }
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
@@ -824,6 +801,22 @@ export class YadeSearchComponent implements OnInit {
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.allhosts = this.coreService.getProtocols();
+    if (this.filter.states && this.filter.states.length > 0) {
+      this.stateOptions = this.stateOptions.map(item => {
+        return {
+          ...item,
+          checked: this.filter.states.indexOf(item.status) > -1
+        };
+      });
+    }
+    if (this.filter.operations && this.filter.operations.length > 0) {
+      this.operationOptions = this.operationOptions.map(item => {
+        return {
+          ...item,
+          checked: this.filter.operations.indexOf(item.status) > -1
+        };
+      });
+    }
   }
 
   checkFilterName(): void {
@@ -864,14 +857,9 @@ export class YadeSearchComponent implements OnInit {
     };
     let fromDate: any;
     let toDate: any;
-    const obj: any = {};
-    obj.regex = result.regex;
-    obj.paths = result.paths;
-    obj.workflow = result.workflow;
-    obj.orderId = result.orderId;
-    obj.job = result.job;
-    obj.state = result.state;
-    obj.name = result.name;
+    const obj: any = this.coreService.clone(result);
+    delete obj.shared;
+    delete obj.radio;
     if (result.radio != 'current') {
       if (result.from1) {
         fromDate = this.coreService.parseProcessExecuted(result.from1);
@@ -891,6 +879,7 @@ export class YadeSearchComponent implements OnInit {
     } else {
       obj.to1 = '0d';
     }
+    console.log(obj);
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
       configObj.id = res.id;
@@ -928,7 +917,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
   orderId: string;
   workflowPath: string;
   commitId: string;
-  dailyPlanDate: string;
+  auditLogId: string;
   subscription: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private router: Router,
@@ -942,7 +931,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
     this.orderId = this.route.snapshot.queryParamMap.get('orderId');
     this.workflowPath = this.route.snapshot.queryParamMap.get('workflow');
     this.commitId = this.route.snapshot.queryParamMap.get('commitId');
-    this.dailyPlanDate = this.route.snapshot.queryParamMap.get('dailyPlanDate');
+    this.auditLogId = this.route.snapshot.queryParamMap.get('auditLogId');
     this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
@@ -952,7 +941,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
       this.getOrderHistory();
     } else if (this.commitId) {
       this.getDeploymentHistory();
-    } else if (this.dailyPlanDate){
+    } else if (this.auditLogId){
       this.getSubmissionHistory();
     }
   }
@@ -1006,7 +995,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
       controllerId: this.controllerId,
       filter: {
         controllerId: this.controllerId,
-        dateFrom: this.dailyPlanDate
+        auditLogId: this.auditLogId
       }
     };
     this.coreService.post('daily_plan/history', obj).subscribe((res: any) => {
@@ -1166,7 +1155,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     {date: '30d', text: 'next30'}
   ];
 
-  constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
+  constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private fileTransferService: FileTransferService,
               private dataService: DataService, private modal: NzModalService, private searchPipe: SearchPipe,
               private message: NzMessageService, private router: Router, private translate: TranslateService, private excelService: ExcelService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
@@ -1398,16 +1387,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   isCustomizationSelected3(flag) {
     if (flag) {
-      this.temp_filter3.states = clone(this.yade.filter.historyStates);
+      this.temp_filter3.states = clone(this.yade.filter.states);
       this.temp_filter3.date = clone(this.yade.filter.date);
-      this.yade.filter.historyStates = '';
+      this.yade.filter.historySstatestates = '';
       this.yade.filter.date = '';
     } else {
       if (this.temp_filter3.states) {
-        this.yade.filter.historyStates = clone(this.temp_filter3.historyStates);
+        this.yade.filter.states = clone(this.temp_filter3.states);
         this.yade.filter.date = clone(this.temp_filter3.date);
       } else {
-        this.yade.filter.historyStates = 'ALL';
+        this.yade.filter.states = 'ALL';
         this.yade.filter.date = 'today';
       }
     }
@@ -1438,12 +1427,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
     if (this.selectedFiltered3 && !isEmpty(this.selectedFiltered3)) {
       this.isCustomizationSelected3(true);
-      //obj = this.yadeParseDate(obj);
+      this.fileTransferService.getRequestForSearch(this.selectedFiltered3, obj, this.preferences);
     } else {
       obj = this.setYadeDateRange(obj);
-      if (this.yade.filter.historyStates && this.yade.filter.historyStates != 'ALL' && this.yade.filter.historyStates.length > 0) {
+      if (this.yade.filter.states && this.yade.filter.states != 'ALL' && this.yade.filter.states.length > 0) {
         obj.states = [];
-        obj.states.push(this.yade.filter.historyStates);
+        obj.states.push(this.yade.filter.states);
       }
     }
     this.convertRequestBody(obj);
@@ -1645,7 +1634,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  search(obj) {
+  search(obj, isLoading = true): void {
+    if (isLoading) {
+      this.isLoading = false;
+    }
     let filter: any = {
       limit: parseInt(this.preferences.maxRecords, 10) || 5000
     };
@@ -1737,13 +1729,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         }
 
       }
-      filter.timeZone = this.preferences.zone;
-      if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-        filter.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateFrom);
-      }
-      if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-        filter.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateTo);
-      }
+      this.convertRequestBody(filter);
       if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true') && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0))) {
         filter.excludeWorkflows = this.savedIgnoreList.workflows;
       }
@@ -1823,18 +1809,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
           filter.jobs.push({job: value});
         });
       }
-      filter.timeZone = this.preferences.zone;
-      if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-        filter.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateFrom);
-      }
-      if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-        filter.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateTo);
-      }
+      this.convertRequestBody(filter);
       if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true')
         && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
         filter.excludeJobs = this.savedIgnoreList.jobs;
       }
-
       this.coreService.post('tasks/history', filter).subscribe((res: any) => {
         this.taskHistorys = this.setDuration(res);
         this.searchInResult();
@@ -1888,13 +1867,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         });
       }
 
-      filter.timeZone = this.preferences.zone;
-      if ((filter.from && typeof filter.from.getMonth === 'function')) {
-        filter.from = this.coreService.convertTimeToLocalTZ(this.preferences, filter.from);
-      }
-      if ((filter.to && typeof filter.to.getMonth === 'function')) {
-        filter.to = this.coreService.convertTimeToLocalTZ(this.preferences, filter.to);
-      }
+      this.convertDeployRequestBody(filter)
       this.coreService.post('inventory/deployment/history', {compactFilter: filter}).subscribe((res: any) => {
         this.deploymentHistorys = res.depHistory;
         this.searchInResult();
@@ -1945,13 +1918,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         filter.controllerId = obj.controllerId;
       }
 
-      filter.timeZone = this.preferences.zone;
-      if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-        filter.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateFrom);
-      }
-      if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-        filter.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateTo);
-      }
+      this.convertRequestBody(filter);
       this.coreService.post('daily_plan/history', {filter, controllerId: this.schedulerIds.selected}).subscribe((res: any) => {
         this.submissionHistorys = res.dailyPlans;
         this.searchInResult();
@@ -1961,85 +1928,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.isLoading = true;
       });
     } else if (this.historyFilters.type === 'YADE') {
-      this.yade.filter.historyStates = '';
+      this.yade.filter.states = '';
       this.yade.filter.date = '';
-      if (obj.file) {
-        filter.files = [];
-        const s = obj.file.replace(/,\s+/g, ',');
-        const files = s.split(',');
-        files.forEach((value) => {
-          filter.files.push({file: value});
-        });
-      }
-      if (obj.states && obj.states.length > 0) {
-        filter.historyStates = obj.states;
-      }
-      if (obj.criticality && obj.criticality.length > 0) {
-        filter.criticality = obj.criticality;
-      }
-      if (obj.radio === 'process') {
-        filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);
-      } else {
-        if (obj.from) {
-          fromDate = new Date(obj.from);
-          if (obj.fromTime) {
-            fromDate.setHours(obj.fromTime.getHours());
-            fromDate.setMinutes(obj.fromTime.getMinutes());
-            fromDate.setSeconds(obj.fromTime.getSeconds());
-          } else {
-            fromDate.setHours(0);
-            fromDate.setMinutes(0);
-            fromDate.setSeconds(0);
-          }
-          fromDate.setMilliseconds(0);
-          filter.dateFrom = this.coreService.getUTC(fromDate);
-        }
-        if (obj.to) {
-          toDate = new Date(obj.to);
-          if (obj.toTime) {
-            toDate.setHours(obj.toTime.getHours());
-            toDate.setMinutes(obj.toTime.getMinutes());
-            toDate.setSeconds(obj.toTime.getSeconds());
-          } else {
-            toDate.setHours(0);
-            toDate.setMinutes(0);
-            toDate.setSeconds(0);
-          }
-          toDate.setMilliseconds(0);
-          filter.dateTo = this.coreService.getUTC(toDate);
-        }
-      }
-
-      if (obj.regex) {
-        filter.regex = obj.regex;
-      }
-      if (obj.controllerId) {
-        filter.controllerId = obj.controllerId;
-      }
-      if (obj.paths && obj.paths.length > 0) {
-        filter.folders = [];
-        obj.paths.forEach((value) => {
-          filter.folders.push({folder: value, recursive: true});
-        });
-      }
-      if (obj.files && obj.files.length > 0) {
-        filter.files = [];
-        obj.files.forEach((value) => {
-          filter.files.push({file: value});
-        });
-      }
-      filter.timeZone = this.preferences.zone;
-      if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
-        filter.timeZone = 'UTC';
-      }
-      if ((filter.from && typeof filter.from.getMonth === 'function')) {
-        filter.from = this.coreService.convertTimeToLocalTZ(this.preferences, filter.from);
-      }
-      if ((filter.to && typeof filter.to.getMonth === 'function')) {
-        filter.to = this.coreService.convertTimeToLocalTZ(this.preferences, filter.to);
-      }
+      this.fileTransferService.getRequestForSearch(obj, filter, this.preferences);
       this.coreService.post('yade/transfers', filter).subscribe((res: any) => {
-        this.yadeHistorys = this.setDuration(res);
+        this.yadeHistorys = res.transfers || [];
         this.searchInResult();
         this.isLoading = true;
         this.setHeaderWidth();
@@ -2455,7 +2348,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.ignoreListConfigId = res.id;
       });
       if ((!isEmpty(this.jobSearch) && this.historyFilters.type === 'TASK') || (!isEmpty(this.orderSearch) && this.historyFilters.type === 'ORDER')) {
-        this.search(true);
+        this.search(this.historyFilters.type === 'TASK' ? this.jobSearch : this.orderSearch);
       } else {
         this.init(false);
       }
@@ -2466,13 +2359,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (this.schedulerIds.selected) {
       if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true) && this.historyFilters.type == 'ORDER' && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0))) {
         if (!isEmpty(this.orderSearch)) {
-          this.search(true);
+          this.search(this.orderSearch);
         } else {
           this.init(false);
         }
       } else if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true) && this.historyFilters.type != 'ORDER' && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
         if (!isEmpty(this.jobSearch)) {
-          this.search(true);
+          this.search(this.jobSearch);
         } else {
           this.init(false);
         }
@@ -3019,7 +2912,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       if ((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true)) {
         if ((!isEmpty(this.jobSearch) && this.historyFilters.type === 'TASK') || (!isEmpty(this.orderSearch) && this.historyFilters.type === 'ORDER')) {
-          this.search(true);
+          this.search(this.historyFilters.type === 'TASK' ? this.jobSearch : this.orderSearch);
         } else {
           this.init(false);
         }
@@ -3336,13 +3229,25 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if ((args.eventSnapshots[j].eventType === 'HistoryOrderTerminated' || args.eventSnapshots[j].eventType === 'HistoryOrderStarted') && this.isLoading && this.historyFilters.type === 'ORDER') {
-          this.init(true);
+          if (!isEmpty(this.orderSearch)) {
+            this.search(this.orderSearch, false);
+          } else {
+            this.init(true);
+          }
           break;
         } else if ((args.eventSnapshots[j].eventType === 'HistoryTaskTerminated' || args.eventSnapshots[j].eventType === 'HistoryTaskStarted') && this.isLoading && this.historyFilters.type === 'TASK') {
-          this.init(true);
+          if (!isEmpty(this.jobSearch)) {
+            this.search(this.jobSearch, false);
+          } else {
+            this.init(true);
+          }
           break;
         } else if (args.eventSnapshots[j].eventType.match(/Deploy/) && this.isLoading && this.historyFilters.type === 'DEPLOYMENT') {
-          this.init(true);
+          if (!isEmpty(this.deploymentSearch)) {
+            this.search(this.deploymentSearch, false);
+          } else {
+            this.init(true);
+          }
           break;
         } else if (this.isLoading && this.historyFilters.type === 'SUBMISSION') {
           // this.init(true);

@@ -404,6 +404,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   }
 
   private getOrders(workflow, isFirst): void {
+    if (this.permission && this.permission.currentController && !this.permission.currentController.orders.view) {
+      this.isWorkflowStored(workflow, isFirst);
+      this.loading = true;
+      return;
+    }
     const obj = {
       compact: true,
       controllerId: this.schedulerIds.selected,

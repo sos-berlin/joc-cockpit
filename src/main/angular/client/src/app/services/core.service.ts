@@ -96,7 +96,7 @@ export class CoreService {
     this.tabs._history.task.selectedView = true;
     this.tabs._history.yade = {};
     this.tabs._history.yade.filter = {};
-    this.tabs._history.yade.filter.historyStates = 'ALL';
+    this.tabs._history.yade.filter.states = 'ALL';
     this.tabs._history.yade.filter.date = 'today';
     this.tabs._history.yade.filter.sortBy = 'start';
     this.tabs._history.yade.reverse = true;
@@ -243,7 +243,7 @@ export class CoreService {
     this.tempTabs._history.task.selectedView = true;
     this.tempTabs._history.yade = {};
     this.tempTabs._history.yade.filter = {};
-    this.tempTabs._history.yade.filter.historyStates = 'ALL';
+    this.tempTabs._history.yade.filter.states = 'ALL';
     this.tempTabs._history.yade.filter.date = 'today';
     this.tempTabs._history.yade.filter.sortBy = 'start';
     this.tempTabs._history.yade.reverse = true;
@@ -729,57 +729,6 @@ export class CoreService {
       obj.dateTo = toDate;
     }
     return obj;
-  }
-
-  mergeHostAndProtocol(hosts: Array<any>, protocols: Array<any>): Array<any> {
-    const arr: any = [];
-    if (protocols.length < hosts.length) {
-      hosts.forEach((value, index) => {
-        if (protocols.length > 0) {
-          if (protocols.length < hosts.length) {
-            if (protocols.length === 1) {
-              arr.push({host: value, protocol: protocols[0]});
-            } else {
-              if (protocols.length >= index) {
-                arr.push({host: value, protocol: protocols[index]});
-              }
-            }
-          }
-        } else {
-          arr.push({host: value});
-        }
-
-      });
-    } else if (protocols.length > hosts.length) {
-      protocols.forEach((value, index) => {
-        if (hosts.length > 0) {
-          if (hosts.length < protocols.length) {
-            if (hosts.length === 1) {
-              arr.push({protocol: value, host: hosts[0]});
-            } else {
-              if (hosts.length >= index) {
-                arr.push({protocol: value, host: hosts[index]});
-              }
-            }
-
-          }
-        } else {
-          arr.push({protocol: value});
-        }
-
-      });
-    } else {
-      hosts.forEach((value, index) => {
-        for (const x in protocols) {
-          if (protocols[x]) {
-            arr.push({host: value, protocol: protocols[x]});
-            protocols.splice(index, 1);
-            break;
-          }
-        }
-      });
-    }
-    return arr;
   }
 
   checkCopyName(list: any, name: string): string {

@@ -409,7 +409,7 @@
                           </tbody>
                         </nz-table>
                       </nz-tab>
-                      <nz-tab [nzTitle]="'auditLog.label.auditLog' | translate">
+                      <nz-tab [nzTitle]="'auditLog.label.auditLog' | translate" *ngIf="(permission.joc && permission.joc.auditLog.view)">
                         <nz-table
                           #auditTable
                           [nzSize]="'small'"

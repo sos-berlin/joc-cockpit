@@ -196,7 +196,7 @@
             </thead>
             <tbody>
             <ng-template ngFor let-auditLog [ngForOf]="ajaxTable.data | orderBy: adtLog.filter.sortBy:adtLog.reverse">
-              <tr (click)="navToDeploymentHistory(auditLog)" [ngClass]="{'primary-text-hover-color cursor': auditLog.commitId}">
+              <tr (click)="navToDeploymentHistory(auditLog)" [ngClass]="{'primary-text-hover-color cursor': auditLog.commitId || auditLog.category === 'DAILYPLAN'}">
                 <td *ngIf="!adtLog.current" (click)="$event.stopPropagation()">
                   <i class="cursor fa fa-caret-down fa-lg" *ngIf="!auditLog.show"
                      (click)="showDetail(auditLog);$event.stopPropagation()"></i>

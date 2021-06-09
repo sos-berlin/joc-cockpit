@@ -1605,28 +1605,21 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           for (let i = 0; i < orders.length; i++) {
             orders[i].checked = false;
           }
+          this.object.mapOfCheckedId.clear();
         }
       } else {
         if (this.object.checked) {
           orders.forEach(item => {
-            if (item.status !== 'finished') {
+            if (item.state._text !== 'FINISHED') {
               this.object.mapOfCheckedId.set(item.orderId, item);
-            } else {
-              flag = true;
             }
           });
+        } else {
+          this.object.mapOfCheckedId.clear();
         }
       }
     } else {
       this.object.checked = false;
-    }
-    if (flag) {
-      setTimeout(() => {
-        this.object.checked = false;
-        if (this.object.mapOfCheckedId.size > 0) {
-          this.object.indeterminate = true;
-        }
-      }, 0);
     }
     this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
     this.checkState(this.object, this.object.mapOfCheckedId);
