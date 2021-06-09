@@ -1253,22 +1253,22 @@
   "resource": {
     "label.locks": "Locks",
     "label.agentView": "Agents",
-    "label.agentJobExecution": "Agent Job Execution",
+    "label.agentJobExecution": "Agent Job Executions",
     "label.calendars": "Calendars",
     "label.documentations": "Documentations",
     "label.showUsage": "Show Usage",
     "button.showUsage": "Show Usage",
     "agentJobExecution": {
-      "label.numberOfJobsExecuted": "Number of Jobs executed",
-      "label.numberOfSuccessfullyExecutedTask": "Number of successfully executed Tasks",
-      "label.agentTaskFound": "Agent Task entry found",
-      "label.agentTasksFound": "Agent Task entries found",
+      "label.numberOfJobsExecuted": "Number of jobs executed",
+      "label.numberOfSuccessfullyExecutedTask": "Number of successfully executed tasks",
+      "label.agentTaskFound": "Agent task entry found",
+      "label.agentTasksFound": "Agent task entries found",
       "label.totalNumberOfExecutions": "Total number of task executions",
-      "label.totalNumberOfJobExecutions": "Total number of Job executions",
+      "label.totalNumberOfJobExecutions": "Total number of job executions",
       "label.agentIds": "Agent IDs",
-      "label.agentUrls": "Agent Urls",
+      "label.agentUrls": "Agent URLs",
       "placeholder.selectAgentIds": "Select Agent IDs",
-      "placeholder.enterAgentUrls": "Enter Agent urls separated by comma"
+      "placeholder.enterAgentUrls": "Enter Agent URLs separated by comma"
     },
     "lock": {
       "label.lock": "Lock",
