@@ -57,8 +57,7 @@
     <div class="form-group row" *ngIf="isSearch">
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.controllerId</label>
       <div class=" col-sm-6">
-        <nz-select nzPlaceHolder="{{'common.label.selectController' | translate}}" [(ngModel)]="filter.controllerId" name="id">
-          <nz-option [nzLabel]="'common.label.selectController' | translate"></nz-option>
+        <nz-select nzAllowClear nzPlaceHolder="{{'common.label.selectController' | translate}}" [(ngModel)]="filter.controllerId" name="id">
           <nz-option *ngFor="let controller of schedulerIds.controllerIds" [nzLabel]="controller" [nzValue]="controller"></nz-option>
         </nz-select>
       </div>

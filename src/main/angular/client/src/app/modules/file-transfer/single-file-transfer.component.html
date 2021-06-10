@@ -26,10 +26,8 @@
         >
           <thead>
           <tr class="main-header-row">
-            <th *ngIf="permission.joc.fileTransfer.manage" class="menu"><span translate>common.label.action</span></th>
             <th><span class="p-r-xs" translate>fileTransfer.label.status</span></th>
             <th><span class="p-r-xs" translate>fileTransfer.label.profileName</span></th>
-            <th><span class="p-r-xs" translate>fileTransfer.label.mandator</span></th>
             <th width="90px"><span class="p-r-xs" translate>fileTransfer.label.operation</span></th>
             <th><span class="p-r-xs" translate>fileTransfer.label.workflow</span></th>
             <th><span class="p-r-xs" translate>fileTransfer.label.order</span></th>
@@ -44,21 +42,6 @@
           <ng-template ngFor let-transfer
                        [ngForOf]="ajaxTable.data">
             <tr>
-              <td *ngIf="permission.joc.fileTransfer.manage">
-                <div class="btn-group dropdown">
-                  <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
-                          type="button">
-                    <i class="fa fa-ellipsis-h"></i>
-                  </button>
-                  <nz-dropdown-menu #menu="nzDropdownMenu">
-                    <ul nz-menu>
-                      <li nz-menu-item [nzDisabled]="transfer.state._text=='SUCCESSFUL'">
-                        <a (click)="restart(transfer)" translate>fileTransfer.button.restart</a>
-                      </li>
-                    </ul>
-                  </nz-dropdown-menu>
-                </div>
-              </td>
               <td noWrap>
                 <span>
                   <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
@@ -72,7 +55,6 @@
                 </span>
               </td>
               <td [innerHtml]="transfer.profile"></td>
-              <td [innerHtml]="transfer.mandator"></td>
               <td [innerHtml]="transfer._operation"></td>
               <td [innerHtml]="transfer.workflowPath"></td>
               <td [innerHtml]="transfer.orderId"></td>
@@ -86,7 +68,7 @@
             </tr>
             <tr *ngIf="transfer.show">
               <td></td>
-              <td colspan="13" style="padding: 0 !important;border-bottom: none!important;">
+              <td colspan="12" style="padding: 0 !important;border-bottom: none!important;">
                 <nz-table class="m-a-0 inner-table" id="fileTransferTable" [nzData]="['']" [nzSize]="'small'" [nzShowPagination]="false">
                   <thead>
                     <tr>
@@ -111,8 +93,8 @@
                   </thead>
                   <tbody>
                   <tr>
-                    <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.account"></span></td>
                     <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.host"></span></td>
+                    <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.account"></span></td>
                     <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.port"></span></td>
                     <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.protocol"></span></td>
                     <td><span *ngIf="transfer.target" [innerHtml]="transfer.target.host"></span></td>
@@ -142,10 +124,6 @@
                   <tbody>
                   <ng-template ngFor let-file [ngForOf]="innerChildTable.data">
                     <tr>
-                      <td *ngIf="permission.joc.fileTransfer.manage" [nzShowCheckbox]="true"
-                          [nzDisabled]="transfer.state._text=='SUCCESSFUL'"
-                          [(nzChecked)]="file.checked">
-                      </td>
                       <td>{{file.sourceName}}</td>
                       <td>{{file.sourcePath}}</td>
                       <td>{{file.targetName}}</td>

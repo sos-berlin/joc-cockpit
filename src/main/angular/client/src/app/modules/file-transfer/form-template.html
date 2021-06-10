@@ -17,15 +17,9 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.label.profileName</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.profileNames</label>
       <div class=" col-sm-6">
-        <input class="form-control" placeholder="{{'fileTransfer.search.placeholder.profileName' | translate}}" name="profileId" [(ngModel)]="filter.profileId">
-      </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.label.mandator</label>
-      <div class=" col-sm-6">
-        <input class="form-control" placeholder="{{'fileTransfer.search.placeholder.mandator' | translate}}" name="mandator" [(ngModel)]="filter.mandator">
+        <input class="form-control" placeholder="{{'fileTransfer.search.placeholder.enterProfileNames' | translate}}" name="profileId" [(ngModel)]="filter.profileId">
       </div>
     </div>
     <div class="form-group row " *ngIf="isSearch">
@@ -68,7 +62,7 @@
     <div class="form-group row" *ngIf="isSearch">
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.controllerId</label>
       <div class=" col-sm-6">
-        <nz-select nzPlaceHolder="{{'common.label.selectController' | translate}}" [(ngModel)]="filter.controllerId" name="id">
+        <nz-select nzAllowClear nzPlaceHolder="{{'common.label.selectController' | translate}}" [(ngModel)]="filter.controllerId" name="id">
           <nz-option *ngFor="let controller of schedulerIds.controllerIds" [nzLabel]="controller" [nzValue]="controller"></nz-option>
         </nz-select>
       </div>
@@ -94,9 +88,9 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.label.sourceFileName</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.sourceFilePaths</label>
       <div class=" col-sm-6">
-        <input class="form-control" placeholder="{{'fileTransfer.search.placeholder.sourceFileName' | translate}}" name="sourceFileName" [(ngModel)]="filter.sourceFileName">
+        <input class="form-control" placeholder="{{'fileTransfer.search.placeholder.sourceFilePaths' | translate}}" name="sourceFileName" [(ngModel)]="filter.sourceFileName">
       </div>
     </div>
     <div class="form-group row">
@@ -107,9 +101,9 @@
          </div>
      </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.label.targetFileName</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.targetFilePaths</label>
       <div class=" col-sm-6">
-        <input class="form-control" placeholder="{{'fileTransfer.search.placeholder.targetFileName' | translate}}" name="targetFileName" [(ngModel)]="filter.targetFileName">
+        <input class="form-control" placeholder="{{'fileTransfer.search.placeholder.targetFilePaths' | translate}}" name="targetFileName" [(ngModel)]="filter.targetFileName">
       </div>
     </div>
     <div class="form-group row">

@@ -190,8 +190,7 @@ export class LockComponent implements OnInit, OnDestroy {
     this.loading = true;
     const obj = {
       folders: [{folder: data.path, recursive}],
-      controllerId: this.schedulerIds.selected,
-      compact: true
+      controllerId: this.schedulerIds.selected
     };
     this.getLocksList(obj);
   }

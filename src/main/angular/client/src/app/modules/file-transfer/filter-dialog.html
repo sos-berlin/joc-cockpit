@@ -8,4 +8,5 @@
       <span aria-hidden="true" class="fa fa-times-circle"></span>
     </button>
 </div>
-<app-form-template [filter]="filter" [preferences]="preferences" [schedulerIds]="schedulerIds"  [permission]="permission" [allFilter]="allFilter" (onCancel)="cancel(null)"></app-form-template>
+<app-file-transfer-form-template [filter]="filter" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="allFilter"
+                                 (onCancel)="cancel($event)"></app-file-transfer-form-template>

@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {isEmpty, clone} from 'underscore';
+import {isEmpty, extend, clone} from 'underscore';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {AuthService} from '../../components/guard';
@@ -57,16 +57,17 @@ export class FilterModalComponent implements OnInit {
 }
 
 @Component({
-  selector: 'app-form-template',
+  selector: 'app-file-transfer-form-template',
   templateUrl: './form-template.html',
 })
-export class SearchComponent implements OnInit {
+export class FileTransferSearchComponent implements OnInit {
   @Input() schedulerIds: any;
   @Input() filter: any;
   @Input() preferences: any;
   @Input() allFilter: any;
   @Input() permission: any;
   @Input() isSearch: boolean;
+  @Input() isHistory: boolean;
 
   @Output() onCancel: EventEmitter<any> = new EventEmitter();
   @Output() onSearch: EventEmitter<any> = new EventEmitter();
@@ -153,7 +154,7 @@ export class SearchComponent implements OnInit {
       controllerId: this.schedulerIds.selected,
       account: this.authService.currentUserData,
       configurationType: 'CUSTOMIZATION',
-      objectType: 'YADE',
+      objectType: this.isHistory ? 'YADE_HISTORY' : 'YADE',
       name: result.name,
       shared: result.shared,
       id: result.id || 0,
@@ -264,7 +265,7 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
       controllerId: this.controllerId
     }).subscribe((res: any) => {
       value.files = res.files;
-      value.widthArr = this.coreService.calFileTransferRowWidth(false);
+      value.widthArr = this.coreService.calFileTransferRowWidth();
       setTimeout(() => {
         const dom = $('#fileTransferMainTable');
         dom.find('thead tr.main-header-row th').each(function(i) {
@@ -277,17 +278,6 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
   showTransferFuc(value): void {
     value.show = true;
     this.getFiles(value);
-  }
-
-  /** ------------------Action------------------- */
-
-  restart(data): void {
-    this.coreService.post('yade/transfers/restart', {
-      transferIds: [data.id],
-      controllerId: this.controllerId
-    }).subscribe(() => {
-
-    });
   }
 
   private setHeaderWidth(): void {
@@ -364,15 +354,10 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   isLoaded = false;
   loadConfig = false;
   showSearchPanel = false;
-  object: any = {
-    mapOfCheckedId: new Map(),
-    checked: false,
-    indeterminate: false
-  };
   subscription1: Subscription;
   subscription2: Subscription;
 
-  searchableProperties = ['controllerId', 'profile', 'mandator', 'start', 'end', '_operation', 'numOfFiles', 'workflowPath', 'orderId'];
+  searchableProperties = ['controllerId', 'profile', 'start', 'end', '_operation', 'numOfFiles', 'workflowPath', 'orderId'];
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private fileTransferService: FileTransferService,
               private router: Router, private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService) {
@@ -432,14 +417,17 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   load(): void {
     this.isLoaded = true;
-    this.reset();
     if (this.selectedFiltered && !isEmpty(this.selectedFiltered)) {
       this.isCustomizationSelected(true);
     }
     let obj: any = {
       controllerId: this.yadeView.current == true ? this.schedulerIds.selected : '',
-      limit : parseInt(this.preferences.maxRecords, 10)
+      limit : parseInt(this.preferences.maxRecords, 10),
+      compact: true
     };
+    if (this.showFiles) {
+      obj.compact = false;
+    }
     if (this.selectedFiltered && !isEmpty(this.selectedFiltered)) {
       this.fileTransferService.getRequestForSearch(this.selectedFiltered, obj, this.preferences);
     } else {
@@ -487,7 +475,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         transfer.isIntervention = res.transfers[0].isIntervention;
         transfer.source = res.transfers[0].source;
         transfer.target = res.transfers[0].target;
-        transfer.mandator = res.transfers[0].mandator;
         transfer.profile = res.transfers[0].profile;
         transfer.taskId = res.transfers[0].taskId;
       }
@@ -495,17 +482,16 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   }
 
   getFiles(value): void {
-    const ids = [value.id];
     const self = this;
-    value.widthArr = this.permission.joc.fileTransfer.manage ? ['0px'] : [];
+    value.widthArr = [];
     value.loading = true;
     this.coreService.post('yade/files', {
-      transferIds: ids,
+      transferIds: [value.id],
       controllerId: value.controllerId || this.schedulerIds.selected
     }).subscribe((res: any) => {
       value.files = res.files;
       value.loading = false;
-      value.widthArr = [...value.widthArr, ...this.coreService.calFileTransferRowWidth(true)];
+      value.widthArr = [...this.coreService.calFileTransferRowWidth()];
       setTimeout(() => {
         const dom = $('#fileTransferMainTable');
         dom.find('thead tr.main-header-row th').each(function(i) {
@@ -518,67 +504,18 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     });
   }
 
-  checkAll(value: boolean): void {
-    if (this.currentData.length > 0) {
-      this.object.mapOfCheckedId.clear();
-      const data = this.currentData;
-      data.forEach(item => {
-        if (item.state._text !== 'SUCCESSFUL') {
-          item.indeterminate = false;
-          if (value) {
-            this.object.mapOfCheckedId.set(item.id, item);
-          }
-          if (item.files && item.files.length > 0) {
-            item.files.forEach((file) => {
-              file.checked = value;
-            });
-          }
-        }
-      });
-    }
-    if (!value) {
-      this.reset();
-    }
-  }
-
-  onItemChecked(transfer: any, checked: boolean): void {
-    transfer.indeterminate = false;
-    if (checked) {
-      this.object.mapOfCheckedId.set(transfer.id, transfer);
-    } else {
-      this.object.mapOfCheckedId.delete(transfer.id);
-    }
-    if (transfer.files && transfer.files.length > 0) {
-      transfer.files.forEach(file => {
-        file.checked = checked;
-      });
-    }
-    this.object.checked = this.object.mapOfCheckedId.size === this.currentData.length;
-    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
-  }
-
-  checkALLFilesFnc(transfer, checked: boolean): void {
-    transfer.indeterminate = checked;
-    let count = 0;
-    transfer.files.forEach((item) => {
-      if (item.checked) {
-        ++count;
-      }
-    });
-
-    if (count === transfer.files.length) {
-      this.object.mapOfCheckedId.set(transfer.id, transfer);
-    } else if (count === 0) {
-      this.object.mapOfCheckedId.delete(transfer.id);
-    } else {
-      transfer.indeterminate = true;
-    }
-    this.object.checked = this.object.mapOfCheckedId.size === this.currentData.length;
-    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
-  }
 
   showTransferFuc(value): void {
     value.show = true;
+    if (!value.target) {
+      const obj = {
+        controllerId: value.controllerId || this.schedulerIds.selected,
+        transferIds: [value.id]
+      };
+      this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
+        value = extend(value, res.transfers[0]);
+      });
+    }
     this.getFiles(value);
   }
 
@@ -586,7 +523,8 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.isLoaded = false;
     let filter: any = {
       controllerId: this.yadeView.current == true ? this.schedulerIds.selected : '',
-      limit: parseInt(this.preferences.maxRecords, 10)
+      limit: parseInt(this.preferences.maxRecords, 10),
+      compact : true
     };
 
     this.yadeFilters.filter.states = '';
@@ -686,34 +624,16 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   expandDetails(): void {
     this.showFiles = true;
     this.yadeFilters.showFiles = true;
-    this.load();
+    this.data.forEach((value) => {
+      this.showTransferFuc(value);
+    });
   }
 
   collapseDetails(): void {
     this.showFiles = false;
     this.yadeFilters.showFiles = false;
-    this.fileTransfers.forEach((value) => {
+    this.data.forEach((value) => {
       value.show = false;
-    });
-  }
-
-  /** ------------------Action------------------- */
-
-  restartAllTransfer(): void {
-    this.coreService.post('yade/transfers/restart', {
-      transferIds: this.object.mapOfCheckedId.keys(),
-      controllerId: this.schedulerIds.selected
-    }).subscribe(() => {
-
-    });
-  }
-
-  restartTransfer(data): void {
-    this.coreService.post('yade/transfers/restart', {
-      transferIds: [data.id],
-      controllerId: this.schedulerIds.selected
-    }).subscribe(() => {
-
     });
   }
 
@@ -976,14 +896,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         }
       }
     }
-  }
-
-  private reset(): void {
-    this.object = {
-      mapOfCheckedId: new Map(),
-      checked: false,
-      indeterminate: false
-    };
   }
 
   private setDateRange(filter): any {

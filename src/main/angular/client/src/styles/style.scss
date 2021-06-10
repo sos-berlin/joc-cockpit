@@ -562,7 +562,9 @@ small {
     margin-inline-start: 1px;
   }
 }
-
+.ant-select-multiple.ant-select-disabled.ant-select:not(.ant-select-customize-input) .ant-select-selector{
+  background: transparent;
+}
 .ant-select-item-empty {
   color: var(--text-color);
 }
@@ -3874,11 +3876,14 @@ li > a > i.remove {
 .plan-overview {
   vertical-align: middle;
   display: inline-block;
-  height: 26px;
+  height: 32px;
   color: var(--white);
-
   label {
-    margin: 5px;
+    margin-left: 2px;
+    margin-right: 2px;
+    position: relative;
+    top: 45%;
+    transform: translateY(-50%);
     font-size: 11px;
   }
 }
@@ -5799,7 +5804,9 @@ pre#pre {
 .ant-tree-switcher .ant-select-tree-switcher-icon {
   font-size: 13px;
 }
-
+.select-input-both:hover input:not([disabled]) {
+    border: 1px solid var(--hover-primary);
+}
 .select-input-both {
   .ant-select {
     position: absolute;

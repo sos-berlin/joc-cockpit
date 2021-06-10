@@ -466,7 +466,7 @@
                   <a class="text-hover-primary" (click)="navToHistory()"
                      translate>dailyPlan.label.submissionHistory</a>
                 </div>
-                <ul class="text-left p-l" style="max-height: 250px; overflow: auto">
+                <ul class="text-left p-l" style="max-height: calc(100vh - 560px); overflow: auto">
                   <li *ngFor="let history of submissionHistory">
                     <a [ngClass]="{ 'text-primary' : selectedSubmissionId === history.submissionHistoryId }"
                        (click)="selectSubmissionHistory(history.submissionHistoryId)">

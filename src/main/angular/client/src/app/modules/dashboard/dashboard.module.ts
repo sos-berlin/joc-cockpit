@@ -3,6 +3,7 @@ import {GridsterModule} from 'angular-gridster2';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
 import {ChartsModule} from 'ng2-charts';
 import {DashboardRoutingModule} from './dashboard-routing.module';
+import {SharedModule} from '../shared/shared.module';
 import {DashboardComponent, AddWidgetModalComponent} from './dashboard.component';
 import {DailyPlanComponent} from './daily-plan/daily-plan.component';
 import {HistorySummaryComponent} from './history-summary/history-summary.component';
@@ -13,7 +14,7 @@ import {SchedulerInstanceComponent} from './scheduler-instance/scheduler-instanc
 import {ActionComponent, CommentModalComponent} from './action/action.component';
 import {ControllerClusterComponent} from './controller-cluster/controller-cluster.component';
 import {InventoryStatisticsComponent} from './inventory-statistics/inventory-statistics.component';
-import {SharedModule} from '../shared/shared.module';
+import {FileTransferHistorySummaryComponent} from './file-transfer-history-summary/file-transfer-history-summary.component';
 
 @NgModule({
   imports: [
@@ -30,6 +31,7 @@ import {SharedModule} from '../shared/shared.module';
     InventoryStatisticsComponent,
     DailyPlanComponent,
     HistorySummaryComponent,
+    FileTransferHistorySummaryComponent,
     OrderOverviewComponent,
     AgentStatusComponent,
     AgentRunningTaskComponent,

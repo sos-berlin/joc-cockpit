@@ -5,7 +5,7 @@ import {
   FilterModalComponent,
   OrderSearchComponent,
   TaskSearchComponent,
-  DeploymentSearchComponent, OrderTemplateComponent, SubmissionSearchComponent, YadeSearchComponent
+  DeploymentSearchComponent, OrderTemplateComponent, SubmissionSearchComponent
 } from './history.component';
 import {HistoryRoutingModule} from './history-routing.module';
 import {SharedModule} from '../shared/shared.module';
@@ -25,7 +25,6 @@ import {FileTransferService} from '../../services/file-transfer.service';
     OrderTemplateComponent,
     EditIgnoreListComponent,
     OrderSearchComponent,
-    YadeSearchComponent,
     TaskSearchComponent,
     DeploymentSearchComponent,
     SubmissionSearchComponent

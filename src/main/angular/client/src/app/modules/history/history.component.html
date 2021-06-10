@@ -708,10 +708,10 @@
                                     (onSearch)="search($event)"></app-task-form-template>
           </div>
           <div *ngIf="historyFilters.type === 'YADE'">
-            <app-yade-form-template [filter]="yadeSearch" [preferences]="preferences" [schedulerIds]="schedulerIds"
-                                    [permission]="permission" [allFilter]="yadeHistoryFilterList"
+            <app-file-transfer-form-template [filter]="yadeSearch" [preferences]="preferences" [schedulerIds]="schedulerIds"
+                                    [permission]="permission" [allFilter]="yadeHistoryFilterList" [isHistory]="true"
                                     [isSearch]="true" (onCancel)="cancel()"
-                                    (onSearch)="search($event)"></app-yade-form-template>
+                                    (onSearch)="search($event)"></app-file-transfer-form-template>
           </div>
           <div *ngIf="historyFilters.type === 'DEPLOYMENT'">
             <app-deployment-form-template [filter]="deploymentSearch" [preferences]="preferences" [schedulerIds]="schedulerIds"
@@ -1137,13 +1137,6 @@
               <i *ngIf="yade.filter.sortBy == 'profile' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th (click)="sort('created')"><a>
-              <span class="p-r-xs" translate>fileTransfer.label.mandator</span>
-              <i *ngIf="yade.filter.sortBy == 'created' && !yade.reverse"
-                 class="fa fa-caret-up "></i>
-              <i *ngIf="yade.filter.sortBy == 'created' && yade.reverse"
-                 class="fa fa-caret-down "></i></a>
-            </th>
             <th (click)="sort('operation')"><a>
               <span class="p-r-xs" translate>fileTransfer.label.operation</span>
               <i *ngIf="yade.filter.sortBy == 'operation' && !yade.reverse"
@@ -1234,8 +1227,6 @@
               <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)"
                   [innerHtml]="transfer.profile | highlight : yade.searchText"></td>
               <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)"
-                  [innerHtml]="transfer.mandator | highlight : yade.searchText"></td>
-              <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)"
                   [innerHtml]="transfer._operation | highlight : yade.searchText"></td>
               <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)">
                 <span class="show-in-single-line w-full">
@@ -1261,7 +1252,7 @@
             </tr>
             <tr *ngIf="transfer.show">
               <td></td>
-              <td colspan="11" style="padding: 0 !important;border-bottom: none!important;">
+              <td colspan="10" style="padding: 0 !important;border-bottom: none!important;">
                 <nz-table class="m-a-0 inner-table" id="fileTransferTable" nzSize="small" [nzData]="['']" [nzShowPagination]="false">
                   <thead>
                     <tr>
@@ -1286,8 +1277,8 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.account"></span></td>
                     <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.host"></span></td>
+                    <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.account"></span></td>
                     <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.port"></span></td>
                     <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.protocol"></span></td>
                     <td><span *ngIf="transfer.target" [innerHtml]="transfer.target.host"></span></td>

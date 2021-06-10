@@ -1,19 +1,16 @@
 <div class="row">
   <div class="col-md-12" *ngIf="data.type">
-    <div id="toolbar" class="bg-white" [hidden]="isTrash" [ngClass]="{'disable-link': !permission.joc.inventory.manage}"></div>
-    <div class="row toolbar b-b m-b-12" [hidden]="isTrash">
-      <div class="col-md-12" *ngIf="!isTrash">
+    <div id="toolbar" class="bg-white" [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"></div>
+    <div class="row toolbar b-b m-b-12">
+      <div class="col-md-12">
           <div class="inline m-b" *ngIf="workflow.path">
             <div style="position: relative; top: 3px">
               <a (click)="backToListView()"><i nz-tooltip="{{'inventory.button.backToList' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
               <span class="_600" [ngClass]="{'cursor text-hover-primary': workflow.hasDeployments || data.deployed}" (click)="navToWorkflowTab()">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
               <span class="text-muted _400" *ngIf="title"> - {{title}}</span>
-              <a class="p-l-xs" (click)="addWorkflow()">
-                <i nz-icon nzType="edit" nzTheme="outline"></i>
-              </a>
             </div>
           </div>
-          <div class="inline pull-right">
+          <div class="inline pull-right" *ngIf="!isTrash">
             <span *ngIf="!isLoading">
               <span (click)="validate()" class="badge m-r-12"
                     [ngClass]="!workflow.valid ? 'cursor badge-danger':'badge-success'">
@@ -41,16 +38,7 @@
           </div>
       </div>
     </div>
-    <div class="row b-b p-b-sm m-b-12" *ngIf="isTrash">
-      <div class="col-md-12">
-        <div *ngIf="data.path">
-          <a (click)="backToListView()"><i nz-tooltip="{{'inventory.button.backToList' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
-          <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
-          <span class="text-muted _400" *ngIf="title"> - {{title}}</span>
-        </div>
-      </div>
-    </div>
-    <div class="graph-container" [ngClass]="{'trash-container' : isTrash}">
+    <div class="graph-container">
       <div class="inline" id="toolbar-icons">
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
           <li class="nav-item">
@@ -139,7 +127,7 @@
   </div>
 </div>
 <!-- BEGIN SLIDER -->
-<div class="property-panel hidden-sm" [hidden]="!data.type || isTrash">
+<div class="property-panel hidden-sm" [hidden]="!data.type">
   <div class="sidebar-open">
     <i class="fa fa-caret-left"></i>
   </div>
@@ -151,16 +139,7 @@
       <h5 class="p-b-xs">
         <span translate>workflow.label.properties</span>
         <span *ngIf="selectedNode" class="font14 text-primary p-l-xs">({{selectedNode.type | translate}})</span>
-        <button class="btn btn-default btn-sm m-l-12 pull-right" style="margin-top: -6px"
-                (click)="openResourceModal()" nz-tooltip="{{'inventory.label.jobResources' | translate}}">
-          <i class="icon-resources-icon icon-color"></i>
-          <span class="p-l-xs btn-text-with-icon" *ngIf="propertyPanelWidth > 320 && (!selectedNode || selectedNode.type !== 'Job')">{{'inventory.label.jobResources' | translate}}</span>
-        </button>
-        <button class="btn btn-default btn-sm pull-right" style="margin-top: -6px"
-                (click)="openDeclarationModal()" nz-tooltip="{{'workflow.label.declareVariables' | translate}}">
-          <i class="fa fa-tasks"></i>
-          <span class="p-l-xs btn-text-with-icon" *ngIf="propertyPanelWidth > 320 && (!selectedNode || selectedNode.type !== 'Job')">{{'order.label.variables' | translate}}</span>
-        </button>
+        <span *ngIf="!selectedNode" class="font14 text-primary p-l-xs">({{'WORKFLOW' | translate}})</span>
       </h5>
     </div>
     <div class="m-l-xs m-r-xs text-left" *ngIf="selectedNode">
@@ -377,8 +356,153 @@
         </div>
       </div>
     </div>
-    <div class="m-t-lg" *ngIf="!selectedNode">
-      <app-empty-data [title]="'workflow.message.noPropertiesFound'"></app-empty-data>
+    <div class="m-l-xs m-r-xs text-left" *ngIf="workflow.id && !selectedNode">
+      <div class="box-body">
+        <div class="form-group row"
+             [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.name</label>
+          <div class="col-md-8 col-lg-9">
+            <input type="text" [readonly]="isTrash" class="form-control" identifierValidation name="name" (blur)="rename(name.invalid)"
+                   [(ngModel)]="workflow.name" required #name="ngModel" [appAutofocus]="!isTrash" autocomplete="off"
+            />
+            <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)" class="text-danger help-block">
+              <div *ngIf="name.errors.required">
+                <div translate>common.message.requiredError</div>
+              </div>
+              <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
+          <div class="col-md-8 col-lg-9">
+            <input type="text" [readonly]="isTrash" class="form-control" name="title" placeholder="{{'common.placeholder.title' | translate}}"
+                   [(ngModel)]="extraConfiguration.title" autocomplete="off" (blur)="updateOtherProperties('title')"/>
+          </div>
+        </div>
+        <div class="form-group row doc-in-workflow">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.documentation</label>
+          <div class="col-md-8 col-lg-9 select-input-both">
+            <input autocomplete="off" type="text" class="form-control"
+                   placeholder="{{'inventory.placeholder.documentationName' | translate}}"
+                   name="documentationPath" [(ngModel)]="extraConfiguration.documentationName">
+            <nz-tree-select
+              name="documentationName"
+              [nzDisabled]="isTrash"
+              nzNoAnimation
+              [nzAllowClear]="false"
+              [nzNodes]="documentationTree"
+              [nzHideUnMatched]="true"
+              [nzDropdownStyle]="{ 'max-height': '300px' }"
+              nzShowSearch
+              [(ngModel)]="document.name"
+              (nzExpandChange)="onExpand($event, 'DOCUMENTATION')"
+            >
+              <ng-template #nzTreeTemplate let-node>
+                <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'DOCUMENTATION', $event);">
+                  <div class="node-content-wrapper"
+                       [class.node-content-wrapper-active]="node.origin.path == extraConfiguration.documentationName">
+                    <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+                       class="w-14"></i>
+                    <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                    {{node.origin.key}}
+                  </div>
+                </div>
+              </ng-template>
+            </nz-tree-select>
+            <i class="tree-search-clear" (click)="extraConfiguration.documentationName = '';document.name='';updateOtherProperties('documentation')" *ngIf="extraConfiguration.documentationName" nz-icon
+               nzType="close-circle" nzTheme="outline"></i>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.jobResourceNames</label>
+          <div class="col-md-8 col-lg-9">
+            <nz-tree-select
+              name="jobResource"
+              [nzDisabled]="isTrash"
+              #treeSelectCtrl
+              nzNoAnimation
+              nzMultiple
+              [nzAllowClear]="false"
+              [nzNodes]="jobResourcesTree"
+              [nzHideUnMatched]="true"
+              [nzDropdownStyle]="{ 'max-height': '300px' }"
+              nzShowSearch
+              (ngModelChange)="onChangeJobResource($event)"
+              [nzPlaceHolder]="'workflow.placeholder.selectJobResources' | translate"
+              [(ngModel)]="extraConfiguration.jobResourceNames"
+              (nzExpandChange)="onExpand($event, 'JOBRESOURCE')"
+            >
+              <ng-template #nzTreeTemplate let-node>
+                <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'JOBRESOURCE', $event);">
+                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
+                    <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+                       class="w-14"></i>
+                    <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                    {{node.origin.name}}
+                  </div>
+                </div>
+              </ng-template>
+            </nz-tree-select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-12 _600" translate>order.label.variables</label>
+        </div>
+        <div class="form-group row m-b-0 m-l-sm" *ngIf="variableDeclarations.parameters.length > 0">
+          <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
+          <div class="col-md-3 col-lg-3 m-b-sm" translate>common.label.type</div>
+          <div class="col-md-5 col-lg-5 m-b-sm" translate>common.label.value</div>
+        </div>
+        <div cdkDropList (cdkDropListDropped)="drop($event)">
+          <div class="form-group row m-b-0 m-l-sm" *ngFor="let variable of variableDeclarations.parameters; let i = index"
+               cdkDrag>
+            <div class="pos-abt" style="margin-left: -13px;font-size: 18px;margin-top: 2px;cursor: move" cdkDragHandle>
+              <i class="fa fa-bars" aria-hidden="true"></i>
+            </div>
+            <div class="col-md-4 col-lg-4 m-b-sm p-r-0"
+                 [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+              <input [readonly]="isTrash" identifierValidation #name="ngModel" autocomplete="off" type="text" class="form-control"
+                     name="name{{i}}"
+                     [(ngModel)]="variable.name" placeholder="{{'common.placeholder.name' | translate}}"
+                     (blur)="checkDuplicateEntries(variable, i)">
+              <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)"
+                   class="text-danger help-block">
+                <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
+              </div>
+            </div>
+            <div class="col-md-3 col-lg-3 m-b-sm p-r-0">
+              <nz-select [nzDisabled]="isTrash" name="type{{i}}" [(ngModel)]="variable.value.type" (ngModelChange)="variable.value.default = '';updateOtherProperties('variable')">
+                <nz-option *ngFor="let dataType of allowedDatatype" [nzLabel]="dataType" [nzValue]="dataType"></nz-option>
+              </nz-select>
+            </div>
+            <div class="col-md-4 col-lg-4 m-b-sm p-r-0" [ngSwitch]="variable.value.type">
+              <nz-input-number [nzDisabled]="isTrash" *ngSwitchCase="'Number'" [nzMin]="0" [nzStep]="1" (nzBlur)="updateOtherProperties('variable')"
+                               nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"
+                               name="value{{i}}" [(ngModel)]="variable.value.default"></nz-input-number>
+              <nz-select [nzDisabled]="isTrash" *ngSwitchCase="'Boolean'" name="value{{i}}" [(ngModel)]="variable.value.default" (ngModelChange)="updateOtherProperties('variable')">
+                <nz-option [nzValue]="" [nzLabel]="'common.placeholder.selectValue' | translate"></nz-option>
+                <nz-option [nzLabel]="'true'" [nzValue]="true"></nz-option>
+                <nz-option [nzLabel]="'false'" [nzValue]="false"></nz-option>
+              </nz-select>
+              <input *ngSwitchDefault autocomplete="off" type="text" class="form-control" name="value{{i}}"
+                     (keypress)="onKeyPress($event)" (blur)="updateOtherProperties('variable')"
+                     [(ngModel)]="variable.value.default" placeholder="{{'common.placeholder.value' | translate}}">
+              <i *ngSwitchDefault class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline"
+                 (click)="openEditor(variable.value)" style="right: 1px;top:1px;"></i>
+            </div>
+            <div class="col-md-1 col-lg-1">
+              <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-12">
+            <a class="text-u-l" (click)="addVariable()" translate>order.button.addVariable</a>
+          </div>
+        </div>
+
+      </div>
     </div>
     <div class="rg-right"><span></span></div>
   </div>

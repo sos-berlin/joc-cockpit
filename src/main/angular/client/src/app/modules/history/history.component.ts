@@ -4,7 +4,7 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NzMessageService} from 'ng-zorro-antd/message';
-import {isEmpty, clone} from 'underscore';
+import {isEmpty, clone, extend} from 'underscore';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
@@ -758,158 +758,11 @@ export class SubmissionSearchComponent implements OnInit {
 }
 
 @Component({
-  selector: 'app-yade-form-template',
-  templateUrl: './yade-form-template.html',
-})
-export class YadeSearchComponent implements OnInit {
-
-  @Input() schedulerIds: any;
-  @Input() filter: any;
-  @Input() preferences: any;
-  @Input() allFilter: any;
-  @Input() permission: any;
-  @Input() isSearch: boolean;
-
-  @Output() onCancel: EventEmitter<any> = new EventEmitter();
-  @Output() onSearch: EventEmitter<any> = new EventEmitter();
-
-  dateFormat: any;
-
-  existingName: any;
-  submitted = false;
-  isUnique = true;
-  allhosts: any;
-  sourceProtocol: any = [];
-  targetProtocol: any = [];
-
-  stateOptions = [
-    {status: 'SUCCESSFUL', text: 'successful', checked: false},
-    {status: 'FAILED', text: 'failed', checked: false},
-    {status: 'INCOMPLETE', text: 'incomplete', checked: false}
-  ];
-
-  operationOptions = [
-    {status: 'COPY', text: 'copy', checked: false},
-    {status: 'MOVE', text: 'move'},
-    {status: 'GETLIST', text: 'getList', checked: false},
-    {status: 'RENAME', text: 'rename', checked: false}
-  ];
-
-  constructor(public coreService: CoreService, private authService: AuthService) {
-  }
-
-  ngOnInit(): void {
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.allhosts = this.coreService.getProtocols();
-    if (this.filter.states && this.filter.states.length > 0) {
-      this.stateOptions = this.stateOptions.map(item => {
-        return {
-          ...item,
-          checked: this.filter.states.indexOf(item.status) > -1
-        };
-      });
-    }
-    if (this.filter.operations && this.filter.operations.length > 0) {
-      this.operationOptions = this.operationOptions.map(item => {
-        return {
-          ...item,
-          checked: this.filter.operations.indexOf(item.status) > -1
-        };
-      });
-    }
-  }
-
-  checkFilterName(): void {
-    this.isUnique = true;
-    for (let i = 0; i < this.allFilter.length; i++) {
-      if (this.filter.name === this.allFilter[i].name && this.authService.currentUserData === this.allFilter[i].account && this.filter.name !== this.existingName) {
-        this.isUnique = false;
-      }
-    }
-  }
-
-  stateChange(value: string[]): void {
-    this.filter.states = value;
-  }
-
-  operationChange(value: string[]): void {
-    this.filter.operations = value;
-  }
-
-  selectedTargetProtocol(value: any): void {
-    if (!this.filter.targetProtocol) {
-      this.filter.targetProtocol = [];
-    }
-    this.filter.targetProtocol.push(value.text);
-  }
-
-  onSubmit(result): void {
-    this.submitted = true;
-    const configObj = {
-      controllerId: this.schedulerIds.selected,
-      account: this.authService.currentUserData,
-      configurationType: 'CUSTOMIZATION',
-      objectType: 'YADE_HISTORY',
-      name: result.name,
-      shared: result.shared,
-      id: 0,
-      configurationItem: {}
-    };
-    let fromDate: any;
-    let toDate: any;
-    const obj: any = this.coreService.clone(result);
-    delete obj.shared;
-    delete obj.radio;
-    if (result.radio != 'current') {
-      if (result.from1) {
-        fromDate = this.coreService.parseProcessExecuted(result.from1);
-      }
-      if (result.to1) {
-        toDate = this.coreService.parseProcessExecuted(result.to1);
-      }
-    }
-
-    if (fromDate) {
-      obj.from1 = fromDate;
-    } else {
-      obj.from1 = '0d';
-    }
-    if (toDate) {
-      obj.to1 = toDate;
-    } else {
-      obj.to1 = '0d';
-    }
-    console.log(obj);
-    configObj.configurationItem = JSON.stringify(obj);
-    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      configObj.id = res.id;
-      this.allFilter.push(configObj);
-      if (this.isSearch) {
-        this.filter.name = '';
-      } else {
-        this.onCancel.emit(configObj);
-      }
-      this.submitted = false;
-    }, () => {
-      this.submitted = false;
-    });
-  }
-
-  search(): void {
-    this.onSearch.emit(this.filter);
-  }
-
-  cancel(): void {
-    this.onCancel.emit();
-  }
-}
-
-@Component({
   selector: 'app-single-history',
   templateUrl: './single-history.component.html'
 })
 export class SingleHistoryComponent implements OnInit, OnDestroy {
-  loading: boolean;
+  loading: boolean = true;
   controllerId: any = {};
   preferences: any = {};
   permission: any = {};
@@ -1068,6 +921,18 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
     data.showAll = false;
   }
 
+  expandDailyPlan(history) {
+    history.show = true;
+    if (history.controllers && history.controllers.length > 0) {
+      history.controllers.forEach((controller) => {
+        controller.submissions.forEach((sub) => {
+          if (sub.show === undefined) {
+            sub.show = true;
+          }
+        });
+      });
+    }
+  }
 }
 
 @Component({
@@ -1129,7 +994,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   orderSearchableProperties = ['controllerId', 'orderId', 'workflow', 'state', '_text', 'orderState', 'position'];
   taskSearchableProperties = ['controllerId', 'job', 'criticality', 'request', 'workflow', 'orderId', 'position'];
   deploymentSearchableProperties = ['controllerId', 'deploymentDate', 'account', 'state'];
-  yadeSearchableProperties = ['controllerId', 'profile', 'mandator', 'start', 'end', '_operation', 'numOfFiles', 'workflowPath', 'orderId'];
+  yadeSearchableProperties = ['controllerId', 'profile', 'start', 'end', '_operation', 'numOfFiles', 'workflowPath', 'orderId'];
 
   object: any = {};
   ignoreListConfigId = 0;
@@ -1435,6 +1300,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         obj.states.push(this.yade.filter.states);
       }
     }
+    obj.compact = true;
     this.convertRequestBody(obj);
     this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
       this.yadeHistorys = res.transfers || [];
@@ -1867,7 +1733,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         });
       }
 
-      this.convertDeployRequestBody(filter)
+      this.convertDeployRequestBody(filter);
       this.coreService.post('inventory/deployment/history', {compactFilter: filter}).subscribe((res: any) => {
         this.deploymentHistorys = res.depHistory;
         this.searchInResult();
@@ -1930,6 +1796,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     } else if (this.historyFilters.type === 'YADE') {
       this.yade.filter.states = '';
       this.yade.filter.date = '';
+      filter.compact = true;
       this.fileTransferService.getRequestForSearch(obj, filter, this.preferences);
       this.coreService.post('yade/transfers', filter).subscribe((res: any) => {
         this.yadeHistorys = res.transfers || [];
@@ -2272,6 +2139,15 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   showTransferFuc(data: any): void {
+    if (!data.target) {
+      const obj = {
+        controllerId: data.controllerId || this.schedulerIds.selected,
+        transferIds: [data.id]
+      };
+      this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
+        data = extend(data, res.transfers[0]);
+      });
+    }
     const self = this;
     data.show = true;
     data.files = [];
@@ -2283,7 +2159,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }).subscribe((res: any) => {
       data.files = res.files;
       data.loading = false;
-      data.widthArr = [...data.widthArr, ...this.coreService.calFileTransferRowWidth(false)];
+      data.widthArr = [...data.widthArr, ...this.coreService.calFileTransferRowWidth()];
       setTimeout(() => {
         const dom = $('#fileTransferMainTable');
         dom.find('thead tr.main-header-row th').each(function(i) {
@@ -3048,7 +2924,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private exportToExcelYade(): any {
-    let controllerId = '', workflow = '', status = '', profileName = '', mandator = '',
+    let controllerId = '', workflow = '', status = '', profileName = '',
       startTime = '', endTime = '', duration = '', operation = '', order = '', total = '', lastErrorMessage = '';
     this.translate.get('common.label.controllerId').subscribe(translatedValue => {
       controllerId = translatedValue;
@@ -3058,9 +2934,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
     this.translate.get('fileTransfer.label.profileName').subscribe(translatedValue => {
       profileName = translatedValue;
-    });
-    this.translate.get('fileTransfer.label.mandator').subscribe(translatedValue => {
-      mandator = translatedValue;
     });
     this.translate.get('fileTransfer.label.operation').subscribe(translatedValue => {
       operation = translatedValue;
@@ -3096,7 +2969,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
         obj[status] = translatedValue;
       });
       obj[profileName] = this.yadeHistorys[i].profile;
-      obj[mandator] = this.yadeHistorys[i].mandator;
       obj[operation] = this.yadeHistorys[i]._operation;
       obj[workflow] = this.yadeHistorys[i].workflowPath;
       obj[order] = this.yadeHistorys[i].orderId;

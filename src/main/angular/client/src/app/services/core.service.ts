@@ -1079,7 +1079,7 @@ export class CoreService {
     }, 100);
   }
 
-  calFileTransferRowWidth(isCheckBox: boolean): Array<string> {
+  calFileTransferRowWidth(): Array<string> {
     const arr: Array<number> = [];
     const arr2 = [];
     const dom = $('#fileTransferTable');
@@ -1087,8 +1087,7 @@ export class CoreService {
       arr.push($(this).outerWidth());
     });
 
-    const firstColWidth = isCheckBox ? 36 : 0;
-    arr2.push((arr[0] + arr[1] - firstColWidth) + 'px');
+    arr2.push((arr[0] + arr[1]) + 'px');
     arr2.push((arr[2] + arr[3]) + 'px');
     arr2.push((arr[4] + arr[5]) + 'px');
     arr2.push((arr[6] + arr[7]) + 'px');

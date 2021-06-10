@@ -35,7 +35,7 @@
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.orderTemplateName</label>
           <div class="col-md-8 col-lg-6">
-            <input autocomplete="off" [readOnly]="isTrash || !permission.joc.inventory.manage" identifierValidation required class="form-control" [appAutofocus]="!isTrash" placeholder="{{'inventory.placeholder.orderName' | translate}}"
+            <input autocomplete="off" [readOnly]="isTrash || !permission.joc.inventory.manage" identifierValidation required class="form-control" [appAutofocus]="!isTrash"
                    name="name" [(ngModel)]="schedule.name" #name="ngModel" (blur)="rename(name.invalid)">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
               <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>

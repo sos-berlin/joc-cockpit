@@ -18,8 +18,8 @@
                           (onCancel)="cancel($event)"></app-task-form-template>
 </div>
 <div *ngIf="type === 'YADE'">
-  <app-yade-form-template [filter]="filter" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="allFilter"
-                          (onCancel)="cancel($event)"></app-yade-form-template>
+  <app-file-transfer-form-template [filter]="filter" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="allFilter"
+                          [isHistory]="true" (onCancel)="cancel($event)"></app-file-transfer-form-template>
 </div>
 <div *ngIf="type === 'DEPLOYMENT'">
   <app-deployment-form-template [filter]="filter" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="allFilter"

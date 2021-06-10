@@ -305,6 +305,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
         'name': 'dailyPlan',
         'visible': true,
         'message': 'message.dailyPlanOverview'
+      }, {
+        'cols': 4,
+        'rows': 2,
+        'y': 11,
+        'x': 0,
+        'name': 'fileTransferSummary',
+        'visible': false,
+        'message': 'message.fileTransferHistorySummary'
       }];
     }
 
@@ -325,6 +333,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         } else if (this.dashboardLayout[i].name === 'inventory' && this.permission.joc.inventory.view) {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'dailyPlan' && this.permission.joc.dailyPlan.view && this.permission.currentController.orders.view) {
+          this.widgets.push(this.dashboardLayout[i]);
+        } else if (this.dashboardLayout[i].name === 'fileTransferSummary' && this.permission.joc.fileTransfer && this.permission.joc.fileTransfer.view) {
           this.widgets.push(this.dashboardLayout[i]);
         }
       }

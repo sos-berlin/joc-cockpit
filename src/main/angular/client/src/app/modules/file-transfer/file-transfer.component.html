@@ -6,7 +6,7 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div class="inline" [ngClass]="{'hide':object.mapOfCheckedId.size>0}">
+          <div class="inline">
             <div class="inline valign">
               <label nz-checkbox [(ngModel)]="yadeView.current" name="current" (ngModelChange)="changeController()">
                 {{'common.label.currentController' | translate}}
@@ -157,11 +157,6 @@
               </nz-dropdown-menu>
             </div>
           </div>
-          <div class="hide" [ngClass]="{'show-block':object.mapOfCheckedId.size>0}">
-            <button class="btn btn-grey btn-sm m-l-12"
-                    (click)="restartAllTransfer()"><i class="fa fa-repeat"></i>&nbsp;
-              <span class="hidden-sm-down" translate>fileTransfer.button.restart</span></button>
-          </div>
         </div>
       </div>
     </div>
@@ -201,9 +196,9 @@
     <div class="row m-b hide" [ngClass]="{'show':showSearchPanel}">
       <div class="col-md-12">
         <div class="box p-a m-b-xs">
-          <app-form-template [filter]="searchFilter" [preferences]="preferences" [schedulerIds]="schedulerIds"
+          <app-file-transfer-form-template [filter]="searchFilter" [preferences]="preferences" [schedulerIds]="schedulerIds"
                              [permission]="permission" [allFilter]="filterList"
-                             [isSearch]="true" (onCancel)="cancel()" (onSearch)="search()"></app-form-template>
+                             [isSearch]="true" (onCancel)="cancel()" (onSearch)="search()"></app-file-transfer-form-template>
         </div>
       </div>
     </div>
@@ -226,12 +221,6 @@
         >
           <thead>
           <tr class="main-header-row">
-            <th class="chk" *ngIf="permission && permission.joc && permission.joc.fileTransfer.manage"
-                [nzShowCheckbox]="true"
-                [(nzChecked)]="object.checked"
-                [nzIndeterminate]="object.indeterminate"
-                (nzCheckedChange)="checkAll($event)">
-            </th>
             <th class="menu">
               <span translate>common.label.action</span>
             </th>
@@ -256,13 +245,6 @@
               <i *ngIf="yadeFilters.filter.sortBy == 'profile' && !yadeFilters.reverse"
                  class="fa fa-caret-up "></i>
               <i *ngIf="yadeFilters.filter.sortBy == 'profile' && yadeFilters.reverse"
-                 class="fa fa-caret-down "></i></a>
-            </th>
-            <th (click)="sort('created')"><a>
-              <span class="p-r-xs" translate>fileTransfer.label.mandator</span>
-              <i *ngIf="yadeFilters.filter.sortBy == 'created' && !yadeFilters.reverse"
-                 class="fa fa-caret-up "></i>
-              <i *ngIf="yadeFilters.filter.sortBy == 'created' && yadeFilters.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
             <th width="90px" (click)="sort('operation')"><a>
@@ -328,12 +310,6 @@
           <ng-template ngFor let-transfer
                        [ngForOf]="ajaxTable.data | orderBy: yadeFilters.filter.sortBy:yadeFilters.reverse">
             <tr [ngClass]="{'light-bg':transfer.show}">
-               <td *ngIf="permission && permission.joc.fileTransfer.manage" [nzShowCheckbox]="true"
-                  [nzDisabled]="transfer.state._text=='SUCCESSFUL'"
-                   [nzChecked]="object.mapOfCheckedId.has(transfer.id)"
-                  [nzIndeterminate]="transfer.indeterminate"
-                  (nzCheckedChange)="onItemChecked(transfer, $event)">
-              </td>
               <td>
                 <div class="btn-group dropdown">
                   <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
@@ -342,10 +318,6 @@
                   </button>
                   <nz-dropdown-menu #menu="nzDropdownMenu">
                     <ul nz-menu>
-                      <li nz-menu-item
-                          *ngIf="permission.joc.fileTransfer.manage && transfer.state._text!='SUCCESSFUL'">
-                        <a (click)="restartTransfer(transfer)" translate>fileTransfer.button.restart</a>
-                      </li>
                       <li nz-menu-item>
                         <a (click)="coreService.copyLink('fileTransfer',transfer.id)" translate>common.button.copyLinkToObject</a>
                       </li>
@@ -376,7 +348,6 @@
                 </span>
               </td>
               <td [innerHtml]="transfer.profile| highlight : yadeFilters.searchText"></td>
-              <td [innerHtml]="transfer.mandator| highlight : yadeFilters.searchText"></td>
               <td [innerHtml]="transfer._operation| highlight : yadeFilters.searchText"></td>
               <td>
                 <span class="show-in-single-line w-full">
@@ -396,7 +367,7 @@
             </tr>
             <tr *ngIf="transfer.show">
               <td></td>
-              <td colspan="13" style="padding: 0 !important;border-bottom: none!important;">
+              <td colspan="12" style="padding: 0 !important;border-bottom: none!important;">
                 <nz-table class="m-a-0 inner-table" id="fileTransferTable" [nzData]="['']" [nzSize]="'small'" [nzShowPagination]="false">
                   <thead>
                   <tr>
@@ -421,8 +392,8 @@
                   </thead>
                   <tbody>
                   <tr>
-                    <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.account"></span></td>
                     <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.host"></span></td>
+                    <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.account"></span></td>
                     <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.port"></span></td>
                     <td><span *ngIf="transfer.source" [innerHtml]="transfer.source.protocol"></span></td>
                     <td><span *ngIf="transfer.target" [innerHtml]="transfer.target.host"></span></td>
@@ -440,9 +411,6 @@
                           [nzData]="transfer.files" [nzFrontPagination]="false" [nzShowPagination]="false" [nzWidthConfig]="transfer.widthArr">
                   <thead>
                   <tr>
-                    <th class="chk" *ngIf="permission.joc.fileTransfer.manage">
-                      #
-                    </th>
                     <th><span translate>fileTransfer.label.sourceFileName</span></th>
                     <th><span translate>fileTransfer.label.sourceFilePath</span></th>
                     <th><span translate>fileTransfer.label.targetFileName</span></th>
@@ -455,11 +423,6 @@
                   <tbody>
                   <ng-template ngFor let-file [ngForOf]="innerChildTable.data">
                     <tr>
-                      <td *ngIf="permission.joc.fileTransfer.manage" [nzShowCheckbox]="true"
-                          [nzDisabled]="transfer.state._text=='SUCCESSFUL'"
-                          [(nzChecked)]="file.checked"
-                          (nzCheckedChange)="checkALLFilesFnc(transfer, $event)">
-                      </td>
                       <td>{{file.sourceName}}</td>
                       <td>{{file.sourcePath}}</td>
                       <td>{{file.targetName}}</td>

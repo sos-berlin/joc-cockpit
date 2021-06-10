@@ -347,11 +347,6 @@ export class ResizableDirective implements OnInit {
             $('.toolbar').css({'margin-right': (wt - 12) + 'px'});
             $('.sidebar-close').css({right: wt + 'px'});
             localStorage.propertyPanelWidth = wt;
-            if (wt > 349) {
-              $('.btn-text-with-icon').show();
-            } else {
-              $('.btn-text-with-icon').hide();
-            }
           }
         });
       }

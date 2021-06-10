@@ -57,238 +57,6 @@ declare const $;
 const x2js = new X2JS();
 
 @Component({
-  selector: 'app-edit-workflow-modal',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './edit-workflow-dialog.html'
-})
-export class UpdateWorkflowComponent implements OnInit {
-  @Input() schedulerId: string;
-  @Input() data: any;
-  @Input() documentationName: string;
-  @Input() title: string;
-  @Input() orderRequirements;
-  @Input() jobResourceNames;
-  @Input() jobResourcesTree = [];
-  @Input() documentationTree = [];
-  @Input() isVariableOnly;
-
-  @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
-
-  allowedDatatype = ['String', 'Number', 'Boolean'];
-  workflowName: string;
-  variableDeclarations = {parameters: []};
-  document = {name: ''};
-
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, public toasterService: ToasterService,
-              private modal: NzModalService, private ref: ChangeDetectorRef) {
-  }
-
-  ngOnInit(): void {
-    if (this.data) {
-      this.workflowName = this.data.name;
-    }
-    if (this.orderRequirements && this.orderRequirements.parameters && !isEmpty(this.orderRequirements.parameters)) {
-      this.variableDeclarations.parameters = Object.entries(this.orderRequirements.parameters).map(([k, v]) => {
-        return {name: k, value: v};
-      });
-    }
-    if (this.jobResourceNames && this.jobResourceNames.length > 0) {
-      const APIs = [];
-      let paths = [];
-      this.jobResourceNames.forEach((name) => {
-        APIs.push(this.coreService.post('inventory/path', {name, objectType: 'JOBRESOURCE', useDrafts: true}).pipe(
-          catchError(error => of(error))
-        ));
-      });
-      forkJoin(APIs).subscribe(results => {
-        results.forEach((item: any, index) => {
-          if (item && item.path) {
-            const path = item.path.substring(0, item.path.lastIndexOf('/')) || item.path.substring(0, item.path.lastIndexOf('/') + 1);
-            if (paths.indexOf(path) === -1) {
-              paths.push(path);
-              this.loadResources(path);
-            }
-          } else {
-            this.jobResourceNames.splice(index, 1);
-            this.ref.detectChanges();
-          }
-        });
-      });
-
-    }
-    if (!this.jobResourceNames && this.variableDeclarations.parameters && this.variableDeclarations.parameters.length === 0) {
-      this.addVariable();
-    }
-  }
-
-  onSubmit(): void {
-    if (this.data && this.workflowName !== this.data.name) {
-      this.coreService.post('inventory/rename', {
-        id: this.data.id,
-        newPath: this.workflowName
-      }).subscribe(() => {
-        this.activeModal.close({name: this.workflowName, title: this.title});
-      });
-    } else if (this.jobResourceNames) {
-      this.activeModal.close({jobResourceNames: this.jobResourceNames});
-    } else {
-      if (this.variableDeclarations.parameters && this.variableDeclarations.parameters.length > 0) {
-        this.variableDeclarations.parameters.forEach((value) => {
-          if (value.value && value.value.default === '') {
-            delete value.value.default;
-          }
-        });
-      }
-      this.activeModal.close({
-        title: this.title,
-        documentationName: this.documentationName,
-        variableDeclarations: this.variableDeclarations
-      });
-    }
-  }
-
-  addVariable(): void {
-    const param = {
-      name: '',
-      value: {
-        type: 'String'
-      }
-    };
-    if (this.variableDeclarations.parameters) {
-      if (!this.coreService.isLastEntryEmpty(this.variableDeclarations.parameters, 'name', '')) {
-        this.variableDeclarations.parameters.push(param);
-      }
-    }
-  }
-
-  checkDuplicateEntries(variable, index): void {
-    if (variable.name) {
-      for (let i = 0; i < this.variableDeclarations.parameters.length; i++) {
-        if (this.variableDeclarations.parameters[i].name === variable.name && i !== index) {
-          variable.name = '';
-          this.toasterService.pop('warning', this.variableDeclarations.parameters[i].name + ' is already exist');
-          break;
-        }
-      }
-    }
-  }
-
-  drop(event: CdkDragDrop<string[]>): void {
-    moveItemInArray(this.variableDeclarations.parameters, event.previousIndex, event.currentIndex);
-  }
-
-  removeVariable(index): void {
-    this.variableDeclarations.parameters.splice(index, 1);
-  }
-
-  onKeyPress($event): void {
-    if ($event.which === '13' || $event.which === 13) {
-      $event.preventDefault();
-      this.addVariable();
-    }
-  }
-
-  openEditor(data: any): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: ValueEditorComponent,
-      nzClassName: 'lg',
-      nzComponentParams: {
-        data: data.default
-      },
-      nzFooter: null,
-      nzClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        data.default = result;
-        this.ref.detectChanges();
-      }
-    });
-  }
-
-  private loadResources(path): void {
-    if (this.treeSelectCtrl) {
-      const node = this.treeSelectCtrl.getTreeNodeByKey(path);
-      if (node) {
-        node.isExpanded = true;
-        this.loadData(node, 'JOBRESOURCE', null);
-      }
-    }
-  }
-
-  loadData(node, type, $event): void {
-    if (!node.origin.type) {
-      if ($event) {
-        node.isExpanded = !node.isExpanded;
-        $event.stopPropagation();
-      }
-      let flag = true;
-      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
-        flag = false;
-      }
-      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        let obj: any = {
-          path: node.key,
-          objectTypes: [type]
-        };
-        if (type === 'DOCUMENTATION') {
-          obj = {
-            folders: [{folder: node.key, recursive: false}],
-            onlyWithAssignReference: true
-          };
-        }
-        const URL = type === 'DOCUMENTATION' ? 'documentations' : 'inventory/read/folder';
-        this.coreService.post(URL, obj).subscribe((res: any) => {
-          let data = res.jobResources || res.documentations;
-          for (let i = 0; i < data.length; i++) {
-            const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-            data[i].title = data[i].assignReference || data[i].name;
-            data[i].path = path;
-            data[i].key = data[i].assignReference || data[i].name;
-            data[i].type = type;
-            data[i].isLeaf = true;
-          }
-          if (node.origin.children && node.origin.children.length > 0) {
-            data = data.concat(node.origin.children);
-          }
-          if (node.origin.isLeaf) {
-            node.origin.expanded = true;
-          }
-          node.origin.isLeaf = false;
-          node.origin.children = data;
-          if (type === 'DOCUMENTATION') {
-            this.documentationTree = [...this.documentationTree];
-          } else {
-            this.jobResourcesTree = [...this.jobResourcesTree];
-          }
-          if (this.jobResourceNames && this.jobResourceNames.length > 0) {
-            this.jobResourceNames = [...this.jobResourceNames];
-          }
-          this.ref.detectChanges();
-        });
-      }
-    } else {
-      if (type === 'DOCUMENTATION') {
-        if (this.document.name) {
-          if (this.documentationName !== this.document.name) {
-            this.documentationName = this.document.name;
-          }
-        } else if (node.key && !node.key.match('/')) {
-          if (this.documentationName !== node.key) {
-            this.documentationName = node.key;
-          }
-        }
-      }
-    }
-  }
-
-  onExpand(e, type): void {
-    this.loadData(e.node, type, null);
-  }
-}
-
-@Component({
   selector: 'app-job-content',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './job-text-editor.html'
@@ -1424,6 +1192,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   node: any;
   title = '';
   documentationName = '';
+  extraConfiguration: any = {};
   jobs: any = [];
   jobResourceNames: any = [];
   orderRequirements: any = {};
@@ -1441,10 +1210,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   objectType = 'WORKFLOW';
   invalidMsg: string;
   inventoryConf: any;
-
+  allowedDatatype = ['String', 'Number', 'Boolean'];
+  variableDeclarations = {parameters: []};
+  document = {name: ''};
   subscription: Subscription;
 
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
+  @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
   constructor(public coreService: CoreService, public translate: TranslateService, private modal: NzModalService,
               public toasterService: ToasterService, public workflowService: WorkflowService, private dataService: DataService,
@@ -1572,102 +1344,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.inventoryConf.copiedInstuctionObject = obj;
       }
     }
-  }
-
-  openDeclarationModal(): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: UpdateWorkflowComponent,
-      nzAutofocus: null,
-      nzClassName: 'lg',
-      nzComponentParams: {
-        schedulerId: this.schedulerId,
-        orderRequirements: this.coreService.clone(this.orderRequirements),
-        isVariableOnly: true
-      },
-      nzFooter: null,
-      nzClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result && this.permission.joc.inventory.manage) {
-        const variableDeclarations = {parameters: []};
-        variableDeclarations.parameters = result.variableDeclarations.parameters.filter((value) => {
-          return !!value.name;
-        });
-        variableDeclarations.parameters = this.coreService.keyValuePair(variableDeclarations.parameters);
-        if (variableDeclarations.parameters && isEmpty(variableDeclarations.parameters)) {
-          delete variableDeclarations.parameters;
-        }
-        if (JSON.stringify(this.orderRequirements) !== JSON.stringify(variableDeclarations)) {
-          this.orderRequirements = variableDeclarations;
-          this.updateOtherProperties();
-        }
-      }
-    });
-  }
-
-  openResourceModal(): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: UpdateWorkflowComponent,
-      nzAutofocus: null,
-      nzClassName: 'lg',
-      nzComponentParams: {
-        schedulerId: this.schedulerId,
-        jobResourceNames: this.coreService.clone(this.jobResourceNames),
-        jobResourcesTree: this.jobResourcesTree
-      },
-      nzFooter: null,
-      nzClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result && this.permission.joc.inventory.manage) {
-        if (!isEqual(JSON.stringify(this.jobResourceNames), JSON.stringify(result.jobResourceNames))) {
-          this.jobResourceNames = result.jobResourceNames;
-          this.updateOtherProperties();
-        }
-      }
-    });
-  }
-
-  addWorkflow(): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: UpdateWorkflowComponent,
-      nzAutofocus: null,
-      nzComponentParams: {
-        schedulerId: this.schedulerId,
-        documentationTree: this.documentationTree,
-        data: this.workflow,
-        title: this.title,
-        documentationName: this.documentationName,
-      },
-      nzFooter: null,
-      nzClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result && this.permission.joc.inventory.manage) {
-        if (result.name) {
-          this.data.name = result.name;
-          this.workflow.name = result.name;
-          this.dataService.reloadTree.next({rename: this.data});
-          this.workflow.deployed = false;
-          this.data.deployed = false;
-        }
-        let flag = false;
-        if (this.title !== result.title) {
-          this.title = result.title;
-          flag = true;
-        }
-        if (this.documentationName !== result.documentationName) {
-          this.documentationName = result.documentationName;
-          flag = true;
-        }
-        if (flag) {
-          this.updateOtherProperties();
-        }
-      }
-    });
   }
 
   zoomIn(): void {
@@ -1858,7 +1534,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   validate(): void {
     if (this.invalidMsg && this.invalidMsg.match(/orderRequirements/)) {
-      this.openDeclarationModal();
+      this.selectedNode = null;
     } else {
       if (!this.workflow.valid) {
         const data = this.coreService.clone(this.workflow.configuration);
@@ -1952,45 +1628,72 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         flag = false;
       }
       if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        this.coreService.post('inventory/read/folder', {
+        let obj: any = {
           path: node.key,
           objectTypes: [type]
-        }).subscribe((res: any) => {
-          let data;
-          if (type === 'LOCK') {
-            data = res.locks;
-            for (let i = 0; i < data.length; i++) {
-              const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-              data[i].title = data[i].name;
-              data[i].path = _path;
-              data[i].key = data[i].name;
-              data[i].type = type;
-              data[i].isLeaf = true;
-            }
-            if (node.origin.children && node.origin.children.length > 0) {
-              data = data.concat(node.origin.children);
-            }
-            if (node.origin.isLeaf) {
-              node.origin.expanded = true;
-            }
-            node.origin.isLeaf = false;
-            node.origin.children = data;
+        };
+        if (type === 'DOCUMENTATION') {
+          obj = {
+            folders: [{folder: node.key, recursive: false}],
+            onlyWithAssignReference: true
+          };
+        }
+        const URL = type === 'DOCUMENTATION' ? 'documentations' : 'inventory/read/folder';
+        this.coreService.post(URL, obj).subscribe((res: any) => {
+          let data = type === 'LOCK' ? res.locks : res.jobResources || res.documentations;
+          for (let i = 0; i < data.length; i++) {
+            const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
+            data[i].title = data[i].assignReference || data[i].name;
+            data[i].path = _path;
+            data[i].key = data[i].assignReference || data[i].name;
+            data[i].type = type;
+            data[i].isLeaf = true;
           }
-          this.lockTree = [...this.lockTree];
+          if (node.origin.children && node.origin.children.length > 0) {
+            data = data.concat(node.origin.children);
+          }
+          if (node.origin.isLeaf) {
+            node.origin.expanded = true;
+          }
+          node.origin.isLeaf = false;
+          node.origin.children = data;
+          if (type === 'LOCK') {
+            this.lockTree = [...this.lockTree];
+          } else if (type === 'DOCUMENTATION') {
+            this.documentationTree = [...this.documentationTree];
+          } else {
+            this.jobResourcesTree = [...this.jobResourcesTree];
+            if (this.extraConfiguration.jobResourceNames && this.extraConfiguration.jobResourceNames.length > 0) {
+              this.extraConfiguration.jobResourceNames = [...this.extraConfiguration.jobResourceNames];
+            }
+          }
           this.ref.detectChanges();
         });
       }
-    }
-
-    if (this.selectedNode.obj.lockName1) {
-      if (this.selectedNode.obj.lockName !== this.selectedNode.obj.lockName1) {
-        this.selectedNode.obj.lockName = this.selectedNode.obj.lockName1;
-        this.getLimit();
-      }
-    } else if (node.key && !node.key.match('/')) {
-      if (this.selectedNode.obj.lockName !== node.key) {
-        this.selectedNode.obj.lockName = node.key;
-        this.getLimit();
+    } else {
+      if (type === 'LOCK') {
+        if (this.selectedNode.obj.lockName1) {
+          if (this.selectedNode.obj.lockName !== this.selectedNode.obj.lockName1) {
+            this.selectedNode.obj.lockName = this.selectedNode.obj.lockName1;
+            this.getLimit();
+          }
+        } else if (node.key && !node.key.match('/')) {
+          if (this.selectedNode.obj.lockName !== node.key) {
+            this.selectedNode.obj.lockName = node.key;
+            this.getLimit();
+          }
+        }
+      } else  if (type === 'DOCUMENTATION') {
+        if (this.document.name) {
+          if (this.extraConfiguration.documentationName !== this.document.name) {
+            this.extraConfiguration.documentationName = this.document.name;
+          }
+        } else if (node.key && !node.key.match('/')) {
+          if (this.extraConfiguration.documentationName !== node.key) {
+            this.extraConfiguration.documentationName = node.key;
+          }
+        }
+        this.updateOtherProperties('documentation');
       }
     }
   }
@@ -2135,18 +1838,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           res.configuration = {};
         }
 
-        if (res.configuration.orderRequirements) {
-          this.orderRequirements = this.coreService.clone(res.configuration.orderRequirements);
-        }
-        if (res.configuration.jobResourceNames) {
-          this.jobResourceNames = this.coreService.clone(res.configuration.jobResourceNames);
-        }
-        this.documentationName = res.configuration.documentationName;
-        this.title = res.configuration.title;
-        delete res.configuration.orderRequirements;
-        delete res.configuration.jobResourceNames;
-        delete res.configuration.documentationName;
-        delete res.configuration.title;
+        this.initObjects(res);
         this.workflow = res;
         this.workflow.actual = JSON.stringify(res.configuration);
 
@@ -2177,6 +1869,161 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }, () => {
       this.isLoading = false;
     });
+  }
+
+  private initObjects(res): void{
+    if (res.configuration.orderRequirements) {
+      this.orderRequirements = this.coreService.clone(res.configuration.orderRequirements);
+    }
+    if (res.configuration.jobResourceNames) {
+      this.jobResourceNames = this.coreService.clone(res.configuration.jobResourceNames);
+    }
+    this.documentationName = res.configuration.documentationName;
+    this.title = res.configuration.title;
+    delete res.configuration.orderRequirements;
+    delete res.configuration.jobResourceNames;
+    delete res.configuration.documentationName;
+    delete res.configuration.title;
+    if (this.jobResourceNames && this.jobResourceNames.length > 0) {
+      const APIs = [];
+      let paths = [];
+      this.jobResourceNames.forEach((name) => {
+        APIs.push(this.coreService.post('inventory/path', {name, objectType: 'JOBRESOURCE', useDrafts: true}).pipe(
+          catchError(error => of(error))
+        ));
+      });
+      forkJoin(APIs).subscribe(results => {
+        results.forEach((item: any, index) => {
+          if (item && item.path) {
+            const path = item.path.substring(0, item.path.lastIndexOf('/')) || item.path.substring(0, item.path.lastIndexOf('/') + 1);
+            if (paths.indexOf(path) === -1) {
+              paths.push(path);
+              this.loadResources(path);
+            }
+          } else {
+            this.jobResourceNames.splice(index, 1);
+            this.ref.detectChanges();
+          }
+        });
+      });
+
+    }
+    this.extraConfiguration = {
+      title: this.title,
+      documentationName: this.documentationName,
+      jobResourceNames: this.jobResourceNames,
+    };
+    if (!this.orderRequirements && this.variableDeclarations.parameters && this.variableDeclarations.parameters.length === 0) {
+      this.addVariable();
+    }
+    if (this.orderRequirements && this.orderRequirements.parameters && !isEmpty(this.orderRequirements.parameters)) {
+      this.variableDeclarations.parameters = Object.entries(this.orderRequirements.parameters).map(([k, v]) => {
+        return {name: k, value: v};
+      });
+    }
+  }
+
+  addVariable(): void {
+    const param = {
+      name: '',
+      value: {
+        type: 'String'
+      }
+    };
+    if (this.variableDeclarations.parameters) {
+      if (!this.coreService.isLastEntryEmpty(this.variableDeclarations.parameters, 'name', '')) {
+        this.variableDeclarations.parameters.push(param);
+      }
+    }
+  }
+
+  checkDuplicateEntries(variable, index): void {
+    if (variable.name) {
+      for (let i = 0; i < this.variableDeclarations.parameters.length; i++) {
+        if (this.variableDeclarations.parameters[i].name === variable.name && i !== index) {
+          variable.name = '';
+          this.toasterService.pop('warning', this.variableDeclarations.parameters[i].name + ' is already exist');
+          break;
+        }
+      }
+    }
+    if (variable.name) {
+      this.updateOtherProperties('variable');
+    }
+  }
+
+  drop(event: CdkDragDrop<string[]>): void {
+    moveItemInArray(this.variableDeclarations.parameters, event.previousIndex, event.currentIndex);
+    this.updateOtherProperties('variable');
+  }
+
+  removeVariable(index): void {
+    this.variableDeclarations.parameters.splice(index, 1);
+    this.updateOtherProperties('variable');
+  }
+
+  onKeyPress($event): void {
+    if ($event.which === '13' || $event.which === 13) {
+      $event.preventDefault();
+      this.addVariable();
+    }
+  }
+
+  openEditor(data: any): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ValueEditorComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        data: data.default
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        if (data.default !== result) {
+          data.default = result;
+          this.ref.detectChanges();
+          this.updateOtherProperties('variable')
+        }
+      }
+    });
+  }
+
+  private loadResources(path): void {
+    if (this.treeSelectCtrl) {
+      const node = this.treeSelectCtrl.getTreeNodeByKey(path);
+      if (node) {
+        node.isExpanded = true;
+        this.loadData(node, 'JOBRESOURCE', null);
+      }
+    }
+  }
+
+  rename(inValid): void {
+    if (this.data.id === this.workflow.id && this.data.name !== this.workflow.name) {
+      if (!inValid) {
+        const data = this.coreService.clone(this.data);
+        const name = this.workflow.name;
+        this.coreService.post('inventory/rename', {
+          id: data.id,
+          newPath: name
+        }).subscribe((res) => {
+          if (data.id === this.data.id) {
+            this.data.name = name;
+          }
+          data.name = name;
+          this.dataService.reloadTree.next({rename: data});
+        }, (err) => {
+          this.workflow.name = this.data.name;
+          this.ref.detectChanges();
+        });
+      } else {
+        this.workflow.name = this.data.name;
+        this.ref.detectChanges();
+      }
+    }
   }
 
   private center(): void {
@@ -7695,9 +7542,42 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  private updateOtherProperties(): void {
-    const data = JSON.parse(this.workflow.actual);
-    this.storeData(data);
+  onChangeJobResource(value): void {
+    if (!isEqual(JSON.stringify(this.jobResourceNames), JSON.stringify(value))) {
+      this.jobResourceNames = value;
+      const data = JSON.parse(this.workflow.actual);
+      this.storeData(data);
+    }
+  }
+
+  updateOtherProperties(type): void {
+    let flag = false;
+    if (type === 'title') {
+      if (this.title !== this.extraConfiguration.title) {
+        this.title = this.extraConfiguration.title;
+        flag = true;
+      }
+    } else if (type === 'documentation') {
+      if (this.documentationName !== this.extraConfiguration.documentationName) {
+        this.documentationName = this.extraConfiguration.documentationName;
+        flag = true;
+      }
+    } else if (type === 'variable') {
+      const variableDeclarations = {parameters: []};
+      variableDeclarations.parameters = this.variableDeclarations.parameters.filter((value) => {
+        return !!value.name;
+      });
+      variableDeclarations.parameters = this.coreService.keyValuePair(variableDeclarations.parameters);
+      if (variableDeclarations.parameters && isEmpty(variableDeclarations.parameters)) {
+        delete variableDeclarations.parameters;
+      }
+      this.orderRequirements = variableDeclarations;
+      flag = true;
+    }
+    if (flag) {
+      const data = JSON.parse(this.workflow.actual);
+      this.storeData(data);
+    }
   }
 
   private storeData(data): void {

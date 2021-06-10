@@ -1,0 +1,80 @@
+<div id="ordersSummary1">
+    <div class="box-header b-b remove">
+        <h3 translate>dashboard.label.fileTransferSummary</h3>
+    </div>
+    <div class="row m-b-sm box-tool" style="top:10px">
+        <div class="col-md-12 container-fluid">
+            <div class="pull-right" *ngIf="!notAuthenticate">
+                <div class="btn-group">
+                    <div class="btn-group dropdown ">
+                        <button class="btn btn-grey btn-sm m-l-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="order"  nzPlacement="bottomRight">
+                            <span>  {{filters.label | translate}} </span>
+                            <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+                        </button>
+                        <nz-dropdown-menu #order="nzDropdownMenu">
+                            <ul nz-menu>
+                                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='0d'}">
+                                    <a (click)="getSummaryByDate('0d');filters.label='filters.button.today'"
+                                       translate>filters.button.today
+                                    </a>
+                                </li>
+                                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-1h'}">
+                                    <a (click)="getSummaryByDate('-1h');filters.label='filters.button.last1'"
+                                       translate>filters.button.last1
+                                    </a>
+                                </li>
+                                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-12h'}">
+                                    <a (click)="getSummaryByDate('-12h');filters.label='filters.button.last12'"
+                                       translate>filters.button.last12
+                                    </a>
+                                </li>
+                                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-24h'}">
+                                    <a (click)="getSummaryByDate('-24h');filters.label='filters.button.last24'"
+                                       translate>filters.button.last24
+                                    </a>
+                                </li>
+                                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-7d'}">
+                                    <a (click)="getSummaryByDate('-7d');filters.label='filters.button.lastWeak'"
+                                       translate>filters.button.lastWeak
+                                    </a>
+                                </li>
+                            </ul>
+                        </nz-dropdown-menu>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box-body">
+        <table class="w-full" *ngIf="!notAuthenticate && isLoaded">
+            <tr class="text-center">
+                <td width="50%">
+                    <div translate>common.label.successful</div>
+                </td>
+                <td width="505%">
+                    <div translate>common.label.failed</div>
+                </td>
+            </tr>
+            <tr class="text-center">
+                <td width="50%">
+                    <a (click)="showSummary('SUCCESSFUL')" class="text-lg _600"
+                       [ngClass]="{'dark-blue':summary.successful >0}"
+                       [innerHtml]="summary.successful || 0"></a>
+                </td>
+                <td width="50%">
+                    <a (click)="showSummary('FAILED')" class="text-lg _600"
+                       [ngClass]="{'red':summary.failed  >0}" [innerHtml]="summary.failed || 0"></a>
+                </td>
+            </tr>
+        </table>
+        <div *ngIf="notAuthenticate">
+          <div>
+            <app-empty-data></app-empty-data>
+          </div>
+        </div>
+        <div [hidden]="notAuthenticate" class="hide text-center text-primary text m-t-md m-b"
+             [ngClass]="{'show': !isLoaded}">
+            <div><i class="fa fa-refresh fa-lg fa-spin"></i> </div>
+        </div>
+    </div>
+</div>

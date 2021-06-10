@@ -23,7 +23,7 @@ import {
 } from './inventory.component';
 import {TableComponent} from './table-data/table.component';
 import {
-  ExpressionComponent, ImportComponent, JobComponent, ScriptEditorComponent, UpdateWorkflowComponent,
+  ExpressionComponent, ImportComponent, JobComponent, ScriptEditorComponent,
   WorkflowComponent
 } from './workflow/workflow.component';
 import {ScheduleComponent} from './schedule/schedule.component';
@@ -35,7 +35,7 @@ import {JobResourceComponent} from './job-resource/job-resource.component';
 import {AddRestrictionComponent, PeriodComponent, RunTimeComponent} from './runtime/runtime.component';
 import {EnvVariableValidator, LabelValidator} from '../../../directives/core.directive';
 
-const COMPONENTS = [FrequencyModalComponent, ImportComponent, UpdateWorkflowComponent, SingleDeployComponent,
+const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployComponent,
   DeployComponent, ExportComponent, SetVersionComponent, CreateFolderModalComponent, CreateObjectModalComponent,
   ImportWorkflowModalComponent, JsonEditorModalComponent, UploadModalComponent, ScriptEditorComponent, PeriodComponent, AddRestrictionComponent, RunTimeComponent];
 

@@ -46,6 +46,7 @@ import {ResumeOrderModalComponent} from '../../components/resume-modal/resume.co
 import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../../components/modify-modal/modify.component';
 import {OrderVariableComponent} from '../../components/order-variable/order-variable.component';
 import {ValueEditorComponent} from '../../components/value-editor/value.component';
+import {FileTransferSearchComponent} from '../file-transfer/file-transfer.component';
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule,
   NzToolTipModule, NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule,
@@ -53,7 +54,7 @@ const MODULES = [Shared2Module, NzTableModule, DragDropModule,
   NzTreeSelectModule, NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, OrderModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, TreeModalComponent,
-  ResumeOrderModalComponent, ChangeParameterModalComponent, OrderVariableComponent, ModifyStartTimeModalComponent];
+  ResumeOrderModalComponent, ChangeParameterModalComponent, OrderVariableComponent, FileTransferSearchComponent, ModifyStartTimeModalComponent];
 const PIPES = [DurationPipe, StringDateFormatePipe, ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, ResizableDirective,
   NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, AutofocusDirective];
@@ -68,7 +69,7 @@ const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent,
     ...COMPONENTS,
     ...EXPORTS
   ],
-  exports: [...MODULES, ...EXPORTS, OrderVariableComponent]
+  exports: [...MODULES, ...EXPORTS, OrderVariableComponent, FileTransferSearchComponent]
 })
 export class SharedModule {
 }

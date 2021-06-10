@@ -205,44 +205,44 @@
                   <tbody>
                   <ng-template ngFor let-controller
                                [ngForOf]="innerChildTable.data">
-                    <tr *ngIf="!historyFilters.current">
+                    <tr>
                       <td class="custom-th" colspan="6">
                         <span class="p-l" translate>common.label.controllerId</span>:
                         <span [innerHtml]="controller.controllerId"></span>
                       </td>
                     </tr>
                     <tr>
-                      <td class="custom-th" colspan="6"><span class="p-l" [ngClass]="{'p-l-md' : !historyFilters.current }" translate>history.label.submission</span></td>
+                      <td class="custom-th" colspan="6"><span class="p-l" translate>history.label.submission</span></td>
                     </tr>
                     <ng-container *ngFor="let child of controller.submissions" class="order-history-template0">
                       <tr>
                         <td colspan="6">
-                                  <span class="p-l" [ngClass]="{'p-l-md' : !historyFilters.current }">
-                                    <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
-                                       *ngIf="!child.show" (click)="child.show = true"></i>
-                                    <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
-                                       *ngIf="child.show" (click)="child.show = false;"></i>
-                                    <span [innerHtml]="child.submissionTime | stringToDate"></span>
-                                  </span>
+                          <span class="p-l">
+                            <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                               *ngIf="!child.show" (click)="child.show = true"></i>
+                            <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+                               *ngIf="child.show" (click)="child.show = false;"></i>
+                            <span [innerHtml]="child.submissionTime | stringToDate"></span>
+                          </span>
                         </td>
                       </tr>
                       <ng-container *ngIf="child.show" class="order-history-template0">
                         <ng-container  *ngIf="child.orderIds && child.orderIds.length > 0">
                           <tr>
                             <td colspan="2" class="custom-th">
-                              <span class="p-l-md" [ngClass]="{'p-l-lg' : !historyFilters.current }" translate>history.label.orderId</span>
+                              <span class="p-l-md" translate>history.label.orderId</span>
                             </td>
                             <td colspan="2" class="custom-th"><span translate>order.label.workflow</span></td>
                             <td class="custom-th"><span translate>order.label.scheduledFor</span></td>
                             <td class="custom-th"><span translate>common.label.status</span></td>
                           </tr>
-                          <tr *ngFor="let order of child.orderIds | filter: submission.searchText: ['workflowPath', 'orderId'] | orderBy: 'scheduledFor': true">
-                            <td colspan="2"><span class="p-l-md" [ngClass]="{'p-l-lg' : !historyFilters.current }"
-                                                  [innerHtml]="order.orderId | highlight: submission.searchText"></span></td>
+                          <tr *ngFor="let order of child.orderIds | orderBy: 'scheduledFor': true">
+                            <td colspan="2"><span class="p-l-md"
+                                                  [innerHtml]="order.orderId"></span></td>
                             <td colspan="2">
                               <i (click)="navToWorkflowTab(order.workflowPath);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                               <span (click)="coreService.showWorkflow(order.workflowPath);$event.stopPropagation()"
-                                    class="text-hover-primary" [innerHtml]="order.workflowPath | highlight: submission.searchText"></span>
+                                    class="text-hover-primary" [innerHtml]="order.workflowPath"></span>
                             </td>
                             <td><span>{{order.scheduledFor | stringToDate}}</span></td>
                             <td>
@@ -250,23 +250,23 @@
                               <span class="label bg-orange" *ngIf="!order.submitted" translate>{{'notSubmitted' | translate}}</span>
                             </td>
                           </tr>
-                          <tr *ngIf="(child.orderIds | filter: submission.searchText : ['workflowPath', 'orderId']).length === 0">
+                          <tr *ngIf="(child.orderIds).length === 0">
                             <td colspan="6" class="text-center">
                               <span class="text-uppercase m-t-sm" translate>common.message.noDataMatched</span>
                             </td>
                           </tr>
                         </ng-container>
                         <tr *ngIf="child.warnMessages && child.warnMessages.length > 0">
-                          <td colspan="6" class="custom-th"><span class="p-l-md" [ngClass]="{'p-l-lg' : !historyFilters.current }" translate>history.label.warnMessages</span></td>
+                          <td colspan="6" class="custom-th"><span class="p-l-md" translate>history.label.warnMessages</span></td>
                         </tr>
                         <tr *ngFor="let msg of child.warnMessages">
-                          <td colspan="6"><span class="p-l-md text-warn" [ngClass]="{'p-l-lg' : !historyFilters.current }">{{msg}}</span></td>
+                          <td colspan="6"><span class="p-l-md text-warn">{{msg}}</span></td>
                         </tr>
                         <tr *ngIf="child.errorMessages && child.errorMessages.length > 0">
-                          <td colspan="6" class="custom-th"><span class="p-l-md" [ngClass]="{'p-l-lg' : !historyFilters.current }" translate>history.label.errorMessages</span></td>
+                          <td colspan="6" class="custom-th"><span class="p-l-md" translate>history.label.errorMessages</span></td>
                         </tr>
                         <tr *ngFor="let msg of child.errorMessages">
-                          <td colspan="6"><span class="p-l-md text-danger" [ngClass]="{'p-l-lg' : !historyFilters.current }">{{msg}}</span></td>
+                          <td colspan="6"><span class="p-l-md text-danger">{{msg}}</span></td>
                         </tr>
                       </ng-container>
                     </ng-container>
