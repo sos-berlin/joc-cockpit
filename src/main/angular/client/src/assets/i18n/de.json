@@ -224,7 +224,7 @@
   "common": {
     "label.loading": "Beim Laden",
     "label.now": "Jetzt",
-    "label.never": "Never",
+    "label.never": "Nie",
     "label.type": "Typ",
     "label.time": "Zeit",
     "label.size": "Größe",
@@ -445,7 +445,7 @@
     "label.JS7Status": "Controller Status",
     "label.inventory": "Inventar",
     "label.history": "Historie",
-    "label.fileTransferSummary": "File Transfers Summary",
+    "label.fileTransferSummary": "Dateiübertragungen",
     "label.successfulOrders": "Erfolgreiche Aufträge",
     "label.failedOrders": "Fehlgeschlagene Aufträge",
     "label.successfulJobs": "Erfolgreiche Jobs",
@@ -513,7 +513,7 @@
     "message.fileTransferOverview": "Das Steuerelement zeigt die Übersicht der aktuellen Dateiübertragungen",
     "message.fileTransferSummary": "Das Steuerelement zeigt die Historie der Dateiübertragungen",
     "message.dailyPlanOverview": "Das Steuerelement zeigt die Übersicht des Tagesplans",
-    "message.fileTransferHistorySummary": "This widget displays the summary of past File Transfers"
+    "message.fileTransferHistorySummary": "Das Steuerelement zeigt die Historie der Dateiübertragungen"
   },
   "dailyPlan": {
     "label.createPlan": "Tagesplan anlegen",
@@ -1498,8 +1498,8 @@
     "label.jobResourceNames": "Job-Ressourcen",
     "label.timeout": "Zeitablauf",
     "label.graceTimeout": "Toleranzfrist",
-    "label.warnIfShorter": "Warn If Shorter",
-    "label.warnIfLonger": "Warn If Longer",
+    "label.warnIfShorter": "Warnen bei kürzerer Dauer",
+    "label.warnIfLonger": "Warnen bei längerer Dauer",
     "label.junction": "Verknüpfung",
     "label.junctionPath": "Name der Verknüpfung",
     "label.predicate": "Prädikat",
