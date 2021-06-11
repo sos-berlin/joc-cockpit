@@ -512,7 +512,7 @@
     "message.inventoryStatistics": "インベントリー統計表示ウィジェット",
     "message.fileTransferOverview": "ファイル転送ステータス表示ウィジェット",
     "message.fileTransferSummary": "ファイル転送実行履歴表示ウィジェット",
-    "message.dailyPlanOverview": "実行計画表示ウィジェット"
+    "message.dailyPlanOverview": "実行計画表示ウィジェット",
     "message.fileTransferHistorySummary": "This widget displays the summary of past File Transfers"
   },
   "dailyPlan": {
