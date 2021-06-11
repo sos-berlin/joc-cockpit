@@ -85,29 +85,8 @@
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>dailyPlan.label.workflow</label>
       <div class="col-sm-6">
-        <nz-tree-select
-          name="workflowPaths"
-          [nzMultiple]="true"
-          [nzAllowClear]="true"
-          [nzNodes]="workflowTree"
-          [nzAsyncData]="true"
-          [nzHideUnMatched]="true"
-          [nzDropdownStyle]="{ 'max-height': '300px' }"
-          nzShowSearch
-          [nzPlaceHolder]="'dailyPlan.placeholder.workflowPath' | translate"
-          [(ngModel)]="filter.workflowPaths"
-          (nzExpandChange)="loadWorkflow($event.node, null)"
-        >
-          <ng-template #nzTreeTemplate let-node>
-            <div style="width: 93%" class="node-wrapper" (click)="loadWorkflow(node, $event);">
-              <div class="node-content-wrapper">
-                <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-                <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                {{node.origin.name}}
-              </div>
-            </div>
-          </ng-template>
-        </nz-tree-select>
+        <input autocomplete="off" type="text" name="workflowPath" class="form-control"
+               placeholder="{{'history.placeholder.workflowPath' | translate}}" [(ngModel)]="filter.workflowPath">
       </div>
     </div>
     <div class="form-group row">

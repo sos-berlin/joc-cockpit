@@ -35,8 +35,6 @@ export class SingleDeployComponent implements OnInit {
   loading = true;
   submitted = false;
   comments: any = {radio: 'predefined'};
-  required: boolean;
-  messageList: any;
   object: any = {
     store: {draftConfigurations: [], deployConfigurations: []},
     delete: {deployConfigurations: []}
@@ -47,12 +45,6 @@ export class SingleDeployComponent implements OnInit {
 
   ngOnInit(): void {
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
-    }
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
-      this.required = true;
-    }
     this.init();
   }
 
@@ -202,8 +194,6 @@ export class DeployComponent implements OnInit {
   isExpandAll = false;
   submitted = false;
   comments: any = {radio: 'predefined'};
-  required: boolean;
-  messageList: any;
   isDeleted = false;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef,
@@ -215,12 +205,6 @@ export class DeployComponent implements OnInit {
       this.isDeleted = true;
     }
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
-    }
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
-      this.required = true;
-    }
     this.buildTree();
   }
 
@@ -658,10 +642,8 @@ export class ExportComponent implements OnInit {
   isExpandAll = false;
   submitted = false;
   comments: any = {radio: 'predefined'};
-  required: boolean;
   inValid = false;
   exportType = 'BOTH';
-  messageList: any;
   path: string;
   securityLevel: string;
   REGEX = /^[0-9a-zA-Z\^\&\'\@\{\}\[\]\,\$\=\!\-\#\(\)\.\%\+\~\_ ]+$/;
@@ -689,12 +671,6 @@ export class ExportComponent implements OnInit {
   ngOnInit(): void {
     this.exportObj.controllerId = this.schedulerIds.selected;
     this.securityLevel = sessionStorage.securityLevel;
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
-    }
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
-      this.required = true;
-    }
     if (this.origin) {
       this.path = this.origin.path;
       if (this.origin.dailyPlan || (this.origin.object &&
@@ -1146,8 +1122,6 @@ export class SetVersionComponent implements OnInit {
   isExpandAll = false;
   loading = true;
   comments: any = {radio: 'predefined'};
-  required: boolean;
-  messageList: any;
   object: any = {
     isRecursive: false,
     deployConfigurations: [],
@@ -1158,12 +1132,6 @@ export class SetVersionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
-    }
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
-      this.required = true;
-    }
     this.buildTree();
   }
 
@@ -1362,8 +1330,6 @@ export class ImportWorkflowModalComponent implements OnInit {
   @Input() schedulerIds;
 
   uploader: FileUploader;
-  messageList: any;
-  required = false;
   signatureAlgorithm: string;
   comments: any = {};
   settings: any = {};
@@ -1389,12 +1355,6 @@ export class ImportWorkflowModalComponent implements OnInit {
       }]
     });
     this.comments.radio = 'predefined';
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
-    }
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
-      this.required = true;
-    }
     if (sessionStorage.$SOS$IMPORT && sessionStorage.$SOS$IMPORT !== 'undefined') {
       this.settings = JSON.parse(sessionStorage.$SOS$IMPORT);
     }
@@ -1700,8 +1660,6 @@ export class CreateObjectModalComponent implements OnInit {
   submitted = false;
   settings: any = {};
   display: any;
-  required = false;
-  messageList: any;
   comments: any = {};
   object = {name: '', type: 'suffix', newName: '', onlyContains: false, originalName: '', suffix: '', prefix: ''};
 
@@ -1711,12 +1669,6 @@ export class CreateObjectModalComponent implements OnInit {
   ngOnInit(): void {
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
-    }
-    if (sessionStorage.$SOS$FORCELOGING == 'true') {
-      this.required = true;
-    }
     if (this.restore) {
       this.settings = JSON.parse(sessionStorage.$SOS$RESTORE);
     } else if (this.copy) {

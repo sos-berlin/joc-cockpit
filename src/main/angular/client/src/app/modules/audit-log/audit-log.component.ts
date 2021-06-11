@@ -126,14 +126,9 @@ export class SearchComponent implements OnInit {
     };
     let fromDate: any;
     let toDate: any;
-    const obj: any = {};
-    obj.name = result.name;
-    obj.comment = result.comment;
-    obj.ticketLink = result.ticketLink;
-    obj.objectTypes = result.objectTypes;
-    obj.objectName = result.objectName;
-    obj.categories = result.categories;
-    obj.account = result.account;
+    const obj: any = this.coreService.clone(result);
+    delete obj.shared;
+    delete obj.radio;
     if (result.radio != 'current') {
       if (result.from1) {
         fromDate = this.coreService.parseProcessExecuted(result.from1);
@@ -143,24 +138,30 @@ export class SearchComponent implements OnInit {
       }
     }
 
-    if (result.radio) {
-      if (fromDate) {
-        obj.from1 = fromDate;
-      } else {
-        obj.from1 = '0d';
-      }
-      if (toDate) {
-        obj.to1 = toDate;
-      } else {
-        obj.to1 = '0d';
-      }
+    if (fromDate) {
+      obj.from1 = fromDate;
     } else {
-      obj.planned = result.planned;
+      obj.from1 = '0d';
     }
+    if (toDate) {
+      obj.to1 = toDate;
+    } else {
+      obj.to1 = '0d';
+    }
+
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      configObj.id = res.id;
-      this.allFilter.push(configObj);
+      if (result.id) {
+        for (let i in this.allFilter) {
+          if (this.allFilter[i].id === result.id) {
+            this.allFilter[i] = configObj;
+            break;
+          }
+        }
+      } else {
+        configObj.id = res.id;
+        this.allFilter.push(configObj);
+      }
       if (this.isSearch) {
         this.filter.name = '';
       } else {
@@ -172,11 +173,11 @@ export class SearchComponent implements OnInit {
     });
   }
 
-  search() {
+  search(): void {
     this.onSearch.emit();
   }
 
-  cancel() {
+  cancel(): void {
     this.onCancel.emit();
   }
 }
@@ -395,10 +396,14 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     if (object.controllerId) {
       filter.controllerId = object.controllerId;
     }
-    if (object.radio == 'planned') {
+    if(object.radio) {
+      if (object.radio == 'planned') {
+        filter = this.parseProcessExecuted(object.planned, filter);
+      } else {
+        filter = this.parseDate(object, filter);
+      }
+    } else if(object.planned){
       filter = this.parseProcessExecuted(object.planned, filter);
-    } else {
-      filter = this.parseDate(object, filter);
     }
     return filter;
   }
@@ -547,7 +552,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
         self.savedFilter.selected = undefined;
         self.isCustomizationSelected(false);
         self.adtLog.selectedView = false;
-        self.selectedFiltered = undefined;
+        self.selectedFiltered = {};
         self.setDateRange({});
         self.load();
       } else {
@@ -555,7 +560,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
           self.isCustomizationSelected(false);
           self.savedFilter.selected = undefined;
           self.adtLog.selectedView = false;
-          self.selectedFiltered = undefined;
+          self.selectedFiltered = {};
         }
       }
       self.saveService.setAuditLog(self.savedFilter);
@@ -717,7 +722,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   /* ---- Customization ------ */
   createCustomization(): void {
     if (this.schedulerIds.selected) {
-      const modal = this.modal.create({
+      this.modal.create({
         nzTitle: undefined,
         nzContent: FilterModalComponent,
         nzClassName: 'lg',
@@ -728,19 +733,6 @@ export class AuditLogComponent implements OnInit, OnDestroy {
         },
         nzFooter: null,
         nzClosable: false
-      });
-      modal.afterClose.subscribe((configObj) => {
-        if (configObj) {
-          if (this.filterList.length == 1) {
-            this.savedFilter.selected = configObj.id;
-            this.adtLog.selectedView = true;
-            this.selectedFiltered = configObj;
-            this.isCustomizationSelected(true);
-            this.load(null);
-            this.saveService.setAuditLog(this.savedFilter);
-            this.saveService.save();
-          }
-        }
       });
     }
   }
@@ -815,7 +807,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
         } else {
           filterObj.id = filter.id;
         }
-        this.modal.create({
+        const modal =  this.modal.create({
           nzTitle: undefined,
           nzContent: FilterModalComponent,
           nzClassName: 'lg',
@@ -827,6 +819,11 @@ export class AuditLogComponent implements OnInit, OnDestroy {
           },
           nzFooter: null,
           nzClosable: false
+        });
+        modal.afterClose.subscribe(obj => {
+          if (obj && this.savedFilter.selected && filterObj.id == this.savedFilter.selected) {
+            this.changeFilter(filterObj);
+          }
         });
       });
     }

@@ -12,8 +12,6 @@ export class ResumeOrderModalComponent implements OnInit {
   @Input() preferences: any;
   @Input() order: any;
   display: any;
-  messageList: any;
-  required = false;
   submitted = false;
   comments: any = {};
   positions: any = [];
@@ -27,12 +25,6 @@ export class ResumeOrderModalComponent implements OnInit {
     this.order.timeZone = this.preferences.zone;
     this.order.fromTime = new Date();
 
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
-    }
-    if (sessionStorage.$SOS$FORCELOGING == 'true') {
-      this.required = true;
-    }
     this.order.position = JSON.stringify(this.order.position);
     this.positions.push(this.order.position);
   }

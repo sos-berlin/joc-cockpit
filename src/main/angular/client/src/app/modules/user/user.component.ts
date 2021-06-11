@@ -13,7 +13,7 @@ import {AuthService} from '../../components/guard';
 declare var $;
 
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-update-modal-content',
   templateUrl: './update-dialog.html'
 })
 export class UpdateKeyModalComponent implements OnInit {
@@ -66,8 +66,6 @@ export class ImportKeyModalComponent implements OnInit {
   @Input() securityLevel: string;
 
   uploader: FileUploader;
-  messageList: any;
-  required = false;
   submitted = false;
   hasBaseDropZoneOver: any;
   comments: any = {};
@@ -86,12 +84,6 @@ export class ImportKeyModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
-    }
-    if (sessionStorage.$SOS$FORCELOGING == 'true') {
-      this.required = true;
-    }
 
     this.uploader.onBeforeUploadItem = (item: any) => {
       let obj: any = {

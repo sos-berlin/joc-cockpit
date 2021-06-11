@@ -80,7 +80,7 @@
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>resource.agentJobExecution.label.agentUrls</label>
       <div class="col-sm-6" >
         <input autocomplete="off" type="text" class="form-control" placeholder="{{'resource.agentJobExecution.placeholder.enterAgentUrls' | translate}}"
-               [(ngModel)]="filter.urls" name="objectName">
+               [(ngModel)]="filter.urls" name="urls">
       </div>
     </div>
     <div class="form-group row" *ngIf="permission.joc.administration.customization.share && !isSearch">

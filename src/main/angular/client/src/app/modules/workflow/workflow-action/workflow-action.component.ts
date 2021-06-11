@@ -22,8 +22,6 @@ export class AddOrderModalComponent implements OnInit {
   arguments: any = [];
   dateFormat: any;
   display: any;
-  required = false;
-  messageList: any;
   comments: any = {};
   submitted = false;
   zones = [];
@@ -41,12 +39,6 @@ export class AddOrderModalComponent implements OnInit {
     this.order.timeZone = this.preferences.zone;
     this.order.fromTime = new Date();
 
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
-    }
-    if (sessionStorage.$SOS$FORCELOGING == 'true') {
-      this.required = true;
-    }
     this.order.at = 'now';
     this.updateVariableList();
   }
@@ -110,7 +102,9 @@ export class AddOrderModalComponent implements OnInit {
     const order: any = {workflowPath: this.workflow.path, orderName: this.order.orderId};
     if (this.order.at === 'now') {
       order.scheduledFor = 'now';
-    } else if (this.order.at === 'later') {
+    } else if (this.order.at === 'never') {
+      order.scheduledFor = 'never';
+    }  else if (this.order.at === 'later') {
       order.scheduledFor = 'now + ' + this.order.atTime;
     } else {
       if (this.order.fromDate) {

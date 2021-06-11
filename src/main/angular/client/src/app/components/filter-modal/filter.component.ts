@@ -3,7 +3,7 @@ import {NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-edit-filter-modal',
   templateUrl: './filter.component.html'
 })
 export class EditFilterModalComponent {
@@ -44,9 +44,10 @@ export class EditFilterModalComponent {
     }).subscribe(() => {
       configObj.shared = false;
       if (this.permission.user != configObj.account) {
-        for (let i = 0; i < this.filterList; i++) {
+        for (let i in this.filterList) {
           if (this.filterList[i].id == configObj.id) {
             this.filterList.splice(i, 1);
+            break;
           }
         }
       }
@@ -68,7 +69,7 @@ export class EditFilterModalComponent {
       controllerId: filter.controllerId,
       id: filter.id
     }).subscribe(() => {
-      for (let i = 0; i < this.filterList; i++) {
+      for (let i in this.filterList) {
         if (this.filterList[i].id == filter.id) {
           this.filterList.splice(i, 1);
           break;

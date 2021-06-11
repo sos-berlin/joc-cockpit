@@ -6,7 +6,7 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div class="inline">
+          <div class="inline" *ngIf="permission.joc">
             <button *ngIf="permission.joc.inventory.manage" class="btn btn-sm btn-grey m-l-12"
                     (click)="setVersion()">
               <i class="fa fa-code-fork"></i>&nbsp;

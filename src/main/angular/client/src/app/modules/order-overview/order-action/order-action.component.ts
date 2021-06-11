@@ -18,9 +18,7 @@ export class StartOrderModalComponent implements OnInit {
   @Input() order: any;
   display: any;
   arguments: any = [];
-  messageList: any;
   dateFormat: any;
-  required = false;
   submitted = false;
   comments: any = {};
   zones = [];
@@ -35,13 +33,6 @@ export class StartOrderModalComponent implements OnInit {
     this.comments.radio = 'predefined';
     this.order.timeZone = this.preferences.zone;
     this.order.fromTime = new Date();
-
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
-    }
-    if (sessionStorage.$SOS$FORCELOGING == 'true') {
-      this.required = true;
-    }
     this.order.at = 'now';
   }
 

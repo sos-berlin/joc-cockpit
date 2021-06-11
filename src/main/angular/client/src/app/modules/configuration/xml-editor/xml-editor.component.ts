@@ -677,8 +677,6 @@ export class ImportModalComponent implements OnInit {
   @Input() importXsd;
   uploader: FileUploader;
   fileLoading = false;
-  messageList: any;
-  required = false;
   submitted = false;
   comments: any = {};
   hasBaseDropZoneOver: any;
@@ -695,12 +693,6 @@ export class ImportModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
-    }
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
-      this.required = true;
-    }
 
     this.uploader.onCompleteItem = (fileItem: any, response, status, headers) => {
       if (status === 200) {

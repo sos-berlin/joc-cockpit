@@ -122,10 +122,9 @@ export class SearchComponent implements OnInit {
     };
     let fromDate: any;
     let toDate: any;
-    const obj: any = {};
-    obj.name = result.name;
-    obj.agentIds = result.agentIds;
-    obj.urls = result.urls;
+    const obj: any = this.coreService.clone(result);
+    delete obj.shared;
+    delete obj.radio;
     if (result.radio != 'current') {
       if (result.from1) {
         fromDate = this.coreService.parseProcessExecuted(result.from1);
@@ -135,24 +134,30 @@ export class SearchComponent implements OnInit {
       }
     }
 
-    if (result.radio) {
-      if (fromDate) {
-        obj.from1 = fromDate;
-      } else {
-        obj.from1 = '0d';
-      }
-      if (toDate) {
-        obj.to1 = toDate;
-      } else {
-        obj.to1 = '0d';
-      }
+    if (fromDate) {
+      obj.from1 = fromDate;
     } else {
-      obj.planned = result.planned;
+      obj.from1 = '0d';
     }
+    if (toDate) {
+      obj.to1 = toDate;
+    } else {
+      obj.to1 = '0d';
+    }
+
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      configObj.id = res.id;
-      this.allFilter.push(configObj);
+      if (result.id) {
+        for (let i in this.allFilter) {
+          if (this.allFilter[i].id === result.id) {
+            this.allFilter[i] = configObj;
+            break;
+          }
+        }
+      } else {
+        configObj.id = res.id;
+        this.allFilter.push(configObj);
+      }
       if (this.isSearch) {
         this.filter.name = '';
       } else {
@@ -492,10 +497,14 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     if (object.controllerId) {
       filter.controllerId = object.controllerId;
     }
-    if (object.radio == 'planned') {
+    if(object.radio) {
+      if (object.radio == 'planned') {
+        filter = this.parseProcessExecuted(object.planned, filter);
+      } else {
+        filter = this.parseDate(object, filter);
+      }
+    } else if(object.planned){
       filter = this.parseProcessExecuted(object.planned, filter);
-    } else {
-      filter = this.parseDate(object, filter);
     }
     return filter;
   }
@@ -618,7 +627,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
         self.savedFilter.selected = undefined;
         self.isCustomizationSelected(false);
         self.agentFilters.selectedView = false;
-        self.selectedFiltered = undefined;
+        self.selectedFiltered = {};
         self.setDateRange({});
         self.loadAgentTasks();
       } else {
@@ -626,7 +635,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
           self.isCustomizationSelected(false);
           self.savedFilter.selected = undefined;
           self.agentFilters.selectedView = false;
-          self.selectedFiltered = undefined;
+          self.selectedFiltered = {};
         }
       }
       self.saveService.setAgent(self.savedFilter);
@@ -646,7 +655,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
 
   createCustomization(): void {
     if (this.schedulerIds.selected) {
-      const modal = this.modal.create({
+      this.modal.create({
         nzTitle: undefined,
         nzContent: FilterModalComponent,
         nzClassName: 'lg',
@@ -657,19 +666,6 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
         },
         nzFooter: null,
         nzClosable: false
-      });
-      modal.afterClose.subscribe((configObj) => {
-        if (configObj) {
-          if (this.filterList.length == 1) {
-            this.savedFilter.selected = configObj.id;
-            this.agentFilters.selectedView = true;
-            this.selectedFiltered = configObj;
-            this.isCustomizationSelected(true);
-            this.loadAgentTasks(null);
-            this.saveService.setAgent(this.savedFilter);
-            this.saveService.save();
-          }
-        }
       });
     }
   }
@@ -744,7 +740,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
         } else {
           filterObj.id = filter.id;
         }
-        this.modal.create({
+        const modal = this.modal.create({
           nzTitle: undefined,
           nzContent: FilterModalComponent,
           nzClassName: 'lg',
@@ -756,6 +752,11 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
           },
           nzFooter: null,
           nzClosable: false
+        });
+        modal.afterClose.subscribe(obj => {
+          if (obj && this.savedFilter.selected && filterObj.id == this.savedFilter.selected) {
+            this.changeFilter(filterObj);
+          }
         });
       });
     }

@@ -20,10 +20,8 @@ export class AgentModalComponent implements OnInit {
   agent: any = {};
   submitted = false;
   isUniqueId = true;
-  messageList: any = [];
   agentNameAliases: any = [];
   comments: any = {};
-  required = false;
   preferences: any;
   display: any;
 
@@ -36,12 +34,6 @@ export class AgentModalComponent implements OnInit {
     }
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
-    }
-    if (sessionStorage.$SOS$FORCELOGING == 'true') {
-      this.required = true;
-    }
     if (this.data) {
       this.agent = this.coreService.clone(this.data);
     }

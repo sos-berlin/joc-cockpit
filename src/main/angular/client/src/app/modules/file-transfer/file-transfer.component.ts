@@ -186,8 +186,17 @@ export class FileTransferSearchComponent implements OnInit {
     }
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      configObj.id = res.id;
-      this.allFilter.push(configObj);
+      if (result.id) {
+        for (let i in this.allFilter) {
+          if (this.allFilter[i].id === result.id) {
+            this.allFilter[i] = configObj;
+            break;
+          }
+        }
+      } else {
+        configObj.id = res.id;
+        this.allFilter.push(configObj);
+      }
       if (this.isSearch) {
         this.filter.name = '';
       } else {
@@ -681,7 +690,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   /* ---- Customization Begin------ */
   createCustomization(): void {
-    const modal = this.modal.create({
+    this.modal.create({
       nzTitle: null,
       nzContent: FilterModalComponent,
       nzClassName: 'lg',
@@ -692,19 +701,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       },
       nzFooter: null,
       nzClosable: false
-    });
-    modal.afterClose.subscribe(configObj => {
-      if (configObj) {
-        if (this.filterList.length == 1) {
-          this.savedFilter.selected = configObj.id;
-          this.yadeFilters.selectedView = true;
-          this.selectedFiltered = configObj;
-          this.isCustomizationSelected(true);
-          this.load();
-          this.saveService.setYade(this.savedFilter);
-          this.saveService.save();
-        }
-      }
     });
   }
 
@@ -740,7 +736,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         self.savedFilter.selected = undefined;
         self.isCustomizationSelected(false);
         self.yadeFilters.selectedView = false;
-        self.selectedFiltered = undefined;
+        self.selectedFiltered = {};
         self.setDateRange(null);
         self.load();
       } else {
@@ -748,7 +744,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
           self.isCustomizationSelected(false);
           self.savedFilter.selected = undefined;
           self.yadeFilters.selectedView = false;
-          self.selectedFiltered = undefined;
+          self.selectedFiltered = {};
         }
       }
       self.saveService.setYade(self.savedFilter);
@@ -854,7 +850,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       } else {
         filterObj.id = filter.id;
       }
-      this.modal.create({
+      const modal = this.modal.create({
         nzTitle: null,
         nzContent: FilterModalComponent,
         nzClassName: 'lg',
@@ -866,6 +862,11 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         },
         nzFooter: null,
         nzClosable: false
+      });
+      modal.afterClose.subscribe(obj => {
+        if (obj && this.savedFilter.selected && filterObj.id == this.savedFilter.selected) {
+          this.changeFilter(filterObj);
+        }
       });
     });
   }

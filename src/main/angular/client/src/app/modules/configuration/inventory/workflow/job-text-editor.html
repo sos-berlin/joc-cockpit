@@ -524,6 +524,24 @@
           </label>
         </div>
       </div>
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.warnIfShorter</label>
+        <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((warnIfShorter.dirty || warnIfShorter.touched) && warnIfShorter.invalid)}">
+          <label class="w-full">
+            <input autocomplete="off" #warnIfShorter="ngModel" type="text" class="form-control" name="warnIfShorter" placeholder="{{'workflow.placeholder.duration' | translate}}"
+                   validateDurtionReqex [(ngModel)]="selectedNode.job.warnIfShorter1">
+          </label>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.warnIfLonger</label>
+        <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((warnIfLonger.dirty || warnIfLonger.touched) && warnIfLonger.invalid)}">
+          <label class="w-full">
+            <input autocomplete="off" #warnIfLonger="ngModel" type="text" class="form-control" name="warnIfLonger" placeholder="{{'workflow.placeholder.duration' | translate}}"
+                   validateDurtionReqex  [(ngModel)]="selectedNode.job.warnIfLonger1">
+          </label>
+        </div>
+      </div>
       <div class="form-group row" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ScriptExecutable'">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.compatibleMode</label>
         <div class="col-md-8 col-lg-9">

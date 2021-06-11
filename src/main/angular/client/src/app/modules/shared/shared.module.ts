@@ -47,6 +47,7 @@ import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../.
 import {OrderVariableComponent} from '../../components/order-variable/order-variable.component';
 import {ValueEditorComponent} from '../../components/value-editor/value.component';
 import {FileTransferSearchComponent} from '../file-transfer/file-transfer.component';
+import {AuditLogInputComponent} from '../../components/audit-log-input/audit-log-input.component';
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule,
   NzToolTipModule, NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule,
@@ -54,11 +55,11 @@ const MODULES = [Shared2Module, NzTableModule, DragDropModule,
   NzTreeSelectModule, NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, OrderModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, TreeModalComponent,
-  ResumeOrderModalComponent, ChangeParameterModalComponent, OrderVariableComponent, FileTransferSearchComponent, ModifyStartTimeModalComponent];
+  ResumeOrderModalComponent, ChangeParameterModalComponent, ModifyStartTimeModalComponent];
 const PIPES = [DurationPipe, StringDateFormatePipe, ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, ResizableDirective,
   NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, AutofocusDirective];
-const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent,
+const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponent, FileTransferSearchComponent, AuditLogInputComponent,
   StartUpModalComponent, TreeComponent, ValueEditorComponent];
 
 @NgModule({
@@ -69,7 +70,7 @@ const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent,
     ...COMPONENTS,
     ...EXPORTS
   ],
-  exports: [...MODULES, ...EXPORTS, OrderVariableComponent, FileTransferSearchComponent]
+  exports: [...MODULES, ...EXPORTS]
 })
 export class SharedModule {
 }

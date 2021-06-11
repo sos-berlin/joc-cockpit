@@ -134,7 +134,6 @@ export class OrderSearchComponent implements OnInit {
   existingName: any;
   submitted = false;
   isUnique = true;
-  workflowTree = [];
   checkOptions = [
     {label: 'successful', value: 'SUCCESSFUL', checked: false},
     {label: 'failed', value: 'FAILED', checked: false},
@@ -146,19 +145,18 @@ export class OrderSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.getWorkflowTree();
-    if (this.filter.states && this.filter.states.length > 0) {
+    if (this.filter.historyStates && this.filter.historyStates.length > 0) {
       this.checkOptions = this.checkOptions.map(item => {
         return {
           ...item,
-          checked: this.filter.states.indexOf(item.value) > -1
+          checked: this.filter.historyStates.indexOf(item.value) > -1
         };
       });
     }
   }
 
   stateChange(value: string[]): void {
-    this.filter.states = value;
+    this.filter.historyStates = value;
   }
 
   getFolderTree(flag: boolean): void {
@@ -202,48 +200,6 @@ export class OrderSearchComponent implements OnInit {
     }
   }
 
-  loadWorkflow(node, $event): void {
-    if (!node || !node.origin) {
-      return;
-    }
-    if (!node.origin.type) {
-      if ($event) {
-        node.isExpanded = !node.isExpanded;
-        $event.stopPropagation();
-      }
-      let flag = true;
-      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
-        flag = false;
-      }
-      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        const obj: any = {
-          path: node.key,
-          objectTypes: ['WORKFLOW']
-        };
-        this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
-          let data = res.workflows;
-          for (let i = 0; i < data.length; i++) {
-            const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-            data[i].title = _path;
-            data[i].path = _path;
-            data[i].type = 'WORKFLOW';
-            data[i].key = _path;
-            data[i].isLeaf = true;
-          }
-          if (node.origin.children && node.origin.children.length > 0) {
-            data = data.concat(node.origin.children);
-          }
-          if (node.origin.isLeaf) {
-            node.origin.expanded = true;
-          }
-          node.origin.isLeaf = false;
-          node.origin.children = data;
-          this.workflowTree = [...this.workflowTree];
-        });
-      }
-    }
-  }
-
   onSubmit(result): void {
     this.submitted = true;
     const configObj = {
@@ -283,8 +239,17 @@ export class OrderSearchComponent implements OnInit {
 
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      configObj.id = res.id;
-      this.allFilter.push(configObj);
+      if (result.id) {
+        for (let i in this.allFilter) {
+          if (this.allFilter[i].id === result.id) {
+            this.allFilter[i] = configObj;
+            break;
+          }
+        }
+      } else {
+        configObj.id = res.id;
+        this.allFilter.push(configObj);
+      }
       if (this.isSearch) {
         this.filter.name = '';
       } else {
@@ -304,17 +269,6 @@ export class OrderSearchComponent implements OnInit {
     this.onCancel.emit();
   }
 
-  private getWorkflowTree(): void {
-    if (this.schedulerIds.selected) {
-      this.coreService.post('tree', {
-        controllerId: this.schedulerIds.selected,
-        forInventory: true,
-        types: ['WORKFLOW']
-      }).subscribe((res) => {
-        this.workflowTree = this.coreService.prepareTree(res, true);
-      });
-    }
-  }
 }
 
 @Component({
@@ -337,7 +291,6 @@ export class TaskSearchComponent implements OnInit {
   existingName: any;
   submitted = false;
   isUnique = true;
-  workflowTree = [];
   checkOptions = [
     {label: 'successful', value: 'SUCCESSFUL', checked: false},
     {label: 'failed', value: 'FAILED', checked: false},
@@ -354,7 +307,6 @@ export class TaskSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.getWorkflowTree();
     if (this.filter.historyStates && this.filter.historyStates.length > 0) {
       this.checkOptions = this.checkOptions.map(item => {
         return {
@@ -423,48 +375,6 @@ export class TaskSearchComponent implements OnInit {
     }
   }
 
-  loadWorkflow(node, $event): void {
-    if (!node || !node.origin) {
-      return;
-    }
-    if (!node.origin.type) {
-      if ($event) {
-        node.isExpanded = !node.isExpanded;
-        $event.stopPropagation();
-      }
-      let flag = true;
-      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
-        flag = false;
-      }
-      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        const obj: any = {
-          path: node.key,
-          objectTypes: ['WORKFLOW']
-        };
-        this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
-          let data = res.workflows;
-          for (let i = 0; i < data.length; i++) {
-            const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-            data[i].title = _path;
-            data[i].path = _path;
-            data[i].type = 'WORKFLOW';
-            data[i].key = _path;
-            data[i].isLeaf = true;
-          }
-          if (node.origin.children && node.origin.children.length > 0) {
-            data = data.concat(node.origin.children);
-          }
-          if (node.origin.isLeaf) {
-            node.origin.expanded = true;
-          }
-          node.origin.isLeaf = false;
-          node.origin.children = data;
-          this.workflowTree = [...this.workflowTree];
-        });
-      }
-    }
-  }
-
   onSubmit(result): void {
     this.submitted = true;
     const configObj = {
@@ -502,8 +412,17 @@ export class TaskSearchComponent implements OnInit {
     }
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      configObj.id = res.id;
-      this.allFilter.push(configObj);
+      if (result.id) {
+        for (let i in this.allFilter) {
+          if (this.allFilter[i].id === result.id) {
+            this.allFilter[i] = configObj;
+            break;
+          }
+        }
+      } else {
+        configObj.id = res.id;
+        this.allFilter.push(configObj);
+      }
       if (this.isSearch) {
         this.filter.name = '';
       } else {
@@ -523,17 +442,6 @@ export class TaskSearchComponent implements OnInit {
     this.onCancel.emit();
   }
 
-  private getWorkflowTree(): void {
-    if (this.schedulerIds.selected) {
-      this.coreService.post('tree', {
-        controllerId: this.schedulerIds.selected,
-        forInventory: true,
-        types: ['WORKFLOW']
-      }).subscribe((res) => {
-        this.workflowTree = this.coreService.prepareTree(res, true);
-      });
-    }
-  }
 }
 
 @Component({
@@ -617,8 +525,17 @@ export class DeploymentSearchComponent implements OnInit {
 
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      configObj.id = res.id;
-      this.allFilter.push(configObj);
+      if (result.id) {
+        for (let i in this.allFilter) {
+          if (this.allFilter[i].id === result.id) {
+            this.allFilter[i] = configObj;
+            break;
+          }
+        }
+      } else {
+        configObj.id = res.id;
+        this.allFilter.push(configObj);
+      }
       if (this.isSearch) {
         this.filter.name = '';
       } else {
@@ -735,8 +652,17 @@ export class SubmissionSearchComponent implements OnInit {
     }
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      configObj.id = res.id;
-      this.allFilter.push(configObj);
+      if (result.id) {
+        for (let i in this.allFilter) {
+          if (this.allFilter[i].id === result.id) {
+            this.allFilter[i] = configObj;
+            break;
+          }
+        }
+      } else {
+        configObj.id = res.id;
+        this.allFilter.push(configObj);
+      }
       if (this.isSearch) {
         this.filter.name = '';
       } else {
@@ -762,7 +688,7 @@ export class SubmissionSearchComponent implements OnInit {
   templateUrl: './single-history.component.html'
 })
 export class SingleHistoryComponent implements OnInit, OnDestroy {
-  loading: boolean = true;
+  loading = true;
   controllerId: any = {};
   preferences: any = {};
   permission: any = {};
@@ -1054,14 +980,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
         obj.folders.push({folder: value, recursive: true});
       });
     }
-    if (this.selectedFiltered1.workflowPaths && this.selectedFiltered1.workflowPaths.length > 0) {
-      obj.orders = [];
-      this.selectedFiltered1.workflowPaths.workflowPaths((value) => {
-        obj.orders.push({workflowPath: value});
-      });
+    if (this.selectedFiltered1.workflowPath) {
+      obj.workflowPath = this.selectedFiltered1.workflowPath;
     }
-    if (this.selectedFiltered1.state && this.selectedFiltered1.state.length > 0) {
-      obj.historyStates = this.selectedFiltered1.state;
+    if (this.selectedFiltered1.historyStates && this.selectedFiltered1.historyStates.length > 0) {
+      obj.historyStates = this.selectedFiltered1.historyStates;
     }
 
     obj = this.coreService.parseProcessExecutedRegex(this.selectedFiltered1.planned, obj);
@@ -1180,8 +1103,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (this.selectedFiltered2.jobName) {
       obj.jobName = this.selectedFiltered2.jobName;
     }
-    if (this.selectedFiltered2.state && this.selectedFiltered2.state.length > 0) {
-      obj.historyStates = this.selectedFiltered2.state;
+    if (this.selectedFiltered2.historyStates && this.selectedFiltered2.historyStates.length > 0) {
+      obj.historyStates = this.selectedFiltered2.historyStates;
     }
     if (this.selectedFiltered2.paths && this.selectedFiltered2.paths.length > 0) {
       obj.folders = [];
@@ -1189,11 +1112,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
         obj.folders.push({folder: value, recursive: true});
       });
     }
-    if (this.selectedFiltered2.workflowPaths && this.selectedFiltered2.workflowPaths.length > 0) {
-      obj.jobs = [];
-      this.selectedFiltered2.workflowPaths.forEach((value) => {
-        obj.jobs.push({workflowPath: value});
-      });
+    if (this.selectedFiltered2.workflowPath) {
+      obj.workflowPath = this.selectedFiltered2.workflowPath;
     }
     obj = this.coreService.parseProcessExecutedRegex(this.selectedFiltered2.planned, obj);
     return obj;
@@ -1250,7 +1170,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  isCustomizationSelected3(flag) {
+  isCustomizationSelected3(flag): void {
     if (flag) {
       this.temp_filter3.states = clone(this.yade.filter.states);
       this.temp_filter3.date = clone(this.yade.filter.date);
@@ -1299,9 +1219,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
         obj.states = [];
         obj.states.push(this.yade.filter.states);
       }
+      this.convertRequestBody(obj);
     }
     obj.compact = true;
-    this.convertRequestBody(obj);
+
     this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
       this.yadeHistorys = res.transfers || [];
       if (flag) {
@@ -1511,14 +1432,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (this.historyFilters.type === 'ORDER') {
       this.order.filter.historyStates = '';
       this.order.filter.date = '';
-      if (obj.workflowPaths) {
-        filter.orders = [];
-        obj.workflowPaths.forEach((value) => {
-          filter.orders.push({workflowPath: value});
-        });
-      }
-      if (obj.states && obj.states.length > 0) {
-        filter.historyStates = obj.states;
+      if (obj.historyStates && obj.historyStates.length > 0) {
+        filter.historyStates = obj.historyStates;
       }
       if (obj.radio === 'planned') {
         filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);
@@ -1567,33 +1482,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
           filter.folders.push({folder: value, recursive: true});
         });
       }
-      if ((obj.workflows && obj.workflows.length > 0) || (obj.orders && obj.orders.length > 0)) {
-        filter.orders = [];
-
-        obj.orders.forEach((value) => {
-          filter.orders.push({workflow: value.workflow, orderId: value.orderId});
-        });
-        if (!obj.orders || obj.orders.length == 0) {
-          obj.workflows.forEach((value) => {
-            filter.orders.push({workflow: value});
-          });
-        } else {
-          if (obj.workflows) {
-            for (let i = 0; i < obj.workflows.length; i++) {
-              let flg = true;
-              for (let j = 0; j < filter.orders.length; j++) {
-                if (filter.orders[j].workflow === obj.workflows[i]) {
-                  flg = false;
-                  break;
-                }
-              }
-              if (flg) {
-                filter.orders.push({workflow: obj.workflows[i]});
-              }
-            }
-          }
-        }
-
+      if (obj.workflowPath){
+        filter.workflowPath = obj.workflowPath;
       }
       this.convertRequestBody(filter);
       if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true') && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0))) {
@@ -1610,12 +1500,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
     } else if (this.historyFilters.type === 'TASK') {
       this.task.filter.historyStates = '';
       this.task.filter.date = '';
-      if (obj.workflowPaths) {
-        filter.jobs = [];
-        obj.workflowPaths.forEach((value) => {
-          filter.jobs.push({workflowPath: value});
-        });
-      }
       if (obj.historyStates && obj.historyStates.length > 0) {
         filter.historyStates = obj.historyStates;
       }
@@ -1669,11 +1553,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
           filter.folders.push({folder: value, recursive: true});
         });
       }
-      if (obj.jobs && obj.jobs.length > 0) {
-        filter.jobs = [];
-        obj.jobs.forEach((value) => {
-          filter.jobs.push({job: value});
-        });
+      if (obj.workflowPath){
+        filter.workflowPath = obj.workflowPath;
       }
       this.convertRequestBody(filter);
       if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true')
@@ -1797,7 +1678,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.yade.filter.states = '';
       this.yade.filter.date = '';
       filter.compact = true;
-      this.fileTransferService.getRequestForSearch(obj, filter, this.preferences);
+      this.fileTransferService.getRequestForSearch(this.yadeSearch, filter, this.preferences);
       this.coreService.post('yade/transfers', filter).subscribe((res: any) => {
         this.yadeHistorys = res.transfers || [];
         this.searchInResult();
@@ -2262,77 +2143,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  createCustomization(): void {
-    if (this.schedulerIds.selected) {
-      const obj: any = {
-        permission: this.permission,
-        schedulerId: this.schedulerIds.selected,
-        new: true,
-        type: this.historyFilters.type
-      };
-      if (this.historyFilters.type === 'ORDER') {
-        obj.allFilter = this.orderHistoryFilterList;
-      } else if (this.historyFilters.type === 'TASK') {
-        obj.allFilter = this.jobHistoryFilterList;
-      } else if (this.historyFilters.type === 'YADE') {
-        obj.allFilter = this.yadeHistoryFilterList;
-      } else if (this.historyFilters.type === 'DEPLOYMENT') {
-        obj.allFilter = this.deploymentHistoryFilterList;
-      } else if (this.historyFilters.type === 'SUBMISSION') {
-        obj.allFilter = this.submissionHistoryFilterList;
-      }
-      this.modal.create({
-        nzTitle: undefined,
-        nzContent: FilterModalComponent,
-        nzClassName: 'lg',
-        nzComponentParams: obj,
-        nzFooter: null,
-        nzClosable: false
-      });
-    }
-  }
-
-  editFilters(): void {
-    const obj: any = {
-      permission: this.permission,
-      username: this.authService.currentUserData,
-      action: this.action
-    };
-    if (this.historyFilters.type === 'ORDER') {
-      obj.filterList = this.orderHistoryFilterList;
-      obj.favorite = this.savedHistoryFilter.favorite;
-    } else if (this.historyFilters.type === 'TASK') {
-      obj.filterList = this.jobHistoryFilterList;
-      obj.favorite = this.savedJobHistoryFilter.favorite;
-    } else if (this.historyFilters.type === 'YADE') {
-      obj.filterList = this.yadeHistoryFilterList;
-      obj.favorite = this.savedYadeHistoryFilter.favorite;
-    } else if (this.historyFilters.type === 'DEPLOYMENT') {
-      obj.filterList = this.deploymentHistoryFilterList;
-      obj.favorite = this.savedDeploymentHistoryFilter.favorite;
-    } else if (this.historyFilters.type === 'SUBMISSION') {
-      obj.filterList = this.submissionHistoryFilterList;
-      obj.favorite = this.savedSubmissionHistoryFilter.favorite;
-    }
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: EditFilterModalComponent,
-      nzComponentParams: obj,
-      nzFooter: null,
-      nzClosable: false
-    });
-    modal.afterClose.subscribe((result) => {
-      if (result) {
-        if (result.type === 'EDIT') {
-          this.editFilter(result);
-        } else if (result.type === 'COPY') {
-          this.copyFilter(result);
-        }
-      }
-    }, () => {
-    });
-  }
-
   /* --------------------------Actions -----------------------*/
 
   downloadLog(obj, schedulerId): void {
@@ -2349,7 +2159,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           self.savedHistoryFilter.selected = undefined;
           self.isCustomizationSelected1(false);
           self.order.selectedView = false;
-          self.selectedFiltered1 = undefined;
+          self.selectedFiltered1 = {};
           self.setDateRange(null);
           self.load();
         } else {
@@ -2357,7 +2167,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             self.isCustomizationSelected1(false);
             self.savedHistoryFilter.selected = undefined;
             self.order.selectedView = false;
-            self.selectedFiltered1 = undefined;
+            self.selectedFiltered1 = {};
           }
         }
         self.saveService.setHistory(self.savedHistoryFilter);
@@ -2379,7 +2189,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           self.savedJobHistoryFilter.selected = undefined;
           self.isCustomizationSelected2(false);
           self.task.selectedView = false;
-          self.selectedFiltered2 = undefined;
+          self.selectedFiltered2 = {};
           self.setDateRange(null);
           self.load();
         } else {
@@ -2387,7 +2197,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             self.isCustomizationSelected2(false);
             self.savedJobHistoryFilter.selected = undefined;
             self.task.selectedView = false;
-            self.selectedFiltered2 = undefined;
+            self.selectedFiltered2 = {};
           }
         }
         self.saveService.setHistory(self.savedJobHistoryFilter);
@@ -2409,7 +2219,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           self.savedYadeHistoryFilter.selected = undefined;
           self.isCustomizationSelected3(false);
           self.yade.selectedView = false;
-          self.selectedFiltered3 = undefined;
+          self.selectedFiltered3 = {};
           self.setDateRange(null);
           self.load();
         } else {
@@ -2417,7 +2227,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             self.isCustomizationSelected(false);
             self.savedYadeHistoryFilter.selected = undefined;
             self.yade.selectedView = false;
-            self.selectedFiltered3 = undefined;
+            self.selectedFiltered3 = {};
           }
         }
         self.saveService.setHistory(self.savedYadeHistoryFilter);
@@ -2439,7 +2249,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           self.savedDeploymentHistoryFilter.selected = undefined;
           self.isCustomizationSelected4(false);
           self.deployment.selectedView = false;
-          self.selectedFiltered4 = undefined;
+          self.selectedFiltered4 = {};
           self.setDateRange(null);
           self.load();
         } else {
@@ -2447,7 +2257,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             self.isCustomizationSelected4(false);
             self.savedDeploymentHistoryFilter.selected = undefined;
             self.deployment.selectedView = false;
-            self.selectedFiltered4 = undefined;
+            self.selectedFiltered4 = {};
           }
         }
         self.saveService.setHistory(self.savedDeploymentHistoryFilter);
@@ -2469,7 +2279,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           self.savedSubmissionHistoryFilter.selected = undefined;
           self.isCustomizationSelected5(false);
           self.submission.selectedView = false;
-          self.selectedFiltered5 = undefined;
+          self.selectedFiltered5 = {};
           self.setDateRange(null);
           self.load();
         } else {
@@ -2477,7 +2287,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             self.isCustomizationSelected5(false);
             self.savedSubmissionHistoryFilter.selected = undefined;
             self.submission.selectedView = false;
-            self.selectedFiltered5 = undefined;
+            self.selectedFiltered5 = {};
           }
         }
         self.saveService.setHistory(self.savedSubmissionHistoryFilter);
@@ -2494,113 +2304,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
         self.saveService.save();
       }
     }
-  }
-
-  changeFilter(filter): void {
-    if (this.historyFilters.type === 'ORDER') {
-      if (filter) {
-        this.savedHistoryFilter.selected = filter.id;
-        this.historyFilters.order.selectedView = true;
-        this.coreService.post('configuration', {
-          controllerId: filter.controllerId,
-          id: filter.id
-        }).subscribe((conf: any) => {
-          this.selectedFiltered1 = JSON.parse(conf.configuration.configurationItem);
-          this.selectedFiltered1.account = filter.account;
-          this.init(false);
-        });
-      } else {
-        this.isCustomizationSelected1(false);
-        this.savedHistoryFilter.selected = filter;
-        this.historyFilters.order.selectedView = false;
-        this.selectedFiltered1 = {};
-        this.init(false);
-      }
-      this.historyFilterObj.order = this.savedHistoryFilter;
-    } else if (this.historyFilters.type === 'TASK') {
-      if (filter) {
-        this.savedJobHistoryFilter.selected = filter.id;
-        this.historyFilters.task.selectedView = true;
-        this.coreService.post('configuration', {
-          controllerId: filter.controllerId,
-          id: filter.id
-        }).subscribe((conf: any) => {
-          this.selectedFiltered2 = JSON.parse(conf.configuration.configurationItem);
-          this.selectedFiltered2.account = filter.account;
-          this.init(false);
-        });
-      } else {
-        this.isCustomizationSelected2(false);
-        this.savedJobHistoryFilter.selected = filter;
-        this.historyFilters.task.selectedView = false;
-        this.selectedFiltered2 = {};
-        this.init(false);
-      }
-      this.historyFilterObj.job = this.savedJobHistoryFilter;
-    } else if (this.historyFilters.type === 'YADE') {
-      if (filter) {
-        this.savedYadeHistoryFilter.selected = filter.id;
-        this.historyFilters.yade.selectedView = true;
-        this.coreService.post('configuration', {
-          controllerId: filter.controllerId,
-          id: filter.id
-        }).subscribe((conf: any) => {
-          this.selectedFiltered3 = JSON.parse(conf.configuration.configurationItem);
-          this.selectedFiltered3.account = filter.account;
-          this.init(false);
-        });
-      } else {
-        this.isCustomizationSelected3(false);
-        this.savedYadeHistoryFilter.selected = filter;
-        this.historyFilters.yade.selectedView = false;
-        this.selectedFiltered3 = {};
-        this.init(false);
-      }
-      this.historyFilterObj.yade = this.savedYadeHistoryFilter;
-
-    } else if (this.historyFilters.type === 'DEPLOYMENT') {
-      if (filter) {
-        this.savedDeploymentHistoryFilter.selected = filter.id;
-        this.historyFilters.deployment.selectedView = true;
-        this.coreService.post('configuration', {
-          controllerId: filter.controllerId,
-          id: filter.id
-        }).subscribe((conf: any) => {
-          this.selectedFiltered4 = JSON.parse(conf.configuration.configurationItem);
-          this.selectedFiltered4.account = filter.account;
-          this.init(false);
-        });
-      } else {
-        this.isCustomizationSelected4(false);
-        this.savedDeploymentHistoryFilter.selected = filter;
-        this.historyFilters.deployment.selectedView = false;
-        this.selectedFiltered4 = {};
-        this.init(false);
-      }
-      this.historyFilterObj.deployment = this.savedDeploymentHistoryFilter;
-    } else if (this.historyFilters.type === 'SUBMISSION') {
-      if (filter) {
-        this.savedSubmissionHistoryFilter.selected = filter.id;
-        this.historyFilters.submission.selectedView = true;
-        this.coreService.post('configuration', {
-          controllerId: filter.controllerId,
-          id: filter.id
-        }).subscribe((conf: any) => {
-          this.selectedFiltered5 = JSON.parse(conf.configuration.configurationItem);
-          this.selectedFiltered5.account = filter.account;
-          this.init(false);
-        });
-      } else {
-        this.isCustomizationSelected5(false);
-        this.savedSubmissionHistoryFilter.selected = filter;
-        this.historyFilters.submission.selectedView = false;
-        this.selectedFiltered5 = {};
-        this.init(false);
-      }
-      this.historyFilterObj.submission = this.savedSubmissionHistoryFilter;
-    }
-    this.saveService.setHistory(this.historyFilterObj);
-    this.saveService.save();
   }
 
   private setHeaderWidth(): void {
@@ -3274,6 +2977,220 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   /* --------------------------Customizations Begin-----------------------*/
 
+  createCustomization(): void {
+    if (this.schedulerIds.selected) {
+      const obj: any = {
+        permission: this.permission,
+        schedulerId: this.schedulerIds.selected,
+        new: true,
+        type: this.historyFilters.type
+      };
+      if (this.historyFilters.type === 'ORDER') {
+        obj.allFilter = this.orderHistoryFilterList;
+      } else if (this.historyFilters.type === 'TASK') {
+        obj.allFilter = this.jobHistoryFilterList;
+      } else if (this.historyFilters.type === 'YADE') {
+        obj.allFilter = this.yadeHistoryFilterList;
+      } else if (this.historyFilters.type === 'DEPLOYMENT') {
+        obj.allFilter = this.deploymentHistoryFilterList;
+      } else if (this.historyFilters.type === 'SUBMISSION') {
+        obj.allFilter = this.submissionHistoryFilterList;
+      }
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: FilterModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: obj,
+        nzFooter: null,
+        nzClosable: false
+      });
+    }
+  }
+
+  editFilters(): void {
+    const obj: any = {
+      permission: this.permission,
+      username: this.authService.currentUserData,
+      action: this.action,
+      self: this
+    };
+    if (this.historyFilters.type === 'ORDER') {
+      obj.filterList = this.orderHistoryFilterList;
+      obj.favorite = this.savedHistoryFilter.favorite;
+    } else if (this.historyFilters.type === 'TASK') {
+      obj.filterList = this.jobHistoryFilterList;
+      obj.favorite = this.savedJobHistoryFilter.favorite;
+    } else if (this.historyFilters.type === 'YADE') {
+      obj.filterList = this.yadeHistoryFilterList;
+      obj.favorite = this.savedYadeHistoryFilter.favorite;
+    } else if (this.historyFilters.type === 'DEPLOYMENT') {
+      obj.filterList = this.deploymentHistoryFilterList;
+      obj.favorite = this.savedDeploymentHistoryFilter.favorite;
+    } else if (this.historyFilters.type === 'SUBMISSION') {
+      obj.filterList = this.submissionHistoryFilterList;
+      obj.favorite = this.savedSubmissionHistoryFilter.favorite;
+    }
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: EditFilterModalComponent,
+      nzComponentParams: obj,
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+        if (result.type === 'EDIT') {
+          this.editFilter(result);
+        } else if (result.type === 'COPY') {
+          this.copyFilter(result);
+        }
+      }
+    }, () => {
+    });
+  }
+
+  changeFilter(filter): void {
+    if (this.historyFilters.type === 'ORDER') {
+      if (filter) {
+        this.savedHistoryFilter.selected = filter.id;
+        this.historyFilters.order.selectedView = true;
+        if (filter.configurationItem) {
+          this.loadConfig = true;
+          this.selectedFiltered1 = JSON.parse(filter.configurationItem);
+          this.selectedFiltered1.account = filter.account;
+          this.init(false);
+        } else {
+          this.coreService.post('configuration', {
+            controllerId: filter.controllerId,
+            id: filter.id
+          }).subscribe((conf: any) => {
+            this.selectedFiltered1 = JSON.parse(conf.configuration.configurationItem);
+            this.selectedFiltered1.account = filter.account;
+            this.init(false);
+          });
+        }
+      } else {
+        this.isCustomizationSelected1(false);
+        this.savedHistoryFilter.selected = filter;
+        this.historyFilters.order.selectedView = false;
+        this.selectedFiltered1 = {};
+        this.init(false);
+      }
+      this.historyFilterObj.order = this.savedHistoryFilter;
+    } else if (this.historyFilters.type === 'TASK') {
+      if (filter) {
+        this.savedJobHistoryFilter.selected = filter.id;
+        this.historyFilters.task.selectedView = true;
+        if (filter.configurationItem) {
+          this.loadConfig = true;
+          this.selectedFiltered2 = JSON.parse(filter.configurationItem);
+          this.selectedFiltered2.account = filter.account;
+          this.init(false);
+        } else {
+          this.coreService.post('configuration', {
+            controllerId: filter.controllerId,
+            id: filter.id
+          }).subscribe((conf: any) => {
+            this.selectedFiltered2 = JSON.parse(conf.configuration.configurationItem);
+            this.selectedFiltered2.account = filter.account;
+            this.init(false);
+          });
+        }
+      } else {
+        this.isCustomizationSelected2(false);
+        this.savedJobHistoryFilter.selected = filter;
+        this.historyFilters.task.selectedView = false;
+        this.selectedFiltered2 = {};
+        this.init(false);
+      }
+      this.historyFilterObj.job = this.savedJobHistoryFilter;
+    } else if (this.historyFilters.type === 'YADE') {
+      if (filter) {
+        this.savedYadeHistoryFilter.selected = filter.id;
+        this.historyFilters.yade.selectedView = true;
+        if (filter.configurationItem) {
+          this.loadConfig = true;
+          this.selectedFiltered3 = JSON.parse(filter.configurationItem);
+          this.selectedFiltered3.account = filter.account;
+          this.init(false);
+        } else {
+          this.coreService.post('configuration', {
+            controllerId: filter.controllerId,
+            id: filter.id
+          }).subscribe((conf: any) => {
+            this.selectedFiltered3 = JSON.parse(conf.configuration.configurationItem);
+            this.selectedFiltered3.account = filter.account;
+            this.init(false);
+          });
+        }
+      } else {
+        this.isCustomizationSelected3(false);
+        this.savedYadeHistoryFilter.selected = filter;
+        this.historyFilters.yade.selectedView = false;
+        this.selectedFiltered3 = {};
+        this.init(false);
+      }
+      this.historyFilterObj.yade = this.savedYadeHistoryFilter;
+
+    } else if (this.historyFilters.type === 'DEPLOYMENT') {
+      if (filter) {
+        this.savedDeploymentHistoryFilter.selected = filter.id;
+        this.historyFilters.deployment.selectedView = true;
+        if (filter.configurationItem) {
+          this.loadConfig = true;
+          this.selectedFiltered4 = JSON.parse(filter.configurationItem);
+          this.selectedFiltered4.account = filter.account;
+          this.init(false);
+        } else {
+          this.coreService.post('configuration', {
+            controllerId: filter.controllerId,
+            id: filter.id
+          }).subscribe((conf: any) => {
+            this.selectedFiltered4 = JSON.parse(conf.configuration.configurationItem);
+            this.selectedFiltered4.account = filter.account;
+            this.init(false);
+          });
+        }
+      } else {
+        this.isCustomizationSelected4(false);
+        this.savedDeploymentHistoryFilter.selected = filter;
+        this.historyFilters.deployment.selectedView = false;
+        this.selectedFiltered4 = {};
+        this.init(false);
+      }
+      this.historyFilterObj.deployment = this.savedDeploymentHistoryFilter;
+    } else if (this.historyFilters.type === 'SUBMISSION') {
+      if (filter) {
+        this.savedSubmissionHistoryFilter.selected = filter.id;
+        this.historyFilters.submission.selectedView = true;
+        if (filter.configurationItem) {
+          this.loadConfig = true;
+          this.selectedFiltered5 = JSON.parse(filter.configurationItem);
+          this.selectedFiltered5.account = filter.account;
+          this.init(false);
+        } else {
+          this.coreService.post('configuration', {
+            controllerId: filter.controllerId,
+            id: filter.id
+          }).subscribe((conf: any) => {
+            this.selectedFiltered5 = JSON.parse(conf.configuration.configurationItem);
+            this.selectedFiltered5.account = filter.account;
+            this.init(false);
+          });
+        }
+      } else {
+        this.isCustomizationSelected5(false);
+        this.savedSubmissionHistoryFilter.selected = filter;
+        this.historyFilters.submission.selectedView = false;
+        this.selectedFiltered5 = {};
+        this.init(false);
+      }
+      this.historyFilterObj.submission = this.savedSubmissionHistoryFilter;
+    }
+    this.saveService.setHistory(this.historyFilterObj);
+    this.saveService.save();
+  }
+
   private checkSharedFilters(type): void {
     const obj = {
       controllerId: this.schedulerIds.selected,
@@ -3345,15 +3262,22 @@ export class HistoryComponent implements OnInit, OnDestroy {
       for (let i = 0; i < this.orderHistoryFilterList.length; i++) {
         if (this.orderHistoryFilterList[i].id == this.savedHistoryFilter.selected) {
           flag = false;
-          this.coreService.post('configuration', {
-            controllerId: this.orderHistoryFilterList[i].controllerId,
-            id: this.orderHistoryFilterList[i].id
-          }).subscribe((conf: any) => {
+          if (this.orderHistoryFilterList[i].configurationItem) {
             this.loadConfig = true;
-            this.selectedFiltered1 = JSON.parse(conf.configuration.configurationItem);
+            this.selectedFiltered1 = JSON.parse(this.orderHistoryFilterList[i].configurationItem);
             this.selectedFiltered1.account = this.orderHistoryFilterList[i].account;
             this.init(false);
-          });
+          } else {
+            this.coreService.post('configuration', {
+              controllerId: this.orderHistoryFilterList[i].controllerId,
+              id: this.orderHistoryFilterList[i].id
+            }).subscribe((conf: any) => {
+              this.loadConfig = true;
+              this.selectedFiltered1 = JSON.parse(conf.configuration.configurationItem);
+              this.selectedFiltered1.account = this.orderHistoryFilterList[i].account;
+              this.init(false);
+            });
+          }
           break;
         }
       }
@@ -3399,15 +3323,22 @@ export class HistoryComponent implements OnInit, OnDestroy {
       for (let i = 0; i < this.jobHistoryFilterList.length; i++) {
         if (this.jobHistoryFilterList[i].id == this.savedJobHistoryFilter.selected) {
           flag = false;
-          this.coreService.post('configuration', {
-            controllerId: this.jobHistoryFilterList[i].controllerId,
-            id: this.jobHistoryFilterList[i].id
-          }).subscribe((conf: any) => {
+          if (this.jobHistoryFilterList[i].configurationItem) {
             this.loadConfig = true;
-            this.selectedFiltered2 = JSON.parse(conf.configuration.configurationItem);
+            this.selectedFiltered2 = JSON.parse(this.jobHistoryFilterList[i].configurationItem);
             this.selectedFiltered2.account = this.jobHistoryFilterList[i].account;
             this.init(false);
-          });
+          } else {
+            this.coreService.post('configuration', {
+              controllerId: this.jobHistoryFilterList[i].controllerId,
+              id: this.jobHistoryFilterList[i].id
+            }).subscribe((conf: any) => {
+              this.loadConfig = true;
+              this.selectedFiltered2 = JSON.parse(conf.configuration.configurationItem);
+              this.selectedFiltered2.account = this.jobHistoryFilterList[i].account;
+              this.init(false);
+            });
+          }
           break;
         }
       }
@@ -3452,15 +3383,22 @@ export class HistoryComponent implements OnInit, OnDestroy {
       for (let i = 0; i < this.yadeHistoryFilterList.length; i++) {
         if (this.yadeHistoryFilterList[i].id === this.savedYadeHistoryFilter.selected) {
           flag = false;
-          this.coreService.post('configuration', {
-            controllerId: this.yadeHistoryFilterList[i].controllerId,
-            id: this.yadeHistoryFilterList[i].id
-          }).subscribe(() => {
+          if (this.yadeHistoryFilterList[i].configurationItem) {
             this.loadConfig = true;
-            this.selectedFiltered3 = JSON.parse(result.configuration.configurationItem);
+            this.selectedFiltered3 = JSON.parse(this.yadeHistoryFilterList[i].configurationItem);
             this.selectedFiltered3.account = this.yadeHistoryFilterList[i].account;
             this.init(false);
-          });
+          } else {
+            this.coreService.post('configuration', {
+              controllerId: this.yadeHistoryFilterList[i].controllerId,
+              id: this.yadeHistoryFilterList[i].id
+            }).subscribe((conf: any) => {
+              this.loadConfig = true;
+              this.selectedFiltered3 = JSON.parse(conf.configuration.configurationItem);
+              this.selectedFiltered3.account = this.yadeHistoryFilterList[i].account;
+              this.init(false);
+            });
+          }
           break;
         }
       }
@@ -3506,15 +3444,22 @@ export class HistoryComponent implements OnInit, OnDestroy {
       for (let i = 0; i < this.deploymentHistoryFilterList.length; i++) {
         if (this.deploymentHistoryFilterList[i].id == this.savedDeploymentHistoryFilter.selected) {
           flag = false;
-          this.coreService.post('configuration', {
-            controllerId: this.deploymentHistoryFilterList[i].controllerId,
-            id: this.deploymentHistoryFilterList[i].id
-          }).subscribe((conf: any) => {
+          if (this.deploymentHistoryFilterList[i].configurationItem) {
             this.loadConfig = true;
-            this.selectedFiltered4 = JSON.parse(conf.configuration.configurationItem);
+            this.selectedFiltered4 = JSON.parse(this.deploymentHistoryFilterList[i].configurationItem);
             this.selectedFiltered4.account = this.deploymentHistoryFilterList[i].account;
             this.init(false);
-          });
+          } else {
+            this.coreService.post('configuration', {
+              controllerId: this.deploymentHistoryFilterList[i].controllerId,
+              id: this.deploymentHistoryFilterList[i].id
+            }).subscribe((conf: any) => {
+              this.loadConfig = true;
+              this.selectedFiltered4 = JSON.parse(conf.configuration.configurationItem);
+              this.selectedFiltered4.account = this.deploymentHistoryFilterList[i].account;
+              this.init(false);
+            });
+          }
           break;
         }
       }
@@ -3559,15 +3504,22 @@ export class HistoryComponent implements OnInit, OnDestroy {
       for (let i = 0; i < this.submissionHistoryFilterList.length; i++) {
         if (this.submissionHistoryFilterList[i].id == this.savedSubmissionHistoryFilter.selected) {
           flag = false;
-          this.coreService.post('configuration', {
-            controllerId: this.submissionHistoryFilterList[i].controllerId,
-            id: this.submissionHistoryFilterList[i].id
-          }).subscribe((conf: any) => {
+          if (this.submissionHistoryFilterList[i].configurationItem) {
             this.loadConfig = true;
-            this.selectedFiltered5 = JSON.parse(conf.configuration.configurationItem);
+            this.selectedFiltered5 = JSON.parse(this.submissionHistoryFilterList[i].configurationItem);
             this.selectedFiltered5.account = this.submissionHistoryFilterList[i].account;
             this.init(false);
-          });
+          } else {
+            this.coreService.post('configuration', {
+              controllerId: this.submissionHistoryFilterList[i].controllerId,
+              id: this.submissionHistoryFilterList[i].id
+            }).subscribe((conf: any) => {
+              this.loadConfig = true;
+              this.selectedFiltered5 = JSON.parse(conf.configuration.configurationItem);
+              this.selectedFiltered5.account = this.submissionHistoryFilterList[i].account;
+              this.init(false);
+            });
+          }
           break;
         }
       }
@@ -3630,86 +3582,90 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   private editFilter(filter): void {
     if (this.schedulerIds.selected) {
-      let filterObj: any = {};
-      this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
-        filterObj = JSON.parse(conf.configuration.configurationItem);
-        filterObj.shared = filter.shared;
-        filterObj.id = filter.id;
-
-        const obj: any = {};
-        obj.permission = this.permission;
-        obj.schedulerId = this.schedulerIds.selected;
-        if (this.historyFilters.type === 'ORDER') {
-          obj.allFilter = this.orderHistoryFilterList;
-        } else if (this.historyFilters.type === 'TASK') {
-          obj.allFilter = this.jobHistoryFilterList;
-        } else if (this.historyFilters.type === 'YADE') {
-          obj.allFilter = this.yadeHistoryFilterList;
-        } else if (this.historyFilters.type === 'DEPLOYMENT') {
-          obj.allFilter = this.deploymentHistoryFilterList;
-        } else if (this.historyFilters.type === 'SUBMISSION') {
-          obj.allFilter = this.submissionHistoryFilterList;
-        }
-        obj.filter = filterObj;
-        obj.edit = true;
-        obj.type = this.historyFilters.type;
-
-        this.modal.create({
-          nzTitle: undefined,
-          nzContent: FilterModalComponent,
-          nzClassName: 'lg',
-          nzComponentParams: obj,
-          nzFooter: null,
-          nzClosable: false
+      if (filter.configurationItem) {
+        this.openFilterModal(filter, true);
+      } else {
+        this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
+          this.openFilterModal(conf.configuration, true);
         });
-      });
+      }
     }
   }
 
   private copyFilter(filter: any): void {
     if (this.schedulerIds.selected) {
-      let filterObj: any = {};
-      this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
-        filterObj = JSON.parse(conf.configuration.configurationItem);
-        filterObj.shared = filter.shared;
-        if (this.historyFilters.type === 'ORDER') {
-          filterObj.name = this.coreService.checkCopyName(this.orderHistoryFilterList, filter.name);
-        } else if (this.historyFilters.type === 'TASK') {
-          filterObj.name = this.coreService.checkCopyName(this.jobHistoryFilterList, filter.name);
-        } else if (this.historyFilters.type === 'YADE') {
-          filterObj.name = this.coreService.checkCopyName(this.yadeHistoryFilterList, filter.name);
-        } else if (this.historyFilters.type === 'DEPLOYMENT') {
-          filterObj.name = this.coreService.checkCopyName(this.deploymentHistoryFilterList, filter.name);
-        } else if (this.historyFilters.type === 'SUBMISSION') {
-          filterObj.name = this.coreService.checkCopyName(this.submissionHistoryFilterList, filter.name);
-        }
-
-        const obj: any = {};
-        obj.permission = this.permission;
-        obj.schedulerId = this.schedulerIds.selected;
-        obj.type = this.historyFilters.type;
-        if (this.historyFilters.type === 'ORDER') {
-          obj.allFilter = this.orderHistoryFilterList;
-        } else if (this.historyFilters.type === 'TASK') {
-          obj.allFilter = this.jobHistoryFilterList;
-        } else if (this.historyFilters.type === 'YADE') {
-          obj.allFilter = this.yadeHistoryFilterList;
-        } else if (this.historyFilters.type === 'DEPLOYMENT') {
-          obj.allFilter = this.deploymentHistoryFilterList;
-        } else if (this.historyFilters.type === 'SUBMISSION') {
-          obj.allFilter = this.submissionHistoryFilterList;
-        }
-        obj.filter = filterObj;
-        this.modal.create({
-          nzTitle: undefined,
-          nzContent: FilterModalComponent,
-          nzClassName: 'lg',
-          nzComponentParams: obj,
-          nzFooter: null,
-          nzClosable: false
+      if (filter.configurationItem) {
+        this.openFilterModal(filter, false);
+      } else {
+        this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
+          this.openFilterModal(conf.configuration, false);
         });
-      });
+      }
     }
+  }
+
+  private openFilterModal(filter, isEdit): void {
+    let filterObj: any = JSON.parse(filter.configurationItem);
+    filterObj.shared = filter.shared;
+    if(isEdit){
+      filterObj.id = filter.id;
+    }else {
+      if (this.historyFilters.type === 'ORDER') {
+        filterObj.name = this.coreService.checkCopyName(this.orderHistoryFilterList, filter.name);
+      } else if (this.historyFilters.type === 'TASK') {
+        filterObj.name = this.coreService.checkCopyName(this.jobHistoryFilterList, filter.name);
+      } else if (this.historyFilters.type === 'YADE') {
+        filterObj.name = this.coreService.checkCopyName(this.yadeHistoryFilterList, filter.name);
+      } else if (this.historyFilters.type === 'DEPLOYMENT') {
+        filterObj.name = this.coreService.checkCopyName(this.deploymentHistoryFilterList, filter.name);
+      } else if (this.historyFilters.type === 'SUBMISSION') {
+        filterObj.name = this.coreService.checkCopyName(this.submissionHistoryFilterList, filter.name);
+      }
+    }
+
+    const obj: any = {};
+    obj.permission = this.permission;
+    obj.schedulerId = this.schedulerIds.selected;
+    obj.type = this.historyFilters.type;
+    if (this.historyFilters.type === 'ORDER') {
+      obj.allFilter = this.orderHistoryFilterList;
+    } else if (this.historyFilters.type === 'TASK') {
+      obj.allFilter = this.jobHistoryFilterList;
+    } else if (this.historyFilters.type === 'YADE') {
+      obj.allFilter = this.yadeHistoryFilterList;
+    } else if (this.historyFilters.type === 'DEPLOYMENT') {
+      obj.allFilter = this.deploymentHistoryFilterList;
+    } else if (this.historyFilters.type === 'SUBMISSION') {
+      obj.allFilter = this.submissionHistoryFilterList;
+    }
+    obj.filter = filterObj;
+    if (isEdit) {
+      obj.edit = true;
+      obj.type = this.historyFilters.type;
+    }
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: FilterModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: obj,
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe((res) => {
+      if (res) {
+        if (this.historyFilters.type === 'ORDER' && this.savedHistoryFilter.selected && this.savedHistoryFilter.selected === filterObj.id) {
+          this.savedHistoryFilter.selected = filter.id;
+        } else if (this.historyFilters.type === 'TASK' && this.savedJobHistoryFilter.selected && this.savedJobHistoryFilter.selected === filterObj.id) {
+          this.changeFilter(filterObj);
+        } else if (this.historyFilters.type === 'YADE' && this.savedYadeHistoryFilter.selected && this.savedYadeHistoryFilter.selected === filterObj.id) {
+          this.changeFilter(filterObj);
+        } else if (this.historyFilters.type === 'DEPLOYMENT' && this.savedDeploymentHistoryFilter.selected && this.savedDeploymentHistoryFilter.selected === filterObj.id) {
+          this.changeFilter(filterObj);
+        }else if (this.historyFilters.type === 'SUBMISSION' && this.savedSubmissionHistoryFilter.selected && this.savedSubmissionHistoryFilter.selected === filterObj.id) {
+          this.changeFilter(filterObj);
+        }
+      }
+    });
   }
 
   /* --------------------------Customizations End-----------------------*/

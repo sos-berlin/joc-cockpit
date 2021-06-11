@@ -243,10 +243,8 @@ export class CreatePlanModalComponent implements OnInit{
   plan: any;
   submitted = false;
   dateFormat: any;
-  messageList: any;
   display: any;
   comments: any = {};
-  required = false;
   schedules: any = [];
   selectedTemplates: any = {schedules: []};
 
@@ -256,12 +254,6 @@ export class CreatePlanModalComponent implements OnInit{
   ngOnInit(): void {
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
-    }
-    if (sessionStorage.$SOS$FORCELOGING == 'true') {
-      this.required = true;
-    }
   }
 
   onSubmit(): void {
@@ -339,8 +331,6 @@ export class RemovePlanModalComponent implements OnInit {
 
   preferences: any;
   display: any;
-  messageList: any;
-  required = false;
   comments: any = {};
 
   constructor(public activeModal: NzModalRef, public  coreService: CoreService) {
@@ -350,12 +340,6 @@ export class RemovePlanModalComponent implements OnInit {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
-    }
-    if (sessionStorage.$SOS$FORCELOGING == 'true') {
-      this.required = true;
-    }
     if (this.workflow && !this.order.key) {
       this.order.key = this.order.workflow;
     }
@@ -717,6 +701,12 @@ export class FilterModalComponent implements OnInit {
       };
     } else {
       this.filter.radio = 'planned';
+      if(this.filter.to && !this.filter.to1){
+        this.filter.to1 = this.filter.to;
+      }
+      if(this.filter.from && !this.filter.from1){
+        this.filter.from1 = this.filter.from;
+      }
       this.name = clone(this.filter.name);
     }
   }
@@ -788,17 +778,15 @@ export class SearchComponent implements OnInit {
       forInventory: true,
       types: ['SCHEDULE']
     }).subscribe(res => {
-      this.nodes = this.coreService.prepareTree(res, true);
-      if (this.nodes.length > 0) {
-        this.nodes[0].expanded = true;
-      }
+      this.nodes = this.coreService.prepareTree(res, false);
+
     });
     this.coreService.post('tree', {
       controllerId: this.schedulerIds.selected,
       forInventory: true,
       types: ['WORKFLOW']
     }).subscribe((res) => {
-      this.workflowTree = this.coreService.prepareTree(res, true);
+      this.workflowTree = this.coreService.prepareTree(res, false);
     });
   }
 
@@ -899,8 +887,17 @@ export class SearchComponent implements OnInit {
 
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      configObj.id = res.id;
-      this.allFilter.push(configObj);
+      if (result.id) {
+        for (let i in this.allFilter) {
+          if (this.allFilter[i].id === result.id) {
+            this.allFilter[i] = configObj;
+            break;
+          }
+        }
+      } else {
+        configObj.id = res.id;
+        this.allFilter.push(configObj);
+      }
       if (this.isSearch) {
         this.filter.name = '';
       } else {
@@ -1019,12 +1016,15 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       filter: {}
     };
     if (this.selectedFiltered && this.selectedFiltered.name) {
+      console.log(this.selectedFiltered)
       this.selectedDate = new Date();
       $('#full-calendar').data('calendar').setSelectedDate(this.selectedDate);
       this.applySearchFilter(obj.filter, this.selectedFiltered);
-      this.getDatesByUrl([this.selectedFiltered.from, this.selectedFiltered.to], (dates) => {
-        this.callApi(new Date(dates[0]), new Date(dates[1]), obj);
-      });
+      if (this.selectedFiltered.from && this.selectedFiltered.to) {
+        this.getDatesByUrl([this.selectedFiltered.from, this.selectedFiltered.to], (dates) => {
+          this.callApi(new Date(dates[0]), new Date(dates[1]), obj);
+        });
+      }
     } else {
       obj.filter.dailyPlanDate = this.coreService.getStringDate(this.selectedDate);
       if (this.selectedSubmissionId) {
@@ -1192,6 +1192,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         openModal(order.requirements);
       });
     }
+
     function openModal(requirements) {
       self.modal.create({
         nzTitle: undefined,
@@ -2307,7 +2308,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       });
       this.object.mapOfCheckedId = tempObject;
       this.object.mapOfCheckedId.size > 0 ? this.updateMainCheckbox() : this.resetCheckBox();
-    } else{
+    } else {
       this.resetCheckBox();
     }
   }
@@ -2316,7 +2317,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   createCustomization(): void {
     if (this.schedulerIds.selected) {
-      const modal = this.modal.create({
+      this.modal.create({
         nzTitle: undefined,
         nzContent: FilterModalComponent,
         nzClassName: 'lg',
@@ -2327,19 +2328,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         },
         nzFooter: null,
         nzClosable: false
-      });
-      modal.afterClose.subscribe(configObj => {
-        if (configObj) {
-          if (this.filterList.length === 1) {
-            this.savedFilter.selected = configObj.id;
-            this.dailyPlanFilters.selectedView = true;
-            this.selectedFiltered = configObj;
-            this.isCustomizationSelected(true);
-            this.loadOrderPlan();
-            this.saveService.setDailyPlan(this.savedFilter);
-            this.saveService.save();
-          }
-        }
       });
     }
   }
@@ -2376,14 +2364,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         self.savedFilter.selected = undefined;
         self.isCustomizationSelected(false);
         self.dailyPlanFilters.selectedView = false;
-        self.selectedFiltered = undefined;
+        self.selectedFiltered = {};
         self.loadOrderPlan();
       } else {
         if (self.filterList.length === 0) {
           self.isCustomizationSelected(false);
           self.savedFilter.selected = undefined;
           self.dailyPlanFilters.selectedView = false;
-          self.selectedFiltered = undefined;
+          self.selectedFiltered = {};
         }
       }
       self.saveService.setDailyPlan(self.savedFilter);
@@ -2444,7 +2432,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         } else {
           filterObj.id = filter.id;
         }
-        this.modal.create({
+        const modal = this.modal.create({
           nzTitle: undefined,
           nzContent: FilterModalComponent,
           nzClassName: 'lg',
@@ -2457,8 +2445,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           nzFooter: null,
           nzClosable: false
         });
+        modal.afterClose.subscribe(obj => {
+          if (obj && this.savedFilter.selected && filterObj.id == this.savedFilter.selected) {
+            this.changeFilter(filterObj);
+          }
+        });
       });
     }
   }
+
   /* ---- End Customization ------ */
 }

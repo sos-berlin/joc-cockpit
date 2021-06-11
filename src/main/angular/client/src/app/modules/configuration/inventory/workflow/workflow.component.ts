@@ -922,6 +922,12 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     if (this.selectedNode.job.graceTimeout) {
       this.selectedNode.job.graceTimeout1 = this.workflowService.convertDurationToString(this.selectedNode.job.graceTimeout);
     }
+    if (this.selectedNode.job.warnIfShorter) {
+      this.selectedNode.job.warnIfShorter1 = this.workflowService.convertDurationToString(this.selectedNode.job.warnIfShorter);
+    }
+    if (this.selectedNode.job.warnIfLonger) {
+      this.selectedNode.job.warnIfLonger1 = this.workflowService.convertDurationToString(this.selectedNode.job.warnIfLonger);
+    }
     if (this.selectedNode.job.defaultArguments && this.selectedNode.job.defaultArguments.length === 0) {
       this.addVariable();
     }
@@ -1245,6 +1251,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           criticality: v.criticality,
           timeout: v.timeout,
           graceTimeout: v.graceTimeout,
+          warnIfShorter: v.warnIfShorter,
+          warnIfLonger: v.warnIfLonger,
           taskLimit: v.taskLimit
         };
       }
@@ -1779,7 +1787,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           forInventory: true,
           types: ['JOBRESOURCE']
         }).subscribe((res) => {
-          this.jobResourcesTree = this.coreService.prepareTree(res, true);
+          this.jobResourcesTree = this.coreService.prepareTree(res, false);
         });
       }
       if (this.lockTree.length === 0) {
@@ -1788,7 +1796,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           forInventory: true,
           types: ['LOCK']
         }).subscribe((res) => {
-          this.lockTree = this.coreService.prepareTree(res, true);
+          this.lockTree = this.coreService.prepareTree(res, false);
         });
       }
       if (this.documentationTree.length === 0) {
@@ -1796,7 +1804,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           onlyWithAssignReference: true,
           types: ['DOCUMENTATION']
         }).subscribe((res) => {
-          this.documentationTree = this.coreService.prepareTree(res, true);
+          this.documentationTree = this.coreService.prepareTree(res, false);
         });
       }
       if (this.agents.length === 0) {
@@ -7086,6 +7094,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     if (job.graceTimeout1) {
       job.graceTimeout = this.workflowService.convertStringToDuration(job.graceTimeout1);
+    }
+    if (job.warnIfShorter1) {
+      job.warnIfShorter = this.workflowService.convertStringToDuration(job.warnIfShorter1);
+    }
+    if (job.warnIfLonger1) {
+      job.warnIfLonger = this.workflowService.convertStringToDuration(job.warnIfLonger1);
     }
     let flag = true;
     let isChange = true;

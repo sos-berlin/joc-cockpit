@@ -24,12 +24,10 @@ export class StartUpModalComponent implements OnInit {
   isPrimaryConnectionChecked = false;
   isBackupConnectionChecked = false;
   isConnectionChecked = false;
-  required = false;
   display: any;
   comments: any = {};
   agent: any = {};
   schedulerIds: any = {};
-  messageList: any = [];
   error: any;
   controllerId = '';
 
@@ -84,12 +82,6 @@ export class StartUpModalComponent implements OnInit {
     }
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
-    }
-    if (sessionStorage.$SOS$FORCELOGING == 'true') {
-      this.required = true;
-    }
   }
 
   onSubmit(): void {

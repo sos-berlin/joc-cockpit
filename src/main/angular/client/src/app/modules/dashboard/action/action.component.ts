@@ -14,20 +14,13 @@ export class CommentModalComponent implements OnInit {
   @Input() performAction;
   @Input() controllerID;
   submitted = false;
-  messageList: any;
-  required = false;
   show = false;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService) {
   }
 
   ngOnInit(): void {
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
-    }
-    if (sessionStorage.$SOS$FORCELOGING == 'true') {
-      this.required = true;
-    }
+
   }
 
   onSubmit(result, obj): void {

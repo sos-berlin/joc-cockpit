@@ -146,6 +146,13 @@ export class FileTransferService {
       filter.mandator = data.mandator;
     }
 
+    if (data.sourceFileRegex) {
+      filter.sourceFile = data.sourceFileRegex;
+    }
+    if (data.targetFileRegex) {
+      filter.targetFile = data.targetRegex;
+    }
+
     if (data.sourceFileName) {
       data.sourceFileName = data.sourceFileName.replace(/\s*(,|^|$)\s*/g, '$1');
       filter.sourceFiles = data.sourceFileName.split(',');
@@ -214,6 +221,8 @@ export class FileTransferService {
           filter.dateTo = toDate;
         }
       }
+    } else if(data.planned){
+      filter = this.parseProcessExecuted(data.planned, filter);
     }
 
     if (data.controllerId) {

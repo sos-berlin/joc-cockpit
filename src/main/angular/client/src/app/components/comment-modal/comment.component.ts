@@ -8,8 +8,6 @@ import {CoreService} from '../../services/core.service';
 })
 export class CommentModalComponent implements OnInit {
   submitted = false;
-  messageList: any = [];
-  required = false;
   @Input() comments: any;
   @Input() obj: any;
   @Input() url: any;
@@ -19,12 +17,6 @@ export class CommentModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
-    }
-    if (sessionStorage.$SOS$FORCELOGING == 'true') {
-      this.required = true;
-    }
   }
 
   onSubmit(): void {

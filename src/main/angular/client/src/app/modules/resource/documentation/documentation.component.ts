@@ -38,8 +38,6 @@ export class ImportModalComponent implements OnInit {
   @Input() nodes: any;
 
   uploader: FileUploader;
-  messageList: any;
-  required = false;
   submitted = false;
   hasBaseDropZoneOver: any;
   comments: any = {};
@@ -54,12 +52,6 @@ export class ImportModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
-    }
-    if (sessionStorage.$SOS$FORCELOGING == 'true') {
-      this.required = true;
-    }
 
     this.document.path = this.selectedPath;
     this.uploader.onBeforeUploadItem = (item: any) => {
@@ -124,8 +116,6 @@ export class ImportModalComponent implements OnInit {
 export class EditModalComponent implements OnInit {
   @Input() display: any;
   @Input() document: any;
-  messageList: any;
-  required = false;
   submitted = false;
   comments: any = {};
 
@@ -134,12 +124,6 @@ export class EditModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
-    if (sessionStorage.comments) {
-      this.messageList = JSON.parse(sessionStorage.comments);
-    }
-    if (sessionStorage.$SOS$FORCELOGING == 'true') {
-      this.required = true;
-    }
   }
 
   onSubmit(): void {
