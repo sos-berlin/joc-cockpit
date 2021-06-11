@@ -412,7 +412,11 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'AuditLogChanged') {
-          this.load(null);
+          if (this.searchFilter && !isEmpty(this.searchFilter)) {
+            this.search(true);
+          } else {
+            this.load(null);
+          }
           break;
         }
       }
@@ -699,8 +703,10 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.load(null);
   }
 
-  search(): void {
-    this.isLoaded = false;
+  search(flag = false): void {
+    if(!flag) {
+      this.isLoaded = false;
+    }
     let filter: any = {
       controllerId: this.adtLog.current == true ? this.schedulerIds.selected : '',
       limit: parseInt(this.preferences.maxAuditLogRecords, 10),

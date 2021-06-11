@@ -701,10 +701,10 @@ export class FilterModalComponent implements OnInit {
       };
     } else {
       this.filter.radio = 'planned';
-      if(this.filter.to && !this.filter.to1){
+      if (this.filter.to && !this.filter.to1) {
         this.filter.to1 = this.filter.to;
       }
-      if(this.filter.from && !this.filter.from1){
+      if (this.filter.from && !this.filter.from1) {
         this.filter.from1 = this.filter.from;
       }
       this.name = clone(this.filter.name);
@@ -779,7 +779,9 @@ export class SearchComponent implements OnInit {
       types: ['SCHEDULE']
     }).subscribe(res => {
       this.nodes = this.coreService.prepareTree(res, false);
-
+      if (this.nodes.length > 0) {
+        this.nodes[0].expanded = true;
+      }
     });
     this.coreService.post('tree', {
       controllerId: this.schedulerIds.selected,
@@ -787,6 +789,43 @@ export class SearchComponent implements OnInit {
       types: ['WORKFLOW']
     }).subscribe((res) => {
       this.workflowTree = this.coreService.prepareTree(res, false);
+      if (this.filter.workflowPaths && this.filter.workflowPaths.length > 0) {
+        const paths = [];
+        this.filter.workflowPaths.forEach((path) => {
+          const path1 = path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1);
+          if (paths.indexOf(path1) === -1) {
+            paths.push(path1);
+          }
+        });
+        this.checkPaths(paths);
+      }
+    });
+  }
+
+  private checkPaths(paths) {
+    const self = this;
+    paths.forEach((path) => {
+      function traverseTree1(data) {
+        for (let i in data.children) {
+          if (data.children[i].path === path) {
+            self.loadWorkflowObjects(data.children[i], {
+              path,
+              objectTypes: ['WORKFLOW']
+            });
+            break;
+          }
+          if (data.children[i].children && data.children[i].children.length > 0) {
+            traverseTree1(data.children[i]);
+          }
+        }
+      }
+      if (this.workflowTree[0].path === path) {
+        self.loadWorkflowObjects(this.workflowTree[0], {
+          path,
+          objectTypes: ['WORKFLOW']
+        });
+      }
+      traverseTree1(this.workflowTree[0]);
     });
   }
 
@@ -824,32 +863,35 @@ export class SearchComponent implements OnInit {
         flag = false;
       }
       if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        const obj: any = {
+        this.loadWorkflowObjects(node.origin, {
           path: node.key,
           objectTypes: ['WORKFLOW']
-        };
-        this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
-          let data = res.workflows;
-          for (let i = 0; i < data.length; i++) {
-            const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-            data[i].title = _path;
-            data[i].path = _path;
-            data[i].type = 'WORKFLOW';
-            data[i].key = _path;
-            data[i].isLeaf = true;
-          }
-          if (node.origin.children && node.origin.children.length > 0) {
-            data = data.concat(node.origin.children);
-          }
-          if (node.origin.isLeaf) {
-            node.origin.expanded = true;
-          }
-          node.origin.isLeaf = false;
-          node.origin.children = data;
-          this.workflowTree = [...this.workflowTree];
         });
       }
     }
+  }
+
+  private loadWorkflowObjects(node, obj): void{
+    this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
+      let data = res.workflows;
+      for (let i = 0; i < data.length; i++) {
+        const path = obj.path + (obj.path === '/' ? '' : '/') + data[i].name;
+        data[i].title = path;
+        data[i].path = path;
+        data[i].type = 'WORKFLOW';
+        data[i].key = path;
+        data[i].isLeaf = true;
+      }
+      if (node.children && node.children.length > 0) {
+        data = data.concat(node.children);
+      }
+      if (node.isLeaf) {
+        node.expanded = true;
+      }
+      node.isLeaf = false;
+      node.children = data;
+      this.workflowTree = [...this.workflowTree];
+    });
   }
 
   checkFilterName(): void {
@@ -876,7 +918,7 @@ export class SearchComponent implements OnInit {
     };
 
     const obj: any = {};
-    obj.workflow = result.workflow;
+    obj.workflowPaths = result.workflowPaths;
     obj.folders = result.folders;
     obj.schedules = result.schedules;
     obj.state = result.state;
@@ -1011,12 +1053,15 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   loadOrderPlan(): void {
+    if (this.searchFilter && !isEmpty(this.searchFilter)) {
+      this.search();
+      return;
+    }
     const obj: any = {
       controllerId: this.schedulerIds.selected,
       filter: {}
     };
     if (this.selectedFiltered && this.selectedFiltered.name) {
-      console.log(this.selectedFiltered)
       this.selectedDate = new Date();
       $('#full-calendar').data('calendar').setSelectedDate(this.selectedDate);
       this.applySearchFilter(obj.filter, this.selectedFiltered);
@@ -1772,6 +1817,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   private updateList(): void {
     this.load(this.selectedDate);
+    this.loadOrderPlan();
   }
 
   private restCall(isKill, order, multiple, type): void {
