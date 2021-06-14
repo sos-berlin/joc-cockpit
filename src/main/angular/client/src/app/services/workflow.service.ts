@@ -897,7 +897,15 @@ export class WorkflowService {
           '<i class="fa fa-circle text-xs p-r-xs ' + color + '"></i>' + data.orderId
           + '</div>';
         if (data.scheduledFor) {
-          str = str + ' <span class="text-xs" >' + this.stringDatePipe.transform(data.scheduledFor) + '</span>';
+          if (!data.scheduledNever) {
+            str = str + ' <span class="text-xs" >' + this.stringDatePipe.transform(data.scheduledFor) + '</span>';
+          } else{
+            let never = '';
+            this.translate.get('common.label.never').subscribe(translatedValue => {
+              never = translatedValue;
+            });
+            str = str + ' <span class="text-xs text-l-c" >' + never + '</span>';
+          }
         }
         str = str + '</div>';
         return str;
@@ -1035,7 +1043,21 @@ export class WorkflowService {
           div = div + '<b class="p-l-sm">' + end + '</b> : ' + this.stringDatePipe.transform(data.cyclicOrder.lastStart) + '</br>';
           div = div + '<b class="p-l-sm">' + orders + '</b> : ' + data.cyclicOrder.count;
         } else {
-          div = div + '<b>' + scheduledFor + '</b> : ' + this.stringDatePipe.transform(data.scheduledFor);
+
+          if (data.scheduledFor) {
+            if (!data.scheduledNever) {
+              div = div + '<b>' + scheduledFor + '</b> : ' + this.stringDatePipe.transform(data.scheduledFor);
+            } else{
+              let never = '';
+              this.translate.get('common.label.never').subscribe(translatedValue => {
+                never = translatedValue;
+              });
+              if(never){
+                never = never.toLowerCase();
+              }
+              div = div + '<b>' + scheduledFor + '</b> : ' + never;
+            }
+          }
         }
         div = div + '</div>';
 

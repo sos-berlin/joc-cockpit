@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {isEmpty} from 'underscore';
 import {Subscription} from 'rxjs';
@@ -13,7 +13,7 @@ declare const $;
   templateUrl: './log2.component.html',
   styleUrls: ['./log2.component.css']
 })
-export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
+export class Log2Component implements OnInit, OnDestroy {
   preferences: any = {};
   loading = false;
   isLoading = false;
@@ -45,6 +45,9 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
   taskCount = 1;
   preferenceId: any;
   controllerId: string;
+  lastScrollTop = 0;
+  delta = 20;
+
   @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
 
   constructor(private route: ActivatedRoute, private authService: AuthService, public coreService: CoreService,
@@ -59,6 +62,15 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
   @HostListener('window:resize', ['$event'])
   onResize(): void {
     Log2Component.calculateHeight();
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onScroll(): void {
+    const nowScrollTop = $(window).scrollTop();
+    if (Math.abs(this.lastScrollTop - nowScrollTop) >= this.delta) {
+      this.scrolled = nowScrollTop <= this.lastScrollTop;
+      this.lastScrollTop = nowScrollTop;
+    }
   }
 
   ngOnInit(): void {
@@ -95,21 +107,10 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  ngAfterViewInit(): void {
-    if (!this.scrolled && this.dataBody.nativeElement) {
-      this.dataBody.nativeElement.scrollTop = this.dataBody.nativeElement.scrollHeight;
-      this.scrolled = true;
-    }
-  }
-
   scrollBottom(): void {
-    const pre = this.dataBody.nativeElement;
-    $('#pp').scroll(() => {
-      if (!this.scrolled) {
-        pre.scrollTop = pre.scrollHeight;
-      }
-      // updateScroll();
-    });
+    if (!this.scrolled) {
+      $(window).scrollTop(this.dataBody.nativeElement.scrollHeight);
+    }
   }
 
   ngOnDestroy(): void {
@@ -284,6 +285,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
           } else{
             this.finished = true;
           }
+          this.scrollBottom();
         }
       });
     }
@@ -305,6 +307,7 @@ export class Log2Component implements OnInit, OnDestroy, AfterViewInit {
             this.finished = true;
             this.showHideTask();
           }
+          this.scrollBottom();
         }
       });
     }

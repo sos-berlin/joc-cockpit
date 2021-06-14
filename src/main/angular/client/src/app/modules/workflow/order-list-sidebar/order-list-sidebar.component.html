@@ -43,10 +43,11 @@
           (nzCheckedChange)="onAllChecked($event)"
         ></th>
         <th class="menu"><span translate>common.label.action</span></th>
-        <th><span class="p-r-xs" translate>order.label.orderId</span></th>
-        <th><span class="p-r-xs" translate>order.label.state</span></th>
-        <th><span class="p-r-xs" translate>order.label.scheduledFor</span></th>
-        <th><span class="p-r-xs" translate>order.label.lastOutcome</span></th>
+        <th><span translate>order.label.orderId</span></th>
+        <th><span translate>order.label.position</span></th>
+        <th><span translate>order.label.state</span></th>
+        <th><span translate>order.label.scheduledFor</span></th>
+        <th><span translate>order.label.lastOutcome</span></th>
       </tr>
       </thead>
       <tbody (click)="$event.preventDefault()">
@@ -83,12 +84,15 @@
             </ng-template>
           </td>
           <td>
+            <span [innerHtml]="order.positionString"></span>
+          </td>
+          <td>
             <a class="label" *ngIf="order.state" [ngClass]="coreService.getColor(order.state.severity, 'bg')"
                [innerHtml]="order.state._text | translate"></a>
           </td>
           <td>
-            {{order.scheduledFor | stringToDate}}
-            <!--<span class="text-success p-l-xs text-xs" *ngIf="order.scheduledFor">({{order.scheduledFor | timeInString}})</span>-->
+            <span *ngIf="!order.scheduledNever">{{order.scheduledFor | stringToDate}}</span>
+            <span class="text-l-c" *ngIf="order.scheduledNever" translate>common.label.never</span>
           </td>
           <td>
               <span *ngIf="order.lastOutcome">

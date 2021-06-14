@@ -443,7 +443,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         if (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED') {
           this.object.isTerminate = false;
         }
-        if (order.state._text !== 'RUNNING' && order.state._text !== 'INPROGRESS' && order.state._text !== 'WAITING') {
+        if (order.state._text !== 'RUNNING' && order.state._text !== 'INPROGRESS' && order.state._text !== 'WAITING' && order.state._text !== 'PENDING') {
           this.object.isSuspend = false;
         }
         if (order.state._text === 'FINISHED' || order.state._text === 'CANCELLED') {

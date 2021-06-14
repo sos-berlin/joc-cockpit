@@ -62,7 +62,7 @@ export class OrderListSidebarComponent {
           if (item.state._text !== 'FINISHED' && item.state._text !== 'CANCELLED') {
             this.object.isTerminate = false;
           }
-          if (item.state._text !== 'RUNNING' && item.state._text !== 'INPROGRESS' && item.state._text !== 'WAITING') {
+          if (item.state._text !== 'RUNNING' && item.state._text !== 'INPROGRESS' && item.state._text !== 'WAITING' && item.state._text !== 'PENDING') {
             this.object.isSuspend = false;
           }
           if (item.state._text === 'FINISHED' || item.state._text === 'CANCELLED') {

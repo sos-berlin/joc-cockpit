@@ -1,4 +1,4 @@
-import {Component, HostListener, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, ViewChild, ElementRef} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {isEmpty} from 'underscore';
 import {Subscription} from 'rxjs';
@@ -12,7 +12,7 @@ declare const $;
   selector: 'app-log',
   templateUrl: './log.component.html'
 })
-export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
+export class LogComponent implements OnInit, OnDestroy {
   preferences: any = {};
   loading = false;
   isLoading = false;
@@ -44,6 +44,8 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
   taskCount = 1;
   preferenceId: any;
   controllerId: string;
+  lastScrollTop = 0;
+  delta = 20;
 
   @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
 
@@ -64,6 +66,16 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
   onResize(): void {
     LogComponent.calculateHeight();
   }
+
+  @HostListener('window:scroll', ['$event'])
+  onScroll(): void {
+    const nowScrollTop = $(window).scrollTop();
+    if (Math.abs(this.lastScrollTop - nowScrollTop) >= this.delta) {
+      this.scrolled = nowScrollTop <= this.lastScrollTop;
+      this.lastScrollTop = nowScrollTop;
+    }
+  }
+
 
   ngOnInit(): void {
     if (sessionStorage.preferences) {
@@ -99,21 +111,10 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  ngAfterViewInit(): void {
-    if (!this.scrolled && this.dataBody.nativeElement) {
-      this.dataBody.nativeElement.scrollTop = this.dataBody.nativeElement.scrollHeight;
-      this.scrolled = true;
-    }
-  }
-
   scrollBottom(): void {
-    const pre = this.dataBody.nativeElement;
-    $('#pp').scroll(() => {
-      if (!this.scrolled) {
-        pre.scrollTop = pre.scrollHeight;
-      }
-      // updateScroll();
-    });
+    if (!this.scrolled) {
+      $(window).scrollTop(this.dataBody.nativeElement.scrollHeight);
+    }
   }
 
   ngOnDestroy(): void {
@@ -290,6 +291,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
           } else{
             this.finished = true;
           }
+          this.scrollBottom();
         }
       });
     }
@@ -299,7 +301,7 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
     if (obj.eventId) {
       this.coreService.post('order/log/running', obj).subscribe((res: any) => {
         if (res) {
-          if(res.logEvents) {
+          if (res.logEvents) {
             this.jsonToString(res);
           }
           if (!res.complete && !this.isCancel) {
@@ -307,10 +309,11 @@ export class LogComponent implements OnInit, OnDestroy, AfterViewInit {
               obj.eventId = res.eventId;
               this.runningOrderLog(obj);
             }
-          } else{
+          } else {
             this.finished = true;
             this.showHideTask();
           }
+          this.scrollBottom();
         }
       });
     }

@@ -179,7 +179,7 @@
                         </div>
                         <div class="text-sm text-left text-muted p-t-xs">
                           <span translate>order.label.position </span>:
-                          <span class="text-black-dk" *ngIf="order.position && order.position.length>0" [innerHtml]="order.position | json | highlight : orderFilters.searchText"></span>
+                          <span class="text-black-dk" [innerHtml]="order.positionString | highlight : orderFilters.searchText"></span>
                         </div>
                         <div class="text-sm text-left text-muted p-t-xs block-ellipsis" style="width: 100%">
                           <span translate>order.label.workflow </span>:
@@ -187,7 +187,8 @@
                         </div>
                         <div class="text-sm text-left text-muted p-t-xs">
                           <span translate>order.label.scheduledFor </span>:
-                          <span class="text-black-dk">{{order.scheduledFor | stringToDate}}</span>
+                          <span class="text-black-dk" *ngIf="!order.scheduledNever">{{order.scheduledFor | stringToDate}}</span>
+                          <span class="text-black-dk text-l-c" *ngIf="order.scheduledNever" translate>common.label.never</span>
                         </div>
                       </div>
                     </div>
@@ -312,17 +313,15 @@
                         </span>
                       </td>
                       <td>
-                        <span *ngIf="order.position && order.position.length>0">
-                          <span [innerHtml]="order.position | json | highlight : orderFilters.searchText"></span>
-                        </span>
+                        <span [innerHtml]="order.positionString | highlight : orderFilters.searchText"></span>
                       </td>
                       <td>
                         <a class="label" *ngIf="order.state" [ngClass]="coreService.getColor(order.state.severity, 'bg')"
                            [innerHtml]="order.state._text | translate | highlight : orderFilters.searchText"></a>
                       </td>
                       <td>
-                        {{order.scheduledFor | stringToDate}}
-                        <!--<span class="text-success p-l-xs text-xs" *ngIf="order.scheduledFor">({{order.scheduledFor | timeInString}})</span>-->
+                        <span *ngIf="!order.scheduledNever">{{order.scheduledFor | stringToDate}}</span>
+                        <span class="text-l-c" *ngIf="order.scheduledNever" translate>common.label.never</span>
                       </td>
                     </tr>
                     <tr *ngIf="order.show">

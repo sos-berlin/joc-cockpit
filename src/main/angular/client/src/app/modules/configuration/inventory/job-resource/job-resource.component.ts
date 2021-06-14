@@ -310,7 +310,9 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
 
   drop(event: CdkDragDrop<string[]>, list): void {
     moveItemInArray(list, event.previousIndex, event.currentIndex);
-    this.saveJSON();
+    if (event.previousIndex !== event.currentIndex) {
+      this.saveJSON();
+    }
   }
 
   onAllChecked(type: string, isChecked: boolean): void {

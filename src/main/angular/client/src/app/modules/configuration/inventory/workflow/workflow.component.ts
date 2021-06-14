@@ -217,7 +217,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   drop(event: CdkDragDrop<string[]>, list: Array<any>): void {
     moveItemInArray(list, event.previousIndex, event.currentIndex);
-    this.saveToHistory();
+    if (event.previousIndex !== event.currentIndex) {
+      this.saveToHistory();
+    }
   }
 
   onAllChecked(obj: any, type: string, isChecked: boolean): void {
@@ -1967,7 +1969,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   drop(event: CdkDragDrop<string[]>): void {
     moveItemInArray(this.variableDeclarations.parameters, event.previousIndex, event.currentIndex);
-    this.updateOtherProperties('variable');
+    if (event.previousIndex !== event.currentIndex) {
+      this.updateOtherProperties('variable');
+    }
   }
 
   removeVariable(index): void {
