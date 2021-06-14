@@ -178,7 +178,7 @@ export class WorkflowService {
       }
       if (type === 'Job') {
         if (!value.executable || (!value.executable.className && value.executable.TYPE === 'InternalExecutable')
-          || (!value.executable.script && value.executable.TYPE === 'ScriptExecutable') || !value.agentName) {
+          || (!value.executable.script && value.executable.TYPE === 'ShellScriptExecutable') || !value.agentName) {
           return false;
         }
       }
@@ -223,22 +223,22 @@ export class WorkflowService {
           }
         }
       }
-      if (value.returnCodeMeaning) {
-        if (value.returnCodeMeaning.success && typeof value.returnCodeMeaning.success === 'string') {
-          value.returnCodeMeaning.success = value.returnCodeMeaning.success.split(',').map(Number);
-          delete value.returnCodeMeaning.failure;
-        } else if (value.returnCodeMeaning.failure && typeof value.returnCodeMeaning.failure === 'string') {
-          value.returnCodeMeaning.failure = value.returnCodeMeaning.failure.split(',').map(Number);
-          delete value.returnCodeMeaning.success;
+      if (value.executable && value.executable.returnCodeMeaning) {
+        if (value.executable.returnCodeMeaning.success && typeof value.executable.returnCodeMeaning.success === 'string') {
+          value.executable.returnCodeMeaning.success = value.executable.returnCodeMeaning.success.split(',').map(Number);
+          delete value.executable.returnCodeMeaning.failure;
+        } else if (value.executable.returnCodeMeaning.failure && typeof value.executable.returnCodeMeaning.failure === 'string') {
+          value.executable.returnCodeMeaning.failure = value.executable.returnCodeMeaning.failure.split(',').map(Number);
+          delete value.executable.returnCodeMeaning.success;
         }
-        if (value.returnCodeMeaning.failure === '') {
-          delete value.returnCodeMeaning.failure;
+        if (value.executable.returnCodeMeaning.failure === '') {
+          delete value.executable.returnCodeMeaning.failure;
         }
-        if (value.returnCodeMeaning.success === '' && !value.returnCodeMeaning.failure) {
-          value.returnCodeMeaning = {};
+        if (value.executable.TYPE !== 'ShellScriptExecutable' || (value.executable.returnCodeMeaning.success === '' && !value.executable.returnCodeMeaning.failure)) {
+          value.executable.returnCodeMeaning = {};
         }
-        if (isEmpty(value.returnCodeMeaning)) {
-          delete value.returnCodeMeaning;
+        if (isEmpty(value.executable.returnCodeMeaning)) {
+          delete value.executable.returnCodeMeaning;
         }
       }
       if (value.returnCode && value.returnCode != 'null' && value.returnCode != 'undefined' && typeof value.returnCode === 'string') {

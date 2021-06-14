@@ -1547,7 +1547,7 @@
     "label.example": "Beispiel",
     "label.script": "Skript",
     "label.className": "Name der Klasse",
-    "label.taskLimit": "Parallelität",
+    "label.parallelism": "Parallelität",
     "label.importWorkflow": "Arbeitsablauf hochladen",
     "label.addNewOrderTo": "Auftrag hinzufügen zu",
     "label.joinVariables": "Variablen zusammenfügen",

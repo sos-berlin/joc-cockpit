@@ -120,7 +120,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   loadOrderHistory(): void {
     let obj = {
       controllerId: this.schedulerIds.selected,
-      orders: [{workflowPath: this.workflow.path}],
+      orders: [{workflowPath: this.workflow.name}],
       limit: this.preferences.maxHistoryPerOrder
     };
     this.coreService.post('orders/history', obj).subscribe((res: any) => {
@@ -197,7 +197,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   loadTaskHistory(): void {
     let obj = {
       controllerId: this.schedulerIds.selected,
-      jobs: [{workflowPath: this.workflow.path}],
+      jobs: [{workflowPath: this.workflow.name}],
       limit: this.preferences.maxHistoryPerTask
     };
     this.coreService.post('tasks/history', obj).subscribe((res: any) => {
@@ -209,7 +209,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     const obj = {
       controllerId: this.schedulerIds.selected,
       objectTypes: ['WORKFLOW'],
-      objectName: this.workflow.path,
+      objectName: this.workflow.name,
       limit: this.preferences.maxAuditLogPerObject
     };
     this.coreService.post('audit_log', obj).subscribe((res: any) => {

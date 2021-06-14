@@ -1547,7 +1547,7 @@
     "label.example": "例",
     "label.script": "スクリプト",
     "label.className": "クラス名",
-    "label.taskLimit": "最大タスク数",
+    "label.parallelism": "最大タスク数",
     "label.importWorkflow": "ワークフローインポート",
     "label.addNewOrderTo": "新規オーダー追加",
     "label.joinVariables": "ジョイン変数",

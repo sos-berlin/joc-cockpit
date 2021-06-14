@@ -1547,7 +1547,7 @@
     "label.example": "Exemple",
     "label.script": "Script",
     "label.className": "Name de la Classe",
-    "label.taskLimit": "Limite de Tâche",
+    "label.parallelism": "Limite de Tâche",
     "label.importWorkflow": "Charger le Workflow",
     "label.addNewOrderTo": "Ajouter un Ordre à",
     "label.joinVariables": "Variables de Jointure",

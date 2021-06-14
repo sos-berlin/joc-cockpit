@@ -2729,7 +2729,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           if (this.tree && this.tree.length > 0) {
             this.initTree(path, null);
           }
-        }, 800);
+        }, 1000);
       }
     });
   }
@@ -2749,7 +2749,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(path => {
       if (path) {
-        this.initTree(path, null);
+        setTimeout(() => {
+          if (this.tree && this.tree.length > 0) {
+            this.initTree(path, null);
+          }
+        }, 1000);
       }
     });
   }

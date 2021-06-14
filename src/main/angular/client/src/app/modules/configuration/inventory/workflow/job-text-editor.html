@@ -131,23 +131,23 @@
           </nz-tree-select>
         </div>
       </div>
-      <div class="form-group row">
+      <div class="form-group row" *ngIf="selectedNode.job.executable.TYPE === 'ShellScriptExecutable'">
         <div class="col-md-4 col-lg-3" translate>workflow.label.returnCode</div>
         <div class="col-md-8 col-lg-9">
           <nz-radio-group [(ngModel)]="returnCodes.on" (ngModelChange)="saveToHistory();">
-            <label nz-radio nzValue="success" (click)="selectedNode.job.returnCodeMeaning.success = selectedNode.job.returnCodeMeaning.failure;selectedNode.job.returnCodeMeaning.failure = ''"><span translate>workflow.label.onSuccess</span></label>
-            <label nz-radio nzValue="failure" (click)="selectedNode.job.returnCodeMeaning.failure = selectedNode.job.returnCodeMeaning.success;selectedNode.job.returnCodeMeaning.success = ''"><span translate>workflow.label.onFailure</span></label>
+            <label nz-radio nzValue="success" (click)="selectedNode.job.executable.returnCodeMeaning.success = selectedNode.job.executable.returnCodeMeaning.failure;selectedNode.job.executable.returnCodeMeaning.failure = ''"><span translate>workflow.label.onSuccess</span></label>
+            <label nz-radio nzValue="failure" (click)="selectedNode.job.executable.returnCodeMeaning.failure = selectedNode.job.executable.returnCodeMeaning.success;selectedNode.job.executable.returnCodeMeaning.success = ''"><span translate>workflow.label.onFailure</span></label>
           </nz-radio-group>
         </div>
       </div>
-      <div class="form-group row" *ngIf="returnCodes.on === 'success'">
+      <div class="form-group row" *ngIf="returnCodes.on === 'success' && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'">
         <label class="col-md-4 col-lg-3 form-control-label"></label>
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : ((success.dirty || success.touched) && success.invalid)}">
           <label class="w-full">
             <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex (blur)="saveToHistory();"
                    placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
-                   name="success" #success="ngModel" [(ngModel)]="selectedNode.job.returnCodeMeaning.success">
+                   name="success" #success="ngModel" [(ngModel)]="selectedNode.job.executable.returnCodeMeaning.success">
           </label>
           <div *ngIf="success.invalid && (success.dirty || success.touched)"
                class="text-danger help-block">
@@ -155,14 +155,14 @@
           </div>
         </div>
       </div>
-      <div class="form-group row" *ngIf="returnCodes.on === 'failure'">
+      <div class="form-group row" *ngIf="returnCodes.on === 'failure' && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'">
         <label class="col-md-4 col-lg-3 form-control-label"></label>
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : ((failure.dirty || failure.touched) && failure.invalid)}">
           <label class="w-full">
             <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex (blur)="saveToHistory();"
                    placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
-                   #failure="ngModel" name="failure" [(ngModel)]="selectedNode.job.returnCodeMeaning.failure">
+                   #failure="ngModel" name="failure" [(ngModel)]="selectedNode.job.executable.returnCodeMeaning.failure">
           </label>
           <div *ngIf="failure.invalid && (failure.dirty || failure.touched)"
                class="text-danger help-block">
@@ -174,7 +174,7 @@
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.jobClass</label>
         <div class="col-md-8 col-lg-9">
           <nz-select name="executableType" [(ngModel)]="selectedNode.job.executable.TYPE" (ngModelChange)="changeType($event)">
-            <nz-option [nzLabel]="'workflow.label.shell' | translate" [nzValue]="'ScriptExecutable'"></nz-option>
+            <nz-option [nzLabel]="'workflow.label.shell' | translate" [nzValue]="'ShellScriptExecutable'"></nz-option>
             <nz-option [nzLabel]="'workflow.label.jitl' | translate" [nzValue]="'InternalExecutable'"></nz-option>
           </nz-select>
         </div>
@@ -216,7 +216,7 @@
                 </div>
               </div>
             </nz-tab>
-            <nz-tab [nzTitle]="'workflow.label.arguments' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ScriptExecutable' && selectedNode.job.executable.v1Compatible">
+            <nz-tab [nzTitle]="'workflow.label.arguments' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && selectedNode.job.executable.v1Compatible">
               <div class="text-right m-t-n-6">
                 <button type="button" class="btn btn-grey btn-sm" [disabled]="object.setOfCheckedDefaultArgu.size === 0"
                         nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('defaultArguments')" translate>
@@ -281,7 +281,7 @@
                 </div>
               </div>
             </nz-tab>
-            <nz-tab [nzTitle]="'workflow.label.environmentVariables' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ScriptExecutable'">
+            <nz-tab [nzTitle]="'workflow.label.environmentVariables' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'">
               <div class="text-right m-t-n-6">
                 <button type="button" class="btn btn-grey btn-sm" [disabled]="object.setOfCheckedEnv.size === 0"
                         nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('env')" translate>
@@ -495,12 +495,12 @@
   <nz-tab [nzTitle]="'workflow.tab.jobOptions' | translate">
     <div class="job-property-editor" *ngIf="index === 1">
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.taskLimit</label>
-        <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((taskLimit.dirty || taskLimit.touched) && taskLimit.invalid)}">
-          <nz-input-number [nzMin]="0" [appAutofocus]="true" [nzStep]="1" required name="taskLimit" #taskLimit="ngModel" [(ngModel)]="selectedNode.job.taskLimit"></nz-input-number>
-          <div *ngIf="taskLimit.invalid && (taskLimit.dirty || taskLimit.touched)"
+        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.parallelism</label>
+        <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((parallelism.dirty || parallelism.touched) && parallelism.invalid)}">
+          <nz-input-number [nzMin]="0" [appAutofocus]="true" [nzStep]="1" required name="parallelism" #parallelism="ngModel" [(ngModel)]="selectedNode.job.parallelism"></nz-input-number>
+          <div *ngIf="parallelism.invalid && (parallelism.dirty || parallelism.touched)"
                class="text-danger help-block">
-            <div *ngIf="taskLimit.errors.required">
+            <div *ngIf="parallelism.errors.required">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
@@ -542,7 +542,7 @@
           </label>
         </div>
       </div>
-      <div class="form-group row" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ScriptExecutable'">
+      <div class="form-group row" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.compatibleMode</label>
         <div class="col-md-8 col-lg-9">
           <nz-select name="v1Compatible" nzAllowClear [(ngModel)]="selectedNode.job.executable.v1Compatible" (ngModelChange)="saveToHistory();">
@@ -571,7 +571,7 @@
           </nz-select>
         </div>
       </div>
-      <div class="form-group row" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ScriptExecutable'">
+      <div class="form-group row" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.credentialKey</label>
         <div class="col-md-8 col-lg-9">
           <label class="w-full">
@@ -580,7 +580,7 @@
           </label>
         </div>
       </div>
-      <div class="form-group row" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ScriptExecutable'">
+      <div class="form-group row" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'">
         <label class="col-md-4 col-lg-3 block-ellipsis-job" [nz-tooltip]="'workflow.label.loadUserProfile' | translate" translate>workflow.label.loadUserProfile</label>
         <div class="col-md-8 col-lg-9">
           <label nz-checkbox [(ngModel)]="selectedNode.job.executable.login.withUserProfile" name="loadUserProfile"></label>

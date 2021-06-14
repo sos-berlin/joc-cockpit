@@ -75,7 +75,7 @@ export class ImportModalComponent implements OnInit {
 
     this.uploader.onCompleteItem = (fileItem: any, response, status, headers) => {
       if (status === 200) {
-        this.activeModal.close('success');
+        this.activeModal.close(this.document.path);
       }
     };
 
@@ -396,7 +396,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       }
     }
     if (pathArr.length > 0) {
-      console.log('>>>>>', pathArr)
+      this.loadDocument();
     }
   }
 
@@ -439,7 +439,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   receiveAction($event): void {
-    this.selectedPath = $event.key;
+    //this.selectedPath = $event.key;
     this.getDocumentations($event, $event.action !== 'NODE');
   }
 
@@ -584,8 +584,9 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       nzFooter: null,
       nzClosable: false
     });
-    modal.afterClose.subscribe(res => {
-      if (res) {
+    modal.afterClose.subscribe(path => {
+      if (path) {
+        this.selectedPath = path;
         this.init();
       }
     });

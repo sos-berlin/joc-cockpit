@@ -148,7 +148,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   changeType(type): void {
-    if (type === 'ScriptExecutable') {
+    if (type === 'ShellScriptExecutable') {
       this.reloadScript();
     }
     this.saveToHistory();
@@ -528,7 +528,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     if (this.error && this.selectedNode && this.selectedNode.obj) {
       this.obj.label = !this.selectedNode.obj.label;
       this.obj.agent = !this.selectedNode.job.agentName;
-      this.obj.script = !this.selectedNode.job.executable.script && this.selectedNode.job.executable.TYPE === 'ScriptExecutable';
+      this.obj.script = !this.selectedNode.job.executable.script && this.selectedNode.job.executable.TYPE === 'ShellScriptExecutable';
       this.obj.className = !this.selectedNode.job.executable.className && this.selectedNode.job.executable.TYPE === 'InternalExecutable';
     } else {
       this.obj = {};
@@ -846,30 +846,33 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private setJobProperties(): void {
-    if (!this.selectedNode.job.taskLimit) {
-      this.selectedNode.job.taskLimit = 1;
+    if (!this.selectedNode.job.parallelism) {
+      this.selectedNode.job.parallelism = 1;
     }
     if (!this.selectedNode.job.executable || !this.selectedNode.job.executable.TYPE) {
       this.selectedNode.job.executable = {
-        TYPE: 'ScriptExecutable',
+        TYPE: 'ShellScriptExecutable',
         script: '',
         login: {},
         env: []
       };
     }
+    if (this.selectedNode.job.executable.TYPE === 'ScriptExecutable'){
+      this.selectedNode.job.executable.TYPE = 'ShellScriptExecutable';
+    }
 
-    if (!this.selectedNode.job.returnCodeMeaning) {
-      this.selectedNode.job.returnCodeMeaning = {
+    if (!this.selectedNode.job.executable.returnCodeMeaning) {
+      this.selectedNode.job.executable.returnCodeMeaning = {
         success: 0
       };
     } else {
-      if (this.selectedNode.job.returnCodeMeaning.success) {
-        this.selectedNode.job.returnCodeMeaning.success = this.selectedNode.job.returnCodeMeaning.success.toString();
-      } else if (this.selectedNode.job.returnCodeMeaning.failure) {
-        this.selectedNode.job.returnCodeMeaning.failure = this.selectedNode.job.returnCodeMeaning.failure.toString();
+      if (this.selectedNode.job.executable.returnCodeMeaning.success) {
+        this.selectedNode.job.executable.returnCodeMeaning.success = this.selectedNode.job.executable.returnCodeMeaning.success.toString();
+      } else if (this.selectedNode.job.executable.returnCodeMeaning.failure) {
+        this.selectedNode.job.executable.returnCodeMeaning.failure = this.selectedNode.job.executable.returnCodeMeaning.failure.toString();
       }
     }
-    if (this.selectedNode.job.returnCodeMeaning.failure) {
+    if (this.selectedNode.job.executable.returnCodeMeaning.failure) {
       this.returnCodes.on = 'failure';
     } else {
       this.returnCodes.on = 'success';
@@ -971,7 +974,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     obj = JSON.parse(obj);
     this.selectedNode.obj = JSON.parse(obj.obj);
     const x = JSON.parse(obj.job);
-    if (this.selectedNode.job.executable.TYPE !== x.executable.TYPE && x.executable.TYPE === 'ScriptExecutable') {
+    if (this.selectedNode.job.executable.TYPE !== x.executable.TYPE && x.executable.TYPE === 'ShellScriptExecutable') {
       this.reloadScript();
     }
     this.selectedNode.job = x;
@@ -1240,10 +1243,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (result.jobs && !isEmpty(result.jobs)) {
       for (const x in result.jobs) {
         const v: any = result.jobs[x];
+        if (v.executable.TYPE === 'ScriptExecutable') {
+          result.jobs[x].executable.TYPE = 'ShellScriptExecutable';
+        }
         result.jobs[x] = {
           agentName: v.agentName,
           executable: v.executable,
-          returnCodeMeaning: v.returnCodeMeaning,
           defaultArguments: v.defaultArguments,
           jobResourceNames: v.jobResourceNames,
           title: v.title,
@@ -1253,7 +1258,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           graceTimeout: v.graceTimeout,
           warnIfShorter: v.warnIfShorter,
           warnIfLonger: v.warnIfLonger,
-          taskLimit: v.taskLimit
+          parallelism: v.parallelism || v.taskLimit
         };
       }
     }
@@ -5546,19 +5551,19 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               if (job.executable && job.executable.env) {
                 self.coreService.convertArrayToObject(job.executable, 'env', true);
               }
-              if (job.returnCodeMeaning && !isEmpty(job.returnCodeMeaning)) {
-                if (job.returnCodeMeaning.success && typeof job.returnCodeMeaning.success == 'string') {
-                  job.returnCodeMeaning.success = job.returnCodeMeaning.success.split(',').map(Number);
-                  delete job.returnCodeMeaning.failure;
-                } else if (job.returnCodeMeaning.failure && typeof job.returnCodeMeaning.failure == 'string') {
-                  job.returnCodeMeaning.failure = job.returnCodeMeaning.failure.split(',').map(Number);
-                  delete job.returnCodeMeaning.success;
+              if (job.executable.returnCodeMeaning && !isEmpty(job.executable.returnCodeMeaning)) {
+                if (job.executable.returnCodeMeaning.success && typeof job.executable.returnCodeMeaning.success == 'string') {
+                  job.executable.returnCodeMeaning.success = job.executable.returnCodeMeaning.success.split(',').map(Number);
+                  delete job.executable.returnCodeMeaning.failure;
+                } else if (job.executable.returnCodeMeaning.failure && typeof job.executable.returnCodeMeaning.failure == 'string') {
+                  job.executable.returnCodeMeaning.failure = job.executable.returnCodeMeaning.failure.split(',').map(Number);
+                  delete job.executable.returnCodeMeaning.success;
                 }
-                if (job.returnCodeMeaning.failure === '') {
-                  delete job.returnCodeMeaning.failure;
+                if (job.executable.returnCodeMeaning.failure === '') {
+                  delete job.executable.returnCodeMeaning.failure;
                 }
-                if (job.returnCodeMeaning.success === '' && !job.returnCodeMeaning.failure) {
-                  job.returnCodeMeaning = {};
+                if (job.executable.returnCodeMeaning.success === '' && !job.executable.returnCodeMeaning.failure) {
+                  job.executable.returnCodeMeaning = {};
                 }
               }
               if (job.executable && isEmpty(job.executable.login)) {
@@ -5576,9 +5581,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               if (job.executable && (!job.executable.env || typeof job.executable.env === 'string' || job.executable.env.length === 0)) {
                 delete job.executable.env;
               }
-              if (job.returnCodeMeaning) {
-                if (job.returnCodeMeaning && job.returnCodeMeaning.success == '0') {
-                  delete job.returnCodeMeaning;
+              if (job.executable.returnCodeMeaning) {
+                if (job.executable.returnCodeMeaning && job.executable.returnCodeMeaning.success == '0') {
+                  delete job.executable.returnCodeMeaning;
                 }
               }
               if (!isEqual(JSON.stringify(_job), JSON.stringify(job))) {
@@ -7014,32 +7019,32 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (isEmpty(job.executable.login)) {
       delete job.executable.login;
     }
-    if (job.returnCodeMeaning) {
-      if (job.returnCodeMeaning && job.returnCodeMeaning.success == '0') {
-        delete job.returnCodeMeaning;
+    if (job.executable.returnCodeMeaning) {
+      if (job.executable.returnCodeMeaning && job.executable.returnCodeMeaning.success == '0') {
+        delete job.executable.returnCodeMeaning;
       } else {
-        if (job.returnCodeMeaning.succes && typeof job.returnCodeMeaning.success == 'string') {
-          job.returnCodeMeaning.success = job.returnCodeMeaning.success.split(',').map(Number);
-          delete job.returnCodeMeaning.failure;
-        } else if (job.returnCodeMeaning.failure && typeof job.returnCodeMeaning.failure == 'string') {
-          job.returnCodeMeaning.failure = job.returnCodeMeaning.failure.split(',').map(Number);
-          delete job.returnCodeMeaning.success;
-        } else if (job.returnCodeMeaning.failure == 0) {
-          job.returnCodeMeaning.failure = [0];
-          delete job.returnCodeMeaning.success;
+        if (job.executable.returnCodeMeaning.succes && typeof job.executable.returnCodeMeaning.success == 'string') {
+          job.executable.returnCodeMeaning.success = job.executable.returnCodeMeaning.success.split(',').map(Number);
+          delete job.executable.returnCodeMeaning.failure;
+        } else if (job.executable.returnCodeMeaning.failure && typeof job.executable.returnCodeMeaning.failure == 'string') {
+          job.executable.returnCodeMeaning.failure = job.executable.returnCodeMeaning.failure.split(',').map(Number);
+          delete job.executable.returnCodeMeaning.success;
+        } else if (job.executable.returnCodeMeaning.failure == 0) {
+          job.executable.returnCodeMeaning.failure = [0];
+          delete job.executable.returnCodeMeaning.success;
         }
       }
     }
 
     if (!job.executable.v1Compatible) {
-      if (job.executable.TYPE === 'ScriptExecutable') {
+      if (job.executable.TYPE === 'ShellScriptExecutable') {
         job.executable.v1Compatible = false;
       } else {
         delete job.executable.v1Compatible;
       }
     }
     if (job.defaultArguments) {
-      if (job.executable.v1Compatible && job.executable.TYPE === 'ScriptExecutable') {
+      if (job.executable.v1Compatible && job.executable.TYPE === 'ShellScriptExecutable') {
         this.coreService.convertArrayToObject(job, 'defaultArguments', true);
       } else {
         delete job.defaultArguments;
@@ -7069,12 +7074,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (job.executable.TYPE === 'InternalExecutable') {
       delete job.executable.script;
       delete job.executable.login;
-    } else if (job.executable.TYPE === 'ScriptExecutable') {
+    } else if (job.executable.TYPE === 'ShellScriptExecutable') {
       delete job.executable.className;
     }
 
     if (job.executable.env) {
-      if (job.executable.TYPE === 'ScriptExecutable') {
+      if (job.executable.TYPE === 'ShellScriptExecutable') {
         if (job.executable.env && isArray(job.executable.env)) {
           job.executable.env.filter((env) => {
             this.coreService.addSlashToString(env, 'value');
@@ -7086,8 +7091,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
     }
 
-    if (!job.taskLimit) {
-      job.taskLimit = 0;
+    if (!job.parallelism) {
+      job.parallelism = 0;
     }
     if (job.timeout1) {
       job.timeout = this.workflowService.convertStringToDuration(job.timeout1);
@@ -7107,9 +7112,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (this.jobs[i].name === job.jobName) {
         flag = false;
         delete job.jobName;
-        if (this.jobs[i].value.returnCodeMeaning) {
-          if (typeof this.jobs[i].value.returnCodeMeaning.success == 'string') {
-            this.jobs[i].value.returnCodeMeaning.success = this.jobs[i].value.returnCodeMeaning.success.split(',').map(Number);
+        if (this.jobs[i].value.executable.returnCodeMeaning) {
+          if(this.jobs[i].value.executable.TYPE === 'ShellScriptExecutable') {
+            if (typeof this.jobs[i].value.executable.returnCodeMeaning.success == 'string') {
+              this.jobs[i].value.executable.returnCodeMeaning.success = this.jobs[i].value.executable.returnCodeMeaning.success.split(',').map(Number);
+            }
+          } else{
+            delete this.jobs[i].value.executable.returnCodeMeaning;
           }
         }
         if (!isEqual(JSON.stringify(job), JSON.stringify(this.jobs[i].value))) {
@@ -7430,7 +7439,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             flag = self.workflowService.validateFields(this.jobs[n].value, 'Job');
             if (!flag) {
               checkErr = true;
-              if (this.jobs[n].value.executable.TYPE === 'ScriptExecutable' && !this.jobs[n].value.executable.script) {
+              if (this.jobs[n].value.executable.TYPE === 'ShellScriptExecutable' && !this.jobs[n].value.executable.script) {
                 this.invalidMsg = 'workflow.message.scriptIsMissing';
               } else if (this.jobs[n].value.executable.TYPE === 'InternalExecutable' && !this.jobs[n].value.executable.className) {
                 this.invalidMsg = 'workflow.message.classNameIsMissing';
@@ -7567,6 +7576,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   updateOtherProperties(type): void {
     let flag = false;
     if (type === 'title') {
+      if (!this.title) {
+        this.title = '';
+      }
+      if (!this.extraConfiguration.title) {
+        this.extraConfiguration.title = '';
+      }
       if (this.title !== this.extraConfiguration.title) {
         this.title = this.extraConfiguration.title;
         flag = true;
@@ -7579,6 +7594,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     } else if (type === 'variable') {
       const variableDeclarations = {parameters: []};
       variableDeclarations.parameters = this.variableDeclarations.parameters.filter((value) => {
+        if (value.value.type !== 'String') {
+          if (value.value.default === '' || value.value.default === "") {
+            delete value.value.default;
+          }
+        }
         return !!value.name;
       });
       variableDeclarations.parameters = this.coreService.keyValuePair(variableDeclarations.parameters);

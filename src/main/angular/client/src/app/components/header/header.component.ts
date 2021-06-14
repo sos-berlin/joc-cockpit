@@ -198,8 +198,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
           this.dataService.announceEvent(res);
         }
         if (!this.isLogout) {
-          this.eventLoading = false;
-          this.getEvents();
+          this.timeout = setTimeout(() => {
+            this.eventLoading = false;
+            this.getEvents();
+          }, 100);
         }
         this.switchScheduler = false;
       }, (err) => {

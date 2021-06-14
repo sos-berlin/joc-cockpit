@@ -1547,7 +1547,7 @@
     "label.example": "Example",
     "label.script": "Script",
     "label.className": "Class Name",
-    "label.taskLimit": "Parallelism",
+    "label.parallelism": "Parallelism",
     "label.importWorkflow": "Upload Workflow",
     "label.addNewOrderTo": "Add New Order to",
     "label.joinVariables": "Join Variables",

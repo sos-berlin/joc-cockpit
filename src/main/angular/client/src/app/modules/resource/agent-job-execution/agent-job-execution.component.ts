@@ -3,7 +3,6 @@ import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
-import * as moment from 'moment';
 import {SearchPipe} from '../../../pipes/core.pipe';
 import {TranslateService} from '@ngx-translate/core';
 import {ExcelService} from '../../../services/excel.service';
@@ -543,7 +542,6 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     };
     this.agentFilters.filter.date = '';
     filter = this.generateRequestObj(this.searchFilter, filter);
-    console.log(filter, this.searchFilter);
     this.coreService.post('agents/report', filter).subscribe((res: any) => {
       this.agentTasks = res.agents || [];
       this.searchInResult();
