@@ -224,7 +224,7 @@
   "common": {
     "label.loading": "Chargement",
     "label.now": "Maintenant",
-    "label.never": "Jamais",
+    "label.never": "Sans démarrage",
     "label.type": "Type",
     "label.time": "Date",
     "label.size": "Taille",
@@ -1141,7 +1141,7 @@
       "label.generateKey": "Générer la Clé",
       "label.setExpiryDate": "Définir la Date d'Expiration",
       "label.expire": "Expirer",
-      "label.neverExpire": "Expire Jamais",
+      "label.neverExpire": "Expire jamais",
       "label.noKeyPresent": "aucune clé présente",
       "message.noKeyFound": "Aucune clé n'est présente",
       "message.keyGeneratedSuccessfully": "La clé a été générée avec succès",

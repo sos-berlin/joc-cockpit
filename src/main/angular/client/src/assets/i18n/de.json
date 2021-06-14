@@ -224,7 +224,7 @@
   "common": {
     "label.loading": "Beim Laden",
     "label.now": "Jetzt",
-    "label.never": "Nie",
+    "label.never": "Ohne Startzeit",
     "label.type": "Typ",
     "label.time": "Zeit",
     "label.size": "Größe",
