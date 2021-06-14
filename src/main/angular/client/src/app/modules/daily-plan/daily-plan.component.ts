@@ -428,10 +428,10 @@ export class RemovePlanModalComponent implements OnInit {
     if (!obj.filter.dailyPlanDate && this.selectedDate && !this.submissionsDelete) {
       obj.filter.dailyPlanDate = this.coreService.getStringDate(this.selectedDate);
     } else if (this.dateRange && this.dateRange.length > 0) {
-      obj.filter.dateFrom = new Date(this.dateRange[0]);
-      obj.filter.dateTo = new Date(this.dateRange[1]);
+      obj.filter.dateFrom = this.coreService.getStringDate(this.dateRange[0]);
+      obj.filter.dateTo = this.coreService.getStringDate(this.dateRange[1]);
     } else if (this.submissionsDelete) {
-      obj.filter.dateFor = new Date(this.selectedDate);
+      obj.filter.dateFor = this.coreService.getStringDate(this.selectedDate);
     }
     this.remove(obj);
   }
@@ -457,9 +457,6 @@ export class RemovePlanModalComponent implements OnInit {
     if (this.dateRange && this.dateRange.length > 0 && !this.submissionsDelete) {
       this.removeRecursively(obj);
       return;
-    }
-    if (this.submissionsDelete) {
-      obj.timezone = this.preferences.zone;
     }
     this.coreService.post(this.submissionsDelete ? 'daily_plan/submissions/delete' : 'daily_plan/orders/delete', obj).subscribe((res) => {
       this.submitted = false;
@@ -1604,7 +1601,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       obj.late = true;
     }
     if (filter.state && filter.state.length > 0) {
-      obj.states = filter.state;
+      obj.states = filter.state.filter((state) => {
+        return state !== 'ALL';
+      });
     }
     if (filter.schedules && filter.schedules.length > 0) {
       obj.schedulePaths = filter.schedules;
@@ -1783,14 +1782,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.isLoaded = false;
     }
     const d = date || new Date();
-    const firstDay = new Date(d.getFullYear(), d.getMonth(), 0, 0, 0, 0);
+    const firstDay = new Date(d.getFullYear(), d.getMonth(), 1);
     const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 0);
     const obj: any = {
       controllerId: this.schedulerIds.selected,
       timeZone: this.preferences.zone,
       filter: {
-        dateFrom: firstDay,
-        dateTo: lastDay
+        dateFrom: this.coreService.getStringDate(firstDay),
+        dateTo: this.coreService.getStringDate(lastDay)
       }
     };
     this.coreService.post('daily_plan/submissions', obj).subscribe((result: any) => {
