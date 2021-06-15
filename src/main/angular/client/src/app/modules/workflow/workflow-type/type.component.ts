@@ -309,7 +309,7 @@ export class TypeComponent implements OnChanges {
   showConfiguration(instruction): void {
     if (instruction.TYPE === 'Job') {
       const job = this.jobs[instruction.jobName];
-      const data = job.executable.TYPE === 'ScriptExecutable' ? job.executable.script : job.executable.className;
+      const data = job.executable.TYPE === 'ShellScriptExecutable' ? job.executable.script : job.executable.className;
       if (job && job.executable) {
         this.modal.create({
           nzTitle: undefined,
@@ -318,7 +318,7 @@ export class TypeComponent implements OnChanges {
           nzComponentParams: {
             data,
             jobName: instruction.jobName,
-            isScript: job.executable.TYPE === 'ScriptExecutable'
+            isScript: job.executable.TYPE === 'ShellScriptExecutable'
           },
           nzFooter: null,
           nzClosable: false

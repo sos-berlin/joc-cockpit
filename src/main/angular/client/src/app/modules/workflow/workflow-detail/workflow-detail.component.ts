@@ -1027,7 +1027,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   showConfiguration(jobName): void {
     const job = this.workflow.jobs[jobName];
-    const data = job.executable.TYPE === 'ScriptExecutable' ? job.executable.script : job.executable.className;
+    const data = job.executable.TYPE === 'ShellScriptExecutable' ? job.executable.script : job.executable.className;
     if (job && job.executable) {
       this.modal.create({
         nzTitle: undefined,
@@ -1036,7 +1036,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         nzComponentParams: {
           data,
           jobName,
-          isScript: job.executable.TYPE === 'ScriptExecutable'
+          isScript: job.executable.TYPE === 'ShellScriptExecutable'
         },
         nzFooter: null,
         nzClosable: false
