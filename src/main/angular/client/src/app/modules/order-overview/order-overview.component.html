@@ -1,4 +1,4 @@
-<div class="white box-shadow sub-header">
+<div class="white box-shadow sub-header" *ngIf="permission.currentController">
   <div class="row">
     <div class="col-md-12">
       <div class="padding">
@@ -194,11 +194,11 @@
                     </div>
                     <div class="box-footer b-t">
                       <div>
-                        <a class="hide text-left primary-text-hover-color" [ngClass]="{'show-block':permission.currentController.orders.modify, 'disable-link' : order.state._text !== 'PENDING'}" (click)="actionChild.modifyOrder(order);">
+                        <a class="hide text-left primary-text-hover-color" [ngClass]="{'show-block':permission.currentController && permission.currentController.orders.modify, 'disable-link' : order.state._text !== 'PENDING'}" (click)="actionChild.modifyOrder(order);">
                           <i class="fa fa-edit p-r-xs text-black-lt"></i>
                           <span class="text-black-lt" translate>dailyPlan.button.setStartTime</span>
                         </a>
-                        <a class="text-right primary-text-hover-color" *ngIf="permission.currentController.orders.cancel" [ngClass]="{'pull-right':permission.currentController.orders.modify}"
+                        <a class="text-right primary-text-hover-color" *ngIf="permission.currentController && permission.currentController.orders.cancel" [ngClass]="{'pull-right':permission.currentController.orders.modify}"
                            (click)="actionChild.cancelOrder(order);">
                           <i class="fa fa-times p-r-xs text-black-lt"></i>
                           <span class="text-black-lt" translate>order.button.cancel</span>

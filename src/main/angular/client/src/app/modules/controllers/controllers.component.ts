@@ -303,8 +303,54 @@ export class ControllersComponent implements OnInit, OnDestroy {
     });
   }
 
+  removeAgent(agent, controller): void {
+    const obj = {
+      controllerId: controller.controllerId,
+      agentId: agent.agentId
+    };
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Agent',
+        operation: 'Remove',
+        name: agent.agentId
+      };
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+          obj,
+          url: 'agent/remove'
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'remove',
+          message: 'removeAgent',
+          type: 'Remove',
+          objectName: agent.agentId,
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.coreService.post('agent/remove', obj).subscribe(() => {
+
+          });
+        }
+      });
+    }
+  }
+
   resetAgent(agent, controller): void {
-    console.log(agent, controller);
     const obj = {
       controllerId: controller.controllerId,
       agentId: agent.agentId

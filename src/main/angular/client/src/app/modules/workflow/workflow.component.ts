@@ -184,7 +184,8 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
     {date: '1d', text: 'today'},
     {date: '1h', text: 'next1'},
     {date: '12h', text: 'next12'},
-    {date: '24h', text: 'next24'}
+    {date: '24h', text: 'next24'},
+    {date: 'NEVER', text: 'never'}
   ];
 
   @ViewChild(WorkflowActionComponent, {static: false}) actionChild;
@@ -257,7 +258,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
           && this.path === args.eventSnapshots[j].workflow.path && args.eventSnapshots[j].workflow === this.versionId) {
           this.getOrders({
             compact: true,
-            controllerId:  this.controllerId,
+            controllerId: this.controllerId,
             workflowIds: args.eventSnapshots[j].workflow
           });
           break;
@@ -293,13 +294,17 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
   }
 
   private getOrders(obj): void {
-    if(this.permission && !this.permission.currentController.orders.view){
+    if (this.permission && !this.permission.currentController.orders.view) {
       return;
     }
     if (this.date !== 'ALL') {
-      obj.dateTo = this.date;
+      if (this.date === 'NEVER') {
+        obj.scheduledNever = true;
+      } else {
+        obj.dateTo = this.date;
+        obj.timeZone = this.preferences.zone;
+      }
     }
-    obj.timeZone = this.preferences.zone;
     this.coreService.post('orders', obj).subscribe((res: any) => {
       this.workflows[0].orders = res.orders;
       this.workflows[0].ordersSummary = {};
@@ -364,7 +369,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     {date: '1d', text: 'today'},
     {date: '1h', text: 'next1'},
     {date: '12h', text: 'next12'},
-    {date: '24h', text: 'next24'}
+    {date: '24h', text: 'next24'},
+    {date: 'NEVER', text: 'never'}
   ];
 
   @ViewChild(TreeComponent, {static: false}) child;
@@ -1032,8 +1038,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       return;
     }
     if (this.workflowFilters.filter.date !== 'ALL') {
-      obj.dateTo = this.workflowFilters.filter.date;
-      obj.timeZone = this.preferences.zone;
+      if (this.workflowFilters.filter.date === 'NEVER') {
+        obj.scheduledNever = true;
+      } else {
+        obj.dateTo = this.workflowFilters.filter.date;
+        obj.timeZone = this.preferences.zone;
+      }
     }
     this.coreService.post('orders', obj).subscribe((res: any) => {
       if (res.orders) {

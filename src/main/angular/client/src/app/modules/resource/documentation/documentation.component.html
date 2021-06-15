@@ -7,8 +7,8 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
-            <button *ngIf="object.mapOfCheckedId.size>0 && permission.joc.documentations.manage" class="btn btn-grey btn-sm m-l-12" (click)="exportDocument(null)"><i class="fa fa-download"></i>&nbsp; {{'resource.documentation.button.exportDocument' | translate}}</button>
-            <button *ngIf="object.mapOfCheckedId.size>0 && permission.joc.documentations.manage" class="btn btn-grey btn-sm m-l-12" (click)="deleteDocumentations(null)"><i class="fa fa-trash"></i>&nbsp; {{'resource.documentation.button.deleteDocument' | translate}}</button>
+            <button *ngIf="object.mapOfCheckedId.size>0 && permission.joc && permission.joc.documentations.manage" class="btn btn-grey btn-sm m-l-12" (click)="exportDocument(null)"><i class="fa fa-download"></i>&nbsp; {{'resource.documentation.button.exportDocument' | translate}}</button>
+            <button *ngIf="object.mapOfCheckedId.size>0 && permission.joc && permission.joc.documentations.manage" class="btn btn-grey btn-sm m-l-12" (click)="deleteDocumentations(null)"><i class="fa fa-trash"></i>&nbsp; {{'resource.documentation.button.deleteDocument' | translate}}</button>
             <div class="inline" [ngClass]="{'hide':object.mapOfCheckedId.size>0}">
               <div class="btn-group dropdown m-l-12">
                 <button class="btn btn-grey btn-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="type" [nzPlacement]="'bottomRight'" >
@@ -69,7 +69,7 @@
                   </ul>
                 </nz-dropdown-menu>
               </div>
-              <button *ngIf="permission.joc.documentations.manage" class="btn btn-grey btn-sm m-l-12" (click)="importDocument()"><i class="fa fa-upload"></i>&nbsp; {{'resource.documentation.button.importDocument' | translate}}</button>
+              <button *ngIf="permission.joc && permission.joc.documentations.manage" class="btn btn-grey btn-sm m-l-12" (click)="importDocument()"><i class="fa fa-upload"></i>&nbsp; {{'resource.documentation.button.importDocument' | translate}}</button>
               <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
             </div>
           </div>
@@ -132,16 +132,16 @@
                           <i class="text fa fa-ellipsis-h"></i></a>
                         <nz-dropdown-menu #option="nzDropdownMenu">
                           <ul nz-menu>
-                            <li nz-menu-item *ngIf="permission.joc.documentations.manage">
+                            <li nz-menu-item *ngIf="permission.joc && permission.joc.documentations.manage">
                               <a (click)="editDocument(document)" translate>resource.documentation.button.editDocument</a>
                             </li>
                             <li nz-menu-item>
                               <a (click)="previewDocument(document)" translate>resource.documentation.button.previewDocument</a>
                             </li>
-                            <li nz-menu-item *ngIf="permission.joc.documentations.manage">
+                            <li nz-menu-item *ngIf="permission.joc && permission.joc.documentations.manage">
                               <a (click)="exportDocument(document)" translate>common.button.export</a>
                             </li>
-                            <li nz-menu-item class="bg-hover-color" *ngIf="permission.joc.documentations.manage">
+                            <li nz-menu-item class="bg-hover-color" *ngIf="permission.joc && permission.joc.documentations.manage">
                               <a (click)="deleteDocumentations(document)" translate>common.button.delete</a>
                             </li>
                             <li nz-menu-item>
@@ -167,11 +167,11 @@
                       </div>
                     </div>
                     <div class="box-footer b-t" >
-                      <a class="text-left primary-text-hover-color " *ngIf="permission.joc.documentations.manage" (click)="exportDocument(document)">
+                      <a class="text-left primary-text-hover-color " *ngIf="permission.joc && permission.joc.documentations.manage" (click)="exportDocument(document)">
                         <i class="fa fa-download text-black-lt p-r-xs"></i>
                         <span class="text-black-lt" translate>common.button.export</span>
                       </a>
-                      <a class="pull-right text-hover-color " *ngIf="permission.joc.documentations.manage" (click)="deleteDocumentations(document)">
+                      <a class="pull-right text-hover-color " *ngIf="permission.joc && permission.joc.documentations.manage" (click)="deleteDocumentations(document)">
                         <i class="fa fa-trash text-black-lt p-r-xs"></i>
                         <span class="text-black-lt" translate>common.button.delete</span>
                       </a>

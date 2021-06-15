@@ -197,6 +197,7 @@ export class ModifyStartTimeModalComponent implements OnInit {
   @Input() schedulerId;
   @Input() order: any;
   @Input() preferences: any;
+  @Input() isDailyPlan: boolean;
   submitted = false;
   dateFormat: any;
   dateType: any = {at : 'date'};
@@ -222,6 +223,8 @@ export class ModifyStartTimeModalComponent implements OnInit {
     };
     if (this.dateType.at === 'now') {
       obj.scheduledFor = 'now';
+    } else if (this.order.at === 'never') {
+      obj.scheduledFor = 'never';
     } else if (this.dateType.at === 'later') {
       obj.scheduledFor = 'now + ' + this.order.atTime;
     } else {

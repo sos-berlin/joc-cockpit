@@ -991,6 +991,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   searchableProperties = ['orderId', 'schedulePath', 'workflowPath', 'status', 'plannedStartTime', 'expectedEndTime'];
   expandedPaths = new Set();
   dateRanges = [];
+  isProcessing = false;
 
   object = {
     mapOfCheckedId: new Map(),
@@ -1158,6 +1159,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: CreatePlanModalComponent,
+      nzClassName: 'lg',
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
         selectedDate: this.selectedDate,
@@ -1296,7 +1298,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         apiArr.push(this.coreService.post('orders/daily_plan/cancel', this.coreService.clone(obj)));
       });
       forkJoin(apiArr).subscribe((result) => {
+        this.isProcessing = true;
         this.resetCheckBox();
+        this.resetAction();
       });
     } else {
       const orderIds = [];
@@ -1360,7 +1364,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       });
     } else {
       this.coreService.post('orders/daily_plan/cancel', obj).subscribe(() => {
-
+        this.isProcessing = true;
+        this.resetAction();
       });
     }
   }
@@ -1723,6 +1728,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
         order,
+        isDailyPlan: true,
         preferences: this.preferences
       },
       nzFooter: null,
@@ -1862,9 +1868,16 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       });
     } else {
       this.coreService.post('orders/' + type.toLowerCase(), obj).subscribe(() => {
-
+        this.isProcessing = true;
+        this.resetAction();
       });
     }
+  }
+
+  private resetAction(): void{
+    setTimeout(() => {
+       this.isProcessing = false;
+    }, 1000);
   }
 
   private callApi(from, to, obj): void {
@@ -1990,7 +2003,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       if (order.state._text !== 'PLANNED' && order.state._text !== 'PENDING') {
         object.isModify = false;
       }
-      if (order.state._text === 'PLANNED' || order.state._text === 'PENDING' || order.state._text === 'FAILED') {
+      if (order.state._text === 'PLANNED' || order.state._text === 'FINISHED' || order.state._text === 'FAILED') {
         object.isSuspend = false;
       }
 

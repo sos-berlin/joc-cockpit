@@ -38,7 +38,6 @@ export class AddOrderModalComponent implements OnInit {
     this.comments.radio = 'predefined';
     this.order.timeZone = this.preferences.zone;
     this.order.fromTime = new Date();
-
     this.order.at = 'now';
     this.updateVariableList();
   }
@@ -104,7 +103,7 @@ export class AddOrderModalComponent implements OnInit {
       order.scheduledFor = 'now';
     } else if (this.order.at === 'never') {
       order.scheduledFor = 'never';
-    }  else if (this.order.at === 'later') {
+    } else if (this.order.at === 'later') {
       order.scheduledFor = 'now + ' + this.order.atTime;
     } else {
       if (this.order.fromDate) {

@@ -46,16 +46,16 @@
                         <i class="fa fa-ellipsis-h"></i></button>
                       <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
                         <ul nz-menu>
-                          <li nz-menu-item *ngIf="permission.joc.documentations.manage">
+                          <li nz-menu-item *ngIf="permission.joc && permission.joc.documentations.manage">
                             <a (click)="editDocument(document)" translate>resource.documentation.button.editDocument</a>
                           </li>
                           <li nz-menu-item >
                             <a (click)="previewDocument(document)" translate>resource.documentation.button.previewDocument</a>
                           </li>
-                          <li nz-menu-item  *ngIf="permission.joc.documentations.manage">
+                          <li nz-menu-item  *ngIf="permission.joc && permission.joc.documentations.manage">
                             <a (click)="exportDocument(document)" translate>common.button.export</a>
                           </li>
-                          <li nz-menu-item class="bg-hover-color" *ngIf="permission.joc.documentations.manage">
+                          <li nz-menu-item class="bg-hover-color" *ngIf="permission.joc && permission.joc.documentations.manage">
                             <a (click)="deleteDocumentation(document)" translate>common.button.delete</a>
                           </li>
                           <li nz-menu-item  >

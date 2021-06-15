@@ -26,7 +26,8 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     {date: '1h', text: 'next1'},
     {date: '12h', text: 'next12'},
     {date: '24h', text: 'next24'},
-    {date: '7d', text: 'nextWeak'}
+    {date: '7d', text: 'nextWeak'},
+    {date: 'NEVER', text: 'never'}
   ];
 
   constructor(public authService: AuthService, public coreService: CoreService,
@@ -69,9 +70,13 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     const obj: any = {
       controllerId: this.schedulerIds.selected
     };
-    if (this.filters.date !== 'ALL') {
-      obj.dateTo = this.filters.date;
-      obj.timeZone = this.preferences.zone;
+    if (this.filters.date === 'NEVER') {
+      obj.scheduledNever = true;
+    } else {
+      if (this.filters.date !== 'ALL') {
+        obj.dateTo = this.filters.date;
+        obj.timeZone = this.preferences.zone;
+      }
     }
     this.coreService.post('orders/overview/snapshot', obj).subscribe((res: any) => {
       this.orders = res.orders;

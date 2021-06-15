@@ -171,6 +171,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.schedulerIds.selected = controller;
     const key = this.schedulerIds.selected;
     this.tabsMap.set(key, JSON.stringify(this.coreService.getTabs()));
+    localStorage.setItem('$SOS$SELECTEDID', controller);
     this.coreService.post('controller/switch', {controllerId: this.schedulerIds.selected}).subscribe(() => {
       this.coreService.post('controller/ids', {}).subscribe((res) => {
         if (res) {
@@ -285,6 +286,16 @@ export class LayoutComponent implements OnInit, OnDestroy {
   private getSchedulerIds(): void {
     this.coreService.post('controller/ids', {}).subscribe((res: any) => {
       if (res && res.controllerIds && res.controllerIds.length > 0) {
+        const ID = localStorage.getItem('$SOS$SELECTEDID');
+        if (ID && ID !== 'null' && ID !== res.selected) {
+          if (res.controllerIds.length > 0 && res.controllerIds.indexOf(ID) > -1) {
+            res.selected = ID;
+            this.coreService.post('controller/switch', {controllerId: ID}).subscribe(() => {
+            });
+          } else {
+            localStorage.removeItem('$SOS$SELECTEDID');
+          }
+        }
         this.authService.setIds(res);
         this.authService.save();
         this.schedulerIds = res;
@@ -327,7 +338,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.authService.save();
       this.getSchedulerIds();
     }, () => {
-      const returnUrl = this.router.url.match(/login/) ? '/' : this.router.url;
+      let returnUrl = this.router.url.match(/login/) ? '/' : this.router.url;
+      if (returnUrl === '/error' || returnUrl === 'error') {
+        returnUrl = '/';
+      }
       this.router.navigate(['login'], {queryParams: {returnUrl}});
     });
   }
@@ -348,7 +362,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   private loadInit(isError: boolean): void {
     this.sessionTimeout = parseInt(this.authService.sessionTimeout, 10);
-    if (!this.authService.permissionCheck(this.router.url)) {
+    if (this.permission && this.permission.joc && !this.authService.permissionCheck(this.router.url)) {
       this.router.navigate(['/error']);
     }
     if (sessionStorage.preferences || isError) {
@@ -381,6 +395,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
       if (!returnUrl || returnUrl.match(/login/)) {
         queryParams = undefined;
       } else {
+        if (returnUrl === '/error' || returnUrl === 'error') {
+          queryParams = undefined;
+        }
         queryParams.queryParams.returnUrl = returnUrl;
       }
       this.router.navigate(['login'], queryParams);

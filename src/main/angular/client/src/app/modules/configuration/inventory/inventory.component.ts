@@ -1692,6 +1692,8 @@ export class CreateObjectModalComponent implements OnInit {
         data.suffix = this.object.suffix;
       } else if (this.object.type === 'prefix') {
         data.prefix = this.object.prefix;
+      } else if (this.object.type === 'existing') {
+
       } else {
         data.newName = this.object.newName;
       }
@@ -1760,12 +1762,12 @@ export class CreateObjectModalComponent implements OnInit {
       prefix: data.prefix
     };
     if (this.obj.id) {
-      request.newPath = obj.path + (obj.path === '/' ? '' : '/') + (data.originalName ? data.originalName : this.obj.name);
+      request.newPath = obj.path + (obj.path === '/' ? '' : '/') + (data.newName ? data.newName : obj.name);
       request.id = this.obj.id;
     } else {
       request.objectType = 'FOLDER';
-      request.newPath = obj.path + (data.noFolder ? '' : (obj.path === '/' ? '' : '/') + this.obj.name);
-      request.path = this.obj.path;
+      request.newPath = data.newName ? (obj.path.substring(0, obj.path.lastIndexOf('/'))) + '/' + data.newName : obj.path;
+      request.path = obj.path;
     }
     request.auditLog = {};
     if (this.comments.comment) {

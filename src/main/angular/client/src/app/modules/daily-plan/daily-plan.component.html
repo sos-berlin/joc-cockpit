@@ -1,3 +1,6 @@
+<div class="operation-status-info" *ngIf="isProcessing" translate>
+  <i class="fa fa-check text-success p-r-sm"></i>common.message.requestAccepted
+</div>
 <ng-template #orderTemplate let-order let-plan="plan">
   <ng-container *ngFor="let value of order">
     <ng-template #tooltipTemplate>
@@ -26,7 +29,7 @@
             <i class="fa fa-ellipsis-h"></i>
           </button>
           <nz-dropdown-menu #export5="nzDropdownMenu" role="menu">
-            <ul nz-menu>
+            <ul nz-menu *ngIf="permission.currentController">
               <li nz-menu-item [nzDisabled]="value.state && value.state._text === 'FINISHED'" *ngIf="permission.currentController.orders.create && value.state && value.state._text === 'PLANNED'">
                 <a (click)="submitOrder(value, false)" translate>dailyPlan.button.submitOrder</a>
               </li>
@@ -164,7 +167,7 @@
             <i class="fa fa-ellipsis-h"></i>
           </button>
           <nz-dropdown-menu #export2="nzDropdownMenu" role="menu">
-            <ul nz-menu>
+            <ul nz-menu *ngIf="permission.currentController">
               <li nz-menu-item [nzDisabled]="!plan.isPlanned" *ngIf="permission.currentController.orders.create">
                 <a (click)="submitOrder(plan, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW')" translate>dailyPlan.button.submitOrder</a>
               </li>
@@ -408,8 +411,7 @@
               class="fa fa-times"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.cancelSelectedOrder</span>
             </button>
-            <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isSuspend" (click)="suspendSelectedOrder()">
-              <i
+            <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isSuspend" (click)="suspendSelectedOrder()"><i
                 class="fa fa-stop"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.suspendSelectedOrder</span>
             </button>
@@ -453,11 +455,11 @@
               <div class="calendar-sm m-t-0" [ngClass]="{'grab' :isCalendarClick }" id="full-calendar"></div>
             </div>
             <div class="text-center m-t">
-              <button *ngIf="permission.joc.dailyPlan.manage" [disabled]="isPastDate" class="btn btn-grey btn-sm m-b-sm" (click)="createPlan()">
+              <button *ngIf="permission.joc && permission.joc.dailyPlan.manage" [disabled]="isPastDate" class="btn btn-grey btn-sm m-b-sm" (click)="createPlan()">
                 <i class="fa fa-plus"></i>&nbsp;
                 <span translate>dailyPlan.button.createPlan</span>
               </button>
-              <button *ngIf="permission.joc.dailyPlan.manage" class="btn btn-grey btn-sm m-l-xs m-b-sm" (click)="deleteSubmission()">
+              <button *ngIf="permission.joc && permission.joc.dailyPlan.manage" class="btn btn-grey btn-sm m-l-xs m-b-sm" (click)="deleteSubmission()">
                 <i class="fa fa-trash"></i>&nbsp;
                 <span translate>dailyPlan.button.deleteSubmissions</span>
               </button>

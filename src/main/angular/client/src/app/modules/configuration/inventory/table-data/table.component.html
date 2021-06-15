@@ -14,11 +14,11 @@
     <div class="inline">
       <input type="search" placeholder="{{'common.placeholder.search' | translate}}"
              [(ngModel)]="searchKey" style="width: 180px" name="search">
-      <button *ngIf="permission.joc.inventory.manage && !isTrash" type="button" [disabled]="!copyObj || (objectType !== copyObj.type)" class="btn btn-sm btn-grey m-l-12" (click)="paste()" >
+      <button *ngIf="permission.joc && permission.joc.inventory.manage && !isTrash" type="button" [disabled]="!copyObj || (objectType !== copyObj.type)" class="btn btn-sm btn-grey m-l-12" (click)="paste()" >
         <i class="fa fa-paste p-r-xs"></i>
         <span translate>inventory.button.paste</span>
       </button>
-      <button type="button" class="btn btn-sm btn-grey m-l-12" (click)="add()" *ngIf="permission.joc.inventory.manage && !isTrash">
+      <button type="button" class="btn btn-sm btn-grey m-l-12" (click)="add()" *ngIf="permission.joc && permission.joc.inventory.manage && !isTrash">
         <i class="fa fa-plus p-r-xs"></i>
         <span *ngIf="objectType === 'WORKFLOW'" translate>inventory.button.newWorkflow</span>
         <span *ngIf="objectType === 'FILEORDERSOURCE'" translate>inventory.button.newFileOrderSource</span>
@@ -84,7 +84,7 @@
                 <i class="fa fa-ellipsis-h"></i>
               </button>
               <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu">
-                <ul nz-menu *ngIf="!isTrash">
+                <ul nz-menu *ngIf="!isTrash && permission.joc">
                   <li nz-menu-item *ngIf="permission.joc.inventory.manage">
                     <a (click)="cutObject(data)" translate>inventory.button.cut</a>
                   </li>
@@ -128,7 +128,7 @@
                     <a (click)="importJSON(data)" translate>inventory.button.uploadJSON</a>
                   </li>
                 </ul>
-                <ul nz-menu *ngIf="isTrash">
+                <ul nz-menu *ngIf="isTrash && permission.joc">
                   <li nz-menu-item *ngIf="permission.joc.inventory.manage" class="bg-hover-color"><a
                     (click)="deletePermanently(data);" translate>inventory.button.delete</a></li>
                   <li nz-menu-item>

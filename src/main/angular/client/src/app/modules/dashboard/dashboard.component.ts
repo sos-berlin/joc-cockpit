@@ -52,13 +52,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   static calculateHeight(): void {
-    let top = 134;
+    let top;
     setTimeout(() => {
       const dom = $('#gridster-container');
       if (dom.position()) {
-        if (dom.position().top < 100 || dom.position().top > 133) {
-          top = dom.position().top;
-        }
+        top = dom.position().top;
+      }
+      if (top < 140) {
+        top = 142;
       }
       $('.gridster').css({height: 'calc(100vh - ' + top + 'px)', 'scroll-top': '0'});
     }, 0);

@@ -537,6 +537,11 @@ export class Log2Component implements OnInit, OnDestroy {
         if (!this.object.checkBoxs.stderr) {
           div.className += ' hide-block';
         }
+      } else if (prefix.search(/\[debug\]/i) > -1) {
+        div.className += ' stderr log_debug';
+        if (!this.object.checkBoxs.debug) {
+          div.className += ' hide-block';
+        }
       } else {
         div.className += ' scheduler scheduler_' + level;
         if (!this.object.checkBoxs.scheduler) {
@@ -556,9 +561,8 @@ export class Log2Component implements OnInit, OnDestroy {
       }
 
       if (!this.isDeBugLevel) {
-        this.isDeBugLevel = !!level.match('^debug');
+        this.isDeBugLevel = !!level.match('^debug') || prefix.search(/\[debug\]/i) > -1;
       }
-
       if (!this.isStdErrLevel) {
         this.isStdErrLevel = div.className.indexOf('stderr') > -1;
       }

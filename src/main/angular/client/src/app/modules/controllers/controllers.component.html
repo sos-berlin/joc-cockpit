@@ -87,6 +87,9 @@
                               <li nz-menu-item *ngIf="agent.disabled">
                                 <a (click)="enableAgent(agent, controller)" translate>agent.button.enable</a>
                               </li>
+                              <li nz-menu-item class="bg-hover-color">
+                                <a (click)="removeAgent(agent, controller)" translate="">common.button.remove</a>
+                              </li>
                             </ul>
                           </nz-dropdown-menu>
                         </div>

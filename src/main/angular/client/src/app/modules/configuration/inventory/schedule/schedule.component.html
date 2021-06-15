@@ -24,13 +24,13 @@
               <span *ngIf="!data.released" translate>inventory.label.notReleased</span>
               <span *ngIf="data.released" translate>inventory.label.released</span>
             </span>
-          <button *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" type="button" [disabled]="!schedule.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="release()" >
+          <button *ngIf="permission.joc && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" type="button" [disabled]="!schedule.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="release()" >
             <i class="fa fa-rocket p-r-xs"></i>
             <span translate>inventory.button.release</span>
           </button>
         </div>
       </div>
-      <form *ngIf="schedule.configuration">
+      <form *ngIf="schedule.configuration && permission.joc">
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.orderTemplateName</label>
@@ -218,7 +218,7 @@
 <nz-drawer [nzVisible]="isVisible" nzPlacement="right" (nzOnClose)="closeCalendarView()">
   <ng-container *nzDrawerContent>
   <div class="close-btn" (click)="closeCalendarView()"></div>
-  <div *ngIf="isVisible">
+  <div *ngIf="isVisible && permission.joc">
     <div class="text-center m-b text" ><i class="fa fa-clock-o"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm" translate>runtime.label.runTime</span></div>
     <app-run-time [schedule]="schedule" [isTrash]="isTrash || !permission.joc.inventory.manage" [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"></app-run-time>
   </div>

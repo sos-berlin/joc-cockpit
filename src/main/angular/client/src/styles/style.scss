@@ -3940,6 +3940,17 @@ table.folder-tree-grid {
   bottom: 0;
 }
 
+.operation-status-info{
+  position: fixed;
+  top: 124px;
+  z-index: 9990;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-box);
+  box-shadow: 1px 3px 5px rgb(0 0 0 / 20%);
+  padding: 4px 18px;
+}
+
 .expand-collapse:hover {
   color: var(--hover-primary);
   cursor: pointer;
@@ -7007,7 +7018,7 @@ tr.tr-border td:first-child {
 .ant-radio-wrapper {
   margin-right: 16px;
   color: var(--text-color);
-  min-width: 132px;
+  min-width: 116px;
 }
 
 .ant-checkbox-wrapper + .ant-checkbox-wrapper {

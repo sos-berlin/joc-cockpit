@@ -1,5 +1,5 @@
 <nz-tabset [(nzSelectedIndex)]="index">
-  <nz-tab *ngIf="permission && permission.currentController.orders.view" [nzTitle]="'history.label.orderHistory' | translate" (nzClick)="loadOrderHistory()">
+  <nz-tab *ngIf="permission.currentController && permission.currentController.orders.view" [nzTitle]="'history.label.orderHistory' | translate" (nzClick)="loadOrderHistory()">
     <div class="table-responsive" id="orderTable">
       <nz-table
         #orderHistoryTable
@@ -73,7 +73,7 @@
       </nz-table>
     </div>
   </nz-tab>
-  <nz-tab *ngIf="permission && permission.currentController.orders.view" [nzTitle]="'history.label.taskHistory' | translate" (nzClick)="loadTaskHistory()">
+  <nz-tab *ngIf="permission.currentController && permission.currentController.orders.view" [nzTitle]="'history.label.taskHistory' | translate" (nzClick)="loadTaskHistory()">
     <div class="table-responsive">
       <nz-table
         #taskHistoryTable
