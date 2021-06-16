@@ -395,7 +395,7 @@ export class RemovePlanModalComponent implements OnInit {
     }
     this.coreService.post('daily_plan/orders/submit', obj).subscribe(() => {
       this.submitted = false;
-      this.activeModal.close('');
+      this.activeModal.close('Done');
     }, () => {
       this.submitted = false;
     });
@@ -992,6 +992,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   expandedPaths = new Set();
   dateRanges = [];
   isProcessing = false;
+  isVisible: boolean;
 
   object = {
     mapOfCheckedId: new Map(),
@@ -1083,6 +1084,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         this.filterData(res.plannedOrderItems);
         this.isLoaded = true;
         this.isRefreshed = false;
+        this.resetAction();
       }, () => {
         this.isLoaded = true;
         this.isRefreshed = false;
@@ -1201,6 +1203,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   /* ------------- Action Begin------------------- */
 
+  change(value: boolean): void {
+    this.isVisible = value;
+  }
+
   deleteSubmission(): void {
     const modal = this.modal.create({
       nzTitle: undefined,
@@ -1217,6 +1223,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
+        this.isProcessing = true;
         this.updateList();
       }
     });
@@ -1250,11 +1257,12 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         nzFooter: null,
         nzClosable: false
       });
+
     }
   }
 
   submitSelectedOrder(): void {
-    this.modal.create({
+    const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: RemovePlanModalComponent,
       nzComponentParams: {
@@ -1265,10 +1273,17 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       nzFooter: null,
       nzClosable: false
     });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.resetCheckBox();
+        this.isProcessing = true;
+        this.loadOrderPlan();
+      }
+    });
   }
 
   submitOrder(order, workflow): void {
-    this.modal.create({
+    const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: RemovePlanModalComponent,
       nzComponentParams: {
@@ -1280,26 +1295,33 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       nzFooter: null,
       nzClosable: false
     });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.isProcessing = true;
+      }
+    });
   }
 
   resumeSelectedOrder(): void {
     this.restCall(false, null, this.object.mapOfCheckedId, 'Resume');
   }
 
-  cancelSelectedOrder(): void {
+  cancelSelectedOrder(isKill = false): void {
     if (this.dateRanges && this.dateRanges.length > 0) {
       let apiArr = [];
       const dates = this.coreService.getDates(this.dateRanges[0], this.dateRanges[1]);
+      this.isProcessing = true;
       dates.forEach((date) => {
         let obj = {
           controllerId: this.schedulerIds.selected,
-          dailyPlanDate: this.coreService.getStringDate(date)
+          dailyPlanDate: this.coreService.getStringDate(date),
+          kill: isKill
         };
         apiArr.push(this.coreService.post('orders/daily_plan/cancel', this.coreService.clone(obj)));
       });
+      this.resetCheckBox();
       forkJoin(apiArr).subscribe((result) => {
-        this.isProcessing = true;
-        this.resetCheckBox();
+      }, () => {
         this.resetAction();
       });
     } else {
@@ -1307,12 +1329,12 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.object.mapOfCheckedId.forEach((value) => {
         orderIds.push(value.orderId);
       });
-      this.cancelCyclicOrder(orderIds, false, true);
+      this.cancelCyclicOrder(orderIds, isKill, true);
     }
   }
 
-  suspendSelectedOrder(): void {
-    this.restCall(false, null, this.object.mapOfCheckedId, 'Suspend');
+  suspendSelectedOrder(isKill = false): void {
+    this.restCall(isKill, null, this.object.mapOfCheckedId, 'Suspend');
   }
 
   cancelOrderWithKill(order, plan): void {
@@ -1350,7 +1372,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           comments.name = id + ', ' + comments.name;
         }
       });
-      this.modal.create({
+      const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
@@ -1362,10 +1384,20 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         nzFooter: null,
         nzClosable: false
       });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.isProcessing = true;
+          if (isMultiple) {
+            this.resetCheckBox();
+          }
+        }
+      });
     } else {
+      this.isProcessing = true;
       this.coreService.post('orders/daily_plan/cancel', obj).subscribe(() => {
-        this.isProcessing = true;
-        this.resetAction();
+        if (isMultiple) {
+          this.resetCheckBox();
+        }
       });
     }
   }
@@ -1390,7 +1422,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (plan && plan.value) {
       this.restCall(false, null, plan.value, 'Resume');
     } else {
-      this.modal.create({
+      const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ResumeOrderModalComponent,
         nzComponentParams: {
@@ -1401,6 +1433,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         },
         nzFooter: null,
         nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.isProcessing = true;
+        }
       });
     }
   }
@@ -1421,7 +1458,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.updateList();
+        this.isProcessing = true;
+        this.resetCheckBox();
+        this.loadOrderPlan();
       }
     });
   }
@@ -1442,7 +1481,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.updateList();
+        this.isProcessing = true;
+        this.loadOrderPlan();
       }
     });
   }
@@ -1623,6 +1663,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       filter: {}
     };
     this.applySearchFilter(obj.filter, this.searchFilter);
+    this.resetCheckBox();
     if (this.searchFilter.radio === 'current') {
       this.callApi(this.searchFilter.from, this.searchFilter.to, obj);
     } else {
@@ -1642,11 +1683,15 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         if (this.object.checked) {
           for (let i = 0; i < orders.length; i++) {
             if (!orders[i].isFinished) {
-              orders[i].indeterminate = false;
-              orders[i].checked = true;
+              let count = 0;
               orders[i].value.forEach(item => {
-                this.object.mapOfCheckedId.set(item.orderId, item);
+                if (item.state._text !== 'FINISHED') {
+                  this.object.mapOfCheckedId.set(item.orderId, item);
+                  ++count;
+                }
               });
+              orders[i].checked = count === orders[i].value.length;
+              orders[i].indeterminate = count > 0 && !orders[i].checked;
             } else {
               flag = true;
             }
@@ -1654,6 +1699,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         } else {
           for (let i = 0; i < orders.length; i++) {
             orders[i].checked = false;
+            orders[i].indeterminate = false;
           }
           this.object.mapOfCheckedId.clear();
         }
@@ -1854,7 +1900,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           }
         });
       }
-      this.modal.create({
+      const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
@@ -1866,18 +1912,31 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         nzFooter: null,
         nzClosable: false
       });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.resetCheckBox();
+          this.isProcessing = true;
+        }
+      });
     } else {
+      this.isProcessing = true;
+      if(multiple){
+        this.resetCheckBox();
+      }
       this.coreService.post('orders/' + type.toLowerCase(), obj).subscribe(() => {
-        this.isProcessing = true;
+
+      },() => {
         this.resetAction();
       });
     }
   }
 
-  private resetAction(): void{
-    setTimeout(() => {
-       this.isProcessing = false;
-    }, 1000);
+  private resetAction(): void {
+    if (this.isProcessing) {
+      setTimeout(() => {
+        this.isProcessing = false;
+      }, 100);
+    }
   }
 
   private callApi(from, to, obj): void {
@@ -2013,7 +2072,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         object.isModify = false;
       }
     });
-
     if (finishedCount === list.length) {
       object.isFinished = true;
     }
@@ -2133,7 +2191,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  private resetCheckBox(): void {
+  private resetCheckBox(flag = false): void {
+    if (this.object.mapOfCheckedId.size > 0) {
+      this.planOrders.forEach((item) => {
+        item.checked = false;
+        item.indeterminate = false;
+      });
+    }
     this.object = {
       mapOfCheckedId: new Map(),
       indeterminate: false,
@@ -2146,9 +2210,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       isPlanned: false,
       isFinished: false
     };
-    this.isCalendarClick = false;
-    if (this.dateRanges.length > 0) {
-      $('#full-calendar').data('calendar').clearRange();
+    if(!flag) {
+      this.isCalendarClick = false;
+      if (this.dateRanges.length > 0) {
+        $('#full-calendar').data('calendar').clearRange();
+      }
     }
   }
 
@@ -2206,10 +2272,16 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         const year = e.currentYear || new Date().getFullYear();
         const month = e.currentMonth || new Date().getMonth();
         this.load(new Date(year, month, 1));
+        if (this.dateRanges && this.dateRanges.length > 1) {
+          $('#full-calendar').data('calendar').checkRange({from: this.dateRanges[0], to: this.dateRanges[1]});
+        }
       },
       rangeEnd: (e) => {
         this.dateRanges = e.dateRanges;
         this.isCalendarClick = false;
+        if (this.dateRanges && this.dateRanges.length > 0) {
+          this.resetCheckBox(true);
+        }
       }
     });
   }
@@ -2219,10 +2291,26 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType.match(/WorkflowStateChanged/) && !this.isRefreshed) {
           this.isRefreshed = true;
-          this.loadOrderPlan();
+          for (let i in this.plans) {
+            if (this.plans[i].workflowPath === args.eventSnapshots[j].workflow.path) {
+              this.refreshView();
+              break;
+            }
+          }
           break;
         }
       }
+    }
+  }
+
+  private refreshView(): void {
+    if (!this.isVisible && this.object.mapOfCheckedId.size === 0) {
+      this.resetAction();
+      this.loadOrderPlan();
+    } else {
+      setTimeout(() => {
+        this.refreshView();
+      }, 750);
     }
   }
 

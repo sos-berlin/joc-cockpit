@@ -652,6 +652,25 @@
       this.options.dateFrom = null;
       this.options.dateTo = null;
     },
+    checkRange: function (range) {
+      this.options.dateFrom = range.from;
+      this.options.dateTo = range.to;
+      let dates = this._getDates(this.options.dateFrom, this.options.dateTo);
+      let cells = this.element.find('.day:not(.old, .new, .disabled)');
+      for (let i = 0; i < cells.length; i++) {
+        let date = this._getDate($(cells[i])).getTime();
+        for (let j = 0; j < dates.length; j++) {
+          if (date === dates[j]) {
+            $(cells[i]).addClass('range');
+          }
+        }
+        if (date == this.options.dateFrom) {
+          $(cells[i]).addClass('range-start');
+        } else if (date == this.options.dateTo) {
+          $(cells[i]).addClass('range-end');
+        }
+      }
+    },
     getWeekNumber: function (date) {
       let tempDate = new Date(date.getTime());
       tempDate.setHours(0, 0, 0, 0);

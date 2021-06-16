@@ -402,7 +402,6 @@
     "message.redeployFolderRecursively": "本当に選択したフォルダー配下全てをを再配置しますか？",
     "message.deleteDocument": "本当にこのドキュメントを削除しますか",
     "message.deleteAllDocument": "本当に全てのドキュメントを削除しますか?",
-    "message.requestAccepted": "The request has been accepted",
     "--------POPUP WINDOW MESSAGES END------------": "確認ポップアップで使用",
     "tooltip.exportInXLS": "xls形式でエキスポート",
     "tooltip.expandDetails": "詳細表示",

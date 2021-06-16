@@ -49,3 +49,9 @@ gridster-item[style] {
 .destroy-button:hover i {
   opacity: 1;
 }
+
+@media (max-width: 767px) {
+  gridster-item {
+    height: auto !important;
+  }
+}

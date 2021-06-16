@@ -1396,7 +1396,7 @@ export class ImportWorkflowModalComponent implements OnInit {
 
     this.uploader.onCompleteItem = (fileItem: any, response, status, headers) => {
       if (status === 200) {
-        this.activeModal.close(this.requestObj.targetFolder);
+        this.activeModal.close(this.requestObj.targetFolder || '/');
       }
     };
 
@@ -1440,7 +1440,7 @@ export class ImportWorkflowModalComponent implements OnInit {
   }
 
   cancel(): void {
-    this.activeModal.close('Cross click');
+    this.activeModal.destroy();
   }
 }
 
@@ -2044,7 +2044,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.modal.closeAll();
   }
 
-  initTree(path, mainPath): void {
+  initTree(path, mainPath, redirect = false): void {
     if (!path) {
       this.isLoading = true;
     }
@@ -2058,9 +2058,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
       const tree = this.coreService.prepareTree(res, false);
       if (path) {
         this.tree = this.recursiveTreeUpdate(tree, this.tree, false);
-        this.updateFolders(path, false, () => {
+        this.updateFolders(path, false, (response) => {
           this.updateTree(false);
-        });
+          if (redirect) {
+            response.expanded = true;
+            this.clearSelection();
+          }
+        }, redirect);
         if (mainPath && path !== mainPath) {
           this.updateFolders(mainPath, false, () => {
             this.updateTree(false);
@@ -2288,7 +2292,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     return scr;
   }
 
-  updateFolders(path, isTrash, cb): void {
+  updateFolders(path, isTrash, cb, redirect = false): void {
     const self = this;
     let matchData: any;
     if ((!isTrash && this.tree.length > 0) || (isTrash && this.trashTree.length > 0)) {
@@ -2312,6 +2316,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
             self.updateTree(isTrash);
           }, !path);
           matchData = data;
+          if(redirect){
+            cb(matchData);
+          }
         }
 
         if (data.children) {
@@ -2729,9 +2736,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (path) {
         setTimeout(() => {
           if (this.tree && this.tree.length > 0) {
-            this.initTree(path, null);
+            this.initTree(path, null, true);
           }
-        }, 1000);
+        }, 700);
       }
     });
   }
@@ -2753,9 +2760,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (path) {
         setTimeout(() => {
           if (this.tree && this.tree.length > 0) {
-            this.initTree(path, null);
+            this.initTree(path, null, true);
           }
-        }, 1000);
+        }, 700);
       }
     });
   }
