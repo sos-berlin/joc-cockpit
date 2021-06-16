@@ -684,7 +684,7 @@
     "button.all": "All",
     "button.today": "Today",
     "button.yesterday": "Yesterday",
-    "button.never": "Never",
+    "button.never": "No start time",
     "button.last1": "Last hour",
     "button.last12": "Last 12 hours",
     "button.last12Hours": "Last 12 Hours",
