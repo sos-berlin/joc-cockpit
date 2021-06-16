@@ -3942,13 +3942,10 @@ table.folder-tree-grid {
 
 .operation-status-info{
   position: fixed;
-  top: 124px;
+  top: 8px;
   z-index: 9990;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--bg-box);
-  box-shadow: 1px 3px 5px rgb(0 0 0 / 20%);
-  padding: 4px 18px;
 }
 
 .expand-collapse:hover {

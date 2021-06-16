@@ -402,7 +402,6 @@
     "message.redeployFolderRecursively": "Sind Sie sicher, dass Sie alle Objekte des ausgewählten Ordners und Unterordner erneut ausrollen wollen?",
     "message.deleteDocument": "Sind Sie sicher, dass Sie diese Dokumentation löschen wollen?",
     "message.deleteAllDocument": "Sind Sie sicher, dass Sie alle Dokumentationen löschen wollen?",
-    "message.requestAccepted": "The request has been accepted",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
     "tooltip.exportInXLS": "Exportieren im XLS Format",
     "tooltip.expandDetails": "Details aufklappen",

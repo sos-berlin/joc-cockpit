@@ -164,6 +164,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   auditLogs = [];
   data = [];
   currentData = [];
+  isProcessing = false;
   searchableProperties = ['orderId', 'workflowId', 'path', 'state', '_text', 'scheduledFor', 'position'];
   object = {
     mapOfCheckedId: new Map(),
@@ -503,7 +504,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this._bulkOperation('Cancel', 'cancel');
   }
 
-  _bulkOperation(operation, url) : void{
+  _bulkOperation(operation, url): void{
     const obj: any = {
       controllerId: this.schedulerIds.selected
     };
@@ -523,7 +524,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       let comments = {
         radio: 'predefined',
         type: 'Order',
-        operation: operation,
+        operation,
         name: ''
       };
       const modal = this.modal.create({
@@ -622,7 +623,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       }
       if (flag && this.isLoaded) {
         this.isLoaded = false;
-        this.refreshView({count:0});
+        this.refreshView();
       }
       if (flag1) {
         this.loadOrderHistory();
@@ -632,17 +633,16 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  private refreshView(obj): void {
-    if (!this.actionChild.isVisible || obj.count === 20) {
+  private refreshView(): void {
+    if (!this.actionChild || (!this.actionChild.isVisible && this.object.mapOfCheckedId.size === 0)) {
       this.getOrders({
         controllerId: this.schedulerIds.selected,
         states: this.getState()
       });
     } else {
       setTimeout(() => {
-        obj.count = obj.count + 1;
-        this.refreshView(obj);
-      }, 500);
+        this.refreshView();
+      }, 750);
     }
   }
 

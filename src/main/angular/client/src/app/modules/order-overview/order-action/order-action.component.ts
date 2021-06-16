@@ -15,7 +15,6 @@ export class OrderActionComponent {
   @Input() permission: any;
   @Input() schedulerId: any;
   isVisible: boolean;
-  isProcessing = false;
 
   constructor(public coreService: CoreService, private modal: NzModalService) {
   }
@@ -25,7 +24,7 @@ export class OrderActionComponent {
   }
 
   resumeOrder(): void {
-    this.modal.create({
+    const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ResumeOrderModalComponent,
       nzComponentParams: {
@@ -36,6 +35,11 @@ export class OrderActionComponent {
       },
       nzFooter: null,
       nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+
+      }
     });
   }
 
@@ -70,7 +74,7 @@ export class OrderActionComponent {
         operation: type,
         name: order.orderId
       };
-      this.modal.create({
+      const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
@@ -82,16 +86,20 @@ export class OrderActionComponent {
         nzFooter: null,
         nzClosable: false
       });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+
+        }
+      });
     } else {
       this.coreService.post('orders/' + url, obj).subscribe(() => {
-        this.isProcessing = true;
-        this.resetAction();
+
       });
     }
   }
 
   modifyOrder(order): void {
-    this.modal.create({
+    const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ModifyStartTimeModalComponent,
       nzClassName: 'lg',
@@ -102,6 +110,11 @@ export class OrderActionComponent {
       },
       nzFooter: null,
       nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+
+      }
     });
   }
 
@@ -118,11 +131,5 @@ export class OrderActionComponent {
       nzFooter: null,
       nzClosable: false
     });
-  }
-
-  private resetAction(): void{
-    setTimeout(() => {
-      this.isProcessing = false;
-    }, 1000);
   }
 }

@@ -402,7 +402,6 @@
     "message.redeployFolderRecursively": "Êtes-vous sûr de vouloir redéployer tous les objets pour le dossier et les sous-dossiers sélectionnés ?",
     "message.deleteDocument": "Êtes-vous sûr de vouloir supprimer ce document ?",
     "message.deleteAllDocument": "Êtes-vous sûr de vouloir supprimer toutes les documentations ?",
-    "message.requestAccepted": "The request has been accepted",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
     "tooltip.exportInXLS": "Exporter au format xls",
     "tooltip.expandDetails": "Développer les Détails",

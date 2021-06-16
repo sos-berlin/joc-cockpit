@@ -1,5 +1,9 @@
-<div class="operation-status-info" *ngIf="isProcessing" translate>
-  <i class="fa fa-check text-success p-r-sm"></i>common.message.requestAccepted
+<div class="operation-status-info" *ngIf="isProcessing">
+  <div id='prog-bar-cont'>
+    <div id="prog-bar">
+      <div id="background"></div>
+    </div>
+  </div>
 </div>
 <ng-template #orderTemplate let-order let-plan="plan">
   <ng-container *ngFor="let value of order">
@@ -25,7 +29,7 @@
         <div class="btn-group dropdown">
           <button class="btn-drop more-option-h"
                   nz-dropdown nzTrigger="click"
-                  [nzDropdownMenu]="export5" type="button">
+                  [nzDropdownMenu]="export5" type="button" (nzVisibleChange)="change($event)">
             <i class="fa fa-ellipsis-h"></i>
           </button>
           <nz-dropdown-menu #export5="nzDropdownMenu" role="menu">
@@ -163,7 +167,7 @@
       <td>
         <div class="btn-group dropdown">
           <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [ngClass]="{'disable-link': plan.isFinished}"
-                  [nzDropdownMenu]="export2" type="button">
+                  [nzDropdownMenu]="export2" type="button" (nzVisibleChange)="change($event)">
             <i class="fa fa-ellipsis-h"></i>
           </button>
           <nz-dropdown-menu #export2="nzDropdownMenu" role="menu">
@@ -396,39 +400,51 @@
           <div class="hide" [ngClass]="{'show-block':object.mapOfCheckedId.size>0}">
             <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isModify" (click)="modifySelectedOrder()"><i
               class="fa fa-edit"></i>&nbsp;
-              <span class="hidden-sm-down" translate>dailyPlan.button.modifySelectedOrder</span>
+              <span class="hidden-sm-down" translate>dailyPlan.button.setParameters</span>
             </button>
             <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isPlanned" (click)="submitSelectedOrder()"><i
               class="fa fa-rocket"></i>&nbsp;
-              <span class="hidden-sm-down" translate>dailyPlan.button.submitSelectedOrder</span>
+              <span class="hidden-sm-down" translate>dailyPlan.button.submitOrder</span>
             </button>
             <button class="btn btn-grey btn-sm m-l-12 bg-hover-color" [disabled]="!object.isPlanned"
                     (click)="removeSelectedOrder()"><i
               class="fa fa-trash"></i>&nbsp;
-              <span class="hidden-sm-down" translate>dailyPlan.button.removeSelectedOrder</span>
+              <span class="hidden-sm-down" translate>dailyPlan.button.removeOrder</span>
             </button>
             <button class="btn btn-grey btn-sm m-l-12" [disabled]="object.isCancel" (click)="cancelSelectedOrder()"><i
               class="fa fa-times"></i>&nbsp;
-              <span class="hidden-sm-down" translate>dailyPlan.button.cancelSelectedOrder</span>
+              <span class="hidden-sm-down" translate>dailyPlan.button.cancel</span>
+            </button>
+            <button class="btn btn-grey btn-sm m-l-12" [disabled]="object.isCancel" (click)="cancelSelectedOrder(true)"><i
+              class="fa fa-times"></i>&nbsp;
+              <span class="hidden-sm-down" translate>dailyPlan.button.cancelAndKillTask</span>
             </button>
             <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isSuspend" (click)="suspendSelectedOrder()"><i
                 class="fa fa-stop"></i>&nbsp;
-              <span class="hidden-sm-down" translate>dailyPlan.button.suspendSelectedOrder</span>
+              <span class="hidden-sm-down" translate>dailyPlan.button.suspend</span>
+            </button>
+            <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isSuspend" (click)="suspendSelectedOrder(true)"><i
+              class="fa fa-stop"></i>&nbsp;
+              <span class="hidden-sm-down" translate>dailyPlan.button.suspendAndKillTask</span>
             </button>
             <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isResume" (click)="resumeSelectedOrder()"><i
               class="fa fa-step-forward"></i>&nbsp;
-              <span class="hidden-sm-down" translate>dailyPlan.button.resumeSelectedOrder</span>
+              <span class="hidden-sm-down" translate>dailyPlan.button.resume</span>
             </button>
           </div>
           <div class="hide" [ngClass]="{'show-block':dateRanges.length > 0}">
             <button class="btn btn-grey btn-sm m-l-12 bg-hover-color"
                     (click)="removeSelectedOrder()"><i
               class="fa fa-trash"></i>&nbsp;
-              <span class="hidden-sm-down" translate>dailyPlan.button.removeSelectedOrder</span>
+              <span class="hidden-sm-down" translate>dailyPlan.button.removeOrder</span>
             </button>
             <button class="btn btn-grey btn-sm m-l-12" (click)="cancelSelectedOrder()"><i
               class="fa fa-times"></i>&nbsp;
-              <span class="hidden-sm-down" translate>dailyPlan.button.cancelSelectedOrder</span>
+              <span class="hidden-sm-down" translate>dailyPlan.button.cancel</span>
+            </button>
+            <button class="btn btn-grey btn-sm m-l-12" (click)="cancelSelectedOrder(true)"><i
+              class="fa fa-times"></i>&nbsp;
+              <span class="hidden-sm-down" translate>dailyPlan.button.cancelAndKillTask</span>
             </button>
           </div>
         </div>
