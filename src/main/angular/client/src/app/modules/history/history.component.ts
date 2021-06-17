@@ -1174,7 +1174,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (flag) {
       this.temp_filter3.states = clone(this.yade.filter.states);
       this.temp_filter3.date = clone(this.yade.filter.date);
-      this.yade.filter.historySstatestates = '';
+      this.yade.filter.states = '';
       this.yade.filter.date = '';
     } else {
       if (this.temp_filter3.states) {
@@ -1624,6 +1624,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.isLoading = true;
       });
     } else if (this.historyFilters.type === 'SUBMISSION') {
+      this.submission.filter.category = '';
       this.submission.filter.date = '';
       if (obj.radio === 'planned') {
         filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);
@@ -1758,8 +1759,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (!this.task.filter.date) {
       this.task.filter.date = 'today';
     }
-    if (!this.yade.filter.historyStates) {
-      this.yade.filter.historyStates = 'ALL';
+    if (!this.yade.filter.states) {
+      this.yade.filter.states = 'ALL';
     }
     if (!this.yade.filter.date) {
       this.yade.filter.date = 'today';
@@ -1812,7 +1813,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.yadeSearch = {};
       this.yadeSearch.date = 'date';
       if (type === 'STATE') {
-        this.yade.filter.historyStates = value;
+        this.yade.filter.states = value;
       } else if (type === 'DATE') {
         this.yade.filter.date = value;
       }
@@ -2867,8 +2868,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (!this.task.filter.date) {
       this.task.filter.date = 'today';
     }
-    if (!this.yade.filter.historyStates) {
-      this.yade.filter.historyStates = 'ALL';
+    if (!this.yade.filter.states) {
+      this.yade.filter.states = 'ALL';
     }
     if (!this.yade.filter.date) {
       this.yade.filter.date = 'today';

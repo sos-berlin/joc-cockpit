@@ -406,29 +406,29 @@
               class="fa fa-rocket"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.submitOrder</span>
             </button>
-            <button class="btn btn-grey btn-sm m-l-12 bg-hover-color" [disabled]="!object.isPlanned"
-                    (click)="removeSelectedOrder()"><i
+            <button class="btn btn-grey btn-sm m-l-12 bg-hover-color"
+                    [disabled]="!object.isPlanned" (click)="removeSelectedOrder()"><i
               class="fa fa-trash"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.removeOrder</span>
             </button>
-            <button class="btn btn-grey btn-sm m-l-12" [disabled]="object.isCancel" (click)="cancelSelectedOrder()"><i
-              class="fa fa-times"></i>&nbsp;
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController.orders.cancel"
+                    [disabled]="object.isCancel" (click)="cancelSelectedOrder()"><i class="fa fa-times"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.cancel</span>
             </button>
-            <button class="btn btn-grey btn-sm m-l-12" [disabled]="object.isCancel" (click)="cancelSelectedOrder(true)"><i
-              class="fa fa-times"></i>&nbsp;
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController.orders.cancel"
+                    [disabled]="object.isCancel" (click)="cancelSelectedOrder(true)"><i class="fa fa-times"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.cancelAndKillTask</span>
             </button>
-            <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isSuspend" (click)="suspendSelectedOrder()"><i
-                class="fa fa-stop"></i>&nbsp;
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController.orders.suspendResume"
+                    [disabled]="!object.isSuspend" (click)="suspendSelectedOrder()"><i class="fa fa-stop"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.suspend</span>
             </button>
-            <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isSuspend" (click)="suspendSelectedOrder(true)"><i
-              class="fa fa-stop"></i>&nbsp;
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController.orders.suspendResume"
+                    [disabled]="!object.isSuspend" (click)="suspendSelectedOrder(true)"><i class="fa fa-stop"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.suspendAndKillTask</span>
             </button>
-            <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isResume" (click)="resumeSelectedOrder()"><i
-              class="fa fa-step-forward"></i>&nbsp;
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController.orders.suspendResume"
+                    [disabled]="!object.isResume" (click)="resumeSelectedOrder()"><i class="fa fa-step-forward"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.resume</span>
             </button>
           </div>
@@ -438,11 +438,13 @@
               class="fa fa-trash"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.removeOrder</span>
             </button>
-            <button class="btn btn-grey btn-sm m-l-12" (click)="cancelSelectedOrder()"><i
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController.orders.cancel"
+                    (click)="cancelSelectedOrder()"><i
               class="fa fa-times"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.cancel</span>
             </button>
-            <button class="btn btn-grey btn-sm m-l-12" (click)="cancelSelectedOrder(true)"><i
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController.orders.cancel"
+                    (click)="cancelSelectedOrder(true)"><i
               class="fa fa-times"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.cancelAndKillTask</span>
             </button>

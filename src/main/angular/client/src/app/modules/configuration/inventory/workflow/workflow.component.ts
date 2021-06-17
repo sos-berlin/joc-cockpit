@@ -76,6 +76,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   errorMsg: string;
   obj: any = {};
   isDisplay = false;
+  fullScreen = false;
   index = 0;
   presentObj: any = {};
   returnCodes: any = {on: 'success'};
@@ -123,6 +124,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
           this.selectedNode.job = {...this.selectedNode.job, ...this.coreService.clone(res.change.current.value)};
           this.setJobProperties();
           this.ref.detectChanges();
+          this.fullScreen = false
         }
       }
     });
@@ -195,7 +197,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.obj.script = false;
   }
 
-  fullScreen(): void {
+  showEditor(): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ScriptEditorComponent,
@@ -292,6 +294,10 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       });
       this.object.indeterminate5 = this.object.setOfCheckedDefaultArgu.size > 0 && !this.object.checked5;
     }
+  }
+
+  fitToScreen(): void{
+    this.fullScreen = !this.fullScreen;
   }
 
   cutParam(type): void {
@@ -885,6 +891,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       if (!isArray(this.selectedNode.job.defaultArguments)) {
         this.selectedNode.job.defaultArguments = this.coreService.convertObjectToArray(this.selectedNode.job, 'defaultArguments');
+        this.selectedNode.job.defaultArguments.filter((argu) => {
+          this.coreService.removeSlashToString(argu, 'value');
+        });
       }
     }
     if (!this.selectedNode.job.executable.arguments || isEmpty(this.selectedNode.job.executable.arguments)) {
@@ -903,6 +912,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       if (!isArray(this.selectedNode.job.executable.jobArguments)) {
         this.selectedNode.job.executable.jobArguments = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'jobArguments');
+        this.selectedNode.job.executable.jobArguments.filter((argu) => {
+          this.coreService.removeSlashToString(argu, 'value');
+        });
       }
     }
 
@@ -7049,6 +7061,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     if (job.defaultArguments) {
       if (job.executable.v1Compatible && job.executable.TYPE === 'ShellScriptExecutable') {
+        job.defaultArguments.filter((argu) => {
+          this.coreService.addSlashToString(argu, 'value');
+        });
         this.coreService.convertArrayToObject(job, 'defaultArguments', true);
       } else {
         delete job.defaultArguments;
@@ -7069,6 +7084,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (job.executable.jobArguments) {
       if (job.executable.TYPE === 'InternalExecutable') {
         if (job.executable.jobArguments && isArray(job.executable.jobArguments)) {
+          job.executable.jobArguments.filter((argu) => {
+            this.coreService.addSlashToString(argu, 'value');
+          });
           this.coreService.convertArrayToObject(job.executable, 'jobArguments', true);
         }
       } else {

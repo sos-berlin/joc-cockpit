@@ -352,6 +352,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   workflowFilters: any = {};
   showPanel: any;
   showSearchPanel = false;
+  isProcessing = false;
   searchFilter: any = {};
   sideView: any = {};
   selectedFiltered: any = {};
@@ -410,6 +411,19 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
     $('.scroll-y').remove();
     this.modal.closeAll();
+  }
+
+  changedHandler(flag: boolean): void {
+   
+    this.isProcessing = flag;
+  }
+
+  private resetAction(): void {
+    if (this.isProcessing) {
+      setTimeout(() => {
+        this.isProcessing = false;
+      }, 100);
+    }
   }
 
   /* ---------------------------- Broadcast messages ----------------------------------*/
@@ -917,6 +931,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             }
           }
         }
+        if (args.eventSnapshots[j].eventType === 'ProblemEvent' && args.eventSnapshots[j].message) {
+          this.resetAction();
+        }
         if (args.eventSnapshots[j].objectType === 'WORKFLOW' && (args.eventSnapshots[j].eventType.match(/Item/))) {
           let path = args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/')) || args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/') + 1);
           if (this.child && this.child.defaultSelectedKeys.length > 0 && this.child.defaultSelectedKeys.indexOf(path) > -1) {
@@ -971,7 +988,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   private getWorkflowList(obj): void {
-    if (obj.folders.length === 1) {
+    if (obj.folders && obj.folders.length === 1) {
       this.currentPath = obj.folders[0].folder;
     }
     this.coreService.post('workflows', obj).subscribe((res: any) => {
@@ -1085,6 +1102,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         }
       }
+      this.resetAction();
+    }, () => {
+      this.resetAction();
     });
   }
 

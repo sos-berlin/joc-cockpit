@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, ChangeDetectorRef} from '@angular/core';
+import {Component, OnInit, Input, ChangeDetectorRef, Output, EventEmitter} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Router} from '@angular/router';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
@@ -197,6 +197,7 @@ export class WorkflowActionComponent {
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
+  @Output() isChanged: EventEmitter<boolean> =   new EventEmitter();
 
   constructor(public modal: NzModalService, public coreService: CoreService, private router: Router) {
   }
@@ -207,7 +208,7 @@ export class WorkflowActionComponent {
   }
 
   addOrder(workflow): void {
-    this.modal.create({
+    const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: AddOrderModalComponent,
       nzClassName: 'lg',
@@ -221,6 +222,11 @@ export class WorkflowActionComponent {
       nzFooter: null,
       nzClosable: false
     });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.isChanged.emit(true);
+      }
+    })
   }
 
   showDailyPlan(workflow): void {

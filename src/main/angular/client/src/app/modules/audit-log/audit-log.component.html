@@ -98,6 +98,12 @@
   <div class="padding p-b-0">
     <div class="row m-b-12 m-t-xs">
       <div class="col-lg-12">
+        <button class="btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}" (click)="collapseDetails()">
+          <i class="fa fa-compress text"></i>
+        </button>
+        <button class="btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}" (click)="expandDetails()" >
+          <i class="fa fa-expand text" ></i>
+        </button>
         <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="advancedSearch()" *ngIf="!showSearchPanel">
           <span translate>common.button.advancedSearch</span>
           <i class="fa fa-caret-down p-l-xs"></i>
@@ -140,6 +146,7 @@
             [nzShowSizeChanger]="true"
             (nzPageIndexChange)="pageIndexChange($event)"
             (nzPageSizeChange)="pageSizeChange($event)"
+            (nzCurrentPageDataChange)="currentPageDataChange($event)"
             [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage || 500]"
           >
             <thead>

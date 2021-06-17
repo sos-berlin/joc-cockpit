@@ -101,26 +101,29 @@
               <span class="hidden-sm-down" translate>order.button.startOrderNow</span></button>-->
             <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isModify" (click)="modifyAllOrder()"><i
               class="fa fa-edit"></i>&nbsp;
-              <span class="hidden-sm-down" translate>dailyPlan.button.modifySelectedOrder</span>
+              <span class="hidden-sm-down" translate>dailyPlan.button.setParameters</span>
             </button>
-            <button class="hide btn btn-grey btn-sm m-l-12"
-                    [ngClass]="{'show-block':permission.currentController.orders.cancel}"
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController.orders.cancel"
                     [disabled]="object.isCancel" (click)="cancelAllOrder()"><i class="fa fa-times p-r-xs"></i>
-              <span class="hidden-sm-down" translate>dailyPlan.button.cancelSelectedOrder</span></button>
-            <button class="hide btn btn-grey btn-sm m-l-12"  *ngIf="object.isTerminate"
-                    [ngClass]="{'show-block':permission.currentController.orders}"
+              <span class="hidden-sm-down" translate>dailyPlan.button.cancel</span></button>
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController.orders.cancel"
+                    [disabled]="object.isCancel" (click)="cancelAllOrder(true)"><i class="fa fa-times"></i>&nbsp;
+              <span class="hidden-sm-down" translate>dailyPlan.button.cancelAndKillTask</span>
+            </button>
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="object.isTerminate && permission.currentController.orders"
                     (click)="terminateAllOrder()"><i class="fa fa-trash p-r-xs"></i>
               <span class="hidden-sm-down" translate>order.button.leaveWorkflow</span></button>
-            <button class="hide btn btn-grey btn-sm m-l-12"
-                    [ngClass]="{'show-block':permission.currentController.orders.suspendResume}"
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController.orders.suspendResume"
                     [disabled]="!object.isSuspend" (click)="suspendAllOrder()"><i class="fa fa-stop p-r-xs"></i>
-              <span class="hidden-sm-down" translate>dailyPlan.button.suspendSelectedOrder</span></button>
-            <button class="hide btn btn-grey btn-sm m-l-12"
-                    [ngClass]="{'show-block':permission.currentController.orders.suspendResume}"
-                    [disabled]="!object.isResume" (click)="resumeAllOrder()"><i
-              class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down" translate>dailyPlan.button.resumeSelectedOrder</span>
+              <span class="hidden-sm-down" translate>dailyPlan.button.suspend</span></button>
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController.orders.suspendResume"
+                    [disabled]="!object.isSuspend" (click)="suspendAllOrder(true)"><i class="fa fa-stop"></i>&nbsp;
+              <span class="hidden-sm-down" translate>dailyPlan.button.suspendAndKillTask</span>
             </button>
-
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController.orders.suspendResume"
+                    [disabled]="!object.isResume" (click)="resumeAllOrder()"><i
+              class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down" translate>dailyPlan.button.resume</span>
+            </button>
           </div>
         </div>
       </div>
@@ -178,7 +181,8 @@
                           <span [nz-tooltip]="order.title" [innerHtml]="order.orderId | highlight : orderFilters.searchText"></span>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
-                          <app-order-action [order]="order" [schedulerId]="schedulerIds.selected" [permission]="permission" [preferences]="preferences"></app-order-action>
+                          <app-order-action [order]="order" [schedulerId]="schedulerIds.selected" (isChanged)="changedHandler($event)"
+                                            [permission]="permission" [preferences]="preferences"></app-order-action>
                         </div>
                         <div class="text-sm text-left text-muted p-t-sm">
                           <span translate>order.label.state </span>:
@@ -285,7 +289,8 @@
                     <tr [ngClass]="{'light-bg': (showPanelObj && showPanelObj.orderId == order.orderId)}">
                       <td [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(order.orderId)" (nzCheckedChange)="onItemChecked(order, $event)"></td>
                       <td>
-                        <app-order-action [order]="order" [schedulerId]="schedulerIds.selected" [permission]="permission" [preferences]="preferences"></app-order-action>
+                        <app-order-action [order]="order" [schedulerId]="schedulerIds.selected" (isChanged)="changedHandler($event)"
+                                          [permission]="permission" [preferences]="preferences"></app-order-action>
                       </td>
                       <td>
                         <span class="show-in-single-line">

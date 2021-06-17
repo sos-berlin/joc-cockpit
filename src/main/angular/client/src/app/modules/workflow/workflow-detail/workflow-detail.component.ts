@@ -58,6 +58,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   orderCountMap = new Map();
   countArr = [];
   sideBar: any = {};
+  isProcessing = false;
   subscription: Subscription;
 
   filterBtn: any = [
@@ -134,6 +135,18 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       }
     } catch (e) {
       console.error(e);
+    }
+  }
+
+  changedHandler(flag: boolean): void {
+    this.isProcessing = flag;
+  }
+
+  private resetAction(): void {
+    if (this.isProcessing) {
+      setTimeout(() => {
+        this.isProcessing = false;
+      }, 100);
     }
   }
 
@@ -258,7 +271,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   }
 
   addOrder(): void {
-    this.modal.create({
+    const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: AddOrderModalComponent,
       nzClassName: 'lg',
@@ -270,6 +283,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       },
       nzFooter: null,
       nzClosable: false
+    });
+    modal.afterClose.subscribe((res) => {
+      if (res) {
+        this.isProcessing = true;
+      }
     });
   }
 
@@ -306,7 +324,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   }
 
   modifyOrder(): void {
-    this.modal.create({
+    const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ModifyStartTimeModalComponent,
       nzClassName: 'lg',
@@ -317,6 +335,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       },
       nzFooter: null,
       nzClosable: false
+    });
+    modal.afterClose.subscribe((res) => {
+      if (res) {
+        this.isProcessing = true;
+      }
     });
   }
 
@@ -333,7 +356,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   }
 
   resumeOrder(): void {
-    this.modal.create({
+    const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ResumeOrderModalComponent,
       nzComponentParams: {
@@ -344,6 +367,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       },
       nzFooter: null,
       nzClosable: false
+    });
+    modal.afterClose.subscribe((res) => {
+      if (res) {
+        this.isProcessing = true;
+      }
     });
   }
 
@@ -400,7 +428,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }, () => {
       this.loading = true;
     });
-
   }
 
   private getOrders(workflow, isFirst): void {
@@ -610,8 +637,10 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             if (event && event.target && event.target.getAttribute('id')) {
               self.coreService.showDocumentation(cell.value.getAttribute('documentationName'), self.preferences);
             } else {
-              self.showConfiguration(cell.value.getAttribute('jobName'));
+              self.showConfiguration({jobName:cell.value.getAttribute('jobName')});
             }
+          } else if (cell.value.tagName === 'If') {
+            self.showConfiguration({predicate:cell.value.getAttribute('predicate')});
           }
           evt.consume();
         }
@@ -636,7 +665,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       function mxIconSet(state) {
         this.images = [];
         let img;
-        if (state.cell && (state.cell.value.tagName === 'Order' || state.cell.value.tagName === 'Job')) {
+        if (state.cell && (state.cell.value.tagName === 'Order' || state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'If')) {
           img = mxUtils.createImage('./assets/images/menu.svg');
           let x = state.x - (20 * state.shape.scale), y = state.y - (8 * state.shape.scale);
           if (state.cell.value.tagName !== 'Job') {
@@ -653,15 +682,18 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
               if (state.cell.value.tagName === 'Order') {
                 data = state.cell.getAttribute('order');
                 data = JSON.parse(data);
-              } else {
+              } else if (state.cell.value.tagName === 'Job') {
                 const jobName = state.cell.value.getAttribute('jobName');
                 const documentationName = state.cell.value.getAttribute('documentationName');
                 data = {jobName, documentationName};
+              } else if (state.cell.value.tagName === 'If') {
+                const predicate = state.cell.value.getAttribute('predicate');
+                data = {predicate};
               }
               try {
                 if (self.menu) {
                   setTimeout(() => {
-                    if (data.jobName) {
+                    if (data.jobName || data.predicate) {
                       self.job = data;
                     } else {
                       self.order = data;
@@ -1005,7 +1037,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         operation: type,
         name: order.orderId
       };
-      this.modal.create({
+      const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
@@ -1017,27 +1049,49 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         nzFooter: null,
         nzClosable: false
       });
+      modal.afterClose.subscribe((res) => {
+        if (res) {
+          this.isProcessing = true;
+        }
+      });
     } else {
+      this.isProcessing = true;
       this.coreService.post('orders/' + url, obj).subscribe(() => {
+      }, () => {
+        this.isProcessing = false;
       });
     }
   }
 
   /* --------- Job action menu operations ----------------*/
 
-  showConfiguration(jobName): void {
-    const job = this.workflow.jobs[jobName];
-    const data = job.executable.TYPE === 'ShellScriptExecutable' ? job.executable.script : job.executable.className;
-    if (job && job.executable) {
+  showConfiguration(argu): void {
+    let nzComponentParams;
+    if (argu.jobName) {
+      const job = this.workflow.jobs[argu.jobName];
+      const data = job.executable.TYPE === 'ShellScriptExecutable' ? job.executable.script : job.executable.className;
+      if (job && job.executable) {
+        nzComponentParams = {
+          data,
+          jobName: argu.jobName,
+          isScript: job.executable.TYPE === 'ShellScriptExecutable',
+          readonly: true
+        };
+      }
+    } else {
+      nzComponentParams = {
+        predicate: true,
+        data: argu.predicate,
+        isScript: true,
+        readonly: true
+      };
+    }
+    if (nzComponentParams) {
       this.modal.create({
         nzTitle: undefined,
         nzContent: ScriptModalComponent,
         nzClassName: 'lg',
-        nzComponentParams: {
-          data,
-          jobName,
-          isScript: job.executable.TYPE === 'ShellScriptExecutable'
-        },
+        nzComponentParams,
         nzFooter: null,
         nzClosable: false
       });

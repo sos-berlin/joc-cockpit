@@ -226,20 +226,22 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   editController(controller): void {
-    this.coreService.post('controllers/p', {controllerId: controller}).subscribe((res: any) => {
-      this.modalInstance = this.modal.create({
-        nzTitle: undefined,
-        nzContent: StartUpModalComponent,
-        nzComponentParams: {
-          isModal: true,
-          controllerInfo: res.controllers,
-          agents: res.agents,
-          modalRef: true
-        },
-        nzFooter: null,
-        nzClosable: false
+    if (this.permission.joc && this.permission.joc.administration.controllers.manage) {
+      this.coreService.post('controllers/p', {controllerId: controller}).subscribe((res: any) => {
+        this.modalInstance = this.modal.create({
+          nzTitle: undefined,
+          nzContent: StartUpModalComponent,
+          nzComponentParams: {
+            isModal: true,
+            controllerInfo: res.controllers,
+            agents: res.agents,
+            modalRef: true
+          },
+          nzFooter: null,
+          nzClosable: false
+        });
       });
-    });
+    }
   }
 
   deleteController(matser): void {
@@ -282,25 +284,27 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   editAgent(agent, controller): void {
-    this.getAgents(controller, () => {
-      const modal = this.modal.create({
-        nzTitle: undefined,
-        nzContent: AgentModalComponent,
-        nzAutofocus: null,
-        nzComponentParams: {
-          controllerId: controller.controllerId,
-          agents: controller.agents,
-          data: agent
-        },
-        nzFooter: null,
-        nzClosable: false
+    if (this.permission.joc && this.permission.joc.administration.controllers.manage) {
+      this.getAgents(controller, () => {
+        const modal = this.modal.create({
+          nzTitle: undefined,
+          nzContent: AgentModalComponent,
+          nzAutofocus: null,
+          nzComponentParams: {
+            controllerId: controller.controllerId,
+            agents: controller.agents,
+            data: agent
+          },
+          nzFooter: null,
+          nzClosable: false
+        });
+        modal.afterClose.subscribe(result => {
+          if (result) {
+            this.getData();
+          }
+        });
       });
-      modal.afterClose.subscribe(result => {
-        if (result) {
-          this.getData();
-        }
-      });
-    });
+    }
   }
 
   removeAgent(agent, controller): void {

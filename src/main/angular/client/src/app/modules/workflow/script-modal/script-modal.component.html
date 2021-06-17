@@ -1,7 +1,10 @@
 <div class="modal-header">
-  <h4 class="modal-title">
+  <h4 class="modal-title" *ngIf="jobName">
     <span translate>workflow.label.showConfiguration</span>
     <i class="text-muted p-l-xs text">{{jobName}}</i>
+  </h4>
+  <h4 class="modal-title" *ngIf="predicate">
+    <span translate>workflow.label.showConfiguration</span>
   </h4>
   <button type="button" class="close" aria-label="Close"
           (click)="activeModal.destroy()">

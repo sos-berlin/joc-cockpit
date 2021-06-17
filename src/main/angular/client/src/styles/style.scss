@@ -3944,8 +3944,7 @@ table.folder-tree-grid {
   position: fixed;
   top: 8px;
   z-index: 9990;
-  left: 50%;
-  transform: translateX(-50%);
+  right: 520px;
 }
 
 .expand-collapse:hover {
@@ -4786,6 +4785,9 @@ tr.disabled-row td:not(.menu) {
   margin-left: -4px;
   overflow: auto;
 }
+.tree-block>.ps.ps--active-y>.ps__rail-y{
+  right: 10px !important;
+}
 
 .tree-children {
   &.tree-children-no-padding {
@@ -5227,6 +5229,10 @@ General CSS
 
 .ant-drawer-body {
   padding: 0;
+  .operation-status-info {
+    top: 24px;
+    right: 12px;
+  }
 }
 
 .ant-drawer-header-no-title {
@@ -5510,6 +5516,16 @@ body tr.mxPopupMenuItemHover {
   top: 128px;
   right: 0;
   z-index: 9;
+  .fullScreen{
+    position: fixed;
+    top: 200px;
+    margin-right: 12px;
+    height: 100%;
+    background-color: var(--bg-box) !important;
+    .tab-ht{
+      max-height: calc(100vh - 268px)!important;
+    }
+  }
 }
 
 .property-panel .sidebar-open, .property-panel .sidebar-close {

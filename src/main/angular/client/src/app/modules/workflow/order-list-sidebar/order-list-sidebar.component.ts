@@ -1,21 +1,24 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ChangeParameterModalComponent} from '../../../components/modify-modal/modify.component';
+import {OrderActionComponent} from '../../order-overview/order-action/order-action.component';
 
 @Component({
   selector: 'app-order-list-sidebar',
   templateUrl: './order-list-sidebar.component.html'
 })
-export class OrderListSidebarComponent {
+export class OrderListSidebarComponent implements OnChanges{
   @Input() orders;
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
   @Input() orderRequirements: any;
+  data = [];
   checked = false;
   indeterminate = false;
+  isProcessing = false;
   setOfCheckedId = new Set<string>();
   object = {
     isModify: false,
@@ -25,9 +28,57 @@ export class OrderListSidebarComponent {
     isTerminate: false
   };
 
+  @ViewChild(OrderActionComponent, {static: false}) actionChild;
+
   constructor(public coreService: CoreService, public modal: NzModalService) {
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.orders && changes.orders.currentValue) {
+      // console.log(changes.orders, this.orders)
+      this.refreshView();
+      this.resetAction();
+    }
+  }
+
+  private refreshView(): void {
+    console.log(this.actionChild)
+    if (!this.actionChild || (!this.actionChild.isVisible && this.setOfCheckedId.size === 0)) {
+      this.data = [...this.orders];
+    } else {
+      if (this.setOfCheckedId.size > 0) {
+        console.log(this.setOfCheckedId);
+        let tempArr = [];
+        for (let i in this.orders) {
+          if (!this.setOfCheckedId.has(this.orders[i].orderId)) {
+            for (let j in this.data) {
+              if (this.setOfCheckedId.has(this.data[j].orderId)) {
+                tempArr.push(this.data[j]);
+                break;
+              }
+            }
+          }
+        }
+        this.data = tempArr.concat(this.orders);
+        console.log('>>>')
+      }
+      setTimeout(() => {
+        this.refreshView();
+      }, 750);
+    }
+  }
+
+  changedHandler(flag: boolean): void {
+    this.isProcessing = flag;
+  }
+
+  private resetAction(): void {
+    if (this.isProcessing) {
+      setTimeout(() => {
+        this.isProcessing = false;
+      }, 100);
+    }
+  }
 
   updateCheckedSet(orderId: string, checked: boolean): void {
     if (checked) {
@@ -108,24 +159,26 @@ export class OrderListSidebarComponent {
     this._bulkOperation('Terminate', 'remove_when_terminated');
   }
 
-  suspendAllOrder(): void {
-    this._bulkOperation('Suspend', 'suspend');
+  suspendAllOrder(isKill = false): void {
+    this._bulkOperation('Suspend', 'suspend', isKill);
   }
 
   resumeAllOrder(): void {
     this._bulkOperation('Resume', 'resume');
   }
 
-  cancelAllOrder(): void {
-    this._bulkOperation('Cancel', 'cancel');
+  cancelAllOrder(isKill = false): void {
+    this._bulkOperation('Cancel', 'cancel', isKill);
   }
 
-  _bulkOperation(operation, url): void {
+  _bulkOperation(operation, url, isKill = false): void {
     const obj: any = {
       controllerId: this.schedulerId,
       orderIds: Array.from(this.setOfCheckedId)
     };
-
+    if (isKill) {
+      obj.kill = true;
+    }
     if (this.preferences.auditLog) {
       let comments = {
         radio: 'predefined',
@@ -147,12 +200,16 @@ export class OrderListSidebarComponent {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
+          this.isProcessing = true;
           this.resetCheckBox();
         }
       });
     } else {
+      this.isProcessing = true;
       this.coreService.post('orders/' + url, obj).subscribe(() => {
         this.resetCheckBox();
+      }, () => {
+        this.isProcessing = false;
       });
     }
   }

@@ -1398,6 +1398,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         if (isMultiple) {
           this.resetCheckBox();
         }
+      }, () => {
+        this.isProcessing = false;
       });
     }
   }
@@ -1662,6 +1664,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       controllerId: this.schedulerIds.selected,
       filter: {}
     };
+    if (this.dailyPlanFilters.filter.status) {
+      this.dailyPlanFilters.filter.status = '';
+    }
     this.applySearchFilter(obj.filter, this.searchFilter);
     this.resetCheckBox();
     if (this.searchFilter.radio === 'current') {
@@ -1763,6 +1768,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (this.isSearchHit) {
       this.isSearchHit = false;
       this.loadOrderPlan();
+    }
+    if (!this.dailyPlanFilters.filter.status) {
+      this.dailyPlanFilters.filter.status = 'ALL';
     }
   }
 
@@ -2238,6 +2246,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.savedFilter.selected = this.savedFilter.selected || this.savedFilter.favorite;
     } else {
       this.savedFilter.selected = undefined;
+    }
+    if (!this.dailyPlanFilters.filter.status) {
+      this.dailyPlanFilters.filter.status = 'ALL';
     }
     if (localStorage.views) {
       this.pageView = JSON.parse(localStorage.views).dailyPlan;

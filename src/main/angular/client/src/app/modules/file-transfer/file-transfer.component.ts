@@ -822,6 +822,14 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       this.showFiles = this.preferences.showFiles;
     }
 
+    if (!this.yadeFilters.filter.states) {
+      this.yadeFilters.filter.states = 'ALL';
+    }
+
+    if (!this.yadeFilters.filter.date) {
+      this.yadeFilters.filter.date = 'today';
+    }
+
     if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
       this.checkSharedFilters();
     } else {

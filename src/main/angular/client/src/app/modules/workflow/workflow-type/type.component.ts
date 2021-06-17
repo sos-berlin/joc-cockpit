@@ -17,6 +17,8 @@ export class TypeComponent implements OnChanges {
   @Input() schedulerId: any;
   @Input() orderRequirements: any;
   @Output() update: EventEmitter<any> = new EventEmitter();
+  @Output() isChanged: EventEmitter<boolean> = new EventEmitter();
+
   sideBar: any = {};
   isFirst = false;
 
@@ -43,6 +45,10 @@ export class TypeComponent implements OnChanges {
     if (changes.orders) {
       this.updateOrder();
     }
+  }
+
+  changedHandler(flag: boolean): void {
+    this.isChanged.emit(flag);
   }
 
   toggleFunc(json, flag): void {
@@ -307,23 +313,35 @@ export class TypeComponent implements OnChanges {
   /* --------- Job action menu operations ----------------*/
 
   showConfiguration(instruction): void {
+    let nzComponentParams;
     if (instruction.TYPE === 'Job') {
       const job = this.jobs[instruction.jobName];
       const data = job.executable.TYPE === 'ShellScriptExecutable' ? job.executable.script : job.executable.className;
       if (job && job.executable) {
-        this.modal.create({
-          nzTitle: undefined,
-          nzContent: ScriptModalComponent,
-          nzClassName: 'lg',
-          nzComponentParams: {
-            data,
-            jobName: instruction.jobName,
-            isScript: job.executable.TYPE === 'ShellScriptExecutable'
-          },
-          nzFooter: null,
-          nzClosable: false
-        });
+        nzComponentParams = {
+          data,
+          jobName: instruction.jobName,
+          isScript: job.executable.TYPE === 'ShellScriptExecutable',
+          readonly: true
+        };
       }
+    } else {
+      nzComponentParams = {
+        predicate: true,
+        data: instruction.predicate,
+        isScript: true,
+        readonly: true
+      };
+    }
+    if (nzComponentParams) {
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: ScriptModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams,
+        nzFooter: null,
+        nzClosable: false
+      });
     }
   }
 

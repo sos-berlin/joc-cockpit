@@ -1,3 +1,10 @@
+<div class="operation-status-info" *ngIf="isProcessing">
+  <div id='prog-bar-cont'>
+    <div id="prog-bar">
+      <div id="background"></div>
+    </div>
+  </div>
+</div>
 <div class="white box-shadow sub-header" style="height: 54px">
   <div class="row">
     <div class="col-md-12">
@@ -277,11 +284,11 @@
                   </ul>
                   <ul nz-menu *ngIf="job">
                     <li nz-menu-item>
-                      <a (click)="showConfiguration(job.jobName);">
+                      <a (click)="showConfiguration(job);">
                         <span translate>common.button.showConfiguration</span>
                       </a>
                     </li>
-                    <li nz-menu-item [nzDisabled]="!job.documentationName">
+                    <li nz-menu-item [nzDisabled]="!job.documentationName" *ngIf="job.jobName">
                       <a (click)="coreService.showDocumentation(job.documentationName, preferences)">
                         <span translate>common.button.viewDocumentation</span>
                       </a>
@@ -303,7 +310,7 @@
                   </span>
                 </div>
                 <app-type [configuration]="workFlowJson" [jobs]="workFlowJson.jobs" [orderRequirements]="orderRequirements" [permission]="permission" [preferences]="preferences"
-                          [schedulerId]="schedulerIds.selected" [expandAll]="isExpandAll"
+                          [schedulerId]="schedulerIds.selected" [expandAll]="isExpandAll" (isChanged)="changedHandler($event)"
                           [orders]="workflow.orders"></app-type>
                 <div class="rg-bottom"><span></span></div>
               </div>

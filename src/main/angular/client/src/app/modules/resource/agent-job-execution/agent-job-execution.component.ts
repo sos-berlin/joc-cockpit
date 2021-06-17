@@ -233,6 +233,9 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     if (!(this.agentFilters.current || this.agentFilters.current === false)) {
       this.agentFilters.current = this.preferences.currentController;
     }
+    if (!this.agentFilters.filter.date) {
+      this.agentFilters.filter.date = 'all';
+    }
     this.savedFilter = JSON.parse(this.saveService.agentFilters) || {};
     if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
       this.checkSharedFilters();

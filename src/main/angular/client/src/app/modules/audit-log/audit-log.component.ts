@@ -201,6 +201,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   savedFilter: any = {};
   filterList: any = [];
   data = [];
+  currentData = [];
   searchableProperties = ['controllerId', 'category', 'account', 'request', 'created', 'comment', 'ticketLink'];
 
   subscription1: Subscription;
@@ -631,6 +632,10 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.adtLog.entryPerPage = $event;
   }
 
+  currentPageDataChange($event): void {
+    this.currentData = $event;
+  }
+
   searchInResult(): void {
     this.data = this.adtLog.searchText ? this.searchPipe.transform(this.auditLogs, this.adtLog.searchText, this.searchableProperties) : this.auditLogs;
     this.data = [...this.data];
@@ -701,6 +706,18 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.showSearchPanel = false;
     this.searchFilter = {};
     this.load(null);
+  }
+
+  expandDetails(): void{
+    this.currentData.forEach((value) => {
+      this.showDetail(value);
+    });
+  }
+
+  collapseDetails(): void {
+    this.currentData.forEach((value: any) => {
+      value.show = false;
+    });
   }
 
   search(flag = false): void {

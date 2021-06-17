@@ -1,3 +1,10 @@
+<div class="operation-status-info" *ngIf="isProcessing">
+  <div id='prog-bar-cont'>
+    <div id="prog-bar">
+      <div id="background"></div>
+    </div>
+  </div>
+</div>
 <div class="white box-shadow sub-header">
   <div class="row">
     <div class="col-md-12">
@@ -178,7 +185,7 @@
                           <span [nz-tooltip]="workflow.title" [innerHtml]="workflow.name | highlight : workflowFilters.searchText"></span>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
-                          <app-workflow-action [schedulerId]="schedulerIds.selected" [permission]="permission"
+                          <app-workflow-action [schedulerId]="schedulerIds.selected" [permission]="permission" (isChanged)="changedHandler($event)"
                                                [preferences]="preferences" [workflow]="workflow"></app-workflow-action>
                         </div>
                       </div>
@@ -376,7 +383,7 @@
                     <tr [ngClass]="{'light-bg':workflow.show}">
                       <td>
                         <div class="btn-group dropdown">
-                          <app-workflow-action [schedulerId]="schedulerIds.selected" [permission]="permission"
+                          <app-workflow-action [schedulerId]="schedulerIds.selected" [permission]="permission" (isChanged)="changedHandler($event)"
                                                [preferences]="preferences" [workflow]="workflow"></app-workflow-action>
                         </div>
                       </td>
@@ -463,7 +470,7 @@
                           </div>
                           <app-type [configuration]="workflow.configuration" [jobs]="workflow.configuration.jobs" [orderRequirements]="workflow.configuration.orderRequirements" [permission]="permission" [preferences]="preferences"
                                     [schedulerId]="schedulerIds.selected" [expandAll]="workflow.isExpand"
-                                    (update)="updatePanelHeight()" [orders]="workflow.orders"></app-type>
+                                    (update)="updatePanelHeight()" (isChanged)="changedHandler($event)" [orders]="workflow.orders"></app-type>
                         </div>
                       </td>
                     </tr>

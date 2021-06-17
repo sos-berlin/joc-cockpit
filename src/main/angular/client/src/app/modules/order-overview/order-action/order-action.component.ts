@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, Output, EventEmitter} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
@@ -14,6 +14,8 @@ export class OrderActionComponent {
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
+
+  @Output() isChanged: EventEmitter<boolean> =   new EventEmitter();
   isVisible: boolean;
 
   constructor(public coreService: CoreService, private modal: NzModalService) {
@@ -38,7 +40,7 @@ export class OrderActionComponent {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-
+        this.isChanged.emit(true);
       }
     });
   }
@@ -88,12 +90,15 @@ export class OrderActionComponent {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-
+          this.isChanged.emit(true);
         }
       });
     } else {
+      this.isChanged.emit(true);
       this.coreService.post('orders/' + url, obj).subscribe(() => {
 
+      }, () => {
+        this.isChanged.emit(false);
       });
     }
   }
@@ -113,7 +118,7 @@ export class OrderActionComponent {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-
+        this.isChanged.emit(true);
       }
     });
   }

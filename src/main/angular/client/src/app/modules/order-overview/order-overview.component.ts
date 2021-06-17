@@ -224,6 +224,10 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.subscription2.unsubscribe();
   }
 
+  changedHandler(flag: boolean): void {
+    this.isProcessing = flag;
+  }
+
   /* ---------------------------- Broadcast messages ----------------------------------*/
   receiveMessage($event): void {
     this.pageView = $event;
@@ -488,8 +492,8 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this._bulkOperation('Terminate', 'remove_when_terminated');
   }
 
-  suspendAllOrder(): void {
-    this._bulkOperation('Suspend', 'suspend');
+  suspendAllOrder(isKill = false): void {
+    this._bulkOperation('Suspend', 'suspend', isKill);
   }
 
   resumeAllOrder(): void {
@@ -500,14 +504,17 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this._bulkOperation('Start', 'add');
   }
 
-  cancelAllOrder(): void{
-    this._bulkOperation('Cancel', 'cancel');
+  cancelAllOrder(isKill = false): void {
+    this._bulkOperation('Cancel', 'cancel', isKill);
   }
 
-  _bulkOperation(operation, url): void{
+  _bulkOperation(operation, url, isKill = false): void {
     const obj: any = {
       controllerId: this.schedulerIds.selected
     };
+    if (isKill) {
+      obj.kill = true;
+    }
     if (operation === 'add') {
       obj.orders = [];
     } else {
@@ -540,11 +547,16 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         nzClosable: false
       });
       modal.afterClose.subscribe(result => {
-
+        if (result) {
+          this.isProcessing = true;
+        }
       });
     } else {
+      this.isProcessing = true;
       this.coreService.post('orders/' + url, obj).subscribe(() => {
 
+      }, () => {
+        this.isProcessing = false;
       });
     }
   }
@@ -605,6 +617,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       let flag1 = false;
       let flag2 = false;
       for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].eventType === 'ProblemEvent' && args.eventSnapshots[j].message) {
+          this.resetAction();
+        }
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
           flag = true;
           if (!this.showPanelObj) {
@@ -706,13 +721,15 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         });
         this.object.mapOfCheckedId = tempObject;
         this.object.mapOfCheckedId.size > 0 ? this.refreshCheckedStatus() : this.resetCheckBox();
-      } else{
+      } else {
         this.resetCheckBox();
       }
+      this.resetAction();
     }, () => {
       this.isLoaded = true;
       this.loading = true;
       this.resetCheckBox();
+      this.resetAction();
     });
   }
 
@@ -738,4 +755,12 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   /* ================================= End Action ============================*/
+
+  private resetAction(): void {
+    if (this.isProcessing) {
+      setTimeout(() => {
+        this.isProcessing = false;
+      }, 100);
+    }
+  }
 }

@@ -185,7 +185,7 @@
             <nz-tab [nzTitle]="'workflow.label.script' | translate" (nzClick)="reloadScript()" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE !== 'InternalExecutable'">
               <div class="row" *ngIf="isDisplay">
                 <div class="col-md-12 role">
-                  <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="fullScreen()" style="right: 15px;top:1px;font-size: 16px;z-index: 999"></i>
+                  <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="showEditor()" style="right: 15px;top:1px;font-size: 16px;z-index: 999"></i>
                   <div class="b-a" [ngClass]="{'invalid': obj.script || (script.invalid && (script.dirty && script.touched))}">
                     <ngx-codemirror required #script="ngModel" [(ngModel)]="selectedNode.job.executable.script"
                                     [options]="cmOption" (focusChange)="focusChange()" (focusout)="saveToHistory()"
@@ -216,9 +216,15 @@
                 </div>
               </div>
             </nz-tab>
-            <nz-tab [nzTitle]="'workflow.label.arguments' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && selectedNode.job.executable.v1Compatible">
+            <nz-tab  [nzTitle]="'workflow.label.arguments' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && selectedNode.job.executable.v1Compatible">
+              <div [ngClass]="{'fullScreen': fullScreen}">
               <div class="text-right m-t-n-6">
-                <button type="button" class="btn btn-grey btn-sm" [disabled]="object.setOfCheckedDefaultArgu.size === 0"
+                <button type="button" class="btn btn-grey btn-sm"
+                        nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" (click)="fitToScreen()" translate>
+                  <i class="fa fa-arrows-alt" *ngIf="!fullScreen"></i>
+                  <i class="fa fa-window-close-o" *ngIf="fullScreen"></i>
+                </button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="object.setOfCheckedDefaultArgu.size === 0"
                         nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('defaultArguments')" translate>
                   <i class="fa fa-scissors"></i>
                 </button>
@@ -241,7 +247,7 @@
                     <div class="col-md-8 col-lg-6 m-b-sm" translate>common.label.value</div>
                   </div>
                 </div>
-                <div class="col-md-12" style="max-height: calc(100vh - 760px); overflow: auto">
+                <div class="col-md-12 tab-ht" style="max-height: calc(100vh - {{selectedNode.job.executable.TYPE === 'ShellScriptExecutable' ? '760px' : '686px'}}); overflow: auto">
                   <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.job.defaultArguments)">
                     <div class="form-group row m-b-0 m-l-md move-on-hover" *ngFor="let argument of selectedNode.job.defaultArguments; let i = index" cdkDrag>
                       <div class="pos-abt move-icon" style="margin-left: -31px;font-size: 18px;margin-top: 2px;cursor: move;" cdkDragHandle>
@@ -280,10 +286,17 @@
                   </div>
                 </div>
               </div>
+              </div>
             </nz-tab>
             <nz-tab [nzTitle]="'workflow.label.environmentVariables' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'">
+              <div [ngClass]="{'fullScreen': fullScreen}">
               <div class="text-right m-t-n-6">
-                <button type="button" class="btn btn-grey btn-sm" [disabled]="object.setOfCheckedEnv.size === 0"
+                <button type="button" class="btn btn-grey btn-sm"
+                        nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" (click)="fitToScreen()" translate>
+                  <i class="fa fa-arrows-alt" *ngIf="!fullScreen"></i>
+                  <i class="fa fa-window-close-o" *ngIf="fullScreen"></i>
+                </button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="object.setOfCheckedEnv.size === 0"
                         nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('env')" translate>
                   <i class="fa fa-scissors"></i>
                 </button>
@@ -306,7 +319,7 @@
                       <div class="col-md-8 col-lg-6 m-b-sm" translate>common.label.value</div>
                     </div>
                 </div>
-                <div class="col-md-12" style="max-height: calc(100vh - 760px); overflow: auto">
+                <div class="col-md-12 tab-ht" style="max-height: calc(100vh - {{selectedNode.job.executable.TYPE === 'ShellScriptExecutable' ? '760px' : '686px'}}); overflow: auto">
                   <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.job.executable.env)">
                     <div class="form-group row m-b-0 m-l-md move-on-hover" *ngFor="let env of selectedNode.job.executable.env; let i = index" cdkDrag>
                       <div class="pos-abt move-icon" style="margin-left: -31px;font-size: 18px;margin-top: 2px;cursor: move;" cdkDragHandle>
@@ -353,10 +366,17 @@
                   </div>
                 </div>
               </div>
+              </div>
             </nz-tab>
             <nz-tab [nzTitle]="'workflow.label.arguments' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'InternalExecutable'">
+              <div [ngClass]="{'fullScreen': fullScreen}">
               <div class="text-right m-t-n-6">
-                <button type="button" class="btn btn-grey btn-sm" [disabled]="object.setOfCheckedArgu.size === 0"
+                <button type="button" class="btn btn-grey btn-sm"
+                        nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" (click)="fitToScreen()" translate>
+                  <i class="fa fa-arrows-alt" *ngIf="!fullScreen"></i>
+                  <i class="fa fa-window-close-o" *ngIf="fullScreen"></i>
+                </button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="object.setOfCheckedArgu.size === 0"
                         nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('arguments')" translate>
                   <i class="fa fa-scissors"></i>
                 </button>
@@ -379,7 +399,7 @@
                       <div class="col-md-8 col-lg-6 m-b-sm" translate>common.label.value</div>
                     </div>
                 </div>
-                <div class="col-md-12" style="max-height: calc(100vh - 760px); overflow: auto">
+                <div class="col-md-12 tab-ht" style="max-height: calc(100vh - {{selectedNode.job.executable.TYPE === 'ShellScriptExecutable' ? '760px' : '686px'}}); overflow: auto">
                   <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.job.executable.arguments)">
                     <div class="form-group row m-b-0 m-l-md move-on-hover" *ngFor="let argu of selectedNode.job.executable.arguments; let i = index" cdkDrag>
                       <div class="pos-abt move-icon" style="margin-left: -31px;font-size: 18px;margin-top: 2px;cursor: move;" cdkDragHandle>
@@ -421,10 +441,17 @@
                   </div>
                 </div>
               </div>
+              </div>
             </nz-tab>
             <nz-tab [nzTitle]="'workflow.label.jobArguments' | translate" *ngIf="selectedNode.job.executable && (selectedNode.job.executable.TYPE === 'InternalExecutable')">
+              <div [ngClass]="{'fullScreen': fullScreen}">
               <div class="text-right m-t-n-6">
-                <button type="button" class="btn btn-grey btn-sm" [disabled]="object.setOfCheckedJobArgu.size === 0"
+                <button type="button" class="btn btn-grey btn-sm"
+                        nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" (click)="fitToScreen()" translate>
+                  <i class="fa fa-arrows-alt" *ngIf="!fullScreen"></i>
+                  <i class="fa fa-window-close-o" *ngIf="fullScreen"></i>
+                </button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="object.setOfCheckedJobArgu.size === 0"
                         nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('jobArguments')" translate>
                   <i class="fa fa-scissors"></i>
                 </button>
@@ -447,7 +474,7 @@
                       <div class="col-md-8 col-lg-6 m-b-sm" translate>common.label.value</div>
                     </div>
                 </div>
-                <div class="col-md-12" style="max-height: calc(100vh - 760px); overflow: auto">
+                <div class="col-md-12 tab-ht" style="max-height: calc(100vh - {{selectedNode.job.executable.TYPE === 'ShellScriptExecutable' ? '760px' : '686px'}}); overflow: auto">
                   <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.job.executable.jobArguments)">
                     <div class="form-group row m-b-0 m-l-md move-on-hover" *ngFor="let argument of selectedNode.job.executable.jobArguments; let i = index" cdkDrag>
                       <div class="pos-abt move-icon" style="margin-left: -31px;font-size: 18px;margin-top: 2px;cursor: move;" cdkDragHandle>
@@ -485,6 +512,7 @@
                     </div>
                   </div>
                 </div>
+              </div>
               </div>
             </nz-tab>
           </nz-tabset>

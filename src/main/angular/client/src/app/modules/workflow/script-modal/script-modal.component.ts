@@ -6,10 +6,12 @@ import {NzModalRef} from 'ng-zorro-antd/modal';
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './script-modal.component.html'
 })
-export class ScriptModalComponent {
+export class ScriptModalComponent implements OnInit{
   @Input() jobName: string;
   @Input() isScript: boolean;
   @Input() data: any;
+  @Input() predicate: any;
+  @Input() readonly: boolean;
 
   cmOption: any = {
     lineNumbers: true,
@@ -18,6 +20,10 @@ export class ScriptModalComponent {
   };
 
   constructor(public activeModal: NzModalRef) {
+  }
+
+  ngOnInit(): void {
+    this.cmOption.readonly = this.readonly;
   }
 }
 
