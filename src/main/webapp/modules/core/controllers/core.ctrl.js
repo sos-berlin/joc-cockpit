@@ -1904,11 +1904,16 @@
 
                 }, function (err) {
                     if (!logout && (err.status == 420 || err.status == 434 || err.status == 504)) {
-                        eventTimeOut = $timeout(function () {
-                            eventLoading = false;
-                            vm.changeEvent(vm.schedulerIds.jobschedulerIds);
-                            $timeout.cancel(eventTimeOut);
-                        }, 1000);
+                        if (err.error && err.error.error && (err.error.error.message.match(/SessionException/) || err.error.error.message.match(/SessionNotExistException/))
+                        || err.data && err.data.error && (err.data.error.message.match(/SessionException/) || err.data.error.message.match(/SessionNotExistException/))) {
+                            logout = true;
+                        } else {
+                            eventTimeOut = $timeout(function () {
+                                eventLoading = false;
+                                vm.changeEvent(vm.schedulerIds.jobschedulerIds);
+                                $timeout.cancel(eventTimeOut);
+                            }, 1000);
+                        }
                     }
                 });
             }
@@ -1922,7 +1927,6 @@
             }, 1000)
         });
         vm.allSessionEvent = {group: [], eventUnReadCount: 0};
-
 
         if (vm.schedulerIds && vm.schedulerIds.jobschedulerIds && vm.schedulerIds.jobschedulerIds.length > 0) {
             vm.changeEvent(vm.schedulerIds.jobschedulerIds);
@@ -2523,6 +2527,7 @@
                 form.$setPristine();
                 form.$setUntouched();
             }
+
             $uibModalInstance.dismiss('cancel');
         };
 

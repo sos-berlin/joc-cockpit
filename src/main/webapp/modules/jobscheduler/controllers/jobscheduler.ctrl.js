@@ -6437,11 +6437,15 @@
         var vm = $scope;
         vm.loadingImg = true;
         function initConfig(flag) {
-           let grid = $('.grid-stack').data('gridstack');
-            grid.movable('.grid-stack-item', flag);
-            grid.resizable('.grid-stack-item', flag);
+            let dom = $('.grid-stack');
+            if (dom) {
+                let grid = dom.data('gridstack');
+                if (grid) {
+                    grid.movable('.grid-stack-item', flag);
+                    grid.resizable('.grid-stack-item', flag);
+                }
+            }
         }
-
 
         vm.dashboardFilters = CoreService.getDashboardTab();
 

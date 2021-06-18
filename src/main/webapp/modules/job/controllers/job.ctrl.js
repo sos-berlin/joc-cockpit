@@ -10593,9 +10593,12 @@
                 strter = JSON.parse(jobStreamObj.cell.getAttribute('starter'));
             } else {
                 obj.jobStreamId = jobStream.jobStreamId;
-                strter = starter;
+                strter = angular.copy(starter);
             }
             obj.jobstreamStarters = [strter];
+            for (let i = 0; i < obj.jobstreamStarters.length; i++) {
+                delete obj.jobstreamStarters[i]['nextStart'];
+            }
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
