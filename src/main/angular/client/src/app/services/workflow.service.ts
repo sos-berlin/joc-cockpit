@@ -92,10 +92,10 @@ export class WorkflowService {
     } else if (type === 'Retry') {
       obj.maxTries = node._maxTries;
       obj.retryDelays = node._retryDelays;
-    } else if (type === 'Finish' || type === 'Fail') {
+    } else if (type === 'Fail') {
       let outcome = node._outcome;
       if (!outcome) {
-        outcome = type === 'Fail' ? {TYPE: 'Failed', result: {}} : {TYPE: 'Succeeded', result: {}};
+        outcome = {TYPE: 'Failed', result: {}};
       } else {
         outcome = JSON.parse(outcome);
       }
@@ -484,8 +484,6 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'Finish') {
             _node.setAttribute('label', 'finish');
-            const outcome = json.instructions[x].outcome || {TYPE: 'Succeeded', result: ''};
-            _node.setAttribute('outcome', JSON.stringify(outcome));
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.finish);
             if (mapObj.vertixMap && json.instructions[x].position) {
@@ -992,7 +990,7 @@ export class WorkflowService {
         });
         return '<b>' + msg + '</b> : ' + (cell.getAttribute('lockName') || '-') + '</br>' +
           '<b>' + limit + '</b> : ' + (cell.getAttribute('count') || '-');
-      } else if (cell.value.tagName === 'Finish' && cell.value.tagName === 'Fail') {
+      } else if (cell.value.tagName === 'Fail') {
         let msg = '', returnCode = '';
         this.translate.get('workflow.label.message').subscribe(translatedValue => {
           msg = translatedValue;

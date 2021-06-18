@@ -1236,6 +1236,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   allowedDatatype = ['String', 'Number', 'Boolean'];
   variableDeclarations = {parameters: []};
   document = {name: ''};
+  fullScreen = false;
   subscription: Subscription;
 
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
@@ -1401,6 +1402,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       this.editor.graph.fit();
       this.center();
     }
+  }
+
+  fitToScreen(): void{
+    this.fullScreen = !this.fullScreen;
   }
 
   /**
@@ -1781,6 +1786,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private init(): void {
+    this.fullScreen = false;
     this.inventoryConf = this.coreService.getConfigurationTab();
     if (!this.dummyXml) {
       this.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 460;
@@ -4629,7 +4635,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             cell = evt.cells[0];
           }
           if (cell && (checkClosingCell(cell) ||
-            cell.value.tagName === 'Connection' || cell.value.tagName === 'Process' || cell.value.tagName === 'Catch')) {
+            cell.value.tagName === 'Connection' || cell.value.tagName === 'Finish' || cell.value.tagName === 'Process' || cell.value.tagName === 'Catch')) {
             graph.clearSelection();
             return;
           }
@@ -5428,7 +5434,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         graph.getModel().beginUpdate();
         let flag = true;
         try {
-
           if (self.selectedNode.type === 'Job') {
             flag = self.updateJobProperties(self.selectedNode);
             const edit = new mxCellAttributeChange(
@@ -5464,7 +5469,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             const edit2 = new mxCellAttributeChange(
               obj.cell, 'lockName', self.selectedNode.newObj.lockName);
             graph.getModel().execute(edit2);
-          } else if (self.selectedNode.type === 'Finish' || self.selectedNode.type === 'Fail') {
+          } else if (self.selectedNode.type === 'Fail') {
             const edit = new mxCellAttributeChange(
               obj.cell, 'outcome', JSON.stringify(self.selectedNode.newObj.outcome));
             graph.getModel().execute(edit);
@@ -5650,7 +5655,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
           obj.lockName = cell.getAttribute('lockName');
           obj.countProperty = obj.count ? 'shared' : 'exclusive';
-        } else if (cell.value.tagName === 'Finish' || cell.value.tagName === 'Fail') {
+        } else if (cell.value.tagName === 'Fail') {
           let outcome = cell.getAttribute('outcome');
           if (!outcome) {
             outcome = cell.value.tagName === 'Fail' ? {TYPE: 'Failed', result: {message: ''}} : {

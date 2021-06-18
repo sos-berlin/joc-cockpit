@@ -439,8 +439,57 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   receiveAction($event): void {
-    //this.selectedPath = $event.key;
     this.getDocumentations($event, $event.action !== 'NODE');
+  }
+
+  deleteFolder(folder): void {
+    let obj  = {
+      folder: folder.path
+    };
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Documentation',
+        operation: 'Delete',
+        name: folder.path
+      };
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: CommentModalComponent,
+        nzComponentParams: {
+          comments,
+          obj,
+          url: 'documentations/delete'
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          console.log(result)
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          type: 'Delete',
+          title: 'delete',
+          message: 'deleteDocumentFolder',
+          objectName: folder.path,
+        },
+        nzFooter: null,
+        nzClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.coreService.post('documentations/delete', obj).subscribe(res => {
+
+          });
+        }
+      });
+    }
   }
 
   getDocumentations(data, recursive): void {

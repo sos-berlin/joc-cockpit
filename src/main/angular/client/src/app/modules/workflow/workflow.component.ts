@@ -414,7 +414,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   changedHandler(flag: boolean): void {
-   
     this.isProcessing = flag;
   }
 

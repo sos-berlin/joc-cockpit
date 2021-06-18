@@ -219,23 +219,23 @@
             <nz-tab  [nzTitle]="'workflow.label.arguments' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && selectedNode.job.executable.v1Compatible">
               <div [ngClass]="{'fullScreen': fullScreen}">
               <div class="text-right m-t-n-6">
-                <button type="button" class="btn btn-grey btn-sm"
-                        nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" (click)="fitToScreen()" translate>
+                <a class="anchor-with-icon"
+                   nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" (click)="fitToScreen()" translate>
                   <i class="fa fa-arrows-alt" *ngIf="!fullScreen"></i>
-                  <i class="fa fa-window-close-o" *ngIf="fullScreen"></i>
-                </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="object.setOfCheckedDefaultArgu.size === 0"
-                        nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('defaultArguments')" translate>
+                  <i class="fa fa-minus-square-o" *ngIf="fullScreen"></i>
+                </a>
+                <a class="anchor-with-icon" [ngClass]="{'disabled-link':object.setOfCheckedDefaultArgu.size === 0}"
+                   nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('defaultArguments')" translate>
                   <i class="fa fa-scissors"></i>
-                </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="object.setOfCheckedDefaultArgu.size === 0"
-                        nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('defaultArguments')" translate>
+                </a>
+                <a class="anchor-with-icon" [ngClass]="{'disabled-link':object.setOfCheckedDefaultArgu.size === 0}"
+                   nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('defaultArguments')" translate>
                   <i class="fa fa-copy"></i>
-                </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="!copiedParamObjects.data || object.setOfCheckedDefaultArgu.size > 0"
-                        nz-tooltip="{{'common.button.paste' | translate}}" (click)="pasteParam(selectedNode.job, 'defaultArguments')" translate>
+                </a>
+                <a class="anchor-with-icon p-r-0" [ngClass]="{'disabled-link':!copiedParamObjects.data || object.setOfCheckedDefaultArgu.size > 0}"
+                   nz-tooltip="{{'common.button.paste' | translate}}" (click)="pasteParam(selectedNode.job, 'defaultArguments')" translate>
                   <i class="fa fa-paste"></i>
-                </button>
+                </a>
               </div>
               <div class="row">
                 <div class="col-md-12" *ngIf="selectedNode.job.defaultArguments.length > 0">
@@ -291,23 +291,23 @@
             <nz-tab [nzTitle]="'workflow.label.environmentVariables' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'">
               <div [ngClass]="{'fullScreen': fullScreen}">
               <div class="text-right m-t-n-6">
-                <button type="button" class="btn btn-grey btn-sm"
+                <a class="anchor-with-icon"
                         nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" (click)="fitToScreen()" translate>
                   <i class="fa fa-arrows-alt" *ngIf="!fullScreen"></i>
-                  <i class="fa fa-window-close-o" *ngIf="fullScreen"></i>
-                </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="object.setOfCheckedEnv.size === 0"
+                  <i class="fa fa-minus-square-o" *ngIf="fullScreen"></i>
+                </a>
+                <a class="anchor-with-icon" [ngClass]="{'disabled-link':object.setOfCheckedEnv.size === 0}"
                         nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('env')" translate>
                   <i class="fa fa-scissors"></i>
-                </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="object.setOfCheckedEnv.size === 0"
+                </a>
+                <a class="anchor-with-icon" [ngClass]="{'disabled-link':object.setOfCheckedEnv.size === 0}"
                         nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('env')" translate>
                   <i class="fa fa-copy"></i>
-                </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="!copiedParamObjects.data || object.setOfCheckedEnv.size > 0"
+                </a>
+                <a class="anchor-with-icon p-r-0" [ngClass]="{'disabled-link':!copiedParamObjects.data || object.setOfCheckedEnv.size > 0}"
                         nz-tooltip="{{'common.button.paste' | translate}}" (click)="pasteParam(selectedNode.job.executable, 'env')" translate>
                   <i class="fa fa-paste"></i>
-                </button>
+                </a>
               </div>
               <div class="row">
                 <div class="col-md-12" *ngIf="selectedNode.job.executable.env.length > 0">
@@ -371,23 +371,23 @@
             <nz-tab [nzTitle]="'workflow.label.arguments' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'InternalExecutable'">
               <div [ngClass]="{'fullScreen': fullScreen}">
               <div class="text-right m-t-n-6">
-                <button type="button" class="btn btn-grey btn-sm"
-                        nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" (click)="fitToScreen()" translate>
+                <a class="anchor-with-icon"
+                   nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" (click)="fitToScreen()" translate>
                   <i class="fa fa-arrows-alt" *ngIf="!fullScreen"></i>
-                  <i class="fa fa-window-close-o" *ngIf="fullScreen"></i>
-                </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="object.setOfCheckedArgu.size === 0"
-                        nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('arguments')" translate>
+                  <i class="fa fa-minus-square-o" *ngIf="fullScreen"></i>
+                </a>
+                <a class="anchor-with-icon" [ngClass]="{'disabled-link':object.setOfCheckedArgu.size === 0}"
+                   nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('arguments')" translate>
                   <i class="fa fa-scissors"></i>
-                </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="object.setOfCheckedArgu.size === 0"
-                        nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('arguments')" translate>
+                </a>
+                <a class="anchor-with-icon" [ngClass]="{'disabled-link':object.setOfCheckedArgu.size === 0}"
+                   nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('arguments')" translate>
                   <i class="fa fa-copy"></i>
-                </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="!copiedParamObjects.data || object.setOfCheckedArgu.size > 0"
-                        nz-tooltip="{{'common.button.paste' | translate}}" (click)="pasteParam(selectedNode.job.executable, 'arguments')" translate>
+                </a>
+                <a class="anchor-with-icon p-r-0" [ngClass]="{'disabled-link':!copiedParamObjects.data || object.setOfCheckedArgu.size > 0}"
+                   nz-tooltip="{{'common.button.paste' | translate}}" (click)="pasteParam(selectedNode.job.executable, 'arguments')" translate>
                   <i class="fa fa-paste"></i>
-                </button>
+                </a>
               </div>
               <div class="row">
                 <div class="col-md-12" *ngIf="selectedNode.job.executable.arguments.length > 0">
@@ -446,23 +446,23 @@
             <nz-tab [nzTitle]="'workflow.label.jobArguments' | translate" *ngIf="selectedNode.job.executable && (selectedNode.job.executable.TYPE === 'InternalExecutable')">
               <div [ngClass]="{'fullScreen': fullScreen}">
               <div class="text-right m-t-n-6">
-                <button type="button" class="btn btn-grey btn-sm"
-                        nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" (click)="fitToScreen()" translate>
+                <a class="anchor-with-icon"
+                   nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" (click)="fitToScreen()" translate>
                   <i class="fa fa-arrows-alt" *ngIf="!fullScreen"></i>
-                  <i class="fa fa-window-close-o" *ngIf="fullScreen"></i>
-                </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="object.setOfCheckedJobArgu.size === 0"
-                        nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('jobArguments')" translate>
+                  <i class="fa fa-minus-square-o" *ngIf="fullScreen"></i>
+                </a>
+                <a class="anchor-with-icon" [ngClass]="{'disabled-link':object.setOfCheckedJobArgu.size === 0}"
+                   nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('jobArguments')" translate>
                   <i class="fa fa-scissors"></i>
-                </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="object.setOfCheckedJobArgu.size === 0"
-                        nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('jobArguments')" translate>
+                </a>
+                <a class="anchor-with-icon" [ngClass]="{'disabled-link':object.setOfCheckedJobArgu.size === 0}"
+                   nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('jobArguments')" translate>
                   <i class="fa fa-copy"></i>
-                </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="!copiedParamObjects.data || object.setOfCheckedJobArgu.size > 0"
-                        nz-tooltip="{{'common.button.paste' | translate}}" (click)="pasteParam(selectedNode.job.executable, 'jobArguments')" translate>
+                </a>
+                <a class="anchor-with-icon p-r-0" [ngClass]="{'disabled-link':!copiedParamObjects.data || object.setOfCheckedJobArgu.size > 0}"
+                   nz-tooltip="{{'common.button.paste' | translate}}" (click)="pasteParam(selectedNode.job.executable, 'jobArguments')" translate>
                   <i class="fa fa-paste"></i>
-                </button>
+                </a>
               </div>
               <div class="row">
                 <div class="col-md-12" *ngIf="selectedNode.job.executable.jobArguments.length > 0">
@@ -588,17 +588,6 @@
           </nz-select>
         </div>
       </div>
-      <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.logLevel</label>
-        <div class="col-md-8 col-lg-9">
-          <nz-select name="logLevel" nzAllowClear class="w-full" [nzPlaceHolder]="'inventory.placeholder.selectLogLevel' | translate"
-                     [(ngModel)]="selectedNode.job.logLevel">
-            <nz-option [nzValue]="'INFO'" [nzLabel]="'log.label.info' | translate"></nz-option>
-            <nz-option [nzValue]="'DEBUG'" [nzLabel]="'log.label.debug' | translate"></nz-option>
-            <nz-option [nzValue]="'TRACE'" [nzLabel]="'log.label.trace' | translate"></nz-option>
-          </nz-select>
-        </div>
-      </div>
       <div class="form-group row" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'">
         <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.credentialKey</label>
         <div class="col-md-8 col-lg-9">
@@ -625,18 +614,18 @@
   <nz-tab [nzTitle]="'workflow.tab.nodeProperties' | translate">
     <div class="job-property-editor">
       <div class="text-right m-t-n-6">
-        <button type="button" class="btn btn-grey btn-sm" [disabled]="object.setOfCheckedNodeArgu.size === 0"
+        <a class="anchor-with-icon" [ngClass]="{'disabled-link':object.setOfCheckedNodeArgu.size === 0}"
                 nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('nodeArguments')" translate>
           <i class="fa fa-scissors"></i>
-        </button>
-        <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="object.setOfCheckedNodeArgu.size === 0"
+        </a>
+        <a class="anchor-with-icon" [ngClass]="{'disabled-link':object.setOfCheckedNodeArgu.size === 0}"
                 nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('nodeArguments')" translate>
           <i class="fa fa-copy"></i>
-        </button>
-        <button type="button" class="btn btn-grey btn-sm m-l-sm" [disabled]="!copiedParamObjects.data || object.setOfCheckedNodeArgu.size > 0"
+        </a>
+        <a class="anchor-with-icon p-r-0" [ngClass]="{'disabled-link':!copiedParamObjects.data || object.setOfCheckedNodeArgu.size > 0}"
                 nz-tooltip="{{'common.button.paste' | translate}}" (click)="pasteParam(selectedNode.obj, 'defaultArguments')" translate>
           <i class="fa fa-paste"></i>
-        </button>
+        </a>
       </div>
       <div class="form-group row">
         <div class="col-md-12" *ngIf="selectedNode.obj.defaultArguments.length > 0">

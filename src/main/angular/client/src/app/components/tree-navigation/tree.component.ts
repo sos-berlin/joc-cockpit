@@ -1,5 +1,7 @@
-import {Component, OnInit, Input, Output, EventEmitter,
-  HostListener, OnChanges, SimpleChanges} from '@angular/core';
+import {
+  Component, OnInit, Input, Output, EventEmitter,
+  HostListener, OnChanges, SimpleChanges, AfterViewInit
+} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 
 declare const $: any;
@@ -8,13 +10,15 @@ declare const $: any;
   selector: 'app-tree-nagivation',
   templateUrl: './tree.component.html'
 })
-export class TreeComponent implements OnInit, OnChanges {
+export class TreeComponent implements OnInit, OnChanges, AfterViewInit {
   preferences: any;
   @Input() tree;
   @Input() sideView;
   @Input() defaultExpandedKeys;
   @Input() defaultSelectedKeys;
+  @Input() isAction: boolean;
   @Output() messageEvent = new EventEmitter<string>();
+  @Output() actionEvent = new EventEmitter<any>();
 
   constructor(public coreService: CoreService) {
   }
@@ -62,6 +66,9 @@ export class TreeComponent implements OnInit, OnChanges {
     if (this.sideView && !this.sideView.show) {
       this.hidePanel();
     }
+  }
+
+  ngAfterViewInit(): void {
     setTimeout(() => {
       TreeComponent.calcTop();
     }, 10);
@@ -107,6 +114,10 @@ export class TreeComponent implements OnInit, OnChanges {
   collapseNode(node): void {
     this.navFullTree(node, false);
     this.defaultExpandedKeys = [...this.defaultExpandedKeys];
+  }
+
+  deleteFolder(node): void{
+    this.actionEvent.emit(node);
   }
 
   selectNode(e): void {

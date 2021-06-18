@@ -29,6 +29,7 @@ export class OrderActionComponent {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ResumeOrderModalComponent,
+      nzClassName: 'x-lg',
       nzComponentParams: {
         preferences: this.preferences,
         permission: this.permission,

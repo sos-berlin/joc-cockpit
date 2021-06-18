@@ -401,6 +401,7 @@
     "message.requiredVariableCannotRemoved": "C'est une variable obligatoire, elle ne peut pas être supprimée.",
     "message.redeployFolderRecursively": "Êtes-vous sûr de vouloir redéployer tous les objets pour le dossier et les sous-dossiers sélectionnés ?",
     "message.deleteDocument": "Êtes-vous sûr de vouloir supprimer ce document ?",
+    "message.deleteDocumentFolder": "Are you sure you want to delete this folder?",
     "message.deleteAllDocument": "Êtes-vous sûr de vouloir supprimer toutes les documentations ?",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
     "tooltip.exportInXLS": "Exporter au format xls",

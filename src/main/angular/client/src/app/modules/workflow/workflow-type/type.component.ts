@@ -28,9 +28,9 @@ export class TypeComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.expandAll) {
       if (this.expandAll) {
-        this.toggleFunc(this.configuration, true);
+        this.recursiveUpdate(this.configuration, true);
       } else if (this.expandAll === false) {
-        this.toggleFunc(this.configuration, false);
+        this.recursiveUpdate(this.configuration, false);
       }
     }
     if (changes.configuration) {
@@ -49,15 +49,6 @@ export class TypeComponent implements OnChanges {
 
   changedHandler(flag: boolean): void {
     this.isChanged.emit(flag);
-  }
-
-  toggleFunc(json, flag): void {
-    for (let i = 0; i < json.instructions.length; i++) {
-      json.instructions[i].show = flag;
-      if (flag) {
-        this.getDocumentationInfo(json.instructions[i]);
-      }
-    }
   }
 
   collapse(node): void {

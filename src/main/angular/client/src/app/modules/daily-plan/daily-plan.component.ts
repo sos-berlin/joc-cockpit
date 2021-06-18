@@ -1427,6 +1427,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ResumeOrderModalComponent,
+        nzClassName: 'x-lg',
         nzComponentParams: {
           preferences: this.preferences,
           permission: this.permission,

@@ -21,6 +21,19 @@
     ></nz-tree>
     <ng-template #nzTreeTemplate let-node>
         <div class="node-wrapper">
+          <button class="btn-drop more-option-h p-l-0" *ngIf="isAction"
+                  nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" type="button">
+            <i class="fa fa-ellipsis-h"></i>
+          </button>
+          <nz-dropdown-menu #menu="nzDropdownMenu">
+            <ul nz-menu>
+              <li nz-menu-item>
+                <a (click)="deleteFolder(node.origin)"
+                   translate>common.button.remove
+                </a>
+              </li>
+            </ul>
+          </nz-dropdown-menu>
           <div class="node-content-wrapper"
                [class.node-content-wrapper-active]="defaultSelectedKeys && defaultSelectedKeys.indexOf(node.key) > -1"
                (click)="selectNode(node)">

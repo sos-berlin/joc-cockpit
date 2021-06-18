@@ -1,4 +1,4 @@
-import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, HostListener, OnDestroy} from '@angular/core';
 import {NavigationEnd, Router, RouterEvent} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
@@ -9,7 +9,7 @@ declare const $: any;
   selector: 'app-configuration',
   templateUrl: './configuration.component.html'
 })
-export class ConfigurationComponent implements OnInit, OnDestroy {
+export class ConfigurationComponent implements AfterViewInit, OnDestroy {
   subscription: Subscription;
   flag = true;
 
@@ -23,7 +23,7 @@ export class ConfigurationComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     setTimeout(() => {
       if (this.flag) {
         this.calcHeight();

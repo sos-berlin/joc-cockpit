@@ -785,6 +785,10 @@ button.close {
   width: 600px !important;
   top: 0;
 }
+.ant-modal.x-lg {
+  min-width: 900px !important;
+  width: auto !important;
+}
 
 .modal-content, .modal-footer, .modal-header {
   border-color: var(--border-color);
@@ -5526,7 +5530,17 @@ body tr.mxPopupMenuItemHover {
       max-height: calc(100vh - 268px)!important;
     }
   }
+  .anchor-with-icon{
+    padding: 2px 8px;
+    .fa {
+      font-size: 14px;
+    }
+    .fa-minus-square-o{
+      font-size: 15px;
+    }
+  }
 }
+
 
 .property-panel .sidebar-open, .property-panel .sidebar-close {
   z-index: 999;

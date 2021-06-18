@@ -140,6 +140,10 @@
   .view-all-agent i {
     display: block
   }
+
+  .ant-modal.x-lg {
+    width: 100vw !important;
+  }
 }
 
 @media (max-width: 1220px) {

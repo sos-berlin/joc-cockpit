@@ -245,7 +245,7 @@
           </div>
         </div>
       </div>
-      <div class="box-body" *ngIf="selectedNode.type === 'Finish' || selectedNode.type === 'Fail'">
+      <div class="box-body" *ngIf="selectedNode.type === 'Fail'">
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.message</label>
           <div class="col-md-8 col-lg-9">
@@ -359,7 +359,7 @@
     <div class="m-l-xs m-r-xs text-left" *ngIf="workflow.id && !selectedNode">
       <div class="box-body">
         <div class="form-group row"
-             [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+             [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid), 'hide': fullScreen}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.name</label>
           <div class="col-md-8 col-lg-9">
             <input type="text" [readonly]="isTrash" class="form-control" identifierValidation name="name" (blur)="rename(name.invalid)"
@@ -373,14 +373,14 @@
             </div>
           </div>
         </div>
-        <div class="form-group row">
+        <div class="form-group row" [ngClass]="{'hide': fullScreen}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
           <div class="col-md-8 col-lg-9">
             <input type="text" [readonly]="isTrash" class="form-control" name="title" placeholder="{{'common.placeholder.title' | translate}}"
                    [(ngModel)]="extraConfiguration.title" autocomplete="off" (blur)="updateOtherProperties('title')"/>
           </div>
         </div>
-        <div class="form-group row doc-in-workflow">
+        <div class="form-group row doc-in-workflow" [ngClass]="{'hide': fullScreen}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.documentation</label>
           <div class="col-md-8 col-lg-9 select-input-both">
             <input autocomplete="off" type="text" class="form-control"
@@ -414,7 +414,7 @@
                nzType="close-circle" nzTheme="outline"></i>
           </div>
         </div>
-        <div class="form-group row">
+        <div class="form-group row" [ngClass]="{'hide': fullScreen}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.jobResourceNames</label>
           <div class="col-md-8 col-lg-9">
             <nz-tree-select
@@ -448,6 +448,11 @@
         </div>
         <div class="form-group row">
           <label class="col-md-12 _600" translate>order.label.variables</label>
+          <a class="anchor-with-icon pos-abt" style="right: 18px; margin-top: -1px"
+             nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" (click)="fitToScreen()" translate>
+            <i class="fa fa-arrows-alt" *ngIf="!fullScreen"></i>
+            <i class="fa fa-minus-square-o" *ngIf="fullScreen"></i>
+          </a>
         </div>
         <div class="form-group row m-b-0 m-l-sm" *ngIf="variableDeclarations.parameters.length > 0">
           <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
