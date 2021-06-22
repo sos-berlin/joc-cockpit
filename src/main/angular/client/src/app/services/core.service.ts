@@ -761,7 +761,7 @@ export class CoreService {
     let host = regEx.exec(window.location.href)[1];
     host = host + '/#/';
     if (objType === 'workflow' && name) {
-      link = host + 'workflows/workflow?name=' + encodeURIComponent(name);
+      link = host + 'workflows/workflow?path=' + encodeURIComponent(name);
     } else if (objType === 'order' && name) {
       link = host + 'history/order?orderId=' + encodeURIComponent(name) + '&workflow=' + encodeURIComponent(workflow);
     } else if (objType === 'lock' && name) {

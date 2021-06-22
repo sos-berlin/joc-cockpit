@@ -5473,6 +5473,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             const edit = new mxCellAttributeChange(
               obj.cell, 'outcome', JSON.stringify(self.selectedNode.newObj.outcome));
             graph.getModel().execute(edit);
+            const edit2 = new mxCellAttributeChange(
+              obj.cell, 'message', self.selectedNode.newObj.message);
+            graph.getModel().execute(edit2);
+            const edit3 = new mxCellAttributeChange(
+              obj.cell, 'uncatchable', self.selectedNode.newObj.uncatchable);
+            graph.getModel().execute(edit3);
           } else if (self.selectedNode.type === 'Await') {
             const edit1 = new mxCellAttributeChange(
               obj.cell, 'junctionPath', self.selectedNode.newObj.junctionPath);
@@ -5658,14 +5664,16 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         } else if (cell.value.tagName === 'Fail') {
           let outcome = cell.getAttribute('outcome');
           if (!outcome) {
-            outcome = cell.value.tagName === 'Fail' ? {TYPE: 'Failed', result: {message: ''}} : {
-              TYPE: 'Succeeded',
-              result: {message: ''}
+            outcome = {
+              returnCode: 0
             };
           } else {
             outcome = JSON.parse(outcome);
           }
           obj.outcome = outcome;
+          obj.message = cell.getAttribute('message');
+          obj.uncatchable = cell.getAttribute('uncatchable');
+          obj.uncatchable = obj.uncatchable == 'true';
         } else if (cell.value.tagName === 'FileWatcher') {
           obj.directory = cell.getAttribute('directory');
           obj.regex = cell.getAttribute('regex');

@@ -1,7 +1,10 @@
 <div class="modal-header">
-  <h4 class="modal-title">
+  <h4 class="modal-title" *ngIf="!orders">
     <span translate> order.label.resumeOrder</span>
     <i class="text-muted p-l-xs text">{{order.orderId}}</i>
+  </h4>
+  <h4 class="modal-title" *ngIf="orders">
+    <span translate> order.label.resumeAllSelectedOrder</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="cancel()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -9,21 +12,24 @@
 </div>
 
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
-  <div class="modal-body p-a">
-    <div class="form-group row">
-      <label class="col-sm-3" translate>order.label.orderId</label>
-      <label class="col-sm-8">{{order.orderId}} <span *ngIf="order.title" class="text-muted"> - {{order.title}}</span></label>
-    </div>
-    <div class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>order.label.position</label>
-      <div class="col-md-6">
-        <nz-select nzShowSearch name="position" nzAllowClear [(ngModel)]="order.position">
-          <nz-option *ngFor="let position of positions" [nzValue]="position" [nzLabel]="position"></nz-option>
-        </nz-select>
-      </div>
-    </div>
+  <div class="modal-body p-a" style="min-height: 300px">
     <div class="hide" [ngClass]="{'show': display}">
-      <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
+      <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
+    </div>
+    <div class="text-center" *ngIf="!workflow">
+      <nz-spin nzSimple></nz-spin>
+    </div>
+    <div *ngIf="workflow">
+    <!--<pre>{{workflow | json}}</pre>-->
+      <div class="hover" >
+        <a class="text-primary" translate >workflow.label.start</a>
+        <span class="expand-collapse-btn">
+          <i class="cursor fa fa-lg fa-angle-double-down" [nz-tooltip]="'common.tooltip.expandAll' | translate" (click)="workflow.isExpand = true;"></i>
+          <i class="cursor fa fa-lg fa-angle-double-up p-l-xs" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="workflow.isExpand = false;"></i>
+        </span>
+      </div>
+      <app-workflow-tree-structure [jobs]="workflow.jobs" [configuration]="workflow.configuration" [orders]="orders" (onDrop)="onDrop($event)"
+                                   [expandAll]="workflow.isExpand"></app-workflow-tree-structure>
     </div>
   </div>
   <div class="modal-footer text-left">
@@ -34,4 +40,3 @@
     <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>common.button.cancel</button>
   </div>
 </form>
-

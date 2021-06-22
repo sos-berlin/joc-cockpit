@@ -466,7 +466,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          console.log(result)
+          this.initTree();
         }
       });
     } else {

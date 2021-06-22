@@ -32,7 +32,6 @@ export class OrderActionComponent {
       nzClassName: 'x-lg',
       nzComponentParams: {
         preferences: this.preferences,
-        permission: this.permission,
         schedulerId: this.schedulerId,
         order: this.coreService.clone(this.order)
       },

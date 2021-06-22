@@ -12,6 +12,7 @@ import {DataService} from '../../services/data.service';
 import {AuthService} from '../../components/guard';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 import {ChangeParameterModalComponent} from '../../components/modify-modal/modify.component';
+import {ResumeOrderModalComponent} from '../../components/resume-modal/resume.component';
 
 declare const $;
 
@@ -445,6 +446,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.object.isTerminate = true;
     this.object.isResume = true;
     let workflow = null;
+    let position = null;
     this.object.mapOfCheckedId.forEach(order => {
       if (order.state) {
         if (order.state._text !== 'SUSPENDED' && order.state._text !== 'FAILED') {
@@ -466,6 +468,14 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
           workflow = order.workflowId.path;
         } else if (workflow !== order.workflowId.path) {
           this.object.isModify = false;
+          if (this.object.isResume) {
+            this.object.isResume = false;
+          }
+        }
+        if (!position) {
+          position = order.positionString;
+        } else if (position !== order.positionString) {
+          this.object.isResume = false;
         }
       }
     });
@@ -497,11 +507,24 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   resumeAllOrder(): void {
-    this._bulkOperation('Resume', 'resume');
-  }
-
-  startAllOrder(): void {
-    this._bulkOperation('Start', 'add');
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ResumeOrderModalComponent,
+      nzClassName: 'x-lg',
+      nzComponentParams: {
+        preferences: this.preferences,
+        schedulerId: this.schedulerIds.selected,
+        orders: this.object.mapOfCheckedId
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.isProcessing = true;
+        this.resetCheckBox();
+      }
+    });
   }
 
   cancelAllOrder(isKill = false): void {
@@ -549,12 +572,13 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       modal.afterClose.subscribe(result => {
         if (result) {
           this.isProcessing = true;
+          this.resetCheckBox();
         }
       });
     } else {
       this.isProcessing = true;
       this.coreService.post('orders/' + url, obj).subscribe(() => {
-
+        this.resetCheckBox();
       }, () => {
         this.isProcessing = false;
       });

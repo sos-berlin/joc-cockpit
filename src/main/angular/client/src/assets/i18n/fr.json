@@ -1013,6 +1013,7 @@
     "label.scheduledFor": "Planifié pour",
     "label.startOrder": "Démarrer l'Ordre",
     "label.resumeOrder": "Reprendre l'Ordre",
+    "label.resumeAllSelectedOrder": "Resume all selected orders",
     "label.orderFound": "Ordre trouvé",
     "label.ordersFound": "Ordres trouvés",
     "label.lastOutcome": "Dernier résultat",

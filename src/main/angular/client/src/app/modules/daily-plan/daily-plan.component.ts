@@ -1430,7 +1430,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         nzClassName: 'x-lg',
         nzComponentParams: {
           preferences: this.preferences,
-          permission: this.permission,
           schedulerId: this.schedulerIds.selected,
           order: this.coreService.clone(order)
         },

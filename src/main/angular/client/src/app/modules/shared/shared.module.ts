@@ -48,6 +48,7 @@ import {OrderVariableComponent} from '../../components/order-variable/order-vari
 import {ValueEditorComponent} from '../../components/value-editor/value.component';
 import {FileTransferSearchComponent} from '../file-transfer/file-transfer.component';
 import {AuditLogInputComponent} from '../../components/audit-log-input/audit-log-input.component';
+import {WorkflowTreeStructureComponent} from '../../components/workflow-tree-structure/workflow-tree-structure.component';
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule,
   NzToolTipModule, NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule,
@@ -60,7 +61,7 @@ const PIPES = [DurationPipe, StringDateFormatePipe, ByteToSizePipe, DurationFrom
 const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, ResizableDirective,
   NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponent, FileTransferSearchComponent, AuditLogInputComponent,
-  StartUpModalComponent, TreeComponent, ValueEditorComponent];
+  StartUpModalComponent, TreeComponent, ValueEditorComponent, WorkflowTreeStructureComponent];
 
 @NgModule({
   imports: [

@@ -362,7 +362,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       nzClassName: 'x-lg',
       nzComponentParams: {
         preferences: this.preferences,
-        permission: this.permission,
         schedulerId: this.schedulerIds.selected,
         order: this.coreService.clone(this.order)
       },

@@ -1022,9 +1022,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   convertRequestBody(obj): void {
     obj.limit = parseInt(this.preferences.maxRecords, 10) || 5000;
     obj.timeZone = this.preferences.zone;
-    if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-      delete obj.timeZone;
-    }
     if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
       obj.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, obj.dateFrom);
     }
@@ -2425,12 +2422,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.data = arr;
   }
 
-  private convertDeployRequestBody(obj) {
+  private convertDeployRequestBody(obj): void {
     obj.limit = parseInt(this.preferences.maxRecords, 10) || 5000;
     obj.timeZone = this.preferences.zone;
-    if ((obj.from && typeof obj.from.getMonth === 'function') || (obj.to && typeof obj.to.getMonth === 'function')) {
-      delete obj.timeZone;
-    }
     if ((obj.from && typeof obj.from.getMonth === 'function')) {
       obj.from = this.coreService.convertTimeToLocalTZ(this.preferences, obj.from);
     }

@@ -95,11 +95,13 @@ export class WorkflowService {
     } else if (type === 'Fail') {
       let outcome = node._outcome;
       if (!outcome) {
-        outcome = {TYPE: 'Failed', result: {}};
+        outcome = {returnCode: 0};
       } else {
         outcome = JSON.parse(outcome);
       }
       obj.outcome = outcome;
+      obj.message = node._message;
+      obj.uncatchable = node._uncatchable;
     } else if (type === 'FileWatcher') {
       obj.directory = node._directory;
       obj.regex = node._regex;
@@ -254,6 +256,12 @@ export class WorkflowService {
         value.joinVariables = value.joinVariables == 'true';
       } else {
         delete value.joinVariables;
+      }
+
+      if (value.uncatchable && value.uncatchable != 'null' && value.uncatchable != 'undefined' && typeof value.uncatchable === 'string') {
+        value.uncatchable = value.uncatchable == 'true';
+      } else {
+        delete value.uncatchable;
       }
 
       if (value.timeout1) {
@@ -491,8 +499,10 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'Fail') {
             _node.setAttribute('label', 'fail');
-            const outcome = json.instructions[x].outcome || {TYPE: 'Failed', result: ''};
+            const outcome = json.instructions[x].outcome || {returnCode: 0};
             _node.setAttribute('outcome', JSON.stringify(outcome));
+            _node.setAttribute('message', json.instructions[x].message || '');
+            _node.setAttribute('uncatchable', json.instructions[x].uncatchable || '');
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.fail);
             if (mapObj.vertixMap && json.instructions[x].position) {
@@ -998,10 +1008,9 @@ export class WorkflowService {
         this.translate.get('workflow.label.returnCode').subscribe(translatedValue => {
           returnCode = translatedValue;
         });
-        const outcome = JSON.parse(cell.getAttribute('outcome'));
-        const result = typeof outcome.result === 'object' ? outcome.result : {};
-        return '<b>' + msg + '</b> : ' + (result.message || '-') + '</br>' +
-          '<b>' + returnCode + '</b> : ' + (result.returnCode || '-');
+        const outcome = cell.getAttribute('outcome') ? JSON.parse(cell.getAttribute('outcome')) : {};
+        return '<b>' + msg + '</b> : ' + (cell.getAttribute('message') || '-') + '</br>' +
+          '<b>' + returnCode + '</b> : ' + (outcome.returnCode || '-');
       } else if (cell.value.tagName === 'Order') {
         let data = cell.getAttribute('order');
         data = JSON.parse(data);

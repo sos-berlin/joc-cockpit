@@ -1013,6 +1013,7 @@
     "label.scheduledFor": "スケジュール済",
     "label.startOrder": "オーダー開始",
     "label.resumeOrder": "オーダー回復",
+    "label.resumeAllSelectedOrder": "Resume all selected orders",
     "label.orderFound": "オーダーがあります",
     "label.ordersFound": "オーダーがあります",
     "label.lastOutcome": "最新結果",

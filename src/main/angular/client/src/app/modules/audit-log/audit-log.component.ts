@@ -543,10 +543,6 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
       filter.dateTo = toDate;
     }
-
-    if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-      delete filter.timeZone;
-    }
     return filter;
   }
 

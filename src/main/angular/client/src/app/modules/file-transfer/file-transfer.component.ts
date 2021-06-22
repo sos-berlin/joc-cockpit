@@ -447,9 +447,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       obj = this.setDateRange(obj);
     }
     obj.timeZone = this.preferences.zone;
-    if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-      delete obj.timeZone;
-    }
     if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
       obj.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, obj.dateFrom);
     }
