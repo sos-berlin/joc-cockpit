@@ -36,6 +36,7 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
   colorScheme = {
     domain: []
   };
+  setObj = new Map();
 
   subscription: Subscription;
 
@@ -82,7 +83,7 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   onSelect(data): void {
-    this.setFilter(data.name.toUpperCase());
+    this.setFilter(this.setObj.get(data.name).toUpperCase());
   }
 
   private init(): void {
@@ -107,15 +108,21 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
   private preparePieData(res): void {
     const ordersData = [];
     this.colorScheme.domain = [];
+    this.setObj =  new Map();
     for (let prop in res) {
       if (res[prop] > 0) {
+        if (prop === 'terminated') {
+          prop = 'completed';
+        }
         let obj: any = {};
         obj.name = prop;
         try {
           this.translate.get(prop.toUpperCase()).subscribe(translatedValue => {
             obj.name = translatedValue;
           });
-        } catch (e){}
+        } catch (e) {
+        }
+        this.setObj.set(obj.name, prop);
         obj.value = res[prop];
         ordersData.push(obj);
         if (prop === 'pending') {
@@ -132,7 +139,7 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
           this.colorScheme.domain.push('#b966b9');
         } else if (prop === 'failed') {
           this.colorScheme.domain.push('#ed365b');
-        } else if (prop === 'terminated') {
+        } else if (prop === 'completed') {
           this.colorScheme.domain.push('#1591d4');
         }
       }

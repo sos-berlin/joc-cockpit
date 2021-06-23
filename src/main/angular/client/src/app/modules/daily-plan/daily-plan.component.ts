@@ -26,7 +26,6 @@ import {DataService} from '../../services/data.service';
 import {ExcelService} from '../../services/excel.service';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../../components/modify-modal/modify.component';
-import {ResumeOrderModalComponent} from '../../components/resume-modal/resume.component';
 import {catchError} from 'rxjs/operators';
 
 declare const JSGantt: any;
@@ -741,7 +740,6 @@ export class SearchComponent implements OnInit {
   schedules = [];
   workflowTree = [];
   checkOptions = [
-    {status: 'ALL', text: 'all', checked: false},
     {status: 'PLANNED', text: 'planned', checked: false},
     {status: 'PENDING', text: 'pending', checked: false},
     {status: 'INPROGRESS', text: 'incomplete', checked: false},
@@ -1000,7 +998,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     indeterminate: false,
     isCancel: false,
     isSuspend: false,
-    isResume: false,
     isModify: false,
     isRunning: false,
     isPlanned: false,
@@ -1084,7 +1081,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         this.filterData(res.plannedOrderItems);
         this.isLoaded = true;
         this.isRefreshed = false;
-        this.resetAction();
       }, () => {
         this.isLoaded = true;
         this.isRefreshed = false;
@@ -1305,10 +1301,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  resumeSelectedOrder(): void {
-    this.restCall(false, null, this.object.mapOfCheckedId, 'Resume');
-  }
-
   cancelSelectedOrder(isKill = false): void {
     if (this.dateRanges && this.dateRanges.length > 0) {
       let apiArr = [];
@@ -1327,7 +1319,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         this.resetAction(5000);
       }, () => {
         this.resetAction();
-        this.resetAction(1000);
       });
     } else {
       const orderIds = [];
@@ -1406,7 +1397,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           this.resetCheckBox();
         }
       }, () => {
-        this.isProcessing = false;
+        this.resetAction();
       });
     }
   }
@@ -1424,31 +1415,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.restCall(false, null, plan.value, 'Suspend');
     } else {
       this.restCall(false, order, null, 'Suspend');
-    }
-  }
-
-  resumeOrder(order, plan): void {
-    if (plan && plan.value) {
-      this.restCall(false, null, plan.value, 'Resume');
-    } else {
-      const modal = this.modal.create({
-        nzTitle: undefined,
-        nzContent: ResumeOrderModalComponent,
-        nzClassName: 'x-lg',
-        nzComponentParams: {
-          preferences: this.preferences,
-          schedulerId: this.schedulerIds.selected,
-          order: this.coreService.clone(order)
-        },
-        nzFooter: null,
-        nzClosable: false
-      });
-      modal.afterClose.subscribe(result => {
-        if (result) {
-          this.isProcessing = true;
-          this.resetAction(5000);
-        }
-      });
     }
   }
 
@@ -1661,6 +1627,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       obj.states = filter.state.filter((state) => {
         return state !== 'ALL';
       });
+      if (obj.states.length === 0) {
+        delete obj.states;
+      }
     }
     if (filter.schedules && filter.schedules.length > 0) {
       obj.schedulePaths = filter.schedules;
@@ -2054,7 +2023,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     object.isCancel = false;
     object.isModify = true;
     object.isSuspend = true;
-    object.isResume = true;
     let finishedCount = 0;
     let count = 0;
     let workflow = null;
@@ -2066,9 +2034,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       }
       if (order.state._text !== 'PLANNED') {
         object.isPlanned = false;
-      }
-      if (order.state._text !== 'SUSPENDED' && order.state._text !== 'FAILED') {
-        object.isResume = false;
       }
       if (order.state._text === 'FINISHED') {
         ++finishedCount;
@@ -2223,7 +2188,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       checked: false,
       isCancel: false,
       isSuspend: false,
-      isResume: false,
       isModify: false,
       isRunning: false,
       isPlanned: false,

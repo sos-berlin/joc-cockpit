@@ -166,10 +166,10 @@
             </ng-container>
             <ng-container *ngSwitchCase="'Boolean'">
               <div class="col-md-7 col-lg-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                <nz-select #value="ngModel" [nzDisabled]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired" (nzBlur)="saveJSON()" name="value{{i}}" [(ngModel)]="variable.value">
-                  <nz-option [nzValue]="" [nzLabel]="'common.placeholder.selectValue' | translate"></nz-option>
-                  <nz-option [nzLabel]="'true'" [nzValue]="true"></nz-option>
-                  <nz-option [nzLabel]="'false'" [nzValue]="false"></nz-option>
+                <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
+                           #value="ngModel" [nzDisabled]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired" (nzBlur)="saveJSON()" name="value{{i}}" [(ngModel)]="variable.value">
+                  <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                  <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
                 </nz-select>
                 <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                      class="text-danger help-block">

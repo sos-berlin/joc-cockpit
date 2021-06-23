@@ -567,6 +567,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       if (res.configuration) {
         delete res.configuration.TYPE;
         delete res.configuration.path;
+        delete res.configuration.version;
         delete res.configuration.versionId;
       } else {
         res.configuration = {};

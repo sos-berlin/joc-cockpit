@@ -42,10 +42,10 @@
                 </ng-container>
                 <ng-container *ngSwitchCase="'Boolean'">
                   <div class="col-md-6 col-lg-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                    <nz-select #value="ngModel" [required]="item.isRequired" name="value{{i}}" [(ngModel)]="item.value">
-                      <nz-option [nzValue]="" [nzLabel]="'common.placeholder.selectValue' | translate"></nz-option>
-                      <nz-option [nzLabel]="'true'" [nzValue]="true"></nz-option>
-                      <nz-option [nzLabel]="'false'" [nzValue]="false"></nz-option>
+                    <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
+                               #value="ngModel" [required]="item.isRequired" name="value{{i}}" [(ngModel)]="item.value">
+                      <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                      <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
                     </nz-select>
                     <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                          class="text-danger help-block">

@@ -343,6 +343,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   sideView: any = {};
   documentTypes = ['PDF', 'HTML', 'XML', 'XSL', 'XSD', 'JAVASCRIPT', 'JSON', 'CSS', 'MARKDOWN', 'GIF', 'JPEG', 'PNG'];
   selectedPath: string;
+  isProcessing = false;
   searchableProperties = ['name', 'type', 'assignReference', 'path'];
 
   subscription1: Subscription;
@@ -440,6 +441,14 @@ export class DocumentationComponent implements OnInit, OnDestroy {
 
   receiveAction($event): void {
     this.getDocumentations($event, $event.action !== 'NODE');
+  }
+
+  private resetAction(time = 100): void {
+    if (this.isProcessing) {
+      setTimeout(() => {
+        this.isProcessing = false;
+      }, time);
+    }
   }
 
   deleteFolder(folder): void {
@@ -613,10 +622,12 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     } else {
       obj.documentations = Array.from(this.object.mapOfCheckedId);
     }
-    this.coreService.download('documentations/export', obj, 'documentations.zip', () => {
-        if(!document){
-          this.reset();
-        }
+    this.isProcessing = true;
+    this.coreService.download('documentations/export', obj, 'documentations.zip', (flag) => {
+      this.resetAction();
+      if (!document && flag) {
+        this.reset();
+      }
     });
   }
 
@@ -635,8 +646,10 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(path => {
       if (path) {
+        this.isProcessing = true;
         this.selectedPath = path;
         this.init();
+        this.resetAction(3000);
       }
     });
   }

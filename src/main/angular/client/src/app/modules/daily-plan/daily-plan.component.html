@@ -57,10 +57,6 @@
                   *ngIf="permission.currentController.orders.suspendResume && value.state && value.state._text !== 'PLANNED' && value.state._text !== 'FINISHED' && value.state._text !== 'FAILED'">
                 <a (click)="suspendOrderWithKill(value, null )" translate>dailyPlan.button.suspendAndKillTask</a>
               </li>
-              <li nz-menu-item [nzDisabled]="value.state && value.state._text === 'FINISHED'"
-                  *ngIf="permission.currentController.orders.suspendResume && value.state && (value.state._text === 'SUSPENDED' || value.state._text === 'FAILED')">
-                <a (click)="resumeOrder(value, null )" translate>dailyPlan.button.resume</a>
-              </li>
               <li nz-menu-item [nzDisabled]="(!!(value.period && value.period.repeat) || (value.state && value.state._text === 'FINISHED'))"
                   *ngIf="permission.currentController.orders.modify && value.state && (value.state._text === 'PLANNED' || value.state._text === 'PENDING')">
                 <a (click)="modifyOrder(value)" translate>dailyPlan.button.setStartTime</a>
@@ -190,9 +186,6 @@
               </li>
               <li nz-menu-item *ngIf="permission.currentController.orders.suspendResume" [nzDisabled]="!plan.isSuspend">
                 <a (click)="suspendOrderWithKill(null, plan )" translate>dailyPlan.button.suspendAndKillTask</a>
-              </li>
-              <li nz-menu-item *ngIf="permission.currentController.orders.suspendResume && plan.isResume">
-                <a (click)="resumeOrder(null, plan )" translate>dailyPlan.button.resume</a>
               </li>
               <li nz-menu-item *ngIf="permission.currentController.orders.modify" [nzDisabled]="!plan.isModify">
                 <a (click)="changeParameter(plan, null)" translate>dailyPlan.button.setParameters</a>
@@ -426,10 +419,6 @@
             <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController.orders.suspendResume"
                     [disabled]="!object.isSuspend" (click)="suspendSelectedOrder(true)"><i class="fa fa-stop"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.suspendAndKillTask</span>
-            </button>
-            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController.orders.suspendResume"
-                    [disabled]="!object.isResume" (click)="resumeSelectedOrder()"><i class="fa fa-step-forward"></i>&nbsp;
-              <span class="hidden-sm-down" translate>dailyPlan.button.resume</span>
             </button>
           </div>
           <div class="hide" [ngClass]="{'show-block':dateRanges.length > 0}">

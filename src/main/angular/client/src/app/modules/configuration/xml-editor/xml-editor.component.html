@@ -224,46 +224,9 @@
                     <span class="fa fa-lg p-l-xs"></span>
                   </span>
                   <button class="btn-drop more-option-h"
-                          (click)="contextMenu(node.origin);"
-                          nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" type="button">
+                          (click)="contextMenu(node, $event);">
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
-                  <nz-dropdown-menu #menu="nzDropdownMenu">
-                    <ul nz-menu>
-                      <li nz-submenu [nzTitle]="'xml.button.addChild' | translate"
-                          [nzDisabled]="!(node.origin.parent == '#' || childNode.length>0)">
-                        <ul *ngIf="childNode && childNode.length>0">
-                          <li nz-menu-item [ngClass]="getCustomCss(child,node.origin)"
-                              *ngFor="let child of childNode; let i=index">
-                            <a (click)="addChild(child, node.origin, true, i); addDefaultValue(child)">
-                              <i class="fa fa-angle-right"></i>&nbsp;
-                              {{child.ref}}
-                            </a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li nz-menu-divider>
-                      <li nz-menu-item [nzDisabled]="!(node.origin.parent == '#' || childNode.length>0)">
-                        <a (click)="showAllChildNode(node.origin)"
-                           translate>xml.button.showAllChildNodes
-                        </a>
-                      </li>
-                      <li nz-menu-divider>
-                      <li nz-menu-item [nzDisabled]="cutData" *ngIf="node.origin && node.origin.parent !=='#'">
-                        <a (click)="cutNode(node.origin)" translate>xml.button.cut
-                        </a>
-                      </li>
-                      <li nz-menu-item><a (click)="copyNode(node.origin)" translate>xml.button.copy</a></li>
-                      <li nz-menu-item [nzDisabled]="!checkRule">
-                        <a (click)="pasteNode(node.origin)" translate>
-                          xml.button.paste</a>
-                      </li>
-                      <li nz-menu-divider>
-                      <li nz-menu-item [nzDisabled]="!(node.origin && node.origin.parent !== '#')">
-                        <a (click)="removeNode(node.origin)" translate>xml.button.remove</a>
-                      </li>
-                    </ul>
-                  </nz-dropdown-menu>
                   <div class="node-content-wrapper"
                        [ngClass]="{'node-content-wrapper-active': selectedNode && selectedNode.ref === node.origin.ref && selectedNode.uuid === node.origin.uuid}">
                     <ng-template #htmlContent>
@@ -581,6 +544,42 @@
     </div>
   </div>
 </div>
+<nz-dropdown-menu #menu="nzDropdownMenu">
+  <ul nz-menu *ngIf="menuNode.origin">
+    <li nz-submenu [nzTitle]="'xml.button.addChild' | translate"
+        [nzDisabled]="!(menuNode.origin.parent == '#' || childNode.length>0)">
+      <ul *ngIf="childNode && childNode.length>0">
+        <li nz-menu-item [ngClass]="getCustomCss(child,menuNode.origin)"
+            *ngFor="let child of childNode; let i=index">
+          <a (click)="addChild(child, menuNode.origin, true, i); addDefaultValue(child)">
+            <i class="fa fa-angle-right"></i>&nbsp;
+            {{child.ref}}
+          </a>
+        </li>
+      </ul>
+    </li>
+    <li nz-menu-divider>
+    <li nz-menu-item [nzDisabled]="!(menuNode.origin.parent == '#' || childNode.length>0)">
+      <a (click)="showAllChildNode(menuNode.origin)"
+         translate>xml.button.showAllChildNodes
+      </a>
+    </li>
+    <li nz-menu-divider>
+    <li nz-menu-item [nzDisabled]="cutData" *ngIf="menuNode.origin && menuNode.origin.parent !=='#'">
+      <a (click)="cutNode(menuNode.origin)" translate>xml.button.cut
+      </a>
+    </li>
+    <li nz-menu-item><a (click)="copyNode(menuNode.origin)" translate>xml.button.copy</a></li>
+    <li nz-menu-item [nzDisabled]="!checkRule">
+      <a (click)="pasteNode(menuNode.origin)" translate>
+        xml.button.paste</a>
+    </li>
+    <li nz-menu-divider>
+    <li nz-menu-item [nzDisabled]="!(menuNode.origin && menuNode.origin.parent !== '#')">
+      <a (click)="removeNode(menuNode.origin)" translate>xml.button.remove</a>
+    </li>
+  </ul>
+</nz-dropdown-menu>
 <div class="spinner" *ngIf="isLoading">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>

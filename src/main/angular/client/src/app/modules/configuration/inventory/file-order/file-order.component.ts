@@ -110,9 +110,10 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       this.indexOfNextAdd = 0;
       this.getDocumentations();
       if (res.configuration) {
-        delete res.configuration['TYPE'];
-        delete res.configuration['path'];
-        delete res.configuration['versionId'];
+        delete res.configuration.TYPE;
+        delete res.configuration.path;
+        delete res.configuration.version;
+        delete res.configuration.versionId;
       } else {
         res.configuration = {};
       }

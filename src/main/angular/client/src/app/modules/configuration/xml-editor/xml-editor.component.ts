@@ -11,6 +11,7 @@ import {ClipboardService} from 'ngx-clipboard';
 import {saveAs} from 'file-saver';
 import {PerfectScrollbarComponent} from 'ngx-perfect-scrollbar';
 import {isEmpty, isArray, isEqual, sortBy, clone} from 'underscore';
+import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
@@ -879,6 +880,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   uniqueName: string;
   onlyNumbers: string;
   isFirefox = false;
+  menuNode: any = {};
   beforeDrop;
   subscription1: Subscription;
   subscription2: Subscription;
@@ -915,6 +917,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   ];
 
   @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
+  @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
   @ViewChild(PerfectScrollbarComponent, {static: false}) componentRef?: PerfectScrollbarComponent;
 
   constructor(
@@ -923,6 +926,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     private dataService: DataService,
     public translate: TranslateService,
     public toasterService: ToasterService,
+    private nzContextMenuService: NzContextMenuService,
     private router: Router,
     private authService: AuthService
   ) {
@@ -1020,11 +1024,17 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.modal.closeAll();
   }
 
-  contextMenu(node: any): void {
-    this.checkChildNode(node, null);
-    this.checkRules(node, this.copyItem);
-    this.checkChoice(node);
-    this.checkOrder(node);
+  contextMenu(node: any, evt): void {
+    if (this.menu) {
+      this.menuNode = node;
+      setTimeout(() => {
+        this.nzContextMenuService.create(evt, this.menu);
+      }, 0);
+    }
+    this.checkChildNode(node.origin, null);
+    this.checkRules(node.origin, this.copyItem);
+    this.checkChoice(node.origin);
+    this.checkOrder(node.origin);
   }
 
   deleteAllConf(): void {

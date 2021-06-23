@@ -484,17 +484,17 @@
             </div>
             <div class="col-md-3 col-lg-3 m-b-sm p-r-0">
               <nz-select [nzDisabled]="isTrash" name="type{{i}}" [(ngModel)]="variable.value.type" (ngModelChange)="variable.value.default = '';updateOtherProperties('variable')">
-                <nz-option *ngFor="let dataType of allowedDatatype" [nzLabel]="dataType" [nzValue]="dataType"></nz-option>
+                <nz-option *ngFor="let dataType of allowedDatatype" [nzLabel]="dataType | translate" [nzValue]="dataType"></nz-option>
               </nz-select>
             </div>
             <div class="col-md-4 col-lg-4 m-b-sm p-r-0" [ngSwitch]="variable.value.type">
               <nz-input-number [nzDisabled]="isTrash" *ngSwitchCase="'Number'" [nzMin]="0" [nzStep]="1" (nzBlur)="updateOtherProperties('variable')"
                                nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"
                                name="value{{i}}" [(ngModel)]="variable.value.default"></nz-input-number>
-              <nz-select [nzDisabled]="isTrash" *ngSwitchCase="'Boolean'" name="value{{i}}" [(ngModel)]="variable.value.default" (ngModelChange)="updateOtherProperties('variable')">
-                <nz-option [nzValue]="" [nzLabel]="'common.placeholder.selectValue' | translate"></nz-option>
-                <nz-option [nzLabel]="'true'" [nzValue]="true"></nz-option>
-                <nz-option [nzLabel]="'false'" [nzValue]="false"></nz-option>
+              <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [nzDisabled]="isTrash" *ngSwitchCase="'Boolean'" name="value{{i}}" [(ngModel)]="variable.value.default"
+                         (ngModelChange)="updateOtherProperties('variable')">
+                <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
               </nz-select>
               <input *ngSwitchDefault autocomplete="off" type="text" class="form-control" name="value{{i}}"
                      (keypress)="onKeyPress($event)" (blur)="updateOtherProperties('variable')"
