@@ -4,6 +4,7 @@ import {CoreService} from '../../../services/core.service';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ChangeParameterModalComponent} from '../../../components/modify-modal/modify.component';
 import {OrderActionComponent} from '../../order-overview/order-action/order-action.component';
+import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume.component';
 
 @Component({
   selector: 'app-order-list-sidebar',
@@ -35,19 +36,16 @@ export class OrderListSidebarComponent implements OnChanges{
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.orders && changes.orders.currentValue) {
-      // console.log(changes.orders, this.orders)
       this.refreshView();
       this.resetAction();
     }
   }
 
   private refreshView(): void {
-    console.log(this.actionChild)
     if (!this.actionChild || (!this.actionChild.isVisible && this.setOfCheckedId.size === 0)) {
       this.data = [...this.orders];
     } else {
       if (this.setOfCheckedId.size > 0) {
-        console.log(this.setOfCheckedId);
         let tempArr = [];
         for (let i in this.orders) {
           if (!this.setOfCheckedId.has(this.orders[i].orderId)) {
@@ -60,11 +58,10 @@ export class OrderListSidebarComponent implements OnChanges{
           }
         }
         this.data = tempArr.concat(this.orders);
-        console.log('>>>')
       }
       setTimeout(() => {
         this.refreshView();
-      }, 750);
+      }, 800);
     }
   }
 
@@ -72,11 +69,11 @@ export class OrderListSidebarComponent implements OnChanges{
     this.isProcessing = flag;
   }
 
-  private resetAction(): void {
+  private resetAction(time= 100): void {
     if (this.isProcessing) {
       setTimeout(() => {
         this.isProcessing = false;
-      }, 100);
+      }, time);
     }
   }
 
@@ -104,6 +101,7 @@ export class OrderListSidebarComponent implements OnChanges{
     this.object.isSuspend = true;
     this.object.isResume = true;
     this.object.isTerminate = true;
+    let position = null;
     this.orders.forEach(item => {
       if (this.setOfCheckedId.has(item.orderId)) {
         if (item.state) {
@@ -121,6 +119,11 @@ export class OrderListSidebarComponent implements OnChanges{
           }
           if (item.state._text !== 'PLANNED' && item.state._text !== 'PENDING') {
             this.object.isModify = false;
+          }
+          if (!position) {
+            position = item.positionString;
+          } else if (position !== item.positionString) {
+            this.object.isResume = false;
           }
         }
       }
@@ -164,7 +167,31 @@ export class OrderListSidebarComponent implements OnChanges{
   }
 
   resumeAllOrder(): void {
-    this._bulkOperation('Resume', 'resume');
+    const map = new Map();
+    this.orders.forEach(item => {
+      if (this.setOfCheckedId.has(item.orderId)) {
+        map.set(item.orderId, item);
+      }
+    });
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ResumeOrderModalComponent,
+      nzClassName: 'x-lg',
+      nzComponentParams: {
+        preferences: this.preferences,
+        schedulerId: this.schedulerId,
+        orders: map
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.isProcessing = true;
+        this.resetAction(5000);
+        this.resetCheckBox();
+      }
+    });
   }
 
   cancelAllOrder(isKill = false): void {
@@ -202,14 +229,16 @@ export class OrderListSidebarComponent implements OnChanges{
         if (result) {
           this.isProcessing = true;
           this.resetCheckBox();
+          this.resetAction(5000);
         }
       });
     } else {
       this.isProcessing = true;
       this.coreService.post('orders/' + url, obj).subscribe(() => {
         this.resetCheckBox();
+        this.resetAction(5000);
       }, () => {
-        this.isProcessing = false;
+        this.resetAction();
       });
     }
   }

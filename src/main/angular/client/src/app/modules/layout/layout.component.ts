@@ -126,7 +126,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         if (!this.permission) {
           this.getPermissions();
         }
-      } else if (!this.schedulerIds || !this.schedulerIds.selected) {
+      } else if (!this.schedulerIds) {
         this.schedulerIds = {};
         this.getSchedulerIds();
       }
@@ -329,6 +329,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
     setTimeout(() => {
       this.loading = true;
+      this.loadInit(false, true);
     }, 10);
   }
 
@@ -360,20 +361,22 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  private loadInit(isError: boolean): void {
+  private loadInit(isError: boolean, skip = false): void {
     this.sessionTimeout = parseInt(this.authService.sessionTimeout, 10);
-    if (this.permission && this.permission.joc && !this.authService.permissionCheck(this.router.url)) {
-      this.router.navigate(['/error']);
+    if(!skip) {
+      if (this.permission && this.permission.joc && !this.authService.permissionCheck(this.router.url)) {
+        this.router.navigate(['/error']);
+      }
+      if (sessionStorage.preferences || isError) {
+        this.loading = true;
+      } else {
+        return;
+      }
+      if (!this.permission) {
+        this.permission = JSON.parse(this.authService.permission) || {};
+      }
+      this.loadSettingConfiguration();
     }
-    if (sessionStorage.preferences || isError) {
-      this.loading = true;
-    } else {
-      return;
-    }
-    if (!this.permission) {
-      this.permission = JSON.parse(this.authService.permission) || {};
-    }
-    this.loadSettingConfiguration();
     this.count = this.sessionTimeout / 1000;
     this.calculateTime();
     if (this.schedulerIds && this.schedulerIds.selected) {

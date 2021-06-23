@@ -13,6 +13,7 @@ export class SchedulerInstanceComponent implements OnInit, OnDestroy {
   @Input() permission: any;
 
   controllersList: any = [];
+  schedulerIds: any;
   isLoaded = false;
   subscription: Subscription;
 
@@ -25,7 +26,12 @@ export class SchedulerInstanceComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.getInstances();
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : null;
+    if (this.schedulerIds) {
+      this.getInstances();
+    } else{
+      this.isLoaded = true;
+    }
   }
 
   ngOnDestroy(): void {

@@ -168,13 +168,13 @@ export class FrequencyModalComponent implements OnInit {
     this.onChangeMonths();
   }
 
-  setEditorEnable() {
+  setEditorEnable(): void {
     if (this.frequency.days && this.frequency.days.length > 0) {
       this.editor.isEnable = true;
     }
   }
 
-  updateFrequencyObj(i) {
+  updateFrequencyObj(i): void {
     if (this.frequencyList[i].tab == 'monthDays') {
       if (this.frequencyList[i].isUltimos === 'months') {
         this.frequency.selectedMonths = clone(this.frequencyList[i].selectedMonths);
@@ -296,12 +296,12 @@ export class FrequencyModalComponent implements OnInit {
         this.editor.isEnable = !!(this.frequency.nationalHoliday && this.frequency.nationalHoliday.length > 0);
       } else if (this.frequency.tab == 'weekDays') {
         this.editor.isEnable = this.frequency.days && this.frequency.days.length > 0;
+        this.onChangeDays();
       } else if (this.frequency.tab == 'specificDays') {
         this.editor.isEnable = this.tempItems.length > 0;
       }
 
       this.checkMonths();
-      this.onChangeDays();
     }
   }
 

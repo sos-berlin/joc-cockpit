@@ -443,7 +443,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   deleteFolder(folder): void {
-    let obj  = {
+    const obj  = {
       folder: folder.path
     };
     if (this.preferences.auditLog) {

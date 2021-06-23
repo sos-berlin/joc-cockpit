@@ -142,11 +142,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     this.isProcessing = flag;
   }
 
-  private resetAction(): void {
+  private resetAction(time = 100): void {
     if (this.isProcessing) {
       setTimeout(() => {
         this.isProcessing = false;
-      }, 100);
+      }, time);
     }
   }
 
@@ -287,6 +287,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe((res) => {
       if (res) {
         this.isProcessing = true;
+        this.resetAction(5000);
       }
     });
   }
@@ -339,6 +340,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe((res) => {
       if (res) {
         this.isProcessing = true;
+        this.resetAction(5000);
       }
     });
   }
@@ -371,6 +373,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe((res) => {
       if (res) {
         this.isProcessing = true;
+        this.resetAction(5000);
       }
     });
   }
@@ -1052,13 +1055,15 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       modal.afterClose.subscribe((res) => {
         if (res) {
           this.isProcessing = true;
+          this.resetAction(5000);
         }
       });
     } else {
       this.isProcessing = true;
       this.coreService.post('orders/' + url, obj).subscribe(() => {
+        this.resetAction(5000);
       }, () => {
-        this.isProcessing = false;
+        this.resetAction();
       });
     }
   }

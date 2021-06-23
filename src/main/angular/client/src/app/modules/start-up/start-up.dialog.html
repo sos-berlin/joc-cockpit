@@ -10,7 +10,7 @@
 
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div [ngClass]="{'modal-body p-a' : isModal}">
-    <div class="hide" [ngClass]="{'show': display}">
+    <div *ngIf="display && isModal">
       <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="8"></app-audit-log-input>
     </div>
     <div class="form-group row">

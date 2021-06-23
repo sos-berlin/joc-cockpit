@@ -225,8 +225,11 @@ export class WorkflowActionComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.isChanged.emit(true);
+        setTimeout(() => {
+          this.isChanged.emit(false);
+        }, 5000);
       }
-    })
+    });
   }
 
   showDailyPlan(workflow): void {

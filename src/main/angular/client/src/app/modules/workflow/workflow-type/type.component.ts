@@ -49,6 +49,9 @@ export class TypeComponent implements OnChanges {
 
   changedHandler(flag: boolean): void {
     this.isChanged.emit(flag);
+    setTimeout(() => {
+      this.isChanged.emit(false);
+    }, 5000);
   }
 
   collapse(node): void {

@@ -1224,6 +1224,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.isProcessing = true;
+        this.resetAction(5000);
         this.updateList();
       }
     });
@@ -1277,6 +1278,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       if (result) {
         this.resetCheckBox();
         this.isProcessing = true;
+        this.resetAction(5000);
         this.loadOrderPlan();
       }
     });
@@ -1298,6 +1300,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.isProcessing = true;
+        this.resetAction(5000);
       }
     });
   }
@@ -1321,8 +1324,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       });
       this.resetCheckBox();
       forkJoin(apiArr).subscribe((result) => {
+        this.resetAction(5000);
       }, () => {
         this.resetAction();
+        this.resetAction(1000);
       });
     } else {
       const orderIds = [];
@@ -1387,6 +1392,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       modal.afterClose.subscribe(result => {
         if (result) {
           this.isProcessing = true;
+          this.resetAction(5000);
           if (isMultiple) {
             this.resetCheckBox();
           }
@@ -1395,6 +1401,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     } else {
       this.isProcessing = true;
       this.coreService.post('orders/daily_plan/cancel', obj).subscribe(() => {
+        this.resetAction(5000);
         if (isMultiple) {
           this.resetCheckBox();
         }
@@ -1439,6 +1446,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       modal.afterClose.subscribe(result => {
         if (result) {
           this.isProcessing = true;
+          this.resetAction(5000);
         }
       });
     }
@@ -1463,6 +1471,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         this.isProcessing = true;
         this.resetCheckBox();
         this.loadOrderPlan();
+        this.resetAction(5000);
       }
     });
   }
@@ -1485,6 +1494,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       if (result) {
         this.isProcessing = true;
         this.loadOrderPlan();
+        this.resetAction(5000);
       }
     });
   }
@@ -1924,26 +1934,27 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         if (result) {
           this.resetCheckBox();
           this.isProcessing = true;
+          this.resetAction(5000);
         }
       });
     } else {
       this.isProcessing = true;
-      if(multiple){
+      if (multiple) {
         this.resetCheckBox();
       }
       this.coreService.post('orders/' + type.toLowerCase(), obj).subscribe(() => {
-
-      },() => {
+        this.resetAction(5000);
+      }, () => {
         this.resetAction();
       });
     }
   }
 
-  private resetAction(): void {
+  private resetAction(time = 100): void {
     if (this.isProcessing) {
       setTimeout(() => {
         this.isProcessing = false;
-      }, 100);
+      }, time);
     }
   }
 

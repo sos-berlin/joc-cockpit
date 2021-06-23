@@ -212,7 +212,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   addController(): void {
-    this.modalInstance = this.modal.create({
+    const modal = this.modalInstance = this.modal.create({
       nzTitle: undefined,
       nzContent: StartUpModalComponent,
       nzComponentParams: {
@@ -222,6 +222,11 @@ export class ControllersComponent implements OnInit, OnDestroy {
       },
       nzFooter: null,
       nzClosable: false,
+    });
+    modal.afterClose.subscribe(result => {
+      if (result && this.controllers.length === 0) {
+        this.getSchedulerIds();
+      }
     });
   }
 

@@ -522,6 +522,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.isProcessing = true;
+        this.resetAction(5000);
         this.resetCheckBox();
       }
     });
@@ -572,6 +573,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       modal.afterClose.subscribe(result => {
         if (result) {
           this.isProcessing = true;
+          this.resetAction(5000);
           this.resetCheckBox();
         }
       });
@@ -579,8 +581,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       this.isProcessing = true;
       this.coreService.post('orders/' + url, obj).subscribe(() => {
         this.resetCheckBox();
+        this.resetAction(5000);
       }, () => {
-        this.isProcessing = false;
+        this.resetAction();
       });
     }
   }
@@ -780,11 +783,11 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   /* ================================= End Action ============================*/
 
-  private resetAction(): void {
+  private resetAction(time = 100): void {
     if (this.isProcessing) {
       setTimeout(() => {
         this.isProcessing = false;
-      }, 100);
+      }, time);
     }
   }
 }

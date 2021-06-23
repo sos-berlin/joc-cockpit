@@ -330,6 +330,8 @@
                       <td>
                         <a class="label" *ngIf="order.state" [ngClass]="coreService.getColor(order.state.severity, 'bg')"
                            [innerHtml]="order.state._text | translate | highlight : orderFilters.searchText"></a>
+                        <a class="label" *ngIf="order.marked" [ngClass]="coreService.getColor(order.marked.severity, 'bg')"
+                           [innerHtml]="order.marked._text | translate | highlight : orderFilters.searchText"></a>
                       </td>
                       <td>
                         <span *ngIf="!order.scheduledNever">{{order.scheduledFor | stringToDate}}</span>
