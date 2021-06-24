@@ -673,7 +673,7 @@
       "placeholder.sourceProtocol": "Source Protocol",
       "placeholder.targetProtocol": "Target Protocol",
       "placeholder.targetFilePaths": "Enter target file paths separated by comma",
-      "placeholder.sourceFilePaths": "Enter target file paths separated by comma",
+      "placeholder.sourceFilePaths": "Enter source file paths separated by comma",
       "placeholder.sourceHost": "Source Host",
       "placeholder.targetHost": "Target Host",
       "placeholder.protocol": "Protocol",
