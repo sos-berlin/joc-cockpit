@@ -1023,10 +1023,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
     obj.limit = parseInt(this.preferences.maxRecords, 10) || 5000;
     obj.timeZone = this.preferences.zone;
     if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-      obj.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, obj.dateFrom);
+      obj.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, obj.dateFrom)._d;
     }
     if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-      obj.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, obj.dateTo);
+      obj.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, obj.dateTo)._d;
     }
   }
 
@@ -1425,7 +1425,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
     let filter: any = {
       limit: parseInt(this.preferences.maxRecords, 10) || 5000
     };
-    let fromDate, toDate;
+    let fromDate;
+    let toDate;
     if (this.historyFilters.type === 'ORDER') {
       this.order.filter.historyStates = '';
       this.order.filter.date = '';
@@ -1447,7 +1448,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             fromDate.setSeconds(0);
           }
           fromDate.setMilliseconds(0);
-          filter.dateFrom = this.coreService.getUTC(fromDate);
+          filter.dateFrom = fromDate;
         }
         if (obj.to) {
           toDate = new Date(obj.to);
@@ -1461,7 +1462,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             toDate.setSeconds(0);
           }
           toDate.setMilliseconds(0);
-          filter.dateTo = this.coreService.getUTC(toDate);
+          filter.dateTo = toDate;
         }
       }
 
@@ -1518,7 +1519,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             fromDate.setSeconds(0);
           }
           fromDate.setMilliseconds(0);
-          filter.dateFrom = this.coreService.getUTC(fromDate);
+          filter.dateFrom = fromDate;
         }
         if (obj.to) {
           toDate = new Date(obj.to);
@@ -1532,7 +1533,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             toDate.setSeconds(0);
           }
           toDate.setMilliseconds(0);
-          filter.dateTo = this.coreService.getUTC(toDate);
+          filter.dateTo = toDate;
         }
       }
 
@@ -1583,7 +1584,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             fromDate.setSeconds(0);
           }
           fromDate.setMilliseconds(0);
-          filter.from = this.coreService.getUTC(fromDate);
+          filter.from = fromDate;
         }
         if (obj.to) {
           toDate = new Date(obj.to);
@@ -1597,7 +1598,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             toDate.setSeconds(0);
           }
           toDate.setMilliseconds(0);
-          filter.to = this.coreService.getUTC(toDate);
+          filter.to = toDate;
         }
       }
 
@@ -1628,31 +1629,19 @@ export class HistoryComponent implements OnInit, OnDestroy {
       } else {
         if (obj.from) {
           fromDate = new Date(obj.from);
-          if (obj.fromTime) {
-            fromDate.setHours(obj.fromTime.getHours());
-            fromDate.setMinutes(obj.fromTime.getMinutes());
-            fromDate.setSeconds(obj.fromTime.getSeconds());
-          } else {
-            fromDate.setHours(0);
-            fromDate.setMinutes(0);
-            fromDate.setSeconds(0);
-          }
+          fromDate.setHours(0);
+          fromDate.setMinutes(0);
+          fromDate.setSeconds(0);
           fromDate.setMilliseconds(0);
-          filter.dateFrom = this.coreService.getUTC(fromDate);
+          filter.dateFrom = this.coreService.getStringDate(fromDate);
         }
         if (obj.to) {
           toDate = new Date(obj.to);
-          if (obj.toTime) {
-            toDate.setHours(obj.toTime.getHours());
-            toDate.setMinutes(obj.toTime.getMinutes());
-            toDate.setSeconds(obj.toTime.getSeconds());
-          } else {
-            toDate.setHours(0);
-            toDate.setMinutes(0);
-            toDate.setSeconds(0);
-          }
+          toDate.setHours(0);
+          toDate.setMinutes(0);
+          toDate.setSeconds(0);
           toDate.setMilliseconds(0);
-          filter.dateTo = this.coreService.getUTC(toDate);
+          filter.dateTo = this.coreService.getStringDate(toDate);
         }
       }
       if (obj.type && obj.type.length === 1) {
@@ -1663,7 +1652,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
         filter.controllerId = obj.controllerId;
       }
 
-      this.convertRequestBody(filter);
       this.coreService.post('daily_plan/history', {filter, controllerId: this.schedulerIds.selected}).subscribe((res: any) => {
         this.submissionHistorys = res.dailyPlans;
         this.searchInResult();
@@ -2426,10 +2414,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
     obj.limit = parseInt(this.preferences.maxRecords, 10) || 5000;
     obj.timeZone = this.preferences.zone;
     if ((obj.from && typeof obj.from.getMonth === 'function')) {
-      obj.from = this.coreService.convertTimeToLocalTZ(this.preferences, obj.from);
+      obj.from = this.coreService.convertTimeToLocalTZ(this.preferences, obj.from)._d;
     }
     if ((obj.to && typeof obj.to.getMonth === 'function')) {
-      obj.to = this.coreService.convertTimeToLocalTZ(this.preferences, obj.to);
+      obj.to = this.coreService.convertTimeToLocalTZ(this.preferences, obj.to)._d;
     }
   }
 

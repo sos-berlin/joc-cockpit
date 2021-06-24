@@ -1105,11 +1105,11 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       let planData: any = {};
       if (value.begin) {
         planData = {
-          plannedStartTime: this.coreService.convertTimeToLocalTZ(this.preferences, value.begin),
-          plannedShowTime: this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, value.begin), this.preferences.dateFormat)
+          plannedStartTime: this.coreService.convertTimeToLocalTZ(this.preferences, value.begin)._d,
+          plannedShowTime: this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, value.begin)._d, this.preferences.dateFormat)
         };
         if (value.end) {
-          planData.endTime = this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, value.end),
+          planData.endTime = this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, value.end)._d,
             this.preferences.dateFormat);
         }
         if (value.repeat) {
@@ -1117,8 +1117,8 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
         }
       } else if (value.singleStart) {
         planData = {
-          plannedStartTime: this.coreService.convertTimeToLocalTZ(this.preferences, value.singleStart),
-          plannedShowTime: this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, value.begin), this.preferences.dateFormat)
+          plannedStartTime: this.coreService.convertTimeToLocalTZ(this.preferences, value.singleStart)._d,
+          plannedShowTime: this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, value.begin)._d, this.preferences.dateFormat)
         };
       }
       let date = new Date(planData.plannedStartTime).setHours(0, 0, 0, 0);

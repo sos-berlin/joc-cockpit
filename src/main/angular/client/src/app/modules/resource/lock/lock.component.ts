@@ -216,6 +216,7 @@ export class LockComponent implements OnInit, OnDestroy {
 
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      let flag = false;
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'LockStateChanged' && args.eventSnapshots[j].path) {
           if (this.locks.length > 0) {
@@ -238,8 +239,11 @@ export class LockComponent implements OnInit, OnDestroy {
             }
           }
         } else if (args.eventSnapshots[j].eventType.match(/Item/) && args.eventSnapshots[j].objectType === 'LOCK') {
-          this.initTree();
+          flag = true;
         }
+      }
+      if(flag){
+        this.initTree();
       }
     }
   }

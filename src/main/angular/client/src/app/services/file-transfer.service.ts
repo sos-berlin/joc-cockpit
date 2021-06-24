@@ -231,10 +231,10 @@ export class FileTransferService {
 
     filter.timeZone = preferences.zone;
     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-      filter.dateFrom = this.coreService.convertTimeToLocalTZ(preferences, filter.dateFrom);
+      filter.dateFrom = this.coreService.convertTimeToLocalTZ(preferences, filter.dateFrom)._d;
     }
     if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-      filter.dateTo = this.coreService.convertTimeToLocalTZ(preferences, filter.dateTo);
+      filter.dateTo = this.coreService.convertTimeToLocalTZ(preferences, filter.dateTo)._d;
     }
   }
 }

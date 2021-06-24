@@ -448,10 +448,10 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     }
     obj.timeZone = this.preferences.zone;
     if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-      obj.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, obj.dateFrom);
+      obj.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, obj.dateFrom)._d;
     }
     if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-      obj.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, obj.dateTo);
+      obj.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, obj.dateTo)._d;
     }
     this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
       this.fileTransfers = res.transfers || [];

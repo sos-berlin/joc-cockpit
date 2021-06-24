@@ -79,12 +79,12 @@
           <li class="nav-item dropdown-separator" *ngIf="permission.joc && permission.joc.fileTransfer.view && permission.joc.inventory.view">
             <span class="separator"></span>
           </li>
-          <li class="nav-item" *ngIf="permission.joc && permission.joc.fileTransfer.view">
+          <li class="nav-item" *ngIf="permission.joc && permission.joc.fileTransfer.view && permission.joc.inventory.view">
             <a class="nav-link" [routerLink]="['/configuration/file_transfer']" [routerLinkActive]="['active']">
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.fileTransfer</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="permission.joc && permission.joc.notification.view">
+          <li class="nav-item dropdown-separator" *ngIf="permission.joc && permission.joc.inventory.view && permission.joc.notification.view">
             <span class="separator"></span>
           </li>
           <li class="nav-item" *ngIf="permission.joc && permission.joc.notification.view">

@@ -156,11 +156,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.router.navigate(['/configuration/' + confFilters.state]);
         return;
       } else {
-        confFilters.state = 'file_transfer';
+        confFilters.state = 'notification';
       }
     }
     if (confFilters.state === 'file_transfer') {
-      if (this.permission.joc.fileTransfer.view) {
+      if (this.permission.joc.fileTransfer.view && this.permission.joc.inventory.view) {
         this.router.navigate(['/configuration/' + confFilters.state]);
         return;
       } else {
