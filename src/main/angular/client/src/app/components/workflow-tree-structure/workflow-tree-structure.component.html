@@ -32,6 +32,19 @@
     <i class="text-sm text-muted text-l-c" *ngIf="order.scheduledNever" translate>common.label.never</i>
   </span>
 </ng-template>
+<ng-template #itemTemplate2 let-orders>
+  <ng-template #contentTemplate2>
+    <div class="p-l-sm" *ngFor="let order of orders | keyvalue; let i = index">
+      <ng-container *ngIf="i != 0">
+        <i class="fa fa-circle p-r-s" [ngClass]="coreService.getColor(order.value.state.severity, 'text')"></i>
+        {{order.value.orderId}} <i *ngIf="order.value.cyclicOrder" class="fa fa-repeat p-l-xs p-r-xs" aria-hidden="true"></i>
+        <i class="text-sm text-muted" *ngIf="order.value.scheduledFor && !order.value.scheduledNever">{{order.value.scheduledFor | stringToDate}}</i>
+        <i class="text-sm text-muted text-l-c" *ngIf="order.value.scheduledNever" translate>common.label.never</i>
+      </ng-container>
+    </div>
+  </ng-template>
+  <span class="_600" [nz-tooltip]="contentTemplate2"> {{orders.size - 1}} others</span>
+</ng-template>
 <div *ngFor="let instruction of configuration.instructions">
   <ul style="margin-bottom: 0">
     <li (dragover)="drag($event);" (dragend)="dragend($event)">
@@ -73,10 +86,10 @@
         </span>
         <span class="m-l" *ngIf="instruction.order" >
           <div class="draggable" draggable="true">
-            <ng-container *ngIf="!orders" [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: instruction.order}"></ng-container>
-            <div class="order-count" *ngIf="orders">
-              <span class="_600"> {{orders.size}}</span>
-            </div>
+            <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: instruction.order}"></ng-container>
+            <span class="order-count" *ngIf="orders && orders.size - 1 > 0">
+              <ng-container [ngTemplateOutlet]="itemTemplate2" [ngTemplateOutletContext]="{ $implicit: orders}"></ng-container>
+            </span>
           </div>
         </span>
       </div>
@@ -100,10 +113,10 @@
         <a [ngClass]="{'cursor': instruction.TYPE === 'Job'}" (click)="showConfiguration(instruction)">{{instruction.jobName || (instruction.TYPE | translate)}}</a>
         <span class="m-l-md" *ngIf="instruction.order">
           <div class="draggable" draggable="true">
-            <ng-container *ngIf="!orders" [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: instruction.order}"></ng-container>
-            <div class="order-count" *ngIf="orders">
-              <span class="_600"> {{orders.size}}</span>
-            </div>
+            <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: instruction.order}"></ng-container>
+            <span class="order-count" *ngIf="orders && orders.size - 1 > 0">
+               <ng-container [ngTemplateOutlet]="itemTemplate2" [ngTemplateOutletContext]="{ $implicit: orders}"></ng-container>
+            </span>
           </div>
         </span>
       </div>
@@ -116,10 +129,10 @@
             </a>
             <span class="m-l-md" *ngIf="branch.order">
               <div class="draggable" draggable="true">
-                  <ng-container *ngIf="!orders" [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: branch.order}"></ng-container>
-                  <div class="order-count" *ngIf="orders">
-                    <span class="_600"> {{orders.size}}</span>
-                  </div>
+                  <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: branch.order}"></ng-container>
+                <span class="order-count" *ngIf="orders  && orders.size - 1 > 0">
+                   <ng-container [ngTemplateOutlet]="itemTemplate2" [ngTemplateOutletContext]="{ $implicit: orders}"></ng-container>
+                </span>
               </div>
             </span>
             <div class="p-l" *ngIf="branch.instructions && (branch.show)">
@@ -140,10 +153,10 @@
             </a>
             <span class="m-l-md" *ngIf="instruction.else && instruction.else.order">
               <div class="draggable" draggable="true">
-                <ng-container *ngIf="!orders" [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: instruction.else.order }"></ng-container>
-                <div class="order-count" *ngIf="orders">
-                  <span class="_600"> {{orders.size}}</span>
-                </div>
+                <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: instruction.else.order }"></ng-container>
+                <span class="order-count" *ngIf="orders && orders.size - 1 > 0">
+                   <ng-container [ngTemplateOutlet]="itemTemplate2" [ngTemplateOutletContext]="{ $implicit: orders}"></ng-container>
+                </span>
               </div>
             </span>
             <div class="p-l" *ngIf="instruction.else && (instruction.else.show)">
@@ -163,10 +176,10 @@
             </a>
             <span class="m-l-md" *ngIf="instruction.catch && instruction.catch.order">
               <div class="draggable" draggable="true">
-                <ng-container *ngIf="!orders" [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: instruction.catch.order}"></ng-container>
-                <div class="order-count" *ngIf="orders">
-                  <span class="_600"> {{orders.size}}</span>
-                </div>
+                <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: instruction.catch.order}"></ng-container>
+                <span class="order-count" *ngIf="orders && orders.size - 1 > 0">
+                   <ng-container [ngTemplateOutlet]="itemTemplate2" [ngTemplateOutletContext]="{ $implicit: orders}"></ng-container>
+                </span>
               </div>
             </span>
             <div class="m-l" *ngIf="instruction.catch && (instruction.catch.show)">

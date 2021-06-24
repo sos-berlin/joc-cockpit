@@ -3,7 +3,6 @@ import {TranslateService} from '@ngx-translate/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {Subscription} from 'rxjs';
-import {isEmpty} from 'underscore';
 import {CommentModalComponent} from '../action/action.component';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';

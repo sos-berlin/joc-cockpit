@@ -152,18 +152,16 @@
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'Fork'">
         <div class="form-group row" *ngIf="selectedNode.obj.branches.length > 0">
-          <label class="col-md-4 col-lg-3">
-            <span translate>workflow.label.joinVariables</span>
-          </label>
+          <label class="col-md-4 col-lg-3 block-ellipsis-job" [nz-tooltip]="'workflow.tooltip.joinVariables' | translate" translate>workflow.label.joinVariables</label>
           <div class="col-md-8 col-lg-9">
             <label nz-checkbox [(ngModel)]="selectedNode.obj.joinVariables" name="joinVariables"></label>
           </div>
         </div>
         <div class="row">
-          <label class="col-md-12 _600" translate>workflow.label.branches</label>
+          <label class="col-md-12 _600 m-b-sm" translate>workflow.label.branches</label>
         </div>
         <div class="form-group row" *ngFor="let branch of selectedNode.obj.branches; let i = index;">
-          <label class="col-md-4 col-lg-3 form-control-label" >
+          <label class="col-md-4 col-lg-3 form-control-label" nz-tooltip="{{'workflow.label.branchId' | translate}}({{i + 1}})">
             <span translate>workflow.label.branchId</span> ({{i + 1}})
           </label>
           <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((branchs.dirty || branchs.touched) && branchs.invalid)}">
@@ -186,7 +184,7 @@
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'Await'">
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.junctionPath</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'workflow.tooltip.junctionPath' | translate" translate>workflow.label.junctionPath</label>
           <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((error && !junction.touched) || (junction.dirty || junction.touched) && junction.invalid)}">
             <input autocomplete="off" [appAutofocus]="true" type="text" class="form-control" required #junction="ngModel"
                    name="junction" [(ngModel)]="selectedNode.obj.junctionPath"  placeholder="{{'workflow.placeholder.enterJunction' | translate}}">
@@ -199,21 +197,21 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.timeout</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'workflow.tooltip.timeout' | translate" translate>workflow.label.timeout</label>
           <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
             <input autocomplete="off" #timeout="ngModel" type="text" class="form-control" name="timeout" placeholder="{{'workflow.placeholder.duration' | translate}}"
                    validateDurtionReqex  [(ngModel)]="selectedNode.obj.timeout1">
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.predicate</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'workflow.tooltip.predicate' | translate" translate>workflow.label.predicate</label>
           <div class="col-md-8 col-lg-9">
             <input type="text" class="form-control" name="predicate" placeholder="{{'workflow.placeholder.expression' | translate}}"
                    validateDurtionReqex  [(ngModel)]="selectedNode.obj.predicate">
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.match</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'workflow.tooltip.match' | translate" translate>workflow.label.match</label>
           <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : error || ((match.dirty || match.touched) && match.invalid)}">
             <input type="text" identifierValidation class="form-control" name="match" #match="ngModel" placeholder="{{'workflow.placeholder.expression' | translate}}"
                    [(ngModel)]="selectedNode.obj.match">
@@ -224,7 +222,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3" translate>workflow.label.joinVariables</label>
+          <label class="col-md-4 col-lg-3 block-ellipsis-job" [nz-tooltip]="'workflow.tooltip.joinVariables' | translate" translate>workflow.label.joinVariables</label>
           <div class="col-md-8 col-lg-9">
             <label nz-checkbox [(ngModel)]="selectedNode.obj.joinVariables" name="joinVariables"></label>
           </div>
@@ -232,7 +230,7 @@
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'Publish'">
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.junctionPath</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'workflow.tooltip.junctionPath' | translate" translate>workflow.label.junctionPath</label>
           <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((junction.dirty || junction.touched) && junction.invalid)}">
             <input autocomplete="off" [appAutofocus]="true" type="text" class="form-control" required #junction="ngModel"
                    name="junction" [(ngModel)]="selectedNode.obj.junctionPath"  placeholder="{{'workflow.placeholder.enterJunction' | translate}}">
@@ -247,20 +245,20 @@
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'Fail'">
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.message</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'workflow.tooltip.message' | translate" translate>workflow.label.message</label>
           <div class="col-md-8 col-lg-9">
             <textarea class="form-control" [appAutofocus]="true" name="message" rows="2" [(ngModel)]="selectedNode.obj.message"></textarea>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.returnCode</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'workflow.tooltip.returnCode' | translate" translate>workflow.label.returnCode</label>
           <div class="col-md-8 col-lg-9">
             <nz-input-number [nzMin]="0" [nzStep]="1" name="returnCode"
                              [(ngModel)]="selectedNode.obj.outcome.returnCode"></nz-input-number>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3" translate>workflow.label.uncatchable</label>
+          <label class="col-md-4 col-lg-3 block-ellipsis-job" [nz-tooltip]="'workflow.tooltip.uncatchable' | translate" translate>workflow.label.uncatchable</label>
           <div class="col-md-8 col-lg-9">
             <label nz-checkbox [(ngModel)]="selectedNode.obj.uncatchable" name="uncatchable"></label>
           </div>
@@ -268,7 +266,7 @@
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'Retry'">
         <div class="form-group row" [ngClass]="{'has-error' : ((maxTries.dirty || maxTries.touched) && maxTries.invalid)}">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.maxTries</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'workflow.tooltip.maxTries' | translate" translate>workflow.label.maxTries</label>
           <div class="col-md-8 col-lg-9">
             <nz-input-number [appAutofocus]="true" required #maxTries="ngModel" [nzMin]="0" [nzStep]="1" name="maxTries"
                              [(ngModel)]="selectedNode.obj.maxTries"></nz-input-number>
@@ -281,7 +279,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.delay</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'workflow.tooltip.delay' | translate" translate>workflow.label.delay</label>
           <div class="col-md-8 col-lg-9">
             <input autocomplete="off"  type="text" class="form-control" validateNumberArrayReqex
                    placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
@@ -291,7 +289,7 @@
       </div>
       <div class="box-body job-property-editor" *ngIf="selectedNode.type === 'Lock'">
         <div class="form-group row" [ngClass]="{'has-error' : (error && !lockName.touched) || ((lockName.dirty || lockName.touched) && lockName.invalid)}">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.name</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'workflow.tooltip.lockName' | translate" translate>workflow.label.name</label>
           <div class="col-md-8 col-lg-9 select-input-both">
             <input autocomplete="off"  type="text" class="form-control" required
                    placeholder="{{'workflow.placeholder.selectLock' | translate}}"
@@ -338,7 +336,7 @@
           </div>
         </div>
         <div class="form-group row" *ngIf="selectedNode.obj.countProperty === 'shared'">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.count</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'workflow.tooltip.count' | translate" translate>workflow.label.count</label>
           <div class="col-md-8 col-lg-9">
             <nz-input-number [nzMin]="1" [nzMax]="selectedNode.obj.limit" [nzStep]="1" name="count"
                              [(ngModel)]="selectedNode.obj.count"></nz-input-number>
@@ -347,14 +345,14 @@
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'FileWatch'">
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.directory</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'workflow.tooltip.directory' | translate" translate>workflow.label.directory</label>
           <div class="col-md-8 col-lg-9">
             <input type="text" class="form-control"
                    name="directory" [(ngModel)]="selectedNode.obj.directory">
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.regex</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'workflow.tooltip.regex' | translate" translate>workflow.label.regex</label>
           <div class="col-md-8 col-lg-9">
             <input type="text" class="form-control"
                    name="regex" [(ngModel)]="selectedNode.obj.regex">
@@ -366,7 +364,7 @@
       <div class="box-body">
         <div class="form-group row"
              [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid), 'hide': fullScreen}">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.name</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'workflow.tooltip.workflowName' | translate" translate>workflow.label.name</label>
           <div class="col-md-8 col-lg-9">
             <input type="text" [readonly]="isTrash" class="form-control" identifierValidation name="name" (blur)="rename(name.invalid)"
                    [(ngModel)]="workflow.name" required #name="ngModel" [appAutofocus]="!isTrash" autocomplete="off"
@@ -380,14 +378,14 @@
           </div>
         </div>
         <div class="form-group row" [ngClass]="{'hide': fullScreen}">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'workflow.tooltip.title' | translate" translate>workflow.label.title</label>
           <div class="col-md-8 col-lg-9">
             <input type="text" [readonly]="isTrash" class="form-control" name="title" placeholder="{{'common.placeholder.title' | translate}}"
                    [(ngModel)]="extraConfiguration.title" autocomplete="off" (blur)="updateOtherProperties('title')"/>
           </div>
         </div>
         <div class="form-group row doc-in-workflow" [ngClass]="{'hide': fullScreen}">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.documentation</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'workflow.tooltip.documentation' | translate" translate>inventory.label.documentation</label>
           <div class="col-md-8 col-lg-9 select-input-both">
             <input autocomplete="off" type="text" class="form-control"
                    placeholder="{{'inventory.placeholder.documentationName' | translate}}"
@@ -421,7 +419,7 @@
           </div>
         </div>
         <div class="form-group row" [ngClass]="{'hide': fullScreen}">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.jobResourceNames</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'workflow.tooltip.jobResourceNames' | translate" translate>workflow.label.jobResourceNames</label>
           <div class="col-md-8 col-lg-9">
             <nz-tree-select
               name="jobResource"

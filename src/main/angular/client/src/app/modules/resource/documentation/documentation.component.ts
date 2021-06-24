@@ -381,34 +381,32 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   private refresh(args): void {
-    const pathArr = [];
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      let flag = false;
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'DocumentationUpdated' && args.eventSnapshots[j].path) {
-          if (this.documents.length > 0) {
-            for (let x = 0; x < this.documents.length; x++) {
-              if (this.documents[x].path === args.eventSnapshots[j].path) {
-                pathArr.push(args.eventSnapshots[j].path);
-                break;
-              }
-            }
-          }
+        if (args.eventSnapshots[j].eventType === 'DocumentationUpdated' && args.eventSnapshots[j].path && !this.loading) {
+          this.loadDocument(args.eventSnapshots[j].path);
+          this.resetAction(500);
+        } else if (args.eventSnapshots[j].eventType === 'DocumentationTreeUpdated' && !flag) {
+          flag = true;
         }
       }
-    }
-    if (pathArr.length > 0) {
-      this.loadDocument();
+
+      if (flag) {
+        this.initTree(true);
+        this.resetAction(500);
+      }
     }
   }
 
-  initTree(): void {
+  initTree(isSkip = false): void {
     if (this.schedulerIds.selected) {
       this.coreService.post('tree', {
         controllerId: this.schedulerIds.selected,
         types: ['DOCUMENTATION']
       }).subscribe(res => {
         this.tree = this.coreService.prepareTree(res, true);
-        if (this.tree.length) {
+        if (this.tree.length && !isSkip) {
           this.loadDocument();
         }
         this.isLoading = true;
@@ -420,16 +418,19 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     }
   }
 
-  loadDocument(): void {
+  loadDocument(path = null): void {
     const obj = {folders: [], types: [], controllerId: this.schedulerIds.selected};
     this.documents = [];
-    this.loading = true;
     let paths = [];
     if (this.child) {
       paths = this.child.defaultSelectedKeys;
     } else {
       paths = this.documentFilters.selectedkeys;
     }
+    if (path && paths.indexOf(path) === -1) {
+      return;
+    }
+    this.loading = true;
     for (let x = 0; x < paths.length; x++) {
       obj.folders.push({folder: paths[x], recursive: false});
     }
@@ -475,7 +476,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this.initTree();
+          this.isProcessing = true;
         }
       });
     } else {
@@ -493,8 +494,11 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
+          this.isProcessing = true;
           this.coreService.post('documentations/delete', obj).subscribe(res => {
 
+          }, () =>{
+            this.resetAction();
           });
         }
       });
@@ -648,7 +652,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       if (path) {
         this.isProcessing = true;
         this.selectedPath = path;
-        this.init();
+        this.initTree();
         this.resetAction(3000);
       }
     });
@@ -693,6 +697,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   deleteDocument(obj, document): void {
+    this.isProcessing = true;
     this.coreService.post('documentations/delete', obj).subscribe(res => {
       if (document) {
         for (let i = 0; i < this.documents.length; i++) {
@@ -710,6 +715,9 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       }
       this.reset();
       this.searchInResult();
+      this.resetAction(5000);
+    }, () => {
+      this.resetAction();
     });
   }
 

@@ -366,6 +366,9 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     if (!(this.adtLog.current || this.adtLog.current === false)) {
       this.adtLog.current = this.preferences.currentController;
     }
+    if(!this.adtLog.filter.date){
+      this.adtLog.filter.date = 'today';
+    }
     this.savedFilter = JSON.parse(this.saveService.auditLogFilters) || {};
     if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
       this.checkSharedFilters();
@@ -540,7 +543,6 @@ export class AuditLogComponent implements OnInit, OnDestroy {
         toDate.setSeconds(0);
       }
       toDate.setMilliseconds(0);
-
       filter.dateTo = toDate;
     }
     return filter;
@@ -729,6 +731,12 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
     this.adtLog.filter.date = '';
     filter = this.generateRequestObj(this.searchFilter, filter);
+    if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
+      filter.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateFrom)._d;
+    }
+    if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+      filter.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateTo)._d;
+    }
     this.coreService.post('audit_log', filter).subscribe((res: any) => {
       this.auditLogs = res.auditLog;
       this.searchInResult();

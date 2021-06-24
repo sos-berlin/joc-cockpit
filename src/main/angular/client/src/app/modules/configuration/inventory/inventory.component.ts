@@ -3523,25 +3523,40 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
+  reloadTree(isTrash): void {
+    const obj: any = {
+      types: ['INVENTORY']
+    };
+    if (isTrash) {
+      obj.forInventoryTrash = true;
+    } else {
+      obj.forInventory = true;
+    }
+    this.coreService.post('tree', obj).subscribe((res: any) => {
+      const tree = this.coreService.prepareTree(res, false);
+      if (isTrash) {
+        this.trashTree = this.recursiveTreeUpdate(tree, this.trashTree, true);
+      } else{
+        this.tree = this.recursiveTreeUpdate(tree, this.tree, false);
+      }
+    });
+  }
+
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].path) {
-          const path = args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/') + 1) || '/';
-          if (args.eventSnapshots[j].eventType.match(/Inventory/) || args.eventSnapshots[j].eventType.match(/Item/)) {
+          if (args.eventSnapshots[j].eventType.match(/Inventory/)) {
             const isTrash = args.eventSnapshots[j].eventType.match(/Trash/);
-            if (args.eventSnapshots[j].objectType === 'FOLDER') {
-              if (isTrash) {
-                if (this.isTrash) {
-                  this.initTrashTree(args.eventSnapshots[j].path);
-                }
-              } else {
-                this.initTree(args.eventSnapshots[j].path, path);
-              }
+            if (!this.isTrash && isTrash) {
             } else {
-              this.updateFolders(args.eventSnapshots[j].path, isTrash, () => {
-                this.updateTree(isTrash);
-              });
+              if (args.eventSnapshots[j].eventType.match(/InventoryTreeUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryTrashTreeUpdated/)) {
+                this.reloadTree(isTrash);
+              } else if (args.eventSnapshots[j].eventType.match(/InventoryUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryTrashUpdated/)) {
+                this.updateFolders(args.eventSnapshots[j].path, isTrash, () => {
+                  this.updateTree(isTrash);
+                });
+              }
             }
           }
         }
