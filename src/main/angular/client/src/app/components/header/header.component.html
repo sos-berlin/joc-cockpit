@@ -224,7 +224,7 @@
           </a>
         </li>
         <li class="nav-item"
-            *ngIf="((showViews && showViews.configuration != undefined) ? showViews.configuration : (permission.joc && (permission.joc.inventory.view || permission.joc.fileTransfer.view || permission.joc.notification.view || permission.joc.others.view)))">
+            *ngIf="((showViews && showViews.configuration != undefined) ? showViews.configuration : (permission.joc && (permission.joc.inventory.view || permission.joc.notification.view || permission.joc.others.view)))">
           <a class="nav-link" routerLink="/configuration" [routerLinkActive]="['active']"
              (click)="navigateToConfiguration()">
             <span class="nav-text">

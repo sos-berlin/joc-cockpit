@@ -104,9 +104,11 @@
              (click)="coreService.showWorkflow(value.workflowPath);"  [innerHtml]="value.workflowPath | highlight : dailyPlanFilters.searchText"></a>
          </span>
       </td>
-      <td>
-        <span class="label" [ngClass]="coreService.getColor(value.state.severity,'bg')"
-              [innerHtml]="value.status | highlight : dailyPlanFilters.searchText"> </span>
+      <td nowrap class="combine-two-label">
+        <span class="label" *ngIf="value.state" [ngClass]="[coreService.getColor(value.state.severity, 'bg'),value.marked ? 'label1' : '']"
+              [innerHtml]="value.state._text | translate  | highlight : dailyPlanFilters.searchText"></span>
+        <span class="label label2" *ngIf="value.marked" [ngClass]="coreService.getColor(value.marked.severity, 'bg')"
+              [innerHtml]="value.marked._text | translate"></span>
       </td>
       <td><span *ngIf="value.late==true" translate>dailyPlan.label.late</span></td>
       <td><span [innerHtml]="value.plannedStartTime | highlight : dailyPlanFilters.searchText"></span></td>
@@ -229,11 +231,11 @@
           </a>
          </span>
       </td>
-      <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]">
-        <span class="label"
-              [ngClass]="coreService.getColor(plan.value[0].state.severity,'bg')"
-              [innerHtml]="plan.value[0].status | highlight : dailyPlanFilters.searchText">
-        </span>
+      <td nowrap class="combine-two-label" *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]">
+        <span class="label" *ngIf="plan.value[0].state" [ngClass]="[coreService.getColor(plan.value[0].state.severity, 'bg'),plan.value[0].marked ? 'label1' : '']"
+           [innerHtml]="plan.value[0].state._text | translate  | highlight : dailyPlanFilters.searchText"></span>
+        <span class="label label2" *ngIf="plan.value[0].marked" [ngClass]="coreService.getColor(plan.value[0].marked.severity, 'bg')"
+           [innerHtml]="plan.value[0].marked._text | translate"></span>
       </td>
       <td *ngIf="!plan.order && plan.value.length === 1 && plan.value[0]"><span
         *ngIf="plan.value[0].late==true" translate>dailyPlan.label.late</span></td>

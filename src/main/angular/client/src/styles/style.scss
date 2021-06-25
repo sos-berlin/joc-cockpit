@@ -3944,6 +3944,38 @@ table.folder-tree-grid {
   bottom: 0;
 }
 
+.combine-two-label{
+  .label1{
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .label2{
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+.half-circle{
+  display: inline-block;
+  height: 10px;
+  width: 5px;
+  position: relative;
+  top: 1px;
+}
+.half-circle-left {
+  border-bottom-left-radius: 10px;
+  border-top-left-radius: 10px;
+}
+
+.half-circle-right {
+  border-bottom-right-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.v-align-link{
+  position: relative;
+  top: 6px;
+}
+
 .operation-status-info{
   position: fixed;
   top: 8px;

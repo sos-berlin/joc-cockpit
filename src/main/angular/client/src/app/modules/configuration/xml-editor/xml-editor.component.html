@@ -12,19 +12,24 @@
               <span *ngIf="validConfig" translate>xml.label.validate</span>
               <span *ngIf="!validConfig" translate>xml.label.nonValidate</span>
             </span>
-            <span class="custom-icon badge m-l-12" [ngClass]="isDeploy ? 'badge-success' : 'badge-danger'"
+            <span class="custom-icon badge m-l-12" [ngClass]="extraInfo.released ? 'badge-success' : 'badge-danger'"
                   *ngIf="objectType === 'NOTIFICATION' && nodes && nodes.length > 0">
-              <span *ngIf="isDeploy" translate>xml.label.deployed</span>
-              <span *ngIf="!isDeploy" translate>xml.label.notDeployed</span>
+              <span *ngIf="extraInfo.released" translate>xml.label.released</span>
+              <span *ngIf="!extraInfo.released" translate>xml.label.notReleased</span>
             </span>
             <button class="btn btn-sm btn-grey m-l-12" (click)="newFile()">
               <i class="fa fa-file m-r-xs"></i>
               <span translate>xml.button.new</span>
             </button>
+            <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType === 'NOTIFICATION' && extraInfo.hasReleases"
+                    (click)="removeConf()">
+              <i class="fa fa-trash m-r-xs"></i>
+              <span translate>xml.button.remove</span>
+            </button>
             <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType === 'NOTIFICATION' && nodes && nodes.length > 0"
               (click)="deleteConf()">
               <i class="fa fa-trash-o m-r-xs"></i>
-              <span translate>xml.button.delete</span>
+              <span translate>xml.button.deleteDraft</span>
             </button>
             <button *ngIf="objectType === 'OTHER' && nodes && nodes.length > 0"
               (click)="reassignSchemaFunc()" class="btn btn-sm btn-grey m-l-12">
@@ -55,10 +60,10 @@
               <i class="fa fa-check m-r-xs"></i>
               <span translate>xml.button.validate</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType === 'NOTIFICATION' && nodes && nodes.length > 0"  [disabled]="isDeploy"
-                    (click)="deployXML()">
+            <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType === 'NOTIFICATION' && nodes && nodes.length > 0" [disabled]="extraInfo.released"
+                    (click)="releaseXML()">
               <i class="fa fa-rocket m-r-xs"></i>
-              <span translate>xml.button.deploy</span>
+              <span translate>xml.button.release</span>
             </button>
           </div>
         </div>
@@ -162,10 +167,7 @@
           </button>
         </div>
       </div>
-      <div class="text-center m-t hide show"
-           *ngIf="XSDState && (XSDState.warning && XSDState.warning.code === 'XMLEDITOR-401')">{{XSDState.warning.code | translate}}</div>
-      <div class="text-center h6 text-uppercase hide show" *ngIf="XSDState && ((XSDState.message && XSDState.message.code === 'XMLEDITOR-105') || (XSDState.warning &&
-            XSDState.warning.code === '401'))">
+      <div class="text-center h6 text-uppercase hide show" *ngIf="extraInfo.state === 'NO_CONFIGURATION_EXIST'">
         <app-empty-data [title]="'xml.message.noConfigurationFound'"></app-empty-data>
       </div>
     </div>
@@ -290,12 +292,14 @@
           </nav>
           <div *ngIf="selectedNode && selectedNode.ref" class="col-12">
             <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref}}
-              <span class="text-dark text-sm _400" *ngIf="XSDState && XSDState.modified"> -
-                  <b *ngIf="!isDeploy && XSDState && XSDState.message && (XSDState.message.code !== 'XMLEDITOR-102')"
-                     translate>xml.label.autoSaveAt</b>
-                  <b *ngIf="isDeploy || XSDState && XSDState.message && (XSDState.message.code === 'XMLEDITOR-102')"
-                     translate>xml.label.modified</b>
-                  <i class="text-muted">{{XSDState.modified | stringToDate}}</i></span>
+              <span class="text-dark text-sm _400" *ngIf="extraInfo.configurationDate"> -
+                  <b translate>xml.label.configurationDate</b>
+                  <i class="text-muted p-l-xs">{{extraInfo.configurationDate | stringToDate}}</i>
+              </span>
+              <span class="text-dark text-sm _400" *ngIf="extraInfo.modified"> -
+                  <b translate>xml.label.modified</b>
+                  <i class="text-muted p-l-xs">{{extraInfo.modified | stringToDate}}</i>
+              </span>
             </div>
           </div>
           <div class="col-12">
@@ -327,6 +331,35 @@
                       *ngIf="node.name && node.id">{{node.name}}
                       <sup *ngIf="node.use ==='required' || !node.use" class="text-danger text-sm">*</sup></label></div>
                     <div class="col-sm-5">
+                      <div class="doc-in-workflow" *ngIf="node.name === 'job_resource'">
+                        <div class="select-input-both">
+                          <input autocomplete="off" type="text" class="form-control"
+                                 name="jobResourcePath" [(ngModel)]="node.data">
+                          <nz-tree-select
+                            name="documentationName"
+                            nzNoAnimation
+                            [nzAllowClear]="false"
+                            [nzNodes]="jobResourcesTree"
+                            [nzHideUnMatched]="true"
+                            [nzDropdownStyle]="{ 'max-height': '300px' }"
+                            nzShowSearch
+                            [(ngModel)]="node.data1"
+                            (nzExpandChange)="onExpand($event, 'JOBRESOURCE', node)"
+                          >
+                            <ng-template #nzTreeTemplate let-item>
+                              <div style="width: 93%" class="node-wrapper" (click)="loadData(item, 'JOBRESOURCE', $event, node);">
+                                <div class="node-content-wrapper"
+                                     [class.node-content-wrapper-active]="item.origin.path == node.data">
+                                  <i *ngIf="!item.origin.type" nz-icon [nzType]="item.isExpanded ? 'folder-open' : 'folder'"
+                                     class="w-14"></i>
+                                  <i *ngIf="item.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                                  {{item.origin.key}}
+                                </div>
+                              </div>
+                            </ng-template>
+                          </nz-tree-select>
+                        </div>
+                      </div>
                       <input class="form-control w-full" id="{{node.name}}" type="text"
                              [(ngModel)]="node.data"
                              (blur)="validateAttr(node.data, node)"
@@ -376,7 +409,7 @@
                              (focus)="hideError()"
                              (keydown)="stopPressingSpace(node.name)"
                              (change)="submitData(node.data, node)"
-                             *ngIf="node.name && node.type === 'xs:NMTOKEN' && !node.refer"
+                             *ngIf="node.name && node.type === 'xs:NMTOKEN' && !node.refer && node.name !== 'job_resource'"
                              [ngClass]="error && errorName === node.name? 'invalid': ''"
                              [required]="node.use ==='required'"
                              xmlAutofocus>
@@ -446,12 +479,12 @@
                       </div>
                     </div>
                     <div class="col-sm-3 p-l-xs">
-                      <span
+                      <span class="v-align-link"
                         (click)="gotoKey(node); getIndividualData(selectedNode, undefined); expandParentNodesOfSelectedNode(selectedNode)"
                         *ngIf="node.refer"><a translate>xml.button.gotoKeyElement</a></span>
                       <span
                         (click)="gotoKeyref(node); getIndividualData(selectedNode, undefined); expandParentNodesOfSelectedNode(selectedNode)"
-                        class="m-t-sm" *ngIf="node.refElement"
+                        [ngClass]="{'v-align-link': !(node.text && node.text.doc && node.text.doc[0] && node.text.doc[0].innerHTML)}" *ngIf="node.refElement"
                       ><a translate>xml.button.gotoRefElement</a></span>
                       <span [ngClass]="(node.refer || node.refElement) ? 'm-l-xs' : ''"
                             *ngIf="node.text && node.text.doc && node.text.doc[0] && node.text.doc[0].innerHTML"
@@ -488,7 +521,7 @@
                               [nzAutosize]="{ minRows: 3}"
                               (blur)="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                               (change)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
-                              *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'password')  && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Body'"
+                              *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'password')  && selectedNode.values[0].parent === selectedNode.ref && selectedNode.values[0].base !== 'html'"
                               [ngClass]="error && errorName == selectedNode.ref ? 'invalid': ''"
                               xmlAutofocus
                               class="form-control"

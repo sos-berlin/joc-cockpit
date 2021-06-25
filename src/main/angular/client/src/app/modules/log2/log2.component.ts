@@ -158,8 +158,8 @@ export class Log2Component implements OnInit, OnDestroy {
           this.runningOrderLog({historyId: order.historyId, controllerId: this.controllerId, eventId: res.eventId});
         } else{
           this.finished = true;
-          this.showHideTask();
         }
+        this.showHideTask();
       } else {
         this.loading = false;
         this.finished = true;
@@ -305,8 +305,8 @@ export class Log2Component implements OnInit, OnDestroy {
             }
           } else{
             this.finished = true;
-            this.showHideTask();
           }
+          this.showHideTask();
           this.scrollBottom();
         }
       });

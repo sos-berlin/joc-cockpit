@@ -368,6 +368,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
         this.router.navigate(['/error']);
       }
       if (sessionStorage.preferences || isError) {
+        if (!this.permission) {
+          this.permission = JSON.parse(this.authService.permission) || {};
+        }
         this.loading = true;
       } else {
         return;

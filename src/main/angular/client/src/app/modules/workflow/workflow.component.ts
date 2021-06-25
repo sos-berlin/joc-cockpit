@@ -1,12 +1,11 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {NzModalService} from 'ng-zorro-antd/modal';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
-import {isEmpty, isArray, clone} from 'underscore';
+import {isEmpty, isArray} from 'underscore';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
-import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {TreeModalComponent} from '../../components/tree-modal/tree.component';
 import {WorkflowActionComponent} from './workflow-action/workflow-action.component';
 import {AuthService} from '../../components/guard';
@@ -20,47 +19,6 @@ import {SearchPipe} from '../../pipes/core.pipe';
 declare const $: any;
 
 @Component({
-  selector: 'app-ngbd-modal-content',
-  templateUrl: './filter-dialog.html',
-})
-export class FilterModalComponent implements OnInit {
-  schedulerIds: any = {};
-  preferences: any = {};
-  permission: any = {};
-  name: string;
-
-  @Input() allFilter;
-  @Input() new;
-  @Input() edit;
-  @Input() filter;
-
-  constructor(private authService: AuthService, public activeModal: NzModalRef) {
-  }
-
-  ngOnInit(): void {
-    this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    this.permission = JSON.parse(this.authService.permission) || {};
-    if (this.new) {
-      this.filter = {
-        shared: false,
-        path: []
-      };
-    } else {
-      this.name = clone(this.filter.name);
-    }
-  }
-
-  cancel(obj): void {
-    if (obj) {
-      this.activeModal.close(obj);
-    } else {
-      this.activeModal.destroy();
-    }
-  }
-}
-
-@Component({
   selector: 'app-form-template',
   templateUrl: './form-template.html',
 })
@@ -68,7 +26,6 @@ export class SearchComponent implements OnInit {
   @Input() schedulerIds: any;
   @Input() filter: any;
   @Input() preferences: any;
-  @Input() allFilter: any;
   @Input() permission: any;
   @Input() isSearch: boolean;
   @Output() onCancel: EventEmitter<any> = new EventEmitter();
@@ -110,46 +67,6 @@ export class SearchComponent implements OnInit {
 
   remove(path): void {
     this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
-  }
-
-  checkFilterName(): void {
-    this.isUnique = true;
-    for (let i = 0; i < this.allFilter.length; i++) {
-      if (this.filter.name === this.allFilter[i].name && this.authService.currentUserData === this.allFilter[i].account && this.filter.name !== this.existingName) {
-        this.isUnique = false;
-      }
-    }
-  }
-
-  onSubmit(result): void {
-    this.submitted = true;
-    const obj: any = {
-      regex: result.regex,
-      paths: result.paths,
-      name: result.name
-    };
-    const configObj = {
-      controllerId: this.schedulerIds.selected,
-      account: this.authService.currentUserData,
-      configurationType: 'CUSTOMIZATION',
-      objectType: 'WORKFLOW',
-      name: result.name,
-      shared: result.shared,
-      id: result.id || 0,
-      configurationItem: JSON.stringify(obj)
-    };
-    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      configObj.id = res.id;
-      this.allFilter.push(configObj);
-      if (this.isSearch) {
-        this.filter.name = '';
-      } else {
-        this.onCancel.emit(configObj);
-      }
-      this.submitted = false;
-    }, () => {
-      this.submitted = false;
-    });
   }
 
   search(): void {
@@ -355,9 +272,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   isProcessing = false;
   searchFilter: any = {};
   sideView: any = {};
-  selectedFiltered: any = {};
-  savedFilter: any = {};
-  filterList: any = [];
   data = [];
   currentData = [];
   sideBar: any = {};
@@ -410,7 +324,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.workflowFilters.selectedkeys = this.child.defaultSelectedKeys;
     }
     $('.scroll-y').remove();
-    this.modal.closeAll();
   }
 
   changedHandler(flag: boolean): void {
@@ -435,79 +348,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.router.navigate(['/workflows/workflow_detail', workflow.path, workflow.versionId]);
   }
 
-  checkSharedFilters(): void {
-    if (this.permission.joc) {
-      let obj = {
-        controllerId: this.schedulerIds.selected,
-        configurationType: 'CUSTOMIZATION',
-        objectType: 'WORKFLOW',
-        shared: true
-      };
-      this.coreService.post('configurations', obj).subscribe((res: any) => {
-        if (res.configurations && res.configurations.length > 0) {
-          this.filterList = res.configurations;
-        }
-        this.getCustomizations();
-      }, (err) => {
-        this.getCustomizations();
-      });
-    } else {
-      this.getCustomizations();
-    }
-  }
-
-  getCustomizations(): void {
-    let obj = {
-      controllerId: this.schedulerIds.selected,
-      account: this.authService.currentUserData,
-      configurationType: 'CUSTOMIZATION',
-      objectType: 'WORKFLOW'
-    };
-    this.coreService.post('configurations', obj).subscribe((res: any) => {
-      if (this.filterList && this.filterList.length > 0) {
-        if (res.configurations && res.configurations.length > 0) {
-          this.filterList = this.filterList.concat(res.configurations);
-        }
-        let data = [];
-        for (let i in this.filterList) {
-          let flag = true;
-          for (let j in data) {
-            if (data[j].id === this.filterList[i].id) {
-              flag = false;
-            }
-          }
-          if (flag) {
-            data.push(this.filterList[i]);
-          }
-        }
-        this.filterList = data;
-      } else {
-        this.filterList = res.configurations;
-      }
-
-      if (this.savedFilter.selected) {
-        let flag = true;
-        this.filterList.forEach((value) => {
-          if (value.id === this.savedFilter.selected) {
-            flag = false;
-            this.coreService.post('configuration', {
-              controllerId: value.controllerId,
-              id: value.id
-            }).subscribe((conf: any) => {
-              this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
-              this.selectedFiltered.account = value.account;
-              this.initTree();
-            });
-          }
-        });
-        if (flag) {
-          this.savedFilter.selected = undefined;
-          this.initTree();
-        }
-      }
-    }, (err) => {
-      this.savedFilter.selected = undefined;
-    });
+  addOrder(workflow): void {
+    this.actionChild.addOrder(workflow);
   }
 
   loadOrders(date): void {
@@ -622,115 +464,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
     }
     this.getWorkflowList(obj);
-  }
-
-  /* ---- Customization ------ */
-  createCustomization(): void {
-    if (this.schedulerIds.selected) {
-      const modal = this.modal.create({
-        nzTitle: undefined,
-        nzContent: FilterModalComponent,
-        nzClassName: 'lg',
-        nzComponentParams: {
-          permission: this.permission,
-          allFilter: this.filterList,
-          new: true
-        },
-        nzFooter: null,
-        nzClosable: false
-      });
-      modal.afterClose.subscribe((configObj) => {
-        if (configObj) {
-          if (this.filterList.length === 1) {
-            this.savedFilter.selected = configObj.id;
-            this.workflowFilters.selectedView = true;
-            this.selectedFiltered = configObj;
-            this.initTree();
-            this.saveService.setWorkflow(this.savedFilter);
-            this.saveService.save();
-          }
-        }
-      });
-    }
-  }
-
-  editFilters(): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: EditFilterModalComponent,
-      nzComponentParams: {
-        filterList: this.filterList,
-        favorite: this.savedFilter.favorite,
-        permission: this.permission,
-        username: this.authService.currentUserData,
-        action: this.action,
-        self: this
-      },
-      nzFooter: null,
-      nzClosable: false
-    });
-    modal.afterClose.subscribe(obj => {
-      if (obj) {
-        if (obj.type === 'EDIT') {
-          this.editFilter(obj);
-        } else if (obj.type === 'COPY') {
-          this.copyFilter(obj);
-        }
-      }
-    });
-  }
-
-  action(type, obj, self): void {
-    if (type === 'DELETE') {
-      if (self.savedFilter.selected == obj.id) {
-        self.savedFilter.selected = undefined;
-        self.workflowFilters.selectedView = false;
-        self.selectedFiltered = undefined;
-        self.initTree();
-      } else {
-        if (self.filterList.length == 0) {
-          self.savedFilter.selected = undefined;
-          self.workflowFilters.selectedView = false;
-          self.selectedFiltered = undefined;
-        }
-      }
-      self.saveService.setWorkflow(self.savedFilter);
-      self.saveService.save();
-    } else if (type === 'MAKEFAV') {
-      self.savedFilter.favorite = obj.id;
-      self.workflowFilters.selectedView = true;
-      self.saveService.setWorkflow(self.savedFilter);
-      self.saveService.save();
-      self.initTree();
-    } else if (type === 'REMOVEFAV') {
-      self.savedFilter.favorite = '';
-      self.saveService.setWorkflow(self.savedFilter);
-      self.saveService.save();
-    }
-  }
-
-  changeFilter(filter): void {
-    this.cancel();
-    if (filter) {
-      this.savedFilter.selected = filter.id;
-      this.workflowFilters.selectedView = true;
-      this.coreService.post('configuration', {
-        controllerId: filter.controllerId,
-        id: filter.id
-      }).subscribe((conf: any) => {
-        this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
-        this.selectedFiltered.account = filter.account;
-        this.initTree();
-      });
-    } else {
-      this.savedFilter.selected = filter;
-      this.workflowFilters.selectedView = false;
-      this.selectedFiltered = {};
-      this.initTree();
-    }
-
-    this.saveService.setWorkflow(this.savedFilter);
-    this.saveService.save();
   }
 
   /* ---------------------------- Action ----------------------------------*/
@@ -934,9 +667,20 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.resetAction();
         }
         if (args.eventSnapshots[j].objectType === 'WORKFLOW' && (args.eventSnapshots[j].eventType.match(/Item/))) {
-          let path = args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/')) || args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/') + 1);
-          if (this.child && this.child.defaultSelectedKeys.length > 0 && this.child.defaultSelectedKeys.indexOf(path) > -1) {
-            reload = false;
+          if (args.eventSnapshots[j].path) {
+            let path = args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/')) || args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/') + 1);
+            if (this.child && this.child.defaultSelectedKeys.length > 0 && this.child.defaultSelectedKeys.indexOf(path) > -1) {
+              reload = false;
+            }
+          }
+          if (args.eventSnapshots[j].eventType === 'ItemDeleted') {
+            for (const i in this.workflows) {
+              if (this.workflows[i].path === args.eventSnapshots[j].workflow.path && this.workflows[i].versionId === args.eventSnapshots[j].workflow.versionId) {
+                this.workflows.splice(i, 1);
+                this.searchInResult();
+                break;
+              }
+            }
           }
           flag = true;
         }
@@ -957,10 +701,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (localStorage.views) {
       this.pageView = JSON.parse(localStorage.views).workflow;
     }
-    if (!this.savedFilter.selected) {
-      this.initTree();
-    }
-    //this.checkSharedFilters();
+    this.initTree();
   }
 
   private initTree(reload = false): void {
@@ -1164,40 +905,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
 
     navFullTree();
-  }
-
-  private editFilter(filter): void {
-    this.openFilterModal(filter, false);
-  }
-
-  private copyFilter(filter): void {
-    this.openFilterModal(filter, true);
-  }
-
-  private openFilterModal(filter, isCopy): void {
-    let filterObj: any = {};
-    this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
-      filterObj = JSON.parse(conf.configuration.configurationItem);
-      filterObj.shared = filter.shared;
-      if (isCopy) {
-        filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
-      } else {
-        filterObj.id = filter.id;
-      }
-      this.modal.create({
-        nzTitle: undefined,
-        nzContent: FilterModalComponent,
-        nzClassName: 'lg',
-        nzComponentParams: {
-          permission: this.permission,
-          allFilter: this.filterList,
-          filter: filterObj,
-          edit: !isCopy
-        },
-        nzFooter: null,
-        nzClosable: false
-      });
-    });
   }
 
   private _updatePanelHeight(): void {
