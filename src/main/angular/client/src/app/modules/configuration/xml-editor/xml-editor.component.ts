@@ -1350,7 +1350,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
               state: res.state,
               hasReleases: res.hasReleases,
               configurationDate: res.configurationDate,
-              modified: res.configuration.modified
+              modified: res.configuration ? res.configuration.modified : ''
             };
             this.printArraya(false);
             if (_tempArrToExpand && _tempArrToExpand.length > 0) {
@@ -1444,7 +1444,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         state: res.state,
         hasReleases: res.hasReleases,
         configurationDate: res.configurationDate,
-        modified: res.configuration.modified
+        modified: res.configuration ? res.configuration.modified : ''
       };
       this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
       if (res.configurationJson) {
