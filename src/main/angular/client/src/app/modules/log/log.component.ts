@@ -46,6 +46,7 @@ export class LogComponent implements OnInit, OnDestroy {
   controllerId: string;
   lastScrollTop = 0;
   delta = 20;
+  taskMap = new Map();
 
   @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
 
@@ -151,6 +152,7 @@ export class LogComponent implements OnInit, OnDestroy {
   }
 
   loadOrderLog(): void {
+    this.taskMap = new Map();
     this.workflow = this.route.snapshot.queryParams.workflow;
     const order: any = {};
     order.controllerId = this.controllerId;
@@ -158,12 +160,12 @@ export class LogComponent implements OnInit, OnDestroy {
     this.canceller = this.coreService.post('order/log', order).subscribe((res: any) => {
       if (res) {
         this.jsonToString(res);
+        this.showHideTask(res.logEvents);
         if (!res.complete && !this.isCancel) {
           this.runningOrderLog({historyId: order.historyId, controllerId: this.controllerId, eventId: res.eventId});
         } else{
           this.finished = true;
         }
-        this.showHideTask();
       } else {
         this.loading = false;
         this.finished = true;
@@ -183,55 +185,72 @@ export class LogComponent implements OnInit, OnDestroy {
     });
   }
 
-  showHideTask(): void {
+  showHideTask(logs): void {
+    let flag = false;
+    for (let i in logs) {
+      if (logs[i].logEvent === 'OrderProcessingStarted') {
+        flag = true;
+        break;
+      }
+    }
+    if (!flag) {
+      return;
+    }
     const x: any = document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
       const element = x[i];
+      this.taskMap.set('ex_' + (i + 1), '');
       element.childNodes[0].addEventListener('click', () => {
-        const jobs: any = {};
-        jobs.controllerId = this.controllerId;
-        jobs.taskId = document.getElementById('tx_id_' + (i + 1)).innerText;
-        const a = document.getElementById('tx_log_' + (i + 1));
-        if (a.classList.contains('hide')) {
-          this.coreService.log('task/log', jobs, {
-            responseType: 'text' as 'json',
-            observe: 'response' as 'response'
-          }).subscribe((res1: any) => {
-            if (res1) {
-              this.renderData(res1.body, 'tx_log_' + (i + 1));
-              document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-down');
-              document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-up');
-              a.classList.remove('hide');
-              a.classList.add('show');
-              if (res1.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
-                const obj = {
-                  controllerId: this.controllerId,
-                  taskId: res1.headers.get('x-log-task-id') || jobs.taskId,
-                  eventId: res1.headers.get('x-log-event-id')
-                };
-                this.runningTaskLog(obj, 'tx_log_' + (i + 1));
-              } else{
-                this.loading = false;
-                this.finished = true;
-              }
-            } else {
-              this.loading = false;
-            }
-          });
-        } else {
-          document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-up');
-          document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-down');
-          a.classList.remove('show');
-          a.classList.add('hide');
-          const z = document.getElementById('tx_id_' + (i + 1)).innerText;
-          document.getElementById('tx_log_' + (i + 1)).innerHTML = '';
-          document.getElementById('tx_log_' + (i + 1)).innerHTML = `<div id="tx_id_` + (i + 1) + `" class="hide">` + z + `</div>`;
-        }
+        this.expandTask(i, false);
       });
     }
 
     if (x && x.length > 0) {
-      x[x.length - 1].childNodes[0].click();
+      const dom = x[x.length - 1].childNodes[0];
+      if (this.taskMap.has(dom.getAttribute('id')) && this.taskMap.get(dom.getAttribute('id')) !== 'false') {
+        dom.click();
+      }
+    }
+  }
+
+  private expandTask(i, expand): void{
+    const domId = 'tx_log_' + (i + 1);
+    const jobs: any = {};
+    jobs.controllerId = this.controllerId;
+    jobs.taskId = document.getElementById('tx_id_' + (i + 1)).innerText;
+    const a = document.getElementById(domId);
+    if (a.classList.contains('hide')) {
+      this.taskMap.set('ex_' + (i + 1), 'true');
+      this.coreService.log('task/log', jobs, {
+        responseType: 'text' as 'json',
+        observe: 'response' as 'response'
+      }).subscribe((res: any) => {
+        if (res) {
+          this.renderData(res.body, domId);
+          document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-down');
+          document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-up');
+          a.classList.remove('hide');
+          a.classList.add('show');
+          if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
+            const obj = {
+              controllerId: jobs.controllerId,
+              taskId: res.headers.get('x-log-task-id') || jobs.taskId,
+              eventId: res.headers.get('x-log-event-id')
+            };
+            this.runningTaskLog(obj, domId);
+          }
+        }
+      });
+    } else {
+      if (!expand) {
+        this.taskMap.set('ex_' + (i + 1), 'false');
+        document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-up');
+        document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-down');
+        a.classList.remove('show');
+        a.classList.add('hide');
+        const z = document.getElementById('tx_id_' + (i + 1)).innerText;
+        document.getElementById(domId).innerHTML = `<div id="tx_id_` + (i + 1) + `" class="hide">` + z + `</div>`;
+      }
     }
   }
 
@@ -303,6 +322,8 @@ export class LogComponent implements OnInit, OnDestroy {
         if (res) {
           if (res.logEvents) {
             this.jsonToString(res);
+            this.showHideTask(res.logEvents);
+            this.scrollBottom();
           }
           if (!res.complete && !this.isCancel) {
             if (res.eventId) {
@@ -312,8 +333,6 @@ export class LogComponent implements OnInit, OnDestroy {
           } else {
             this.finished = true;
           }
-          this.showHideTask();
-          this.scrollBottom();
         }
       });
     }
@@ -600,40 +619,15 @@ export class LogComponent implements OnInit, OnDestroy {
   expandAll(): void {
     const x: any = document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
-      const jobs: any = {};
-      jobs.controllerId = this.controllerId;
-      jobs.taskId = document.getElementById('tx_id_' + (i + 1)).innerText;
-      const a = document.getElementById('tx_log_' + (i + 1));
-      if (a.classList.contains('hide')) {
-        this.coreService.log('task/log', jobs, {
-          responseType: 'text' as 'json',
-          observe: 'response' as 'response'
-        }).subscribe((res: any) => {
-          if (res) {
-            this.renderData(res.body, 'tx_log_' + (i + 1));
-            document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-down');
-            document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-up');
-            a.classList.remove('hide');
-            a.classList.add('show');
-            if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
-              const obj = {
-                controllerId: this.controllerId,
-                taskId: res.headers.get('x-log-task-id') || jobs.taskId,
-                eventId: res.headers.get('x-log-event-id')
-              };
-              this.runningTaskLog(obj, 'tx_log_' + (i + 1));
-            }
-          } else {
-            this.loading = false;
-          }
-        });
-      }
+      this.taskMap.set('ex_' + (i + 1), 'true');
+      this.expandTask(i, true);
     }
   }
 
   collapseAll(): void {
     const x: any = document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
+      this.taskMap.set('ex_' + (i + 1), 'false');
       const a = document.getElementById('tx_log_' + (i + 1));
       document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-up');
       document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-down');

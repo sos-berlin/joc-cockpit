@@ -4764,7 +4764,13 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
         this.nodes = a;
         this.submitXsd = true;
-       
+        this.extraInfo = {
+          released: res.result.released,
+          state: res.result.state,
+          hasReleases: res.result.hasReleases,
+          configurationDate: res.result.configurationDate,
+          modified: res.result.configuration ? res.result.configuration.modified : ''
+        };
         this.prevXML = '';
         this.getIndividualData(this.nodes[0], undefined);
         this.getData(this.nodes[0]);
@@ -5259,7 +5265,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             this.selectedNode = this.nodes[0];
             this.selectedNodeDoc = this.checkText(this.nodes[0]);
             this.getIndividualData(this.selectedNode, undefined);
-            console.log(res);
             this.submitXsd = true;
             this.prevXML = this.removeComment(res.configuration);
             this.copyItem = undefined;
@@ -5298,7 +5303,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (flag) {
       this.nodes = [];
       this.submitXsd = false;
-     
     }
     this.isLoading = false;
   }
@@ -5384,7 +5388,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           this.prevXML = this.mainXml;
           this.isStore = false;
           if (tab && tab.id < 0) {
-          
             this.extraInfo.modified = res.modified;
             tab.id = res.id;
             tab.schemaIdentifier = this.schemaIdentifier;

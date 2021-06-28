@@ -174,6 +174,7 @@
   },
   "breadcrumb": {
     "label.dashboard": "Tableau de Bord",
+    "label.monitor": "Monitor",
     "label.dailyPlan": "Plan Quotidien",
     "label.workflows": "Workflows",
     "label.workflow": "Workflow",
@@ -708,6 +709,7 @@
   },
   "header": {
     "label.dashboard": "TABLEAU DE BORD",
+    "label.monitor": "MONITOR",
     "label.dailyPlan": "PLAN QUOTIDIEN",
     "label.workflows": "WORKFLOWS",
     "label.fileTransfers": "TRANSFERTS DE FICHIERS",
@@ -1012,6 +1014,10 @@
     "label.rememberMe": "Se Souvenir",
     "button.logIn": "Connexion",
     "message.loginError": "Compte ou Mot de Passe est incorrect"
+  },
+  "monitor": {
+    "label.agentMonitor": "Agent Monitor",
+    "label.controllerMonitor": "Controller Monitor"
   },
   "order": {
     "label.allOrders": "Tous les Ordres",
