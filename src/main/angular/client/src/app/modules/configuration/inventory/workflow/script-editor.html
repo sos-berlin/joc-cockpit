@@ -66,7 +66,7 @@
         </div>
       </div>
       <div class="col-md-12">
-        <div class="b-a" [ngClass]="{'invalid': (cm.invalid && (cm.dirty || cm.touched))}">
+        <div id="resizable" class="b-a" [ngClass]="{'invalid': (cm.invalid && (cm.dirty || cm.touched))}">
           <ngx-codemirror required #codeMirror #cm="ngModel" name="cm" [(ngModel)]="script"
                           [options]="cmOption"
           ></ngx-codemirror>

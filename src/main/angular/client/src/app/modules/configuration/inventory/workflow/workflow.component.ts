@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -20,7 +21,7 @@ import {catchError} from 'rxjs/operators';
 import {isEmpty, isArray, isEqual, clone, extend} from 'underscore';
 import {saveAs} from 'file-saver';
 import {Router} from '@angular/router';
-import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {CdkDragDrop, moveItemInArray, DragDrop} from '@angular/cdk/drag-drop';
 import {WorkflowService} from '../../../../services/workflow.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
@@ -1002,7 +1003,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './script-editor.html'
 })
-export class ScriptEditorComponent {
+export class ScriptEditorComponent implements AfterViewInit{
   @Input() script: any;
   @ViewChild('codeMirror', {static: true}) cm;
 
@@ -1014,7 +1015,17 @@ export class ScriptEditorComponent {
     mode: 'shell'
   };
 
-  constructor(public activeModal: NzModalRef) {
+  constructor(public activeModal: NzModalRef, private dragDrop: DragDrop) {
+  }
+
+  ngAfterViewInit(): void {
+    this.dragDrop.createDrag(this.activeModal.containerInstance.modalElementRef.nativeElement);
+    $('#resizable').resizable({
+      resize: (e, x) => {
+        this.cm.codeMirror.setSize(x.size.width - 2, x.size.height - 2);
+        $('.ant-modal').css('cssText', 'width : ' + (x.size.width + 32) + 'px !important;');
+      }
+    });
   }
 
   onSubmit(): void {
