@@ -21,12 +21,12 @@
               <i class="fa fa-file m-r-xs"></i>
               <span translate>xml.button.new</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType === 'NOTIFICATION' && extraInfo.hasReleases"
+            <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType === 'NOTIFICATION'" [disabled]="!extraInfo.hasReleases"
                     (click)="removeConf()">
               <i class="fa fa-trash m-r-xs"></i>
               <span translate>xml.button.remove</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType === 'NOTIFICATION' && nodes && nodes.length > 0"
+            <button class="btn btn-sm btn-grey m-l-12" [disabled]="extraInfo.released" *ngIf="objectType === 'NOTIFICATION' && nodes && nodes.length > 0"
               (click)="deleteConf()">
               <i class="fa fa-trash-o m-r-xs"></i>
               <span translate>xml.button.deleteDraft</span>

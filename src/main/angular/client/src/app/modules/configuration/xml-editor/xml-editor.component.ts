@@ -2495,6 +2495,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         }
       }
       this.validConfig = false;
+      this.extraInfo.released = false;
     }, 0);
   }
 
@@ -3155,6 +3156,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.selectedNodeDoc = this.checkText(this.nodes[0]);
       this.getIndividualData(this.selectedNode, undefined);
     }
+    this.extraInfo.released = false;
   }
 
   getParent(node, list) {
@@ -3454,6 +3456,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.selectedNodeDoc = this.checkText(copyData);
     this.getIndividualData(this.selectedNode, undefined);
     this.scrollTreeToGivenId(this.selectedNode.uuid);
+    this.extraInfo.released = false;
   }
 
   renameTab(tab): void {
@@ -3770,6 +3773,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         }
       }
     }
+    this.extraInfo.released = false;
   }
 
   // validation for attributes
@@ -4243,6 +4247,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         this.autoValidate();
       }
     }
+    this.extraInfo.released = false;
   }
 
 // validation for node value property
@@ -4283,6 +4288,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       tag.data = value;
       this.autoValidate();
     }
+    this.extraInfo.released = false;
   }
 
   getDataAttr(refer): void {
@@ -5243,6 +5249,16 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       obj.release = isRelease;
     }
     this.coreService.post('xmleditor/remove', obj).subscribe((res: any) => {
+      if (this.objectType === 'NOTIFICATION') {
+        this.extraInfo = {
+          released: res.released,
+          state: res.state,
+          hasReleases: res.hasReleases
+        };
+        if (res.released) {
+          this.validConfig = true;
+        }
+      }
       if (res.configuration) {
         if (!this.ok(res.configuration)) {
           let obj1: any = {
