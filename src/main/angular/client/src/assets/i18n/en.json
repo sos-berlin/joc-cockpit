@@ -1154,9 +1154,9 @@
       "placeholder.pastePrivateKey": "Paste Private Key here",
       "placeholder.pastePublicKey": "Paste Public Key here",
       "placeholder.pasteCertificate": "Paste Certificate here",
-      "tooltip.import": "Import",
-      "tooltip.updateKey": "Update key",
-      "tooltip.generate": "Generate"
+      "tooltip.import": "Import public/private key from external CA",
+      "tooltip.updateKey": "Update public/private key",
+      "tooltip.generate": "Generate public/private key"
     }
   },
   "runtime": {
@@ -1629,10 +1629,10 @@
     "tooltip.workflowName": "Workflow Name",
     "tooltip.title": "Title",
     "tooltip.label": "Label",
-    "tooltip.compatibleMode": "Compatibility",
-    "tooltip.credentialKey": "Credential Key",
-    "tooltip.loadUserProfile": "Load User Profile",
-    "tooltip.returnCode": "Return Code",
+    "tooltip.compatibleMode": "Compatibility with previous JobSchedulerVersions",
+    "tooltip.credentialKey": "A Credential Key can be added to the Windows Credential Manager holding the credentials that are used to switch to a target user account for this job",
+    "tooltip.loadUserProfile": "Load Windows User Profile. A profile includes e.g. environment variables and registry settings.",
+    "tooltip.returnCode": "Return Codes signal sucessful (0) or failed (>0) execution. In case of alternative use either return codes signalling success or signalling failure can be specified by a comma separated list.",
     "tooltip.uncatchable": "Uncatchable",
     "tooltip.checkSteadyState": "Check steady state",
     "tooltip.jobClass": "Job Class",
