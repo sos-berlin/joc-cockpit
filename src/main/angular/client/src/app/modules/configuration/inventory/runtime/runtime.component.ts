@@ -103,7 +103,7 @@ export class AddRestrictionComponent implements OnInit {
     });
   }
 
-  convertStringToDate(date): void {
+  convertStringToDate(date): any {
     if (typeof date === 'string') {
       return this.coreService.getDate(date);
     } else {
@@ -545,7 +545,7 @@ export class AddRestrictionComponent implements OnInit {
   deleteFrequency(data, index): void {
     this.calendar.frequencyList.splice(index, 1);
     if (this.calendar.frequencyList.length === 0) {
-      let temp = this.coreService.clone(this.frequency);
+      const temp = this.coreService.clone(this.frequency);
       this.frequency = {};
       this.frequency.tab = temp.tab;
       this.frequency.isUltimos = temp.isUltimos;
@@ -565,7 +565,7 @@ export class AddRestrictionComponent implements OnInit {
   }
 
   private selectDate(e): void {
-    let obj = {
+    const obj = {
       startDate: e.date,
       endDate: e.date,
       color: 'blue'
@@ -636,24 +636,24 @@ export class PeriodComponent implements OnInit {
 
   onSubmit(): void {
     if (this.period.frequency === 'singleStart') {
-      delete this.period.period['repeat'];
-      delete this.period.period['begin'];
-      delete this.period.period['end'];
+      delete this.period.period.repeat;
+      delete this.period.period.begin;
+      delete this.period.period.end;
       if (this.period.period.singleStart) {
         this.period.period.singleStart = this.calendarService.checkTime(this.period.period.singleStart);
       } else {
         return;
       }
     } else if (this.period.frequency === 'repeat') {
-      delete this.period.period['singleStart'];
+      delete this.period.period.singleStart;
       if (this.period.period.repeat) {
         this.period.period.repeat = this.calendarService.checkTime(this.period.period.repeat);
       } else {
         return;
       }
     } else if (this.period.frequency === 'time_slot') {
-      delete this.period.period['repeat'];
-      delete this.period.period['singleStart'];
+      delete this.period.period.repeat;
+      delete this.period.period.singleStart;
     }
     if (this.period.frequency !== 'singleStart') {
       if (this.period.period.begin) {
@@ -914,7 +914,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   }
 
   changeDate(): void {
-    let newDate = new Date();
+    const newDate = new Date();
     newDate.setHours(0, 0, 0, 0);
     let toDate: any;
     if (new Date(this.toDate).getTime() < new Date(this.calendarTitle + '-12-31').getTime()) {
@@ -924,7 +924,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     }
 
     if (newDate.getFullYear() < this.calendarTitle && (new Date(this.calendarTitle + '-01-01').getTime() < new Date(toDate).getTime())) {
-      let obj: any = {
+      const obj: any = {
         dateFrom: this.calendarTitle + '-01-01',
         dateTo: toDate,
       };
@@ -1072,8 +1072,8 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     } else {
       if (result.dates) {
         for (let i = 0; i < result.dates.length; i++) {
-          let x = result.dates[i];
-          let obj = {
+          const x = result.dates[i];
+          const obj = {
             startDate: this.coreService.getDate(x),
             endDate: this.coreService.getDate(x),
             color: 'blue'
@@ -1084,7 +1084,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       }
       if (result.withExcludes) {
         for (let i = 0; i < result.withExcludes.length; i++) {
-          let x = result.withExcludes[i];
+          const x = result.withExcludes[i];
           this.planItems.push({
             startDate: this.coreService.getDate(x),
             endDate: this.coreService.getDate(x),
@@ -1121,7 +1121,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
           plannedShowTime: this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, value.begin)._d, this.preferences.dateFormat)
         };
       }
-      let date = new Date(planData.plannedStartTime).setHours(0, 0, 0, 0);
+      const date = new Date(planData.plannedStartTime).setHours(0, 0, 0, 0);
       planData.startDate = date;
       planData.endDate = date;
       planData.color = 'blue';
@@ -1131,9 +1131,9 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   }
 
   private getCalendarObj(list): any {
-    let calendars = [];
+    const calendars = [];
     for (let i = 0; i < list.length; i++) {
-      let obj: any = {calendarName: list[i].calendarName, periods: list[i].periods};
+      const obj: any = {calendarName: list[i].calendarName, periods: list[i].periods};
       if (list[i].frequencyList && list[i].frequencyList.length > 0) {
         obj.includes = {};
         list[i].frequencyList.forEach((val) => {

@@ -460,6 +460,14 @@ export class CalendarService {
     }
     if (time === '00:00') {
       time = '00:00:00';
+    } else if (time.length === 3) {
+      time = time + '00:00';
+    } else if (time.length === 4) {
+      time = time + '0:00';
+    } else if (time.length === 6) {
+      time = time + '00';
+    } else if (time.length === 7) {
+      time = time + '0';
     }
     return time;
   }

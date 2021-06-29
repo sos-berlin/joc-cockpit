@@ -164,7 +164,7 @@
         <li class="nav-item" *ngIf="(showViews && showViews.dashboard != undefined) ? showViews.dashboard : true">
           <a class="nav-link" routerLink="/dashboard" [routerLinkActive]="['active']">
             <span class="nav-text">
-              <i class="icon-dashboard-icon text-white"></i>
+              <i class="icon2-dashboard text-white"></i>
               <span class="ico text-white text-u-c _600" translate>header.label.dashboard</span>
             </span>
           </a>
@@ -224,7 +224,7 @@
           </a>
         </li>
         <li class="nav-item"
-            *ngIf="((showViews && showViews.configuration != undefined) ? showViews.configuration : (permission.joc && (permission.joc.inventory.view || permission.joc.fileTransfer.view || permission.joc.notification.view || permission.joc.others.view)))">
+            *ngIf="((showViews && showViews.configuration != undefined) ? showViews.configuration : (permission.joc && (permission.joc.inventory.view || permission.joc.notification.view || permission.joc.others.view)))">
           <a class="nav-link" routerLink="/configuration" [routerLinkActive]="['active']"
              (click)="navigateToConfiguration()">
             <span class="nav-text">

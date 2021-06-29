@@ -118,6 +118,47 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+@font-face {
+  font-family: 'joc1';
+  src: url('../assets/fonts/joc1.eot');
+  src: url('../assets/fonts/joc1.eot?#iefix') format('embedded-opentype'),
+  url('../assets/fonts/joc1.woff') format('woff'),
+  url('../assets/fonts/joc1.ttf') format('truetype'),
+  url('../assets/fonts/joc1.svg#joc1') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[data-icon]:before {
+  font-family: 'joc1' !important;
+  content: attr(data-icon);
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="icon2-"]:before,
+[class*=" icon2-"]:before {
+  font-family: 'joc1' !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon2-dashboard:before {
+  content: "\64";
+}
+
 .icon1-Actual-size:before {
   content: "\e900";
 }
@@ -204,6 +245,10 @@
 
 .icon-dashboard-icon:before {
   content: "\e00c";
+}
+
+.icon-noun-dashboard:before {
+  content: "\e008";
 }
 
 .icon-upload-icon:before {
@@ -785,6 +830,7 @@ button.close {
   width: 600px !important;
   top: 0;
 }
+
 .ant-modal.x-lg {
   min-width: 900px !important;
   width: auto !important;
@@ -3944,6 +3990,38 @@ table.folder-tree-grid {
   bottom: 0;
 }
 
+.combine-two-label{
+  .label1{
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .label2{
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+.half-circle{
+  display: inline-block;
+  height: 10px;
+  width: 5px;
+  position: relative;
+  top: 1px;
+}
+.half-circle-left {
+  border-bottom-left-radius: 10px;
+  border-top-left-radius: 10px;
+}
+
+.half-circle-right {
+  border-bottom-right-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.v-align-link{
+  position: relative;
+  top: 6px;
+}
+
 .operation-status-info{
   position: fixed;
   top: 8px;
@@ -6460,7 +6538,7 @@ tr.tr-border td:first-child {
 
 .CodeMirror {
   background: 0 0 !important;
-  height: auto !important;
+  height: auto;
   pre {
     font-family: monospace !important;
   }
@@ -6661,7 +6739,6 @@ tr.tr-border td:first-child {
   .CodeMirror {
     background: #fff !important;
     color: #3d464d !important;
-    height: auto;
     max-height: calc(100vh - 232px);
   }
 

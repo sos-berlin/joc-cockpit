@@ -84,6 +84,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    this.modal.closeAll();
     if (this.timeout) {
       clearTimeout(this.timeout);
     }

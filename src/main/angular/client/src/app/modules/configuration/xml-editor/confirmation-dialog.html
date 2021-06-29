@@ -1,8 +1,9 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="!delete && !deleteAll" translate>xml.label.saveXml</span>
+    <span *ngIf="!delete && !deleteAll && !remove" translate>xml.label.saveXml</span>
     <span *ngIf="!delete && deleteAll && objectType !== 'NOTIFICATION'" translate>xml.label.deleteXml</span>
-      <span *ngIf="delete && objectType === 'NOTIFICATION'" translate>xml.label.deleteXml</span>
+      <span *ngIf="delete && objectType === 'NOTIFICATION'" translate>xml.label.deleteDraft</span>
+      <span *ngIf="remove" translate>common.label.remove</span>
       <span *ngIf="delete && !deleteAll && objectType !== 'NOTIFICATION'" ><span translate>xml.button.delete</span> <span class="m-l-xs" *ngIf="objectType !== 'NOTIFICATION'">{{activeTab.name}}</span></span> ?
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
@@ -12,8 +13,9 @@
 <div class="modal-body p-a">
   <div class="row text-center">
     <div class="col-sm-12 text m-t m-b">
-      <span *ngIf="!delete && !deleteAll" translate>xml.message.wouldYouLikeToSaveCurrentXml</span>
+      <span *ngIf="!delete && !deleteAll && !remove" translate>xml.message.wouldYouLikeToSaveCurrentXml</span>
       <span *ngIf="!delete && deleteAll" translate>xml.message.deleteAllDraft</span>
+      <span *ngIf="remove" translate>xml.message.removeXML</span>
       <span *ngIf="delete && !deleteAll">
         <span *ngIf="objectType === 'NOTIFICATION'" translate>xml.message.wouldYouLikeToDeleteCurrentXml</span>
         <span *ngIf="objectType !== 'NOTIFICATION'" translate>xml.message.wouldYouLikeToDeleteThisConfiguration</span>
@@ -22,9 +24,10 @@
   </div>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-danger btn-sm" [ngClass]="{'btn-primary' : (!delete && !deleteAll)}" (click)="confirmMessage('yes')">
+  <button type="button" class="btn btn-danger btn-sm" [ngClass]="{'btn-primary' : (!delete && !deleteAll && !remove)}" (click)="confirmMessage('yes')">
     <span *ngIf="delete || deleteAll">{{'common.button.delete' | translate}}</span>
-    <span *ngIf="!delete && !deleteAll">{{'common.button.confirm' | translate}}</span>
+    <span *ngIf="remove">{{'common.button.remove' | translate}}</span>
+    <span *ngIf="!delete && !deleteAll && !remove">{{'common.button.confirm' | translate}}</span>
   </button>
   <button type="button" class="btn btn-grey btn-sm" (click)="confirmMessage('no')"
           translate>common.button.cancel

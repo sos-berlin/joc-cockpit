@@ -97,9 +97,11 @@
           <td>
             <span [innerHtml]="order.positionString"></span>
           </td>
-          <td>
-            <a class="label" *ngIf="order.state" [ngClass]="coreService.getColor(order.state.severity, 'bg')"
+          <td nowrap class="combine-two-label">
+            <a class="label" *ngIf="order.state" [ngClass]="[coreService.getColor(order.state.severity, 'bg'),order.marked ? 'label1' : '']"
                [innerHtml]="order.state._text | translate"></a>
+            <a class="label label2" *ngIf="order.marked" [ngClass]="coreService.getColor(order.marked.severity, 'bg')"
+               [innerHtml]="order.marked._text | translate"></a>
           </td>
           <td>
             <span *ngIf="!order.scheduledNever">{{order.scheduledFor | stringToDate}}</span>

@@ -1045,7 +1045,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     $('.scroll-y').remove();
-    this.modal.closeAll();
   }
 
   loadOrderPlan(): void {

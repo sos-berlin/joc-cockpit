@@ -892,18 +892,20 @@ export class WorkflowService {
       } else if (cell.value.tagName === 'Order') {
         let data = cell.getAttribute('order');
         data = JSON.parse(data);
-        let color = '';
-        if (data.state) {
-          color = this.coreService.getColor(data.state.severity, 'text');
-        }
         let className = 'hide';
         if (data.cyclicOrder) {
           className = 'show';
         }
+        const class1 = data.state ?  this.coreService.getColor(data.state.severity, data.marked ? 'bg' : 'text') : '';
+        const class2 = data.marked ? this.coreService.getColor(data.marked.severity, 'bg') : '';
         str = '<div class="vertex-text"><div class="block-ellipsis-job">' +
-          '<i style="position: absolute;margin-top: -2px;margin-left: -10px;" class="fa fa-repeat ' + className + '" aria-hidden="true"></i>' +
-          '<i class="fa fa-circle text-xs p-r-xs ' + color + '"></i>' + data.orderId
-          + '</div>';
+          '<i style="position: absolute;margin-top: -2px;margin-left: -10px;" class="fa fa-repeat ' + className + '" aria-hidden="true"></i>';
+        if (data.marked){
+          str = str + '<span class="half-circle half-circle-left ' + class1 + '"></span><span class="half-circle half-circle-right m-r-xs ' + class2 + '"></span>';
+        } else{
+          str = str + '<i class="fa fa-circle text-xs p-r-xs ' + class1 + '"></i>';
+        }
+        str = str + data.orderId + '</div>';
         if (data.scheduledFor) {
           if (!data.scheduledNever) {
             str = str + ' <span class="text-xs" >' + this.stringDatePipe.transform(data.scheduledFor) + '</span>';
@@ -1014,7 +1016,7 @@ export class WorkflowService {
       } else if (cell.value.tagName === 'Order') {
         let data = cell.getAttribute('order');
         data = JSON.parse(data);
-        let state = '', orderId = '', _text = '', scheduledFor = '',
+        let state = '', orderId = '', _text = '', _markedText = '', scheduledFor = '',
           cyclicOrder = '', begin = '', end = '', orders = '';
         this.translate.get('workflow.label.orderId').subscribe(translatedValue => {
           orderId = translatedValue;
@@ -1028,6 +1030,11 @@ export class WorkflowService {
         this.translate.get(data.state._text).subscribe(translatedValue => {
           _text = translatedValue;
         });
+        if (data.marked) {
+          this.translate.get(data.marked._text).subscribe(translatedValue => {
+            _markedText = translatedValue;
+          });
+        }
         if (data.cyclicOrder) {
           this.translate.get('dailyPlan.label.cyclicOrder').subscribe(translatedValue => {
             cyclicOrder = translatedValue;
@@ -1042,24 +1049,25 @@ export class WorkflowService {
             orders = translatedValue;
           });
         }
+        const class1 = this.coreService.getColor(data.state.severity, 'text');
+        const class2 = data.marked ? this.coreService.getColor(data.marked.severity, 'text') : '';
         let div = '<div><b>' + orderId + '</b> : ' + (data.orderId || '-') + '</br>' +
-          '<b>' + state + '</b> : ' + _text + '</br>';
+          '<b>' + state + '</b> : <span class="'+class1+'">' + _text + '</span><span class="'+class2+'">' + (_markedText ? '/' + _markedText : '') + '</span>'  + '</br>';
         if (data.cyclicOrder) {
           div = div + '<b class="m-b-xs">' + cyclicOrder + '</b></br>';
           div = div + '<b class="p-l-sm">' + begin + '</b> : ' + this.stringDatePipe.transform(data.cyclicOrder.firstStart) + '</br>';
           div = div + '<b class="p-l-sm">' + end + '</b> : ' + this.stringDatePipe.transform(data.cyclicOrder.lastStart) + '</br>';
           div = div + '<b class="p-l-sm">' + orders + '</b> : ' + data.cyclicOrder.count;
         } else {
-
           if (data.scheduledFor) {
             if (!data.scheduledNever) {
               div = div + '<b>' + scheduledFor + '</b> : ' + this.stringDatePipe.transform(data.scheduledFor);
-            } else{
+            } else {
               let never = '';
               this.translate.get('common.label.never').subscribe(translatedValue => {
                 never = translatedValue;
               });
-              if(never){
+              if (never) {
                 never = never.toLowerCase();
               }
               div = div + '<b>' + scheduledFor + '</b> : ' + never;
@@ -1067,7 +1075,6 @@ export class WorkflowService {
           }
         }
         div = div + '</div>';
-
         return div;
       } else {
         const x = cell.getAttribute('label');
