@@ -457,17 +457,6 @@ export class RemovePlanModalComponent implements OnInit {
       this.removeRecursively(obj);
       return;
     }
-    if (!this.submissionsDelete) {
-      this.getOrderIds(obj.filter.orderIds, (orderIds) => {
-        obj.filter.orderIds = orderIds;
-        this.removeAPICall(obj);
-      });
-    } else {
-      this.removeAPICall(obj);
-    }
-  }
-
-  private removeAPICall(obj): void{
     this.coreService.post(this.submissionsDelete ? 'daily_plan/submissions/delete' : 'daily_plan/orders/delete', obj).subscribe((res) => {
       this.submitted = false;
       this.activeModal.close('Done');
@@ -490,17 +479,6 @@ export class RemovePlanModalComponent implements OnInit {
       this.submitted = false;
     });
   }
-
-  getOrderIds(orderIds, cb): void {
-    this.coreService.post('utilities/cyclic_orders', {
-      orderIds
-    }).subscribe((res: any) => {
-      cb(res.orderIds);
-    }, () => {
-      cb([]);
-    });
-  }
-
 }
 
 @Component({
