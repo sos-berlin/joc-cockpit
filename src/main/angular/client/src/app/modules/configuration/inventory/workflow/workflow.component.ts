@@ -1019,11 +1019,30 @@ export class ScriptEditorComponent implements AfterViewInit{
   }
 
   ngAfterViewInit(): void {
-    this.dragDrop.createDrag(this.activeModal.containerInstance.modalElementRef.nativeElement);
+    if (localStorage.$SOS$SCRIPTWINDOWWIDTH) {
+      const wt = parseInt(localStorage.$SOS$SCRIPTWINDOWWIDTH, 10);
+      this.cm.codeMirror.setSize(wt - 2, (parseInt(localStorage.$SOS$SCRIPTWINDOWHIGHT, 10) - 2));
+      $('.ant-modal').css('cssText', 'width : ' + (wt + 32) + 'px !important');
+    }
+
+    const dragEle = this.dragDrop.createDrag(this.activeModal.containerInstance.modalElementRef.nativeElement);
+    dragEle.moved.subscribe((e: any) => {
+      if (dragEle.disabled) {
+        dragEle.setFreeDragPosition(e.source._passiveTransform);
+      }
+    });
     $('#resizable').resizable({
+      start: () => {
+        dragEle.disabled = true;
+      },
       resize: (e, x) => {
-        this.cm.codeMirror.setSize(x.size.width - 2, x.size.height - 2);
-        $('.ant-modal').css('cssText', 'width : ' + (x.size.width + 32) + 'px !important;');
+        const dom: any = document.getElementsByClassName('script-editor')[0];
+        this.cm.codeMirror.setSize((x.size.width - 2), (x.size.height - 2));
+        dom.style.setProperty('width', (x.size.width + 32) + 'px', 'important');
+      }, stop: (e, x) => {
+        dragEle.disabled = false;
+        localStorage.$SOS$SCRIPTWINDOWWIDTH = x.size.width;
+        localStorage.$SOS$SCRIPTWINDOWHIGHT = x.size.height;
       }
     });
   }
