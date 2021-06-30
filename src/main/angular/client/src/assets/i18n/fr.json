@@ -987,6 +987,68 @@
       "label.released": "Publié",
       "label.controller": "Contrôleur",
       "label.dailyPlan": "Plan Quotidien"
+    },
+    "tooltips": {
+      "workflow": {
+        "name": "The name of a workflow is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+        "jobResourceNames": "Job Resources hold shared variables that can be used by a number of jobs and workflows.",
+        "documentation": "Documentation",
+        "title": "The Title of a workflow.",
+        "await": {
+          "match": "Match",
+          "timeout": "Timeout",
+          "junctionPath": "A Junction links two or more workflows and causes orders to wait for each other if they are derived from the same daily plan.",
+          "predicate": "Predicate",
+          "joinVariables": "Join Variables"
+        },
+        "fail": {
+          "message": "The instruction allows to specify a Message that is attached the order and that becomes visible with the order history.",
+          "uncatchable": "An Uncatchable error cannot be handled with a Try/Catch Instruction.",
+          "returnCode": "Return Code"
+        },
+        "fileWatch": {
+          "directory": "The Directory that is watched for incoming files.",
+          "regex": "A Regular Expression specifies the pattern for the names of incoming files that a directory is watched for."
+        },
+        "fork": {
+          "joinVariables": "Variables of child orders in the branches of a Fork Instruction are added to the parent order when reaching the Join Instruction."
+        },
+        "if": {
+          "predicate": "A Predicate in an If Instruction is an expression or comparison that evaluates to 'true' or 'false'"
+        },
+        "job": {
+          "name": "A job name is unique in a workflow. A job with the same name can occur with a number of instructions in the same workflow if individual job labels are used. For a job name most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+          "label": "A job Label is used to distinguish multiple occurrences of a job with the same name in a workflow.",
+          "title": "The Title of a job.",
+          "compatibleMode": "Compatibility with previous JobScheduler versions includes e.g. for shell jobs to automatically create environment variables prefixed with 'SCHEDULER_PARAM_' for any order variables as in JS1.",
+          "credentialKey": "A Credential Key can be added to the Windows Credential Manager holding the credentials that are used to switch to a target user account for this job.",
+          "loadUserProfile": "Load Windows User Profile. A profile includes e.g. environment variables and Windows registry settings.",
+          "returnCode": "Return Codes signal sucessful (0) or failed (>0) execution. In case of alternative use either return codes signalling success or signalling failure can be specified by a comma separated list.",
+          "checkSteadyState": "When a file arrives in a directory that is watched for incoming files then the file size and file timestamp are checked for changes. Between each check the specified delay is applied until no further changes can be observed.",
+          "jobClass": "The Job Class determines if a job is executed with the OS Shell (Windows, Unix, MacOS) etc.) or is executed as a JVM JITL Java job or is executed as a JVM Script job for one of the scripting languages supported by the JVM.",
+          "timeout": "When exceeding the Timeout then with Windows a job is aborted. With Unix the job is sent a SIGTERM signal and after the Grace Timeout a SIGKILL signal will abort the job.",
+          "graceTimeout": "A Grace Timeout is applied to jobs with Unix that receive a SIGTERM signal when exceeding their Timeout. If the job does not terminate then after the Grace Timeout a SIGKILL signal will abort the job.",
+          "warnIfShorter": "If the execution period of a job is shorter than specified then a notification, e.g. by e-mail, is sent.",
+          "warnIfLonger": "If the execution period of a job is longer than specified then a notification, e.g. by e-mail, is sent.",
+          "agent": "Agent",
+          "fileWatcher": "File Order Sources are used to watch a Directory for incoming files and to create an order with the respective workflow for each file.",
+          "className": "The name of a Java class implementing a job. JS7 ships with a number of predefined JITL Java classes, e.g. for database access, to send e-mail etc.",
+          "parallelism": "The max. Parallelism specifies the number of orders in a workflow that can execute the job in parallel. If the maximum is exceeded then orders have to wait until the value has fallen below the job's max. Parallelism.",
+          "criticality": "The Criticality of jobs can be used in notifications to better distinguish the urgency of an incident.",
+          "failOnOutputErr": "If a job writes output to the stderr channel then this is considered an error and the order is put in the FAILED state."
+        },
+        "lock": {
+          "name": "Names of Resource Locks are unique in the inventory. Sections in workflows can be limited in parllelism by using Resource Locks.",
+          "count": "The Weight for use of a Resource Lock is calculated towards its capacity. If the capacity is exceeded then the order has to wait until a capacity is available that matches or exceeds the current weight."
+        },
+        "publish": {
+          "junctionPath": "A Junction links two or more workflows and causes orders to wait for each other if they are derived from the same daily plan."
+        },
+        "retry": {
+          "maxTries": "When reaching the max. number of retries then the Try Instruction ends and the order is put in the FAILED state.",
+          "delay": "The Delay specifies the time in seconds before the next retry is performed. If a number of values are specified - separated by a comma - then each value from left to right applies to the period that the next retry is waited for."
+        }
+      }
     }
   },
   "log": {
@@ -1364,7 +1426,9 @@
       "daily_plan_history_age": "Spécifie la période de rétention de l'historique des soumissions avec le Plan Quotidien. Toutes les entrées d'historique plus anciennes que la valeur spécifiée seront purgées.",
       "deployment_history_versions": "Spécifie le nombre de versions par objet déployé qui doivent être conservées. Ces versions peuvent être utilisées pour redéployer un objet à partir d'un état plus ancien. Toutes les versions déployées antérieures des objets déployés sont supprimées.",
       "audit_log_age": "Spécifie la période de rétention du Journal d'Audit. Toutes les entrées du Journal d'Audit plus anciennes que la valeur spécifiée seront purgées.",
-      "file_transfer_history_age": "Specifies the retention period of the File Transfer History. Any history entries older than the value specified will be purged."
+      "file_transfer_history_age": "Specifies the retention period of the File Transfer History. Any history entries older than the value specified will be purged.",
+      "monitoring_history_age": "monitoring_history_age",
+      "notification_history_age": "monitoring_history_age"
     },
     "dailyplan": {
       "time_zone": "Spécifie le fuseau horaire qui est appliqué à l'heure de démarrage du service du Plan Quotidien et à la période du Plan Quotidien.",
@@ -1577,6 +1641,7 @@
     "button.zoomOut": "Dézoomer",
     "button.actual": "Défaut",
     "button.fit": "Ajuster",
+    "button.fitToScreen": "Fit to screen",
     "button.undo": "Annuler",
     "button.redo": "Refaire",
     "button.find": "Trouver",
@@ -1632,41 +1697,7 @@
     "placeholder.orderId": "Entrer l'ID de l'Ordre",
     "placeholder.className": "Entrer le Nom de la Classe",
     "placeholder.selectJobResources": "Sélectionnez les Ressources de la taĉhe",
-    "placeholder.enterCredentialKey": "Entrer la clé d'identification à partir du gestionnaire d'identification Windows",
-    "tooltip.jobName": "Job Name",
-    "tooltip.workflowName": "Workflow Name",
-    "tooltip.title": "Title",
-    "tooltip.label": "Label",
-    "tooltip.compatibleMode": "Compatibility",
-    "tooltip.credentialKey": "Credential Key",
-    "tooltip.loadUserProfile": "Load User Profile",
-    "tooltip.returnCode": "Return Code",
-    "tooltip.uncatchable": "Uncatchable",
-    "tooltip.checkSteadyState": "Check steady state",
-    "tooltip.jobClass": "Job Class",
-    "tooltip.jobResourceNames": "Job Resources",
-    "tooltip.timeout": "Timeout",
-    "tooltip.graceTimeout": "Grace Timeout",
-    "tooltip.warnIfShorter": "Warn on shorter execution period",
-    "tooltip.warnIfLonger": "Warn on longer execution period",
-    "tooltip.junctionPath": "Junction Path",
-    "tooltip.predicate": "Predicate",
-    "tooltip.message": "Message",
-    "tooltip.directory": "Directory",
-    "tooltip.regex": "Regular Expression",
-    "tooltip.maxTries": "Max. Tries",
-    "tooltip.delay": "Delay",
-    "tooltip.agent": "Agent",
-    "tooltip.lockName": "Resource Lock Name",
-    "tooltip.count": "Count",
-    "tooltip.match": "Match",
-    "tooltip.fileWatcher": "File Watcher",
-    "tooltip.className": "Class Name",
-    "tooltip.parallelism": "Parallelism",
-    "tooltip.joinVariables": "Join Variables",
-    "tooltip.criticality": "Criticality",
-    "tooltip.documentation": "Documentation",
-    "tooltip.failOnOutputErr": "Fail on output to stderr"
+    "placeholder.enterCredentialKey": "Entrer la clé d'identification à partir du gestionnaire d'identification Windows"
   },
   "xml": {
     "label.assignedSchema": "Schéma Assigné",

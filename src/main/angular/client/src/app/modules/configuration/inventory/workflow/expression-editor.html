@@ -1,5 +1,5 @@
 <div class="form-group row" >
-  <div class="col-sm-12 m-b-xs"><span translate>workflow.label.predicate</span>:</div>
+  <div class="col-sm-12 m-b-xs"><span [nz-tooltip]="'inventory.tooltips.workflow.if.predicate' | translate" translate>workflow.label.predicate</span>:</div>
   <div class="col-md-12">
     <div class="b-a p-a-xs" [ngClass]="{'invalid': error || (cm.invalid && (cm.dirty || cm.touched))}">
       <ngx-codemirror required #codeMirror #cm="ngModel" [(ngModel)]="selectedNode.obj.predicate"

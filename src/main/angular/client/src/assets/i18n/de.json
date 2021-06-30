@@ -987,6 +987,68 @@
       "label.released": "Freigegeben",
       "label.controller": "Controller",
       "label.dailyPlan": "Tagesplan"
+    },
+    "tooltips": {
+      "workflow": {
+        "name": "Der Name eines Arbeitsablaufs ist eindeutig im Inventar. Die meisten Unicode Zeichen kÃ¶nnen verwendet werden inkl. Punkte und Bindestriche. FÃ¼hrende und schlieÃŸende Bindestriche sind nicht zugleassen.",
+        "jobResourceNames": "Job-Ressourcen definieren gemeinsame genutzte Variablen.",
+        "documentation": "Dokumentation",
+        "title": "Der Titel des Arbeitsablaufs.",
+        "await": {
+          "match": "The matching order pattern specifies what order is waited for. In most situations the match includes to specify orders originated for the same daily plan date.",
+          "timeout": "Timeout",
+          "junctionPath": "VerknÃ¼pfungen zwischen ArbeitsablÃ¤ufen lassen AuftrÃ¤ge aufeinander warten sofern sie aus demselben Tagesplan stammen.",
+          "predicate": "Predicate",
+          "joinVariables": "Join Variables"
+        },
+        "fail": {
+          "message": "Mit dieser Instruktion kann eine Nachricht zurÃ¼ckgegeben werden, die im Auftragsprotokoll sichtbar wird.",
+          "uncatchable": "Ein uneinfangbarer Fehler kann nicht mit Try/Catch abgefangen werden.",
+          "returnCode": "Return Code"
+        },
+        "fileWatch": {
+          "directory": "Das Verzeichnis, das auf die Existenz neuer Dateien hin Ã¼berwacht wird.",
+          "regex": "Ein regulÃ¤rer Ausdruck beschreibt das Muster der Namen von Dateien, die im Verzeichnis Ã¼berwacht werden."
+        },
+        "fork": {
+          "joinVariables": "Auftragsvariablen aus Zweigen einer Fork Instruktion werden in der entsprechenden Join Instruktion dem Elternauftrag Ã¼bergeben."
+        },
+        "if": {
+          "predicate": "Das PrÃ¤dikat einer If-Instruktion stellt einen Ausdruck oder Vergleich dar, der zu 'wahr' oder 'falsch' evaluiert."
+        },
+        "job": {
+          "name": "Der Name eines Jobs ist eindeutig im Arbeitsablauf. Derselbe Job kann mehrfach als Instruktion im Arbeitsablauf vorkommen sofern er durch seine Kennzeichnung unterschieden ist.",
+          "label": "Eindeutige Kennzeichnung des Jobs im Arbeitsablauf. Ein Job kann im Arbeitsablauf wiederverwendet werden, sein Auftreten wird durch die Kennzeichnung unterschieden.",
+          "title": "The Title of a job.",
+          "compatibleMode": "Kompatibilität mit zurückliegenden JobScheduler Versionen beinhaltet bspw. dass für alle Auftragsvariablen in Shell Jobs Umgebungsvariablen erzeugt werden, die mit 'SCHEDULER_PARAM_' präfiziert sind - analog zu JS1",
+          "credentialKey": "Im Windows Credential Manager kann ein SchlÃ¼ssel mit Zugangsdaten hinterlegt werden, um den Job mit diesen Zugangsdaten fÃ¼r einen anderen Benutzer zu starten.",
+          "loadUserProfile": "Windows Benutzerprofil laden. Das Profil enthÃ¤lt bspw. Umgebungsvariablen und SchlÃ¼ssel der Windows Registry.",
+          "returnCode": "RÃ¼ckgabewerte signalisieren im Standardfall die erfolgreiche AusfÃ¼hrung (0) oder Fehler (>0). Im Fall abweichender Verwendung kÃ¶nnen entweder die Erfolg signalisierenden oder die Fehler signalisierenden RÃ¼ckgabewerte durch Komma getrennt aufgefÃ¼hrt werden.",
+          "checkSteadyState": "Eine Datei im Ã¼berwachten Verzeichnis wird wiederholt auf VerÃ¤nderungen der DateigrÃ¶ÃŸe und des Zeitstempels geprÃ¼ft bis nach Ablauf des Intervalls keine Ã„nderungen mehr erfolgen.",
+          "jobClass": "Die Job-Klasse legt fest, ob ein Job in der Shell des Betriebssystems (Windows, Unix, MacOs etc.) oder als JITL Java Job oder als Skript Job in einer der von Java unterstützten Skript-Sprachen ausgeführt wird.",
+          "timeout": "Nach Zeitablauf wird ein Job unter Windows abgebrochen. Unter Unix wird der Job mit SIGTERM versucht zu beenden und ggf. nach Ablauf der Toleranzfrist mit SIGKILL abgebrochen.",
+          "graceTimeout": "Die Toleranzfrist gilt für Jobs unter Unix, die zunächst mit SIGTERM versucht werden zu beenden und nach Ablauf der Toleranzfrist mit SIGKILL abgebrochen werden.",
+          "warnIfShorter": "Bei kÃ¼rzerer Dauer als angegeben wird eine Benachrichtigung, z.B. per E-Mail, gesendet.",
+          "warnIfLonger": "Bei lÃ¤ngerer Dauer als angegeben wird eine Benachrichtigung, z.B. per E-Mail, gesendet.",
+          "agent": "Agent",
+          "fileWatcher": "Eine Dateiauftragsquelle Ã¼berwacht ein Verzeichnis auf eintreffende Dateien und erzeugt fÃ¼r jede Datei einen Auftrag fÃ¼r einen Arbeitsablauf.",
+          "className": "Der Name einer Java Klasse, die einen Job implementiert. JS7 enthÃ¤lt eine Reihe von JITL Java Klassen, z.B. fÃ¼r Datenbankzugriffe, E-Mail Versand etc.",
+          "parallelism": "Die max. ParallelitÃ¤t eines Jobs bestimmt wie viele AuftrÃ¤ge gleichzeitig in einem Arbeitsablauf diesen Job ausfÃ¼hren kÃ¶nnen. Wird der Wert Ã¼berschritten, dann warten AuftrÃ¤ge bis der Wert unterschritten wird.",
+          "criticality": "Die KritikalitÃ¤t eines Jobs kann zur Unterscheidung in Benachrichtigungen verwendet werden.",
+          "failOnOutputErr": "Sofern ein Job Ausgaben in den stderr Kanal schreibt, wird dies als Fehler gewertet und der Auftrag wird in den FAILED Zustand versetzt."
+        },
+        "lock": {
+          "name": "Der Name einer Ressourcen-Sperre ist eindeutig im System. Abschnitte in ArbeitsablÃ¤ufen kÃ¶nnen durch Ressourcen-Sperren fÃ¼r die parallele AusfÃ¼hrung limitiert werden.",
+          "count": "Das Gewicht fÃ¼r die Nutzung einer Ressourcen-Sperre wird auf deren KapazitÃ¤t angerechnet. Wird die KapazitÃ¤t Ã¼berschritten, dann wartet der Auftrag bis die KapazitÃ¤t fÃ¼r das angegebene Gewicht verfÃ¼gbar ist."
+        },
+        "publish": {
+          "junctionPath": "VerknÃ¼pfungen zwischen ArbeitsablÃ¤ufen lassen AuftrÃ¤ge aufeinander warten sofern sie aus demselben Tagesplan stammen."
+        },
+        "retry": {
+          "maxTries": "Nach Erreichenn der max. Anzahl von Wiederholungsversuchen wird die Retry-Instruktion beendeet und der Auftrag wird in den FAILED Zustand versetzt.",
+          "delay": "Die VerzÃ¶gerung ist die Anzahl Sekunden, fÃ¼r die auf den nÃ¤chsten Wiederholungsversuch gewartet wird. Werden mehrere durch Komma getrennte Werte angegeben, so gelten sie von links nach rechts fÃ¼r die Wartezeit auf die nÃ¤chste Wiederholung."
+        }
+      }
     }
   },
   "log": {
@@ -1364,7 +1426,9 @@
       "daily_plan_history_age": "Benennt die Aufwbewahrungsdauer der Historie der Auftragsübermittlungen im Tagesplan. Ältere Einträge werden entfernt.",
       "deployment_history_versions": "Benennt die Anzahl Versionen pro ausgerolltem Objekt, die vorgehalten werden. Ältere Versionen können für das erneute Ausrollen eines bestimmten Versionsstands herangezogen werden. Frühere Versionen ausgerollter Objekte werden entfernt.",
       "audit_log_age": "Benennt die Aufbewahrungsdauer des Prüfprotokolls. Ältere Einträge im Prüfprotokoll werden entfernt.",
-      "file_transfer_history_age": "Benennt die Aufbewahrungsdauer der Historie der Dateiübertragungen. Ältere Einträge werden aus der Historie entfernt."
+      "file_transfer_history_age": "Benennt die Aufbewahrungsdauer der Historie der Dateiübertragungen. Ältere Einträge werden aus der Historie entfernt.",
+      "monitoring_history_age": "monitoring_history_age",
+      "notification_history_age": "monitoring_history_age"
     },
     "dailyplan": {
       "time_zone": "Benennt die Zeitzone der Startzeit des Tagesplandienstes und der Periode des Tagesplans.",
@@ -1577,6 +1641,7 @@
     "button.zoomOut": "Verkleinern",
     "button.actual": "Voreinstellung",
     "button.fit": "Passend",
+    "button.fitToScreen": "Fit to screen",
     "button.undo": "Rückgängig machen",
     "button.redo": "Wiederholen",
     "button.find": "Suchen",
@@ -1632,41 +1697,7 @@
     "placeholder.orderId": "Auftragskennung angeben",
     "placeholder.className": "Name der Klasse angeben",
     "placeholder.selectJobResources": "Job-Ressource auswählen",
-    "placeholder.enterCredentialKey": "Name des Schlüssels im Windows Credential Manager",
-    "tooltip.jobName": "Der Name eines Jobs ist eindeutig im Arbeitsablauf. Derselbe Job kann mehrfach als Instruktion im Arbeitsablauf vorkommen sofern er durch seine Kennzeichnung unterschieden ist.",
-    "tooltip.workflowName": "Der Name eines Arbeitsablaufs ist eindeutig im Inventar. Die meisten Unicode Zeichen können verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Bindestriche sind nicht zugleassen.",
-    "tooltip.title": "Der Titel des Arbeitsablaufs.",
-    "tooltip.label": "Eindeutige Kennzeichnung des Jobs im Arbeitsablauf. Ein Job kann im Arbeitsablauf wiederverwendet werden, sein Auftreten wird durch die Kennzeichnung unterschieden.",
-    "tooltip.compatibleMode": "Kompatibilität mit zurückliegenden JobScheduler Versionen beinhaltet bspw. dass für alle Auftragsvariablen in Shell Jobs Umgebungsvariablen erzeugt werden, die mit 'SCHEDULER_PARAM_' präfiziert sind - analog zu JS1",
-    "tooltip.credentialKey": "Im Windows Credential Manager kann ein Schlüssel mit Zugangsdaten hinterlegt werden, um den Job mit diesen Zugangsdaten für einen anderen Benutzer zu starten.",
-    "tooltip.loadUserProfile": "Windows Benutzerprofil laden. Das Profil enthält bspw. Umgebungsvariablen und Schlüssel der Windows Registry.",
-    "tooltip.returnCode": "Rückgabewerte signalisieren im Standardfall die erfolgreiche Ausführung (0) oder Fehler (>0). Im Fall abweichender Verwendung können entweder die Erfolg signalisierenden oder die Fehler signalisierenden Rückgabewerte durch Komma getrennt aufgeführt werden.",
-    "tooltip.uncatchable": "Ein uneinfangbarer Fehler kann nicht mit Try/Catch abgefangen werden.",
-    "tooltip.checkSteadyState": "Eine Datei im überwachten Verzeichnis wird wiederholt auf Veränderungen der Dateigröße und des Zeitstempels geprüft bis nach Ablauf des Intervalls keine Änderungen mehr erfolgen.",
-    "tooltip.jobClass": "Die Job-Klasse legt fest, ob ein Job in der Shell des Betriebssystems (Windows, Unix, MacOs etc.) oder als JITL Java Job oder als Skript Job in einer der von Java unterstützten Skript-Sprachen ausgeführt wird.",
-    "tooltip.jobResourceNames": "Job-Ressourcen definieren gemeinsame genutzte Variablen.",
-    "tooltip.timeout": "Nach Zeitablauf wird ein Job unter Windows abgebrochen. Unter Unix wird der Job mit SIGTERM versucht zu beenden und ggf. nach Ablauf der Toleranzfrist mit SIGKILL abgebrochen.",
-    "tooltip.graceTimeout": "Die Toleranzfrist gilt für Jobs unter Unix, die zunächst mit SIGTERM versucht werden zu beenden und nach Ablauf der Toleranzfrist mit SIGKILL abgebrochen werden.",
-    "tooltip.warnIfShorter": "Bei kürzerer Dauer als angegeben wird eine Benachrichtigung, z.B. per E-Mail, gesendet.",
-    "tooltip.warnIfLonger": "Bei längerer Dauer als angegeben wird eine Benachrichtigung, z.B. per E-Mail, gesendet.",
-    "tooltip.junctionPath": "Verknüpfungen zwischen Arbeitsabläufen lassen Aufträge aufeinander warten sofern sie aus demselben Tagesplan stammen.",
-    "tooltip.predicate": "Das Prädikat einer If-Instruktion stellt einen Ausdruck oder Vergleich dar, der zu 'wahr' oder 'falsch' evaluiert.",
-    "tooltip.message": "Mit dieser Instruktion kann eine Nachricht zurückgegeben werden, die im Auftragsprotokoll sichtbar wird.",
-    "tooltip.directory": "Das Verzeichnis, das auf die Existenz neuer Dateien hin überwacht wird.",
-    "tooltip.regex": "Ein regulärer Ausdruck beschreibt das Muster der Namen von Dateien, die im Verzeichnis überwacht werden.",
-    "tooltip.maxTries": "Nach Erreichenn der max. Anzahl von Wiederholungsversuchen wird die Retry-Instruktion beendeet und der Auftrag wird in den FAILED Zustand versetzt.",
-    "tooltip.delay": "Die Verzögerung ist die Anzahl Sekunden, für die auf den nächsten Wiederholungsversuch gewartet wird. Werden mehrere durch Komma getrennte Werte angegeben, so gelten sie von links nach rechts für die Wartezeit auf die nächste Wiederholung.",
-    "tooltip.agent": "Agent",
-    "tooltip.lockName": "Der Name einer Ressourcen-Sperre ist eindeutig im System. Abschnitte in Arbeitsabläufen können durch Ressourcen-Sperren für die parallele Ausführung limitiert werden.",
-    "tooltip.count": "Das Gewicht für die Nutzung einer Ressourcen-Sperre wird auf deren Kapazität angerechnet. Wird die Kapazität überschritten, dann wartet der Auftrag bis die Kapazität für das angegebene Gewicht verfügbar ist.",
-    "tooltip.match": "The matching order pattern specifies what order is waited for. In most situations the match includes to specify orders originated for the same daily plan date.",
-    "tooltip.fileWatcher": "Eine Dateiauftragsquelle überwacht ein Verzeichnis auf eintreffende Dateien und erzeugt für jede Datei einen Auftrag für einen Arbeitsablauf.",
-    "tooltip.className": "Der Name einer Java Klasse, die einen Job implementiert. JS7 enthält eine Reihe von JITL Java Klassen, z.B. für Datenbankzugriffe, E-Mail Versand etc.",
-    "tooltip.parallelism": "Die max. Parallelität eines Jobs bestimmt wie viele Aufträge gleichzeitig in einem Arbeitsablauf diesen Job ausführen können. Wird der Wert überschritten, dann warten Aufträge bis der Wert unterschritten wird.",
-    "tooltip.joinVariables": "Auftragsvariablen aus Zweigen einer Fork Instruktion werden in der entsprechenden Join Instruktion dem Elternauftrag übergeben.",
-    "tooltip.criticality": "Die Kritikalität eines Jobs kann zur Unterscheidung in Benachrichtigungen verwendet werden.",
-    "tooltip.documentation": "Dokumentation",
-    "tooltip.failOnOutputErr": "Sofern ein Job Ausgaben in den stderr Kanal schreibt, wird dies als Fehler gewertet und der Auftrag wird in den FAILED Zustand versetzt."
+    "placeholder.enterCredentialKey": "Name des Schlüssels im Windows Credential Manager"
   },
   "xml": {
     "label.assignedSchema": "Zugewiesenes Schema",

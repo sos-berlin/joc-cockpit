@@ -987,6 +987,68 @@
       "label.released": "Released",
       "label.controller": "Controller",
       "label.dailyPlan": "Daily Plan"
+    },
+    "tooltips": {
+      "workflow": {
+        "name": "The name of a workflow is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+        "jobResourceNames": "Job Resources hold shared variables that can be used by a number of jobs and workflows.",
+        "documentation": "Documentation",
+        "title": "The Title of a workflow.",
+        "await": {
+          "match": "Match",
+          "timeout": "Timeout",
+          "junctionPath": "A Junction links two or more workflows and causes orders to wait for each other if they are derived from the same daily plan.",
+          "predicate": "Predicate",
+          "joinVariables": "Join Variables"
+        },
+        "fail": {
+          "message": "The instruction allows to specify a Message that is attached the order and that becomes visible with the order history.",
+          "uncatchable": "An Uncatchable error cannot be handled with a Try/Catch Instruction.",
+          "returnCode": "Return Code"
+        },
+        "fileWatch": {
+          "directory": "The Directory that is watched for incoming files.",
+          "regex": "A Regular Expression specifies the pattern for the names of incoming files that a directory is watched for."
+        },
+        "fork": {
+          "joinVariables": "Variables of child orders in the branches of a Fork Instruction are added to the parent order when reaching the Join Instruction."
+        },
+        "if": {
+          "predicate": "A Predicate in an If Instruction is an expression or comparison that evaluates to 'true' or 'false'"
+        },
+        "job": {
+          "name": "A job name is unique in a workflow. A job with the same name can occur with a number of instructions in the same workflow if individual job labels are used. For a job name most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+          "label": "A job Label is used to distinguish multiple occurrences of a job with the same name in a workflow.",
+          "title": "The Title of a job.",
+          "compatibleMode": "Compatibility with previous JobScheduler versions includes e.g. for shell jobs to automatically create environment variables prefixed with 'SCHEDULER_PARAM_' for any order variables as in JS1.",
+          "credentialKey": "A Credential Key can be added to the Windows Credential Manager holding the credentials that are used to switch to a target user account for this job.",
+          "loadUserProfile": "Load Windows User Profile. A profile includes e.g. environment variables and Windows registry settings.",
+          "returnCode": "Return Codes signal sucessful (0) or failed (>0) execution. In case of alternative use either return codes signalling success or signalling failure can be specified by a comma separated list.",
+          "checkSteadyState": "When a file arrives in a directory that is watched for incoming files then the file size and file timestamp are checked for changes. Between each check the specified delay is applied until no further changes can be observed.",
+          "jobClass": "The Job Class determines if a job is executed with the OS Shell (Windows, Unix, MacOS) etc.) or is executed as a JVM JITL Java job or is executed as a JVM Script job for one of the scripting languages supported by the JVM.",
+          "timeout": "When exceeding the Timeout then with Windows a job is aborted. With Unix the job is sent a SIGTERM signal and after the Grace Timeout a SIGKILL signal will abort the job.",
+          "graceTimeout": "A Grace Timeout is applied to jobs with Unix that receive a SIGTERM signal when exceeding their Timeout. If the job does not terminate then after the Grace Timeout a SIGKILL signal will abort the job.",
+          "warnIfShorter": "If the execution period of a job is shorter than specified then a notification, e.g. by e-mail, is sent.",
+          "warnIfLonger": "If the execution period of a job is longer than specified then a notification, e.g. by e-mail, is sent.",
+          "agent": "Agent",
+          "fileWatcher": "File Order Sources are used to watch a Directory for incoming files and to create an order with the respective workflow for each file.",
+          "className": "The name of a Java class implementing a job. JS7 ships with a number of predefined JITL Java classes, e.g. for database access, to send e-mail etc.",
+          "parallelism": "The max. Parallelism specifies the number of orders in a workflow that can execute the job in parallel. If the maximum is exceeded then orders have to wait until the value has fallen below the job's max. Parallelism.",
+          "criticality": "The Criticality of jobs can be used in notifications to better distinguish the urgency of an incident.",
+          "failOnOutputErr": "If a job writes output to the stderr channel then this is considered an error and the order is put in the FAILED state."
+        },
+        "lock": {
+          "name": "Names of Resource Locks are unique in the inventory. Sections in workflows can be limited in parllelism by using Resource Locks.",
+          "count": "The Weight for use of a Resource Lock is calculated towards its capacity. If the capacity is exceeded then the order has to wait until a capacity is available that matches or exceeds the current weight."
+        },
+        "publish": {
+          "junctionPath": "A Junction links two or more workflows and causes orders to wait for each other if they are derived from the same daily plan."
+        },
+        "retry": {
+          "maxTries": "When reaching the max. number of retries then the Try Instruction ends and the order is put in the FAILED state.",
+          "delay": "The Delay specifies the time in seconds before the next retry is performed. If a number of values are specified - separated by a comma - then each value from left to right applies to the period that the next retry is waited for."
+        }
+      }
     }
   },
   "log": {
@@ -1364,7 +1426,9 @@
       "daily_plan_history_age": "Specifies the retention period for the history of submissions with the Daily Plan. Any history entries older than the value specified will be purged.",
       "deployment_history_versions": "Specifies the number of versions per deployed object that should be retained. Such versions can be used to re-deploy an object from an older state. Any earlier deployed versions of deployed objects are removed.",
       "audit_log_age": "Specifies the retention period for the Audit Log. Any audit log entries older than the value specified will be purged.",
-      "file_transfer_history_age": "Specifies the retention period of the File Transfer History. Any history entries older than the value specified will be purged."
+      "file_transfer_history_age": "Specifies the retention period of the File Transfer History. Any history entries older than the value specified will be purged.",
+      "monitoring_history_age": "monitoring_history_age",
+      "notification_history_age": "monitoring_history_age"
     },
     "dailyplan": {
       "time_zone": "Specifies the time zone that is applied to the start time of the Daily Plan Service and period of the Daily Plan.",
@@ -1633,41 +1697,7 @@
     "placeholder.orderId": "Enter Order ID",
     "placeholder.className": "Enter Class Name",
     "placeholder.selectJobResources": "Select Job Resources",
-    "placeholder.enterCredentialKey": "Enter credential key for Windows Credential Manager",
-    "tooltip.jobName": "A job name is unique in a workflow. A job with the same name can occur with a number of instructions in the same workflow if individual job labels are used. For a job name most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
-    "tooltip.workflowName": "The name of a workflow is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
-    "tooltip.title": "The Title of a workflow.",
-    "tooltip.label": "A job Label is used to distinguish multiple occurrences of a job with the same name in a workflow.",
-    "tooltip.compatibleMode": "Compatibility with previous JobScheduler versions includes e.g. for shell jobs to automatically create environment variables prefixed with 'SCHEDULER_PARAM_' for any order variables as in JS1.",
-    "tooltip.credentialKey": "A Credential Key can be added to the Windows Credential Manager holding the credentials that are used to switch to a target user account for this job.",
-    "tooltip.loadUserProfile": "Load Windows User Profile. A profile includes e.g. environment variables and Windows registry settings.",
-    "tooltip.returnCode": "Return Codes signal sucessful (0) or failed (>0) execution. In case of alternative use either return codes signalling success or signalling failure can be specified by a comma separated list.",
-    "tooltip.uncatchable": "An Uncatchable error cannot be handled with a Try/Catch Instruction.",
-    "tooltip.checkSteadyState": "When a file arrives in a directory that is watched for incoming files then the file size and file timestamp are checked for changes. Between each check the specified delay is applied until no further changes can be observed.",
-    "tooltip.jobClass": "The Job Class determines if a job is executed with the OS Shell (Windows, Unix, MacOS) etc.) or is executed as a JVM JITL Java job or is executed as a JVM Script job for one of the scripting languages supported by the JVM.",
-    "tooltip.jobResourceNames": "Job Resources hold shared variables that can be used by a number of jobs and workflows.",
-    "tooltip.timeout": "When exceeding the Timeout then with Windows a job is aborted. With Unix the job is sent a SIGTERM signal and after the Grace Timeout a SIGKILL signal will abort the job.",
-    "tooltip.graceTimeout": "A Grace Timeout is applied to jobs with Unix that receive a SIGTERM signal when exceeding their Timeout. If the job does not terminate then after the Grace Timeout a SIGKILL signal will abort the job.",
-    "tooltip.warnIfShorter": "If the execution period of a job is shorter than specified then a notification, e.g. by e-mail, is sent.",
-    "tooltip.warnIfLonger": "If the execution period of a job is longer than specified then a notification, e.g. by e-mail, is sent.",
-    "tooltip.junctionPath": "A Junction links two or more workflows and causes orders to wait for each other if they are derived from the same daily plan.",
-    "tooltip.predicate": "A Predicate in an If Instruction is an expression or comparison that evaluates to 'true' or 'false'",
-    "tooltip.message": "The instruction allows to specify a Message that is attached the order and that becomes visible with the order history.",
-    "tooltip.directory": "The Directory that is watched for incoming files.",
-    "tooltip.regex": "A Regular Expression specifies the pattern for the names of incoming files that a directory is watched for.",
-    "tooltip.maxTries": "When reaching the max. number of retries then the Try Instruction ends and the order is put in the FAILED state.",
-    "tooltip.delay": "The Delay specifies the time in seconds before the next retry is performed. If a number of values are specified - separated by a comma - then each value from left to right applies to the period that the next retry is waited for.",
-    "tooltip.agent": "Agent",
-    "tooltip.lockName": "Names of Resource Locks are unique in the inventory. Sections in workflows can be limited in parllelism by using Resource Locks.",
-    "tooltip.count": "The Weight for use of a Resource Lock is calculated towards its capacity. If the capacity is exceeded then the order has to wait until a capacity is available that matches or exceeds the current weight.",
-    "tooltip.match": "Match",
-    "tooltip.fileWatcher": "File Order Sources are used to watch a Directory for incoming files and to create an order with the respective workflow for each file.",
-    "tooltip.className": "The name of a Java class implementing a job. JS7 ships with a number of predefined JITL Java classes, e.g. for database access, to send e-mail etc.",
-    "tooltip.parallelism": "The max. Parallelism specifies the number of orders in a workflow that can execute the job in parallel. If the maximum is exceeded then orders have to wait until the value has fallen below the job's max. Parallelism.",
-    "tooltip.joinVariables": "Variables of child orders in the branches of a Fork Instruction are added to the parent order when reaching the Join Instruction.",
-    "tooltip.criticality": "The Criticality of jobs can be used in notifications to better distinguish the urgency of an incident.",
-    "tooltip.documentation": "Documentation",
-    "tooltip.failOnOutputErr": "If a job writes output to the stderr channel then this is considered an error and the order is put in the FAILED state."
+    "placeholder.enterCredentialKey": "Enter credential key for Windows Credential Manager"
   },
   "xml": {
     "label.assignedSchema": "Assigned Schema",
