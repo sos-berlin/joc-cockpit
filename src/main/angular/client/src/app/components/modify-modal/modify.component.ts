@@ -16,7 +16,7 @@ export class ChangeParameterModalComponent implements OnInit {
   @Input() plan: any;
   @Input() orders: any;
   @Input() orderIds: any;
-  @Input() orderRequirements: any;
+  @Input() orderPreparation: any;
   removeVariables = [];
   variables: any = [];
   variableList = [];
@@ -48,8 +48,8 @@ export class ChangeParameterModalComponent implements OnInit {
   }
 
   updateVariableList(): void {
-    if (this.orderRequirements && this.orderRequirements.parameters && !isEmpty(this.orderRequirements.parameters)) {
-      this.variableList = Object.entries(this.orderRequirements.parameters).map(([k, v]) => {
+    if (this.orderPreparation && this.orderPreparation.parameters && !isEmpty(this.orderPreparation.parameters)) {
+      this.variableList = Object.entries(this.orderPreparation.parameters).map(([k, v]) => {
         const val: any = v;
         let isExist = false;
         for (let i = 0; i < this.variables.length; i++) {
@@ -76,7 +76,7 @@ export class ChangeParameterModalComponent implements OnInit {
   }
 
   checkVariableType(variable): void {
-    let obj = this.orderRequirements.parameters[variable.name];
+    let obj = this.orderPreparation.parameters[variable.name];
     if (obj) {
       variable.type = obj.type;
       if (!obj.default && obj.default !== false && obj.default !== 0) {

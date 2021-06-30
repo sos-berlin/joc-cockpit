@@ -16,7 +16,7 @@ export class ConfirmModalComponent {
   @Input() document: any;
   @Input() documentArr: any;
   @Input() resetProfiles: any;
-  @Input() agent: any;
+  @Input() question: string;
 
   constructor(public activeModal: NzModalRef) {
   }

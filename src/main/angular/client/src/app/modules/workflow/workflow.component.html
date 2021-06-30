@@ -441,7 +441,7 @@
                               <i class="cursor fa fa-lg fa-angle-double-up p-l-xs" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="workflow.isExpand = false;"></i>
                             </span>
                           </div>
-                          <app-type [configuration]="workflow.configuration" [jobs]="workflow.configuration.jobs" [orderRequirements]="workflow.configuration.orderRequirements" [permission]="permission" [preferences]="preferences"
+                          <app-type [configuration]="workflow.configuration" [jobs]="workflow.configuration.jobs" [orderPreparation]="workflow.configuration.orderPreparation" [permission]="permission" [preferences]="preferences"
                                     [schedulerId]="schedulerIds.selected" [expandAll]="workflow.isExpand"
                                     (update)="updatePanelHeight()" (isChanged)="changedHandler($event)" [orders]="workflow.orders"></app-type>
                         </div>
@@ -494,7 +494,7 @@
 <nz-drawer [nzVisible]="sideBar.isVisible" nzPlacement="right" (nzOnClose)="sideBar.isVisible = false">
   <ng-container *nzDrawerContent>
   <div class="close-btn" (click)="sideBar.isVisible = false"></div>
-  <app-order-list-sidebar [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerIds.selected" [orderRequirements]="sideBar.orderRequirements" [orders]="sideBar.orders"></app-order-list-sidebar>
+  <app-order-list-sidebar [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerIds.selected" [orderPreparation]="sideBar.orderPreparation" [orders]="sideBar.orders"></app-order-list-sidebar>
   </ng-container>
 </nz-drawer>
 <div class="spinner" *ngIf="loading || !isLoading">

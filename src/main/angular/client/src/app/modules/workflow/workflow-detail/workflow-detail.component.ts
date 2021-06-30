@@ -38,7 +38,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   path: string;
   versionId: string;
   workFlowJson: any = {};
-  orderRequirements: any = {};
+  orderPreparation: any = {};
   loading: boolean;
   schedulerIds: any = {};
   preferences: any = {};
@@ -425,7 +425,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       workflowId: {path: this.path, versionId: this.versionId}
     }).subscribe((res: any) => {
       this.workflow = this.coreService.clone(res.workflow);
-      this.orderRequirements = res.workflow.orderRequirements;
+      this.orderPreparation = res.workflow.orderPreparation;
       this.createEditor(this.configXml);
       this.getOrders(res.workflow, true);
     }, () => {
@@ -1010,7 +1010,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
         order,
-        orderRequirements: this.orderRequirements
+        orderPreparation: this.orderPreparation
       },
       nzFooter: null,
       nzClosable: false

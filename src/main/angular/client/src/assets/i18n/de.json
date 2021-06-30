@@ -41,6 +41,8 @@
   "PAUSED": "pausiert",
   "BLOCKED": "blockiert",
   "PENDING": "anstehend",
+  "PROMPTING": "prompting",
+  "SCHEDULED": "scheduled",
   "WAITING": "wartend",
   "CANCELLED": "storniert",
   "CANCELLING": "cancelling",
@@ -278,6 +280,8 @@
     "placeholder.ticketLink": "Ticket Link eingeben",
     "--------AUDIT LOG POPUP WINDOW END------------": "",
     "label.pending": "anstehend",
+    "label.prompting": "Prompting",
+    "label.scheduled": "Scheduled",
     "label.running": "in Ausführung",
     "label.suspended": "unterbrochen",
     "label.blocked": "blockiert",
@@ -343,6 +347,8 @@
     "button.waiting": "Wartend",
     "button.blocked": "Blockiert",
     "button.pending": "Anstehend",
+    "button.prompting": "Prompting",
+    "button.scheduled": "Scheduled",
     "button.running": "In Ausführung",
     "button.completed": "Abgeschlossen",
     "button.finished": "Beendet",
@@ -490,9 +496,11 @@
     "label.schedules": "Zeitpläne",
     "label.planned": "Geplant",
     "label.pending": "Anstehend",
+    "label.prompting": "Prompting",
     "label.finished": "Beendet",
     "label.plannedLate": "Geplant und verspätet",
-    "label.blocked": "Blockiert",
+    "label.scheduled": "Scheduled",
+    "label.scheduledLate": "Scheduled Late",
     "button.editLayout": "Layout editieren",
     "button.resetLayout": "Layout zurücksetzen",
     "button.widget": "Darstellungskomponente hinzufügen",
@@ -989,11 +997,30 @@
       "label.dailyPlan": "Tagesplan"
     },
     "tooltips": {
+      "calendar": {
+
+      },
+      "fileOrderSources": {
+
+      },
+      "jobResource": {
+
+      },
+      "junction": {
+
+      },
+      "lock": {
+
+      },
+      "schedule": {
+
+      },
       "workflow": {
         "name": "Der Name eines Arbeitsablaufs ist eindeutig im Inventar. Die meisten Unicode Zeichen kÃ¶nnen verwendet werden inkl. Punkte und Bindestriche. FÃ¼hrende und schlieÃŸende Bindestriche sind nicht zugleassen.",
         "jobResourceNames": "Job-Ressourcen definieren gemeinsame genutzte Variablen.",
         "documentation": "Dokumentation",
         "title": "Der Titel des Arbeitsablaufs.",
+        "allowUndeclared": "Allow Undeclared",
         "await": {
           "match": "The matching order pattern specifies what order is waited for. In most situations the match includes to specify orders originated for the same daily plan date.",
           "timeout": "Timeout",
@@ -1040,6 +1067,9 @@
         "lock": {
           "name": "Der Name einer Ressourcen-Sperre ist eindeutig im System. Abschnitte in ArbeitsablÃ¤ufen kÃ¶nnen durch Ressourcen-Sperren fÃ¼r die parallele AusfÃ¼hrung limitiert werden.",
           "count": "Das Gewicht fÃ¼r die Nutzung einer Ressourcen-Sperre wird auf deren KapazitÃ¤t angerechnet. Wird die KapazitÃ¤t Ã¼berschritten, dann wartet der Auftrag bis die KapazitÃ¤t fÃ¼r das angegebene Gewicht verfÃ¼gbar ist."
+        },
+        "prompt": {
+          "question": "Question"
         },
         "publish": {
           "junctionPath": "VerknÃ¼pfungen zwischen ArbeitsablÃ¤ufen lassen AuftrÃ¤ge aufeinander warten sofern sie aus demselben Tagesplan stammen."
@@ -1611,6 +1641,8 @@
     "label.exclusive": "Exklusiv",
     "label.shared": "Geteilt",
     "label.publish": "Publish",
+    "label.prompt": "Prompt",
+    "label.question": "Question",
     "label.if": "If",
     "label.ifEnd": "If-End",
     "label.then": "wahr",
@@ -1637,6 +1669,7 @@
     "label.logLevel": "Protokollierungsstufe",
     "label.failOnOutputErr": "Scheitern bei Ausgaben in stderr",
     "label.showConfiguration": "Konfiguration anzeigen",
+    "label.allowUndeclared": "Allow Undeclared",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",
     "button.actual": "Voreinstellung",

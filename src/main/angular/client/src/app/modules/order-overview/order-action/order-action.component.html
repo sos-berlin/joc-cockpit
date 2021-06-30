@@ -32,6 +32,10 @@
         <a (click)="removeWhenTerminated()"
            translate>order.button.leaveWorkflow</a>
       </li>
+      <li nz-menu-item *ngIf="permission && permission.controllerDefaults.orders.modify && order.state && (order.state._text === 'PROMPTING')">
+        <a (click)="confirmOrder()"
+           translate>order.button.confirm</a>
+      </li>
       <li nz-menu-item *ngIf="order.state && (order.state._text !== 'PLANNED' && order.state._text !== 'PENDING')">
         <a (click)="coreService.copyLink('order',order.orderId, order.workflowId.path)" translate>common.button.copyLinkToObject</a>
       </li>

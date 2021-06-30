@@ -17,6 +17,7 @@ export class WorkflowService {
   public fail = '';
   public await = '';
   public publish = '';
+  public prompt = '';
   public fork = '';
   public lock = '';
   public closeLock = '';
@@ -47,6 +48,7 @@ export class WorkflowService {
       this.await = 'symbol;image=./assets/mxgraph/images/symbols/await.svg';
       this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork.svg';
       this.publish = 'symbol;image=./assets/mxgraph/images/symbols/publish.svg';
+      this.prompt = 'symbol;image=./assets/mxgraph/images/symbols/prompt.svg';
       this.lock = 'symbol;image=./assets/mxgraph/images/symbols/lock.svg';
       this.closeLock = 'symbol;image=./assets/mxgraph/images/symbols/lock-close.svg';
     } else {
@@ -56,6 +58,7 @@ export class WorkflowService {
       this.await = 'symbol;image=./assets/mxgraph/images/symbols/await-white.svg';
       this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork-white.svg';
       this.publish = 'symbol;image=./assets/mxgraph/images/symbols/publish-white.svg';
+      this.prompt = 'symbol;image=./assets/mxgraph/images/symbols/prompt-white.svg';
       this.lock = 'symbol;image=./assets/mxgraph/images/symbols/lock-white.svg';
       this.closeLock = 'symbol;image=./assets/mxgraph/images/symbols/lock-close-white.svg';
     }
@@ -113,6 +116,8 @@ export class WorkflowService {
       obj.match = node._match;
     } else if (type === 'Publish') {
       obj.junctionPath = node._junctionPath;
+    } else if (type === 'Prompt') {
+      obj.question = node._question;
     }
     if (this.isInstructionCollapsible(type)) {
       obj.isCollapsed = node.mxCell._collapsed;
@@ -513,6 +518,14 @@ export class WorkflowService {
             _node.setAttribute('junctionPath', json.instructions[x].junctionPath || '');
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.publish);
+            if (mapObj.vertixMap && json.instructions[x].position) {
+              mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
+            }
+          } else if (json.instructions[x].TYPE === 'Prompt') {
+            _node.setAttribute('label', 'prompt');
+            _node.setAttribute('question', json.instructions[x].question || '');
+            _node.setAttribute('uuid', json.instructions[x].uuid);
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.prompt);
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1013,6 +1026,12 @@ export class WorkflowService {
         const outcome = cell.getAttribute('outcome') ? JSON.parse(cell.getAttribute('outcome')) : {};
         return '<b>' + msg + '</b> : ' + (cell.getAttribute('message') || '-') + '</br>' +
           '<b>' + returnCode + '</b> : ' + (outcome.returnCode || '-');
+      } else if (cell.value.tagName === 'Prompt') {
+        let question = '';
+        this.translate.get('workflow.label.question').subscribe(translatedValue => {
+          question = translatedValue;
+        });
+        return '<b>' + question + '</b> : ' + (cell.getAttribute('question') || '-');
       } else if (cell.value.tagName === 'Order') {
         let data = cell.getAttribute('order');
         data = JSON.parse(data);

@@ -101,8 +101,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
     {date: '1d', text: 'today'},
     {date: '1h', text: 'next1'},
     {date: '12h', text: 'next12'},
-    {date: '24h', text: 'next24'},
-    {date: 'NEVER', text: 'never'}
+    {date: '24h', text: 'next24'}
   ];
 
   @ViewChild(WorkflowActionComponent, {static: false}) actionChild;
@@ -160,7 +159,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
   }
 
   viewOrders(workflow): void {
-    this.sideBar = {isVisible: true, orders: workflow.orders, workflow: workflow.path, orderRequirements: workflow.orderRequirements};
+    this.sideBar = {isVisible: true, orders: workflow.orders, workflow: workflow.path, orderPreparation: workflow.orderPreparation};
   }
 
   navToDetailView(view, workflow): void {
@@ -215,12 +214,8 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
       return;
     }
     if (this.date !== 'ALL') {
-      if (this.date === 'NEVER') {
-        obj.scheduledNever = true;
-      } else {
-        obj.dateTo = this.date;
-        obj.timeZone = this.preferences.zone;
-      }
+      obj.dateTo = this.date;
+      obj.timeZone = this.preferences.zone;
     }
     this.coreService.post('orders', obj).subscribe((res: any) => {
       this.workflows[0].orders = res.orders;
@@ -284,8 +279,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     {date: '1d', text: 'today'},
     {date: '1h', text: 'next1'},
     {date: '12h', text: 'next12'},
-    {date: '24h', text: 'next24'},
-    {date: 'NEVER', text: 'never'}
+    {date: '24h', text: 'next24'}
   ];
 
   @ViewChild(TreeComponent, {static: false}) child;
@@ -618,7 +612,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       orders: workflow.orders,
       workflow: workflow.path,
       versionId: workflow.versionId,
-      orderRequirements: workflow.orderRequirements
+      orderPreparation: workflow.orderPreparation
     };
   }
 
@@ -795,12 +789,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       return;
     }
     if (this.workflowFilters.filter.date !== 'ALL') {
-      if (this.workflowFilters.filter.date === 'NEVER') {
-        obj.scheduledNever = true;
-      } else {
-        obj.dateTo = this.workflowFilters.filter.date;
-        obj.timeZone = this.preferences.zone;
-      }
+      obj.dateTo = this.workflowFilters.filter.date;
+      obj.timeZone = this.preferences.zone;
     }
     this.coreService.post('orders', obj).subscribe((res: any) => {
       if (res.orders) {

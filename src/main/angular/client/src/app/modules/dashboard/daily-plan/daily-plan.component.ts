@@ -19,8 +19,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   planned = 0;
   pending = 0;
   finished = 0;
+  scheduled = 0;
   plannedLate = 0;
-  pendingLate = 0;
+  scheduledLate = 0;
   subscription: Subscription;
 
   constructor(private coreService: CoreService, private authService: AuthService,
@@ -73,16 +74,17 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   filterData(res): void {
-    this.totalPlanData = ((res.planned || 0) + (res.pending || 0) + (res.finished || 0) + (res.plannedLate || 0) + (res.pendingLate || 0));
+    this.totalPlanData = ((res.planned || 0) + (res.scheduled || 0) + (res.pending || 0) + (res.finished || 0) + (res.plannedLate || 0) + (res.scheduledLate || 0));
     this.planned = this.getPlanPercent(res.planned);
     this.pending = this.getPlanPercent(res.pending);
     this.finished = this.getPlanPercent(res.finished);
     this.plannedLate = this.getPlanPercent(res.plannedLate);
-    this.pendingLate = this.getPlanPercent(res.pendingLate);
-    this.arrayWidth = [this.planned, this.plannedLate, this.pending, this.pendingLate, this.finished];
+    this.scheduled = this.getPlanPercent(res.scheduled);
+    this.scheduledLate = this.getPlanPercent(res.scheduledLate);
+    this.arrayWidth = [this.planned, this.plannedLate, this.pending, this.scheduled, this.scheduledLate, this.finished];
 
     let totalLessWidth = 0, totalGreaterWidth = 0, flag = false;
-    for (let i = 0; i <= 5; i++) {
+    for (let i = 0; i <= 6; i++) {
       if (this.arrayWidth[i] > 0) {
         if (this.arrayWidth[i] <= 28) {
           this.arrayWidth[i] = 14;
@@ -94,17 +96,17 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         }
       }
     }
-    for (let i = 0; i <= 5; i++) {
+    for (let i = 0; i <= 6; i++) {
       if (this.arrayWidth[i] > 28) {
         this.arrayWidth[i] = (100 - totalLessWidth) * this.arrayWidth[i] / totalGreaterWidth;
       }
     }
 
     if (!flag) {
-      this.arrayWidth = [this.planned, this.plannedLate, this.pending, this.pendingLate, this.finished];
-      let totalLessWidth = 0;
-      let totalGreaterWidth = 0;
-      for (let i = 0; i <= 5; i++) {
+      this.arrayWidth = [this.planned, this.plannedLate, this.pending, this.scheduled, this.scheduledLate, this.finished];
+      totalLessWidth = 0;
+      totalGreaterWidth = 0;
+      for (let i = 0; i <= 6; i++) {
         if (this.arrayWidth[i] > 0) {
 
           if (this.arrayWidth[i] <= 14) {
@@ -116,7 +118,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           }
         }
       }
-      for (let i = 0; i <= 5; i++) {
+      for (let i = 0; i <= 6; i++) {
         if (this.arrayWidth[i] > 14) {
           this.arrayWidth[i] = (100 - totalLessWidth) * this.arrayWidth[i] / totalGreaterWidth;
         }
@@ -135,8 +137,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
     const filter = this.coreService.getDailyPlanTab();
     filter.selectedDate = new Date(d);
-    filter.filter.status = (obj === 1 || obj === 2) ? 'PLANNED' : (obj === 3 || obj === 4) ? 'PENDING' : 'FINISHED';
-    filter.filter.late = (obj === 2 || obj === 4);
+    filter.filter.status = (obj === 1 || obj === 2) ? 'PLANNED' : (obj === 3) ? 'PENDING' : (obj === 4 || obj === 5) ? 'SCHEDULED' : 'FINISHED';
+    filter.filter.late = (obj === 2 || obj === 5);
     this.router.navigate(['/daily_plan']);
   }
 

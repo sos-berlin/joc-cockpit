@@ -13,8 +13,8 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div class="inline" *ngIf="orderFilters.filter.state==='PENDING'" [ngClass]="{'hide': object.mapOfCheckedId && object.mapOfCheckedId.size>0}">
-            <div class="btn-group dropdown">
+          <div class="inline" [ngClass]="{'hide': object.mapOfCheckedId && object.mapOfCheckedId.size>0}">
+            <div class="btn-group dropdown" *ngIf="orderFilters.filter.state==='PENDING'">
               <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" type="button" translate>
                 <span>  {{ 'filters.button.'+orderFilters.filter.dateLabel | translate}} </span>
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
@@ -31,8 +31,6 @@
                 </ul>
               </nz-dropdown-menu>
             </div>
-          </div>
-          <div class="inline" [ngClass]="{'hide': object.mapOfCheckedId && object.mapOfCheckedId.size>0}">
             <div class="btn-group m-l-12 hidden-btn-group">
               <ng-container *ngFor="let btn of filterBtn">
                 <button class="btn btn-grey btn-sm button-group-ellipsis"
@@ -58,6 +56,8 @@
                 </ul>
               </nz-dropdown-menu>
             </div>
+          </div>
+          <div class="inline" [ngClass]="{'hide': object.mapOfCheckedId && object.mapOfCheckedId.size>0}">
             <div class="btn-group dropdown">
               <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'">
                 <span translate>common.label.sortBy</span>
@@ -188,6 +188,7 @@
                           <span translate>order.label.state </span>:
                           <span [ngClass]="coreService.getColor(order.state.severity, 'text')" [innerHtml]="order.state._text | translate | highlight : orderFilters.searchText"></span>
                           <span *ngIf="order.marked" [ngClass]="coreService.getColor(order.marked.severity, 'text')">/{{order.marked._text | translate}}</span>
+                          <span *ngIf="order.state._text === 'PROMPTING' && order.question" class="p-l-xs"><i [nz-tooltip]="order.question" class="fa fa-question"></i></span>
                         </div>
                         <div class="text-sm text-left text-muted p-t-xs">
                           <span translate>order.label.position </span>:
@@ -333,6 +334,7 @@
                            [innerHtml]="order.state._text | translate  | highlight : orderFilters.searchText"></a>
                         <a class="label label2" *ngIf="order.marked" [ngClass]="coreService.getColor(order.marked.severity, 'bg')"
                            [innerHtml]="order.marked._text | translate"></a>
+                        <span *ngIf="order.state._text === 'PROMPTING' && order.question" class="p-l-xs"><i [nz-tooltip]="order.question" class="fa fa-question"></i></span>
                       </td>
                       <td>
                         <span *ngIf="!order.scheduledNever">{{order.scheduledFor | stringToDate}}</span>

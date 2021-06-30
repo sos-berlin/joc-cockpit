@@ -1235,7 +1235,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         controllerId: this.schedulerIds.selected,
         workflowId: {path: order.workflowPath}
       }).subscribe((res: any) => {
-        order.requirements = res.workflow.orderRequirements;
+        order.requirements = res.workflow.orderPreparation;
         openModal(order.requirements);
       });
     }
@@ -1248,7 +1248,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         nzComponentParams: {
           schedulerId: self.schedulerIds.selected,
           orders: self.object.mapOfCheckedId,
-          orderRequirements: requirements
+          orderPreparation: requirements
         },
         nzFooter: null,
         nzClosable: false
@@ -2108,7 +2108,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           controllerId: this.schedulerIds.selected,
           workflowId: {path: order.workflowPath}
         }).subscribe((res: any) => {
-          order.requirements = res.workflow.orderRequirements;
+          order.requirements = res.workflow.orderPreparation;
           this._openModel(plan, order, order.requirements);
         });
       } else {
@@ -2135,7 +2135,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
             controllerId: this.schedulerIds.selected,
             workflowId: {path: workflowPath}
           }).subscribe((res: any) => {
-            this._openModel(plan, order, res.workflow.orderRequirements);
+            this._openModel(plan, order, res.workflow.orderPreparation);
           });
         }
       } else {
@@ -2144,7 +2144,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  private _openModel(plan, order, orderRequirements): void {
+  private _openModel(plan, order, orderPreparation): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ChangeParameterModalComponent,
@@ -2153,7 +2153,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         schedulerId: this.schedulerIds.selected,
         order,
         plan,
-        orderRequirements
+        orderPreparation
       },
       nzFooter: null,
       nzClosable: false

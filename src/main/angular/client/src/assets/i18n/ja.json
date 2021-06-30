@@ -41,6 +41,8 @@
   "PAUSED": "一時停止",
   "BLOCKED": "ブロック",
   "PENDING": "保留",
+  "PROMPTING": "prompting",
+  "SCHEDULED": "scheduled",
   "WAITING": "待機中",
   "CANCELLED": "キャンセル",
   "CANCELLING": "cancelling",
@@ -278,6 +280,8 @@
     "placeholder.ticketLink": "チケットリンクを入力",
     "--------AUDIT LOG POPUP WINDOW END------------": "",
     "label.pending": "保留",
+    "label.prompting": "Prompting",
+    "label.scheduled": "Scheduled",
     "label.running": "実行中",
     "label.suspended": "一時停止",
     "label.blocked": "ブロック中",
@@ -343,6 +347,8 @@
     "button.waiting": "計画済",
     "button.blocked": "ブロック中",
     "button.pending": "保留",
+    "button.prompting": "Prompting",
+    "button.scheduled": "Scheduled",
     "button.running": "実行中",
     "button.completed": "完了",
     "button.finished": "終了",
@@ -490,9 +496,11 @@
     "label.schedules": "スケジュール",
     "label.planned": "開始予定",
     "label.pending": "保留",
+    "label.prompting": "Prompting",
     "label.finished": "終了",
     "label.plannedLate": "計画遅延",
-    "label.blocked": "ブロック中",
+    "label.scheduled": "Scheduled",
+    "label.scheduledLate": "Scheduled Late",
     "button.editLayout": "レイアウト編集",
     "button.resetLayout": "レイアウトリセット",
     "button.widget": "ウイジェット追加",
@@ -989,11 +997,30 @@
       "label.dailyPlan": "実行計画"
     },
     "tooltips": {
+      "calendar": {
+
+      },
+      "fileOrderSources": {
+
+      },
+      "jobResource": {
+
+      },
+      "junction": {
+
+      },
+      "lock": {
+
+      },
+      "schedule": {
+
+      },
       "workflow": {
         "name": "The name of a workflow is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
         "jobResourceNames": "Job Resources hold shared variables that can be used by a number of jobs and workflows.",
         "documentation": "Documentation",
         "title": "The Title of a workflow.",
+        "allowUndeclared": "Allow Undeclared",
         "await": {
           "match": "Match",
           "timeout": "Timeout",
@@ -1040,6 +1067,9 @@
         "lock": {
           "name": "Names of Resource Locks are unique in the inventory. Sections in workflows can be limited in parllelism by using Resource Locks.",
           "count": "The Weight for use of a Resource Lock is calculated towards its capacity. If the capacity is exceeded then the order has to wait until a capacity is available that matches or exceeds the current weight."
+        },
+        "prompt": {
+          "question": "Question"
         },
         "publish": {
           "junctionPath": "A Junction links two or more workflows and causes orders to wait for each other if they are derived from the same daily plan."
@@ -1611,6 +1641,8 @@
     "label.exclusive": "排他",
     "label.shared": "共有",
     "label.publish": "Publish",
+    "label.prompt": "Prompt",
+    "label.question": "Question",
     "label.if": "If",
     "label.ifEnd": "If-End",
     "label.then": "true",
@@ -1637,6 +1669,7 @@
     "label.logLevel": "ログレベル",
     "label.failOnOutputErr": "stderr出力でエラー",
     "label.showConfiguration": "ジョブ定義表示",
+    "label.allowUndeclared": "Allow Undeclared",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",
     "button.actual": "デフォルト",
@@ -1697,7 +1730,7 @@
     "placeholder.orderId": "オーダーID編集",
     "placeholder.className": "クラス名を入力",
     "placeholder.selectJobResources": "ジョブリソースを選択",
-    "placeholder.enterCredentialKey": "Windows資格マネージャーから認証キーを入力",
+    "placeholder.enterCredentialKey": "Windows資格マネージャーから認証キーを入力"
   },
   "xml": {
     "label.assignedSchema": "適用スキーマ",

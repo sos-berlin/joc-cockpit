@@ -80,6 +80,13 @@
         </mxCell>
       </Publish>
     </add>
+    <add as="Prompt">
+      <Prompt label="prompt" question="">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="68" height="68"/>
+        </mxCell>
+      </Prompt>
+    </add>
     <add as="FileWatcher">
       <FileWatcher label="fileWatcher" agent="" regex=".*" directory="">
         <mxCell vertex="1">

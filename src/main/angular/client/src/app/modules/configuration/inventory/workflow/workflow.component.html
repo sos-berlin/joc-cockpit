@@ -144,7 +144,7 @@
     </div>
     <div class="m-l-xs m-r-xs text-left" *ngIf="selectedNode">
       <div class="box-body p-t-0" *ngIf="selectedNode.type === 'Job'">
-        <app-job-content [selectedNode]="selectedNode" [orderRequirements]="orderRequirements" [jobs]="jobs" [agents]="agents"
+        <app-job-content [selectedNode]="selectedNode" [orderPreparation]="orderPreparation" [jobs]="jobs" [agents]="agents"
                          [jobResourcesTree]="jobResourcesTree" [documentationTree]="documentationTree" [schedulerId]="schedulerId"></app-job-content>
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'If'">
@@ -240,6 +240,14 @@
                 <div translate>common.message.requiredError</div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+      <div class="box-body" *ngIf="selectedNode.type === 'Prompt'">
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.workflow.prompt.question' | translate" translate>workflow.label.question</label>
+          <div class="col-md-8 col-lg-9">
+            <textarea class="form-control" [appAutofocus]="true" name="question" rows="2" [(ngModel)]="selectedNode.obj.question"></textarea>
           </div>
         </div>
       </div>
@@ -457,6 +465,12 @@
             <i class="fa fa-arrows-alt" *ngIf="!fullScreen"></i>
             <i class="fa fa-minus-square-o" *ngIf="fullScreen"></i>
           </a>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 block-ellipsis-job" [nz-tooltip]="'inventory.tooltips.workflow.allowUndeclared' | translate" translate>workflow.label.allowUndeclared</label>
+          <div class="col-md-8 col-lg-9">
+            <label nz-checkbox [(ngModel)]="variableDeclarations.allowUndeclared" (nzCheckedChange)="updateOtherProperties('variable')" name="allowUndeclared"></label>
+          </div>
         </div>
         <div class="form-group row m-b-0 m-l-sm" *ngIf="variableDeclarations.parameters.length > 0">
           <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>

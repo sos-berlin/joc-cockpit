@@ -43,8 +43,8 @@ export class AddOrderModalComponent implements OnInit {
   }
 
   updateVariableList(): void {
-    if (this.workflow.orderRequirements && this.workflow.orderRequirements.parameters && !isEmpty(this.workflow.orderRequirements.parameters)) {
-      this.variableList = Object.entries(this.workflow.orderRequirements.parameters).map(([k, v]) => {
+    if (this.workflow.orderPreparation && this.workflow.orderPreparation.parameters && !isEmpty(this.workflow.orderPreparation.parameters)) {
+      this.variableList = Object.entries(this.workflow.orderPreparation.parameters).map(([k, v]) => {
         const val: any = v;
         if (!val.default && val.default !== false && val.default !== 0) {
           this.arguments.push({name: k, type: val.type, isRequired: true});
@@ -56,7 +56,7 @@ export class AddOrderModalComponent implements OnInit {
   }
 
   checkVariableType(argument): void {
-    let obj = this.workflow.orderRequirements.parameters[argument.name];
+    let obj = this.workflow.orderPreparation.parameters[argument.name];
     if (obj) {
       argument.type = obj.type;
       if (!obj.default && obj.default !== false && obj.default !== 0) {

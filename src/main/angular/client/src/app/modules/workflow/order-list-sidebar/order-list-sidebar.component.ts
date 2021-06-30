@@ -15,7 +15,7 @@ export class OrderListSidebarComponent implements OnChanges{
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
-  @Input() orderRequirements: any;
+  @Input() orderPreparation: any;
   data = [];
   checked = false;
   indeterminate = false;
@@ -150,7 +150,7 @@ export class OrderListSidebarComponent implements OnChanges{
       nzClassName: 'lg',
       nzComponentParams: {
         schedulerId: this.schedulerId,
-        orderRequirements: this.coreService.clone(this.orderRequirements),
+        orderPreparation: this.coreService.clone(this.orderPreparation),
         orderIds: Array.from(this.setOfCheckedId)
       },
       nzFooter: null,

@@ -41,6 +41,8 @@
   "PAUSED": "interrompu",
   "BLOCKED": "bloqué",
   "PENDING": "à venir",
+  "PROMPTING": "prompting",
+  "SCHEDULED": "scheduled",
   "WAITING": "en attente",
   "CANCELLED": "annulé",
   "CANCELLING": "cancelling",
@@ -278,6 +280,8 @@
     "placeholder.ticketLink": "Entrer le lien du ticket",
     "--------AUDIT LOG POPUP WINDOW END------------": "",
     "label.pending": "À venir",
+    "label.prompting": "Prompting",
+    "label.scheduled": "Scheduled",
     "label.running": "En exécution",
     "label.suspended": "Suspendu",
     "label.blocked": "Bloqué",
@@ -343,6 +347,8 @@
     "button.waiting": "En attente",
     "button.blocked": "Bloqué",
     "button.pending": "À venir",
+    "button.prompting": "Prompting",
+    "button.scheduled": "Scheduled",
     "button.running": "En exécution",
     "button.completed": "Complet",
     "button.finished": "Terminé",
@@ -490,9 +496,11 @@
     "label.schedules": "Planifications",
     "label.planned": "Planifié",
     "label.pending": "À venir",
+    "label.prompting": "Prompting",
     "label.finished": "Terminé",
     "label.plannedLate": "Planifié et Retardé",
-    "label.blocked": "Bloqué",
+    "label.scheduled": "Scheduled",
+    "label.scheduledLate": "Scheduled Late",
     "button.editLayout": "Modifier la disposition",
     "button.resetLayout": "Réinitialiser la disposition",
     "button.widget": "Ajouter un widget",
@@ -989,11 +997,30 @@
       "label.dailyPlan": "Plan Quotidien"
     },
     "tooltips": {
+      "calendar": {
+
+      },
+      "fileOrderSources": {
+
+      },
+      "jobResource": {
+
+      },
+      "junction": {
+
+      },
+      "lock": {
+
+      },
+      "schedule": {
+
+      },
       "workflow": {
         "name": "The name of a workflow is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
         "jobResourceNames": "Job Resources hold shared variables that can be used by a number of jobs and workflows.",
         "documentation": "Documentation",
         "title": "The Title of a workflow.",
+        "allowUndeclared": "Allow Undeclared",
         "await": {
           "match": "Match",
           "timeout": "Timeout",
@@ -1040,6 +1067,9 @@
         "lock": {
           "name": "Names of Resource Locks are unique in the inventory. Sections in workflows can be limited in parllelism by using Resource Locks.",
           "count": "The Weight for use of a Resource Lock is calculated towards its capacity. If the capacity is exceeded then the order has to wait until a capacity is available that matches or exceeds the current weight."
+        },
+        "prompt": {
+          "question": "Question"
         },
         "publish": {
           "junctionPath": "A Junction links two or more workflows and causes orders to wait for each other if they are derived from the same daily plan."
@@ -1611,6 +1641,8 @@
     "label.exclusive": "Exclusive",
     "label.shared": "Partagé",
     "label.publish": "Publier",
+    "label.prompt": "Prompt",
+    "label.question": "Question",
     "label.if": "If",
     "label.ifEnd": "If-End",
     "label.then": "vrai",
@@ -1637,6 +1669,7 @@
     "label.logLevel": "Niveau de Journalisation",
     "label.failOnOutputErr": "Échec de la sortie vers stderr",
     "label.showConfiguration": "Afficher la Configuration",
+    "label.allowUndeclared": "Allow Undeclared",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",
     "button.actual": "Défaut",

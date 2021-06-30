@@ -186,6 +186,8 @@
     <add as="Fail" template="Fail" style="symbol;image=./assets/mxgraph/images/symbols/fail.svg"
          icon="./assets/mxgraph/images/fail.png"/>
     <hr/>
+    <add as="Prompt" template="Prompt" style="symbol;image=./assets/mxgraph/images/symbols/prompt.svg" icon="./assets/mxgraph/images/prompt.png"/>
+    <hr/>
     <add as="Publish" template="Publish" style="symbol;image=./assets/mxgraph/images/symbols/publish.svg" icon="./assets/mxgraph/images/publish.png"/>
     <hr/>
     <add as="Await" template="Await" style="symbol;image=./assets/mxgraph/images/symbols/await.svg"

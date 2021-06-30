@@ -88,13 +88,9 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
 
   private init(): void {
     const obj: any = {controllerId: this.schedulerId};
-    if (this.date === 'NEVER') {
-      obj.scheduledNever = true;
-    } else {
-      if (this.state === 'PENDING' && this.date !== 'ALL') {
-        obj.dateTo = this.date;
-        obj.timeZone = this.timeZone;
-      }
+    if (this.state === 'PENDING' && this.date !== 'ALL') {
+      obj.dateTo = this.date;
+      obj.timeZone = this.timeZone;
     }
     this.coreService.post('orders/overview/snapshot', obj).subscribe((res: any) => {
       this.snapshot = res.orders;
@@ -188,9 +184,11 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   filterBtn: any = [
     {status: 'ALL', text: 'all'},
     {status: 'PENDING', text: 'pending'},
+    {status: 'SCHEDULED', text: 'scheduled'},
     {status: 'INPROGRESS', text: 'incomplete'},
     {status: 'RUNNING', text: 'running'},
     {status: 'SUSPENDED', text: 'suspended'},
+    {status: 'PROMPTING', text: 'prompting'},
     {status: 'WAITING', text: 'waiting'},
     {status: 'BLOCKED', text: 'blocked'},
     {status: 'FAILED', text: 'failed'},
@@ -203,8 +201,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     {date: '1h', text: 'next1'},
     {date: '12h', text: 'next12'},
     {date: '24h', text: 'next24'},
-    {date: '7d', text: 'nextWeak'},
-    {date: 'NEVER', text: 'never'}
+    {date: '7d', text: 'nextWeak'}
   ];
 
   @ViewChild(OrderActionComponent, {static: false}) actionChild;
@@ -498,7 +495,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
         orders: this.object.mapOfCheckedId,
-        orderRequirements: order.requirements
+        orderPreparation: order.requirements
       },
       nzFooter: null,
       nzClosable: false
@@ -634,7 +631,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   private getState(): string {
     let state;
-    if (this.orderFilters.filter.state !== 'ALL' && this.orderFilters.filter.state !== 'NEVER') {
+    if (this.orderFilters.filter.state !== 'ALL') {
       if (this.orderFilters.filter.state === 'COMPLETED') {
         state = ['FINISHED', 'CANCELLED'];
       } else {
@@ -699,14 +696,11 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     let tempOrder = this.orders.filter((order) => {
       return order.show;
     });
-    if (this.orderFilters.filter.date === 'NEVER') {
-      obj.scheduledNever = true;
-    } else {
-      if (this.orderFilters.filter.date !== 'ALL' && this.orderFilters.filter.state === 'PENDING') {
-        obj.dateTo = this.orderFilters.filter.date;
-        obj.timeZone = this.preferences.zone;
-      }
+    if (this.orderFilters.filter.date !== 'ALL' && this.orderFilters.filter.state === 'PENDING') {
+      obj.dateTo = this.orderFilters.filter.date;
+      obj.timeZone = this.preferences.zone;
     }
+
     this.coreService.post('orders', obj).subscribe((res: any) => {
       this.isLoaded = true;
       this.orders = res.orders;

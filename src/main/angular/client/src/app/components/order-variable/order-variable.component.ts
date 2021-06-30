@@ -40,7 +40,7 @@ export class OrderVariableComponent implements OnInit {
           schedulerId: this.schedulerId,
           variable,
           order,
-          orderRequirements: order.requirements
+          orderPreparation: order.requirements
         },
         nzFooter: null,
         nzClosable: false
@@ -102,7 +102,7 @@ export class OrderVariableComponent implements OnInit {
         controllerId: this.schedulerId,
         workflowId: {path: order.workflowPath}
       }).subscribe((res: any) => {
-        order.requirements = res.workflow.orderRequirements;
+        order.requirements = res.workflow.orderPreparation;
         cb();
       });
     }

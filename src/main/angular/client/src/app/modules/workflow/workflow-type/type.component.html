@@ -88,7 +88,7 @@
         <span class="order-count" (click)="showOrders(instruction)" *ngIf="instruction.orderCount > 0 && (!instruction.show && !expandAll)">{{instruction.orderCount}}</span>
       </a>
       <div *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'ImplicitEnd'
-       || instruction.TYPE === 'Publish' || instruction.TYPE === 'Await'" [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction.TYPE === 'ImplicitEnd'}">
+       || instruction.TYPE === 'Publish' || instruction.TYPE === 'Prompt' || instruction.TYPE === 'Await'" [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction.TYPE === 'ImplicitEnd'}">
         <div class="btn-group dropdown" style="margin-left: -10px" *ngIf="instruction.TYPE === 'Job'">
           <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
                   type="button">
@@ -140,7 +140,7 @@
             <span class="order-count" (click)="showOrders(branch)" *ngIf="branch.orderCount > 0 && (!branch.show && !expandAll)"> {{branch.orderCount}}</span>
             <div class="p-l" *ngIf="branch.instructions && (branch.show)">
               <app-type [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
-                        [configuration]="branch" [jobs]="jobs" (isChanged)="changedHandler($event)" [orderRequirements]="orderRequirements" [expandAll]="expandAll"></app-type>
+                        [configuration]="branch" [jobs]="jobs" (isChanged)="changedHandler($event)" [orderPreparation]="orderPreparation" [expandAll]="expandAll"></app-type>
             </div>
           </div>
         </div>
@@ -148,7 +148,7 @@
       <div *ngIf="instruction.TYPE === 'If' && (instruction.show)">
         <div *ngIf="instruction.then && instruction.then.instructions">
           <app-type [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
-                    [configuration]="instruction.then" [jobs]="jobs" (isChanged)="changedHandler($event)" [orderRequirements]="orderRequirements" [expandAll]="expandAll"></app-type>
+                    [configuration]="instruction.then" [jobs]="jobs" (isChanged)="changedHandler($event)" [orderPreparation]="orderPreparation" [expandAll]="expandAll"></app-type>
           <div class="p-l-md">
             <a class="m-l" *ngIf="instruction.else" (click)="collapse(instruction.else)">
               <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.else.show)}"></i>
@@ -165,14 +165,14 @@
             </span>
             <span class="order-count" (click)="showOrders(instruction.else)" *ngIf="instruction.else && instruction.else.orderCount > 0 && (!instruction.else.show && !expandAll)">{{instruction.else.orderCount}}</span>
             <div class="p-l" *ngIf="instruction.else && (instruction.else.show)">
-              <app-type [permission]="permission" [orderRequirements]="orderRequirements" [preferences]="preferences" [schedulerId]="schedulerId"
+              <app-type [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
                         [configuration]="instruction.else" [jobs]="jobs" (isChanged)="changedHandler($event)" [expandAll]="expandAll" *ngIf="instruction.else.instructions"></app-type>
             </div>
           </div>
         </div>
       </div>
       <div *ngIf="instruction.TYPE === 'Try' && (instruction.show)">
-          <app-type [permission]="permission" [orderRequirements]="orderRequirements" [preferences]="preferences" [schedulerId]="schedulerId"
+          <app-type [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
                     [configuration]="instruction" [jobs]="jobs" (isChanged)="changedHandler($event)" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
           <div class="p-l-md">
             <a class="m-l" *ngIf="instruction.catch" (click)="collapse(instruction.catch)">
@@ -190,20 +190,20 @@
             </span>
             <span class="order-count" (click)="showOrders(instruction.catch)" *ngIf="instruction.catch && instruction.catch.orderCount > 0 && (!instruction.catch.show && !expandAll)">{{instruction.catch.orderCount}}</span>
             <div class="m-l" *ngIf="instruction.catch && (instruction.catch.show)">
-              <app-type [permission]="permission" [orderRequirements]="orderRequirements" [preferences]="preferences" [schedulerId]="schedulerId"
+              <app-type [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
                         [configuration]="instruction.catch" [jobs]="jobs" (isChanged)="changedHandler($event)" [expandAll]="expandAll" *ngIf="instruction.catch.instructions"></app-type>
             </div>
           </div>
       </div>
       <div *ngIf="instruction.TYPE === 'Retry' && (instruction.show)">
         <div>
-          <app-type [permission]="permission" [orderRequirements]="orderRequirements" [preferences]="preferences" [schedulerId]="schedulerId"
+          <app-type [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
                     [configuration]="instruction" [jobs]="jobs" (isChanged)="changedHandler($event)" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
         </div>
       </div>
       <div *ngIf="instruction.TYPE === 'Lock' && (instruction.show)">
         <div>
-          <app-type [permission]="permission" [orderRequirements]="orderRequirements" [preferences]="preferences" [schedulerId]="schedulerId"
+          <app-type [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
                     [configuration]="instruction" [jobs]="jobs" (isChanged)="changedHandler($event)" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
         </div>
       </div>

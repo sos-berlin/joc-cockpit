@@ -69,7 +69,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   @Input() jobs: any;
   @Input() jobResourcesTree = [];
   @Input() documentationTree = [];
-  @Input() orderRequirements;
+  @Input() orderPreparation;
   @Input() agents = [];
   history = [];
   indexOfNextAdd = 0;
@@ -145,7 +145,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.presentObj.obj = JSON.stringify(this.selectedNode.obj);
       this.presentObj.job = JSON.stringify(this.selectedNode.job);
     }
-    if (changes.orderRequirements) {
+    if (changes.orderPreparation) {
       this.updateVariableList();
     }
   }
@@ -177,8 +177,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   updateVariableList(): void {
-    if (this.orderRequirements && this.orderRequirements.parameters && !isEmpty(this.orderRequirements.parameters)) {
-      this.variableList = Object.entries(this.orderRequirements.parameters).map(([k, v]) => {
+    if (this.orderPreparation && this.orderPreparation.parameters && !isEmpty(this.orderPreparation.parameters)) {
+      this.variableList = Object.entries(this.orderPreparation.parameters).map(([k, v]) => {
         return {name: k, value: v};
       });
     }
@@ -1248,7 +1248,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   extraConfiguration: any = {};
   jobs: any = [];
   jobResourceNames: any = [];
-  orderRequirements: any = {};
+  orderPreparation: any = {};
   workflow: any = {};
   history = {past: [], present: {}, future: [], type: 'new'};
   implicitSave = false;
@@ -1264,7 +1264,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   invalidMsg: string;
   inventoryConf: any;
   allowedDatatype = ['String', 'Number', 'Boolean'];
-  variableDeclarations = {parameters: []};
+  variableDeclarations = {parameters: [], allowUndeclared: false};
   document = {name: ''};
   fullScreen = false;
   subscription: Subscription;
@@ -1336,7 +1336,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.title = '';
         this.documentationName = '';
         this.jobResourceNames = [];
-        this.orderRequirements = {};
+        this.orderPreparation = {};
         this.dummyXml = null;
         this.ref.detectChanges();
       }
@@ -1595,7 +1595,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   validate(): void {
-    if (this.invalidMsg && this.invalidMsg.match(/orderRequirements/)) {
+    if (this.invalidMsg && this.invalidMsg.match(/orderPreparation/)) {
       this.selectedNode = null;
     } else {
       if (!this.workflow.valid) {
@@ -1618,8 +1618,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
       if (typeof data === 'object') {
         const newData: any = {};
-        if (this.orderRequirements && this.orderRequirements.parameters) {
-          newData.orderRequirements = this.orderRequirements;
+        if (this.orderPreparation && this.orderPreparation.parameters) {
+          newData.orderPreparation = this.orderPreparation;
         }
         newData.instructions = data.instructions;
         if (this.title) {
@@ -1650,8 +1650,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     modal.afterClose.subscribe(result => {
       if (result) {
         WorkflowComponent.parseWorkflowJSON(result);
-        if (result.orderRequirements) {
-          this.orderRequirements = this.coreService.clone(result.orderRequirements);
+        if (result.orderPreparation) {
+          this.orderPreparation = this.coreService.clone(result.orderPreparation);
         }
         if (result.title) {
           this.title = this.coreService.clone(result.title);
@@ -1668,7 +1668,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             return {name: k, value: v};
           });
         }
-        delete this.workflow.configuration.orderRequirements;
+        delete this.workflow.configuration.orderPreparation;
         delete this.workflow.configuration.jobResourceNames;
         delete this.workflow.configuration.title;
         delete this.workflow.configuration.documentationName;
@@ -1891,7 +1891,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           this.data.valid = res.valid;
         }
         this.jobs = [];
-        this.orderRequirements = {};
+        this.variableDeclarations = {parameters: [], allowUndeclared: false};
+        this.orderPreparation = {};
         this.jobResourceNames = [];
         if (res.configuration) {
           delete res.configuration.TYPE;
@@ -1936,15 +1937,15 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private initObjects(res): void{
-    if (res.configuration.orderRequirements) {
-      this.orderRequirements = this.coreService.clone(res.configuration.orderRequirements);
+    if (res.configuration.orderPreparation) {
+      this.orderPreparation = this.coreService.clone(res.configuration.orderPreparation);
     }
     if (res.configuration.jobResourceNames) {
       this.jobResourceNames = this.coreService.clone(res.configuration.jobResourceNames);
     }
     this.documentationName = res.configuration.documentationName;
     this.title = res.configuration.title;
-    delete res.configuration.orderRequirements;
+    delete res.configuration.orderPreparation;
     delete res.configuration.jobResourceNames;
     delete res.configuration.documentationName;
     delete res.configuration.title;
@@ -1977,11 +1978,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       documentationName: this.documentationName,
       jobResourceNames: this.jobResourceNames,
     };
-    if (!this.orderRequirements && this.variableDeclarations.parameters && this.variableDeclarations.parameters.length === 0) {
+    if (!this.orderPreparation && this.variableDeclarations.parameters && this.variableDeclarations.parameters.length === 0) {
       this.addVariable();
     }
-    if (this.orderRequirements && this.orderRequirements.parameters && !isEmpty(this.orderRequirements.parameters)) {
-      this.variableDeclarations.parameters = Object.entries(this.orderRequirements.parameters).map(([k, v]) => {
+    if (this.orderPreparation && this.orderPreparation.parameters && !isEmpty(this.orderPreparation.parameters)) {
+      this.variableDeclarations.allowUndeclared = this.orderPreparation.allowUndeclared;
+      this.variableDeclarations.parameters = Object.entries(this.orderPreparation.parameters).map(([k, v]) => {
         return {name: k, value: v};
       });
     }
@@ -2371,6 +2373,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         let _lockInstructions = clone(objects.Lock);
         let _awaitInstructions = clone(objects.Await);
         let _publishInstructions = clone(objects.Publish);
+        let _promptInstructions = clone(objects.Prompt);
         let _fileWatcherInstructions = clone(objects.FileWatcher);
         let _failInstructions = clone(objects.Fail);
         let _finishInstructions = clone(objects.Finish);
@@ -2480,6 +2483,20 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             } else {
               if (connection[i].mxCell._target === _publishInstructions._id) {
                 _publishInstructions = [];
+              }
+            }
+          }
+          if (_promptInstructions) {
+            if (isArray(_promptInstructions)) {
+              for (let j = 0; j < _promptInstructions.length; j++) {
+                if (connection[i].mxCell._target === _promptInstructions[j]._id) {
+                  _promptInstructions.splice(j, 1);
+                  break;
+                }
+              }
+            } else {
+              if (connection[i].mxCell._target === _promptInstructions._id) {
+                _promptInstructions = [];
               }
             }
           }
@@ -2624,6 +2641,20 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
         } else {
+          if (_promptInstructions) {
+            if (isArray(_promptInstructions) && _promptInstructions.length > 0) {
+              startNode = _promptInstructions[0];
+            } else {
+              startNode = _promptInstructions;
+            }
+          }
+        }
+
+        if (!isEmpty(startNode)) {
+          jsonObj.instructions.push(this.workflowService.createObject('Prompt', startNode));
+          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
+          startNode = null;
+        } else {
           if (_awaitInstructions) {
             if (isArray(_awaitInstructions) && _awaitInstructions.length > 0) {
               startNode = _awaitInstructions[0];
@@ -2689,6 +2720,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         const tryIns = objects.Try;
         const awaitIns = objects.Await;
         const publishIns = objects.Publish;
+        const promptIns = objects.Prompt;
         const fileWatcherIns = objects.FileWatcher;
         const fail = objects.Fail;
         const finish = objects.Finish;
@@ -2762,6 +2794,15 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           } else {
             jsonObj.instructions.push(this.workflowService.createObject('Publish', publishIns));
+          }
+        }
+        if (promptIns) {
+          if (isArray(promptIns)) {
+            for (let i = 0; i < promptIns.length; i++) {
+              jsonObj.instructions.push(this.workflowService.createObject('Prompt', promptIns[i]));
+            }
+          } else {
+            jsonObj.instructions.push(this.workflowService.createObject('Prompt', promptIns));
           }
         }
         if (fileWatcherIns) {
@@ -3110,6 +3151,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     const tryEndInstructions = objects.EndTry;
     const awaitInstructions = objects.Await;
     const publishInstructions = objects.Publish;
+    const promptInstructions = objects.Prompt;
     const failInstructions = objects.Fail;
     const finishInstructions = objects.Finish;
     const fileWatcherInstructions = objects.FileWatcher;
@@ -3444,8 +3486,30 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
       }
     }
+
     if (nextNode && !isEmpty(nextNode)) {
       instructionsArr.push(this.workflowService.createObject('Publish', nextNode));
+      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
+      nextNode = null;
+    } else {
+      if (promptInstructions) {
+        if (isArray(promptInstructions)) {
+          for (let i = 0; i < promptInstructions.length; i++) {
+            if (promptInstructions[i]._id === id) {
+              nextNode = promptInstructions[i];
+              break;
+            }
+          }
+        } else {
+          if (promptInstructions._id === id) {
+            nextNode = promptInstructions;
+          }
+        }
+      }
+    }
+
+    if (nextNode && !isEmpty(nextNode)) {
+      instructionsArr.push(this.workflowService.createObject('Prompt', nextNode));
       this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
     } else {
@@ -3763,7 +3827,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           this.images = [];
           let img;
           if (state.cell && (state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'Finish' || state.cell.value.tagName === 'Fail' ||
-            state.cell.value.tagName === 'Await' || state.cell.value.tagName === 'Publish' || self.workflowService.isInstructionCollapsible(state.cell.value.tagName))) {
+            state.cell.value.tagName === 'Await' || state.cell.value.tagName === 'Publish' || state.cell.value.tagName === 'Prompt' || self.workflowService.isInstructionCollapsible(state.cell.value.tagName))) {
             img = mxUtils.createImage('./assets/images/menu.svg');
             let x = state.x - (20 * state.shape.scale);
             let y = state.y - (8 * state.shape.scale);
@@ -4012,7 +4076,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           // Handles the event if it has not been consumed
           if (cell) {
             if (cell.value.tagName === 'Job' || cell.value.tagName === 'Finish' || cell.value.tagName === 'Fail' ||
-              cell.value.tagName === 'Await' || cell.value.tagName === 'Publish') {
+              cell.value.tagName === 'Await' || cell.value.tagName === 'Publish' || cell.value.tagName === 'Prompt') {
               graph.setSelectionCell(cell);
             } else {
               if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
@@ -4191,7 +4255,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
             if (!check) {
               if (drpTargt.value.tagName !== 'Connection') {
-                if (drpTargt.value.tagName === 'Job' || drpTargt.value.tagName === 'Finish' || drpTargt.value.tagName === 'Fail' || drpTargt.value.tagName === 'Await' || drpTargt.value.tagName === 'Publish') {
+                if (drpTargt.value.tagName === 'Job' || drpTargt.value.tagName === 'Finish' || drpTargt.value.tagName === 'Fail'
+                  || drpTargt.value.tagName === 'Await' || drpTargt.value.tagName === 'Publish' || drpTargt.value.tagName === 'Prompt') {
                   for (let i = 0; i < drpTargt.edges.length; i++) {
                     if (drpTargt.edges[i].target.id !== drpTargt.id) {
                       self.translate.get('workflow.message.validationError').subscribe(translatedValue => {
@@ -4595,8 +4660,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                       if (cell.source.edges[x].id === cell.id) {
                         const _sourCellName = cell.source.value.tagName;
                         const _tarCellName = cell.target.value.tagName;
-                        if ((cell.target && ((_sourCellName === 'Job' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'Publish' || _sourCellName === 'Await') &&
-                          (_tarCellName === 'Job' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'Publish' || _tarCellName === 'Await')))) {
+                        if ((cell.target && ((_sourCellName === 'Job' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'Publish' || _sourCellName === 'Prompt' || _sourCellName === 'Await') &&
+                          (_tarCellName === 'Job' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'Publish' || _tarCellName === 'Prompt' || _tarCellName === 'Await')))) {
                           graph.getModel().remove(cell.source.edges[x]);
                         } else {
                           cell.source.removeEdge(cell.source.edges[x], true);
@@ -5534,6 +5599,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             const edit = new mxCellAttributeChange(
               obj.cell, 'junctionPath', self.selectedNode.newObj.junctionPath);
             graph.getModel().execute(edit);
+          } else if (self.selectedNode.type === 'Prompt') {
+            const edit = new mxCellAttributeChange(
+              obj.cell, 'question', self.selectedNode.newObj.question);
+            graph.getModel().execute(edit);
           } else if (self.selectedNode.type === 'FileWatcher') {
             const edit1 = new mxCellAttributeChange(
               obj.cell, 'directory', self.selectedNode.newObj.directory);
@@ -5720,6 +5789,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           obj.match = cell.getAttribute('match');
         } else if (cell.value.tagName === 'Publish') {
           obj.junctionPath = cell.getAttribute('junctionPath');
+        } else if (cell.value.tagName === 'Prompt') {
+          obj.question = cell.getAttribute('question');
         } else if (cell.value.tagName === 'Fork') {
           obj.joinVariables = cell.getAttribute('joinVariables');
           obj.joinVariables = obj.joinVariables == 'true';
@@ -6143,6 +6214,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           _node.setAttribute('label', 'publish');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.publish);
+        } else if (title.match('prompt')) {
+          _node = doc.createElement('Prompt');
+          _node.setAttribute('label', 'prompt');
+          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.prompt);
         } else if (title.match('fileWatcher')) {
           _node = doc.createElement('FileWatcher');
           _node.setAttribute('label', 'fileWatcher');
@@ -6210,8 +6286,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               if (targetCell.source.edges[x].id === targetCell.id) {
                 const _sourCellName = targetCell.source.value.tagName;
                 const _tarCellName = targetCell.target.value.tagName;
-                if ((targetCell.target && ((_sourCellName === 'Job' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'Publish' || _sourCellName === 'Await') &&
-                  (_tarCellName === 'Job' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'Publish' || _tarCellName === 'Await')))) {
+                if ((targetCell.target && ((_sourCellName === 'Job' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'Publish' || _sourCellName === 'Prompt' || _sourCellName === 'Await') &&
+                  (_tarCellName === 'Job' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'Publish' || _tarCellName === 'Prompt' || _tarCellName === 'Await')))) {
                   graph.getModel().remove(targetCell.source.edges[x]);
                 } else {
                   targetCell.source.removeEdge(targetCell.source.edges[x], true);
@@ -6298,7 +6374,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
       if (!flg) {
         if (tagName !== 'Connection') {
-          if (tagName === 'Job' || tagName === 'Finish' || tagName === 'Fail' || tagName === 'Await' || tagName === 'Publish') {
+          if (tagName === 'Job' || tagName === 'Finish' || tagName === 'Fail' || tagName === 'Await' || tagName === 'Publish' || tagName === 'Prompt') {
             for (let i = 0; i < targetCell.edges.length; i++) {
               if (targetCell.edges[i].target.id !== targetCell.id) {
                 return 'inValid';
@@ -7671,7 +7747,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (variableDeclarations.parameters && isEmpty(variableDeclarations.parameters)) {
         delete variableDeclarations.parameters;
       }
-      this.orderRequirements = variableDeclarations;
+      this.orderPreparation = variableDeclarations;
+      this.orderPreparation.allowUndeclared = this.variableDeclarations.allowUndeclared;
       flag = true;
     }
     if (flag) {
@@ -7686,8 +7763,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     let newObj: any = {};
     newObj = extend(newObj, data);
-    if (this.orderRequirements && this.orderRequirements.parameters) {
-      newObj.orderRequirements = this.orderRequirements;
+    if (this.orderPreparation && this.orderPreparation.parameters) {
+      newObj.orderPreparation = this.orderPreparation;
     }
     if (this.jobResourceNames) {
       newObj.jobResourceNames = this.jobResourceNames;

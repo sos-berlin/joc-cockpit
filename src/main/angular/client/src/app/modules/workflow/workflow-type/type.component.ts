@@ -15,7 +15,7 @@ export class TypeComponent implements OnChanges {
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
-  @Input() orderRequirements: any;
+  @Input() orderPreparation: any;
   @Output() update: EventEmitter<any> = new EventEmitter();
   @Output() isChanged: EventEmitter<boolean> = new EventEmitter();
 
