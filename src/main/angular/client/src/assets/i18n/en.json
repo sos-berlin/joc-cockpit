@@ -500,7 +500,7 @@
     "label.finished": "Finished",
     "label.plannedLate": "Planned Late",
     "label.scheduled": "Scheduled",
-    "label.scheduledLate": "Scheduled Late",
+    "label.scheduledLate": "Late",
     "button.editLayout": "Edit Layout",
     "button.resetLayout": "Reset Layout",
     "button.widget": "Add Widget",
@@ -956,8 +956,8 @@
     "placeholder.enterNewName": "Enter new name",
     "placeholder.enterTemplateId": "Enter Schedule ID",
     "placeholder.enterCalendarName": "Enter Calendar Name",
-    "placeholder.enterOrSelectCategory": "Enter or Select Category",
-    "placeholder.enterOrSelectFromTree": "Enter or Select from tree",
+    "placeholder.enterOrSelectCategory": "Enter or select Category",
+    "placeholder.enterOrSelectFromTree": "Enter or select from tree",
     "placeholder.enterMainSection": "Enter Main Section",
     "placeholder.enterLimit": "Enter the limit",
     "placeholder.selectPriority": "Select priority",
@@ -970,7 +970,7 @@
     "placeholder.documentationName": "Select Documentation",
     "placeholder.enterFolderPath": "Enter Folder Path",
     "placeholder.signatureAlgorithm": "Enter the signature algorithm used",
-    "placeholder.searchNonWorkingCalendars": "Search Non-working Day Calendars",
+    "placeholder.searchNonWorkingCalendars": "Search non-working Day Calendars",
     "placeholder.suffix": "Enter suffix",
     "placeholder.prefix": "Enter prefix",
     "placeholder.directory": "Enter the directory",
@@ -1017,21 +1017,21 @@
       },
       "workflow": {
         "name": "The name of a workflow is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
-        "jobResourceNames": "Job Resources hold shared variables that can be used by a number of jobs and workflows.",
-        "documentation": "Documentation",
-        "title": "The Title of a workflow.",
-        "allowUndeclared": "Allow Undeclared",
+        "jobResourceNames": "Job Resources hold shared variables that can be used by a number of jobs and workflows. Any variables from the selected Job Resource can be used by any jobs in the workflow.",
+        "documentation": "A workflow can be assigned a Documentation that is displayed with the WORKFLOWS view. Documentations are managed with the RESOURCES->Documentations view.",
+        "title": "The Title of a workflow is displayed with the WORKFLOWS view.",
+        "allowUndeclared": "Allow undeclared variables to be used. This includes that an order can carry variables that are not checked for their data type or mandatory use. Jobs will fail when referencing undeclared variables that are not available with an order.",
         "await": {
-          "match": "Match",
-          "timeout": "Timeout",
-          "junctionPath": "A Junction links two or more workflows and causes orders to wait for each other if they are derived from the same daily plan.",
-          "predicate": "Predicate",
-          "joinVariables": "Join Variables"
+          "match": "The pattern specifies what order is waited for, for example an order with a matching daily plan date.",
+          "timeout": "If no matching order is available within the duration specified by the Timeout then the current order will continue in the workflow.",
+          "junctionPath": "A Junction links two workflows and causes an order in one of the workflows to wait for a matching order of the other workflow.",
+          "predicate": "The Predicate is an expression that evalues to 'true' or 'false'. It can be used to specify additional checks for matching orders.",
+          "joinVariables": "Variables of a matching order are added to the current order."
         },
         "fail": {
           "message": "The instruction allows to specify a Message that is attached the order and that becomes visible with the order history.",
-          "uncatchable": "An Uncatchable error cannot be handled with a Try/Catch Instruction.",
-          "returnCode": "Return Code"
+          "uncatchable": "An uncatchable error cannot be handled with a Try/Catch Instruction.",
+          "returnCode": "The Fail Instruction can be assigned a positive, non-zero Return Code that becomes visible with the order history."
         },
         "fileWatch": {
           "directory": "The Directory that is watched for incoming files.",
@@ -1046,7 +1046,7 @@
         "job": {
           "name": "A job name is unique in a workflow. A job with the same name can occur with a number of instructions in the same workflow if individual job labels are used. For a job name most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
           "label": "A job Label is used to distinguish multiple occurrences of a job with the same name in a workflow.",
-          "title": "The Title of a job.",
+          "title": "The Title of a job becomes visible with the Workflows view.",
           "compatibleMode": "Compatibility with previous JobScheduler versions includes e.g. for shell jobs to automatically create environment variables prefixed with 'SCHEDULER_PARAM_' for any order variables as in JS1.",
           "credentialKey": "A Credential Key can be added to the Windows Credential Manager holding the credentials that are used to switch to a target user account for this job.",
           "loadUserProfile": "Load Windows User Profile. A profile includes e.g. environment variables and Windows registry settings.",
@@ -1057,10 +1057,10 @@
           "graceTimeout": "A Grace Timeout is applied to jobs with Unix that receive a SIGTERM signal when exceeding their Timeout. If the job does not terminate then after the Grace Timeout a SIGKILL signal will abort the job.",
           "warnIfShorter": "If the execution period of a job is shorter than specified then a notification, e.g. by e-mail, is sent.",
           "warnIfLonger": "If the execution period of a job is longer than specified then a notification, e.g. by e-mail, is sent.",
-          "agent": "Agent",
+          "agent": "The job is assigned an Agent that will execute the job script/class. Select from the list of available Agents.",
           "fileWatcher": "File Order Sources are used to watch a Directory for incoming files and to create an order with the respective workflow for each file.",
           "className": "The name of a Java class implementing a job. JS7 ships with a number of predefined JITL Java classes, e.g. for database access, to send e-mail etc.",
-          "parallelism": "The max. Parallelism specifies the number of orders in a workflow that can execute the job in parallel. If the maximum is exceeded then orders have to wait until the value has fallen below the job's max. Parallelism.",
+          "parallelism": "The max. Parallelism specifies the number of orders in a workflow that can execute the job in parallel. If the max. Parallelism is exceeded then orders have to wait until the value has fallen below the job's max. Parallelism.",
           "criticality": "The Criticality of jobs can be used in notifications to better distinguish the urgency of an incident.",
           "failOnOutputErr": "If a job writes output to the stderr channel then this is considered an error and the order is put in the FAILED state."
         },
@@ -1069,10 +1069,10 @@
           "count": "The Weight for use of a Resource Lock is calculated towards its capacity. If the capacity is exceeded then the order has to wait until a capacity is available that matches or exceeds the current weight."
         },
         "prompt": {
-          "question": "Question"
+          "question": "A Prompt Instruction includes that workflow execution will be temporarily stopped. The order is put in the PROMPTING state. User can check the Message that is associated with the Prompt Instruction and can confirm execution of the workflow. The order will then be put in the RUNNING state."
         },
         "publish": {
-          "junctionPath": "A Junction links two or more workflows and causes orders to wait for each other if they are derived from the same daily plan."
+          "junctionPath": "A Junction links two workflows and will cause orders in one workflow to wait for orders from the second workflow if both orders are originated by the same daily plan."
         },
         "retry": {
           "maxTries": "When reaching the max. number of retries then the Try Instruction ends and the order is put in the FAILED state.",
@@ -1084,8 +1084,8 @@
   "log": {
     "--------COMMENT BOX BEGIN------------": "Client Logging and Log window",
     "label.logs": "Logs",
-    "label.stdout": "Stdout",
-    "label.stderr": "Stderr",
+    "label.stdout": "stdout",
+    "label.stderr": "stderr",
     "label.info": "Info",
     "label.trace": "trace",
     "label.error": "Error",
@@ -1442,9 +1442,9 @@
     "button.addSection": "Add Section",
     "button.dropSection": "Drop Section",
     "placeholder.enterPositiveNumber": "Enter only positive number",
-    "placeholder.enterNonNegativeNumber": "Enter non negative number",
+    "placeholder.enterNonNegativeNumber": "Enter non-negative number",
     "placeholder.enterPositiveInteger": "Enter only positive integer",
-    "placeholder.enterNonNegativeInteger": "Enter non negative integer",
+    "placeholder.enterNonNegativeInteger": "Enter non-negative integer",
     "cleanup": {
       "time_zone": "Specifies the time zone that is applied to the start time and period of the Cleanup Service.",
       "period": "Specifies weekdays on which the Cleanup Service is performed. The first day of week is considered being Monday. When initially installing JS7 then the distribution specifies the full week. Without this setting the Cleanup Service will not start.",
@@ -1457,8 +1457,8 @@
       "deployment_history_versions": "Specifies the number of versions per deployed object that should be retained. Such versions can be used to re-deploy an object from an older state. Any earlier deployed versions of deployed objects are removed.",
       "audit_log_age": "Specifies the retention period for the Audit Log. Any audit log entries older than the value specified will be purged.",
       "file_transfer_history_age": "Specifies the retention period of the File Transfer History. Any history entries older than the value specified will be purged.",
-      "monitoring_history_age": "monitoring_history_age",
-      "notification_history_age": "monitoring_history_age"
+      "monitoring_history_age": "Specifies the retention period of the Monitoring History. Any history entries older than the value specified will be purged.",
+      "notification_history_age": "Specifies the retention period of the Notification History. Any history entries older than the value specified will be purged."
     },
     "dailyplan": {
       "time_zone": "Specifies the time zone that is applied to the start time of the Daily Plan Service and period of the Daily Plan.",
@@ -1642,7 +1642,7 @@
     "label.shared": "Shared",
     "label.publish": "Publish",
     "label.prompt": "Prompt",
-    "label.question": "Question",
+    "label.question": "Message",
     "label.if": "If",
     "label.ifEnd": "If-End",
     "label.then": "true",
