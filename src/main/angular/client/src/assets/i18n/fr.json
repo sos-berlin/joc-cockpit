@@ -85,7 +85,7 @@
   "--------SELECT BOX VALUE BEGIN------------": "",
   "True": "vrai",
   "False": "faux",
-  "String": "String",
+  "String": "Chaîne de caractères",
   "Number": "Nombre",
   "Boolean": "Booléen",
   "Final": "Final",
@@ -318,7 +318,7 @@
     "label.no": "non",
     "label.all": "Tous",
     "label.redeploy": "Redéployer",
-    "label.confirm": "Confirm",
+    "label.confirm": "Confirmer",
     "button.all": "Tous",
     "button.save": "Sauvegarder",
     "button.apply": "Appliquer",
@@ -1019,7 +1019,7 @@
         "jobResourceNames": "Les ressources de tâche contiennent des variables partagées qui peuvent être utilisées par un certain nombre de tâches et de workflows.",
         "documentation": "Documentation",
         "title": "Le titre d'un workflow.",
-        "allowUndeclared": "Autoriser les non déclarés",
+        "allowUndeclared": "Autoriser les variables non déclarés",
         "await": {
           "match": "Correspondance",
           "timeout": "Timeout",
@@ -1068,7 +1068,7 @@
           "count": "Le poids pour l'utilisation d'un verrou de ressource est calculé en fonction de sa capacité. Si la capacité est dépassée, l'ordre doit attendre jusqu'à ce qu'une capacité soit disponible qui correspond ou dépasse le poids actuel."
         },
         "prompt": {
-          "question": "Question"
+          "question": "Message"
         },
         "publish": {
           "junctionPath": "Une Junction relie deux ou plusieurs workflow et fait en sorte que les ordres s'attendent les uns des autres s'ils sont dérivés du même plan quotidien."
@@ -1669,12 +1669,12 @@
     "label.logLevel": "Niveau de Journalisation",
     "label.failOnOutputErr": "Échec de la sortie vers stderr",
     "label.showConfiguration": "Afficher la Configuration",
-    "label.allowUndeclared": "Allow Undeclared",
+    "label.allowUndeclared": "Variables non déclarés",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",
     "button.actual": "Défaut",
     "button.fit": "Ajuster",
-    "button.fitToScreen": "Fit to screen",
+    "button.fitToScreen": "Ajuster à l'écran",
     "button.undo": "Annuler",
     "button.redo": "Refaire",
     "button.find": "Trouver",
