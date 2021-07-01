@@ -1003,10 +1003,10 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './script-editor.html'
 })
-export class ScriptEditorComponent implements AfterViewInit{
+export class ScriptEditorComponent implements AfterViewInit {
   @Input() script: any;
   @ViewChild('codeMirror', {static: true}) cm;
-
+  dragEle: any;
   cmOption: any = {
     lineNumbers: true,
     viewportMargin: Infinity,
@@ -1024,27 +1024,26 @@ export class ScriptEditorComponent implements AfterViewInit{
       this.cm.codeMirror.setSize(wt - 2, (parseInt(localStorage.$SOS$SCRIPTWINDOWHIGHT, 10) - 2));
       $('.ant-modal').css('cssText', 'width : ' + (wt + 32) + 'px !important');
     }
-
-    const dragEle = this.dragDrop.createDrag(this.activeModal.containerInstance.modalElementRef.nativeElement);
-    dragEle.moved.subscribe((e: any) => {
-      if (dragEle.disabled) {
-        dragEle.setFreeDragPosition(e.source._passiveTransform);
-      }
-    });
+    this.dragEle = this.dragDrop.createDrag(this.activeModal.containerInstance.modalElementRef.nativeElement);
     $('#resizable').resizable({
-      start: () => {
-        dragEle.disabled = true;
-      },
       resize: (e, x) => {
         const dom: any = document.getElementsByClassName('script-editor')[0];
         this.cm.codeMirror.setSize((x.size.width - 2), (x.size.height - 2));
         dom.style.setProperty('width', (x.size.width + 32) + 'px', 'important');
       }, stop: (e, x) => {
-        dragEle.disabled = false;
         localStorage.$SOS$SCRIPTWINDOWWIDTH = x.size.width;
         localStorage.$SOS$SCRIPTWINDOWHIGHT = x.size.height;
       }
     });
+  }
+
+  @HostListener('document:mousemove', ['$event'])
+  onMouseMove(e): void {
+    if (e.target && (e.target.getAttribute('class') === 'modal-header' || e.target.getAttribute('class') === 'drag-text')) {
+      this.dragEle.disabled = false;
+    } else {
+      this.dragEle.disabled = true;
+    }
   }
 
   onSubmit(): void {
@@ -1879,6 +1878,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.error = false;
     this.history = {past: [], present: {}, future: [], type: 'new'};
     this.isLoading = true;
+    this.invalidMsg = '';
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
     this.coreService.post(URL, {
       id: this.data.id
