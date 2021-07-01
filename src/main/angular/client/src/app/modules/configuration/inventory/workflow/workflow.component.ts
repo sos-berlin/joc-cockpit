@@ -207,7 +207,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         script: this.selectedNode.job.executable.script
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -522,7 +523,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         data: data.value
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -995,7 +997,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.selectedNode.job = x;
     this.ref.detectChanges();
   }
-
 }
 
 @Component({
@@ -1039,11 +1040,7 @@ export class ScriptEditorComponent implements AfterViewInit {
 
   @HostListener('document:mousemove', ['$event'])
   onMouseMove(e): void {
-    if (e.target && (e.target.getAttribute('class') === 'modal-header' || e.target.getAttribute('class') === 'drag-text')) {
-      this.dragEle.disabled = false;
-    } else {
-      this.dragEle.disabled = true;
-    }
+    this.dragEle.disabled = !(e.target && (e.target.getAttribute('class') === 'modal-header' || e.target.getAttribute('class') === 'drag-text'));
   }
 
   onSubmit(): void {
@@ -1262,7 +1259,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   objectType = 'WORKFLOW';
   invalidMsg: string;
   inventoryConf: any;
-  allowedDatatype = ['String', 'Number', 'Boolean'];
+  allowedDatatype = ['String', 'Number', 'Boolean', 'Final'];
   variableDeclarations = {parameters: [], allowUndeclared: false};
   document = {name: ''};
   fullScreen = false;
@@ -1936,7 +1933,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     });
   }
 
-  private initObjects(res): void{
+  private initObjects(res): void {
     if (res.configuration.orderPreparation) {
       this.orderPreparation = this.coreService.clone(res.configuration.orderPreparation);
     }
@@ -1983,8 +1980,16 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     if (this.orderPreparation && this.orderPreparation.parameters && !isEmpty(this.orderPreparation.parameters)) {
       this.variableDeclarations.allowUndeclared = this.orderPreparation.allowUndeclared;
-      this.variableDeclarations.parameters = Object.entries(this.orderPreparation.parameters).map(([k, v]) => {
-        return {name: k, value: v};
+      let temp = this.coreService.clone(this.orderPreparation.parameters);
+      this.variableDeclarations.parameters = Object.entries(temp).map(([k, v]) => {
+        let val: any = v;
+        if (val.final) {
+          val.type = 'Final';
+          this.coreService.removeSlashToString(val, 'final');
+        } else if (val.default) {
+          this.coreService.removeSlashToString(val, 'default');
+        }
+        return {name: k, value: val};
       });
     }
   }
@@ -2037,23 +2042,23 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  openEditor(data: any): void {
+  openEditor(data: any, type = 'default'): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ValueEditorComponent,
       nzClassName: 'lg',
       nzComponentParams: {
-        data: data.default
+        data: data[type]
       },
       nzFooter: null,
       nzClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        if (data.default !== result) {
-          data.default = result;
+        if (data[type] !== result) {
+          data[type] = result;
           this.ref.detectChanges();
-          this.updateOtherProperties('variable')
+          this.updateOtherProperties('variable');
         }
       }
     });
@@ -5600,6 +5605,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               obj.cell, 'junctionPath', self.selectedNode.newObj.junctionPath);
             graph.getModel().execute(edit);
           } else if (self.selectedNode.type === 'Prompt') {
+            self.coreService.addSlashToString(self.selectedNode.newObj, 'question');
             const edit = new mxCellAttributeChange(
               obj.cell, 'question', self.selectedNode.newObj.question);
             graph.getModel().execute(edit);
@@ -5791,6 +5797,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           obj.junctionPath = cell.getAttribute('junctionPath');
         } else if (cell.value.tagName === 'Prompt') {
           obj.question = cell.getAttribute('question');
+          self.coreService.removeSlashToString(obj, 'question');
         } else if (cell.value.tagName === 'Fork') {
           obj.joinVariables = cell.getAttribute('joinVariables');
           obj.joinVariables = obj.joinVariables == 'true';
@@ -7735,10 +7742,16 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
     } else if (type === 'variable') {
       const variableDeclarations = {parameters: []};
-      variableDeclarations.parameters = this.variableDeclarations.parameters.filter((value) => {
-        if (value.value.type !== 'String') {
-          if (value.value.default === '' || value.value.default === "") {
-            delete value.value.default;
+      let temp = this.coreService.clone(this.variableDeclarations.parameters);
+      variableDeclarations.parameters = temp.filter((value) => {
+        if (value.value.type === 'Final') {
+          delete value.value.type;
+          delete value.value.default;
+        } else {
+          if (value.value.type !== 'String') {
+            if (value.value.default === '' || value.value.default === "") {
+              delete value.value.default;
+            }
           }
         }
         return !!value.name;

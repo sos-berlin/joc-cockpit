@@ -151,7 +151,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         type: 'Reset',
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -197,7 +198,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         self: this
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 

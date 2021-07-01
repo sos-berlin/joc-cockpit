@@ -46,30 +46,30 @@
           </a>
         </label>
       </div>
-      <div class="plan-overview bg-gold hide" [ngStyle]="{width: arrayWidth[2]+'%'}" [ngClass]="{'show-block': pending > 0}">
+      <div class="plan-overview bg-light-yellow hide" [ngStyle]="{width: arrayWidth[2]+'%'}" [ngClass]="{'show-block': pending > 0}">
         <label [nz-tooltip]="(pending*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
           <a class="nav-link" (click)="navigate(3)">
             <span class="block-ellipsis-job" translate>dashboard.label.pending</span> - {{pending | number : '1.1-1' }} %
           </a>
         </label>
       </div>
-      <div class="plan-overview bg-gold hide" [ngStyle]="{width: arrayWidth[2]+'%'}" [ngClass]="{'show-block': scheduled > 0}">
+      <div class="plan-overview bg-gold hide" [ngStyle]="{width: arrayWidth[3]+'%'}" [ngClass]="{'show-block': scheduled > 0}">
         <label [nz-tooltip]="(scheduled*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
-          <a class="nav-link" (click)="navigate(3)">
+          <a class="nav-link" (click)="navigate(4)">
             <span class="block-ellipsis-job" translate>dashboard.label.scheduled</span> - {{scheduled | number : '1.1-1' }} %
           </a>
         </label>
       </div>
-      <div class="plan-overview bg-mangenta hide" [ngStyle]="{width: arrayWidth[3]+'%'}" [ngClass]="{'show-block': scheduledLate > 0}">
+      <div class="plan-overview bg-late hide" [ngStyle]="{width: arrayWidth[4]+'%'}" [ngClass]="{'show-block': scheduledLate > 0}">
         <label [nz-tooltip]="(scheduledLate*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
-          <a class="nav-link" (click)="navigate(4)">
+          <a class="nav-link" (click)="navigate(5)">
             <span class="block-ellipsis-job" translate>dashboard.label.scheduledLate</span> - {{scheduledLate | number : '1.1-1' }} %
           </a>
         </label>
       </div>
-      <div class="plan-overview bg-dark-blue hide" [ngStyle]="{width: arrayWidth[4]+'%'}" [ngClass]="{'show-block': finished > 0}">
+      <div class="plan-overview bg-dark-blue hide" [ngStyle]="{width: arrayWidth[5]+'%'}" [ngClass]="{'show-block': finished > 0}">
         <label [nz-tooltip]="(finished*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
-          <a class="nav-link" (click)="navigate(5)">
+          <a class="nav-link" (click)="navigate(6)">
             <span class="block-ellipsis-job" translate>dashboard.label.finished</span> - {{finished | number : '1.1-1'}} %
           </a>
         </label>

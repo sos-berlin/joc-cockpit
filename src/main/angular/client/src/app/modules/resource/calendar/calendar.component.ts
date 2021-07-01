@@ -69,7 +69,8 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
           calendar: cal
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
     });
   }
@@ -84,7 +85,8 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
         calendar: true
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 
@@ -255,7 +257,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
           calendar: cal
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
     });
   }
@@ -270,7 +273,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
         calendar: true
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 

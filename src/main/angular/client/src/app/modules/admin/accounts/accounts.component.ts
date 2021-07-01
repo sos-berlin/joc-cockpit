@@ -188,7 +188,8 @@ export class AccountsComponent implements OnInit, OnDestroy {
         newUser: true,
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -209,7 +210,8 @@ export class AccountsComponent implements OnInit, OnDestroy {
         oldUser: user,
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -230,7 +232,8 @@ export class AccountsComponent implements OnInit, OnDestroy {
         oldUser: user,
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -251,7 +254,8 @@ export class AccountsComponent implements OnInit, OnDestroy {
         objectName: user,
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {

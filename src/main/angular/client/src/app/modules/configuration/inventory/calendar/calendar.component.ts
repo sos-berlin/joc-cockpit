@@ -1540,7 +1540,8 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         flag: true
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 
@@ -1569,7 +1570,8 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         data
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 
@@ -1656,7 +1658,8 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         _temp: data ? clone(data) : {}
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(res => {
       if (res && res.calendar) {

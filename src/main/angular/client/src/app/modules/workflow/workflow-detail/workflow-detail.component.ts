@@ -282,7 +282,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         workflow: this.workFlowJson
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe((res) => {
       if (res) {
@@ -301,7 +302,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         path: this.workFlowJson.path
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 
@@ -335,7 +337,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         order: this.order
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe((res) => {
       if (res) {
@@ -368,7 +371,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         order: this.coreService.clone(this.order)
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe((res) => {
       if (res) {
@@ -1013,7 +1017,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         orderPreparation: this.orderPreparation
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -1050,7 +1055,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
           url: 'orders/' + url
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe((res) => {
         if (res) {
@@ -1098,7 +1104,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         nzClassName: 'lg',
         nzComponentParams,
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
     }
   }

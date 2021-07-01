@@ -95,7 +95,8 @@ export class ActionComponent implements OnInit {
           performAction : this.performAction
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
     } else {
       this.performAction(action, obj);

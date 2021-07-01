@@ -442,7 +442,8 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         data: data.value
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {

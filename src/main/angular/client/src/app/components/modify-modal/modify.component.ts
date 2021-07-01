@@ -63,10 +63,12 @@ export class ChangeParameterModalComponent implements OnInit {
           }
         }
         if (!isExist && !this.variable) {
-          if (!val.default && val.default !== false && val.default !== 0) {
-            this.variables.push({name: k, type: val.type, isRequired: true});
-          } else {
-            this.variables.push({name: k, value: val.default, default: val.default});
+          if(!val.final) {
+            if (!val.default && val.default !== false && val.default !== 0) {
+              this.variables.push({name: k, type: val.type, isRequired: true});
+            } else {
+              this.variables.push({name: k, value: val.default, default: val.default});
+            }
           }
         }
         return {name: k, value: v};

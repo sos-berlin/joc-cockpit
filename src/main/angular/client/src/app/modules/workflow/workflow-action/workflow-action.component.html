@@ -12,10 +12,10 @@
         <a translate>workflow.button.showGraphicalView</a>
       </li>
       <li nz-menu-item *ngIf="permission.currentController.orders.create" [nzDisabled]="!workflow.isCurrentVersion" (click)="addOrder(workflow);" >
-        <a translate>workflow.button.addOrder</a>
+        <a>{{'workflow.button.addOrder' | translate}} ..</a>
       </li>
       <li nz-menu-item (click)="showDailyPlan(workflow);" >
-        <a translate>workflow.button.showDailyPlan</a>
+        <a>{{'workflow.button.showDailyPlan' | translate}}</a>
       </li>
       <li nz-menu-item (click)="coreService.copyLink('workflow',workflow.name)" >
         <a translate>common.button.copyLinkToObject</a>

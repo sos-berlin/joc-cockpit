@@ -64,10 +64,10 @@
         </tr>
         <tr class="text-center">
           <td [width]="(xbody > 7 && ybody == 2) ? '10%' : '20%'">
-            <a (click)="navigate('PENDING')" class="text-lg _600 " [ngClass]="{'gold' : orders.pending > 0}" [innerHtml]="orders.pending || 0"></a>
+            <a (click)="navigate('PENDING')" class="text-lg _600 " [ngClass]="{'light-yellow' : orders.pending > 0}" [innerHtml]="orders.pending || 0"></a>
           </td>
           <td [width]="(xbody > 7 && ybody == 2) ? '10%' : '20%'">
-            <a (click)="navigate('SCHEDULED')" class="text-lg _600" [ngClass]="{'scheduled' : orders.scheduled > 0}" [innerHtml]="orders.scheduled || 0"></a>
+            <a (click)="navigate('SCHEDULED')" class="text-lg _600" [ngClass]="{'gold' : orders.scheduled > 0}" [innerHtml]="orders.scheduled || 0"></a>
           </td>
           <td [width]="(xbody > 7 && ybody == 2) ? '10%' : '20%'">
             <a (click)="navigate('INPROGRESS')" class="text-lg _600" [ngClass]="{'light-blue' : orders.inProgress > 0}" [innerHtml]="orders.inProgress || 0"></a>
@@ -79,10 +79,10 @@
             <a (click)="navigate('SUSPENDED')" class="text-lg _600" [ngClass]="{'orange' : orders.suspended > 0}" [innerHtml]="orders.suspended || 0"></a>
           </td>
           <td width="10%"  *ngIf="xbody > 7 && ybody == 2">
-            <a (click)="navigate('COMPLETED')" class="text-lg _600" [ngClass]="{'terminated' : orders.terminated > 0}" [innerHtml]="orders.terminated || 0"></a>
+            <a (click)="navigate('COMPLETED')" class="text-lg _600" [ngClass]="{'dark-blue' : orders.terminated > 0}" [innerHtml]="orders.terminated || 0"></a>
           </td>
           <td width="10%"  *ngIf="xbody > 7 && ybody == 2">
-            <a (click)="navigate('PROMPTING')" class="text-lg _600 " [ngClass]="{'gold' : orders.prompting > 0}" [innerHtml]="orders.prompting || 0"></a>
+            <a (click)="navigate('PROMPTING')" class="text-lg _600 " [ngClass]="{'light-green' : orders.prompting > 0}" [innerHtml]="orders.prompting || 0"></a>
           </td>
           <td width="10%"  *ngIf="xbody > 7 && ybody == 2">
             <a (click)="navigate('WAITING')" class="text-lg _600" [ngClass]="{'yellow-green' : orders.waiting > 0}" [innerHtml]="orders.waiting || 0"></a>
@@ -113,10 +113,10 @@
         </tr>
         <tr class="text-center" *ngIf="xbody < 8 || ybody !== 2">
           <td width="20%">
-            <a (click)="navigate('COMPLETED')" class="text-lg _600" [ngClass]="{'terminated' : orders.terminated > 0}" [innerHtml]="orders.terminated || 0"></a>
+            <a (click)="navigate('COMPLETED')" class="text-lg _600" [ngClass]="{'dark-blue' : orders.terminated > 0}" [innerHtml]="orders.terminated || 0"></a>
           </td>
           <td width="20%">
-            <a (click)="navigate('PROMPTING')" class="text-lg _600 " [ngClass]="{'gold' : orders.prompting > 0}" [innerHtml]="orders.prompting || 0"></a>
+            <a (click)="navigate('PROMPTING')" class="text-lg _600 " [ngClass]="{'light-green' : orders.prompting > 0}" [innerHtml]="orders.prompting || 0"></a>
           </td>
           <td width="20%">
             <a (click)="navigate('WAITING')" class="text-lg _600" [ngClass]="{'yellow-green' : orders.waiting > 0}" [innerHtml]="orders.waiting || 0"></a>

@@ -198,7 +198,8 @@ export class SingleDocumentationComponent implements OnInit {
         document: this.coreService.clone(document),
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(res => {
       if (res) {
@@ -230,7 +231,8 @@ export class SingleDocumentationComponent implements OnInit {
           document: documentObj
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
     });
   }
@@ -289,7 +291,8 @@ export class SingleDocumentationComponent implements OnInit {
           url: 'documentations/delete'
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {
@@ -308,7 +311,8 @@ export class SingleDocumentationComponent implements OnInit {
           objectName: document.path
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe((result) => {
         if (result) {
@@ -472,7 +476,8 @@ export class DocumentationComponent implements OnInit, OnDestroy {
           url: 'documentations/delete'
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {
@@ -490,7 +495,8 @@ export class DocumentationComponent implements OnInit, OnDestroy {
           objectName: folder.path,
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {
@@ -582,7 +588,8 @@ export class DocumentationComponent implements OnInit, OnDestroy {
         document: this.coreService.clone(document),
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(res => {
       if (res) {
@@ -614,7 +621,8 @@ export class DocumentationComponent implements OnInit, OnDestroy {
           document: documentObj
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
     });
   }
@@ -646,7 +654,8 @@ export class DocumentationComponent implements OnInit, OnDestroy {
         nodes: this.tree
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(path => {
       if (path) {
@@ -781,7 +790,8 @@ export class DocumentationComponent implements OnInit, OnDestroy {
           url: 'documentations/delete'
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {
@@ -801,7 +811,8 @@ export class DocumentationComponent implements OnInit, OnDestroy {
           documentArr: document ? undefined : arr
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {

@@ -170,7 +170,8 @@ export class OrderSearchComponent implements OnInit {
         showCheckBox: !flag
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -345,7 +346,8 @@ export class TaskSearchComponent implements OnInit {
         showCheckBox: !flag
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -2072,7 +2074,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
           self: this
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
     }
   }
@@ -2985,7 +2988,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
         nzClassName: 'lg',
         nzComponentParams: obj,
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
     }
   }
@@ -3018,7 +3022,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       nzContent: EditFilterModalComponent,
       nzComponentParams: obj,
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe((result) => {
       if (result) {
@@ -3632,7 +3637,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       nzClassName: 'lg',
       nzComponentParams: obj,
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe((res) => {
       if (res) {

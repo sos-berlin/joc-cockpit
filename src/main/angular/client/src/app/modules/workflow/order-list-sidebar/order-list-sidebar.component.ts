@@ -183,7 +183,8 @@ export class OrderListSidebarComponent implements OnChanges{
         orders: map
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -223,7 +224,8 @@ export class OrderListSidebarComponent implements OnChanges{
           url: 'orders/' + url
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {

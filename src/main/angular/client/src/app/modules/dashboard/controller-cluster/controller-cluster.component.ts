@@ -718,7 +718,8 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
           performAction: this.performAction
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
 
     } else {

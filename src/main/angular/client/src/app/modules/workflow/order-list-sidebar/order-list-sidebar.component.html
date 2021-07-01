@@ -102,7 +102,7 @@
                [innerHtml]="order.state._text | translate"></a>
             <a class="label label2" *ngIf="order.marked" [ngClass]="coreService.getColor(order.marked.severity, 'bg')"
                [innerHtml]="order.marked._text | translate"></a>
-            <span *ngIf="order.state._text === 'PROMPTING' && order.question" class="p-l-xs"><i [nz-tooltip]="order.question" class="fa fa-question"></i></span>
+            <span *ngIf="order.state._text === 'PROMPTING' && order.question" class="p-l-xs"><i [nz-tooltip]="order.question" class="fa fa-info-circle"></i></span>
           </td>
           <td>
             <span *ngIf="!order.scheduledNever">{{order.scheduledFor | stringToDate}}</span>

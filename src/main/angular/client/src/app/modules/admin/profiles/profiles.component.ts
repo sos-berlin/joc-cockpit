@@ -100,7 +100,8 @@ export class ProfilesComponent implements OnInit, OnDestroy {
         objectName: profile.account
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -120,7 +121,8 @@ export class ProfilesComponent implements OnInit, OnDestroy {
         resetProfiles: Array.from(this.setOfCheckedId)
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {

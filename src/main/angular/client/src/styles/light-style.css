@@ -1,5 +1,7 @@
 :root {
   --border-color: #e3e3e3;
+  --light-yellow: #fdee00;
+  --bg-light-yellow: #fdee00;
 }
 
 .backup {

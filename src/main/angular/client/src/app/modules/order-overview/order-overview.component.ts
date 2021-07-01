@@ -107,13 +107,11 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
     this.setObj =  new Map();
     for (let prop in res) {
       if (res[prop] > 0) {
-        if (prop === 'terminated') {
-          prop = 'completed';
-        }
         let obj: any = {};
         obj.name = prop;
         try {
-          this.translate.get(prop.toUpperCase()).subscribe(translatedValue => {
+          const txt = prop === 'terminated' ? 'completed' : prop;
+          this.translate.get(txt.toUpperCase()).subscribe(translatedValue => {
             obj.name = translatedValue;
           });
         } catch (e) {
@@ -122,7 +120,11 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
         obj.value = res[prop];
         ordersData.push(obj);
         if (prop === 'pending') {
-          this.colorScheme.domain.push('#ffc91a');
+          this.colorScheme.domain.push('#fdee00');
+        } else if (prop === 'scheduled') {
+          this.colorScheme.domain.push('#efcc00');
+        } else if (prop === 'prompting') {
+          this.colorScheme.domain.push('#90EE90');
         } else if (prop === 'inProgress') {
           this.colorScheme.domain.push('#a3c6ea');
         } else if (prop === 'running') {
@@ -135,7 +137,7 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
           this.colorScheme.domain.push('#b966b9');
         } else if (prop === 'failed') {
           this.colorScheme.domain.push('#ed365b');
-        } else if (prop === 'completed') {
+        } else if (prop === 'terminated') {
           this.colorScheme.domain.push('#1591d4');
         }
       }
@@ -498,7 +500,8 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         orderPreparation: order.requirements
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 
@@ -521,7 +524,8 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         orders: this.object.mapOfCheckedId
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -572,7 +576,8 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
           url: 'orders/' + url
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {

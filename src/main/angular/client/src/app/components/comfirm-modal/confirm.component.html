@@ -21,7 +21,6 @@
 <div class="modal-body p-a">
   <div class="row text-center">
     <div class="col-sm-12 m-t m-b">
-      <span *ngIf="question" class="text">{{question}}</span>
       <span *ngIf="!countMessage && message" class="text">{{'common.message.' + message | translate}}</span>
       <span *ngIf="countMessage && count > 0" [translateParams]="{count: count}" class="text" translate>{{'common.message.' + countMessage}}</span>
       <span *ngIf="countMessage && count === 0" class="text">

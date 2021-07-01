@@ -319,10 +319,10 @@ export class TypeComponent implements OnChanges {
           readonly: true
         };
       }
-    } else {
+    } else if(instruction.TYPE === 'If' || instruction.TYPE === 'Prompt'){
       nzComponentParams = {
         predicate: true,
-        data: instruction.predicate,
+        data: instruction.predicate || instruction.question,
         isScript: true,
         readonly: true
       };
@@ -334,7 +334,8 @@ export class TypeComponent implements OnChanges {
         nzClassName: 'lg',
         nzComponentParams,
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
     }
   }

@@ -4,7 +4,6 @@ import {CoreService} from '../../../services/core.service';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume.component';
 import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../../../components/modify-modal/modify.component';
-import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 
 @Component({
   selector: 'app-order-action',
@@ -37,7 +36,8 @@ export class OrderActionComponent {
         order: this.coreService.clone(this.order)
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -90,7 +90,8 @@ export class OrderActionComponent {
           url: 'orders/' + url
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {
@@ -113,21 +114,7 @@ export class OrderActionComponent {
   }
 
   confirmOrder(): void {
-    const modal = this.modal.create({
-      nzTitle: null,
-      nzContent: ConfirmModalComponent,
-      nzComponentParams: {
-        title: 'confirm',
-        question: this.order.question
-      },
-      nzFooter: null,
-      nzClosable: false
-    });
-    modal.afterClose.subscribe((result) => {
-      if (result) {
-        this.restCall(false, 'Confirm', this.order, 'confirm');
-      }
-    });
+    this.restCall(false, 'Confirm', this.order, 'confirm');
   }
 
   modifyOrder(order): void {
@@ -141,7 +128,8 @@ export class OrderActionComponent {
         order
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -164,7 +152,8 @@ export class OrderActionComponent {
         order: this.coreService.clone(order)
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 }

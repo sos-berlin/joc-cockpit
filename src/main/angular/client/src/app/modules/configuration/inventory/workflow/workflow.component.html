@@ -495,11 +495,11 @@
               </div>
             </div>
             <div class="col-md-3 col-lg-3 m-b-sm p-r-0">
-              <nz-select [nzDisabled]="isTrash" name="type{{i}}" [(ngModel)]="variable.value.type" (ngModelChange)="variable.value.default = '';updateOtherProperties('variable')">
+              <nz-select [nzDisabled]="isTrash" name="type{{i}}" [(ngModel)]="variable.value.type" (ngModelChange)="variable.value.default = '';variable.value.final = '';">
                 <nz-option *ngFor="let dataType of allowedDatatype" [nzLabel]="dataType | translate" [nzValue]="dataType"></nz-option>
               </nz-select>
             </div>
-            <div class="col-md-4 col-lg-4 m-b-sm p-r-0" [ngSwitch]="variable.value.type">
+            <div class="col-md-4 col-lg-4 m-b-sm p-r-0" *ngIf="variable.value.type !== 'Final'" [ngSwitch]="variable.value.type">
               <nz-input-number [nzDisabled]="isTrash" *ngSwitchCase="'Number'" [nzMin]="0" [nzStep]="1" (nzBlur)="updateOtherProperties('variable')"
                                nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"
                                name="value{{i}}" [(ngModel)]="variable.value.default"></nz-input-number>
@@ -513,6 +513,17 @@
                      [(ngModel)]="variable.value.default" placeholder="{{'common.placeholder.value' | translate}}">
               <i *ngSwitchDefault class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline"
                  (click)="openEditor(variable.value)" style="right: 1px;top:1px;"></i>
+            </div>
+            <div class="col-md-4 col-lg-4 m-b-sm p-r-0" *ngIf="variable.value.type === 'Final'" [ngClass]="{'has-error' : ((final.dirty || final.touched) && final.invalid)}">
+              <input required autocomplete="off" type="text" class="form-control" #final="ngModel" name="final{{i}}"
+                     (keypress)="onKeyPress($event)" (blur)="updateOtherProperties('variable')"
+                     [(ngModel)]="variable.value.final" placeholder="{{'workflow.placeholder.final' | translate}}">
+              <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline"
+                 (click)="openEditor(variable.value, 'final')" style="right: 1px;top:1px;"></i>
+              <div *ngIf="final.invalid && final.errors && (final.dirty || final.touched)"
+                   class="text-danger help-block">
+                <div *ngIf="final.errors.invalidIdentifier" translate>common.message.invalid</div>
+              </div>
             </div>
             <div class="col-md-1 col-lg-1">
               <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>

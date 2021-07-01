@@ -716,7 +716,8 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
         object: 'Calendar'
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -736,7 +737,8 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
         object: 'Calendar'
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -828,7 +830,8 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
         data: {}
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -857,7 +860,8 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
         data: period
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -971,7 +975,8 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
         data: {calendar: this.coreService.clone(data)}
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -994,7 +999,8 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
         }
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {

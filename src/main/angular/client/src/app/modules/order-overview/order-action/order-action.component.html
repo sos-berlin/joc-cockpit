@@ -18,15 +18,13 @@
         <a (click)="suspendOrderWithKill()" translate>order.button.suspendAndKillTask</a>
       </li>
       <li nz-menu-item *ngIf="permission && permission.controllerDefaults.orders.suspendResume && (order.state._text === 'SUSPENDED' || order.state._text === 'FAILED')">
-        <a (click)="resumeOrder()" translate>order.button.resume</a>
+        <a (click)="resumeOrder()">{{'order.button.resume' | translate}} ..</a>
       </li>
       <li nz-menu-item *ngIf="permission && permission.controllerDefaults.orders.modify && order.state && (order.state._text === 'PLANNED' || order.state._text === 'PENDING')">
-        <a (click)="modifyOrder(order)"
-           translate>dailyPlan.button.setStartTime</a>
+        <a (click)="modifyOrder(order)">{{'dailyPlan.button.setStartTime' | translate}} ..</a>
       </li>
       <li nz-menu-item *ngIf="permission && permission.controllerDefaults.orders.modify && order.state && (order.state._text === 'PLANNED' || order.state._text === 'PENDING')">
-        <a (click)="changeParameter(order)"
-           translate>dailyPlan.button.setParameters</a>
+        <a (click)="changeParameter(order)">{{'dailyPlan.button.setParameters' | translate}} ..</a>
       </li>
       <li nz-menu-item *ngIf="permission && permission.controllerDefaults.orders.cancel && order.state && (order.state._text === 'FINISHED' || order.state._text === 'CANCELLED')">
         <a (click)="removeWhenTerminated()"

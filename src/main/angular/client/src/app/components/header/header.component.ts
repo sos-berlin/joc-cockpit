@@ -95,7 +95,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: AboutModalComponent,
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 

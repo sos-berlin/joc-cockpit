@@ -459,7 +459,11 @@ export class CoreService {
     } else if (d === 8) {
       return type === 'text' ? 'yellow-green' : type === 'border' ? 'yellow-green-box' : 'bg-yellow-green';
     } else if (d === 9) {
-      return type === 'text' ? 'chocolate' : type === 'border' ? 'chocolate-box' : 'bg-chocolate';
+      return type === 'text' ? 'calling' : type === 'border' ? 'calling-box' : 'bg-calling';
+    } else if (d === 10) {
+      return type === 'text' ? 'light-yellow' : type === 'border' ? 'light-yellow-box' : 'bg-light-yellow';
+    } else if (d === 11) {
+      return type === 'text' ? 'light-green' : type === 'border' ? 'light-green-box' : 'bg-light-green';
     } else {
       return '';
     }

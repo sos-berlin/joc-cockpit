@@ -309,7 +309,8 @@ export class RolesComponent implements OnDestroy {
         newRole: true
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -329,7 +330,8 @@ export class RolesComponent implements OnDestroy {
         oldRole: role
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -350,7 +352,8 @@ export class RolesComponent implements OnDestroy {
         copy: true
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -381,7 +384,8 @@ export class RolesComponent implements OnDestroy {
           objectName: role.name
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {
@@ -413,7 +417,8 @@ export class RolesComponent implements OnDestroy {
         userDetail: this.userDetail
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -435,7 +440,8 @@ export class RolesComponent implements OnDestroy {
         userDetail: this.userDetail
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -455,7 +461,8 @@ export class RolesComponent implements OnDestroy {
         objectName: controller.name || 'default'
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {

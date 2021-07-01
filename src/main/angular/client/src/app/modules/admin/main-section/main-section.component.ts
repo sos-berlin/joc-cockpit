@@ -532,7 +532,8 @@ export class MainSectionComponent implements OnInit, OnDestroy {
         userDetail: this.userDetail
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -553,7 +554,8 @@ export class MainSectionComponent implements OnInit, OnDestroy {
         objectName: main.entryName
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -572,7 +574,8 @@ export class MainSectionComponent implements OnInit, OnDestroy {
         userDetail: this.userDetail
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -592,7 +595,8 @@ export class MainSectionComponent implements OnInit, OnDestroy {
         isUpdate: true
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -612,7 +616,8 @@ export class MainSectionComponent implements OnInit, OnDestroy {
         isldap: true
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -631,7 +636,8 @@ export class MainSectionComponent implements OnInit, OnDestroy {
         userDetail: this.userDetail
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {

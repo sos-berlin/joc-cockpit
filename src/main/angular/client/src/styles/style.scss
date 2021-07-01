@@ -22,7 +22,8 @@
   --black: rgba(0, 0, 0, .9);
   --green: #52c41a;
   --blue: #1171a6;
-  --gold: #ffc300;
+  --gold: #efcc00;
+  --light-yellow: #ffff00;
   --red: #dc143c;
   --dimgrey: #696969;
   --light-blue: #a3c6ea;
@@ -30,9 +31,11 @@
   --pink: #f37891;
   --orange: #FF8000;
   --yellow-green: #b3b300;
+  --light-green: #90EE90;
   --bg-green: #7ab97a;
   --bg-blue: #1591d4;
-  --bg-gold: #ffc91a;
+  --bg-gold: #efcc00;
+  --bg-light-yellow: #ffff00;
   --bg-red: #ed365b;
   --bg-dimgrey: #bbb;
   --bg-light-blue: #a3c6ea;
@@ -40,6 +43,7 @@
   --bg-orange: #FF8d1a;
   --bg-pink: #f37891;
   --bg-yellow-green: #cccc00;
+  --bg-light-green: #90EE90;
   --row-selected: #e6f7ff;
   --date-selected: rgba(14, 138, 139, .5);
   --date-selected-hover: rgba(14, 138, 139, 0.65);
@@ -3050,7 +3054,7 @@ div.order-panel div {
   border-color: var(--bg-dimgrey) !important;
 }
 
-.bg-planned {
+.bg-planned, .bg-planned .jsgantt-task-background {
   color: white;
   background: var(--bg-dimgrey);
 }
@@ -3065,6 +3069,24 @@ div.order-panel div {
 
 .bg-gold {
   background: var(--bg-gold);
+}
+
+.bg-late{
+  background: var(--background-color);
+  color: var(--text-color) !important;
+}
+
+.light-yellow {
+  color: var(--light-yellow)
+}
+
+.light-yellow-box {
+  border-color: var(--bg-light-yellow) !important;
+}
+
+.bg-light-yellow {
+  background: var(--bg-light-yellow);
+  color: rgba(0, 0, 0, .87) !important;
 }
 
 .light-blue {
@@ -3115,6 +3137,18 @@ div.order-panel div {
   background: var(--bg-yellow-green);
 }
 
+.light-green {
+  color: var(--light-green)
+}
+
+.light-green-box {
+  border-color: var(--bg-light-green) !important;
+}
+
+.bg-light-green {
+  background: var(--bg-light-green);
+}
+
 .red {
   color: var(--red)
 }
@@ -3135,7 +3169,7 @@ div.order-panel div {
   border-color: var(--bg-orange) !important;
 }
 
-.bg-orange {
+.bg-orange, .bg-orange .jsgantt-task-background {
   background: var(--bg-orange);
 }
 
@@ -3147,7 +3181,7 @@ div.order-panel div {
   border-color: var(--bg-blue) !important;
 }
 
-.bg-dark-blue {
+.bg-dark-blue, .bg-dark-blue .jsgantt-task-background {
   background: var(--bg-blue);
 }
 
@@ -3170,6 +3204,11 @@ div.order-panel div {
   }
 
   .pending {
+    color: var(--light-yellow);
+    border-left-color: var(--light-yellow);
+  }
+
+  .scheduled{
     color: var(--gold);
     border-left-color: var(--gold);
   }
@@ -3192,6 +3231,11 @@ div.order-panel div {
   .calling {
     color: var(--pink);
     border-color: var(--pink);
+  }
+
+  .prompting{
+    color: var(--light-green);
+    border-color: var(--light-green);
   }
 
   .waiting {

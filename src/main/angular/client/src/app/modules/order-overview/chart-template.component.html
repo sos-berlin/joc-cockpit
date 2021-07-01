@@ -37,7 +37,7 @@
         <a (click)="setFilter('PENDING')" class="pull-right text primary-text-hover-color"
            [ngClass]="{'_600': state =='PENDING'}" [innerHtml]="snapshot.pending || 0"></a>
       </div>
-      <div class="pending">
+      <div class="scheduled">
         <span class="text-black-lt _300" [ngClass]="{'_600': state =='SCHEDULED'}">
           <a (click)="setFilter('SCHEDULED')"
              class="primary-text-hover-color"

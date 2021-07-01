@@ -54,7 +54,8 @@ export class SearchComponent implements OnInit {
         showCheckBox: true
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {

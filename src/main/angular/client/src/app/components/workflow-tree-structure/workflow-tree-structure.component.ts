@@ -140,7 +140,8 @@ export class WorkflowTreeStructureComponent implements OnChanges {
         nzClassName: 'lg',
         nzComponentParams,
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
     }
   }

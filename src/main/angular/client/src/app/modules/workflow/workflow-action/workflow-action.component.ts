@@ -46,8 +46,10 @@ export class AddOrderModalComponent implements OnInit {
     if (this.workflow.orderPreparation && this.workflow.orderPreparation.parameters && !isEmpty(this.workflow.orderPreparation.parameters)) {
       this.variableList = Object.entries(this.workflow.orderPreparation.parameters).map(([k, v]) => {
         const val: any = v;
-        if (!val.default && val.default !== false && val.default !== 0) {
-          this.arguments.push({name: k, type: val.type, isRequired: true});
+        if (!val.final) {
+          if (!val.default && val.default !== false && val.default !== 0) {
+            this.arguments.push({name: k, type: val.type, isRequired: true});
+          }
         }
         return {name: k, value: v};
       });
@@ -82,7 +84,7 @@ export class AddOrderModalComponent implements OnInit {
     }
   }
 
-  drop(event: CdkDragDrop<string[]>) {
+  drop(event: CdkDragDrop<string[]>): void {
     moveItemInArray(this.arguments, event.previousIndex, event.currentIndex);
   }
 
@@ -176,7 +178,8 @@ export class AddOrderModalComponent implements OnInit {
         data: data.value
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -220,7 +223,8 @@ export class WorkflowActionComponent {
         workflow
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -241,7 +245,8 @@ export class WorkflowActionComponent {
         path: workflow.path
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 }

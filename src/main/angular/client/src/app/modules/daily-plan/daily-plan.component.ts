@@ -741,13 +741,7 @@ export class SearchComponent implements OnInit {
   workflowTree = [];
   checkOptions = [
     {status: 'PLANNED', text: 'planned', checked: false},
-    {status: 'PENDING', text: 'pending', checked: false},
-    {status: 'INPROGRESS', text: 'incomplete', checked: false},
-    {status: 'RUNNING', text: 'running', checked: false},
-    {status: 'SUSPENDED', text: 'suspended', checked: false},
-    {status: 'WAITING', text: 'waiting', checked: false},
-    {status: 'BLOCKED', text: 'blocked', checked: false},
-    {status: 'FAILED', text: 'failed', checked: false},
+    {status: 'SUBMITTED', text: 'submitted', checked: false},
     {status: 'FINISHED', text: 'finished', checked: false}
   ];
 
@@ -997,7 +991,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     checked: false,
     indeterminate: false,
     isCancel: false,
-    isSuspend: false,
     isModify: false,
     isRunning: false,
     isPlanned: false,
@@ -1007,13 +1000,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   filterBtn: any = [
     {status: 'ALL', text: 'all'},
     {status: 'PLANNED', text: 'planned'},
-    {status: 'PENDING', text: 'pending'},
-    {status: 'INPROGRESS', text: 'incomplete'},
-    {status: 'RUNNING', text: 'running'},
-    {status: 'SUSPENDED', text: 'suspended'},
-    {status: 'WAITING', text: 'waiting'},
-    {status: 'BLOCKED', text: 'blocked'},
-    {status: 'FAILED', text: 'failed'},
+    {status: 'SUBMITTED', text: 'submitted'},
     {status: 'FINISHED', text: 'finished'}
   ];
 
@@ -1164,7 +1151,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         dateRanges: this.dateRanges
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -1214,7 +1202,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         dateRange: this.dateRanges
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -1251,7 +1240,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           orderPreparation: requirements
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
 
     }
@@ -1267,7 +1257,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         isSubmit: true
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -1290,7 +1281,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         isSubmit: true
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -1300,7 +1292,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  cancelSelectedOrder(isKill = false): void {
+  cancelSelectedOrder(): void {
     if (this.dateRanges && this.dateRanges.length > 0) {
       let apiArr = [];
       const dates = this.coreService.getDates(this.dateRanges[0], this.dateRanges[1]);
@@ -1309,7 +1301,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         let obj = {
           controllerId: this.schedulerIds.selected,
           dailyPlanDate: this.coreService.getStringDate(date),
-          kill: isKill
         };
         apiArr.push(this.coreService.post('orders/daily_plan/cancel', this.coreService.clone(obj)));
       });
@@ -1324,34 +1315,22 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.object.mapOfCheckedId.forEach((value) => {
         orderIds.push(value.orderId);
       });
-      this.cancelCyclicOrder(orderIds, isKill, true);
-    }
-  }
-
-  suspendSelectedOrder(isKill = false): void {
-    this.restCall(isKill, null, this.object.mapOfCheckedId, 'Suspend');
-  }
-
-  cancelOrderWithKill(order, plan): void {
-    if (plan && plan.value) {
-      this.cancelCyclicOrder(plan.value, true, false);
-    } else {
-      this.cancelCyclicOrder(order, true, false);
+      this.cancelCyclicOrder(orderIds, true);
     }
   }
 
   cancelOrder(order, plan): void {
     if (plan && plan.value) {
-      this.cancelCyclicOrder(plan.value, false, false);
+      this.cancelCyclicOrder(plan.value, false);
     } else {
-      this.cancelCyclicOrder(order, false, false);
+      this.cancelCyclicOrder(order, false);
     }
   }
 
-  cancelCyclicOrder(orders, isKill, isMultiple): void {
+  cancelCyclicOrder(orders, isMultiple): void {
     let orderIds = isMultiple ? orders : orders.orderId ? [orders.orderId] : orders.map((order) => order.orderId);
     const obj: any = {
-      controllerId: this.schedulerIds.selected, orderIds, kill: isKill
+      controllerId: this.schedulerIds.selected, orderIds
     };
     if (this.preferences.auditLog) {
       const comments = {
@@ -1377,7 +1356,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           url: 'orders/daily_plan/cancel'
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {
@@ -1401,22 +1381,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  suspendOrderWithKill(order, plan): void {
-    if (plan && plan.value) {
-      this.restCall(true, null, plan.value, 'Suspend');
-    } else {
-      this.restCall(true, order, null, 'Suspend');
-    }
-  }
-
-  suspendOrder(order, plan): void {
-    if (plan && plan.value) {
-      this.restCall(false, null, plan.value, 'Suspend');
-    } else {
-      this.restCall(false, order, null, 'Suspend');
-    }
-  }
-
   removeSelectedOrder(): void {
     const modal = this.modal.create({
       nzTitle: undefined,
@@ -1429,7 +1393,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         dateRange: this.dateRanges
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -1453,7 +1418,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         selectedDate: this.selectedDate
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -1764,7 +1730,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         preferences: this.preferences
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -1857,9 +1824,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.loadOrderPlan();
   }
 
-  private restCall(isKill, order, multiple, type): void {
+  private restCall(order, multiple, type): void {
     const obj: any = {
-      controllerId: this.schedulerIds.selected, orderIds: [], kill: isKill
+      controllerId: this.schedulerIds.selected, orderIds: []
     };
     if (multiple) {
       multiple.forEach((value) => {
@@ -1896,7 +1863,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           url: 'orders/' + type.toLowerCase()
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {
@@ -2021,7 +1989,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     object.isRunning = false;
     object.isCancel = false;
     object.isModify = true;
-    object.isSuspend = true;
     let finishedCount = 0;
     let count = 0;
     let workflow = null;
@@ -2044,9 +2011,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       }
       if (order.state._text !== 'PLANNED' && order.state._text !== 'PENDING') {
         object.isModify = false;
-      }
-      if (order.state._text === 'PLANNED' || order.state._text === 'FINISHED' || order.state._text === 'FAILED') {
-        object.isSuspend = false;
       }
 
       if (!workflow) {
@@ -2156,7 +2120,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         orderPreparation
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -2186,7 +2151,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       indeterminate: false,
       checked: false,
       isCancel: false,
-      isSuspend: false,
       isModify: false,
       isRunning: false,
       isPlanned: false,
@@ -2458,7 +2422,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           new: true
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
     }
   }
@@ -2476,7 +2441,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         self: this
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(obj => {
       if (obj) {
@@ -2574,7 +2540,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
             edit: !isCopy
           },
           nzFooter: null,
-          nzClosable: false
+          nzClosable: false,
+          nzMaskClosable: false
         });
         modal.afterClose.subscribe(obj => {
           if (obj && this.savedFilter.selected && filterObj.id == this.savedFilter.selected) {

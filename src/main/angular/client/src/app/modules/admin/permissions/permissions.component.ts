@@ -290,7 +290,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         folderArr: this.folderArr
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -315,7 +316,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         oldFolder: folder
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -335,7 +337,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         objectName: folder.folder
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -361,7 +364,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         add: true
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 
@@ -382,7 +386,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         role: this.roleName
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 
@@ -397,7 +402,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         objectName: permission.path
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {

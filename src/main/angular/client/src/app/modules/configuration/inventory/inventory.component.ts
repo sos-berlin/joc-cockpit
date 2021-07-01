@@ -2716,7 +2716,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
         origin
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 
@@ -2729,7 +2730,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
         display: this.preferences.auditLog
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(path => {
       if (path) {
@@ -2753,7 +2755,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
         isDeploy: true
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(path => {
       if (path) {
@@ -2777,7 +2780,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
         display: this.preferences.auditLog
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(path => {
 
@@ -2794,7 +2798,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
         origin: node.origin
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(path => {
       if (path) {
@@ -2840,7 +2845,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           data: origin
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
     } else {
       this.modal.create({
@@ -2856,7 +2862,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           releasable
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
     }
   }
@@ -2881,7 +2888,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           objectName: origin.path
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {
@@ -2927,7 +2935,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           edit: obj.edit
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {
@@ -2951,7 +2960,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
         objectType: obj.objectType || obj.type
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -2985,7 +2995,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           rename: true
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
     }
   }
@@ -3091,7 +3102,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           comments,
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {
@@ -3128,7 +3140,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           count: (obj.objects || object.type) ? obj.objects.length : undefined
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {
@@ -3169,7 +3182,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           obj,
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {
@@ -3194,7 +3208,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           count: (obj.objects || object.type) ? obj.objects.length : undefined
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {
@@ -3265,7 +3280,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
         count: (obj.objects || object.type) ? obj.objects.length : undefined
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -3293,7 +3309,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
         restore: true
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 
@@ -3513,7 +3530,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
         copy: this.copyObj
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(data => {
       if (data) {
@@ -3657,7 +3675,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
         obj
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe((res: any) => {
       if (res) {

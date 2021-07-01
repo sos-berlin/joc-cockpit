@@ -1107,7 +1107,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         objectType: this.objectType
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -1159,7 +1160,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         activeTab: (this.objectType !== 'NOTIFICATION') ? tab : undefined
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -1177,7 +1179,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         objectType: this.objectType
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -3537,7 +3540,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         doc: this.doc,
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 
@@ -4485,7 +4489,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         importXsd: false
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(res => {
       if (res) {
@@ -4591,7 +4596,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           self: this
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(() => {
         this.copyItem = undefined;
@@ -4628,7 +4634,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         importXsd: true
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(res => {
       if (res) {
@@ -4759,7 +4766,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         activeTab: this.activeTab
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(res => {
       if (res && res.result.configurationJson) {

@@ -666,7 +666,8 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
           new: true
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
     }
   }
