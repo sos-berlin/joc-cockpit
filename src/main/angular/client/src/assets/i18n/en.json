@@ -1020,7 +1020,7 @@
         "jobResourceNames": "Job Resources hold shared variables that can be used by a number of jobs and workflows. Any variables from the selected Job Resource can be used by any jobs in the workflow.",
         "documentation": "A workflow can be assigned a Documentation that is displayed with the WORKFLOWS view. Documentations are managed with the RESOURCES->Documentations view.",
         "title": "The Title of a workflow is displayed with the WORKFLOWS view.",
-        "allowUndeclared": "Allow undeclared variables to be used. This includes that an order can carry variables that are not checked for their data type or mandatory use. Jobs will fail when referencing undeclared variables that are not available with an order.",
+        "allowUndeclared": "Allow undeclared variables from orders. This includes that an order can carry variables that are not checked for their data type or mandatory use. Jobs will fail when referencing undeclared variables that are not available with an order.",
         "await": {
           "match": "The pattern specifies what order is waited for, for example an order with a matching daily plan date.",
           "timeout": "If no matching order is available within the duration specified by the Timeout then the current order will continue in the workflow.",
@@ -1669,7 +1669,7 @@
     "label.logLevel": "Log Level",
     "label.failOnOutputErr": "Fail on output to stderr",
     "label.showConfiguration": "Show Configuration",
-    "label.allowUndeclared": "Allow Undeclared",
+    "label.allowUndeclared": "Undeclared Variables",
     "button.zoomIn": "Zoom In",
     "button.zoomOut": "Zoom Out",
     "button.actual": "Default",

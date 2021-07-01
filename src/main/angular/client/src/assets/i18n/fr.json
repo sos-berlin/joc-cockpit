@@ -1016,67 +1016,67 @@
 
       },
       "workflow": {
-        "name": "The name of a workflow is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
-        "jobResourceNames": "Job Resources hold shared variables that can be used by a number of jobs and workflows.",
+        "name": "Le nom d'un workflow est unique dans l'inventaire. La plupart des caractères unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin.",
+        "jobResourceNames": "Les ressources de tâche contiennent des variables partagées qui peuvent être utilisées par un certain nombre de tâches et de workflows.",
         "documentation": "Documentation",
-        "title": "The Title of a workflow.",
-        "allowUndeclared": "Allow Undeclared",
+        "title": "Le titre d'un workflow.",
+        "allowUndeclared": "Autoriser les non déclarés",
         "await": {
-          "match": "Match",
+          "match": "Correspondance",
           "timeout": "Timeout",
-          "junctionPath": "A Junction links two or more workflows and causes orders to wait for each other if they are derived from the same daily plan.",
-          "predicate": "Predicate",
-          "joinVariables": "Join Variables"
+          "junctionPath": "Une jonction relie deux ou plusieurs workflows et fait en sorte que les ordres s'attendent les uns des autres si ils sont dérivés du même plan quotidien.",
+          "predicate": "Predicat",
+          "joinVariables": "Variables Join"
         },
         "fail": {
-          "message": "The instruction allows to specify a Message that is attached the order and that becomes visible with the order history.",
-          "uncatchable": "An Uncatchable error cannot be handled with a Try/Catch Instruction.",
-          "returnCode": "Return Code"
+          "message": "L'instruction permet de spécifier un Message qui est joint à l'ordre et qui devient visible avec l'historique des ordres.",
+          "uncatchable": "Une erreur Intraitable ne peut pas être gérée avec une instruction Try/Catch.",
+          "returnCode": "Code Retour"
         },
         "fileWatch": {
-          "directory": "The Directory that is watched for incoming files.",
-          "regex": "A Regular Expression specifies the pattern for the names of incoming files that a directory is watched for."
+          "directory": "Le répertoire qui est surveillé pour les fichiers entrants.",
+          "regex": "Une Expression Régulière spécifie le pattern des noms de fichiers entrants du répertoire surveillé."
         },
         "fork": {
-          "joinVariables": "Variables of child orders in the branches of a Fork Instruction are added to the parent order when reaching the Join Instruction."
+          "joinVariables": "Les variables des ordres enfants dans les branches d'une instruction Fork sont ajoutées à l'ordre parent lorsqu'elles atteignent l'instruction Join."
         },
         "if": {
-          "predicate": "A Predicate in an If Instruction is an expression or comparison that evaluates to 'true' or 'false'"
+          "predicate": "Un Prédicat dans une instruction If est une expression ou une comparaison qui donne la valeur 'vrai' ou 'faux'."
         },
         "job": {
-          "name": "A job name is unique in a workflow. A job with the same name can occur with a number of instructions in the same workflow if individual job labels are used. For a job name most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
-          "label": "A job Label is used to distinguish multiple occurrences of a job with the same name in a workflow.",
-          "title": "The Title of a job.",
-          "compatibleMode": "Compatibility with previous JobScheduler versions includes e.g. for shell jobs to automatically create environment variables prefixed with 'SCHEDULER_PARAM_' for any order variables as in JS1.",
-          "credentialKey": "A Credential Key can be added to the Windows Credential Manager holding the credentials that are used to switch to a target user account for this job.",
-          "loadUserProfile": "Load Windows User Profile. A profile includes e.g. environment variables and Windows registry settings.",
-          "returnCode": "Return Codes signal sucessful (0) or failed (>0) execution. In case of alternative use either return codes signalling success or signalling failure can be specified by a comma separated list.",
-          "checkSteadyState": "When a file arrives in a directory that is watched for incoming files then the file size and file timestamp are checked for changes. Between each check the specified delay is applied until no further changes can be observed.",
-          "jobClass": "The Job Class determines if a job is executed with the OS Shell (Windows, Unix, MacOS) etc.) or is executed as a JVM JITL Java job or is executed as a JVM Script job for one of the scripting languages supported by the JVM.",
-          "timeout": "When exceeding the Timeout then with Windows a job is aborted. With Unix the job is sent a SIGTERM signal and after the Grace Timeout a SIGKILL signal will abort the job.",
-          "graceTimeout": "A Grace Timeout is applied to jobs with Unix that receive a SIGTERM signal when exceeding their Timeout. If the job does not terminate then after the Grace Timeout a SIGKILL signal will abort the job.",
-          "warnIfShorter": "If the execution period of a job is shorter than specified then a notification, e.g. by e-mail, is sent.",
-          "warnIfLonger": "If the execution period of a job is longer than specified then a notification, e.g. by e-mail, is sent.",
+          "name": "Un nom de tâche est unique dans un workflow. Un travail portant le même nom peut être associé à un certain nombre d'instructions dans le même workflow si des labels de tâche individuelle sont utilisées. Le nom d'une tâche peut contenir la plupart des caractères unicode, des points et des traits d'union, mais pas de points ni de traits d'union au début ou à la fin.",
+          "label": "Un label de tâche est utilisé pour distinguer plusieurs occurrences d'une tche portant le même nom dans un workflow.",
+          "title": "Le Titre d'une tâche",
+          "compatibleMode": "La compatibilité avec les versions précédentes de JobScheduler inclut par ex. pour que les tâches shell créent automatiquement des variables d'environnement préfixées par 'SCHEDULER_PARAM_' pour toutes les variables d'ordre comme dans JS1.",
+          "credentialKey": "Une Clé d'Identification peut être ajoutée au gestionnaire d'identification Windows, contenant les informations d'identification utilisées pour basculer vers un compte utilisateur cible pour cette tâche.",
+          "loadUserProfile": "Chargez le profil utilisateur Windows. Un profil comprend par exemple les variables d'environnement et les paramètres du registre Windows.",
+          "returnCode": "Les codes retours signalent une exécution réussie (0) ou échouée (>0). En cas d'utilisation alternative, les codes retours signalant le succès ou signalant l'échec peuvent être spécifiés par une liste séparée par des virgules.",
+          "checkSteadyState": "Lorsqu'un fichier arrive dans un répertoire qui est surveillé pour les fichiers entrants, la taille du fichier et l'horodatage du fichier sont vérifiés pour des changements. Entre chaque vérification, le délai spécifié est appliqué jusqu'à ce qu'aucun autre changement ne puisse être observé.",
+          "jobClass": "La catégorie de la tâche détermine si une tâche est exécutée avec le shell du système d'exploitation (Windows, Unix, MacOS, etc.), ou exécuté en tant que travail Java JVM JITL ou exécuté en tant que travail JVM Script pour l'un des langages de script pris en charge par la JVM.",
+          "timeout": "Lorsque le délai est dépassé, la tache est interrompu sous Windows. Sous Unix, la tâche reçoit un signal SIGTERM et après le délai de grâce, un signal SIGKILL interrompra la tâche.",
+          "graceTimeout": "Un délai de grâce est appliqué aux tâches sous Unix qui reçoivent un signal SIGTERM lorsqu'ils dépassent leur délai. Si la tâche ne se termine pas après le délai de grâce, un signal SIGKILL interrompra la tâche.",
+          "warnIfShorter": "Si la période d'exécution d'un travail est plus courte que celle spécifiée, une notification, par exemple par e-mail, sera envoyée.",
+          "warnIfLonger": "Si la période d'exécution d'un travail est plus longue que celle spécifiée, une notification, par exemple par e-mail, sera envoyée.",
           "agent": "Agent",
-          "fileWatcher": "File Order Sources are used to watch a Directory for incoming files and to create an order with the respective workflow for each file.",
-          "className": "The name of a Java class implementing a job. JS7 ships with a number of predefined JITL Java classes, e.g. for database access, to send e-mail etc.",
-          "parallelism": "The max. Parallelism specifies the number of orders in a workflow that can execute the job in parallel. If the maximum is exceeded then orders have to wait until the value has fallen below the job's max. Parallelism.",
-          "criticality": "The Criticality of jobs can be used in notifications to better distinguish the urgency of an incident.",
-          "failOnOutputErr": "If a job writes output to the stderr channel then this is considered an error and the order is put in the FAILED state."
+          "fileWatcher": "Les sources d'ordre de fichier sont utilisées pour surveiller un répertoire pour les fichiers entrants et pour créer un ordre avec le workflow respectif pour chaque fichier.",
+          "className": "Le nom d'une Classe Java implémentant une tâche. JS7 est livré avec un certain nombre de classes Java JITL prédéfinies, par exemple pour l'accès aux bases de données, pour l'envoi d'e-mails, etc.",
+          "parallelism": "La valeur max. Parallélisme spécifie le nombre d'ordres dans un workflow qui peuvent exécuter de tâche en parallèle. Si le maximum est dépassé, les ordres doivent attendre que la valeur soit redescendue en dessous du max. Parallelisme",
+          "criticality": "La Criticité des tâches peut être utilisée dans les notifications pour mieux distinguer l'urgence d'un incident..",
+          "failOnOutputErr": "Si une tâche écrit une sortie sur le canal stderr, cela est considéré comme une erreur et l'ordre passe à l'état ECHEC."
         },
         "lock": {
-          "name": "Names of Resource Locks are unique in the inventory. Sections in workflows can be limited in parllelism by using Resource Locks.",
-          "count": "The Weight for use of a Resource Lock is calculated towards its capacity. If the capacity is exceeded then the order has to wait until a capacity is available that matches or exceeds the current weight."
+          "name": "Les noms des Verrous de Ressources sont uniques dans l'inventaire. Les sections des workflows peuvent être limitées dans leur parallélisme en utilisant des Verrous de Ressources.",
+          "count": "Le poids pour l'utilisation d'un verrou de ressource est calculé en fonction de sa capacité. Si la capacité est dépassée, l'ordre doit attendre jusqu'à ce qu'une capacité soit disponible qui correspond ou dépasse le poids actuel."
         },
         "prompt": {
           "question": "Question"
         },
         "publish": {
-          "junctionPath": "A Junction links two or more workflows and causes orders to wait for each other if they are derived from the same daily plan."
+          "junctionPath": "Une Junction relie deux ou plusieurs workflow et fait en sorte que les ordres s'attendent les uns des autres s'ils sont dérivés du même plan quotidien."
         },
         "retry": {
-          "maxTries": "When reaching the max. number of retries then the Try Instruction ends and the order is put in the FAILED state.",
-          "delay": "The Delay specifies the time in seconds before the next retry is performed. If a number of values are specified - separated by a comma - then each value from left to right applies to the period that the next retry is waited for."
+          "maxTries": "Lorsque le nombre maximal de tentatives est atteint, l'instruction Try se termine et l'ordre passe à l'état ECHEC.",
+          "delay": "Le délai spécifie le temps en secondes avant que la prochaine tentative ne soit effectuée. Si un certain nombre de valeurs sont spécifiées - séparées par une virgule - alors chaque valeur de gauche à droite s'applique à la période d'attente de la prochaine tentative."
         }
       }
     }
