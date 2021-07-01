@@ -106,7 +106,7 @@
           </td>
           <td>
             <span *ngIf="!order.scheduledNever">{{order.scheduledFor | stringToDate}}</span>
-            <span class="text-l-c" *ngIf="order.scheduledNever" translate>common.label.never</span>
+            <span *ngIf="order.scheduledNever" translate>common.label.never</span>
           </td>
           <td>
               <span *ngIf="order.lastOutcome">

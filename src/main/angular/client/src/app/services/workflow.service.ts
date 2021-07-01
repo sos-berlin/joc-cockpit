@@ -927,7 +927,7 @@ export class WorkflowService {
             this.translate.get('common.label.never').subscribe(translatedValue => {
               never = translatedValue;
             });
-            str = str + ' <span class="text-xs text-l-c" >' + never + '</span>';
+            str = str + ' <span class="text-xs" >' + never + '</span>';
           }
         }
         str = str + '</div>';

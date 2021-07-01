@@ -12,7 +12,7 @@
     <div class="p-l-sm" *ngIf="!order.cyclicOrder">
       <span translate> order.label.scheduledFor </span>:
       <span class="_600" *ngIf="!order.scheduledNever">{{order.scheduledFor | stringToDate}}</span>
-      <span class="_600 text-l-c" *ngIf="order.scheduledNever" translate>common.label.never</span>
+      <span class="_600" *ngIf="order.scheduledNever" translate>common.label.never</span>
     </div>
     <div class="m-a-sm m-t-0" *ngIf="order.cyclicOrder">
       <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
@@ -34,7 +34,7 @@
     <span *ngIf="order.marked" class="half-circle half-circle-right" [ngClass]="coreService.getColor(order.marked.severity, 'bg')"></span>
     {{order.orderId}} <i *ngIf="order.cyclicOrder" class="fa fa-repeat p-l-xs p-r-xs" aria-hidden="true"></i>
     <i class="text-sm text-muted" *ngIf="order.scheduledFor && !order.scheduledNever">{{order.scheduledFor | stringToDate}}</i>
-    <i class="text-sm text-muted text-l-c" *ngIf="order.scheduledNever" translate>common.label.never</i>
+    <i class="text-sm text-muted" *ngIf="order.scheduledNever" translate>common.label.never</i>
   </span>
 </ng-template>
 <div *ngFor="let instruction of configuration.instructions">
