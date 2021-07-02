@@ -998,52 +998,52 @@
     },
     "tooltips": {
       "calendar": {
-        "name": "Name of the calendar",
-        "documentation": "Documentation",
-        "title": "The Title of a calendar.",
-        "type": "Type",
-        "validFrom": "Valid From",
-        "validTo": "Valid To"
+        "name": "Calendars are used with Schedules that create orders for the days specified by the Calendar",
+        "documentation": "A reference to a Documentation can be added that will be displayed with the Calendar. The RESOURCES->Documentation view allows to manage the documentation.",
+        "title": "The Title of a Calendar",
+        "type": "Calnendars are created for working days or for non-working days. When assigning a Calendar to a Schedule then in addition to a working day Calendar a non-working day Calendar can be assigned that further limits the days for workflow execution.",
+        "validFrom": "Optionally the start of the Calendar's validity period can be specified. No orders will be created by a Schedle prior to this date.",
+        "validTo": "Optionally the end of the Calendar's validity period can be specified. No orders will be created by a Schedule beyond this date."
       },
       "fileOrderSource": {
-        "name": "Name of file order source",
-        "documentation": "Documentation",
-        "title": "The Title of a file order source.",
-        "workflowName": "Name of the workflow",
-        "agent": "Agent",
-        "directory": "Directory",
-        "pattern": "Pattern",
-        "timeZone": "Time Zone",
-        "delay": "Delay"
+        "name": "A File Order Source is used to watch a Directory for incoming files and to create an order for each file individually. This allows to automatically start workflows on arrival of files.",
+        "documentation": "A reference to a Documentation can be added that will be displayed with the File Order Source. The RESOURCES->Documentation view allows to manage the documentation.",
+        "title": "The Title of a File Order Source",
+        "workflowName": "A reference to a Workflow has to be added. An order will be created for this workflow on arrival of a file in the Directory that is watched for incoming files.",
+        "agent": "The Agent has to be specified that performs file watching on the respective host on which the Agent is installed.",
+        "directory": "The Directory is specified that is watched for incoming files. Consider that the Directory is accessible for the Agent's host and account.",
+        "pattern": "A regular expression Pattern specifies the files that the Directory is watched for. For example .* means any files, .*\\.txt$ means any files with a .txt extension.",
+        "timeZone": "When a file arrives then the Agent will create an order that includes the current date with its order ID. This item specifies the time zone that is used for the date in the order ID.",
+        "delay": "A Delay is applied for which the Agent waits that an incoming file remains unchanged. Changes are detected from the file size and file timestamp. If the file changes, for example if the file is written to by some process, then once again the Delay will be applied and the check will be repeated until no further change occurs."
       },
       "jobResource": {
-        "name": "Name of job resource",
-        "documentation": "Documentation",
-        "title": "The Title of a job resource."
+        "name": "A Job Resource is a set of variables that can be used by a number of workflows or jobs. There are two flavors: Variables are assigned to JITL jobs and Java jobs, Environment Variables become automatically available with Shell jobs.",
+        "documentation": "A reference to a Documentation can be added that will be displayed with the Job Resource. The RESOURCES->Documentation view allows to manage the Documentation.",
+        "title": "The Title of a Job Resource"
       },
       "junction": {
-        "name": "Name of junction",
-        "documentation": "Documentation",
-        "title": "The Title of a junction.",
-        "lifetime": "life time"
+        "name": "A Juncction represents the dependency between to two workflows. The respective Publish Instructions and Await Instructions in workflows reference the Junction.",
+        "documentation": "A reference to a Documentation can be added that will be displayed with the Junction. The RESOURCES->Documentation view allows to manage the documentation.",
+        "title": "The Title of a Junction",
+        "lifetime": "If an order is published to a Junction then this publication will be revoked if the lifetime is exceeded and no Await Instruction did pick up the order."
       },
       "lock": {
-        "name": "Name of lock",
-        "documentation": "Documentation",
-        "title": "The Title of a lock.",
-        "limit": "Limit"
+        "name": "Resource Locks are used to implement mutual exclusion for a sequence of jobs. They can be used across any workflows and limit the the parallellism of jobs.",
+        "documentation": "A reference to a Documentation can be added that will be displayed with the Resource Lock. The RESOURCES->Documentation view allows to manage the documentation.",
+        "title": "The Title of a Resource Lock",
+        "limit": "If a Resource Lock is acquired in shared mode then each Resource Lock consumer specifies a weight that is calculated towards the capacity of the Resource Lock. If the capacity is exceeded then jobs have to wait until their weight matches the available capacity of the Resource Lock."
       },
       "schedule": {
-        "name": "Name of schedule",
-        "documentation": "Documentation",
-        "title": "The Title of a schedule.",
-        "workflowName": "Name of the workflow",
-        "planOrderAutomatically": "Plan Order automatically",
-        "submitOrderToControllerWhenPlanned": "Submit Order to Controller when planned"
+        "name": "A Schedule is used to automatically create orders for a given workflow based on the Calendar assigned.",
+        "documentation": "A reference to a Documentation can be added that will be displayed with the Schedule. The RESOURCES->Documentation view allows to manage the documentation.",
+        "title": "The Title of a Schedule",
+        "workflowName": "A reference to a workflow has to be added for which orders are created.",
+        "planOrderAutomatically": "Orders are Planned Automatically, i.e. based on the Daily Plan Service settings order are created for the next few days in advance.",
+        "submitOrderToControllerWhenPlanned": "Orders are automatically submitted to a Controller when planned. Based on the settings of the Daily Plan Service orders are submitted a number of days in advance."
       },
       "workflow": {
-        "name": "The name of a workflow is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
-        "jobResourceNames": "Job Resources hold shared variables that can be used by a number of jobs and workflows. Any variables from the selected Job Resource can be used by any jobs in the workflow.",
+        "name": "The name of a Workflow is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+        "jobResourceNames": "References to Job Resources can be added that hold shared variables for use by a number of jobs and workflows. Any variables from the selected Job Resources can be used by any jobs in the Workflow.",
         "documentation": "A workflow can be assigned a Documentation that is displayed with the WORKFLOWS view. Documentations are managed with the RESOURCES->Documentations view.",
         "title": "The Title of a workflow is displayed with the WORKFLOWS view.",
         "allowUndeclared": "Allow undeclared variables from orders. This includes that an order can carry variables that are not checked for their data type or mandatory use. Jobs will fail when referencing undeclared variables that are not available with an order.",
@@ -1061,7 +1061,7 @@
         },
         "fileWatch": {
           "directory": "The Directory that is watched for incoming files.",
-          "regex": "A Regular Expression specifies the pattern for the names of incoming files that a directory is watched for."
+          "regex": "A regular expression specifies the Pattern for the names of incoming files that a directory is watched for."
         },
         "fork": {
           "joinVariables": "Variables of child orders in the branches of a Fork Instruction are added to the parent order when reaching the Join Instruction."
@@ -1101,7 +1101,7 @@
           "junctionPath": "A Junction links two workflows and will cause orders in one workflow to wait for orders from the second workflow if both orders are originated by the same daily plan."
         },
         "retry": {
-          "maxTries": "When reaching the max. number of retries then the Try Instruction ends and the order is put in the FAILED state.",
+          "maxTries": "When reaching the max. number of Retries then the Try Instruction ends and the order is put in the FAILED state.",
           "delay": "The Delay specifies the time in seconds before the next retry is performed. If a number of values are specified - separated by a comma - then each value from left to right applies to the period that the next retry is waited for."
         }
       }
@@ -1728,9 +1728,9 @@
     "message.orderInstructionValidationError": "Instruction can use only order events",
     "message.otherInstructionValidationError": "Cannot use more than one outgoing edge",
     "message.ifInstructionValidationError": "Cannot use more than one condition",
-    "message.awaitInstructionValidationError": "Only Await instruction can use order events",
+    "message.awaitInstructionValidationError": "Only Await Instruction can use order events",
     "message.invalidInstructionsSelected": "Selection of instructions is not valid",
-    "message.catchInstructionValidationError": "Only Try instruction can use Catch instruction",
+    "message.catchInstructionValidationError": "Only Try Instruction can use Catch instruction",
     "message.inValidWorkflow": "Not a valid Workflow file",
     "message.dropHereToRemoveInstruction": "Drop here to remove instruction",
     "message.labelIsMissing": "Label is missing, but is required",
@@ -1768,7 +1768,7 @@
     "label.jsSuiteInventory": "JSSuite Inventory",
     "label.saveXml": "Save XML",
     "label.deleteDraft": "Revert Draft",
-    "label.importXML": "Import XML",
+    "label.importXML": "Upload XML",
     "label.assignSchema": "Assign XSD Schema",
     "label.assignXSDSchema": "Assign XSD Schema",
     "label.xsdElement": "XSD Element",
@@ -1780,7 +1780,7 @@
     "label.nonValidate": "not validated",
     "label.released": "released",
     "label.notReleased": "not released",
-    "label.importXSD": "Import XSD",
+    "label.importXSD": "Upload XSD",
     "label.configurationDate": "Configuration Date",
     "label.modified": "Last modified at",
     "label.xmlEditor": "XML Editor",
@@ -1790,14 +1790,14 @@
     "button.copy": "Copy",
     "button.paste": "Paste",
     "button.remove": "Remove",
-    "button.import": "Import",
+    "button.import": "Upload",
     "button.addChild": "Add Child Node",
     "button.validate": "Validate",
     "button.showXML": "Show XML",
-    "button.importXML": "Import XML",
+    "button.importXML": "Upload XML",
     "button.deleteDraft": "Revert Draft",
     "button.editXML": "Edit XML",
-    "button.export": "Export",
+    "button.export": "Download",
     "button.showAllChildNodes": "Show all Child Nodes of selected Node",
     "button.assign": "Assign",
     "button.gotoKeyElement": "Go to Key Element",
