@@ -26,7 +26,7 @@
       </div>
       <form *ngIf="jobResource.configuration">
         <div class="form-group row" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.name</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.jobResource.name' | translate" translate>common.label.name</label>
           <div class="col-md-8 col-lg-6">
             <input type="text" class="form-control" [readonly]="isTrash || !permission.joc.inventory.manage" [appAutofocus]="!isTrash" identifierValidation required name="name" #name="ngModel" autocomplete="off"
                    [(ngModel)]="jobResource.name" (blur)="rename(name.invalid)">
@@ -39,14 +39,14 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.jobResource.title' | translate" translate>common.label.title</label>
           <div class="col-md-8 col-lg-6">
             <input type="text" class="form-control" [readonly]="isTrash || !permission.joc.inventory.manage" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
                    name="title" [(ngModel)]="jobResource.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.documentation</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.jobResource.documentation' | translate" translate>inventory.label.documentation</label>
           <div class="col-md-8 col-lg-6 select-input-both">
             <input autocomplete="off" [readOnly]="isTrash || !permission.joc.inventory.manage" type="text" class="form-control"
                    placeholder="{{'inventory.placeholder.documentationName' | translate}}"

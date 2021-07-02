@@ -1157,7 +1157,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.updateList();
+        this.isProcessing = true;
+        this.resetAction(5000);
       }
     });
   }
@@ -2245,9 +2246,12 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           }
           break;
         }
-	if (args.eventSnapshots[j].eventType.match(/DailyPlanUpdated/) && !this.isRefreshed) {
-          this.isRefreshed = true;
-          this.refreshView();
+        if (args.eventSnapshots[j].eventType.match(/DailyPlanUpdated/)) {
+          this.load(this.selectedDate);
+          if (args.eventSnapshots[j].message === this.coreService.getStringDate(this.selectedDate)) {
+            this.loadOrderPlan();
+          }
+          this.resetAction();
           break;
         }
       }

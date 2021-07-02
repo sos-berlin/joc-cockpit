@@ -998,22 +998,48 @@
     },
     "tooltips": {
       "calendar": {
-
+        "name": "Name of the calendar",
+        "documentation": "Documentation",
+        "title": "The Title of a calendar.",
+        "type": "Type",
+        "validFrom": "Valid From",
+        "validTo": "Valid To"
       },
-      "fileOrderSources": {
-
+      "fileOrderSource": {
+        "name": "Name of file order source",
+        "documentation": "Documentation",
+        "title": "The Title of a file order source.",
+        "workflowName": "Name of the workflow",
+        "agent": "Agent",
+        "directory": "Directory",
+        "pattern": "Pattern",
+        "timeZone": "Time Zone",
+        "delay": "Delay"
       },
       "jobResource": {
-
+        "name": "Name of job resource",
+        "documentation": "Documentation",
+        "title": "The Title of a job resource."
       },
       "junction": {
-
+        "name": "Name of junction",
+        "documentation": "Documentation",
+        "title": "The Title of a junction.",
+        "lifetime": "life time"
       },
       "lock": {
-
+        "name": "Name of lock",
+        "documentation": "Documentation",
+        "title": "The Title of a lock.",
+        "limit": "Limit"
       },
       "schedule": {
-
+        "name": "Name of schedule",
+        "documentation": "Documentation",
+        "title": "The Title of a schedule.",
+        "workflowName": "Name of the workflow",
+        "planOrderAutomatically": "Plan Order automatically",
+        "submitOrderToControllerWhenPlanned": "Submit Order to Controller when planned"
       },
       "workflow": {
         "name": "Le nom d'un workflow est unique dans l'inventaire. La plupart des caractères unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin.",

@@ -270,9 +270,14 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           }
         }
         if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
-          this.schedule.configuration.variables.push({name: k, type: val.type, isRequired: true});
+          if (!val.final) {
+            this.schedule.configuration.variables.push({name: k, type: val.type, isRequired: true});
+          }
         }
         return {name: k, value: v};
+      });
+      this.variableList = this.variableList.filter((item) => {
+        return !item.value.final;
       });
     } else {
       this.schedule.configuration.variables = [];
@@ -286,6 +291,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       argument.type = obj.type;
       if (!obj.default && obj.default !== false && obj.default !== 0) {
         argument.isRequired = true;
+      } else{
+        this.coreService.removeSlashToString(obj, 'default');
+        argument.value = obj.default;
       }
     }
     this.updateSelectItems();

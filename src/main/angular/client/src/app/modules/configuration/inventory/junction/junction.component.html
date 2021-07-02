@@ -27,7 +27,7 @@
       <form *ngIf="junction.configuration">
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.name</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.junction.name' | translate" translate>common.label.name</label>
           <div class="col-md-8 col-lg-6">
             <input type="text" required identifierValidation class="form-control" [readonly]="isTrash || !permission.joc.inventory.manage" [appAutofocus]="!isTrash"
                    name="name" [(ngModel)]="junction.name" #name="ngModel" autocomplete="off" (blur)="rename(name.invalid)">
@@ -40,14 +40,14 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.junction.title' | translate" translate>common.label.title</label>
           <div class="col-md-8 col-lg-6">
             <input type="text" class="form-control" [readonly]="isTrash || !permission.joc.inventory.manage" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
                    name="title" [(ngModel)]="junction.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.documentation</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.junction.documentation' | translate" translate>inventory.label.documentation</label>
           <div class="col-md-8 col-lg-6 select-input-both">
             <input autocomplete="off" [readOnly]="isTrash || !permission.joc.inventory.manage" type="text" class="form-control"
                    placeholder="{{'inventory.placeholder.documentationName' | translate}}"
@@ -83,7 +83,7 @@
         </div>
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((lt.dirty || lt.touched) && lt.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.lifetime</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.junction.lifetime' | translate" translate>inventory.label.lifetime</label>
           <div class="col-md-8 col-lg-6">
             <input autocomplete="off" [readonly]="isTrash || !permission.joc.inventory.manage" #lt="ngModel" required type="text" class="form-control" name="lt"
                    placeholder="{{'workflow.placeholder.duration' | translate}}" (blur)="saveJSON()"
