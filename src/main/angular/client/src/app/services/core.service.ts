@@ -462,10 +462,8 @@ export class CoreService {
       return type === 'text' ? 'calling' : type === 'border' ? 'calling-box' : 'bg-calling';
     } else if (d === 10) {
       return type === 'text' ? 'light-yellow' : type === 'border' ? 'light-yellow-box' : 'bg-light-yellow';
-    } else if (d === 11) {
-      return type === 'text' ? 'light-green' : type === 'border' ? 'light-green-box' : 'bg-light-green';
     } else {
-      return '';
+      return type === 'text' ? 'light-green' : type === 'border' ? 'light-green-box' : 'bg-light-green';
     }
   }
 

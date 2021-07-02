@@ -658,7 +658,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             }
           }
         }
-        if (args.eventSnapshots[j].eventType === 'ProblemEvent' && args.eventSnapshots[j].message) {
+        if ((args.eventSnapshots[j].eventType === 'ProblemEvent' || args.eventSnapshots[j].eventType === 'ProblemAsHintEvent') && args.eventSnapshots[j].message) {
           this.resetAction();
         }
         if (args.eventSnapshots[j].objectType === 'WORKFLOW' && (args.eventSnapshots[j].eventType.match(/Item/))) {

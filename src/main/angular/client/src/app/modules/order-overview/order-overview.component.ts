@@ -653,7 +653,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       let flag1 = false;
       let flag2 = false;
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'ProblemEvent' && args.eventSnapshots[j].message) {
+        if ((args.eventSnapshots[j].eventType === 'ProblemEvent' || args.eventSnapshots[j].eventType === 'ProblemAsHintEvent') && args.eventSnapshots[j].message) {
           this.resetAction();
         }
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
