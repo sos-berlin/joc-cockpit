@@ -992,7 +992,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     indeterminate: false,
     isCancel: false,
     isModify: false,
-    isRunning: false,
     isPlanned: false,
     isFinished: false
   };
@@ -1070,6 +1069,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       }, () => {
         this.isLoaded = true;
         this.isRefreshed = false;
+        this.plans = [];
+        this.planOrders = [];
         this.resetCheckBox();
       });
     }
@@ -1986,7 +1987,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   private checkState(object, list): void {
     object.isPlanned = true;
     object.isFinished = false;
-    object.isRunning = false;
     object.isCancel = false;
     object.isModify = true;
     let finishedCount = 0;
@@ -2003,13 +2003,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       }
       if (order.state._text === 'FINISHED') {
         ++finishedCount;
-      } else if (order.state._text === 'RUNNING') {
-        object.isRunning = true;
       }
       if (order.state._text === 'PLANNED') {
         object.isCancel = true;
       }
-      if (order.state._text !== 'PLANNED' && order.state._text !== 'PENDING') {
+      if (order.state._text === 'FINISHED') {
         object.isModify = false;
       }
 
@@ -2152,11 +2150,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       checked: false,
       isCancel: false,
       isModify: false,
-      isRunning: false,
       isPlanned: false,
       isFinished: false
     };
-    if(!flag) {
+    if (!flag) {
       this.isCalendarClick = false;
       if (this.dateRanges.length > 0) {
         $('#full-calendar').data('calendar').clearRange();
@@ -2246,6 +2243,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
               break;
             }
           }
+          break;
+        }
+	if (args.eventSnapshots[j].eventType.match(/DailyPlanUpdated/) && !this.isRefreshed) {
+          this.isRefreshed = true;
+          this.refreshView();
           break;
         }
       }
