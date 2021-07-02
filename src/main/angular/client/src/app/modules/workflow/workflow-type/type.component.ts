@@ -319,10 +319,10 @@ export class TypeComponent implements OnChanges {
           readonly: true
         };
       }
-    } else if(instruction.TYPE === 'If' || instruction.TYPE === 'Prompt'){
+    } else if (instruction.TYPE === 'If') {
       nzComponentParams = {
         predicate: true,
-        data: instruction.predicate || instruction.question,
+        data: instruction.predicate,
         isScript: true,
         readonly: true
       };

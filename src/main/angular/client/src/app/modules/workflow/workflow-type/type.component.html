@@ -110,7 +110,8 @@
           </nz-dropdown-menu>
         </div>
         <i *ngIf="instruction.TYPE === 'Job' && instruction.documentationName" (click)="coreService.showDocumentation(instruction.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
-        <a [ngClass]="{'cursor': instruction.TYPE === 'Job'}" (click)="showConfiguration(instruction)">{{instruction.jobName || (instruction.TYPE | translate)}}</a>
+        <span class="cursor" *ngIf="instruction.TYPE === 'Job'" (click)="showConfiguration(instruction)">{{instruction.jobName}}</span>
+        <span *ngIf="instruction.TYPE !== 'Job'" [nz-tooltip]="instruction.question || instruction.message">{{instruction.TYPE | translate}}</span>
         <span class="m-l-md" *ngIf="instruction.orders && instruction.orders.length> 0">
          <ng-template ngFor let-order [ngForOf]="instruction.orders | orderBy : 'scheduledFor': true | slice:0:3">
             <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>

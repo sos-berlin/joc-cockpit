@@ -110,7 +110,8 @@
             </ul>
           </nz-dropdown-menu>
         </div>
-        <a [ngClass]="{'cursor': instruction.TYPE === 'Job'}" (click)="showConfiguration(instruction)">{{instruction.jobName || (instruction.TYPE | translate)}}</a>
+        <span class="cursor" *ngIf="instruction.TYPE === 'Job'" (click)="showConfiguration(instruction)">{{instruction.jobName}}</span>
+        <span *ngIf="instruction.TYPE !== 'Job'" [nz-tooltip]="instruction.question || instruction.message">{{instruction.TYPE | translate}}</span>
         <span class="m-l-md" *ngIf="instruction.order">
           <div class="draggable" draggable="true">
             <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: instruction.order}"></ng-container>

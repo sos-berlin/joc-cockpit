@@ -672,6 +672,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             for (const i in this.workflows) {
               if (this.workflows[i].path === args.eventSnapshots[j].workflow.path && this.workflows[i].versionId === args.eventSnapshots[j].workflow.versionId) {
                 this.workflows.splice(i, 1);
+                this.resetAction();
                 this.searchInResult();
                 break;
               }
