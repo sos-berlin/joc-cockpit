@@ -998,51 +998,51 @@
     },
     "tooltips": {
       "calendar": {
-        "name": "Name of the calendar",
-        "documentation": "Documentation",
-        "title": "The Title of a calendar.",
-        "type": "Type",
-        "validFrom": "Valid From",
-        "validTo": "Valid To"
+        "name": "Kalender werden von Zeitplänen genutzt, die Aufträge für jeden Tag des Kalenders zu erzeugen. Für den Namen des Kalenders können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugleassen.",
+        "documentation": "Ein Verweis auf ein Dokumentation kann hinzugefügt werden, die mit dem Kalender angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
+        "title": "Der Titel des Kalenders",
+        "type": "Kalender können für Arbeitstage und für Nicht-Arbeitstage eingerichtet werden. Beim Zuweisen eines Kalenders zu einem Zeitplan können zusätzlich Kalender der Nicht-Arbeitstage verwendet werden, die die Tage zur Ausführung von Arbeitsabläufen weiter beschränken.",
+        "validFrom": "Optional kann die Gültigkeitsperiode des Kalenders angegeben werden. Vor dem angegebenen Datum werden von Zeitplänen keine Aufträge erzeugt.",
+        "validTo": "Optional kann die Gültigkeitsperiode des Kalenders angegeben werden. Nach dem angegebenen Datum werden von Zeitplänen keine Aufträge erzeugt."
       },
       "fileOrderSource": {
-        "name": "Name of file order source",
-        "documentation": "Documentation",
-        "title": "The Title of a file order source.",
-        "workflowName": "Name of the workflow",
-        "agent": "Agent",
-        "directory": "Directory",
-        "pattern": "Pattern",
-        "timeZone": "Time Zone",
-        "delay": "Delay"
+        "name": "Eine Dateiauftragsquelle wird zur Verzeichnisüberwachung genutzt. Für jede eintreffende Datei wird ein Dateiauftrag eingerichtet. Dadurch werden Arbeitsabläufe automatisch bei Eintreffen von Dateien gestartet. Für den Namen der Dateiauftragsquelle können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugleassen.",
+        "documentation": "Ein Verweis auf ein Dokumentation kann hinzugefügt werden, die mit der Dateiauftragsquelle angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
+        "title": "Der Titel der Dateiauftragsquelle",
+        "workflowName": "Ein Verweis auf einen Arbeitsablauf muss hinzugefügt werden. Bei Eintreffen einer Datei im überwachten Verzeichnis wird automatisch ein Dateiauftrag für den Arbeitsablauf erzeugt.",
+        "agent": "Ein Agent muss angegeben werden, der die Verzeichnisüberwachung auf dem Server durchführt, auf dem er installiert ist.",
+        "directory": "Das Verzeichnis muss angegeben werden, das vom Agenten überwacht wird. Das Verzeichnis muss für den Server und für das Konto des Agenten zugreifbar sein.",
+        "pattern": "Ein regülärer Ausdruck beschreibt das Muster der Namen von Dateien, die überwacht werden. Zum Beispiel bedeutet .* alle Dateinamen, \\.*txt$ bedeutet alle Dateinamen mit der Endung .txt.",
+        "timeZone": "Wenn eine Datei im überwachten Verzeichnis eintrifft wird vom Agenten ein Auftrag erzeugt, dessen Auftragskennung das Tagesdatum enthält. Hier wird die Zeitzone benannt, für die das Tagesdatum verwendet wird.",
+        "delay": "Die Verzögerung stellt die Dauer dar, für die ein Agent wartet bis eine eintreffende Datei stabil ist, d.h.  deren Größe und Zeitstempel sich nicht ändern. Wird eine Änderung bemerkt, dann wird erneut für die Dauer der Verzögerung gewartet und die Prüfung wiederholt."
       },
       "jobResource": {
-        "name": "Name of job resource",
-        "documentation": "Documentation",
-        "title": "The Title of a job resource."
+        "name": "Eine Job-Ressource ist eine Menge von Variablen, d.h. Paaren von Namen und Wert, die allen Arbeitsabläufen und Jobs zur Verfügung gestellt werden kann. Es gibt zwei Varianten: Variablen sind für JITL Jobs und Java Jobs verfügbar, Umgebungsvariablen sind für Shell Jobs verfügbar. Für den Namen der Job-Ressource können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugleassen.",
+        "documentation": "Ein Verweis auf ein Dokumentation kann hinzugefügt werden, die mit der Job-Ressource angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
+        "title": "Der Titel der Job-Ressource"
       },
       "junction": {
-        "name": "Name of junction",
-        "documentation": "Documentation",
-        "title": "The Title of a junction.",
-        "lifetime": "life time"
+        "name": "Eine Verknnüpfung benennt die Abhängigkeit zwischen zwei Arbeitsabläufen. Die Publish und Await-Instruktionen eines Arbeitsablaufs verweisen auf die Verknüpfung. Für den Namen der Verknüpfung können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugleassen.",
+        "documentation": "Ein Verweis auf ein Dokumentation kann hinzugefügt werden, die mit der Verknüpfung angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
+        "title": "Der Titel der Verknüpfung.",
+        "lifetime": "Wird eine Auftrag mit der Publish-Instruktion eines Arbeitsablaufs publiziert, dann gilt dies für die angegebene Lebensdauer. Wird der Auftrag nicht von einer passenden Await-Instruktion innerhalb der angegebenen Frist angenommen, dann wird die Publikation des Auftrags zurückgezogen."
       },
       "lock": {
-        "name": "Name of lock",
-        "documentation": "Documentation",
-        "title": "The Title of a lock.",
-        "limit": "Limit"
+        "name": "Ressourcen-Sperren werden zur Limitierung der Parallelität von Jobs verwendet. Sie verhindern oder beschränken die parallele Ausführung von Jobs in mehreren Arbeitsabläufen. Für den Namen der Ressourcen-Sperre können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugleassen.",
+        "documentation": "Ein Verweis auf ein Dokumentation kann hinzugefügt werden, die mit der Ressourcen-Sperre angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
+        "title": "Der Titel der Ressourcen-Sperre",
+        "limit": "Wird eine Ressourcen-Sperre von mehreren Jobs geteilt genutzt, dann kann jede Nutzung ein Gewicht für den Zugriff bestimmen, dass verwendet wird, um die verfügbare Kapazität der Ressourcen-Sperre zu bestimmen und Jobs ggf. warten zu lassen bis eine ausreichende Kapazität verfügbar ist."
       },
       "schedule": {
-        "name": "Name of schedule",
-        "documentation": "Documentation",
-        "title": "The Title of a schedule.",
-        "workflowName": "Name of the workflow",
-        "planOrderAutomatically": "Plan Order automatically",
-        "submitOrderToControllerWhenPlanned": "Submit Order to Controller when planned"
+        "name": "Ein Zeitplan wird verwendet, um automatisch Aufträge für Arbeitsabläufe basierend auf einem Kalender zu erzeugen. Für den Namen des Zeitplans können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugleassen.",
+        "documentation": "Ein Verweis auf ein Dokumentation kann hinzugefügt werden, die mit dem Zeitplan angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
+        "title": "Der Titel des Zeitplans",
+        "workflowName": "Ein Verweis auf einen Arbeitsablauf muss angegeben werden, für den die Aufträge erzeugt werden.",
+        "planOrderAutomatically": "Aufträge werden automatisch geplant, d.h. in Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus geplant.",
+        "submitOrderToControllerWhenPlanned": "Gelante Aufträge werden automatisch an den Controller übermittelt. In Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus übermittelt."
       },
       "workflow": {
-        "name": "Der Name eines Arbeitsablaufs ist eindeutig im Inventar. Die meisten Unicode Zeichen können verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Bindestriche sind nicht zugleassen.",
+        "name": "Der Name eines Arbeitsablaufs ist eindeutig im Inventar. Die meisten Unicode Zeichen können verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Bindestriche und Punkte sind nicht zugleassen.",
         "jobResourceNames": "Job-Ressourcen definieren gemeinsame genutzte Variablen. Die Variablen der ausgewählten Job-Ressourcen stehen allen Jobs des Arbeitsablaufs zur Verfügung.",
         "documentation": "Einem Workflow kann eine Dokumetation zugewiesen werden, die in der Sicht ARBEITSABLÄUFE angezeigt wird. Dokumentationen werden in der Sicht RESSOURCEN->Dokumentationen verwaltet.",
         "title": "Der Titel des Arbeitsablaufs wird in der Sicht ARBEITSABLÄUFE angezeigt.",
@@ -1057,24 +1057,24 @@
         "fail": {
           "message": "Mit dieser Instruktion kann eine Nachricht zurückgegeben werden, die im Auftragsprotokoll sichtbar wird.",
           "uncatchable": "Ein uneinfangbarer Fehler kann nicht mit Try/Catch abgefangen werden.",
-          "returnCode": "Der Fail Instruktion kann ein positiver, numerischer Rückgabewert zugeordnet werden, der in der Auftragshistorie sichtbar wird."
+          "returnCode": "Der Fail-Instruktion kann ein positiver, numerischer Rückgabewert zugeordnet werden, der in der Auftragshistorie sichtbar wird."
         },
         "fileWatch": {
           "directory": "Das Verzeichnis, das auf die Existenz neuer Dateien hin überwacht wird.",
           "regex": "Ein regulärer Ausdruck beschreibt das Muster der Namen von Dateien, die im Verzeichnis überwacht werden."
         },
         "fork": {
-          "joinVariables": "Auftragsvariablen aus Zweigen einer Fork Instruktion werden in der entsprechenden Join Instruktion dem Elternauftrag übergeben."
+          "joinVariables": "Auftragsvariablen aus Zweigen einer Fork-Instruktion werden in der entsprechenden Join-Instruktion dem Elternauftrag übergeben."
         },
         "if": {
           "predicate": "Das Prädikat einer If-Instruktion stellt einen Ausdruck oder Vergleich dar, der zu 'wahr' oder 'falsch' evaluiert."
         },
         "job": {
-          "name": "Der Name eines Jobs ist eindeutig im Arbeitsablauf. Derselbe Job kann mehrfach als Instruktion im Arbeitsablauf vorkommen sofern er durch seine Kennzeichnung unterschieden ist.",
+          "name": "Der Name eines Jobs ist eindeutig im Arbeitsablauf. Derselbe Job kann mehrfach als Instruktion im Arbeitsablauf vorkommen sofern er durch seine Kennzeichnung unterschieden ist. Für Job-Namen können Unicode Zeichen verwendet werden, Punkte und Bindestriche, jedoch nicht am Beginn oder Ende des Job-Namens.",
           "label": "Eindeutige Kennzeichnung des Jobs im Arbeitsablauf. Ein Job kann im Arbeitsablauf wiederverwendet werden, sein Auftreten wird durch die Kennzeichnung unterschieden.",
           "title": "Der Titel eines Jobs wird in der Sicht ARBEITSABLÄUFE angezeigt.",
           "compatibleMode": "Kompatibilität mit zurückliegenden JobScheduler Versionen beinhaltet bspw. dass für alle Auftragsvariablen in Shell Jobs Umgebungsvariablen erzeugt werden, die mit 'SCHEDULER_PARAM_' präfiziert sind - analog zu JS1",
-          "credentialKey": "Im Windows Credential Manager kann ein Schlüssel mit Zugangsdaten hinterlegt werden, um den Job mit diesen Zugangsdaten für einen anderen Benutzer zu starten.",
+          "credentialKey": "In der Windows Anmeldeinformationsverwaltung kann ein Schlüssel mit Zugangsdaten hinterlegt werden, um den Job mit diesen Zugangsdaten für einen anderen Benutzer zu starten.",
           "loadUserProfile": "Windows Benutzerprofil laden. Das Profil enthält bspw. Umgebungsvariablen und Schlüssel der Windows Registry.",
           "returnCode": "Rückgabewerte signalisieren im Standardfall die erfolgreiche Ausführung (0) oder Fehler (>0). Im Fall abweichender Verwendung können entweder die Erfolg signalisierenden oder die Fehler signalisierenden Rückgabewerte durch Komma getrennt aufgeführt werden.",
           "checkSteadyState": "Eine Datei im überwachten Verzeichnis wird wiederholt auf Veränderungen der Dateigröße und des Zeitstempels geprüft bis nach Ablauf des Intervalls keine Ã„nderungen mehr erfolgen.",
@@ -1088,20 +1088,20 @@
           "className": "Der Name einer Java Klasse, die einen Job implementiert. JS7 enthält eine Reihe von JITL Java Klassen, z.B. für Datenbankzugriffe, E-Mail Versand etc.",
           "parallelism": "Die max. Parallelität eines Jobs bestimmt wie viele Aufträge gleichzeitig in einem Arbeitsablauf diesen Job ausführen können. Wird der Wert überschritten, dann warten Aufträge bis der Wert unterschritten wird.",
           "criticality": "Die Kritikalität eines Jobs kann zur Unterscheidung in Benachrichtigungen verwendet werden.",
-          "failOnOutputErr": "Sofern ein Job Ausgaben in den stderr Kanal schreibt, wird dies als Fehler gewertet und der Auftrag wird in den FAILED Zustand versetzt."
+          "failOnOutputErr": "Sofern ein Job Ausgaben in den stderr Kanal schreibt, wird dies als Fehler gewertet und der Auftrag wird in den Zustand FEHLGESCHLAGEN versetzt."
         },
         "lock": {
           "name": "Der Name einer Ressourcen-Sperre ist eindeutig im System. Abschnitte in Arbeitsabläufen können durch Ressourcen-Sperren für die parallele Ausführung limitiert werden.",
           "count": "Das Gewicht für die Nutzung einer Ressourcen-Sperre wird auf deren Kapazität angerechnet. Wird die Kapazität überschritten, dann wartet der Auftrag bis die Kapazität für das angegebene Gewicht verfügbar ist."
         },
         "prompt": {
-          "question": "Die Prompt Instruktion hält einen Arbeitsablauf temporär an. Der Auftrag wird in den Zustand ANFRAGEND versetzt. Anwender können die Mitteilung der Prompt Instruktion sehen und die Fortsetzung des Arbeitsablaufs bestätigen."
+          "question": "Die Prompt-Instruktion hält einen Arbeitsablauf temporär an. Der Auftrag wird in den Zustand ANFRAGEND versetzt. Anwender können die Mitteilung der Prompt-Instruktion sehen und die Fortsetzung des Arbeitsablaufs bestätigen."
         },
         "publish": {
           "junctionPath": "Verknüpfungen zwischen Arbeitsabläufen lassen Aufträge aufeinander warten sofern sie aus demselben Tagesplan stammen."
         },
         "retry": {
-          "maxTries": "Nach Erreichenn der max. Anzahl von Wiederholungsversuchen wird die Retry-Instruktion beendeet und der Auftrag wird in den FAILED Zustand versetzt.",
+          "maxTries": "Nach Erreichenn der max. Anzahl von Wiederholungsversuchen wird die Retry-Instruktion beendeet und der Auftrag wird in den Zustand FEHLGESCHLAGEN versetzt.",
           "delay": "Die Verzögerung ist die Anzahl Sekunden, für die auf den nächsten Wiederholungsversuch gewartet wird. Werden mehrere durch Komma getrennte Werte angegeben, so gelten sie von links nach rechts für die Wartezeit auf die nächste Wiederholung."
         }
       }
@@ -1728,9 +1728,9 @@
     "message.orderInstructionValidationError": "Instruktion kann nur Auftragsereignisse verwenden",
     "message.otherInstructionValidationError": "Mehr als eine ausgehende Kante kann nicht verwendet werden.",
     "message.ifInstructionValidationError": "Nur eine Bedingungen kann verwendet werden",
-    "message.awaitInstructionValidationError": "Nur Await Instruktion kann Auftragsereignisse verwenden",
+    "message.awaitInstructionValidationError": "Nur Await-Instruktion kann Auftragsereignisse verwenden",
     "message.invalidInstructionsSelected": "Auswahl der Instruktionen ungültig",
-    "message.catchInstructionValidationError": "Nur Try Instruktion kann Catch Instruktion verwenden",
+    "message.catchInstructionValidationError": "Nur Try-Instruktion kann Catch-Instruktion verwenden",
     "message.inValidWorkflow": "Ungültiger, ggf. unvollständiger, Arbeitsablauf",
     "message.dropHereToRemoveInstruction": "Hierher ziehen, um Instruktion zu entfernen",
     "message.labelIsMissing": "Kennzeichnung ist erforderlich",
@@ -1739,14 +1739,14 @@
     "message.duplicateLabel": "Identische Kennzeichnung in mehreren Jobs gefunden",
     "message.predicateIsMissing": "Prädikat ist erforderlich",
     "message.lockNameIsMissing": "Name der Ressourcen-Sperre erforderlich",
-    "message.invalidIfInstruction": "If Instruktion darf nicht leer sein",
-    "message.invalidTryInstruction": "Try Instruktion darf nicht leer sein",
-    "message.invalidRetryInstruction": "Retry Instruktion darf nicht leer sein",
-    "message.invalidLockInstruction": "Resource-Lock Instruktion darf nicht leer sein",
-    "message.invalidAwaitInstruction": "Await Instruktion ist ungültig",
+    "message.invalidIfInstruction": "If-Instruktion darf nicht leer sein",
+    "message.invalidTryInstruction": "Try-Instruktion darf nicht leer sein",
+    "message.invalidRetryInstruction": "Retry-Instruktion darf nicht leer sein",
+    "message.invalidLockInstruction": "Resource-Lock-Instruktion darf nicht leer sein",
+    "message.invalidAwaitInstruction": "Await-Instruktion ist ungültig",
     "message.agentIsMissing": "Agent ist erforderlich",
     "message.emptyWorkflow": "Arbeitsablauf ist leer, mindestens eine Instruktion ist erforderlich",
-    "message.invalidForkInstruction": "Fork Instruktion muss mindestens zwei Zweige besitzen",
+    "message.invalidForkInstruction": "Fork-Instruktion muss mindestens zwei Zweige besitzen",
     "placeholder.selectAgentName": "Agentennamen auswählen",
     "placeholder.enterJobClass": "Referenz für Job-Klasse angeben",
     "placeholder.enterJunction": "Referenz für Verknüpfung angeben",
@@ -1757,7 +1757,7 @@
     "placeholder.orderId": "Auftragskennung angeben",
     "placeholder.className": "Name der Klasse angeben",
     "placeholder.selectJobResources": "Job-Ressource auswählen",
-    "placeholder.enterCredentialKey": "Name des Schlüssels im Windows Credential Manager",
+    "placeholder.enterCredentialKey": "Name des Schlüssels in der Windows Anmeldeinformationsverwaltung",
     "placeholder.final": "Final"
   },
   "xml": {
