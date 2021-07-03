@@ -998,7 +998,7 @@
     },
     "tooltips": {
       "calendar": {
-        "name": "Kalender werden von Zeitplänen genutzt, die Aufträge für jeden Tag des Kalenders zu erzeugen. Für den Namen des Kalenders können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugleassen.",
+        "name": "Kalender werden von Zeitplänen genutzt, die Aufträge für jeden Tag des Kalenders zu erzeugen. Für den Namen des Kalenders können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf ein Dokumentation kann hinzugefügt werden, die mit dem Kalender angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des Kalenders",
         "type": "Kalender können für Arbeitstage und für Nicht-Arbeitstage eingerichtet werden. Beim Zuweisen eines Kalenders zu einem Zeitplan können zusätzlich Kalender der Nicht-Arbeitstage verwendet werden, die die Tage zur Ausführung von Arbeitsabläufen weiter beschränken.",
@@ -1006,7 +1006,7 @@
         "validTo": "Optional kann die Gültigkeitsperiode des Kalenders angegeben werden. Nach dem angegebenen Datum werden von Zeitplänen keine Aufträge erzeugt."
       },
       "fileOrderSource": {
-        "name": "Eine Dateiauftragsquelle wird zur Verzeichnisüberwachung genutzt. Für jede eintreffende Datei wird ein Dateiauftrag eingerichtet. Dadurch werden Arbeitsabläufe automatisch bei Eintreffen von Dateien gestartet. Für den Namen der Dateiauftragsquelle können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugleassen.",
+        "name": "Eine Dateiauftragsquelle wird zur Verzeichnisüberwachung genutzt. Für jede eintreffende Datei wird ein Dateiauftrag eingerichtet. Dadurch werden Arbeitsabläufe automatisch bei Eintreffen von Dateien gestartet. Für den Namen der Dateiauftragsquelle können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf ein Dokumentation kann hinzugefügt werden, die mit der Dateiauftragsquelle angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel der Dateiauftragsquelle",
         "workflowName": "Ein Verweis auf einen Arbeitsablauf muss hinzugefügt werden. Bei Eintreffen einer Datei im überwachten Verzeichnis wird automatisch ein Dateiauftrag für den Arbeitsablauf erzeugt.",
@@ -1017,24 +1017,24 @@
         "delay": "Die Verzögerung stellt die Dauer dar, für die ein Agent wartet bis eine eintreffende Datei stabil ist, d.h.  deren Größe und Zeitstempel sich nicht ändern. Wird eine Änderung bemerkt, dann wird erneut für die Dauer der Verzögerung gewartet und die Prüfung wiederholt."
       },
       "jobResource": {
-        "name": "Eine Job-Ressource ist eine Menge von Variablen, d.h. Paaren von Namen und Wert, die allen Arbeitsabläufen und Jobs zur Verfügung gestellt werden kann. Es gibt zwei Varianten: Variablen sind für JITL Jobs und Java Jobs verfügbar, Umgebungsvariablen sind für Shell Jobs verfügbar. Für den Namen der Job-Ressource können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugleassen.",
+        "name": "Eine Job-Ressource ist eine Menge von Variablen, d.h. Paaren von Namen und Wert, die allen Arbeitsabläufen und Jobs zur Verfügung gestellt werden kann. Es gibt zwei Varianten: Variablen sind für JITL Jobs und Java Jobs verfügbar, Umgebungsvariablen sind für Shell Jobs verfügbar. Für den Namen der Job-Ressource können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf ein Dokumentation kann hinzugefügt werden, die mit der Job-Ressource angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel der Job-Ressource"
       },
       "junction": {
-        "name": "Eine Verknnüpfung benennt die Abhängigkeit zwischen zwei Arbeitsabläufen. Die Publish und Await-Instruktionen eines Arbeitsablaufs verweisen auf die Verknüpfung. Für den Namen der Verknüpfung können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugleassen.",
+        "name": "Eine Verknnüpfung benennt die Abhängigkeit zwischen zwei Arbeitsabläufen. Die Publish und Await-Instruktionen eines Arbeitsablaufs verweisen auf die Verknüpfung. Für den Namen der Verknüpfung können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf ein Dokumentation kann hinzugefügt werden, die mit der Verknüpfung angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel der Verknüpfung.",
         "lifetime": "Wird eine Auftrag mit der Publish-Instruktion eines Arbeitsablaufs publiziert, dann gilt dies für die angegebene Lebensdauer. Wird der Auftrag nicht von einer passenden Await-Instruktion innerhalb der angegebenen Frist angenommen, dann wird die Publikation des Auftrags zurückgezogen."
       },
       "lock": {
-        "name": "Ressourcen-Sperren werden zur Limitierung der Parallelität von Jobs verwendet. Sie verhindern oder beschränken die parallele Ausführung von Jobs in mehreren Arbeitsabläufen. Für den Namen der Ressourcen-Sperre können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugleassen.",
+        "name": "Ressourcen-Sperren werden zur Limitierung der Parallelität von Jobs verwendet. Sie verhindern oder beschränken die parallele Ausführung von Jobs in mehreren Arbeitsabläufen. Für den Namen der Ressourcen-Sperre können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf ein Dokumentation kann hinzugefügt werden, die mit der Ressourcen-Sperre angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel der Ressourcen-Sperre",
         "limit": "Wird eine Ressourcen-Sperre von mehreren Jobs geteilt genutzt, dann kann jede Nutzung ein Gewicht für den Zugriff bestimmen, dass verwendet wird, um die verfügbare Kapazität der Ressourcen-Sperre zu bestimmen und Jobs ggf. warten zu lassen bis eine ausreichende Kapazität verfügbar ist."
       },
       "schedule": {
-        "name": "Ein Zeitplan wird verwendet, um automatisch Aufträge für Arbeitsabläufe basierend auf einem Kalender zu erzeugen. Für den Namen des Zeitplans können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugleassen.",
+        "name": "Ein Zeitplan wird verwendet, um automatisch Aufträge für Arbeitsabläufe basierend auf einem Kalender zu erzeugen. Für den Namen des Zeitplans können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf ein Dokumentation kann hinzugefügt werden, die mit dem Zeitplan angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des Zeitplans",
         "workflowName": "Ein Verweis auf einen Arbeitsablauf muss angegeben werden, für den die Aufträge erzeugt werden.",
@@ -1042,9 +1042,9 @@
         "submitOrderToControllerWhenPlanned": "Gelante Aufträge werden automatisch an den Controller übermittelt. In Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus übermittelt."
       },
       "workflow": {
-        "name": "Der Name eines Arbeitsablaufs ist eindeutig im Inventar. Die meisten Unicode Zeichen können verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Bindestriche und Punkte sind nicht zugleassen.",
+        "name": "Der Name eines Arbeitsablaufs ist eindeutig im Inventar. Die meisten Unicode Zeichen können verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Bindestriche und Punkte sind nicht zugelassen.",
         "jobResourceNames": "Job-Ressourcen definieren gemeinsame genutzte Variablen. Die Variablen der ausgewählten Job-Ressourcen stehen allen Jobs des Arbeitsablaufs zur Verfügung.",
-        "documentation": "Einem Workflow kann eine Dokumetation zugewiesen werden, die in der Sicht ARBEITSABLÄUFE angezeigt wird. Dokumentationen werden in der Sicht RESSOURCEN->Dokumentationen verwaltet.",
+        "documentation": "Einem Arbeitsablauf oder Job kann eine Dokumetation zugewiesen werden, die in der Sicht ARBEITSABLÄUFE angezeigt wird. Dokumentationen werden in der Sicht RESSOURCEN->Dokumentationen verwaltet.",
         "title": "Der Titel des Arbeitsablaufs wird in der Sicht ARBEITSABLÄUFE angezeigt.",
         "allowUndeclared": "Erlaubt die Verwending undeklarierter Variablen am Auftrag. Solche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
         "await": {
@@ -1505,14 +1505,14 @@
       "restore_prefix": "Benennt das Präfix für Objektnamen, das verwendet wird, wenn Funktionen zum Wiederherstellen von Objekten verwendet werden.",
       "import_suffix": "Benennt das Suffix für Objektnamen, das verwendet wird, wenn Objekte aus einer Archiv-Datei importiert werden.",
       "import_prefix": "Benennt das Präfix für Objektnamen, das verwendet wird, wenn Objekte aus einer Archiv-Datei importiert werden.",
-      "show_view_filetransfer": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Dateiübertragungsansicht sichtbar ist (=true) oder nicht sichtbar ist (=false). Ein leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
-      "show_view_dashboard": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Übersichtsansicht sichtbar ist (=true) oder nicht sichtbar ist (=false). Ein leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
-      "show_view_dailyplan": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Tagesplanansicht sichtbar ist (=true) oder nicht sichtbar ist (=false). Ein leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
-      "show_view_workflows": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Arbeitsablaufansicht sichtbar ist (=true) oder nicht sichtbar ist (=false). Ein leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
-      "show_view_resources": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Ressourcen-Ansicht sichtbar ist (=true) oder nicht sichtbar ist (=false). Ein leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
-      "show_view_history": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Historienansicht sichtbar ist (=true) oder nicht sichtbar ist (=false). Ein leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
-      "show_view_auditlog": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Prüfprotokollansicht sichtbar ist (=true) oder nicht sichtbar ist (=false). Ein leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
-      "show_view_configuration": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Konfigurationsansicht sichtbar ist (=true) oder nicht sichtbar ist (=false). Ein leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden."
+      "show_view_filetransfer": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Sicht DATEIÜBERTRAGUNGEN sichtbar ist (=true) oder nicht sichtbar ist (=false). Ein leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
+      "show_view_dashboard": "Vereinbart, dass unabhängig von Anwenderberechtigungen die die Sicht ÜBERSICHT sichtbar ist (=true) oder nicht sichtbar ist (=false). Ein leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
+      "show_view_dailyplan": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Sicht TAGESPLAN sichtbar ist (=true) oder nicht sichtbar ist (=false). Ein leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
+      "show_view_workflows": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Sicht ARBEITSABLÄUFE sichtbar ist (=true) oder nicht sichtbar ist (=false). Ein leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
+      "show_view_resources": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Sicht RESSOURCEN sichtbar ist (=true) oder nicht sichtbar ist (=false). Ein leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
+      "show_view_history": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Sicht HISTORIE sichtbar ist (=true) oder nicht sichtbar ist (=false). Ein leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
+      "show_view_auditlog": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Sicht PRÜFPROTOKOLL sichtbar ist (=true) oder nicht sichtbar ist (=false). Ein leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
+      "show_view_configuration": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Sicht KONFIGURATION sichtbar ist (=true) oder nicht sichtbar ist (=false). Ein leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden."
     }
   },
   "user": {
