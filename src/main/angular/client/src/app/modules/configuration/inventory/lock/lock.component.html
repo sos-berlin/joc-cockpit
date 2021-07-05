@@ -23,7 +23,8 @@
       <form *ngIf="lock.configuration">
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.lock.name' | translate" translate>common.label.name</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.lock.name' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 translate>common.label.name</label>
           <div class="col-md-8 col-lg-6">
             <input type="text" required identifierValidation [readonly]="isTrash || !permission.joc.inventory.manage" [appAutofocus]="!isTrash" class="form-control" (blur)="rename(name.invalid)"
                    name="name" [(ngModel)]="lock.name" #name="ngModel" autocomplete="off">
@@ -36,14 +37,16 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.lock.title' | translate" translate>common.label.title</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.lock.title' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 translate>common.label.title</label>
           <div class="col-md-8 col-lg-6">
             <input type="text" [readonly]="isTrash || !permission.joc.inventory.manage" class="form-control" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
                    name="title" [(ngModel)]="lock.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.lock.documentation' | translate" translate>inventory.label.documentation</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.lock.documentation' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 translate>inventory.label.documentation</label>
           <div class="col-md-8 col-lg-6 select-input-both">
             <input autocomplete="off" [readOnly]="isTrash || !permission.joc.inventory.manage" type="text" class="form-control"
                    placeholder="{{'inventory.placeholder.documentationName' | translate}}"
@@ -78,7 +81,8 @@
           </div>
         </div>
         <div class="form-group row" [ngClass]="{ 'has-error' : (((limit.dirty || limit.touched) && limit.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.lock.limit' | translate" translate>inventory.label.limit</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.lock.limit' | translate) : ''" [nzTooltipVisible]="false" [nzTooltipMouseEnterDelay]="0.5"
+                 translate>inventory.label.limit</label>
           <div class="col-md-8 col-lg-6">
             <nz-input-number [nzDisabled]="isTrash || !permission.joc.inventory.manage" required [nzMin]="0" [nzStep]="1" [nzPlaceHolder]="'inventory.placeholder.enterLimit' | translate"
                              name="limit" #limit="ngModel" [(ngModel)]="lock.configuration.limit" (nzBlur)="saveJSON()"></nz-input-number>

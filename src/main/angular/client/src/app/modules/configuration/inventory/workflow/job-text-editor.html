@@ -12,7 +12,8 @@
   <nz-tab [nzTitle]="'workflow.tab.jobProperties' | translate">
     <div class="job-property-editor" *ngIf="index === 0">
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.workflow.job.name' | translate" translate>workflow.label.name</label>
+        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.name' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               translate>workflow.label.name</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
           <label class="w-full">
             <input type="text" identifierValidation [appAutofocus]="true" autocomplete="off" required class="form-control"
@@ -29,7 +30,8 @@
         </div>
       </div>
       <div class="form-group row" >
-        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.workflow.job.label' | translate" translate>workflow.label.label</label>
+        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.label' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               translate>workflow.label.label</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : (obj.label || errorMsg || (label.dirty || label.touched) && label.invalid)}">
           <label class="w-full">
             <input type="text" labelValidation required autocomplete="off" (blur)="onBlur();errorMsg=''" maxlength="30" class="form-control"
@@ -46,7 +48,8 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.workflow.job.title' | translate" translate>workflow.label.title</label>
+        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.title' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               translate>workflow.label.title</label>
         <div class="col-md-8 col-lg-9">
           <label class="w-full">
             <input type="text" autocomplete="off" [maxLength]="255" class="form-control" [(ngModel)]="selectedNode.job.title" (blur)="saveToHistory();"
@@ -55,7 +58,8 @@
         </div>
       </div>
       <div class="form-group row doc-in-workflow">
-        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.workflow.documentation' | translate" translate>inventory.label.documentation</label>
+        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.documentation' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               translate>inventory.label.documentation</label>
         <div class="col-md-8 col-lg-9 select-input-both">
           <input autocomplete="off" type="text" class="form-control"
                  placeholder="{{'inventory.placeholder.documentationName' | translate}}"
@@ -87,7 +91,8 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.workflow.job.agent' | translate" translate>workflow.label.agent</label>
+        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agent' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               translate>workflow.label.agent</label>
         <div class="col-md-8 col-lg-9"
              [ngClass]="{'has-error' : (obj.agent || (agentName.dirty || agentName.touched) && agentName.invalid)}">
           <nz-select nzShowSearch name="agentName" nzPlaceHolder="{{'workflow.placeholder.selectAgentName' | translate}}"
@@ -103,7 +108,8 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.workflow.jobResourceNames' | translate" translate>workflow.label.jobResourceNames</label>
+        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.jobResourceNames' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               translate>workflow.label.jobResourceNames</label>
         <div class="col-md-8 col-lg-9">
           <nz-tree-select
             name="jobResource"
@@ -132,7 +138,7 @@
         </div>
       </div>
       <div class="form-group row" *ngIf="selectedNode.job.executable.TYPE === 'ShellScriptExecutable'">
-        <div class="col-md-4 col-lg-3" translate [nz-tooltip]="'inventory.tooltips.workflow.job.returnCode' | translate">workflow.label.returnCode</div>
+        <div class="col-md-4 col-lg-3" translate [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.returnCode' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5">workflow.label.returnCode</div>
         <div class="col-md-8 col-lg-9">
           <nz-radio-group [(ngModel)]="returnCodes.on" (ngModelChange)="saveToHistory();">
             <label nz-radio nzValue="success" (click)="selectedNode.job.executable.returnCodeMeaning.success = selectedNode.job.executable.returnCodeMeaning.failure;selectedNode.job.executable.returnCodeMeaning.failure = ''"><span translate>workflow.label.onSuccess</span></label>
@@ -171,7 +177,8 @@
         </div>
       </div>
       <div class="form-group row" *ngIf="selectedNode.job.executable">
-        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.workflow.job.jobClass' | translate" translate>workflow.label.jobClass</label>
+        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.jobClass' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               translate>workflow.label.jobClass</label>
         <div class="col-md-8 col-lg-9">
           <nz-select name="executableType" [(ngModel)]="selectedNode.job.executable.TYPE" (ngModelChange)="changeType($event)">
             <nz-option [nzLabel]="'workflow.label.shell' | translate" [nzValue]="'ShellScriptExecutable'"></nz-option>
@@ -523,7 +530,8 @@
   <nz-tab [nzTitle]="'workflow.tab.jobOptions' | translate">
     <div class="job-property-editor" *ngIf="index === 1">
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.workflow.job.parallelism' | translate" translate>workflow.label.parallelism</label>
+        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.parallelism' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               translate>workflow.label.parallelism</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((parallelism.dirty || parallelism.touched) && parallelism.invalid)}">
           <nz-input-number [nzMin]="0" [appAutofocus]="true" [nzStep]="1" required name="parallelism" #parallelism="ngModel" [(ngModel)]="selectedNode.job.parallelism"></nz-input-number>
           <div *ngIf="parallelism.invalid && (parallelism.dirty || parallelism.touched)"
@@ -535,7 +543,8 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.workflow.job.timeout' | translate" translate>workflow.label.timeout</label>
+        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.timeout' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               translate>workflow.label.timeout</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
           <label class="w-full">
             <input autocomplete="off" #timeout="ngModel" type="text" class="form-control" name="timeout" placeholder="{{'workflow.placeholder.duration' | translate}}"
@@ -544,7 +553,8 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.workflow.job.graceTimeout' | translate" translate>workflow.label.graceTimeout</label>
+        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.graceTimeout' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               translate>workflow.label.graceTimeout</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((graceTimeout.dirty || graceTimeout.touched) && graceTimeout.invalid)}">
           <label class="w-full">
             <input autocomplete="off" #graceTimeout="ngModel" type="text" class="form-control" name="graceTimeout" placeholder="{{'workflow.placeholder.duration' | translate}}"
@@ -553,7 +563,8 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.workflow.job.warnIfShorter' | translate" translate>workflow.label.warnIfShorter</label>
+        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnIfShorter' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               translate>workflow.label.warnIfShorter</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((warnIfShorter.dirty || warnIfShorter.touched) && warnIfShorter.invalid)}">
           <label class="w-full">
             <input autocomplete="off" #warnIfShorter="ngModel" type="text" class="form-control" name="warnIfShorter" placeholder="{{'workflow.placeholder.duration' | translate}}"
@@ -562,7 +573,8 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.workflow.job.warnIfLonger' | translate" translate>workflow.label.warnIfLonger</label>
+        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnIfLonger' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               translate>workflow.label.warnIfLonger</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((warnIfLonger.dirty || warnIfLonger.touched) && warnIfLonger.invalid)}">
           <label class="w-full">
             <input autocomplete="off" #warnIfLonger="ngModel" type="text" class="form-control" name="warnIfLonger" placeholder="{{'workflow.placeholder.duration' | translate}}"
@@ -571,7 +583,8 @@
         </div>
       </div>
       <div class="form-group row" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'">
-        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.workflow.job.compatibleMode' | translate" translate>workflow.label.compatibleMode</label>
+        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.compatibleMode' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               translate>workflow.label.compatibleMode</label>
         <div class="col-md-8 col-lg-9">
           <nz-select name="v1Compatible" nzAllowClear [(ngModel)]="selectedNode.job.executable.v1Compatible" (ngModelChange)="saveToHistory();">
             <nz-option [nzLabel]="'workflow.label.branch1.x' | translate" [nzValue]="true"></nz-option>
@@ -579,7 +592,8 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.workflow.job.criticality' | translate" translate>workflow.label.criticality</label>
+        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.criticality' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               translate>workflow.label.criticality</label>
         <div class="col-md-8 col-lg-9">
           <nz-select name="criticality" nzAllowClear class="w-full" [nzPlaceHolder]="'inventory.placeholder.selectCriticality' | translate"
                      [(ngModel)]="selectedNode.job.criticality">
@@ -589,7 +603,8 @@
         </div>
       </div>
       <div class="form-group row" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'">
-        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.workflow.job.credentialKey' | translate" translate>workflow.label.credentialKey</label>
+        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.credentialKey' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               translate>workflow.label.credentialKey</label>
         <div class="col-md-8 col-lg-9">
           <label class="w-full">
             <input autocomplete="off" type="text" class="form-control" name="credentialKey" placeholder="{{'workflow.placeholder.enterCredentialKey' | translate}}"
@@ -598,13 +613,15 @@
         </div>
       </div>
       <div class="form-group row" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'">
-        <label class="col-md-4 col-lg-3 block-ellipsis-job" [nz-tooltip]="'inventory.tooltips.workflow.job.loadUserProfile' | translate" translate>workflow.label.loadUserProfile</label>
+        <label class="col-md-4 col-lg-3 block-ellipsis-job" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.loadUserProfile' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               translate>workflow.label.loadUserProfile</label>
         <div class="col-md-8 col-lg-9">
           <label nz-checkbox [(ngModel)]="selectedNode.job.executable.login.withUserProfile" name="loadUserProfile"></label>
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 block-ellipsis-job" [nz-tooltip]="'inventory.tooltips.workflow.job.failOnOutputErr' | translate" translate>workflow.label.failOnOutputErr</label>
+        <label class="col-md-4 col-lg-3 block-ellipsis-job" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.failOnOutputErr' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+               translate>workflow.label.failOnOutputErr</label>
         <div class="col-md-8 col-lg-9">
           <label nz-checkbox [(ngModel)]="selectedNode.job.failOnErrWritten" name="failOnErrWritten"></label>
         </div>

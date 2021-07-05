@@ -1165,7 +1165,8 @@
     "button.leaveWorkflow": "ワークフローを離れる",
     "button.addVariable": "変数追加",
     "button.modifyVariable": "変数編集",
-    "message.noVariableAvailable": "変数はありません"
+    "message.noVariableAvailable": "変数はありません",
+    "message.orderModificationNotAllowed": "The order state {{state}} does not allow modification"
   },
   "profile": {
     "label.userDetails": "アカウント詳細",
@@ -1195,10 +1196,11 @@
     "label.newTab": "新規タブ",
     "label.newWindow": "新規ウィンドウ",
     "label.theme": "テーマ変更",
-    "label.MenuBarTheme": "ヘッダーカラー",
+    "label.menuBarTheme": "ヘッダーカラー",
     "label.themeTitle": "テーマ名",
     "label.enableCommentsForAuditLog": "操作ログコメント有効化",
     "label.useTimezoneForLog": "ログタイムスタンプにタイムゾーンを使用",
+    "label.showTooltipInfo": "Suppress tooltips for Inventory objects",
     "label.selectAll": "すべて選択",
     "label.all": "全て",
     "label.current": "現在",

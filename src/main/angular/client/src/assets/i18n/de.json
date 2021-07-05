@@ -1165,7 +1165,8 @@
     "button.leaveWorkflow": "Arbeitsablauf verlassen",
     "button.addVariable": "Variable hinzufügen",
     "button.modifyVariable": "Variable ändern",
-    "message.noVariableAvailable": "keine Variablen vorhanden"
+    "message.noVariableAvailable": "keine Variablen vorhanden",
+    "message.orderModificationNotAllowed": "The order state {{state}} does not allow modification"
   },
   "profile": {
     "label.userDetails": "Anwenderinformationen",
@@ -1195,10 +1196,11 @@
     "label.newTab": "Neue Registerkarte",
     "label.newWindow": "Neues Fenster",
     "label.theme": "Farbschema",
-    "label.MenuBarTheme": "Farbe der Menüzeile",
+    "label.menuBarTheme": "Farbe der Menüzeile",
     "label.themeTitle": "Titel bei Farbschema",
     "label.enableCommentsForAuditLog": "Begründungen für Prüfprotokoll aktivieren",
     "label.useTimezoneForLog": "Zeitzone für Zeitstempel der Protokolle verwenden",
+    "label.showTooltipInfo": "Suppress tooltips for Inventory objects",
     "label.selectAll": "Alle auswählen",
     "label.all": "Alle",
     "label.current": "Aktuell",

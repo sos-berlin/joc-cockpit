@@ -487,6 +487,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       preferences.historyTab = 'order';
       preferences.expandOption = 'both';
       preferences.currentController = true;
+      preferences.showTooltipInfo = true;
       preferences.logTimezone = true;
       if (sessionStorage.$SOS$FORCELOGING === 'true' || sessionStorage.$SOS$FORCELOGING === true) {
         preferences.auditLog = true;

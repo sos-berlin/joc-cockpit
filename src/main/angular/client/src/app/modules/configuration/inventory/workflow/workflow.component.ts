@@ -71,6 +71,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   @Input() documentationTree = [];
   @Input() orderPreparation;
   @Input() agents = [];
+  @Input() isTooltipVisible: boolean;
   history = [];
   indexOfNextAdd = 0;
   error: boolean;
@@ -1060,6 +1061,7 @@ export class ScriptEditorComponent implements AfterViewInit {
 export class ExpressionComponent implements OnInit {
   @Input() selectedNode: any;
   @Input() error: any;
+  @Input() isTooltipVisible: boolean;
   expression: any = {};
   operators = ['==', '!=', '<', '<=', '>', '>=', 'in', '&&', '||', '!'];
   functions = ['toNumber ', 'toBoolean'];

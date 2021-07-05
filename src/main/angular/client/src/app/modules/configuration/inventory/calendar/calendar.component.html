@@ -29,7 +29,8 @@
           <div class="col-md-12">
             <div class="form-group row"
                  [ngClass]="{'has-error' : ((cname.dirty || cname.touched) && cname.invalid)}">
-              <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.calendar.name' | translate" translate>common.label.name</label>
+              <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.calendar.name' | translate) : ''"
+                     [nzTooltipMouseEnterDelay]="0.5" translate>common.label.name</label>
               <div class="col-md-8 col-lg-6">
                 <input type="text" class="form-control" [readonly]="isTrash || !permission.joc.inventory.manage" [appAutofocus]="!isTrash" identifierValidation required name="name" #cname="ngModel" autocomplete="off"
                        placeholder="{{'inventory.placeholder.enterCalendarName' | translate}}"
@@ -43,14 +44,16 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.calendar.title' | translate" translate>common.label.title</label>
+              <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.calendar.title' | translate) : ''"
+                     [nzTooltipMouseEnterDelay]="0.5" translate>common.label.title</label>
               <div class="col-md-8 col-lg-6">
                 <input type="text" class="form-control" [readonly]="isTrash || !permission.joc.inventory.manage" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
                        [(ngModel)]="calendar.configuration.title" name="title" (blur)="saveJSON()">
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.calendar.documentation' | translate" translate>inventory.label.documentation</label>
+              <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.calendar.documentation' | translate) : ''"
+                     [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.documentation</label>
               <div class="col-md-8 col-lg-6 select-input-both">
                 <input autocomplete="off" [readOnly]="isTrash || !permission.joc.inventory.manage" type="text" class="form-control"
                        placeholder="{{'inventory.placeholder.documentationName' | translate}}"
@@ -85,7 +88,8 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.calendar.type' | translate" translate>common.label.type</label>
+              <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.calendar.type' | translate) : ''"
+                     [nzTooltipMouseEnterDelay]="0.5" translate>common.label.type</label>
               <div class="col-md-8 col-lg-6">
                 <nz-select [(ngModel)]="calendar.configuration.type" [nzDisabled]="isTrash || !permission.joc.inventory.manage" name="cType" (ngModelChange)="saveJSON()">
                   <nz-option nzValue="WORKINGDAYSCALENDAR" [nzLabel]="'runtime.label.workingDay' | translate"></nz-option>
@@ -94,13 +98,15 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.tooltips.calendar.validFrom' | translate" translate>runtime.label.validFrom</label>
+              <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.calendar.validFrom' | translate) : ''"
+                     [nzTooltipMouseEnterDelay]="0.5" translate>runtime.label.validFrom</label>
               <div class="col-md-8 col-lg-2">
                 <nz-date-picker name="from" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
                           [(ngModel)]="calendar.configuration.from" [nzFormat]="dateFormat"
                           [nzPlaceHolder]="'common.placeholder.setStartDate' | translate" (ngModelChange)="saveJSON()"></nz-date-picker>
               </div>
-              <label class="col-md-4 col-lg-2 form-control-label date-center" [nz-tooltip]="'inventory.tooltips.calendar.validTo' | translate" translate>runtime.label.validTo</label>
+              <label class="col-md-4 col-lg-2 form-control-label date-center" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.calendar.validTo' | translate) : ''"
+                     [nzTooltipMouseEnterDelay]="0.5" translate>runtime.label.validTo</label>
               <div class="col-md-8 col-lg-2 date-right" [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}">
                 <nz-date-picker id="to" name="to" #to="ngModel" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
                           [(ngModel)]="calendar.configuration.to" [nzFormat]="dateFormat"

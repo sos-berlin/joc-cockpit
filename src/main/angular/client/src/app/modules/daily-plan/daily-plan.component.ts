@@ -17,6 +17,8 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {OrderPipe} from 'ngx-order-pipe';
 import {isEmpty, groupBy, sortBy, clone} from 'underscore';
 import {Router} from '@angular/router';
+import {catchError} from 'rxjs/operators';
+import {ToasterService} from 'angular2-toaster';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {GroupByPipe, SearchPipe} from '../../pipes/core.pipe';
 import {CoreService} from '../../services/core.service';
@@ -26,7 +28,6 @@ import {DataService} from '../../services/data.service';
 import {ExcelService} from '../../services/excel.service';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../../components/modify-modal/modify.component';
-import {catchError} from 'rxjs/operators';
 
 declare const JSGantt: any;
 declare let jsgantt: any;
@@ -1007,7 +1008,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
-              private dataService: DataService, private groupByPipe: GroupByPipe,
+              private dataService: DataService, private groupByPipe: GroupByPipe, private toasterService: ToasterService,
               private modal: NzModalService, private translate: TranslateService, private searchPipe: SearchPipe,
               private orderPipe: OrderPipe, private excelService: ExcelService, private router: Router) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
@@ -1073,6 +1074,27 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         this.planOrders = [];
         this.resetCheckBox();
       });
+    }
+  }
+
+  private getOrder(order, cb): void {
+    let ids = [];
+    if (order.value) {
+      ids = order.value.map((val) => val.orderId);
+    } else if (order.state && order.state._text === 'SUBMITTED') {
+      ids = [order.orderId];
+    } else{
+      ids = order;
+    }
+    if (ids.length > 0) {
+      this.coreService.post('orders', {
+        controllerId: this.schedulerIds.selected,
+        orderIds: ids
+      }).subscribe((res: any) => {
+        cb(res.orders);
+      });
+    } else {
+      cb();
     }
   }
 
@@ -1219,17 +1241,36 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   modifySelectedOrder(): void {
     const self = this;
     let order = this.object.mapOfCheckedId.values().next().value;
-    if (order.requirements) {
-      openModal(order.requirements);
-    } else {
-      this.coreService.post('workflow', {
-        controllerId: this.schedulerIds.selected,
-        workflowId: {path: order.workflowPath}
-      }).subscribe((res: any) => {
-        order.requirements = res.workflow.orderPreparation;
-        openModal(order.requirements);
-      });
-    }
+    const orderIds = [];
+    this.object.mapOfCheckedId.forEach((value) => {
+      orderIds.push(value.orderId);
+    });
+    this.getOrder(orderIds, (orders) => {
+      let state;
+      if (orders && orders.length > 0) {
+        for (let i in orders) {
+          if (orders[i].state._text !== 'SCHEDULED' && orders[i].state._text !== 'PENDING') {
+            state = orders[i].state._text;
+            break;
+          }
+        }
+      }
+      if (!state) {
+        if (order.requirements) {
+          openModal(order.requirements);
+        } else {
+          this.coreService.post('workflow', {
+            controllerId: this.schedulerIds.selected,
+            workflowId: {path: order.workflowPath}
+          }).subscribe((res: any) => {
+            order.requirements = res.workflow.orderPreparation;
+            openModal(order.requirements);
+          });
+        }
+      } else {
+        this.showInfoMsg(state);
+      }
+    });
 
     function openModal(requirements) {
       self.modal.create({
@@ -1718,41 +1759,73 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   modifyOrder(order): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: ModifyStartTimeModalComponent,
-      nzClassName: 'lg',
-      nzComponentParams: {
-        schedulerId: this.schedulerIds.selected,
-        order,
-        isDailyPlan: true,
-        preferences: this.preferences
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.loadOrderPlan();
+    this.getOrder(order, (orders) => {
+      let state = '';
+      if (orders && orders[0]) {
+        state = orders[0].state._text;
+      }
+      if (state === '' || state === 'SCHEDULED' || state === 'PENDING') {
+        const modal = this.modal.create({
+          nzTitle: undefined,
+          nzContent: ModifyStartTimeModalComponent,
+          nzClassName: 'lg',
+          nzComponentParams: {
+            schedulerId: this.schedulerIds.selected,
+            order,
+            isDailyPlan: true,
+            preferences: this.preferences
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        });
+        modal.afterClose.subscribe(result => {
+          if (result) {
+            this.loadOrderPlan();
+          }
+        });
+      } else if(state){
+        this.showInfoMsg(state);
       }
     });
   }
 
   changeParameter(plan, order): void {
-    if (order) {
-      this.coreService.post('daily_plan/order/variables', {
-        orderId: order.orderId,
-        controllerId: this.schedulerIds.selected
-      }).subscribe((res: any) => {
-        this.convertObjectToArray(res.variables, order);
-        this.openModel(plan, order);
-      });
-    } else {
-      this.openModel(plan, order);
-    }
+    this.getOrder(plan || order, (orders) => {
+      let state;
+      if (orders && orders.length > 0) {
+        for (let i in orders) {
+          if (orders[i].state._text !== 'SCHEDULED' && orders[i].state._text !== 'PENDING') {
+            state = orders[i].state._text;
+            break;
+          }
+        }
+      }
+      if (!state) {
+        if (order) {
+          this.coreService.post('daily_plan/order/variables', {
+            orderId: order.orderId,
+            controllerId: this.schedulerIds.selected
+          }).subscribe((res: any) => {
+            this.convertObjectToArray(res.variables, order);
+            this.openModel(plan, order);
+          });
+        } else {
+          this.openModel(plan, order);
+        }
+      } else {
+        this.showInfoMsg(state);
+      }
+    });
   }
 
+  private showInfoMsg(state): void {
+    this.translate.get(state).subscribe(stateTranslated => {
+      this.translate.get('order.message.orderModificationNotAllowed', {state: stateTranslated}).subscribe(translatedValue => {
+        this.toasterService.pop('info', translatedValue);
+      });
+    });
+  }
 
   receiveMessage($event): void {
     if ($event === 'grid') {

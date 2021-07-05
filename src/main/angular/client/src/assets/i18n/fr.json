@@ -1165,7 +1165,8 @@
     "button.leaveWorkflow": "Quitter le Workflow",
     "button.addVariable": "Ajouter une Variable",
     "button.modifyVariable": "Modifier une Variable",
-    "message.noVariableAvailable": "aucune variable disponible"
+    "message.noVariableAvailable": "aucune variable disponible",
+    "message.orderModificationNotAllowed": "The order state {{state}} does not allow modification"
   },
   "profile": {
     "label.userDetails": "Détails de l'utilisateur",
@@ -1195,10 +1196,11 @@
     "label.newTab": "Nouvel Onglet",
     "label.newWindow": "Nouvelle Fenêtre",
     "label.theme": "Changer de thème",
-    "label.MenuBarTheme": "Couleur de la Barre de Menu",
+    "label.menuBarTheme": "Couleur de la Barre de Menu",
     "label.themeTitle": "Titre du Thème",
     "label.enableCommentsForAuditLog": "Activer les raisons pour le Journal d'Audit",
     "label.useTimezoneForLog": "Utiliser le Fuseau Horaire pour les horodatages des Journaux",
+    "label.showTooltipInfo": "Suppress tooltips for Inventory objects",
     "label.selectAll": "Tout Sélectionner",
     "label.all": "Tous",
     "label.current": "Actuel",

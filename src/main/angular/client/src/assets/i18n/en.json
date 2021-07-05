@@ -1165,7 +1165,8 @@
     "button.leaveWorkflow": "Leave Workflow",
     "button.addVariable": "Add Variable",
     "button.modifyVariable": "Modify Variable",
-    "message.noVariableAvailable": "no variable available"
+    "message.noVariableAvailable": "no variable available",
+    "message.orderModificationNotAllowed": "The order state {{state}} does not allow modification"
   },
   "profile": {
     "label.userDetails": "User Details",
@@ -1195,10 +1196,11 @@
     "label.newTab": "New Tab",
     "label.newWindow": "New Window",
     "label.theme": "Change Theme",
-    "label.MenuBarTheme": "Menu Bar Color",
+    "label.menuBarTheme": "Menu Bar Color",
     "label.themeTitle": "Theme Title",
     "label.enableCommentsForAuditLog": "Enable Reasons for Audit Log",
     "label.useTimezoneForLog": "Use time zone for log timestamps",
+    "label.showTooltipInfo": "Suppress tooltips for Inventory objects",
     "label.selectAll": "Select All",
     "label.all": "All",
     "label.current": "Current",

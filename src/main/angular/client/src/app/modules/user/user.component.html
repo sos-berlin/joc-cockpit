@@ -262,7 +262,7 @@
                   </div>
                 </div>
                 <div class="row m-t" *ngIf="this.preferences.theme === 'light'">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.MenuBarTheme</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.menuBarTheme</div>
                   <div class="col-sm-6">
                     <nz-select nzShowSearch class="w-xl" [(ngModel)]="preferences.headerColor"
                                (ngModelChange)="changeMenuTheme(preferences.headerColor)">
@@ -338,6 +338,14 @@
                   </div>
                   <div class="col-sm-6">
                     <label nz-checkbox [(ngModel)]="preferences.currentController" (ngModelChange)="changeConfiguration()"></label>
+                  </div>
+                </div>
+                <div class="row m-t">
+                  <div class="col-md-4 col-lg-3 text-dark" translate>
+                    profile.label.showTooltipInfo
+                  </div>
+                  <div class="col-sm-6">
+                    <label nz-checkbox [(ngModel)]="preferences.showTooltipInfo" (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
                 <div class="row m-t">
