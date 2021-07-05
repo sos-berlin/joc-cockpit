@@ -111,13 +111,13 @@ export class OrderListSidebarComponent implements OnChanges{
           if (item.state._text !== 'FINISHED' && item.state._text !== 'CANCELLED') {
             this.object.isTerminate = false;
           }
-          if (item.state._text !== 'RUNNING' && item.state._text !== 'INPROGRESS' && item.state._text !== 'WAITING' && item.state._text !== 'PENDING') {
+          if (item.state._text !== 'RUNNING' && item.state._text !== 'INPROGRESS' && item.state._text !== 'WAITING' && item.state._text !== 'PENDING' && item.state._text !== 'SCHEDULED') {
             this.object.isSuspend = false;
           }
           if (item.state._text === 'FINISHED' || item.state._text === 'CANCELLED') {
             this.object.isCancel = true;
           }
-          if (item.state._text !== 'PLANNED' && item.state._text !== 'PENDING') {
+          if (item.state._text !== 'SCHEDULED' && item.state._text !== 'PENDING') {
             this.object.isModify = false;
           }
           if (!position) {

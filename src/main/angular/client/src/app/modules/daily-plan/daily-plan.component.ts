@@ -1267,7 +1267,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         this.resetCheckBox();
         this.isProcessing = true;
         this.resetAction(5000);
-        this.loadOrderPlan();
       }
     });
   }
@@ -1402,7 +1401,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       if (result) {
         this.isProcessing = true;
         this.resetCheckBox();
-        this.loadOrderPlan();
         this.resetAction(5000);
       }
     });
@@ -1426,7 +1424,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.isProcessing = true;
-        this.loadOrderPlan();
         this.resetAction(5000);
       }
     });
@@ -2236,22 +2233,12 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType.match(/WorkflowStateChanged/) && !this.isRefreshed) {
-          this.isRefreshed = true;
-          for (let i in this.plans) {
-            if (this.plans[i].workflowPath === args.eventSnapshots[j].workflow.path) {
-              this.refreshView();
-              break;
-            }
-          }
-          break;
-        }
         if (args.eventSnapshots[j].eventType.match(/DailyPlanUpdated/)) {
           this.load(this.selectedDate);
-          if (args.eventSnapshots[j].message === this.coreService.getStringDate(this.selectedDate)) {
-            this.loadOrderPlan();
+          if (!args.eventSnapshots[j].message
+            || (args.eventSnapshots[j].message === this.coreService.getStringDate(this.selectedDate))) {
+            this.refreshView();
           }
-          this.resetAction();
           break;
         }
       }

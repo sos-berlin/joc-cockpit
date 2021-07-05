@@ -58,8 +58,8 @@
           </nz-dropdown-menu>
         </div>
       </td>
-      <td [ngStyle]="{'padding-left' : dailyPlanFilters.filter.groupBy === '' ? 'inherit' :  '20px !important'}">
-        <span class="show-in-single-line">
+      <td>
+        <span class="show-in-single-line" [ngClass]="dailyPlanFilters.filter.groupBy === '' ? '' :  'p-l-sm'">
           <i class="fa fa-caret-down cursor p-r-xs" *ngIf="!value.show"
              (click)="addDetailsOfOrder(value)"
              aria-hidden="true"></i>

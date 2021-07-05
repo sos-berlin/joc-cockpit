@@ -504,6 +504,8 @@
     "label.prompting": "Prompting",
     "label.finished": "Finished",
     "label.plannedLate": "Planned Late",
+    "label.submitted": "Submitted",
+    "label.submittedLate": "Submitted Late",
     "label.scheduled": "Scheduled",
     "label.scheduledLate": "Late",
     "button.editLayout": "Edit Layout",

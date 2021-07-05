@@ -17,11 +17,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   isLoaded = false;
   totalPlanData = 0;
   planned = 0;
-  pending = 0;
   finished = 0;
-  scheduled = 0;
+  submitted = 0;
   plannedLate = 0;
-  scheduledLate = 0;
+  submittedLate = 0;
   subscription: Subscription;
 
   constructor(private coreService: CoreService, private authService: AuthService,
@@ -74,14 +73,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   filterData(res): void {
-    this.totalPlanData = ((res.planned || 0) + (res.scheduled || 0) + (res.pending || 0) + (res.finished || 0) + (res.plannedLate || 0) + (res.scheduledLate || 0));
+    this.totalPlanData = ((res.planned || 0) + (res.submitted || 0) + (res.finished || 0) + (res.plannedLate || 0) + (res.submittedLate || 0));
     this.planned = this.getPlanPercent(res.planned);
-    this.pending = this.getPlanPercent(res.pending);
     this.finished = this.getPlanPercent(res.finished);
     this.plannedLate = this.getPlanPercent(res.plannedLate);
-    this.scheduled = this.getPlanPercent(res.scheduled);
-    this.scheduledLate = this.getPlanPercent(res.scheduledLate);
-    this.arrayWidth = [this.planned, this.plannedLate, this.pending, this.scheduled, this.scheduledLate, this.finished];
+    this.submitted = this.getPlanPercent(res.submitted);
+    this.submittedLate = this.getPlanPercent(res.submittedLate);
+    this.arrayWidth = [this.planned, this.plannedLate, this.submitted, this.submittedLate, this.finished];
 
     let totalLessWidth = 0, totalGreaterWidth = 0, flag = false;
     for (let i = 0; i <= 6; i++) {
@@ -103,7 +101,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
 
     if (!flag) {
-      this.arrayWidth = [this.planned, this.plannedLate, this.pending, this.scheduled, this.scheduledLate, this.finished];
+      this.arrayWidth = [this.planned, this.plannedLate, this.submitted, this.submittedLate, this.finished];
       totalLessWidth = 0;
       totalGreaterWidth = 0;
       for (let i = 0; i <= 6; i++) {
@@ -137,7 +135,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
     const filter = this.coreService.getDailyPlanTab();
     filter.selectedDate = new Date(d);
-    filter.filter.status = (obj === 1 || obj === 2) ? 'PLANNED' : (obj === 3) ? 'PENDING' : (obj === 4 || obj === 5) ? 'SCHEDULED' : 'FINISHED';
+    filter.filter.status = (obj === 1 || obj === 2) ? 'PLANNED' : (obj === 4 || obj === 5) ? 'SUBMITTED' : 'FINISHED';
     filter.filter.late = (obj === 2 || obj === 5);
     this.router.navigate(['/daily_plan']);
   }
@@ -145,8 +143,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' || args.eventSnapshots[j].eventType === 'DailyPlanUpdated') {
-          this.getPlans();
+        if (args.eventSnapshots[j].eventType === 'DailyPlanUpdated') {
+          let d = new Date();
+          if (this.filters.date === '1d') {
+            d.setDate(new Date().getDate() + 1);
+          }
+          if (!args.eventSnapshots[j].message || (args.eventSnapshots[j].message === this.coreService.getStringDate(d))) {
+            this.getPlans();
+          }
           break;
         }
       }

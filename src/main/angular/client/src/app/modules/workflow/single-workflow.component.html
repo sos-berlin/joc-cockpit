@@ -44,13 +44,15 @@
                 <th rowspan="2"><span translate>inventory.label.deploymentDate</span></th>
                 <th rowspan="2"><span translate>common.label.status</span></th>
                 <th rowspan="2"><span translate>workflow.label.noOfOrders</span></th>
-                <th colspan="8"><span translate>workflow.label.order</span></th>
+                <th colspan="10"><span translate>workflow.label.order</span></th>
               </tr>
               <tr>
                 <th><span translate>common.label.pending</span></th>
+                <th><span translate>common.label.scheduled</span></th>
                 <th><span translate>common.label.incomplete</span></th>
                 <th><span translate>common.label.running</span></th>
                 <th><span translate>common.label.suspended</span></th>
+                <th><span translate>common.label.prompting</span></th>
                 <th><span translate>common.label.waiting</span></th>
                 <th><span translate>common.label.blocked</span></th>
                 <th><span translate>common.label.failed</span></th>
@@ -99,6 +101,9 @@
                     <span [innerHtml]="workflow.ordersSummary.pending || 0"></span>
                   </td>
                   <td>
+                    <span [innerHtml]="workflow.ordersSummary.scheduled || 0"></span>
+                  </td>
+                  <td>
                     <span [innerHtml]="workflow.ordersSummary.inprogress || 0"></span>
                   </td>
                   <td>
@@ -106,6 +111,9 @@
                   </td>
                   <td>
                     <span [innerHtml]="workflow.ordersSummary.suspended || 0"></span>
+                  </td>
+                  <td>
+                    <span [innerHtml]="workflow.ordersSummary.prompting || 0"></span>
                   </td>
                   <td>
                     <span [innerHtml]="workflow.ordersSummary.waiting || 0"></span>
@@ -121,7 +129,7 @@
                   </td>
                 </tr>
                 <tr *ngIf="workflow.show && workflow.fileOrderSources && workflow.fileOrderSources.length>0">
-                  <td colspan="14">
+                  <td colspan="16">
                     <div class="text-sm" *ngFor="let order of workflow.fileOrderSources; let i = index">
                       <span *ngIf="i==0">{{'workflow.label.fileOrders' | translate}} |&nbsp;</span>
                       <span>{{'inventory.label.directory' | translate}}:</span>
@@ -134,7 +142,7 @@
                   </td>
                 </tr>
                 <tr *ngIf="workflow.show">
-                  <td colspan="14">
+                  <td colspan="16">
                     <div class="m-a-sm">
                       <div class="hover" >
                         <a class="text-primary" translate >workflow.label.start</a>

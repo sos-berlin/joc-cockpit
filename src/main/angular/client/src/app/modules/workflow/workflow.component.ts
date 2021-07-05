@@ -491,8 +491,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   exportToExcel(): void {
-    let name = '', path = '', deploymentDate = '', status = '', numOfOrders = '', pending = '', running = '',
-      suspended = '', failed = '', waiting = '', blocked = '', calling = '', inprogress = '';
+    let name = '', path = '', deploymentDate = '', status = '', numOfOrders = '', pending = '', scheduled = '', running = '',
+      suspended = '', prompting = '', failed = '', waiting = '', blocked = '', calling = '', inprogress = '';
     this.translate.get('common.label.name').subscribe(translatedValue => {
       name = translatedValue;
     });
@@ -512,6 +512,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.translate.get('common.label.pending').subscribe(translatedValue => {
         pending = translatedValue;
       });
+      this.translate.get('common.label.scheduled').subscribe(translatedValue => {
+        scheduled = translatedValue;
+      });
       this.translate.get('common.label.incomplete').subscribe(translatedValue => {
         inprogress = translatedValue;
       });
@@ -523,6 +526,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       });
       this.translate.get('common.label.suspended').subscribe(translatedValue => {
         suspended = translatedValue;
+      });
+      this.translate.get('common.label.prompting').subscribe(translatedValue => {
+        prompting = translatedValue;
       });
       this.translate.get('common.label.failed').subscribe(translatedValue => {
         failed = translatedValue;
@@ -547,9 +553,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       obj[numOfOrders] = this.workflows[i].numOfOrders || 0;
       if (!this.workflowFilters.isCompact) {
         obj[pending] = this.workflows[i].ordersSummary.pending || 0;
+        obj[scheduled] = this.workflows[i].ordersSummary.scheduled || 0;
         obj[inprogress] = this.workflows[i].ordersSummary.inprogress || 0;
         obj[running] = this.workflows[i].ordersSummary.running || 0;
         obj[suspended] = this.workflows[i].ordersSummary.suspended || 0;
+        obj[prompting] = this.workflows[i].ordersSummary.prompting || 0;
         obj[calling] = this.workflows[i].ordersSummary.calling || 0;
         obj[waiting] = this.workflows[i].ordersSummary.waiting || 0;
         obj[blocked] = this.workflows[i].ordersSummary.blocked || 0;

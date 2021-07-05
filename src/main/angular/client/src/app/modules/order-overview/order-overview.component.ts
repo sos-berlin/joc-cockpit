@@ -88,7 +88,7 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
 
   private init(): void {
     const obj: any = {controllerId: this.schedulerId};
-    if (this.state === 'PENDING' && this.date !== 'ALL') {
+    if (this.state === 'SCHEDULED' && this.date !== 'ALL') {
       obj.dateTo = this.date;
       obj.timeZone = this.timeZone;
     }
@@ -461,13 +461,13 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         if (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED') {
           this.object.isTerminate = false;
         }
-        if (order.state._text !== 'RUNNING' && order.state._text !== 'INPROGRESS' && order.state._text !== 'WAITING' && order.state._text !== 'PENDING') {
+        if (order.state._text !== 'RUNNING' && order.state._text !== 'INPROGRESS' && order.state._text !== 'WAITING' && order.state._text !== 'PENDING' && order.state._text !== 'SCHEDULED') {
           this.object.isSuspend = false;
         }
         if (order.state._text === 'FINISHED' || order.state._text === 'CANCELLED') {
           this.object.isCancel = true;
         }
-        if (order.state._text !== 'PLANNED' && order.state._text !== 'PENDING') {
+        if (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING') {
           this.object.isModify = false;
         }
         if (!workflow) {
@@ -701,7 +701,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     let tempOrder = this.orders.filter((order) => {
       return order.show;
     });
-    if (this.orderFilters.filter.date !== 'ALL' && this.orderFilters.filter.state === 'PENDING') {
+    if (this.orderFilters.filter.date !== 'ALL' && this.orderFilters.filter.state === 'SCHEDULED') {
       obj.dateTo = this.orderFilters.filter.date;
       obj.timeZone = this.preferences.zone;
     }

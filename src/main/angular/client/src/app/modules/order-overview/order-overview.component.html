@@ -14,7 +14,7 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline" [ngClass]="{'hide': object.mapOfCheckedId && object.mapOfCheckedId.size>0}">
-            <div class="btn-group dropdown" *ngIf="orderFilters.filter.state==='PENDING'">
+            <div class="btn-group dropdown" *ngIf="orderFilters.filter.state==='SCHEDULED'">
               <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" type="button" translate>
                 <span>  {{ 'filters.button.'+orderFilters.filter.dateLabel | translate}} </span>
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
@@ -207,7 +207,7 @@
                     </div>
                     <div class="box-footer b-t">
                       <div>
-                        <a class="hide text-left primary-text-hover-color" [ngClass]="{'show-block':permission.currentController && permission.currentController.orders.modify, 'disable-link' : order.state._text !== 'PENDING'}" (click)="actionChild.modifyOrder(order);">
+                        <a class="hide text-left primary-text-hover-color" [ngClass]="{'show-block':permission.currentController && permission.currentController.orders.modify, 'disable-link' : (order.state._text !== 'PENDING' && order.state._text !== 'SCHEDULED')}" (click)="actionChild.modifyOrder(order);">
                           <i class="fa fa-edit p-r-xs text-black-lt"></i>
                           <span class="text-black-lt" translate>dailyPlan.button.setStartTime</span>
                         </a>

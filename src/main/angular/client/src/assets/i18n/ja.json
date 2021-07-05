@@ -504,6 +504,8 @@
     "label.prompting": "指示待ち",
     "label.finished": "終了",
     "label.plannedLate": "計画遅延",
+    "label.submitted": "登録",
+    "label.submittedLate": "Submitted Late",
     "label.scheduled": "予定",
     "label.scheduledLate": "遅延予定",
     "button.editLayout": "レイアウト編集",

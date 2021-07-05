@@ -504,6 +504,8 @@
     "label.prompting": "À confirmer",
     "label.finished": "Terminé",
     "label.plannedLate": "Planifié et Retardé",
+    "label.submitted": "Soumis",
+    "label.submittedLate": "Submitted Late",
     "label.scheduled": "Prévu",
     "label.scheduledLate": "Retardé",
     "button.editLayout": "Modifier la disposition",
