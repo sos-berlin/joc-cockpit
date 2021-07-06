@@ -1064,7 +1064,7 @@ export class ExpressionComponent implements OnInit {
   @Input() isTooltipVisible: boolean;
   expression: any = {};
   operators = ['==', '!=', '<', '<=', '>', '>=', 'in', '&&', '||', '!'];
-  functions = ['toNumber ', 'toBoolean'];
+  functions = ['toNumber', 'toBoolean'];
   variablesOperators = ['matches', 'startWith', 'endsWith', 'contains'];
   varExam = 'variable ("aString", default="") matches ".*"';
   lastSelectOperator = '';
@@ -1088,13 +1088,13 @@ export class ExpressionComponent implements OnInit {
     this.lastSelectOperator = operator;
     let setText;
     if (type == 'function') {
-      setText = '.' + operator + ' ';
+      setText = operator + '(EXPR)';
       if (operator === 'toNumber') {
-        this.varExam = 'variable ("aNumber", default="0").' + operator;
+        this.varExam = operator + '(variable ("NAME"))';
       } else if (operator === 'toBoolean') {
-        this.varExam = 'variable ("aBoolean", default="false").' + operator;
+        this.varExam = operator + '(variable ("NAME"))';
       } else {
-        this.varExam = 'variable ("aString", default="").' + operator;
+        this.varExam = 'variable("aString", default="").' + operator;
       }
     } else {
       if (operator) {
@@ -1545,7 +1545,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   private updateToolbar(operation, cell, name = ''): void {
     $('#toolbar').find('img').each(function(index) {
-      if (index === 12) {
+      if (index === 13) {
         if (!cell && !name) {
           $(this).addClass('disable-link');
           $(this).attr('title', '');
@@ -1616,7 +1616,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
       if (typeof data === 'object') {
         const newData: any = {};
-        if (this.orderPreparation && this.orderPreparation.parameters) {
+        if (this.orderPreparation) {
           newData.orderPreparation = this.orderPreparation;
         }
         newData.instructions = data.instructions;
@@ -1980,19 +1980,21 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (!this.orderPreparation && this.variableDeclarations.parameters && this.variableDeclarations.parameters.length === 0) {
       this.addVariable();
     }
-    if (this.orderPreparation && this.orderPreparation.parameters && !isEmpty(this.orderPreparation.parameters)) {
+    if (this.orderPreparation && !isEmpty(this.orderPreparation)) {
       this.variableDeclarations.allowUndeclared = this.orderPreparation.allowUndeclared;
-      let temp = this.coreService.clone(this.orderPreparation.parameters);
-      this.variableDeclarations.parameters = Object.entries(temp).map(([k, v]) => {
-        let val: any = v;
-        if (val.final) {
-          val.type = 'Final';
-          this.coreService.removeSlashToString(val, 'final');
-        } else if (val.default) {
-          this.coreService.removeSlashToString(val, 'default');
-        }
-        return {name: k, value: val};
-      });
+      if (this.orderPreparation.parameters && !isEmpty(this.orderPreparation.parameters)) {
+        const temp = this.coreService.clone(this.orderPreparation.parameters);
+        this.variableDeclarations.parameters = Object.entries(temp).map(([k, v]) => {
+          const val: any = v;
+          if (val.final) {
+            val.type = 'Final';
+            this.coreService.removeSlashToString(val, 'final');
+          } else if (val.default) {
+            this.coreService.removeSlashToString(val, 'default');
+          }
+          return {name: k, value: val};
+        });
+      }
     }
   }
 
@@ -3561,9 +3563,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     const doc = mxUtils.createXmlDocument();
     if (!callFun) {
       $('#toolbar').find('img').each(function(index) {
-        if (index === 11) {
+        if (index === 12) {
           $(this).addClass('disable-link');
-        } else if (index === 12) {
+        } else if (index === 13) {
           $(this).addClass('disable-link');
         }
       });
@@ -3823,7 +3825,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
           self.cutCell = null;
           $('#toolbar').find('img').each(function(index) {
-            if (index === 12) {
+            if (index === 13) {
               $(this).addClass('disable-link');
             }
           });
@@ -7337,7 +7339,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   private clearCopyObj(): void {
     this.copyId = null;
     $('#toolbar').find('img').each(function(index) {
-      if (index === 12) {
+      if (index === 13) {
         $(this).addClass('disable-link');
       }
     });
@@ -7750,6 +7752,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           delete value.value.type;
           delete value.value.default;
         } else {
+          delete value.value.final;
           if (value.value.type !== 'String') {
             if (value.value.default === '' || value.value.default === "") {
               delete value.value.default;
@@ -7778,7 +7781,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     let newObj: any = {};
     newObj = extend(newObj, data);
-    if (this.orderPreparation && this.orderPreparation.parameters) {
+    if (this.orderPreparation) {
       newObj.orderPreparation = this.orderPreparation;
     }
     if (this.jobResourceNames) {

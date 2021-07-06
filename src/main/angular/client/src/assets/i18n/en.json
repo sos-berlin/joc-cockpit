@@ -1161,6 +1161,7 @@
     "button.suspend": "Suspend",
     "button.suspendAndKillTask": "Suspend/Kill Tasks",
     "button.resume": "Resume",
+    "button.resumeParametrized": "Resume Parametrized",
     "button.confirm": "Confirm",
     "button.leaveWorkflow": "Leave Workflow",
     "button.addVariable": "Add Variable",

@@ -150,7 +150,12 @@
         <div class="form-group row m-b-0" *ngFor="let variable of schedule.configuration.variables; let i = index">
           <div class="col-md-4 col-lg-3 m-b-sm" *ngIf="i==0" translate>common.label.name</div>
           <div class="col-md-8 col-lg-9 m-b-sm" *ngIf="i==0" translate>common.label.value</div>
-          <div class="col-md-4 col-lg-3 m-b-sm">
+          <div class="col-md-4 col-lg-3 m-b-sm" *ngIf="variable.isTextField" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+            <input #name="ngModel" required autocomplete="off" type="text" class="form-control"
+                   name="name_{{i}}"
+                   [(ngModel)]="variable.name" placeholder="{{'common.placeholder.name' | translate}}">
+          </div>
+          <div class="col-md-4 col-lg-3 m-b-sm" *ngIf="!variable.isTextField">
             <nz-select nzShowSearch name="name{{i}}" [nzDisabled]="isTrash || !permission.joc.inventory.manage" nzPlaceHolder="{{'common.placeholder.selectVariable' | translate}}"
                        [(ngModel)]="variable.name" (ngModelChange)="checkVariableType(variable);saveJSON()">
               <nz-option *ngFor="let list of variableList" [nzDisabled]="list.isSelected" [nzLabel]="list.name"
@@ -205,6 +210,9 @@
         <div class="form-group row" [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}">
           <div class="col-sm-12" *ngIf="variableList.length > schedule.configuration.variables.length">
             <a class="text-u-l" (click)="addVariable()" translate>order.button.modifyVariable</a>
+          </div>
+          <div class="col-sm-12" *ngIf="variableList.length <=  schedule.configuration.variables.length && (workflow.orderPreparation && workflow.orderPreparation.allowUndeclared)">
+            <a class="text-u-l" (click)="addVariable(true)" translate>order.button.addVariable</a>
           </div>
         </div>
       </form>

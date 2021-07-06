@@ -76,14 +76,12 @@ export class AddOrderModalComponent implements OnInit {
   }
 
   updateSelectItems(): void {
-    if (this.arguments.length > 0) {
-      for (let i = 0; i < this.variableList.length; i++) {
-        this.variableList[i].isSelected = false;
-        for (let j = 0; j < this.arguments.length; j++) {
-          if (this.variableList[i].name === this.arguments[j].name) {
-            this.variableList[i].isSelected = true;
-            break;
-          }
+    for (let i = 0; i < this.variableList.length; i++) {
+      this.variableList[i].isSelected = false;
+      for (let j = 0; j < this.arguments.length; j++) {
+        if (this.variableList[i].name === this.arguments[j].name) {
+          this.variableList[i].isSelected = true;
+          break;
         }
       }
     }
@@ -146,13 +144,16 @@ export class AddOrderModalComponent implements OnInit {
     });
   }
 
-  addArgument(): void {
-    const param = {
+  addArgument(isNew = false): void {
+    const param: any = {
       name: '',
       value: ''
     };
     if (this.arguments) {
       if (!this.coreService.isLastEntryEmpty(this.arguments, 'name', '')) {
+        if (isNew) {
+          param.isTextField = true;
+        }
         this.arguments.push(param);
       }
     }

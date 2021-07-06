@@ -120,13 +120,16 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }, 10);
   }
 
-  addVariable(): void {
-    let param = {
+  addVariable(isNew = false): void {
+    const param: any = {
       name: '',
       value: ''
     };
     if (this.schedule.configuration.variables) {
       if (!this.coreService.isLastEntryEmpty(this.schedule.configuration.variables, 'name', '')) {
+        if (isNew) {
+          param.isTextField = true;
+        }
         this.schedule.configuration.variables.push(param);
       }
     }
@@ -276,6 +279,13 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         }
         return {name: k, value: v};
       });
+      if (this.workflow.orderPreparation.allowUndeclared) {
+        for (let i = 0; i < this.schedule.configuration.variables.length; i++) {
+          if (!this.schedule.configuration.variables[i].type) {
+            this.schedule.configuration.variables[i].isTextField = true;
+          }
+        }
+      }
       this.variableList = this.variableList.filter((item) => {
         return !item.value.final;
       });
@@ -300,14 +310,12 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   updateSelectItems(): void {
-    if (this.schedule.configuration.variables.length > 0) {
-      for (let i = 0; i < this.variableList.length; i++) {
-        this.variableList[i].isSelected = false;
-        for (let j = 0; j < this.schedule.configuration.variables.length; j++) {
-          if (this.variableList[i].name === this.schedule.configuration.variables[j].name) {
-            this.variableList[i].isSelected = true;
-            break;
-          }
+    for (let i = 0; i < this.variableList.length; i++) {
+      this.variableList[i].isSelected = false;
+      for (let j = 0; j < this.schedule.configuration.variables.length; j++) {
+        if (this.variableList[i].name === this.schedule.configuration.variables[j].name) {
+          this.variableList[i].isSelected = true;
+          break;
         }
       }
     }

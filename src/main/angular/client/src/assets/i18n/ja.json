@@ -1161,6 +1161,7 @@
     "button.suspend": "一時停止",
     "button.suspendAndKillTask": "タスク一時停止/即時終了",
     "button.resume": "回復",
+    "button.resumeParametrized": "Resume Parametrized",
     "button.confirm": "確認",
     "button.leaveWorkflow": "ワークフローを離れる",
     "button.addVariable": "変数追加",

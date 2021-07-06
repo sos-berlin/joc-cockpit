@@ -1,6 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {isEmpty} from 'underscore';
 
 @Component({
   selector: 'app-resume-order',
@@ -11,11 +13,15 @@ export class ResumeOrderModalComponent implements OnInit {
   @Input() preferences: any;
   @Input() order: any;
   @Input() orders: any;
+  @Input() isParametrized: any;
   workflow: any;
   display: any;
   submitted = false;
   comments: any = {};
   position: any;
+  arguments: any = [];
+  variableList = [];
+  orderPreparation: any;
 
   constructor(public coreService: CoreService, private modal: NzModalRef) {
   }
@@ -41,8 +47,12 @@ export class ResumeOrderModalComponent implements OnInit {
     }).subscribe((res: any) => {
       this.workflow = {};
       this.workflow.jobs = res.workflow.jobs;
+      this.orderPreparation = res.workflow.orderPreparation;
       this.workflow.configuration = {instructions: res.workflow.instructions};
       this.convertTryToRetry(this.workflow.configuration);
+      if (this.isParametrized) {
+        this.updateVariableList();
+      }
     });
   }
 
@@ -182,6 +192,15 @@ export class ResumeOrderModalComponent implements OnInit {
     } else if (this.order.position) {
       obj.position = this.order.position;
     }
+    if (this.isParametrized && this.arguments.length > 0) {
+      let argu = [...this.arguments];
+      if (this.coreService.isLastEntryEmpty(argu, 'name', '')) {
+        argu.splice(argu.length - 1, 1);
+      }
+      if (argu.length > 0) {
+        obj.arguments = this.coreService.keyValuePair(argu);
+      }
+    }
     obj.auditLog = {};
     if (this.comments.comment) {
       obj.auditLog.comment = this.comments.comment;
@@ -206,6 +225,82 @@ export class ResumeOrderModalComponent implements OnInit {
 
   onDrop(postion): void {
     this.updateOrder(postion);
+  }
+
+  drop(event: CdkDragDrop<string[]>): void {
+    moveItemInArray(this.arguments, event.previousIndex, event.currentIndex);
+  }
+
+  updateVariableList(): void {
+    if (this.orderPreparation && this.orderPreparation.parameters && !isEmpty(this.orderPreparation.parameters)) {
+      this.variableList = Object.entries(this.orderPreparation.parameters).map(([k, v]) => {
+        const val: any = v;
+        if (!val.final) {
+          if (!val.default && val.default !== false && val.default !== 0) {
+            this.arguments.push({name: k, type: val.type, isRequired: true});
+          } else{
+            this.coreService.removeSlashToString(val, 'default');
+          }
+        }
+        return {name: k, value: val};
+      });
+      this.variableList = this.variableList.filter((item) => {
+        return !item.value.final;
+      });
+    }
+    this.updateSelectItems();
+  }
+
+  addArgument(isNew = false): void {
+    const param: any = {
+      name: '',
+      value: ''
+    };
+    if (this.arguments) {
+      if (!this.coreService.isLastEntryEmpty(this.arguments, 'name', '')) {
+        if (isNew) {
+          param.isTextField = true;
+        }
+        this.arguments.push(param);
+      }
+    }
+  }
+
+  removeArgument(index): void {
+    this.arguments.splice(index, 1);
+    this.updateSelectItems();
+  }
+
+  onKeyPress($event): void {
+    if ($event.which === '13' || $event.which === 13) {
+      $event.preventDefault();
+      this.addArgument();
+    }
+  }
+
+  checkVariableType(argument): void {
+    let obj = this.orderPreparation.parameters[argument.name];
+    if (obj) {
+      argument.type = obj.type;
+      if (!obj.default && obj.default !== false && obj.default !== 0) {
+        argument.isRequired = true;
+      } else{
+        argument.value = obj.default;
+      }
+    }
+    this.updateSelectItems();
+  }
+
+  updateSelectItems(): void {
+    for (let i = 0; i < this.variableList.length; i++) {
+      this.variableList[i].isSelected = false;
+      for (let j = 0; j < this.arguments.length; j++) {
+        if (this.variableList[i].name === this.arguments[j].name) {
+          this.variableList[i].isSelected = true;
+          break;
+        }
+      }
+    }
   }
 
   private updateOrder(position): void {

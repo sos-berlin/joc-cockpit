@@ -280,16 +280,16 @@
                                     </td>
                                   </tr>
                                   <tr>
-                                    <td colspan="3" class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
+                                    <td colspan="4" class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
                                     <td colspan="3" class="custom-th"><span translate>order.label.position</span></td>
                                     <td class="custom-th"><span translate>order.label.state</span></td>
                                     <td class="custom-th"><span translate>order.label.scheduledFor</span></td>
                                   </tr>
                                   <tr *ngFor="let item of workflow.ordersWaitingForLocks">
-                                    <td colspan="3"><span class="p-l">{{item.order.orderId}}</span></td>
+                                    <td colspan="4"><span class="p-l">{{item.order.orderId}}</span></td>
                                     <td colspan="3">
-                                      <span *ngIf="item.order.position && item.order.position.length>0">
-                                        {{item.order.position | json}}
+                                      <span>
+                                        {{item.order.positionString}}
                                       </span>
                                     </td>
                                     <td><span class="label" [ngClass]="coreService.getColor(item.order.state.severity,'bg')">{{item.order.state._text | translate}}</span></td>
@@ -303,16 +303,16 @@
                                     </td>
                                   </tr>
                                   <tr>
-                                    <td colspan="3" class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
+                                    <td colspan="4" class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
                                     <td colspan="3" class="custom-th"><span translate>order.label.position</span></td>
                                     <td class="custom-th"><span translate>order.label.state</span></td>
                                     <td class="custom-th"><span translate>order.label.scheduledFor</span></td>
                                   </tr>
                                   <tr *ngFor="let item of workflow.ordersHoldingLocks">
-                                    <td colspan="3"><span class="p-l">{{item.order.orderId}}</span></td>
+                                    <td colspan="4"><span class="p-l">{{item.order.orderId}}</span></td>
                                     <td colspan="3">
-                                      <span *ngIf="item.order.position && item.order.position.length>0">
-                                        {{item.order.position | json}}
+                                      <span>
+                                        {{item.order.positionString}}
                                       </span>
                                     </td>
                                     <td><span class="label" [ngClass]="coreService.getColor(item.order.state.severity,'bg')">{{item.order.state._text | translate}}</span></td>

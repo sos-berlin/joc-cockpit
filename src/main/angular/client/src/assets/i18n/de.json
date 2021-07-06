@@ -1161,6 +1161,7 @@
     "button.suspend": "Unterbrechen",
     "button.suspendAndKillTask": "Unterbrechen/Prozess abschießen",
     "button.resume": "Fortsetzen",
+    "button.resumeParametrized": "Resume Parametrized",
     "button.confirm": "Bestätigen",
     "button.leaveWorkflow": "Arbeitsablauf verlassen",
     "button.addVariable": "Variable hinzufügen",

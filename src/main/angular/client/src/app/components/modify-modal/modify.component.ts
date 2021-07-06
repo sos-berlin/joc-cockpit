@@ -95,18 +95,16 @@ export class ChangeParameterModalComponent implements OnInit {
   }
 
   updateSelectItems(): void {
-    if (this.variables.length > 0) {
-      for (let i = 0; i < this.variableList.length; i++) {
-        this.variableList[i].isSelected = false;
-        for (let j = 0; j < this.variables.length; j++) {
-          if (this.variableList[i].name === this.variables[j].name) {
-            this.variableList[i].isSelected = true;
-            this.variables[j].type = this.variableList[i].value.type;
-            if (!this.variableList[i].value.default && this.variableList[i].value.default !== false && this.variableList[i].value.default !== 0) {
-              this.variables[j].isRequired = true;
-            }
-            break;
+    for (let i = 0; i < this.variableList.length; i++) {
+      this.variableList[i].isSelected = false;
+      for (let j = 0; j < this.variables.length; j++) {
+        if (this.variableList[i].name === this.variables[j].name) {
+          this.variableList[i].isSelected = true;
+          this.variables[j].type = this.variableList[i].value.type;
+          if (!this.variableList[i].value.default && this.variableList[i].value.default !== false && this.variableList[i].value.default !== 0) {
+            this.variables[j].isRequired = true;
           }
+          break;
         }
       }
     }
@@ -117,15 +115,19 @@ export class ChangeParameterModalComponent implements OnInit {
     this.variables = this.variables.filter((item) => {
       return argu.name !== item.name;
     });
+    this.updateSelectItems();
   }
 
-  addVariable(): void {
-    const param = {
+  addVariable(isNew = false): void {
+    const param: any = {
       name: '',
       value: ''
     };
     if (this.variables) {
       if (!this.coreService.isLastEntryEmpty(this.variables, 'name', '')) {
+        if (isNew) {
+          param.isTextField = true;
+        }
         this.variables.push(param);
       }
     }
