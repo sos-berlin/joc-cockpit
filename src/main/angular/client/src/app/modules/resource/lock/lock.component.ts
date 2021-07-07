@@ -105,7 +105,7 @@ export class LockComponent implements OnInit, OnDestroy {
   data: any = [];
   locksFilters: any = {};
   sideView: any = {};
-  searchableProperties = ['id', 'path', 'limit', 'title', 'state', 'versionDate'];
+  searchableProperties = ['id', 'path', 'limit', 'title', 'state', '_text', 'versionDate'];
   subscription1: Subscription;
   subscription2: Subscription;
 

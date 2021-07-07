@@ -451,13 +451,9 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
         toDate.setSeconds(0);
       }
       toDate.setMilliseconds(0);
-
       filter.dateTo = toDate;
     }
 
-    if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-      delete filter.timeZone;
-    }
     return filter;
   }
 
@@ -522,7 +518,6 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
       radio: 'current',
       planned: 'today',
       from: new Date(),
-      fromTime: new Date(),
       to: new Date(),
       toTime: new Date()
     };
@@ -545,6 +540,12 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     };
     this.agentFilters.filter.date = '';
     filter = this.generateRequestObj(this.searchFilter, filter);
+    if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
+      filter.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateFrom)._d;
+    }
+    if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+      filter.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateTo)._d;
+    }
     this.coreService.post('agents/report', filter).subscribe((res: any) => {
       this.agentTasks = res.agents || [];
       this.searchInResult();

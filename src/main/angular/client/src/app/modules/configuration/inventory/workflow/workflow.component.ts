@@ -7246,16 +7246,28 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     if (job.timeout1) {
       job.timeout = this.workflowService.convertStringToDuration(job.timeout1);
+    } else{
+      delete job.timeout;
     }
     if (job.graceTimeout1) {
       job.graceTimeout = this.workflowService.convertStringToDuration(job.graceTimeout1);
+    } else{
+      delete job.graceTimeout;
     }
     if (job.warnIfShorter1) {
       job.warnIfShorter = this.workflowService.convertStringToDuration(job.warnIfShorter1);
+    } else{
+      delete job.warnIfShorter;
     }
     if (job.warnIfLonger1) {
       job.warnIfLonger = this.workflowService.convertStringToDuration(job.warnIfLonger1);
+    } else{
+      delete job.warnIfLonger;
     }
+    delete job.timeout1;
+    delete job.graceTimeout1;
+    delete job.warnIfShorter1;
+    delete job.warnIfLonger1;
     let flag = true;
     let isChange = true;
     for (let i = 0; i < this.jobs.length; i++) {
