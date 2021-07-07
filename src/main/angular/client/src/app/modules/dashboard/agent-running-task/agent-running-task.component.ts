@@ -43,8 +43,8 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'JobStateChanged' || args.eventSnapshots[j].eventType === 'AgentStateChanged' ||
-          args.eventSnapshots[j].eventType === 'ProxyCoupled' ||
-          args.eventSnapshots[j].eventType === 'ProxyDecoupled') {
+          ((args.eventSnapshots[j].eventType === 'ProxyCoupled' ||
+          args.eventSnapshots[j].eventType === 'ProxyDecoupled' || args.eventSnapshots[j].eventType.match(/Item/)) && args.eventSnapshots[j].objectType === 'AGENT')) {
           this.getRunningTask();
           break;
         }

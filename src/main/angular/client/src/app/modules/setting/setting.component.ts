@@ -43,7 +43,7 @@ export class AddSectionComponent implements OnInit {
     }
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.submitted = true;
     setTimeout(() => {
       this.activeModal.close(this.setting);
@@ -101,7 +101,10 @@ export class ImportSettingComponent implements OnInit {
         data = JSON.parse(_event.target.result);
         self.setting = data;
       } catch (e) {
-
+        self.translate.get('error.message.invalidJSON').subscribe(translatedValue => {
+          self.toasterService.pop('error', '', translatedValue);
+        });
+        self.uploader.clearQueue();
       }
     }
   }

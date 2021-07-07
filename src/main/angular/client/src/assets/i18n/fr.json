@@ -635,7 +635,8 @@
     "message.objectNotFound": "L'objet n'existe plus",
     "message.noControllerFound": "Aucun Contrôleur trouvé",
     "message.errorInLoadingScheduleIds": "Erreur lors de la récupération des ID du contrôleur",
-    "message.pasteInSubFolderNotAllowed": "Le dossier de destination est un sous-dossier du dossier source."
+    "message.pasteInSubFolderNotAllowed": "Le dossier de destination est un sous-dossier du dossier source.",
+    "message.invalidJSON": "Invalid JSON file"
   },
   "fileTransfer": {
     "label.transfer": "Transfert",

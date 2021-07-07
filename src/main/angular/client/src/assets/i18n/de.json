@@ -635,7 +635,8 @@
     "message.objectNotFound": "Das Objekt ist nicht mehr vorhanden",
     "message.noControllerFound": "Keinen Controller gefunden",
     "message.errorInLoadingScheduleIds": "Fehler beim Lesen der Controller-Kennungen",
-    "message.pasteInSubFolderNotAllowed": "Der Zielordner ist ein Unterordner des Quellordners."
+    "message.pasteInSubFolderNotAllowed": "Der Zielordner ist ein Unterordner des Quellordners.",
+    "message.invalidJSON": "Invalid JSON file"
   },
   "fileTransfer": {
     "label.transfer": "Übertragung",

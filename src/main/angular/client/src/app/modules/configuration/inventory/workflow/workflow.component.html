@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-md-12" *ngIf="data.type">
-    <div id="toolbar" class="bg-white" [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"></div>
+    <div id="toolbar" class="bg-white" [ngClass]="{'disable-link': isTrash || !(permission.joc && permission.joc.inventory.manage)}"></div>
     <div class="row toolbar b-b m-b-12">
       <div class="col-md-12">
           <div class="inline m-b" *ngIf="workflow.path">
@@ -30,7 +30,7 @@
               <i class="fa fa-spin fa-spinner"></i>
               <i class="fa fa-spin fa-spinner m-l-12"></i>
             </span>
-            <button *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" type="button" [disabled]="!workflow.valid && !workflow.hasDeployments"
+            <button *ngIf="permission.joc && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" type="button" [disabled]="!workflow.valid && !workflow.hasDeployments"
                     class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="deploy()" >
               <i class="fa fa-rocket p-r-xs"></i>
               <span translate>inventory.button.deploy</span>
@@ -68,31 +68,31 @@
               <span class="nav-text"> <i nz-icon nzType="column-width" nzTheme="outline"></i></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="!isTrash && permission.joc.inventory.manage">
+          <li class="nav-item dropdown-separator" *ngIf="!isTrash && permission.joc && permission.joc.inventory.manage">
             <span class="separator"></span>
           </li>
-          <li class="nav-item" [nz-tooltip]="'workflow.button.undo' | translate" *ngIf="!isTrash && permission.joc.inventory.manage">
+          <li class="nav-item" [nz-tooltip]="'workflow.button.undo' | translate" *ngIf="!isTrash && permission.joc && permission.joc.inventory.manage">
             <a class="nav-link" [ngClass]="{'disable-link': history.past.length === 0}"
                (click)="undo()">
               <span class="nav-text"> <i nz-icon nzType="undo" nzTheme="outline"></i></span>
             </a>
           </li>
-          <li class="nav-item" [nz-tooltip]="'workflow.button.redo' | translate" *ngIf="!isTrash && permission.joc.inventory.manage">
+          <li class="nav-item" [nz-tooltip]="'workflow.button.redo' | translate" *ngIf="!isTrash && permission.joc && permission.joc.inventory.manage">
             <a class="nav-link" [ngClass]="{'disable-link': history.future.length === 0}"
                (click)="redo()">
               <span class="nav-text"> <i nz-icon nzType="redo" nzTheme="outline"></i></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="!isTrash && permission.joc.inventory.manage">
+          <li class="nav-item dropdown-separator" *ngIf="!isTrash && permission.joc && permission.joc.inventory.manage">
             <span class="separator"></span>
           </li>
-          <li class="nav-item" [nz-tooltip]="'inventory.button.download' | translate" *ngIf="!isTrash && permission.joc.inventory.manage">
+          <li class="nav-item" [nz-tooltip]="'inventory.button.download' | translate" *ngIf="!isTrash && permission.joc && permission.joc.inventory.manage">
             <a class="nav-link"
                (click)="exportJSON()">
               <span class="nav-text">  <i nz-icon nzType="download" nzTheme="outline"></i></span>
             </a>
           </li>
-          <li class="nav-item" [nz-tooltip]="'inventory.button.upload' | translate" *ngIf="!isTrash && permission.joc.inventory.manage">
+          <li class="nav-item" [nz-tooltip]="'inventory.button.upload' | translate" *ngIf="!isTrash && permission.joc && permission.joc.inventory.manage">
             <a class="nav-link" (click)="importJSON()">
               <span class="nav-text">  <i nz-icon nzType="upload" nzTheme="outline"></i></span>
             </a>

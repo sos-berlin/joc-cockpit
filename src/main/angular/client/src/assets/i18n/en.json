@@ -635,7 +635,8 @@
     "message.objectNotFound": "Object does not exist any longer",
     "message.noControllerFound": "No Controller Found",
     "message.errorInLoadingScheduleIds": "Error in fetching Controller IDs",
-    "message.pasteInSubFolderNotAllowed": "The destination folder is a sub-folder of the source folder."
+    "message.pasteInSubFolderNotAllowed": "The destination folder is a sub-folder of the source folder.",
+    "message.invalidJSON": "Invalid JSON file"
   },
   "fileTransfer": {
     "label.transfer": "Transfer",

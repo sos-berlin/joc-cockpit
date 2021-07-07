@@ -635,7 +635,8 @@
     "message.objectNotFound": "オブジェクトはありません",
     "message.noControllerFound": "コントローラーはありません",
     "message.errorInLoadingScheduleIds": "コントローラーID取得エラー",
-    "message.pasteInSubFolderNotAllowed": "宛先フォルダーはソースフォルダーの下にあります"
+    "message.pasteInSubFolderNotAllowed": "宛先フォルダーはソースフォルダーの下にあります",
+    "message.invalidJSON": "Invalid JSON file"
   },
   "fileTransfer": {
     "label.transfer": "送信",

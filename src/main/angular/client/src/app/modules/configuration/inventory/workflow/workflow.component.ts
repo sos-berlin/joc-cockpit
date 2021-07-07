@@ -4387,8 +4387,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 flag = true;
               }
               setTimeout(() => {
-                self.validateJSON(true);
-              }, 50);
+                self.storeJSON();
+              }, 10);
             } else {
               movedTarget = drpTargt;
             }
@@ -4853,10 +4853,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 iterateJson(json.instructions[x].branches[i], cell, '');
                 if (!json.instructions[x].branches[i].instructions) {
                   json.instructions[x].branches.splice(i, 1);
-                  if (json.instructions[x].branches.length === 0) {
+/*                  if (json.instructions[x].branches.length === 0) {
                     delete json.instructions[x].branches;
                     break;
-                  }
+                  }*/
                 }
               }
             }
@@ -5172,10 +5172,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         if (cell) {
           if (cell.edges) {
             for (let i = 0; i < cell.edges.length; i++) {
-              if (cell.edges[i].target.id === cell.id) {
+              if (cell.edges[i].target && cell.edges[i].target.id === cell.id) {
                 _sour = cell.edges[i];
               }
-              if (cell.edges[i].source.id === cell.id) {
+              if (cell.edges[i].source && cell.edges[i].source.id === cell.id) {
                 _tar = cell.edges[i];
               }
             }
@@ -5201,7 +5201,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             _middle = _tar.source;
           } else {
             for (let i = 0; i < cells.lastCell.edges.length; i++) {
-              if (cells.lastCell.edges[i].source.id === cells.lastCell.id) {
+              if (cells.lastCell.edges[i].source && cells.lastCell.edges[i].source.id === cells.lastCell.id) {
                 _tar = cells.lastCell.edges[i];
 
                 break;
@@ -5663,7 +5663,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
 
         let isChange = true;
-        if (isEqual(self.selectedNode.newObj, self.selectedNode.actualValue)) {
+        if (isEqual(JSON.stringify(self.selectedNode.newObj), JSON.stringify(self.selectedNode.actualValue))) {
           isChange = false;
           if (self.selectedNode.type === 'Job') {
             let _job;
@@ -6173,7 +6173,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         if (title.match('job')) {
           _node = doc.createElement('Job');
           _node.setAttribute('jobName', 'job');
-          _node.setAttribute('label', '');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 180, 40, 'job');
         } else if (title.match('finish')) {
@@ -6207,7 +6206,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         } else if (title.match('lock')) {
           _node = doc.createElement('Lock');
           _node.setAttribute('label', 'lock');
-          _node.setAttribute('lockName', '');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.lock);
         } else if (title.match('try')) {
@@ -6233,7 +6231,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         } else if (title.match('fileWatcher')) {
           _node = doc.createElement('FileWatcher');
           _node.setAttribute('label', 'fileWatcher');
-          _node.setAttribute('directory', '');
           _node.setAttribute('regex', '.*');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 110, 40, 'fileWatcher');
@@ -6504,7 +6501,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       let label = '';
       const dropTargetName = _dropTarget.value.tagName;
       for (let i = 0; i < _dropTarget.edges.length; i++) {
-        if (_dropTarget.edges[i].source.id === _dropTarget.id) {
+        if (_dropTarget.edges[i].source && _dropTarget.edges[i].source.id === _dropTarget.id) {
           if (checkClosedCellWithSourceCell(_dropTarget, _dropTarget.edges[i].target)) {
             graph.foldCells(false, false, [_dropTarget], null, null);
           }
@@ -6515,7 +6512,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         let flag = false;
         label = 'then';
         for (let i = 0; i < _dropTarget.edges.length; i++) {
-          if (_dropTarget.edges[i].target.id !== _dropTarget.id && _dropTarget.edges[i].target.value.tagName !== 'EndIf') {
+          if (_dropTarget.edges[i].target && _dropTarget.edges[i].target.id !== _dropTarget.id && _dropTarget.edges[i].target.value.tagName !== 'EndIf') {
             label = 'else';
           } else {
             if (_dropTarget.edges[i].target && _dropTarget.edges[i].target.edges) {
@@ -7538,6 +7535,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                   recursive(json.instructions[x].branches[i].workflow);
                 }
               }
+            } else{
+              json.instructions[x].branches = [];
             }
           }
           json.instructions[x].id = undefined;

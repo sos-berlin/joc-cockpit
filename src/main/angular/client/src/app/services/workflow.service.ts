@@ -359,7 +359,7 @@ export class WorkflowService {
             json.instructions[x].TYPE = 'Job';
             if (!isEmpty(jobs) && !json.instructions[x].documentationName) {
               const job = jobs[json.instructions[x].jobName];
-              json.instructions[x].documentationName =  job ? job.documentationName : null;
+              json.instructions[x].documentationName = job ? job.documentationName : null;
             }
           }
           if (json.instructions[x].TYPE === 'Try') {
@@ -481,15 +481,15 @@ export class WorkflowService {
           }
           if (json.instructions[x].TYPE === 'Job') {
             _node.setAttribute('jobName', json.instructions[x].jobName);
-            _node.setAttribute('label', json.instructions[x].label || '');
+            if (json.instructions[x].label !== undefined) {
+              _node.setAttribute('label', json.instructions[x].label);
+            }
             _node.setAttribute('uuid', json.instructions[x].uuid);
-            if(json.instructions[x].documentationName) {
+            if (json.instructions[x].documentationName !== undefined) {
               _node.setAttribute('documentationName', json.instructions[x].documentationName);
             }
             if (json.instructions[x].defaultArguments && typeof json.instructions[x].defaultArguments === 'object') {
               _node.setAttribute('defaultArguments', JSON.stringify(json.instructions[x].defaultArguments));
-            } else {
-              _node.setAttribute('defaultArguments', '');
             }
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 180, 40, 'job');
             if (mapObj.vertixMap && json.instructions[x].position) {
@@ -506,8 +506,12 @@ export class WorkflowService {
             _node.setAttribute('label', 'fail');
             const outcome = json.instructions[x].outcome || {returnCode: 0};
             _node.setAttribute('outcome', JSON.stringify(outcome));
-            _node.setAttribute('message', json.instructions[x].message || '');
-            _node.setAttribute('uncatchable', json.instructions[x].uncatchable || '');
+            if (json.instructions[x].message !== undefined) {
+              _node.setAttribute('message', json.instructions[x].message);
+            }
+            if (json.instructions[x].uncatchable !== undefined) {
+              _node.setAttribute('uncatchable', json.instructions[x].uncatchable);
+            }
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.fail);
             if (mapObj.vertixMap && json.instructions[x].position) {
@@ -515,7 +519,9 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'Publish') {
             _node.setAttribute('label', 'publish');
-            _node.setAttribute('junctionPath', json.instructions[x].junctionPath || '');
+            if (json.instructions[x].junctionPath !== undefined) {
+              _node.setAttribute('junctionPath', json.instructions[x].junctionPath);
+            }
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.publish);
             if (mapObj.vertixMap && json.instructions[x].position) {
@@ -523,7 +529,9 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'Prompt') {
             _node.setAttribute('label', 'prompt');
-            _node.setAttribute('question', json.instructions[x].question || '');
+            if (json.instructions[x].question !== undefined) {
+              _node.setAttribute('question', json.instructions[x].question);
+            }
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.prompt);
             if (mapObj.vertixMap && json.instructions[x].position) {
@@ -538,11 +546,22 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'Await') {
             _node.setAttribute('label', 'await');
-            _node.setAttribute('junctionPath', json.instructions[x].junctionPath || '');
-            _node.setAttribute('timeout', json.instructions[x].timeout || '');
-            _node.setAttribute('joinVariables', json.instructions[x].joinVariables || '');
-            _node.setAttribute('predicate', json.instructions[x].predicate || '');
-            _node.setAttribute('match', json.instructions[x].match || '');
+            if (json.instructions[x].junctionPath !== undefined) {
+              _node.setAttribute('junctionPath', json.instructions[x].junctionPath);
+            }
+            if (json.instructions[x].timeout !== undefined) {
+              _node.setAttribute('timeout', json.instructions[x].timeout);
+            }
+            if (json.instructions[x].joinVariables !== undefined) {
+              _node.setAttribute('joinVariables', json.instructions[x].joinVariables);
+            }
+            if (json.instructions[x].predicate !== undefined) {
+              _node.setAttribute('predicate', json.instructions[x].predicate);
+            }
+            if (json.instructions[x].match !== undefined) {
+              _node.setAttribute('match', json.instructions[x].match);
+            }
+
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.await);
             if (mapObj.vertixMap && json.instructions[x].position) {
@@ -550,7 +569,9 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'Fork') {
             _node.setAttribute('label', 'fork');
-            _node.setAttribute('joinVariables', json.instructions[x].joinVariables || '');
+            if (json.instructions[x].joinVariables !== undefined) {
+              _node.setAttribute('joinVariables', json.instructions[x].joinVariables);
+            }
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.fork);
             if (mapObj.vertixMap && json.instructions[x].position) {
@@ -587,8 +608,8 @@ export class WorkflowService {
             v2 = endIf(json.instructions[x], v1, parent);
           } else if (json.instructions[x].TYPE === 'Retry') {
             _node.setAttribute('label', 'retry');
-            _node.setAttribute('maxTries', json.instructions[x].maxTries || '');
-            _node.setAttribute('retryDelays', json.instructions[x].retryDelays ? json.instructions[x].retryDelays.toString() : '');
+            _node.setAttribute('maxTries', json.instructions[x].maxTries || '10');
+            _node.setAttribute('retryDelays', json.instructions[x].retryDelays ? json.instructions[x].retryDelays.toString() : '0');
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, 'retry');
             if (mapObj.vertixMap && json.instructions[x].position) {
@@ -603,8 +624,12 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'Lock') {
             _node.setAttribute('label', 'lock');
-            _node.setAttribute('lockName', json.instructions[x].lockName || '');
-            _node.setAttribute('count', json.instructions[x].count || '');
+            if (json.instructions[x].lockName !== undefined) {
+              _node.setAttribute('lockName', json.instructions[x].lockName);
+            }
+            if (json.instructions[x].count !== undefined) {
+              _node.setAttribute('count', json.instructions[x].count);
+            }
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.lock);
             if (mapObj.vertixMap && json.instructions[x].position) {
@@ -909,20 +934,20 @@ export class WorkflowService {
         if (data.cyclicOrder) {
           className = 'show';
         }
-        const class1 = data.state ?  this.coreService.getColor(data.state.severity, data.marked ? 'bg' : 'text') : '';
+        const class1 = data.state ? this.coreService.getColor(data.state.severity, data.marked ? 'bg' : 'text') : '';
         const class2 = data.marked ? this.coreService.getColor(data.marked.severity, 'bg') : '';
         str = '<div class="vertex-text"><div class="block-ellipsis-job">' +
           '<i style="position: absolute;margin-top: -2px;margin-left: -10px;" class="fa fa-repeat ' + className + '" aria-hidden="true"></i>';
-        if (data.marked){
+        if (data.marked) {
           str = str + '<span class="half-circle half-circle-left ' + class1 + '"></span><span class="half-circle half-circle-right m-r-xs ' + class2 + '"></span>';
-        } else{
+        } else {
           str = str + '<i class="fa fa-circle text-xs p-r-xs ' + class1 + '"></i>';
         }
         str = str + data.orderId + '</div>';
         if (data.scheduledFor) {
           if (!data.scheduledNever) {
             str = str + ' <span class="text-xs" >' + this.stringDatePipe.transform(data.scheduledFor) + '</span>';
-          } else{
+          } else {
             let never = '';
             this.translate.get('common.label.never').subscribe(translatedValue => {
               never = translatedValue;
@@ -1071,7 +1096,7 @@ export class WorkflowService {
         const class1 = this.coreService.getColor(data.state.severity, 'text');
         const class2 = data.marked ? this.coreService.getColor(data.marked.severity, 'text') : '';
         let div = '<div><b>' + orderId + '</b> : ' + (data.orderId || '-') + '</br>' +
-          '<b>' + state + '</b> : <span class="'+class1+'">' + _text + '</span><span class="'+class2+'">' + (_markedText ? '/' + _markedText : '') + '</span>'  + '</br>';
+          '<b>' + state + '</b> : <span class="' + class1 + '">' + _text + '</span><span class="' + class2 + '">' + (_markedText ? '/' + _markedText : '') + '</span>' + '</br>';
         if (data.cyclicOrder) {
           div = div + '<b class="m-b-xs">' + cyclicOrder + '</b></br>';
           div = div + '<b class="p-l-sm">' + begin + '</b> : ' + this.stringDatePipe.transform(data.cyclicOrder.firstStart) + '</br>';
@@ -1186,7 +1211,7 @@ export class WorkflowService {
     let bg = dom.css('background-color');
     bg = bg.substring(0, bg.length - 4);
     saveSvgAsPng(dom.first()[0].firstChild, name + '.png', {
-      backgroundColor:  bg + '1)',
+      backgroundColor: bg + '1)',
       height: ht + 200,
       width: wt + 200,
       left: -50,

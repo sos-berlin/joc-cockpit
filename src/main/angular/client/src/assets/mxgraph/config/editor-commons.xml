@@ -12,7 +12,7 @@
       </Connector>
     </add>
     <add as="Job">
-      <Job jobName="job" label="" defaultArguments="">
+      <Job jobName="job">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="180" height="40"/>
         </mxCell>
@@ -33,7 +33,7 @@
       </Fork>
     </add>
     <add as="Lock" >
-      <Lock label="lock" lockId="">
+      <Lock label="lock">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
@@ -68,28 +68,28 @@
       </Finish>
     </add>
     <add as="Await" >
-      <Await label="await" junctionPath="" timeout="">
+      <Await label="await">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
       </Await>
     </add>
     <add as="Publish">
-      <Publish label="publish" junctionPath="">
+      <Publish label="publish">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
       </Publish>
     </add>
     <add as="Prompt">
-      <Prompt label="prompt" question="">
+      <Prompt label="prompt">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
       </Prompt>
     </add>
     <add as="FileWatcher">
-      <FileWatcher label="fileWatcher" agent="" regex=".*" directory="">
+      <FileWatcher label="fileWatcher" regex=".*">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="110" height="40"/>
         </mxCell>
