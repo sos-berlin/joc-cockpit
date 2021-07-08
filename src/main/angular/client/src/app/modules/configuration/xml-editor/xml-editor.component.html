@@ -243,14 +243,14 @@
                         <tr *ngFor="let item of node.origin.values">
                           <td style="padding: 3px;"><span> {{item.name}}</span></td>
                           <td style="padding: 3px;"
-                              [innerHTML]="(item.data && item.name !== 'password') ? item.data : passwordLabel(item.data)"></td>
+                              [innerHTML]="(item.data && item.name !== 'password') ? (item.data | safeHtml) : passwordLabel(item.data)"></td>
                         </tr>
                       </table>
                     </ng-template>
                     <span
                       (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
                       [ngClass]="cutData && node.origin.uuid === copyItem.uuid? 'disabled' : ''"
-                      [nz-tooltip]="((node.origin.attributes && node.origin.attributes.length>0) || (node.origin.values && node.origin.values.length>0)) ? htmlContent : ''">{{node.origin.ref}}
+                      [nz-tooltip]="((node.origin.attributes && node.origin.attributes.length>0) || (node.origin.values && node.origin.values.length>0)) ? (htmlContent) : ''">{{node.origin.ref}}
                       </span>
                     <span class="text-sm pl-2"
                           (click)="getData(node.origin); getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
@@ -331,25 +331,22 @@
                       *ngIf="node.name && node.id">{{node.name}}
                       <sup *ngIf="node.use ==='required' || !node.use" class="text-danger text-sm">*</sup></label></div>
                     <div class="col-sm-5">
-                      <div class="doc-in-workflow" *ngIf="node.name === 'job_resource'">
-                        <div class="select-input-both">
-                          <input autocomplete="off" type="text" class="form-control"
-                                 name="jobResourcePath" [(ngModel)]="node.data">
+                      <div *ngIf="node.name === 'job_resources'">
                           <nz-tree-select
-                            name="documentationName"
+                            name="jobResourceName"
+                            nzMultiple
                             nzNoAnimation
                             [nzAllowClear]="false"
                             [nzNodes]="jobResourcesTree"
                             [nzHideUnMatched]="true"
                             [nzDropdownStyle]="{ 'max-height': '300px' }"
                             nzShowSearch
-                            [(ngModel)]="node.data1"
+                            [(ngModel)]="node.data"
                             (nzExpandChange)="onExpand($event, 'JOBRESOURCE', node)"
                           >
                             <ng-template #nzTreeTemplate let-item>
                               <div style="width: 93%" class="node-wrapper" (click)="loadData(item, 'JOBRESOURCE', $event, node);">
-                                <div class="node-content-wrapper"
-                                     [class.node-content-wrapper-active]="item.origin.path == node.data">
+                                <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
                                   <i *ngIf="!item.origin.type" nz-icon [nzType]="item.isExpanded ? 'folder-open' : 'folder'"
                                      class="w-14"></i>
                                   <i *ngIf="item.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
@@ -358,7 +355,6 @@
                               </div>
                             </ng-template>
                           </nz-tree-select>
-                        </div>
                       </div>
                       <input class="form-control w-full" id="{{node.name}}" type="text"
                              [(ngModel)]="node.data"
@@ -409,7 +405,7 @@
                              (focus)="hideError()"
                              (keydown)="stopPressingSpace(node.name)"
                              (change)="submitData(node.data, node)"
-                             *ngIf="node.name && node.type === 'xs:NMTOKEN' && !node.refer && node.name !== 'job_resource'"
+                             *ngIf="node.name && node.type === 'xs:NMTOKEN' && !node.refer && node.name !== 'job_resources'"
                              [ngClass]="error && errorName === node.name? 'invalid': ''"
                              [required]="node.use ==='required'"
                              xmlAutofocus>
@@ -528,20 +524,22 @@
                               rows="1"></textarea>
                     <div *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].base === 'html'" class="form-group"
                     [ngClass]="{'has-error': myckeditor.invalid && (myckeditor.touched || myckeditor.dirty)}">
-                      <div class="NgxEditor__Wrapper">
-                        <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
-                        <ngx-editor
-                          name="myContent"
-                          required
-                          #myckeditor="ngModel"
-                          [editor]="editor"
-                          [ngModel]="myContent"
-                          [disabled]="false"
-                          [placeholder]="'common.placeholder.value' | translate"
-                          (ngModelChange)="onChange($event, selectedNode)"
-                        ></ngx-editor>
+                      <a class="btn btn-xs btn-default" style="box-shadow: none !important;" [ngClass]="{'text-primary': selectedNode.preview !== true}" (click)="selectedNode.preview = false;" translate>xml.button.sourceCode</a>
+                      <a class="btn btn-xs btn-default b-l" style="box-shadow: none !important;" [ngClass]="{'text-primary': selectedNode.preview === true}" (click)="selectedNode.preview = true;" translate>xml.button.preview</a>
+                      <textarea class="form-control" nz-input id="{{selectedNode.values[0].uuid}}" [hidden]="selectedNode.preview"
+                                  [(ngModel)]="selectedNode.values[0].data"
+                                  (keydown)="checkForTab(selectedNode.values[0].uuid);"
+                                  [nzAutosize]="{ minRows: 5, maxRows:22}"
+                                  #myckeditor="ngModel"
+                                  required
+                                  (blur)="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
+                                  (change)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
+                                  [ngClass]="error && errorName == selectedNode.ref ? 'invalid': ''"
+                      ></textarea>
+                      <div class="b-a" style="min-height: 104px;max-height: 450px;overflow: auto" *ngIf="selectedNode.preview">
+                        <pre *ngIf="selectedNode.values[0].data" [innerHTML]="selectedNode.values[0].data | safeHtml"></pre>
                       </div>
-                      <div *ngIf="myckeditor.invalid && (myckeditor.touched || myckeditor.dirty)" class="help-block" translate>
+                      <div *ngIf="!selectedNode.preview && myckeditor.invalid && (myckeditor.touched || myckeditor.dirty)" class="help-block" translate>
                         xml.message.requiredField
                       </div>
                     </div>

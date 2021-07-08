@@ -45,7 +45,6 @@
     "ng2-charts": "^2.4.2",
     "ng2-file-upload": "^1.4.0",
     "ngx-clipboard": "^14.0.1",
-    "ngx-editor": "^9.0.1",
     "ngx-order-pipe": "^2.1.1",
     "ngx-perfect-scrollbar": "^10.1.1",
     "replace-in-file": "^6.2.0",

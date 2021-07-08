@@ -1766,7 +1766,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     if (this.historyFilters.type === 'TASK') {
       this.jobSearch = {};
-      this.jobSearch.date = 'date';
       if (type === 'STATE') {
         this.task.filter.historyStates = value;
       } else if (type === 'DATE') {
@@ -1774,7 +1773,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
     } else if (this.historyFilters.type === 'ORDER') {
       this.orderSearch = {};
-      this.orderSearch.date = 'date';
       if (type === 'STATE') {
         this.order.filter.historyStates = value;
       } else if (type === 'DATE') {
@@ -1782,7 +1780,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
       this.deploymentSearch = {};
-      this.deploymentSearch.date = 'date';
       if (type === 'STATE') {
         this.deployment.filter.state = value;
       } else if (type === 'DATE') {
@@ -1790,7 +1787,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
     } else if (this.historyFilters.type === 'SUBMISSION') {
       this.submissionSearch = {};
-      this.submissionSearch.date = 'date';
       if (type === 'DATE') {
         this.submission.filter.date = value;
       } else if (type === 'CATEGORY') {
@@ -1798,7 +1794,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
     } else if (this.historyFilters.type === 'YADE') {
       this.yadeSearch = {};
-      this.yadeSearch.date = 'date';
       if (type === 'STATE') {
         this.yade.filter.states = value;
       } else if (type === 'DATE') {

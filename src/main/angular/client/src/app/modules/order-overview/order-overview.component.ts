@@ -452,7 +452,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.object.isTerminate = true;
     this.object.isResume = true;
     let workflow = null;
-    let position = null;
     this.object.mapOfCheckedId.forEach(order => {
       if (order.state) {
         if (order.state._text !== 'SUSPENDED' && order.state._text !== 'FAILED') {
@@ -474,14 +473,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
           workflow = order.workflowId.path;
         } else if (workflow !== order.workflowId.path) {
           this.object.isModify = false;
-          if (this.object.isResume) {
-            this.object.isResume = false;
-          }
-        }
-        if (!position) {
-          position = order.positionString;
-        } else if (position !== order.positionString) {
-          this.object.isResume = false;
         }
       }
     });
@@ -514,26 +505,85 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   resumeAllOrder(): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: ResumeOrderModalComponent,
-      nzClassName: 'x-lg',
-      nzComponentParams: {
-        preferences: this.preferences,
-        schedulerId: this.schedulerIds.selected,
-        orders: this.object.mapOfCheckedId
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.isProcessing = true;
-        this.resetAction(5000);
-        this.resetCheckBox();
+   
+    let workflow;
+    for (let [key, value] of this.object.mapOfCheckedId) {
+      console.log(key + "key");
+      console.log(value.workflowId.path);
+      if (!workflow) {
+        workflow = value.workflowId.path;
+      } else if (workflow !== value.workflowId.path) {
+        workflow = null;
+        break;
       }
-    });
+    }
+
+    if (workflow) {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ResumeOrderModalComponent,
+        nzClassName: 'x-lg',
+        nzComponentParams: {
+          preferences: this.preferences,
+          schedulerId: this.schedulerIds.selected,
+          orders: this.object.mapOfCheckedId
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.isProcessing = true;
+          this.resetAction(5000);
+          this.resetCheckBox();
+        }
+      });
+    } else {
+      const obj: any = {
+        controllerId: this.schedulerIds.selected,
+        orderIds : []
+      };
+      this.object.mapOfCheckedId.forEach((order) => {
+        obj.orderIds.push(order.orderId);
+      });
+      if (this.preferences.auditLog) {
+        let comments = {
+          radio: 'predefined',
+          type: 'Order',
+          operation: 'Resume',
+          name: ''
+        };
+        const modal = this.modal.create({
+          nzTitle: null,
+          nzContent: CommentModalComponent,
+          nzClassName: 'lg',
+          nzComponentParams: {
+            comments,
+            obj,
+            url: 'orders/resume'
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        });
+        modal.afterClose.subscribe(result => {
+          if (result) {
+            this.isProcessing = true;
+            this.resetAction(5000);
+            this.resetCheckBox();
+          }
+        });
+      } else {
+        this.isProcessing = true;
+        this.coreService.post('orders/resume', obj).subscribe(() => {
+          this.resetCheckBox();
+          this.resetAction(5000);
+        }, () => {
+          this.resetAction();
+        });
+      }
+    }
   }
 
   cancelAllOrder(isKill = false): void {

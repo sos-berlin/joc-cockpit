@@ -19,6 +19,7 @@ export class ResumeOrderModalComponent implements OnInit {
   submitted = false;
   comments: any = {};
   position: any;
+  positions: any;
   arguments: any = [];
   variableList = [];
   orderPreparation: any;
@@ -37,7 +38,19 @@ export class ResumeOrderModalComponent implements OnInit {
     if (!this.order.positionString) {
       this.order.positionString = '0';
     }
+    this.getPositions();
     this.getWorkflow();
+  }
+
+  private getPositions(): void {
+    this.coreService.post('orders/resume/positions', {
+      controllerId: this.schedulerId,
+      orderIds: this.orders ? [...this.orders.keys()] : [this.order.orderId]
+    }).subscribe((res: any) => {
+      this.positions = res.positions.map((pos) => pos.positionString);
+    }, () => {
+      this.positions = [];
+    });
   }
 
   private getWorkflow(): void {
@@ -49,17 +62,26 @@ export class ResumeOrderModalComponent implements OnInit {
       this.workflow.jobs = res.workflow.jobs;
       this.orderPreparation = res.workflow.orderPreparation;
       this.workflow.configuration = {instructions: res.workflow.instructions};
-      this.convertTryToRetry(this.workflow.configuration);
+      this.checkPositions();
       if (this.isParametrized) {
         this.updateVariableList();
       }
     });
   }
 
+  private checkPositions(): void {
+    if (this.positions) {
+      this.convertTryToRetry(this.workflow.configuration);
+    } else {
+      setTimeout(() => {
+        this.checkPositions();
+      }, 50);
+    }
+  }
+
   convertTryToRetry(mainJson: any): void {
     const self = this;
     let flag = false;
-
     function recursive(json: any) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -70,6 +92,9 @@ export class ResumeOrderModalComponent implements OnInit {
             json.instructions[x].show = true;
           }
           if (json.instructions[x].positionString) {
+            if(self.positions.indexOf(json.instructions[x].positionString) > -1){
+              json.instructions[x].enabled = true;
+            }
             if (self.order.positionString && self.order.positionString == json.instructions[x].positionString) {
               flag = true;
               json.instructions[x].order = self.order;

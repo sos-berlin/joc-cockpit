@@ -456,7 +456,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       toDate = '0d';
     } else if (/^\s*(Yesterday)\s*$/i.test(regex)) {
       fromDate = '-1d';
-      toDate = '0d';
+      toDate = '-1d';
     } else if (/^\s*(now)\s*$/i.test(regex)) {
       fromDate = new Date();
       toDate = new Date();

@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
 import {XmlEditorRoutingModule} from './xml-editor-routing.module';
-import {NgxEditorModule} from 'ngx-editor';
 import {FileUploadModule} from 'ng2-file-upload';
 import {NzTabsModule} from 'ng-zorro-antd/tabs';
 import {CodemirrorModule} from '@ctrl/ngx-codemirror';
@@ -23,8 +22,7 @@ const COMPONENTS = [ImportModalComponent, ShowModalComponent,
     SharedModule,
     CodemirrorModule,
     NzTabsModule,
-    FileUploadModule,
-    NgxEditorModule
+    FileUploadModule
   ],
   declarations: [
     XmlEditorComponent,

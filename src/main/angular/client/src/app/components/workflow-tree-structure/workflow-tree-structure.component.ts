@@ -125,7 +125,7 @@ export class WorkflowTreeStructureComponent implements OnChanges {
           readonly: true
         };
       }
-    } else {
+    } else if (instruction.TYPE === 'If') {
       nzComponentParams = {
         predicate: true,
         data: instruction.predicate,
@@ -149,14 +149,13 @@ export class WorkflowTreeStructureComponent implements OnChanges {
   drag(event): void {
     this.position = null;
     const elements = document.getElementsByClassName('drop-hover');
-    // console.log(elements.length);
+    for (let i = 0; i < elements.length; i++) {
+      if (elements[i].classList && elements[i].classList.contains('drop-hover')) {
+        elements[i].classList.remove('drop-hover');
+      }
+    }
     let data = event.target.getAttribute('class');
     if (data && data.match('drop-area')) {
-      for (let i = 0; i < elements.length; i++) {
-        if (elements[i].classList && elements[i].classList.contains('drop-hover')) {
-          elements[i].classList.remove('drop-hover');
-        }
-      }
       this.position = event.target.getAttribute('id');
       const classList = document.getElementById(this.position).classList;
       classList.add('drop-hover');

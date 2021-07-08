@@ -101,7 +101,6 @@ export class OrderListSidebarComponent implements OnChanges{
     this.object.isSuspend = true;
     this.object.isResume = true;
     this.object.isTerminate = true;
-    let position = null;
     this.orders.forEach(item => {
       if (this.setOfCheckedId.has(item.orderId)) {
         if (item.state) {
@@ -119,11 +118,6 @@ export class OrderListSidebarComponent implements OnChanges{
           }
           if (item.state._text !== 'SCHEDULED' && item.state._text !== 'PENDING') {
             this.object.isModify = false;
-          }
-          if (!position) {
-            position = item.positionString;
-          } else if (position !== item.positionString) {
-            this.object.isResume = false;
           }
         }
       }

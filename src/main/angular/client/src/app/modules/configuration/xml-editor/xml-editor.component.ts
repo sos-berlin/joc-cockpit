@@ -3,7 +3,6 @@ import {NzFormatBeforeDropEvent, NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-a
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {FileUploader} from 'ng2-file-upload';
-import {Editor, Toolbar} from 'ngx-editor';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Observable, of, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
@@ -886,37 +885,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   jobResourcesTree = [];
   subscription1: Subscription;
   subscription2: Subscription;
-  config: any = {
-    toolbar: [
-      {name: 'document', items: ['Source']},
-      {
-        name: 'clipboard',
-        items: ['Cut', 'Copy', 'Paste', 'Undo', 'Redo']
-      },
-      {name: 'editing', items: ['Find', 'Replace', '-']},
-      {
-        name: 'basicstyles',
-        items: ['Bold', 'Italic', 'Underline']
-      },
-      {
-        name: 'paragraph',
-        items: ['NumberedList', 'BulletedList', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']
-      },
-      {name: 'insert', items: ['Table']},
-      {name: 'styles', items: ['Styles', 'Format']},
-      {name: 'links', items: ['Link', 'Unlink']},
-      {name: 'styles', items: ['Font', 'FontSize']},
-    ], allowedContent: true
-  };
-  editor: Editor;
-  toolbar: Toolbar = [
-    ['bold', 'italic'],
-    ['underline', 'strike'],
-    ['blockquote'],
-    ['ordered_list', 'bullet_list'],
-    [{heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']}],
-    ['align_left', 'align_center', 'align_right', 'align_justify']
-  ];
 
   @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
@@ -984,7 +952,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.isLoading = false;
       return;
     }
-    this.editor = new Editor();
     this.sideView = this.coreService.getSideView();
     if (this.sideView.xml && !this.sideView.xml.show) {
       this.hidePanel();
@@ -1014,7 +981,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.editor.destroy();
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.coreService.setSideView(this.sideView);
@@ -1055,14 +1021,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         this.updateList(node, type);
       }
     } else {
-      if (data.data) {
-        if (data.data !== data.data1) {
-          data.data = data.data1;
-        }
-      } else if (node.key && !node.key.match('/')) {
-        if (data.data !== node.key) {
-          data.data = node.key;
-        }
+      this.jobResourcesTree = [...this.jobResourcesTree];
+      if (data.data && data.data.length > 0) {
+        data.data = [...data.data];
       }
     }
   }
@@ -1536,7 +1497,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (attrs && attrs.length > 0) {
       if (node.attributes && node.attributes.length > 0) {
         for (let i = 0; i < attrs.length; i++) {
-          if (attrs[i].name === 'job_resource' && !flag) {
+          if (attrs[i].name === 'job_resources' && !flag) {
             flag = true;
             this.getJobResourceTree();
           }
@@ -1821,7 +1782,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   _checkAttributes(attrsPath, attribute, node, attrsArr, select) {
     let attrs = select(attrsPath, this.doc);
-
     if (attrs.length > 0) {
       for (let i = 0; i < attrs.length; i++) {
         attribute = {};
@@ -2520,7 +2480,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.printArraya(false);
     }
   }
-
 
   attachTypeAttrs(attrs, child) {
     for (let i = 0; i < child.length; i++) {
@@ -3758,26 +3717,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         }
       }
     }
-  }
-
-  // details meathod
-  onChange(event, nodes): void {
-    if (!(/[a-zA-Z0-9_]+.*$/.test(event))) {
-      this.error = true;
-    } else {
-      if (event.match(/<[^>]+>/gm)) {
-        const x = event.replace(/<[^>]+>/gm, '');
-        if (x !== '&nbsp;') {
-          nodes.values[0] = Object.assign(nodes.values[0], {
-            data: event
-          });
-          this.error = false;
-        } else {
-          delete nodes.values[0].data;
-        }
-      }
-    }
-    this.extraInfo.released = false;
   }
 
   // validation for attributes

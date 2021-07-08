@@ -3879,9 +3879,6 @@ li > a > i.remove {
   .checkbox, .checkbox-inline, .control-label, .form-control-feedback, .help-block, .radio, .radio-inline, &.checkbox label, &.checkbox-inline label, &.radio label, &.radio-inline label {
     color: #a94442;
   }
-  .NgxEditor{
-    border-color: #a94442 !important;
-  }
 }
 
 .contextmenu-item {
@@ -4373,7 +4370,7 @@ input[type=search] {
 }
 
 .b-l {
-  border-left: 1px solid var(--border-color);
+  border-left: 1px solid var(--border-color) !important;
 }
 
 .b-primary {
@@ -5810,28 +5807,6 @@ pre#pre {
 .badge-danger {
   background-color: var(--bg-orange);
   color: white;
-}
-
-.NgxEditor__Wrapper, .NgxEditor__Wrapper .NgxEditor__MenuBar {
-  border-radius: 0 !important;
-  border: 1px solid var(--border-color) !important;
-}
-
-.NgxEditor__Wrapper .NgxEditor__MenuBar {
-  border-top: none !important;
-  border-left: none !important;
-  border-right: none !important;
-}
-
-.NgxEditor {
-  background: var(--bg-box) !important;
-  color: var(--text-color) !important;
-  border-radius: 0 !important;
-}
-
-.NgxEditor__Dropdown .NgxEditor__Dropdown--Text, .NgxEditor__Dropdown .NgxEditor__Dropdown--DropdownMenu {
-  color: rgb(0, 0, 0);
-  font-weight: 600;
 }
 
 /***

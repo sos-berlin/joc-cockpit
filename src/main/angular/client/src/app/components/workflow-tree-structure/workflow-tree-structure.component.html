@@ -48,7 +48,7 @@
 <div *ngFor="let instruction of configuration.instructions">
   <ul style="margin-bottom: 0">
     <li (dragover)="drag($event);" (dragend)="dragend($event)">
-      <div class="hover drop-area" id="{{instruction.positionString}}"
+      <div class="hover" [ngClass]="{'drop-area' : instruction.enabled}" id="{{instruction.positionString}}"
         *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Lock'">
         <div class="btn-group dropdown" style="margin-left: -10px" *ngIf="instruction.TYPE === 'If'">
           <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
@@ -94,7 +94,7 @@
         </span>
       </div>
       <div id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'ImplicitEnd'
-       || instruction.TYPE === 'Publish' || instruction.TYPE === 'Prompt' || instruction.TYPE === 'Await'" [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction.TYPE === 'ImplicitEnd', 'drop-area': instruction.TYPE !== 'ImplicitEnd'}">
+       || instruction.TYPE === 'Publish' || instruction.TYPE === 'Prompt' || instruction.TYPE === 'Await'" [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction.TYPE === 'ImplicitEnd', 'drop-area': instruction.enabled}">
         <div class="btn-group dropdown" style="margin-left: -10px" *ngIf="instruction.TYPE === 'Job'">
           <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
                   type="button">
@@ -121,7 +121,7 @@
           </div>
         </span>
       </div>
-      <div class="drop-area" id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'Fork' && (instruction.show)">
+      <div [ngClass]="{'drop-area' : instruction.enabled}" id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'Fork' && (instruction.show)">
         <div *ngFor="let branch of instruction.branches">
           <div class="p-l-md">
             <a class="m-l" (click)="collapse(branch)">
@@ -143,7 +143,7 @@
           </div>
         </div>
       </div>
-      <div class="drop-area" id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'If' && (instruction.show)">
+      <div [ngClass]="{'drop-area' : instruction.enabled}" id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'If' && (instruction.show)">
         <div *ngIf="instruction.then && instruction.then.instructions">
           <app-workflow-tree-structure
                     [configuration]="instruction.then" [jobs]="jobs" [orders]="orders" [expandAll]="expandAll"></app-workflow-tree-structure>
@@ -167,7 +167,7 @@
           </div>
         </div>
       </div>
-      <div class="drop-area" id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'Try' && (instruction.show)">
+      <div [ngClass]="{'drop-area' : instruction.enabled}" id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'Try' && (instruction.show)">
           <app-workflow-tree-structure
                     [configuration]="instruction" [jobs]="jobs" [orders]="orders" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-workflow-tree-structure>
           <div class="p-l-md">
@@ -189,13 +189,13 @@
             </div>
           </div>
       </div>
-      <div class="drop-area" id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'Retry' && (instruction.show)">
+      <div [ngClass]="{'drop-area' : instruction.enabled}" id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'Retry' && (instruction.show)">
         <div>
           <app-workflow-tree-structure
                     [configuration]="instruction" [jobs]="jobs" [orders]="orders" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-workflow-tree-structure>
         </div>
       </div>
-      <div class="drop-area" id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'Lock' && (instruction.show)">
+      <div [ngClass]="{'drop-area' : instruction.enabled}" id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'Lock' && (instruction.show)">
         <div>
           <app-workflow-tree-structure
                     [configuration]="instruction" [jobs]="jobs" [orders]="orders" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-workflow-tree-structure>
