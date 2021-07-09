@@ -1813,7 +1813,7 @@
     "button.reassignSchema": "Réaffecter le Schéma",
     "button.release": "Version",
     "button.preview": "Preview",
-    "button.sourceCode": "Source Code",
+    "button.sourceCode": "Source",
     "message.uniqueError": "Nom déjà utilisé",
     "message.requiredField": "Champs Requis",
     "message.spaceNotAllowed": "Caractère d'espace non autorisé",

@@ -21,7 +21,7 @@
               <i class="fa fa-file m-r-xs"></i>
               <span translate>xml.button.new</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType === 'NOTIFICATION'" [disabled]="!extraInfo.hasReleases"
+            <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType === 'NOTIFICATION' && nodes && nodes.length > 0" [disabled]="!extraInfo.hasReleases"
                     (click)="removeConf()">
               <i class="fa fa-trash m-r-xs"></i>
               <span translate>xml.button.remove</span>
@@ -342,11 +342,11 @@
                             [nzDropdownStyle]="{ 'max-height': '300px' }"
                             nzShowSearch
                             [(ngModel)]="node.data"
-                            (nzExpandChange)="onExpand($event, 'JOBRESOURCE', node)"
+                            (ngModelChange)="onChangeJobResource($event, node)"
                           >
                             <ng-template #nzTreeTemplate let-item>
                               <div style="width: 93%" class="node-wrapper" (click)="loadData(item, 'JOBRESOURCE', $event, node);">
-                                <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
+                                <div class="node-content-wrapper" [class.node-content-wrapper-active]="item.isSelected">
                                   <i *ngIf="!item.origin.type" nz-icon [nzType]="item.isExpanded ? 'folder-open' : 'folder'"
                                      class="w-14"></i>
                                   <i *ngIf="item.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
@@ -492,12 +492,12 @@
                 </div>
               </div>
               <div class="box p-a val" *ngIf="selectedNode.values && selectedNode.values.length>0">
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 form-control-label"><span translate>xml.label.value</span>
+                <div class="row">
+                  <div class="col-md-12"><span translate>xml.label.value</span>
                     <sup *ngIf="!(selectedNode.values && selectedNode.values[0].use)"
                          class="text-danger text-sm">*</sup>
                   </div>
-                  <div class="col-md-8 col-lg-6">
+                  <div class="col-md-12 m-t-xs">
                     <input (blur)="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                            (change)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
                            *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.values[0].base == 'password'"

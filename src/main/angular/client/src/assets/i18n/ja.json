@@ -1813,7 +1813,7 @@
     "button.reassignSchema": "スキーマ再適用",
     "button.release": "リリース",
     "button.preview": "Preview",
-    "button.sourceCode": "Source Code",
+    "button.sourceCode": "Source",
     "message.uniqueError": "既にある名称です",
     "message.requiredField": "必須入力項目",
     "message.spaceNotAllowed": "スペースは使えません",

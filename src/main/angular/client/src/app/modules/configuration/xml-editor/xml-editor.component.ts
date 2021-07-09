@@ -1013,50 +1013,13 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         node.isExpanded = !node.isExpanded;
         $event.stopPropagation();
       }
-      let flag = true;
-      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
-        flag = false;
-      }
-      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        this.updateList(node, type);
-      }
-    } else {
-      this.jobResourcesTree = [...this.jobResourcesTree];
-      if (data.data && data.data.length > 0) {
-        data.data = [...data.data];
-      }
     }
   }
 
-  updateList(node, type): void {
-    let obj: any = {
-      path: node.key,
-      objectTypes: [type]
-    };
-    this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
-      let data = res.jobResources;
-      for (let i = 0; i < data.length; i++) {
-        const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-        data[i].title = data[i].assignReference || data[i].name;
-        data[i].path = path;
-        data[i].key = data[i].assignReference || data[i].name;
-        data[i].type = type;
-        data[i].isLeaf = true;
-      }
-      if (node.origin.children && node.origin.children.length > 0) {
-        data = data.concat(node.origin.children);
-      }
-      if (node.origin.isLeaf) {
-        node.origin.expanded = true;
-      }
-      node.origin.isLeaf = false;
-      node.origin.children = data;
-      this.jobResourcesTree = [...this.jobResourcesTree];
-    });
-  }
-
-  onExpand(e, type, data): void {
-    this.loadData(e.node, type, null, data);
+  onChangeJobResource(value, data): void {
+    if (!isEqual(JSON.stringify(data.data), JSON.stringify(value))) {
+      data.data = value;
+    }
   }
 
   deleteAllConf(): void {
@@ -1204,7 +1167,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   changeTab(data): void {
-    //console.time('TOTAL-READING-XML-TIME');
     this.activeTab = data;
     this.readOthersXSD(data.id);
     this.validConfig = false;
@@ -1487,7 +1449,49 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         types: ['JOBRESOURCE']
       }).subscribe((res) => {
         this.jobResourcesTree = this.coreService.prepareTree(res, true);
+        this.getJobResources();
       });
+    }
+  }
+
+  private getJobResources(): void {
+    this.coreService.post('inventory/read/folder', {
+      path: '/',
+      recursive: true,
+      objectTypes: ['JOBRESOURCE']
+    }).subscribe((res: any) => {
+      let map = new Map();
+      res.jobResources.forEach((item) => {
+        const path = item.path.substring(0, item.path.lastIndexOf('/')) || '/';
+        const obj = {
+          title : item.name,
+          path : item.path,
+          key : item.name,
+          type : item.objectType,
+          isLeaf : true
+        };
+        if (map.has(path)) {
+          const arr = map.get(path);
+          arr.push(obj);
+          map.set(path, arr);
+        } else {
+          map.set(path, [obj]);
+        }
+      });
+      this.jobResourcesTree[0].expanded = true;
+      this.updateTreeRecursive(this.jobResourcesTree, map);
+      this.jobResourcesTree = [...this.jobResourcesTree];
+    });
+  }
+
+  private updateTreeRecursive(nodes, map): void {
+    for (let i = 0; i < nodes.length; i++) {
+      if (nodes[i].path && map.has(nodes[i].path)) {
+        nodes[i].children = map.get(nodes[i].path).concat(nodes[i].children || []);
+      }
+      if (nodes[i].children) {
+        this.updateTreeRecursive(nodes[i].children, map);
+      }
     }
   }
 
@@ -1639,6 +1643,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     } else {
       this.printArraya(false);
     }
+
     if (scroll) {
       this.scrollTreeToGivenId(this.selectedNode.uuid);
     }
@@ -2971,9 +2976,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   private removeDocs(): void {
-    if (this.selectedNode && this.selectedNode.attributes) {
-      for (const i in this.selectedNode.attributes) {
-        delete this.selectedNode.attributes[i].text;
+    if (this.selectedNode) {
+      delete this.selectedNode.preview;
+      if (this.selectedNode.attributes) {
+        for (const i in this.selectedNode.attributes) {
+          delete this.selectedNode.attributes[i].text;
+        }
       }
     }
   }
@@ -2981,7 +2989,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   // to send data in details component
   getData(event): void {
     this.removeDocs();
-    if (event && event.keyref) {
+    if (event && event.keyref && event.attributes) {
       for (let i = 0; i < event.attributes.length; i++) {
         if (event.attributes[i].name === event.keyref) {
           this.getDataAttr(event.attributes[i].refer);

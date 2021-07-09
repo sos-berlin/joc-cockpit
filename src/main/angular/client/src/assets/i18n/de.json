@@ -1813,7 +1813,7 @@
     "button.reassignSchema": "Schema erneut zuweisen",
     "button.release": "Freigeben",
     "button.preview": "Preview",
-    "button.sourceCode": "Source Code",
+    "button.sourceCode": "Source",
     "message.uniqueError": "Name wird bereits verwendet",
     "message.requiredField": "Erforderliches Eingabefeld",
     "message.spaceNotAllowed": "Leerzeichen nicht zugelassen",

@@ -1813,7 +1813,7 @@
     "button.reassignSchema": "Reassign Schema",
     "button.release": "Release",
     "button.preview": "Preview",
-    "button.sourceCode": "Source Code",
+    "button.sourceCode": "Source",
     "message.uniqueError": "Name already in use",
     "message.requiredField": "Required field",
     "message.spaceNotAllowed": "Space character not allowed",
