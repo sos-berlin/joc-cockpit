@@ -16,98 +16,39 @@
     <div class="hide" [ngClass]="{'show': display}">
       <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
     </div>
-    <div *ngIf="isParametrized">
-      <div class="form-group row m-b-0 m-l-12" *ngIf="arguments.length > 0">
+    <div *ngIf="isParametrized && workflow">
+      <div class="form-group row m-b-0" *ngIf="variables.length > 0">
         <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
         <div class="col-md-4 col-lg-8 m-b-sm" translate>common.label.value</div>
       </div>
-      <div cdkDropList (cdkDropListDropped)="drop($event)">
-        <div class="form-group row m-b-0 m-l-12" *ngFor="let argument of arguments; let i=index" cdkDrag>
-          <div class="pos-abt" style="margin-left: -13px;font-size: 18px;margin-top: 3px;cursor: move" cdkDragHandle>
-            <i class="fa fa-bars" aria-hidden="true"></i>
-          </div>
-          <div class="col-sm-4 m-b-sm" *ngIf="argument.isTextField" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-            <input #name="ngModel" required autocomplete="off" type="text" class="form-control"
-                   name="name_{{i}}"
-                   [(ngModel)]="argument.name" placeholder="{{'common.placeholder.name' | translate}}">
-          </div>
-          <div class="col-sm-4 m-b-sm" *ngIf="!argument.isTextField">
-            <nz-select nzShowSearch name="name{{i}}" [(ngModel)]="argument.name"
-                       (ngModelChange)="checkVariableType(argument)">
-              <nz-option *ngFor="let list of variableList" [nzDisabled]="list.isSelected" [nzLabel]="list.name"
-                         [nzValue]="list.name"></nz-option>
-            </nz-select>
-          </div>
-          <ng-container [ngSwitch]="argument.type">
-            <ng-container *ngSwitchCase="'Number'">
-              <div class="col-md-6 col-lg-6 m-b-sm"
-                   [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                <nz-input-number [required]="argument.isRequired" #value="ngModel"
-                                 nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"
-                                 [nzMin]="0" [nzStep]="1" name="value{{i}}" [(ngModel)]="argument.value"
-                                 (keypress)="onKeyPress($event)"></nz-input-number>
-                <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                     class="text-danger help-block">
-                  <div *ngIf="value.errors.required">
-                    <div translate>common.message.requiredError</div>
-                  </div>
-                </div>
-              </div>
-            </ng-container>
-            <ng-container *ngSwitchCase="'Boolean'">
-              <div class="col-md-6 col-lg-6 m-b-sm"
-                   [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-                           #value="ngModel" [required]="argument.isRequired" name="value{{i}}"
-                           [(ngModel)]="argument.value">
-                  <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
-                  <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
-                </nz-select>
-                <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                     class="text-danger help-block">
-                  <div *ngIf="value.errors.required">
-                    <div translate>common.message.requiredError</div>
-                  </div>
-                </div>
-              </div>
-            </ng-container>
-            <ng-container *ngSwitchDefault>
-              <div class="col-md-6 col-lg-6 m-b-sm"
-                   [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                <input #value="ngModel" [required]="argument.isRequired" autocomplete="off" type="text"
-                       class="form-control"
-                       name="value{{i}}" (keypress)="onKeyPress($event)"
-                       [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
-                <i *ngSwitchDefault class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline"
-                   (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
-                <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                     class="text-danger help-block">
-                  <div *ngIf="value.errors.required">
-                    <div translate>common.message.requiredError</div>
-                  </div>
-                </div>
-              </div>
-            </ng-container>
-          </ng-container>
-          <div class="col-sm-1 p-l-0" *ngIf="!argument.isRequired">
-            <a><i (click)="removeArgument(i)" class="fa fa-times m-t-sm text-muted"></i></a>
-          </div>
+      <div class="form-group row m-b-0" *ngFor="let argument of variables; let i=index">
+        <div class="col-sm-4 m-b-sm" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+          <input #name="ngModel" required autocomplete="off" type="text" class="form-control"
+                 name="name_{{i}}"
+                 [(ngModel)]="argument.name" placeholder="{{'common.placeholder.name' | translate}}">
+        </div>
+        <div class="col-md-6 col-lg-6 m-b-sm"
+             [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+          <input #value="ngModel" autocomplete="off" type="text"
+                 class="form-control" name="value{{i}}" (keypress)="onKeyPress($event)"
+                 [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
+          <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline"
+             (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
+        </div>
+        <div class="col-sm-1 p-l-0">
+          <a><i (click)="removeArgument(i)" class="fa fa-times m-t-sm text-muted"></i></a>
         </div>
       </div>
-    </div>
-    <div class="form-group row" *ngIf="isParametrized">
-      <div class="col-sm-12" *ngIf="variableList.length > arguments.length">
-        <a class="text-u-l" (click)="addArgument()" translate>order.button.modifyVariable</a>
-      </div>
-      <div class="col-sm-12" *ngIf="variableList.length <= arguments.length && (orderPreparation && orderPreparation.allowUndeclared)">
-        <a class="text-u-l" (click)="addArgument(true)" translate>order.button.addVariable</a>
+      <div class="form-group row">
+        <div class="col-sm-12">
+          <a class="text-u-l" (click)="addArgument()" translate>order.button.addVariable</a>
+        </div>
       </div>
     </div>
     <div class="text-center" *ngIf="!workflow">
       <nz-spin nzSimple></nz-spin>
     </div>
     <div *ngIf="workflow">
-    <!--<pre>{{workflow | json}}</pre>-->
       <div class="hover" >
         <a class="text-primary" translate >workflow.label.start</a>
         <span class="expand-collapse-btn">
@@ -115,7 +56,7 @@
           <i class="cursor fa fa-lg fa-angle-double-up p-l-xs" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="workflow.isExpand = false;"></i>
         </span>
       </div>
-      <app-workflow-tree-structure [jobs]="workflow.jobs" [configuration]="workflow.configuration" [orders]="orders" (onDrop)="onDrop($event)"
+      <app-workflow-tree-structure [disabledDrag]="disabledDrag" [jobs]="workflow.jobs" [configuration]="workflow.configuration" [orders]="orders" (onDrop)="onDrop($event)"
                                    [expandAll]="workflow.isExpand"></app-workflow-tree-structure>
     </div>
   </div>

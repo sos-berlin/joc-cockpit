@@ -13,6 +13,7 @@ export class WorkflowTreeStructureComponent implements OnChanges {
   @Input() jobs;
   @Input() orders;
   @Input() expandAll;
+  @Input() disabledDrag: boolean;
   @Output() onDrop: EventEmitter<any> = new EventEmitter();
   position: '';
 
