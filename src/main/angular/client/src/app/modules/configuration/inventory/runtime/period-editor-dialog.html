@@ -22,8 +22,7 @@
               </nz-select>
             </div>
           </div>
-          <div class="form-group row" *ngIf="period.frequency=='singleStart'"
-               [ngClass]="{ 'has-error' : (startTime.dirty || startTime.touched) && startTime.invalid }">
+          <div class="form-group row" *ngIf="period.frequency=='singleStart'">
             <label class="col-sm-4 form-control-label" translate>runtime.label.startTime</label>
             <div class="col-sm-3" [ngClass]="{ 'has-error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}">
               <input timevalidator [appAutofocus]="true" maxlength="8" autocomplete="off" class="form-control" name="startTime" #startTime="ngModel"
@@ -31,8 +30,7 @@
                      placeholder="HH:MM:SS" type="text">
             </div>
           </div>
-          <div class="form-group row" *ngIf="period.frequency=='repeat'"
-               [ngClass]="{ 'has-error' : (repeat.dirty || repeat.touched) && repeat.invalid }">
+          <div class="form-group row" *ngIf="period.frequency=='repeat'">
             <label class="col-sm-4 form-control-label" translate>runtime.label.repeatTime</label>
             <div class="col-sm-3" [ngClass]="{ 'has-error' : (((repeat.dirty || repeat.touched) && repeat.invalid))}">
               <input timevalidator maxlength="8" class="form-control" name="repeat" #repeat="ngModel"

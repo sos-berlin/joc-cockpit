@@ -395,6 +395,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       }
       if (obj.calendars.length > 0) {
         for (let i = 0; i < obj.calendars.length; i++) {
+          delete obj.calendars[i].type;
           if (obj.calendars[i].frequencyList) {
             if (obj.calendars[i].frequencyList.length > 0) {
               obj.calendars[i].includes = {};
@@ -402,8 +403,13 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
                 this.calendarService.generateCalendarObj(val, obj.calendars[i]);
               });
             }
-            delete obj.calendars[i]['frequencyList'];
+            delete obj.calendars[i].frequencyList;
           }
+        }
+      }
+      if (obj.nonWorkingCalendars.length > 0) {
+        for (let i = 0; i < obj.nonWorkingCalendars.length; i++) {
+          delete obj.nonWorkingCalendars[i].type;
         }
       }
       let isValid = false;

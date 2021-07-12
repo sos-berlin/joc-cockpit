@@ -34,6 +34,35 @@
       </div>
     </div>
     <div class="form-group row">
+      <label class="col-md-3 form-control-label" translate>dailyPlan.label.workflow</label>
+      <div class="col-md-6">
+        <nz-tree-select
+          name="workflows"
+          nzNoAnimation
+          nzMultiple
+          [nzAllowClear]="false"
+          [nzNodes]="workflowsTree"
+          [nzHideUnMatched]="true"
+          [nzDropdownStyle]="{ 'max-height': '300px' }"
+          nzShowSearch
+          (nzExpandChange)="onExpand($event)"
+          [nzPlaceHolder]="'inventory.placeholder.workflowName' | translate"
+          [(ngModel)]="object.workflowPaths"
+        >
+          <ng-template #nzTreeTemplate let-node>
+            <div style="width: 93%" class="node-wrapper" (click)="loadData(node, $event);">
+              <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
+                <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+                   class="w-14"></i>
+                <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                {{node.origin.key}}
+              </div>
+            </div>
+          </ng-template>
+        </nz-tree-select>
+      </div>
+    </div>
+    <div class="form-group row">
       <label class="col-md-3" translate>dailyPlan.label.overwrite</label>
       <div class="col-md-6">
         <label nz-checkbox [(ngModel)]="object.overwrite" name="overwrite"></label>

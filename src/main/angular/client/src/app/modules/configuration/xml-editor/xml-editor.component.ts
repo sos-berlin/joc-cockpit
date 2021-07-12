@@ -1004,7 +1004,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.checkOrder(node.origin);
   }
 
-  loadData(node, type, $event, data): void {
+  loadData(node, type, $event): void {
     if (!node || !node.origin) {
       return;
     }

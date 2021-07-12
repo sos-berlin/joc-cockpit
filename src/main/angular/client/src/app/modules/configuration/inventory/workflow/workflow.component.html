@@ -464,7 +464,6 @@
               (ngModelChange)="onChangeJobResource($event)"
               [nzPlaceHolder]="'workflow.placeholder.selectJobResources' | translate"
               [(ngModel)]="extraConfiguration.jobResourceNames"
-              (nzExpandChange)="onExpand($event, 'JOBRESOURCE')"
             >
               <ng-template #nzTreeTemplate let-node>
                 <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'JOBRESOURCE', $event);">
@@ -472,7 +471,7 @@
                     <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
                        class="w-14"></i>
                     <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                    {{node.origin.name}}
+                    {{node.origin.key}}
                   </div>
                 </div>
               </ng-template>

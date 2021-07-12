@@ -232,28 +232,86 @@ export class SelectOrderTemplatesComponent implements OnInit {
   selector: 'app-create-plan-modal-content',
   templateUrl: './create-plan-dialog.html'
 })
-export class CreatePlanModalComponent implements OnInit{
+export class CreatePlanModalComponent implements OnInit {
   @Input() schedulerId;
   @Input() selectedDate;
   @Input() dateRanges;
   @Input() preferences: any;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
   objects: any = [];
-  object: any = {at: 'all', overwrite: false, submitWith: false};
+  object: any = {at: 'all', overwrite: false, submitWith: false, workflowPaths: []};
   plan: any;
   submitted = false;
   dateFormat: any;
   display: any;
   comments: any = {};
   schedules: any = [];
+  workflowsTree: any = [];
   selectedTemplates: any = {schedules: []};
 
-  constructor(public activeModal: NzModalRef, public  coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
   }
 
   ngOnInit(): void {
     this.display = this.preferences.auditLog;
+    this.getWorkflowTree();
     this.comments.radio = 'predefined';
+  }
+
+  private getWorkflowTree(): void {
+    this.coreService.post('tree', {
+      controllerId: this.schedulerId,
+      forInventory: true,
+      types: ['WORKFLOW']
+    }).subscribe((res) => {
+      this.workflowsTree = this.coreService.prepareTree(res, true);
+    });
+  }
+
+  loadData(node, $event): void {
+    if (!node || !node.origin) {
+      return;
+    }
+    if (!node.origin.type) {
+      if ($event) {
+        node.isExpanded = !node.isExpanded;
+        $event.stopPropagation();
+      }
+      let flag = true;
+      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
+        flag = false;
+      }
+      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
+        let request: any = {
+          path: node.key,
+          objectTypes: ['WORKFLOW']
+        };
+        this.coreService.post('inventory/read/folder', request).subscribe((res: any) => {
+          let data = res.workflows;
+          for (let i = 0; i < data.length; i++) {
+            const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
+            data[i].title = data[i].name;
+            data[i].path = path;
+            data[i].key = data[i].name;
+            data[i].type = 'WORKFLOW';
+            data[i].isLeaf = true;
+          }
+          if (node.origin.children && node.origin.children.length > 0) {
+            data = data.concat(node.origin.children);
+          }
+          if (node.origin.isLeaf) {
+            node.origin.expanded = true;
+          }
+          node.origin.isLeaf = false;
+          node.origin.children = data;
+          this.workflowsTree = [...this.workflowsTree];
+        });
+      }
+    }
+  }
+
+  onExpand(e): void {
+    this.loadData(e.node, null);
   }
 
   onSubmit(): void {
@@ -265,6 +323,12 @@ export class CreatePlanModalComponent implements OnInit{
     };
     if (this.object.at === 'template' && this.selectedTemplates.schedules.length > 0) {
       obj.selector = {schedulePaths: this.selectedTemplates.schedules};
+    }
+    if (this.object.workflowPaths && this.object.workflowPaths.length > 0) {
+      if (!obj.selector) {
+        obj.selector = {};
+      }
+      obj.selector.workflowPaths = this.object.workflowPaths;
     }
     obj.auditLog = {};
     if (this.comments.comment) {

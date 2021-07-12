@@ -107,7 +107,7 @@
                     [disabled]="object.isCancel" (click)="cancelAllOrder()"><i class="fa fa-times p-r-xs"></i>
               <span class="hidden-sm-down" translate>order.button.cancel</span></button>
             <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController.orders.cancel"
-                    [disabled]="object.isCancel" (click)="cancelAllOrder(true)"><i class="fa fa-times"></i>&nbsp;
+                    [disabled]="object.isCancelWithKill" (click)="cancelAllOrder(true)"><i class="fa fa-times"></i>&nbsp;
               <span class="hidden-sm-down" translate>order.button.cancelAndKillTask</span>
             </button>
             <button class="btn btn-grey btn-sm m-l-12" *ngIf="object.isTerminate && permission.currentController.orders"
@@ -117,7 +117,7 @@
                     [disabled]="!object.isSuspend" (click)="suspendAllOrder()"><i class="fa fa-stop p-r-xs"></i>
               <span class="hidden-sm-down" translate>order.button.suspend</span></button>
             <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController.orders.suspendResume"
-                    [disabled]="!object.isSuspend" (click)="suspendAllOrder(true)"><i class="fa fa-stop"></i>&nbsp;
+                    [disabled]="!object.isSuspendWithKill" (click)="suspendAllOrder(true)"><i class="fa fa-stop"></i>&nbsp;
               <span class="hidden-sm-down" translate>order.button.suspendAndKillTask</span>
             </button>
             <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController.orders.suspendResume"

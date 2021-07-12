@@ -547,6 +547,7 @@
   "dailyPlan": {
     "label.createPlan": "Create Daily Plan",
     "label.schedules": "Schedules",
+    "label.workflows": "Workflows",
     "label.scheduleAndOrder": "Schedule/Order ID",
     "label.workflowAndOrder": "Workflow/Order ID",
     "label.order": "Order ID",
@@ -1137,8 +1138,9 @@
     "message.loginError": "Account or password is wrong"
   },
   "monitor": {
-    "label.agentMonitor": "Agent Availabililty",
-    "label.controllerMonitor": "Controller Availability"
+    "label.agentAvailability": "Agent Availability",
+    "label.controllerAvailability": "Controller Availability",
+    "label.notification": "Notification"
   },
   "order": {
     "label.allOrders": "All Orders",

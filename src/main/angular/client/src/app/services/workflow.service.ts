@@ -333,8 +333,6 @@ export class WorkflowService {
                   recursive(json.instructions[x].branches[i]);
                 }
               }
-            } else {
-              delete json.instructions[x].branches;
             }
           }
         }
@@ -744,20 +742,24 @@ export class WorkflowService {
       const v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.merge);
       mapObj.nodeMap.set(target.id.toString(), v1.id.toString());
       if (isArray(branches)) {
-        for (let i = 0; i < branches.length; i++) {
-          if (branches[i].instructions && branches[i].instructions.length > 0) {
-            const x = branches[i].instructions[branches[i].instructions.length - 1];
-            if (x) {
-              let endNode;
-              if (self.isInstructionCollapsible(x.TYPE)) {
-                endNode = graph.getModel().getCell(mapObj.nodeMap.get(x.id));
-              } else {
-                endNode = vertexMap.get(x.uuid);
+        if(branches.length === 0){
+          connectInstruction(target, v1, '', '', parent);
+        } else {
+          for (let i = 0; i < branches.length; i++) {
+            if (branches[i].instructions && branches[i].instructions.length > 0) {
+              const x = branches[i].instructions[branches[i].instructions.length - 1];
+              if (x) {
+                let endNode;
+                if (self.isInstructionCollapsible(x.TYPE)) {
+                  endNode = graph.getModel().getCell(mapObj.nodeMap.get(x.id));
+                } else {
+                  endNode = vertexMap.get(x.uuid);
+                }
+                connectInstruction(endNode, v1, 'join', 'join', parent);
               }
-              connectInstruction(endNode, v1, 'join', 'join', parent);
+            } else {
+              connectInstruction(target, v1, '', '', parent);
             }
-          } else {
-            connectInstruction(target, v1, '', '', parent);
           }
         }
       } else {

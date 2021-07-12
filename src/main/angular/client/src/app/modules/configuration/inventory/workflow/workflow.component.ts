@@ -16,8 +16,7 @@ import {FileUploader} from 'ng2-file-upload';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
-import {forkJoin, of, Subscription} from 'rxjs';
-import {catchError} from 'rxjs/operators';
+import {Subscription} from 'rxjs';
 import {isEmpty, isArray, isEqual, clone, extend} from 'underscore';
 import {saveAs} from 'file-saver';
 import {Router} from '@angular/router';
@@ -548,6 +547,12 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.saveToHistory();
   }
 
+  onChangeJobResource(value): void {
+    if (!isEqual(JSON.stringify(this.selectedNode.job.jobResourceNames), JSON.stringify(value))) {
+      this.selectedNode.job.jobResourceNames = value;
+    }
+  }
+
   saveToHistory(): void {
     let flag1 = false;
     let flag2 = false;
@@ -737,10 +742,16 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   loadData(node, type, $event): void {
+    if (!node || !node.origin) {
+      return;
+    }
     if (!node.origin.type) {
       if ($event) {
         node.isExpanded = !node.isExpanded;
         $event.stopPropagation();
+      }
+      if(type === 'JOBRESOURCE'){
+        return;
       }
       let flag = true;
       if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
@@ -778,11 +789,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
           node.origin.children = data;
           if (type === 'DOCUMENTATION') {
             this.documentationTree = [...this.documentationTree];
-          } else {
-            this.jobResourcesTree = [...this.jobResourcesTree];
-            if (this.selectedNode.job.jobResourceNames && this.selectedNode.job.jobResourceNames.length > 0) {
-              this.selectedNode.job.jobResourceNames = [...this.selectedNode.job.jobResourceNames];
-            }
           }
           this.ref.detectChanges();
         });
@@ -817,27 +823,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.addArgument();
     }
     if (this.selectedNode.job.jobResourceNames && this.selectedNode.job.jobResourceNames.length > 0) {
-      const APIs = [];
-      let paths = [];
-      this.selectedNode.job.jobResourceNames.forEach((name) => {
-        APIs.push(this.coreService.post('inventory/path', {name, objectType: 'JOBRESOURCE', useDrafts: true}).pipe(
-          catchError(error => of(error))
-        ));
-      });
-      forkJoin(APIs).subscribe(results => {
-        results.forEach((item: any, index) => {
-          if (item && item.path) {
-            const path = item.path.substring(0, item.path.lastIndexOf('/')) || item.path.substring(0, item.path.lastIndexOf('/') + 1);
-            if (paths.indexOf(path) === -1) {
-              paths.push(path);
-              this.loadResources(path);
-            }
-          } else {
-            this.selectedNode.job.jobResourceNames.splice(index, 1);
-            this.ref.detectChanges();
-          }
-        });
-      });
+      this.selectedNode.job.jobResourceNames = [...this.selectedNode.job.jobResourceNames];
     }
     this.onBlur();
     if (this.index === 0) {
@@ -845,16 +831,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     }
     this.presentObj.obj = JSON.stringify(this.selectedNode.obj);
     this.presentObj.job = JSON.stringify(this.selectedNode.job);
-  }
-
-  private loadResources(path): void {
-    if (this.treeSelectCtrl) {
-      const node = this.treeSelectCtrl.getTreeNodeByKey(path);
-      if (node) {
-        node.isExpanded = true;
-        this.loadData(node, 'JOBRESOURCE', null);
-      }
-    }
   }
 
   private setJobProperties(): void {
@@ -1678,10 +1654,16 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   loadData(node, type, $event): void {
+    if (!node || !node.origin) {
+      return;
+    }
     if (!node.origin.type) {
       if ($event) {
         node.isExpanded = !node.isExpanded;
         $event.stopPropagation();
+      }
+      if (type === 'JOBRESOURCE') {
+        return;
       }
       let flag = true;
       if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
@@ -1721,11 +1703,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             this.lockTree = [...this.lockTree];
           } else if (type === 'DOCUMENTATION') {
             this.documentationTree = [...this.documentationTree];
-          } else {
-            this.jobResourcesTree = [...this.jobResourcesTree];
-            if (this.extraConfiguration.jobResourceNames && this.extraConfiguration.jobResourceNames.length > 0) {
-              this.extraConfiguration.jobResourceNames = [...this.extraConfiguration.jobResourceNames];
-            }
           }
           this.ref.detectChanges();
         });
@@ -1841,6 +1818,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           types: ['JOBRESOURCE']
         }).subscribe((res) => {
           this.jobResourcesTree = this.coreService.prepareTree(res, false);
+          this.getJobResources();
         });
       }
       if (this.lockTree.length === 0) {
@@ -1864,6 +1842,51 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.coreService.post('agents/names', {controllerId: this.schedulerId}).subscribe((res: any) => {
           this.agents = res.agentNames ? res.agentNames.sort() : [];
         });
+      }
+    }
+  }
+
+  private getJobResources(): void {
+    this.coreService.post('inventory/read/folder', {
+      path: '/',
+      recursive: true,
+      objectTypes: ['JOBRESOURCE']
+    }).subscribe((res: any) => {
+      let map = new Map();
+      res.jobResources.forEach((item) => {
+        const path = item.path.substring(0, item.path.lastIndexOf('/')) || '/';
+        const obj = {
+          title : item.name,
+          path : item.path,
+          key : item.name,
+          type : item.objectType,
+          isLeaf : true
+        };
+        if (map.has(path)) {
+          const arr = map.get(path);
+          arr.push(obj);
+          map.set(path, arr);
+        } else {
+          map.set(path, [obj]);
+        }
+      });
+      this.jobResourcesTree[0].expanded = true;
+      this.updateTreeRecursive(this.jobResourcesTree, map);
+      this.jobResourcesTree = [...this.jobResourcesTree];
+      if (this.extraConfiguration.jobResourceNames && this.extraConfiguration.jobResourceNames.length > 0) {
+        this.extraConfiguration.jobResourceNames = [...this.extraConfiguration.jobResourceNames];
+        this.ref.detectChanges();
+      }
+    });
+  }
+
+  private updateTreeRecursive(nodes, map): void {
+    for (let i = 0; i < nodes.length; i++) {
+      if (nodes[i].path && map.has(nodes[i].path)) {
+        nodes[i].children = map.get(nodes[i].path).concat(nodes[i].children || []);
+      }
+      if (nodes[i].children) {
+        this.updateTreeRecursive(nodes[i].children, map);
       }
     }
   }
@@ -1948,35 +1971,17 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     delete res.configuration.jobResourceNames;
     delete res.configuration.documentationName;
     delete res.configuration.title;
-    if (this.jobResourceNames && this.jobResourceNames.length > 0) {
-      const APIs = [];
-      let paths = [];
-      this.jobResourceNames.forEach((name) => {
-        APIs.push(this.coreService.post('inventory/path', {name, objectType: 'JOBRESOURCE', useDrafts: true}).pipe(
-          catchError(error => of(error))
-        ));
-      });
-      forkJoin(APIs).subscribe(results => {
-        results.forEach((item: any, index) => {
-          if (item && item.path) {
-            const path = item.path.substring(0, item.path.lastIndexOf('/')) || item.path.substring(0, item.path.lastIndexOf('/') + 1);
-            if (paths.indexOf(path) === -1) {
-              paths.push(path);
-              this.loadResources(path);
-            }
-          } else {
-            this.jobResourceNames.splice(index, 1);
-            this.ref.detectChanges();
-          }
-        });
-      });
 
-    }
     this.extraConfiguration = {
       title: this.title,
       documentationName: this.documentationName,
       jobResourceNames: this.jobResourceNames,
     };
+
+    if (this.extraConfiguration.jobResourceNames && this.extraConfiguration.jobResourceNames.length > 0) {
+      this.extraConfiguration.jobResourceNames = [...this.extraConfiguration.jobResourceNames];
+      this.ref.detectChanges();
+    }
     if (!this.orderPreparation && this.variableDeclarations.parameters && this.variableDeclarations.parameters.length === 0) {
       this.addVariable();
     }
@@ -7691,9 +7696,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private saveJSON(noValidate): void {
-    if (this.selectedNode && noValidate) {
-      return;
-    }
     if (this.selectedNode) {
       this.initEditorConf(this.editor, false, true);
       this.xmlToJsonParser(null);

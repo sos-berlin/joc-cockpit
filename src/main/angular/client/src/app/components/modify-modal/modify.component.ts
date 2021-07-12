@@ -208,9 +208,11 @@ export class ModifyStartTimeModalComponent implements OnInit {
   @Input() isDailyPlan: boolean;
   submitted = false;
   dateFormat: any;
-  dateType: any = {at : 'date'};
+  dateType: any = {at: 'date'};
   zones = [];
-  constructor(private activeModal: NzModalRef, public  coreService: CoreService) {
+  period: any = {};
+
+  constructor(private activeModal: NzModalRef, public coreService: CoreService) {
   }
 
   ngOnInit(): void {
@@ -224,25 +226,56 @@ export class ModifyStartTimeModalComponent implements OnInit {
     return moment(current.setHours(0, 0, 0, 0)).diff(new Date().setHours(0, 0, 0, 0)) < 0;
   }
 
+  private checkTime(time): string {
+    if (/^\d{1,2}:\d{2}?$/i.test(time)) {
+      time = time + ':00';
+    } else if (/^\d{1,2}:\d{2}(:)?$/i.test(time)) {
+      time = time + '00';
+    } else if (/^\d{1,2}?$/i.test(time)) {
+      time = time + ':00:00';
+    }
+    if (time === '00:00') {
+      time = '00:00:00';
+    } else if (time.length === 3) {
+      time = time + '00:00';
+    } else if (time.length === 4) {
+      time = time + '0:00';
+    } else if (time.length === 6) {
+      time = time + '00';
+    } else if (time.length === 7) {
+      time = time + '0';
+    }
+    return time;
+  }
+
   onSubmit(): void {
     let obj: any = {
       controllerId: this.schedulerId,
       orderIds: [this.order.orderId]
     };
-    if (this.dateType.at === 'now') {
-      obj.scheduledFor = 'now';
-    } else if (this.order.at === 'never') {
-      obj.scheduledFor = 'never';
-    } else if (this.dateType.at === 'later') {
-      obj.scheduledFor = 'now + ' + this.order.atTime;
-    } else {
-      if (this.order.from && this.order.time) {
-        this.order.from.setHours(moment(this.order.time).hours());
-        this.order.from.setMinutes(moment(this.order.time).minutes());
-        this.order.from.setSeconds(moment(this.order.time).seconds());
-        this.order.from.setMilliseconds(0);
+    if (isEmpty(this.period)) {
+      if (this.dateType.at === 'now') {
+        obj.scheduledFor = 'now';
+      } else if (this.order.at === 'never') {
+        obj.scheduledFor = 'never';
+      } else if (this.dateType.at === 'later') {
+        obj.scheduledFor = 'now + ' + this.order.atTime;
+      } else {
+        if (this.order.from && this.order.time) {
+          this.order.from.setHours(moment(this.order.time).hours());
+          this.order.from.setMinutes(moment(this.order.time).minutes());
+          this.order.from.setSeconds(moment(this.order.time).seconds());
+          this.order.from.setMilliseconds(0);
+        }
+        obj.scheduledFor = moment(this.order.from).format('YYYY-MM-DD HH:mm:ss');
+        obj.timeZone = this.dateType.timeZone;
       }
-      obj.scheduledFor = moment(this.order.from).format('YYYY-MM-DD HH:mm:ss');
+    } else {
+      obj.cycle = {
+        repeat : this.checkTime(this.period.repeat),
+        begin : this.checkTime(this.period.begin),
+        end : this.checkTime(this.period.end),
+      };
       obj.timeZone = this.dateType.timeZone;
     }
     this.submitted = true;

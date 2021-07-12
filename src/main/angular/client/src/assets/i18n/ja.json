@@ -547,6 +547,7 @@
   "dailyPlan": {
     "label.createPlan": "実行計画作成",
     "label.schedules": "スケジュール",
+    "label.workflows": "Workflows",
     "label.scheduleAndOrder": "スケジュール/オーダーID",
     "label.workflowAndOrder": "ワークフロー/オーダーID",
     "label.order": "オーダーID",
@@ -1137,8 +1138,9 @@
     "message.loginError": "アカウントかパスワードが間違っています"
   },
   "monitor": {
-    "label.agentMonitor": "エージェントモニター",
-    "label.controllerMonitor": "コントローラーモニター"
+    "label.agentAvailability": "エージェントモニター",
+    "label.controllerAvailability": "コントローラーモニター",
+    "label.notification": "Notification"
   },
   "order": {
     "label.allOrders": "全オーダー",

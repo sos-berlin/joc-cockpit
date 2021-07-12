@@ -179,7 +179,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     isModify: false,
     isTerminate: false,
     isCancel: false,
+    isCancelWithKill: false,
     isSuspend: false,
+    isSuspendWithKill: false,
     isResume: false,
   };
 
@@ -447,8 +449,10 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   refreshCheckedStatus(): void {
     this.object.checked = this.object.mapOfCheckedId.size === this.currentData.length;
     this.object.isCancel = false;
+    this.object.isCancelWithKill = false;
     this.object.isModify = true;
     this.object.isSuspend = true;
+    this.object.isSuspendWithKill = true;
     this.object.isTerminate = true;
     this.object.isResume = true;
     let workflow = null;
@@ -463,8 +467,15 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         if (order.state._text !== 'RUNNING' && order.state._text !== 'INPROGRESS' && order.state._text !== 'WAITING' && order.state._text !== 'PENDING' && order.state._text !== 'SCHEDULED') {
           this.object.isSuspend = false;
         }
+        if (order.state._text !== 'RUNNING' && order.state._text !== 'INPROGRESS' && order.state._text !== 'WAITING') {
+          this.object.isSuspendWithKill = false;
+        }
         if (order.state._text === 'FINISHED' || order.state._text === 'CANCELLED') {
           this.object.isCancel = true;
+          this.object.isCancelWithKill = true;
+        }
+        if (order.state._text === 'PENDING' || order.state._text === 'SCHEDULED') {
+          this.object.isCancelWithKill = true;
         }
         if (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING') {
           this.object.isModify = false;
@@ -505,11 +516,8 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   resumeAllOrder(): void {
-   
     let workflow;
     for (let [key, value] of this.object.mapOfCheckedId) {
-      console.log(key + "key");
-      console.log(value.workflowId.path);
       if (!workflow) {
         workflow = value.workflowId.path;
       } else if (workflow !== value.workflowId.path) {
@@ -655,7 +663,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       isModify: false,
       isTerminate: false,
       isCancel: false,
+      isCancelWithKill: false,
       isSuspend: false,
+      isSuspendWithKill: false,
       isResume: false,
     };
   }

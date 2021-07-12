@@ -3061,7 +3061,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             return;
           }
         }
-        obj.newPath = obj.newPath + '/' + this.copyObj.name;
+        obj.newPath = obj.newPath + (obj.newPath === '/' ? '' : '/') + this.copyObj.name;
         this.coreService.post('inventory/rename', obj).subscribe((res) => {
           let obj: any = this.coreService.clone(this.copyObj);
           this.updateFolders(this.copyObj.path, false, () => {
@@ -3589,7 +3589,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         flag = false;
       }
     }
-    if (flag) {
+    if (flag && this.selectedObj.type) {
       if (this.objectHistory.length === 20) {
         this.objectHistory.shift();
       }

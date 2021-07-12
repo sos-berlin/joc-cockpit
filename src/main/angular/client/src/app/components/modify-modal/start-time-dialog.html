@@ -18,37 +18,63 @@
             <span *ngIf="!order.plannedStartTime">{{order.scheduledFor | stringToDate}}</span>
           </div>
         </div>
-        <div class="form-group row">
-          <label class="col-md-3" translate>common.label.startTime</label>
-          <div class="col-md-9">
-            <nz-radio-group name="at" [(ngModel)]="dateType.at">
-              <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
-              <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
-              <label nz-radio nzValue="later"><span translate>common.label.relativeDate</span></label>
-              <label *ngIf="!isDailyPlan" nz-radio nzValue="never"><span translate>common.label.never</span></label>
-            </nz-radio-group>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="dateType.at == 'later'">
-          <label class="col-md-3 form-control-label" translate>common.label.time</label>
-          <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
-            <input validTimeReqex type="text" #time="ngModel" class="form-control" [required]="dateType.at == 'now'"
-                   name="atTime" [(ngModel)]="order.atTime" placeholder="{{'common.placeholder.enterSecond' | translate}}">
-            <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
-              <div translate *ngIf="!time.valid">common.message.invalid</div>
+        <ng-container *ngIf="!order.cyclicOrder">
+          <div class="form-group row">
+            <label class="col-md-3" translate>common.label.startTime</label>
+            <div class="col-md-9">
+              <nz-radio-group name="at" [(ngModel)]="dateType.at">
+                <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
+                <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
+                <label nz-radio nzValue="later"><span translate>common.label.relativeDate</span></label>
+                <label *ngIf="!isDailyPlan" nz-radio nzValue="never"><span translate>common.label.never</span></label>
+              </nz-radio-group>
             </div>
           </div>
-        </div>
-        <div class="form-group row" *ngIf="dateType.at == 'date'">
-          <label class="col-md-3 form-control-label" translate>workflow.label.enterDateAndTime</label>
-          <div class="col-sm-6">
-            <nz-date-picker [nzDisabledDate]="disabledDate" [required]="true" [nzPlaceHolder]="dateFormat | uppercase" [nzFormat]="dateFormat" [(ngModel)]="order.from"
-                            name="from"></nz-date-picker>
-            <nz-time-picker [nzDisabled]="!order.from" [nzFormat]="'HH:mm:ss'"
-                            class="input-time m-l time-picker" [(ngModel)]="order.time" name="fromTime"
-                            nzPlaceHolder="HH:MM:SS"></nz-time-picker>
+          <div class="form-group row" *ngIf="dateType.at == 'later'">
+            <label class="col-md-3 form-control-label" translate>common.label.time</label>
+            <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
+              <input validTimeReqex type="text" #time="ngModel" class="form-control" [required]="dateType.at == 'now'"
+                     name="atTime" [(ngModel)]="order.atTime" placeholder="{{'common.placeholder.enterSecond' | translate}}">
+              <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
+                <div translate *ngIf="!time.valid">common.message.invalid</div>
+              </div>
+            </div>
           </div>
-        </div>
+          <div class="form-group row" *ngIf="dateType.at == 'date'">
+            <label class="col-md-3 form-control-label" translate>workflow.label.enterDateAndTime</label>
+            <div class="col-sm-6">
+              <nz-date-picker [nzDisabledDate]="disabledDate" [required]="true" [nzPlaceHolder]="dateFormat | uppercase" [nzFormat]="dateFormat" [(ngModel)]="order.from"
+                              name="from"></nz-date-picker>
+              <nz-time-picker [nzDisabled]="!order.from" [nzFormat]="'HH:mm:ss'"
+                              class="input-time m-l time-picker" [(ngModel)]="order.time" name="fromTime"
+                              nzPlaceHolder="HH:MM:SS"></nz-time-picker>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="order.cyclicOrder">
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label" translate>runtime.label.repeatTime</label>
+            <div class="col-md-2" [ngClass]="{ 'has-error' : (((repeat.dirty || repeat.touched) && repeat.invalid))}">
+              <input timevalidator maxlength="8" class="form-control" name="repeat" #repeat="ngModel"
+                     [(ngModel)]="period.repeat"
+                     placeholder="HH:MM:SS" type="text">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label" translate>runtime.label.begin</label>
+            <div class="col-md-2" [ngClass]="{'has-error': (begin.dirty || begin.touched) && begin.invalid}">
+              <input timevalidator maxlength="8" class="form-control" name="begin" #begin="ngModel"
+                     [(ngModel)]="period.begin"
+                     placeholder="HH:MM:SS" type="text">
+            </div>
+            <label class="col-md-2 form-control-label text-right" translate>runtime.label.end</label>
+            <div class="col-md-2" [ngClass]="{'has-error': (end.dirty || end.touched) && end.invalid}">
+              <input timevalidator maxlength="8" class="form-control" name="end" #end="ngModel"
+                     [(ngModel)]="period.end"
+                     placeholder="HH:MM:SS" type="text">
+            </div>
+          </div>
+        </ng-container>
         <div class="form-group row" [hidden]="!(dateType.at =='date')">
           <div class="col-md-3 form-control-label" translate>common.label.timeZone</div>
           <div class="col-sm-6">
