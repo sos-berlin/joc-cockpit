@@ -393,6 +393,9 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   }
 
   pasteParam(type: string): void {
+    if (!this.copiedParamObjects.data) {
+      return;
+    }
     const arr = this.getPasteParam(this.jobResource.configuration[type], this.copiedParamObjects.data);
     if (arr.length > 0) {
       this.jobResource.configuration[type] = this.jobResource.configuration[type].filter((item) => {

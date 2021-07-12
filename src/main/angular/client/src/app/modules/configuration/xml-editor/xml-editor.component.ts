@@ -1507,8 +1507,20 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           }
           for (let j = 0; j < node.attributes.length; j++) {
             this.checkAttrsValue(attrs[i]);
+            let vals = (attrs[i].values && attrs[i].values.length > 0) ? this.coreService.clone(attrs[i].values) : '';
             if (attrs[i].name === node.attributes[j].name) {
               attrs[i] = Object.assign(attrs[i], node.attributes[j]);
+              if (vals && attrs[i].values && attrs[i].values.length === 0) {
+                attrs[i].values = vals;
+              }
+              if (attrs[i].type === 'xs:list') {
+                if(!attrs[i].data && attrs[i].default){
+                  attrs[i].data = attrs[i].default;
+                }
+                if (attrs[i].data && typeof attrs[i].data === 'string') {
+                  attrs[i].data1 = attrs[i].data.split(' ');
+                }
+              }
             }
           }
         }
@@ -2595,19 +2607,36 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     } else {
       let enumerationPath = '//xs:element[@name=\'' + attrs.parent + '\']//xs:complexType/xs:attribute[@name=\'' + attrs.name + '\']/xs:simpleType/xs:restriction/xs:enumeration';
       value = select(enumerationPath, this.doc);
-      for (let i = 0; i < value.length; i++) {
-        valueJson = {};
-        for (let j = 0; j < value[i].attributes.length; j++) {
-          let a = value[i].attributes[j].nodeName;
-          let b = value[i].attributes[j].nodeValue;
-          valueJson = Object.assign(valueJson, this._defineProperty({}, a, b));
+      if (value.length > 0) {
+        for (let i = 0; i < value.length; i++) {
+          valueJson = {};
+          for (let j = 0; j < value[i].attributes.length; j++) {
+            let a = value[i].attributes[j].nodeName;
+            let b = value[i].attributes[j].nodeValue;
+            valueJson = Object.assign(valueJson, this._defineProperty({}, a, b));
+          }
+          valueArr.push(valueJson);
         }
-        valueArr.push(valueJson);
-      }
-      if (!attrs.values) {
-        attrs.values = [];
-        for (let i = 0; i < valueArr.length; i++) {
-          attrs.values.push(valueArr[i]);
+        if (!attrs.values) {
+          attrs.values = [];
+          for (let i = 0; i < valueArr.length; i++) {
+            attrs.values.push(valueArr[i]);
+          }
+        }
+      } else {
+        let list = '//xs:element[@name=\'' + attrs.parent + '\']//xs:complexType/xs:attribute[@name=\'' + attrs.name + '\']/xs:simpleType/xs:list';
+        list = select(list, this.doc);
+        if (list && list.length > 0) {
+          attrs.type = 'xs:list';
+          attrs.values = [];
+
+          let enumerationPath = '//xs:element[@name=\'' + attrs.parent + '\']//xs:complexType/xs:attribute[@name=\'' + attrs.name + '\']/xs:simpleType/xs:list/xs:simpleType/xs:restriction/xs:enumeration';
+          let value = select(enumerationPath, this.doc);
+          for (let i = 0; i < value.length; i++) {
+            if (value[i].attributes.length > 0) {
+              attrs.values.push(value[i].attributes[0].nodeValue);
+            }
+          }
         }
       }
     }
@@ -2981,6 +3010,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       if (this.selectedNode.attributes) {
         for (const i in this.selectedNode.attributes) {
           delete this.selectedNode.attributes[i].text;
+          delete this.selectedNode.attributes[i].data1;
         }
       }
     }
@@ -3944,6 +3974,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         e.preventDefault();
       }
     });
+  }
+
+  updateListData(node): void {
+    node.data = node.data1.join(' ');
   }
 
   submitData(value, tag) {

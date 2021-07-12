@@ -429,6 +429,17 @@
                                  id="{{node.name}}">
                         <nz-option [nzValue]="key" *ngFor="let key of tempArr" [nzLabel]="key"></nz-option>
                       </nz-select>
+                      <nz-select class="w-full"
+                                 nzMode="multiple"
+                                 [(ngModel)]="node.data1"
+                                 (ngModelChange)="updateListData(node)"
+                                 *ngIf="node.values && node.values.length>0 && node.type === 'xs:list'"
+                                 [ngClass]="error && errorName === node.name? 'invalid': ''"
+                                 [required]="node.use ==='required'"
+                                 id="{{node.name}}">
+                        <nz-option [nzValue]="key" *ngFor="let key of node.values"
+                                   [nzLabel]="key"></nz-option>
+                      </nz-select>
                       <nz-input-number class="w-full"
                                        (nzBlur)="validateAttr(node.data, node)"
                                        (nzFocus)="hideError()"
@@ -463,7 +474,7 @@
                       <nz-select class="w-full"
                                  (nzBlur)="validateAttr(node.data, node)"
                                  (ngModelChange)="submitData(node.data, node)"
-                                 *ngIf="node.values && node.values.length > 0"
+                                 *ngIf="node.values && node.values.length > 0 && node.type !== 'xs:list'"
                                  [ngClass]="error && errorName === node.name? 'invalid': ''"
                                  [(ngModel)]="node.data" [required]="node.use ==='required'"
                                  id="{{node.name}}">

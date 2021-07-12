@@ -444,7 +444,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       }
     });
     this.copiedParamObjects = {operation, type, data: arr, name: this.selectedNode.obj.jobName};
-    this.coreService.tabs._configuration.copiedParamObjects = this.copiedParamObjects;
+    this.coreService.tabs._configuration.copiedParamObjects = this.coreService.clone(this.copiedParamObjects);
   }
 
   private getList(type): Array<any> {
@@ -462,6 +462,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   pasteParam(obj: any, type: string): void {
+    if (!this.copiedParamObjects.data) {
+      return;
+    }
     const arr = this.getPasteParam(obj[type], this.copiedParamObjects.data);
     if (arr.length > 0) {
       obj[type] = obj[type].filter((item) => {
@@ -495,6 +498,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       }
       this.copiedParamObjects = {};
       this.coreService.tabs._configuration.copiedParamObjects = this.copiedParamObjects;
+      this.ref.detectChanges();
     }
   }
 
@@ -503,11 +507,15 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
    */
   private getPasteParam(sour, target): any {
     const temp = this.coreService.clone(target);
-    for (let i = 0; i < sour.length; i++) {
-      for (let j = 0; j < temp.length; j++) {
-        if (sour[i].name === temp[j].name) {
-          temp.splice(j, 1);
-          break;
+    if (sour) {
+      for (let i = 0; i < sour.length; i++) {
+        if (temp) {
+          for (let j = 0; j < temp.length; j++) {
+            if (sour[i].name === temp[j].name) {
+              temp.splice(j, 1);
+              break;
+            }
+          }
         }
       }
     }
@@ -7143,13 +7151,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         obj = this.selectedNode.job;
       }
       if (obj[copiedParamObjects.type === 'nodeArguments' ? 'defaultArguments' : copiedParamObjects.type] && obj[copiedParamObjects.type === 'nodeArguments' ? 'defaultArguments' : copiedParamObjects.type].length > 0) {
-        obj[copiedParamObjects.type === 'nodeArguments' ? 'defaultArguments' : copiedParamObjects.type] = obj[copiedParamObjects.type === 'nodeArguments' ? 'defaultArguments' : copiedParamObjects.type].filter(item => {
+        obj[copiedParamObjects.type === 'nodeArguments' ? 'defaultArguments' : copiedParamObjects.type] = obj[copiedParamObjects.type === 'nodeArguments' ? 'defaultArguments' : copiedParamObjects.type] = obj[copiedParamObjects.type === 'nodeArguments' ? 'defaultArguments' : copiedParamObjects.type] = obj[copiedParamObjects.type === 'nodeArguments' ? 'defaultArguments' : copiedParamObjects.type].filter(item => {
           let flag = true;
           for (const i in copiedParamObjects.data) {
             if (copiedParamObjects.data[i]) {
               if (copiedParamObjects.data[i].name === item.name && copiedParamObjects.data[i].value === item.value) {
                 flag = false;
-                copiedParamObjects.data.splice(i, 1);
                 break;
               }
             }
