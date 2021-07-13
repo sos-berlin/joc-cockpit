@@ -445,19 +445,56 @@
                         <span [innerHtml]="workflow.ordersSummary.terminated || 0"></span>
                       </td>
                     </tr>
-                    <tr *ngIf="workflow.show && workflow.fileOrderSources && workflow.fileOrderSources.length>0">
-                      <td colspan="16">
-                        <div class="text-sm" *ngFor="let order of workflow.fileOrderSources; let i = index">
-                          <span *ngIf="i==0">{{'workflow.label.fileOrders' | translate}} |&nbsp;</span>
-                          <span>{{'inventory.label.directory' | translate}}:</span>
-                          {{order.directory}}&nbsp;
-                          <span *ngIf="order.pattern">{{'inventory.label.pattern' | translate}}:</span>
-                          {{order.pattern}}&nbsp;
-                          <span *ngIf="order.delay">{{'workflow.label.delay' | translate}}:</span>
-                          {{order.delay}}&nbsp;
-                        </div>
-                      </td>
-                    </tr>
+                    <ng-container *ngIf="workflow.show && workflow.fileOrderSources && workflow.fileOrderSources.length>0">
+                      <tr>
+                        <td class="menu"></td>
+                        <td [colSpan]="!workflowFilters.isCompact ? 15 : 5" style="padding:0 !important;">
+                          <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small"
+                                    [nzData]="workflow.fileOrderSources" [nzShowPagination]="false">
+                            <thead>
+                            <tr>
+                              <th><span class="m-l-sm" translate>common.label.path</span></th>
+                              <th><span translate>inventory.label.deploymentDate</span></th>
+                              <th><span translate>common.label.status</span></th>
+                              <th><span translate>workflow.label.agent</span></th>
+                              <th><span translate>inventory.label.directory</span></th>
+                              <th><span translate>inventory.label.pattern</span></th>
+                              <th><span translate>common.label.timeZone</span></th>
+                              <th><span translate>workflow.label.delay</span></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let order of innerChildTable.data">
+                                <td>
+                                  <span class="show-in-single-line m-l-sm">
+                                    <i *ngIf="order.documentationName" (click)="coreService.showDocumentation(order.documentationName, preferences)" class="cursor fa fa-book p-r-xs"></i>
+                                    <span class="text-dark">
+                                      <i (click)="coreService.navToInventoryTab(order.path, 'FILEORDERSOURCE')"
+                                         class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                                      <span [innerHtml]="order.path"></span>
+                                      <i *ngIf="order.title"> - </i>
+                                      <i class="text-muted">{{order.title}}</i>
+                                    </span>
+                                  </span>
+                                </td>
+                                <td>
+                                  <span [innerHtml]="order.versionDate | stringToDate"></span>
+                                </td>
+                                <td>
+                                  <span class="label" *ngIf="order.state" [ngClass]="coreService.getColor(order.state.severity, 'bg')"
+                                        [innerHtml]="order.state._text | translate"></span>
+                                </td>
+                                <td>{{order.agentName}}</td>
+                                <td>{{order.directory}}</td>
+                                <td>{{order.pattern}}</td>
+                                <td>{{order.timeZone}}</td>
+                                <td>{{order.delay}}</td>
+                              </tr>
+                            </tbody>
+                          </nz-table>
+                        </td>
+                      </tr>
+                    </ng-container>
                     <tr *ngIf="workflow.show">
                       <td colspan="16">
                         <div class="m-a-sm">

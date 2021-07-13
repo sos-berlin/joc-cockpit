@@ -714,10 +714,23 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.saveToHistory();
   }
 
-  isStringValid(data, notValid): void {
-    if (notValid) {
+  isStringValid(data, form, list): void {
+    if (form.invalid) {
       data.name = '';
       data.value = '';
+    } else {
+      let count = 0;
+      if (list.length > 1) {
+        for (let i in list) {
+          if (list[i].name === data.name) {
+            ++count;
+          }
+          if (count > 1) {
+            form.control.setErrors({incorrect: true});
+            break;
+          }
+        }
+      }
     }
   }
 
@@ -1428,7 +1441,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   redo(): void {
     // use first future state as next present ...
     if (this.history.future.length > 0) {
-      const next = this.history.future[0];
+      let next = this.history.future[0];
       // ... and remove from future
       const newFuture = this.history.future.slice(1);
       this.history = {
@@ -1438,6 +1451,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         future: newFuture,
         type: 'redo'
       };
+      next = JSON.parse(next);
+      this.updateWorkflowJSONObj(next);
       this.reloadWorkflow(next);
     }
   }
@@ -1450,7 +1465,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   undo(): void {
     // use first past state as next present ...
     if (this.history.past.length > 0) {
-      const previous = this.history.past[0];
+      let previous = this.history.past[0];
       // ... and remove from past
       const newPast = this.history.past.slice(1);
       this.history = {
@@ -1460,8 +1475,26 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         future: [this.history.present, ...this.history.future],
         type: 'undo'
       };
+      previous = JSON.parse(previous);
+      this.updateWorkflowJSONObj(previous);
       this.reloadWorkflow(previous);
     }
+  }
+
+  private updateWorkflowJSONObj(data): void {
+    if (data.orderPreparation) {
+      this.orderPreparation = data.orderPreparation;
+    }
+    this.extraConfiguration = {
+      title: data.title,
+      documentationName: data.documentationName,
+      jobResourceNames: data.jobResourceNames,
+    };
+    delete data.title;
+    delete data.orderPreparation;
+    delete data.documentationName;
+    delete data.jobResourceNames;
+    this.ref.detectChanges();
   }
 
   expandAll(): void {
@@ -1787,7 +1820,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   deploy(): void {
-    this.dataService.reloadTree.next({deploy: this.workflow});
+    if (this.selectedNode) {
+      this.initEditorConf(this.editor, false, true);
+      setTimeout(() => {
+        this.dataService.reloadTree.next({deploy: this.workflow});
+      }, 10);
+    } else {
+      this.dataService.reloadTree.next({deploy: this.workflow});
+    }
   }
 
   backToListView(): void {
@@ -1955,7 +1995,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.centered();
         this.checkGraphHeight();
         this.isLoading = false;
-        this.history.present = this.workflow.actual;
+        this.history.present = JSON.stringify(this.extendJsonObj(JSON.parse(this.workflow.actual)));
         if (this.editor) {
           this.updateJobs(this.editor.graph, true);
           this.ref.detectChanges();
@@ -2135,7 +2175,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.closeMenu();
     const data = this.coreService.clone(this.workflow.configuration);
     this.modifyJSON(data, false, false);
-    this.workflow.configuration = JSON.parse(obj);
+    this.workflow.configuration = obj;
     let flag = false;
     if (this.workflow.configuration.jobs) {
       if (this.workflow.configuration.jobs && !isEmpty(this.workflow.configuration.jobs)) {
@@ -2148,7 +2188,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
       }
     }
-    if (!isEqual(JSON.stringify(JSON.parse(obj).instructions), JSON.stringify(data.instructions))) {
+    if (!isEqual(JSON.stringify(obj.instructions), JSON.stringify(data.instructions))) {
       this.updateXMLJSON(false);
     }
     if (this.selectedNode && this.selectedNode.job && flag) {
@@ -7720,20 +7760,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
     if (this.workflow.actual && !isEqual(this.workflow.actual, JSON.stringify(data)) && !this.isStore) {
       this.isStore = true;
-      if (this.history.past.length === 20) {
-        this.history.past.shift();
-      }
-      if (this.history.type === 'new') {
-        this.history = {
-          // push previous present into past for undo
-          past: [this.history.present, ...this.history.past],
-          present: JSON.stringify(data),
-          future: [], // clear future
-          type: 'new'
-        };
-      } else {
-        this.history.type = 'new';
-      }
       this.storeData(data);
     }
   }
@@ -7795,10 +7821,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  private storeData(data): void {
-    if (this.isTrash || !this.workflow || !this.workflow.id || !this.permission.joc.inventory.manage) {
-      return;
-    }
+  private extendJsonObj(data): any {
     let newObj: any = {};
     newObj = extend(newObj, data);
     if (this.orderPreparation) {
@@ -7812,6 +7835,28 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     if (this.documentationName) {
       newObj.documentationName = this.documentationName;
+    }
+    return newObj;
+  }
+
+  private storeData(data): void {
+    if (this.isTrash || !this.workflow || !this.workflow.id || !this.permission.joc.inventory.manage) {
+      return;
+    }
+    const newObj = this.extendJsonObj(data);
+    if (this.history.past.length === 20) {
+      this.history.past.shift();
+    }
+    if (this.history.type === 'new') {
+      this.history = {
+        // push previous present into past for undo
+        past: [this.history.present, ...this.history.past],
+        present: JSON.stringify(newObj),
+        future: [], // clear future
+        type: 'new'
+      };
+    } else {
+      this.history.type = 'new';
     }
     this.coreService.post('inventory/store', {
       configuration: newObj,
