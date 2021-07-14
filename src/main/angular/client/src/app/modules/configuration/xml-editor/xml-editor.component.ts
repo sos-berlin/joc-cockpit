@@ -2607,29 +2607,28 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     } else {
       let enumerationPath = '//xs:element[@name=\'' + attrs.parent + '\']//xs:complexType/xs:attribute[@name=\'' + attrs.name + '\']/xs:simpleType/xs:restriction/xs:enumeration';
       value = select(enumerationPath, this.doc);
-      if (value.length > 0) {
-        for (let i = 0; i < value.length; i++) {
-          valueJson = {};
-          for (let j = 0; j < value[i].attributes.length; j++) {
-            let a = value[i].attributes[j].nodeName;
-            let b = value[i].attributes[j].nodeValue;
-            valueJson = Object.assign(valueJson, this._defineProperty({}, a, b));
-          }
-          valueArr.push(valueJson);
+      for (let i = 0; i < value.length; i++) {
+        valueJson = {};
+        for (let j = 0; j < value[i].attributes.length; j++) {
+          let a = value[i].attributes[j].nodeName;
+          let b = value[i].attributes[j].nodeValue;
+          valueJson = Object.assign(valueJson, this._defineProperty({}, a, b));
         }
-        if (!attrs.values) {
-          attrs.values = [];
-          for (let i = 0; i < valueArr.length; i++) {
-            attrs.values.push(valueArr[i]);
-          }
+        valueArr.push(valueJson);
+      }
+      if (!attrs.values) {
+        attrs.values = [];
+        for (let i = 0; i < valueArr.length; i++) {
+          attrs.values.push(valueArr[i]);
         }
-      } else {
+      }
+
+      if (value.length === 0) {
         let list = '//xs:element[@name=\'' + attrs.parent + '\']//xs:complexType/xs:attribute[@name=\'' + attrs.name + '\']/xs:simpleType/xs:list';
         list = select(list, this.doc);
         if (list && list.length > 0) {
           attrs.type = 'xs:list';
           attrs.values = [];
-
           let enumerationPath = '//xs:element[@name=\'' + attrs.parent + '\']//xs:complexType/xs:attribute[@name=\'' + attrs.name + '\']/xs:simpleType/xs:list/xs:simpleType/xs:restriction/xs:enumeration';
           let value = select(enumerationPath, this.doc);
           for (let i = 0; i < value.length; i++) {
@@ -4731,7 +4730,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   // create Xml from Json
   showXml(): void {
-    const xml = this._showXml();
+    const xml = this._showXml(this.nodes, true);
     if (!xml) {
       return;
     }
@@ -5657,13 +5656,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     });
   }
 
-  private _showXml(json = this.nodes): any {
+  private _showXml(json = this.nodes, flag = false): any {
     const xml = this.jsonToXml(json);
     if (xml) {
       const xmlAsString = new XMLSerializer().serializeToString(xml);
       let a = `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>`;
       a = a.concat(xmlAsString);
-      return vkbeautify.xml(a);
+     
+      return flag ? vkbeautify.xml(a) : a;
     } else {
       return null;
     }

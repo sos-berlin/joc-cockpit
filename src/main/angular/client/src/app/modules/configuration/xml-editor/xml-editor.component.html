@@ -249,7 +249,7 @@
                     </ng-template>
                     <span
                       (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
-                      [ngClass]="cutData && node.origin.uuid === copyItem.uuid? 'disabled' : ''"
+                      [ngClass]="cutData && node.origin.uuid === copyItem.uuid? 'disabled' : ''" nzTooltipPlacement="right"
                       [nz-tooltip]="((node.origin.attributes && node.origin.attributes.length>0) || (node.origin.values && node.origin.values.length>0)) ? (htmlContent) : ''">{{node.origin.ref}}
                       </span>
                     <span class="text-sm pl-2"
