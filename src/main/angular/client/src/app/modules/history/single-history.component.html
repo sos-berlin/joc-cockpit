@@ -14,7 +14,7 @@
 <div class="scroll-y max-ht">
   <div class="padding p-b-0">
     <div class="m-t-sm box p-a">
-      <div class="table-responsive" *ngIf="workflowPath">
+      <div class="table-responsive" *ngIf="workflowPath && orderId">
         <nz-table
           #ajaxOrderTable
           [nzSize]="'small'"
@@ -26,15 +26,15 @@
         >
           <thead>
           <tr>
-            <th><span class="p-r-xs" translate>history.label.orderId</span></th>
-            <th><span class="p-r-xs" translate>history.label.workflow</span></th>
-            <th><span class="p-r-xs" translate>history.label.position</span></th>
-            <th><span class="p-r-xs" translate>history.label.status</span></th>
-            <th><span class="p-r-xs" translate>history.label.orderState</span></th>
-            <th><span class="p-r-xs" translate>history.label.plannedTime</span></th>
-            <th><span class="p-r-xs" translate>history.label.startTime</span></th>
-            <th><span class="p-r-xs" translate>history.label.endTime</span></th>
-            <th><span class="p-r-xs" translate>history.label.duration</span></th>
+            <th><span translate>history.label.orderId</span></th>
+            <th><span translate>history.label.workflow</span></th>
+            <th><span translate>history.label.position</span></th>
+            <th><span translate>history.label.status</span></th>
+            <th><span translate>history.label.orderState</span></th>
+            <th><span translate>history.label.plannedTime</span></th>
+            <th><span translate>history.label.startTime</span></th>
+            <th><span translate>history.label.endTime</span></th>
+            <th><span translate>history.label.duration</span></th>
           </tr>
           </thead>
           <tbody>
@@ -92,6 +92,77 @@
               <app-order-history-template class="order-history-template0" style="display: block" [history]="history" [schedulerId]="controllerId"
                                           [historyView]="{}"
               ></app-order-history-template>
+              </td>
+            </tr>
+          </ng-template>
+          </tbody>
+        </nz-table>
+      </div>
+      <div class="table-responsive" *ngIf="workflowPath && jobName">
+        <nz-table
+          #ajaxJobTable
+          [nzSize]="'small'"
+          [nzBordered]="true"
+          [nzShowPagination]="false"
+          [nzData]="history"
+          [nzLoading]="loading"
+          [nzShowSizeChanger]="false"
+        >
+          <thead>
+          <tr>
+            <th><span translate>history.label.job</span></th>
+            <th><span translate>history.label.workflow</span></th>
+            <th><span translate>history.label.position</span></th>
+            <th><span translate>history.label.status</span></th>
+            <th><span translate>history.label.startTime</span></th>
+            <th><span translate>history.label.endTime</span></th>
+            <th><span translate>history.label.duration</span></th>
+            <th><span translate>history.label.criticality</span></th>
+            <th><span translate>history.label.returnCode</span></th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-template ngFor let-jobHistory [ngForOf]="ajaxJobTable.data">
+            <tr class="cursor" [ngClass]="{'light-bg':jobHistory.show}">
+              <td (click)="coreService.showLogWindow(null,jobHistory, null, jobHistory.controllerId, null)">
+                <span class="show-in-single-line">
+                  <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs" [ngClass]="jobHistory.show ? 'fa-caret-up' : 'fa-caret-down'"
+                     (click)="jobHistory.show=!jobHistory.show;$event.stopPropagation()"></i>
+                  <i class="cursor fa fa-download  text-hover-primary p-r-xs"
+                     (click)="coreService.downloadLog(jobHistory,jobHistory.controllerId);$event.stopPropagation()"></i>
+                  <span [innerHtml]="jobHistory.job"></span>
+                </span>
+              </td>
+              <td (click)="coreService.showLogWindow(null,jobHistory, null, jobHistory.controllerId, null)">
+                <span class="show-in-single-line w-full">
+                  <i (click)="navToWorkflowTab(jobHistory.workflow);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                  <span (click)="coreService.showWorkflow(jobHistory.workflow);$event.stopPropagation()"
+                        class="text-hover-primary" [innerHtml]="jobHistory.workflow"></span>
+                </span>
+              </td>
+              <td (click)="coreService.showLogWindow(null,jobHistory, null, jobHistory.controllerId, null)">
+                <span [innerHtml]="jobHistory.position"></span>
+              </td>
+              <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null)">
+                <span class="label"
+                      [ngClass]="coreService.getColor(jobHistory.state.severity,'bg')"
+                      [innerHtml]="jobHistory.state._text | translate"></span>
+              </td>
+              <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null)"
+                  [innerHtml]="jobHistory.startTime | stringToDate"></td>
+              <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null)"
+                  [innerHtml]="jobHistory.endTime | stringToDate"></td>
+              <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null)"
+                  [innerHtml]="jobHistory.startTime | duration:jobHistory.endTime"></td>
+              <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null)"
+                  [innerHtml]="jobHistory.criticality | translate"></td>
+              <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null)"
+                  [innerHtml]="jobHistory.exitCode"></td>
+            </tr>
+            <tr *ngIf="jobHistory.show">
+              <td></td>
+              <td colspan="10">
+                <app-order-variable [order]="jobHistory" [type]="'arguments'" [schedulerId]="controllerId"></app-order-variable>
               </td>
             </tr>
           </ng-template>

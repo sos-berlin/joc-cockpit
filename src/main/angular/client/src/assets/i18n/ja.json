@@ -197,6 +197,7 @@
     "label.documentation": "ドキュメント",
     "label.history": "履歴",
     "label.order": "オーダー",
+    "label.task": "Task",
     "label.deployment": "配置",
     "label.auditLog": "操作ログ",
     "label.configuration": "ジョブ定義",

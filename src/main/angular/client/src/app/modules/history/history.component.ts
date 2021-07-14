@@ -698,6 +698,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
   orderId: string;
   workflowPath: string;
   commitId: string;
+  jobName: string;
   auditLogId: string;
   subscription: Subscription;
 
@@ -711,6 +712,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.orderId = this.route.snapshot.queryParamMap.get('orderId');
     this.workflowPath = this.route.snapshot.queryParamMap.get('workflow');
+    this.jobName = this.route.snapshot.queryParamMap.get('job');
     this.commitId = this.route.snapshot.queryParamMap.get('commitId');
     this.auditLogId = this.route.snapshot.queryParamMap.get('auditLogId');
     this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
@@ -719,7 +721,11 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
     }
     this.permission = JSON.parse(this.authService.permission) || {};
     if (this.workflowPath) {
-      this.getOrderHistory();
+      if (this.orderId) {
+        this.getOrderHistory();
+      } else if (this.jobName) {
+        this.getJobHistory();
+      }
     } else if (this.commitId) {
       this.getDeploymentHistory();
     } else if (this.auditLogId){
@@ -735,6 +741,18 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
     this.coreService.post('orders/history', {
       controllerId: this.controllerId,
       orders: [{workflowPath: this.workflowPath, orderId: this.orderId}]
+    }).subscribe((res: any) => {
+      this.loading = false;
+      this.history = res.history;
+    }, () => {
+      this.loading = false;
+    });
+  }
+
+  private getJobHistory(): void {
+    this.coreService.post('tasks/history', {
+      controllerId: this.controllerId,
+      jobs: [{workflowPath: this.workflowPath, job: this.jobName}]
     }).subscribe((res: any) => {
       this.loading = false;
       this.history = res.history;
@@ -790,10 +808,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if ((args.eventSnapshots[j].eventType === 'HistoryOrderTerminated' || args.eventSnapshots[j].eventType === 'HistoryOrderStarted') && this.orderId) {
-          this.getOrderHistory();
-          break;
-        } else if (args.eventSnapshots[j].eventType.match(/Deploy/) && this.commitId) {
+        if (args.eventSnapshots[j].eventType.match(/Deploy/) && this.commitId) {
           this.getDeploymentHistory();
           break;
         }

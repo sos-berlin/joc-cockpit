@@ -197,6 +197,7 @@
     "label.documentation": "Documentation",
     "label.history": "History",
     "label.order": "Order",
+    "label.task": "Task",
     "label.deployment": "Deployment",
     "label.auditLog": "Audit Log",
     "label.configuration": "Configuration",
