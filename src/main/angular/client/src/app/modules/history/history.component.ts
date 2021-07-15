@@ -698,7 +698,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
   orderId: string;
   workflowPath: string;
   commitId: string;
-  jobName: string;
+  taskId: string;
   auditLogId: string;
   subscription: Subscription;
 
@@ -712,7 +712,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.orderId = this.route.snapshot.queryParamMap.get('orderId');
     this.workflowPath = this.route.snapshot.queryParamMap.get('workflow');
-    this.jobName = this.route.snapshot.queryParamMap.get('job');
+    this.taskId = this.route.snapshot.queryParamMap.get('taskId');
     this.commitId = this.route.snapshot.queryParamMap.get('commitId');
     this.auditLogId = this.route.snapshot.queryParamMap.get('auditLogId');
     this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
@@ -720,15 +720,13 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
       this.preferences = JSON.parse(sessionStorage.preferences);
     }
     this.permission = JSON.parse(this.authService.permission) || {};
-    if (this.workflowPath) {
-      if (this.orderId) {
-        this.getOrderHistory();
-      } else if (this.jobName) {
-        this.getJobHistory();
-      }
+    if (this.workflowPath && this.orderId) {
+      this.getOrderHistory();
+    } else if (this.taskId) {
+      this.getJobHistory();
     } else if (this.commitId) {
       this.getDeploymentHistory();
-    } else if (this.auditLogId){
+    } else if (this.auditLogId) {
       this.getSubmissionHistory();
     }
   }
@@ -752,7 +750,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
   private getJobHistory(): void {
     this.coreService.post('tasks/history', {
       controllerId: this.controllerId,
-      jobs: [{workflowPath: this.workflowPath, job: this.jobName}]
+      taskIds: [parseInt(this.taskId, 10)]
     }).subscribe((res: any) => {
       this.loading = false;
       this.history = res.history;
@@ -762,13 +760,12 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
   }
 
   private getDeploymentHistory(): void {
-    const obj = {
+    this.coreService.post('inventory/deployment/history', {
       detailFilter: {
         controllerId: this.controllerId,
         commitId: this.commitId
       }
-    };
-    this.coreService.post('inventory/deployment/history', obj).subscribe((res: any) => {
+    }).subscribe((res: any) => {
       const obj = {
         controllerId: '',
         deploymentDate: '',
