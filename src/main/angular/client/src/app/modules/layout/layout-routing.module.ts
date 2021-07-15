@@ -17,6 +17,12 @@ const routes: Routes = [
         data: {breadcrumb: 'breadcrumb.label.dashboard'}
       },
       {
+        path: 'monitor',
+        loadChildren: () => import('./../monitor/monitor.module').then(m => m.MonitorModule),
+        canActivate: [AuthGuard],
+        data: {breadcrumb: 'breadcrumb.label.monitor'}
+      },
+      {
         path: 'start-up',
         loadChildren: () => import('./../start-up/start-up.module').then(m => m.StartUpModule),
         canActivate: [AuthGuard]

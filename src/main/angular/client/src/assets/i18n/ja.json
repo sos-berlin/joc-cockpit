@@ -1139,9 +1139,20 @@
     "message.loginError": "アカウントかパスワードが間違っています"
   },
   "monitor": {
-    "label.agentAvailability": "エージェントモニター",
-    "label.controllerAvailability": "コントローラーモニター",
-    "label.notification": "Notification"
+    "label": {
+      "agentAvailability": "エージェントモニター",
+      "controllerAvailability": "コントローラーモニター",
+      "notification": "Notification",
+      "overview": "Overview",
+      "statistics": "Statistics",
+      "runningTime": "Running Time",
+      "date": "Date",
+      "shutdown": "shutdown"
+    },
+    "button": {
+      "week": "Week",
+      "month": "Month"
+    }
   },
   "order": {
     "label.allOrders": "全オーダー",

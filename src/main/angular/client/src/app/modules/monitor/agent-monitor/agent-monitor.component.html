@@ -1,0 +1,79 @@
+<div class="row m-t-xs">
+  <div class="col-md-12">
+    <div class="timeline m-b">
+      <div class="timeline-header inline">
+        <div class="btn-group">
+          <div class="btn btn-default btn-sm" (click)="prev()">
+            <i class="fa fa-angle-left text-md"></i>
+          </div>
+          <div class="btn btn-default btn-sm no-cursor">
+            <nz-week-picker *ngIf="filters.filter.view === 'Week'" [(ngModel)]="filters.filter.endDate" [nzAllowClear]="false" (ngModelChange)="onChange($event )" [nzDisabledDate]="disabledDate"></nz-week-picker>
+            <nz-month-picker *ngIf="filters.filter.view === 'Month'" [(ngModel)]="filters.filter.endDate" [nzAllowClear]="false" (ngModelChange)="onChange($event)" [nzDisabledDate]="disabledDate"></nz-month-picker>
+            {{filters.filter.startDate | date : dateFormat }} - {{filters.filter.endDate | date : dateFormat}}
+          </div>
+          <div class="btn btn-default btn-sm" (click)="next()" [ngClass]="{'disabled': (filters.filter.startMonth=== filters.filter.currentMonth && filters.filter.startYear=== filters.filter.currentYear)}">
+            <i class="fa fa-angle-right text-md"></i>
+          </div>
+        </div>
+      </div>
+      <div class="inline">
+        <div class="inline">
+          <label class="m-r" style="position: relative;top: 2px">Filter By:</label>
+        </div>
+        <div class="inline">
+          <div style="position: relative;top: 2px">
+            <nz-select class="select-box" nzMode="multiple" nzAllowClear nzPlaceHolder="{{'common.label.selectController' | translate}}" [(ngModel)]="filters.filter.controllerId" name="id">
+              <nz-option *ngFor="let controller of schedulerIds.controllerIds" [nzLabel]="controller" [nzValue]="controller"></nz-option>
+            </nz-select>
+          </div>
+        </div>
+      </div>
+      <div class="inline btn-group pull-right hidden-btn-group">
+        <div class="btn btn-default btn-sm"
+             (click)="setView('Week')"
+             [class.primary]="filters.filter.view === 'Week'" translate>
+          monitor.button.week
+        </div>
+        <div class="btn btn-default btn-sm"
+             (click)="setView('Month')"
+             [class.primary]="filters.filter.view === 'Month'" translate>
+          monitor.button.month
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <div class="box">
+      <div class="box-header b-b">
+        <h3 translate>monitor.label.statistics</h3>
+      </div>
+      <div class="row" [hidden]="!isLoaded" style="overflow-y: auto;">
+        <div class="col-md-12">
+          <div class="p-a-sm" *ngIf="data.length>0">
+            <ngx-charts-bar-horizontal
+              [scheme]="colorScheme"
+              [results]="data"
+              [gradient]="true"
+              [xAxis]="true"
+              [yAxis]="true"
+              [xAxisLabel]="true"
+              [yAxisLabel]="true"
+              [showGridLines]="true"
+              [roundDomains]="true"
+              [barPadding]="5">
+            </ngx-charts-bar-horizontal>
+          </div>
+        </div>
+      </div>
+      <div [hidden]="data.length>0" class="hide text-center m-t-lg p-b-lg text-primary text"
+           [ngClass]="{'show': !isLoaded}">
+        <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+      </div>
+      <div *ngIf="data.length==0 && isLoaded" class="vert-middle">
+        <div>
+          <app-empty-data></app-empty-data>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

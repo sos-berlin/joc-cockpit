@@ -1139,9 +1139,20 @@
     "message.loginError": "Konto oder Kennwort falsch"
   },
   "monitor": {
-    "label.agentAvailability": "Verfügbarkeit Agent",
-    "label.controllerAvailability": "Verfügbarkeit Controller",
-    "label.notification": "Notification"
+    "label": {
+      "agentAvailability": "Verfügbarkeit Agent",
+      "controllerAvailability": "Verfügbarkeit Controller",
+      "notification": "Notification",
+      "overview": "Overview",
+      "statistics": "Statistics",
+      "runningTime": "Running Time",
+      "date": "Date",
+      "shutdown": "shutdown"
+    },
+    "button": {
+      "week": "Week",
+      "month": "Month"
+    }
   },
   "order": {
     "label.allOrders": "Alle Aufträge",

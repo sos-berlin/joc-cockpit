@@ -1,0 +1,60 @@
+<div [ngClass]="'theme-' + this.theme" class="mat-elevation-z8">
+  <div class="taskTableWrapper" #scrollOne>
+    <table class="taskTable">
+      <thead>
+      <tr>
+        <th><span translate>dashboard.label.controllerId</span></th>
+        <th><span translate>monitor.label.date</span></th>
+        <th><span translate>dashboard.label.url</span></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr
+        *ngFor="let task of tasks"
+        [ngClass]="{ parentTask: task.isParent, active: task.active }"
+        [hidden]="task.isHidden"
+        (click)="onTaskClick(task)"
+      >
+        <td>{{ task.label }}</td>
+        <td>{{ task.date }}</td>
+        <td>{{ task.url }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div
+    class="timelineWrapper"
+    (scroll)="scrollOne.scrollTop = scrollTwo.scrollTop"
+    #scrollTwo
+  >
+    <table class="timeline">
+      <thead>
+      <tr>
+        <th *ngFor="let item of [].constructor(workingHours); let i = index">
+          {{ this.dayStartHour + i }}:00
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <div class="row" *ngFor="let task of tasks" [hidden]="task.isHidden">
+        <div
+          class="taskBar"
+          [ngStyle]="{
+              left: task.offset + 'px',
+              width: task.width + 'px'
+            }"
+        ></div>
+        <span
+          *ngFor="let status of task.statusList; let i = index"
+          class="statusBar"
+          [ngStyle]="{
+              left: status.offset + 'px',
+              width: status.width + 'px',
+              'background-color': status.color
+            }"
+        ><i *ngIf="i===0" [nz-tooltip]="status.start + ' to ' + status.end" translate>monitor.label.shutdown</i></span>
+      </div>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,36 @@
+<div class="white box-shadow sub-header">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="padding">
+        <div class="text-right ">
+          <div class="pull-left">
+            <app-breadcrumbs></app-breadcrumbs>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="scroll-y max-ht">
+  <div class="padding p-b-0">
+    <nz-tabset [(nzSelectedIndex)]="index" (nzSelectChange)="tabChange($event)">
+      <nz-tab [nzTitle]="'monitor.label.controllerAvailability' | translate">
+        <div *ngIf="index === 0">
+          <app-controller-monitor [permission]="permission" [preferences]="preferences"
+                                  [schedulerIds]="schedulerIds" [filters]="monitorFilters.controller"></app-controller-monitor>
+        </div>
+      </nz-tab>
+      <nz-tab [nzTitle]="'monitor.label.agentAvailability' | translate">
+        <div *ngIf="index === 1">
+          <app-agent-monitor [permission]="permission" [preferences]="preferences"
+                             [schedulerIds]="schedulerIds" [filters]="monitorFilters.agent"></app-agent-monitor>
+        </div>
+      </nz-tab>
+      <nz-tab [nzTitle]="'monitor.label.notification' | translate">
+        <div *ngIf="index === 2" class="text-center m-t-lg text-md">
+          NOT YET IMPLEMENTED
+        </div>
+      </nz-tab>
+    </nz-tabset>
+  </div>
+</div>

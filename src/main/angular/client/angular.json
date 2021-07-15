@@ -76,6 +76,7 @@
               "chartjs-plugin-datalabels",
               "@ctrl/ngx-codemirror",
               "chart.js",
+              "svg-gauge",
               "codemirror/mode/shell/shell",
               "codemirror/mode/xml/xml",
               "codemirror/mode/ruby/ruby",

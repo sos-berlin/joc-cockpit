@@ -1139,9 +1139,20 @@
     "message.loginError": "Compte ou Mot de Passe est incorrect"
   },
   "monitor": {
-    "label.agentAvailability": "Moniteur Agent",
-    "label.controllerAvailability": "Moniteur Contrôleur",
-    "label.notification": "Notification"
+    "label": {
+      "agentAvailability": "Moniteur Agent",
+      "controllerAvailability": "Moniteur Contrôleur",
+      "notification": "Notification",
+      "overview": "Overview",
+      "statistics": "Statistics",
+      "runningTime": "Running Time",
+      "date": "Date",
+      "shutdown": "shutdown"
+    },
+    "button": {
+      "week": "Week",
+      "month": "Month"
+    }
   },
   "order": {
     "label.allOrders": "Tous les Ordres",

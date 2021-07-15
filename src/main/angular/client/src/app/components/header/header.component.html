@@ -169,6 +169,14 @@
             </span>
           </a>
         </li>
+        <li class="nav-item" *ngIf="permission.currentController && permission.currentController.agents.view && username === 'root'">
+          <a class="nav-link" routerLink="/monitor" [routerLinkActive]="['active']">
+            <span class="nav-text">
+              <i class="icon-dashboard-icon text-white"></i>
+              <span class="ico text-white _600" translate>header.label.monitor</span>
+            </span>
+          </a>
+        </li>
         <li class="nav-item"
             *ngIf="((showViews && showViews.dailyPlan != undefined) ? showViews.dailyPlan : (permission.joc && permission.joc.dailyPlan.view && permission.currentController.orders.view))">
           <a class="nav-link" routerLink="/daily_plan" [routerLinkActive]="['active']">

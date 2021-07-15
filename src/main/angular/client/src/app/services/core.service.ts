@@ -62,6 +62,52 @@ export class CoreService {
     this.tabs._daliyPlan.currentPage = '1';
     this.tabs._daliyPlan.selectedView = true;
 
+    this.tabs._monitor = {};
+    this.tabs._monitor.tabIndex = 0;
+    this.tabs._monitor.currentDate = new Date();
+    this.tabs._monitor.controller = {
+      statistics: {
+        filter: {
+          view: 'Week',
+          startYear: this.tabs._monitor.currentDate.getFullYear(),
+          startMonth: this.tabs._monitor.currentDate.getMonth(),
+          currentYear: this.tabs._monitor.currentDate.getFullYear(),
+          currentMonth: this.tabs._monitor.currentDate.getMonth(),
+          startDate: new Date(),
+          endDate: new Date()
+        }
+      },
+      runningTime: {
+        filter: {
+          date: 'ALL',
+          label: 'all'
+        }
+      },
+      overview: {
+        filter: {
+          view: 'Week',
+          startYear: this.tabs._monitor.currentDate.getFullYear(),
+          startMonth: this.tabs._monitor.currentDate.getMonth(),
+          currentYear: this.tabs._monitor.currentDate.getFullYear(),
+          currentMonth: this.tabs._monitor.currentDate.getMonth(),
+          startDate: new Date(),
+          endDate: new Date()
+        }
+      }
+    };
+    this.tabs._monitor.agent = {
+      filter: {
+        view: 'Week',
+        startYear: this.tabs._monitor.currentDate.getFullYear(),
+        startMonth: this.tabs._monitor.currentDate.getMonth(),
+        currentYear: this.tabs._monitor.currentDate.getFullYear(),
+        currentMonth: this.tabs._monitor.currentDate.getMonth(),
+        startDate: new Date(),
+        endDate: new Date()
+      }
+    };
+    this.tabs._monitor.notification = {};
+
     this.tabs._orderOverview = {};
     this.tabs._orderOverview.overview = true;
     this.tabs._orderOverview.filter = {};
@@ -208,6 +254,52 @@ export class CoreService {
     this.tempTabs._daliyPlan.reverse = true;
     this.tempTabs._daliyPlan.currentPage = '1';
     this.tempTabs._daliyPlan.selectedView = true;
+
+    this.tempTabs._monitor = {};
+    this.tempTabs._monitor.tabIndex = 0;
+    this.tempTabs._monitor.currentDate = new Date();
+    this.tempTabs._monitor.controller = {
+      statistics: {
+        filter: {
+          view: 'Week',
+          startYear: this.tempTabs._monitor.currentDate.getFullYear(),
+          startMonth: this.tempTabs._monitor.currentDate.getMonth(),
+          currentYear: this.tempTabs._monitor.currentDate.getFullYear(),
+          currentMonth: this.tempTabs._monitor.currentDate.getMonth(),
+          startDate: new Date(),
+          endDate: new Date()
+        }
+      },
+      runningTime: {
+        filter: {
+          date: 'ALL',
+          label: 'all'
+        }
+      },
+      overview: {
+        filter: {
+          view: 'Week',
+          startYear: this.tempTabs._monitor.currentDate.getFullYear(),
+          startMonth: this.tempTabs._monitor.currentDate.getMonth(),
+          currentYear: this.tempTabs._monitor.currentDate.getFullYear(),
+          currentMonth: this.tempTabs._monitor.currentDate.getMonth(),
+          startDate: new Date(),
+          endDate: new Date()
+        }
+      }
+    };
+    this.tempTabs._monitor.agent = {
+      filter: {
+        view: 'Week',
+        startYear: this.tabs._monitor.currentDate.getFullYear(),
+        startMonth: this.tabs._monitor.currentDate.getMonth(),
+        currentYear: this.tabs._monitor.currentDate.getFullYear(),
+        currentMonth: this.tabs._monitor.currentDate.getMonth(),
+        startDate: new Date(),
+        endDate: new Date()
+      }
+    };
+    this.tempTabs._monitor.notification = {};
 
     this.tempTabs._orderOverview = {};
     this.tempTabs._orderOverview.overview = true;
@@ -383,6 +475,10 @@ export class CoreService {
 
   getDailyPlanTab(): any {
     return this.tabs._daliyPlan;
+  }
+
+  getMonitorTab(): any {
+    return this.tabs._monitor;
   }
 
   getHistoryTab(): any {
@@ -1217,6 +1313,23 @@ export class CoreService {
       }
     } else if (data[type] === '') {
       data[type] = '"' + data[type] + '"';
+    }
+  }
+
+  getTimeFromNumber(milliSeconds): string {
+    let totalSeconds = milliSeconds / 1000;
+    let hours: any = Math.floor(totalSeconds / 3600);
+    totalSeconds %= 3600;
+    let minutes: any = Math.floor(totalSeconds / 60);
+    let days = (milliSeconds / (1000 * 60 * 60 * 24)).toFixed(1);
+    let seconds: any = Math.floor(totalSeconds % 60);
+    minutes = String(minutes).padStart(2, '0');
+    hours = String(hours).padStart(2, '0');
+    seconds = String(seconds).padStart(2, '0');
+    if (hours < 24) {
+      return (hours + ':' + minutes + ':' + seconds);
+    } else {
+      return days + ' days';
     }
   }
 }

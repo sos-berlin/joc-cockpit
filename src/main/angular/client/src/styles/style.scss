@@ -4668,6 +4668,12 @@ svg text {
   font-family: "Open Sans", "lucida grande", "Segoe UI", arial, verdana, "lucida sans unicode", tahoma, serif;
 }
 
+
+mwl-gauge > .gauge > .value-text {
+  fill: var(--primary);
+  font-size: 8px !important;
+}
+
 .input-dropdown {
   position: relative;
   margin-right: 28px;

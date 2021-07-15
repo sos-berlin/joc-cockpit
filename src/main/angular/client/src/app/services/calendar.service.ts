@@ -439,17 +439,6 @@ export class CalendarService {
     return time;
   }
 
-  getTimeFromNumber(totalSeconds): string {
-    let hours: any = Math.floor(totalSeconds / 3600);
-    totalSeconds %= 3600;
-    let minutes: any = Math.floor(totalSeconds / 60);
-    let seconds: any = totalSeconds % 60;
-    minutes = String(minutes).padStart(2, '0');
-    hours = String(hours).padStart(2, '0');
-    seconds = String(seconds).padStart(2, '0');
-    return (hours + ':' + minutes + ':' + seconds);
-  }
-
   checkTime(time): string {
     if (/^\d{1,2}:\d{2}?$/i.test(time)) {
       time = time + ':00';

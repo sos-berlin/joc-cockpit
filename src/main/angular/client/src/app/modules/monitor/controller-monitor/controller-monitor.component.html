@@ -1,0 +1,164 @@
+<div class="row m-t-xs">
+  <div class="col-md-9">
+    <div class="box">
+      <div class="box-header b-b">
+        <h3>
+          <span translate>monitor.label.statistics</span>
+        </h3>
+      </div>
+      <div class="row m-b-sm box-tool" style="top:10px">
+        <div class="col-md-12 container-fluid">
+          <div class="timeline m-b">
+            <div class="timeline-header inline">
+              <div class="btn-group">
+                <div class="btn btn-default btn-sm" (click)="prev('statistics')">
+                  <i class="fa fa-angle-left text-md"></i>
+                </div>
+                <div class="btn btn-default btn-sm no-cursor">
+                  <nz-week-picker *ngIf="filters.statistics.filter.view === 'Week'" [(ngModel)]="filters.statistics.filter.endDate" [nzAllowClear]="false" (ngModelChange)="onChange($event, 'statistics')" [nzDisabledDate]="disabledDate"></nz-week-picker>
+                  <nz-month-picker *ngIf="filters.statistics.filter.view === 'Month'" [(ngModel)]="filters.statistics.filter.endDate" [nzAllowClear]="false" (ngModelChange)="onChange($event, 'statistics')" [nzDisabledDate]="disabledDate"></nz-month-picker>
+                  {{filters.statistics.filter.startDate | date : dateFormat }} - {{filters.statistics.filter.endDate | date : dateFormat}}
+                </div>
+                <div class="btn btn-default btn-sm" (click)="next('statistics')" [ngClass]="{'disabled': (filters.statistics.filter.startMonth=== filters.statistics.filter.currentMonth && filters.statistics.filter.startYear=== filters.statistics.filter.currentYear)}">
+                  <i class="fa fa-angle-right text-md"></i>
+                </div>
+              </div>
+            </div>
+            <div class="inline btn-group pull-right hidden-btn-group">
+              <div class="btn btn-default btn-sm"
+                   (click)="setView('Week',  'statistics')"
+                   [class.primary]="filters.statistics.filter.view === 'Week'" translate>
+                monitor.button.week
+              </div>
+              <div class="btn btn-default btn-sm"
+                   (click)="setView('Month', 'statistics')"
+                   [class.primary]="filters.statistics.filter.view === 'Month'" translate>
+                monitor.button.month
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="box-body p-a" [hidden]="!isLoaded">
+        <div style="height: 260px;">
+          <ngx-charts-bar-vertical-2d
+            [scheme]="colorScheme"
+            [results]="statisticsData"
+            [gradient]="gradient"
+            [xAxis]="showXAxis"
+            [yAxis]="showYAxis"
+            (select)="onSelect($event)">
+          </ngx-charts-bar-vertical-2d>
+        </div>
+      </div>
+      <div class="hide text-center m-t-lg p-b-lg text-primary text" [ngClass]="{'show': !isLoaded}">
+        <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+      </div>
+      <div *ngIf="isLoaded && statisticsData.length ===0" class="vert-middle">
+        <div>
+          <app-empty-data></app-empty-data>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="box">
+      <div class="box-header b-b">
+        <h3>
+          <span translate>monitor.label.runningTime</span>
+        </h3>
+      </div>
+      <div class="row m-b-sm box-tool" style="top:10px">
+        <div class="col-md-12 container-fluid">
+          <div class="pull-right">
+            <div class="btn-group">
+              <div class="btn-group dropdown ">
+                <button class="btn btn-grey btn-sm m-l-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="order"  nzPlacement="bottomRight">
+                  <span> {{'filters.button.'+ filters.runningTime.filter.label | translate}} </span>
+                  <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+                </button>
+                <nz-dropdown-menu #order="nzDropdownMenu">
+                  <ul nz-menu>
+                    <ng-container *ngFor="let btn of runningFilterBtn">
+                      <li nz-menu-item
+                          [ngClass]="{'ant-select-dropdown-menu-item-active': btn.date === filters.runningTime.filter.date}">
+                        <a (click)="changeDate(btn)" translate>filters.button.{{btn.text}}</a>
+                      </li>
+                    </ng-container>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="box-body p-a" [hidden]="!isLoaded" style="height: 292px">
+        <div class="row">
+          <div class="col-md-6 text-center" [ngClass]="{'col-md-12' : runningTime.length === 1}" *ngFor="let item of runningTime">
+              <div class="text-dark _600 m-t">{{item.controllerId}}</div>
+              <mwl-gauge
+                [dialStartAngle]="-90"
+                [dialEndAngle]="-90.001"
+                [value]="item.value"
+                [label]="getValue"
+                [color]="getColor"
+                [animated]="true"
+                [animationDuration]="1"
+              >
+              </mwl-gauge>
+              <i class="text-muted" style="position: relative;top:-16px" translate>Total {{item.hours}}</i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <div class="box">
+      <div class="box-header b-b">
+        <h3>
+          <span translate>monitor.label.overview</span>
+        </h3>
+      </div>
+      <div class="row m-b-sm box-tool" style="top:10px">
+        <div class="col-md-12 container-fluid">
+          <div class="timeline m-b">
+            <div class="timeline-header inline">
+              <div class="btn-group">
+                <div class="btn btn-default btn-sm" (click)="prev('overview')">
+                  <i class="fa fa-angle-left text-md"></i>
+                </div>
+                <div class="btn btn-default btn-sm no-cursor">
+                  <nz-week-picker *ngIf="filters.overview.filter.view === 'Week'" [(ngModel)]="filters.overview.filter.endDate" [nzAllowClear]="false" (ngModelChange)="onChange($event, 'overview')" [nzDisabledDate]="disabledDate"></nz-week-picker>
+                  <nz-month-picker *ngIf="filters.overview.filter.view === 'Month'" [(ngModel)]="filters.overview.filter.endDate" [nzAllowClear]="false" (ngModelChange)="onChange($event, 'overview')" [nzDisabledDate]="disabledDate"></nz-month-picker>
+                  {{filters.overview.filter.startDate | date : dateFormat }} - {{filters.overview.filter.endDate | date : dateFormat}}
+                </div>
+                <div class="btn btn-default btn-sm" (click)="next('overview')" [ngClass]="{'disabled': (filters.overview.filter.startMonth=== filters.overview.filter.currentMonth && filters.overview.filter.startYear=== filters.overview.filter.currentYear)}">
+                  <i class="fa fa-angle-right text-md"></i>
+                </div>
+              </div>
+            </div>
+            <div class="inline btn-group pull-right hidden-btn-group">
+              <div class="btn btn-default btn-sm"
+                   (click)="setView('Week',  'overview')"
+                   [class.primary]="filters.overview.filter.view === 'Week'" translate>
+                monitor.button.week
+              </div>
+              <div class="btn btn-default btn-sm"
+                   (click)="setView('Month', 'overview')"
+                   [class.primary]="filters.overview.filter.view === 'Month'" translate>
+                monitor.button.month
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="box-body p-a" [hidden]="!isLoaded">
+        <app-gantt-chart
+          [dayStart]="'00:00'"
+          [dayEnd]="'23:00'"
+          [tasks]="tasks"
+        ></app-gantt-chart>
+      </div>
+    </div>
+  </div>
+</div>

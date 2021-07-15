@@ -1,0 +1,32 @@
+mwl-gauge {
+  width: 200px;
+  height: 200px;
+  display: block;
+  padding: 10px;
+}
+
+
+.timeline{
+  display: inline-block;
+  min-width: 100%;
+  .ant-picker-input {
+    top: 1px;
+    cursor: pointer;
+    opacity: 0;
+  }
+}
+.timeline .timeline-header {
+  display: inline-block;
+  margin-right: 16px;
+  .ant-picker {
+    width: 0;
+    height: 0;
+    padding-left: 0 !important;
+    right: 8px;
+    border: none;
+    cursor: pointer;
+  }
+  .no-cursor{
+    cursor: default;
+  }
+}

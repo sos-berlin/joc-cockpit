@@ -1139,9 +1139,20 @@
     "message.loginError": "Account or password is wrong"
   },
   "monitor": {
-    "label.agentAvailability": "Agent Availability",
-    "label.controllerAvailability": "Controller Availability",
-    "label.notification": "Notification"
+    "label": {
+      "agentAvailability": "Agent Availability",
+      "controllerAvailability": "Controller Availability",
+      "notification": "Notification",
+      "overview": "Overview",
+      "statistics": "Statistics",
+      "runningTime": "Running Time",
+      "date": "Date",
+      "shutdown": "shutdown"
+    },
+    "button": {
+      "week": "Week",
+      "month": "Month"
+    }
   },
   "order": {
     "label.allOrders": "All Orders",
