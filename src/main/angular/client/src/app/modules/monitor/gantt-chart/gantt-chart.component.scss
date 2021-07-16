@@ -145,20 +145,25 @@ table {
       margin: 4px 0;
       font-size: 10px;
       color: #fff;
-      i {
-        position: absolute;
-        z-index: 999;
-        left: 50%;
-        transform: translateX(-26%);
-      }
+      text-align: center;
     }
+    span {
+      border-radius: 7px;
+    }
+  }
+}
 
-    span:first-of-type {
-      border-radius: 7px 0 0 7px;
+.parentTask {
+  cursor: pointer;
+  &.active {
+    > td:first-child::before {
+      content: '▼ ';
     }
-
-    span:last-of-type {
-      border-radius: 0 7px 7px 0;
-    }
+  }
+  > td:first-child::before {
+    content: '▶ ';
+  }
+  + tr td:first-child {
+    padding-left: 25px !important;
   }
 }

@@ -98,6 +98,7 @@ export class CoreService {
     this.tabs._monitor.agent = {
       filter: {
         view: 'Week',
+        groupBy: 'DATE',
         startYear: this.tabs._monitor.currentDate.getFullYear(),
         startMonth: this.tabs._monitor.currentDate.getMonth(),
         currentYear: this.tabs._monitor.currentDate.getFullYear(),
@@ -106,7 +107,15 @@ export class CoreService {
         endDate: new Date()
       }
     };
-    this.tabs._monitor.notification = {};
+    this.tabs._monitor.notification = {
+      filter : {
+        state: 'all',
+        date: 'today',
+        sortBy: 'created',
+        reverse: true,
+        currentPage: '1'
+      }
+    };
 
     this.tabs._orderOverview = {};
     this.tabs._orderOverview.overview = true;
@@ -291,6 +300,7 @@ export class CoreService {
     this.tempTabs._monitor.agent = {
       filter: {
         view: 'Week',
+        groupBy: 'DATE',
         startYear: this.tabs._monitor.currentDate.getFullYear(),
         startMonth: this.tabs._monitor.currentDate.getMonth(),
         currentYear: this.tabs._monitor.currentDate.getFullYear(),
@@ -299,7 +309,15 @@ export class CoreService {
         endDate: new Date()
       }
     };
-    this.tempTabs._monitor.notification = {};
+    this.tempTabs._monitor.notification = {
+      filter : {
+        state: 'all',
+        date: 'today',
+        sortBy: 'created',
+        reverse: true,
+        currentPage: '1'
+      }
+    };
 
     this.tempTabs._orderOverview = {};
     this.tempTabs._orderOverview.overview = true;

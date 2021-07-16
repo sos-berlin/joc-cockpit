@@ -4,6 +4,7 @@
       <thead>
       <tr>
         <th><span translate>dashboard.label.controllerId</span></th>
+        <th *ngIf="isAgent"><span translate>agent.label.agentId</span></th>
         <th><span translate>monitor.label.date</span></th>
         <th><span translate>dashboard.label.url</span></th>
       </tr>
@@ -15,8 +16,9 @@
         [hidden]="task.isHidden"
         (click)="onTaskClick(task)"
       >
-        <td>{{ task.label }}</td>
-        <td>{{ task.date }}</td>
+        <td>{{ task.controllerId }}</td>
+        <td *ngIf="isAgent">{{ task.agentId }}</td>
+        <td>{{ task.date || '-' }}</td>
         <td>{{ task.url }}</td>
       </tr>
       </tbody>
@@ -52,7 +54,10 @@
               width: status.width + 'px',
               'background-color': status.color
             }"
-        ><i *ngIf="i===0" [nz-tooltip]="status.start + ' to ' + status.end" translate>monitor.label.shutdown</i></span>
+        >
+          <i *ngIf="!isAgent" [nz-tooltip]="status.start + ' to ' + status.end" translate>monitor.label.shutdown</i>
+          <i *ngIf="isAgent" [nz-tooltip]="status.tooltip" translate>COUPLINGFAILED</i>
+        </span>
       </div>
       </tbody>
     </table>

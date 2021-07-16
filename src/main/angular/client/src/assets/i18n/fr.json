@@ -704,6 +704,7 @@
     "button.today": "Aujourd'hui",
     "button.yesterday": "Hier",
     "button.last1": "Dernière heure",
+    "button.last6": "Dernières 6 heures",
     "button.last12": "Dernières 12 heures",
     "button.last12Hours": "Dernières 12 Heures",
     "button.last1Hour": "Dernière Heure",
@@ -1152,6 +1153,27 @@
     "button": {
       "week": "Week",
       "month": "Month"
+    },
+    "notification" : {
+      "label" : {
+        "orderId": "Order ID",
+        "job": "Job",
+        "message": "Message",
+        "created": "Created",
+        "type": "Type",
+        "name": "Name",
+        "configuration": "Configuration",
+        "errorText": "Error Text",
+        "jobReturnCode": "Job Return Code",
+        "notificationsFound": "Notification entries found",
+        "notificationFound": "Notification entry found"
+      },
+      "button": {
+        "success": "Success",
+        "error": "Error",
+        "warning": "Warning",
+        "recovered": "Recovered"
+      }
     }
   },
   "order": {

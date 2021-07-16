@@ -5,6 +5,8 @@ import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 
+declare let self;
+
 @Component({
   selector: 'app-controller-monitor',
   templateUrl: './controller-monitor.component.html',
@@ -50,7 +52,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   ];
 
   colorScheme = {
-    domain: ['#5AA454', '#C7B42C', '#AAAAAA']
+    domain: ['#19AADE', '#C7B42C', '#AAAAAA']
   };
 
   subscription: Subscription;
@@ -62,6 +64,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    self = this;
     this.init();
   }
 
@@ -206,24 +209,22 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
     this.tasks = [
       {
         id: 1,
-        label: 'testsuite',
+        controllerId: 'testsuite',
         url: 'http://localhost:7444',
         date: '2021-07-06',
         start: '00:15',
         end: '25:00',
         statusList: [
           {
-            start: '18:19:36',
-            color: '#ff0000'
-          }, {
-            start: '20:00:36',
-            color: '#ff0000'
+            start: '18:00:06',
+            color: '#ff3232',
+            end: '20:00:36'
           }
         ]
       },
       {
         id: 2,
-        label: 'testsuite',
+        controllerId: 'testsuite',
         url: 'http://localhost:7444',
         date: '2021-07-05',
         start: '00:15',
@@ -231,17 +232,14 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
         statusList: [
           {
             start: '11:54',
-            color: '#ff0000'
-          },
-          {
-            start: '12:30',
-            color: '#ff0000'
+            end: '12:30',
+            color: '#ff3232'
           }
         ]
       },
       {
         id: 3,
-        label: 'standalone',
+        controllerId: 'standalone',
         url: 'http://localhost:7544',
         date: '2021-07-03',
         start: '00:15',
@@ -249,11 +247,8 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
         statusList: [
           {
             start: '10:55:27',
-            color: '#ff0000'
-          },
-          {
-            start: '11:49:46',
-            color: '#ff0000'
+            end: '11:49:46',
+            color: '#ff3232'
           }
         ]
       }
@@ -340,11 +335,16 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   }
 
   getValue(val): string {
-    return val + '%';
+    for (let i in self.runningTime) {
+      if (val === self.runningTime[i].value) {
+        return self.coreService.getTimeFromNumber(self.runningTime[i].time);
+      }
+    }
+    return val + ' %';
   }
 
   getColor(): string {
-    return '#5AA454';
+    return 'rgb(122,185,122)';
   }
 
   onSelect(data): void {

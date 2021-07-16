@@ -10,6 +10,7 @@ export class GanttChartComponent implements OnChanges {
   @Input() dayStart: any;
   @Input() dayEnd: any;
   @Input() tasks: any;
+  @Input() isAgent: boolean;
   theme = 'material';
   dayStartHour: number;
   today = new Date();
@@ -32,14 +33,16 @@ export class GanttChartComponent implements OnChanges {
 
   prepareTasks(): void {
     this.tasks.map((task) => {
-      task.width = this.diffFromTime(task.end, task.start, 'minutes') * 1;
-      task.offset = this.diffFromTime(task.start, this.dayStart, 'minutes') * 1;
+      task.width = this.diffFromTime(task.end, task.start, 'minutes');
+      task.offset = this.diffFromTime(task.start, this.dayStart, 'minutes');
       if (task.statusList) {
         task.statusList.map((status, index) => {
           status.offset =
-            this.diffFromTime(status.start, this.dayStart, 'minutes') * 1;
-          if (task.statusList[index + 1] && task.statusList[index + 1].start) {
-            status.end = task.statusList[index + 1].start;
+            this.diffFromTime(status.start, this.dayStart, 'minutes') + 13;
+          if ((task.statusList[index + 1] && task.statusList[index + 1].start) || status.end) {
+            if (!status.end) {
+              status.end = task.statusList[index + 1].start;
+            }
             status.width =
               this.diffFromTime(status.end, status.start, 'minutes') * 1;
           }

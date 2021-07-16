@@ -704,6 +704,7 @@
     "button.today": "本日",
     "button.yesterday": "昨日",
     "button.last1": "最新1時間",
+    "button.last6": "Last 6 hours",
     "button.last12": "最新12時間",
     "button.last12Hours": "最新12時間",
     "button.last1Hour": "最新1時間",
@@ -1152,6 +1153,27 @@
     "button": {
       "week": "Week",
       "month": "Month"
+    },
+    "notification" : {
+      "label" : {
+        "orderId": "Order ID",
+        "job": "Job",
+        "message": "Message",
+        "created": "Created",
+        "type": "Type",
+        "name": "Name",
+        "configuration": "Configuration",
+        "errorText": "Error Text",
+        "jobReturnCode": "Job Return Code",
+        "notificationsFound": "Notification entries found",
+        "notificationFound": "Notification entry found"
+      },
+      "button": {
+        "success": "Success",
+        "error": "Error",
+        "warning": "Warning",
+        "recovered": "Recovered"
+      }
     }
   },
   "order": {

@@ -4674,6 +4674,10 @@ mwl-gauge > .gauge > .value-text {
   font-size: 8px !important;
 }
 
+mwl-gauge > .gauge > .value {
+  stroke-width: 4;
+}
+
 .input-dropdown {
   position: relative;
   margin-right: 28px;
@@ -4900,15 +4904,9 @@ tr.disabled-row td:not(.menu) {
   background-position: 150px !important;
 }
 
-.ant-tooltip {
-  max-width: 450px;
-  width: 100%;
-  overflow: auto;
-}
-
 .ant-tooltip-inner{
   max-height: 350px;
-  overflow: auto;
+  overflow-y: auto;
 }
 
 .tooltip {

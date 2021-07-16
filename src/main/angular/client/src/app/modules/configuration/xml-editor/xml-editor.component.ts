@@ -3977,6 +3977,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   updateListData(node): void {
     node.data = node.data1.join(' ');
+    this.extraInfo.released = false;
   }
 
   submitData(value, tag) {

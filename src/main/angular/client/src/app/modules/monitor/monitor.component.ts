@@ -43,4 +43,11 @@ export class MonitorComponent implements OnInit, OnDestroy {
     this.monitorFilters.tabIndex = $event.index;
   }
 
+  changeDate(date): void {
+    this.monitorFilters.notification.filter.date = date;
+  }
+
+  changeState(state): void {
+    this.monitorFilters.notification.filter.state = state;
+  }
 }

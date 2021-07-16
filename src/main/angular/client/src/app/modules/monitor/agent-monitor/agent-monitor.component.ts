@@ -1,9 +1,9 @@
 import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
+import {differenceInCalendarDays} from 'date-fns';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
-import {differenceInCalendarDays} from 'date-fns';
 
 @Component({
   selector: 'app-agent-monitor',
@@ -17,19 +17,12 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
   @Input() filters: any = {};
 
   isLoaded = false;
-  data = [];
-  view: any[] = [560, 150];
+  agents = [];
   viewDate: Date = new Date();
   dateFormat: string;
   weekStart = 1;
 
-  colorScheme = {
-    domain: ['rgb(122,185,122)']
-  };
-
   subscription1: Subscription;
-  subscription2: Subscription;
-
 
   constructor(private coreService: CoreService, private authService: AuthService, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
@@ -49,7 +42,6 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log('AgentMonitorComponent>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', this.filters)
     this.getData();
   }
 
@@ -58,7 +50,96 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
   }
 
   private getData(): void {
-
+    console.log('Agent  >>> From :', this.filters.filter.startDate, 'To :', this.filters.filter.endDate);
+    this.agents = [
+      {
+        id: 1,
+        controllerId: 'testsuite',
+        agentId: '',
+        isParent: true,
+        url: '',
+        date: '',
+        start: '00:15',
+        end: '25:00',
+        statusList: [
+        ]
+      },
+      {
+        id: 2,
+        controllerId: '',
+        agentId: 'agent1',
+        parentID: 1,
+        url: 'http://localhost:7445',
+        date: '2021-07-16',
+        start: '00:15',
+        end: '25:00',
+        statusList: [
+          {
+            start: '10:19:36',
+            end: '12:00:36',
+            color: '#ff3232',
+            tooltip: 'akka.stream.StreamTcpException: Tcp command [Connect(localhost:7446,None,List(),Some(10 seconds),true)] failed because of java.net.ConnectException: Connection refused: no further information [suppressed: TCP Connect localhost:7446: Connection refused: no further information]'
+          },
+          {
+            start: '18:19:36',
+            end: '20:00:36',
+            color: '#ff3232',
+            tooltip: 'akka.stream.StreamTcpException: Tcp command [Connect(localhost:7446,None,List(),Some(10 seconds),true)] failed because of java.net.ConnectException: Connection refused: no further information [suppressed: TCP Connect localhost:7446: Connection refused: no further information]'
+          }
+        ]
+      },
+      {
+        id: 3,
+        controllerId: '',
+        agentId: 'agent2',
+        parentID: 1,
+        url: 'http://localhost:7446',
+        date: '2021-07-15',
+        start: '00:15',
+        end: '25:00',
+        statusList: [
+          {
+            start: '11:54',
+            color: '#ff3232',
+            tooltip: 'akka.stream.StreamTcpException: Tcp command [Connect(localhost:7446,None,List(),Some(10 seconds),true)] failed because of java.net.ConnectException: Connection refused: no further information [suppressed: TCP Connect localhost:7446: Connection refused: no further information]',
+            end: '12:30'
+          }
+        ]
+      },
+      {
+        id: 4,
+        controllerId: 'testsuite',
+        agentId: '',
+        isParent: true,
+        url: '',
+        date: '',
+        start: '00:15',
+        end: '25:00',
+        statusList: [
+        ]
+      },
+      {
+        id: 5,
+        controllerId: '',
+        parentID: 4,
+        agentId: 'agent3',
+        url: 'http://localhost:7445',
+        date: '2021-07-13',
+        start: '00:15',
+        end: '25:00',
+        statusList: [
+          {
+            start: '10:59:27',
+            color: '#ff3232',
+            end: '11:49:46',
+            tooltip: 'akka.stream.StreamTcpException: Tcp command [Connect(localhost:7446,None,List(),Some(10 seconds),true)] failed because of java.net.ConnectException: Connection refused: no further information [suppressed: TCP Connect localhost:7446: Connection refused: no further information]'
+          }
+        ]
+      }
+    ];
+    setTimeout(() => {
+      this.isLoaded = true;
+    }, 1000);
   }
 
   setView(view): void {

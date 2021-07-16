@@ -1,9 +1,3 @@
-mwl-gauge {
-  width: 200px;
-  height: 200px;
-  display: block;
-  padding: 10px;
-}
 
 .timeline{
   display: inline-block;
@@ -14,7 +8,6 @@ mwl-gauge {
     opacity: 0;
   }
 }
-
 .timeline .timeline-header {
   display: inline-block;
   margin-right: 16px;
@@ -28,5 +21,14 @@ mwl-gauge {
   }
   .no-cursor{
     cursor: default;
+  }
+}
+.btn{
+  border: 1px solid var(--border-color);
+}
+.select-box {
+  min-width: 220px;
+  .ant-select-multiple .ant-select-selector {
+    padding: 0;
   }
 }
