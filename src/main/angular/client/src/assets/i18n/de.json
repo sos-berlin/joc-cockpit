@@ -638,7 +638,7 @@
     "message.noControllerFound": "Keinen Controller gefunden",
     "message.errorInLoadingScheduleIds": "Fehler beim Lesen der Controller-Kennungen",
     "message.pasteInSubFolderNotAllowed": "Der Zielordner ist ein Unterordner des Quellordners.",
-    "message.invalidJSON": "Invalid JSON file"
+    "message.invalidJSON": "Ungültige JSON Datei"
   },
   "fileTransfer": {
     "label.transfer": "Übertragung",
@@ -1119,7 +1119,7 @@
     "label.stdout": "stdout",
     "label.stderr": "stderr",
     "label.info": "Info",
-    "label.trace": "trace",
+    "label.trace": "Trace",
     "label.error": "Error",
     "label.fatal": "Fatal",
     "label.warn": "Warn",
@@ -1143,36 +1143,36 @@
     "label": {
       "agentAvailability": "Verfügbarkeit Agent",
       "controllerAvailability": "Verfügbarkeit Controller",
-      "notification": "Notification",
-      "overview": "Overview",
-      "statistics": "Statistics",
-      "runningTime": "Running Time",
-      "date": "Date",
-      "shutdown": "shutdown"
+      "notification": "Benachrichtigungen",
+      "overview": "Übersicht",
+      "statistics": "Statistik",
+      "runningTime": "Laufzeit",
+      "date": "Datum",
+      "shutdown": "außer Betrieb"
     },
     "button": {
-      "week": "Week",
-      "month": "Month"
+      "week": "Woche",
+      "month": "Monat"
     },
     "notification" : {
       "label" : {
-        "orderId": "Order ID",
+        "orderId": "Auftragskennung",
         "job": "Job",
-        "message": "Message",
-        "created": "Created",
-        "type": "Type",
+        "message": "Nachricht",
+        "created": "Erstellt",
+        "type": "Typ",
         "name": "Name",
-        "configuration": "Configuration",
-        "errorText": "Error Text",
-        "jobReturnCode": "Job Return Code",
-        "notificationsFound": "Notification entries found",
-        "notificationFound": "Notification entry found"
+        "configuration": "Konfiguration",
+        "errorText": "Fehlermeldung",
+        "jobReturnCode": "Rückgabewert",
+        "notificationsFound": "Benachrichtigungen gefunden",
+        "notificationFound": "Benachrichtigung gefunden"
       },
       "button": {
-        "success": "Success",
-        "error": "Error",
-        "warning": "Warning",
-        "recovered": "Recovered"
+        "success": "Erfolgreich",
+        "error": "Fehlgeschlagen",
+        "warning": "Warnung",
+        "recovered": "Wiederhergestellt"
       }
     }
   },
@@ -1198,13 +1198,13 @@
     "button.suspend": "Unterbrechen",
     "button.suspendAndKillTask": "Unterbrechen/Prozess abschießen",
     "button.resume": "Fortsetzen",
-    "button.resumeParametrized": "Resume Parametrized",
+    "button.resumeParametrized": "Fortsetzen mit Parametern",
     "button.confirm": "Bestätigen",
     "button.leaveWorkflow": "Arbeitsablauf verlassen",
     "button.addVariable": "Variable hinzufügen",
     "button.modifyVariable": "Variable ändern",
     "message.noVariableAvailable": "keine Variablen vorhanden",
-    "message.orderModificationNotAllowed": "The order state {{state}} does not allow modification"
+    "message.orderModificationNotAllowed": "Der Auftagszustand {{state}} erlaubt keine Änderung"
   },
   "profile": {
     "label.userDetails": "Anwenderinformationen",
@@ -1238,7 +1238,7 @@
     "label.themeTitle": "Titel bei Farbschema",
     "label.enableCommentsForAuditLog": "Begründungen für Prüfprotokoll aktivieren",
     "label.useTimezoneForLog": "Zeitzone für Zeitstempel der Protokolle verwenden",
-    "label.showTooltipInfo": "Suppress tooltips for Inventory objects",
+    "label.showTooltipInfo": "Kurzinfo für Objekte des Inventars ausschalten",
     "label.selectAll": "Alle auswählen",
     "label.all": "Alle",
     "label.current": "Aktuell",
@@ -1809,7 +1809,7 @@
     "label.yade": "YADE",
     "label.jsSuiteInventory": "JSSuite Inventory",
     "label.saveXml": "XML speichern",
-    "label.deleteDraft": "Revert Draft",
+    "label.deleteDraft": "Arbeitsversion zurückrollen",
     "label.importXML": "XML importieren",
     "label.assignSchema": "XSD Schema zuweisen",
     "label.assignXSDSchema": "XSD Schema zuweisen",
@@ -1837,7 +1837,7 @@
     "button.validate": "Validieren",
     "button.showXML": "XML anzeigen",
     "button.importXML": "XML importieren",
-    "button.deleteDraft": "Revert Draft",
+    "button.deleteDraft": "Arbeitsversion zurückrollen",
     "button.editXML": "XML ändern",
     "button.export": "Exportieren",
     "button.showAllChildNodes": "Alle Kindknoten des ausgewählten Knotens anzeigen",

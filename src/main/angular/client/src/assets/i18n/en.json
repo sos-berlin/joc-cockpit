@@ -1143,12 +1143,12 @@
     "label": {
       "agentAvailability": "Agent Availability",
       "controllerAvailability": "Controller Availability",
-      "notification": "Notification",
+      "notification": "Notifications",
       "overview": "Overview",
       "statistics": "Statistics",
       "runningTime": "Running Time",
       "date": "Date",
-      "shutdown": "shutdown"
+      "shutdown": "out of service"
     },
     "button": {
       "week": "Week",
@@ -1164,7 +1164,7 @@
         "name": "Name",
         "configuration": "Configuration",
         "errorText": "Error Text",
-        "jobReturnCode": "Job Return Code",
+        "jobReturnCode": "Return Code",
         "notificationsFound": "Notification entries found",
         "notificationFound": "Notification entry found"
       },
