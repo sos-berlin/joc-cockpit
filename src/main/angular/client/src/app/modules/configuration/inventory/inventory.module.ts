@@ -28,7 +28,7 @@ import {
 } from './workflow/workflow.component';
 import {ScheduleComponent} from './schedule/schedule.component';
 import {LockComponent} from './lock/lock.component';
-import {JunctionComponent} from './junction/junction.component';
+import {BoardComponent} from './board/board.component';
 import {CalendarComponent, FrequencyModalComponent} from './calendar/calendar.component';
 import {FileOrderComponent} from './file-order/file-order.component';
 import {JobResourceComponent} from './job-resource/job-resource.component';
@@ -61,7 +61,7 @@ const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployCompon
     ScheduleComponent,
     LockComponent,
     WorkflowComponent,
-    JunctionComponent,
+    BoardComponent,
     JobResourceComponent,
     FileOrderComponent,
     TableComponent,

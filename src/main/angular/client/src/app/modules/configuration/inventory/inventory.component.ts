@@ -2444,7 +2444,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           path: data.path,
           key: (KEY + 'Job_Resources$')
         },
-        {name: 'Junctions', title: 'Junctions', object: 'JUNCTION', children: [], path: data.path, key: (KEY + 'Junctions$')},
+        {name: 'Boards', title: 'Boards', object: 'BOARD', children: [], path: data.path, key: (KEY + 'Boards$')},
         {name: 'Locks', title: 'Locks', object: 'LOCK', children: [], path: data.path, key: (KEY + 'Locks$')}
       ];
       dailyPlanObj.dailyPlanArr = [
@@ -2465,8 +2465,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           resObject = res.fileOrderSources;
         } else if (controllerObj.controllerArr[i].object === 'JOBRESOURCE') {
           resObject = res.jobResources;
-        } else if (controllerObj.controllerArr[i].object === 'JUNCTION') {
-          resObject = res.junctions;
+        } else if (controllerObj.controllerArr[i].object === 'BOARD') {
+          resObject = res.boards;
         } else if (controllerObj.controllerArr[i].object === 'LOCK') {
           resObject = res.locks;
         }
@@ -3695,7 +3695,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private storeObject(obj, list, configuration): void {
-    const valid = !(obj.type.match(/CALENDAR/) || obj.type === 'SCHEDULE' || obj.type === 'WORKFLOW' || obj.type === 'FILEORDERSOURCE' || obj.type === 'JOBRESOURCE');
+    const valid = !(obj.type.match(/CALENDAR/) || obj.type === 'SCHEDULE' || obj.type === 'BOARD' || obj.type === 'WORKFLOW' || obj.type === 'FILEORDERSOURCE' || obj.type === 'JOBRESOURCE');
     const PATH = obj.path + (obj.path === '/' ? '' : '/') + obj.name;
     if (PATH && obj.type) {
       this.coreService.post('inventory/store', {

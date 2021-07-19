@@ -360,6 +360,12 @@ export class WorkflowService {
               json.instructions[x].documentationName = job ? job.documentationName : null;
             }
           }
+          if (json.instructions[x].TYPE === 'PostNotice') {
+            json.instructions[x].TYPE = 'Publish ';
+          }
+          if (json.instructions[x].TYPE === 'ReadNotice') {
+            json.instructions[x].TYPE = 'Await ';
+          }
           if (json.instructions[x].TYPE === 'Try') {
             let isRetry = false;
             if (json.instructions[x].catch) {

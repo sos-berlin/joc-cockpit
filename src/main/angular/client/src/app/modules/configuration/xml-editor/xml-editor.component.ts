@@ -819,7 +819,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   doc: any;
   nodes: any = [];
   showAllChild: any = [];
-  xsdXML: any;
   counting = 0;
   autoAddCount = 0;
   copyItem: any = {};
@@ -1718,7 +1717,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   loadTree(xml, check): void {
     this.doc = new DOMParser().parseFromString(xml, 'application/xml');
     this.getRootNode(this.doc, check);
-    this.xsdXML = xml;
     this.xpath();
     this.AddKeyReferencing();
     this.getData(this.nodes[0]);
@@ -2793,9 +2791,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
           if (x !== undefined) {
             value.base = x;
-            value.parent = node;
-          } else {
-            value.base = 'xs:string';
             value.parent = node;
           }
         }
@@ -4419,16 +4414,20 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (node !== undefined) {
       if (node.refElement === child.ref) {
         if (child.keyref) {
-          for (let i = 0; i < child.attributes.length; i++) {
-            if (child.attributes[i].name === child.keyref) {
-              if (node.data === child.attributes[i].data) {
-                this.getData(child);
+          if(child.attributes) {
+            for (let i = 0; i < child.attributes.length; i++) {
+              if (child.attributes[i].name === child.keyref) {
+                if (node.data === child.attributes[i].data) {
+                  this.getData(child);
+                }
               }
             }
           }
         } else {
-          for (let i = 0; i < child.children.length; i++) {
-            this.gotoKeyrefRecursion(node, child.children[i]);
+          if (child.children) {
+            for (let i = 0; i < child.children.length; i++) {
+              this.gotoKeyrefRecursion(node, child.children[i]);
+            }
           }
         }
       } else if (this.refElement && this.refElement.parent === child.ref) {
@@ -4441,13 +4440,17 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             }
           }
         } else {
-          for (let i = 0; i < child.children.length; i++) {
-            this.gotoKeyrefRecursion(node, child.children[i]);
+          if (child.children) {
+            for (let i = 0; i < child.children.length; i++) {
+              this.gotoKeyrefRecursion(node, child.children[i]);
+            }
           }
         }
       } else {
-        for (let i = 0; i < child.children.length; i++) {
-          this.gotoKeyrefRecursion(node, child.children[i]);
+        if (child.children) {
+          for (let i = 0; i < child.children.length; i++) {
+            this.gotoKeyrefRecursion(node, child.children[i]);
+          }
         }
       }
     }
@@ -5680,7 +5683,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       const xmlAsString = new XMLSerializer().serializeToString(xml);
       let a = `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>`;
       a = a.concat(xmlAsString);
-     
       return flag ? vkbeautify.xml(a) : a;
     } else {
       return null;

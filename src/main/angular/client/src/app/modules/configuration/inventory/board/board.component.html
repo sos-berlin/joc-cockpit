@@ -7,9 +7,9 @@
           <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
         </span>
         <div class="inline pull-right" *ngIf="!isTrash">
-           <span class="badge badge-success m-r-12" *ngIf="junction.configuration" [ngClass]="!junction.valid ? 'badge-danger':'badge-success'">
-              <span *ngIf="junction.valid" translate>inventory.label.valid</span>
-              <span *ngIf="!junction.valid">
+           <span class="badge badge-success m-r-12" *ngIf="board.configuration" [ngClass]="!board.valid ? 'badge-danger':'badge-success'">
+              <span *ngIf="board.valid" translate>inventory.label.valid</span>
+              <span *ngIf="!board.valid">
                 <span translate>inventory.label.notValid</span>
                 <i nz-tooltip="{{invalidMsg | translate}}" class="fa fa-info-circle p-l-xs"></i>
               </span>
@@ -18,20 +18,20 @@
               <span *ngIf="!data.deployed" translate>inventory.label.notDeployed</span>
               <span *ngIf="data.deployed" translate>inventory.label.deployed</span>
           </span>
-          <button *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" type="button" [disabled]="!junction.valid && !junction.hasDeployments" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="deploy()" >
+          <button *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" type="button" [disabled]="!board.valid && !board.hasDeployments" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="deploy()" >
             <i class="fa fa-rocket p-r-xs"></i>
             <span translate>inventory.button.deploy</span>
           </button>
         </div>
       </div>
-      <form *ngIf="junction.configuration">
+      <form *ngIf="board.configuration">
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.junction.name' | translate) : ''"
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.board.name' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>common.label.name</label>
           <div class="col-md-8 col-lg-6">
             <input type="text" required identifierValidation class="form-control" [readonly]="isTrash || !permission.joc.inventory.manage" [appAutofocus]="!isTrash"
-                   name="name" [(ngModel)]="junction.name" #name="ngModel" autocomplete="off" (blur)="rename(name.invalid)">
+                   name="name" [(ngModel)]="board.name" #name="ngModel" autocomplete="off" (blur)="rename(name.invalid)">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
               <div *ngIf="name.errors.required">
                 <div translate>common.message.requiredError</div>
@@ -41,20 +41,20 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.junction.title' | translate) : ''"
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.board.title' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>common.label.title</label>
           <div class="col-md-8 col-lg-6">
             <input type="text" class="form-control" [readonly]="isTrash || !permission.joc.inventory.manage" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
-                   name="title" [(ngModel)]="junction.configuration.title" (blur)="saveJSON()">
+                   name="title" [(ngModel)]="board.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.junction.documentation' | translate) : ''"
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.board.documentation' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.documentation</label>
           <div class="col-md-8 col-lg-6 select-input-both">
             <input autocomplete="off" [readOnly]="isTrash || !permission.joc.inventory.manage" type="text" class="form-control"
                    placeholder="{{'inventory.placeholder.documentationName' | translate}}"
-                   name="documentationPath" [(ngModel)]="junction.configuration.documentationName">
+                   name="documentationPath" [(ngModel)]="board.configuration.documentationName">
             <nz-tree-select
               name="documentationName"
               [disabled]="isTrash || !permission.joc.inventory.manage"
@@ -65,13 +65,13 @@
               [nzHideUnMatched]="false"
               [nzDropdownStyle]="{ 'max-height': '300px' }"
               nzShowSearch
-              [(ngModel)]="junction.configuration.documentationName1"
+              [(ngModel)]="board.configuration.documentationName1"
               (nzExpandChange)="onExpand($event)"
             >
               <ng-template #nzTreeTemplate let-node>
                 <div style="width: 93%" class="node-wrapper" (click)="loadData(node, $event);">
                   <div class="node-content-wrapper"
-                       [class.node-content-wrapper-active]="node.origin.path == junction.configuration.documentationName">
+                       [class.node-content-wrapper-active]="node.origin.path == board.configuration.documentationName">
                     <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
                        class="w-14"></i>
                     <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
@@ -80,20 +80,50 @@
                 </div>
               </ng-template>
             </nz-tree-select>
-            <i class="tree-search-clear" (click)="junction.configuration.documentationName = '';junction.configuration.documentationName1='';saveJSON()"
-               *ngIf="junction.configuration.documentationName" nz-icon nzType="close-circle" nzTheme="outline"></i>
+            <i class="tree-search-clear" (click)="board.configuration.documentationName = '';board.configuration.documentationName1='';saveJSON()"
+               *ngIf="board.configuration.documentationName" nz-icon nzType="close-circle" nzTheme="outline"></i>
           </div>
         </div>
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((lt.dirty || lt.touched) && lt.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.junction.lifetime' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.lifetime</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.board.toNotice' | translate) : ''"
+                 [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.toNotice</label>
           <div class="col-md-8 col-lg-6">
             <input autocomplete="off" [readonly]="isTrash || !permission.joc.inventory.manage" #lt="ngModel" required type="text" class="form-control" name="lt"
-                   placeholder="{{'workflow.placeholder.duration' | translate}}" (blur)="saveJSON()"
-                   validateDurtionReqex [(ngModel)]="lifetime">
+                   placeholder="{{'inventory.placeholder.toNotice' | translate}}" (blur)="saveJSON()"
+                   [(ngModel)]="board.configuration.toNotice">
             <div *ngIf="lt.invalid && (lt.dirty || lt.touched)" class="text-danger help-block">
               <div *ngIf="lt.errors.required">
+                <div translate>common.message.requiredError</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row"
+             [ngClass]="{ 'has-error' : (((endOfLife.dirty || endOfLife.touched) && endOfLife.invalid))}">
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.board.endOfLife' | translate) : ''"
+                 [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.endOfLife</label>
+          <div class="col-md-8 col-lg-6">
+            <input autocomplete="off" [readonly]="isTrash || !permission.joc.inventory.manage" #endOfLife="ngModel" required type="text" class="form-control" name="endOfLife"
+                   placeholder="{{'inventory.placeholder.endOfLife' | translate}}" (blur)="saveJSON()"
+                   [(ngModel)]="board.configuration.endOfLife">
+            <div *ngIf="endOfLife.invalid && (endOfLife.dirty || endOfLife.touched)" class="text-danger help-block">
+              <div *ngIf="endOfLife.errors.required">
+                <div translate>common.message.requiredError</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row"
+             [ngClass]="{ 'has-error' : (((readingOrderToNoticeId.dirty || readingOrderToNoticeId.touched) && readingOrderToNoticeId.invalid))}">
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.board.readingOrderToNoticeId' | translate) : ''"
+                 [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.readingOrderToNoticeId</label>
+          <div class="col-md-8 col-lg-6">
+            <input autocomplete="off" [readonly]="isTrash || !permission.joc.inventory.manage" #readingOrderToNoticeId="ngModel" required type="text" class="form-control" name="readingOrderToNoticeId"
+                   placeholder="{{'inventory.placeholder.readingOrderToNoticeId' | translate}}" (blur)="saveJSON()"
+                   [(ngModel)]="board.configuration.readingOrderToNoticeId">
+            <div *ngIf="readingOrderToNoticeId.invalid && (readingOrderToNoticeId.dirty || readingOrderToNoticeId.touched)" class="text-danger help-block">
+              <div *ngIf="readingOrderToNoticeId.errors.required">
                 <div translate>common.message.requiredError</div>
               </div>
             </div>

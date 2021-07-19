@@ -1,16 +1,16 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
-import {isEmpty, isEqual} from 'underscore';
+import {clone, isEmpty, isEqual} from 'underscore';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {WorkflowService} from '../../../../services/workflow.service';
 
 @Component({
-  selector: 'app-junction',
+  selector: 'app-board',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './junction.component.html'
+  templateUrl: './board.component.html'
 })
-export class JunctionComponent implements OnChanges, OnDestroy {
+export class BoardComponent implements OnChanges, OnDestroy {
   @Input() preferences: any;
   @Input() schedulerId: any;
   @Input() data: any;
@@ -19,10 +19,9 @@ export class JunctionComponent implements OnChanges, OnDestroy {
   @Input() reload: any;
   @Input() isTrash: any;
 
-  junction: any = {};
-  lifetime: string;
+  board: any = {};
   invalidMsg: string;
-  objectType = 'JUNCTION';
+  objectType = 'BOARD';
   documentationTree = [];
   indexOfNextAdd = 0;
   history = [];
@@ -33,7 +32,7 @@ export class JunctionComponent implements OnChanges, OnDestroy {
               private dataService: DataService, private ref: ChangeDetectorRef) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
-        if (res.reloadTree && this.junction.actual) {
+        if (res.reloadTree && this.board.actual) {
           this.ref.detectChanges();
         }
       }
@@ -62,7 +61,7 @@ export class JunctionComponent implements OnChanges, OnDestroy {
       if (this.data.type) {
         this.getObject();
       } else {
-        this.junction = {};
+        this.board = {};
         this.ref.detectChanges();
       }
     }
@@ -71,7 +70,7 @@ export class JunctionComponent implements OnChanges, OnDestroy {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
-    if (this.junction.name) {
+    if (this.board.name) {
       this.saveJSON();
     }
   }
@@ -98,23 +97,57 @@ export class JunctionComponent implements OnChanges, OnDestroy {
       if (this.data.valid !== res.valid){
         this.data.valid = res.valid;
       }
-      this.junction = res;
-      this.junction.path1 = this.data.path;
-      this.junction.name = this.data.name;
-      if (res.configuration.lifetime) {
-        this.lifetime = this.workflowService.convertDurationToString(res.configuration.lifetime);
+      this.board = res;
+      this.board.path1 = this.data.path;
+      this.board.name = this.data.name;
+
+      this.board.actual = JSON.stringify(res.configuration);
+      this.history.push(this.board.actual);
+      if (!res.valid) {
+        if (!this.board.configuration.readingOrderToNoticeId) {
+          this.invalidMsg = 'inventory.message.readingOrderToNoticeIdIsMissing';
+        } else if (this.board.configuration.toNotice) {
+          this.invalidMsg = 'inventory.message.toNoticeIsMissing';
+        } else {
+          this.validateJSON(res.configuration);
+        }
+      } else {
+        this.invalidMsg = '';
       }
-      this.junction.actual = JSON.stringify(res.configuration);
-      this.history.push(this.junction.actual);
       this.ref.detectChanges();
     });
   }
 
+  private validateJSON(json): void {
+    const obj = clone(json);
+    obj.path = this.data.path;
+    this.coreService.post('inventory/' + this.objectType + '/validate', obj).subscribe((res: any) => {
+      this.setErrorMessage(res);
+    }, () => {
+    });
+  }
+
+  private setErrorMessage(res): void {
+    if (res.invalidMsg) {
+      if (res.invalidMsg.match('readingOrderToNoticeId')) {
+        this.invalidMsg = 'inventory.message.readingOrderToNoticeIdIsMissing';
+      } else if (res.invalidMsg.match('toNoticeIsMissing')) {
+        this.invalidMsg = 'inventory.message.toNoticeIsMissing';
+      }
+      if (!this.invalidMsg) {
+        this.invalidMsg = res.invalidMsg;
+      }
+    } else {
+      this.invalidMsg = '';
+    }
+    this.ref.detectChanges();
+  }
+
   rename(inValid): void {
-    if (this.data.id === this.junction.id && this.data.name !== this.junction.name) {
+    if (this.data.id === this.board.id && this.data.name !== this.board.name) {
       if (!inValid) {
         const data = this.coreService.clone(this.data);
-        const name = this.junction.name;
+        const name = this.board.name;
         this.coreService.post('inventory/rename', {
           id: data.id,
           newPath: name
@@ -125,11 +158,11 @@ export class JunctionComponent implements OnChanges, OnDestroy {
           data.name = name;
           this.dataService.reloadTree.next({rename: data});
         }, () => {
-          this.junction.name = this.data.name;
+          this.board.name = this.data.name;
           this.ref.detectChanges();
         });
       } else {
-        this.junction.name = this.data.name;
+        this.board.name = this.data.name;
         this.ref.detectChanges();
       }
     }
@@ -191,13 +224,13 @@ export class JunctionComponent implements OnChanges, OnDestroy {
         this.updateList(node);
       }
     } else {
-      if (this.junction.configuration.documentationName1) {
-        if (this.junction.configuration.documentationName !== this.junction.configuration.documentationName1) {
-          this.junction.configuration.documentationName = this.junction.configuration.documentationName1;
+      if (this.board.configuration.documentationName1) {
+        if (this.board.configuration.documentationName !== this.board.configuration.documentationName1) {
+          this.board.configuration.documentationName = this.board.configuration.documentationName1;
         }
       } else if (node.key && !node.key.match('/')) {
-        if (this.junction.configuration.documentationName !== node.key) {
-          this.junction.configuration.documentationName = node.key;
+        if (this.board.configuration.documentationName !== node.key) {
+          this.board.configuration.documentationName = node.key;
         }
       }
       setTimeout(() => {
@@ -212,11 +245,11 @@ export class JunctionComponent implements OnChanges, OnDestroy {
 
 
   deploy(): void {
-    this.dataService.reloadTree.next({deploy: this.junction});
+    this.dataService.reloadTree.next({deploy: this.board});
   }
 
   backToListView(): void {
-    this.dataService.reloadTree.next({back: this.junction});
+    this.dataService.reloadTree.next({back: this.board});
   }
 
   /**
@@ -228,7 +261,7 @@ export class JunctionComponent implements OnChanges, OnDestroy {
     const n = this.history.length;
     if (this.indexOfNextAdd < n) {
       const obj = this.history[this.indexOfNextAdd++];
-      this.junction.configuration = JSON.parse(obj);
+      this.board.configuration = JSON.parse(obj);
       this.saveJSON(true);
     }
   }
@@ -241,7 +274,7 @@ export class JunctionComponent implements OnChanges, OnDestroy {
   undo(): void {
     if (this.indexOfNextAdd > 0) {
       const obj = this.history[--this.indexOfNextAdd];
-      this.junction.configuration = JSON.parse(obj);
+      this.board.configuration = JSON.parse(obj);
       this.saveJSON(true);
     }
   }
@@ -250,27 +283,27 @@ export class JunctionComponent implements OnChanges, OnDestroy {
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
-    if (this.lifetime) {
-      this.junction.configuration.lifetime = this.workflowService.convertStringToDuration(this.lifetime);
-    }
-    if (!isEqual(this.junction.actual, JSON.stringify(this.junction.configuration))) {
+    if (!isEqual(this.board.actual, JSON.stringify(this.board.configuration))) {
       if (flag) {
         if (this.history.length === 20) {
           this.history.shift();
         }
-        this.history.push(JSON.stringify(this.junction.configuration));
+        this.history.push(JSON.stringify(this.board.configuration));
         this.indexOfNextAdd = this.history.length - 1;
       }
       this.coreService.post('inventory/store', {
-        configuration: this.junction.configuration,
-        valid: true,
-        id: this.junction.id,
+        configuration: this.board.configuration,
+        valid: !!(this.board.configuration.toNotice && this.board.configuration.readingOrderToNoticeId),
+        id: this.board.id,
         objectType: this.objectType
       }).subscribe((res: any) => {
-        if (res.id === this.data.id && this.junction.id === this.data.id) {
-          this.junction.actual = JSON.stringify(this.junction.configuration);
-          this.junction.deployed = false;
+        if (res.id === this.data.id && this.board.id === this.data.id) {
+          this.board.actual = JSON.stringify(this.board.configuration);
+          this.board.deployed = false;
           this.data.deployed = false;
+          this.board.valid = res.valid;
+          this.data.valid = res.valid;
+          this.setErrorMessage(res);
           this.ref.detectChanges();
         }
       }, (err) => {

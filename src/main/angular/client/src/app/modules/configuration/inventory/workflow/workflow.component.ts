@@ -7442,6 +7442,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     function recursive(json) {
       if (json.instructions && (flag || !isValidate)) {
         for (let x = 0; x < json.instructions.length; x++) {
+          if (json.instructions[x].TYPE === 'Publish') {
+            json.instructions[x].TYPE = 'PostNotice';
+          }
+          if (json.instructions[x].TYPE === 'Await') {
+            json.instructions[x].TYPE = 'ReadNotice';
+          }
           if (json.instructions[x].TYPE === 'Job') {
             isJobExist = true;
             json.instructions[x].TYPE = 'Execute.Named';

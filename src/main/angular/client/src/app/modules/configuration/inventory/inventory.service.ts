@@ -12,7 +12,7 @@ export class InventoryService {
         arr[i].level = 1;
       } else if (arr[i].objectType === 'JOBCLASS') {
         arr[i].level = 2;
-      } else if (arr[i].objectType === 'JUNCTION') {
+      } else if (arr[i].objectType === 'BOARD') {
         arr[i].level = 3;
       } else if (arr[i].objectType === 'LOCK') {
         arr[i].level = 4;
@@ -225,7 +225,7 @@ export class InventoryService {
   }
 
   isControllerObject(type): boolean {
-    return type === 'WORKFLOW' || type === 'JOBCLASS' || type === 'JUNCTION' || type === 'LOCK' || type === 'FILEORDERSOURCE' || type === 'JOBRESOURCE';
+    return type === 'WORKFLOW' || type === 'JOBCLASS' || type === 'BOARD' || type === 'LOCK' || type === 'FILEORDERSOURCE' || type === 'JOBRESOURCE';
   }
 }
 
