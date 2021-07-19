@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
@@ -7,10 +7,9 @@ import {SearchPipe} from '../../../pipes/core.pipe';
 
 @Component({
   selector: 'app-notification-monitor',
-  templateUrl: './notification-monitor.component.html',
-  styleUrls: ['./notification-monitor.component.scss']
+  templateUrl: './notification-monitor.component.html'
 })
-export class NotificationMonitorComponent implements OnInit, OnChanges, OnDestroy {
+export class NotificationMonitorComponent implements OnInit, OnDestroy {
   @Input() permission: any;
   @Input() preferences: any = {};
   @Input() schedulerIds: any = {};
@@ -20,14 +19,23 @@ export class NotificationMonitorComponent implements OnInit, OnChanges, OnDestro
   notifications = [];
   data = [];
   currentData = [];
-  searchableProperties = ['controllerId', 'type', 'orderId', 'workflow', 'created'];
+  searchableProperties = ['controllerId', 'type', 'job', 'job', 'exitCode', 'message', 'orderId', 'workflow', 'created'];
 
   subscription1: Subscription;
+  subscription2: Subscription;
 
   constructor(private coreService: CoreService, private authService: AuthService,
               private dataService: DataService, private searchPipe: SearchPipe) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
-      this.refresh(res);
+      if (res) {
+        this.refresh(res);
+      }
+    });
+
+    this.subscription2 = dataService.functionAnnounced$.subscribe((res: any) => {
+      if (res && res.filter) {
+        this.getData();
+      }
     });
   }
 
@@ -46,19 +54,23 @@ export class NotificationMonitorComponent implements OnInit, OnChanges, OnDestro
     this.getData();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
-  }
-
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
   }
 
   private getData(): void {
     let obj: any = {
       controllerId: this.filters.filter.current == true ? this.schedulerIds.selected : '',
-      limit: parseInt(this.preferences.maxAuditLogRecords, 10) || 5000
+      limit: parseInt(this.preferences.maxAuditLogRecords, 10) || 5000,
+      timeZone: this.preferences.timeZone
     };
+    if (this.filters.filter.type && this.filters.filter.type !== 'ALL') {
+      obj.types = [this.filters.filter.type];
+    }
+    if (this.filters.filter.date && this.filters.filter.date !== 'ALL') {
+      obj.dateFrom = this.filters.filter.date;
+    }
     this.coreService.post('monitoring/notifications', obj).subscribe((res: any) => {
       this.notifications = res.notifications;
       this.searchInResult();
@@ -89,7 +101,8 @@ export class NotificationMonitorComponent implements OnInit, OnChanges, OnDestro
     data.show = true;
     if (!data.isLoaded) {
       this.coreService.post('monitoring/notification', {
-        notificationId: data.notificationId
+        controllerId: data.controllerId,
+        notificationId: data.notificationId,
       }).subscribe((res: any) => {
         data.monitors = res.monitors;
         data.isLoaded = true;

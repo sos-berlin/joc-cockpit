@@ -20,7 +20,11 @@ export class UpdateKeyModalComponent implements OnInit {
   @Input() paste: any;
   @Input() data: any;
   @Input() securityLevel: string;
+  @Input() type: string;
+  @Input() display: any;
+
   submitted = false;
+  comments: any = {};
   algorithm: any = {};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
@@ -28,6 +32,10 @@ export class UpdateKeyModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.algorithm.keyAlg = this.securityLevel !== 'HIGH' ? 'RSA' : 'PGP';
+    this.comments.radio = 'predefined';
+    if (this.type === 'ca') {
+      this.algorithm.keyAlg = 'ECDSA';
+    }
   }
 
   onSubmit(): void {
@@ -47,7 +55,18 @@ export class UpdateKeyModalComponent implements OnInit {
       }
     }
     obj.keyAlgorithm = this.algorithm.keyAlg;
-    this.coreService.post('profile/key/store', {keys: obj}).subscribe(res => {
+    obj.auditLog = {};
+    if (this.comments.comment) {
+      obj.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      obj.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      obj.auditLog.ticketLink = this.comments.ticketLink;
+    }
+    const URL = this.type === 'key' ? 'profile/key/store' : 'profile/ca/store';
+    this.coreService.post(URL, {keys: obj}).subscribe(res => {
       this.submitted = false;
       this.activeModal.close();
     }, (err) => {
@@ -57,13 +76,14 @@ export class UpdateKeyModalComponent implements OnInit {
 }
 
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-import-key-modal',
   templateUrl: './import-key-dialog.html'
 })
 export class ImportKeyModalComponent implements OnInit {
   @Input() schedulerId: any;
   @Input() display: any;
   @Input() securityLevel: string;
+  @Input() type: string;
 
   uploader: FileUploader;
   submitted = false;
@@ -74,7 +94,7 @@ export class ImportKeyModalComponent implements OnInit {
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService,
               public translate: TranslateService, public toasterService: ToasterService) {
     this.uploader = new FileUploader({
-      url: './api/profile/key/import',
+      url: this.type === 'key' ? './api/profile/key/import' : './api/profile/ca/import',
       queueLimit: 2
     });
     let uo: FileUploaderOptions = {};
@@ -84,6 +104,9 @@ export class ImportKeyModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
+    if (this.type === 'ca') {
+      this.key.keyAlg = 'ECDSA';
+    }
 
     this.uploader.onBeforeUploadItem = (item: any) => {
       let obj: any = {
@@ -180,14 +203,25 @@ export class ImportKeyModalComponent implements OnInit {
   selector: 'app-generate-key-component',
   templateUrl: './generate-key-dialog.html'
 })
-export class GenerateKeyComponent {
+export class GenerateKeyComponent implements OnInit {
+  @Input() type: string;
+  @Input() display: any;
   submitted = false;
   expiry: any = {dateValue: 'date'};
+  caObj: any = {};
+  comments: any = {};
   key: any = {
     keyAlg: 'RSA'
   };
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private toasterService: ToasterService) {
+  }
+
+  ngOnInit(): void {
+    this.comments.radio = 'predefined';
+    if (this.type === 'ca') {
+      this.key.keyAlg = 'ECDSA';
+    }
   }
 
   cancel(): void {
@@ -200,13 +234,27 @@ export class GenerateKeyComponent {
 
   generateKey(): void {
     this.submitted = true;
-    const obj: any = {
+    let obj: any = {
       keyAlgorithm: this.key.keyAlg
     };
+    if (this.type === 'ca') {
+      obj = this.caObj;
+    }
     if (this.expiry.dateValue === 'date') {
       obj.validUntil = this.key.date;
     }
-    this.coreService.post('profile/key/generate', obj).subscribe(res => {
+    obj.auditLog = {};
+    if (this.comments.comment) {
+      obj.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      obj.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      obj.auditLog.ticketLink = this.comments.ticketLink;
+    }
+    const URL = this.type === 'key' ? 'profile/key/generate' : 'profile/ca/generate';
+    this.coreService.post(URL, obj).subscribe(res => {
       this.toasterService.pop('success', 'Key has been generated successfully');
       this.submitted = false;
       this.activeModal.close('ok');
@@ -227,6 +275,7 @@ export class UserComponent implements OnInit, OnDestroy {
   object: any = {};
   schedulerIds: any = {};
   keys: any;
+  certificates: any;
   configObj: any = {};
   timeZone: any = {};
   locales: any = [];
@@ -248,6 +297,45 @@ export class UserComponent implements OnInit, OnDestroy {
     this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
       this.setPreferences();
     });
+  }
+
+  ngOnInit(): void {
+    this.locales = [
+      {lang: 'en', country: 'US', name: 'English'},
+      {lang: 'fr', country: 'FR', name: 'French'},
+      {lang: 'de', country: 'DE', name: 'German'},
+      {lang: 'ja', country: 'JA', name: 'Japanese'}];
+
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.forceLoging = true;
+      this.preferences.auditLog = true;
+    }
+
+    this.setIds();
+    this.setPreferences();
+    this.zones = this.coreService.getTimeZoneList();
+    this.timeZone = this.coreService.getTimeZone();
+    this.configObj.controllerId = this.schedulerIds.selected;
+    this.configObj.account = this.username;
+    this.configObj.configurationType = 'PROFILE';
+    this.configObj.id = parseInt(sessionStorage.preferenceId, 10);
+  }
+
+  ngOnDestroy(): void {
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
+  }
+
+  tabChange($event): void {
+    if ($event.index === 2) {
+      if (this.permission.joc && this.permission.joc.administration.certificates.view) {
+        this.getKeys();
+      }
+    } else if ($event.index === 3) {
+      if (this.permission.joc && this.permission.joc.administration.certificates.manage) {
+        this.getCA();
+      }
+    }
   }
 
   savePreferences(): void {
@@ -273,48 +361,6 @@ export class UserComponent implements OnInit, OnDestroy {
     }
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-  }
-
-  ngOnInit(): void {
-    this.locales = [
-      {lang: 'en', country: 'US', name: 'English'},
-      {lang: 'fr', country: 'FR', name: 'French'},
-      {lang: 'de', country: 'DE', name: 'German'},
-      {lang: 'ja', country: 'JA', name: 'Japanese'}];
-
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
-      this.forceLoging = true;
-      this.preferences.auditLog = true;
-    }
-
-    this.setIds();
-    this.setPreferences();
-    if (this.permission.joc && this.permission.joc.administration.certificates.view) {
-      this.getKeys();
-    }
-    this.zones = this.coreService.getTimeZoneList();
-    this.timeZone = this.coreService.getTimeZone();
-    this.configObj.controllerId = this.schedulerIds.selected;
-    this.configObj.account = this.username;
-    this.configObj.configurationType = 'PROFILE';
-    this.configObj.id = parseInt(sessionStorage.preferenceId, 10);
-  }
-
-  ngOnDestroy(): void {
-    this.subscription1.unsubscribe();
-    this.subscription2.unsubscribe();
-  }
-
-  getKeys(): void {
-    this.keys = {};
-    this.coreService.post('profile/key', {}).subscribe((res: any) => {
-      this.keys = res;
-      if (this.keys.validUntil) {
-        this.keys.isKeyExpired = this.coreService.getTimeDiff(this.preferences, this.keys.validUntil) < 0;
-      }
-    }, (err) => {
-      this.keys = {};
-    });
   }
 
   changeConfiguration(): void {
@@ -430,72 +476,6 @@ export class UserComponent implements OnInit, OnDestroy {
     this.savePreferences();
   }
 
-
-  pasteKey(): void {
-    const modal = this.modal.create({
-      nzTitle: null,
-      nzContent: UpdateKeyModalComponent,
-      nzAutofocus: null,
-      nzComponentParams: {
-        securityLevel: this.securityLevel,
-        paste: true,
-        data: {}
-      },
-      nzFooter: null,
-      nzClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.getKeys();
-      }
-    });
-  }
-
-  showGenerateKeyModal(): void {
-    const modal = this.modal.create({
-      nzTitle: null,
-      nzContent: GenerateKeyComponent,
-      nzFooter: null,
-      nzClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.getKeys();
-      }
-    });
-  }
-
-  importKey(): void {
-    const modal = this.modal.create({
-      nzTitle: null,
-      nzContent: ImportKeyModalComponent,
-      nzClassName: 'lg',
-      nzComponentParams: {
-        securityLevel: this.securityLevel
-      },
-      nzFooter: null,
-      nzClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.getKeys();
-      }
-    });
-  }
-
-  showKey(): void {
-    this.modal.create({
-      nzTitle: null,
-      nzContent: UpdateKeyModalComponent,
-      nzComponentParams: {
-        securityLevel: this.securityLevel,
-        data: this.keys
-      },
-      nzFooter: null,
-      nzClosable: false
-    });
-  }
-
   resetProfile(): void {
     const modal = this.modal.create({
       nzTitle: null,
@@ -520,6 +500,103 @@ export class UserComponent implements OnInit, OnDestroy {
     const obj = {accounts: [this.username]};
     this.coreService.post('configurations/delete', obj).subscribe(res => {
       this.dataService.isProfileReload.next(true);
+    });
+  }
+
+  getKeys(): void {
+    this.keys = {};
+    this.coreService.post('profile/key', {}).subscribe((res: any) => {
+      this.keys = res;
+      if (this.keys.validUntil) {
+        this.keys.isKeyExpired = this.coreService.getTimeDiff(this.preferences, this.keys.validUntil) < 0;
+      }
+    }, (err) => {
+      this.keys = {};
+    });
+  }
+
+  getCA(): void {
+    this.certificates = {};
+    this.coreService.post('profile/ca', {}).subscribe((res: any) => {
+      this.certificates = res;
+      if (this.certificates.validUntil) {
+        this.certificates.isKeyExpired = this.coreService.getTimeDiff(this.preferences, this.certificates.validUntil) < 0;
+      }
+    }, (err) => {
+      this.certificates = {};
+    });
+  }
+
+  pasteKey(type = 'key'): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: UpdateKeyModalComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        securityLevel: this.securityLevel,
+        display : this.preferences.auditLog,
+        paste: true,
+        type,
+        data: {}
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        type === 'key' ? this.getKeys() : this.getCA();
+      }
+    });
+  }
+
+  showGenerateKeyModal(type = 'key'): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: GenerateKeyComponent,
+      nzComponentParams: {
+        display : this.preferences.auditLog,
+        type
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        type === 'key' ? this.getKeys() : this.getCA();
+      }
+    });
+  }
+
+  importKey(type = 'key'): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ImportKeyModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        securityLevel: this.securityLevel,
+        display : this.preferences.auditLog,
+        type
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        type === 'key' ? this.getKeys() : this.getCA();
+      }
+    });
+  }
+
+  showKey(type = 'key'): void {
+    this.modal.create({
+      nzTitle: null,
+      nzContent: UpdateKeyModalComponent,
+      nzComponentParams: {
+        securityLevel: this.securityLevel,
+        data: type === 'key' ? this.keys : this.certificates
+      },
+      nzFooter: null,
+      nzClosable: false
     });
   }
 }

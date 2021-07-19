@@ -332,6 +332,9 @@ export class HighlightSearch implements PipeTransform {
     if (!args) {
       return value;
     }
+    if (typeof value === 'number') {
+      value = value.toString();
+    }
     if (typeof value === 'string') {
       return value.replace(new RegExp(args, 'gi'),
         '<span class="highlighted">$&</span>');

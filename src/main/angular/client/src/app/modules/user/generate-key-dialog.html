@@ -8,29 +8,84 @@
 </div>
 <form>
   <div class="modal-body p-a">
-    <div class="form-group row">
-      <label class="col-md-4 col-lg-3" translate>profile.keyManagement.label.setExpiryDate</label>
-      <div class="col-md-8 col-lg-9">
-        <nz-radio-group name="expireDate" [(ngModel)]="expiry.dateValue">
-          <label nz-radio nzValue="date"><span translate>profile.keyManagement.label.expire</span></label>
-          <label nz-radio nzValue="0"><span translate>profile.keyManagement.label.neverExpire</span></label>
-        </nz-radio-group>
+    <div class="hide" [ngClass]="{'show': display}">
+      <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
+    </div>
+    <div *ngIf="type === 'key'">
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3" translate>profile.keyManagement.label.setExpiryDate</label>
+        <div class="col-md-8 col-lg-9">
+          <nz-radio-group name="expireDate" [(ngModel)]="expiry.dateValue">
+            <label nz-radio nzValue="date"><span translate>profile.keyManagement.label.expire</span></label>
+            <label nz-radio nzValue="0"><span translate>profile.keyManagement.label.neverExpire</span></label>
+          </nz-radio-group>
+        </div>
+      </div>
+      <div class="form-group row" *ngIf="expiry.dateValue === 'date'">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>profile.keyManagement.label.date</label>
+        <div class="col-md-8 col-lg-6">
+          <nz-date-picker name="date" [(ngModel)]="key.validUntil" (ngModelChange)="onChange($event)"></nz-date-picker>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-md-4 col-lg-3" translate>profile.keyManagement.label.keyAlgorithm</div>
+        <div class="col-md-8 col-lg-9">
+          <nz-radio-group name="alg" [(ngModel)]="key.keyAlg">
+            <label nz-radio nzValue="PGP"><span translate>profile.keyManagement.label.pgp</span></label>
+            <label nz-radio nzValue="RSA"><span translate>profile.keyManagement.label.rsa</span></label>
+            <label nz-radio nzValue="ECDSA"><span translate>profile.keyManagement.label.ecdsa</span></label>
+          </nz-radio-group>
+        </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="expiry.dateValue === 'date'">
-      <label class="col-md-4 col-lg-3 form-control-label" translate>profile.keyManagement.label.date</label>
-      <div class="col-md-8 col-lg-6">
-        <nz-date-picker name="date" [(ngModel)]="key.validUntil" (ngModelChange)="onChange($event)"></nz-date-picker>
+    <div *ngIf="type === 'ca'">
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>profile.keyManagement.label.commonName</label>
+        <div class="col-md-8 col-lg-6" [ngClass]="{ 'has-error' : (commonName.dirty || commonName.touched) && commonName.invalid}">
+          <input autocomplete="off" required class="form-control"
+                 name="commonName" [(ngModel)]="caObj.commonName" #commonName="ngModel">
+          <div *ngIf="commonName.invalid && (commonName.dirty || commonName.touched)" class="text-danger help-block">
+            <div *ngIf="commonName.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="form-group row">
-      <div class="col-md-4 col-lg-3" translate>profile.keyManagement.label.keyAlgorithm</div>
-      <div class="col-md-8 col-lg-9">
-        <nz-radio-group name="alg" [(ngModel)]="key.keyAlg">
-          <label nz-radio nzValue="PGP"><span translate>profile.keyManagement.label.pgp</span></label>
-          <label nz-radio nzValue="RSA"><span translate>profile.keyManagement.label.rsa</span></label>
-          <label nz-radio nzValue="ECDSA"><span translate>profile.keyManagement.label.ecdsa</span></label>
-        </nz-radio-group>
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>profile.keyManagement.label.organizationUnit</label>
+        <div class="col-md-8 col-lg-6" [ngClass]="{ 'has-error' : (organizationUnit.dirty || organizationUnit.touched) && organizationUnit.invalid}">
+          <input autocomplete="off" required class="form-control"
+                 name="organizationUnit" [(ngModel)]="caObj.organizationUnit" #organizationUnit="ngModel">
+          <div *ngIf="organizationUnit.invalid && (organizationUnit.dirty || organizationUnit.touched)" class="text-danger help-block">
+            <div *ngIf="organizationUnit.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>profile.keyManagement.label.organization</label>
+        <div class="col-md-8 col-lg-6" [ngClass]="{ 'has-error' : (organization.dirty || organization.touched) && organization.invalid}">
+          <input autocomplete="off" required class="form-control"
+                 name="organization" [(ngModel)]="caObj.organization" #organization="ngModel">
+          <div *ngIf="organization.invalid && (organization.dirty || organization.touched)" class="text-danger help-block">
+            <div *ngIf="organization.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>profile.keyManagement.label.countryCode</label>
+        <div class="col-md-8 col-lg-6" [ngClass]="{ 'has-error' : (countryCode.dirty || countryCode.touched) && countryCode.invalid}">
+          <input autocomplete="off" required class="form-control"
+                 name="countryCode" maxlength="6" [(ngModel)]="caObj.countryCode" #countryCode="ngModel">
+          <div *ngIf="countryCode.invalid && (countryCode.dirty || countryCode.touched)" class="text-danger help-block">
+            <div *ngIf="countryCode.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

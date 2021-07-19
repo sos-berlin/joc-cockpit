@@ -18,7 +18,7 @@
       <div class="form-group row">
         <label class="col-md-3 form-control-label" translate>inventory.label.fileName</label>
         <div class="col-md-6" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || inValid}">
-          <input type="text" [pattern]="REGEX" nz-input required name="name" #name="ngModel" (blur)="checkFileName()" (focus)="inValid=false"
+          <input type="text" [pattern]="REGEX" nz-input required name="name" [appAutofocus]="true" #name="ngModel" (blur)="checkFileName()" (focus)="inValid=false"
                  placeholder="{{'inventory.placeholder.enterFileName' | translate}}" [(ngModel)]="exportObj.filename" />
           <div *ngIf="inValid || (name.invalid && name.errors && (name.dirty || name.touched))" class="text-danger help-block">
             <div *ngIf="name.errors && name.errors.required">

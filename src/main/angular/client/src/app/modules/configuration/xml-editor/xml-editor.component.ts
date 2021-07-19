@@ -14,6 +14,7 @@ import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropd
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
+import {NzMessageService} from 'ng-zorro-antd/message';
 
 declare const require: any;
 declare const vkbeautify: any;
@@ -895,6 +896,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     private modal: NzModalService,
     private dataService: DataService,
     public translate: TranslateService,
+    private message: NzMessageService,
     public toasterService: ToasterService,
     private nzContextMenuService: NzContextMenuService,
     private router: Router,
@@ -1803,7 +1805,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       for (let i = 0; i < attrs.length; i++) {
         attribute = {};
         let x = void 0;
-
         for (let j = 0; j < attrs[i].attributes.length; j++) {
           let a = attrs[i].attributes[j].nodeName;
           let b = attrs[i].attributes[j].nodeValue;
@@ -1811,7 +1812,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           let valueFromXmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:complexType/xs:attribute[@name=\''
             + b + '\']/xs:annotation/xs:appinfo/XmlEditor';
           let attr1 = select(valueFromXmlEditorPath, this.doc);
-
           if (attr1.length > 0) {
             if (attr1[0].attributes && attr1[0].attributes.length > 0) {
               for (let k = 0; k < attr1[0].attributes.length; k++) {
@@ -3015,6 +3015,15 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
+  selectNode(node): void {
+    this.getData(node.origin);
+    this.getIndividualData(node.origin, undefined);
+    this.changeLastUUid(node.origin);
+    if (this.preferences.expandOption === 'both') {
+      node.isExpanded = !node.isExpanded;
+    }
+  }
+
   // to send data in details component
   getData(event): void {
     this.removeDocs();
@@ -3341,6 +3350,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       } else {
         this.copyItem = Object.assign({}, this.copyItem, this._defineProperty({}, key, node[key]));
       }
+    }
+
+    if(this.copyItem) {
+      let msg = '';
+      this.translate.get('common.message.copied').subscribe(translatedValue => {
+        msg = translatedValue;
+      });
+      this.message.success(msg);
     }
   }
 

@@ -248,22 +248,22 @@
                       </table>
                     </ng-template>
                     <span
-                      (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
-                      [ngClass]="cutData && node.origin.uuid === copyItem.uuid? 'disabled' : ''" nzTooltipPlacement="right"
+                      (click)="selectNode(node);addContent(node.origin.values);"
+                      [ngClass]="cutData && node.origin.uuid === copyItem.uuid? 'disabled' : ''" nzTooltipPlacement="right" nzTooltipOverlayClassName="custom-tooltip"
                       [nz-tooltip]="((node.origin.attributes && node.origin.attributes.length>0) || (node.origin.values && node.origin.values.length>0)) ? (htmlContent) : ''">{{node.origin.ref}}
                       </span>
                     <span class="text-sm pl-2"
-                          (click)="getData(node.origin); getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
+                          (click)="selectNode(node)"
                           [hidden]="!node.origin.attributes || (node.origin.attributes && node.origin.attributes.length==0)">
                         {{getFirstNotEmptyAttribute(node.origin.attributes)}}
                       </span>
                     <span class="text-sm pl-2"
-                          (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
+                          (click)="selectNode(node);addContent(node.origin.values);"
                           *ngIf="(getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && node.origin.values[0].base !== 'password')">
                         {{node.origin.values[0].base === 'html' ? removeTag(node.origin.values[0]) : node.origin.values[0].data}}
                       </span>
                     <span class="text-sm pl-2"
-                          (click)="getData(node.origin);addContent(node.origin.values);getIndividualData(node.origin, undefined); changeLastUUid(node.origin)"
+                          (click)="selectNode(node);addContent(node.origin.values);"
                           *ngIf="(getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && (node.origin.values[0].parent === 'Password' || node.origin.values[0].base === 'password'))">
                         {{passwordLabel(node.origin.values[0].data)}}
                       </span>
@@ -487,10 +487,10 @@
                     </div>
                     <div class="col-sm-3 p-l-xs">
                       <span class="v-align-link"
-                        (click)="gotoKey(node); getIndividualData(selectedNode, undefined); expandParentNodesOfSelectedNode(selectedNode)"
+                        (click)="gotoKey(node);getIndividualData(selectedNode, undefined);expandParentNodesOfSelectedNode(selectedNode)"
                         *ngIf="node.refer"><a translate>xml.button.gotoKeyElement</a></span>
                       <span
-                        (click)="gotoKeyref(node); getIndividualData(selectedNode, undefined); expandParentNodesOfSelectedNode(selectedNode)"
+                        (click)="gotoKeyref(node);getIndividualData(selectedNode, undefined);expandParentNodesOfSelectedNode(selectedNode)"
                         [ngClass]="{'v-align-link': !(node.text && node.text.doc && node.text.doc[0] && node.text.doc[0].innerHTML)}" *ngIf="node.refElement"
                       ><a translate>xml.button.gotoRefElement</a></span>
                       <span [ngClass]="(node.refer || node.refElement) ? 'm-l-xs' : ''"

@@ -109,8 +109,8 @@ export class CoreService {
     };
     this.tabs._monitor.notification = {
       filter : {
-        state: 'all',
-        date: 'today',
+        type: 'ALL',
+        date: '0d',
         sortBy: 'created',
         reverse: true,
         currentPage: '1'
@@ -311,8 +311,8 @@ export class CoreService {
     };
     this.tempTabs._monitor.notification = {
       filter : {
-        state: 'all',
-        date: 'today',
+        type: 'ALL',
+        date: '0d',
         sortBy: 'created',
         reverse: true,
         currentPage: '1'

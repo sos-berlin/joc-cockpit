@@ -69,13 +69,13 @@
             <i *ngIf="filters.filter.sortBy == 'job.exitCode' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('job.exitCode')"><a><span class="p-r-xs" translate>monitor.notification.label.message</span>
-            <i *ngIf="filters.filter.sortBy == 'job.exitCode' && !filters.filter.reverse"
+          <th  width="20%" (click)="sort('message')"><a><span class="p-r-xs" translate>monitor.notification.label.message</span>
+            <i *ngIf="filters.filter.sortBy == 'message' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'job.exitCode' && filters.filter.reverse"
+            <i *ngIf="filters.filter.sortBy == 'message' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('created')"><a><span class="p-r-xs" translate>monitor.notification.label.created</span>
+          <th width="150px" (click)="sort('created')"><a><span class="p-r-xs" translate>monitor.notification.label.created</span>
           <i *ngIf="filters.filter.sortBy == 'created' && !filters.filter.reverse"
              class="fa fa-caret-up "></i>
           <i *ngIf="filters.filter.sortBy == 'created' && filters.filter.reverse"
@@ -103,7 +103,7 @@
                  (click)="notify.show = false;$event.stopPropagation()"></i>&nbsp;
               <span [innerHtml]="notify.orderId | highlight : filters.filter.searchText"></span></td>
             <td><span [innerHtml]="notify.job.job | highlight : filters.filter.searchText"></span></td>
-            <td><span [innerHtml]="notify.type | highlight : filters.filter.searchText"></span></td>
+            <td><span [innerHtml]="notify.type | translate | highlight : filters.filter.searchText"></span></td>
             <td><span [innerHtml]="notify.job.exitCode | highlight : filters.filter.searchText"></span></td>
             <td><span [innerHtml]="notify.message | highlight : filters.filter.searchText"></span></td>
             <td><span [innerHtml]="notify.created | stringToDate | highlight : filters.filter.searchText"></span></td>
@@ -120,19 +120,25 @@
                           [nzData]="notify.monitors" [nzShowPagination]="false">
                   <thead>
                   <tr>
-                    <th><span class="m-l-sm" translate>monitor.notification.label.type</span></th>
+                    <th width="100px"><span class="m-l-sm" translate>monitor.notification.label.type</span></th>
                     <th><span translate>monitor.notification.label.name</span></th>
                     <th><span translate>monitor.notification.label.message</span></th>
                     <th><span translate>monitor.notification.label.configuration</span></th>
-                    <th><span translate>monitor.notification.label.errorText</span></th>
-                    <th><span translate>monitor.notification.label.created</span></th>
+                    <th width="20%"><span translate>monitor.notification.label.errorText</span></th>
+                    <th width="150px"><span translate>monitor.notification.label.created</span></th>
                   </tr>
                   </thead>
                   <tbody>
                   <tr *ngFor="let monitor of innerChildTable.data">
-                    <td><span [innerHtml]="monitor.type"></span></td>
+                    <td><span class="m-l-sm" [innerHtml]="monitor.type | translate"></span></td>
                     <td><span [innerHtml]="monitor.name"></span></td>
-                    <td><span [innerHtml]="monitor.message"></span></td>
+                    <td>
+                      <ng-template #htmlContent>
+                        <div style="padding: 3px;" [innerHTML]="monitor.message | safeHtml"></div>
+                      </ng-template>
+                      <span *ngIf="monitor.message && monitor.message.length < 100">{{monitor.message }}</span>
+                      <span *ngIf="monitor.message && monitor.message.length >= 100" [nz-tooltip]="htmlContent">{{monitor.message.substring(0, 99)}}...</span>
+                    </td>
                     <td><span [innerHtml]="monitor.configuration"></span></td>
                     <td><span [innerHtml]="monitor.error"></span></td>
                     <td><span [innerHtml]="monitor.created | stringToDate"></span></td>

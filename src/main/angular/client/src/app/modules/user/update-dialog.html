@@ -10,12 +10,15 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
+    <div class="hide" [ngClass]="{'show': display}">
+      <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="9"></app-audit-log-input>
+    </div>
     <div class="form-group row" *ngIf="paste">
       <div class="col-sm-3" translate>profile.keyManagement.label.keyAlgorithm</div>
       <div class="col-sm-9">
         <nz-radio-group name="alg" [(ngModel)]="algorithm.keyAlg">
-          <label nz-radio nzValue="PGP"><span translate>profile.keyManagement.label.pgp</span></label>
-          <label nz-radio nzValue="RSA"><span translate>profile.keyManagement.label.rsa</span></label>
+          <label nz-radio nzValue="PGP" *ngIf="type === 'key'"><span translate>profile.keyManagement.label.pgp</span></label>
+          <label nz-radio nzValue="RSA" *ngIf="type === 'key'"><span translate>profile.keyManagement.label.rsa</span></label>
           <label nz-radio nzValue="ECDSA"><span translate>profile.keyManagement.label.ecdsa</span></label>
         </nz-radio-group>
       </div>

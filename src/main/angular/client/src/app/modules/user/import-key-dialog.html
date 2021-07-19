@@ -18,8 +18,8 @@
           <div class="col-md-4 col-lg-3" translate>profile.keyManagement.label.keyAlgorithm</div>
           <div class="col-md-8 col-lg-9">
             <nz-radio-group name="alg" [(ngModel)]="key.keyAlg">
-              <label nz-radio nzValue="PGP"><span translate>profile.keyManagement.label.pgp</span></label>
-              <label nz-radio nzValue="RSA"><span translate>profile.keyManagement.label.rsa</span></label>
+              <label nz-radio nzValue="PGP" *ngIf="type === 'key'"><span translate>profile.keyManagement.label.pgp</span></label>
+              <label nz-radio nzValue="RSA" *ngIf="type === 'key'"><span translate>profile.keyManagement.label.rsa</span></label>
               <label nz-radio nzValue="ECDSA"><span translate>profile.keyManagement.label.ecdsa</span></label>
             </nz-radio-group>
           </div>

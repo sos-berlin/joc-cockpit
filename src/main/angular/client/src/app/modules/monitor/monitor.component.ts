@@ -45,9 +45,15 @@ export class MonitorComponent implements OnInit, OnDestroy {
 
   changeDate(date): void {
     this.monitorFilters.notification.filter.date = date;
+    this.dataService.announceFunction(this.monitorFilters.notification);
   }
 
-  changeState(state): void {
-    this.monitorFilters.notification.filter.state = state;
+  controllerChange(): void {
+    this.dataService.announceFunction(this.monitorFilters.notification);
+  }
+
+  changeState(type): void {
+    this.monitorFilters.notification.filter.type = type;
+    this.dataService.announceFunction(this.monitorFilters.notification);
   }
 }

@@ -7,33 +7,33 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline valign" *ngIf="monitorFilters.tabIndex == 2">
-            <label nz-checkbox [(ngModel)]="monitorFilters.notification.filter.current" name="current">
+            <label nz-checkbox [(ngModel)]="monitorFilters.notification.filter.current" name="current" (nzCheckedChange)="controllerChange()">
               {{'common.label.currentController' | translate}}
             </label>
           </div>
           <div class="btn-group m-l-12 hidden-btn-group" *ngIf="monitorFilters.tabIndex == 2">
-            <button class="btn btn-grey btn-sm" (click)="changeState('all')"
-                    [ngClass]="{'btn-primary': monitorFilters.notification.filter.state=='all'}" translate>filters.button.all
+            <button class="btn btn-grey btn-sm" (click)="changeState('ALL')"
+                    [ngClass]="{'btn-primary': monitorFilters.notification.filter.type=='ALL'}" translate>filters.button.all
             </button>
-            <button class="btn btn-grey btn-sm" (click)="changeState('1')"
-                    [ngClass]="{'btn-primary': monitorFilters.notification.filter.state=='1'}" translate>monitor.notification.button.success
+            <button class="btn btn-grey btn-sm" (click)="changeState('SUCCESS')"
+                    [ngClass]="{'btn-primary': monitorFilters.notification.filter.type=='SUCCESS'}" translate>monitor.notification.button.success
             </button>
-            <button class="btn btn-grey btn-sm" (click)="changeState('2')"
-                    [ngClass]="{'btn-primary': monitorFilters.notification.filter.state=='2'}" translate>monitor.notification.button.error
+            <button class="btn btn-grey btn-sm" (click)="changeState('ERROR')"
+                    [ngClass]="{'btn-primary': monitorFilters.notification.filter.type=='ERROR'}" translate>monitor.notification.button.error
             </button>
-            <button class="btn btn-grey btn-sm" (click)="changeState('3')"
-                    [ngClass]="{'btn-primary': monitorFilters.notification.filter.state=='3'}" translate>monitor.notification.button.warning
+            <button class="btn btn-grey btn-sm" (click)="changeState('WARNING')"
+                    [ngClass]="{'btn-primary': monitorFilters.notification.filter.type=='WARNING'}" translate>monitor.notification.button.warning
             </button>
-            <button class="btn btn-grey btn-sm" (click)="changeState('4')"
-                    [ngClass]="{'btn-primary': monitorFilters.notification.filter.state=='4'}" translate>monitor.notification.button.recovered
+            <button class="btn btn-grey btn-sm" (click)="changeState('RECOVERED')"
+                    [ngClass]="{'btn-primary': monitorFilters.notification.filter.type=='RECOVERED'}" translate>monitor.notification.button.recovered
             </button>
           </div>
           <div class="btn-group m-l-12 hidden-btn-group" *ngIf="monitorFilters.tabIndex == 2">
-            <button class="btn btn-grey btn-sm" (click)="changeDate('all')"
-                    [ngClass]="{'btn-primary': monitorFilters.notification.filter.date=='all'}" translate>filters.button.all
+            <button class="btn btn-grey btn-sm" (click)="changeDate('ALL')"
+                    [ngClass]="{'btn-primary': monitorFilters.notification.filter.date=='ALL'}" translate>filters.button.all
             </button>
-            <button class="btn btn-grey btn-sm" (click)="changeDate('today')"
-                    [ngClass]="{'btn-primary': monitorFilters.notification.filter.date=='today'}" translate>filters.button.today
+            <button class="btn btn-grey btn-sm" (click)="changeDate('0d')"
+                    [ngClass]="{'btn-primary': monitorFilters.notification.filter.date=='0d'}" translate>filters.button.today
             </button>
             <button class="btn btn-grey btn-sm" (click)="changeDate('-1h')"
                     [ngClass]="{'btn-primary': monitorFilters.notification.filter.date=='-1h'}" translate>filters.button.last1
@@ -52,11 +52,11 @@
             </button>
             <nz-dropdown-menu #menu="nzDropdownMenu" >
               <ul nz-menu>
-                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.notification.filter.date=='all'}">
-                  <a (click)="changeDate('all')" translate>filters.button.all</a>
+                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.notification.filter.date=='ALL'}">
+                  <a (click)="changeDate('ALL')" translate>filters.button.all</a>
                 </li>
-                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.notification.filter.date=='today'}">
-                  <a (click)="changeDate('today')" translate>filters.button.today</a>
+                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.notification.filter.date=='0d'}">
+                  <a (click)="changeDate('0d')" translate>filters.button.today</a>
                 </li>
                 <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.notification.filter.date=='-1h'}">
                   <a (click)="changeDate('-1h')" translate>filters.button.last1</a>

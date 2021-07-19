@@ -76,7 +76,7 @@
           <label class="col-md-3"></label>
           <div class="col-md-9" [ngClass]="{'has-error' : ((suffix.dirty || suffix.touched) && suffix.invalid)}">
             <input type="text" required identifierValidation class="form-control" name="suffix" placeholder="{{'inventory.placeholder.suffix' | translate}}"
-                   #suffix="ngModel" [(ngModel)]="requestObj.suffix" autocomplete="off">
+                   #suffix="ngModel" [(ngModel)]="requestObj.suffix" [appAutofocus]="true" autocomplete="off">
             <div *ngIf="suffix.invalid && (suffix.dirty || suffix.touched)"
                  class="text-danger help-block">
               <div *ngIf="(suffix.errors && suffix.errors.required)">

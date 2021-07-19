@@ -39,7 +39,7 @@
             </div>
           </div>
           <hr>
-          <nz-tabset>
+          <nz-tabset (nzSelectChange)="tabChange($event)">
             <nz-tab [nzTitle]="'profile.label.preferences' | translate">
               <div class="m-l-12">
                 <div class="row">
@@ -663,6 +663,60 @@
                               class="btn btn-sm btn-grey m-l-12"
                               (click)="showGenerateKeyModal()"
                               [nz-tooltip]="'profile.keyManagement.tooltip.generate' | translate">
+                              <i nz-icon nzType="file-protect" nzTheme="outline"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </nz-tab>
+            <nz-tab [nzTitle]="'profile.label.caManagement' | translate"
+                    *ngIf="permission.joc && permission.joc.administration.certificates.manage">
+              <div class="m-l-12">
+                <div class="row m-t-sm">
+                  <div class="col-sm-12">
+                    <div class="m-t-sm" *ngIf="certificates">
+                      <div class="row">
+                        <div class="col-md-2">
+                          <span class="text-dark _600" translate>profile.keyManagement.label.keysAndCertificates</span>
+                        </div>
+                        <div class="col-md-10">
+                          <span *ngIf="certificates.keyID || certificates.keyAlgorithm">
+                            <span class="text-dark _600" style="padding-right: 10%" translate>{{certificates.keyID}}</span>
+                            <span class="text-black-lt">
+                              <i class="fa fa-check text-success"
+                                 [ngClass]="{'fa-times text-danger': certificates.isKeyExpired}"></i>&nbsp;
+                              <span *ngIf="!certificates.isKeyExpired" translate>profile.keyManagement.label.valid</span>
+                              <span *ngIf="certificates.isKeyExpired" translate>profile.keyManagement.label.expiredKey</span>
+                              <span *ngIf="certificates.validUntil">
+                                <span class="m-l" translate>profile.keyManagement.label.validUntil</span>:
+                                <span class="text-muted p-l-sm">{{certificates.validUntil | stringToDate}}</span>
+                              </span>
+                               <span *ngIf="!certificates.validUntil">
+                                <span class="m-l" translate>profile.keyManagement.label.noValidDate</span>
+                              </span>
+                            </span>
+                            <a class="text-hover-primary m-l-12" [nz-tooltip]="'profile.keyManagement.label.showKey' | translate"
+                               (click)="showKey('ca')"><i class="fa fa-television"></i></a>
+                          </span>
+                          <span *ngIf="!certificates.keyID && !certificates.keyAlgorithm" translate>
+                            profile.keyManagement.message.noCAFound
+                          </span>
+                          <div class="inline pull-right m-t-n-xs" style="margin-bottom: 2px">
+                            <button class="btn btn-sm btn-grey m-l-12" (click)="pasteKey('ca')"
+                                    [nz-tooltip]="'profile.keyManagement.tooltip.updateKey' | translate">
+                              <i class="fa fa-paste"></i>
+                            </button>
+                            <button class="btn btn-sm btn-grey m-l-12" (click)="importKey('ca')"
+                                    [nz-tooltip]="'profile.keyManagement.tooltip.import' | translate">
+                              <i nz-icon nzType="upload" nzTheme="outline"></i>
+                            </button>
+                            <button class="btn btn-sm btn-grey m-l-12"
+                                    (click)="showGenerateKeyModal('ca')"
+                                    [nz-tooltip]="'profile.keyManagement.tooltip.generate' | translate">
                               <i nz-icon nzType="file-protect" nzTheme="outline"></i>
                             </button>
                           </div>
