@@ -88,7 +88,7 @@
         <span class="order-count" (click)="showOrders(instruction)" *ngIf="instruction.orderCount > 0 && (!instruction.show && !expandAll)">{{instruction.orderCount}}</span>
       </a>
       <div *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'ImplicitEnd'
-       || instruction.TYPE === 'Publish' || instruction.TYPE === 'Prompt' || instruction.TYPE === 'Await'" [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction.TYPE === 'ImplicitEnd'}">
+       || instruction.TYPE === 'PostNotice' || instruction.TYPE === 'Prompt' || instruction.TYPE === 'ReadNotice'" [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction.TYPE === 'ImplicitEnd'}">
         <div class="btn-group dropdown" style="margin-left: -10px" *ngIf="instruction.TYPE === 'Job'">
           <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
                   type="button">

@@ -27,7 +27,7 @@
       <form *ngIf="board.configuration">
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.board.name' | translate) : ''"
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.name' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>common.label.name</label>
           <div class="col-md-8 col-lg-6">
             <input type="text" required identifierValidation class="form-control" [readonly]="isTrash || !permission.joc.inventory.manage" [appAutofocus]="!isTrash"
@@ -41,7 +41,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.board.title' | translate) : ''"
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.title' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>common.label.title</label>
           <div class="col-md-8 col-lg-6">
             <input type="text" class="form-control" [readonly]="isTrash || !permission.joc.inventory.manage" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
@@ -49,7 +49,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.board.documentation' | translate) : ''"
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.documentation' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.documentation</label>
           <div class="col-md-8 col-lg-6 select-input-both">
             <input autocomplete="off" [readOnly]="isTrash || !permission.joc.inventory.manage" type="text" class="form-control"
@@ -86,12 +86,20 @@
         </div>
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((lt.dirty || lt.touched) && lt.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.board.toNotice' | translate) : ''"
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.toNotice' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.toNotice</label>
           <div class="col-md-8 col-lg-6">
-            <input autocomplete="off" [readonly]="isTrash || !permission.joc.inventory.manage" #lt="ngModel" required type="text" class="form-control" name="lt"
-                   placeholder="{{'inventory.placeholder.toNotice' | translate}}" (blur)="saveJSON()"
-                   [(ngModel)]="board.configuration.toNotice">
+            <nz-input-group [nzAddOnAfter]="addOnAfterTemplate">
+              <input autocomplete="off" nz-input [readonly]="isTrash || !permission.joc.inventory.manage" #lt="ngModel" required type="text" name="lt"
+                     placeholder="{{'inventory.placeholder.toNotice' | translate}}" (blur)="saveJSON()"
+                     [(ngModel)]="board.configuration.toNotice">
+            </nz-input-group>
+            <ng-template #addOnAfterTemplate>
+              <nz-select [nzAllowClear]="true" nzPlaceHolder="{{'inventory.placeholder.selectPredefinedExpression' | translate}}" (ngModelChange)="changeExp($event, 'toNotice')" name="toNoticeMsg" [(ngModel)]="boardObj.toNoticeMsg" style="width: 220px">
+                <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDate' | translate" nzValue="replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*$', '$1')"></nz-option>
+                <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDateAndOrderName' | translate" nzValue="replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*-(.*)$', '$1$2')"></nz-option>
+              </nz-select>
+            </ng-template>
             <div *ngIf="lt.invalid && (lt.dirty || lt.touched)" class="text-danger help-block">
               <div *ngIf="lt.errors.required">
                 <div translate>common.message.requiredError</div>
@@ -99,29 +107,34 @@
             </div>
           </div>
         </div>
-        <div class="form-group row"
-             [ngClass]="{ 'has-error' : (((endOfLife.dirty || endOfLife.touched) && endOfLife.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.board.endOfLife' | translate) : ''"
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.endOfLife' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.endOfLife</label>
-          <div class="col-md-8 col-lg-6">
-            <input autocomplete="off" [readonly]="isTrash || !permission.joc.inventory.manage" #endOfLife="ngModel" required type="text" class="form-control" name="endOfLife"
-                   placeholder="{{'inventory.placeholder.endOfLife' | translate}}" (blur)="saveJSON()"
-                   [(ngModel)]="board.configuration.endOfLife">
-            <div *ngIf="endOfLife.invalid && (endOfLife.dirty || endOfLife.touched)" class="text-danger help-block">
-              <div *ngIf="endOfLife.errors.required">
-                <div translate>common.message.requiredError</div>
-              </div>
-            </div>
+          <div class="col-md-8 col-lg-6" [ngClass]="{ 'has-error' : (((endOfLife.dirty || endOfLife.touched) && endOfLife.invalid))}">
+            <nz-input-group>
+              <input style="width: 220px" nz-input readonly type="text" class="form-control" name="endOfLifeMsg" [(ngModel)]="boardObj.endOfLifeMsg">
+              <input style="width: calc(100% - 220px)" nz-input autocomplete="off" [readonly]="isTrash || !permission.joc.inventory.manage" #endOfLife="ngModel" type="text" name="endOfLife"
+                     placeholder="{{'inventory.placeholder.endOfLife' | translate}}" (blur)="saveJSON()"
+                     validateDurtionReqex [(ngModel)]="boardObj.endOfLife">
+            </nz-input-group>
           </div>
         </div>
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((readingOrderToNoticeId.dirty || readingOrderToNoticeId.touched) && readingOrderToNoticeId.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.board.readingOrderToNoticeId' | translate) : ''"
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.readingOrderToNoticeId' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.readingOrderToNoticeId</label>
           <div class="col-md-8 col-lg-6">
-            <input autocomplete="off" [readonly]="isTrash || !permission.joc.inventory.manage" #readingOrderToNoticeId="ngModel" required type="text" class="form-control" name="readingOrderToNoticeId"
-                   placeholder="{{'inventory.placeholder.readingOrderToNoticeId' | translate}}" (blur)="saveJSON()"
-                   [(ngModel)]="board.configuration.readingOrderToNoticeId">
+            <nz-input-group [nzAddOnAfter]="addOnAfterTemplate2">
+              <input autocomplete="off" nz-input [readonly]="isTrash || !permission.joc.inventory.manage" #readingOrderToNoticeId="ngModel" required type="text" name="readingOrderToNoticeId"
+                     placeholder="{{'inventory.placeholder.readingOrderToNoticeId' | translate}}" (blur)="saveJSON()"
+                     [(ngModel)]="board.configuration.readingOrderToNoticeId">
+            </nz-input-group>
+            <ng-template #addOnAfterTemplate2>
+              <nz-select [nzAllowClear]="true" nzPlaceHolder="{{'inventory.placeholder.selectPredefinedExpression' | translate}}" (ngModelChange)="changeExp($event, 'NoticeId')" name="readingOrderToNoticeIdMsg" [(ngModel)]="boardObj.readingOrderToNoticeIdMsg" style="width: 220px">
+                <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDate' | translate" nzValue="replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*$', '$1')"></nz-option>
+                <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDateAndOrderName' | translate" nzValue="replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*-(.*)$', '$1$2')"></nz-option>
+              </nz-select>
+            </ng-template>
             <div *ngIf="readingOrderToNoticeId.invalid && (readingOrderToNoticeId.dirty || readingOrderToNoticeId.touched)" class="text-danger help-block">
               <div *ngIf="readingOrderToNoticeId.errors.required">
                 <div translate>common.message.requiredError</div>

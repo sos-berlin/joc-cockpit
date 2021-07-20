@@ -1313,7 +1313,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       let state;
       if (orders && orders.length > 0) {
         for (let i in orders) {
-          if (orders[i].state._text !== 'SCHEDULED' && orders[i].state._text !== 'PENDING') {
+          if (orders[i].state._text !== 'SCHEDULED' && orders[i].state._text !== 'PENDING'  && orders[i].state._text !== 'BLOCKED') {
             state = orders[i].state._text;
             break;
           }
@@ -1828,7 +1828,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       if (orders && orders[0]) {
         state = orders[0].state._text;
       }
-      if (state === '' || state === 'SCHEDULED' || state === 'PENDING') {
+      if (state === '' || state === 'SCHEDULED' || state === 'PENDING' || state === 'BLOCKED') {
         const modal = this.modal.create({
           nzTitle: undefined,
           nzContent: ModifyStartTimeModalComponent,
@@ -1859,7 +1859,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       let state;
       if (orders && orders.length > 0) {
         for (let i in orders) {
-          if (orders[i].state._text !== 'SCHEDULED' && orders[i].state._text !== 'PENDING') {
+          if (orders[i].state._text !== 'SCHEDULED' && orders[i].state._text !== 'PENDING' && orders[i].state._text !== 'BLOCKED') {
             state = orders[i].state._text;
             break;
           }

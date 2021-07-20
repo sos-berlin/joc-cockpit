@@ -33,7 +33,7 @@
       <form *ngIf="schedule.configuration && permission.joc">
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.schedule.name' | translate) : ''"
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.name' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.orderTemplateName</label>
           <div class="col-md-8 col-lg-6">
             <input autocomplete="off" [readOnly]="isTrash || !permission.joc.inventory.manage" identifierValidation required class="form-control" [appAutofocus]="!isTrash"
@@ -47,7 +47,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.schedule.title' | translate) : ''"
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.title' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>common.label.title</label>
           <div class="col-md-8 col-lg-6">
             <input type="text" [readOnly]="isTrash || !permission.joc.inventory.manage" class="form-control" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
@@ -55,7 +55,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.schedule.documentation' | translate) : ''"
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.documentation' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.documentation</label>
           <div class="col-md-8 col-lg-6 select-input-both">
             <input autocomplete="off" [readOnly]="isTrash || !permission.joc.inventory.manage" type="text" class="form-control"
@@ -91,7 +91,7 @@
         </div>
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((workflowName.dirty || workflowName.touched) && workflowName.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.schedule.workflowName' | translate) : ''"
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.workflowName' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.workflowName</label>
           <div class="col-md-8 col-lg-6 select-input-both">
             <input autocomplete="off" [readOnly]="isTrash || !permission.joc.inventory.manage" type="text" class="form-control"
@@ -131,14 +131,14 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.schedule.planOrderAutomatically' | translate) : ''"
+          <label class="col-md-4 col-lg-3" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.planOrderAutomatically' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.planOrderAutomatically</label>
           <div class="col-md-8 col-lg-6">
             <label nz-checkbox [nzDisabled]="isTrash || !permission.joc.inventory.manage" [(ngModel)]="schedule.configuration.planOrderAutomatically" (ngModelChange)="saveJSON()" name="planOrderAutomatically"></label>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.schedule.submitOrderToControllerWhenPlanned' | translate) : ''"
+          <label class="col-md-4 col-lg-3" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.submitOrderToControllerWhenPlanned' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.submitOrderToControllerWhenPlanned</label>
           <div class="col-md-8 col-lg-6">
             <label nz-checkbox [nzDisabled]="isTrash || !permission.joc.inventory.manage" [(ngModel)]="schedule.configuration.submitOrderToControllerWhenPlanned" (ngModelChange)="saveJSON()" name="submitOrderToControllerWhenPlanned"></label>

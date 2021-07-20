@@ -860,6 +860,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   activeTab: any = {};
   extraInfo: any = {};
   tabsArray = [];
+  previousName: string;
   oldName: string;
   tab: any;
   showSelectSchema: any;
@@ -3347,7 +3348,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       }
     }
 
-    if(this.copyItem) {
+    if (this.copyItem) {
       let msg = '';
       this.translate.get('common.message.copied').subscribe(translatedValue => {
         msg = translatedValue;
@@ -3774,7 +3775,15 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   // validation for attributes
-  validateAttr(value, tag) {
+  validateAttr(value, tag): void {
+    if (tag.refElement && this.previousName) {
+      if (value === this.previousName) {
+        this.previousName = null;
+        return;
+      }
+      this.getReferenceByName(this.previousName, tag);
+    }
+    this.previousName = null;
     if (tag.type === 'xs:NMTOKEN') {
       if (/\s/.test(value)) {
         this.error = true;
@@ -4455,6 +4464,40 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         if (child.children) {
           for (let i = 0; i < child.children.length; i++) {
             this.gotoKeyrefRecursion(node, child.children[i]);
+          }
+        }
+      }
+    }
+  }
+
+  private getReferenceByName(refName, data): void {
+    for (let i = 0; i < this.nodes[0].children.length; i++) {
+      getRecursively(data, this.nodes[0].children[i]);
+    }
+
+    function getRecursively(node, child): void {
+      if (node.refElement === child.ref) {
+        if (child.keyref) {
+          if (child.attributes) {
+            for (let i = 0; i < child.attributes.length; i++) {
+              if (child.attributes[i].name === child.keyref) {
+                if (refName === child.attributes[i].data) {
+                  child.attributes[i].data = node.data;
+                }
+              }
+            }
+          }
+        } else {
+          if (child.children) {
+            for (let i = 0; i < child.children.length; i++) {
+              getRecursively(node, child.children[i]);
+            }
+          }
+        }
+      } else {
+        if (child.children) {
+          for (let i = 0; i < child.children.length; i++) {
+            getRecursively(node, child.children[i]);
           }
         }
       }
@@ -5402,7 +5445,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           this.isStore = false;
         }, (error) => {
           this.isStore = false;
-          this.toasterService.pop('error', error.error.message);
+          if (error && error.error) {
+            this.toasterService.pop('error', error.error.message);
+          }
         });
       } else {
         this.coreService.post('xmleditor/store', {

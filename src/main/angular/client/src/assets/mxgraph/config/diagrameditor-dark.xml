@@ -187,9 +187,9 @@
     <hr/>
     <add as="Prompt" template="Prompt" style="symbol;image=./assets/mxgraph/images/symbols/prompt-white.svg" icon="./assets/mxgraph/images/white-prompt.png"/>
     <hr/>
-    <add as="Publish" template="Publish" style="symbol;image=./assets/mxgraph/images/symbols/publish-white.svg" icon="./assets/mxgraph/images/white-publish.png"/>
+    <add as="PostNotice" template="PostNotice" style="symbol;image=./assets/mxgraph/images/symbols/publish-white.svg" icon="./assets/mxgraph/images/white-publish.png"/>
     <hr/>
-    <add as="Await" template="Await" style="symbol;image=./assets/mxgraph/images/symbols/await-white.svg"
+    <add as="ReadNotice" template="ReadNotice" style="symbol;image=./assets/mxgraph/images/symbols/await-white.svg"
          icon="./assets/mxgraph/images/white-await.png"/>
     <hr/>
     <add as="Lock" template="Lock" style="symbol;image=./assets/mxgraph/images/symbols/lock-white.svg"

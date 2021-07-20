@@ -2455,8 +2455,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         let _tryInstructions = clone(objects.Try);
         let _retryInstructions = clone(objects.Retry);
         let _lockInstructions = clone(objects.Lock);
-        let _awaitInstructions = clone(objects.Await);
-        let _publishInstructions = clone(objects.Publish);
+        let _readNoticeInstructions = clone(objects.ReadNotice);
+        let _postNoticeInstructions = clone(objects.PostNotice);
         let _promptInstructions = clone(objects.Prompt);
         let _fileWatcherInstructions = clone(objects.FileWatcher);
         let _failInstructions = clone(objects.Fail);
@@ -2542,31 +2542,31 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               }
             }
           }
-          if (_awaitInstructions) {
-            if (isArray(_awaitInstructions)) {
-              for (let j = 0; j < _awaitInstructions.length; j++) {
-                if (connection[i].mxCell._target === _awaitInstructions[j]._id) {
-                  _awaitInstructions.splice(j, 1);
+          if (_readNoticeInstructions) {
+            if (isArray(_readNoticeInstructions)) {
+              for (let j = 0; j < _readNoticeInstructions.length; j++) {
+                if (connection[i].mxCell._target === _readNoticeInstructions[j]._id) {
+                  _readNoticeInstructions.splice(j, 1);
                   break;
                 }
               }
             } else {
-              if (connection[i].mxCell._target === _awaitInstructions._id) {
-                _awaitInstructions = [];
+              if (connection[i].mxCell._target === _readNoticeInstructions._id) {
+                _readNoticeInstructions = [];
               }
             }
           }
-          if (_publishInstructions) {
-            if (isArray(_publishInstructions)) {
-              for (let j = 0; j < _publishInstructions.length; j++) {
-                if (connection[i].mxCell._target === _publishInstructions[j]._id) {
-                  _publishInstructions.splice(j, 1);
+          if (_postNoticeInstructions) {
+            if (isArray(_postNoticeInstructions)) {
+              for (let j = 0; j < _postNoticeInstructions.length; j++) {
+                if (connection[i].mxCell._target === _postNoticeInstructions[j]._id) {
+                  _postNoticeInstructions.splice(j, 1);
                   break;
                 }
               }
             } else {
-              if (connection[i].mxCell._target === _publishInstructions._id) {
-                _publishInstructions = [];
+              if (connection[i].mxCell._target === _postNoticeInstructions._id) {
+                _postNoticeInstructions = [];
               }
             }
           }
@@ -2711,17 +2711,17 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
         } else {
-          if (_publishInstructions) {
-            if (isArray(_publishInstructions) && _publishInstructions.length > 0) {
-              startNode = _publishInstructions[0];
+          if (_postNoticeInstructions) {
+            if (isArray(_postNoticeInstructions) && _postNoticeInstructions.length > 0) {
+              startNode = _postNoticeInstructions[0];
             } else {
-              startNode = _publishInstructions;
+              startNode = _postNoticeInstructions;
             }
           }
         }
 
         if (!isEmpty(startNode)) {
-          jsonObj.instructions.push(this.workflowService.createObject('Publish', startNode));
+          jsonObj.instructions.push(this.workflowService.createObject('PostNotice', startNode));
           this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
         } else {
@@ -2739,17 +2739,17 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
         } else {
-          if (_awaitInstructions) {
-            if (isArray(_awaitInstructions) && _awaitInstructions.length > 0) {
-              startNode = _awaitInstructions[0];
+          if (_readNoticeInstructions) {
+            if (isArray(_readNoticeInstructions) && _readNoticeInstructions.length > 0) {
+              startNode = _readNoticeInstructions[0];
             } else {
-              startNode = _awaitInstructions;
+              startNode = _readNoticeInstructions;
             }
           }
         }
 
         if (!isEmpty(startNode)) {
-          jsonObj.instructions.push(this.workflowService.createObject('Await', startNode));
+          jsonObj.instructions.push(this.workflowService.createObject('ReadNotice', startNode));
           this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
         } else {
@@ -2802,8 +2802,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         const retry = objects.Retry;
         const lock = objects.Lock;
         const tryIns = objects.Try;
-        const awaitIns = objects.Await;
-        const publishIns = objects.Publish;
+        const readNoticeIns = objects.ReadNotice;
+        const postNoticeIns = objects.PostNotice;
         const promptIns = objects.Prompt;
         const fileWatcherIns = objects.FileWatcher;
         const fail = objects.Fail;
@@ -2862,22 +2862,22 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             jsonObj.instructions.push(this.workflowService.createObject('Try', tryIns));
           }
         }
-        if (awaitIns) {
-          if (isArray(awaitIns)) {
-            for (let i = 0; i < awaitIns.length; i++) {
-              jsonObj.instructions.push(this.workflowService.createObject('Await', awaitIns[i]));
+        if (readNoticeIns) {
+          if (isArray(readNoticeIns)) {
+            for (let i = 0; i < readNoticeIns.length; i++) {
+              jsonObj.instructions.push(this.workflowService.createObject('ReadNotice', readNoticeIns[i]));
             }
           } else {
-            jsonObj.instructions.push(this.workflowService.createObject('Await', awaitIns));
+            jsonObj.instructions.push(this.workflowService.createObject('ReadNotice', readNoticeIns));
           }
         }
-        if (publishIns) {
-          if (isArray(publishIns)) {
-            for (let i = 0; i < publishIns.length; i++) {
-              jsonObj.instructions.push(this.workflowService.createObject('Publish', publishIns[i]));
+        if (postNoticeIns) {
+          if (isArray(postNoticeIns)) {
+            for (let i = 0; i < postNoticeIns.length; i++) {
+              jsonObj.instructions.push(this.workflowService.createObject('PostNotice', postNoticeIns[i]));
             }
           } else {
-            jsonObj.instructions.push(this.workflowService.createObject('Publish', publishIns));
+            jsonObj.instructions.push(this.workflowService.createObject('PostNotice', postNoticeIns));
           }
         }
         if (promptIns) {
@@ -3233,8 +3233,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     const tryInstructions = objects.Try;
     const catchInstructions = objects.Catch;
     const tryEndInstructions = objects.EndTry;
-    const awaitInstructions = objects.Await;
-    const publishInstructions = objects.Publish;
+    const readNoticeInstructions = objects.ReadNotice;
+    const postNoticeInstructions = objects.PostNotice;
     const promptInstructions = objects.Prompt;
     const failInstructions = objects.Fail;
     const finishInstructions = objects.Finish;
@@ -3385,24 +3385,24 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
     } else {
-      if (awaitInstructions) {
-        if (isArray(awaitInstructions)) {
-          for (let i = 0; i < awaitInstructions.length; i++) {
-            if (awaitInstructions[i]._id === id) {
-              nextNode = awaitInstructions[i];
+      if (readNoticeInstructions) {
+        if (isArray(readNoticeInstructions)) {
+          for (let i = 0; i < readNoticeInstructions.length; i++) {
+            if (readNoticeInstructions[i]._id === id) {
+              nextNode = readNoticeInstructions[i];
               break;
             }
           }
         } else {
-          if (awaitInstructions._id === id) {
-            nextNode = awaitInstructions;
+          if (readNoticeInstructions._id === id) {
+            nextNode = readNoticeInstructions;
           }
         }
       }
     }
 
     if (nextNode && !isEmpty(nextNode)) {
-      instructionsArr.push(this.workflowService.createObject('Await', nextNode));
+      instructionsArr.push(this.workflowService.createObject('ReadNotice', nextNode));
       this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
     } else {
@@ -3555,24 +3555,24 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
     } else {
-      if (publishInstructions) {
-        if (isArray(publishInstructions)) {
-          for (let i = 0; i < publishInstructions.length; i++) {
-            if (publishInstructions[i]._id === id) {
-              nextNode = publishInstructions[i];
+      if (postNoticeInstructions) {
+        if (isArray(postNoticeInstructions)) {
+          for (let i = 0; i < postNoticeInstructions.length; i++) {
+            if (postNoticeInstructions[i]._id === id) {
+              nextNode = postNoticeInstructions[i];
               break;
             }
           }
         } else {
-          if (publishInstructions._id === id) {
-            nextNode = publishInstructions;
+          if (postNoticeInstructions._id === id) {
+            nextNode = postNoticeInstructions;
           }
         }
       }
     }
 
     if (nextNode && !isEmpty(nextNode)) {
-      instructionsArr.push(this.workflowService.createObject('Publish', nextNode));
+      instructionsArr.push(this.workflowService.createObject('PostNotice', nextNode));
       this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
     } else {
@@ -3911,7 +3911,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           this.images = [];
           let img;
           if (state.cell && (state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'Finish' || state.cell.value.tagName === 'Fail' ||
-            state.cell.value.tagName === 'Await' || state.cell.value.tagName === 'Publish' || state.cell.value.tagName === 'Prompt' || self.workflowService.isInstructionCollapsible(state.cell.value.tagName))) {
+            state.cell.value.tagName === 'ReadNotice' || state.cell.value.tagName === 'PostNotice' || state.cell.value.tagName === 'Prompt' || self.workflowService.isInstructionCollapsible(state.cell.value.tagName))) {
             img = mxUtils.createImage('./assets/images/menu.svg');
             let x = state.x - (20 * state.shape.scale);
             let y = state.y - (8 * state.shape.scale);
@@ -4160,7 +4160,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           // Handles the event if it has not been consumed
           if (cell) {
             if (cell.value.tagName === 'Job' || cell.value.tagName === 'Finish' || cell.value.tagName === 'Fail' ||
-              cell.value.tagName === 'Await' || cell.value.tagName === 'Publish' || cell.value.tagName === 'Prompt') {
+              cell.value.tagName === 'ReadNotice' || cell.value.tagName === 'PostNotice' || cell.value.tagName === 'Prompt') {
               graph.setSelectionCell(cell);
             } else {
               if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
@@ -4340,7 +4340,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             if (!check) {
               if (drpTargt.value.tagName !== 'Connection') {
                 if (drpTargt.value.tagName === 'Job' || drpTargt.value.tagName === 'Finish' || drpTargt.value.tagName === 'Fail'
-                  || drpTargt.value.tagName === 'Await' || drpTargt.value.tagName === 'Publish' || drpTargt.value.tagName === 'Prompt') {
+                  || drpTargt.value.tagName === 'ReadNotice' || drpTargt.value.tagName === 'PostNotice' || drpTargt.value.tagName === 'Prompt') {
                   for (let i = 0; i < drpTargt.edges.length; i++) {
                     if (drpTargt.edges[i].target.id !== drpTargt.id) {
                       self.translate.get('workflow.message.validationError').subscribe(translatedValue => {
@@ -4744,8 +4744,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                       if (cell.source.edges[x].id === cell.id) {
                         const _sourCellName = cell.source.value.tagName;
                         const _tarCellName = cell.target.value.tagName;
-                        if ((cell.target && ((_sourCellName === 'Job' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'Publish' || _sourCellName === 'Prompt' || _sourCellName === 'Await') &&
-                          (_tarCellName === 'Job' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'Publish' || _tarCellName === 'Prompt' || _tarCellName === 'Await')))) {
+                        if ((cell.target && ((_sourCellName === 'Job' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'PostNotice' || _sourCellName === 'Prompt' || _sourCellName === 'ReadNotice') &&
+                          (_tarCellName === 'Job' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'PostNotice' || _tarCellName === 'Prompt' || _tarCellName === 'ReadNotice')))) {
                           graph.getModel().remove(cell.source.edges[x]);
                         } else {
                           cell.source.removeEdge(cell.source.edges[x], true);
@@ -5659,7 +5659,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             const edit3 = new mxCellAttributeChange(
               obj.cell, 'uncatchable', self.selectedNode.newObj.uncatchable);
             graph.getModel().execute(edit3);
-          } else if (self.selectedNode.type === 'Await' || self.selectedNode.type === 'Publish') {
+          } else if (self.selectedNode.type === 'ReadNotice' || self.selectedNode.type === 'PostNotice') {
             const edit1 = new mxCellAttributeChange(
               obj.cell, 'boardName', self.selectedNode.newObj.boardName);
             graph.getModel().execute(edit1);
@@ -5858,7 +5858,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         } else if (cell.value.tagName === 'FileWatcher') {
           obj.directory = cell.getAttribute('directory');
           obj.regex = cell.getAttribute('regex');
-        } else if (cell.value.tagName === 'Await' || cell.value.tagName === 'Publish') {
+        } else if (cell.value.tagName === 'ReadNotice' || cell.value.tagName === 'PostNotice') {
           obj.boardName = cell.getAttribute('boardName');
           const timeout = cell.getAttribute('timeout');
           if (timeout && timeout != 'null' && timeout != 'undefined') {
@@ -6282,16 +6282,16 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           _node.setAttribute('label', 'try');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'try');
-        } else if (title.match('await')) {
-          _node = doc.createElement('Await');
-          _node.setAttribute('label', 'await');
+        } else if (title.match('readNotice')) {
+          _node = doc.createElement('ReadNotice');
+          _node.setAttribute('label', 'readNotice');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.await);
-        } else if (title.match('publish')) {
-          _node = doc.createElement('Publish');
-          _node.setAttribute('label', 'publish');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.readNotice);
+        } else if (title.match('postNotice')) {
+          _node = doc.createElement('PostNotice');
+          _node.setAttribute('label', 'postNotice');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.publish);
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.postNotice);
         } else if (title.match('prompt')) {
           _node = doc.createElement('Prompt');
           _node.setAttribute('label', 'prompt');
@@ -6363,8 +6363,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               if (targetCell.source.edges[x].id === targetCell.id) {
                 const _sourCellName = targetCell.source.value.tagName;
                 const _tarCellName = targetCell.target.value.tagName;
-                if ((targetCell.target && ((_sourCellName === 'Job' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'Publish' || _sourCellName === 'Prompt' || _sourCellName === 'Await') &&
-                  (_tarCellName === 'Job' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'Publish' || _tarCellName === 'Prompt' || _tarCellName === 'Await')))) {
+                if ((targetCell.target && ((_sourCellName === 'Job' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'PostNotice' || _sourCellName === 'Prompt' || _sourCellName === 'ReadNotice') &&
+                  (_tarCellName === 'Job' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'PostNotice' || _tarCellName === 'Prompt' || _tarCellName === 'ReadNotice')))) {
                   graph.getModel().remove(targetCell.source.edges[x]);
                 } else {
                   targetCell.source.removeEdge(targetCell.source.edges[x], true);
@@ -6451,7 +6451,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
       if (!flg) {
         if (tagName !== 'Connection') {
-          if (tagName === 'Job' || tagName === 'Finish' || tagName === 'Fail' || tagName === 'Await' || tagName === 'Publish' || tagName === 'Prompt') {
+          if (tagName === 'Job' || tagName === 'Finish' || tagName === 'Fail' || tagName === 'ReadNotice' || tagName === 'PostNotice' || tagName === 'Prompt') {
             for (let i = 0; i < targetCell.edges.length; i++) {
               if (targetCell.edges[i].target.id !== targetCell.id) {
                 return 'inValid';
@@ -7458,12 +7458,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     function recursive(json) {
       if (json.instructions && (flag || !isValidate)) {
         for (let x = 0; x < json.instructions.length; x++) {
-          if (json.instructions[x].TYPE === 'Publish') {
-            json.instructions[x].TYPE = 'PostNotice';
-          }
-          if (json.instructions[x].TYPE === 'Await') {
-            json.instructions[x].TYPE = 'ReadNotice';
-          }
+
           if (json.instructions[x].TYPE === 'Job') {
             isJobExist = true;
             json.instructions[x].TYPE = 'Execute.Named';
@@ -7495,6 +7490,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               ids.set(json.instructions[x].jobName, json.instructions[x].id);
             }
           }
+
           if (json.instructions[x].TYPE === 'If') {
             if ((!json.instructions[x].predicate || !json.instructions[x].then) && isValidate) {
               flag = false;
@@ -7516,6 +7512,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               self.validatePredicate(json.instructions[x].predicate, json.instructions[x].id, isOpen);
             }
           }
+
           if (json.instructions[x].TYPE === 'Try') {
             if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0) && isValidate) {
               flag = false;
@@ -7524,6 +7521,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               return;
             }
           }
+
           if (json.instructions[x].TYPE === 'Retry') {
             if (!json.instructions[x].id && !json.instructions[x].instructions && !json.instructions[x].maxTries) {
 
@@ -7575,11 +7573,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           }
 
-          if (json.instructions[x].TYPE === 'Await') {
-            flag = self.workflowService.validateFields(json.instructions[x], 'Await');
+          if (json.instructions[x].TYPE === 'ReadNotice') {
+            flag = self.workflowService.validateFields(json.instructions[x], 'ReadNotice');
             if (!flag) {
               checkErr = true;
-              self.invalidMsg = 'workflow.message.invalidAwaitInstruction';
+              self.invalidMsg = 'workflow.message.invalidReadNoticeInstruction';
             }
             if (!flag && isValidate) {
               if (isOpen) {
@@ -7588,6 +7586,21 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               return;
             }
           }
+
+          if (json.instructions[x].TYPE === 'PostNotice') {
+            flag = self.workflowService.validateFields(json.instructions[x], 'PostNotice');
+            if (!flag) {
+              checkErr = true;
+              self.invalidMsg = 'workflow.message.invalidPostNoticeInstruction';
+            }
+            if (!flag && isValidate) {
+              if (isOpen) {
+                self.openSideBar(json.instructions[x].id);
+              }
+              return;
+            }
+          }
+
           if (json.instructions[x].TYPE === 'Fork') {
             flag = self.workflowService.validateFields(json.instructions[x], 'Fork');
             if (!flag) {
@@ -7825,6 +7838,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             if (value.value.default === '' || value.value.default === "") {
               delete value.value.default;
             }
+          } else{
+            this.coreService.addSlashToString(value.value, 'default');
           }
         }
         return !!value.name;

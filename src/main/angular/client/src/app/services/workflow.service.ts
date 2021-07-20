@@ -15,8 +15,8 @@ export class WorkflowService {
   public merge = '';
   public finish = '';
   public fail = '';
-  public await = '';
-  public publish = '';
+  public readNotice = '';
+  public postNotice = '';
   public prompt = '';
   public fork = '';
   public lock = '';
@@ -45,9 +45,9 @@ export class WorkflowService {
       this.merge = 'symbol;image=./assets/mxgraph/images/symbols/merge.svg';
       this.finish = 'symbol;image=./assets/mxgraph/images/symbols/finish.svg';
       this.fail = 'symbol;image=./assets/mxgraph/images/symbols/fail.svg';
-      this.await = 'symbol;image=./assets/mxgraph/images/symbols/await.svg';
+      this.readNotice = 'symbol;image=./assets/mxgraph/images/symbols/await.svg';
       this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork.svg';
-      this.publish = 'symbol;image=./assets/mxgraph/images/symbols/publish.svg';
+      this.postNotice = 'symbol;image=./assets/mxgraph/images/symbols/publish.svg';
       this.prompt = 'symbol;image=./assets/mxgraph/images/symbols/prompt.svg';
       this.lock = 'symbol;image=./assets/mxgraph/images/symbols/lock.svg';
       this.closeLock = 'symbol;image=./assets/mxgraph/images/symbols/lock-close.svg';
@@ -55,9 +55,9 @@ export class WorkflowService {
       this.merge = 'symbol;image=./assets/mxgraph/images/symbols/merge-white.svg';
       this.finish = 'symbol;image=./assets/mxgraph/images/symbols/finish-white.svg';
       this.fail = 'symbol;image=./assets/mxgraph/images/symbols/fail-white.svg';
-      this.await = 'symbol;image=./assets/mxgraph/images/symbols/await-white.svg';
+      this.readNotice = 'symbol;image=./assets/mxgraph/images/symbols/await-white.svg';
       this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork-white.svg';
-      this.publish = 'symbol;image=./assets/mxgraph/images/symbols/publish-white.svg';
+      this.postNotice = 'symbol;image=./assets/mxgraph/images/symbols/publish-white.svg';
       this.prompt = 'symbol;image=./assets/mxgraph/images/symbols/prompt-white.svg';
       this.lock = 'symbol;image=./assets/mxgraph/images/symbols/lock-white.svg';
       this.closeLock = 'symbol;image=./assets/mxgraph/images/symbols/lock-close-white.svg';
@@ -108,7 +108,7 @@ export class WorkflowService {
     } else if (type === 'FileWatcher') {
       obj.directory = node._directory;
       obj.regex = node._regex;
-    } else if (type === 'Publish' || type === 'Await') {
+    } else if (type === 'PostNotice' || type === 'ReadNotice') {
       obj.boardName = node._boardName;
     } else if (type === 'Prompt') {
       obj.question = node._question;
@@ -183,7 +183,7 @@ export class WorkflowService {
           return false;
         }
       }
-      if (type === 'Await' || type === 'Publish') {
+      if (type === 'ReadNotice' || type === 'PostNotice') {
         if (!value.boardName) {
           return false;
         }
@@ -351,12 +351,6 @@ export class WorkflowService {
               json.instructions[x].documentationName = job ? job.documentationName : null;
             }
           }
-          if (json.instructions[x].TYPE === 'PostNotice') {
-            json.instructions[x].TYPE = 'Publish';
-          }
-          if (json.instructions[x].TYPE === 'ReadNotice') {
-            json.instructions[x].TYPE = 'Await';
-          }
           if (json.instructions[x].TYPE === 'Try') {
             let isRetry = false;
             if (json.instructions[x].catch) {
@@ -512,13 +506,13 @@ export class WorkflowService {
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
-          } else if (json.instructions[x].TYPE === 'Publish') {
-            _node.setAttribute('label', 'publish');
+          } else if (json.instructions[x].TYPE === 'PostNotice') {
+            _node.setAttribute('label', 'postNotice');
             if (json.instructions[x].boardName !== undefined) {
               _node.setAttribute('boardName', json.instructions[x].boardName);
             }
             _node.setAttribute('uuid', json.instructions[x].uuid);
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.publish);
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.postNotice);
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -539,14 +533,14 @@ export class WorkflowService {
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
-          } else if (json.instructions[x].TYPE === 'Await') {
-            _node.setAttribute('label', 'await');
+          } else if (json.instructions[x].TYPE === 'ReadNotice') {
+            _node.setAttribute('label', 'readNotice');
             if (json.instructions[x].boardName !== undefined) {
               _node.setAttribute('boardName', json.instructions[x].boardName);
             }
 
             _node.setAttribute('uuid', json.instructions[x].uuid);
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.await);
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.readNotice);
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1120,8 +1114,20 @@ export class WorkflowService {
     return str;
   }
 
-  convertDurationToString(time: any): string {
-    const seconds = Number(time);
+  convertDurationToString(time: any, isMills = false): string {
+    let seconds = Number(time);
+    if (isMills) {
+      if (seconds < 1000) {
+        return seconds.toString();
+      } else {
+        let sec = seconds / 1000;
+        if (sec % 1 !== 0) {
+          return seconds.toString();
+        } else {
+          seconds = sec;
+        }
+      }
+    }
     const y = Math.floor(seconds / (3600 * 365 * 24));
     const m = Math.floor((seconds % (3600 * 365 * 24)) / (3600 * 30 * 24));
     const w = Math.floor(((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) / (3600 * 7 * 24));

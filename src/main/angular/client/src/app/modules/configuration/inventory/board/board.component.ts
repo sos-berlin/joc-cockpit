@@ -20,6 +20,9 @@ export class BoardComponent implements OnChanges, OnDestroy {
   @Input() isTrash: any;
 
   board: any = {};
+  boardObj: any = {
+    endOfLifeMsg : '$epochMilli + '
+  };
   invalidMsg: string;
   objectType = 'BOARD';
   documentationTree = [];
@@ -100,6 +103,14 @@ export class BoardComponent implements OnChanges, OnDestroy {
       this.board = res;
       this.board.path1 = this.data.path;
       this.board.name = this.data.name;
+      if (res.configuration.endOfLife) {
+        this.boardObj.endOfLife = this.workflowService.convertDurationToString(res.configuration.endOfLife.replace(this.boardObj.endOfLifeMsg, ''), true);
+      } else{
+        this.boardObj.endOfLife = '';
+      }
+
+      this.boardObj.toNoticeMsg = clone(this.board.configuration.toNotice);
+      this.boardObj.readingOrderToNoticeIdMsg = clone(this.board.configuration.readingOrderToNoticeId);
 
       this.board.actual = JSON.stringify(res.configuration);
       this.history.push(this.board.actual);
@@ -279,9 +290,27 @@ export class BoardComponent implements OnChanges, OnDestroy {
     }
   }
 
+  changeExp($event, type: string): void {
+    if (type === 'toNotice') {
+      this.board.configuration.toNotice = $event;
+    } else {
+      this.board.configuration.readingOrderToNoticeId = $event;
+    }
+    this.saveJSON();
+  }
+
   saveJSON(flag = false): void {
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
+    }
+    if (this.boardObj.endOfLife) {
+      if(isNaN(this.boardObj.endOfLife)){
+        this.board.configuration.endOfLife = this.boardObj.endOfLifeMsg + (this.workflowService.convertStringToDuration(this.boardObj.endOfLife) * 1000);
+      } else{
+        this.board.configuration.endOfLife = this.boardObj.endOfLifeMsg + this.boardObj.endOfLife;
+      }
+    } else {
+      delete this.board.configuration.endOfLife;
     }
     if (!isEqual(this.board.actual, JSON.stringify(this.board.configuration))) {
       if (flag) {

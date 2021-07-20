@@ -359,7 +359,7 @@
                       <input class="form-control w-full" id="{{node.name}}" type="text"
                              [(ngModel)]="node.data"
                              (blur)="validateAttr(node.data, node)"
-                             (focus)="hideError()"
+                             (focus)="hideError();previousName = node.data;"
                              (change)="submitData(node.data, node)"
                              *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:string' && !node.refer"
                              [ngClass]="error && errorName === node.name? 'invalid': ''"
@@ -559,8 +559,8 @@
                                *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].base === 'xs:boolean'"
                                [ngClass]="error && errorName == selectedNode.ref ? 'invalid': ''" class="w-full"
                                id="{{selectedNode.ref}}">
-                      <nz-option [nzValue]="true" [nzLabel]="'True'"></nz-option>
-                      <nz-option [nzValue]="false" [nzLabel]="'False'"></nz-option>
+                      <nz-option [nzValue]="true" [nzLabel]="'True' | translate"></nz-option>
+                      <nz-option [nzValue]="false" [nzLabel]="'False' | translate"></nz-option>
                     </nz-select>
                     <nz-select [(ngModel)]="selectedNode.values[0].data"
                                (ngModelChange)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"

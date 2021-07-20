@@ -1357,7 +1357,12 @@ export class ImportWorkflowModalComponent implements OnInit {
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$IMPORT && sessionStorage.$SOS$IMPORT !== 'undefined') {
       this.settings = JSON.parse(sessionStorage.$SOS$IMPORT);
+      if (this.settings) {
+        this.requestObj.suffix = this.settings.suffix;
+        this.requestObj.prefix = this.settings.prefix;
+      }
     }
+
     this.uploader.onBeforeUploadItem = (item: any) => {
       const obj: any = {};
       if (this.comments.comment) {
@@ -1406,14 +1411,6 @@ export class ImportWorkflowModalComponent implements OnInit {
         this.toasterService.pop('error', res.error.code, res.error.message);
       }
     };
-  }
-
-  checkedChange(isChecked: boolean): void {
-    if (isChecked) {
-      this.requestObj.type = 'suffix';
-      this.requestObj.suffix = '';
-      this.requestObj.prefix = '';
-    }
   }
 
   fileOverBase(e: any): void {

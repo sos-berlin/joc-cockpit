@@ -67,19 +67,19 @@
         </mxCell>
       </Finish>
     </add>
-    <add as="Await" >
-      <Await label="await">
+    <add as="ReadNotice" >
+      <ReadNotice label="readNotice">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
-      </Await>
+      </ReadNotice>
     </add>
-    <add as="Publish">
-      <Publish label="publish">
+    <add as="PostNotice">
+      <PostNotice label="postNotice">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
-      </Publish>
+      </PostNotice>
     </add>
     <add as="Prompt">
       <Prompt label="prompt">

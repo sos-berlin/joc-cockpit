@@ -34,25 +34,25 @@
           </button>
           <nz-dropdown-menu #export5="nzDropdownMenu" role="menu">
             <ul nz-menu *ngIf="permission.currentController">
-              <li nz-menu-item [nzDisabled]="value.state && (value.state._text === 'FINISHED' || value.state._text === 'SUBMITTED')" *ngIf="permission.currentController.orders.create">
-                <a (click)="submitOrder(value, false)">{{'dailyPlan.button.submitOrder' | translate}} ..</a>
+              <li  (click)="submitOrder(value, false)" nz-menu-item [nzDisabled]="value.state && (value.state._text === 'FINISHED' || value.state._text === 'SUBMITTED')" *ngIf="permission.currentController.orders.create">
+                <a>{{'dailyPlan.button.submitOrder' | translate}} ..</a>
               </li>
-              <li nz-menu-item class="bg-hover-color" [nzDisabled]="value.state && (value.state._text === 'FINISHED' || value.state._text === 'SUBMITTED')"
+              <li  (click)="removeOrder(value, false)" nz-menu-item class="bg-hover-color" [nzDisabled]="value.state && (value.state._text === 'FINISHED' || value.state._text === 'SUBMITTED')"
                   *ngIf="permission.currentController.orders.cancel">
-                <a (click)="removeOrder(value, false)">{{'dailyPlan.button.removeOrder' | translate}} ..</a>
+                <a>{{'dailyPlan.button.removeOrder' | translate}} ..</a>
               </li>
-              <li nz-menu-item [nzDisabled]="value.state && (value.state._text === 'FINISHED' || value.state._text === 'PLANNED')" *ngIf="permission.currentController.orders.cancel">
-                <a (click)="cancelOrder(value, null )" translate>dailyPlan.button.cancel</a>
+              <li (click)="cancelOrder(value, null )" nz-menu-item [nzDisabled]="value.state && (value.state._text === 'FINISHED' || value.state._text === 'PLANNED')" *ngIf="permission.currentController.orders.cancel">
+                <a translate>dailyPlan.button.cancel</a>
               </li>
-              <li nz-menu-item [nzDisabled]="(value.state && value.state._text === 'FINISHED')"
+              <li (click)="modifyOrder(value)" nz-menu-item [nzDisabled]="(value.state && value.state._text === 'FINISHED')"
                   *ngIf="permission.currentController.orders.modify">
-                <a (click)="modifyOrder(value)" >{{'dailyPlan.button.setStartTime' | translate}} ..</a>
+                <a>{{'dailyPlan.button.setStartTime' | translate}} ..</a>
               </li>
-              <li nz-menu-item [nzDisabled]="value.state && value.state._text === 'FINISHED'" *ngIf="permission.currentController.orders.modify">
-                <a (click)="changeParameter(null, value)" translate>{{'dailyPlan.button.setParameters' | translate}} ..</a>
+              <li (click)="changeParameter(null, value)" nz-menu-item [nzDisabled]="value.state && value.state._text === 'FINISHED'" *ngIf="permission.currentController.orders.modify">
+                <a translate>{{'dailyPlan.button.setParameters' | translate}} ..</a>
               </li>
-              <li nz-menu-item [nzDisabled]="value.state && value.state._text !== 'FINISHED'">
-                <a (click)="coreService.copyLink('order',value.orderId, value.workflowPath)" translate>common.button.copyLinkToObject</a>
+              <li (click)="coreService.copyLink('order',value.orderId, value.workflowPath)" nz-menu-item [nzDisabled]="value.state && value.state._text !== 'FINISHED'">
+                <a translate>common.button.copyLinkToObject</a>
               </li>
             </ul>
           </nz-dropdown-menu>
@@ -156,21 +156,21 @@
           </button>
           <nz-dropdown-menu #export2="nzDropdownMenu" role="menu">
             <ul nz-menu *ngIf="permission.currentController">
-              <li nz-menu-item [nzDisabled]="!plan.isPlanned" *ngIf="permission.currentController.orders.create">
-                <a (click)="submitOrder(plan, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW')">
+              <li (click)="submitOrder(plan, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW')" nz-menu-item [nzDisabled]="!plan.isPlanned" *ngIf="permission.currentController.orders.create">
+                <a>
                   {{'dailyPlan.button.submitOrder' | translate}} ..
                 </a>
               </li>
-              <li nz-menu-item *ngIf="permission.currentController.orders.cancel" class="bg-hover-color" [nzDisabled]="!plan.isPlanned">
-                <a (click)="removeOrder(plan, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW' )">
+              <li (click)="removeOrder(plan, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW' )" nz-menu-item *ngIf="permission.currentController.orders.cancel" class="bg-hover-color" [nzDisabled]="!plan.isPlanned">
+                <a>
                   {{'dailyPlan.button.removeOrder' | translate}} ..
                 </a>
               </li>
-              <li nz-menu-item *ngIf="permission.currentController.orders.cancel" [nzDisabled]="plan.isCancel">
-                <a (click)="cancelOrder(null, plan )" translate>dailyPlan.button.cancel</a>
+              <li (click)="cancelOrder(null, plan )" nz-menu-item *ngIf="permission.currentController.orders.cancel" [nzDisabled]="plan.isCancel">
+                <a translate>dailyPlan.button.cancel</a>
               </li>
-              <li nz-menu-item *ngIf="permission.currentController.orders.modify" [nzDisabled]="!plan.isModify">
-                <a (click)="changeParameter(plan, null)">
+              <li (click)="changeParameter(plan, null)" nz-menu-item *ngIf="permission.currentController.orders.modify" [nzDisabled]="!plan.isModify">
+                <a>
                   {{'dailyPlan.button.setParameters' | translate}} ..
                 </a>
               </li>
@@ -274,9 +274,9 @@
               <nz-dropdown-menu #state="nzDropdownMenu">
                 <ul nz-menu>
                   <ng-container *ngFor="let btn of filterBtn">
-                    <li nz-menu-item
+                    <li (click)="getPlans(btn.status)" nz-menu-item
                         [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status=== btn.status, 'disable-link':savedFilter.selected}">
-                      <a (click)="getPlans(btn.status)"
+                      <a
                          translate>common.button.{{btn.text}}</a>
                     </li>
                   </ng-container>
@@ -320,17 +320,17 @@
               </button>
               <nz-dropdown-menu #sortBy="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item>
-                    <a (click)="sort('orderId')" translate>dailyPlan.label.order</a>
+                  <li nz-menu-item (click)="sort('orderId')">
+                    <a translate>dailyPlan.label.order</a>
                   </li>
-                  <li nz-menu-item>
-                    <a (click)="sort('workflowPath')" translate>dailyPlan.label.workflow</a>
+                  <li nz-menu-item (click)="sort('workflowPath')">
+                    <a translate>dailyPlan.label.workflow</a>
                   </li>
-                  <li nz-menu-item>
-                    <a (click)="sort( 'plannedStartTime')" translate>dailyPlan.label.plannedStart</a>
+                  <li nz-menu-item (click)="sort( 'plannedStartTime')">
+                    <a translate>dailyPlan.label.plannedStart</a>
                   </li>
-                  <li nz-menu-item>
-                    <a (click)="sort('status')" translate>dailyPlan.label.state</a>
+                  <li nz-menu-item (click)="sort('status')">
+                    <a translate>dailyPlan.label.state</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -346,11 +346,11 @@
               </button>
               <nz-dropdown-menu #customization="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item *ngIf="permission.joc && permission.joc.administration.customization.manage">
-                    <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
+                  <li (click)="createCustomization()" nz-menu-item *ngIf="permission.joc && permission.joc.administration.customization.manage">
+                    <a translate>customization.label.createCustomization</a>
                   </li>
-                  <li nz-menu-item *ngIf="filterList.length>0">
-                    <a (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
+                  <li (click)="editFilters()" nz-menu-item *ngIf="filterList.length>0">
+                    <a translate>customization.label.editExistingCustomizations</a>
                   </li>
                   <li nz-menu-divider *ngIf="filterList.length>0"></li>
                   <li nz-menu-item

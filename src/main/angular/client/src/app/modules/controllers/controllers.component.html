@@ -30,14 +30,14 @@
                     <i class="fa fa-ellipsis-h"></i></button>
                   <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
                     <ul nz-menu>
-                      <li nz-menu-item>
-                        <a (click)="addAgent(controller)" translate="">agent.button.addAgent</a>
+                      <li (click)="addAgent(controller)" nz-menu-item>
+                        <a translate>agent.button.addAgent</a>
                       </li>
-                      <li nz-menu-item>
-                        <a (click)="editController(controller.controllerId)" translate>common.button.edit</a>
+                      <li (click)="editController(controller.controllerId)" nz-menu-item>
+                        <a translate>common.button.edit</a>
                       </li>
-                      <li nz-menu-item class="bg-hover-color">
-                        <a (click)="deleteController(controller.controllerId)" translate="">common.button.delete</a>
+                      <li (click)="deleteController(controller.controllerId)" nz-menu-item class="bg-hover-color">
+                        <a translate="">common.button.delete</a>
                       </li>
                     </ul>
                   </nz-dropdown-menu>
@@ -75,20 +75,20 @@
                           <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
                           <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                             <ul nz-menu >
-                              <li nz-menu-item >
-                                <a (click)="editAgent(agent, controller)" translate>common.button.edit</a>
+                              <li (click)="editAgent(agent, controller)" nz-menu-item >
+                                <a translate>common.button.edit</a>
                               </li>
-                              <li nz-menu-item >
-                                <a (click)="resetAgent(agent, controller)" translate>agent.button.reset</a>
+                              <li (click)="resetAgent(agent, controller)" nz-menu-item >
+                                <a translate>agent.button.reset</a>
                               </li>
-                              <li nz-menu-item *ngIf="!agent.disabled">
-                                <a (click)="disableAgent(agent, controller)" translate>agent.button.disable</a>
+                              <li (click)="disableAgent(agent, controller)" nz-menu-item *ngIf="!agent.disabled">
+                                <a translate>agent.button.disable</a>
                               </li>
-                              <li nz-menu-item *ngIf="agent.disabled">
-                                <a (click)="enableAgent(agent, controller)" translate>agent.button.enable</a>
+                              <li (click)="enableAgent(agent, controller)" nz-menu-item *ngIf="agent.disabled">
+                                <a translate>agent.button.enable</a>
                               </li>
-                              <li nz-menu-item class="bg-hover-color">
-                                <a (click)="removeAgent(agent, controller)" translate="">common.button.remove</a>
+                              <li (click)="removeAgent(agent, controller)" nz-menu-item class="bg-hover-color">
+                                <a translate>common.button.remove</a>
                               </li>
                             </ul>
                           </nz-dropdown-menu>

@@ -246,9 +246,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
           sessionStorage.defaultProfile = result.defaultProfileAccount;
           sessionStorage.$SOS$COPY = JSON.stringify(result.copy);
           sessionStorage.$SOS$RESTORE = JSON.stringify(result.restore);
-          if (result.import) {
-            sessionStorage.$SOS$IMPORT = JSON.stringify(result.import);
-          }
+          sessionStorage.$SOS$IMPORT = JSON.stringify(result.import);
 
           if (!this.loading) {
             this.init();
@@ -487,7 +485,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
       preferences.historyTab = 'order';
       preferences.expandOption = 'both';
       preferences.currentController = true;
-      preferences.showTooltipInfo = true;
       preferences.logTimezone = true;
       if (sessionStorage.$SOS$FORCELOGING === 'true' || sessionStorage.$SOS$FORCELOGING === true) {
         preferences.auditLog = true;
