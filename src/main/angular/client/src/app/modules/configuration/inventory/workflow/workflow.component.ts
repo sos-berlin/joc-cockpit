@@ -1226,6 +1226,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   jobResourcesTree = [];
   documentationTree = [];
   lockTree = [];
+  boardTree = [];
   configXml = './assets/mxgraph/config/diagrameditor.xml';
   editor: any;
   dummyXml: any;
@@ -1723,7 +1724,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
         const URL = type === 'DOCUMENTATION' ? 'documentations' : 'inventory/read/folder';
         this.coreService.post(URL, obj).subscribe((res: any) => {
-          let data = type === 'LOCK' ? res.locks : res.jobResources || res.documentations;
+          let data = type === 'LOCK' ? res.locks : res.boards || res.documentations;
           for (let i = 0; i < data.length; i++) {
             const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
             data[i].title = data[i].assignReference || data[i].name;
@@ -1744,6 +1745,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             this.lockTree = [...this.lockTree];
           } else if (type === 'DOCUMENTATION') {
             this.documentationTree = [...this.documentationTree];
+          } else if (type === 'BOARD') {
+            this.boardTree = [...this.boardTree];
           }
           this.ref.detectChanges();
         });
@@ -1759,6 +1762,16 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (this.selectedNode.obj.lockName !== node.key) {
             this.selectedNode.obj.lockName = node.key;
             this.getLimit();
+          }
+        }
+      } else if (type === 'BOARD') {
+        if (this.selectedNode.obj.boardName1) {
+          if (this.selectedNode.obj.boardName !== this.selectedNode.obj.boardName1) {
+            this.selectedNode.obj.boardName = this.selectedNode.obj.boardName1;
+          }
+        } else if (node.key && !node.key.match('/')) {
+          if (this.selectedNode.obj.boardName !== node.key) {
+            this.selectedNode.obj.boardName = node.key;
           }
         }
       } else  if (type === 'DOCUMENTATION') {
@@ -1834,8 +1847,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.dataService.reloadTree.next({back: this.workflow});
   }
 
-  navToLock(lockName): void {
-    this.dataService.reloadTree.next({navigate: {name: lockName, type: 'LOCK'}});
+  navToObj(name, type): void {
+    this.dataService.reloadTree.next({navigate: {name, type}});
   }
 
   private init(): void {
@@ -1876,6 +1889,15 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           types: ['LOCK']
         }).subscribe((res) => {
           this.lockTree = this.coreService.prepareTree(res, false);
+        });
+      }
+      if (this.boardTree.length === 0) {
+        this.coreService.post('tree', {
+          controllerId: this.schedulerId,
+          forInventory: true,
+          types: ['BOARD']
+        }).subscribe((res) => {
+          this.boardTree = this.coreService.prepareTree(res, false);
         });
       }
       if (this.documentationTree.length === 0) {
@@ -5637,9 +5659,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             const edit3 = new mxCellAttributeChange(
               obj.cell, 'uncatchable', self.selectedNode.newObj.uncatchable);
             graph.getModel().execute(edit3);
-          } else if (self.selectedNode.type === 'Await') {
+          } else if (self.selectedNode.type === 'Await' || self.selectedNode.type === 'Publish') {
             const edit1 = new mxCellAttributeChange(
-              obj.cell, 'junctionPath', self.selectedNode.newObj.junctionPath);
+              obj.cell, 'boardName', self.selectedNode.newObj.boardName);
             graph.getModel().execute(edit1);
             let timeout;
             if (self.selectedNode.newObj.timeout1) {
@@ -5657,10 +5679,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             const edit5 = new mxCellAttributeChange(
               obj.cell, 'match', self.selectedNode.newObj.match);
             graph.getModel().execute(edit5);
-          } else if (self.selectedNode.type === 'Publish') {
-            const edit = new mxCellAttributeChange(
-              obj.cell, 'junctionPath', self.selectedNode.newObj.junctionPath);
-            graph.getModel().execute(edit);
           } else if (self.selectedNode.type === 'Prompt') {
             self.coreService.addSlashToString(self.selectedNode.newObj, 'question');
             const edit = new mxCellAttributeChange(
@@ -5840,8 +5858,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         } else if (cell.value.tagName === 'FileWatcher') {
           obj.directory = cell.getAttribute('directory');
           obj.regex = cell.getAttribute('regex');
-        } else if (cell.value.tagName === 'Await') {
-          obj.junctionPath = cell.getAttribute('junctionPath');
+        } else if (cell.value.tagName === 'Await' || cell.value.tagName === 'Publish') {
+          obj.boardName = cell.getAttribute('boardName');
           const timeout = cell.getAttribute('timeout');
           if (timeout && timeout != 'null' && timeout != 'undefined') {
             obj.timeout1 = self.workflowService.convertDurationToString(timeout);
@@ -5850,8 +5868,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           obj.joinVariables = obj.joinVariables == 'true';
           obj.predicate = cell.getAttribute('predicate');
           obj.match = cell.getAttribute('match');
-        } else if (cell.value.tagName === 'Publish') {
-          obj.junctionPath = cell.getAttribute('junctionPath');
         } else if (cell.value.tagName === 'Prompt') {
           obj.question = cell.getAttribute('question');
           self.coreService.removeSlashToString(obj, 'question');

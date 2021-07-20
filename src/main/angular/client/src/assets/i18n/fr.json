@@ -1063,12 +1063,8 @@
         "documentation": "Documentation",
         "title": "Le titre d'un workflow.",
         "allowUndeclared": "Autoriser les variables non déclarés",
-        "await": {
-          "match": "Correspondance",
-          "timeout": "Timeout",
-          "junctionPath": "Une jonction relie deux ou plusieurs workflows et fait en sorte que les ordres s'attendent les uns des autres si ils sont dérivés du même plan quotidien.",
-          "predicate": "Predicat",
-          "joinVariables": "Variables Join"
+        "board": {
+          "boardName": "BoardName"
         },
         "fail": {
           "message": "L'instruction permet de spécifier un Message qui est joint à l'ordre et qui devient visible avec l'historique des ordres.",
@@ -1112,9 +1108,6 @@
         },
         "prompt": {
           "question": "Message"
-        },
-        "publish": {
-          "junctionPath": "Une Junction relie deux ou plusieurs workflow et fait en sorte que les ordres s'attendent les uns des autres s'ils sont dérivés du même plan quotidien."
         },
         "retry": {
           "maxTries": "Lorsque le nombre maximal de tentatives est atteint, l'instruction Try se termine et l'ordre passe à l'état ECHEC.",
@@ -1755,6 +1748,7 @@
     "label.failOnOutputErr": "Échec de la sortie vers stderr",
     "label.showConfiguration": "Afficher la Configuration",
     "label.allowUndeclared": "Variables non déclarés",
+    "label.boardName": "Board Name",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",
     "button.actual": "Défaut",
@@ -1774,7 +1768,6 @@
     "button.addArgument": "Ajouter un Argument",
     "button.showTabularView": "Afficher la vue tabulaire",
     "button.showGraphicalView": "Afficher la vue graphique",
-    "button.showDailyPlan": "Afficher le Plan Quotidien",
     "button.addOrder": "Ajouter un Ordre",
     "button.exportInPng": "Exporter en format PNG",
     "tab.jobProperties": "Propriétés de Tâche",
@@ -1807,8 +1800,8 @@
     "message.invalidForkInstruction": "L'instruction Fork doit avoir un minimum de deux branches",
     "placeholder.selectAgentName": "Sélectionnez le nom de l'Agent",
     "placeholder.enterJobClass": "Entrer la référence de la classe du Tâche",
-    "placeholder.enterJunction": "Entrer la référence de la Junction",
     "placeholder.selectLock": "Sélectionner l'ID du Verrou de ressource",
+    "placeholder.selectBoard": "Select Board",
     "placeholder.duration": "Entrer une valeur comme d/w/m/y/h our hh:mm:ss or seconds",
     "placeholder.enterPositiveNumber": "Entrer uniquement un nombre positif séparé par une virgule",
     "placeholder.expression": "Entrer l'expression",

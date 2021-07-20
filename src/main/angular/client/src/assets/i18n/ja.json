@@ -1063,12 +1063,8 @@
         "documentation": "ドキュメント",
         "title": "ワークフローのタイトル",
         "allowUndeclared": "未宣言を許可",
-        "await": {
-          "match": "一致",
-          "timeout": "タイムアウト",
-          "junctionPath": "ジャンクションは2つ以上のワークフローを結合し、同じ実行計画からのオーダーを互いに待受けます。",
-          "predicate": "述部",
-          "joinVariables": "ジョイン変数"
+        "board": {
+          "boardName": "BoardName"
         },
         "fail": {
           "message": "オーダーに添付され、オーダー履歴で表示されるメッセージを指定することができます。",
@@ -1112,9 +1108,6 @@
         },
         "prompt": {
           "question": "質問"
-        },
-        "publish": {
-          "junctionPath": "ジャンクションとは、2つ以上のワークフローを結合し、同じ実行計画のオーダーを互いに待ち受けします。"
         },
         "retry": {
           "maxTries": "再試行回数が最大になると、Retry命令は終了し、オーダーは失敗ステートになります。",
@@ -1755,6 +1748,7 @@
     "label.failOnOutputErr": "stderr出力でエラー",
     "label.showConfiguration": "ジョブ定義表示",
     "label.allowUndeclared": "未宣言を許可",
+    "label.boardName": "Board Name",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",
     "button.actual": "デフォルト",
@@ -1774,7 +1768,6 @@
     "button.addArgument": "引数追加",
     "button.showTabularView": "表形式表示",
     "button.showGraphicalView": "グラフィカル表示",
-    "button.showDailyPlan": "実行計画表示",
     "button.addOrder": "オーダー追加",
     "button.exportInPng": "Pngエキスポート",
     "tab.jobProperties": "ジョブプロパティ",
@@ -1807,8 +1800,8 @@
     "message.invalidForkInstruction": "Fork instruction must have minimum of two branches",
     "placeholder.selectAgentName": "参照エージェント入力",
     "placeholder.enterJobClass": "参照ジョブクラス入力",
-    "placeholder.enterJunction": "参照ジャンクション入力",
     "placeholder.selectLock": "ロックID選択",
+    "placeholder.selectBoard": "Select Board",
     "placeholder.duration": "d/w/m/y/hか、hh:mm:ss、secondsで入力してください",
     "placeholder.enterPositiveNumber": "コンマ区切りで正数を入力",
     "placeholder.expression": "条件式を入力",

@@ -170,7 +170,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
           }
           break;
         } else if (args.eventSnapshots[j].eventType === 'ControllerStateChanged' || ((args.eventSnapshots[j].eventType === 'ProxyCoupled'
-          || args.eventSnapshots[j].eventType === 'ProxyDecoupled') && args.eventSnapshots[j].objectType === 'CONTROLLER')) {
+          || args.eventSnapshots[j].eventType === 'ProxyDecoupled' || args.eventSnapshots[j].eventType.match(/Item/)) && args.eventSnapshots[j].objectType === 'CONTROLLER')) {
           this.getSchedulerIds();
           break;
         }
@@ -212,7 +212,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   addController(): void {
-    const modal = this.modalInstance = this.modal.create({
+    this.modalInstance = this.modal.create({
       nzTitle: undefined,
       nzContent: StartUpModalComponent,
       nzComponentParams: {
@@ -222,11 +222,6 @@ export class ControllersComponent implements OnInit, OnDestroy {
       },
       nzFooter: null,
       nzClosable: false,
-    });
-    modal.afterClose.subscribe(result => {
-      if (result && this.controllers.length === 0) {
-        this.getSchedulerIds();
-      }
     });
   }
 

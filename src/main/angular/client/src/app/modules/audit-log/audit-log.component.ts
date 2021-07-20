@@ -80,9 +80,8 @@ export class SearchComponent implements OnInit {
   isUnique = true;
   objectTypes = ['WORKFLOW',
     'FILEORDERSOURCE',
-    'JOBCLASS',
     'JOBRESOURCE',
-    'JUNCTION',
+    'BOARD',
     'LOCK',
     'SCHEDULE',
     'WORKINGDAYSCALENDAR',

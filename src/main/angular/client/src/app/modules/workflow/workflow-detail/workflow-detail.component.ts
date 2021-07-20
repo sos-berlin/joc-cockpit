@@ -8,7 +8,6 @@ import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {WorkflowService} from '../../../services/workflow.service';
 import {AddOrderModalComponent} from '../workflow-action/workflow-action.component';
-import {CalendarModalComponent} from '../../../components/calendar-modal/calendar.component';
 import {DataService} from '../../../services/data.service';
 import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
@@ -290,20 +289,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         this.isProcessing = true;
         this.resetAction(5000);
       }
-    });
-  }
-
-  showDailyPlan(): void {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: CalendarModalComponent,
-      nzClassName: 'lg',
-      nzComponentParams: {
-        path: this.workFlowJson.path
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
     });
   }
 

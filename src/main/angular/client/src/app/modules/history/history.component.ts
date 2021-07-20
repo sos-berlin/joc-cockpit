@@ -473,7 +473,7 @@ export class DeploymentSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.deployTypes = ['WORKFLOW', 'JOBCLASS', 'LOCK', 'JUNCTION'];
+    this.deployTypes = ['WORKFLOW', 'FILEORDERSOURCE', 'JOBRESOURCE', 'BOARD', 'LOCK'];
   }
 
   remove(path): void {

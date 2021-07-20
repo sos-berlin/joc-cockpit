@@ -223,12 +223,6 @@
                           <i class="fa fa-plus-square-o text-black-lt p-r-xs"></i>
                           <span class="text-black-lt" translate>workflow.button.addOrder</span>
                         </a>
-                        <a class="text-right primary-text-hover-color" *ngIf="permission.joc && permission.joc.dailyPlan.view"
-                           [ngClass]="{'pull-right':permission.currentController.orders.create}"
-                           (click)="actionChild.showDailyPlan(workflow);">
-                          <i class="fa fa-calendar text-black-lt p-r-xs"></i>
-                          <span class="text-black-lt" translate>workflow.button.showDailyPlan</span>
-                        </a>
                       </div>
                     </div>
                   </div>

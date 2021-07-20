@@ -183,70 +183,49 @@
           </div>
         </div>
       </div>
-      <div class="box-body" *ngIf="selectedNode.type === 'Await'">
+      <div class="box-body" *ngIf="selectedNode.type === 'Publish' || selectedNode.type === 'Await'">
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.junctionPath' | translate}}" [nz-tooltip]="preferences.showTooltipInfo ? ('workflow.await.junctionPath' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.junctionPath</label>
-          <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((error && !junction.touched) || (junction.dirty || junction.touched) && junction.invalid)}">
-            <input autocomplete="off" [appAutofocus]="true" type="text" class="form-control" required #junction="ngModel"
-                   name="junction" [(ngModel)]="selectedNode.obj.junctionPath"  placeholder="{{'workflow.placeholder.enterJunction' | translate}}">
-            <div *ngIf="(error && !junction.touched) || junction.invalid && (junction.dirty || junction.touched)"
+          <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.boardName' | translate}}"
+                 [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.workflow.board.boardName' | translate) : ''"
+                 [nzTooltipMouseEnterDelay]="0.5"
+                 translate>workflow.label.boardName</label>
+          <div class="col-md-8 col-lg-9 select-input-both"
+               [ngClass]="{'has-error' : ((boardName.dirty || boardName.touched) && boardName.invalid)}">
+            <input autocomplete="off" type="text" class="form-control" required
+                   placeholder="{{'workflow.placeholder.selectBoard' | translate}}"
+                   name="boardName" #boardName="ngModel" [(ngModel)]="selectedNode.obj.boardName">
+            <nz-tree-select
+              name="lockNameSelect"
+              nzNoAnimation
+              [nzNodes]="boardTree"
+              [nzHideUnMatched]="true"
+              [nzDropdownStyle]="{ 'max-height': '300px' }"
+              nzShowSearch
+              [nzAllowClear]="false"
+              [(ngModel)]="selectedNode.obj.boardName1"
+              (nzExpandChange)="onExpand($event, 'BOARD')"
+            >
+              <ng-template #nzTreeTemplate let-node>
+                <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'BOARD', $event);">
+                  <div class="node-content-wrapper"
+                       [class.node-content-wrapper-active]="node.origin.path == selectedNode.obj.boardName">
+                    <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+                       class="w-14"></i>
+                    <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                    {{node.origin.name}}
+                  </div>
+                </div>
+              </ng-template>
+            </nz-tree-select>
+            <div *ngIf="(error && !boardName.touched) || boardName.invalid && (boardName.dirty || boardName.touched)"
                  class="text-danger help-block">
-              <div *ngIf="error || (junction.errors && junction.errors.required)">
+              <div *ngIf="error || (boardName.errors && boardName.errors.required)">
                 <div translate>common.message.requiredError</div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.workflow.await.timeout' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.timeout</label>
-          <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
-            <input autocomplete="off" #timeout="ngModel" type="text" class="form-control" name="timeout" placeholder="{{'workflow.placeholder.duration' | translate}}"
-                   validateDurtionReqex  [(ngModel)]="selectedNode.obj.timeout1">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.workflow.await.predicate' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.predicate</label>
-          <div class="col-md-8 col-lg-9">
-            <input type="text" class="form-control" name="predicate" placeholder="{{'workflow.placeholder.expression' | translate}}"
-                   validateDurtionReqex  [(ngModel)]="selectedNode.obj.predicate">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.workflow.await.match' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.match</label>
-          <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : error || ((match.dirty || match.touched) && match.invalid)}">
-            <input type="text" identifierValidation class="form-control" name="match" #match="ngModel" placeholder="{{'workflow.placeholder.expression' | translate}}"
-                   [(ngModel)]="selectedNode.obj.match">
-            <div *ngIf="match.invalid && match.errors && (match.dirty || match.touched)"
-                 class="text-danger help-block">
-              <div *ngIf="match.errors.invalidIdentifier" translate>common.message.invalid</div>
-            </div>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.joinVariables' | translate}}" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.workflow.await.joinVariables' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.joinVariables</label>
-          <div class="col-md-8 col-lg-9">
-            <label nz-checkbox [(ngModel)]="selectedNode.obj.joinVariables" name="joinVariables"></label>
-          </div>
-        </div>
-      </div>
-      <div class="box-body" *ngIf="selectedNode.type === 'Publish'">
-        <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.junctionPath' | translate}}" [nz-tooltip]="preferences.showTooltipInfo ? ('inventory.tooltips.workflow.publish.junctionPath' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
-                 translate>workflow.label.junctionPath</label>
-          <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((junction.dirty || junction.touched) && junction.invalid)}">
-            <input autocomplete="off" [appAutofocus]="true" type="text" class="form-control" required #junction="ngModel"
-                   name="junction" [(ngModel)]="selectedNode.obj.junctionPath"  placeholder="{{'workflow.placeholder.enterJunction' | translate}}">
-            <div *ngIf="junction.invalid && (junction.dirty || junction.touched)"
-                 class="text-danger help-block">
-              <div *ngIf="junction.errors.required">
-                <div translate>common.message.requiredError</div>
-              </div>
-            </div>
+          <div *ngIf="selectedNode.obj.boardName" class="pos-abt" style="margin-top: 3px; right: 5px">
+            <i (click)="navToObj(selectedNode.obj.boardName, 'BOARD')" class="fa fa-pencil cursor"></i>
           </div>
         </div>
       </div>
@@ -345,7 +324,7 @@
             </div>
           </div>
           <div *ngIf="selectedNode.obj.lockName" class="pos-abt" style="margin-top: 3px; right: 5px">
-            <i (click)="navToLock(selectedNode.obj.lockName)" class="fa fa-pencil cursor"></i>
+            <i (click)="navToObj(selectedNode.obj.lockName, 'LOCK')" class="fa fa-pencil cursor"></i>
           </div>
         </div>
         <div class="form-group row">

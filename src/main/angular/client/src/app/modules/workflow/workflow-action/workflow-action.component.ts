@@ -5,7 +5,6 @@ import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {isEmpty} from 'underscore';
 import * as moment from 'moment';
 import {CoreService} from '../../../services/core.service';
-import {CalendarModalComponent} from '../../../components/calendar-modal/calendar.component';
 import {ValueEditorComponent} from '../../../components/value-editor/value.component';
 
 @Component({
@@ -239,20 +238,6 @@ export class WorkflowActionComponent {
           this.isChanged.emit(false);
         }, 5000);
       }
-    });
-  }
-
-  showDailyPlan(workflow): void {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: CalendarModalComponent,
-      nzClassName: 'lg',
-      nzComponentParams: {
-        path: workflow.path
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
     });
   }
 }

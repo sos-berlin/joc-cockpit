@@ -108,14 +108,8 @@ export class WorkflowService {
     } else if (type === 'FileWatcher') {
       obj.directory = node._directory;
       obj.regex = node._regex;
-    } else if (type === 'Await') {
-      obj.junctionPath = node._junctionPath;
-      obj.timeout = node._timeout;
-      obj.joinVariables = node._joinVariables;
-      obj.predicate = node._predicate;
-      obj.match = node._match;
-    } else if (type === 'Publish') {
-      obj.junctionPath = node._junctionPath;
+    } else if (type === 'Publish' || type === 'Await') {
+      obj.boardName = node._boardName;
     } else if (type === 'Prompt') {
       obj.question = node._question;
     }
@@ -189,11 +183,8 @@ export class WorkflowService {
           return false;
         }
       }
-      if (type === 'Await') {
-        if (!value.junctionPath) {
-          return false;
-        }
-        if (value.match && !this.isValidObject(value.match)) {
+      if (type === 'Await' || type === 'Publish') {
+        if (!value.boardName) {
           return false;
         }
       }
@@ -361,10 +352,10 @@ export class WorkflowService {
             }
           }
           if (json.instructions[x].TYPE === 'PostNotice') {
-            json.instructions[x].TYPE = 'Publish ';
+            json.instructions[x].TYPE = 'Publish';
           }
           if (json.instructions[x].TYPE === 'ReadNotice') {
-            json.instructions[x].TYPE = 'Await ';
+            json.instructions[x].TYPE = 'Await';
           }
           if (json.instructions[x].TYPE === 'Try') {
             let isRetry = false;
@@ -523,8 +514,8 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'Publish') {
             _node.setAttribute('label', 'publish');
-            if (json.instructions[x].junctionPath !== undefined) {
-              _node.setAttribute('junctionPath', json.instructions[x].junctionPath);
+            if (json.instructions[x].boardName !== undefined) {
+              _node.setAttribute('boardName', json.instructions[x].boardName);
             }
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.publish);
@@ -550,20 +541,8 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'Await') {
             _node.setAttribute('label', 'await');
-            if (json.instructions[x].junctionPath !== undefined) {
-              _node.setAttribute('junctionPath', json.instructions[x].junctionPath);
-            }
-            if (json.instructions[x].timeout !== undefined) {
-              _node.setAttribute('timeout', json.instructions[x].timeout);
-            }
-            if (json.instructions[x].joinVariables !== undefined) {
-              _node.setAttribute('joinVariables', json.instructions[x].joinVariables);
-            }
-            if (json.instructions[x].predicate !== undefined) {
-              _node.setAttribute('predicate', json.instructions[x].predicate);
-            }
-            if (json.instructions[x].match !== undefined) {
-              _node.setAttribute('match', json.instructions[x].match);
+            if (json.instructions[x].boardName !== undefined) {
+              _node.setAttribute('boardName', json.instructions[x].boardName);
             }
 
             _node.setAttribute('uuid', json.instructions[x].uuid);

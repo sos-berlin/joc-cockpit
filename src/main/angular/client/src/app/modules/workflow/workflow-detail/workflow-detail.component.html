@@ -61,9 +61,6 @@
                     *ngIf="permission.currentController && permission.currentController.orders.create"><i class="fa fa-plus-square"></i>
               &nbsp;<span class="hidden-sm-down" translate>workflow.button.addOrder</span>
             </button>
-            <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="showDailyPlan()"><i class="fa fa-calendar"></i>
-              &nbsp;<span class="hidden-sm-down" translate>workflow.button.showDailyPlan</span>
-            </button>
             <div class="btn-group m-l-12">
               <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='grid'}" (click)="setView('grid')"><i
                 class="fa fa-sitemap"></i>

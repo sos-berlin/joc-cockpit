@@ -3357,7 +3357,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   // check rules before paste
-  checkRules(pasteNode, copyNode): void {
+  private checkRules(pasteNode, copyNode): void {
     if (copyNode !== undefined) {
       this.checkRule = false;
       if (pasteNode.ref === copyNode.parent) {
@@ -3462,12 +3462,17 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     node.children = sortBy(node.children, 'order');
     this.cutData = false;
     this.checkRule = true;
-    this.printArraya(false);
-    this.selectedNode = copyData;
-    this.selectedNodeDoc = this.checkText(copyData);
+    for (const i in node.children) {
+      if (node.children[i].uuid === copyData.uuid) {
+        this.selectedNode = node.children[i];
+        this.selectedNodeDoc = this.checkText(node.children[i]);
+        break;
+      }
+    }
     this.getIndividualData(this.selectedNode, undefined);
     this.scrollTreeToGivenId(this.selectedNode.uuid);
     this.extraInfo.released = false;
+    this.printArraya(false);
   }
 
   renameTab(tab): void {
