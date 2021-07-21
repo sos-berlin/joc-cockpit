@@ -201,7 +201,6 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   }
 
   private getOverviewData(): void {
-    // console.log('Overview >>> From :', this.filters.overview.filter.startDate, 'To :', this.filters.overview.filter.endDate);
     let arr = [];
     this.data.forEach((controller) => {
       const obj: any = {
@@ -223,7 +222,6 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
     arr.forEach((item) => {
       const date = new Date(item.key).setHours(0, 0, 0, 0);
       if (date >= this.filters.overview.filter.startDate && date <= this.filters.overview.filter.endDate) {
-        console.log('>>>>>', item.key)
         const values = this.groupByPipe.transform(item.value, 'controllerId');
         for (const i in values) {
           const obj = {
@@ -241,14 +239,11 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
               color: '#ff3232'
             };
             obj.statusList.push(statusObj);
-            console.log(statusObj);
-           // console.log(time.readyTime, time.shutdownTime);
           });
           this.ganttData.push(obj);
         }
       }
     });
-    console.log(this.ganttData, 'ganttData')
   }
 
   setView(view, type): void {

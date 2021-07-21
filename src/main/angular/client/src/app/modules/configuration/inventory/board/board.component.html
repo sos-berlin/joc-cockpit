@@ -107,29 +107,6 @@
             </div>
           </div>
         </div>
-        <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.endOfLife' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.endOfLife</label>
-          <div class="col-md-8 col-lg-6" [ngClass]="{ 'has-error' : (((endOfLife.dirty || endOfLife.touched) && endOfLife.invalid))}">
-            <nz-input-group [nzAddOnAfter]="addOnAfterTemplate2">
-              <input timevalidator maxlength="8" [hidden]="boardObj.units !== 'HH:MM:SS'" nz-input autocomplete="off" [readonly]="isTrash || !permission.joc.inventory.manage" #endOfLife="ngModel" type="text" name="endOfLife"
-                     placeholder="{{'inventory.placeholder.endOfLife' | translate}}" (blur)="saveJSON()"
-                     [(ngModel)]="boardObj.endOfLife">
-              <nz-input-number [hidden]="boardObj.units === 'HH:MM:SS'" [nzMin]="1" [nzDisabled]="isTrash || !permission.joc.inventory.manage" nzPlaceHolder="{{'inventory.placeholder.endOfLife' | translate}}" #endOfLife="ngModel" name="endOfLife" [(ngModel)]="boardObj.endOfLife"
-                               (nzBlur)="saveJSON()"></nz-input-number>
-            </nz-input-group>
-            <ng-template #addOnAfterTemplate2>
-              <nz-select name="units" [(ngModel)]="boardObj.units" (ngModelChange)="changeUnit($event)" style="width: 220px">
-                <nz-option [nzLabel]="'inventory.label.milliseconds' | translate" nzValue="Milliseconds"></nz-option>
-                <nz-option [nzLabel]="'inventory.label.seconds' | translate" nzValue="Seconds"></nz-option>
-                <nz-option [nzLabel]="'inventory.label.minutes' | translate" nzValue="Minutes"></nz-option>
-                <nz-option [nzLabel]="'inventory.label.hours' | translate" nzValue="Hours"></nz-option>
-                <nz-option [nzLabel]="'inventory.label.days' | translate" nzValue="Days"></nz-option>
-                <nz-option [nzLabel]="'HH:MM:SS'" nzValue="HH:MM:SS"></nz-option>
-              </nz-select>
-            </ng-template>
-          </div>
-        </div>
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((readingOrderToNoticeId.dirty || readingOrderToNoticeId.touched) && readingOrderToNoticeId.invalid))}">
           <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.readingOrderToNoticeId' | translate) : ''"
@@ -151,6 +128,29 @@
                 <div translate>common.message.requiredError</div>
               </div>
             </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.endOfLife' | translate) : ''"
+                 [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.endOfLife</label>
+          <div class="col-md-8 col-lg-6" [ngClass]="{ 'has-error' : (((endOfLife.dirty || endOfLife.touched) && endOfLife.invalid))}">
+            <nz-input-group [nzAddOnAfter]="addOnAfterTemplate2">
+              <input timevalidator maxlength="8" [hidden]="boardObj.units !== 'HH:MM:SS'" nz-input autocomplete="off" [readonly]="isTrash || !permission.joc.inventory.manage" #endOfLife="ngModel" type="text" name="endOfLife"
+                     placeholder="{{'inventory.placeholder.endOfLife' | translate}}" (blur)="saveJSON()"
+                     [(ngModel)]="boardObj.endOfLife">
+              <nz-input-number [hidden]="boardObj.units === 'HH:MM:SS'" [nzMin]="1" [nzDisabled]="isTrash || !permission.joc.inventory.manage" nzPlaceHolder="{{'inventory.placeholder.endOfLife' | translate}}" #endOfLife="ngModel" name="endOfLife" [(ngModel)]="boardObj.endOfLife"
+                               (nzBlur)="saveJSON()"></nz-input-number>
+            </nz-input-group>
+            <ng-template #addOnAfterTemplate2>
+              <nz-select name="units" [(ngModel)]="boardObj.units" (ngModelChange)="changeUnit($event)" style="width: 220px">
+                <nz-option [nzLabel]="'inventory.label.milliseconds' | translate" nzValue="Milliseconds"></nz-option>
+                <nz-option [nzLabel]="'inventory.label.seconds' | translate" nzValue="Seconds"></nz-option>
+                <nz-option [nzLabel]="'inventory.label.minutes' | translate" nzValue="Minutes"></nz-option>
+                <nz-option [nzLabel]="'inventory.label.hours' | translate" nzValue="Hours"></nz-option>
+                <nz-option [nzLabel]="'inventory.label.days' | translate" nzValue="Days"></nz-option>
+                <nz-option [nzLabel]="'HH:MM:SS'" nzValue="HH:MM:SS"></nz-option>
+              </nz-select>
+            </ng-template>
           </div>
         </div>
       </form>
