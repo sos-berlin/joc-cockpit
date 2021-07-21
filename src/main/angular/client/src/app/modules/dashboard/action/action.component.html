@@ -6,62 +6,62 @@
       <ul nz-menu >
         <li nz-submenu nzTitle="{{'dashboard.button.terminate' | translate}}" *ngIf="controllerPermission && controllerPermission.terminate && controller && controller.role !== 'STANDALONE' && controller.clusterNodeState._text === 'active'">
           <ul>
-            <li nz-menu-item >
+            <li nz-menu-item (click)="clusterAction('terminate', controller,true)">
               <a tabindex="-1" [ngClass]="{'disable-link':!controller.isCoupled}"
-                (click)="clusterAction('terminate', controller,true)">{{'dashboard.button.withSwitchover' | translate}}</a>
+                >{{'dashboard.button.withSwitchover' | translate}}</a>
             </li>
-            <li nz-menu-item >
-              <a tabindex="-1"
-                (click)="clusterAction('terminate', controller,false)">{{'dashboard.button.withOutSwitchover' | translate}}</a>
+            <li nz-menu-item (click)="clusterAction('terminate', controller,false)">
+              <a tabindex="-1">{{'dashboard.button.withOutSwitchover' | translate}}</a>
             </li>
           </ul>
         </li>
         <li nz-submenu nzTitle="{{'dashboard.button.terminateAndRestart' | translate}}" *ngIf="controllerPermission && controllerPermission.restart && controllerPermission.terminate && controller && controller.role !== 'STANDALONE' && controller.clusterNodeState._text === 'active'">
           <ul>
-            <li nz-menu-item >
-              <a tabindex="-1" [ngClass]="{'disable-link':!controller.isCoupled}"
-                (click)="clusterAction('terminateAndRestart', controller,true)">{{'dashboard.button.withSwitchover' | translate}}</a>
+            <li nz-menu-item
+                (click)="clusterAction('terminateAndRestart', controller,true)">
+              <a tabindex="-1" [ngClass]="{'disable-link':!controller.isCoupled}">{{'dashboard.button.withSwitchover' | translate}}</a>
             </li>
-            <li nz-menu-item >
-              <a tabindex="-1"
-                (click)="clusterAction('terminateAndRestart', controller,false)">{{'dashboard.button.withOutSwitchover' | translate}}</a>
+            <li nz-menu-item
+                (click)="clusterAction('terminateAndRestart', controller,false)">
+              <a tabindex="-1">{{'dashboard.button.withOutSwitchover' | translate}}</a>
             </li>
           </ul>
         </li>
         <li nz-submenu nzTitle="{{'dashboard.button.abort' | translate}}" *ngIf="controllerPermission && controllerPermission.terminate && controller && controller.role !== 'STANDALONE' && controller.clusterNodeState._text === 'active'">
           <ul>
-            <li nz-menu-item >
-              <a tabindex="-1" [ngClass]="{'disable-link':!controller.isCoupled}"
-                (click)="clusterAction('abort', controller,true)">{{'dashboard.button.withFailover' | translate}}</a>
+            <li nz-menu-item
+                (click)="clusterAction('abort', controller,true)">
+              <a tabindex="-1" [ngClass]="{'disable-link':!controller.isCoupled}">{{'dashboard.button.withFailover' | translate}}</a>
             </li>
           </ul>
         </li>
         <li nz-submenu nzTitle="{{'dashboard.button.abortAndRestart' | translate}}" *ngIf="controllerPermission && controllerPermission.restart && controllerPermission.terminate && controller && controller.role !== 'STANDALONE' && controller.clusterNodeState._text === 'active'">
           <ul>
-            <li nz-menu-item >
-              <a tabindex="-1" [ngClass]="{'disable-link':!controller.isCoupled}"
-                (click)="clusterAction('abortAndRestart', controller,true)">{{'dashboard.button.withFailover' | translate}}</a>
+            <li nz-menu-item
+                (click)="clusterAction('abortAndRestart', controller,true)">
+              <a tabindex="-1" [ngClass]="{'disable-link':!controller.isCoupled}">{{'dashboard.button.withFailover' | translate}}</a>
             </li>
           </ul>
         </li>
-        <li nz-menu-item *ngIf="controllerPermission && controllerPermission.terminate && controller && (controller.role === 'STANDALONE' || controller.clusterNodeState._text !== 'active')">
-          <a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}"
-            (click)="clusterAction('terminate', controller,false)">{{'dashboard.button.terminate' | translate}}</a>
+        <li nz-menu-item
+            (click)="clusterAction('terminate', controller,false)" *ngIf="controllerPermission && controllerPermission.terminate && controller && (controller.role === 'STANDALONE' || controller.clusterNodeState._text !== 'active')">
+          <a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}">{{'dashboard.button.terminate' | translate}}</a>
         </li>
-        <li nz-menu-item *ngIf="controllerPermission && controllerPermission.restart && controller && (controller.role === 'STANDALONE' || controller.clusterNodeState._text !== 'active')">
-          <a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}"
-            (click)="clusterAction('terminateAndRestart', controller,false)">{{'dashboard.button.terminateAndRestart' | translate}}</a>
+        <li nz-menu-item
+            (click)="clusterAction('terminateAndRestart', controller,false)" *ngIf="controllerPermission && controllerPermission.restart && controller && (controller.role === 'STANDALONE' || controller.clusterNodeState._text !== 'active')">
+          <a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}">{{'dashboard.button.terminateAndRestart' | translate}}</a>
         </li>
-        <li nz-menu-item *ngIf="controllerPermission && controllerPermission.terminate && controller && (controller.role === 'STANDALONE' || controller.clusterNodeState._text !== 'active')">
-          <a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}"
-              (click)="clusterAction('abort', controller, false)" translate>dashboard.button.abort</a>
+        <li nz-menu-item
+            (click)="clusterAction('abort', controller, false)" *ngIf="controllerPermission && controllerPermission.terminate && controller && (controller.role === 'STANDALONE' || controller.clusterNodeState._text !== 'active')">
+          <a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}" translate>dashboard.button.abort</a>
         </li>
-        <li nz-menu-item *ngIf="controllerPermission && controllerPermission.restart && controllerPermission.terminate && controller && (controller.role === 'STANDALONE' || controller.clusterNodeState._text !== 'active')">
-          <a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}"
-            (click)="clusterAction('abortAndRestart', controller, false)" translate>dashboard.button.abortAndRestart</a>
+        <li nz-menu-item
+            (click)="clusterAction('abortAndRestart', controller, false)" *ngIf="controllerPermission && controllerPermission.restart && controllerPermission.terminate && controller && (controller.role === 'STANDALONE' || controller.clusterNodeState._text !== 'active')">
+          <a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}" translate>dashboard.button.abortAndRestart</a>
         </li>
-        <li nz-menu-item *ngIf="controller && controllerPermission && controllerPermission.getLog"><a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}"
-            (click)="clusterAction('downloadLog', controller, false)"
+        <li nz-menu-item
+            (click)="clusterAction('downloadLog', controller, false)" *ngIf="controller && controllerPermission && controllerPermission.getLog">
+          <a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}"
               translate>dashboard.button.downloadLog</a>
         </li>
       </ul>

@@ -13,14 +13,14 @@
             </button>
             <nz-dropdown-menu #menu="nzDropdownMenu">
               <ul nz-menu>
-                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='0d'}">
-                  <a (click)="getDailyPlans('0d');filters.label='filters.button.today'"
-                     translate>filters.button.today
+                <li nz-menu-item (click)="getDailyPlans('0d');filters.label='filters.button.today'"
+                    [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='0d'}">
+                  <a translate>filters.button.today
                   </a>
                 </li>
-                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='1d'}">
-                  <a (click)="getDailyPlans('1d');filters.label='filters.button.nextDay'"
-                     translate>filters.button.nextDay
+                <li nz-menu-item (click)="getDailyPlans('1d');filters.label='filters.button.nextDay'"
+                    [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='1d'}">
+                  <a translate>filters.button.nextDay
                   </a>
                 </li>
               </ul>

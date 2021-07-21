@@ -15,7 +15,7 @@
         <div class="col-sm-12 text m-b" *ngIf="variableList.length > 0">
            <div class="form-group row m-b-0 m-l-12" *ngIf="variables.length > 0">
             <div class="col-md-5 col-sm-5 m-b-sm" translate>common.label.name</div>
-            <div class="col-md-6 col-sm-6 m-b-sm" translate>common.label.type</div>
+            <div class="col-md-6 col-sm-6 m-b-sm" translate>common.label.value</div>
           </div>
           <div cdkDropList (cdkDropListDropped)="drop($event)">
             <div class="form-group row m-b-0 m-l-12" *ngFor="let item of variables; let i = index" cdkDrag>

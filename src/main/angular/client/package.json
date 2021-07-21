@@ -55,6 +55,7 @@
     "tslib": "^2.0.0",
     "underscore": "^1.13.1",
     "xlsx": "^0.16.9",
+    "xml-formatter": "^2.4.0",
     "xml-js": "^1.6.11",
     "xmldom": "^0.6.0",
     "xpath": "0.0.32",

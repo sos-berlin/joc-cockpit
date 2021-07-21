@@ -1,5 +1,6 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
+import {isArray} from 'underscore';
 import {CoreService} from '../../../services/core.service';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume.component';
@@ -16,7 +17,7 @@ export class OrderActionComponent {
   @Input() permission: any;
   @Input() schedulerId: any;
 
-  @Output() isChanged: EventEmitter<boolean> =   new EventEmitter();
+  @Output() isChanged: EventEmitter<boolean> = new EventEmitter();
   isVisible: boolean;
 
   constructor(public coreService: CoreService, private modal: NzModalService) {
@@ -159,6 +160,11 @@ export class OrderActionComponent {
   }
 
   changeParameter(order): void {
+    if (order.arguments && !isArray(order.arguments)) {
+      order.arguments = Object.entries(order.arguments).map(([k, v]) => {
+        return {name: k, value: v};
+      });
+    }
     this.modal.create({
       nzTitle: undefined,
       nzContent: ChangeParameterModalComponent,

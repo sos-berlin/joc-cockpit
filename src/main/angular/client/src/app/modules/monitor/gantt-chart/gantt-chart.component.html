@@ -1,12 +1,12 @@
 <div [ngClass]="'theme-' + this.theme" class="mat-elevation-z8">
-  <div class="taskTableWrapper" #scrollOne>
+  <div class="taskTableWrapper" [ngStyle]="{width: isAgent ? 'calc(26% - 2px)' : 'calc(20% - 2px)'}" #scrollOne>
     <table class="taskTable">
       <thead>
       <tr>
         <th><span translate>dashboard.label.controllerId</span></th>
         <th *ngIf="isAgent"><span translate>agent.label.agentId</span></th>
         <th><span translate>monitor.label.date</span></th>
-        <th><span translate>dashboard.label.url</span></th>
+        <th *ngIf="isAgent"><span translate>dashboard.label.url</span></th>
       </tr>
       </thead>
       <tbody>
@@ -19,13 +19,13 @@
         <td>{{ task.controllerId }}</td>
         <td *ngIf="isAgent">{{ task.agentId }}</td>
         <td>{{ task.date || '-' }}</td>
-        <td>{{ task.url }}</td>
+        <td *ngIf="isAgent">{{ task.url }}</td>
       </tr>
       </tbody>
     </table>
   </div>
   <div
-    class="timelineWrapper"
+    class="timelineWrapper" [ngStyle]="{width: isAgent ? '74%' : '80%'}"
     (scroll)="scrollOne.scrollTop = scrollTwo.scrollTop"
     #scrollTwo
   >
@@ -48,14 +48,14 @@
         ></div>
         <span
           *ngFor="let status of task.statusList; let i = index"
-          class="statusBar"
+          class="statusBar" [nz-tooltip]="status.start + ' to ' + status.end"
           [ngStyle]="{
               left: status.offset + 'px',
               width: status.width + 'px',
               'background-color': status.color
             }"
         >
-          <i *ngIf="!isAgent" [nz-tooltip]="status.start + ' to ' + status.end" translate>monitor.label.shutdown</i>
+          <i *ngIf="!isAgent" translate>monitor.label.shutdown</i>
           <i *ngIf="isAgent" [nz-tooltip]="status.tooltip" translate>COUPLINGFAILED</i>
         </span>
       </div>

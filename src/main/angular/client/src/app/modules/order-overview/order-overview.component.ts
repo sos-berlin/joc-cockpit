@@ -477,7 +477,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         if (order.state._text === 'PENDING' || order.state._text === 'SCHEDULED') {
           this.object.isCancelWithKill = true;
         }
-        if (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING') {
+        if (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING' && order.state._text !== 'BLOCKED') {
           this.object.isModify = false;
         }
         if (!workflow) {

@@ -1,9 +1,10 @@
 import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
-import { differenceInCalendarDays } from 'date-fns';
+import {differenceInCalendarDays, differenceInMilliseconds} from 'date-fns';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
+import {GroupByPipe} from '../../../pipes/core.pipe';
 
 declare let self;
 
@@ -21,9 +22,10 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   isLoaded = false;
   runningTime: any = [];
   statisticsData: any[];
-  tasks = [];
+  data = [];
+  ganttData = [];
 
-  // options
+// options
   showXAxis = true;
   showYAxis = true;
   gradient = true;
@@ -36,10 +38,6 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   runningFilterBtn = [
     {
       date: 'ALL', text: 'all'
-    },
-    {
-      date: '-1d',
-      text: 'yesterday'
     },
     {
       date: '-7d',
@@ -57,7 +55,8 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
 
   subscription: Subscription;
 
-  constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService) {
+  constructor(private authService: AuthService, public coreService: CoreService,
+              private groupByPipe: GroupByPipe, private dataService: DataService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -74,16 +73,14 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
 
   init(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.getRunningTime();
-    this.renderTimeSheetHeader('overview');
-    this.renderTimeSheetHeader('statistics');
+    this.getData();
   }
 
   refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'ControllerStateChanged') {
-
+        if (args.eventSnapshots[j].objectType === 'CONTROLLER') {
+          this.getData();
           break;
         }
       }
@@ -96,48 +93,47 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
     this.getRunningTime();
   }
 
+  private getData(): void {
+    this.coreService.post('monitoring/controllers', {
+      controllerId: this.schedulerIds.selected
+    }).subscribe((res: any) => {
+      this.data = res.controllers;
+      this.getRunningTime();
+      this.renderTimeSheetHeader('overview');
+      this.renderTimeSheetHeader('statistics');
+      this.isLoaded = true;
+    }, () => {
+      this.isLoaded = true;
+    });
+  }
+
   private getRunningTime(): void {
-    if (this.filters.runningTime.filter.date === '-1d') {
-      this.runningTime = [{
-        controllerId: 'testsuite',
-        time: 81400000,
-        total: 86400000,
-      }, {
-        controllerId: 'standalone',
-        time: 84400000,
-        total: 86400000,
-      }];
-    } else if (this.filters.runningTime.filter.date === '-7d') {
-      this.runningTime = [{
-        controllerId: 'testsuite',
-        time: 504800000,
-        total: 604800000,
-      }, {
-        controllerId: 'standalone',
-        time: 524800000,
-        total: 604800000,
-      }];
-    } else if (this.filters.runningTime.filter.date === '-30d') {
-      this.runningTime = [{
-        controllerId: 'testsuite',
-        time: 1504255511,
-        total: 1674255511,
-      }, {
-        controllerId: 'standalone',
-        time: 1404255511,
-        total: 1674255511,
-      }];
-    } else {
-      this.runningTime = [{
-        controllerId: 'testsuite',
-        time: 1574255511,
-        total: 1674255511,
-      }, {
-        controllerId: 'standalone',
-        time: 1474255511,
-        total: 1674255511,
-      }];
-    }
+    this.runningTime = [];
+    this.data.forEach((controller) => {
+      const obj: any = {
+        controllerId: controller.controllerId,
+      };
+      let firstEntry = controller.entries[0];
+      const lastEntry = controller.entries[controller.entries.length - 1];
+      const d = new Date();
+      if (this.filters.runningTime.filter.date !== 'ALL') {
+        let fromDate;
+        if (this.filters.runningTime.filter.date === '-7d') {
+          fromDate = d.setDate(new Date().getDate() - 7);
+        } else {
+          fromDate = d.setMonth(new Date().getMonth() - 1);
+        }
+        for (const i in controller.entries) {
+          if (new Date(controller.entries[i].readyTime) >= fromDate) {
+            firstEntry = controller.entries[i];
+            break;
+          }
+        }
+      }
+      obj.total = differenceInMilliseconds(new Date(lastEntry.readyTime), new Date(firstEntry.readyTime));
+      obj.time = (lastEntry.totalRunningTime - firstEntry.totalRunningTime);
+      this.runningTime.push(obj);
+    });
 
     this.runningTime.forEach((item) => {
       item.value = Math.round((item.time * 100) / item.total);
@@ -149,111 +145,110 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
     console.log('Statistics >>> From :', this.filters.statistics.filter.startDate, 'To :', this.filters.statistics.filter.endDate);
     this.statisticsData = [
       {
-        "name": "01/07/2021",
-        "series": [
+        'name': '01/07/2021',
+        'series': [
           {
-            "name": "testsuit",
-            "value": 23
+            'name': 'testsuit',
+            'value': 23
           },
           {
-            "name": "standalone",
-            "value": 22
+            'name': 'standalone',
+            'value': 22
           }
         ]
       },
       {
-        "name": "02/07/2021",
-        "series": [
+        'name': '02/07/2021',
+        'series': [
           {
-            "name": "testsuit",
-            "value": 22
+            'name': 'testsuit',
+            'value': 22
           },
           {
-            "name": "standalone",
-            "value": 10
+            'name': 'standalone',
+            'value': 10
           }
         ]
       },
       {
-        "name": "04/07/2021",
-        "series": [
+        'name': '04/07/2021',
+        'series': [
           {
-            "name": "testsuit",
-            "value": 21
+            'name': 'testsuit',
+            'value': 21
           },
           {
-            "name": "standalone",
-            "value": 22.5
+            'name': 'standalone',
+            'value': 22.5
           }
         ]
       },
       {
-        "name": "07/07/2021",
-        "series": [
+        'name': '07/07/2021',
+        'series': [
           {
-            "name": "testsuit",
-            "value": 24
+            'name': 'testsuit',
+            'value': 24
           },
           {
-            "name": "standalone",
-            "value": 23.55
+            'name': 'standalone',
+            'value': 23.55
           }
         ]
       }
     ];
-    this.isLoaded = true;
+
   }
 
   private getOverviewData(): void {
-    console.log('Overview >>> From :', this.filters.overview.filter.startDate, 'To :', this.filters.overview.filter.endDate);
-    this.tasks = [
-      {
-        id: 1,
-        controllerId: 'testsuite',
-        url: 'http://localhost:7444',
-        date: '2021-07-06',
-        start: '00:15',
-        end: '25:00',
-        statusList: [
-          {
-            start: '18:00:06',
-            color: '#ff3232',
-            end: '20:00:36'
-          }
-        ]
-      },
-      {
-        id: 2,
-        controllerId: 'testsuite',
-        url: 'http://localhost:7444',
-        date: '2021-07-05',
-        start: '00:15',
-        end: '25:00',
-        statusList: [
-          {
-            start: '11:54',
-            end: '12:30',
-            color: '#ff3232'
-          }
-        ]
-      },
-      {
-        id: 3,
-        controllerId: 'standalone',
-        url: 'http://localhost:7544',
-        date: '2021-07-03',
-        start: '00:15',
-        end: '25:00',
-        statusList: [
-          {
-            start: '10:55:27',
-            end: '11:49:46',
-            color: '#ff3232'
-          }
-        ]
+    // console.log('Overview >>> From :', this.filters.overview.filter.startDate, 'To :', this.filters.overview.filter.endDate);
+    let arr = [];
+    this.data.forEach((controller) => {
+      const obj: any = {
+        controllerId: controller.controllerId,
+      };
+      for (const i in controller.entries) {
+        const obj = {
+          controllerId: controller.controllerId,
+          date: this.coreService.getDateByFormat(controller.entries[i].readyTime, this.preferences.zone, 'YYYY-MM-DD'),
+          readyTime: controller.entries[i].readyTime,
+          shutdownTime: controller.entries[i].shutdownTime
+        };
+        arr.push(obj);
       }
-    ];
-    this.isLoaded = true;
+    });
+    arr = this.groupByPipe.transform(arr, 'date');
+    this.ganttData = [];
+    let count = 0;
+    arr.forEach((item) => {
+      const date = new Date(item.key).setHours(0, 0, 0, 0);
+      if (date >= this.filters.overview.filter.startDate && date <= this.filters.overview.filter.endDate) {
+        console.log('>>>>>', item.key)
+        const values = this.groupByPipe.transform(item.value, 'controllerId');
+        for (const i in values) {
+          const obj = {
+            id: ++count,
+            controllerId: values[i].key,
+            date: item.key,
+            start: '00:15',
+            end: '25:00',
+            statusList: []
+          };
+          values[i].value.forEach((time, index) => {
+            const statusObj = {
+              start: index === 0 ? '00:00' : this.coreService.getDateByFormat(values[i].value[index - 1].shutdownTime, this.preferences.zone, 'HH:mm:SS'),
+              end: this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS'),
+              color: '#ff3232'
+            };
+            obj.statusList.push(statusObj);
+            console.log(statusObj);
+           // console.log(time.readyTime, time.shutdownTime);
+          });
+          this.ganttData.push(obj);
+        }
+      }
+    });
+    console.log(this.ganttData, 'ganttData')
   }
 
   setView(view, type): void {
@@ -265,7 +260,9 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
     if (this.filters[type].filter.view === 'Month') {
       this.filters[type].filter.startMonth = this.filters[type].filter.startMonth - 1;
     } else {
-      this.filters[type].filter.endDate.setDate(this.filters[type].filter.endDate.getDate() - 8);
+      const d = new Date(this.filters[type].filter.endDate);
+      const time = d.setDate(d.getDate() - 8);
+      this.filters[type].filter.endDate = new Date(time).setHours(0, 0, 0, 0);
     }
     this.renderTimeSheetHeader(type);
   }
@@ -274,7 +271,9 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
     if (this.filters[type].filter.view === 'Month') {
       this.filters[type].filter.startMonth = this.filters[type].filter.startMonth + 1;
     } else {
-      this.filters[type].filter.endDate.setDate(this.filters[type].filter.endDate.getDate() + 1);
+      const d = new Date(this.filters[type].filter.endDate);
+      const time = d.setDate(d.getDate() + 1);
+      this.filters[type].filter.endDate = new Date(time).setHours(0, 0, 0, 0);
     }
     this.renderTimeSheetHeader(type);
   }
@@ -320,8 +319,8 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
       }
       while (currentDate.getDay() !== weekStart);
     }
-    this.filters[type].filter.startDate = headerDates[0];
-    this.filters[type].filter.endDate = headerDates[headerDates.length - 1];
+    this.filters[type].filter.startDate = headerDates[0].setHours(0, 0, 0, 0);
+    this.filters[type].filter.endDate = headerDates[headerDates.length - 1].setHours(0, 0, 0, 0);
     if (type === 'overview') {
       this.getOverviewData();
     } else {
@@ -332,7 +331,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   disabledDate = (current: Date): boolean => {
     // Can not select days before today and today
     return differenceInCalendarDays(current, this.viewDate) > 0;
-  }
+  };
 
   getValue(val): string {
     for (let i in self.runningTime) {

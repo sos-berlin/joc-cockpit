@@ -21,7 +21,8 @@ export class BoardComponent implements OnChanges, OnDestroy {
 
   board: any = {};
   boardObj: any = {
-    endOfLifeMsg : '$epochMilli + '
+    endOfLifeMsg : '$epochMilli + ',
+    units : 'Milliseconds'
   };
   invalidMsg: string;
   objectType = 'BOARD';
@@ -103,9 +104,12 @@ export class BoardComponent implements OnChanges, OnDestroy {
       this.board = res;
       this.board.path1 = this.data.path;
       this.board.name = this.data.name;
+      this.boardObj = {
+        endOfLifeMsg : '$epochMilli + '
+      };
       if (res.configuration.endOfLife) {
-        this.boardObj.endOfLife = this.workflowService.convertDurationToString(res.configuration.endOfLife.replace(this.boardObj.endOfLifeMsg, ''), true);
-      } else{
+        this.boardObj.endOfLife = this.convertIntoUnit(res.configuration.endOfLife.replace(this.boardObj.endOfLifeMsg, ''));
+      } else {
         this.boardObj.endOfLife = '';
       }
 
@@ -127,6 +131,34 @@ export class BoardComponent implements OnChanges, OnDestroy {
       }
       this.ref.detectChanges();
     });
+  }
+
+  private convertIntoUnit(val): string {
+    val = this.convertDurationToString(val);
+    if (/\s*\d+\s*:\s*\d+\s*:\s*\d+\s*/i.test(val)) {
+      this.boardObj.units = 'HH:MM:SS';
+    } else {
+      const arr = val.split('*');
+      if (arr && arr.length === 5) {
+        this.boardObj.units = 'Days';
+        val = arr[0];
+      } else if (arr && arr.length === 4) {
+        this.boardObj.units = 'Hours';
+        val = arr[0];
+      } else if (arr && arr.length === 3) {
+        this.boardObj.units = 'Minutes';
+        val = arr[0];
+      } else if (arr && arr.length === 2) {
+        this.boardObj.units = 'Seconds';
+        val = arr[0];
+      } else {
+        this.boardObj.units = 'Milliseconds';
+      }
+      if (val && typeof val === 'string') {
+        val = val.trim();
+      }
+    }
+    return val;
   }
 
   private validateJSON(json): void {
@@ -299,16 +331,102 @@ export class BoardComponent implements OnChanges, OnDestroy {
     this.saveJSON();
   }
 
+  changeUnit($event): void {
+    if ($event === 'HH:MM:SS') {
+      if (!isNaN(this.boardObj.endOfLife)) {
+        this.boardObj.endOfLife = '';
+      }
+    } else {
+      if (isNaN(this.boardObj.endOfLife)) {
+        this.boardObj.endOfLife = '';
+      }
+    }
+    this.saveJSON();
+  }
+
+  private getConvertedValue(value): any {
+    let str = value;
+    if (this.boardObj.units === 'Seconds') {
+      str = str + ' * 1000';
+    } else if (this.boardObj.units === 'Minutes') {
+      str = str + ' * 60 * 1000';
+    } else if (this.boardObj.units === 'Hours') {
+      str = str + ' * 60 * 60 * 1000';
+    } else if (this.boardObj.units === 'Days') {
+      str = str + ' * 24 * 60 * 60 * 1000';
+    } else if (this.boardObj.units === 'HH:MM:SS') {
+      const arr = value.split(':');
+      let ms = 0;
+      for (const i in arr) {
+        if (i === '0') {
+          ms += (arr[i] * 60 * 60 * 1000);
+        } else if (i === '1') {
+          ms += (arr[i] * 60 * 1000);
+        } else {
+          ms += (arr[i] * 1000);
+        }
+      }
+      str = ms;
+    }
+    return str;
+  }
+
+  convertDurationToString(miliSeconds: any): any {
+    let seconds;
+    if (!isNaN(miliSeconds)) {
+      if (miliSeconds < 1000) {
+        return miliSeconds;
+      } else {
+        seconds = miliSeconds / 1000;
+        if (seconds % 1 !== 0) {
+          return seconds;
+        }
+      }
+      const d = Math.floor((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) / (3600 * 24));
+      const h = Math.floor(((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) / 3600);
+      const M = Math.floor((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) / 60);
+      const s = Math.floor(((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) % 60));
+      if (d == 0) {
+        if (h == 0 && M == 0) {
+
+        } else {
+          return (h < 10 ? '0' + h : h) + ':' + (M < 10 ? '0' + M : M) + ':' + (s < 10 ? '0' + s : s);
+        }
+      }
+    }
+    return miliSeconds;
+  }
+
+  private chectTime(): void {
+    if (this.boardObj.units === 'HH:MM:SS') {
+      if (/^\d{1,2}:\d{2}?$/i.test(this.boardObj.endOfLife)) {
+        this.boardObj.endOfLife = this.boardObj.endOfLife + ':00';
+      } else if (/^\d{1,2}:\d{2}(:)?$/i.test(this.boardObj.endOfLife)) {
+        this.boardObj.endOfLife = this.boardObj.endOfLife + '00';
+      } else if (/^\d{1,2}?$/i.test(this.boardObj.endOfLife)) {
+        this.boardObj.endOfLife = this.boardObj.endOfLife + ':00:00';
+      }
+      if (this.boardObj.endOfLife === '00:00') {
+        this.boardObj.endOfLife = '00:00:00';
+      } else if (this.boardObj.endOfLife.length === 3) {
+        this.boardObj.endOfLife = this.boardObj.endOfLife + '00:00';
+      } else if (this.boardObj.endOfLife.length === 4) {
+        this.boardObj.endOfLife = this.boardObj.endOfLife + '0:00';
+      } else if (this.boardObj.endOfLife.length === 6) {
+        this.boardObj.endOfLife = this.boardObj.endOfLife + '00';
+      } else if (this.boardObj.endOfLife.length === 7) {
+        this.boardObj.endOfLife = this.boardObj.endOfLife + '0';
+      }
+    }
+  }
+
   saveJSON(flag = false): void {
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
     if (this.boardObj.endOfLife) {
-      if(isNaN(this.boardObj.endOfLife)){
-        this.board.configuration.endOfLife = this.boardObj.endOfLifeMsg + (this.workflowService.convertStringToDuration(this.boardObj.endOfLife) * 1000);
-      } else{
-        this.board.configuration.endOfLife = this.boardObj.endOfLifeMsg + this.boardObj.endOfLife;
-      }
+      this.chectTime();
+      this.board.configuration.endOfLife = this.boardObj.endOfLifeMsg + this.getConvertedValue(this.boardObj.endOfLife);
     } else {
       delete this.board.configuration.endOfLife;
     }

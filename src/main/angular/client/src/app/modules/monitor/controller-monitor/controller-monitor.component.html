@@ -19,7 +19,7 @@
                   <nz-month-picker *ngIf="filters.statistics.filter.view === 'Month'" [(ngModel)]="filters.statistics.filter.endDate" [nzAllowClear]="false" (ngModelChange)="onChange($event, 'statistics')" [nzDisabledDate]="disabledDate"></nz-month-picker>
                   {{filters.statistics.filter.startDate | date : dateFormat }} - {{filters.statistics.filter.endDate | date : dateFormat}}
                 </div>
-                <div class="btn btn-default btn-sm" (click)="next('statistics')" [ngClass]="{'disabled': (filters.statistics.filter.startMonth=== filters.statistics.filter.currentMonth && filters.statistics.filter.startYear=== filters.statistics.filter.currentYear)}">
+                <div class="btn btn-default btn-sm" (click)="next('statistics')">
                   <i class="fa fa-angle-right text-md"></i>
                 </div>
               </div>
@@ -80,9 +80,9 @@
                 <nz-dropdown-menu #order="nzDropdownMenu">
                   <ul nz-menu>
                     <ng-container *ngFor="let btn of runningFilterBtn">
-                      <li nz-menu-item
+                      <li nz-menu-item (click)="changeDate(btn)"
                           [ngClass]="{'ant-select-dropdown-menu-item-active': btn.date === filters.runningTime.filter.date}">
-                        <a (click)="changeDate(btn)" translate>filters.button.{{btn.text}}</a>
+                        <a translate>filters.button.{{btn.text}}</a>
                       </li>
                     </ng-container>
                   </ul>
@@ -132,7 +132,7 @@
                   <nz-month-picker *ngIf="filters.overview.filter.view === 'Month'" [(ngModel)]="filters.overview.filter.endDate" [nzAllowClear]="false" (ngModelChange)="onChange($event, 'overview')" [nzDisabledDate]="disabledDate"></nz-month-picker>
                   {{filters.overview.filter.startDate | date : dateFormat }} - {{filters.overview.filter.endDate | date : dateFormat}}
                 </div>
-                <div class="btn btn-default btn-sm" (click)="next('overview')" [ngClass]="{'disabled': (filters.overview.filter.startMonth=== filters.overview.filter.currentMonth && filters.overview.filter.startYear=== filters.overview.filter.currentYear)}">
+                <div class="btn btn-default btn-sm" (click)="next('overview')">
                   <i class="fa fa-angle-right text-md"></i>
                 </div>
               </div>
@@ -152,12 +152,21 @@
           </div>
         </div>
       </div>
-      <div class="box-body p-a" [hidden]="!isLoaded">
+      <div class="box-body p-a" [hidden]="!isLoaded && ganttData.length === 0">
         <app-gantt-chart
           [dayStart]="'00:00'"
           [dayEnd]="'23:00'"
-          [tasks]="tasks"
+          [tasks]="ganttData"
         ></app-gantt-chart>
+      </div>
+      <div [hidden]="ganttData.length>0" class="hide text-center m-t-lg p-b-lg text-primary text"
+           [ngClass]="{'show': !isLoaded}">
+        <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+      </div>
+      <div *ngIf="ganttData.length==0 && isLoaded" class="p-b">
+        <div>
+          <app-empty-data></app-empty-data>
+        </div>
       </div>
     </div>
   </div>

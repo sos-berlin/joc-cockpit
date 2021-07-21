@@ -104,12 +104,6 @@ export class ResumeOrderModalComponent implements OnInit {
           if (json.instructions[x].TYPE === 'Execute.Named') {
             json.instructions[x].TYPE = 'Job';
           }
-          if (json.instructions[x].TYPE === 'PostNotice') {
-            json.instructions[x].TYPE = 'Publish ';
-          }
-          if (json.instructions[x].TYPE === 'ReadNotice') {
-            json.instructions[x].TYPE = 'Await ';
-          }
           if (!flag) {
             json.instructions[x].show = true;
           }

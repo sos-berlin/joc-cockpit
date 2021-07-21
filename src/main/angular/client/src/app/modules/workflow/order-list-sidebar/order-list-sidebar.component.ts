@@ -127,7 +127,7 @@ export class OrderListSidebarComponent implements OnChanges{
           if (item.state._text === 'PENDING' || item.state._text === 'SCHEDULED') {
             this.object.isCancelWithKill = true;
           }
-          if (item.state._text !== 'SCHEDULED' && item.state._text !== 'PENDING') {
+          if (item.state._text !== 'SCHEDULED' && item.state._text !== 'PENDING' && item.state._text !== 'BLOCKED') {
             this.object.isModify = false;
           }
         }

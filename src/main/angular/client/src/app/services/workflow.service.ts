@@ -1114,20 +1114,8 @@ export class WorkflowService {
     return str;
   }
 
-  convertDurationToString(time: any, isMills = false): string {
-    let seconds = Number(time);
-    if (isMills) {
-      if (seconds < 1000) {
-        return seconds.toString();
-      } else {
-        let sec = seconds / 1000;
-        if (sec % 1 !== 0) {
-          return seconds.toString();
-        } else {
-          seconds = sec;
-        }
-      }
-    }
+  convertDurationToString(time: any): string {
+    const seconds = Number(time);
     const y = Math.floor(seconds / (3600 * 365 * 24));
     const m = Math.floor((seconds % (3600 * 365 * 24)) / (3600 * 30 * 24));
     const w = Math.floor(((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) / (3600 * 7 * 24));

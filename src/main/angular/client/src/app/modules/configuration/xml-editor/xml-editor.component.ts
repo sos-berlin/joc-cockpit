@@ -17,9 +17,9 @@ import {DataService} from '../../../services/data.service';
 import {NzMessageService} from 'ng-zorro-antd/message';
 
 declare const require: any;
-declare const vkbeautify: any;
 declare const $: any;
 
+const format = require('xml-formatter');
 const xpath = require('xpath');
 const convert = require('xml-js');
 
@@ -1443,7 +1443,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }, 10);
   }
 
-  private getJobResourceTree(): void{
+  private getJobResourceTree(): void {
     if (this.jobResourcesTree.length === 0) {
       this.coreService.post('tree', {
         controllerId: this.schedulerIds.selected,
@@ -1466,11 +1466,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       res.jobResources.forEach((item) => {
         const path = item.path.substring(0, item.path.lastIndexOf('/')) || '/';
         const obj = {
-          title : item.name,
-          path : item.path,
-          key : item.name,
-          type : item.objectType,
-          isLeaf : true
+          title: item.name,
+          path: item.path,
+          key: item.name,
+          type: item.objectType,
+          isLeaf: true
         };
         if (map.has(path)) {
           const arr = map.get(path);
@@ -1516,7 +1516,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
                 attrs[i].values = vals;
               }
               if (attrs[i].type === 'xs:list') {
-                if(!attrs[i].data && attrs[i].default){
+                if (!attrs[i].data && attrs[i].default) {
                   attrs[i].data = attrs[i].default;
                 }
                 if (attrs[i].data && typeof attrs[i].data === 'string') {
@@ -4428,7 +4428,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (node !== undefined) {
       if (node.refElement === child.ref) {
         if (child.keyref) {
-          if(child.attributes) {
+          if (child.attributes) {
             for (let i = 0; i < child.attributes.length; i++) {
               if (child.attributes[i].name === child.keyref) {
                 if (node.data === child.attributes[i].data) {
@@ -5302,7 +5302,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     };
     if (this.objectType !== 'NOTIFICATION') {
       obj.id = tab.id;
-    } else{
+    } else {
       obj.release = isRelease;
     }
     this.coreService.post('xmleditor/remove', obj).subscribe((res: any) => {
@@ -5733,7 +5733,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       const xmlAsString = new XMLSerializer().serializeToString(xml);
       let a = `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>`;
       a = a.concat(xmlAsString);
-      return flag ? vkbeautify.xml(a) : a;
+      if(flag) {
+        let formatedXml = format(a);
+        formatedXml = formatedXml.replace(/>\s*(<!\[CDATA\[)/g, '>$1');
+        formatedXml = formatedXml.replace(/]]>\s*<\//g, ']]></');
+        return formatedXml;
+      } else{
+        return a;
+      }
     } else {
       return null;
     }
