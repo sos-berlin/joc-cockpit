@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-md-12" *ngIf="data.type">
-    <div class="box p-a">
+    <div class="box p-a p-r-md">
       <div class="b-b p-b m-b">
         <span class="text-left">
           <a (click)="backToListView()"><i nz-tooltip="{{'inventory.button.backToList' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
@@ -27,9 +27,9 @@
       <form *ngIf="board.configuration">
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.name' | translate) : ''"
+          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.name' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>common.label.name</label>
-          <div class="col-md-8 col-lg-6">
+          <div class="col-lg-9 col-xl-8 col-xxl-6">
             <input type="text" required identifierValidation class="form-control" [readonly]="isTrash || !permission.joc.inventory.manage" [appAutofocus]="!isTrash"
                    name="name" [(ngModel)]="board.name" #name="ngModel" autocomplete="off" (blur)="rename(name.invalid)">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
@@ -41,17 +41,17 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.title' | translate) : ''"
+          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.title' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>common.label.title</label>
-          <div class="col-md-8 col-lg-6">
+          <div class="col-lg-9 col-xl-8 col-xxl-6">
             <input type="text" class="form-control" [readonly]="isTrash || !permission.joc.inventory.manage" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
                    name="title" [(ngModel)]="board.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.documentation' | translate) : ''"
+          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.documentation' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.documentation</label>
-          <div class="col-md-8 col-lg-6 select-input-both">
+          <div class="col-lg-9 col-xl-8 col-xxl-6 select-input-both">
             <input autocomplete="off" [readOnly]="isTrash || !permission.joc.inventory.manage" type="text" class="form-control"
                    placeholder="{{'inventory.placeholder.documentationName' | translate}}"
                    name="documentationPath" [(ngModel)]="board.configuration.documentationName">
@@ -86,9 +86,9 @@
         </div>
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((toNotice.dirty || toNotice.touched) && toNotice.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.toNotice' | translate) : ''"
+          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.toNotice' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.toNotice</label>
-          <div class="col-md-8 col-lg-6">
+          <div class="col-lg-9 col-xl-8 col-xxl-6">
             <nz-input-group [nzAddOnAfter]="addOnAfterTemplate">
               <input autocomplete="off" nz-input [readonly]="isTrash || !permission.joc.inventory.manage" #toNotice="ngModel" required type="text" name="toNotice"
                      placeholder="{{'inventory.placeholder.toNotice' | translate}}" (blur)="saveJSON()"
@@ -109,9 +109,9 @@
         </div>
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((readingOrderToNoticeId.dirty || readingOrderToNoticeId.touched) && readingOrderToNoticeId.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.readingOrderToNoticeId' | translate) : ''"
+          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.readingOrderToNoticeId' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.readingOrderToNoticeId</label>
-          <div class="col-md-8 col-lg-6">
+          <div class="col-lg-9 col-xl-8 col-xxl-6">
             <nz-input-group [nzAddOnAfter]="addOnAfterTemplate3">
               <input autocomplete="off" nz-input [readonly]="isTrash || !permission.joc.inventory.manage" #readingOrderToNoticeId="ngModel" required type="text" name="readingOrderToNoticeId"
                      placeholder="{{'inventory.placeholder.readingOrderToNoticeId' | translate}}" (blur)="saveJSON()"
@@ -131,9 +131,9 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.endOfLife' | translate) : ''"
+          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.endOfLife' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.endOfLife</label>
-          <div class="col-md-8 col-lg-6" [ngClass]="{ 'has-error' : (((endOfLife.dirty || endOfLife.touched) && endOfLife.invalid))}">
+          <div class="col-lg-9 col-xl-8 col-xxl-6" [ngClass]="{ 'has-error' : (((endOfLife.dirty || endOfLife.touched) && endOfLife.invalid))}">
             <nz-input-group [nzAddOnAfter]="addOnAfterTemplate2">
               <input timevalidator maxlength="8" [hidden]="boardObj.units !== 'HH:MM:SS'" nz-input autocomplete="off" [readonly]="isTrash || !permission.joc.inventory.manage" #endOfLife="ngModel" type="text" name="endOfLife"
                      placeholder="{{'inventory.placeholder.endOfLife' | translate}}" (blur)="saveJSON()"

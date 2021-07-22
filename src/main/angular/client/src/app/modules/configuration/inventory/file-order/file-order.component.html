@@ -1,6 +1,6 @@
 <div class="row" >
   <div class="col-md-12" *ngIf="data.type">
-    <div class="box p-a">
+    <div class="box p-a p-r-md">
       <div class="b-b p-b m-b">
         <span class="text-left">
           <a (click)="backToListView()"><i nz-tooltip="{{'inventory.button.backToList' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
@@ -26,9 +26,9 @@
       </div>
       <form *ngIf="fileOrder.configuration">
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.name' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.name' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                  translate>common.label.name</label>
-          <div class="col-md-8 col-lg-6"
+          <div class="col-lg-9 col-xl-8 col-xxl-6"
                [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
             <input type="text" required identifierValidation [readonly]="isTrash || !permission.joc.inventory.manage" [appAutofocus]="!isTrash"
                    class="form-control" (blur)="rename(name.invalid)"
@@ -42,18 +42,18 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.title' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.title' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                  translate>common.label.title</label>
-          <div class="col-md-8 col-lg-6">
+          <div class="col-lg-9 col-xl-8 col-xxl-6">
             <input type="text" [readonly]="isTrash || !permission.joc.inventory.manage" class="form-control" autocomplete="off" maxlength="255"
                    placeholder="{{'common.placeholder.title' | translate}}"
                    name="title" [(ngModel)]="fileOrder.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.documentation' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.documentation' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                  translate>inventory.label.documentation</label>
-          <div class="col-md-8 col-lg-6 select-input-both">
+          <div class="col-lg-9 col-xl-8 col-xxl-6 select-input-both">
             <input autocomplete="off" [readOnly]="isTrash" type="text" class="form-control"
                    placeholder="{{'inventory.placeholder.documentationName' | translate}}"
                    name="documentationPath" [(ngModel)]="fileOrder.configuration.documentationName">
@@ -88,9 +88,9 @@
         </div>
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((workflowName.dirty || workflowName.touched) && workflowName.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.workflowName' | translate) : ''"
+          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.workflowName' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.workflowName</label>
-          <div class="col-md-8 col-lg-6 select-input-both">
+          <div class="col-lg-9 col-xl-8 col-xxl-6 select-input-both">
             <input autocomplete="off" [readOnly]="isTrash" type="text" class="form-control"
                    placeholder="{{'inventory.placeholder.workflowName' | translate}}"
                    name="workflowName" #workflowName="ngModel" [(ngModel)]="fileOrder.configuration.workflowName">
@@ -124,15 +124,15 @@
                 <div translate>common.message.requiredError</div>
               </div>
             </div>
-          </div>
-          <div *ngIf="fileOrder.configuration.workflowName" style="position: relative; top: 2px">
-            <i (click)="navToWorkflow()" class="fa fa-pencil cursor"></i>
+            <div *ngIf="fileOrder.configuration.workflowName" class="pos-abt" style="right: -8px;margin-top: -25px">
+              <i (click)="navToWorkflow()" class="fa fa-pencil cursor"></i>
+            </div>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.agent' | translate) : ''"
+          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.agent' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.agent</label>
-          <div class="col-md-8 col-lg-6"
+          <div class="col-lg-9 col-xl-8 col-xxl-6"
                [ngClass]="{'has-error' : (agentName.dirty || agentName.touched) && agentName.invalid}">
             <nz-select nzShowSearch name="agentName" (ngModelChange)="changeValue($event, 'agentName')"
                        nzPlaceHolder="{{'workflow.placeholder.selectAgentName' | translate}}"
@@ -148,36 +148,36 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.directory' | translate) : ''"
+          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.directory' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.directory</label>
-          <div class="col-md-8 col-lg-6">
+          <div class="col-lg-9 col-xl-8 col-xxl-6">
             <input type="text" [readonly]="isTrash" class="form-control" autocomplete="off" maxlength="255"
                    placeholder="{{'inventory.placeholder.directory' | translate}}"
                    name="directory" [(ngModel)]="fileOrder.configuration.directory" (blur)="saveJSON()">
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.pattern' | translate) : ''"
+          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.pattern' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.pattern</label>
-          <div class="col-md-8 col-lg-6">
+          <div class="col-lg-9 col-xl-8 col-xxl-6">
             <input type="text" [readonly]="isTrash" class="form-control" autocomplete="off" maxlength="255"
                    placeholder="{{'inventory.placeholder.pattern' | translate}}"
                    name="pattern" [(ngModel)]="fileOrder.configuration.pattern" (blur)="saveJSON()">
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.timeZone' | translate) : ''"
+          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.timeZone' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>common.label.timeZone</label>
-          <div class="col-md-8 col-lg-6">
+          <div class="col-lg-9 col-xl-8 col-xxl-6">
             <nz-select nzShowSearch name="timeZone" nzAllowClear [(ngModel)]="fileOrder.configuration.timeZone" (ngModelChange)="changeValue($event, 'timeZone')">
               <nz-option *ngFor="let zone of zones" [nzValue]="zone" [nzLabel]="zone"></nz-option>
             </nz-select>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.delay' | translate) : ''"
+          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.delay' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.delay</label>
-          <div class="col-md-8 col-lg-6">
+          <div class="col-lg-9 col-xl-8 col-xxl-6">
             <nz-input-number [nzMin]="1" [nzStep]="1" name="delay" (nzBlur)="saveJSON()"
                              [(ngModel)]="fileOrder.configuration.delay"></nz-input-number>
           </div>

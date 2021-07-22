@@ -1,13 +1,14 @@
 mwl-gauge {
-  width: 200px;
+  width: 240px;
   height: 200px;
   display: block;
-  padding: 10px;
+  padding: 2px;
 }
 
-.timeline{
+.timeline {
   display: inline-block;
   min-width: 100%;
+
   .ant-picker-input {
     top: 1px;
     cursor: pointer;
@@ -18,6 +19,7 @@ mwl-gauge {
 .timeline .timeline-header {
   display: inline-block;
   margin-right: 16px;
+
   .ant-picker {
     width: 0;
     height: 0;
@@ -26,7 +28,30 @@ mwl-gauge {
     border: none;
     cursor: pointer;
   }
-  .no-cursor{
+
+  .no-cursor {
     cursor: default;
+  }
+}
+
+.overview {
+  max-height: calc(100vh - 636px);
+  overflow: auto;
+}
+
+@media(min-width: 1600px) {
+  mwl-gauge {
+    width: 200px;
+  }
+}
+
+@media(max-width: 991px) {
+  mwl-gauge {
+    width: 200px;
+  }
+
+  .overview {
+    max-height: 100%;
+    overflow: hidden;
   }
 }

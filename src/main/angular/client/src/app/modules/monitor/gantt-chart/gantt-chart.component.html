@@ -1,5 +1,5 @@
 <div class="gantt-chart">
-  <div class="taskTableWrapper" [ngStyle]="{width: isAgent ? 'calc(26% - 2px)' : 'calc(20% - 2px)'}" #scrollOne>
+  <div class="taskTableWrapper" [ngStyle]="{width: isAgent ? 'calc(26% - 2px)' : 'calc(22% - 2px)'}" #scrollOne>
     <table class="taskTable">
       <thead>
       <tr>
@@ -7,7 +7,7 @@
         <th><span translate>dashboard.label.controllerId</span></th>
         <th *ngIf="groupBy !== 'DATE'"><span translate>monitor.label.date</span></th>
         <th *ngIf="isAgent"><span translate>agent.label.agentId</span></th>
-        <th *ngIf="isAgent"><span translate>dashboard.label.url</span></th>
+        <th><span translate>dashboard.label.url</span></th>
       </tr>
       </thead>
       <tbody>
@@ -33,16 +33,17 @@
             {{ task.date}}
         </td>
         <td *ngIf="isAgent">{{ task.agentId }}</td>
-        <td *ngIf="isAgent">
-          <a class="text-hover-primary" [href]="task.url+'/agent/api'" target="_blank"
+        <td>
+          <a *ngIf="isAgent" class="text-hover-primary" [href]="task.url+'/agent/api'" target="_blank"
              [innerHtml]="task.url"></a>
+          <a *ngIf="!isAgent" [innerHtml]="task.url"></a>
         </td>
       </tr>
       </tbody>
     </table>
   </div>
   <div
-    class="timelineWrapper" [ngStyle]="{width: isAgent ? '74%' : '80%'}"
+    class="timelineWrapper" [ngStyle]="{width: isAgent ? '74%' : '78%'}"
     (scroll)="scrollOne.scrollTop = scrollTwo.scrollTop"
     #scrollTwo
   >

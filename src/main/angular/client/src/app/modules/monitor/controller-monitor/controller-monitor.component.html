@@ -1,5 +1,5 @@
 <div class="row m-t-xs">
-  <div class="col-md-8 col-lg-9">
+  <div class="col-lg-8 col-xl-9">
     <div class="box">
       <div class="box-header b-b">
         <h3>
@@ -24,7 +24,7 @@
                 </div>
               </div>
             </div>
-            <div class="inline btn-group pull-right hidden-btn-group">
+            <div class="inline btn-group pull-right">
               <div class="btn btn-default btn-sm"
                    (click)="setView('Week',  'statistics')"
                    [class.primary]="filters.statistics.filter.view === 'Week'" translate>
@@ -66,7 +66,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md-4 col-lg-3">
+  <div class="col-lg-4 col-xl-3">
     <div class="box">
       <div class="box-header b-b">
         <h3>
@@ -115,8 +115,8 @@
               </div>
               <i class="text-muted" style="position: relative;top:-12px" >{{'common.label.total' | translate}} {{item.hours}}</i>
           </div>
-          <div class="col-md-6 text-center" *ngIf="!isLoaded">
-            <div [hidden]="runningTime.length>0" class="hide vert-middle text-primary text">
+          <div class="col-md-12 text-center" *ngIf="!isLoaded">
+            <div class="vert-middle text-primary text">
               <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
             </div>
           </div>
@@ -149,7 +149,7 @@
                 </div>
               </div>
             </div>
-            <div class="inline btn-group pull-right hidden-btn-group">
+            <div class="inline btn-group pull-right">
               <div class="btn btn-default btn-sm"
                    (click)="setView('Week',  'overview')"
                    [class.primary]="filters.overview.filter.view === 'Week'" translate>
@@ -164,7 +164,7 @@
           </div>
         </div>
       </div>
-      <div class="box-body p-a" style="max-height: calc(100vh - 636px);overflow: auto" [hidden]="!isLoaded && ganttData.length === 0">
+      <div class="box-body p-a overview" [hidden]="!isLoaded && ganttData.length === 0">
         <app-gantt-chart
           [dayStart]="'00:00'"
           [dayEnd]="'23:00'"

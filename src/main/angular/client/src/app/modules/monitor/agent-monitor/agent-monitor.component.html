@@ -11,18 +11,19 @@
             <nz-month-picker *ngIf="filters.filter.view === 'Month'" [(ngModel)]="filters.filter.endDate" [nzAllowClear]="false" (ngModelChange)="onChange($event)" [nzDisabledDate]="disabledDate"></nz-month-picker>
             {{filters.filter.startDate | date : dateFormat }} - {{filters.filter.endDate | date : dateFormat}}
           </div>
-          <div class="btn btn-default btn-sm" (click)="next()" [ngClass]="{'disabled': (filters.filter.startMonth=== filters.filter.currentMonth && filters.filter.startYear=== filters.filter.currentYear)}">
+          <div class="btn btn-default btn-sm" (click)="next()">
             <i class="fa fa-angle-right text-md"></i>
           </div>
         </div>
       </div>
       <div class="inline">
         <div class="inline">
-          <label class="m-r" style="position: relative;top: 2px">Filter By:</label>
+          <label class="m-r" style="position: relative;top: 2px">{{'monitor.button.filterBy' | translate}}:</label>
         </div>
         <div class="inline">
           <div style="position: relative;top: 2px">
-            <nz-select class="select-box" nzMode="multiple" nzAllowClear nzPlaceHolder="{{'common.label.selectController' | translate}}" [(ngModel)]="filters.filter.controllerId" name="id">
+            <nz-select class="select-box" nzAllowClear nzPlaceHolder="{{'common.label.selectController' | translate}}"
+                       [(ngModel)]="filters.filter.controllerId" (ngModelChange)="changeController()" name="controller">
               <nz-option *ngFor="let controller of schedulerIds.controllerIds" [nzLabel]="controller" [nzValue]="controller"></nz-option>
             </nz-select>
           </div>
@@ -30,18 +31,18 @@
       </div>
       <div class="inline m-l">
         <div class="inline">
-          <label class="m-r" style="position: relative;top: 2px">Group By:</label>
+          <label class="m-r" style="position: relative;top: 2px">{{'monitor.button.groupBy' | translate}}:</label>
         </div>
         <div class="inline">
           <div style="position: relative;top: 2px">
-            <nz-select class="select-box" [(ngModel)]="filters.filter.groupBy" name="groupBy">
-              <nz-option [nzLabel]="'Controller ID'" [nzValue]="'CONTROLLER_ID'"></nz-option>
+            <nz-select class="select-box" [(ngModel)]="filters.filter.groupBy" (ngModelChange)="groupBy()" name="groupBy">
+              <nz-option [nzLabel]="'Controller ID'" [nzValue]="'CONTROLLERID'"></nz-option>
               <nz-option [nzLabel]="'Date'" [nzValue]="'DATE'"></nz-option>
             </nz-select>
           </div>
         </div>
       </div>
-      <div class="inline btn-group pull-right hidden-btn-group">
+      <div class="inline btn-group pull-right" style="top: 6px">
         <div class="btn btn-default btn-sm"
              (click)="setView('Week')"
              [class.primary]="filters.filter.view === 'Week'" translate>
@@ -55,18 +56,19 @@
       </div>
     </div>
   </div>
-  <div class="col-md-12">
+  <div class="col-md-12 m-t-xs">
     <div class="box">
       <div class="box-header b-b">
         <h3 translate>monitor.label.statistics</h3>
       </div>
-      <div class="box-body">
-        <div class="row" [hidden]="!isLoaded" style="overflow-y: auto;">
+      <div class="box-body overview">
+        <div class="row" [hidden]="!isLoaded && agents.length === 0" style="overflow-y: auto;">
           <div class="col-md-12">
             <app-gantt-chart
               [dayStart]="'00:00'"
               [dayEnd]="'23:00'"
               [tasks]="agents"
+              [groupBy]="filters.filter.groupBy"
               [isAgent]="true"
             ></app-gantt-chart>
           </div>
@@ -75,7 +77,7 @@
              [ngClass]="{'show': !isLoaded}">
           <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
         </div>
-        <div *ngIf="agents.length==0 && isLoaded" class="vert-middle">
+        <div *ngIf="agents.length==0 && isLoaded" class="p-a">
           <div>
             <app-empty-data></app-empty-data>
           </div>

@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-md-12" *ngIf="data.type">
-    <div class="box p-a">
+    <div class="box p-a p-r-md">
       <div class="b-b p-b m-b">
         <span class="text-left">
           <a (click)="backToListView()"><i nz-tooltip="{{'inventory.button.backToList' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
@@ -29,9 +29,9 @@
           <div class="col-md-12">
             <div class="form-group row"
                  [ngClass]="{'has-error' : ((cname.dirty || cname.touched) && cname.invalid)}">
-              <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.name' | translate) : ''"
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.name' | translate) : ''"
                      [nzTooltipMouseEnterDelay]="0.5" translate>common.label.name</label>
-              <div class="col-md-8 col-lg-6">
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <input type="text" class="form-control" [readonly]="isTrash || !permission.joc.inventory.manage" [appAutofocus]="!isTrash" identifierValidation required name="name" #cname="ngModel" autocomplete="off"
                        placeholder="{{'inventory.placeholder.enterCalendarName' | translate}}"
                        [(ngModel)]="calendar.name" (blur)="rename(cname.invalid)">
@@ -44,17 +44,17 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.title' | translate) : ''"
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.title' | translate) : ''"
                      [nzTooltipMouseEnterDelay]="0.5" translate>common.label.title</label>
-              <div class="col-md-8 col-lg-6">
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <input type="text" class="form-control" [readonly]="isTrash || !permission.joc.inventory.manage" autocomplete="off" placeholder="{{'common.placeholder.title' | translate}}"
                        [(ngModel)]="calendar.configuration.title" name="title" (blur)="saveJSON()">
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.documentation' | translate) : ''"
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.documentation' | translate) : ''"
                      [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.documentation</label>
-              <div class="col-md-8 col-lg-6 select-input-both">
+              <div class="col-lg-9 col-xl-8 col-xxl-6 select-input-both">
                 <input autocomplete="off" [readOnly]="isTrash || !permission.joc.inventory.manage" type="text" class="form-control"
                        placeholder="{{'inventory.placeholder.documentationName' | translate}}"
                        name="documentationPath" [(ngModel)]="calendar.configuration.documentationName">
@@ -88,9 +88,9 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.type' | translate) : ''"
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.type' | translate) : ''"
                      [nzTooltipMouseEnterDelay]="0.5" translate>common.label.type</label>
-              <div class="col-md-8 col-lg-6">
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <nz-select [(ngModel)]="calendar.configuration.type" [nzDisabled]="isTrash || !permission.joc.inventory.manage" name="cType" (ngModelChange)="saveJSON()">
                   <nz-option nzValue="WORKINGDAYSCALENDAR" [nzLabel]="'runtime.label.workingDay' | translate"></nz-option>
                   <nz-option nzValue="NONWORKINGDAYSCALENDAR" [nzLabel]="'runtime.label.nonWorkingDay' | translate"></nz-option>
@@ -98,23 +98,23 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.validFrom' | translate) : ''"
+              <label class="col-md-3 col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.validFrom' | translate) : ''"
                      [nzTooltipMouseEnterDelay]="0.5" translate>runtime.label.validFrom</label>
-              <div class="col-md-8 col-lg-2">
+              <div class="col-md-3 col-lg-3 col-xl-3 col-xxl-2">
                 <nz-date-picker name="from" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
                           [(ngModel)]="calendar.configuration.from" [nzFormat]="dateFormat"
                           [nzPlaceHolder]="'common.placeholder.setStartDate' | translate" (ngModelChange)="saveJSON()"></nz-date-picker>
               </div>
-              <label class="col-md-4 col-lg-2 form-control-label date-center" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.validTo' | translate) : ''"
+              <label class="col-md-3 col-lg-3 col-xl-2 col-xxl-2 form-control-label date-center" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.validTo' | translate) : ''"
                      [nzTooltipMouseEnterDelay]="0.5" translate>runtime.label.validTo</label>
-              <div class="col-md-8 col-lg-2 date-right" [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}">
+              <div class="col-md-3 col-lg-3 col-xl-3 col-xxl-2 date-right" [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}">
                 <nz-date-picker id="to" name="to" #to="ngModel" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
                           [(ngModel)]="calendar.configuration.to" [nzFormat]="dateFormat"
                           [nzPlaceHolder]="'common.placeholder.setEndDate' | translate" (ngModelChange)="saveJSON()"></nz-date-picker>
               </div>
             </div>
           </div>
-          <div class="col-md-12 col-lg-9">
+          <div class="col-lg-12 col-xl-11 col-xxl-9">
             <div class="btn-group">
               <button type="button" class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': editor.frequencyType=='INCLUDE'}"
@@ -127,18 +127,18 @@
                 runtime.button.excludedFrequencies
               </button>
             </div>
-            <button type="button" class="btn btn-sm pull-right btn-grey hidden-btn-text"
+            <button type="button" class="btn btn-sm pull-right btn-grey"
                     (click)="createNewFrequency()" [disabled]="isTrash || !permission.joc.inventory.manage" translate>
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>runtime.button.addNewFrequency</span>
             </button>
-            <button type="button" class="btn btn-sm pull-right btn-grey hidden-btn-text m-r-12 m-b" [disabled]="calendar.configuration.includesFrequency.length==0 && calendar.configuration.excludesFrequency.length==0"
+            <button type="button" class="btn btn-sm pull-right btn-grey m-r-12 m-b" [disabled]="calendar.configuration.includesFrequency.length==0 && calendar.configuration.excludesFrequency.length==0"
                     (click)="showYearView()" translate>
               <i class="fa fa-television"></i>&nbsp;
               <span translate>runtime.button.showYearView</span>
             </button>
           </div>
-          <div class="col-md-12 col-lg-9" style="max-height: calc(100vh - 554px); overflow: auto">
+          <div class="col-lg-12 col-xl-11 col-xxl-9" style="max-height: calc(100vh - 554px); overflow: auto">
             <div class="table-responsive">
               <table class="table table-hover table-bordered ">
                 <thead>

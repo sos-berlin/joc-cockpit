@@ -347,3 +347,9 @@
     width: 900px !important;
   }
 }
+
+@media(max-width: 1200px) {
+  .mr-lg{
+    margin-right: 17px;
+  }
+}

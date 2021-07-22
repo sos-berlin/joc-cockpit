@@ -4,6 +4,7 @@ import {differenceInCalendarDays} from 'date-fns';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
+import {GroupByPipe} from '../../../pipes/core.pipe';
 
 @Component({
   selector: 'app-agent-monitor',
@@ -18,13 +19,17 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
 
   isLoaded = false;
   agents = [];
+  data = [];
+  groupByData = [];
+
   viewDate: Date = new Date();
   dateFormat: string;
   weekStart = 1;
 
   subscription1: Subscription;
 
-  constructor(private coreService: CoreService, private authService: AuthService, private dataService: DataService) {
+  constructor(private coreService: CoreService, private authService: AuthService,
+              private groupByPipe: GroupByPipe, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -42,7 +47,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.getData();
+    this.renderTimeSheetHeader();
   }
 
   ngOnDestroy(): void {
@@ -50,96 +55,45 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
   }
 
   private getData(): void {
-    console.log('Agent  >>> From :', this.filters.filter.startDate, 'To :', this.filters.filter.endDate);
-    this.agents = [
-      {
-        id: 1,
-        controllerId: 'testsuite',
-        agentId: '',
-        isParent: true,
-        url: '',
-        date: '',
-        start: '00:15',
-        end: '25:00',
-        statusList: [
-        ]
-      },
-      {
-        id: 2,
-        controllerId: '',
-        agentId: 'agent1',
-        parentID: 1,
-        url: 'http://localhost:7445',
-        date: '2021-07-16',
-        start: '00:15',
-        end: '25:00',
-        statusList: [
-          {
-            start: '10:19:36',
-            end: '12:00:36',
-            color: '#ff3232',
-            tooltip: 'akka.stream.StreamTcpException: Tcp command [Connect(localhost:7446,None,List(),Some(10 seconds),true)] failed because of java.net.ConnectException: Connection refused: no further information [suppressed: TCP Connect localhost:7446: Connection refused: no further information]'
-          },
-          {
-            start: '18:19:36',
-            end: '20:00:36',
-            color: '#ff3232',
-            tooltip: 'akka.stream.StreamTcpException: Tcp command [Connect(localhost:7446,None,List(),Some(10 seconds),true)] failed because of java.net.ConnectException: Connection refused: no further information [suppressed: TCP Connect localhost:7446: Connection refused: no further information]'
-          }
-        ]
-      },
-      {
-        id: 3,
-        controllerId: '',
-        agentId: 'agent2',
-        parentID: 1,
-        url: 'http://localhost:7446',
-        date: '2021-07-15',
-        start: '00:15',
-        end: '25:00',
-        statusList: [
-          {
-            start: '11:54',
-            color: '#ff3232',
-            tooltip: 'akka.stream.StreamTcpException: Tcp command [Connect(localhost:7446,None,List(),Some(10 seconds),true)] failed because of java.net.ConnectException: Connection refused: no further information [suppressed: TCP Connect localhost:7446: Connection refused: no further information]',
-            end: '12:30'
-          }
-        ]
-      },
-      {
-        id: 4,
-        controllerId: 'testsuite',
-        agentId: '',
-        isParent: true,
-        url: '',
-        date: '',
-        start: '00:15',
-        end: '25:00',
-        statusList: [
-        ]
-      },
-      {
-        id: 5,
-        controllerId: '',
-        parentID: 4,
-        agentId: 'agent3',
-        url: 'http://localhost:7445',
-        date: '2021-07-13',
-        start: '00:15',
-        end: '25:00',
-        statusList: [
-          {
-            start: '10:59:27',
-            color: '#ff3232',
-            end: '11:49:46',
-            tooltip: 'akka.stream.StreamTcpException: Tcp command [Connect(localhost:7446,None,List(),Some(10 seconds),true)] failed because of java.net.ConnectException: Connection refused: no further information [suppressed: TCP Connect localhost:7446: Connection refused: no further information]'
-          }
-        ]
-      }
-    ];
-    setTimeout(() => {
+    this.coreService.post('monitoring/agents', {
+      controllerId: this.filters.filter.controllerId ? this.filters.filter.controllerId : '',
+      dateFrom: this.filters.filter.startDate,
+      dateTo: this.filters.filter.endDate,
+      timeZone: this.preferences.zone
+    }).subscribe((res: any) => {
+      this.data = res.controllers;
       this.isLoaded = true;
-    }, 1000);
+      this.groupBy();
+    }, () => {
+      this.isLoaded = true;
+    });
+  }
+
+  changeController(): void{
+    this.getData();
+  }
+
+  groupBy(): void {
+    this.groupByData = [];
+    this.isLoaded = true;
+    this.data.forEach((controller) => {
+      for (const i in controller.agents) {
+        for (const j in controller.agents[i].entries) {
+          const obj = {
+            controllerId: controller.controllerId,
+            agentId: controller.agents[i].agentId,
+            url: controller.agents[i].url,
+            date: this.coreService.getDateByFormat(controller.agents[i].entries[j].readyTime, this.preferences.zone, 'YYYY-MM-DD'),
+            readyTime: controller.agents[i].entries[j].readyTime,
+            couplingFailedTime: controller.agents[i].entries[j].couplingFailedTime,
+            couplingFailedMessage: controller.agents[i].entries[j].couplingFailedMessage,
+          };
+          this.groupByData.push(obj);
+        }
+      }
+    });
+    this.groupByData = this.groupByPipe.transform(this.groupByData, this.filters.filter.groupBy === 'DATE' ? 'date' : 'controllerId');
+    this.getStatisticsData();
   }
 
   setView(view): void {
@@ -192,7 +146,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
         do {
           const date = currentDate.getDate();
           if (currentDate >= firstDate && currentDate <= lastDate) {
-            headerDates.push(new Date(currentDate));
+            headerDates.push(new Date(currentDate.setHours(0, 0, 0, 0)));
           }
           currentDate.setDate(date + 1);
         }
@@ -201,7 +155,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
     } else {
       do {
         const date = currentDate.getDate();
-        headerDates.push(new Date(currentDate));
+        headerDates.push(new Date(currentDate.setHours(0, 0, 0, 0)));
         currentDate.setDate(date + 1);
       }
       while (currentDate.getDay() !== weekStart);
@@ -209,6 +163,67 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
     this.filters.filter.startDate = headerDates[0];
     this.filters.filter.endDate = headerDates[headerDates.length - 1];
     this.getData();
+  }
+
+  private getStatisticsData(): void {
+    this.agents = [];
+    let count = 0;
+    this.groupByData.forEach((item) => {
+      const parentObj: any = {
+        id: ++count,
+        isParent: true,
+        start: '00:15',
+        end: '25:00',
+        statusList: []
+      };
+      parentObj[this.filters.filter.groupBy === 'DATE' ? 'date' : 'controllerId'] = item.key;
+      this.agents.push(parentObj);
+      const values = this.groupByPipe.transform(item.value, this.filters.filter.groupBy === 'DATE' ? 'agentId' : 'date');
+      for (const i in values) {
+        if (this.filters.filter.groupBy === 'CONTROLLERID') {
+          const agents = this.groupByPipe.transform(values[i].value, 'agentId');
+          for (const a in agents) {
+            const obj: any = {
+              id: ++count,
+              parentID: parentObj.id,
+              date: values[i].key,
+              agentId: agents[a].key,
+              start: '00:15',
+              end: '25:00',
+              statusList: []
+            };
+            this.updateStatusList(agents[a], obj);
+          }
+        } else {
+          const obj: any = {
+            id: ++count,
+            parentID: parentObj.id,
+            agentId: values[i].key,
+            start: '00:15',
+            end: '25:00',
+            statusList: []
+          };
+          this.updateStatusList(values[i], obj);
+        }
+      }
+    });
+  }
+
+  private updateStatusList(data, obj): void {
+    data.value.forEach((time, index) => {
+      if (this.filters.filter.groupBy === 'DATE') {
+        obj.controllerId = time.controllerId;
+      }
+      obj.url = time.url;
+      const statusObj = {
+        start: index === 0 ? '00:00' : this.coreService.getDateByFormat(data.value[index - 1].couplingFailedTime, this.preferences.zone, 'HH:mm:SS'),
+        end: this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS'),
+        color: '#ff3232',
+        tooltip: time.couplingFailedMessage
+      };
+      obj.statusList.push(statusObj);
+    });
+    this.agents.push(obj);
   }
 
   disabledDate = (current: Date): boolean => {

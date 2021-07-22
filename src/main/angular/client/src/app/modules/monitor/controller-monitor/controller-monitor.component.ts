@@ -22,7 +22,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
 
   isLoaded = false;
   runningTime: any = [];
-  statisticsData: any[];
+  statisticsData: any = [];
   data = [];
   ganttData = [];
   groupByData = [];

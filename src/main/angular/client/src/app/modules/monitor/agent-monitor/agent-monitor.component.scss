@@ -1,16 +1,19 @@
 
-.timeline{
+.timeline {
   display: inline-block;
   min-width: 100%;
+
   .ant-picker-input {
     top: 1px;
     cursor: pointer;
     opacity: 0;
   }
 }
+
 .timeline .timeline-header {
   display: inline-block;
   margin-right: 16px;
+
   .ant-picker {
     width: 0;
     height: 0;
@@ -19,16 +22,29 @@
     border: none;
     cursor: pointer;
   }
-  .no-cursor{
+
+  .no-cursor {
     cursor: default;
   }
 }
-.btn{
+
+.btn {
   border: 1px solid var(--border-color);
 }
+
 .select-box {
-  min-width: 220px;
-  .ant-select-multiple .ant-select-selector {
-    padding: 0;
+  min-width: 196px;
+}
+
+.overview {
+  max-height: calc(100vh - 330px);
+  overflow: auto;
+}
+
+@media(max-width: 991px) {
+
+  .overview {
+    max-height: 100%;
+    overflow: hidden;
   }
 }
