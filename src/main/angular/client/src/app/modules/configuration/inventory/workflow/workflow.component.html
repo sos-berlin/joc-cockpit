@@ -183,7 +183,7 @@
           </div>
         </div>
       </div>
-      <div class="box-body" *ngIf="selectedNode.type === 'PostNotice' || selectedNode.type === 'ReadNotice'">
+      <div class="box-body" *ngIf="selectedNode.type === 'PostNotice' || selectedNode.type === 'ExpectNotice'">
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.boardName' | translate}}"
                  [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.board.boardName' | translate) : ''"

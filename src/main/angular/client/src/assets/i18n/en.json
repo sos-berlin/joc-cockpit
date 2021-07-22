@@ -1044,7 +1044,7 @@
         "title": "The Title of the Job Resource"
       },
       "board": {
-        "name": "A Notice Board represents the dependencies between workflows. The respective PostNotice Instructions and ReadNotice Instructions in workflows reference the Notice Board. For the name of the Notice Board most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+        "name": "A Notice Board represents the dependencies between workflows. The respective PostNotice Instructions and ExpectNotice Instructions in workflows reference the Notice Board. For the name of the Notice Board most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
         "documentation": "A reference to a Documentation can be added that will be displayed with the Notice Board. The RESOURCES view allows to manage the documentation.",
         "title": "The Title of the Notice Board",
         "toNotice": "Enter Notice ID for posting order",
@@ -1163,7 +1163,9 @@
     },
     "button": {
       "week": "Week",
-      "month": "Month"
+      "month": "Month",
+      "filterBy": "Filter By",
+      "groupBy": "Group By"
     },
     "notification" : {
       "label" : {
@@ -1709,7 +1711,7 @@
     "label.join": "Join",
     "label.branches": "Branches",
     "label.branchId": "Branch ID",
-    "label.readNotice": "ReadNotice",
+    "label.expectNotice": "ExpectNotice",
     "label.fail": "Fail",
     "label.finish": "Finish",
     "label.try": "Try",
@@ -1802,7 +1804,7 @@
     "message.invalidRetryInstruction": "Retry Instruction can't be empty",
     "message.invalidLockInstruction": "Resource Lock Instruction can't be empty",
     "message.invalidPostNoticeInstruction": "PostNotice Instruction is not valid",
-    "message.invalidReadNoticeInstruction": "ReadNotice Instruction is not valid",
+    "message.invalidExpectNoticeInstruction": "ExpectNotice Instruction is not valid",
     "message.agentIsMissing": "Agent is missing, but is required",
     "message.emptyWorkflow": "Workflow is empty, minimum one instruction is required",
     "message.invalidForkInstruction": "Fork Instruction must have minimum of two branches",

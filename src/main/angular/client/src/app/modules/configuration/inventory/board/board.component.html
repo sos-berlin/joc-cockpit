@@ -92,7 +92,7 @@
             <nz-input-group [nzAddOnAfter]="addOnAfterTemplate">
               <input autocomplete="off" nz-input [readonly]="isTrash || !permission.joc.inventory.manage" #toNotice="ngModel" required type="text" name="toNotice"
                      placeholder="{{'inventory.placeholder.toNotice' | translate}}" (blur)="saveJSON()"
-                     [(ngModel)]="board.configuration.toNotice">
+                     [(ngModel)]="board.configuration.postOrderToNoticeId">
             </nz-input-group>
             <ng-template #addOnAfterTemplate>
               <nz-select [nzAllowClear]="true" nzPlaceHolder="{{'inventory.placeholder.selectPredefinedExpression' | translate}}" (ngModelChange)="changeExp($event, 'toNotice')" name="toNoticeMsg" [(ngModel)]="boardObj.toNoticeMsg" style="width: 220px">
@@ -115,7 +115,7 @@
             <nz-input-group [nzAddOnAfter]="addOnAfterTemplate3">
               <input autocomplete="off" nz-input [readonly]="isTrash || !permission.joc.inventory.manage" #readingOrderToNoticeId="ngModel" required type="text" name="readingOrderToNoticeId"
                      placeholder="{{'inventory.placeholder.readingOrderToNoticeId' | translate}}" (blur)="saveJSON()"
-                     [(ngModel)]="board.configuration.readingOrderToNoticeId">
+                     [(ngModel)]="board.configuration.expectOrderToNoticeId">
             </nz-input-group>
             <ng-template #addOnAfterTemplate3>
               <nz-select [nzAllowClear]="true" nzPlaceHolder="{{'inventory.placeholder.selectPredefinedExpression' | translate}}" (ngModelChange)="changeExp($event, 'NoticeId')" name="readingOrderToNoticeIdMsg" [(ngModel)]="boardObj.readingOrderToNoticeIdMsg" style="width: 220px">

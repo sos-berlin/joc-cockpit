@@ -190,7 +190,7 @@
     <hr/>
     <add as="PostNotice" template="PostNotice" style="symbol;image=./assets/mxgraph/images/symbols/publish.svg" icon="./assets/mxgraph/images/publish.png"/>
     <hr/>
-    <add as="ReadNotice" template="ReadNotice" style="symbol;image=./assets/mxgraph/images/symbols/await.svg"
+    <add as="ExpectNotice" template="ExpectNotice" style="symbol;image=./assets/mxgraph/images/symbols/await.svg"
          icon="./assets/mxgraph/images/await.png"/>
     <hr/>
     <add as="Lock" template="Lock" style="symbol;image=./assets/mxgraph/images/symbols/lock.svg"

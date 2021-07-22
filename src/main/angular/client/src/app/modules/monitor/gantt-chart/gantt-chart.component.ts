@@ -11,7 +11,7 @@ export class GanttChartComponent implements OnChanges {
   @Input() dayEnd: any;
   @Input() tasks: any;
   @Input() isAgent: boolean;
-  theme = 'material';
+  @Input() groupBy: any;
   dayStartHour: number;
   today = new Date();
   selectedDate = this.today;

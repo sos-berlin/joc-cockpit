@@ -1,25 +1,42 @@
-<div [ngClass]="'theme-' + this.theme" class="mat-elevation-z8">
+<div class="gantt-chart">
   <div class="taskTableWrapper" [ngStyle]="{width: isAgent ? 'calc(26% - 2px)' : 'calc(20% - 2px)'}" #scrollOne>
     <table class="taskTable">
       <thead>
       <tr>
+        <th *ngIf="groupBy === 'DATE'"><span translate>monitor.label.date</span></th>
         <th><span translate>dashboard.label.controllerId</span></th>
+        <th *ngIf="groupBy !== 'DATE'"><span translate>monitor.label.date</span></th>
         <th *ngIf="isAgent"><span translate>agent.label.agentId</span></th>
-        <th><span translate>monitor.label.date</span></th>
         <th *ngIf="isAgent"><span translate>dashboard.label.url</span></th>
       </tr>
       </thead>
       <tbody>
       <tr
         *ngFor="let task of tasks"
-        [ngClass]="{ parentTask: task.isParent, active: task.active }"
-        [hidden]="task.isHidden"
-        (click)="onTaskClick(task)"
-      >
-        <td>{{ task.controllerId }}</td>
+        [hidden]="task.isHidden">
+        <td *ngIf="groupBy === 'DATE'">
+          <span class="show-in-single-line">
+          <i class="fa fa-angle-down cursor fa-lg p-r-xs" [ngClass]="{ 'fa-angle-right': task.active }" *ngIf="task.isParent"
+             (click)="onTaskClick(task)" aria-hidden="true"></i>
+            {{ task.date}}
+          </span>
+        </td>
+        <td *ngIf="groupBy === 'CONTROLLERID'">
+          <span class="show-in-single-line">
+          <i class="fa fa-angle-down cursor fa-lg p-r-xs" [ngClass]="{ 'fa-angle-right': task.active }" *ngIf="task.isParent"
+             (click)="onTaskClick(task)" aria-hidden="true"></i>
+            {{ task.controllerId}}
+          </span>
+        </td>
+        <td *ngIf="groupBy !== 'CONTROLLERID'">{{ task.controllerId }}</td>
+        <td *ngIf="groupBy !== 'DATE'">
+            {{ task.date}}
+        </td>
         <td *ngIf="isAgent">{{ task.agentId }}</td>
-        <td>{{ task.date || '-' }}</td>
-        <td *ngIf="isAgent">{{ task.url }}</td>
+        <td *ngIf="isAgent">
+          <a class="text-hover-primary" [href]="task.url+'/agent/api'" target="_blank"
+             [innerHtml]="task.url"></a>
+        </td>
       </tr>
       </tbody>
     </table>

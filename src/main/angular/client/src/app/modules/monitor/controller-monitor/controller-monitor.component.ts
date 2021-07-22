@@ -1,5 +1,6 @@
 import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
+import * as moment from 'moment-timezone';
 import {differenceInCalendarDays, differenceInMilliseconds} from 'date-fns';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -24,7 +25,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   statisticsData: any[];
   data = [];
   ganttData = [];
-
+  groupByData = [];
 // options
   showXAxis = true;
   showYAxis = true;
@@ -98,6 +99,19 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
       controllerId: this.schedulerIds.selected
     }).subscribe((res: any) => {
       this.data = res.controllers;
+      this.groupByData = [];
+      this.data.forEach((controller) => {
+        for (const i in controller.entries) {
+          const obj = {
+            controllerId: controller.controllerId,
+            date: this.coreService.getDateByFormat(controller.entries[i].readyTime, this.preferences.zone, 'YYYY-MM-DD'),
+            readyTime: controller.entries[i].readyTime,
+            shutdownTime: controller.entries[i].shutdownTime
+          };
+          this.groupByData.push(obj);
+        }
+      });
+      this.groupByData = this.groupByPipe.transform(this.groupByData, 'date');
       this.getRunningTime();
       this.renderTimeSheetHeader('overview');
       this.renderTimeSheetHeader('statistics');
@@ -142,84 +156,43 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   }
 
   private getStatisticsData(): void {
-    console.log('Statistics >>> From :', this.filters.statistics.filter.startDate, 'To :', this.filters.statistics.filter.endDate);
-    this.statisticsData = [
-      {
-        'name': '01/07/2021',
-        'series': [
-          {
-            'name': 'testsuit',
-            'value': 23
-          },
-          {
-            'name': 'standalone',
-            'value': 22
-          }
-        ]
-      },
-      {
-        'name': '02/07/2021',
-        'series': [
-          {
-            'name': 'testsuit',
-            'value': 22
-          },
-          {
-            'name': 'standalone',
-            'value': 10
-          }
-        ]
-      },
-      {
-        'name': '04/07/2021',
-        'series': [
-          {
-            'name': 'testsuit',
-            'value': 21
-          },
-          {
-            'name': 'standalone',
-            'value': 22.5
-          }
-        ]
-      },
-      {
-        'name': '07/07/2021',
-        'series': [
-          {
-            'name': 'testsuit',
-            'value': 24
-          },
-          {
-            'name': 'standalone',
-            'value': 23.55
-          }
-        ]
+    this.statisticsData = [];
+    this.groupByData.forEach((item) => {
+      const date = new Date(item.key).setHours(0, 0, 0, 0);
+      if (date >= this.filters.statistics.filter.startDate && date <= this.filters.statistics.filter.endDate) {
+        const values = this.groupByPipe.transform(item.value, 'controllerId');
+        const obj = {
+          name: item.key,
+          series: []
+        };
+        for (const i in values) {
+          const statusObj: any = {
+            value: 0,
+            name: values[i].key,
+          };
+          let dur = 0;
+          values[i].value.forEach((time, index) => {
+            if (index === 0) {
+              dur = moment.duration(this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS')).asSeconds();
+            } else {
+              let diff = Math.abs(moment.duration(this.coreService.getDateByFormat(values[i].value[index - 1].shutdownTime, this.preferences.zone, 'HH:mm:SS')).asSeconds()
+                - moment.duration(this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS')).asSeconds());
+              dur += diff;
+            }
+          });
+          statusObj.value = ((86400 - dur) / (60 * 60));
+          statusObj.tooltip = statusObj.value.toFixed(2) + ' hours';
+          obj.series.push(statusObj);
+        }
+        this.statisticsData.push(obj);
       }
-    ];
-
+    });
   }
 
   private getOverviewData(): void {
-    let arr = [];
-    this.data.forEach((controller) => {
-      const obj: any = {
-        controllerId: controller.controllerId,
-      };
-      for (const i in controller.entries) {
-        const obj = {
-          controllerId: controller.controllerId,
-          date: this.coreService.getDateByFormat(controller.entries[i].readyTime, this.preferences.zone, 'YYYY-MM-DD'),
-          readyTime: controller.entries[i].readyTime,
-          shutdownTime: controller.entries[i].shutdownTime
-        };
-        arr.push(obj);
-      }
-    });
-    arr = this.groupByPipe.transform(arr, 'date');
     this.ganttData = [];
     let count = 0;
-    arr.forEach((item) => {
+    this.groupByData.forEach((item) => {
       const date = new Date(item.key).setHours(0, 0, 0, 0);
       if (date >= this.filters.overview.filter.startDate && date <= this.filters.overview.filter.endDate) {
         const values = this.groupByPipe.transform(item.value, 'controllerId');
@@ -339,10 +312,6 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
 
   getColor(): string {
     return 'rgb(122,185,122)';
-  }
-
-  onSelect(data): void {
-    console.log('Item clicked', JSON.parse(JSON.stringify(data)));
   }
 
 }

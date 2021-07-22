@@ -67,12 +67,12 @@
         </mxCell>
       </Finish>
     </add>
-    <add as="ReadNotice" >
-      <ReadNotice label="readNotice">
+    <add as="ExpectNotice" >
+      <ExpectNotice label="expectNotice">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
-      </ReadNotice>
+      </ExpectNotice>
     </add>
     <add as="PostNotice">
       <PostNotice label="postNotice">

@@ -2455,7 +2455,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         let _tryInstructions = clone(objects.Try);
         let _retryInstructions = clone(objects.Retry);
         let _lockInstructions = clone(objects.Lock);
-        let _readNoticeInstructions = clone(objects.ReadNotice);
+        let _expectNoticeInstructions = clone(objects.ExpectNotice);
         let _postNoticeInstructions = clone(objects.PostNotice);
         let _promptInstructions = clone(objects.Prompt);
         let _fileWatcherInstructions = clone(objects.FileWatcher);
@@ -2542,17 +2542,17 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               }
             }
           }
-          if (_readNoticeInstructions) {
-            if (isArray(_readNoticeInstructions)) {
-              for (let j = 0; j < _readNoticeInstructions.length; j++) {
-                if (connection[i].mxCell._target === _readNoticeInstructions[j]._id) {
-                  _readNoticeInstructions.splice(j, 1);
+          if (_expectNoticeInstructions) {
+            if (isArray(_expectNoticeInstructions)) {
+              for (let j = 0; j < _expectNoticeInstructions.length; j++) {
+                if (connection[i].mxCell._target === _expectNoticeInstructions[j]._id) {
+                  _expectNoticeInstructions.splice(j, 1);
                   break;
                 }
               }
             } else {
-              if (connection[i].mxCell._target === _readNoticeInstructions._id) {
-                _readNoticeInstructions = [];
+              if (connection[i].mxCell._target === _expectNoticeInstructions._id) {
+                _expectNoticeInstructions = [];
               }
             }
           }
@@ -2739,17 +2739,17 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
         } else {
-          if (_readNoticeInstructions) {
-            if (isArray(_readNoticeInstructions) && _readNoticeInstructions.length > 0) {
-              startNode = _readNoticeInstructions[0];
+          if (_expectNoticeInstructions) {
+            if (isArray(_expectNoticeInstructions) && _expectNoticeInstructions.length > 0) {
+              startNode = _expectNoticeInstructions[0];
             } else {
-              startNode = _readNoticeInstructions;
+              startNode = _expectNoticeInstructions;
             }
           }
         }
 
         if (!isEmpty(startNode)) {
-          jsonObj.instructions.push(this.workflowService.createObject('ReadNotice', startNode));
+          jsonObj.instructions.push(this.workflowService.createObject('ExpectNotice', startNode));
           this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
         } else {
@@ -2802,7 +2802,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         const retry = objects.Retry;
         const lock = objects.Lock;
         const tryIns = objects.Try;
-        const readNoticeIns = objects.ReadNotice;
+        const expectNoticeIns = objects.ExpectNotice;
         const postNoticeIns = objects.PostNotice;
         const promptIns = objects.Prompt;
         const fileWatcherIns = objects.FileWatcher;
@@ -2862,13 +2862,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             jsonObj.instructions.push(this.workflowService.createObject('Try', tryIns));
           }
         }
-        if (readNoticeIns) {
-          if (isArray(readNoticeIns)) {
-            for (let i = 0; i < readNoticeIns.length; i++) {
-              jsonObj.instructions.push(this.workflowService.createObject('ReadNotice', readNoticeIns[i]));
+        if (expectNoticeIns) {
+          if (isArray(expectNoticeIns)) {
+            for (let i = 0; i < expectNoticeIns.length; i++) {
+              jsonObj.instructions.push(this.workflowService.createObject('ExpectNotice', expectNoticeIns[i]));
             }
           } else {
-            jsonObj.instructions.push(this.workflowService.createObject('ReadNotice', readNoticeIns));
+            jsonObj.instructions.push(this.workflowService.createObject('ExpectNotice', expectNoticeIns));
           }
         }
         if (postNoticeIns) {
@@ -3233,7 +3233,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     const tryInstructions = objects.Try;
     const catchInstructions = objects.Catch;
     const tryEndInstructions = objects.EndTry;
-    const readNoticeInstructions = objects.ReadNotice;
+    const expectNoticeInstructions = objects.ExpectNotice;
     const postNoticeInstructions = objects.PostNotice;
     const promptInstructions = objects.Prompt;
     const failInstructions = objects.Fail;
@@ -3385,24 +3385,24 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
     } else {
-      if (readNoticeInstructions) {
-        if (isArray(readNoticeInstructions)) {
-          for (let i = 0; i < readNoticeInstructions.length; i++) {
-            if (readNoticeInstructions[i]._id === id) {
-              nextNode = readNoticeInstructions[i];
+      if (expectNoticeInstructions) {
+        if (isArray(expectNoticeInstructions)) {
+          for (let i = 0; i < expectNoticeInstructions.length; i++) {
+            if (expectNoticeInstructions[i]._id === id) {
+              nextNode = expectNoticeInstructions[i];
               break;
             }
           }
         } else {
-          if (readNoticeInstructions._id === id) {
-            nextNode = readNoticeInstructions;
+          if (expectNoticeInstructions._id === id) {
+            nextNode = expectNoticeInstructions;
           }
         }
       }
     }
 
     if (nextNode && !isEmpty(nextNode)) {
-      instructionsArr.push(this.workflowService.createObject('ReadNotice', nextNode));
+      instructionsArr.push(this.workflowService.createObject('ExpectNotice', nextNode));
       this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
     } else {
@@ -3911,7 +3911,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           this.images = [];
           let img;
           if (state.cell && (state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'Finish' || state.cell.value.tagName === 'Fail' ||
-            state.cell.value.tagName === 'ReadNotice' || state.cell.value.tagName === 'PostNotice' || state.cell.value.tagName === 'Prompt' || self.workflowService.isInstructionCollapsible(state.cell.value.tagName))) {
+            state.cell.value.tagName === 'ExpectNotice' || state.cell.value.tagName === 'PostNotice' || state.cell.value.tagName === 'Prompt' || self.workflowService.isInstructionCollapsible(state.cell.value.tagName))) {
             img = mxUtils.createImage('./assets/images/menu.svg');
             let x = state.x - (20 * state.shape.scale);
             let y = state.y - (8 * state.shape.scale);
@@ -4160,7 +4160,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           // Handles the event if it has not been consumed
           if (cell) {
             if (cell.value.tagName === 'Job' || cell.value.tagName === 'Finish' || cell.value.tagName === 'Fail' ||
-              cell.value.tagName === 'ReadNotice' || cell.value.tagName === 'PostNotice' || cell.value.tagName === 'Prompt') {
+              cell.value.tagName === 'ExpectNotice' || cell.value.tagName === 'PostNotice' || cell.value.tagName === 'Prompt') {
               graph.setSelectionCell(cell);
             } else {
               if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
@@ -4340,7 +4340,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             if (!check) {
               if (drpTargt.value.tagName !== 'Connection') {
                 if (drpTargt.value.tagName === 'Job' || drpTargt.value.tagName === 'Finish' || drpTargt.value.tagName === 'Fail'
-                  || drpTargt.value.tagName === 'ReadNotice' || drpTargt.value.tagName === 'PostNotice' || drpTargt.value.tagName === 'Prompt') {
+                  || drpTargt.value.tagName === 'ExpectNotice' || drpTargt.value.tagName === 'PostNotice' || drpTargt.value.tagName === 'Prompt') {
                   for (let i = 0; i < drpTargt.edges.length; i++) {
                     if (drpTargt.edges[i].target.id !== drpTargt.id) {
                       self.translate.get('workflow.message.validationError').subscribe(translatedValue => {
@@ -4744,8 +4744,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                       if (cell.source.edges[x].id === cell.id) {
                         const _sourCellName = cell.source.value.tagName;
                         const _tarCellName = cell.target.value.tagName;
-                        if ((cell.target && ((_sourCellName === 'Job' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'PostNotice' || _sourCellName === 'Prompt' || _sourCellName === 'ReadNotice') &&
-                          (_tarCellName === 'Job' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'PostNotice' || _tarCellName === 'Prompt' || _tarCellName === 'ReadNotice')))) {
+                        if ((cell.target && ((_sourCellName === 'Job' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'PostNotice' || _sourCellName === 'Prompt' || _sourCellName === 'ExpectNotice') &&
+                          (_tarCellName === 'Job' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'PostNotice' || _tarCellName === 'Prompt' || _tarCellName === 'ExpectNotice')))) {
                           graph.getModel().remove(cell.source.edges[x]);
                         } else {
                           cell.source.removeEdge(cell.source.edges[x], true);
@@ -5659,7 +5659,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             const edit3 = new mxCellAttributeChange(
               obj.cell, 'uncatchable', self.selectedNode.newObj.uncatchable);
             graph.getModel().execute(edit3);
-          } else if (self.selectedNode.type === 'ReadNotice' || self.selectedNode.type === 'PostNotice') {
+          } else if (self.selectedNode.type === 'ExpectNotice' || self.selectedNode.type === 'PostNotice') {
             const edit1 = new mxCellAttributeChange(
               obj.cell, 'boardName', self.selectedNode.newObj.boardName);
             graph.getModel().execute(edit1);
@@ -5858,7 +5858,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         } else if (cell.value.tagName === 'FileWatcher') {
           obj.directory = cell.getAttribute('directory');
           obj.regex = cell.getAttribute('regex');
-        } else if (cell.value.tagName === 'ReadNotice' || cell.value.tagName === 'PostNotice') {
+        } else if (cell.value.tagName === 'ExpectNotice' || cell.value.tagName === 'PostNotice') {
           obj.boardName = cell.getAttribute('boardName');
           const timeout = cell.getAttribute('timeout');
           if (timeout && timeout != 'null' && timeout != 'undefined') {
@@ -6282,11 +6282,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           _node.setAttribute('label', 'try');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'try');
-        } else if (title.match('readNotice')) {
-          _node = doc.createElement('ReadNotice');
-          _node.setAttribute('label', 'readNotice');
+        } else if (title.match('expectNotice')) {
+          _node = doc.createElement('ExpectNotice');
+          _node.setAttribute('label', 'expectNotice');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.readNotice);
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.expectNotice);
         } else if (title.match('postNotice')) {
           _node = doc.createElement('PostNotice');
           _node.setAttribute('label', 'postNotice');
@@ -6363,8 +6363,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               if (targetCell.source.edges[x].id === targetCell.id) {
                 const _sourCellName = targetCell.source.value.tagName;
                 const _tarCellName = targetCell.target.value.tagName;
-                if ((targetCell.target && ((_sourCellName === 'Job' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'PostNotice' || _sourCellName === 'Prompt' || _sourCellName === 'ReadNotice') &&
-                  (_tarCellName === 'Job' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'PostNotice' || _tarCellName === 'Prompt' || _tarCellName === 'ReadNotice')))) {
+                if ((targetCell.target && ((_sourCellName === 'Job' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'PostNotice' || _sourCellName === 'Prompt' || _sourCellName === 'ExpectNotice') &&
+                  (_tarCellName === 'Job' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'PostNotice' || _tarCellName === 'Prompt' || _tarCellName === 'ExpectNotice')))) {
                   graph.getModel().remove(targetCell.source.edges[x]);
                 } else {
                   targetCell.source.removeEdge(targetCell.source.edges[x], true);
@@ -6451,7 +6451,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
       if (!flg) {
         if (tagName !== 'Connection') {
-          if (tagName === 'Job' || tagName === 'Finish' || tagName === 'Fail' || tagName === 'ReadNotice' || tagName === 'PostNotice' || tagName === 'Prompt') {
+          if (tagName === 'Job' || tagName === 'Finish' || tagName === 'Fail' || tagName === 'ExpectNotice' || tagName === 'PostNotice' || tagName === 'Prompt') {
             for (let i = 0; i < targetCell.edges.length; i++) {
               if (targetCell.edges[i].target.id !== targetCell.id) {
                 return 'inValid';
@@ -7573,11 +7573,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           }
 
-          if (json.instructions[x].TYPE === 'ReadNotice') {
-            flag = self.workflowService.validateFields(json.instructions[x], 'ReadNotice');
+          if (json.instructions[x].TYPE === 'ExpectNotice') {
+            flag = self.workflowService.validateFields(json.instructions[x], 'ExpectNotice');
             if (!flag) {
               checkErr = true;
-              self.invalidMsg = 'workflow.message.invalidReadNoticeInstruction';
+              self.invalidMsg = 'workflow.message.invalidExpectNoticeInstruction';
             }
             if (!flag && isValidate) {
               if (isOpen) {

@@ -1163,7 +1163,9 @@
     },
     "button": {
       "week": "Woche",
-      "month": "Monat"
+      "month": "Monat",
+      "filterBy": "Filter By",
+      "groupBy": "Group By"
     },
     "notification" : {
       "label" : {
@@ -1709,7 +1711,7 @@
     "label.join": "Join",
     "label.branches": "Zweig",
     "label.branchId": "Kennung des Zweigs",
-    "label.readNotice": "ReadNotice",
+    "label.expectNotice": "ExpectNotice",
     "label.fail": "Fail",
     "label.finish": "Finish",
     "label.try": "Try",
@@ -1802,7 +1804,7 @@
     "message.invalidRetryInstruction": "Retry-Instruktion darf nicht leer sein",
     "message.invalidLockInstruction": "Resource-Lock-Instruktion darf nicht leer sein",
     "message.invalidPostNoticeInstruction": "PostNotice Instruction is not valid",
-    "message.invalidReadNoticeInstruction": "ReadNotice Instruction is not valid",
+    "message.invalidExpectNoticeInstruction": "ExpectNotice Instruction is not valid",
     "message.agentIsMissing": "Agent ist erforderlich",
     "message.emptyWorkflow": "Arbeitsablauf ist leer, mindestens eine Instruktion ist erforderlich",
     "message.invalidForkInstruction": "Fork-Instruktion muss mindestens zwei Zweige besitzen",

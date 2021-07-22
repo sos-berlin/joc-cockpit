@@ -15,7 +15,7 @@ export class WorkflowService {
   public merge = '';
   public finish = '';
   public fail = '';
-  public readNotice = '';
+  public expectNotice = '';
   public postNotice = '';
   public prompt = '';
   public fork = '';
@@ -45,7 +45,7 @@ export class WorkflowService {
       this.merge = 'symbol;image=./assets/mxgraph/images/symbols/merge.svg';
       this.finish = 'symbol;image=./assets/mxgraph/images/symbols/finish.svg';
       this.fail = 'symbol;image=./assets/mxgraph/images/symbols/fail.svg';
-      this.readNotice = 'symbol;image=./assets/mxgraph/images/symbols/await.svg';
+      this.expectNotice = 'symbol;image=./assets/mxgraph/images/symbols/await.svg';
       this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork.svg';
       this.postNotice = 'symbol;image=./assets/mxgraph/images/symbols/publish.svg';
       this.prompt = 'symbol;image=./assets/mxgraph/images/symbols/prompt.svg';
@@ -55,7 +55,7 @@ export class WorkflowService {
       this.merge = 'symbol;image=./assets/mxgraph/images/symbols/merge-white.svg';
       this.finish = 'symbol;image=./assets/mxgraph/images/symbols/finish-white.svg';
       this.fail = 'symbol;image=./assets/mxgraph/images/symbols/fail-white.svg';
-      this.readNotice = 'symbol;image=./assets/mxgraph/images/symbols/await-white.svg';
+      this.expectNotice = 'symbol;image=./assets/mxgraph/images/symbols/await-white.svg';
       this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork-white.svg';
       this.postNotice = 'symbol;image=./assets/mxgraph/images/symbols/publish-white.svg';
       this.prompt = 'symbol;image=./assets/mxgraph/images/symbols/prompt-white.svg';
@@ -108,7 +108,7 @@ export class WorkflowService {
     } else if (type === 'FileWatcher') {
       obj.directory = node._directory;
       obj.regex = node._regex;
-    } else if (type === 'PostNotice' || type === 'ReadNotice') {
+    } else if (type === 'PostNotice' || type === 'ExpectNotice') {
       obj.boardName = node._boardName;
     } else if (type === 'Prompt') {
       obj.question = node._question;
@@ -183,7 +183,7 @@ export class WorkflowService {
           return false;
         }
       }
-      if (type === 'ReadNotice' || type === 'PostNotice') {
+      if (type === 'ExpectNotice' || type === 'PostNotice') {
         if (!value.boardName) {
           return false;
         }
@@ -533,14 +533,14 @@ export class WorkflowService {
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
-          } else if (json.instructions[x].TYPE === 'ReadNotice') {
-            _node.setAttribute('label', 'readNotice');
+          } else if (json.instructions[x].TYPE === 'ExpectNotice') {
+            _node.setAttribute('label', 'expectNotice');
             if (json.instructions[x].boardName !== undefined) {
               _node.setAttribute('boardName', json.instructions[x].boardName);
             }
 
             _node.setAttribute('uuid', json.instructions[x].uuid);
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.readNotice);
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.expectNotice);
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }

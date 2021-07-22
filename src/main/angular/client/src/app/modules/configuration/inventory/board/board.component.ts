@@ -113,15 +113,15 @@ export class BoardComponent implements OnChanges, OnDestroy {
         this.boardObj.endOfLife = '';
       }
 
-      this.boardObj.toNoticeMsg = clone(this.board.configuration.toNotice);
-      this.boardObj.readingOrderToNoticeIdMsg = clone(this.board.configuration.readingOrderToNoticeId);
+      this.boardObj.toNoticeMsg = clone(this.board.configuration.postOrderToNoticeId);
+      this.boardObj.readingOrderToNoticeIdMsg = clone(this.board.configuration.expectOrderToNoticeId);
 
       this.board.actual = JSON.stringify(res.configuration);
       this.history.push(this.board.actual);
       if (!res.valid) {
-        if (!this.board.configuration.readingOrderToNoticeId) {
+        if (!this.board.configuration.expectOrderToNoticeId) {
           this.invalidMsg = 'inventory.message.readingOrderToNoticeIdIsMissing';
-        } else if (this.board.configuration.toNotice) {
+        } else if (this.board.configuration.postOrderToNoticeId) {
           this.invalidMsg = 'inventory.message.toNoticeIsMissing';
         } else {
           this.validateJSON(res.configuration);
@@ -172,7 +172,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
 
   private setErrorMessage(res): void {
     if (res.invalidMsg) {
-      if (res.invalidMsg.match('readingOrderToNoticeId')) {
+      if (res.invalidMsg.match('expectOrderToNoticeId')) {
         this.invalidMsg = 'inventory.message.readingOrderToNoticeIdIsMissing';
       } else if (res.invalidMsg.match('toNoticeIsMissing')) {
         this.invalidMsg = 'inventory.message.toNoticeIsMissing';
@@ -324,9 +324,9 @@ export class BoardComponent implements OnChanges, OnDestroy {
 
   changeExp($event, type: string): void {
     if (type === 'toNotice') {
-      this.board.configuration.toNotice = $event;
+      this.board.configuration.postOrderToNoticeId = $event;
     } else {
-      this.board.configuration.readingOrderToNoticeId = $event;
+      this.board.configuration.expectOrderToNoticeId = $event;
     }
     this.saveJSON();
   }
@@ -440,7 +440,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
       }
       this.coreService.post('inventory/store', {
         configuration: this.board.configuration,
-        valid: !!(this.board.configuration.toNotice && this.board.configuration.readingOrderToNoticeId),
+        valid: !!(this.board.configuration.postOrderToNoticeId && this.board.configuration.expectOrderToNoticeId),
         id: this.board.id,
         objectType: this.objectType
       }).subscribe((res: any) => {

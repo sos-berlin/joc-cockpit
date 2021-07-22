@@ -1163,7 +1163,9 @@
     },
     "button": {
       "week": "Week",
-      "month": "Month"
+      "month": "Month",
+      "filterBy": "Filter By",
+      "groupBy": "Group By"
     },
     "notification" : {
       "label" : {
@@ -1709,7 +1711,7 @@
     "label.join": "Join",
     "label.branches": "Branches",
     "label.branchId": "ID Branche",
-    "label.readNotice": "ReadNotice",
+    "label.expectNotice": "ExpectNotice",
     "label.fail": "Fail",
     "label.finish": "Finish",
     "label.try": "Try",
@@ -1802,7 +1804,7 @@
     "message.invalidRetryInstruction": "L'instruction Retry ne peut pas être vide",
     "message.invalidLockInstruction": "L'instruction Lock ne peut pas être vide",
     "message.invalidPostNoticeInstruction": "PostNotice Instruction is not valid",
-    "message.invalidReadNoticeInstruction": "ReadNotice Instruction is not valid",
+    "message.invalidExpectNoticeInstruction": "ExpectNotice Instruction is not valid",
     "message.agentIsMissing": "L'Agent est absent, mais il est nécessaire",
     "message.emptyWorkflow": "Workflow est vide, une instruction au minimum est requise.",
     "message.invalidForkInstruction": "L'instruction Fork doit avoir un minimum de deux branches",

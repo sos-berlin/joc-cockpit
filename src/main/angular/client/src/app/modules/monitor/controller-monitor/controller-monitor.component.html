@@ -1,5 +1,5 @@
 <div class="row m-t-xs">
-  <div class="col-md-9">
+  <div class="col-md-8 col-lg-9">
     <div class="box">
       <div class="box-header b-b">
         <h3>
@@ -39,29 +39,34 @@
           </div>
         </div>
       </div>
-      <div class="box-body p-a" [hidden]="!isLoaded">
+      <div class="box-body p-a" [hidden]="!isLoaded || statisticsData.length ===0">
         <div style="height: 260px;">
           <ngx-charts-bar-vertical-2d
             [scheme]="colorScheme"
             [results]="statisticsData"
             [gradient]="gradient"
             [xAxis]="showXAxis"
-            [yAxis]="showYAxis"
-            (select)="onSelect($event)">
+            [yAxis]="showYAxis">
+            <ng-template #tooltipTemplate let-model="model">
+              <div class="p-a-sm text-center">
+                <h6>{{model.name}}</h6>
+                <div class="text-md"><i>{{model.tooltip}}</i></div>
+              </div>
+            </ng-template>
           </ngx-charts-bar-vertical-2d>
         </div>
       </div>
-      <div class="hide text-center m-t-lg p-b-lg text-primary text" [ngClass]="{'show': !isLoaded}">
+      <div style="height: 291px;" class="hide text-center m-t-lg p-b-lg text-primary text" [ngClass]="{'show': !isLoaded}">
         <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
       </div>
-      <div *ngIf="isLoaded && statisticsData.length ===0" class="vert-middle">
+      <div style="height: 291px;" *ngIf="isLoaded && statisticsData.length ===0" class="vert-middle">
         <div>
           <app-empty-data></app-empty-data>
         </div>
       </div>
     </div>
   </div>
-  <div class="col-md-3">
+  <div class="col-md-4 col-lg-3">
     <div class="box">
       <div class="box-header b-b">
         <h3>
@@ -92,21 +97,28 @@
           </div>
         </div>
       </div>
-      <div class="box-body p-a" [hidden]="!isLoaded" style="height: 292px">
+      <div class="box-body p-a" style="height: 292px">
         <div class="row">
-          <div class="col-md-6 text-center" [ngClass]="{'col-md-12' : runningTime.length === 1}" *ngFor="let item of runningTime">
+          <div class="col-sm-12 col-md-6 text-center" [ngClass]="{'col-md-12' : runningTime.length === 1}" *ngFor="let item of runningTime">
               <div class="text-dark _600 m-t">{{item.controllerId}}</div>
-              <mwl-gauge
-                [dialStartAngle]="-90"
-                [dialEndAngle]="-90.001"
-                [value]="item.value"
-                [label]="getValue"
-                [color]="getColor"
-                [animated]="true"
-                [animationDuration]="1"
-              >
-              </mwl-gauge>
-              <i class="text-muted" style="position: relative;top:-16px" translate>Total {{item.hours}}</i>
+              <div style="display: flex;justify-content: center">
+                <mwl-gauge
+                  [dialStartAngle]="-90"
+                  [dialEndAngle]="-90.001"
+                  [value]="item.value"
+                  [label]="getValue"
+                  [color]="getColor"
+                  [animated]="true"
+                  [animationDuration]="1"
+                >
+                </mwl-gauge>
+              </div>
+              <i class="text-muted" style="position: relative;top:-12px" >{{'common.label.total' | translate}} {{item.hours}}</i>
+          </div>
+          <div class="col-md-6 text-center" *ngIf="!isLoaded">
+            <div [hidden]="runningTime.length>0" class="hide vert-middle text-primary text">
+              <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+            </div>
           </div>
         </div>
       </div>
@@ -152,7 +164,7 @@
           </div>
         </div>
       </div>
-      <div class="box-body p-a" [hidden]="!isLoaded && ganttData.length === 0">
+      <div class="box-body p-a" style="max-height: calc(100vh - 636px);overflow: auto" [hidden]="!isLoaded && ganttData.length === 0">
         <app-gantt-chart
           [dayStart]="'00:00'"
           [dayEnd]="'23:00'"

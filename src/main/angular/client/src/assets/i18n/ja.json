@@ -1163,7 +1163,9 @@
     },
     "button": {
       "week": "Week",
-      "month": "Month"
+      "month": "Month",
+      "filterBy": "Filter By",
+      "groupBy": "Group By"
     },
     "notification" : {
       "label" : {
@@ -1709,7 +1711,7 @@
     "label.join": "Join",
     "label.branches": "分岐",
     "label.branchId": "分岐ID",
-    "label.readNotice": "ReadNotice",
+    "label.expectNotice": "ExpectNotice",
     "label.fail": "失敗",
     "label.finish": "終了",
     "label.try": "Try",
@@ -1802,7 +1804,7 @@
     "message.invalidRetryInstruction": "Retry命令が必要です",
     "message.invalidLockInstruction": "Lock命令が必要です",
     "message.invalidPostNoticeInstruction": "PostNotice Instruction is not valid",
-    "message.invalidReadNoticeInstruction": "ReadNotice Instruction is not valid",
+    "message.invalidExpectNoticeInstruction": "ExpectNotice Instruction is not valid",
     "message.agentIsMissing": "エージェントが必要です",
     "message.emptyWorkflow": "ワークフローには最低一つの命令が必要です",
     "message.invalidForkInstruction": "Fork instruction must have minimum of two branches",
