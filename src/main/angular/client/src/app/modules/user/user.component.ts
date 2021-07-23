@@ -271,6 +271,7 @@ export class UserComponent implements OnInit, OnDestroy {
   zones: any = {};
   preferences: any = {};
   username = '';
+  caTab = false;
   permission: any = {};
   object: any = {};
   schedulerIds: any = {};
@@ -358,6 +359,9 @@ export class UserComponent implements OnInit, OnDestroy {
     this.securityLevel = sessionStorage.securityLevel;
     if (this.securityLevel === 'LOW' && sessionStorage.defaultProfile && sessionStorage.defaultProfile === this.username) {
       this.securityLevel = 'MEDIUM';
+    }
+    if (sessionStorage.defaultProfile === this.username){
+      this.caTab = true;
     }
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};

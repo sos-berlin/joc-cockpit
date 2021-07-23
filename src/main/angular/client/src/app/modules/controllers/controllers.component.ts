@@ -9,6 +9,66 @@ import {DataService} from '../../services/data.service';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 
 @Component({
+  selector: 'app-create-token-modal',
+  templateUrl: './create-token.dialog.html'
+})
+export class CreateTokenModalComponent implements OnInit {
+  @Input() agents: any;
+  @Input() agent: any;
+  @Input() data: any;
+  @Input() controllerId: any;
+  token: any = {};
+  submitted = false;
+  comments: any = {};
+  preferences: any;
+  display: any;
+  zones = [];
+
+  constructor(public coreService: CoreService, public activeModal: NzModalRef) {
+  }
+
+  ngOnInit(): void {
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    }
+    this.zones = this.coreService.getTimeZoneList();
+    this.display = this.preferences.auditLog;
+    this.token.timezone = this.preferences.zone;
+    this.comments.radio = 'predefined';
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    const obj: any = this.coreService.clone(this.token);
+    if (this.agent) {
+      obj.agentIds = [this.agent.agentId];
+    } else if (this.agents){
+      obj.agentIds = Array.from(this.agents);
+    } else {
+      obj.controllerId = this.controllerId;
+    }
+    if (this.display) {
+      obj.auditLog = {};
+      if (this.comments.comment) {
+        obj.auditLog.comment = this.comments.comment;
+      }
+      if (this.comments.timeSpent) {
+        obj.auditLog.timeSpent = this.comments.timeSpent;
+      }
+      if (this.comments.ticketLink) {
+        obj.auditLog.ticketLink = this.comments.ticketLink;
+      }
+    }
+    this.coreService.post('token/create', obj).subscribe(res => {
+      this.submitted = false;
+      this.activeModal.close(res);
+    }, err => {
+      this.submitted = false;
+    });
+  }
+}
+
+@Component({
   selector: 'app-agent-modal',
   templateUrl: './agent.dialog.html'
 })
@@ -121,12 +181,17 @@ export class AgentModalComponent implements OnInit {
 export class ControllersComponent implements OnInit, OnDestroy {
   data: any = [];
   controllers: any = [];
+  tokens: any = [];
   currentSecurityLevel: string;
   showPanel = [true];
   permission: any = {};
   preferences: any = {};
   modalInstance: NzModalRef;
   loading = false;
+  object = {
+    mapOfCheckedId: new Set()
+  };
+
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -147,7 +212,8 @@ export class ControllersComponent implements OnInit, OnDestroy {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
-    this.getData();
+
+    this.getTokens();
   }
 
   ngOnDestroy(): void {
@@ -178,6 +244,21 @@ export class ControllersComponent implements OnInit, OnDestroy {
     }
   }
 
+  private getTokens(flag = true): void {
+    this.coreService.post('token/show', {}).subscribe((data: any) => {
+      this.tokens = data.tokens;
+      if (flag) {
+        this.getData();
+      } else{
+        this.checkTokens();
+      }
+    }, () => {
+      if (flag) {
+        this.getData();
+      }
+    });
+  }
+
   getData(): void {
     this.coreService.post('controller/ids', {})
       .subscribe((data: any) => {
@@ -195,6 +276,9 @@ export class ControllersComponent implements OnInit, OnDestroy {
         controllerId: controller.controllerId
       }).subscribe((data: any) => {
         controller.agents = data.agents;
+        controller.agents.forEach((agent) => {
+          this.mergeTokenData(null, agent.agentId, agent);
+        });
         controller.loading = false;
         if (cb) {
           cb();
@@ -262,6 +346,27 @@ export class ControllersComponent implements OnInit, OnDestroy {
         this.coreService.post('controller/cleanup', {controllerId: matser}).subscribe(() => {
 
         });
+      }
+    });
+  }
+
+  createToken(controller, agent = null): void {
+    const modal =  this.modal.create({
+      nzTitle: undefined,
+      nzContent: CreateTokenModalComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        controllerId: controller ? controller.controllerId : '',
+        agents: this.object.mapOfCheckedId,
+        agent
+      },
+      nzFooter: null,
+      nzClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.object.mapOfCheckedId.clear();
+        this.getTokens(false);
       }
     });
   }
@@ -413,6 +518,70 @@ export class ControllersComponent implements OnInit, OnDestroy {
       });
   }
 
+  checkAll(value: boolean, controller): void {
+    if (value && controller.agents.length > 0) {
+      controller.agents.forEach(item => {
+        if (!item.disabled) {
+          this.object.mapOfCheckedId.add(item.agentId);
+        }
+      });
+    } else {
+      controller.agents.forEach(item => {
+        this.object.mapOfCheckedId.delete(item.agentId);
+      });
+    }
+    let count = 0;
+    if (this.object.mapOfCheckedId.size > 0) {
+      controller.agents.forEach(item => {
+        if (this.object.mapOfCheckedId.has(item.agentId)) {
+          ++count;
+        }
+      });
+    }
+    controller.indeterminate = count > 0 && !controller.checked;
+  }
+
+  onItemChecked(controller: any, agent: any, checked: boolean): void {
+    if (checked) {
+      this.object.mapOfCheckedId.add(agent.agentId);
+    } else {
+      this.object.mapOfCheckedId.delete(agent.agentId);
+    }
+    let count = 0;
+    if (this.object.mapOfCheckedId.size > 0) {
+      controller.agents.forEach(item => {
+        if (this.object.mapOfCheckedId.has(item.agentId)) {
+          ++count;
+        }
+      });
+    }
+    controller.checked = count === controller.agents.length;
+    controller.indeterminate = count > 0 && !controller.checked;
+  }
+
+  private mergeTokenData(controllerId, agentId, obj): void {
+    for (const tk in this.tokens) {
+      if ((controllerId && this.tokens[tk].controllerId === controllerId)
+        || (agentId && this.tokens[tk].agentId === agentId)) {
+        obj.token = this.tokens[tk];
+        break;
+      }
+    }
+  }
+
+  private checkTokens(): void {
+    this.controllers.forEach((controller) => {
+      controller.checked = false;
+      controller.indeterminate = false;
+      this.mergeTokenData(controller.controllerId, null, controller);
+      if (controller.agents) {
+        controller.agents.forEach((agent) => {
+          this.mergeTokenData(null, agent.agentId, agent);
+        });
+      }
+    });
+  }
+
   private mergeData(securityData): void {
     this.controllers = [];
     this.currentSecurityLevel = securityData ? securityData.currentSecurityLevel : '';
@@ -431,12 +600,14 @@ export class ControllersComponent implements OnInit, OnDestroy {
           }
         }
         if (this.currentSecurityLevel === obj.securityLevel) {
+          this.mergeTokenData(obj.controllerId, null, obj);
           this.controllers.push(obj);
         }
       }
     } else if (securityData) {
       for (let j = 0; j < securityData.controllers.length; j++) {
         if (this.currentSecurityLevel === securityData.controllers[j].securityLevel) {
+          this.mergeTokenData(securityData.controllers[j].controllerId, null, securityData.controllers[j]);
           this.controllers.push(securityData.controllers[j]);
         }
       }

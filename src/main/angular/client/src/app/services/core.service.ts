@@ -109,7 +109,7 @@ export class CoreService {
     };
     this.tabs._monitor.notification = {
       filter : {
-        type: 'ALL',
+        types: ['ERROR', 'WARNING', 'RECOVERED'],
         date: '0d',
         sortBy: 'created',
         reverse: true,
@@ -311,7 +311,7 @@ export class CoreService {
     };
     this.tempTabs._monitor.notification = {
       filter : {
-        type: 'ALL',
+        types: ['ERROR', 'WARNING', 'RECOVERED'],
         date: '0d',
         sortBy: 'created',
         reverse: true,
@@ -1259,7 +1259,7 @@ export class CoreService {
     let addDays = function(days) {
       const date = new Date(this.valueOf());
       date.setDate(date.getDate() + days);
-      return date;
+      return date.setHours(0, 0, 0, 0);
     };
     while (currentDate <= endDate) {
       dates.push(currentDate);

@@ -65,9 +65,7 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
       limit: parseInt(this.preferences.maxAuditLogRecords, 10) || 5000,
       timeZone: this.preferences.timeZone
     };
-    if (this.filters.filter.type && this.filters.filter.type !== 'ALL') {
-      obj.types = [this.filters.filter.type];
-    }
+    obj.types = this.filters.filter.types;
     if (this.filters.filter.date && this.filters.filter.date !== 'ALL') {
       obj.dateFrom = this.filters.filter.date;
     }

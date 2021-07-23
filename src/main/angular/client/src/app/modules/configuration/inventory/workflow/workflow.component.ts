@@ -6282,12 +6282,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           _node.setAttribute('label', 'try');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'try');
-        } else if (title.match('expectNotice')) {
+        } else if (title.match('await')) {
           _node = doc.createElement('ExpectNotice');
           _node.setAttribute('label', 'expectNotice');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.expectNotice);
-        } else if (title.match('postNotice')) {
+        } else if (title.match('publish')) {
           _node = doc.createElement('PostNotice');
           _node.setAttribute('label', 'postNotice');
           _node.setAttribute('uuid', self.workflowService.create_UUID());

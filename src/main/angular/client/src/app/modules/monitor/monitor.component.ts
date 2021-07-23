@@ -14,6 +14,7 @@ export class MonitorComponent implements OnInit, OnDestroy {
   permission: any = {};
   monitorFilters: any = {};
   index: number;
+  isNotReady = true;
   subscription: any;
 
   constructor(private authService: AuthService, public coreService: CoreService,
@@ -37,6 +38,10 @@ export class MonitorComponent implements OnInit, OnDestroy {
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.monitorFilters = this.coreService.getMonitorTab();
     this.index = this.monitorFilters.tabIndex;
+    const username = this.authService.currentUserData;
+    if (sessionStorage.defaultProfile === username) {
+      this.isNotReady = false;
+    }
   }
 
   tabChange($event): void {
@@ -49,11 +54,16 @@ export class MonitorComponent implements OnInit, OnDestroy {
   }
 
   controllerChange(): void {
-    this.dataService.announceFunction(this.monitorFilters.notification);
+    this.dataService.announceFunction(this.monitorFilters[this.index === 0 ? 'controller' : this.index === 1 ? 'agent' : 'notification']);
   }
 
-  changeState(type): void {
-    this.monitorFilters.notification.filter.type = type;
+  changeTypes(type): void {
+    const index = this.monitorFilters.notification.filter.types.indexOf(type);
+    if (index === -1) {
+      this.monitorFilters.notification.filter.types.push(type);
+    } else {
+      this.monitorFilters.notification.filter.types.splice(index, 1);
+    }
     this.dataService.announceFunction(this.monitorFilters.notification);
   }
 }

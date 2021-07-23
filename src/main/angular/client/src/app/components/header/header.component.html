@@ -169,7 +169,7 @@
             </span>
           </a>
         </li>
-        <li class="nav-item" *ngIf="permission.currentController && permission.currentController.agents.view && username === 'root'">
+        <li class="nav-item" *ngIf="permission.currentController && permission.currentController.agents.view">
           <a class="nav-link" routerLink="/monitor" [routerLinkActive]="['active']">
             <span class="nav-text">
               <i class="icon-dashboard-icon text-white"></i>
