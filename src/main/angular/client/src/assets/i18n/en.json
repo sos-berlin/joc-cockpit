@@ -795,7 +795,7 @@
     "placeholder.selectDeployType": "Choose object type",
     "placeholder.jobName": "Enter job name pattern",
     "placeholder.workflowPath": "Enter workflow pattern",
-    "placeholder.orderId": "Enter order id pattern",
+    "placeholder.orderId": "Enter Order ID pattern",
     "message.ignoreListIsEmpty": "Ignore List is empty!",
     "message.noOrderHistoryFound": "no Order History entries found",
     "message.addedToIgnoreList": "Added To Ignore List",
@@ -1035,7 +1035,7 @@
         "agent": "The Agent has to be specified that performs file watching on the respective host on which the Agent is installed.",
         "directory": "The Directory is specified that is watched for incoming files. Consider that the Directory is accessible for the Agent's host and account.",
         "pattern": "A regular expression Pattern specifies the files that the Directory is watched for. For example .* means any files, .*\\.txt$ means any files with a .txt extension.",
-        "timeZone": "When a file arrives then the Agent will create an order that includes the current date with its order ID. This item specifies the time zone that is used for the date in the order ID.",
+        "timeZone": "When a file arrives then the Agent will create an order that includes the current date with its Order ID. This item specifies the time zone that is used for the date in the Order ID.",
         "delay": "A Delay is applied for which the Agent waits that an incoming file remains unchanged. Changes are detected from the file size and file timestamp. If the file changes, for example if the file is written to by some process, then once again the Delay will be applied and the check will be repeated until no further change occurs."
       },
       "jobResource": {

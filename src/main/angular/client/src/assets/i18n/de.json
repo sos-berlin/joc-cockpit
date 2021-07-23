@@ -1044,7 +1044,7 @@
         "title": "Der Titel der Job-Ressource"
       },
       "board": {
-        "name": "Ein Aushang benennt die Abhängigkeit zwischen Arbeitsabläufen. Die PostNotice und ReadNotce-Instruktionen von Arbeitsabläufen verweisen auf den Aushang. Für den Namen des Aushangs können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Ein Aushang benennt die Abhängigkeit zwischen Arbeitsabläufen. Die PostNotice und ExpectNotce-Instruktionen von Arbeitsabläufen verweisen auf den Aushang. Für den Namen des Aushangs können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf ein Dokumentation kann hinzugefügt werden, die mit dem Aushang angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des Aushangs.",
         "toNotice": "Notizkennung des ausstellenden Auftrags",
@@ -1072,7 +1072,7 @@
         "title": "Der Titel des Arbeitsablaufs wird in der Sicht ARBEITSABLÄUFE angezeigt.",
         "allowUndeclared": "Erlaubt die Verwending undeklarierter Variablen am Auftrag. Solche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
         "board": {
-          "boardName": "BoardName"
+          "boardName": "Name des Aushangs"
         },
         "fail": {
           "message": "Mit dieser Instruktion kann eine Nachricht zurückgegeben werden, die im Auftragsprotokoll sichtbar wird.",
@@ -1886,7 +1886,7 @@
     "message.invalidXSDFile": "Ungültige oder leere XSD Datei",
     "message.wouldYouLikeToDeleteThisConfiguration": "Möchten Sie diese Konfiguration löschen?",
     "message.validateSuccessfully": "XML Dokument erfolgreich validiert",
-    "message.removeXML": "Are you sure you want to remove this configuration?",
+    "message.removeXML": "Sind Sie sicher, dass Sie diese Konfiguraton entfernen möchten?",
     "message.deleteAllDraft": "Sind Sie sicher, dass Sie alle Entwürfe für XML Dokumente löschen möchten?",
     "message.noConfigurationFound": "Keine Konfiguration gefunden"
   }
