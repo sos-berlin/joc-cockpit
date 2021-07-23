@@ -1,6 +1,7 @@
 import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import * as moment from 'moment-timezone';
+import {sortBy} from 'underscore';
 import {differenceInCalendarDays, differenceInMilliseconds} from 'date-fns';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -21,6 +22,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   @Input() filters: any = {};
 
   isLoaded = false;
+  toggle = false;
   runningTime: any = [];
   statisticsData: any = [];
   data = [];
@@ -31,6 +33,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   showYAxis = true;
   gradient = true;
   showLabels = true;
+  yAxisLabel = 'In Hours';
 
   selectedDate: Date = new Date();
   viewDate: Date = new Date();
@@ -51,15 +54,22 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   ];
 
   colorScheme = {
-    domain: ['#19AADE', '#C7B42C', '#AAAAAA']
+    domain: ['rgb(122,185,122)', '#ef486a', '#AAAAAA']
   };
 
-  subscription: Subscription;
+  subscription1: Subscription;
+  subscription2: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService,
               private groupByPipe: GroupByPipe, private dataService: DataService) {
-    this.subscription = dataService.eventAnnounced$.subscribe(res => {
+    this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+    });
+
+    this.subscription2 = dataService.functionAnnounced$.subscribe((res: any) => {
+      if (res && res.statistics) {
+        this.getData();
+      }
     });
   }
 
@@ -69,7 +79,8 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
   }
 
   init(): void {
@@ -88,6 +99,15 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
     }
   }
 
+  customColors(): any {
+    self.toggle = !self.toggle;
+    return self.toggle ? 'rgb(122,185,122)' : '#ef486a';
+  }
+
+  formatDataLabel(value ): any {
+    return value + 'daat';
+  }
+
   changeDate(obj): void {
     this.filters.runningTime.filter.date = obj.date;
     this.filters.runningTime.filter.label = obj.text;
@@ -96,7 +116,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
 
   private getData(): void {
     this.coreService.post('monitoring/controllers', {
-      controllerId: this.schedulerIds.selected
+      controllerId: this.filters.current ? this.schedulerIds.selected : '',
     }).subscribe((res: any) => {
       this.data = res.controllers;
       this.groupByData = [];
@@ -157,6 +177,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
 
   private getStatisticsData(): void {
     this.statisticsData = [];
+    const dates = this.coreService.getDates(this.filters.statistics.filter.startDate, this.filters.statistics.filter.endDate);
     this.groupByData.forEach((item) => {
       const date = new Date(item.key).setHours(0, 0, 0, 0);
       if (date >= this.filters.statistics.filter.startDate && date <= this.filters.statistics.filter.endDate) {
@@ -165,6 +186,12 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
           name: item.key,
           series: []
         };
+        for (const i in dates) {
+          if (this.coreService.getDateByFormat(dates[i], this.preferences.zone, 'YYYY-MM-DD') === item.key) {
+            dates.splice(i, 1);
+            break;
+          }
+        }
         for (const i in values) {
           const statusObj: any = {
             value: 0,
@@ -180,13 +207,30 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
               dur += diff;
             }
           });
-          statusObj.value = ((86400 - dur) / (60 * 60));
-          statusObj.tooltip = statusObj.value.toFixed(2) + ' hours';
+          statusObj.value = ((86400 - dur) / (60 * 60)).toFixed(2);
           obj.series.push(statusObj);
+          obj.series.push({
+            value: statusObj.value - 24,
+            name: values[i].key,
+          });
         }
         this.statisticsData.push(obj);
       }
     });
+    if (dates.length > 0) {
+      const today = new Date().setHours(0, 0, 0, 0);
+      dates.forEach((date) => {
+        if (today > date) {
+          this.statisticsData.push({
+            name: this.coreService.getDateByFormat(date, this.preferences.zone, 'YYYY-MM-DD'),
+            series: []
+          });
+        }
+      });
+      this.statisticsData = sortBy(this.statisticsData, (i: any) => {
+        return i.name;
+      });
+    }
   }
 
   private getOverviewData(): void {
@@ -302,11 +346,11 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   };
 
   getValue(val): string {
-    for (let i in self.runningTime) {
+/*    for (let i in self.runningTime) {
       if (val === self.runningTime[i].value) {
-        return self.coreService.getTimeFromNumber(self.runningTime[i].time);
+       return self.coreService.getTimeFromNumber(self.runningTime[i].time);
       }
-    }
+    }*/
     return val + ' %';
   }
 

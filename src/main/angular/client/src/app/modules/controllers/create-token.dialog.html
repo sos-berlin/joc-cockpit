@@ -1,0 +1,47 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>agent.button.createToken</span>
+    <i *ngIf="agent || controllerId">:</i>
+    <i class="text-muted p-l-xs text" *ngIf="!agent">{{controllerId}}</i>
+    <i class="text-muted p-l-xs text" *ngIf="agent">{{agent.agentId}}</i>
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
+  <div class="modal-body p-a">
+    <div class="hide" [ngClass]="{'show': display}">
+      <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-3 form-control-label" translate>agent.label.validUntil</label>
+      <div class="col-sm-8" [ngClass]="{ 'has-error' : (((date.dirty || date.touched) && date.invalid))}">
+        <nz-date-picker name="date" #date="ngModel" required [(ngModel)]="token.validUntil"></nz-date-picker>
+        <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger help-block">
+          <div *ngIf="date.errors.required">
+            <div translate>common.message.requiredError</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-3 form-control-label" translate>common.label.timeZone</div>
+      <div class="col-sm-8">
+        <nz-select required nzShowSearch name="timeZone" [(ngModel)]="token.timezone">
+          <nz-option *ngFor="let zone of zones" [nzValue]="zone" [nzLabel]="zone"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+      common.button.cancel
+    </button>
+  </div>
+</form>
+

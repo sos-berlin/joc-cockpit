@@ -134,6 +134,10 @@
     "label.runningTasks": "実行中タスク",
     "label.agentFound": "エージェントがあります",
     "label.agentsFound": "エージェントがあります",
+    "label.oneTimeToken": "One Time Token",
+    "label.validUntil": "Valid Until",
+    "label.uuid": "UUID",
+    "button.createToken": "Create One Time Token",
     "button.addAgent": "エージェント追加",
     "button.allAgent": "全エージェント",
     "button.coupled": "接続",
@@ -1169,6 +1173,7 @@
     },
     "notification" : {
       "label" : {
+        "workflow": "Workflow",
         "orderId": "Order ID",
         "job": "Job",
         "message": "Message",
@@ -1192,6 +1197,7 @@
   "order": {
     "label.allOrders": "全オーダー",
     "label.orderId": "オーダーID",
+    "label.orderName": "Order Name",
     "label.workflow": "ワークフロー",
     "label.position": "ポジション",
     "label.state": "ステート",

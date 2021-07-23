@@ -18,19 +18,6 @@
       </div>
       <div class="inline">
         <div class="inline">
-          <label class="m-r" style="position: relative;top: 2px">{{'monitor.button.filterBy' | translate}}:</label>
-        </div>
-        <div class="inline">
-          <div style="position: relative;top: 2px">
-            <nz-select class="select-box" nzAllowClear nzPlaceHolder="{{'common.label.selectController' | translate}}"
-                       [(ngModel)]="filters.filter.controllerId" (ngModelChange)="changeController()" name="controller">
-              <nz-option *ngFor="let controller of schedulerIds.controllerIds" [nzLabel]="controller" [nzValue]="controller"></nz-option>
-            </nz-select>
-          </div>
-        </div>
-      </div>
-      <div class="inline m-l">
-        <div class="inline">
           <label class="m-r" style="position: relative;top: 2px">{{'monitor.button.groupBy' | translate}}:</label>
         </div>
         <div class="inline">

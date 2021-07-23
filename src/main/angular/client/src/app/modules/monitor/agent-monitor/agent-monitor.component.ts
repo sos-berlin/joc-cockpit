@@ -27,11 +27,18 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
   weekStart = 1;
 
   subscription1: Subscription;
+  subscription2: Subscription;
 
   constructor(private coreService: CoreService, private authService: AuthService,
               private groupByPipe: GroupByPipe, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+    });
+
+    this.subscription2 = dataService.functionAnnounced$.subscribe((res: any) => {
+      if (res && res.filter) {
+        this.getData();
+      }
     });
   }
 
@@ -52,11 +59,12 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
   }
 
   private getData(): void {
     this.coreService.post('monitoring/agents', {
-      controllerId: this.filters.filter.controllerId ? this.filters.filter.controllerId : '',
+      controllerId: this.filters.current ? this.schedulerIds.selected : '',
       dateFrom: this.filters.filter.startDate,
       dateTo: this.filters.filter.endDate,
       timeZone: this.preferences.zone

@@ -45,6 +45,12 @@
             <i *ngIf="filters.filter.sortBy == 'controllerId' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
+          <th (click)="sort('workflow')"><a><span class="p-r-xs" translate>monitor.notification.label.workflow</span>
+            <i *ngIf="filters.filter.sortBy == 'workflow' && !filters.filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filters.filter.sortBy == 'workflow' && filters.filter.reverse"
+               class="fa fa-caret-down "></i></a>
+          </th>
           <th (click)="sort('orderId')"><a><span class="p-r-xs" translate>monitor.notification.label.orderId</span>
             <i *ngIf="filters.filter.sortBy == 'orderId' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
@@ -101,7 +107,8 @@
               <i class="cursor fa fa-caret-up fa-lg"
                  *ngIf="notify.show && filters.filter.current && notify.hasMonitors"
                  (click)="notify.show = false;$event.stopPropagation()"></i>&nbsp;
-              <span [innerHtml]="notify.orderId | highlight : filters.filter.searchText"></span></td>
+              <span [innerHtml]="notify.workflow | highlight : filters.filter.searchText"></span></td>
+            <td><span [innerHtml]="notify.orderId | highlight : filters.filter.searchText"></span></td>
             <td><span [innerHtml]="notify.job.job | highlight : filters.filter.searchText"></span></td>
             <td><span [innerHtml]="notify.type | translate | highlight : filters.filter.searchText"></span></td>
             <td><span [innerHtml]="notify.job.exitCode | highlight : filters.filter.searchText"></span></td>

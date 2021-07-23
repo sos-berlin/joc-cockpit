@@ -45,12 +45,17 @@
             [scheme]="colorScheme"
             [results]="statisticsData"
             [gradient]="gradient"
+            [customColors]="customColors"
             [xAxis]="showXAxis"
+            [noBarWhenZero]="false"
+            [trimXAxisTicks]="false"
+            [showYAxisLabel]="true"
+            [yAxisLabel]="yAxisLabel"
             [yAxis]="showYAxis">
             <ng-template #tooltipTemplate let-model="model">
               <div class="p-a-sm text-center">
                 <h6>{{model.name}}</h6>
-                <div class="text-md"><i>{{model.tooltip}}</i></div>
+                <div class="text-md"><i>{{model.value}}</i></div>
               </div>
             </ng-template>
           </ngx-charts-bar-vertical-2d>

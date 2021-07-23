@@ -134,6 +134,10 @@
     "label.runningTasks": "Running Tasks",
     "label.agentFound": "Agent entry found",
     "label.agentsFound": "Agent entries found",
+    "label.oneTimeToken": "One Time Token",
+    "label.validUntil": "Valid Until",
+    "label.uuid": "UUID",
+    "button.createToken": "Create One Time Token",
     "button.addAgent": "Add Agent",
     "button.allAgent": "All Agent",
     "button.coupled": "Coupled",
@@ -1169,6 +1173,7 @@
     },
     "notification" : {
       "label" : {
+        "workflow": "Workflow",
         "orderId": "Order ID",
         "job": "Job",
         "message": "Message",
@@ -1192,6 +1197,7 @@
   "order": {
     "label.allOrders": "All Orders",
     "label.orderId": "Order ID",
+    "label.orderName": "Order Name",
     "label.workflow": "Workflow",
     "label.position": "Position",
     "label.state": "State",
