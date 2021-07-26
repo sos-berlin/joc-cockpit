@@ -23,7 +23,7 @@
   .timelineWrapper {
     tr,
     .row {
-      border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+      border-bottom: 1px solid var(--border-color);
 
       th:not(:last-child) {
         border-right: 1px solid #e0e0e0;
@@ -127,8 +127,7 @@ table {
     .taskBar {
       display: inline-block;
       box-sizing: border-box;
-      margin: 4px 0;
-      height: 22px;
+      margin: 7px 0;
       text-align: center;
       padding: 5px;
       border-radius: 7px;

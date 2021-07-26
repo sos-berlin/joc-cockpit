@@ -1,10 +1,14 @@
-import {Component, OnInit, OnDestroy, Input} from '@angular/core';
+import {Component, OnInit, OnDestroy, Input, ViewChild, ElementRef} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {differenceInCalendarDays} from 'date-fns';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
 import {GroupByPipe} from '../../../pipes/core.pipe';
+import * as moment from 'moment-timezone';
+import {sortBy} from 'underscore';
+
+declare let self;
 
 @Component({
   selector: 'app-agent-monitor',
@@ -17,17 +21,28 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
   @Input() schedulerIds: any = {};
   @Input() filters: any = {};
 
+  toggle = false;
   isLoaded = false;
   agents = [];
   data = [];
   groupByData = [];
+  statisticsData: any = [];
 
   viewDate: Date = new Date();
   dateFormat: string;
   weekStart = 1;
+  yAxisLabel = 'In Hours';
+  groupPadding = 16;
+  view: any = null;
 
   subscription1: Subscription;
   subscription2: Subscription;
+
+  colorScheme = {
+    domain: ['rgb(122,185,122)', '#ef486a', '#AAAAAA']
+  };
+
+  @ViewChild('chartArea', { static: true }) chartArea: ElementRef;
 
   constructor(private coreService: CoreService, private authService: AuthService,
               private groupByPipe: GroupByPipe, private dataService: DataService) {
@@ -72,6 +87,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
       this.data = res.controllers;
       this.isLoaded = true;
       this.groupBy();
+      this.getStatisticsData();
     }, () => {
       this.isLoaded = true;
     });
@@ -83,7 +99,6 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
 
   groupBy(): void {
     this.groupByData = [];
-    this.isLoaded = true;
     this.data.forEach((controller) => {
       for (const i in controller.agents) {
         for (const j in controller.agents[i].entries) {
@@ -100,13 +115,29 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
         }
       }
     });
-    this.groupByData = this.groupByPipe.transform(this.groupByData, this.filters.filter.groupBy === 'DATE' ? 'date' : 'controllerId');
-    this.getStatisticsData();
+    const gData = this.groupByPipe.transform(this.groupByData, 'date');
+    if (this.filters.filter.groupBy !== 'DATE') {
+      this.getOverviewData(this.groupByPipe.transform(this.groupByData, 'controllerId'));
+    } else{
+      this.getOverviewData(gData);
+    }
+    this.groupByData = gData;
   }
 
   setView(view): void {
     this.filters.filter.view = view;
     this.renderTimeSheetHeader();
+  }
+
+  setViewSize(len): void {
+    this.view = this.statisticsData.length > 15 ? [(32 * len * this.statisticsData.length), 260] : (this.chartArea.nativeElement.offsetWidth && this.chartArea.nativeElement.offsetWidth > 500)
+      ? [(this.chartArea.nativeElement.offsetWidth - 34), 260] : null;
+    this.groupPadding = this.statisticsData.length > 15 ? 4 : 16;
+  }
+
+  customColors(): any {
+    self.toggle = !self.toggle;
+    return self.toggle ? 'rgb(122,185,122)' : '#ef486a';
   }
 
   prev(): void {
@@ -173,10 +204,10 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
     this.getData();
   }
 
-  private getStatisticsData(): void {
+  private getOverviewData(groupByData): void {
     this.agents = [];
     let count = 0;
-    this.groupByData.forEach((item) => {
+    groupByData.forEach((item) => {
       const parentObj: any = {
         id: ++count,
         isParent: true,
@@ -217,6 +248,73 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
     });
   }
 
+  private getStatisticsData(): void {
+    this.statisticsData = [];
+    const dates = this.coreService.getDates(this.filters.filter.startDate, this.filters.filter.endDate);
+    let len = 1;
+    this.groupByData.forEach((item) => {
+      const values = this.groupByPipe.transform(item.value, 'agentId');
+      if (len < values.length) {
+        len = values.length;
+      }
+      const obj = {
+        name: item.key,
+        series: []
+      };
+      for (const i in dates) {
+        if (this.coreService.getDateByFormat(dates[i], this.preferences.zone, 'YYYY-MM-DD') === item.key) {
+          dates.splice(i, 1);
+          break;
+        }
+      }
+      for (const i in values) {
+        const statusObj: any = {
+          value: 0,
+          name: values[i].key,
+        };
+        let dur = 0;
+        values[i].value.forEach((time, index) => {
+          if (index === 0) {
+            dur = moment.duration(this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS')).asSeconds();
+          } else {
+            let diff = Math.abs(moment.duration(this.coreService.getDateByFormat(values[i].value[index - 1].shutdownTime, this.preferences.zone, 'HH:mm:SS')).asSeconds()
+              - moment.duration(this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS')).asSeconds());
+            dur += diff;
+          }
+        });
+        let dur1;
+        if (this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD') === item.key) {
+          dur1 = moment.duration(this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:SS')).asSeconds();
+        }
+
+        statusObj.value = (((dur1 || 86400) - dur) / (60 * 60)).toFixed(2);
+        obj.series.push(statusObj);
+        const totalVal: any = dur1 ? (dur1 / (60 * 60)).toFixed(2) : 24;
+        obj.series.push({
+          value: statusObj.value - totalVal,
+          name: values[i].key,
+        });
+      }
+      this.statisticsData.push(obj);
+    });
+
+    if (dates.length > 0) {
+      const today = new Date().setHours(0, 0, 0, 0);
+      dates.forEach((date) => {
+        if (today > date) {
+          this.statisticsData.push({
+            name: this.coreService.getDateByFormat(date, this.preferences.zone, 'YYYY-MM-DD'),
+            series: []
+          });
+        }
+      });
+      this.statisticsData = sortBy(this.statisticsData, (i: any) => {
+        return i.name;
+      });
+    }
+    this.setViewSize(len);
+  }
+
   private updateStatusList(data, obj): void {
     data.value.forEach((time, index) => {
       if (this.filters.filter.groupBy === 'DATE') {
@@ -226,7 +324,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
       const statusObj = {
         start: index === 0 ? '00:00' : this.coreService.getDateByFormat(data.value[index - 1].couplingFailedTime, this.preferences.zone, 'HH:mm:SS'),
         end: this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS'),
-        color: '#ff3232',
+        color: '#ef486a',
         tooltip: time.couplingFailedMessage
       };
       obj.statusList.push(statusObj);

@@ -1,5 +1,6 @@
 import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
+import {Router} from '@angular/router';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
@@ -24,7 +25,7 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(private coreService: CoreService, private authService: AuthService,
+  constructor(public coreService: CoreService, private authService: AuthService, private router: Router,
               private dataService: DataService, private searchPipe: SearchPipe) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
@@ -125,5 +126,25 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
   searchInResult(): void {
     this.data = this.filters.filter.searchText ? this.searchPipe.transform(this.notifications, this.filters.filter.searchText, this.searchableProperties) : this.notifications;
     this.data = [...this.data];
+  }
+
+  navToWorkflowTab(workflow): void {
+    this.coreService.getConfigurationTab().inventory.expand_to = [];
+    this.coreService.getConfigurationTab().inventory.selectedObj = {
+      name: workflow.substring(workflow.lastIndexOf('/') + 1),
+      path: workflow.substring(0, workflow.lastIndexOf('/')) || '/',
+      type: 'WORKFLOW'
+    };
+    this.router.navigate(['/configuration/inventory']);
+  }
+
+  navToOrderHistory(data): void {
+    this.router.navigate(['/history/order'], {
+      queryParams: {
+        orderId: data.orderId,
+        workflow: data.workflow,
+        controllerId: data.controllerId || this.schedulerIds.selected
+      }
+    });
   }
 }

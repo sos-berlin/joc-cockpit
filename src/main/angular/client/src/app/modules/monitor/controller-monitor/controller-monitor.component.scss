@@ -55,3 +55,8 @@ mwl-gauge {
     overflow: hidden;
   }
 }
+.scroll-class {
+  max-width: 100%;
+  overflow-y: auto !important;
+  height: 293px;
+}

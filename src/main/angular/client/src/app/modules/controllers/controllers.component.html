@@ -55,9 +55,10 @@
                   <i (click)="showPanel[id]  = false" *ngIf="showPanel[id]"
                      class="cursor fa fa-caret-down m-l-xs"></i>
                   <span class="text-sm" *ngIf="controller.token">
-                      <span class="m-l-md" translate>agent.label.validUntil</span>:
+                      <span class="m-l-md" translate>agent.label.validityDate</span>:
+                    <i class="text-muted p-l-sm">{{controller.token.validUntil | stringToDate}}</i>
                     <a nz-popover nzPopoverTrigger="click"
-                       [nzPopoverContent]="contentTemplate" class="text-muted primary-text-hover-color p-l-sm">{{controller.token.validUntil | stringToDate}}</a>
+                       [nzPopoverContent]="contentTemplate" class="primary-text-hover-color p-l-xs"><i class="fa fa-key"></i></a>
                     <ng-template #contentTemplate>
                       <b translate>agent.label.uuid</b> :
                       <span>{{controller.token.UUID}} <i ngxClipboard [cbContent]="controller.token.UUID" class="primary-text-hover-color p-l-sm fa fa-copy"></i></span>
@@ -81,10 +82,11 @@
                       ></th>
                       <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="menu"><span translate>common.label.action</span></th>
                       <th width="15%"><span translate>agent.label.agentId</span></th>
-                      <th width="20%"><span translate>agent.label.agentName</span></th>
+                      <th width="15%"><span translate>agent.label.agentName</span></th>
                       <th><span translate>agent.label.agentNameAliases</span></th>
-                      <th width="25%"><span translate>agent.label.url</span></th>
-                      <th width="150px"><span translate>agent.label.oneTimeToken</span></th>
+                      <th width="20%"><span translate>agent.label.url</span></th>
+                      <th width="150px"><span translate>agent.label.validityDate</span></th>
+                      <th width="140px"><span translate>agent.label.oneTimeToken</span></th>
                       <th width="100px"><span translate>agent.label.disabled</span></th>
                       <th width="140px"><span translate>agent.label.clusterWatcher</span></th>
                     </tr>
@@ -125,9 +127,13 @@
                       <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.agentNameAliases || '-'"></span></td>
                       <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.url"></span></td>
                       <td>
+                        <span *ngIf="!agent.token">-</span>
+                        <span *ngIf="agent.token">{{agent.token.validUntil | stringToDate}}</span>
+                      </td>
+                      <td>
                         <div *ngIf="agent.token">
                           <a class="primary-text-hover-color" nz-popover nzPopoverTrigger="click"
-                             [nzPopoverContent]="contentTemplate">{{agent.token.validUntil | stringToDate}}</a>
+                             [nzPopoverContent]="contentTemplate"><i class="fa fa-key"></i></a>
                           <ng-template #contentTemplate>
                             <b translate>agent.label.uuid</b> :
                             <span>{{agent.token.UUID}} <i ngxClipboard [cbContent]="agent.token.UUID" class="primary-text-hover-color p-l-sm fa fa-copy"></i></span>

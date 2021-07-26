@@ -101,17 +101,25 @@
               <span [innerHtml]="notify.controllerId | highlight : filters.filter.searchText"></span>
             </td>
             <td nowrap (click)="$event.stopPropagation()">
-              <i class="cursor fa fa-caret-down fa-lg"
-                 *ngIf="!notify.show && filters.filter.current && notify.hasMonitors"
-                 (click)="showDetail(notify);$event.stopPropagation()"></i>
-              <i class="cursor fa fa-caret-up fa-lg"
+              <span class="show-in-single-line w-full">
+                <i class="cursor fa fa-caret-down fa-lg"
+                    *ngIf="!notify.show && filters.filter.current && notify.hasMonitors"
+                    (click)="showDetail(notify);$event.stopPropagation()"></i>
+                 <i class="cursor fa fa-caret-up fa-lg"
                  *ngIf="notify.show && filters.filter.current && notify.hasMonitors"
                  (click)="notify.show = false;$event.stopPropagation()"></i>&nbsp;
-              <span [innerHtml]="notify.workflow | highlight : filters.filter.searchText"></span></td>
-            <td><span [innerHtml]="notify.orderId | highlight : filters.filter.searchText"></span></td>
-            <td><span [innerHtml]="notify.job.job | highlight : filters.filter.searchText"></span></td>
+                  <i (click)="navToWorkflowTab(notify.workflow);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                  <span (click)="coreService.showWorkflow(notify.workflow);$event.stopPropagation()"
+                        class="text-hover-primary" [innerHtml]="notify.workflow | highlight : filters.filter.searchText"></span>
+              </span>
+            </td>
+            <td>
+              <a class="text-hover-primary"
+                 (click)="navToOrderHistory(notify)" [innerHtml]="notify.orderId | highlight : filters.filter.searchText"></a>
+            </td>
+            <td><span *ngIf="notify.job" [innerHtml]="notify.job.job | highlight : filters.filter.searchText"></span></td>
             <td><span [innerHtml]="notify.type | translate | highlight : filters.filter.searchText"></span></td>
-            <td><span [innerHtml]="notify.job.exitCode | highlight : filters.filter.searchText"></span></td>
+            <td><span *ngIf="notify.job" [innerHtml]="notify.job.exitCode | highlight : filters.filter.searchText"></span></td>
             <td><span [innerHtml]="notify.message | highlight : filters.filter.searchText"></span></td>
             <td><span [innerHtml]="notify.created | stringToDate | highlight : filters.filter.searchText"></span></td>
           </tr>

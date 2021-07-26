@@ -321,8 +321,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     $('.scroll-y').remove();
   }
 
-  changedHandler(flag: boolean): void {
-    this.isProcessing = flag;
+  changedHandler(obj: any): void {
+    this.isProcessing = obj.flag;
+    if (obj.isOrderAdded && obj.flag) {
+      this.showPanelFunc(obj.isOrderAdded);
+    }
   }
 
   private resetAction(): void {

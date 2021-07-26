@@ -72,7 +72,7 @@
               'background-color': status.color
             }"
         >
-          <i *ngIf="!isAgent" translate>monitor.label.shutdown</i>
+          <i *ngIf="!isAgent" translate>COUPLED</i>
           <i *ngIf="isAgent" [nz-tooltip]="status.tooltip" translate>COUPLINGFAILED</i>
         </span>
       </div>

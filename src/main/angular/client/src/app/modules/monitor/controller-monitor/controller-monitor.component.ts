@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, Input} from '@angular/core';
+import {Component, OnInit, OnDestroy, Input, ViewChild, ElementRef} from '@angular/core';
 import {Subscription} from 'rxjs';
 import * as moment from 'moment-timezone';
 import {sortBy} from 'underscore';
@@ -39,19 +39,8 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   viewDate: Date = new Date();
   dateFormat: string;
   weekStart = 1;
-  runningFilterBtn = [
-    {
-      date: 'ALL', text: 'all'
-    },
-    {
-      date: '-7d',
-      text: 'lastWeak'
-    },
-    {
-      date: '-30d',
-      text: 'last30'
-    }
-  ];
+  groupPadding = 16;
+  view: any = null;
 
   colorScheme = {
     domain: ['rgb(122,185,122)', '#ef486a', '#AAAAAA']
@@ -59,6 +48,8 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
 
   subscription1: Subscription;
   subscription2: Subscription;
+
+  @ViewChild('chartArea', { static: true }) chartArea: ElementRef;
 
   constructor(private authService: AuthService, public coreService: CoreService,
               private groupByPipe: GroupByPipe, private dataService: DataService) {
@@ -88,6 +79,18 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
     this.getData();
   }
 
+  setViewSize(): void {
+    this.view = this.statisticsData.length > 15 ? [(100 * this.statisticsData.length), 260] :
+      (this.chartArea.nativeElement.offsetWidth && this.chartArea.nativeElement.offsetWidth > 500)
+        ? [(this.chartArea.nativeElement.offsetWidth - 34), 260] : null;
+    if (!this.view && this.chartArea.nativeElement.offsetWidth === 0) {
+      setTimeout(() => {
+        this.setViewSize();
+      }, 100);
+    }
+    this.groupPadding = this.statisticsData.length > 15 ? 4 : 16;
+  }
+
   refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
@@ -104,22 +107,13 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
     return self.toggle ? 'rgb(122,185,122)' : '#ef486a';
   }
 
-  formatDataLabel(value ): any {
-    return value + 'daat';
-  }
-
-  changeDate(obj): void {
-    this.filters.runningTime.filter.date = obj.date;
-    this.filters.runningTime.filter.label = obj.text;
-    this.getRunningTime();
-  }
-
   private getData(): void {
     this.coreService.post('monitoring/controllers', {
       controllerId: this.filters.current ? this.schedulerIds.selected : '',
     }).subscribe((res: any) => {
       this.data = res.controllers;
       this.groupByData = [];
+      this.isLoaded = true;
       this.data.forEach((controller) => {
         for (const i in controller.entries) {
           const obj = {
@@ -135,37 +129,38 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
       this.getRunningTime();
       this.renderTimeSheetHeader('overview');
       this.renderTimeSheetHeader('statistics');
-      this.isLoaded = true;
     }, () => {
       this.isLoaded = true;
     });
   }
 
-  private getRunningTime(): void {
+  getRunningTime(): void {
     this.runningTime = [];
     this.data.forEach((controller) => {
       const obj: any = {
         controllerId: controller.controllerId,
       };
-      let firstEntry = controller.entries[0];
-      const lastEntry = controller.entries[controller.entries.length - 1];
-      const d = new Date();
-      if (this.filters.runningTime.filter.date !== 'ALL') {
-        let fromDate;
-        if (this.filters.runningTime.filter.date === '-7d') {
-          fromDate = d.setDate(new Date().getDate() - 7);
-        } else {
-          fromDate = d.setMonth(new Date().getMonth() - 1);
-        }
+      let firstEntry;
+      let lastEntry;
+      if (this.filters.runningTime.filter.dateRange) {
         for (const i in controller.entries) {
-          if (new Date(controller.entries[i].readyTime) >= fromDate) {
+          if (!firstEntry && new Date(controller.entries[i].readyTime).setHours(0, 0, 0, 0) >= new Date(this.filters.runningTime.filter.dateRange[0]).setHours(0, 0, 0, 0)) {
             firstEntry = controller.entries[i];
-            break;
+          } else {
+            if (new Date(controller.entries[i].readyTime).setHours(0, 0, 0, 0) >= new Date(this.filters.runningTime.filter.dateRange[1]).setHours(0, 0, 0, 0)) {
+              lastEntry = controller.entries[parseInt(i, 10) - 1];
+              break;
+            }
           }
         }
+      } else {
+        firstEntry = controller.entries[0];
+        lastEntry = controller.entries[controller.entries.length - 1];
       }
+
       obj.total = differenceInMilliseconds(new Date(lastEntry.readyTime), new Date(firstEntry.readyTime));
-      obj.time = (lastEntry.totalRunningTime - firstEntry.totalRunningTime);
+      obj.time = Math.abs(lastEntry.totalRunningTime - firstEntry.totalRunningTime);
+     // console.log(obj, '????', controller.controllerId)
       this.runningTime.push(obj);
     });
 
@@ -207,10 +202,16 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
               dur += diff;
             }
           });
-          statusObj.value = ((86400 - dur) / (60 * 60)).toFixed(2);
+          let dur1;
+          if (this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD') === item.key) {
+            dur1 = moment.duration(this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:SS')).asSeconds();
+          }
+
+          statusObj.value = (((dur1 || 86400) - dur) / (60 * 60)).toFixed(2);
           obj.series.push(statusObj);
+          const totalVal: any = dur1 ? (dur1 / (60 * 60)).toFixed(2) : 24;
           obj.series.push({
-            value: statusObj.value - 24,
+            value: statusObj.value - totalVal,
             name: values[i].key,
           });
         }
@@ -231,6 +232,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
         return i.name;
       });
     }
+    this.setViewSize();
   }
 
   private getOverviewData(): void {
@@ -251,9 +253,9 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
           };
           values[i].value.forEach((time, index) => {
             const statusObj = {
-              start: index === 0 ? '00:00' : this.coreService.getDateByFormat(values[i].value[index - 1].shutdownTime, this.preferences.zone, 'HH:mm:SS'),
-              end: this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS'),
-              color: '#ff3232'
+              start: this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS'),
+              end: time.shutdownTime ? this.coreService.getDateByFormat(time.shutdownTime, this.preferences.zone, 'HH:mm:SS') : '24:00',
+              color: 'rgb(122,185,122)'
             };
             obj.statusList.push(statusObj);
           });
@@ -346,11 +348,6 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   };
 
   getValue(val): string {
-/*    for (let i in self.runningTime) {
-      if (val === self.runningTime[i].value) {
-       return self.coreService.getTimeFromNumber(self.runningTime[i].time);
-      }
-    }*/
     return val + ' %';
   }
 

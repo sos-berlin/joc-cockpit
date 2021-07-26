@@ -79,8 +79,7 @@ export class CoreService {
       },
       runningTime: {
         filter: {
-          date: 'ALL',
-          label: 'all'
+          dateRange: null
         }
       },
       overview: {
@@ -281,8 +280,7 @@ export class CoreService {
       },
       runningTime: {
         filter: {
-          date: 'ALL',
-          label: 'all'
+          dateRange: null
         }
       },
       overview: {

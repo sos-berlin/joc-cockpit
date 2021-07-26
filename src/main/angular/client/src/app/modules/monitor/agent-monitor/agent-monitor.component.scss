@@ -37,7 +37,7 @@
 }
 
 .overview {
-  max-height: calc(100vh - 330px);
+  max-height: calc(100vh - 646px);
   overflow: auto;
 }
 
@@ -47,4 +47,9 @@
     max-height: 100%;
     overflow: hidden;
   }
+}
+
+.scroll-class {
+  max-width: 100%;
+  overflow-y: auto !important;
 }

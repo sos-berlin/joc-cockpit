@@ -41,6 +41,8 @@ export class MonitorComponent implements OnInit, OnDestroy {
     const username = this.authService.currentUserData;
     if (sessionStorage.defaultProfile === username) {
       this.isNotReady = false;
+    } else{
+      this.index = 2;
     }
   }
 

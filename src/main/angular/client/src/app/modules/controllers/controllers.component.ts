@@ -1,6 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subscription} from 'rxjs';
+import {differenceInCalendarDays} from 'date-fns';
 import {CoreService} from '../../services/core.service';
 import {StartUpModalComponent} from '../start-up/start-up.component';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
@@ -22,6 +23,7 @@ export class CreateTokenModalComponent implements OnInit {
   comments: any = {};
   preferences: any;
   display: any;
+  viewDate = new Date();
   zones = [];
 
   constructor(public coreService: CoreService, public activeModal: NzModalRef) {
@@ -66,6 +68,11 @@ export class CreateTokenModalComponent implements OnInit {
       this.submitted = false;
     });
   }
+
+  disabledDate = (current: Date): boolean => {
+    // Can not select days before today and today
+    return differenceInCalendarDays(current, this.viewDate) < 0;
+  };
 }
 
 @Component({

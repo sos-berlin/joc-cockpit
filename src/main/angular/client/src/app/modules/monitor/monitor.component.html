@@ -81,26 +81,16 @@
 <div class="scroll-y max-ht">
   <div class="padding p-b-0">
     <nz-tabset [(nzSelectedIndex)]="index" (nzSelectChange)="tabChange($event)">
-      <nz-tab [nzTitle]="'monitor.label.controllerAvailability' | translate">
+      <nz-tab [nzTitle]="'monitor.label.controllerAvailability' | translate" [nzDisabled]="isNotReady">
         <div *ngIf="index === 0">
-          <div *ngIf="!isNotReady">
-            <app-controller-monitor [permission]="permission" [preferences]="preferences"
-                                    [schedulerIds]="schedulerIds" [filters]="monitorFilters.controller"></app-controller-monitor>
-          </div>
-          <div class="font14 text-center m-t-md" *ngIf="isNotReady">
-            Not Yet Implemented
-          </div>
+          <app-controller-monitor [permission]="permission" [preferences]="preferences"
+                                  [schedulerIds]="schedulerIds" [filters]="monitorFilters.controller"></app-controller-monitor>
         </div>
       </nz-tab>
-      <nz-tab [nzTitle]="'monitor.label.agentAvailability' | translate">
+      <nz-tab [nzTitle]="'monitor.label.agentAvailability' | translate" [nzDisabled]="isNotReady">
         <div *ngIf="index === 1">
-          <div *ngIf="!isNotReady">
-            <app-agent-monitor [permission]="permission" [preferences]="preferences"
-                               [schedulerIds]="schedulerIds" [filters]="monitorFilters.agent"></app-agent-monitor>
-          </div>
-          <div class="font14 text-center m-t-md" *ngIf="isNotReady">
-            Not Yet Implemented
-          </div>
+          <app-agent-monitor [permission]="permission" [preferences]="preferences"
+                             [schedulerIds]="schedulerIds" [filters]="monitorFilters.agent"></app-agent-monitor>
         </div>
       </nz-tab>
       <nz-tab [nzTitle]="'monitor.label.notification' | translate">

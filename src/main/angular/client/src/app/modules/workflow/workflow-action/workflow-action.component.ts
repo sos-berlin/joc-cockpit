@@ -205,7 +205,7 @@ export class WorkflowActionComponent {
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
-  @Output() isChanged: EventEmitter<boolean> =   new EventEmitter();
+  @Output() isChanged: EventEmitter<any> = new EventEmitter();
 
   constructor(public modal: NzModalService, public coreService: CoreService, private router: Router) {
   }
@@ -233,9 +233,9 @@ export class WorkflowActionComponent {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.isChanged.emit(true);
+        this.isChanged.emit({flag: true, isOrderAdded : workflow});
         setTimeout(() => {
-          this.isChanged.emit(false);
+          this.isChanged.emit({flag: false});
         }, 5000);
       }
     });
