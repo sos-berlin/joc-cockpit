@@ -65,7 +65,7 @@
         ></div>
         <span
           *ngFor="let status of task.statusList; let i = index"
-          class="statusBar" [nz-tooltip]="status.start + ' to ' + status.end"
+          class="statusBar" [nz-tooltip]="status.start + ' to ' + (status.end === '25:00' ? '24:00' : status.end)"
           [ngStyle]="{
               left: status.offset + 'px',
               width: status.width + 'px',

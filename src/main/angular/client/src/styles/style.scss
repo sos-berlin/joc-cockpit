@@ -6420,6 +6420,10 @@ tr.tr-border td:first-child {
   box-shadow: none !important;
 }
 
+.ant-picker-range .ant-picker-active-bar{
+  background: var(--primary);
+}
+
 .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before,
 .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before.ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
   border-color: var(--primary);
