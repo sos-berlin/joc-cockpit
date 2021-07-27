@@ -1342,10 +1342,6 @@ export class CoreService {
     minutes = String(minutes).padStart(2, '0');
     hours = String(hours).padStart(2, '0');
     seconds = String(seconds).padStart(2, '0');
-    if (hours < 24) {
-      return (hours + ':' + minutes + ':' + seconds);
-    } else {
-      return days + ' days';
-    }
+    return days;
   }
 }

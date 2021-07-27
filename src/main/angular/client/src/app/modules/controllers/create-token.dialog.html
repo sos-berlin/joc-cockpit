@@ -14,6 +14,27 @@
     <div class="hide" [ngClass]="{'show': display}">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
     </div>
+    <div class="form-group row" *ngIf="!agent && controllerId">
+      <label class="col-sm-3 form-control-label" translate>agent.label.agents</label>
+      <div class="col-sm-8" [ngClass]="{ 'has-error' : (((agent.dirty || agent.touched) && agent.invalid))}">
+        <nz-select
+          nzMode="multiple"
+          #agent="ngModel"
+          nzShowSearch
+          name="agents"
+          [nzPlaceHolder]="'resource.agentJobExecution.placeholder.selectAgentIds' | translate"
+          [(ngModel)]="token.agentIds">
+          <ng-container *ngFor="let agent of agents">
+            <nz-option [nzValue]="agent.agentId" [nzLabel]="agent.agentId"></nz-option>
+          </ng-container>
+        </nz-select>
+        <div *ngIf="agent.invalid && (agent.dirty || agent.touched)" class="text-danger help-block">
+          <div *ngIf="agent.errors.required">
+            <div translate>common.message.requiredError</div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="form-group row">
       <label class="col-sm-3 form-control-label" translate>agent.label.validUntil</label>
       <div class="col-sm-8" [ngClass]="{ 'has-error' : (((date.dirty || date.touched) && date.invalid))}">

@@ -7,7 +7,7 @@
       [nzPageIndex]="usr.currentPage"
       [nzBordered]="true"
       [nzShowPagination]="(users | filter: searchKey : ['user', 'roles']).length > 0"
-      [nzData]="(users | filter: searchKey: ['user', 'roles'])"
+      [nzData]="(users | filter: searchKey: ['user', 'roles']) | orderBy: usr.sortBy:usr.reverse"
       [nzLoading]="loading"
       [nzShowSizeChanger]="true"
       [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage || 5000]"
@@ -35,7 +35,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let user of ajaxTable.data | orderBy: usr.sortBy:usr.reverse:false;">
+      <tr *ngFor="let user of ajaxTable.data">
         <td>
           <div class="btn-group dropdown pull-left m-r-sm">
             <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>

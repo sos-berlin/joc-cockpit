@@ -71,7 +71,7 @@ export class StringDateFormatePipe implements PipeTransform {
         n.dateFormat = n.dateFormat.replace('|', '');
       }
       n.dateFormat = n.dateFormat.trim();
-      
+
       if (skip) {
         return moment(t).format(n.dateFormat);
       } else {

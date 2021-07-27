@@ -737,7 +737,7 @@
           [nzPageIndex]="order.currentPage"
           [nzBordered]="true"
           [nzShowPagination]="data.length > 0"
-          [nzData]="data"
+          [nzData]="data | orderBy: order.filter.sortBy:order.reverse"
           [nzLoading]="!isLoading"
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
@@ -814,7 +814,7 @@
           </thead>
           <tbody>
           <ng-template ngFor let-history
-                       [ngForOf]="ajaxOrderTable.data | orderBy: order.filter.sortBy:order.reverse">
+                       [ngForOf]="ajaxOrderTable.data">
             <tr class="cursor" [ngClass]="{'light-bg':history.show}">
               <td>
                 <div class="btn-group dropdown">
@@ -930,7 +930,7 @@
           [nzPageIndex]="task.currentPage"
           [nzBordered]="true"
           [nzShowPagination]="data.length > 0"
-          [nzData]="data"
+          [nzData]="data | orderBy: task.filter.sortBy:task.reverse"
           [nzLoading]="!isLoading"
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
@@ -1014,7 +1014,7 @@
           </tr>
           </thead>
           <tbody>
-          <ng-template ngFor let-jobHistory [ngForOf]="ajaxTable.data | orderBy: task.filter.sortBy:task.reverse">
+          <ng-template ngFor let-jobHistory [ngForOf]="ajaxTable.data">
             <tr class="cursor" [ngClass]="{'light-bg':jobHistory.show}">
               <td>
                 <div class="btn-group dropdown">
@@ -1106,7 +1106,7 @@
           [nzPageIndex]="yade.currentPage"
           [nzBordered]="true"
           [nzShowPagination]="data.length > 0"
-          [nzData]="data"
+          [nzData]="data | orderBy: yade.filter.sortBy:yade.reverse"
           [nzLoading]="!isLoading"
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
@@ -1116,49 +1116,49 @@
         >
           <thead>
           <tr class="main-header-row">
-            <th *ngIf="!historyFilters.current" (click)="sort('controllerId')"><a><span
+            <th *ngIf="!historyFilters.current" (click)="sort2('controllerId')"><a><span
               translate>common.label.controllerId</span>
               <i *ngIf="yade.filter.sortBy == 'controllerId' && !yade.reverse"
                  class="fa fa-caret-up "></i>
               <i *ngIf="yade.filter.sortBy == 'controllerId' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th (click)="sort('state._text')"><a>
+            <th (click)="sort2('state._text')"><a>
               <span class="p-r-xs" translate>fileTransfer.label.status</span>
               <i *ngIf="yade.filter.sortBy == 'state._text' && !yade.reverse"
                  class="fa fa-caret-up "></i>
               <i *ngIf="yade.filter.sortBy == 'state._text' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th (click)="sort('profile')"><a>
+            <th (click)="sort2('profile')"><a>
               <span class="p-r-xs" translate>fileTransfer.label.profileName</span>
               <i *ngIf="yade.filter.sortBy == 'profile' && !yade.reverse"
                  class="fa fa-caret-up "></i>
               <i *ngIf="yade.filter.sortBy == 'profile' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th (click)="sort('operation')"><a>
+            <th (click)="sort2('operation')"><a>
               <span class="p-r-xs" translate>fileTransfer.label.operation</span>
               <i *ngIf="yade.filter.sortBy == 'operation' && !yade.reverse"
                  class="fa fa-caret-up "></i>
               <i *ngIf="yade.filter.sortBy == 'operation' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th (click)="sort('workflow')"><a>
+            <th (click)="sort2('workflow')"><a>
               <span class="p-r-xs" translate>fileTransfer.label.workflow</span>
               <i *ngIf="yade.filter.sortBy == 'workflow' && !yade.reverse"
                  class="fa fa-caret-up "></i>
               <i *ngIf="yade.filter.sortBy == 'workflow' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th (click)="sort('orderId')"><a>
+            <th (click)="sort2('orderId')"><a>
               <span class="p-r-xs" translate>fileTransfer.label.order</span>
               <i *ngIf="yade.filter.sortBy == 'orderId' && !yade.reverse"
                  class="fa fa-caret-up "></i>
               <i *ngIf="yade.filter.sortBy == 'orderId' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th width="65px" (click)="sort('numOfFiles')"><a>
+            <th width="65px" (click)="sort2('numOfFiles')"><a>
               <span class="p-r-xs" [nz-tooltip]="'fileTransfer.tooltip.totalNumberOfFiles' | translate" translate>fileTransfer.label.total</span>
               <i *ngIf="yade.filter.sortBy == 'numOfFiles' && !yade.reverse"
                  class="fa fa-caret-up "></i>
@@ -1166,28 +1166,28 @@
                  class="fa fa-caret-down "></i></a>
 
             </th>
-            <th width="20%" style="width: 20% !important;" (click)="sort('error.message')"><a>
+            <th width="20%" style="width: 20% !important;" (click)="sort2('error.message')"><a>
               <span class="p-r-xs" translate>fileTransfer.label.lastErrorMessage</span>
               <i *ngIf="yade.filter.sortBy == 'error.message' && !yade.reverse"
                  class="fa fa-caret-up "></i>
               <i *ngIf="yade.filter.sortBy == 'error.message' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th (click)="sort('start')"><a>
+            <th (click)="sort2('start')"><a>
               <span class="p-r-xs" translate>fileTransfer.label.startTime</span>
               <i *ngIf="yade.filter.sortBy == 'start' && !yade.reverse"
                  class="fa fa-caret-up "></i>
               <i *ngIf="yade.filter.sortBy == 'start' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th (click)="sort('end')"><a>
+            <th (click)="sort2('end')"><a>
               <span class="p-r-xs" translate>fileTransfer.label.endTime</span>
               <i *ngIf="yade.filter.sortBy == 'end' && !yade.reverse"
                  class="fa fa-caret-up "></i>
               <i *ngIf="yade.filter.sortBy == 'end' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th width="100px" (click)="sort('duration')"><a>
+            <th width="100px" (click)="sort2('duration')"><a>
               <span class="p-r-xs" translate>common.label.duration</span>
               <i *ngIf="yade.filter.sortBy == 'duration' && !yade.reverse"
                  class="fa fa-caret-up "></i>
@@ -1198,7 +1198,7 @@
           </thead>
           <tbody>
           <ng-template ngFor let-transfer
-                       [ngForOf]="ajaxYadeTable.data | orderBy: yade.filter.sortBy:yade.reverse">
+                       [ngForOf]="ajaxYadeTable.data">
             <tr class="cursor" [ngClass]="{'light-bg':transfer.show}">
               <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)" *ngIf="!historyFilters.current">
                 <span class="show-in-single-line">
@@ -1236,7 +1236,7 @@
                 </span>
               </td>
               <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)">
-                <span *ngIf="transfer.target" [innerHtml]="transfer.orderId | highlight : yade.searchText"></span>
+                <span [innerHtml]="transfer.orderId | highlight : yade.searchText"></span>
               </td>
               <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)"
                   [innerHtml]="transfer.numOfFiles | highlight : yade.searchText"></td>
@@ -1344,7 +1344,7 @@
           [nzPageIndex]="deployment.currentPage"
           [nzBordered]="true"
           [nzShowPagination]="data.length > 0"
-          [nzData]="data"
+          [nzData]="data | orderBy: deployment.filter.sortBy:deployment.reverse"
           [nzLoading]="!isLoading"
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
@@ -1386,7 +1386,7 @@
           </thead>
           <tbody>
           <ng-template ngFor let-depHistory
-                       [ngForOf]="ajaxTable.data | orderBy: deployment.filter.sortBy:deployment.reverse">
+                       [ngForOf]="ajaxTable.data">
             <tr [ngClass]="{'light-bg':depHistory.show}">
               <td *ngIf="!historyFilters.current">
                 <span class="show-in-single-line w-full">
@@ -1468,7 +1468,7 @@
           [nzPageIndex]="submission.currentPage"
           [nzBordered]="true"
           [nzShowPagination]="data.length > 0"
-          [nzData]="data"
+          [nzData]="data | orderBy: submission.filter.sortBy:submission.reverse"
           [nzLoading]="!isLoading"
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
@@ -1489,7 +1489,7 @@
           </thead>
           <tbody>
           <ng-template ngFor let-submissionHistory
-                       [ngForOf]="ajaxTable.data | orderBy: submission.filter.sortBy:submission.reverse">
+                       [ngForOf]="ajaxTable.data">
             <tr [ngClass]="{'light-bg':submissionHistory.show}">
               <td>
                 <span class="show-in-single-line w-full">

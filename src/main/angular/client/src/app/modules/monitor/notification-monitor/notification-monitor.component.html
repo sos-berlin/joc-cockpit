@@ -28,7 +28,7 @@
         [nzPageIndex]="filters.filter.currentPage"
         [nzBordered]="true"
         [nzShowPagination]="data.length > 0"
-        [nzData]="data"
+        [nzData]="data | orderBy: filters.filter.sortBy:filters.filter.reverse"
         [nzLoading]="!isLoaded"
         [nzShowSizeChanger]="true"
         (nzPageIndexChange)="pageIndexChange($event)"
@@ -38,6 +38,8 @@
       >
         <thead>
         <tr>
+          <th nzWidth="55px"><span translate>common.label.action</span></th>
+          <th nzWidth="35px"><span translate>#</span></th>
           <th *ngIf="!filters.filter.current" (click)="sort('controllerId')"><a><span class="p-r-xs"
                                                                                                     translate>common.label.controllerId</span>
             <i *ngIf="filters.filter.sortBy == 'controllerId' && !filters.filter.reverse"
@@ -91,8 +93,25 @@
         </thead>
         <tbody>
         <ng-template ngFor let-notify
-                     [ngForOf]="ajaxTable.data | orderBy: filters.filter.sortBy:filters.filter.reverse">
+                     [ngForOf]="ajaxTable.data">
           <tr>
+            <td>
+              <div class="btn-group dropdown">
+                <button class="btn-drop more-option-h" [disabled]="notify.type !== 'ERROR'" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" type="button">
+                  <i class="fa fa-ellipsis-h"></i>
+                </button>
+                <nz-dropdown-menu #option="nzDropdownMenu" role="menu" >
+                  <ul nz-menu>
+                    <li nz-menu-item (click)="acknowledge(notify)">
+                      <a translate>monitor.notification.button.acknowledge</a>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+            </td>
+            <td class="text-center">
+              <i class="fa fa-stop" [ngClass]="{'green' : notify.type === 'SUCCESS', 'gold' : notify.type === 'WARNING', 'red' : notify.type === 'ERROR'}"></i>
+            </td>
             <td *ngIf="!filters.filter.current" (click)="$event.stopPropagation()">
               <i class="cursor fa fa-caret-down fa-lg" *ngIf="!notify.show && notify.hasMonitors"
                  (click)="showDetail(notify);$event.stopPropagation()"></i>
@@ -118,19 +137,38 @@
                  (click)="navToOrderHistory(notify)" [innerHtml]="notify.orderId | highlight : filters.filter.searchText"></a>
             </td>
             <td><span *ngIf="notify.job" [innerHtml]="notify.job.job | highlight : filters.filter.searchText"></span></td>
-            <td><span [innerHtml]="notify.type | translate | highlight : filters.filter.searchText"></span></td>
+            <td>
+              <span *ngIf="!notify.acknowledgement" [innerHtml]="notify.type | translate | highlight : filters.filter.searchText"></span>
+              <span class="cursor" *ngIf="notify.acknowledgement" nz-popover
+                    [nzPopoverContent]="contentTemplate" [innerHtml]="notify.type | translate | highlight : filters.filter.searchText"></span>
+              <ng-template #contentTemplate>
+                <div>
+                  <b translate>common.label.account</b> :
+                  <span>{{notify.acknowledgement.account}}</span>
+                </div>
+                <div>
+                  <b translate>monitor.notification.label.created</b> :
+                  <span>{{notify.acknowledgement.created | stringToDate}}</span>
+                </div>
+                <div>
+                  <b translate>monitor.notification.label.comment</b> :
+                  <span>{{notify.acknowledgement.comment}}</span>
+                </div>
+              </ng-template>
+            </td>
             <td><span *ngIf="notify.job" [innerHtml]="notify.job.exitCode | highlight : filters.filter.searchText"></span></td>
             <td><span [innerHtml]="notify.message | highlight : filters.filter.searchText"></span></td>
             <td><span [innerHtml]="notify.created | stringToDate | highlight : filters.filter.searchText"></span></td>
           </tr>
           <ng-container *ngIf="notify.show">
             <tr *ngIf="!notify.isLoaded">
-              <td colspan="7">
+              <td colspan="10">
                 <nz-spin nzSimple [nzSize]="'small'"></nz-spin>
               </td>
             </tr>
             <tr *ngIf="notify.monitors && notify.monitors.length> 0">
-              <td colspan="7" style="padding:0 !important;">
+              <td></td>
+              <td colspan="9" style="padding:0 !important;">
                 <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small"
                           [nzData]="notify.monitors" [nzShowPagination]="false">
                   <thead>
@@ -145,7 +183,9 @@
                   </thead>
                   <tbody>
                   <tr *ngFor="let monitor of innerChildTable.data">
-                    <td><span class="m-l-sm" [innerHtml]="monitor.type | translate"></span></td>
+                    <td>
+                      <span class="m-l-sm" [innerHtml]="monitor.type | translate"></span>
+                    </td>
                     <td><span [innerHtml]="monitor.name"></span></td>
                     <td>
                       <ng-template #htmlContent>

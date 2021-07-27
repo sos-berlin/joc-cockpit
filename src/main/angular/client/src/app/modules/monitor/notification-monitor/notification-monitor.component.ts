@@ -1,10 +1,37 @@
 import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {Router} from '@angular/router';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
 import {SearchPipe} from '../../../pipes/core.pipe';
+import {Router} from '@angular/router';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+
+@Component({
+  selector: 'app-acknowledge-modal',
+  templateUrl: './acknowledge.dialog.html'
+})
+export class AcknowledgeModalComponent {
+  @Input() data: any;
+  submitted = false;
+  comment: string;
+
+  constructor(public coreService: CoreService, public activeModal: NzModalRef) {
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    this.coreService.post('monitoring/notification/acknowledge', {
+      ...this.data, comment: this.comment
+    }).subscribe(res => {
+      this.submitted = false;
+      this.activeModal.close(res);
+    }, err => {
+      this.submitted = false;
+    });
+  }
+
+}
 
 @Component({
   selector: 'app-notification-monitor',
@@ -26,7 +53,7 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router,
-              private dataService: DataService, private searchPipe: SearchPipe) {
+              private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -84,7 +111,7 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
     this.filters.filter.sortBy = propertyName;
   }
 
-  expandDetails(): void{
+  expandDetails(): void {
     this.currentData.forEach((value) => {
       this.showDetail(value);
     });
@@ -144,6 +171,29 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
         orderId: data.orderId,
         workflow: data.workflow,
         controllerId: data.controllerId || this.schedulerIds.selected
+      }
+    });
+  }
+
+  acknowledge(data): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: AcknowledgeModalComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        data: {
+          controllerId: data.controllerId,
+          notificationId: data.notificationId,
+        }
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        data.type = 'ACKNOWLEDGED';
+        data.acknowledgement = result.acknowledgement;
       }
     });
   }

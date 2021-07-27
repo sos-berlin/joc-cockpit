@@ -193,7 +193,7 @@
         </div>
       </div>
     </div>
-    <div class="row m-b hide" [ngClass]="{'show':showSearchPanel}">
+    <div class="row m-b" *ngIf="showSearchPanel">
       <div class="col-md-12">
         <div class="box p-a m-b-xs">
           <app-file-transfer-form-template [filter]="searchFilter" [preferences]="preferences" [schedulerIds]="schedulerIds"
@@ -211,7 +211,7 @@
           [nzPageIndex]="yadeFilters.currentPage"
           [nzBordered]="true"
           [nzShowPagination]="data.length > 0"
-          [nzData]="data"
+          [nzData]="data | orderBy: yadeFilters.filter.sortBy:yadeFilters.reverse"
           [nzLoading]="!isLoaded"
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
@@ -308,7 +308,7 @@
           </thead>
           <tbody>
           <ng-template ngFor let-transfer
-                       [ngForOf]="ajaxTable.data | orderBy: yadeFilters.filter.sortBy:yadeFilters.reverse">
+                       [ngForOf]="ajaxTable.data">
             <tr [ngClass]="{'light-bg':transfer.show}">
               <td>
                 <div class="btn-group dropdown">

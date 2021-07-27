@@ -1,13 +1,13 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subscription} from 'rxjs';
-import {differenceInCalendarDays} from 'date-fns';
 import {CoreService} from '../../services/core.service';
 import {StartUpModalComponent} from '../start-up/start-up.component';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
+import {differenceInCalendarDays} from 'date-fns';
 
 @Component({
   selector: 'app-create-token-modal',
@@ -44,7 +44,7 @@ export class CreateTokenModalComponent implements OnInit {
     const obj: any = this.coreService.clone(this.token);
     if (this.agent) {
       obj.agentIds = [this.agent.agentId];
-    } else if (this.agents){
+    } else if (this.agents && this.agents.size > 0){
       obj.agentIds = Array.from(this.agents);
     } else {
       obj.controllerId = this.controllerId;
@@ -313,6 +313,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       },
       nzFooter: null,
       nzClosable: false,
+      nzMaskClosable: false
     });
   }
 
@@ -329,7 +330,8 @@ export class ControllersComponent implements OnInit, OnDestroy {
             modalRef: true
           },
           nzFooter: null,
-          nzClosable: false
+          nzClosable: false,
+          nzMaskClosable: false
         });
       });
     }
@@ -346,7 +348,8 @@ export class ControllersComponent implements OnInit, OnDestroy {
         objectName: matser
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -358,17 +361,31 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   createToken(controller, agent = null): void {
+    if (!controller || controller.agents) {
+      this.openWindow(controller, agent);
+    } else {
+      this.coreService.post('agents/p', {
+        controllerId: controller.controllerId
+      }).subscribe((data: any) => {
+        controller.agents = data.agents;
+        this.openWindow(controller, agent);
+      });
+    }
+  }
+
+  private openWindow(controller, agent): void{
     const modal =  this.modal.create({
       nzTitle: undefined,
       nzContent: CreateTokenModalComponent,
       nzAutofocus: null,
       nzComponentParams: {
         controllerId: controller ? controller.controllerId : '',
-        agents: this.object.mapOfCheckedId,
+        agents: controller ? controller.agents : this.object.mapOfCheckedId,
         agent
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -390,7 +407,8 @@ export class ControllersComponent implements OnInit, OnDestroy {
           new: true
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
     });
   }
@@ -408,7 +426,8 @@ export class ControllersComponent implements OnInit, OnDestroy {
             data: agent
           },
           nzFooter: null,
-          nzClosable: false
+          nzClosable: false,
+          nzMaskClosable: false
         });
         modal.afterClose.subscribe(result => {
           if (result) {
@@ -441,7 +460,8 @@ export class ControllersComponent implements OnInit, OnDestroy {
           url: 'agent/remove'
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
     } else {
       const modal = this.modal.create({
@@ -454,7 +474,8 @@ export class ControllersComponent implements OnInit, OnDestroy {
           objectName: agent.agentId,
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {
@@ -488,7 +509,8 @@ export class ControllersComponent implements OnInit, OnDestroy {
           url: 'agent/reset'
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
     } else {
       this.coreService.post('agent/reset', obj).subscribe(res => {

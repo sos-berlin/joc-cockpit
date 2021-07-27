@@ -1850,7 +1850,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.task.filter.sortBy = propertyName;
   }
 
-  sortBy2(propertyName): void {
+  sort2(propertyName): void {
     this.yade.reverse = !this.yade.reverse;
     this.yade.filter.sortBy = propertyName;
   }

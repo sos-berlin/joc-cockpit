@@ -141,7 +141,7 @@
             [nzPageIndex]="adtLog.currentPage"
             [nzBordered]="true"
             [nzShowPagination]="data.length > 0"
-            [nzData]="data"
+            [nzData]="data | orderBy: adtLog.filter.sortBy:adtLog.reverse"
             [nzLoading]="!isLoaded"
             [nzShowSizeChanger]="true"
             (nzPageIndexChange)="pageIndexChange($event)"
@@ -202,7 +202,7 @@
             </tr>
             </thead>
             <tbody>
-            <ng-template ngFor let-auditLog [ngForOf]="ajaxTable.data | orderBy: adtLog.filter.sortBy:adtLog.reverse">
+            <ng-template ngFor let-auditLog [ngForOf]="ajaxTable.data">
               <tr (click)="navToDeploymentHistory(auditLog)" [ngClass]="{'primary-text-hover-color cursor': auditLog.commitId || auditLog.category === 'DAILYPLAN'}">
                 <td *ngIf="!adtLog.current" (click)="$event.stopPropagation()">
                   <i class="cursor fa fa-caret-down fa-lg" *ngIf="!auditLog.show"

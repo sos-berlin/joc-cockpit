@@ -39,7 +39,7 @@
     [nzPageIndex]="1"
     [nzBordered]="true"
     [nzShowPagination]="(dataObj.children | filter: searchKey: ['name']).length > 0"
-    [nzData]="(dataObj.children | filter: searchKey:['name'])"
+    [nzData]="(dataObj.children | filter: searchKey:['name']) | orderBy: filter.sortBy:filter.reverse"
     [nzShowSizeChanger]="true"
     [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]">
 
@@ -75,7 +75,7 @@
       </tr>
     </thead>
     <tbody>
-      <ng-template ngFor let-data [ngForOf]="ajaxTable.data | orderBy: filter.sortBy:filter.reverse">
+      <ng-template ngFor let-data [ngForOf]="ajaxTable.data">
         <tr [ngClass]="{'cut-row' : (copyObj && copyObj.operation === 'CUT' && copyObj.path === data.path && copyObj.name === data.name && copyObj.type === data.type)}">
           <td class="menu">
             <div class="btn-group dropdown">

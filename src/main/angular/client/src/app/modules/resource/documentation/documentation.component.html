@@ -196,7 +196,7 @@
                   [nzPageIndex]="documentFilters.currentPage"
                   [nzBordered]="true"
                   [nzShowPagination]="data.length > 0"
-                  [nzData]="data"
+                  [nzData]="data | orderBy: documentFilters.filter.sortBy:documentFilters.reverse"
                   [nzLoading]="loading"
                   [nzShowSizeChanger]="true"
                   (nzPageIndexChange)="pageIndexChange($event)"
@@ -245,7 +245,7 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr *ngFor="let document of ajaxTable.data | orderBy: documentFilters.filter.sortBy:documentFilters.reverse">
+                  <tr *ngFor="let document of ajaxTable.data">
                     <td [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(document.path)" (nzCheckedChange)="onItemChecked(document, $event)"></td>
                     <td>
                       <div class="btn-group dropdown">

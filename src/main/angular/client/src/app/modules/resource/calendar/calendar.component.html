@@ -171,7 +171,7 @@
                   [nzPageIndex]="calendarFilters.currentPage"
                   [nzBordered]="true"
                   [nzShowPagination]="data.length > 0"
-                  [nzData]="data"
+                  [nzData]="data | orderBy: calendarFilters.filter.sortBy:calendarFilters.reverse"
                   [nzLoading]="loading"
                   [nzShowSizeChanger]="true"
                   (nzPageIndexChange)="pageIndexChange($event)"
@@ -214,7 +214,7 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr *ngFor="let calendar of ajaxTable.data | orderBy: calendarFilters.filter.sortBy:calendarFilters.reverse">
+                  <tr *ngFor="let calendar of ajaxTable.data">
                     <td>
                       <div class="btn-group dropdown">
                         <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" type="button">

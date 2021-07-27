@@ -141,7 +141,7 @@
                   [nzPageIndex]="locksFilters.currentPage"
                   [nzBordered]="true"
                   [nzShowPagination]="data.length > 0"
-                  [nzData]="data"
+                  [nzData]="data | orderBy: locksFilters.filter.sortBy:locksFilters.reverse"
                   [nzLoading]="loading"
                   [nzShowSizeChanger]="true"
                   (nzPageIndexChange)="pageIndexChange($event)"
@@ -205,7 +205,7 @@
                   </thead>
                   <tbody>
                   <ng-template ngFor let-lock
-                               [ngForOf]="ajaxTable.data | orderBy: locksFilters.filter.sortBy:locksFilters.reverse">
+                               [ngForOf]="ajaxTable.data">
                     <tr [ngClass]="{'light-bg':lock.show}">
                       <td>
                         <div class="btn-group dropdown">

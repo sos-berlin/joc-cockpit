@@ -415,11 +415,18 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   }
 
   loadYadeFiles(type, value): void {
+    this.showSearchPanel = false;
     if (type === 'DATE') {
       this.yadeFilters.filter.date = value;
 
     } else if (type === 'STATE') {
       this.yadeFilters.filter.states = value;
+    }
+    if (!this.yadeFilters.filter.date) {
+      this.yadeFilters.filter.date = 'today';
+    }
+    if (!this.yadeFilters.filter.states) {
+      this.yadeFilters.filter.states = 'ALL';
     }
     this.load();
   }

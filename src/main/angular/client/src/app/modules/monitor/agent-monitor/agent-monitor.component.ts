@@ -7,6 +7,7 @@ import {AuthService} from '../../../components/guard';
 import {GroupByPipe} from '../../../pipes/core.pipe';
 import * as moment from 'moment-timezone';
 import {sortBy} from 'underscore';
+import {TranslateService} from '@ngx-translate/core';
 
 declare let self;
 
@@ -44,7 +45,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
 
   @ViewChild('chartArea', { static: true }) chartArea: ElementRef;
 
-  constructor(private coreService: CoreService, private authService: AuthService,
+  constructor(private coreService: CoreService, private authService: AuthService, private translate: TranslateService,
               private groupByPipe: GroupByPipe, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -69,6 +70,9 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.translate.get('monitor.label.inHours').subscribe(translatedValue => {
+      this.yAxisLabel = translatedValue;
+    });
     this.renderTimeSheetHeader();
   }
 
@@ -291,7 +295,8 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
         obj.series.push(statusObj);
         const totalVal: any = dur1 ? (dur1 / (60 * 60)).toFixed(2) : 24;
         obj.series.push({
-          value: statusObj.value - totalVal,
+          value: totalVal,
+          value1: statusObj.value,
           name: values[i].key,
         });
       }
@@ -316,17 +321,29 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
   }
 
   private updateStatusList(data, obj): void {
-    data.value.forEach((time, index) => {
+    console.log(data.value);
+    data.value.forEach((time) => {
       if (this.filters.filter.groupBy === 'DATE') {
         obj.controllerId = time.controllerId;
       }
       obj.url = time.url;
       const statusObj = {
-        start: index === 0 ? '00:00' : this.coreService.getDateByFormat(data.value[index - 1].couplingFailedTime, this.preferences.zone, 'HH:mm:SS'),
-        end: this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS'),
-        color: '#ef486a',
-        tooltip: time.couplingFailedMessage
+        start: this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS'),
+        end: '25:00',
+        color: 'rgb(122,185,122)'
       };
+      const readyTimeDate = this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'YYYY-MM-DD');
+      if (time.couplingFailedTime) {
+        if (readyTimeDate === this.coreService.getDateByFormat(time.couplingFailedTime, this.preferences.zone, 'YYYY-MM-DD')) {
+          statusObj.end = this.coreService.getDateByFormat(time.couplingFailedTime, this.preferences.zone, 'HH:mm:SS');
+        } else {
+          console.log(time.readyTime, time.couplingFailedTime);
+        }
+      } else{
+        if (this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD') === readyTimeDate) {
+          statusObj.end = this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:SS');
+        }
+      }
       obj.statusList.push(statusObj);
     });
     this.agents.push(obj);

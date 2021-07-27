@@ -222,3 +222,7 @@ div.jsoneditor-tree .jsoneditor-button.jsoneditor-schema-error {
 .jsoneditor-frame {
   background-color: #FFFFFF;
 }
+.timelineWrapper .row .taskBar {
+  background-color: #d8d8d8 !important;
+}
+

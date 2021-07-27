@@ -137,7 +137,7 @@
                 [nzPageIndex]="agentsFilters.currentPage"
                 [nzBordered]="true"
                 [nzShowPagination]="data.length > 0"
-                [nzData]="data"
+                [nzData]="data | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse"
                 [nzLoading]="loading"
                 [nzShowSizeChanger]="true"
                 (nzPageIndexChange)="pageIndexChange($event)"
@@ -181,7 +181,7 @@
                 </thead>
                 <tbody>
                 <ng-template ngFor let-cluster
-                             [ngForOf]="ajaxTable.data | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse">
+                             [ngForOf]="ajaxTable.data">
                   <tr [ngClass]="{'light-bg':cluster.show}">
                     <td>
                       <i class="cursor fa fa-caret-down fa-lg p-r-xs p-l-xs" *ngIf="!cluster.show"

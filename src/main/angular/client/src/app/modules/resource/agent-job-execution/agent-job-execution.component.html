@@ -144,7 +144,7 @@
               [nzPageIndex]="agentFilters.currentPage"
               [nzBordered]="true"
               [nzShowPagination]="data.length > 0"
-              [nzData]="data"
+              [nzData]="data | orderBy:agentFilters.filter.sortBy:agentFilters.reverse"
               [nzLoading]="!isLoading"
               [nzShowSizeChanger]="true"
               (nzPageIndexChange)="pageIndexChange($event)"
@@ -192,7 +192,7 @@
               </thead>
               <tbody>
               <ng-template ngFor let-agentTask
-                           [ngForOf]="ajaxTable.data | orderBy:agentFilters.filter.sortBy:agentFilters.reverse">
+                           [ngForOf]="ajaxTable.data">
                 <tr>
                   <td *ngIf="!agentFilters.current"><span [innerHtml]="agentTask.controllerId | highlight : agentFilters.searchText"></span></td>
                   <td><span [innerHtml]="agentTask.agentId | highlight : agentFilters.searchText"></span></td>

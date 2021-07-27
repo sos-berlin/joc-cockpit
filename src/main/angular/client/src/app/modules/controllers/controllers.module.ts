@@ -15,7 +15,7 @@ const routes: Routes = [{path: '', component: ControllersComponent}];
     SharedModule,
     ClipboardModule,
     NzPopoverModule
-  ], entryComponents: [StartUpModalComponent, AgentModalComponent, CreateTokenModalComponent]
+  ], entryComponents: [StartUpModalComponent]
 })
 export class ControllersModule {
 }

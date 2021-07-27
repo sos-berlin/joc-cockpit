@@ -30,6 +30,9 @@
             <button class="btn btn-grey btn-sm" (click)="changeTypes('RECOVERED')"
                     [ngClass]="{'btn-primary': monitorFilters.notification.filter.types.includes('RECOVERED')}" translate>monitor.notification.button.recovered
             </button>
+            <button class="btn btn-grey btn-sm" (click)="changeTypes('ACKNOWLEDGED')"
+                    [ngClass]="{'btn-primary': monitorFilters.notification.filter.types.includes('ACKNOWLEDGED')}" translate>monitor.notification.button.acknowledge
+            </button>
           </div>
           <div class="btn-group m-l-12 hidden-btn-group" *ngIf="monitorFilters.tabIndex == 2">
             <button class="btn btn-grey btn-sm" (click)="changeDate('ALL')"

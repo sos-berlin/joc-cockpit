@@ -42,7 +42,7 @@
       [nzSize]="'small'"
       [nzBordered]="true"
       [nzShowPagination]="false"
-      [nzData]="data"
+      [nzData]="data | orderBy: 'scheduledFor': true"
       [nzPageSize]="data.length"
     >
       <thead>
@@ -63,7 +63,7 @@
       </thead>
       <tbody (click)="$event.preventDefault()">
       <ng-template ngFor let-order
-                   [ngForOf]="ajaxTable.data | orderBy: 'scheduledFor': true">
+                   [ngForOf]="ajaxTable.data">
         <tr>
           <td [nzShowCheckbox]="true" [nzChecked]="setOfCheckedId.has(order.orderId)" (nzCheckedChange)="onItemChecked(order.orderId, $event)"></td>
           <td>

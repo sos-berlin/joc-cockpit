@@ -136,7 +136,7 @@
     "label.agentsFound": "Entrées d'Agent trouvées",
     "label.oneTimeToken": "One Time Token",
     "label.validUntil": "Valid Until",
-    "label.validityDate": "Validity Date",
+    "label.validityDate": "Token expires on",
     "label.uuid": "UUID",
     "button.createToken": "Create One Time Token",
     "button.addAgent": "Ajouter un Agent",
@@ -1163,6 +1163,8 @@
       "overview": "Overview",
       "statistics": "Statistics",
       "runningTime": "Running Time",
+      "inHours": "In Hours",
+      "totalDays": "{{count}} days",
       "date": "Date",
       "shutdown": "shutdown"
     },
@@ -1178,6 +1180,8 @@
         "orderId": "Order ID",
         "job": "Job",
         "message": "Message",
+        "comment": "Comment",
+        "acknowledge": "Acknowledge",
         "created": "Created",
         "type": "Type",
         "name": "Name",
@@ -1191,7 +1195,8 @@
         "success": "Success",
         "error": "Error",
         "warning": "Warning",
-        "recovered": "Recovered"
+        "recovered": "Recovered",
+        "acknowledge": "Acknowledge"
       }
     }
   },

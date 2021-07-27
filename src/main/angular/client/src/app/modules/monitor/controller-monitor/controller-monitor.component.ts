@@ -7,6 +7,7 @@ import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {GroupByPipe} from '../../../pipes/core.pipe';
+import {TranslateService} from '@ngx-translate/core';
 
 declare let self;
 
@@ -51,7 +52,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
 
   @ViewChild('chartArea', { static: true }) chartArea: ElementRef;
 
-  constructor(private authService: AuthService, public coreService: CoreService,
+  constructor(private authService: AuthService, public coreService: CoreService, private translate: TranslateService,
               private groupByPipe: GroupByPipe, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -66,6 +67,9 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     self = this;
+    this.translate.get('monitor.label.inHours').subscribe(translatedValue => {
+      this.yAxisLabel = translatedValue;
+    });
     this.init();
   }
 
@@ -211,7 +215,8 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
           obj.series.push(statusObj);
           const totalVal: any = dur1 ? (dur1 / (60 * 60)).toFixed(2) : 24;
           obj.series.push({
-            value: statusObj.value - totalVal,
+            value: totalVal,
+            value1: statusObj.value,
             name: values[i].key,
           });
         }
@@ -251,12 +256,24 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
             end: '25:00',
             statusList: []
           };
-          values[i].value.forEach((time, index) => {
+          values[i].value.forEach((time) => {
             const statusObj = {
               start: this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS'),
-              end: time.shutdownTime ? this.coreService.getDateByFormat(time.shutdownTime, this.preferences.zone, 'HH:mm:SS') : '24:00',
+              end: '25:00',
               color: 'rgb(122,185,122)'
             };
+            const readyTimeDate = this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'YYYY-MM-DD');
+            if (time.shutdownTime) {
+              if (readyTimeDate === this.coreService.getDateByFormat(time.shutdownTime, this.preferences.zone, 'YYYY-MM-DD')) {
+                statusObj.end = this.coreService.getDateByFormat(time.shutdownTime, this.preferences.zone, 'HH:mm:SS');
+              } else {
+                console.log(time.readyTime, time.shutdownTime);
+              }
+            } else{
+              if (this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD') === readyTimeDate) {
+                statusObj.end = this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:SS');
+              }
+            }
             obj.statusList.push(statusObj);
           });
           this.ganttData.push(obj);
