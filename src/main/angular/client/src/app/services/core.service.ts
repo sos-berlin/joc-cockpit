@@ -66,33 +66,20 @@ export class CoreService {
     this.tabs._monitor.tabIndex = 0;
     this.tabs._monitor.currentDate = new Date();
     this.tabs._monitor.controller = {
-      statistics: {
-        filter: {
-          view: 'Week',
-          startYear: this.tabs._monitor.currentDate.getFullYear(),
-          startMonth: this.tabs._monitor.currentDate.getMonth(),
-          currentYear: this.tabs._monitor.currentDate.getFullYear(),
-          currentMonth: this.tabs._monitor.currentDate.getMonth(),
-          startDate: new Date(),
-          endDate: new Date()
-        }
+      filter: {
+        view: 'Week',
+        startYear: this.tabs._monitor.currentDate.getFullYear(),
+        startMonth: this.tabs._monitor.currentDate.getMonth(),
+        currentYear: this.tabs._monitor.currentDate.getFullYear(),
+        currentMonth: this.tabs._monitor.currentDate.getMonth(),
+        startDate: new Date(),
+        endDate: new Date()
       },
       runningTime: {
         filter: {
           dateRange: null
         }
       },
-      overview: {
-        filter: {
-          view: 'Week',
-          startYear: this.tabs._monitor.currentDate.getFullYear(),
-          startMonth: this.tabs._monitor.currentDate.getMonth(),
-          currentYear: this.tabs._monitor.currentDate.getFullYear(),
-          currentMonth: this.tabs._monitor.currentDate.getMonth(),
-          startDate: new Date(),
-          endDate: new Date()
-        }
-      }
     };
     this.tabs._monitor.agent = {
       filter: {
@@ -267,31 +254,19 @@ export class CoreService {
     this.tempTabs._monitor.tabIndex = 0;
     this.tempTabs._monitor.currentDate = new Date();
     this.tempTabs._monitor.controller = {
-      statistics: {
-        filter: {
-          view: 'Week',
-          startYear: this.tempTabs._monitor.currentDate.getFullYear(),
-          startMonth: this.tempTabs._monitor.currentDate.getMonth(),
-          currentYear: this.tempTabs._monitor.currentDate.getFullYear(),
-          currentMonth: this.tempTabs._monitor.currentDate.getMonth(),
-          startDate: new Date(),
-          endDate: new Date()
-        }
+
+      filter: {
+        view: 'Week',
+        startYear: this.tempTabs._monitor.currentDate.getFullYear(),
+        startMonth: this.tempTabs._monitor.currentDate.getMonth(),
+        currentYear: this.tempTabs._monitor.currentDate.getFullYear(),
+        currentMonth: this.tempTabs._monitor.currentDate.getMonth(),
+        startDate: new Date(),
+        endDate: new Date()
       },
       runningTime: {
         filter: {
           dateRange: null
-        }
-      },
-      overview: {
-        filter: {
-          view: 'Week',
-          startYear: this.tempTabs._monitor.currentDate.getFullYear(),
-          startMonth: this.tempTabs._monitor.currentDate.getMonth(),
-          currentYear: this.tempTabs._monitor.currentDate.getFullYear(),
-          currentMonth: this.tempTabs._monitor.currentDate.getMonth(),
-          startDate: new Date(),
-          endDate: new Date()
         }
       }
     };

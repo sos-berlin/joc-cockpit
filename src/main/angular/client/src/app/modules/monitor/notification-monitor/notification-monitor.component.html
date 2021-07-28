@@ -38,7 +38,13 @@
       >
         <thead>
         <tr>
-          <th nzWidth="55px"><span translate>common.label.action</span></th>
+          <th class="chk"
+              [nzShowCheckbox]="true"
+              [(nzChecked)]="object.checked"
+              [nzIndeterminate]="object.indeterminate"
+              (nzCheckedChange)="checkAll($event)"
+          ></th>
+          <th class="menu"><span translate>common.label.action</span></th>
           <th nzWidth="35px"><span translate>#</span></th>
           <th *ngIf="!filters.filter.current" (click)="sort('controllerId')"><a><span class="p-r-xs"
                                                                                                     translate>common.label.controllerId</span>
@@ -95,6 +101,7 @@
         <ng-template ngFor let-notify
                      [ngForOf]="ajaxTable.data">
           <tr>
+            <td [nzShowCheckbox]="true" [nzDisabled]="notify.type !== 'ERROR'" [nzChecked]="filters.mapOfCheckedId.has(notify.notificationId)" (nzCheckedChange)="onItemChecked(notify, $event)"></td>
             <td>
               <div class="btn-group dropdown">
                 <button class="btn-drop more-option-h" [disabled]="notify.type !== 'ERROR'" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" type="button">
@@ -162,13 +169,13 @@
           </tr>
           <ng-container *ngIf="notify.show">
             <tr *ngIf="!notify.isLoaded">
-              <td colspan="10">
+              <td colspan="11">
                 <nz-spin nzSimple [nzSize]="'small'"></nz-spin>
               </td>
             </tr>
             <tr *ngIf="notify.monitors && notify.monitors.length> 0">
               <td></td>
-              <td colspan="9" style="padding:0 !important;">
+              <td colspan="10" style="padding:0 !important;">
                 <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small"
                           [nzData]="notify.monitors" [nzShowPagination]="false">
                   <thead>

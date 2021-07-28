@@ -31,13 +31,16 @@
 .btn {
   border: 1px solid var(--border-color);
 }
+.btn .primary{
+  border-color: var(--primary) !important;
+}
 
 .select-box {
   min-width: 196px;
 }
 
 .overview {
-  max-height: calc(100vh - 646px);
+  max-height: calc(100vh - 684px);
   overflow: auto;
 }
 

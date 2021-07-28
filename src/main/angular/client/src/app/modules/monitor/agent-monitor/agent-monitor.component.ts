@@ -90,8 +90,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
     }).subscribe((res: any) => {
       this.data = res.controllers;
       this.isLoaded = true;
-      this.groupBy();
-      this.getStatisticsData();
+      this.checkMissingDates();
     }, () => {
       this.isLoaded = true;
     });
@@ -102,30 +101,11 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
   }
 
   groupBy(): void {
-    this.groupByData = [];
-    this.data.forEach((controller) => {
-      for (const i in controller.agents) {
-        for (const j in controller.agents[i].entries) {
-          const obj = {
-            controllerId: controller.controllerId,
-            agentId: controller.agents[i].agentId,
-            url: controller.agents[i].url,
-            date: this.coreService.getDateByFormat(controller.agents[i].entries[j].readyTime, this.preferences.zone, 'YYYY-MM-DD'),
-            readyTime: controller.agents[i].entries[j].readyTime,
-            couplingFailedTime: controller.agents[i].entries[j].couplingFailedTime,
-            couplingFailedMessage: controller.agents[i].entries[j].couplingFailedMessage,
-          };
-          this.groupByData.push(obj);
-        }
-      }
-    });
-    const gData = this.groupByPipe.transform(this.groupByData, 'date');
     if (this.filters.filter.groupBy !== 'DATE') {
       this.getOverviewData(this.groupByPipe.transform(this.groupByData, 'controllerId'));
     } else{
-      this.getOverviewData(gData);
+      this.getOverviewData(this.groupByData);
     }
-    this.groupByData = gData;
   }
 
   setView(view): void {
@@ -252,76 +232,166 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
     });
   }
 
+  private checkMissingDates(): void{
+    this.groupByData = [];
+    this.data.forEach((controller) => {
+      for (const i in controller.agents) {
+        for (const j in controller.agents[i].entries) {
+          const obj = {
+            controllerId: controller.controllerId,
+            agentId: controller.agents[i].agentId,
+            url: controller.agents[i].url,
+            date: this.coreService.getDateByFormat(controller.agents[i].entries[j].readyTime, this.preferences.zone, 'YYYY-MM-DD'),
+            readyTime: controller.agents[i].entries[j].readyTime,
+            couplingFailedTime: controller.agents[i].entries[j].couplingFailedTime,
+            couplingFailedMessage: controller.agents[i].entries[j].couplingFailedMessage,
+          };
+          this.groupByData.push(obj);
+        }
+      }
+    });
+    this.groupByData = this.groupByPipe.transform(this.groupByData, 'date');
+    this.getStatisticsData();
+    this.groupBy();
+  }
+
   private getStatisticsData(): void {
     this.statisticsData = [];
     const dates = this.coreService.getDates(this.filters.filter.startDate, this.filters.filter.endDate);
     let len = 1;
-    this.groupByData.forEach((item) => {
-      const values = this.groupByPipe.transform(item.value, 'agentId');
-      if (len < values.length) {
-        len = values.length;
-      }
-      const obj = {
-        name: item.key,
-        series: []
-      };
-      for (const i in dates) {
-        if (this.coreService.getDateByFormat(dates[i], this.preferences.zone, 'YYYY-MM-DD') === item.key) {
-          dates.splice(i, 1);
-          break;
-        }
-      }
-      for (const i in values) {
-        const statusObj: any = {
-          value: 0,
-          name: values[i].key,
-        };
-        let dur = 0;
-        values[i].value.forEach((time, index) => {
-          if (index === 0) {
-            dur = moment.duration(this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS')).asSeconds();
-          } else {
-            let diff = Math.abs(moment.duration(this.coreService.getDateByFormat(values[i].value[index - 1].shutdownTime, this.preferences.zone, 'HH:mm:SS')).asSeconds()
-              - moment.duration(this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS')).asSeconds());
-            dur += diff;
-          }
-        });
-        let dur1;
-        if (this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD') === item.key) {
-          dur1 = moment.duration(this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:SS')).asSeconds();
-        }
-
-        statusObj.value = (((dur1 || 86400) - dur) / (60 * 60)).toFixed(2);
-        obj.series.push(statusObj);
-        const totalVal: any = dur1 ? (dur1 / (60 * 60)).toFixed(2) : 24;
-        obj.series.push({
-          value: totalVal,
-          value1: statusObj.value,
-          name: values[i].key,
-        });
-      }
-      this.statisticsData.push(obj);
-    });
-
-    if (dates.length > 0) {
+    const tempArr = [];
+    for (let i = 0; i < dates.length; i++) {
       const today = new Date().setHours(0, 0, 0, 0);
-      dates.forEach((date) => {
-        if (today > date) {
-          this.statisticsData.push({
-            name: this.coreService.getDateByFormat(date, this.preferences.zone, 'YYYY-MM-DD'),
-            series: []
-          });
+      if (today < dates[i]) {
+        break;
+      } else {
+        let flag = false;
+        const date = this.coreService.getDateByFormat(dates[i], this.preferences.zone, 'YYYY-MM-DD');
+        for (const j in this.groupByData) {
+          if (date === this.groupByData[j].key) {
+            flag = true;
+            this.groupByData[j].value = sortBy(this.groupByData[j].value, (i: any) => {
+              return i.readyTime;
+            });
+            tempArr.push(this.groupByData[j]);
+            if (len < this.groupByData[j].value.length) {
+              len = this.groupByData[j].value.length;
+            }
+            break;
+          }
         }
-      });
-      this.statisticsData = sortBy(this.statisticsData, (i: any) => {
-        return i.name;
-      });
+        if (!flag) {
+          let mailObj = {
+            key: date,
+            value: []
+          };
+          if (i > 0) {
+            let x = tempArr[i - 1].value;
+            if (x.length > 0) {
+              x.forEach((data) => {
+                const couplingFailedDate = this.coreService.getDateByFormat(data.couplingFailedTime, this.preferences.zone, 'YYYY-MM-DD');
+                if (this.coreService.getDateByFormat(data.readyTime, this.preferences.zone, 'YYYY-MM-DD') !== couplingFailedDate) {
+                  const copyObj = this.coreService.clone(data);
+                  copyObj.date = date;
+                  data.couplingFailedTime = null;
+                  copyObj.readyTime = new Date(date).setHours(0, 0, 0, 0);
+                  mailObj.value.push(copyObj);
+                }
+              });
+            }
+          }
+          tempArr.push(mailObj);
+        }
+
+        if (i > 0) {
+          let prev = this.coreService.clone(tempArr[i - 1].value);
+          for (let j = 0; j < prev.length; j++) {
+            let flag = false;
+            for (let x = 0; x < tempArr[i].value.length; x++) {
+              if (prev[j].agentId === tempArr[i].value[x].agentId) {
+                if (prev[j].couplingFailedTime &&
+                  this.coreService.getDateByFormat(prev[j].couplingFailedTime, this.preferences.zone, 'YYYY-MM-DD') === tempArr[i].value[x].date) {
+                  tempArr[i - 1].couplingFailedTime = null;
+                  prev[j].date = tempArr[i].value[x].date;
+                  prev[j].readyTime = new Date(prev[j].date).setHours(0, 0, 0, 0);
+                  flag = true;
+                  tempArr[i].value.push(prev[j]);
+                  break;
+                }
+              }
+            }
+            if (flag) {
+              break;
+            }
+          }
+        }
+
+        this.updateSeries(tempArr[i]);
+      }
     }
+    this.groupByData = tempArr;
+    console.log(this.groupByData)
     this.setViewSize(len);
   }
 
+  private updateSeries(item): void {
+    const values = this.groupByPipe.transform(item.value, 'agentId');
+    const obj = {
+      name: item.key,
+      series: []
+    };
+
+    for (let i = 0; i < values.length; i++) {
+      const statusObj: any = {
+        value: 0,
+        name: values[i].key,
+      };
+      let dur = 0;
+      values[i].value.forEach((time) => {
+        const startTimeInSec = moment.duration(this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS')).asSeconds();
+        let endTimeInSec = 86400;
+        if (this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD') === item.key) {
+          endTimeInSec = moment.duration(this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:SS')).asSeconds();
+        }
+        if (time.couplingFailedTime) {
+          const couplingFailedDate = this.coreService.getDateByFormat(time.couplingFailedTime, this.preferences.zone, 'YYYY-MM-DD');
+          if (this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'YYYY-MM-DD') === couplingFailedDate) {
+            endTimeInSec = moment.duration(this.coreService.getDateByFormat(time.couplingFailedTime, this.preferences.zone, 'HH:mm:SS')).asSeconds();
+          }
+        }
+        dur += (endTimeInSec - startTimeInSec);
+      });
+
+      let dur1;
+      if (this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD') === item.key) {
+        dur1 = moment.duration(this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:SS')).asSeconds();
+      }
+      statusObj.value2 = (dur / (60 * 60));
+      statusObj.value = ((dur1 ? (dur1 / (60 * 60)) : 24) - statusObj.value2);
+
+      let totalVal: any = dur1 ? (dur1 / (60 * 60)).toFixed(2) : 24;
+      if (statusObj.value == 24 || statusObj.value === '24.00') {
+        totalVal = 0;
+      }
+      const statusObj2: any = {
+        value: totalVal,
+        value1: statusObj.value2.toFixed(2),
+        name: values[i].key,
+      };
+      statusObj.value1 = (24 - statusObj.value2).toFixed(2);
+      if (parseInt(statusObj2.value, 10) < parseInt(statusObj.value, 10)){
+        obj.series.push(statusObj);
+        obj.series.push(statusObj2);
+      } else{
+        obj.series.push(statusObj2);
+        obj.series.push(statusObj);
+      }
+
+    }
+    this.statisticsData.push(obj);
+  }
+
   private updateStatusList(data, obj): void {
-    console.log(data.value);
     data.value.forEach((time) => {
       if (this.filters.filter.groupBy === 'DATE') {
         obj.controllerId = time.controllerId;
@@ -336,8 +406,6 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
       if (time.couplingFailedTime) {
         if (readyTimeDate === this.coreService.getDateByFormat(time.couplingFailedTime, this.preferences.zone, 'YYYY-MM-DD')) {
           statusObj.end = this.coreService.getDateByFormat(time.couplingFailedTime, this.preferences.zone, 'HH:mm:SS');
-        } else {
-          console.log(time.readyTime, time.couplingFailedTime);
         }
       } else{
         if (this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD') === readyTimeDate) {

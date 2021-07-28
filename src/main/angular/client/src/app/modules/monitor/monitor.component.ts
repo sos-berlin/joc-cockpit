@@ -37,11 +37,14 @@ export class MonitorComponent implements OnInit, OnDestroy {
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.monitorFilters = this.coreService.getMonitorTab();
+    if (!this.monitorFilters.notification.mapOfCheckedId) {
+      this.monitorFilters.notification.mapOfCheckedId = new Set();
+    }
     this.index = this.monitorFilters.tabIndex;
     const username = this.authService.currentUserData;
     if (sessionStorage.defaultProfile === username) {
       this.isNotReady = false;
-    } else{
+    } else {
       this.index = 2;
     }
   }
@@ -67,5 +70,10 @@ export class MonitorComponent implements OnInit, OnDestroy {
       this.monitorFilters.notification.filter.types.splice(index, 1);
     }
     this.dataService.announceFunction(this.monitorFilters.notification);
+  }
+
+  acknowledge(): void {
+    const obj: any = {action: 'acknowledge'};
+    this.dataService.announceFunction(obj);
   }
 }

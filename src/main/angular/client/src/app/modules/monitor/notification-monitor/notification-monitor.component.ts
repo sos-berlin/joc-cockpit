@@ -47,6 +47,11 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
   notifications = [];
   data = [];
   currentData = [];
+  object = {
+    checked: false,
+    indeterminate: false
+  };
+
   searchableProperties = ['controllerId', 'type', 'job', 'job', 'exitCode', 'message', 'orderId', 'workflow', 'created'];
 
   subscription1: Subscription;
@@ -61,10 +66,24 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
     });
 
     this.subscription2 = dataService.functionAnnounced$.subscribe((res: any) => {
-      if (res && res.filter) {
-        this.getData();
+      if (res) {
+        if (res.filter) {
+          this.getData();
+        } else if (res.action) {
+          this.acknowledge(null);
+        }
       }
     });
+  }
+
+  ngOnInit(): void {
+    this.filters.mapOfCheckedId.clear();
+    this.getData();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
   }
 
   refresh(args): void {
@@ -78,14 +97,6 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit(): void {
-    this.getData();
-  }
-
-  ngOnDestroy(): void {
-    this.subscription1.unsubscribe();
-    this.subscription2.unsubscribe();
-  }
 
   private getData(): void {
     let obj: any = {
@@ -175,6 +186,34 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
     });
   }
 
+  checkAll(value: boolean): void {
+    if (value && this.notifications.length > 0) {
+      this.notifications.slice((this.preferences.entryPerPage * (this.filters.filter.currentPage - 1)), (this.preferences.entryPerPage * this.filters.filter.currentPage))
+        .forEach(item => {
+          if (item.type === 'ERROR') {
+            this.filters.mapOfCheckedId.add(item.notificationId);
+          }
+        });
+    } else {
+      this.filters.mapOfCheckedId.clear();
+    }
+    this.refreshCheckedStatus();
+  }
+
+  onItemChecked(item: any, checked: boolean): void {
+    if (checked) {
+      this.filters.mapOfCheckedId.add(item.notificationId);
+    } else {
+      this.filters.mapOfCheckedId.delete(item.notificationId);
+    }
+    this.object.checked = this.filters.mapOfCheckedId.size === this.notifications.slice((this.preferences.entryPerPage * (this.filters.filter.currentPage - 1)), (this.preferences.entryPerPage * this.filters.filter.currentPage)).filter((val) => val.type === 'ERROR').length;
+    this.refreshCheckedStatus();
+  }
+
+  refreshCheckedStatus(): void {
+    this.object.indeterminate = this.filters.mapOfCheckedId.size > 0 && !this.object.checked;
+  }
+
   acknowledge(data): void {
     const modal = this.modal.create({
       nzTitle: undefined,
@@ -182,8 +221,8 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
       nzAutofocus: null,
       nzComponentParams: {
         data: {
-          controllerId: data.controllerId,
-          notificationId: data.notificationId,
+          controllerId: data ? data.controllerId : this.schedulerIds.selected,
+          notificationIds: data ? [data.notificationId] : Array.from(this.filters.mapOfCheckedId)
         }
       },
       nzFooter: null,
@@ -192,8 +231,10 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        data.type = 'ACKNOWLEDGED';
-        data.acknowledgement = result.acknowledgement;
+        this.filters.mapOfCheckedId.clear();
+        this.object.checked = false;
+        this.object.indeterminate = false;
+        this.getData();
       }
     });
   }

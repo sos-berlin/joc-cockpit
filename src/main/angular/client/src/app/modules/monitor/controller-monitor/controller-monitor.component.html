@@ -1,4 +1,35 @@
 <div class="row m-t-xs">
+  <div class="col-md-12">
+    <div class="timeline m-b">
+      <div class="inline btn-group pull-right">
+        <div class="btn btn-default btn-sm"
+             (click)="setView('Week')"
+             [class.primary]="filters.filter.view === 'Week'" translate>
+          monitor.button.week
+        </div>
+        <div class="btn btn-default btn-sm"
+             (click)="setView('Month')"
+             [class.primary]="filters.filter.view === 'Month'" translate>
+          monitor.button.month
+        </div>
+      </div>
+      <div class="timeline-header pull-right inline m-l-12">
+        <div class="btn-group">
+          <div class="btn btn-default btn-sm" (click)="prev()">
+            <i class="fa fa-angle-left text-md"></i>
+          </div>
+          <div class="btn btn-default btn-sm no-cursor">
+            <nz-week-picker *ngIf="filters.filter.view === 'Week'" [(ngModel)]="filters.filter.endDate" [nzAllowClear]="false" (ngModelChange)="onChange($event )" [nzDisabledDate]="disabledDate"></nz-week-picker>
+            <nz-month-picker *ngIf="filters.filter.view === 'Month'" [(ngModel)]="filters.filter.endDate" [nzAllowClear]="false" (ngModelChange)="onChange($event)" [nzDisabledDate]="disabledDate"></nz-month-picker>
+            {{filters.filter.startDate | date : dateFormat }} - {{filters.filter.endDate | date : dateFormat}}
+          </div>
+          <div class="btn btn-default btn-sm" (click)="next()">
+            <i class="fa fa-angle-right text-md"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="col-lg-4 col-xl-3">
     <div class="box">
       <div class="box-header b-b">
@@ -47,39 +78,6 @@
           <span translate>monitor.label.statistics</span>
         </h3>
       </div>
-      <div class="row m-b-sm box-tool" style="top:10px">
-        <div class="col-md-12 container-fluid">
-          <div class="timeline m-b">
-            <div class="timeline-header inline">
-              <div class="btn-group">
-                <div class="btn btn-default btn-sm" (click)="prev('statistics')">
-                  <i class="fa fa-angle-left text-md"></i>
-                </div>
-                <div class="btn btn-default btn-sm no-cursor">
-                  <nz-week-picker *ngIf="filters.statistics.filter.view === 'Week'" [(ngModel)]="filters.statistics.filter.endDate" [nzAllowClear]="false" (ngModelChange)="onChange($event, 'statistics')" [nzDisabledDate]="disabledDate"></nz-week-picker>
-                  <nz-month-picker *ngIf="filters.statistics.filter.view === 'Month'" [(ngModel)]="filters.statistics.filter.endDate" [nzAllowClear]="false" (ngModelChange)="onChange($event, 'statistics')" [nzDisabledDate]="disabledDate"></nz-month-picker>
-                  {{filters.statistics.filter.startDate | date : dateFormat }} - {{filters.statistics.filter.endDate | date : dateFormat}}
-                </div>
-                <div class="btn btn-default btn-sm" (click)="next('statistics')">
-                  <i class="fa fa-angle-right text-md"></i>
-                </div>
-              </div>
-            </div>
-            <div class="inline btn-group pull-right">
-              <div class="btn btn-default btn-sm"
-                   (click)="setView('Week',  'statistics')"
-                   [class.primary]="filters.statistics.filter.view === 'Week'" translate>
-                monitor.button.week
-              </div>
-              <div class="btn btn-default btn-sm"
-                   (click)="setView('Month', 'statistics')"
-                   [class.primary]="filters.statistics.filter.view === 'Month'" translate>
-                monitor.button.month
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <div class="box-body p-a scroll-class" #chartArea [hidden]="!isLoaded || statisticsData.length ===0">
         <div style="height: 260px">
           <ngx-charts-bar-vertical-2d
@@ -99,7 +97,7 @@
             <ng-template #tooltipTemplate let-model="model">
               <div class="p-a-sm text-center">
                 <h6>{{model.name}}</h6>
-                <div class="text-md"><i>{{model.value1 || model.value}}</i></div>
+                <div class="text-md"><i>{{model.value1}}</i></div>
               </div>
             </ng-template>
           </ngx-charts-bar-vertical-2d>
@@ -121,39 +119,6 @@
         <h3>
           <span translate>monitor.label.overview</span>
         </h3>
-      </div>
-      <div class="row m-b-sm box-tool" style="top:10px">
-        <div class="col-md-12 container-fluid">
-          <div class="timeline m-b">
-            <div class="timeline-header inline">
-              <div class="btn-group">
-                <div class="btn btn-default btn-sm" (click)="prev('overview')">
-                  <i class="fa fa-angle-left text-md"></i>
-                </div>
-                <div class="btn btn-default btn-sm no-cursor">
-                  <nz-week-picker *ngIf="filters.overview.filter.view === 'Week'" [(ngModel)]="filters.overview.filter.endDate" [nzAllowClear]="false" (ngModelChange)="onChange($event, 'overview')" [nzDisabledDate]="disabledDate"></nz-week-picker>
-                  <nz-month-picker *ngIf="filters.overview.filter.view === 'Month'" [(ngModel)]="filters.overview.filter.endDate" [nzAllowClear]="false" (ngModelChange)="onChange($event, 'overview')" [nzDisabledDate]="disabledDate"></nz-month-picker>
-                  {{filters.overview.filter.startDate | date : dateFormat }} - {{filters.overview.filter.endDate | date : dateFormat}}
-                </div>
-                <div class="btn btn-default btn-sm" (click)="next('overview')">
-                  <i class="fa fa-angle-right text-md"></i>
-                </div>
-              </div>
-            </div>
-            <div class="inline btn-group pull-right">
-              <div class="btn btn-default btn-sm"
-                   (click)="setView('Week',  'overview')"
-                   [class.primary]="filters.overview.filter.view === 'Week'" translate>
-                monitor.button.week
-              </div>
-              <div class="btn btn-default btn-sm"
-                   (click)="setView('Month', 'overview')"
-                   [class.primary]="filters.overview.filter.view === 'Month'" translate>
-                monitor.button.month
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
       <div class="box-body p-a overview" [hidden]="!isLoaded && ganttData.length === 0">
         <app-gantt-chart

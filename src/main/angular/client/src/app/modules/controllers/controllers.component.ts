@@ -1,13 +1,14 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subscription} from 'rxjs';
+import {differenceInCalendarDays} from 'date-fns';
+import * as moment from 'moment-timezone';
 import {CoreService} from '../../services/core.service';
 import {StartUpModalComponent} from '../start-up/start-up.component';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
-import {differenceInCalendarDays} from 'date-fns';
 
 @Component({
   selector: 'app-create-token-modal',
@@ -44,7 +45,7 @@ export class CreateTokenModalComponent implements OnInit {
     const obj: any = this.coreService.clone(this.token);
     if (this.agent) {
       obj.agentIds = [this.agent.agentId];
-    } else if (this.agents && this.agents.size > 0){
+    } else if (this.agents && this.agents.size > 0) {
       obj.agentIds = Array.from(this.agents);
     } else {
       obj.controllerId = this.controllerId;
@@ -61,10 +62,11 @@ export class CreateTokenModalComponent implements OnInit {
         obj.auditLog.ticketLink = this.comments.ticketLink;
       }
     }
+    obj.validUntil = moment(obj.validUntil).format('YYYY-MM-DDTHH:mm:ss.sss') + 'Z';
     this.coreService.post('token/create', obj).subscribe(res => {
       this.submitted = false;
       this.activeModal.close(res);
-    }, err => {
+    }, () => {
       this.submitted = false;
     });
   }
@@ -72,7 +74,7 @@ export class CreateTokenModalComponent implements OnInit {
   disabledDate = (current: Date): boolean => {
     // Can not select days before today and today
     return differenceInCalendarDays(current, this.viewDate) < 0;
-  };
+  }
 }
 
 @Component({
