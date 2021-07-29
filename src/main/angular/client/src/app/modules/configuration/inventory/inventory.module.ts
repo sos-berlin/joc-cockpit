@@ -34,10 +34,12 @@ import {FileOrderComponent} from './file-order/file-order.component';
 import {JobResourceComponent} from './job-resource/job-resource.component';
 import {AddRestrictionComponent, PeriodComponent, RunTimeComponent} from './runtime/runtime.component';
 import {EnvVariableValidator, LabelValidator} from '../../../directives/core.directive';
+import { SearchComponent } from './search/search.component';
 
 const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployComponent,
   DeployComponent, ExportComponent, SetVersionComponent, CreateFolderModalComponent, CreateObjectModalComponent,
-  ImportWorkflowModalComponent, JsonEditorModalComponent, UploadModalComponent, ScriptEditorComponent, PeriodComponent, AddRestrictionComponent, RunTimeComponent];
+  ImportWorkflowModalComponent, JsonEditorModalComponent, UploadModalComponent, ScriptEditorComponent,
+  PeriodComponent, AddRestrictionComponent, RunTimeComponent, SearchComponent];
 
 @NgModule({
   imports: [

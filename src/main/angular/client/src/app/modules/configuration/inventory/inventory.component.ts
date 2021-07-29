@@ -18,6 +18,7 @@ import {InventoryService} from './inventory.service';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {catchError} from 'rxjs/operators';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
+import {InventoryObject} from '../../../models/enums';
 
 declare const $: any;
 
@@ -274,7 +275,7 @@ export class DeployComponent implements OnInit {
     };
     if (this.data && this.data.object) {
       obj.recursive = false;
-      obj.objectTypes = this.data.object === 'CALENDAR' ? ['WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'] : [this.data.object];
+      obj.objectTypes = this.data.object === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.object];
     }
     if (!this.isRemove) {
       if (this.releasable) {
@@ -674,7 +675,7 @@ export class ExportComponent implements OnInit {
     if (this.origin) {
       this.path = this.origin.path;
       if (this.origin.dailyPlan || (this.origin.object &&
-        (this.origin.object === 'SCHEDULE' || this.origin.object.match('CALENDAR')))) {
+        (this.origin.object === InventoryObject.SCHEDULE || this.origin.object.match('CALENDAR')))) {
         this.exportType = this.origin.object || 'DAILYPLAN';
       } else {
         if (this.origin.controller || this.origin.object) {
@@ -719,7 +720,7 @@ export class ExportComponent implements OnInit {
         catchError(error => of(error))
       ));
     } else {
-      if (this.exportType === 'DAILYPLAN' || this.exportType === 'SCHEDULE' || this.exportType.match('CALENDAR')) {
+      if (this.exportType === 'DAILYPLAN' || this.exportType === InventoryObject.SCHEDULE || this.exportType.match('CALENDAR')) {
         this.filter.controller = false;
         this.filter.deploy = false;
       } else if (this.exportType === 'CONTROLLER') {
@@ -729,9 +730,9 @@ export class ExportComponent implements OnInit {
       if (this.exportType === 'CONTROLLER' || this.exportType === 'DAILYPLAN') {
         obj.recursive = true;
       } else {
-        obj.objectTypes = this.exportType === 'CALENDAR' ? ['WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'] : [this.exportType];
+        obj.objectTypes = this.exportType === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.exportType];
       }
-      if (this.exportType === 'DAILYPLAN' || this.exportType === 'SCHEDULE' || this.exportType.match('CALENDAR')) {
+      if (this.exportType === 'DAILYPLAN' || this.exportType === InventoryObject.SCHEDULE || this.exportType.match('CALENDAR')) {
         obj.withoutReleased = false;
         obj.withoutDrafts = false;
         APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
@@ -798,15 +799,15 @@ export class ExportComponent implements OnInit {
         return false;
       }
 
-      if (!this.filter.controller && value.objectType !== 'SCHEDULE' && !value.objectType.match(/CALENDAR/)) {
+      if (!this.filter.controller && value.objectType !== InventoryObject.SCHEDULE && !value.objectType.match(/CALENDAR/)) {
         return false;
       }
-      if (!this.filter.dailyPlan && (value.objectType === 'SCHEDULE' || value.objectType.match(/CALENDAR/))) {
+      if (!this.filter.dailyPlan && (value.objectType === InventoryObject.SCHEDULE || value.objectType.match(/CALENDAR/))) {
         return false;
       }
 
       if (this.exportObj.forSigning) {
-        if (!(value.objectType === 'SCHEDULE' || value.objectType.match(/CALENDAR/))) {
+        if (!(value.objectType === InventoryObject.SCHEDULE || value.objectType.match(/CALENDAR/))) {
           if (this.filter.draft && (value.deployed === false || value.released === false)) {
             return !(this.filter.valid && !value.valid);
           }
@@ -1942,6 +1943,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   inventoryConfig: any;
   isTreeLoaded = false;
   isTrash = false;
+  isSearchVisible = false;
   tempObjSelection: any = {};
   subscription1: Subscription;
   subscription2: Subscription;
@@ -2182,7 +2184,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
                   data.children.splice(0, index, children[0]);
                   data.children.splice(1, index, children[1]);
 
-                  const parentNode = (self.selectedObj.type === 'SCHEDULE' || self.selectedObj.type.match(/CALENDAR/)) ? children[1] : children[0];
+                  const parentNode = (self.selectedObj.type === InventoryObject.SCHEDULE || self.selectedObj.type.match(/CALENDAR/)) ? children[1] : children[0];
                   if (self.selectedObj.path === parentNode.path) {
                     parentNode.expanded = true;
                     for (let j = 0; j < parentNode.children.length; j++) {
@@ -2312,7 +2314,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             self.updateTree(isTrash);
           }, !path);
           matchData = data;
-          if(redirect){
+          if (redirect) {
             cb(matchData);
           }
         }
@@ -2424,11 +2426,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
     if (flag) {
       controllerObj.controllerArr = [
-        {name: 'Workflows', title: 'Workflows', object: 'WORKFLOW', children: [], path: data.path, key: (KEY + 'Workflows$')},
+        {name: 'Workflows', title: 'Workflows', object: InventoryObject.WORKFLOW, children: [], path: data.path, key: (KEY + 'Workflows$')},
         {
           name: 'File Order Sources',
           title: 'File Order Sources',
-          object: 'FILEORDERSOURCE',
+          object: InventoryObject.FILEORDERSOURCE,
           children: [],
           path: data.path,
           key: (KEY + 'File_Order_Sources$')
@@ -2436,16 +2438,16 @@ export class InventoryComponent implements OnInit, OnDestroy {
         {
           name: 'Job Resources',
           title: 'Job Resources',
-          object: 'JOBRESOURCE',
+          object: InventoryObject.JOBRESOURCE,
           children: [],
           path: data.path,
           key: (KEY + 'Job_Resources$')
         },
-        {name: 'Boards', title: 'Boards', object: 'BOARD', children: [], path: data.path, key: (KEY + 'Boards$')},
-        {name: 'Locks', title: 'Locks', object: 'LOCK', children: [], path: data.path, key: (KEY + 'Locks$')}
+        {name: 'Boards', title: 'Boards', object: InventoryObject.BOARD, children: [], path: data.path, key: (KEY + 'Boards$')},
+        {name: 'Locks', title: 'Locks', object: InventoryObject.LOCK, children: [], path: data.path, key: (KEY + 'Locks$')}
       ];
       dailyPlanObj.dailyPlanArr = [
-        {name: 'Schedules', title: 'Schedules', object: 'SCHEDULE', children: [], path: data.path, key: (KEY + 'Schedules$')},
+        {name: 'Schedules', title: 'Schedules', object: InventoryObject.SCHEDULE, children: [], path: data.path, key: (KEY + 'Schedules$')},
         {name: 'Calendars', title: 'Calendars', object: 'CALENDAR', children: [], path: data.path, key: (KEY + 'Calendars$')}
       ];
     }
@@ -2456,15 +2458,15 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }).subscribe((res: any) => {
       for (let i = 0; i < controllerObj.controllerArr.length; i++) {
         let resObject;
-        if (controllerObj.controllerArr[i].object === 'WORKFLOW') {
+        if (controllerObj.controllerArr[i].object === InventoryObject.WORKFLOW) {
           resObject = res.workflows;
-        } else if (controllerObj.controllerArr[i].object === 'FILEORDERSOURCE') {
+        } else if (controllerObj.controllerArr[i].object === InventoryObject.FILEORDERSOURCE) {
           resObject = res.fileOrderSources;
-        } else if (controllerObj.controllerArr[i].object === 'JOBRESOURCE') {
+        } else if (controllerObj.controllerArr[i].object === InventoryObject.JOBRESOURCE) {
           resObject = res.jobResources;
-        } else if (controllerObj.controllerArr[i].object === 'BOARD') {
+        } else if (controllerObj.controllerArr[i].object === InventoryObject.BOARD) {
           resObject = res.boards;
-        } else if (controllerObj.controllerArr[i].object === 'LOCK') {
+        } else if (controllerObj.controllerArr[i].object === InventoryObject.LOCK) {
           resObject = res.locks;
         }
         if (resObject) {
@@ -2486,7 +2488,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       for (let i = 0; i < dailyPlanObj.dailyPlanArr.length; i++) {
         dailyPlanObj.dailyPlanArr[i].deleted = data.deleted;
         let resObject;
-        if (dailyPlanObj.dailyPlanArr[i].object === 'SCHEDULE') {
+        if (dailyPlanObj.dailyPlanArr[i].object === InventoryObject.SCHEDULE) {
           resObject = res.schedules;
         } else if (dailyPlanObj.dailyPlanArr[i].object === 'CALENDAR') {
           resObject = res.calendars;
@@ -2660,7 +2662,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       const data = node.origin.children;
       this.updateObjects(node.origin, false, (children) => {
         if (children.length > 0) {
-          if ((type.match('CALENDAR') || type === 'SCHEDULE')) {
+          if ((type.match('CALENDAR') || type === InventoryObject.SCHEDULE)) {
             children[1].expanded = true;
           } else {
             children[0].expanded = true;
@@ -3222,7 +3224,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (object.id) {
         let isDraftOnly = true;
         let isDeployObj = true;
-        if (object.type.match(/CALENDAR/) || object.type === 'SCHEDULE') {
+        if (object.type.match(/CALENDAR/) || object.type === InventoryObject.SCHEDULE) {
           isDeployObj = false;
           if (object.hasReleases) {
             isDraftOnly = false;
@@ -3397,7 +3399,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   private backToListView(): void {
     const parent = this.treeCtrl.getTreeNodeByKey(this.selectedObj.path);
     if (parent && parent.origin.children) {
-      const index = (this.selectedObj.type === 'CALENDAR' || this.selectedObj.type === 'SCHEDULE') ? 1 : 0;
+      const index = (this.selectedObj.type === 'CALENDAR' || this.selectedObj.type === InventoryObject.SCHEDULE) ? 1 : 0;
       const child = parent.origin.children[index];
       for (let i = 0; i < child.children.length; i++) {
         if (child.children[i].object === this.selectedObj.type) {
@@ -3467,7 +3469,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           if (!data[0] || !data[0].controller || data.length === 0) {
             this.updateObjects(node.origin, false, (children) => {
               if (children.length > 0) {
-                if ((this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'SCHEDULE')) {
+                if ((this.copyObj.type === 'CALENDAR' || this.copyObj.type === InventoryObject.SCHEDULE)) {
                   children[1].expanded = true;
                 } else {
                   children[0].expanded = true;
@@ -3483,7 +3485,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             }, true);
             return;
           }
-          if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === 'SCHEDULE') {
+          if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === InventoryObject.SCHEDULE) {
             data = object.children[1];
           } else {
             data = object.children[0];
@@ -3550,7 +3552,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       const tree = this.coreService.prepareTree(res, false);
       if (isTrash) {
         this.trashTree = this.recursiveTreeUpdate(tree, this.trashTree, true);
-      } else{
+      } else {
         this.tree = this.recursiveTreeUpdate(tree, this.tree, false);
       }
     });
@@ -3679,11 +3681,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (res) {
         let configuration = {};
         obj.name = res.name;
-        if (type === 'SCHEDULE') {
+        if (type === InventoryObject.SCHEDULE) {
           configuration = {controllerId: this.schedulerIds.selected};
         } else if (type === 'LOCK') {
           configuration = {limit: 1, id: res.name};
-        } else if (type === 'WORKINGDAYSCALENDAR' || type === 'NONWORKINGDAYSCALENDAR') {
+        } else if (type === InventoryObject.WORKINGDAYSCALENDAR || type === InventoryObject.NONWORKINGDAYSCALENDAR) {
           configuration = {type};
         }
         this.storeObject(obj, list, configuration);
@@ -3692,7 +3694,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private storeObject(obj, list, configuration): void {
-    const valid = !(obj.type.match(/CALENDAR/) || obj.type === 'SCHEDULE' || obj.type === 'BOARD' || obj.type === 'WORKFLOW' || obj.type === 'FILEORDERSOURCE' || obj.type === 'JOBRESOURCE');
+    const valid = !(obj.type.match(/CALENDAR/) || obj.type === InventoryObject.SCHEDULE || obj.type === InventoryObject.BOARD
+      || obj.type === InventoryObject.WORKFLOW || obj.type === InventoryObject.FILEORDERSOURCE || obj.type === InventoryObject.JOBRESOURCE);
     const PATH = obj.path + (obj.path === '/' ? '' : '/') + obj.name;
     if (PATH && obj.type) {
       this.coreService.post('inventory/store', {
@@ -3701,7 +3704,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         valid: obj.valid ? obj.valid : valid,
         configuration
       }).subscribe((res: any) => {
-        if ((obj.type === 'WORKINGDAYSCALENDAR' || obj.type === 'NONWORKINGDAYSCALENDAR')) {
+        if ((obj.type === InventoryObject.WORKINGDAYSCALENDAR || obj.type === InventoryObject.NONWORKINGDAYSCALENDAR)) {
           obj.objectType = obj.type;
           obj.type = 'CALENDAR';
         }
@@ -3805,6 +3808,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (this.selectedObj && this.selectedObj.id) {
       this.importJSON(this.selectedObj);
     }
+  }
+
+  search(): void {
+    this.isSearchVisible = true;
   }
 
   /* ------------- Object based operations End---------- */

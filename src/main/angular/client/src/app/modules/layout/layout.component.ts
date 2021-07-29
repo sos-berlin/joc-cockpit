@@ -4,6 +4,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
+import {isEmpty} from 'underscore';
 import {NzConfigService} from 'ng-zorro-antd/core/config';
 import {CoreService} from '../../services/core.service';
 import {DataService} from '../../services/data.service';
@@ -52,8 +53,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
     });
     this.subscription3 = dataService.isProfileReload.subscribe(res => {
       if (res) {
-        this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-        if (this.schedulerIds.selected) {
+        this.schedulerIds = JSON.parse(this.authService.scheduleIds);
+        if (this.schedulerIds && this.schedulerIds.selected) {
           this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, true);
         }
       }
@@ -128,6 +129,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
         }
       } else if (!this.schedulerIds) {
         this.schedulerIds = {};
+        this.getSchedulerIds();
+      } else if (isEmpty(this.schedulerIds) && !this.loading) {
         this.getSchedulerIds();
       }
     } else {
@@ -361,7 +364,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   private loadInit(isError: boolean, skip = false): void {
     this.sessionTimeout = parseInt(this.authService.sessionTimeout, 10);
-    if(!skip) {
+    if (!skip) {
       if (this.permission && this.permission.joc && !this.authService.permissionCheck(this.router.url)) {
         this.router.navigate(['/error']);
       }

@@ -211,7 +211,11 @@ export class ControllersComponent implements OnInit, OnDestroy {
     });
     this.subscription2 = dataService.closeModal.subscribe(res => {
       if (res && this.modalInstance) {
-        this.modalInstance.close();
+        if (res === 'reload') {
+          this.modalInstance.close(res);
+        } else {
+          this.modalInstance.destroy();
+        }
       }
     });
   }
@@ -316,6 +320,11 @@ export class ControllersComponent implements OnInit, OnDestroy {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
+    });
+    this.modalInstance.afterClose.subscribe(result => {
+      if (result && this.controllers.length === 0) {
+        this.getSchedulerIds();
+      }
     });
   }
 
@@ -660,6 +669,6 @@ export class ControllersComponent implements OnInit, OnDestroy {
       this.authService.setIds(res);
       this.authService.save();
       this.dataService.isProfileReload.next(true);
-    }, err => console.log(err));
+    }, err => console.error(err));
   }
 }

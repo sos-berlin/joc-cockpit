@@ -304,25 +304,41 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
         }
 
         if (i > 0) {
-          let prev = this.coreService.clone(tempArr[i - 1].value);
+          const prev = this.coreService.clone(tempArr[i - 1].value);
+          const length = tempArr[i].value.length;
           for (let j = 0; j < prev.length; j++) {
-            let flag = false;
-            for (let x = 0; x < tempArr[i].value.length; x++) {
-              if (prev[j].agentId === tempArr[i].value[x].agentId) {
-                if (prev[j].couplingFailedTime &&
-                  this.coreService.getDateByFormat(prev[j].couplingFailedTime, this.preferences.zone, 'YYYY-MM-DD') === tempArr[i].value[x].date) {
-                  tempArr[i - 1].couplingFailedTime = null;
-                  prev[j].date = tempArr[i].value[x].date;
-                  prev[j].readyTime = new Date(prev[j].date).setHours(0, 0, 0, 0);
-                  flag = true;
-                  tempArr[i].value.push(prev[j]);
-                  break;
+            for (let x = 0; x < length; x++) {
+              if (prev[j].agentId === tempArr[i].value[x].agentId && prev[j].readyTime !== tempArr[i].value[x].readyTime) {
+                if (prev[j].couplingFailedTime) {
+                  const couplingFailedDate = this.coreService.getDateByFormat(prev[j].couplingFailedTime, this.preferences.zone, 'YYYY-MM-DD');
+                  if (couplingFailedDate === tempArr[i].value[x].date || (new Date(couplingFailedDate).setHours(0, 0, 0, 0) > new Date(tempArr[i].value[x].date).setHours(0, 0, 0, 0))) {
+                    tempArr[i - 1].couplingFailedTime = null;
+                    prev[j].date = tempArr[i].value[x].date;
+                    prev[j].readyTime = new Date(prev[j].date).setHours(0, 0, 0, 0);
+                    tempArr[i].value.push(prev[j]);
+                  }
                 }
               }
             }
-            if (flag) {
-              break;
-            }
+          }
+          if (length === 0) {
+            tempArr[i].value = prev;
+            tempArr[i].value.forEach(item => {
+              item.date = tempArr[i].key;
+              if (item.couplingFailedTime) {
+                const couplingFailedDate = this.coreService.getDateByFormat(item.couplingFailedTime, this.preferences.zone, 'YYYY-MM-DD');
+                if (couplingFailedDate === item.date || (new Date(couplingFailedDate).setHours(0, 0, 0, 0) >
+                  new Date(item.date).setHours(0, 0, 0, 0))) {
+                  item.readyTime = new Date(tempArr[i].key).setHours(0, 0, 0, 0);
+                } else if (new Date(couplingFailedDate).setHours(0, 0, 0, 0) <
+                  new Date(item.date).setHours(0, 0, 0, 0)) {
+                  item.readyTime = new Date(tempArr[i].key).setHours(23, 59, 59, 0);
+                  item.couplingFailedTime = null;
+                }
+              } else{
+                item.readyTime = new Date(tempArr[i].key).setHours(0, 0, 0, 0);
+              }
+            });
           }
         }
 
@@ -330,7 +346,6 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
       }
     }
     this.groupByData = tempArr;
-    console.log(this.groupByData)
     this.setViewSize(len);
   }
 
@@ -361,6 +376,9 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
         }
         dur += (endTimeInSec - startTimeInSec);
       });
+      if (dur > 86400) {
+        dur = dur - 86400;
+      }
 
       let dur1;
       if (this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD') === item.key) {
@@ -378,7 +396,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
         value1: statusObj.value2.toFixed(2),
         name: values[i].key,
       };
-      statusObj.value1 = (24 - statusObj.value2).toFixed(2);
+      statusObj.value1 = ((dur1 ? (dur1 / (60 * 60)) : 24) - statusObj.value2).toFixed(2);
       if (parseInt(statusObj2.value, 10) < parseInt(statusObj.value, 10)){
         obj.series.push(statusObj);
         obj.series.push(statusObj2);

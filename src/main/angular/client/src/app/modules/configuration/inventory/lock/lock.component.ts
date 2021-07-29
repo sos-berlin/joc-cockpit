@@ -3,6 +3,7 @@ import {isEmpty, isEqual} from 'underscore';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
+import {InventoryObject} from '../../../../models/enums';
 
 @Component({
   selector: 'app-lock',
@@ -19,7 +20,7 @@ export class LockComponent implements OnChanges, OnDestroy {
   @Input() isTrash: any;
 
   lock: any = {};
-  objectType = 'LOCK';
+  objectType = InventoryObject.LOCK;
   documentationTree = [];
   indexOfNextAdd = 0;
   history = [];

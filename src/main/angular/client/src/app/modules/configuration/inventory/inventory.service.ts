@@ -1,27 +1,26 @@
 import {Injectable} from '@angular/core';
 import {sortBy, groupBy} from 'underscore';
+import {InventoryObject} from '../../../models/enums';
 
 @Injectable()
 export class InventoryService {
 
   sortList(arr): any {
     for (let i = 0; i < arr.length; i++) {
-      if (arr[i].objectType === 'WORKFLOW') {
+      if (arr[i].objectType === InventoryObject.WORKFLOW) {
         arr[i].level = 0;
-      } else if (arr[i].objectType === 'FILEORDERSOURCE') {
+      } else if (arr[i].objectType === InventoryObject.FILEORDERSOURCE) {
         arr[i].level = 1;
-      } else if (arr[i].objectType === 'JOBCLASS') {
+      } else if (arr[i].objectType === InventoryObject.BOARD) {
         arr[i].level = 2;
-      } else if (arr[i].objectType === 'BOARD') {
+      } else if (arr[i].objectType === InventoryObject.LOCK) {
         arr[i].level = 3;
-      } else if (arr[i].objectType === 'LOCK') {
+      } else if (arr[i].objectType === InventoryObject.SCHEDULE) {
         arr[i].level = 4;
-      } else if (arr[i].objectType === 'SCHEDULE') {
+      } else if (arr[i].objectType === InventoryObject.WORKINGDAYSCALENDAR) {
         arr[i].level = 5;
-      } else if (arr[i].objectType === 'WORKINGDAYSCALENDAR') {
+      } else if (arr[i].objectType === InventoryObject.NONWORKINGDAYSCALENDAR) {
         arr[i].level = 6;
-      } else if (arr[i].objectType === 'NONWORKINGDAYSCALENDAR') {
-        arr[i].level = 7;
       }
     }
     return sortBy(arr, 'level');
@@ -225,7 +224,8 @@ export class InventoryService {
   }
 
   isControllerObject(type): boolean {
-    return type === 'WORKFLOW' || type === 'JOBCLASS' || type === 'BOARD' || type === 'LOCK' || type === 'FILEORDERSOURCE' || type === 'JOBRESOURCE';
+    return type === InventoryObject.WORKFLOW || type === InventoryObject.BOARD
+      || type === InventoryObject.LOCK || type === InventoryObject.FILEORDERSOURCE || type === InventoryObject.JOBRESOURCE;
   }
 }
 

@@ -1127,6 +1127,37 @@
           "delay": "遅延は、次のリトライが実行されるまでの時間を秒単位で指定します。コンマで区切って複数の値を指定した場合は、左から右に向かってそれぞれの値が次のリトライを待つ期間に適用されます。"
         }
       }
+    },
+    "search": {
+      "label": {
+        "searchHeading": "Filter Your Search",
+        "search": "Search",
+        "folders": "Folders",
+        "currentController": "Current Controller",
+        "deployedOrReleased": "Deployed/Released",
+        "return": "Return",
+        "advanced": "Advanced",
+        "agent": "Agent Name",
+        "workflow": "Workflow",
+        "fileOrderSource": "File Order Source",
+        "jobResources": "Job Resources",
+        "boards": "Notice Boards",
+        "lock": "Lock",
+        "schedule": "Schedule",
+        "countJobs": "Count Jobs",
+        "from": "From",
+        "to": "To",
+        "jobName": "Job Name",
+        "jobCriticality": "Job Criticality",
+        "argument": "Argument"
+      },
+      "button": {
+        "search": "Search"
+      },
+      "placeholder": {
+        "search" : "name or title like '%search%'",
+        "selectFromTree": "Select from tree"
+      }
     }
   },
   "log": {

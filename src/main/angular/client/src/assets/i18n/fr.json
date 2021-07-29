@@ -1127,6 +1127,37 @@
           "delay": "Le délai spécifie le temps en secondes avant que la prochaine tentative ne soit effectuée. Si un certain nombre de valeurs sont spécifiées - séparées par une virgule - alors chaque valeur de gauche à droite s'applique à la période d'attente de la prochaine tentative."
         }
       }
+    },
+    "search": {
+      "label": {
+        "searchHeading": "Filter Your Search",
+        "search": "Search",
+        "folders": "Folders",
+        "currentController": "Current Controller",
+        "deployedOrReleased": "Deployed/Released",
+        "return": "Return",
+        "advanced": "Advanced",
+        "agent": "Agent Name",
+        "workflow": "Workflow",
+        "fileOrderSource": "File Order Source",
+        "jobResources": "Job Resources",
+        "boards": "Notice Boards",
+        "lock": "Lock",
+        "schedule": "Schedule",
+        "countJobs": "Count Jobs",
+        "from": "From",
+        "to": "To",
+        "jobName": "Job Name",
+        "jobCriticality": "Job Criticality",
+        "argument": "Argument"
+      },
+      "button": {
+        "search": "Search"
+      },
+      "placeholder": {
+        "search" : "name or title like '%search%'",
+        "selectFromTree": "Select from tree"
+      }
     }
   },
   "log": {

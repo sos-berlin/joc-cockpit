@@ -7,6 +7,11 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline" *ngIf="permission.joc">
+            <button class="btn btn-sm btn-grey m-l-12"
+                    (click)="search()">
+              <i class="fa fa-search"></i>&nbsp;
+              <span translate>common.button.search</span>
+            </button>
             <button *ngIf="permission.joc.inventory.manage" class="btn btn-sm btn-grey m-l-12"
                     (click)="setVersion()">
               <i class="fa fa-code-fork"></i>&nbsp;
@@ -351,4 +356,12 @@
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>
 </div>
-
+<nz-drawer [nzVisible]="isSearchVisible" nzPlacement="right" (nzOnClose)="isSearchVisible = false">
+  <ng-container *nzDrawerContent>
+    <div class="close-btn" (click)="isSearchVisible = false"></div>
+    <div *ngIf="isSearchVisible">
+      <div class="text-center m-b text" ><span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span></div>
+      <app-inventory-search></app-inventory-search>
+    </div>
+  </ng-container>
+</nz-drawer>

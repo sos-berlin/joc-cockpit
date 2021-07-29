@@ -6,6 +6,7 @@ import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
+import {InventoryObject} from '../../../../models/enums';
 
 @Component({
   selector: 'app-job-resource',
@@ -23,7 +24,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
 
   jobResource: any = {};
   invalidMsg: string;
-  objectType = 'JOBRESOURCE';
+  objectType = InventoryObject.JOBRESOURCE;
   documentationTree = [];
   indexOfNextAdd = 0;
   history = [];

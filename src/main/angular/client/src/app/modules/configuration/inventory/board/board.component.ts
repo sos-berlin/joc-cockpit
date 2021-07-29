@@ -4,6 +4,7 @@ import {Subscription} from 'rxjs';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {WorkflowService} from '../../../../services/workflow.service';
+import {InventoryObject} from '../../../../models/enums';
 
 @Component({
   selector: 'app-board',
@@ -25,7 +26,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
     units : 'Milliseconds'
   };
   invalidMsg: string;
-  objectType = 'BOARD';
+  objectType = InventoryObject.BOARD;
   documentationTree = [];
   indexOfNextAdd = 0;
   history = [];

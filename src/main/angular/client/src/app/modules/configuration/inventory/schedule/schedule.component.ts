@@ -13,6 +13,7 @@ import {Subscription} from 'rxjs';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {CalendarService} from '../../../../services/calendar.service';
+import {InventoryObject} from '../../../../models/enums';
 
 @Component({
   selector: 'app-schedule',
@@ -32,7 +33,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   isVisible: boolean;
   dateFormat: any;
   isUnique = true;
-  objectType = 'SCHEDULE';
+  objectType = InventoryObject.SCHEDULE;
   workflowTree = [];
   invalidMsg: string;
   workflow: any = {};
@@ -457,7 +458,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   private getWorkflowInfo(name): void {
     this.coreService.post('inventory/read/configuration', {
       path: name,
-      objectType: 'WORKFLOW'
+      objectType: InventoryObject.WORKFLOW
     }).subscribe((conf: any) => {
       this.workflow = conf.configuration;
       this.updateVariableList();

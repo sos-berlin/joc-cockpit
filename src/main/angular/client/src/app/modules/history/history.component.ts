@@ -15,6 +15,7 @@ import {EditFilterModalComponent} from '../../components/filter-modal/filter.com
 import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component';
 import {SearchPipe} from '../../pipes/core.pipe';
 import {FileTransferService} from '../../services/file-transfer.service';
+import {InventoryForHistory} from '../../models/enums';
 
 declare const $;
 
@@ -473,7 +474,7 @@ export class DeploymentSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.deployTypes = ['WORKFLOW', 'FILEORDERSOURCE', 'JOBRESOURCE', 'BOARD', 'LOCK'];
+    this.deployTypes = Object.keys(InventoryForHistory).filter(key => isNaN(+key));
   }
 
   remove(path): void {

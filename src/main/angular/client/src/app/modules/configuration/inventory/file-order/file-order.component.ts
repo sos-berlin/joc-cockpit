@@ -3,6 +3,7 @@ import {Subscription} from 'rxjs';
 import {isEmpty, isEqual} from 'underscore';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
+import {InventoryObject} from '../../../../models/enums';
 
 @Component({
   selector: 'app-file-order',
@@ -23,7 +24,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   agents = [];
   workflowTree = [];
   fileOrder: any = {};
-  objectType = 'FILEORDERSOURCE';
+  objectType = InventoryObject.FILEORDERSOURCE;
   documentationTree = [];
   indexOfNextAdd = 0;
   history = [];
@@ -94,7 +95,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       this.coreService.post('tree', {
         controllerId: this.schedulerId,
         forInventory: true,
-        types: ['WORKFLOW']
+        types: [InventoryObject.WORKFLOW]
       }).subscribe((res) => {
         this.workflowTree = this.coreService.prepareTree(res, true);
       });
@@ -333,7 +334,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   navToWorkflow(): void {
-    this.dataService.reloadTree.next({navigate: {name: this.fileOrder.configuration.workflowName, type: 'WORKFLOW'}});
+    this.dataService.reloadTree.next({navigate: {name: this.fileOrder.configuration.workflowName, type: InventoryObject.WORKFLOW}});
   }
 
   changeValue($event, type): void{

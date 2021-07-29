@@ -135,7 +135,7 @@ export class StartUpModalComponent implements OnInit {
     this.coreService.post('controller/register', obj).subscribe(res => {
       this.submitted = false;
       if (this.modalRef) {
-        this.dataService.closeModal.next('close');
+        this.dataService.closeModal.next('reload');
       } else {
         this.afterSubmit.emit();
       }

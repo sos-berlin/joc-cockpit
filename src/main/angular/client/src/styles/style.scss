@@ -3889,6 +3889,10 @@ li > a > i.remove {
   margin-top: -6px;
 }
 
+.m-t-n-8 {
+  margin-top: -8px;
+}
+
 .m-t-n-35 {
   margin-top: -26px !important;
 }
@@ -5787,10 +5791,6 @@ pre#pre {
   padding: 10px;
 }
 
-.m-t-n-8 {
-  margin-top: -8px;
-}
-
 .syntax-box {
   background: #f2f2f2;
 }
@@ -6234,6 +6234,11 @@ aside.sidebar-hover-effect {
 .ant-picker-input-placeholder > input {
   color: var(--placholder-color);
   opacity: .55;
+}
+
+.ant-input-group-addon{
+  border-color: var(--border-color);
+  background: var(--background-color);
 }
 
 .ant-input-affix-wrapper::placeholder {
