@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
-import {InventorySearch} from '../../../../models/enums';
+import {InventoryObject, InventorySearch} from '../../../../models/enums';
 import {CoreService} from '../../../../services/core.service';
 
 @Component({
@@ -9,13 +9,18 @@ import {CoreService} from '../../../../services/core.service';
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
+  @Output() onCancel: EventEmitter<any> = new EventEmitter();
+  @Output() onNavigate: EventEmitter<any> = new EventEmitter();
+  submitted = false;
   deployTypes: Array<string> = [];
-  results = [];
+  results: any;
   folders = [];
   agents = [];
   searchObj: any = {};
   ENUM: any;
-  showAdvanceFields = false;
+  panel = {
+    active: false
+  };
 
   constructor(private coreService: CoreService, public modal: NzModalService) {
   }
@@ -49,13 +54,32 @@ export class SearchComponent implements OnInit {
     });
   }
 
+  navToObject(data): void {
+    this.onNavigate.emit(data);
+  }
+
   search(): void {
-    this.coreService.post('inventory/search', {}).subscribe((result) => {
-      this.results = result;
+    this.submitted = true;
+    this.coreService.post('inventory/search', this.searchObj).subscribe((result) => {
+      if (this.searchObj.returnType === this.ENUM.SCHEDULE) {
+        this.results = result.schedules;
+      } else if (this.searchObj.returnType === this.ENUM.WORKFLOW) {
+        this.results = result.workflows;
+      } else if (this.searchObj.returnType === this.ENUM.FILE_ORDER_SOURCE) {
+        this.results = result.fileOrderSources;
+      } else if (this.searchObj.returnType === this.ENUM.JOB_RESOURCE) {
+        this.results = result.jobResources;
+      } else if (this.searchObj.returnType === this.ENUM.BOARD) {
+        this.results = result.boards;
+      } else if (this.searchObj.returnType === this.ENUM.LOCK) {
+        this.results = result.locks;
+      } else{
+        this.results = [];
+      }
+      this.submitted = false;
+    }, () => {
+      this.submitted = false;
     });
   }
 
-  showAdvance(): void {
-    this.showAdvanceFields = !this.showAdvanceFields;
-  }
 }

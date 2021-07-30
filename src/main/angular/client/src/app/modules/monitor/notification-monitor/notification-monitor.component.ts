@@ -99,6 +99,12 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
 
 
   private getData(): void {
+    const notificationIds = new Map();
+    this.data.forEach((item) => {
+      if (item.show) {
+        notificationIds.set(item.notificationId, item.monitors);
+      }
+    });
     let obj: any = {
       controllerId: this.filters.filter.current == true ? this.schedulerIds.selected : '',
       limit: parseInt(this.preferences.maxAuditLogRecords, 10) || 5000,
@@ -110,6 +116,15 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
     }
     this.coreService.post('monitoring/notifications', obj).subscribe((res: any) => {
       this.notifications = res.notifications;
+      if (notificationIds && notificationIds.size > 0) {
+        res.notifications.forEach((value) => {
+          if (notificationIds.has(value.notificationId)) {
+            value.show = true;
+            value.isLoaded = true;
+            value.monitors = notificationIds.get(value.notificationId);
+          }
+        });
+      }
       this.searchInResult();
       this.isLoaded = true;
     }, () => {

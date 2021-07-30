@@ -2147,76 +2147,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       path: this.selectedObj.name
     }).subscribe((res) => {
       this.selectedObj.id = res.id;
-      this.selectedObj.path = res.path.substring(0, res.path.lastIndexOf('/')) || res.path.substring(0, res.path.lastIndexOf('/') + 1);
-      const pathArr = [];
-      const arr = this.selectedObj.path.split('/');
-      const len = arr.length;
-      if (len > 1) {
-        for (let i = 0; i < len; i++) {
-          if (arr[i]) {
-            if (i > 0 && pathArr[i - 1]) {
-              pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + arr[i]);
-            } else {
-              pathArr.push('/' + arr[i]);
-            }
-          } else {
-            pathArr.push('/');
-          }
-        }
-      }
-      const self = this;
-      if (this.tree.length > 0) {
-        function traverseTree(data) {
-          let flag = false;
-          for (let i = 0; i < pathArr.length; i++) {
-            if (pathArr[i] === data.path) {
-              data.expanded = true;
-              flag = true;
-              pathArr.splice(i, 1);
-              break;
-            }
-          }
-          if (flag) {
-            if (!data.controller && !data.dailyPlan) {
-              self.updateObjects(data, self.isTrash, (children) => {
-                if (children.length > 0) {
-                  const index = data.children[0] && data.children[0].controller ? 1 : 0;
-                  data.children.splice(0, index, children[0]);
-                  data.children.splice(1, index, children[1]);
-
-                  const parentNode = (self.selectedObj.type === InventoryObject.SCHEDULE || self.selectedObj.type.match(/CALENDAR/)) ? children[1] : children[0];
-                  if (self.selectedObj.path === parentNode.path) {
-                    parentNode.expanded = true;
-                    for (let j = 0; j < parentNode.children.length; j++) {
-                      const x = parentNode.children[j];
-                      if (x.object === self.selectedObj.type) {
-                        x.expanded = true;
-                        for (let k = 0; k < x.children.length; k++) {
-                          if (x.children[k].name === self.selectedObj.name) {
-                            self.selectedData = x.children[k];
-                            break;
-                          }
-                        }
-                        break;
-                      }
-                    }
-                    self.type = self.selectedObj.type;
-                    self.isLoading = false;
-                    self.updateTree(self.isTrash);
-                  }
-                }
-              }, false);
-            }
-          }
-          if (data.children && pathArr.length > 0) {
-            for (let i = 0; i < data.children.length; i++) {
-              traverseTree(data.children[i]);
-            }
-          }
-        }
-
-        traverseTree(this.tree[0]);
-      }
+      this.findObjectByPath(res.path);
     }, () => {
       this.updateObjects(this.tree[0], this.isTrash, (children) => {
         this.isLoading = false;
@@ -2228,6 +2159,81 @@ export class InventoryComponent implements OnInit, OnDestroy {
         this.updateTree(this.isTrash);
       }, false);
     });
+  }
+
+  private findObjectByPath(path): void {
+    this.selectedObj.path = path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1);
+    const pathArr = [];
+    const arr = this.selectedObj.path.split('/');
+    const len = arr.length;
+    if (len > 1) {
+      for (let i = 0; i < len; i++) {
+        if (arr[i]) {
+          if (i > 0 && pathArr[i - 1]) {
+            pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + arr[i]);
+          } else {
+            pathArr.push('/' + arr[i]);
+          }
+        } else {
+          pathArr.push('/');
+        }
+      }
+    }
+
+    const self = this;
+    if (this.tree.length > 0) {
+      function traverseTree(data) {
+        let flag = false;
+        for (let i = 0; i < pathArr.length; i++) {
+          if (pathArr[i] === data.path) {
+            data.expanded = true;
+            flag = true;
+            pathArr.splice(i, 1);
+            break;
+          }
+        }
+
+        if (flag) {
+          if (!data.controller && !data.dailyPlan) {
+            self.updateObjects(data, self.isTrash, (children) => {
+              if (children.length > 0) {
+                const index = data.children[0] && data.children[0].controller ? 1 : 0;
+                data.children.splice(0, index, children[0]);
+                data.children.splice(1, index, children[1]);
+
+                const parentNode = (self.selectedObj.type === InventoryObject.SCHEDULE || self.selectedObj.type.match(/CALENDAR/)) ? children[1] : children[0];
+                if (self.selectedObj.path === parentNode.path) {
+                  parentNode.expanded = true;
+                  for (let j = 0; j < parentNode.children.length; j++) {
+                    const x = parentNode.children[j];
+                    if (x.object === self.selectedObj.type) {
+                      x.expanded = true;
+                      for (let k = 0; k < x.children.length; k++) {
+                        if (x.children[k].name === self.selectedObj.name) {
+                          self.selectedData = x.children[k];
+                          break;
+                        }
+                      }
+                      break;
+                    }
+                  }
+                  self.type = self.selectedObj.type;
+                  self.isLoading = false;
+                  self.updateTree(self.isTrash);
+                }
+              }
+            }, false);
+          }
+        }
+        if (data.children && pathArr.length > 0) {
+          for (let i = 0; i < data.children.length; i++) {
+            traverseTree(data.children[i]);
+          }
+        }
+      }
+
+      traverseTree(this.tree[0]);
+    }
   }
 
   recursiveTreeUpdate(scr, dest, isTrash): any {
@@ -2477,7 +2483,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
             controllerObj.controllerArr[i].children.forEach((child, index) => {
               controllerObj.controllerArr[i].children[index].type = controllerObj.controllerArr[i].object;
               controllerObj.controllerArr[i].children[index].path = res.path;
-              controllerObj.controllerArr[i].children[index].title = child.name;
             });
             controllerObj.controllerArr[i].children = sortBy(controllerObj.controllerArr[i].children, 'name');
           }
@@ -2501,7 +2506,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
             dailyPlanObj.dailyPlanArr[i].children.forEach((child, index) => {
               dailyPlanObj.dailyPlanArr[i].children[index].type = dailyPlanObj.dailyPlanArr[i].object;
               dailyPlanObj.dailyPlanArr[i].children[index].path = res.path;
-              dailyPlanObj.dailyPlanArr[i].children[index].title = child.name;
             });
             dailyPlanObj.dailyPlanArr[i].children = sortBy(dailyPlanObj.dailyPlanArr[i].children, 'name');
           }
@@ -3609,7 +3613,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       for (let j = 0; j < sour.length; j++) {
         if (dest.children[i].name === sour[j].name) {
           dest.children[i].deleted = sour[j].deleted;
-          dest.children[i].title = sour[j].title || sour[j].name;
+          dest.children[i].title1 = sour[j].title;
           dest.children[i].deployed = sour[j].deployed;
           dest.children[i].released = sour[j].released;
           dest.children[i].hasReleases = sour[j].hasReleases;
@@ -3810,9 +3814,22 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
+  /* ------------- Object based operations End---------- */
+
   search(): void {
     this.isSearchVisible = true;
   }
 
-  /* ------------- Object based operations End---------- */
+  closeSearch(): void {
+    this.isSearchVisible = false;
+  }
+
+  onNavigate(data): void {
+   // this.isSearchVisible = false;
+    this.pushObjectInHistory();
+    this.selectedObj.type = data.objectType;
+    this.selectedObj.name = data.name;
+    this.selectedObj.id = data.id;
+    this.findObjectByPath(data.path);
+  }
 }

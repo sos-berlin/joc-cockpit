@@ -8,6 +8,7 @@ import {ChecklistModule} from 'angular-checklist';
 import {DatePipe} from '@angular/common';
 import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {NzDrawerModule} from 'ng-zorro-antd/drawer';
+import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import {InventoryRoutingModule} from './inventory-routing.module';
 import {SharedModule} from '../../shared/shared.module';
 import {WorkflowService} from '../../../services/workflow.service';
@@ -51,6 +52,7 @@ const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployCompon
     NzAutocompleteModule,
     NzTabsModule,
     NzDrawerModule,
+    NzCollapseModule,
     NgJsonEditorModule,
     ChecklistModule
   ],

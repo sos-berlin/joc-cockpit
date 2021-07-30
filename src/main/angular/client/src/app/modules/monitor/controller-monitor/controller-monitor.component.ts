@@ -126,7 +126,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
             controllerId: controller.controllerId,
             date: this.coreService.getDateByFormat(controller.entries[i].readyTime, this.preferences.zone, 'YYYY-MM-DD'),
             readyTime: controller.entries[i].readyTime,
-            shutdownTime: controller.entries[i].shutdownTime
+            lastKnownTime: controller.entries[i].lastKnownTime
           };
           groupData.push(obj);
         }
@@ -196,10 +196,10 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
           if (this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD') === item.key) {
             endTimeInSec = moment.duration(this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:SS')).asSeconds();
           }
-          if (time.shutdownTime) {
-            const shutdownDate = this.coreService.getDateByFormat(time.shutdownTime, this.preferences.zone, 'YYYY-MM-DD');
+          if (time.lastKnownTime) {
+            const shutdownDate = this.coreService.getDateByFormat(time.lastKnownTime, this.preferences.zone, 'YYYY-MM-DD');
             if (this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'YYYY-MM-DD') === shutdownDate) {
-              endTimeInSec = moment.duration(this.coreService.getDateByFormat(time.shutdownTime, this.preferences.zone, 'HH:mm:SS')).asSeconds();
+              endTimeInSec = moment.duration(this.coreService.getDateByFormat(time.lastKnownTime, this.preferences.zone, 'HH:mm:SS')).asSeconds();
             }
           }
           dur += (endTimeInSec - startTimeInSec);
@@ -261,9 +261,9 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
             color: 'rgb(122,185,122)'
           };
           const readyTimeDate = this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'YYYY-MM-DD');
-          if (time.shutdownTime) {
-            if (readyTimeDate === this.coreService.getDateByFormat(time.shutdownTime, this.preferences.zone, 'YYYY-MM-DD')) {
-              statusObj.end = this.coreService.getDateByFormat(time.shutdownTime, this.preferences.zone, 'HH:mm:SS');
+          if (time.lastKnownTime) {
+            if (readyTimeDate === this.coreService.getDateByFormat(time.lastKnownTime, this.preferences.zone, 'YYYY-MM-DD')) {
+              statusObj.end = this.coreService.getDateByFormat(time.lastKnownTime, this.preferences.zone, 'HH:mm:SS');
             }
           } else {
             if (this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD') === readyTimeDate) {
@@ -379,11 +379,11 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
             let x = tempArr[i - 1].value;
             if (x.length > 0) {
               x.forEach((data) => {
-                const shutdownDate = this.coreService.getDateByFormat(data.shutdownTime, this.preferences.zone, 'YYYY-MM-DD');
+                const shutdownDate = this.coreService.getDateByFormat(data.lastKnownTime, this.preferences.zone, 'YYYY-MM-DD');
                 if (this.coreService.getDateByFormat(data.readyTime, this.preferences.zone, 'YYYY-MM-DD') !== shutdownDate) {
                   const copyObj = this.coreService.clone(data);
                   copyObj.date = date;
-                  data.shutdownTime = null;
+                  data.lastKnownTime = null;
                   copyObj.readyTime = new Date(date).setHours(0, 0, 0, 0);
                   mailObj.value.push(copyObj);
                 }
@@ -394,18 +394,28 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
         }
 
         if (i > 0) {
-          const prev = this.coreService.clone(tempArr[i - 1].value);
+          const prev = tempArr[i - 1].value;
           const length = tempArr[i].value.length;
           for (let j = 0; j < prev.length; j++) {
             for (let x = 0; x < length; x++) {
               if (prev[j].controllerId === tempArr[i].value[x].controllerId && prev[j].readyTime !== tempArr[i].value[x].readyTime) {
-                if (prev[j].shutdownTime) {
-                  const couplingFailedDate = this.coreService.getDateByFormat(prev[j].shutdownTime, this.preferences.zone, 'YYYY-MM-DD');
+                if (prev[j].lastKnownTime) {
+                  const couplingFailedDate = this.coreService.getDateByFormat(prev[j].lastKnownTime, this.preferences.zone, 'YYYY-MM-DD');
                   if (couplingFailedDate === tempArr[i].value[x].date || (new Date(couplingFailedDate).setHours(0, 0, 0, 0) > new Date(tempArr[i].value[x].date).setHours(0, 0, 0, 0))) {
-                    tempArr[i - 1].shutdownTime = null;
-                    prev[j].date = tempArr[i].value[x].date;
-                    prev[j].readyTime = new Date(prev[j].date).setHours(0, 0, 0, 0);
-                    tempArr[i].value.push(prev[j]);
+                    const copyPrevObj = this.coreService.clone(prev[j]);
+                    prev[j].lastKnownTime = null;
+                    copyPrevObj.date = tempArr[i].value[x].date;
+                    copyPrevObj.readyTime = new Date(copyPrevObj.date).setHours(0, 0, 0, 0);
+                    let isMatch = false;
+                    for (const y in tempArr[i].value) {
+                      if (tempArr[i].value[y].readyTime === copyPrevObj.readyTime) {
+                        isMatch = true;
+                        break;
+                      }
+                    }
+                    if (!isMatch) {
+                      tempArr[i].value.push(copyPrevObj);
+                    }
                   }
                 }
               }
@@ -415,15 +425,15 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
             tempArr[i].value = prev;
             tempArr[i].value.forEach(item => {
               item.date = tempArr[i].key;
-              if (item.shutdownTime) {
-                const couplingFailedDate = this.coreService.getDateByFormat(item.shutdownTime, this.preferences.zone, 'YYYY-MM-DD');
+              if (item.lastKnownTime) {
+                const couplingFailedDate = this.coreService.getDateByFormat(item.lastKnownTime, this.preferences.zone, 'YYYY-MM-DD');
                 if (couplingFailedDate === item.date || (new Date(couplingFailedDate).setHours(0, 0, 0, 0) >
                   new Date(item.date).setHours(0, 0, 0, 0))) {
                   item.readyTime = new Date(tempArr[i].key).setHours(0, 0, 0, 0);
                 } else if (new Date(couplingFailedDate).setHours(0, 0, 0, 0) <
                   new Date(item.date).setHours(0, 0, 0, 0)) {
                   item.readyTime = new Date(tempArr[i].key).setHours(23, 59, 59, 0);
-                  item.shutdownTime = null;
+                  item.lastKnownTime = null;
                 }
               } else{
                 item.readyTime = new Date(tempArr[i].key).setHours(0, 0, 0, 0);

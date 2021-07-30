@@ -139,8 +139,8 @@
           </td>
           <td class="cursor" (click)="editObject(data)">
             <span [innerHTML]="data.name | highlight : searchKey"></span>
-          <!--  <i *ngIf="data.title"> - </i>
-            <span class="text-muted">{{data.title}}</span>-->
+            <i *ngIf="data.title"> - </i>
+            <span class="text-muted">{{data.title}}</span>
           </td>
           <td class="cursor" (click)="editObject(data)">
             <span class="label bg-dark-blue" *ngIf="data.valid"

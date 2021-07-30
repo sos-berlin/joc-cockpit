@@ -7312,6 +7312,28 @@ tr.tr-border td:first-child {
   font-size: 16px;
 }
 
+.ant-collapse-content > .ant-collapse-content-box{
+  padding: 0 !important;
+}
+.ant-collapse-borderless {
+  background-color: transparent;
+}
+.ant-collapse, .ant-collapse-content {
+  color: var(--text-color)
+}
+.ant-collapse-borderless > .ant-collapse-item {
+  border-bottom: none;
+}
+.ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow {
+  padding: 0;
+  left: 0;
+}
+.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+  padding: 0;
+  padding-left: 18px;
+  color: var(--text-color);
+}
+
 .order-count {
   margin-left: 8px;
   color: var(--white) !important;

@@ -1,6 +1,6 @@
-<div class="row m-t-xs">
+<div class="row m-t-n-xxs">
   <div class="col-md-12">
-    <div class="timeline m-b">
+    <div class="timeline m-b-12">
       <div class="inline btn-group pull-right">
         <div class="btn btn-default btn-sm"
              (click)="setView('Week')"
@@ -65,6 +65,11 @@
           <div class="col-md-12 text-center" *ngIf="!isLoaded">
             <div class="vert-middle text-primary text">
               <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+            </div>
+          </div>
+          <div *ngIf="isLoaded && runningTime.length ===0" class="col-md-12 vert-middle">
+            <div>
+              <app-empty-data></app-empty-data>
             </div>
           </div>
         </div>

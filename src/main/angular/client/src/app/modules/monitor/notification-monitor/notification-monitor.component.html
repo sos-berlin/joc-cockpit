@@ -169,7 +169,7 @@
           </tr>
           <ng-container *ngIf="notify.show">
             <tr *ngIf="!notify.isLoaded">
-              <td colspan="11">
+              <td colspan="11" class="text-center">
                 <nz-spin nzSimple [nzSize]="'small'"></nz-spin>
               </td>
             </tr>
@@ -180,8 +180,8 @@
                           [nzData]="notify.monitors" [nzShowPagination]="false">
                   <thead>
                   <tr>
-                    <th width="100px"><span class="m-l-sm" translate>monitor.notification.label.type</span></th>
-                    <th><span translate>monitor.notification.label.name</span></th>
+                    <th width="89px"><span translate>monitor.notification.label.type</span></th>
+                    <th width="150px"><span translate>monitor.notification.label.name</span></th>
                     <th><span translate>monitor.notification.label.message</span></th>
                     <th><span translate>monitor.notification.label.configuration</span></th>
                     <th width="20%"><span translate>monitor.notification.label.errorText</span></th>
@@ -191,7 +191,7 @@
                   <tbody>
                   <tr *ngFor="let monitor of innerChildTable.data">
                     <td>
-                      <span class="m-l-sm" [innerHtml]="monitor.type | translate"></span>
+                      <span [innerHtml]="monitor.type | translate"></span>
                     </td>
                     <td><span [innerHtml]="monitor.name"></span></td>
                     <td>

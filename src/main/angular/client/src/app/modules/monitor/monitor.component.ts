@@ -14,7 +14,6 @@ export class MonitorComponent implements OnInit, OnDestroy {
   permission: any = {};
   monitorFilters: any = {};
   index: number;
-  isNotReady = true;
   subscription: any;
 
   constructor(private authService: AuthService, public coreService: CoreService,
@@ -41,12 +40,6 @@ export class MonitorComponent implements OnInit, OnDestroy {
       this.monitorFilters.notification.mapOfCheckedId = new Set();
     }
     this.index = this.monitorFilters.tabIndex;
-    const username = this.authService.currentUserData;
-    if (sessionStorage.defaultProfile === username) {
-      this.isNotReady = false;
-    } else {
-      this.index = 2;
-    }
   }
 
   tabChange($event): void {

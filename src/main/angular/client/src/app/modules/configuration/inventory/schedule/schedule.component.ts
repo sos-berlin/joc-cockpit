@@ -242,7 +242,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       node.origin.children = data;
       if (type === 'DOCUMENTATION') {
         this.documentationTree = [...this.documentationTree];
-      } else if (type === 'WORKFLOW') {
+      } else if (type === InventoryObject.WORKFLOW) {
         this.workflowTree = [...this.workflowTree];
       }
       this.ref.detectChanges();
@@ -254,7 +254,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   navToWorkflow(): void {
-    this.dataService.reloadTree.next({navigate: {name: this.schedule.configuration.workflowName, type: 'WORKFLOW'}});
+    this.dataService.reloadTree.next({navigate: {name: this.schedule.configuration.workflowName, type: InventoryObject.WORKFLOW}});
   }
 
   updateVariableList(): void {

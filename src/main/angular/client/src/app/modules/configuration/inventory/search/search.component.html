@@ -60,148 +60,205 @@
           </nz-select>
         </div>
       </div>
-      <div class="form-group row m-b-0">
-        <div class="col-md-12">
-          <a class="text-primary-hover cursor" (click)="showAdvance()" translate>
-            inventory.search.label.advanced
-            <i class="fa fa-caret-down p-lxs"></i>
-          </a>
-        </div>
-      </div>
-      <div class="p-a b-a m-t" *ngIf="showAdvanceFields">
-        <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label"
-                 translate>inventory.search.label.agent</label>
-          <div class="col-md-8 col-lg-9">
-            <nz-select nzShowSearch name="agentName" nzPlaceHolder="{{'workflow.placeholder.selectAgentName' | translate}}"
-                       [(ngModel)]="searchObj.agentName">
-              <nz-option *ngFor="let agent of agents" [nzLabel]="agent" [nzValue]="agent"></nz-option>
-            </nz-select>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.WORKFLOW">
-          <label class="col-md-4 col-lg-3 form-control-label"
-                 translate>inventory.search.label.workflow</label>
-          <div class="col-md-8 col-lg-9">
-            <label class="w-full">
-              <input type="text" autocomplete="off" class="form-control"
-                     name="workflow" [(ngModel)]="searchObj.workflow">
-            </label>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.FILE_ORDER_SOURCE">
-          <label class="col-md-4 col-lg-3 form-control-label"
-                 translate>inventory.search.label.fileOrderSource</label>
-          <div class="col-md-8 col-lg-9">
-            <label class="w-full">
-              <input type="text" autocomplete="off" class="form-control"
-                     name="fileOrderSource" [(ngModel)]="searchObj.fileOrderSource">
-            </label>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.JOB_RESOURCE">
-          <label class="col-md-4 col-lg-3 form-control-label"
-                 translate>inventory.search.label.jobResources</label>
-          <div class="col-md-8 col-lg-9">
-            <label class="w-full">
-              <input type="text" autocomplete="off" class="form-control"
-                     name="jobResources" [(ngModel)]="searchObj.jobResources">
-            </label>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.BOARD">
-          <label class="col-md-4 col-lg-3 form-control-label"
-                 translate>inventory.search.label.boards</label>
-          <div class="col-md-8 col-lg-9">
-            <label class="w-full">
-              <input type="text" autocomplete="off" class="form-control"
-                     name="boards" [(ngModel)]="searchObj.boards">
-            </label>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.LOCK">
-          <label class="col-md-4 col-lg-3 form-control-label"
-                 translate>inventory.search.label.lock</label>
-          <div class="col-md-8 col-lg-9">
-            <label class="w-full">
-              <input type="text" autocomplete="off" class="form-control"
-                     name="lock" [(ngModel)]="searchObj.lock">
-            </label>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.SCHEDULE">
-          <label class="col-md-4 col-lg-3 form-control-label"
-                 translate>inventory.search.label.schedule</label>
-          <div class="col-md-8 col-lg-9">
-            <label class="w-full">
-              <input type="text" autocomplete="off" class="form-control"
-                     name="schedule" [(ngModel)]="searchObj.schedule">
-            </label>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label"
-                 translate>inventory.search.label.countJobs</label>
-          <label class="col-md-2 col-lg-2 form-control-label"
-                   translate>inventory.search.label.from
-          </label>
-          <div class="col-md-2 col-lg-2">
-            <nz-input-number [nzMin]="0" class="form-control"
-                             name="from" [(ngModel)]="searchObj.from"></nz-input-number>
-          </div>
-          <label class="col-md-2 col-lg-2 text-center form-control-label"
-                   translate>inventory.search.label.to
-          </label>
-          <div class="col-md-2 col-lg-2">
-            <nz-input-number [nzMin]="0" class="form-control"
-                             name="to" [(ngModel)]="searchObj.to"></nz-input-number>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label"
-                 translate>inventory.search.label.jobName</label>
-          <div class="col-md-8 col-lg-9">
-            <label class="w-full">
-              <input type="text" autocomplete="off" class="form-control"
-                    name="jobName" [(ngModel)]="searchObj.jobName">
-            </label>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label"
-                 translate>inventory.search.label.jobCriticality</label>
-          <div class="col-md-8 col-lg-9">
-            <nz-select name="criticality" nzAllowClear class="w-full" [nzPlaceHolder]="'inventory.placeholder.selectCriticality' | translate"
-                       [(ngModel)]="searchObj.criticality">
-              <nz-option [nzValue]="'NORMAL'" [nzLabel]="'common.label.normal' | translate"></nz-option>
-              <nz-option [nzValue]="'CRITICAL'" [nzLabel]="'common.label.critical' | translate"></nz-option>
-            </nz-select>
-          </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-md-12">
-            <label translate>inventory.search.label.argument</label>
-          </div>
-        </div>
-        <div class="form-group row m-b-0">
-          <div class="col-md-6 m-b-sm" translate>common.label.name</div>
-          <div class="col-md-6 m-b-sm" translate>common.label.value</div>
-        </div>
-        <div class="form-group row m-b-0">
-          <div class="col-md-6">
-            <input autocomplete="off" type="text" class="form-control" name="name"
-                   [(ngModel)]="searchObj.name" placeholder="{{'common.placeholder.name' | translate}}">
-          </div>
-          <div class="col-md-6">
-            <input autocomplete="off" type="text" class="form-control" name="value"
-                   [(ngModel)]="searchObj.value" placeholder="{{'common.placeholder.value' | translate}}">
-          </div>
-        </div>
-      </div>
+      <nz-collapse [nzBordered]="false">
+        <nz-collapse-panel
+          [nzHeader]="'inventory.search.label.advanced' | translate"
+          [nzActive]="panel.active"
+        >
+            <div class="p-a b-a m-t">
+              <div class="form-group row">
+                <label class="col-md-4 col-lg-3 form-control-label"
+                       translate>inventory.search.label.agent</label>
+                <div class="col-md-8 col-lg-9">
+                  <nz-select nzShowSearch name="agentName" nzPlaceHolder="{{'workflow.placeholder.selectAgentName' | translate}}"
+                             [(ngModel)]="searchObj.agentName">
+                    <nz-option *ngFor="let agent of agents" [nzLabel]="agent" [nzValue]="agent"></nz-option>
+                  </nz-select>
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.WORKFLOW">
+                <label class="col-md-4 col-lg-3 form-control-label"
+                       translate>inventory.search.label.workflow</label>
+                <div class="col-md-8 col-lg-9">
+                  <label class="w-full">
+                    <input type="text" autocomplete="off" class="form-control"
+                           name="workflow" [(ngModel)]="searchObj.workflow">
+                  </label>
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.FILE_ORDER_SOURCE">
+                <label class="col-md-4 col-lg-3 form-control-label"
+                       translate>inventory.search.label.fileOrderSource</label>
+                <div class="col-md-8 col-lg-9">
+                  <label class="w-full">
+                    <input type="text" autocomplete="off" class="form-control"
+                           name="fileOrderSource" [(ngModel)]="searchObj.fileOrderSource">
+                  </label>
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.JOB_RESOURCE">
+                <label class="col-md-4 col-lg-3 form-control-label"
+                       translate>inventory.search.label.jobResources</label>
+                <div class="col-md-8 col-lg-9">
+                  <label class="w-full">
+                    <input type="text" autocomplete="off" class="form-control"
+                           name="jobResources" [(ngModel)]="searchObj.jobResources">
+                  </label>
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.BOARD">
+                <label class="col-md-4 col-lg-3 form-control-label"
+                       translate>inventory.search.label.boards</label>
+                <div class="col-md-8 col-lg-9">
+                  <label class="w-full">
+                    <input type="text" autocomplete="off" class="form-control"
+                           name="boards" [(ngModel)]="searchObj.boards">
+                  </label>
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.LOCK">
+                <label class="col-md-4 col-lg-3 form-control-label"
+                       translate>inventory.search.label.lock</label>
+                <div class="col-md-8 col-lg-9">
+                  <label class="w-full">
+                    <input type="text" autocomplete="off" class="form-control"
+                           name="lock" [(ngModel)]="searchObj.lock">
+                  </label>
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.SCHEDULE">
+                <label class="col-md-4 col-lg-3 form-control-label"
+                       translate>inventory.search.label.schedule</label>
+                <div class="col-md-8 col-lg-9">
+                  <label class="w-full">
+                    <input type="text" autocomplete="off" class="form-control"
+                           name="schedule" [(ngModel)]="searchObj.schedule">
+                  </label>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-4 col-lg-3 form-control-label"
+                       translate>inventory.search.label.countJobs</label>
+                <label class="col-md-2 col-lg-2 form-control-label"
+                       translate>inventory.search.label.from
+                </label>
+                <div class="col-md-2 col-lg-2">
+                  <nz-input-number [nzMin]="0" class="form-control"
+                                   name="from" [(ngModel)]="searchObj.from"></nz-input-number>
+                </div>
+                <label class="col-md-2 col-lg-2 text-center form-control-label"
+                       translate>inventory.search.label.to
+                </label>
+                <div class="col-md-2 col-lg-2">
+                  <nz-input-number [nzMin]="0" class="form-control"
+                                   name="to" [(ngModel)]="searchObj.to"></nz-input-number>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-4 col-lg-3 form-control-label"
+                       translate>inventory.search.label.jobName</label>
+                <div class="col-md-8 col-lg-9">
+                  <label class="w-full">
+                    <input type="text" autocomplete="off" class="form-control"
+                           name="jobName" [(ngModel)]="searchObj.jobName">
+                  </label>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-4 col-lg-3 form-control-label"
+                       translate>inventory.search.label.jobCriticality</label>
+                <div class="col-md-8 col-lg-9">
+                  <nz-select name="criticality" nzAllowClear class="w-full" [nzPlaceHolder]="'inventory.placeholder.selectCriticality' | translate"
+                             [(ngModel)]="searchObj.criticality">
+                    <nz-option [nzValue]="'NORMAL'" [nzLabel]="'common.label.normal' | translate"></nz-option>
+                    <nz-option [nzValue]="'CRITICAL'" [nzLabel]="'common.label.critical' | translate"></nz-option>
+                  </nz-select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-md-12">
+                  <label translate>inventory.search.label.argument</label>
+                </div>
+              </div>
+              <div class="form-group row m-b-0">
+                <div class="col-md-6 m-b-sm" translate>common.label.name</div>
+                <div class="col-md-6 m-b-sm" translate>common.label.value</div>
+              </div>
+              <div class="form-group row m-b-0">
+                <div class="col-md-6">
+                  <input autocomplete="off" type="text" class="form-control" name="name"
+                         [(ngModel)]="searchObj.name" placeholder="{{'common.placeholder.name' | translate}}">
+                </div>
+                <div class="col-md-6">
+                  <input autocomplete="off" type="text" class="form-control" name="value"
+                         [(ngModel)]="searchObj.value" placeholder="{{'common.placeholder.value' | translate}}">
+                </div>
+              </div>
+            </div>
+        </nz-collapse-panel>
+      </nz-collapse>
     </div>
     <div class="modal-footer border-top-0 text-left m-t-n-8">
-      <button class="btn btn-primary btn-sm" translate type="submit">common.button.search</button>
-      <button class="btn btn-grey btn-sm" translate type="button">common.button.close</button>
+      <button class="btn btn-primary btn-sm" type="submit" [disabled]="submitted">
+        <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+        {{'common.button.search' | translate}}
+      </button>
+      <button class="btn btn-grey btn-sm" translate type="button" (click)="onCancel.emit()">common.button.close</button>
     </div>
   </form>
+  <div class="modal-body p-a p-t-sm" *ngIf="results">
+    <div class="form-group row">
+      <div class="col-sm-12" ><b translate>inventory.search.label.searchResult</b>:</div>
+      <div class="col-sm-12" style="max-height: 240px; overflow: auto">
+        <div class="table-responsive">
+          <nz-table
+            #ajaxTable
+            [nzSize]="'small'"
+            [nzNoResult]="'inventory.search.label.noDataMatched' | translate"
+            [nzPageSize]="results.length"
+            [nzBordered]="true"
+            [nzShowPagination]="false"
+            [nzData]="results"
+            [nzShowSizeChanger]="false">
+            <thead>
+            <tr>
+              <th><span translate>common.label.name</span></th>
+              <th><span translate>common.label.path</span></th>
+             <!-- <th><span translate>inventory.label.validHeader</span></th>-->
+              <th><span translate>common.label.status</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-template ngFor let-data [ngForOf]="ajaxTable.data">
+              <tr class="cursor" (click)="navToObject(data)">
+                <td>
+                  <span [innerHTML]="data.name"></span>
+                  <i *ngIf="data.title"> - </i>
+                  <span class="text-muted">{{data.title}}</span>
+                </td>
+                <td>{{data.path}}</td>
+<!--                <td>
+                  <span class="label bg-dark-blue" *ngIf="data.valid"
+                    translate>inventory.label.valid</span>
+                  <span class="label bg-orange" *ngIf="!data.valid"
+                        translate>inventory.label.notValid</span>
+                </td>-->
+                <td>
+                  <span class="label bg-dark-blue" *ngIf="data.deployed && searchObj.returnType !== ENUM.SCHEDULE"
+                    translate>inventory.label.deployed</span>
+                  <span class="label bg-orange" *ngIf="!data.deployed && searchObj.returnType !== ENUM.SCHEDULE"
+                        translate>inventory.label.notDeployed</span>
+                  <span class="label bg-dark-blue" *ngIf="data.released && searchObj.returnType === ENUM.SCHEDULE"
+                        translate>inventory.label.released</span>
+                  <span class="label bg-orange" *ngIf="!data.released && searchObj.returnType === ENUM.SCHEDULE"
+                        translate>inventory.label.notReleased</span>
+                </td>
+              </tr>
+            </ng-template>
+            </tbody>
+          </nz-table>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

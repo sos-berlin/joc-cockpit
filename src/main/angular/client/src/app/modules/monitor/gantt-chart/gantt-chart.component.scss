@@ -75,7 +75,9 @@ table {
   height: 100%;
   overflow: scroll hidden;
   display: inline-block;
-  width: calc(26% - 2px);
+  width: calc(26% - 6px);
+  border-right: 1px solid var(--border-color);
+  margin-right: 5px;
 }
 
 .taskTable {
@@ -104,6 +106,7 @@ table {
   width: 74%;
   top: -1px;
   position: relative;
+  border-left: 1px solid var(--border-color);
 }
 
 .timeline {

@@ -88,14 +88,14 @@
 </div>
 <div class="scroll-y max-ht">
   <div class="padding p-b-0">
-    <nz-tabset [(nzSelectedIndex)]="index" (nzSelectChange)="tabChange($event)">
-      <nz-tab [nzTitle]="'monitor.label.controllerAvailability' | translate" [nzDisabled]="isNotReady">
+    <nz-tabset [(nzSelectedIndex)]="index" (nzSelectChange)="tabChange($event)" *ngIf="permission && permission.joc && permission.joc.administration.controllers.view">
+      <nz-tab [nzTitle]="'monitor.label.controllerAvailability' | translate">
         <div *ngIf="index === 0">
           <app-controller-monitor [permission]="permission" [preferences]="preferences"
                                   [schedulerIds]="schedulerIds" [filters]="monitorFilters.controller"></app-controller-monitor>
         </div>
       </nz-tab>
-      <nz-tab [nzTitle]="'monitor.label.agentAvailability' | translate" [nzDisabled]="isNotReady">
+      <nz-tab [nzTitle]="'monitor.label.agentAvailability' | translate" *ngIf="permission && permission.currentController && permission.currentController.agents.view">
         <div *ngIf="index === 1">
           <app-agent-monitor [permission]="permission" [preferences]="preferences"
                              [schedulerIds]="schedulerIds" [filters]="monitorFilters.agent"></app-agent-monitor>

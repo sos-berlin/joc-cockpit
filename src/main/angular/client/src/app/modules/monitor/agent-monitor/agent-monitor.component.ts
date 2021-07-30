@@ -102,7 +102,11 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
 
   groupBy(): void {
     if (this.filters.filter.groupBy !== 'DATE') {
-      this.getOverviewData(this.groupByPipe.transform(this.groupByData, 'controllerId'));
+      let tempArr = [];
+      this.groupByData.forEach((item) => {
+        tempArr = tempArr.concat(item.value);
+      });
+      this.getOverviewData(this.groupByPipe.transform(tempArr, 'controllerId'));
     } else{
       this.getOverviewData(this.groupByData);
     }
@@ -243,8 +247,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
             url: controller.agents[i].url,
             date: this.coreService.getDateByFormat(controller.agents[i].entries[j].readyTime, this.preferences.zone, 'YYYY-MM-DD'),
             readyTime: controller.agents[i].entries[j].readyTime,
-            couplingFailedTime: controller.agents[i].entries[j].couplingFailedTime,
-            couplingFailedMessage: controller.agents[i].entries[j].couplingFailedMessage,
+            lastKnownTime: controller.agents[i].entries[j].lastKnownTime
           };
           this.groupByData.push(obj);
         }
@@ -289,11 +292,11 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
             let x = tempArr[i - 1].value;
             if (x.length > 0) {
               x.forEach((data) => {
-                const couplingFailedDate = this.coreService.getDateByFormat(data.couplingFailedTime, this.preferences.zone, 'YYYY-MM-DD');
+                const couplingFailedDate = this.coreService.getDateByFormat(data.lastKnownTime, this.preferences.zone, 'YYYY-MM-DD');
                 if (this.coreService.getDateByFormat(data.readyTime, this.preferences.zone, 'YYYY-MM-DD') !== couplingFailedDate) {
                   const copyObj = this.coreService.clone(data);
                   copyObj.date = date;
-                  data.couplingFailedTime = null;
+                  data.lastKnownTime = null;
                   copyObj.readyTime = new Date(date).setHours(0, 0, 0, 0);
                   mailObj.value.push(copyObj);
                 }
@@ -304,18 +307,28 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
         }
 
         if (i > 0) {
-          const prev = this.coreService.clone(tempArr[i - 1].value);
+          const prev = tempArr[i - 1].value;
           const length = tempArr[i].value.length;
           for (let j = 0; j < prev.length; j++) {
             for (let x = 0; x < length; x++) {
               if (prev[j].agentId === tempArr[i].value[x].agentId && prev[j].readyTime !== tempArr[i].value[x].readyTime) {
-                if (prev[j].couplingFailedTime) {
-                  const couplingFailedDate = this.coreService.getDateByFormat(prev[j].couplingFailedTime, this.preferences.zone, 'YYYY-MM-DD');
+                if (prev[j].lastKnownTime) {
+                  const couplingFailedDate = this.coreService.getDateByFormat(prev[j].lastKnownTime, this.preferences.zone, 'YYYY-MM-DD');
                   if (couplingFailedDate === tempArr[i].value[x].date || (new Date(couplingFailedDate).setHours(0, 0, 0, 0) > new Date(tempArr[i].value[x].date).setHours(0, 0, 0, 0))) {
-                    tempArr[i - 1].couplingFailedTime = null;
-                    prev[j].date = tempArr[i].value[x].date;
-                    prev[j].readyTime = new Date(prev[j].date).setHours(0, 0, 0, 0);
-                    tempArr[i].value.push(prev[j]);
+                    const copyPrevObj = this.coreService.clone(prev[j]);
+                    prev[j].lastKnownTime = null;
+                    copyPrevObj.date = tempArr[i].value[x].date;
+                    copyPrevObj.readyTime = new Date(copyPrevObj.date).setHours(0, 0, 0, 0);
+                    let isMatch = false;
+                    for (const y in tempArr[i].value) {
+                      if (tempArr[i].value[y].readyTime === copyPrevObj.readyTime) {
+                        isMatch = true;
+                        break;
+                      }
+                    }
+                    if (!isMatch) {
+                      tempArr[i].value.push(copyPrevObj);
+                    }
                   }
                 }
               }
@@ -325,15 +338,15 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
             tempArr[i].value = prev;
             tempArr[i].value.forEach(item => {
               item.date = tempArr[i].key;
-              if (item.couplingFailedTime) {
-                const couplingFailedDate = this.coreService.getDateByFormat(item.couplingFailedTime, this.preferences.zone, 'YYYY-MM-DD');
+              if (item.lastKnownTime) {
+                const couplingFailedDate = this.coreService.getDateByFormat(item.lastKnownTime, this.preferences.zone, 'YYYY-MM-DD');
                 if (couplingFailedDate === item.date || (new Date(couplingFailedDate).setHours(0, 0, 0, 0) >
                   new Date(item.date).setHours(0, 0, 0, 0))) {
                   item.readyTime = new Date(tempArr[i].key).setHours(0, 0, 0, 0);
                 } else if (new Date(couplingFailedDate).setHours(0, 0, 0, 0) <
                   new Date(item.date).setHours(0, 0, 0, 0)) {
                   item.readyTime = new Date(tempArr[i].key).setHours(23, 59, 59, 0);
-                  item.couplingFailedTime = null;
+                  item.lastKnownTime = null;
                 }
               } else{
                 item.readyTime = new Date(tempArr[i].key).setHours(0, 0, 0, 0);
@@ -368,10 +381,10 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
         if (this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD') === item.key) {
           endTimeInSec = moment.duration(this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:SS')).asSeconds();
         }
-        if (time.couplingFailedTime) {
-          const couplingFailedDate = this.coreService.getDateByFormat(time.couplingFailedTime, this.preferences.zone, 'YYYY-MM-DD');
+        if (time.lastKnownTime) {
+          const couplingFailedDate = this.coreService.getDateByFormat(time.lastKnownTime, this.preferences.zone, 'YYYY-MM-DD');
           if (this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'YYYY-MM-DD') === couplingFailedDate) {
-            endTimeInSec = moment.duration(this.coreService.getDateByFormat(time.couplingFailedTime, this.preferences.zone, 'HH:mm:SS')).asSeconds();
+            endTimeInSec = moment.duration(this.coreService.getDateByFormat(time.lastKnownTime, this.preferences.zone, 'HH:mm:SS')).asSeconds();
           }
         }
         dur += (endTimeInSec - startTimeInSec);
@@ -421,9 +434,9 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
         color: 'rgb(122,185,122)'
       };
       const readyTimeDate = this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'YYYY-MM-DD');
-      if (time.couplingFailedTime) {
-        if (readyTimeDate === this.coreService.getDateByFormat(time.couplingFailedTime, this.preferences.zone, 'YYYY-MM-DD')) {
-          statusObj.end = this.coreService.getDateByFormat(time.couplingFailedTime, this.preferences.zone, 'HH:mm:SS');
+      if (time.lastKnownTime) {
+        if (readyTimeDate === this.coreService.getDateByFormat(time.lastKnownTime, this.preferences.zone, 'YYYY-MM-DD')) {
+          statusObj.end = this.coreService.getDateByFormat(time.lastKnownTime, this.preferences.zone, 'HH:mm:SS');
         }
       } else{
         if (this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD') === readyTimeDate) {

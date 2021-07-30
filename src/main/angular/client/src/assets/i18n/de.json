@@ -1130,6 +1130,8 @@
     },
     "search": {
       "label": {
+        "noDataMatched": "No results found",
+        "searchResult": "Search Result",
         "searchHeading": "Filter Your Search",
         "search": "Search",
         "folders": "Folders",
