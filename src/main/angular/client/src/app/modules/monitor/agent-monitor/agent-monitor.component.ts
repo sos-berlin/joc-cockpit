@@ -1,6 +1,6 @@
 import {Component, OnInit, OnDestroy, Input, ViewChild, ElementRef} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {differenceInCalendarDays} from 'date-fns';
+import {differenceInCalendarDays, differenceInMilliseconds} from 'date-fns';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
@@ -26,6 +26,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
   isLoaded = false;
   agents = [];
   data = [];
+  runningTime: any = [];
   groupByData = [];
   statisticsData: any = [];
 
@@ -240,12 +241,17 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
     this.groupByData = [];
     this.data.forEach((controller) => {
       for (const i in controller.agents) {
+       
+        if (controller.agents[i].previousEntry){
+          controller.agents[i].entries = [controller.agents[i].previousEntry].concat(controller.agents[i].entries);
+        }
         for (const j in controller.agents[i].entries) {
           const obj = {
             controllerId: controller.controllerId,
             agentId: controller.agents[i].agentId,
             url: controller.agents[i].url,
             date: this.coreService.getDateByFormat(controller.agents[i].entries[j].readyTime, this.preferences.zone, 'YYYY-MM-DD'),
+            totalRunningTime: controller.agents[i].entries[j].totalRunningTime,
             readyTime: controller.agents[i].entries[j].readyTime,
             lastKnownTime: controller.agents[i].entries[j].lastKnownTime
           };
@@ -253,9 +259,37 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
         }
       }
     });
+    this.getRunningTime(this.coreService.clone(this.groupByPipe.transform(this.groupByData, 'agentId')));
     this.groupByData = this.groupByPipe.transform(this.groupByData, 'date');
     this.getStatisticsData();
     this.groupBy();
+  }
+
+  getRunningTime(data): void {
+    this.runningTime = [];
+    console.log(data);
+    data.forEach((agent) => {
+      console.log(agent);
+      agent.value = sortBy(agent.value, (i: any) => {
+        return i.date;
+      });
+      const obj: any = {
+        agentId: agent.key,
+      };
+      if (agent.value.length > 0) {
+        const firstEntry = agent.value[0];
+        const lastEntry = agent.value[agent.value.length - 1];
+        obj.total = differenceInMilliseconds(new Date(lastEntry.readyTime), new Date(firstEntry.readyTime));
+        obj.time = Math.abs(lastEntry.totalRunningTime - firstEntry.totalRunningTime);
+        obj.value = Math.round((obj.time * 100) / obj.total);
+        obj.hours = this.coreService.getTimeFromNumber(obj.total);
+        if (isNaN(obj.value)) {
+          obj.value = 0;
+        }
+        console.log(obj, '>>>>')
+        this.runningTime.push(obj);
+      }
+    });
   }
 
   private getStatisticsData(): void {
@@ -451,5 +485,13 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
   disabledDate = (current: Date): boolean => {
     // Can not select days before today and today
     return differenceInCalendarDays(current, this.viewDate) > 0;
+  }
+
+  getValue(val): string {
+    return val + ' %';
+  }
+
+  getColor(): string {
+    return 'rgb(122,185,122)';
   }
 }

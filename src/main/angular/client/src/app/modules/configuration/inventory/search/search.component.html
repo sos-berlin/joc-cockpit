@@ -71,7 +71,7 @@
                        translate>inventory.search.label.agent</label>
                 <div class="col-md-8 col-lg-9">
                   <nz-select nzShowSearch name="agentName" nzPlaceHolder="{{'workflow.placeholder.selectAgentName' | translate}}"
-                             [(ngModel)]="searchObj.agentName">
+                             [(ngModel)]="searchObj.advanced.agentName">
                     <nz-option *ngFor="let agent of agents" [nzLabel]="agent" [nzValue]="agent"></nz-option>
                   </nz-select>
                 </div>
@@ -82,7 +82,7 @@
                 <div class="col-md-8 col-lg-9">
                   <label class="w-full">
                     <input type="text" autocomplete="off" class="form-control"
-                           name="workflow" [(ngModel)]="searchObj.workflow">
+                           name="workflow" [(ngModel)]="searchObj.advanced.workflow">
                   </label>
                 </div>
               </div>
@@ -92,7 +92,7 @@
                 <div class="col-md-8 col-lg-9">
                   <label class="w-full">
                     <input type="text" autocomplete="off" class="form-control"
-                           name="fileOrderSource" [(ngModel)]="searchObj.fileOrderSource">
+                           name="fileOrderSource" [(ngModel)]="searchObj.advanced.fileOrderSource">
                   </label>
                 </div>
               </div>
@@ -102,7 +102,7 @@
                 <div class="col-md-8 col-lg-9">
                   <label class="w-full">
                     <input type="text" autocomplete="off" class="form-control"
-                           name="jobResources" [(ngModel)]="searchObj.jobResources">
+                           name="jobResources" [(ngModel)]="searchObj.advanced.jobResources">
                   </label>
                 </div>
               </div>
@@ -112,7 +112,7 @@
                 <div class="col-md-8 col-lg-9">
                   <label class="w-full">
                     <input type="text" autocomplete="off" class="form-control"
-                           name="boards" [(ngModel)]="searchObj.boards">
+                           name="boards" [(ngModel)]="searchObj.advanced.boards">
                   </label>
                 </div>
               </div>
@@ -122,7 +122,7 @@
                 <div class="col-md-8 col-lg-9">
                   <label class="w-full">
                     <input type="text" autocomplete="off" class="form-control"
-                           name="lock" [(ngModel)]="searchObj.lock">
+                           name="lock" [(ngModel)]="searchObj.advanced.lock">
                   </label>
                 </div>
               </div>
@@ -132,7 +132,7 @@
                 <div class="col-md-8 col-lg-9">
                   <label class="w-full">
                     <input type="text" autocomplete="off" class="form-control"
-                           name="schedule" [(ngModel)]="searchObj.schedule">
+                           name="schedule" [(ngModel)]="searchObj.advanced.schedule">
                   </label>
                 </div>
               </div>
@@ -144,14 +144,14 @@
                 </label>
                 <div class="col-md-2 col-lg-2">
                   <nz-input-number [nzMin]="0" class="form-control"
-                                   name="from" [(ngModel)]="searchObj.from"></nz-input-number>
+                                   name="from" [(ngModel)]="searchObj.advanced.jobCountFrom"></nz-input-number>
                 </div>
                 <label class="col-md-2 col-lg-2 text-center form-control-label"
                        translate>inventory.search.label.to
                 </label>
                 <div class="col-md-2 col-lg-2">
                   <nz-input-number [nzMin]="0" class="form-control"
-                                   name="to" [(ngModel)]="searchObj.to"></nz-input-number>
+                                   name="to" [(ngModel)]="searchObj.advanced.jobCountTo"></nz-input-number>
                 </div>
               </div>
               <div class="form-group row">
@@ -160,7 +160,7 @@
                 <div class="col-md-8 col-lg-9">
                   <label class="w-full">
                     <input type="text" autocomplete="off" class="form-control"
-                           name="jobName" [(ngModel)]="searchObj.jobName">
+                           name="jobName" [(ngModel)]="searchObj.advanced.jobName">
                   </label>
                 </div>
               </div>
@@ -169,7 +169,7 @@
                        translate>inventory.search.label.jobCriticality</label>
                 <div class="col-md-8 col-lg-9">
                   <nz-select name="criticality" nzAllowClear class="w-full" [nzPlaceHolder]="'inventory.placeholder.selectCriticality' | translate"
-                             [(ngModel)]="searchObj.criticality">
+                             [(ngModel)]="searchObj.advanced.jobCriticality">
                     <nz-option [nzValue]="'NORMAL'" [nzLabel]="'common.label.normal' | translate"></nz-option>
                     <nz-option [nzValue]="'CRITICAL'" [nzLabel]="'common.label.critical' | translate"></nz-option>
                   </nz-select>
@@ -187,11 +187,11 @@
               <div class="form-group row m-b-0">
                 <div class="col-md-6">
                   <input autocomplete="off" type="text" class="form-control" name="name"
-                         [(ngModel)]="searchObj.name" placeholder="{{'common.placeholder.name' | translate}}">
+                         [(ngModel)]="searchObj.advanced.argumentName" placeholder="{{'common.placeholder.name' | translate}}">
                 </div>
                 <div class="col-md-6">
                   <input autocomplete="off" type="text" class="form-control" name="value"
-                         [(ngModel)]="searchObj.value" placeholder="{{'common.placeholder.value' | translate}}">
+                         [(ngModel)]="searchObj.advanced.argumentValue" placeholder="{{'common.placeholder.value' | translate}}">
                 </div>
               </div>
             </div>

@@ -4672,6 +4672,12 @@ svg text {
   font-family: "Open Sans", "lucida grande", "Segoe UI", arial, verdana, "lucida sans unicode", tahoma, serif;
 }
 
+mwl-gauge {
+  width: 240px;
+  height: 200px;
+  display: block;
+  padding: 2px;
+}
 
 mwl-gauge > .gauge > .value-text {
   fill: var(--primary);
@@ -4680,6 +4686,29 @@ mwl-gauge > .gauge > .value-text {
 
 mwl-gauge > .gauge > .value {
   stroke-width: 4;
+}
+
+.scroll-class {
+  max-width: 100%;
+  overflow-y: auto !important;
+  height: 293px;
+}
+
+@media(min-width: 1600px) {
+  mwl-gauge {
+    width: 200px;
+  }
+}
+
+@media(max-width: 991px) {
+  mwl-gauge {
+    width: 200px;
+  }
+
+  .overview {
+    max-height: 100%;
+    overflow: hidden;
+  }
 }
 
 .input-dropdown {

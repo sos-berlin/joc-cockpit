@@ -30,7 +30,46 @@
       </div>
     </div>
   </div>
-  <div class="col-md-12">
+  <div class="col-lg-4 col-xl-3">
+    <div class="box">
+      <div class="box-header b-b">
+        <h3>
+          <span translate>monitor.label.runningTime</span>
+        </h3>
+      </div>
+      <div class="box-body p-a" style="height: 292px">
+        <div class="row">
+          <div class="col-sm-12 col-md-6 text-center" [ngClass]="{'col-md-12' : runningTime.length === 1}" *ngFor="let item of runningTime">
+            <div class="text-dark _600 m-t">{{item.agentId}}</div>
+            <div style="display: flex;justify-content: center;">
+              <mwl-gauge
+                [dialStartAngle]="-90"
+                [dialEndAngle]="-90.001"
+                [value]="item.value"
+                [label]="getValue"
+                [color]="getColor"
+                [animated]="true"
+                [animationDuration]="1"
+              >
+              </mwl-gauge>
+            </div>
+            <i class="text-muted" style="position: relative;top:-12px" >{{'common.label.total' | translate}} <i translate [translateParams]="{count: item.hours}">monitor.label.totalDays</i></i>
+          </div>
+          <div class="col-md-12 text-center" *ngIf="!isLoaded">
+            <div class="vert-middle text-primary text">
+              <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+            </div>
+          </div>
+          <div *ngIf="isLoaded && runningTime.length ===0" class="col-md-12 vert-middle">
+            <div style="padding-top: 96px">
+              <app-empty-data></app-empty-data>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-8 col-xl-9">
     <div class="box">
       <div class="box-header b-b">
         <h3>

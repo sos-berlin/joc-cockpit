@@ -31,7 +31,8 @@
 .btn {
   border: 1px solid var(--border-color);
 }
-.btn .primary{
+
+.btn .primary {
   border-color: var(--primary) !important;
 }
 
@@ -42,17 +43,4 @@
 .overview {
   max-height: calc(100vh - 676px);
   overflow: auto;
-}
-
-@media(max-width: 991px) {
-
-  .overview {
-    max-height: 100%;
-    overflow: hidden;
-  }
-}
-
-.scroll-class {
-  max-width: 100%;
-  overflow-y: auto !important;
 }

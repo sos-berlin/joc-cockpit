@@ -37,13 +37,13 @@
           <span translate>monitor.label.runningTime</span>
         </h3>
       </div>
-      <div class="row m-b-sm box-tool" style="top:10px">
+<!--      <div class="row m-b-sm box-tool" style="top:10px">
         <div class="col-md-12 container-fluid">
           <div class="pull-right">
             <nz-range-picker [nzDisabledDate]="disabledDate" [(ngModel)]="filters.runningTime.filter.dateRange" (ngModelChange)="getRunningTime()"></nz-range-picker>
           </div>
         </div>
-      </div>
+      </div>-->
       <div class="box-body p-a" style="height: 292px">
         <div class="row">
           <div class="col-sm-12 col-md-6 text-center" [ngClass]="{'col-md-12' : runningTime.length === 1}" *ngFor="let item of runningTime">
@@ -68,7 +68,7 @@
             </div>
           </div>
           <div *ngIf="isLoaded && runningTime.length ===0" class="col-md-12 vert-middle">
-            <div>
+            <div style="padding-top: 96px">
               <app-empty-data></app-empty-data>
             </div>
           </div>

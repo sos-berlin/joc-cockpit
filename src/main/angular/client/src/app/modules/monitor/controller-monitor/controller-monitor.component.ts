@@ -121,6 +121,20 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
       let groupData = [];
       this.isLoaded = true;
       this.data.forEach((controller) => {
+        if (controller.previousEntry){
+          const startDate = new Date(this.filters.filter.startDate).setHours(0, 0, 0, 0);
+
+          if(startDate > new Date(controller.previousEntry.readyTime).getTime()) {
+            controller.previousEntry.readyTime = startDate;
+            if (startDate > new Date(controller.previousEntry.lastKnownTime).getTime()) {
+              controller.previousEntry.lastKnownTime = startDate;
+            }
+          } else{
+          //  console.log(startDate, 'startDate', new Date(controller.previousEntry.readyTime).getTime())
+          }
+         // console.log(controller.previousEntry, this.coreService.getDateByFormat(controller.previousEntry.readyTime, this.preferences.zone, 'YYYY-MM-DD'))
+          controller.entries = [controller.previousEntry].concat(controller.entries);
+        }
         for (const i in controller.entries) {
           const obj = {
             controllerId: controller.controllerId,
@@ -145,23 +159,8 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
       const obj: any = {
         controllerId: controller.controllerId,
       };
-      let firstEntry;
-      let lastEntry;
-      if (this.filters.runningTime.filter.dateRange && this.filters.runningTime.filter.dateRange.length > 0) {
-        for (const i in controller.entries) {
-          if (!firstEntry && new Date(controller.entries[i].readyTime).setHours(0, 0, 0, 0) >= new Date(this.filters.runningTime.filter.dateRange[0]).setHours(0, 0, 0, 0)) {
-            firstEntry = controller.entries[i];
-          } else {
-            if (new Date(controller.entries[i].readyTime).setHours(0, 0, 0, 0) >= new Date(this.filters.runningTime.filter.dateRange[1]).setHours(0, 0, 0, 0)) {
-              lastEntry = controller.entries[parseInt(i, 10) - 1];
-              break;
-            }
-          }
-        }
-      } else {
-        firstEntry = controller.entries[0];
-        lastEntry = controller.entries[controller.entries.length - 1];
-      }
+      let firstEntry = controller.entries[0];
+      let lastEntry = controller.entries[controller.entries.length - 1];
 
       if (lastEntry) {
         obj.total = differenceInMilliseconds(new Date(lastEntry.readyTime), new Date(firstEntry.readyTime));

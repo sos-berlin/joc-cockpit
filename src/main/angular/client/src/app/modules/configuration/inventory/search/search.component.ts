@@ -16,7 +16,9 @@ export class SearchComponent implements OnInit {
   results: any;
   folders = [];
   agents = [];
-  searchObj: any = {};
+  searchObj: any = {
+    advanced: {}
+  };
   ENUM: any;
   panel = {
     active: false
@@ -60,22 +62,8 @@ export class SearchComponent implements OnInit {
 
   search(): void {
     this.submitted = true;
-    this.coreService.post('inventory/search', this.searchObj).subscribe((result) => {
-      if (this.searchObj.returnType === this.ENUM.SCHEDULE) {
-        this.results = result.schedules;
-      } else if (this.searchObj.returnType === this.ENUM.WORKFLOW) {
-        this.results = result.workflows;
-      } else if (this.searchObj.returnType === this.ENUM.FILE_ORDER_SOURCE) {
-        this.results = result.fileOrderSources;
-      } else if (this.searchObj.returnType === this.ENUM.JOB_RESOURCE) {
-        this.results = result.jobResources;
-      } else if (this.searchObj.returnType === this.ENUM.BOARD) {
-        this.results = result.boards;
-      } else if (this.searchObj.returnType === this.ENUM.LOCK) {
-        this.results = result.locks;
-      } else{
-        this.results = [];
-      }
+    this.coreService.post('inventory/search', this.searchObj).subscribe((res) => {
+      this.results = res.results;
       this.submitted = false;
     }, () => {
       this.submitted = false;
