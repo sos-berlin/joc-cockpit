@@ -43,4 +43,5 @@
 .overview {
   max-height: calc(100vh - 676px);
   overflow: auto;
+  min-height: 200px;
 }

@@ -31,6 +31,13 @@
         </mxCell>
       </Fork>
     </add>
+    <add as="ForkList">
+      <ForkList label="forkList">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="68" height="68"/>
+        </mxCell>
+      </ForkList>
+    </add>
     <add as="Retry">
       <Retry label="retry" maxTries="10" retryDelays="0">
         <mxCell vertex="1">

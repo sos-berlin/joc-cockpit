@@ -173,6 +173,9 @@
     <add as="Fork" template="Fork" style="symbol;image=./assets/mxgraph/images/symbols/fork-white.svg"
          icon="./assets/mxgraph/images/white-fork.png"/>
     <hr/>
+    <add as="ForkList" template="ForkList" style="symbol;image=./assets/mxgraph/images/symbols/fork-list-white.svg"
+         icon="./assets/mxgraph/images/white-fork-list.png"/>
+    <hr/>
     <add as="Retry" template="Retry" style="retry" icon="./assets/mxgraph/images/white-retry.png"/>
     <hr/>
     <add as="Try" template="Try" style="try" icon="./assets/mxgraph/images/white-try.png"/>

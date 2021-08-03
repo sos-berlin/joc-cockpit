@@ -19,6 +19,8 @@ export class WorkflowService {
   public postNotice = '';
   public prompt = '';
   public fork = '';
+  public forkList = '';
+  public endForkList = '';
   public lock = '';
   public closeLock = '';
   preferences: any = {};
@@ -47,6 +49,8 @@ export class WorkflowService {
       this.fail = 'symbol;image=./assets/mxgraph/images/symbols/fail.svg';
       this.expectNotice = 'symbol;image=./assets/mxgraph/images/symbols/await.svg';
       this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork.svg';
+      this.forkList = 'symbol;image=./assets/mxgraph/images/symbols/fork-list.svg';
+      this.endForkList = 'symbol;image=./assets/mxgraph/images/symbols/merge-list.svg';
       this.postNotice = 'symbol;image=./assets/mxgraph/images/symbols/publish.svg';
       this.prompt = 'symbol;image=./assets/mxgraph/images/symbols/prompt.svg';
       this.lock = 'symbol;image=./assets/mxgraph/images/symbols/lock.svg';
@@ -54,9 +58,11 @@ export class WorkflowService {
     } else {
       this.merge = 'symbol;image=./assets/mxgraph/images/symbols/merge-white.svg';
       this.finish = 'symbol;image=./assets/mxgraph/images/symbols/finish-white.svg';
+      this.endForkList = 'symbol;image=./assets/mxgraph/images/symbols/merge-list-white.svg';
       this.fail = 'symbol;image=./assets/mxgraph/images/symbols/fail-white.svg';
       this.expectNotice = 'symbol;image=./assets/mxgraph/images/symbols/await-white.svg';
       this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork-white.svg';
+      this.forkList = 'symbol;image=./assets/mxgraph/images/symbols/fork-list-white.svg';
       this.postNotice = 'symbol;image=./assets/mxgraph/images/symbols/publish-white.svg';
       this.prompt = 'symbol;image=./assets/mxgraph/images/symbols/prompt-white.svg';
       this.lock = 'symbol;image=./assets/mxgraph/images/symbols/lock-white.svg';
@@ -89,6 +95,9 @@ export class WorkflowService {
       }
     } else if (type === 'If') {
       obj.predicate = node._predicate;
+    } else if (type === 'ForkList') {
+      obj.children = node._children;
+      obj.childToId = node._childToId;
     } else if (type === 'Lock') {
       obj.lockName = node._lockName;
       obj.count = node._count;
@@ -193,6 +202,11 @@ export class WorkflowService {
           delete value.count;
         }
         if (!value.lockName) {
+          return false;
+        }
+      }
+      if (type === 'ForkList') {
+        if (!value.children) {
           return false;
         }
       }
@@ -383,6 +397,12 @@ export class WorkflowService {
               delete json.instructions[x].lockedWorkflow;
             }
           }
+          if (json.instructions[x].TYPE === 'ForkList') {
+            if (json.instructions[x].workflow) {
+              json.instructions[x].instructions = json.instructions[x].workflow.instructions;
+              delete json.instructions[x].workflow;
+            }
+          }
           if (json.instructions[x].instructions) {
             recursive(json.instructions[x]);
           }
@@ -566,6 +586,26 @@ export class WorkflowService {
             } else {
               v2 = joinFork(v1, v1, parent);
             }
+          } else if (json.instructions[x].TYPE === 'ForkList') {
+            _node.setAttribute('label', 'forkList');
+            if (json.instructions[x].childToId !== undefined) {
+              _node.setAttribute('childToId', json.instructions[x].childToId);
+            }
+            if (json.instructions[x].children !== undefined) {
+              _node.setAttribute('children', json.instructions[x].children);
+            }
+            _node.setAttribute('uuid', json.instructions[x].uuid);
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.forkList);
+            if (mapObj.vertixMap && json.instructions[x].position) {
+              mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
+            }
+            if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
+              recursive(json.instructions[x], '', v1);
+              connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'forkList', 'forkList', v1);
+              v2 = joinForkList(json.instructions[x], v1, parent);
+            } else {
+              v2 = joinForkList(v1, v1, parent);
+            }
           } else if (json.instructions[x].TYPE === 'If') {
             _node.setAttribute('label', 'if');
             _node.setAttribute('predicate', json.instructions[x].predicate);
@@ -691,7 +731,7 @@ export class WorkflowService {
 
           if (x > 0) {
             const prev = json.instructions[x - 1];
-            if (prev.TYPE !== 'Fork' && prev.TYPE !== 'If' && prev.TYPE !== 'Try' && prev.TYPE !== 'Retry' && prev.TYPE !== 'Lock' && vertexMap.get(prev.uuid)) {
+            if (prev.TYPE !== 'Fork' && prev.TYPE !== 'ForkList' && prev.TYPE !== 'If' && prev.TYPE !== 'Try' && prev.TYPE !== 'Retry' && prev.TYPE !== 'Lock' && vertexMap.get(prev.uuid)) {
               connectInstruction(vertexMap.get(prev.uuid), v1, type, type, parent);
             }
           }
@@ -808,6 +848,32 @@ export class WorkflowService {
             endNode = vertexMap.get(x.uuid);
           }
           connectInstruction(endNode, v1, 'endLock', 'endLock', parent);
+        }
+      } else {
+        connectInstruction(branches, v1, '', '', parent);
+      }
+      return v1;
+    }
+
+    function joinForkList(branches: any, targetId: any, parent: any): any {
+      const _node = doc.createElement('EndForkList');
+      _node.setAttribute('label', 'forkListEnd');
+      if (targetId) {
+        _node.setAttribute('targetId', targetId);
+      }
+      const v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.endForkList);
+      mapObj.nodeMap.set(targetId.toString(), v1.id.toString());
+
+      if (branches.instructions && branches.instructions.length > 0) {
+        const x = branches.instructions[branches.instructions.length - 1];
+        if (x) {
+          let endNode;
+          if (self.isInstructionCollapsible(x.TYPE)) {
+            endNode = graph.getModel().getCell(mapObj.nodeMap.get(x.id));
+          } else {
+            endNode = vertexMap.get(x.uuid);
+          }
+          connectInstruction(endNode, v1, 'endForkList', 'endForkList', parent);
         }
       } else {
         connectInstruction(branches, v1, '', '', parent);
@@ -1011,6 +1077,12 @@ export class WorkflowService {
           msg = translatedValue;
         });
         return '<b>' + msg + '</b> : ' + (cell.getAttribute('predicate') || '-');
+      } else if (cell.value.tagName === 'ForkList') {
+        let msg = '';
+        this.translate.get('workflow.label.children').subscribe(translatedValue => {
+          msg = translatedValue;
+        });
+        return '<b>' + msg + '</b> : ' + (cell.getAttribute('children') || '-');
       } else if (cell.value.tagName === 'Lock') {
         let msg = '', limit = '';
         this.translate.get('workflow.label.name').subscribe(translatedValue => {
@@ -1175,7 +1247,7 @@ export class WorkflowService {
   }
 
   isInstructionCollapsible(tagName: string): boolean {
-    return (tagName === 'Fork' || tagName === 'If' || tagName === 'Retry'
+    return (tagName === 'Fork' || tagName === 'ForkList' || tagName === 'If' || tagName === 'Retry'
       || tagName === 'Lock' || tagName === 'Try');
   }
 

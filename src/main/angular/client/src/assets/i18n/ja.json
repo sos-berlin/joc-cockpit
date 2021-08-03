@@ -933,6 +933,9 @@
     "label.minutes": "Minutes",
     "label.hours": "Hours",
     "label.days": "Days",
+    "label.variableSets": "Variable Sets",
+    "button.modifyVariableSet": "Modify Variable Set",
+    "button.addVariableSet": "Add Variable Set",
     "button.setVersion": "バージョン設定",
     "button.new": "新規",
     "button.newFolder": "新規フォルダー",
@@ -1090,6 +1093,10 @@
         },
         "fork": {
           "joinVariables": "Fork命令で分岐した子オーダーの変数は、Join命令に到達したときに親オーダーに追加されます。"
+        },
+        "forkList": {
+          "children": "Children",
+          "childToId": "Child to Id"
         },
         "if": {
           "predicate": "If命令の述部は、「true」または「false」と評価される条件式です。"
@@ -1755,6 +1762,8 @@
     "label.showOther": "他を表示",
     "label.fork": "Fork",
     "label.join": "Join",
+    "label.forkList": "ForkList",
+    "label.forkListEnd": "ForkList-End",
     "label.branches": "分岐",
     "label.branchId": "分岐ID",
     "label.expectNotice": "ExpectNotice",
@@ -1845,10 +1854,12 @@
     "message.duplicateLabel": "他のジョブで同じラベルがあります",
     "message.predicateIsMissing": "述部が必要です",
     "message.lockNameIsMissing": "必要なロック名がありません",
+    "message.childrenIsMissing": "ForkList children is missing, but is required",
     "message.invalidIfInstruction": "If命令が必要です",
     "message.invalidTryInstruction": "Try命令が必要です",
     "message.invalidRetryInstruction": "Retry命令が必要です",
     "message.invalidLockInstruction": "Lock命令が必要です",
+    "message.invalidForkListInstruction": "ForkList Instruction can't be empty",
     "message.invalidPostNoticeInstruction": "PostNotice Instruction is not valid",
     "message.invalidExpectNoticeInstruction": "ExpectNotice Instruction is not valid",
     "message.agentIsMissing": "エージェントが必要です",

@@ -41,14 +41,12 @@
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 block-ellipsis-job"
                translate>inventory.search.label.deployedOrReleased</label>
-        <div class="col-md-8 col-lg-9">
+        <div class="col-md-2 col-lg-2">
           <label nz-checkbox [(ngModel)]="searchObj.deployedOrReleased" name="deployedOrReleased"></label>
         </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-md-4 col-lg-3 block-ellipsis-job"
+        <label class="col-md-3 col-lg-3 block-ellipsis-job" *ngIf="searchObj.deployedOrReleased"
                translate>inventory.search.label.currentController</label>
-        <div class="col-md-8 col-lg-9">
+        <div class="col-md-1 col-lg-1" *ngIf="searchObj.deployedOrReleased">
           <label nz-checkbox [(ngModel)]="searchObj.currentController" name="currentController"></label>
         </div>
       </div>
@@ -226,6 +224,7 @@
             [nzShowSizeChanger]="false">
             <thead>
             <tr>
+              <th nowrap><span translate>common.label.controllerId</span></th>
               <th><span translate>common.label.name</span></th>
               <th><span translate>common.label.path</span></th>
             </tr>
@@ -233,6 +232,7 @@
             <tbody>
             <ng-template ngFor let-data [ngForOf]="ajaxTable.data">
               <tr class="cursor" (click)="navToObject(data)">
+                <td>{{data.controllerId}}</td>
                 <td>
                   <span class="fa fa-check-circle-o orange text-xs w-11"
                         [ngClass]="{'fa-circle-o': !data.valid , 'fa-circle dark-blue' : data.deployed || data.released}"
@@ -241,7 +241,7 @@
                   <i *ngIf="data.title"> - </i>
                   <span class="text-muted">{{data.title}}</span>
                 </td>
-                <td>{{data.path}}</td>
+                <td>{{data.path.substring(0, data.path.lastIndexOf('/'))}}</td>
               </tr>
             </ng-template>
             </tbody>

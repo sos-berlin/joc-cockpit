@@ -76,15 +76,12 @@ export class SearchComponent implements OnInit {
       obj.search = this.searchObj.obj;
     }
     if (this.searchObj.folders && this.searchObj.folders.length > 0) {
-      obj.folders = [];
-      this.searchObj.folders.forEach((folder) => {
-        obj.folders.push({folder, recursive: false});
-      });
+      obj.folders = this.searchObj.folders;
     }
     if (!isEmpty(this.searchObj.advanced)) {
       obj.advanced = this.searchObj.advanced;
     }
-    if (this.searchObj.currentController) {
+    if (this.searchObj.deployedOrReleased && this.searchObj.currentController) {
       obj.controllerId = this.controllerId;
     }
     this.coreService.post('inventory/search', obj).subscribe((res) => {

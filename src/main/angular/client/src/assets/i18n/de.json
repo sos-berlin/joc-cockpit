@@ -933,6 +933,9 @@
     "label.minutes": "Minutes",
     "label.hours": "Hours",
     "label.days": "Days",
+    "label.variableSets": "Variable Sets",
+    "button.modifyVariableSet": "Modify Variable Set",
+    "button.addVariableSet": "Add Variable Set",
     "button.setVersion": "Version setzen",
     "button.new": "Neu",
     "button.newFolder": "Neuer Ordner",
@@ -1090,6 +1093,10 @@
         },
         "fork": {
           "joinVariables": "Auftragsvariablen aus Zweigen einer Fork-Instruktion werden in der entsprechenden Join-Instruktion dem Elternauftrag übergeben."
+        },
+        "forkList": {
+          "children": "Children",
+          "childToId": "Child to Id"
         },
         "if": {
           "predicate": "Das Prädikat einer If-Instruktion stellt einen Ausdruck oder Vergleich dar, der zu 'wahr' oder 'falsch' evaluiert."
@@ -1755,6 +1762,8 @@
     "label.showOther": "Andere zeigen",
     "label.fork": "Fork",
     "label.join": "Join",
+    "label.forkList": "ForkList",
+    "label.forkListEnd": "ForkList-End",
     "label.branches": "Zweig",
     "label.branchId": "Kennung des Zweigs",
     "label.expectNotice": "ExpectNotice",
@@ -1845,6 +1854,7 @@
     "message.duplicateLabel": "Identische Kennzeichnung in mehreren Jobs gefunden",
     "message.predicateIsMissing": "Prädikat ist erforderlich",
     "message.lockNameIsMissing": "Name der Ressourcen-Sperre erforderlich",
+    "message.childrenIsMissing": "ForkList children is missing, but is required",
     "message.invalidIfInstruction": "If-Instruktion darf nicht leer sein",
     "message.invalidTryInstruction": "Try-Instruktion darf nicht leer sein",
     "message.invalidRetryInstruction": "Retry-Instruktion darf nicht leer sein",
@@ -1854,6 +1864,7 @@
     "message.agentIsMissing": "Agent ist erforderlich",
     "message.emptyWorkflow": "Arbeitsablauf ist leer, mindestens eine Instruktion ist erforderlich",
     "message.invalidForkInstruction": "Fork-Instruktion muss mindestens zwei Zweige besitzen",
+    "message.invalidForkListInstruction": "ForkList Instruction can't be empty",
     "placeholder.selectAgentName": "Agentennamen auswählen",
     "placeholder.enterJobClass": "Referenz für Job-Klasse angeben",
     "placeholder.selectLock": "Kennung der Ressourcen-Sperre auswählen",

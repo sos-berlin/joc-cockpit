@@ -166,14 +166,14 @@
     <add as="connect" mode="connect" icon="./assets/mxgraph/images/symbols/connect.gif"/>
 <!--    <add as="show" action="show" icon="./assets/mxgraph/images/preview.png"/>
     <hr/>-->
-
     <add as="Job" template="Job" style="job" icon="./assets/mxgraph/images/job.png"/>
     <hr/>
-
     <add as="Fork" template="Fork" style="symbol;image=./assets/mxgraph/images/symbols/fork.svg"
          icon="./assets/mxgraph/images/fork.png"/>
     <hr/>
-
+    <add as="ForkList" template="ForkList" style="symbol;image=./assets/mxgraph/images/symbols/fork-list.svg"
+         icon="./assets/mxgraph/images/fork-list.png"/>
+    <hr/>
     <add as="Retry" template="Retry" style="retry" icon="./assets/mxgraph/images/retry.png"/>
     <hr/>
     <add as="Try" template="Try" style="try" icon="./assets/mxgraph/images/try.png"/>

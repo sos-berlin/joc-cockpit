@@ -49,7 +49,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  @ViewChild('chartArea', { static: true }) chartArea: ElementRef;
+  @ViewChild('chartArea', {static: true}) chartArea: ElementRef;
 
   constructor(private authService: AuthService, public coreService: CoreService, private translate: TranslateService,
               private groupByPipe: GroupByPipe, private dataService: DataService) {
@@ -120,20 +120,30 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
       this.data = res.controllers;
       let groupData = [];
       this.isLoaded = true;
+      const map = new Map();
       this.data.forEach((controller) => {
-        if (controller.previousEntry){
+        if (controller.previousEntry) {
           const startDate = new Date(this.filters.filter.startDate).setHours(0, 0, 0, 0);
-
-          if(startDate > new Date(controller.previousEntry.readyTime).getTime()) {
-            controller.previousEntry.readyTime = startDate;
-            if (startDate > new Date(controller.previousEntry.lastKnownTime).getTime()) {
-              controller.previousEntry.lastKnownTime = startDate;
+          if (startDate > new Date(controller.previousEntry.readyTime).getTime()) {
+            const obj = {
+              controllerId: controller.controllerId,
+              date: this.coreService.getDateByFormat(startDate, this.preferences.zone, 'YYYY-MM-DD'),
+              readyTime: startDate,
+              lastKnownTime: null,
+              isShutdown: false
+            };
+            if (startDate < new Date(controller.previousEntry.lastKnownTime).getTime()) {
+              obj.lastKnownTime = controller.previousEntry.lastKnownTime;
+            } else {
+              obj.readyTime = new Date(this.filters.filter.startDate).setHours(23, 59, 59, 59);
+              obj.isShutdown = true;
             }
-          } else{
-          //  console.log(startDate, 'startDate', new Date(controller.previousEntry.readyTime).getTime())
+            let arr = [obj];
+            if (map.has(obj.date)) {
+              arr = arr.concat(JSON.parse(map.get(obj.date)));
+            }
+            map.set(obj.date, JSON.stringify(arr));
           }
-         // console.log(controller.previousEntry, this.coreService.getDateByFormat(controller.previousEntry.readyTime, this.preferences.zone, 'YYYY-MM-DD'))
-          controller.entries = [controller.previousEntry].concat(controller.entries);
         }
         for (const i in controller.entries) {
           const obj = {
@@ -147,7 +157,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
       });
       groupData = this.groupByPipe.transform(groupData, 'date');
       this.getRunningTime();
-      this.checkMissingDates(groupData);
+      this.checkMissingDates(groupData, map);
     }, () => {
       this.isLoaded = true;
     });
@@ -159,14 +169,16 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
       const obj: any = {
         controllerId: controller.controllerId,
       };
-      let firstEntry = controller.entries[0];
-      let lastEntry = controller.entries[controller.entries.length - 1];
-
+      const sortedData = sortBy(controller.entries, (i: any) => {
+        return i.readyTime;
+      });
+      const lastEntry = sortedData[sortedData.length - 1];
       if (lastEntry) {
-        obj.total = differenceInMilliseconds(new Date(lastEntry.readyTime), new Date(firstEntry.readyTime));
-        obj.time = Math.abs(lastEntry.totalRunningTime - firstEntry.totalRunningTime);
+        obj.total = (differenceInMilliseconds(this.filters.filter.endDate,
+          this.filters.filter.startDate) + (1000 * 60 * 60 * 24));
+        obj.time = lastEntry.totalRunningTime;
         obj.value = Math.round((obj.time * 100) / obj.total);
-        obj.hours = this.coreService.getTimeFromNumber(obj.total);
+        obj.hours = (obj.total) / (1000 * 60 * 60 * 24);
         if (isNaN(obj.value)) {
           obj.value = 0;
         }
@@ -190,7 +202,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
         };
         let dur = 0;
         values[i].value.forEach((time) => {
-          const startTimeInSec = moment.duration(this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS')).asSeconds();
+          const startTimeInSec = time.isShutdown ? 86399 : moment.duration(this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS')).asSeconds();
           let endTimeInSec = 86400;
           if (this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD') === item.key) {
             endTimeInSec = moment.duration(this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:SS')).asSeconds();
@@ -254,22 +266,24 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
           statusList: []
         };
         values[i].value.forEach((time) => {
-          const statusObj = {
-            start: this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS'),
-            end: '25:00',
-            color: 'rgb(122,185,122)'
-          };
-          const readyTimeDate = this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'YYYY-MM-DD');
-          if (time.lastKnownTime) {
-            if (readyTimeDate === this.coreService.getDateByFormat(time.lastKnownTime, this.preferences.zone, 'YYYY-MM-DD')) {
-              statusObj.end = this.coreService.getDateByFormat(time.lastKnownTime, this.preferences.zone, 'HH:mm:SS');
+          if (!time.isShutdown) {
+            const statusObj = {
+              start: this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS'),
+              end: '25:00',
+              color: 'rgb(122,185,122)'
+            };
+            const readyTimeDate = this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'YYYY-MM-DD');
+            if (time.lastKnownTime) {
+              if (readyTimeDate === this.coreService.getDateByFormat(time.lastKnownTime, this.preferences.zone, 'YYYY-MM-DD')) {
+                statusObj.end = this.coreService.getDateByFormat(time.lastKnownTime, this.preferences.zone, 'HH:mm:SS');
+              }
+            } else {
+              if (this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD') === readyTimeDate) {
+                statusObj.end = this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:SS');
+              }
             }
-          } else {
-            if (this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD') === readyTimeDate) {
-              statusObj.end = this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:SS');
-            }
+            obj.statusList.push(statusObj);
           }
-          obj.statusList.push(statusObj);
         });
         this.ganttData.push(obj);
       }
@@ -311,7 +325,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
       this.filters.filter.endDate = new Date(date);
     }
     this.renderTimeSheetHeader();
-  }
+  };
 
   renderTimeSheetHeader(): void {
     const headerDates = [];
@@ -349,7 +363,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
     this.getData();
   }
 
-  checkMissingDates(groupData): void {
+  checkMissingDates(groupData, map): void {
     const dates = this.coreService.getDates(this.filters.filter.startDate, this.filters.filter.endDate);
     const tempArr = [];
     for (let i = 0; i < dates.length; i++) {
@@ -378,15 +392,29 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
             let x = tempArr[i - 1].value;
             if (x.length > 0) {
               x.forEach((data) => {
-                const shutdownDate = this.coreService.getDateByFormat(data.lastKnownTime, this.preferences.zone, 'YYYY-MM-DD');
-                if (this.coreService.getDateByFormat(data.readyTime, this.preferences.zone, 'YYYY-MM-DD') !== shutdownDate) {
+                if (data.isShutdown) {
                   const copyObj = this.coreService.clone(data);
                   copyObj.date = date;
-                  data.lastKnownTime = null;
-                  copyObj.readyTime = new Date(date).setHours(0, 0, 0, 0);
+                  copyObj.readyTime = new Date(date).setHours(23, 59, 59, 59);
+                  copyObj.lastKnownTime = null;
                   mainObj.value.push(copyObj);
+                } else {
+                  const shutdownDate = this.coreService.getDateByFormat(data.lastKnownTime, this.preferences.zone, 'YYYY-MM-DD');
+                  if (this.coreService.getDateByFormat(data.readyTime, this.preferences.zone, 'YYYY-MM-DD') !== shutdownDate) {
+                    const copyObj = this.coreService.clone(data);
+                    copyObj.date = date;
+                    data.lastKnownTime = null;
+                    copyObj.readyTime = new Date(date).setHours(0, 0, 0, 0);
+                    mainObj.value.push(copyObj);
+                  }
                 }
               });
+            }
+          } else {
+            if (map && map.size > 0) {
+              if (map.has(date)) {
+                mainObj.value = mainObj.value.concat(JSON.parse(map.get(date)));
+              }
             }
           }
           tempArr.push(mainObj);
@@ -431,10 +459,10 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
                   item.readyTime = new Date(tempArr[i].key).setHours(0, 0, 0, 0);
                 } else if (new Date(couplingFailedDate).setHours(0, 0, 0, 0) <
                   new Date(item.date).setHours(0, 0, 0, 0)) {
-                  item.readyTime = new Date(tempArr[i].key).setHours(23, 59, 59, 0);
+                  item.readyTime = new Date(tempArr[i].key).setHours(23, 59, 59, 59);
                   item.lastKnownTime = null;
                 }
-              } else{
+              } else {
                 item.readyTime = new Date(tempArr[i].key).setHours(0, 0, 0, 0);
               }
             });

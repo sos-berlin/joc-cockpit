@@ -32,6 +32,13 @@
         </mxCell>
       </Fork>
     </add>
+    <add as="ForkList">
+      <ForkList label="forkList">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="68" height="68"/>
+        </mxCell>
+      </ForkList>
+    </add>
     <add as="Lock" >
       <Lock label="lock">
         <mxCell vertex="1">

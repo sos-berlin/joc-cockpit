@@ -121,30 +121,47 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }, 10);
   }
 
-  addVariable(isNew = false): void {
-    const param: any = {
-      name: '',
-      value: ''
+  addVariableSet(): void {
+    const variableSet: any = {
+      orderName: '',
+      variables: []
     };
-    if (this.schedule.configuration.variables) {
-      if (!this.coreService.isLastEntryEmpty(this.schedule.configuration.variables, 'name', '')) {
-        if (isNew) {
-          param.isTextField = true;
-        }
-        this.schedule.configuration.variables.push(param);
+    if (this.schedule.configuration.variableSets) {
+      if (!this.coreService.isLastEntryEmpty(this.schedule.configuration.variableSets, 'orderName', '') || this.schedule.configuration.variableSets.length < 2) {
+        this.schedule.configuration.variableSets.push(variableSet);
+        this.addVariable(false, variableSet);
       }
     }
   }
 
-  removeVariable(index): void {
-    this.schedule.configuration.variables.splice(index, 1);
+  addVariable(isNew = false, variableSet): void {
+    const param: any = {
+      name: '',
+      value: ''
+    };
+    if (variableSet.variables) {
+      if (!this.coreService.isLastEntryEmpty(variableSet.variables, 'name', '')) {
+        if (isNew) {
+          param.isTextField = true;
+        }
+        variableSet.variables.push(param);
+      }
+    }
+  }
+
+  removeVariableSet(index): void{
+    this.schedule.configuration.variableSets.splice(index, 1);
+  }
+
+  removeVariable(index, variableSet): void {
+    variableSet.variables.splice(index, 1);
     this.updateSelectItems();
     this.saveJSON();
   }
 
-  onKeyPress($event): void {
+  onKeyPress($event, variableSet): void {
     if ($event.which === '13' || $event.which === 13) {
-      this.addVariable();
+      this.addVariable(false, variableSet);
     }
   }
   private getDocumentations(): void {
@@ -262,28 +279,39 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     if (this.workflow.orderPreparation && this.workflow.orderPreparation.parameters && !isEmpty(this.workflow.orderPreparation.parameters)) {
       this.variableList = Object.entries(this.workflow.orderPreparation.parameters).map(([k, v]) => {
         const val: any = v;
-        let isExist = false;
-        for (let i = 0; i < this.schedule.configuration.variables.length; i++) {
-          if (this.schedule.configuration.variables[i].name === k) {
-            this.schedule.configuration.variables[i].type = val.type;
-            if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
-              this.schedule.configuration.variables[i].isRequired = true;
+        if (this.schedule.configuration.variableSets.length === 0){
+          if (!val.default && val.default !== false && val.default !== 0) {
+            if (!val.final) {
+              this.schedule.configuration.variableSets.push({orderName: '', variables : []});
             }
-            isExist = true;
-            break;
           }
         }
-        if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
-          if (!val.final) {
-            this.schedule.configuration.variables.push({name: k, type: val.type, isRequired: true});
+        for (const prop in this.schedule.configuration.variableSets) {
+          let isExist = false;
+          for (let i = 0; i < this.schedule.configuration.variableSets[prop].variables.length; i++) {
+            if (this.schedule.configuration.variableSets[prop].variables[i].name === k) {
+              this.schedule.configuration.variableSets[prop].variables[i].type = val.type;
+              if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
+                this.schedule.configuration.variableSets[prop].variables[i].isRequired = true;
+              }
+              isExist = true;
+              break;
+            }
+          }
+          if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
+            if (!val.final) {
+              this.schedule.configuration.variableSets[prop].variables.push({name: k, type: val.type, isRequired: true});
+            }
           }
         }
         return {name: k, value: v};
       });
       if (this.workflow.orderPreparation.allowUndeclared) {
-        for (let i = 0; i < this.schedule.configuration.variables.length; i++) {
-          if (!this.schedule.configuration.variables[i].type) {
-            this.schedule.configuration.variables[i].isTextField = true;
+        for (const prop in this.schedule.configuration.variableSets) {
+          for (let i = 0; i < this.schedule.configuration.variableSets[prop].length; i++) {
+            if (!this.schedule.configuration.variableSets[prop][i].type) {
+              this.schedule.configuration.variableSets[prop][i].isTextField = true;
+            }
           }
         }
       }
@@ -291,7 +319,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         return !item.value.final;
       });
     } else {
-      this.schedule.configuration.variables = [];
+      this.schedule.configuration.variableSets = [];
     }
     this.updateSelectItems();
   }
@@ -313,10 +341,12 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   updateSelectItems(): void {
     for (let i = 0; i < this.variableList.length; i++) {
       this.variableList[i].isSelected = false;
-      for (let j = 0; j < this.schedule.configuration.variables.length; j++) {
-        if (this.variableList[i].name === this.schedule.configuration.variables[j].name) {
-          this.variableList[i].isSelected = true;
-          break;
+      for (const prop in this.schedule.configuration.variableSets) {
+        for (let j = 0; j < this.schedule.configuration.variableSets[prop].length; j++) {
+          if (this.variableList[i].name === this.schedule.configuration.variableSets[prop].variables[j].name) {
+            this.variableList[i].isSelected = true;
+            break;
+          }
         }
       }
     }
@@ -388,12 +418,19 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
-    let obj = this.coreService.clone(this.schedule.configuration);
-    obj.variables = obj.variables.map(variable => ({name: variable.name, value: variable.value}));
-    if (this.schedule.actual && !isEqual(this.schedule.actual, JSON.stringify(obj))) {
-      if (obj.variables && isArray(obj.variables)) {
-        this.coreService.convertArrayToObject(obj, 'variables', true);
+    const obj = this.coreService.clone(this.schedule.configuration);
+    obj.variableSets.filter(variableSet => {
+      if (variableSet.variables) {
+        variableSet.variables = variableSet.variables.map(variable => ({name: variable.name, value: variable.value}));
       }
+    });
+
+    obj.variableSets = obj.variableSets.map(variableSet => ({orderName: variableSet.orderName, variables: variableSet.variables}));
+    if (this.schedule.actual && !isEqual(this.schedule.actual, JSON.stringify(obj))) {
+      obj.variableSets.filter(variableSet => {
+        this.coreService.convertArrayToObject(variableSet, 'variables', true);
+      });
+      console.log(obj.variableSets, ' Before store.......obj.variableSets>>>>')
       if (obj.calendars.length > 0) {
         for (let i = 0; i < obj.calendars.length; i++) {
           delete obj.calendars[i].type;
@@ -417,12 +454,14 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       if (obj.workflowName && obj.calendars.length > 0) {
         isValid = true;
       }
-      for (let i = 0; i < this.schedule.configuration.variables.length; i++) {
-        const argu = this.schedule.configuration.variables[i];
-        if (argu.isRequired) {
-          if (!argu.value && argu.value !== false && argu.value !== 0) {
-            isValid = false;
-            break;
+      for (const i in this.schedule.configuration.variableSets) {
+        for (let j = 0; j < this.schedule.configuration.variableSets[i].length; j++) {
+          const argu = this.schedule.configuration.variableSets[i].variables[j];
+          if (argu.isRequired) {
+            if (!argu.value && argu.value !== false && argu.value !== 0) {
+              isValid = false;
+              break;
+            }
           }
         }
       }
@@ -618,10 +657,14 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       if (this.schedule.configuration.workflowName) {
         this.getWorkflowInfo(this.schedule.configuration.workflowName);
       }
-      if (this.schedule.configuration.variables) {
-        this.schedule.configuration.variables = this.coreService.convertObjectToArray(this.schedule.configuration, 'variables');
+      if (this.schedule.configuration.variableSets) {
+        this.schedule.configuration.variableSets.forEach((variableSet) => {
+          console.log(variableSet);
+          variableSet.variables = this.coreService.convertObjectToArray(variableSet, 'variables');
+        });
+
       } else {
-        this.schedule.configuration.variables = [];
+        this.schedule.configuration.variableSets = [];
       }
       this.history.push(this.schedule.actual);
       if (!res.valid) {

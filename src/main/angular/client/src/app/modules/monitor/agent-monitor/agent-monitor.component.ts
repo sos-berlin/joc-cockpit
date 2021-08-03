@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, Input, ViewChild, ElementRef} from '@angular/core';
+import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {differenceInCalendarDays, differenceInMilliseconds} from 'date-fns';
 import {CoreService} from '../../../services/core.service';
@@ -239,11 +239,33 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
 
   private checkMissingDates(): void{
     this.groupByData = [];
+    const map = new Map();
     this.data.forEach((controller) => {
       for (const i in controller.agents) {
-       
-        if (controller.agents[i].previousEntry){
-          controller.agents[i].entries = [controller.agents[i].previousEntry].concat(controller.agents[i].entries);
+        if (controller.agents[i].previousEntry) {
+          const startDate = new Date(this.filters.filter.startDate).setHours(0, 0, 0, 0);
+          if (startDate > new Date(controller.agents[i].previousEntry.readyTime).getTime()) {
+            const obj = {
+              controllerId: controller.controllerId,
+              agentId: controller.agents[i].agentId,
+              url: controller.agents[i].url,
+              date: this.coreService.getDateByFormat(startDate, this.preferences.zone, 'YYYY-MM-DD'),
+              readyTime: new Date(this.filters.filter.startDate).setHours(23, 59, 59, 59),
+              lastKnownTime: null,
+              isShutdown: false
+            };
+            if (startDate < new Date(controller.agents[i].previousEntry.lastKnownTime).getTime()) {
+              obj.lastKnownTime = controller.agents[i].previousEntry.lastKnownTime;
+            } else {
+              obj.readyTime = new Date(this.filters.filter.startDate).setHours(23, 59, 59, 59);
+              obj.isShutdown = true;
+            }
+            let arr = [obj];
+            if (map.has(obj.date)) {
+              arr = arr.concat(JSON.parse(map.get(obj.date)));
+            }
+            map.set(obj.date, JSON.stringify(arr));
+          }
         }
         for (const j in controller.agents[i].entries) {
           const obj = {
@@ -261,15 +283,13 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
     });
     this.getRunningTime(this.coreService.clone(this.groupByPipe.transform(this.groupByData, 'agentId')));
     this.groupByData = this.groupByPipe.transform(this.groupByData, 'date');
-    this.getStatisticsData();
+    this.getStatisticsData(map);
     this.groupBy();
   }
 
   getRunningTime(data): void {
     this.runningTime = [];
-    console.log(data);
     data.forEach((agent) => {
-      console.log(agent);
       agent.value = sortBy(agent.value, (i: any) => {
         return i.date;
       });
@@ -277,22 +297,21 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
         agentId: agent.key,
       };
       if (agent.value.length > 0) {
-        const firstEntry = agent.value[0];
         const lastEntry = agent.value[agent.value.length - 1];
-        obj.total = differenceInMilliseconds(new Date(lastEntry.readyTime), new Date(firstEntry.readyTime));
-        obj.time = Math.abs(lastEntry.totalRunningTime - firstEntry.totalRunningTime);
+        obj.total = (differenceInMilliseconds(this.filters.filter.endDate,
+          this.filters.filter.startDate) + (1000 * 60 * 60 * 24));
+        obj.time = Math.abs(lastEntry.totalRunningTime);
         obj.value = Math.round((obj.time * 100) / obj.total);
-        obj.hours = this.coreService.getTimeFromNumber(obj.total);
+        obj.hours = (obj.total) / (1000 * 60 * 60 * 24)
         if (isNaN(obj.value)) {
           obj.value = 0;
         }
-        console.log(obj, '>>>>')
         this.runningTime.push(obj);
       }
     });
   }
 
-  private getStatisticsData(): void {
+  private getStatisticsData(map): void {
     this.statisticsData = [];
     const dates = this.coreService.getDates(this.filters.filter.startDate, this.filters.filter.endDate);
     let len = 1;
@@ -318,7 +337,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
           }
         }
         if (!flag) {
-          let mailObj = {
+          let mainObj = {
             key: date,
             value: []
           };
@@ -326,18 +345,32 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
             let x = tempArr[i - 1].value;
             if (x.length > 0) {
               x.forEach((data) => {
-                const couplingFailedDate = this.coreService.getDateByFormat(data.lastKnownTime, this.preferences.zone, 'YYYY-MM-DD');
-                if (this.coreService.getDateByFormat(data.readyTime, this.preferences.zone, 'YYYY-MM-DD') !== couplingFailedDate) {
+                if (data.isShutdown) {
                   const copyObj = this.coreService.clone(data);
                   copyObj.date = date;
-                  data.lastKnownTime = null;
-                  copyObj.readyTime = new Date(date).setHours(0, 0, 0, 0);
-                  mailObj.value.push(copyObj);
+                  copyObj.readyTime = new Date(date).setHours(23, 59, 59, 59);
+                  copyObj.lastKnownTime = null;
+                  mainObj.value.push(copyObj);
+                } else {
+                  const couplingFailedDate = this.coreService.getDateByFormat(data.lastKnownTime, this.preferences.zone, 'YYYY-MM-DD');
+                  if (this.coreService.getDateByFormat(data.readyTime, this.preferences.zone, 'YYYY-MM-DD') !== couplingFailedDate) {
+                    const copyObj = this.coreService.clone(data);
+                    copyObj.date = date;
+                    data.lastKnownTime = null;
+                    copyObj.readyTime = new Date(date).setHours(0, 0, 0, 0);
+                    mainObj.value.push(copyObj);
+                  }
                 }
               });
             }
+          } else {
+            if (map && map.size > 0) {
+              if (map.has(date)) {
+                mainObj.value = mainObj.value.concat(JSON.parse(map.get(date)));
+              }
+            }
           }
-          tempArr.push(mailObj);
+          tempArr.push(mainObj);
         }
 
         if (i > 0) {
@@ -410,7 +443,8 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
       };
       let dur = 0;
       values[i].value.forEach((time) => {
-        const startTimeInSec = moment.duration(this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS')).asSeconds();
+        const startTimeInSec = time.isShutdown ? 86399 :
+          moment.duration(this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS')).asSeconds();
         let endTimeInSec = 86400;
         if (this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD') === item.key) {
           endTimeInSec = moment.duration(this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:SS')).asSeconds();
@@ -458,26 +492,28 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
 
   private updateStatusList(data, obj): void {
     data.value.forEach((time) => {
-      if (this.filters.filter.groupBy === 'DATE') {
-        obj.controllerId = time.controllerId;
-      }
-      obj.url = time.url;
-      const statusObj = {
-        start: this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS'),
-        end: '25:00',
-        color: 'rgb(122,185,122)'
-      };
-      const readyTimeDate = this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'YYYY-MM-DD');
-      if (time.lastKnownTime) {
-        if (readyTimeDate === this.coreService.getDateByFormat(time.lastKnownTime, this.preferences.zone, 'YYYY-MM-DD')) {
-          statusObj.end = this.coreService.getDateByFormat(time.lastKnownTime, this.preferences.zone, 'HH:mm:SS');
+      if (!time.isShutdown) {
+        if (this.filters.filter.groupBy === 'DATE') {
+          obj.controllerId = time.controllerId;
         }
-      } else{
-        if (this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD') === readyTimeDate) {
-          statusObj.end = this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:SS');
+        obj.url = time.url;
+        const statusObj = {
+          start: this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS'),
+          end: '25:00',
+          color: 'rgb(122,185,122)'
+        };
+        const readyTimeDate = this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'YYYY-MM-DD');
+        if (time.lastKnownTime) {
+          if (readyTimeDate === this.coreService.getDateByFormat(time.lastKnownTime, this.preferences.zone, 'YYYY-MM-DD')) {
+            statusObj.end = this.coreService.getDateByFormat(time.lastKnownTime, this.preferences.zone, 'HH:mm:SS');
+          }
+        } else {
+          if (this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD') === readyTimeDate) {
+            statusObj.end = this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:SS');
+          }
         }
+        obj.statusList.push(statusObj);
       }
-      obj.statusList.push(statusObj);
     });
     this.agents.push(obj);
   }

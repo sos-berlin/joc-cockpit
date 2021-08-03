@@ -933,6 +933,9 @@
     "label.minutes": "Minutes",
     "label.hours": "Hours",
     "label.days": "Days",
+    "label.variableSets": "Variable Sets",
+    "button.modifyVariableSet": "Modify Variable Set",
+    "button.addVariableSet": "Add Variable Set",
     "button.setVersion": "Définir la Version",
     "button.new": "Nouveau",
     "button.newFolder": "Nouveau Répertoire",
@@ -1090,6 +1093,10 @@
         },
         "fork": {
           "joinVariables": "Les variables des ordres enfants dans les branches d'une instruction Fork sont ajoutées à l'ordre parent lorsqu'elles atteignent l'instruction Join."
+        },
+        "forkList": {
+          "children": "Children",
+          "childToId": "Child to Id"
         },
         "if": {
           "predicate": "Un Prédicat dans une instruction If est une expression ou une comparaison qui donne la valeur 'vrai' ou 'faux'."
@@ -1755,6 +1762,8 @@
     "label.showOther": "Afficher Autres",
     "label.fork": "Fork",
     "label.join": "Join",
+    "label.forkList": "ForkList",
+    "label.forkListEnd": "ForkList-End",
     "label.branches": "Branches",
     "label.branchId": "ID Branche",
     "label.expectNotice": "ExpectNotice",
@@ -1845,10 +1854,12 @@
     "message.duplicateLabel": "Même Label trouvé dans plus d'une Taĉhe",
     "message.predicateIsMissing": "Predicat est manquant, mais est obligatoire",
     "message.lockNameIsMissing": "Le nom du Verrou de ressource est manquant, mais est obligatoire",
+    "message.childrenIsMissing": "ForkList children is missing, but is required",
     "message.invalidIfInstruction": "L'instruction If ne peut être vide",
     "message.invalidTryInstruction": "L'instruction Try ne peut pas être vide",
     "message.invalidRetryInstruction": "L'instruction Retry ne peut pas être vide",
     "message.invalidLockInstruction": "L'instruction Lock ne peut pas être vide",
+    "message.invalidForkListInstruction": "ForkList Instruction can't be empty",
     "message.invalidPostNoticeInstruction": "PostNotice Instruction is not valid",
     "message.invalidExpectNoticeInstruction": "ExpectNotice Instruction is not valid",
     "message.agentIsMissing": "L'Agent est absent, mais il est nécessaire",

@@ -933,6 +933,9 @@
     "label.minutes": "Minutes",
     "label.hours": "Hours",
     "label.days": "Days",
+    "label.variableSets": "Variable Sets",
+    "button.modifyVariableSet": "Modify Variable Set",
+    "button.addVariableSet": "Add Variable Set",
     "button.setVersion": "Set Version",
     "button.new": "New",
     "button.newFolder": "New Folder",
@@ -1090,6 +1093,10 @@
         },
         "fork": {
           "joinVariables": "Variables of child orders in the branches of a Fork Instruction are added to the parent order when reaching the Join Instruction."
+        },
+        "forkList": {
+          "children": "Children",
+          "childToId": "Child to Id"
         },
         "if": {
           "predicate": "A Predicate in an If Instruction is an expression or comparison that evaluates to 'true' or 'false'"
@@ -1756,6 +1763,8 @@
     "label.showOther": "Show other",
     "label.fork": "Fork",
     "label.join": "Join",
+    "label.forkList": "ForkList",
+    "label.forkListEnd": "ForkList-End",
     "label.branches": "Branches",
     "label.branchId": "Branch ID",
     "label.expectNotice": "ExpectNotice",
@@ -1846,10 +1855,12 @@
     "message.duplicateLabel": "Same Label found in more then one Job",
     "message.predicateIsMissing": "Predicate is missing, but is required",
     "message.lockNameIsMissing": "Resource Lock Name is missing, but is required",
+    "message.childrenIsMissing": "ForkList children is missing, but is required",
     "message.invalidIfInstruction": "If Instruction can't be empty",
     "message.invalidTryInstruction": "Try Instruction can't be empty",
     "message.invalidRetryInstruction": "Retry Instruction can't be empty",
     "message.invalidLockInstruction": "Resource Lock Instruction can't be empty",
+    "message.invalidForkListInstruction": "ForkList Instruction can't be empty",
     "message.invalidPostNoticeInstruction": "PostNotice Instruction is not valid",
     "message.invalidExpectNoticeInstruction": "ExpectNotice Instruction is not valid",
     "message.agentIsMissing": "Agent is missing, but is required",
