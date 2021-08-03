@@ -361,7 +361,7 @@
     <div class="close-btn" (click)="closeSearch()"></div>
     <div *ngIf="isSearchVisible">
       <div class="text-center m-b text" ><span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span></div>
-      <app-inventory-search (onCancel)="closeSearch()" (onNavigate)="onNavigate($event)"></app-inventory-search>
+      <app-inventory-search [controllerId]="schedulerIds.selected" (onCancel)="closeSearch()" (onNavigate)="onNavigate($event)"></app-inventory-search>
     </div>
   </ng-container>
 </nz-drawer>

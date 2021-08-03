@@ -1226,7 +1226,13 @@ export class CoreService {
     }));
   }
 
-  getDates(startDate: any, endDate: string): any {
+  getDates(startDate: any, endDate: any): any {
+    if (typeof startDate !== 'number') {
+      startDate = new Date(startDate).setHours(0, 0, 0, 0);
+    }
+    if (typeof endDate !== 'number') {
+      endDate = new Date(endDate).setHours(0, 0, 0, 0);
+    }
     let dates = [];
     let currentDate = startDate;
     let addDays = function(days) {

@@ -370,7 +370,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
           }
         }
         if (!flag) {
-          let mailObj = {
+          let mainObj = {
             key: date,
             value: []
           };
@@ -384,12 +384,12 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
                   copyObj.date = date;
                   data.lastKnownTime = null;
                   copyObj.readyTime = new Date(date).setHours(0, 0, 0, 0);
-                  mailObj.value.push(copyObj);
+                  mainObj.value.push(copyObj);
                 }
               });
             }
           }
-          tempArr.push(mailObj);
+          tempArr.push(mainObj);
         }
 
         if (i > 0) {

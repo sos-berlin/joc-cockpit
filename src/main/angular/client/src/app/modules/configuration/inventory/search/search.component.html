@@ -1,6 +1,6 @@
 <div class="text-left">
   <form #myForm="ngForm" (ngSubmit)="search()">
-    <div class="modal-body p-a">
+    <div class="p-a">
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label"
                translate>inventory.search.label.search</label>
@@ -64,6 +64,7 @@
         <nz-collapse-panel
           [nzHeader]="'inventory.search.label.advanced' | translate"
           [nzActive]="panel.active"
+          (nzActiveChange)="onChange($event)"
         >
             <div class="p-a b-a m-t">
               <div class="form-group row">
@@ -86,7 +87,7 @@
                   </label>
                 </div>
               </div>
-              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.FILE_ORDER_SOURCE">
+              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.FILEORDERSOURCE">
                 <label class="col-md-4 col-lg-3 form-control-label"
                        translate>inventory.search.label.fileOrderSource</label>
                 <div class="col-md-8 col-lg-9">
@@ -96,7 +97,7 @@
                   </label>
                 </div>
               </div>
-              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.JOB_RESOURCE">
+              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.JOBRESOURCE">
                 <label class="col-md-4 col-lg-3 form-control-label"
                        translate>inventory.search.label.jobResources</label>
                 <div class="col-md-8 col-lg-9">
@@ -206,11 +207,14 @@
       <button class="btn btn-grey btn-sm" translate type="button" (click)="onCancel.emit()">common.button.close</button>
     </div>
   </form>
-  <div class="modal-body p-a p-t-sm" *ngIf="results">
+  <div class="p-a p-t-sm" *ngIf="results">
     <div class="form-group row">
-      <div class="col-sm-12" ><b translate>inventory.search.label.searchResult</b>:</div>
-      <div class="col-sm-12" style="max-height: 240px; overflow: auto">
-        <div class="table-responsive">
+      <div class="col-sm-12" >
+        <span class="text-muted" translate>inventory.search.label.searchResult</span>:
+        <b>{{results.length}} {{'inventory.search.label.recordsFound' | translate}}</b>
+      </div>
+      <div class="col-sm-12">
+        <div class="table-responsive" style="overflow: auto" [ngStyle]="{'max-height': panel.active ? '200px' : 'calc(100vh - 440px)'}">
           <nz-table
             #ajaxTable
             [nzSize]="'small'"
@@ -224,35 +228,20 @@
             <tr>
               <th><span translate>common.label.name</span></th>
               <th><span translate>common.label.path</span></th>
-             <!-- <th><span translate>inventory.label.validHeader</span></th>-->
-              <th><span translate>common.label.status</span></th>
             </tr>
             </thead>
             <tbody>
             <ng-template ngFor let-data [ngForOf]="ajaxTable.data">
               <tr class="cursor" (click)="navToObject(data)">
                 <td>
-                  <span [innerHTML]="data.name"></span>
+                  <span class="fa fa-check-circle-o orange text-xs w-11"
+                        [ngClass]="{'fa-circle-o': !data.valid , 'fa-circle dark-blue' : data.deployed || data.released}"
+                        style="margin-top: 4px"></span>
+                  <span class="p-l-xs" [innerHTML]="data.name"></span>
                   <i *ngIf="data.title"> - </i>
                   <span class="text-muted">{{data.title}}</span>
                 </td>
                 <td>{{data.path}}</td>
-<!--                <td>
-                  <span class="label bg-dark-blue" *ngIf="data.valid"
-                    translate>inventory.label.valid</span>
-                  <span class="label bg-orange" *ngIf="!data.valid"
-                        translate>inventory.label.notValid</span>
-                </td>-->
-                <td>
-                  <span class="label bg-dark-blue" *ngIf="data.deployed && searchObj.returnType !== ENUM.SCHEDULE"
-                    translate>inventory.label.deployed</span>
-                  <span class="label bg-orange" *ngIf="!data.deployed && searchObj.returnType !== ENUM.SCHEDULE"
-                        translate>inventory.label.notDeployed</span>
-                  <span class="label bg-dark-blue" *ngIf="data.released && searchObj.returnType === ENUM.SCHEDULE"
-                        translate>inventory.label.released</span>
-                  <span class="label bg-orange" *ngIf="!data.released && searchObj.returnType === ENUM.SCHEDULE"
-                        translate>inventory.label.notReleased</span>
-                </td>
               </tr>
             </ng-template>
             </tbody>

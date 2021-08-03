@@ -1131,6 +1131,7 @@
     "search": {
       "label": {
         "noDataMatched": "No results found",
+        "recordsFound": "records found",
         "searchResult": "Search Result",
         "searchHeading": "Filter Your Search",
         "search": "Search",
