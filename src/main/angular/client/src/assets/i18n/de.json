@@ -1137,35 +1137,35 @@
     },
     "search": {
       "label": {
-        "noDataMatched": "No results found",
-        "searchResult": "Search Result",
-        "searchHeading": "Filter Your Search",
-        "search": "Search",
-        "folders": "Folders",
-        "currentController": "Current Controller",
-        "deployedOrReleased": "Deployed/Released",
-        "return": "Return",
-        "advanced": "Advanced",
-        "agent": "Agent Name",
-        "workflow": "Workflow",
-        "fileOrderSource": "File Order Source",
-        "jobResources": "Job Resources",
-        "boards": "Notice Boards",
-        "lock": "Lock",
-        "schedule": "Schedule",
-        "countJobs": "Count Jobs",
-        "from": "From",
-        "to": "To",
+        "noDataMatched": "Keine Treffer gefunden",
+        "searchResult": "Suchergebnis",
+        "searchHeading": "Ergebnisse filtern",
+        "search": "Suche",
+        "folders": "Ordner",
+        "currentController": "Aktueller Controller",
+        "deployedOrReleased": "Ausgerollt/Freigegeben",
+        "return": "Rückgabe",
+        "advanced": "Erweitert",
+        "agent": "Agentenname",
+        "workflow": "Arbeitsablauf",
+        "fileOrderSource": "Dateiauftragsquelle",
+        "jobResources": "Job-Resosurcen",
+        "boards": "Notiztafeln",
+        "lock": "Ressourcen-Sperre",
+        "schedule": "Zeitplan",
+        "countJobs": "Anzahl Jobs",
+        "from": "Von",
+        "to": "Bis",
         "jobName": "Job Name",
-        "jobCriticality": "Job Criticality",
+        "jobCriticality": "Job Kritikalität",
         "argument": "Argument"
       },
       "button": {
-        "search": "Search"
+        "search": "Suche"
       },
       "placeholder": {
-        "search" : "name or title like '%search%'",
-        "selectFromTree": "Select from tree"
+        "search" : "Name oder Titel, z.B. '%search%'",
+        "selectFromTree": "Auswahl aus Ordner"
       }
     }
   },
@@ -1220,8 +1220,8 @@
         "orderId": "Auftragskennung",
         "job": "Job",
         "message": "Nachricht",
-        "comment": "Comment",
-        "acknowledge": "Acknowledge",
+        "comment": "Kommentar",
+        "acknowledge": "Quittieren",
         "created": "Erstellt",
         "type": "Typ",
         "name": "Name",
@@ -1236,7 +1236,7 @@
         "error": "Fehlgeschlagen",
         "warning": "Warnung",
         "recovered": "Wiederhergestellt",
-        "acknowledge": "Acknowledge"
+        "acknowledge": "Quittierungsbedürftig"
       }
     }
   },
@@ -1854,13 +1854,13 @@
     "message.duplicateLabel": "Identische Kennzeichnung in mehreren Jobs gefunden",
     "message.predicateIsMissing": "Prädikat ist erforderlich",
     "message.lockNameIsMissing": "Name der Ressourcen-Sperre erforderlich",
-    "message.childrenIsMissing": "ForkList children is missing, but is required",
+    "message.childrenIsMissing": "ForkList-Instruktion darf nicht leer sein",
     "message.invalidIfInstruction": "If-Instruktion darf nicht leer sein",
     "message.invalidTryInstruction": "Try-Instruktion darf nicht leer sein",
     "message.invalidRetryInstruction": "Retry-Instruktion darf nicht leer sein",
     "message.invalidLockInstruction": "Resource-Lock-Instruktion darf nicht leer sein",
-    "message.invalidPostNoticeInstruction": "PostNotice Instruction is not valid",
-    "message.invalidExpectNoticeInstruction": "ExpectNotice Instruction is not valid",
+    "message.invalidPostNoticeInstruction": "PostNotice-Instruktion ist nicht gültig",
+    "message.invalidExpectNoticeInstruction": "ExpectNotice-Instruktion ist nicht gültig",
     "message.agentIsMissing": "Agent ist erforderlich",
     "message.emptyWorkflow": "Arbeitsablauf ist leer, mindestens eine Instruktion ist erforderlich",
     "message.invalidForkInstruction": "Fork-Instruktion muss mindestens zwei Zweige besitzen",
