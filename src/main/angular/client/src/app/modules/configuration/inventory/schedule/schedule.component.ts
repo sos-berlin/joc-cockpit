@@ -159,11 +159,38 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     this.saveJSON();
   }
 
-  onKeyPress($event, variableSet): void {
-    if ($event.which === '13' || $event.which === 13) {
-      this.addVariable(false, variableSet);
+  isOrderNameValid(data, form, list): void {
+    if (form.invalid) {
+      data.orderName = '';
+    } else {
+      let count = 0;
+      if (list.length > 1) {
+        for (let i in list) {
+          if (list[i].orderName === data.orderName) {
+            ++count;
+          }
+          if (count > 1) {
+            form.control.setErrors({incorrect: true});
+            break;
+          }
+        }
+      }
+      if (count === 0) {
+        this.saveJSON();
+      }
     }
   }
+
+  onKeyPress($event, variableSet): void {
+    if ($event.which === '13' || $event.which === 13) {
+      if(variableSet) {
+        this.addVariable(false, variableSet);
+      } else{
+        this.addVariableSet();
+      }
+    }
+  }
+
   private getDocumentations(): void {
     if (this.documentationTree.length === 0) {
       this.coreService.post('tree', {
@@ -213,7 +240,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           }
         }
         if (this.schedule.configuration.workflowName) {
-          this.getWorkflowInfo(this.schedule.configuration.workflowName);
+          this.getWorkflowInfo(this.schedule.configuration.workflowName, true);
         }
       }
       setTimeout(() => {
@@ -330,21 +357,27 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       argument.type = obj.type;
       if (!obj.default && obj.default !== false && obj.default !== 0) {
         argument.isRequired = true;
-      } else{
+      } else {
         this.coreService.removeSlashToString(obj, 'default');
-        argument.value = obj.default;
+        if (obj.type === 'Boolean') {
+          argument.value = (obj.default === true || obj.default === 'true');
+        } else{
+          argument.value = obj.default;
+        }
       }
     }
     this.updateSelectItems();
   }
 
   updateSelectItems(): void {
-    for (let i = 0; i < this.variableList.length; i++) {
-      this.variableList[i].isSelected = false;
-      for (const prop in this.schedule.configuration.variableSets) {
-        for (let j = 0; j < this.schedule.configuration.variableSets[prop].length; j++) {
-          if (this.variableList[i].name === this.schedule.configuration.variableSets[prop].variables[j].name) {
-            this.variableList[i].isSelected = true;
+    for (const prop in this.schedule.configuration.variableSets) {
+      this.schedule.configuration.variableSets[prop].variableList = this.coreService.clone(this.variableList);
+      for (let i = 0; i < this.schedule.configuration.variableSets[prop].variableList.length; i++) {
+        this.schedule.configuration.variableSets[prop].variableList[i].isSelected = false;
+        for (let j = 0; j < this.schedule.configuration.variableSets[prop].variables.length; j++) {
+          this.schedule.configuration.variableSets[prop].variableList[i].name , this.schedule.configuration.variableSets[prop].variables[j].name
+          if (this.schedule.configuration.variableSets[prop].variableList[i].name === this.schedule.configuration.variableSets[prop].variables[j].name) {
+            this.schedule.configuration.variableSets[prop].variableList[i].isSelected = true;
             break;
           }
         }
@@ -419,10 +452,18 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       return;
     }
     const obj = this.coreService.clone(this.schedule.configuration);
-    obj.variableSets.filter(variableSet => {
+    let isEmptyExist = false;
+    obj.variableSets = obj.variableSets.filter(variableSet => {
+      if(variableSet.orderName === '' || !variableSet.orderName){
+        if(isEmptyExist){
+          return false;
+        }
+        isEmptyExist = true;
+      }
       if (variableSet.variables) {
         variableSet.variables = variableSet.variables.map(variable => ({name: variable.name, value: variable.value}));
       }
+      return true;
     });
 
     obj.variableSets = obj.variableSets.map(variableSet => ({orderName: variableSet.orderName, variables: variableSet.variables}));
@@ -430,7 +471,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       obj.variableSets.filter(variableSet => {
         this.coreService.convertArrayToObject(variableSet, 'variables', true);
       });
-      console.log(obj.variableSets, ' Before store.......obj.variableSets>>>>')
       if (obj.calendars.length > 0) {
         for (let i = 0; i < obj.calendars.length; i++) {
           delete obj.calendars[i].type;
@@ -494,12 +534,15 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  private getWorkflowInfo(name): void {
+  private getWorkflowInfo(name, flag = false): void {
     this.coreService.post('inventory/read/configuration', {
       path: name,
       objectType: InventoryObject.WORKFLOW
     }).subscribe((conf: any) => {
       this.workflow = conf.configuration;
+      if (flag) {
+        this.schedule.configuration.variableSets = [];
+      }
       this.updateVariableList();
     });
   }
@@ -659,7 +702,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       }
       if (this.schedule.configuration.variableSets) {
         this.schedule.configuration.variableSets.forEach((variableSet) => {
-          console.log(variableSet);
           variableSet.variables = this.coreService.convertObjectToArray(variableSet, 'variables');
         });
 

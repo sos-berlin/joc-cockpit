@@ -64,7 +64,8 @@
     </div>
     <div class="row" *ngIf="!paste && data.validUntil">
       <div class="col-sm-12">
-        <label translate>profile.keyManagement.label.keyExpiredOn</label>:
+        <label *ngIf="type === 'key'" translate>profile.keyManagement.label.keyExpiredOn</label>
+        <label *ngIf="type !== 'key'" translate>profile.keyManagement.label.certificateExpiredOn</label>:
         <span class="text-muted p-l-sm" [ngClass]="{ 'text-danger': data.isKeyExpired}">{{data.validUntil | stringToDate}}</span>
       </div>
     </div>

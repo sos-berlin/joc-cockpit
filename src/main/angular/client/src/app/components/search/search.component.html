@@ -1,4 +1,4 @@
-<div class="text-left">
+<div class="text-left" xmlns="http://www.w3.org/1999/html">
   <form #myForm="ngForm" (ngSubmit)="search()">
     <div class="p-a">
       <div class="form-group row">
@@ -38,7 +38,7 @@
           </nz-tree-select>
         </div>
       </div>
-      <div class="form-group row">
+      <div class="form-group row" *ngIf="!isWorkflow">
         <label class="col-md-4 col-lg-3 block-ellipsis-job"
                translate>inventory.search.label.deployedOrReleased</label>
         <div class="col-md-2 col-lg-2">
@@ -50,7 +50,7 @@
           <label nz-checkbox [(ngModel)]="searchObj.currentController" name="currentController"></label>
         </div>
       </div>
-      <div class="form-group row">
+      <div class="form-group row" *ngIf="!isWorkflow">
         <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.search.label.return</label>
         <div class="col-md-8 col-lg-9">
           <nz-select [(ngModel)]="searchObj.returnType" name="returnType">
@@ -69,7 +69,7 @@
                 <label class="col-md-4 col-lg-3 form-control-label"
                        translate>inventory.search.label.agent</label>
                 <div class="col-md-8 col-lg-9">
-                  <nz-select nzShowSearch name="agentName" nzPlaceHolder="{{'workflow.placeholder.selectAgentName' | translate}}"
+                  <nz-select nzAllowClear nzShowSearch name="agentName" nzPlaceHolder="{{'workflow.placeholder.selectAgentName' | translate}}"
                              [(ngModel)]="searchObj.advanced.agentName">
                     <nz-option *ngFor="let agent of agents" [nzLabel]="agent" [nzValue]="agent"></nz-option>
                   </nz-select>
@@ -142,15 +142,13 @@
                        translate>inventory.search.label.from
                 </label>
                 <div class="col-md-2 col-lg-2">
-                  <nz-input-number [nzMin]="0" class="form-control"
-                                   name="from" [(ngModel)]="searchObj.advanced.jobCountFrom"></nz-input-number>
+                  <nz-input-number [nzMin]="0" name="from" [(ngModel)]="searchObj.advanced.jobCountFrom"></nz-input-number>
                 </div>
                 <label class="col-md-2 col-lg-2 text-center form-control-label"
                        translate>inventory.search.label.to
                 </label>
                 <div class="col-md-2 col-lg-2">
-                  <nz-input-number [nzMin]="0" class="form-control"
-                                   name="to" [(ngModel)]="searchObj.advanced.jobCountTo"></nz-input-number>
+                  <nz-input-number [nzMin]="0" name="to" [(ngModel)]="searchObj.advanced.jobCountTo"></nz-input-number>
                 </div>
               </div>
               <div class="form-group row">
@@ -203,6 +201,7 @@
         {{'common.button.search' | translate}}
       </button>
       <button class="btn btn-grey btn-sm" translate type="button" (click)="onCancel.emit()">common.button.close</button>
+      <button class="btn btn-grey btn-sm" translate type="button" (click)="clear()">common.button.clear</button>
     </div>
   </form>
   <div class="p-a p-t-sm" *ngIf="results">
@@ -224,7 +223,7 @@
             [nzShowSizeChanger]="false">
             <thead>
             <tr>
-              <th nowrap><span translate>common.label.controllerId</span></th>
+              <th nowrap *ngIf="!isWorkflow"><span translate>common.label.controllerId</span></th>
               <th><span translate>common.label.name</span></th>
               <th><span translate>common.label.path</span></th>
             </tr>
@@ -232,16 +231,22 @@
             <tbody>
             <ng-template ngFor let-data [ngForOf]="ajaxTable.data">
               <tr class="cursor" (click)="navToObject(data)">
-                <td>{{data.controllerId}}</td>
+                <td *ngIf="!isWorkflow">{{data.controllerId}}</td>
                 <td>
-                  <span class="fa fa-check-circle-o orange text-xs w-11"
+                  <span *ngIf="!isWorkflow" class="fa fa-check-circle-o orange text-xs w-11"
                         [ngClass]="{'fa-circle-o': !data.valid , 'fa-circle dark-blue' : data.deployed || data.released}"
                         style="margin-top: 4px"></span>
                   <span class="p-l-xs" [innerHTML]="data.name"></span>
                   <i *ngIf="data.title"> - </i>
                   <span class="text-muted">{{data.title}}</span>
                 </td>
-                <td>{{data.path.substring(0, data.path.lastIndexOf('/'))}}</td>
+                <td>
+                  <span class="show-in-single-line">
+                    <i *ngIf="isWorkflow" (click)="coreService.navToInventoryTab(data.path, 'WORKFLOW');$event.stopPropagation();"
+                       class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                    <span> {{data.path.substring(0, data.path.lastIndexOf('/')) || '/'}}</span>
+                  </span>
+                </td>
               </tr>
             </ng-template>
             </tbody>

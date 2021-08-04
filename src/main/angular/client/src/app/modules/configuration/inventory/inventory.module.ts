@@ -8,7 +8,6 @@ import {ChecklistModule} from 'angular-checklist';
 import {DatePipe} from '@angular/common';
 import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {NzDrawerModule} from 'ng-zorro-antd/drawer';
-import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import {InventoryRoutingModule} from './inventory-routing.module';
 import {SharedModule} from '../../shared/shared.module';
 import {WorkflowService} from '../../../services/workflow.service';
@@ -35,12 +34,11 @@ import {FileOrderComponent} from './file-order/file-order.component';
 import {JobResourceComponent} from './job-resource/job-resource.component';
 import {AddRestrictionComponent, PeriodComponent, RunTimeComponent} from './runtime/runtime.component';
 import {EnvVariableValidator, LabelValidator} from '../../../directives/core.directive';
-import { SearchComponent } from './search/search.component';
 
 const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployComponent,
   DeployComponent, ExportComponent, SetVersionComponent, CreateFolderModalComponent, CreateObjectModalComponent,
   ImportWorkflowModalComponent, JsonEditorModalComponent, UploadModalComponent, ScriptEditorComponent,
-  PeriodComponent, AddRestrictionComponent, RunTimeComponent, SearchComponent];
+  PeriodComponent, AddRestrictionComponent, RunTimeComponent];
 
 @NgModule({
   imports: [
@@ -52,7 +50,6 @@ const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployCompon
     NzAutocompleteModule,
     NzTabsModule,
     NzDrawerModule,
-    NzCollapseModule,
     NgJsonEditorModule,
     ChecklistModule
   ],

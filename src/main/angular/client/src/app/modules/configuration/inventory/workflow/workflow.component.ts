@@ -7905,18 +7905,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               json.instructions[x].branches = [];
             }
           }
-          if (json.instructions[x].TYPE === 'ForkList') {
-            json.instructions[x].workflow = {
-              instructions: json.instructions[x].instructions
-            };
-            const childrenObj = clone(json.instructions[x].children);
-            const childToIdObj = clone(json.instructions[x].childToId);
-            delete json.instructions[x].instructions;
-            delete json.instructions[x].children;
-            delete json.instructions[x].childToId;
-            json.instructions[x].children = childrenObj;
-            json.instructions[x].childToId = childToIdObj;
-          }
 
           json.instructions[x].id = undefined;
           json.instructions[x].uuid = undefined;
@@ -7939,6 +7927,18 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             delete json.instructions[x].instructions;
             delete json.instructions[x].count;
             json.instructions[x].count = countObj;
+          }
+          if (json.instructions[x].TYPE === 'ForkList') {
+            json.instructions[x].workflow = {
+              instructions: json.instructions[x].instructions
+            };
+            const childrenObj = clone(json.instructions[x].children);
+            const childToIdObj = clone(json.instructions[x].childToId);
+            delete json.instructions[x].instructions;
+            delete json.instructions[x].children;
+            delete json.instructions[x].childToId;
+            json.instructions[x].children = childrenObj;
+            json.instructions[x].childToId = childToIdObj;
           }
           if (json.instructions[x].catch) {
             json.instructions[x].catch.id = undefined;

@@ -69,6 +69,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
     this.translate.get('monitor.label.inHours').subscribe(translatedValue => {
       this.yAxisLabel = translatedValue;
     });
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.init();
   }
 
@@ -78,7 +79,6 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   }
 
   init(): void {
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.renderTimeSheetHeader();
   }
 
@@ -174,11 +174,18 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
       });
       const lastEntry = sortedData[sortedData.length - 1];
       if (lastEntry) {
-        obj.total = (differenceInMilliseconds(this.filters.filter.endDate,
-          this.filters.filter.startDate) + (1000 * 60 * 60 * 24));
+        let lastDate = this.filters.filter.endDate;
+        let dur1 = 0;
+        if (new Date(this.viewDate).getTime() < new Date(lastDate).getTime()) {
+          lastDate = this.viewDate;
+          dur1 = (86400000 - moment.duration(this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:SS')).asMilliseconds());
+        }
+
+        obj.total = ((differenceInMilliseconds(lastDate,
+          this.filters.filter.startDate) + (1000 * 60 * 60 * 24)) - (dur1));
         obj.time = lastEntry.totalRunningTime;
         obj.value = Math.round((obj.time * 100) / obj.total);
-        obj.hours = (obj.total) / (1000 * 60 * 60 * 24);
+        obj.hours = ((obj.total) / (1000 * 60 * 60 * 24)).toFixed(2);
         if (isNaN(obj.value)) {
           obj.value = 0;
         }
@@ -363,6 +370,17 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
     this.getData();
   }
 
+  private isAlreadyExist(value, data): boolean {
+    let isMatch = false;
+    for (const y in value) {
+      if (value[y].readyTime === data.readyTime && value[y].controllerId === data.controllerId) {
+        isMatch = true;
+        break;
+      }
+    }
+    return isMatch;
+  }
+
   checkMissingDates(groupData, map): void {
     const dates = this.coreService.getDates(this.filters.filter.startDate, this.filters.filter.endDate);
     const tempArr = [];
@@ -379,7 +397,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
             groupData[j].value = sortBy(groupData[j].value, (i: any) => {
               return i.readyTime;
             });
-            tempArr.push(groupData[j]);
+            tempArr.push(this.coreService.clone(groupData[j]));
             break;
           }
         }
@@ -397,7 +415,10 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
                   copyObj.date = date;
                   copyObj.readyTime = new Date(date).setHours(23, 59, 59, 59);
                   copyObj.lastKnownTime = null;
-                  mainObj.value.push(copyObj);
+                  copyObj.isShutdown = true;
+                  if (!this.isAlreadyExist(mainObj.value, copyObj)) {
+                    mainObj.value.push(copyObj);
+                  }
                 } else {
                   const shutdownDate = this.coreService.getDateByFormat(data.lastKnownTime, this.preferences.zone, 'YYYY-MM-DD');
                   if (this.coreService.getDateByFormat(data.readyTime, this.preferences.zone, 'YYYY-MM-DD') !== shutdownDate) {
@@ -405,7 +426,9 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
                     copyObj.date = date;
                     data.lastKnownTime = null;
                     copyObj.readyTime = new Date(date).setHours(0, 0, 0, 0);
-                    mainObj.value.push(copyObj);
+                    if (!this.isAlreadyExist(mainObj.value, copyObj)) {
+                      mainObj.value.push(copyObj);
+                    }
                   }
                 }
               });
@@ -433,14 +456,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
                     prev[j].lastKnownTime = null;
                     copyPrevObj.date = tempArr[i].value[x].date;
                     copyPrevObj.readyTime = new Date(copyPrevObj.date).setHours(0, 0, 0, 0);
-                    let isMatch = false;
-                    for (const y in tempArr[i].value) {
-                      if (tempArr[i].value[y].readyTime === copyPrevObj.readyTime) {
-                        isMatch = true;
-                        break;
-                      }
-                    }
-                    if (!isMatch) {
+                    if (!this.isAlreadyExist(tempArr[i].value, copyPrevObj)) {
                       tempArr[i].value.push(copyPrevObj);
                     }
                   }
@@ -461,6 +477,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
                   new Date(item.date).setHours(0, 0, 0, 0)) {
                   item.readyTime = new Date(tempArr[i].key).setHours(23, 59, 59, 59);
                   item.lastKnownTime = null;
+                  item.isShutdown = true;
                 }
               } else {
                 item.readyTime = new Date(tempArr[i].key).setHours(0, 0, 0, 0);

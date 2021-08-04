@@ -8,6 +8,7 @@ import {NzSelectModule} from 'ng-zorro-antd/select';
 import {NzTreeModule} from 'ng-zorro-antd/tree';
 import {NzSpinModule} from 'ng-zorro-antd/spin';
 import {NzInputModule} from 'ng-zorro-antd/input';
+import {NzCollapseModule} from 'ng-zorro-antd/collapse';
 import {NzMessageModule} from 'ng-zorro-antd/message';
 import {NzCheckboxModule} from 'ng-zorro-antd/checkbox';
 import {NzTreeSelectModule} from 'ng-zorro-antd/tree-select';
@@ -49,19 +50,20 @@ import {ValueEditorComponent} from '../../components/value-editor/value.componen
 import {FileTransferSearchComponent} from '../file-transfer/file-transfer.component';
 import {AuditLogInputComponent} from '../../components/audit-log-input/audit-log-input.component';
 import {WorkflowTreeStructureComponent} from '../../components/workflow-tree-structure/workflow-tree-structure.component';
+import {SearchComponent} from '../../components/search/search.component';
 
-const MODULES = [Shared2Module, NzTableModule, DragDropModule,
+const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
   NzToolTipModule, NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule,
   NzSelectModule, NzInputModule, NzMessageModule, NzCheckboxModule, NzRadioModule,
   NzTreeSelectModule, NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, OrderModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
-  CalendarModalComponent, TreeModalComponent,
-  ResumeOrderModalComponent, ChangeParameterModalComponent, ModifyStartTimeModalComponent];
+  CalendarModalComponent, TreeModalComponent, ResumeOrderModalComponent, ChangeParameterModalComponent,
+  ModifyStartTimeModalComponent];
 const PIPES = [DurationPipe, StringDateFormatePipe, ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, ResizableDirective,
   NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponent, FileTransferSearchComponent, AuditLogInputComponent,
-  StartUpModalComponent, TreeComponent, ValueEditorComponent, WorkflowTreeStructureComponent];
+  StartUpModalComponent, TreeComponent, ValueEditorComponent, WorkflowTreeStructureComponent, SearchComponent];
 
 @NgModule({
   imports: [

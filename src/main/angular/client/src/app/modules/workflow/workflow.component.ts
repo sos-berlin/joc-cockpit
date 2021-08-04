@@ -1,12 +1,11 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
-import {isEmpty, isArray} from 'underscore';
+import {isEmpty} from 'underscore';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
-import {TreeModalComponent} from '../../components/tree-modal/tree.component';
 import {WorkflowActionComponent} from './workflow-action/workflow-action.component';
 import {AuthService} from '../../components/guard';
 import {SaveService} from '../../services/save.service';
@@ -17,67 +16,6 @@ import {ExcelService} from '../../services/excel.service';
 import {SearchPipe} from '../../pipes/core.pipe';
 
 declare const $: any;
-
-@Component({
-  selector: 'app-form-template',
-  templateUrl: './form-template.html',
-})
-export class SearchComponent implements OnInit {
-  @Input() schedulerIds: any;
-  @Input() filter: any;
-  @Input() preferences: any;
-  @Input() permission: any;
-  @Input() isSearch: boolean;
-  @Output() onCancel: EventEmitter<any> = new EventEmitter();
-  @Output() onSearch: EventEmitter<any> = new EventEmitter();
-
-  dateFormat: any;
-  existingName: any;
-  submitted = false;
-  isUnique = true;
-
-  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService) {
-  }
-
-  ngOnInit(): void {
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-  }
-
-  getFolderTree(): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: TreeModalComponent,
-      nzComponentParams: {
-        schedulerId: this.schedulerIds.selected,
-        paths: this.filter.paths || [],
-        type: 'WORKFLOW',
-        showCheckBox: true
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        if (isArray(result)) {
-          this.filter.paths = result;
-        }
-      }
-    });
-  }
-
-  remove(path): void {
-    this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
-  }
-
-  search(): void {
-    this.onSearch.emit();
-  }
-
-  cancel(): void {
-    this.onCancel.emit();
-  }
-}
 
 @Component({
   selector: 'app-single-workflow',
@@ -251,7 +189,6 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
 export class WorkflowComponent implements OnInit, OnDestroy {
   isLoading = false;
   loading: boolean;
-  isSearchHit: boolean;
   isUnique: boolean;
   schedulerIds: any = {};
   tree: any = [];
@@ -264,9 +201,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   selectedPath: string;
   workflowFilters: any = {};
   showPanel: any;
-  showSearchPanel = false;
   isProcessing = false;
-  searchFilter: any = {};
+  isSearchVisible = false;
   sideView: any = {};
   data = [];
   currentData = [];
@@ -334,6 +270,48 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         this.isProcessing = false;
       }, 100);
     }
+  }
+
+  search(): void {
+    this.isSearchVisible = true;
+  }
+
+  closeSearch(): void {
+    this.isSearchVisible = false;
+  }
+
+  onNavigate(data): void {
+    const pathArr = [];
+    const arr = data.path.split('/');
+    this.workflowFilters.selectedkeys = [];
+    const len = arr.length - 1;
+    if (len > 1) {
+      for (let i = 0; i < len; i++) {
+        if (arr[i]) {
+          if (i > 0 && pathArr[i - 1]) {
+            pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + arr[i]);
+          } else {
+            pathArr.push('/' + arr[i]);
+          }
+        } else {
+          pathArr.push('/');
+        }
+      }
+    }
+    if (pathArr.length === 0) {
+      pathArr.push('/');
+    }
+    const PATH = data.path.substring(0, data.path.lastIndexOf('/')) || '/';
+    this.workflowFilters.expandedKeys = pathArr;
+    this.workflowFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
+    this.workflowFilters.expandedObjects = [data.path];
+    const obj = {
+      controllerId: this.schedulerIds.selected,
+      folders: [{folder: PATH, recursive: false}]
+    };
+    this.workflows = [];
+    this.loading = true;
+    this.getWorkflowList(obj);
   }
 
   /* ---------------------------- Broadcast messages ----------------------------------*/
@@ -437,32 +415,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.updatePanelHeight();
   }
 
-  /* ----------------------Advance Search --------------------- */
-  advancedSearch(): void {
-    this.showSearchPanel = true;
-    this.isUnique = true;
-    this.isSearchHit = false;
-    this.searchFilter = {};
-  }
-
-  search(): void {
-    this.loading = true;
-    this.isSearchHit = true;
-    let obj: any = {
-      controllerId: this.schedulerIds.selected,
-      compact: true
-    };
-    if (this.searchFilter && this.searchFilter.regex) {
-      obj.regex = this.searchFilter.regex;
-    }
-    if (this.searchFilter.paths && this.searchFilter.paths.length > 0) {
-      obj.folders = [];
-      for (let i in this.searchFilter.paths) {
-        obj.folders.push({folder: this.searchFilter.paths[i], recursive: true});
-      }
-    }
-    this.getWorkflowList(obj);
-  }
 
   /* ---------------------------- Action ----------------------------------*/
   sort(key): void {
@@ -637,15 +589,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.saveProfileSettings(this.preferences);
   }
 
-  cancel(): void {
-    this.showSearchPanel = false;
-    this.searchFilter = {};
-    if (this.isSearchHit) {
-      this.isSearchHit = false;
-      this.changeStatus();
-    }
-  }
-
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       const request = [];
@@ -779,9 +722,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       if (request.workflowIds.length > 0) {
         this.getOrders(request);
       }
-      if (this.isSearchHit && this.showSearchPanel) {
-        this.traverseTreeForSearchData();
-      }
       this.updatePanelHeight();
     }, () => {
       this.loading = false;
@@ -874,41 +814,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     return flag;
   }
 
-  private traverseTreeForSearchData(): void {
-    const self = this;
-    this.workflowFilters.expandedKeys = [];
-    this.workflowFilters.selectedkeys = [];
-
-    function traverseTree1(data) {
-      for (let i in data.children) {
-        if (!data.children[i].isLeaf) {
-          self.workflowFilters.expandedKeys.push(data.children[i].path);
-        }
-        pushJob(data.children[i]);
-        traverseTree1(data.children[i]);
-      }
-    }
-
-    function navFullTree() {
-      for (let i in self.tree) {
-        if (!self.tree[i].isLeaf) {
-          self.workflowFilters.expandedKeys.push(self.tree[i].path);
-        }
-        pushJob(self.tree[i]);
-        traverseTree1(self.tree[i]);
-      }
-    }
-
-    function pushJob(data) {
-      for (let i in self.workflows) {
-        if (data.path === self.workflows[i].path1) {
-          self.workflowFilters.selectedkeys.push(self.workflows[i].path1);
-        }
-      }
-    }
-
-    navFullTree();
-  }
 
   private _updatePanelHeight(): void {
     setTimeout(() => {

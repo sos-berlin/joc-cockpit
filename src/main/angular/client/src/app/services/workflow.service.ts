@@ -24,6 +24,7 @@ export class WorkflowService {
   public lock = '';
   public closeLock = '';
   preferences: any = {};
+  searchResult: any;
 
   constructor(public translate: TranslateService, public coreService: CoreService,
               private stringDatePipe: StringDatePipe) {
@@ -602,9 +603,9 @@ export class WorkflowService {
             if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
               recursive(json.instructions[x], '', v1);
               connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'forkList', 'forkList', v1);
-              v2 = joinForkList(json.instructions[x], v1, parent);
+              v2 = joinForkList(json.instructions[x], v1.id, parent);
             } else {
-              v2 = joinForkList(v1, v1, parent);
+              v2 = joinForkList(v1, v1.id, parent);
             }
           } else if (json.instructions[x].TYPE === 'If') {
             _node.setAttribute('label', 'if');
@@ -1270,5 +1271,13 @@ export class WorkflowService {
       left: -50,
       top: -80
     });
+  }
+
+  setSearchResult(result): void {
+    this.searchResult = result;
+  }
+
+  getSearchResult(): any {
+    return this.searchResult;
   }
 }

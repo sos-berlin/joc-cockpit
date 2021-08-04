@@ -74,12 +74,7 @@ export class CoreService {
         currentMonth: this.tabs._monitor.currentDate.getMonth(),
         startDate: new Date(),
         endDate: new Date()
-      },
-      runningTime: {
-        filter: {
-          dateRange: null
-        }
-      },
+      }
     };
     this.tabs._monitor.agent = {
       filter: {
@@ -263,11 +258,6 @@ export class CoreService {
         currentMonth: this.tempTabs._monitor.currentDate.getMonth(),
         startDate: new Date(),
         endDate: new Date()
-      },
-      runningTime: {
-        filter: {
-          dateRange: null
-        }
       }
     };
     this.tempTabs._monitor.agent = {
@@ -1313,16 +1303,4 @@ export class CoreService {
     }
   }
 
-  getTimeFromNumber(milliSeconds): string {
-    let totalSeconds = milliSeconds / 1000;
-    let hours: any = Math.floor(totalSeconds / 3600);
-    totalSeconds %= 3600;
-    let minutes: any = Math.floor(totalSeconds / 60);
-    let days = (milliSeconds / (1000 * 60 * 60 * 24)).toFixed(1);
-    let seconds: any = Math.floor(totalSeconds % 60);
-    minutes = String(minutes).padStart(2, '0');
-    hours = String(hours).padStart(2, '0');
-    seconds = String(seconds).padStart(2, '0');
-    return days;
-  }
 }

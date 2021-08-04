@@ -60,7 +60,7 @@
                     <a nz-popover nzPopoverTrigger="click"
                        [nzPopoverContent]="contentTemplate" class="primary-text-hover-color p-l-sm"><i class="fa fa-key"></i></a>
                     <ng-template #contentTemplate>
-                      <b translate>agent.label.uuid</b> :
+                      <b translate>agent.label.token</b> :
                       <span>{{controller.token.UUID}} <i ngxClipboard [cbContent]="controller.token.UUID" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
                     </ng-template>
                   </span>
@@ -81,14 +81,14 @@
                           (nzCheckedChange)="checkAll($event, controller)"
                       ></th>
                       <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="menu"><span translate>common.label.action</span></th>
-                      <th width="15%"><span translate>agent.label.agentId</span></th>
-                      <th width="15%"><span translate>agent.label.agentName</span></th>
+                      <th nzWidth="15%"><span translate>agent.label.agentId</span></th>
+                      <th nzWidth="15%"><span translate>agent.label.agentName</span></th>
                       <th><span translate>agent.label.agentNameAliases</span></th>
-                      <th width="20%"><span translate>agent.label.url</span></th>
-                      <th width="150px"><span translate>agent.label.validityDate</span></th>
-                      <th width="100px"><span translate>agent.label.disabled</span></th>
-                      <th width="140px"><span translate>agent.label.clusterWatcher</span></th>
-                      <th width="140px"><span translate>agent.label.oneTimeToken</span></th>
+                      <th nzWidth="20%"><span translate>agent.label.url</span></th>
+                      <th nzWidth="100px"><span translate>agent.label.disabled</span></th>
+                      <th nzWidth="140px"><span translate>agent.label.clusterWatcher</span></th>
+                      <th nzWidth="150px"><span translate>agent.label.validityDate</span></th>
+                      <th nzWidth="140px"><span translate>agent.label.oneTimeToken</span></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -126,18 +126,18 @@
                       <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.agentName"></span></td>
                       <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.agentNameAliases || '-'"></span></td>
                       <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.url"></span></td>
+                      <td (click)="editAgent(agent, controller)">{{agent.disabled ? 'Yes' : 'No'}}</td>
+                      <td (click)="editAgent(agent, controller)">{{agent.isClusterWatcher ? 'Yes' : 'No'}}</td>
                       <td>
                         <span *ngIf="!agent.token">-</span>
                         <span *ngIf="agent.token">{{agent.token.validUntil | stringToDate}}</span>
                       </td>
-                      <td (click)="editAgent(agent, controller)">{{agent.disabled ? 'Yes' : 'No'}}</td>
-                      <td (click)="editAgent(agent, controller)">{{agent.isClusterWatcher ? 'Yes' : 'No'}}</td>
                       <td>
                         <div *ngIf="agent.token">
                           <a class="primary-text-hover-color" nz-popover nzPopoverTrigger="click"
                              [nzPopoverContent]="contentTemplate"><i class="fa fa-key"></i></a>
                           <ng-template #contentTemplate>
-                            <b translate>agent.label.uuid</b> :
+                            <b translate>agent.label.token</b> :
                             <span>{{agent.token.UUID}} <i ngxClipboard [cbContent]="agent.token.UUID" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
                           </ng-template>
                         </div>

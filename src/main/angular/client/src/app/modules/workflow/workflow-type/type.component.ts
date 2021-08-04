@@ -34,7 +34,7 @@ export class TypeComponent implements OnChanges {
       }
     }
     if (changes.configuration) {
-      if (this.configuration.TYPE === 'Workflow') {
+      if (this.configuration.TYPE === 'Workflow' && this.configuration.instructions) {
         this.isFirst = true;
         for (let i = 0; i < this.configuration.instructions.length; i++) {
           this.configuration.instructions[i].show = true;

@@ -1,18 +1,20 @@
 import {Component, EventEmitter, OnInit, Input, Output} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
-import {InventorySearch} from '../../../../models/enums';
+import {InventorySearch} from '../../models/enums';
 import {isEmpty} from 'underscore';
-import {CoreService} from '../../../../services/core.service';
+import {CoreService} from '../../services/core.service';
+import {InventoryService} from '../../modules/configuration/inventory/inventory.service';
+import {WorkflowService} from '../../services/workflow.service';
 
 @Component({
   selector: 'app-inventory-search',
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss']
+  templateUrl: './search.component.html'
 })
 export class SearchComponent implements OnInit {
   @Output() onCancel: EventEmitter<any> = new EventEmitter();
   @Output() onNavigate: EventEmitter<any> = new EventEmitter();
   @Input() controllerId: string;
+  @Input() isWorkflow: boolean;
   submitted = false;
   deployTypes: Array<string> = [];
   results: any;
@@ -26,7 +28,8 @@ export class SearchComponent implements OnInit {
     active: false
   };
 
-  constructor(private coreService: CoreService, public modal: NzModalService) {
+  constructor(public coreService: CoreService, public modal: NzModalService,
+              private inventoryService: InventoryService, private workflowService: WorkflowService) {
   }
 
   ngOnInit(): void {
@@ -35,6 +38,11 @@ export class SearchComponent implements OnInit {
     this.deployTypes = Object.keys(this.ENUM).filter(key => isNaN(+key));
     this.getAgents();
     this.getFolderTree();
+    if (!this.isWorkflow) {
+      this.results = this.inventoryService.getSearchResult();
+    } else{
+      this.results = this.workflowService.getSearchResult();
+    }
   }
 
   private getAgents(): void {
@@ -72,11 +80,22 @@ export class SearchComponent implements OnInit {
       deployedOrReleased: this.searchObj.deployedOrReleased,
       returnType: this.searchObj.returnType,
     };
+    if (this.isWorkflow) {
+      obj.deployedOrReleased = true;
+    }
     if (this.searchObj.search) {
-      obj.search = this.searchObj.obj;
+      obj.search = this.searchObj.search;
     }
     if (this.searchObj.folders && this.searchObj.folders.length > 0) {
       obj.folders = this.searchObj.folders;
+    }
+    if (this.searchObj.advanced) {
+      if (this.searchObj.advanced.jobCriticality == null) {
+        delete this.searchObj.advanced.jobCriticality;
+      }
+      if (this.searchObj.advanced.agentName == null) {
+        delete this.searchObj.advanced.agentName;
+      }
     }
     if (!isEmpty(this.searchObj.advanced)) {
       obj.advanced = this.searchObj.advanced;
@@ -86,10 +105,24 @@ export class SearchComponent implements OnInit {
     }
     this.coreService.post('inventory/search', obj).subscribe((res) => {
       this.results = res.results;
+      if (!this.isWorkflow) {
+        this.inventoryService.setSearchResult(this.results);
+      } else{
+        this.workflowService.setSearchResult(this.results);
+      }
       this.submitted = false;
     }, () => {
       this.submitted = false;
     });
+  }
+
+  clear(): void {
+    this.results = [];
+    if (!this.isWorkflow) {
+      this.inventoryService.setSearchResult(this.results);
+    } else{
+      this.workflowService.setSearchResult(this.results);
+    }
   }
 
 }

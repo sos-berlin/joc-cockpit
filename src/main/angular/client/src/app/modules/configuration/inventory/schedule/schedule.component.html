@@ -147,12 +147,15 @@
         <div class="form-group row" *ngIf="variableList.length || schedule.configuration.variableSets.length">
           <label class="col-md-12 _600" translate>inventory.label.variableSets</label>
         </div>
-        <div *ngFor="let variableSet of schedule.configuration.variableSets; let j = index">
+        <div *ngFor="let variableSet of schedule.configuration.variableSets; let j = index" [ngClass]="{'b-t p-t' : j != 0}">
           <div class="form-group row">
             <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.orderName</label>
-            <div class="col-lg-9 col-xl-8 col-xxl-6">
-              <input type="text" maxlength="30" [readOnly]="isTrash || !permission.joc.inventory.manage" class="form-control" autocomplete="off" placeholder="{{'inventory.placeholder.orderName' | translate}}"
-                     name="orderName{{j}}" [(ngModel)]="variableSet.orderName" (blur)="saveJSON()">
+            <div class="col-lg-9 col-xl-8 col-xxl-6" [ngClass]="{ 'has-error' : (((orderName.dirty || orderName.touched) && orderName.invalid))}">
+              <input type="text" identifierValidation maxlength="30" [readOnly]="isTrash || !permission.joc.inventory.manage" class="form-control" autocomplete="off" placeholder="{{'inventory.placeholder.orderName' | translate}}"
+                     name="orderName{{j}}" #orderName="ngModel" [(ngModel)]="variableSet.orderName" (keypress)="onKeyPress($event, null)" (blur)="isOrderNameValid(variableSet, orderName, schedule.configuration.variableSets)">
+              <div *ngIf="orderName.invalid && (orderName.dirty || orderName.touched)" class="text-danger help-block">
+                <div *ngIf="orderName.errors.invalidIdentifier" translate>common.message.invalid</div>
+              </div>
               <div class="pos-abt" style="right: -6px; margin-top: -28px">
                 <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeVariableSet(j)" class="fa fa-times m-t-sm text-hover-color"></i></a>
               </div>
@@ -169,7 +172,7 @@
             <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" *ngIf="!variable.isTextField">
               <nz-select nzShowSearch name="name{{i}}{{j}}" [nzDisabled]="isTrash || !permission.joc.inventory.manage" nzPlaceHolder="{{'common.placeholder.selectVariable' | translate}}"
                          [(ngModel)]="variable.name" (ngModelChange)="checkVariableType(variable);saveJSON()">
-                <nz-option *ngFor="let list of variableList" [nzDisabled]="list.isSelected" [nzLabel]="list.name"
+                <nz-option *ngFor="let list of variableSet.variableList" [nzDisabled]="list.isSelected" [nzLabel]="list.name"
                            [nzValue]="list.name"></nz-option>
               </nz-select>
             </div>

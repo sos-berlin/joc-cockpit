@@ -71,9 +71,11 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    self = this;
     this.translate.get('monitor.label.inHours').subscribe(translatedValue => {
       this.yAxisLabel = translatedValue;
     });
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.renderTimeSheetHeader();
   }
 
@@ -174,7 +176,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
         do {
           const date = currentDate.getDate();
           if (currentDate >= firstDate && currentDate <= lastDate) {
-            headerDates.push(new Date(currentDate.setHours(0, 0, 0, 0)));
+            headerDates.push(new Date(currentDate));
           }
           currentDate.setDate(date + 1);
         }
@@ -183,7 +185,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
     } else {
       do {
         const date = currentDate.getDate();
-        headerDates.push(new Date(currentDate.setHours(0, 0, 0, 0)));
+        headerDates.push(new Date(currentDate));
         currentDate.setDate(date + 1);
       }
       while (currentDate.getDay() !== weekStart);
@@ -235,6 +237,17 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  private isAlreadyExist(value, data): boolean {
+    let isMatch = false;
+    for (const y in value) {
+      if (value[y].readyTime === data.readyTime && value[y].agentId === data.agentId) {
+        isMatch = true;
+        break;
+      }
+    }
+    return isMatch;
   }
 
   private checkMissingDates(): void{
@@ -291,22 +304,32 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
     this.runningTime = [];
     data.forEach((agent) => {
       agent.value = sortBy(agent.value, (i: any) => {
-        return i.date;
+        return i.readyTime;
       });
       const obj: any = {
         agentId: agent.key,
       };
       if (agent.value.length > 0) {
         const lastEntry = agent.value[agent.value.length - 1];
-        obj.total = (differenceInMilliseconds(this.filters.filter.endDate,
-          this.filters.filter.startDate) + (1000 * 60 * 60 * 24));
-        obj.time = Math.abs(lastEntry.totalRunningTime);
-        obj.value = Math.round((obj.time * 100) / obj.total);
-        obj.hours = (obj.total) / (1000 * 60 * 60 * 24)
-        if (isNaN(obj.value)) {
-          obj.value = 0;
+        if (lastEntry) {
+          let lastDate = this.filters.filter.endDate;
+          let dur1 = 0;
+          if (new Date(this.viewDate).getTime() < new Date(lastDate).getTime()) {
+            lastDate = this.viewDate;
+            dur1 = (86400000 - moment.duration(this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:SS')).asMilliseconds());
+          }
+
+          obj.total = ((differenceInMilliseconds(lastDate,
+            this.filters.filter.startDate) + (1000 * 60 * 60 * 24)) - (dur1));
+          console.log('lastDate agent', lastDate, obj.total)
+          obj.time = lastEntry.totalRunningTime;
+          obj.value = Math.round((obj.time * 100) / obj.total);
+          obj.hours = ((obj.total) / (1000 * 60 * 60 * 24)).toFixed(2);
+          if (isNaN(obj.value)) {
+            obj.value = 0;
+          }
+          this.runningTime.push(obj);
         }
-        this.runningTime.push(obj);
       }
     });
   }
@@ -350,7 +373,10 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
                   copyObj.date = date;
                   copyObj.readyTime = new Date(date).setHours(23, 59, 59, 59);
                   copyObj.lastKnownTime = null;
-                  mainObj.value.push(copyObj);
+                  copyObj.isShutdown = true;
+                  if (!this.isAlreadyExist(mainObj.value, copyObj)) {
+                    mainObj.value.push(copyObj);
+                  }
                 } else {
                   const couplingFailedDate = this.coreService.getDateByFormat(data.lastKnownTime, this.preferences.zone, 'YYYY-MM-DD');
                   if (this.coreService.getDateByFormat(data.readyTime, this.preferences.zone, 'YYYY-MM-DD') !== couplingFailedDate) {
@@ -358,7 +384,9 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
                     copyObj.date = date;
                     data.lastKnownTime = null;
                     copyObj.readyTime = new Date(date).setHours(0, 0, 0, 0);
-                    mainObj.value.push(copyObj);
+                    if (!this.isAlreadyExist(mainObj.value, copyObj)) {
+                      mainObj.value.push(copyObj);
+                    }
                   }
                 }
               });
@@ -386,14 +414,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
                     prev[j].lastKnownTime = null;
                     copyPrevObj.date = tempArr[i].value[x].date;
                     copyPrevObj.readyTime = new Date(copyPrevObj.date).setHours(0, 0, 0, 0);
-                    let isMatch = false;
-                    for (const y in tempArr[i].value) {
-                      if (tempArr[i].value[y].readyTime === copyPrevObj.readyTime) {
-                        isMatch = true;
-                        break;
-                      }
-                    }
-                    if (!isMatch) {
+                    if (!this.isAlreadyExist(tempArr[i].value, copyPrevObj)) {
                       tempArr[i].value.push(copyPrevObj);
                     }
                   }
@@ -414,6 +435,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
                   new Date(item.date).setHours(0, 0, 0, 0)) {
                   item.readyTime = new Date(tempArr[i].key).setHours(23, 59, 59, 0);
                   item.lastKnownTime = null;
+                  item.isShutdown = true;
                 }
               } else{
                 item.readyTime = new Date(tempArr[i].key).setHours(0, 0, 0, 0);
