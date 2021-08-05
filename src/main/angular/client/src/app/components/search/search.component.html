@@ -223,7 +223,7 @@
             [nzShowSizeChanger]="false">
             <thead>
             <tr>
-              <th nowrap *ngIf="!isWorkflow"><span translate>common.label.controllerId</span></th>
+              <th nowrap *ngIf="isControllerId"><span translate>common.label.controllerId</span></th>
               <th><span translate>common.label.name</span></th>
               <th><span translate>common.label.path</span></th>
             </tr>
@@ -231,7 +231,7 @@
             <tbody>
             <ng-template ngFor let-data [ngForOf]="ajaxTable.data">
               <tr class="cursor" (click)="navToObject(data)">
-                <td *ngIf="!isWorkflow">{{data.controllerId}}</td>
+                <td *ngIf="isControllerId">{{data.controllerId}}</td>
                 <td>
                   <span *ngIf="!isWorkflow" class="fa fa-check-circle-o orange text-xs w-11"
                         [ngClass]="{'fa-circle-o': !data.valid , 'fa-circle dark-blue' : data.deployed || data.released}"

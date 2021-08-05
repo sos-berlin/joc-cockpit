@@ -1261,7 +1261,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   invalidMsg: string;
   inventoryConf: any;
   allowedDatatype = ['String', 'Number', 'Boolean', 'Final'];
-  variableDeclarations = {parameters: [], allowUndeclared: false};
+  variableDeclarations = {parameters: []};
   document = {name: ''};
   fullScreen = false;
   subscription: Subscription;
@@ -1564,7 +1564,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   private updateToolbar(operation, cell, name = ''): void {
     $('#toolbar').find('img').each(function(index) {
-      if (index === 14) {
+      if (index === 13) {
         if (!cell && !name) {
           $(this).addClass('disable-link');
           $(this).attr('title', '');
@@ -1984,7 +1984,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           this.data.valid = res.valid;
         }
         this.jobs = [];
-        this.variableDeclarations = {parameters: [], allowUndeclared: false};
+        this.variableDeclarations = {parameters: []};
+        //this.variableDeclarations.allowUndeclared = false;
         this.orderPreparation = {};
         this.jobResourceNames = [];
         if (res.configuration) {
@@ -2057,7 +2058,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       this.addVariable();
     }
     if (this.orderPreparation && !isEmpty(this.orderPreparation)) {
-      this.variableDeclarations.allowUndeclared = this.orderPreparation.allowUndeclared;
+      //this.variableDeclarations.allowUndeclared = this.orderPreparation.allowUndeclared;
       if (this.orderPreparation.parameters && !isEmpty(this.orderPreparation.parameters)) {
         const temp = this.coreService.clone(this.orderPreparation.parameters);
         this.variableDeclarations.parameters = Object.entries(temp).map(([k, v]) => {
@@ -3756,8 +3757,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       $('#toolbar').find('img').each(function(index) {
         if (index === 13) {
           $(this).addClass('disable-link');
-        } else if (index === 14) {
-          $(this).addClass('disable-link');
         }
       });
       if (!isXML) {
@@ -4016,7 +4015,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
           self.cutCell = null;
           $('#toolbar').find('img').each(function(index) {
-            if (index === 14) {
+            if (index === 13) {
               $(this).addClass('disable-link');
             }
           });
@@ -7657,7 +7656,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   private clearCopyObj(): void {
     this.copyId = null;
     $('#toolbar').find('img').each(function(index) {
-      if (index === 14) {
+      if (index === 13) {
         $(this).addClass('disable-link');
       }
     });
@@ -8129,7 +8128,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         delete variableDeclarations.parameters;
       }
       this.orderPreparation = variableDeclarations;
-      this.orderPreparation.allowUndeclared = this.variableDeclarations.allowUndeclared;
+      //this.orderPreparation.allowUndeclared = this.variableDeclarations.allowUndeclared;
       flag = true;
     }
     if (flag) {

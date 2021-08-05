@@ -198,8 +198,8 @@
     <add as="Lock" template="Lock" style="symbol;image=./assets/mxgraph/images/symbols/lock-white.svg"
          icon="./assets/mxgraph/images/white-lock.png"/>
     <hr/>
-    <add as="FileWatcher" template="FileWatcher" style="fileWatcher" icon="./assets/mxgraph/images/white-fileWatcher.png"/>
-    <hr/>
+ <!--   <add as="FileWatcher" template="FileWatcher" style="fileWatcher" icon="./assets/mxgraph/images/white-fileWatcher.png"/>
+    <hr/>-->
     <add as="Paste" template="symbol" style="symbol" icon="./assets/mxgraph/images/white-paste.png"/>
   </mxDefaultToolbar>
 </mxEditor>

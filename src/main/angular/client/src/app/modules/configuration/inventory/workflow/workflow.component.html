@@ -489,13 +489,13 @@
             <i class="fa fa-minus-square-o" *ngIf="fullScreen"></i>
           </a>
         </div>
-        <div class="form-group row">
+<!--        <div class="form-group row">
           <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.allowUndeclared' | translate}}" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.allowUndeclared' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.allowUndeclared</label>
           <div class="col-md-8 col-lg-9">
             <label nz-checkbox [(ngModel)]="variableDeclarations.allowUndeclared" (nzCheckedChange)="updateOtherProperties('variable')" name="allowUndeclared"></label>
           </div>
-        </div>
+        </div>-->
         <div class="form-group row m-b-0 m-l-sm" *ngIf="variableDeclarations.parameters.length > 0">
           <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
           <div class="col-md-3 col-lg-3 m-b-sm" translate>common.label.type</div>

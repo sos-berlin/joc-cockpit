@@ -20,6 +20,7 @@ export class CreateTokenModalComponent implements OnInit {
   @Input() data: any;
   @Input() controllerId: any;
   token: any = {};
+  dateFormat: string;
   submitted = false;
   comments: any = {};
   preferences: any;
@@ -36,8 +37,24 @@ export class CreateTokenModalComponent implements OnInit {
     }
     this.zones = this.coreService.getTimeZoneList();
     this.display = this.preferences.auditLog;
+    this.dateFormat = this.getDateFormat(this.preferences.dateFormat);
     this.token.timezone = this.preferences.zone;
     this.comments.radio = 'predefined';
+  }
+
+  private getDateFormat(dateFormat: string): string {
+    if (!dateFormat) {
+      return 'dd-MM-yyyy HH:mm:ss';
+    }
+    dateFormat = dateFormat.replace('YY', 'yy');
+    dateFormat = dateFormat.replace('YY', 'yy');
+    dateFormat = dateFormat.replace('D', 'd');
+    dateFormat = dateFormat.replace('D', 'd');
+    if (dateFormat.match('A')) {
+      dateFormat = dateFormat.replace('A', 'a');
+    }
+    dateFormat = dateFormat.trim();
+    return dateFormat;
   }
 
   onSubmit(): void {
@@ -62,7 +79,7 @@ export class CreateTokenModalComponent implements OnInit {
         obj.auditLog.ticketLink = this.comments.ticketLink;
       }
     }
-    obj.validUntil = moment(obj.validUntil).format('YYYY-MM-DDTHH:mm:ss.sss') + 'Z';
+    obj.validUntil = moment(obj.validUntil).format('YYYY-MM-DDTHH:mm:ss') + '.000Z';
     this.coreService.post('token/create', obj).subscribe(res => {
       this.submitted = false;
       this.activeModal.close(res);

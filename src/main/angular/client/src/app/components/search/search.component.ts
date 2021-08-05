@@ -16,6 +16,7 @@ export class SearchComponent implements OnInit {
   @Input() controllerId: string;
   @Input() isWorkflow: boolean;
   submitted = false;
+  isControllerId = false;
   deployTypes: Array<string> = [];
   results: any;
   folders = [];
@@ -40,7 +41,10 @@ export class SearchComponent implements OnInit {
     this.getFolderTree();
     if (!this.isWorkflow) {
       this.results = this.inventoryService.getSearchResult();
-    } else{
+      if (this.results.length > 0 && this.results[0].controllerId) {
+        this.isControllerId = true;
+      }
+    } else {
       this.results = this.workflowService.getSearchResult();
     }
   }
@@ -82,6 +86,7 @@ export class SearchComponent implements OnInit {
     };
     if (this.isWorkflow) {
       obj.deployedOrReleased = true;
+      obj.controllerId = this.controllerId;
     }
     if (this.searchObj.search) {
       obj.search = this.searchObj.search;
@@ -105,8 +110,12 @@ export class SearchComponent implements OnInit {
     }
     this.coreService.post('inventory/search', obj).subscribe((res) => {
       this.results = res.results;
+      this.isControllerId = false;
       if (!this.isWorkflow) {
         this.inventoryService.setSearchResult(this.results);
+        if (this.results.length > 0 && this.results[0].controllerId) {
+          this.isControllerId = true;
+        }
       } else{
         this.workflowService.setSearchResult(this.results);
       }
