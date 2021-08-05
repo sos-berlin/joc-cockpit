@@ -3,7 +3,6 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
-import {AboutModalComponent} from '../../components/about-modal/about.component';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 
@@ -73,15 +72,6 @@ export class LoginComponent implements OnInit {
     }, () => {
       this.submitted = false;
       this.errorMsg = true;
-    });
-  }
-
-  about(): any {
-    this.modal.create({
-      nzTitle: null,
-      nzContent: AboutModalComponent,
-      nzFooter: null,
-      nzClosable: false
     });
   }
 }

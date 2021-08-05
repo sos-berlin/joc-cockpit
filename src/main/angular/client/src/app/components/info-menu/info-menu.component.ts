@@ -1,6 +1,6 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
-import {NzModalRef} from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-about',
@@ -54,4 +54,26 @@ export class AboutModalComponent implements OnInit {
       this.ref.detectChanges();
     });
   }
+}
+
+@Component({
+  selector: 'app-info-menu',
+  templateUrl: './info-menu.component.html'
+})
+export class InfoMenuComponent {
+  @Input() isHeader: boolean;
+
+  constructor(public coreService: CoreService, private modal: NzModalService) {
+  }
+
+  about(): any {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: AboutModalComponent,
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
+
 }

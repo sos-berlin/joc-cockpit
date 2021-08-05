@@ -6,7 +6,7 @@ import {isEmpty} from 'underscore';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../guard';
 import {DataService} from '../../services/data.service';
-import {AboutModalComponent} from '../about-modal/about.component';
+import {AboutModalComponent} from '../info-menu/info-menu.component';
 
 @Component({
   selector: 'app-header',

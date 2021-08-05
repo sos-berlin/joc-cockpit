@@ -12,10 +12,9 @@ import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {AppRoutingModule} from './app-routing.module';
 import {LoginModule} from './modules/login/login.module';
 import {AppComponent} from './app.component';
-import {AboutModalComponent} from './components/about-modal/about.component';
 import {AuthInterceptor} from './components/guard';
 import {LoggingService} from './services/logging.service';
-
+import {AboutModalComponent} from './components/info-menu/info-menu.component';
 
 registerLocaleData(en);
 
