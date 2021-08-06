@@ -837,8 +837,8 @@
     "button.examplesForUnix": "Workflow Examples for Unix",
     "button.examplesForWindows": "Workflow Examples for Windows",
     "tooltip.globalVariablesAndEmailSettings": "Default Job Resources for global variables and e-mail settings",
-    "tooltip.workflowExampleForUnix": "Workflow demo examples for use with Agents running for Unix",
-    "tooltip.workflowExampleForWindows": " Workflow demo examples for use with Agents running for Windows"
+    "tooltip.workflowExampleForUnix": "Workflow examples for use with Agents running for Unix",
+    "tooltip.workflowExampleForWindows": " Workflow examples for use with Agents running for Windows"
   },
   "inventory": {
     "label.validHeader": "Valid",
@@ -1384,7 +1384,7 @@
       "label.expiredKey": "Key has already expired",
       "label.noValidDate": "Key does not expire",
       "label.keyExpiredOn": "Key is valid until",
-      "label.certificateExpiredOn": "Certificate is valid until",
+      "label.certificateExpiredOn": "Certificate valid until",
       "label.newKey": "new key",
       "label.updateKeys": "Update Private Key/Certificate",
       "label.updatePublicKey": "Update Public Key/Certificate",
