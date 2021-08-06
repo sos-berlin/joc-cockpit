@@ -811,7 +811,7 @@
     "tab.dailyPlan": "Tagesplan"
   },
   "info": {
-    "label.welcome": "Welcome",
+    "label.welcome": "Willkommen",
     "--------COMMENT BOX BEGIN------------": "Link and buttons for information question mark icon in header",
     "button.aboutJS7": "Über JS7",
     "button.js7Download": "JS7 Herunterladen",
@@ -837,9 +837,9 @@
     "button.jobResourceDefaults": "Job-Ressourcen Voreinstellungen",
     "button.examplesForUnix": "Beispiele für Arbeitsabläufe mit Unix",
     "button.examplesForWindows": "Beispiele für Arbeitsabläufe mit Windows",
-    "button.gotIt": "Got it",
-    "button.remindMeLater": "Remind me Later",
-    "button.doNotRemindMe": "Do not remind me",
+    "button.gotIt": "Verstanden",
+    "button.remindMeLater": "Mich später erinnern",
+    "button.doNotRemindMe": "Mich nicht erinnern",
     "tooltip.globalVariablesAndEmailSettings": "Job-Ressourcen Voreinstellungen für globale Variablen und E-Mail",
     "tooltip.workflowExampleForUnix": "Beispiele für Arbeitsabläufe mit Agenten unter Unix",
     "tooltip.workflowExampleForWindows": "Beispiele für Arbeitsabläufe mit Agenten unter Windows"
@@ -1105,8 +1105,8 @@
           "joinVariables": "Auftragsvariablen aus Zweigen einer Fork-Instruktion werden in der entsprechenden Join-Instruktion dem Elternauftrag übergeben."
         },
         "forkList": {
-          "children": "Children",
-          "childToId": "Child to Id"
+          "children": "Listenvariable",
+          "childToId": "Abbildung Listenelement zu Auftragskennung"
         },
         "if": {
           "predicate": "Das Prädikat einer If-Instruktion stellt einen Ausdruck oder Vergleich dar, der zu 'wahr' oder 'falsch' evaluiert."
@@ -1251,7 +1251,7 @@
         "acknowledge": "Quittiert"
       },
       "menu": {
-        "acknowledge": "Acknowledge"
+        "acknowledge": "Quittieren"
       }
     }
   },
