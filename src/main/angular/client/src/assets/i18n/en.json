@@ -1248,10 +1248,10 @@
         "error": "Failed",
         "warning": "Warning",
         "recovered": "Recovered",
-        "acknowledge": "Acknowledgable"
+        "acknowledge": "Acknowledged"
       },
       "menu": {
-        "acknowledge": "Acknowledged"
+        "acknowledge": "Acknowledge"
       }
     }
   },
