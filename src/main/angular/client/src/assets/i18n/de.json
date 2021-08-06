@@ -1248,10 +1248,10 @@
         "error": "Fehlgeschlagen",
         "warning": "Warnung",
         "recovered": "Wiederhergestellt",
-        "acknowledge": "Quittierungsbedürftig"
+        "acknowledge": "Quittiert"
       },
       "menu": {
-        "acknowledge": "Quittiert"
+        "acknowledge": "Acknowledge"
       }
     }
   },

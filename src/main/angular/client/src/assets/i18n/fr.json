@@ -1248,7 +1248,7 @@
         "error": "Error",
         "warning": "Warning",
         "recovered": "Recovered",
-        "acknowledge": "Acknowledge"
+        "acknowledge": "Acknowledged"
       },
       "menu": {
         "acknowledge": "Acknowledge"
