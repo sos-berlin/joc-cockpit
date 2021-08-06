@@ -108,6 +108,7 @@
   "True": "true",
   "False": "false",
   "String": "String",
+  "List": "List",
   "Number": "Number",
   "Boolean": "Boolean",
   "Final": "Final",

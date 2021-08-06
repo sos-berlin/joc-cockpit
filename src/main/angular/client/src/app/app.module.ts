@@ -1,8 +1,11 @@
 import {ErrorHandler, Injectable, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {en_US, NZ_I18N} from 'ng-zorro-antd/i18n';
+import {en_US, NZ_I18N, fr_FR, de_DE, ja_JP} from 'ng-zorro-antd/i18n';
 import {registerLocaleData} from '@angular/common';
 import en from '@angular/common/locales/en';
+import fr from '@angular/common/locales/fr';
+import de from '@angular/common/locales/de';
+import ja from '@angular/common/locales/ja';
 import {FormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -16,6 +19,9 @@ import {AuthInterceptor} from './components/guard';
 import {LoggingService} from './services/logging.service';
 
 registerLocaleData(en);
+registerLocaleData(fr);
+registerLocaleData(de);
+registerLocaleData(ja);
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader  {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');

@@ -87,6 +87,7 @@
   "True": "vrai",
   "False": "faux",
   "String": "Chaîne de caractères",
+  "List": "List",
   "Number": "Nombre",
   "Boolean": "Booléen",
   "Final": "Final",

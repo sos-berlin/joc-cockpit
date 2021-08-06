@@ -11,7 +11,7 @@
   <div class="modal-body p-a">
     <div class="row">
       <div class="col-md-12 mono-font">
-        <textarea nz-input name="value" [(ngModel)]="data"
+        <textarea nz-input name="value" [(ngModel)]="data" [appAutofocus]="true"
                   placeholder="{{'common.placeholder.value' | translate}}"
                   [nzAutosize]="{ minRows: 8}"
         ></textarea>

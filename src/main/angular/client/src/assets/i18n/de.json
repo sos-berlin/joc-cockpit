@@ -87,6 +87,7 @@
   "True": "wahr",
   "False": "falsch",
   "String": "Zeichenkette",
+  "List": "List",
   "Number": "Zahl",
   "Boolean": "Wahrheitswert",
   "Final": "Final",

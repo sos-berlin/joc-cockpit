@@ -1260,7 +1260,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   objectType = InventoryObject.WORKFLOW;
   invalidMsg: string;
   inventoryConf: any;
-  allowedDatatype = ['String', 'Number', 'Boolean', 'Final'];
+  allowedDatatype = ['String', 'Number', 'Boolean', 'Final', 'List'];
   variableDeclarations = {parameters: []};
   document = {name: ''};
   fullScreen = false;
@@ -1662,7 +1662,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       nzContent: ImportComponent,
       nzClassName: 'lg',
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -1850,6 +1851,15 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   navToObj(name, type): void {
     this.dataService.reloadTree.next({navigate: {name, type}});
+  }
+
+  changeDataType(type, variable): void {
+    variable.value.default = '';
+    variable.value.final = '';
+    if (type === 'List') {
+      variable.value.listParameters = [];
+      this.addVariableToList(variable.value);
+    }
   }
 
   private init(): void {
@@ -2068,12 +2078,36 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             this.coreService.removeSlashToString(val, 'final');
           } else if (val.default) {
             this.coreService.removeSlashToString(val, 'default');
+          } else if (val.type === 'List') {
+            if (val.listParameters) {
+              val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
+                return {name: k1, value: v1};
+              });
+            } else{
+              this.addVariableToList(val);
+            }
           }
           return {name: k, value: val};
         });
       }
     }
   }
+
+  addVariableToList(variable): void {
+    const param = {
+      name: '',
+      value: {
+        type: 'String'
+      }
+    };
+    if (!variable.listParameters) {
+      variable.listParameters = [];
+    }
+    if (!this.coreService.isLastEntryEmpty(variable.listParameters, 'name', '')) {
+      variable.listParameters.push(param);
+    }
+  }
+
 
   addVariable(): void {
     const param = {
@@ -2089,12 +2123,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  checkDuplicateEntries(variable, index): void {
+  checkDuplicateEntries(variable, index, list): void {
     if (variable.name) {
-      for (let i = 0; i < this.variableDeclarations.parameters.length; i++) {
-        if (this.variableDeclarations.parameters[i].name === variable.name && i !== index) {
+      for (let i = 0; i < list.length; i++) {
+        if (list[i].name === variable.name && i !== index) {
           variable.name = '';
-          this.toasterService.pop('warning', this.variableDeclarations.parameters[i].name + ' is already exist');
+          this.toasterService.pop('warning', list[i].name + ' is already exist');
           break;
         }
       }
@@ -2116,6 +2150,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.updateOtherProperties('variable');
   }
 
+  removeVariableFromList(list, index){
+    list.splice(index, 1);
+  }
+
   onKeyPress($event): void {
     if ($event.which === '13' || $event.which === 13) {
       $event.preventDefault();
@@ -2132,7 +2170,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         data: data[type]
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -8108,7 +8147,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       const variableDeclarations = {parameters: []};
       let temp = this.coreService.clone(this.variableDeclarations.parameters);
       variableDeclarations.parameters = temp.filter((value) => {
-        if (value.value.type === 'Final') {
+        if (value.value.type === 'List') {
+          value.value.listParameters = this.coreService.keyValuePair(value.value.listParameters);
+        } else if (value.value.type === 'Final') {
           delete value.value.type;
           delete value.value.default;
         } else {

@@ -15,7 +15,7 @@
   <div class="modal-body p-a" style="min-height: 112px">
     <div class="row">
       <div class="col-md-12" *ngIf="isScript">
-        <div class="b-a">
+        <div class="b-a" style="pointer-events: none">
           <ngx-codemirror name="cm" [(ngModel)]="data" [options]="cmOption"></ngx-codemirror>
         </div>
       </div>
