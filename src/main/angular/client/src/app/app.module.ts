@@ -14,7 +14,6 @@ import {LoginModule} from './modules/login/login.module';
 import {AppComponent} from './app.component';
 import {AuthInterceptor} from './components/guard';
 import {LoggingService} from './services/logging.service';
-import {AboutModalComponent} from './components/info-menu/info-menu.component';
 
 registerLocaleData(en);
 
@@ -35,8 +34,7 @@ export class MyErrorHandler implements ErrorHandler {
 
 @NgModule({
   declarations: [
-    AppComponent,
-    AboutModalComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,

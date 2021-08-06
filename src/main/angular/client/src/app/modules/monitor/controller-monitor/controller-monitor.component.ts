@@ -295,6 +295,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
         this.ganttData.push(obj);
       }
     });
+    this.ganttData = this.ganttData.reverse();
   }
 
   setView(view): void {

@@ -37,7 +37,7 @@
           <span translate>monitor.label.runningTime</span>
         </h3>
       </div>
-      <div class="box-body p-a" style="height: 292px">
+      <div class="box-body p-a" style="height: 292px;overflow: auto">
         <div class="row">
           <div class="col-sm-12 col-md-6 text-center" [ngClass]="{'col-md-12' : runningTime.length === 1}" *ngFor="let item of runningTime">
             <div class="text-dark _600 m-t">{{item.agentId}}</div>

@@ -101,6 +101,12 @@ export class SearchComponent implements OnInit {
       if (this.searchObj.advanced.agentName == null) {
         delete this.searchObj.advanced.agentName;
       }
+      if (this.searchObj.advanced.jobCountFrom === '') {
+        delete this.searchObj.advanced.jobCountFrom;
+      }
+      if (this.searchObj.advanced.jobCountTo === '') {
+        delete this.searchObj.advanced.jobCountTo;
+      }
     }
     if (!isEmpty(this.searchObj.advanced)) {
       obj.advanced = this.searchObj.advanced;

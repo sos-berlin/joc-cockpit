@@ -110,7 +110,7 @@
                 <nz-dropdown-menu #option="nzDropdownMenu" role="menu" >
                   <ul nz-menu>
                     <li nz-menu-item (click)="acknowledge(notify)">
-                      <a translate>monitor.notification.button.acknowledge</a>
+                      <a translate>monitor.notification.menu.acknowledge</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
@@ -164,7 +164,13 @@
               </ng-template>
             </td>
             <td><span *ngIf="notify.job" [innerHtml]="notify.job.exitCode | highlight : filters.filter.searchText"></span></td>
-            <td><span [innerHtml]="notify.message | highlight : filters.filter.searchText"></span></td>
+            <td>
+              <span [innerHtml]="notify.message | highlight : filters.filter.searchText"></span>
+              <div *ngIf="notify.acknowledgement">
+                <b translate>monitor.notification.label.comment</b> :
+                <span>{{notify.acknowledgement.comment}}</span>
+              </div>
+            </td>
             <td><span [innerHtml]="notify.created | stringToDate | highlight : filters.filter.searchText"></span></td>
           </tr>
           <ng-container *ngIf="notify.show">

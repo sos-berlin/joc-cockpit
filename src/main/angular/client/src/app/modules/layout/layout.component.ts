@@ -2,6 +2,7 @@ import {Component, HostListener, OnInit, OnDestroy, ViewChild} from '@angular/co
 import {ActivatedRoute, NavigationEnd, Router, RouterEvent} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
+import {NzModalService} from 'ng-zorro-antd/modal';
 import {Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
 import {isEmpty} from 'underscore';
@@ -10,6 +11,7 @@ import {CoreService} from '../../services/core.service';
 import {DataService} from '../../services/data.service';
 import {AuthService} from '../../components/guard';
 import {HeaderComponent} from '../../components/header/header.component';
+import {StepGuideComponent} from '../../components/info-menu/info-menu.component';
 
 declare const $: any;
 
@@ -36,6 +38,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   isTouch = false;
   isProfileLoaded = false;
   isPropertiesLoaded = false;
+  isPopupOpen = false;
   count = 0;
   count2 = 0;
 
@@ -44,7 +47,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   constructor(private coreService: CoreService, private route: ActivatedRoute, private authService: AuthService, private router: Router,
               private dataService: DataService, public translate: TranslateService, private toasterService: ToasterService,
-              private nzConfigService: NzConfigService) {
+              private nzConfigService: NzConfigService, private modal: NzModalService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -461,6 +464,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
           this.logout('timeout');
         }
       }
+      this.openStepGuideModal();
     }, 3000);
   }
 
@@ -596,5 +600,36 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, true);
     this.loadSettingConfiguration();
+  }
+
+  private openStepGuideModal(): void {
+    if (!this.isPopupOpen) {
+      if (this.router.url && !(this.router.url.match(/dashboard/) || this.router.url.match(/configuration\/inventory/))) {
+        return;
+      }
+      this.isPopupOpen = true;
+      if (localStorage.getItem('$SOS$GUIDESTEP') && localStorage.getItem('$SOS$GUIDESTEP') !== 'REMINDMELATER') {
+        return;
+      }
+      const date = localStorage.getItem('$SOS$REMINDMEAFTER');
+      if (date) {
+        if (parseInt(date, 10) > new Date().getTime()) {
+          return;
+        }
+      }
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: StepGuideComponent,
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        localStorage.setItem('$SOS$GUIDESTEP', result);
+        if (result === 'REMINDMELATER') {
+          localStorage.setItem('$SOS$REMINDMEAFTER', (new Date().setDate(new Date().getDate() + 1)).toString());
+        }
+      });
+    }
   }
 }

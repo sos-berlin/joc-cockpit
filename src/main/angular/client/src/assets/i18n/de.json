@@ -811,6 +811,7 @@
     "tab.dailyPlan": "Tagesplan"
   },
   "info": {
+    "label.welcome": "Welcome",
     "--------COMMENT BOX BEGIN------------": "Link and buttons for information question mark icon in header",
     "button.aboutJS7": "Über JS7",
     "button.js7Download": "JS7 Herunterladen",
@@ -836,6 +837,9 @@
     "button.jobResourceDefaults": "Job-Ressourcen Voreinstellungen",
     "button.examplesForUnix": "Beispiele für Arbeitsabläufe mit Unix",
     "button.examplesForWindows": "Beispiele für Arbeitsabläufe mit Windows",
+    "button.gotIt": "Got it",
+    "button.remindMeLater": "Remind me Later",
+    "button.doNotRemindMe": "Do not remind me",
     "tooltip.globalVariablesAndEmailSettings": "Job-Ressourcen Voreinstellungen für globale Variablen und E-Mail",
     "tooltip.workflowExampleForUnix": "Beispiele für Arbeitsabläufe mit Agenten unter Unix",
     "tooltip.workflowExampleForWindows": "Beispiele für Arbeitsabläufe mit Agenten unter Windows"
@@ -1144,6 +1148,8 @@
     "search": {
       "label": {
         "noDataMatched": "Keine Treffer gefunden",
+        "recordFound": "record found",
+        "recordsFound": "records found",
         "searchResult": "Suchergebnis",
         "searchHeading": "Ergebnisse filtern",
         "search": "Suche",
@@ -1243,6 +1249,9 @@
         "warning": "Warnung",
         "recovered": "Wiederhergestellt",
         "acknowledge": "Quittierungsbedürftig"
+      },
+      "menu": {
+        "acknowledge": "Acknowledge"
       }
     }
   },

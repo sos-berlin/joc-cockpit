@@ -10,7 +10,7 @@ import {CoreService} from '../../services/core.service';
       <h4 class="modal-title">
         <span translate>info.button.aboutJS7</span>
       </h4>
-      <button type="button" class="close" aria-label="Close" (click)="modal.destroy()">
+      <button type="button" class="close" aria-label="Close" (click)="modalService.destroy()">
         <span aria-hidden="true" class="fa fa-times-circle"></span>
       </button>
     </div>
@@ -45,7 +45,7 @@ import {CoreService} from '../../services/core.service';
 })
 export class AboutModalComponent implements OnInit {
   versionData: any = {};
-  constructor(public modal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef) {
+  constructor(public modalService: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -57,13 +57,26 @@ export class AboutModalComponent implements OnInit {
 }
 
 @Component({
+  selector: 'app-step-guide',
+  templateUrl: './step-guide-dialog.component.html'
+})
+export class StepGuideComponent {
+  constructor(public modalService: NzModalRef) {
+  }
+
+  onSubmit(type): void {
+    this.modalService.close(type);
+  }
+}
+
+@Component({
   selector: 'app-info-menu',
   templateUrl: './info-menu.component.html'
 })
 export class InfoMenuComponent {
   @Input() isHeader: boolean;
 
-  constructor(public coreService: CoreService, private modal: NzModalService) {
+  constructor(private modal: NzModalService) {
   }
 
   about(): any {

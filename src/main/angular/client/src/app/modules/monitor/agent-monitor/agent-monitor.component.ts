@@ -237,6 +237,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
         }
       }
     });
+    this.agents = this.agents.reverse();
   }
 
   private isAlreadyExist(value, data): boolean {
