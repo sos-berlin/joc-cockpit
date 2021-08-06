@@ -299,7 +299,7 @@
     "label.planned": "geplant",
     "label.failed": "fehlgeschlagen",
     "label.completed": "abgeschlossen",
-    "label.submitted": "Submitted",
+    "label.submitted": "Übermittelt",
     "label.folders": "Ordner",
     "label.name": "Name",
     "label.value": "Wert",
@@ -331,7 +331,7 @@
     "button.apply": "Anwenden",
     "button.cancel": "Abbrechen",
     "button.download": "Herunterladen",
-    "button.clear": "Inhalt löschen",
+    "button.clear": "Trefferliste leeren",
     "button.close": "Schließen",
     "button.done": "Übernehmen",
     "button.edit": "Editieren",
@@ -1203,7 +1203,7 @@
   },
   "monitor": {
     "label": {
-      "agentAvailability": "Verfügbarkeit Agent",
+      "agentAvailability": "Verfügbarkeit Agenten",
       "controllerAvailability": "Verfügbarkeit Controller",
       "notification": "Benachrichtigungen",
       "overview": "Übersicht",
@@ -1242,7 +1242,7 @@
         "error": "Fehlgeschlagen",
         "warning": "Warnung",
         "recovered": "Wiederhergestellt",
-        "acknowledge": "Quittierungsbedürftig"
+        "acknowledge": "Quittiert"
       }
     }
   },

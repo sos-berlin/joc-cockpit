@@ -1243,7 +1243,7 @@
         "error": "Failed",
         "warning": "Warning",
         "recovered": "Recovered",
-        "acknowledge": "Acknowledgable"
+        "acknowledge": "Acknowledged"
       }
     }
   },
