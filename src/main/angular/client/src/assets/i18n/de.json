@@ -1148,10 +1148,10 @@
     "search": {
       "label": {
         "noDataMatched": "Keine Treffer gefunden",
-        "recordFound": "record found",
-        "recordsFound": "records found",
+        "recordFound": "Treffer gefunden",
+        "recordsFound": "Treffer gefunden",
         "searchResult": "Suchergebnis",
-        "searchHeading": "Ergebnisse filtern",
+        "searchHeading": "Ergebnis filtern",
         "search": "Suche",
         "folders": "Ordner",
         "currentController": "Aktueller Controller",
@@ -1169,7 +1169,7 @@
         "from": "Von",
         "to": "Bis",
         "jobName": "Job Name",
-        "jobCriticality": "Job Kritikalität",
+        "jobCriticality": "Job-Kritikalität",
         "argument": "Argument"
       },
       "button": {
