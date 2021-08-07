@@ -1,6 +1,7 @@
 import {NgModule} from '@angular/core';
 import {OrderModule} from 'ngx-order-pipe';
 import {NzTableModule} from 'ng-zorro-antd/table';
+import {NzIconModule} from 'ng-zorro-antd/icon';
 import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
 import {NzSelectModule} from 'ng-zorro-antd/select';
 import {NzTreeModule} from 'ng-zorro-antd/tree';
@@ -51,7 +52,7 @@ import {WorkflowTreeStructureComponent} from '../../components/workflow-tree-str
 import {SearchComponent} from '../../components/search/search.component';
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
-  NzInputNumberModule, NzTreeModule, NzSpinModule,
+  NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule,
   NzSelectModule, NzInputModule, NzMessageModule, NzCheckboxModule, NzRadioModule,
   NzTreeSelectModule, NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, OrderModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,

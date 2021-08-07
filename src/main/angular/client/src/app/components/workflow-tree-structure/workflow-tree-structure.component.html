@@ -49,7 +49,7 @@
   <ul style="margin-bottom: 0">
     <li (dragover)="drag($event);" (dragend)="dragend($event)">
       <div class="hover" [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}" id="{{instruction.positionString}}"
-        *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Lock'">
+        *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'ForkList' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Lock'">
         <div class="btn-group dropdown" style="margin-left: -10px" *ngIf="instruction.TYPE === 'If'">
           <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
                   type="button">
@@ -189,13 +189,7 @@
             </div>
           </div>
       </div>
-      <div [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}" id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'Retry' && (instruction.show)">
-        <div>
-          <app-workflow-tree-structure [disabledDrag]="disabledDrag"
-                    [configuration]="instruction" [jobs]="jobs" [orders]="orders" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-workflow-tree-structure>
-        </div>
-      </div>
-      <div [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}" id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'Lock' && (instruction.show)">
+      <div [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}" id="{{instruction.positionString}}" *ngIf="(instruction.TYPE === 'Retry' || instruction.TYPE === 'Lock' || instruction.TYPE === 'ForkList') && (instruction.show)">
         <div>
           <app-workflow-tree-structure [disabledDrag]="disabledDrag"
                     [configuration]="instruction" [jobs]="jobs" [orders]="orders" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-workflow-tree-structure>

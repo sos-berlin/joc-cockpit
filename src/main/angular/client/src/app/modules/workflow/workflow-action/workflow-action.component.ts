@@ -2,7 +2,7 @@ import {Component, OnInit, Input, ChangeDetectorRef, Output, EventEmitter} from 
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Router} from '@angular/router';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import {isEmpty} from 'underscore';
+import {isEmpty, isArray} from 'underscore';
 import * as moment from 'moment';
 import {CoreService} from '../../../services/core.service';
 import {ValueEditorComponent} from '../../../components/value-editor/value.component';
@@ -19,6 +19,7 @@ export class AddOrderModalComponent implements OnInit {
 
   order: any = {};
   arguments: any = [];
+  forkListVariables: any = [];
   dateFormat: any;
   display: any;
   comments: any = {};
@@ -45,16 +46,38 @@ export class AddOrderModalComponent implements OnInit {
     if (this.workflow.orderPreparation && this.workflow.orderPreparation.parameters && !isEmpty(this.workflow.orderPreparation.parameters)) {
       this.variableList = Object.entries(this.workflow.orderPreparation.parameters).map(([k, v]) => {
         const val: any = v;
-        if (!val.final) {
-          if (!val.default && val.default !== false && val.default !== 0) {
-            this.arguments.push({name: k, type: val.type, isRequired: true});
-          } else{
-            this.coreService.removeSlashToString(val, 'default');
+        if (val.type !== 'List') {
+          if (!val.final) {
+            if (!val.default && val.default !== false && val.default !== 0) {
+              this.arguments.push({name: k, type: val.type, isRequired: true});
+            } else {
+              this.coreService.removeSlashToString(val, 'default');
+            }
+          }
+        } else {
+          console.log(k, val);
+          const actualList = [];
+          if(val.listParameters) {
+            if (isArray(val.listParameters)) {
+              val.listParameters.forEach((item) => {
+                actualList.push({name: item.name, type: item.value.type});
+              });
+            } else {
+              val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
+                const val1: any = v1;
+                actualList.push({name: k1, type: val1.type});
+                return {name: k1, value: val1};
+              });
+            }
+            this.forkListVariables.push({name: k, list: val.listParameters, actualList});
           }
         }
         return {name: k, value: val};
       });
       this.variableList = this.variableList.filter((item) => {
+        if (item.value.type === 'List') {
+          return false;
+        }
         return !item.value.final;
       });
     }
@@ -62,7 +85,7 @@ export class AddOrderModalComponent implements OnInit {
   }
 
   checkVariableType(argument): void {
-    let obj = this.workflow.orderPreparation.parameters[argument.name];
+    const obj = this.workflow.orderPreparation.parameters[argument.name];
     if (obj) {
       argument.type = obj.type;
       if (!obj.default && obj.default !== false && obj.default !== 0) {
@@ -124,6 +147,21 @@ export class AddOrderModalComponent implements OnInit {
         order.arguments = this.coreService.keyValuePair(argu);
       }
     }
+    if (this.forkListVariables && this.forkListVariables.length > 0) {
+      if (!order.arguments) {
+        order.arguments = {};
+      }
+      this.forkListVariables.forEach((item) => {
+        order.arguments[item.name] = [];
+        if (item.actualList) {
+          item.actualList.forEach((data) => {
+            const listObj = {};
+            listObj[data.name] = data.value;
+            order.arguments[item.name].push(listObj);
+          });
+        }
+      });
+    }
     obj.orders.push(order);
     obj.auditLog = {};
     if (this.comments.comment) {
@@ -141,6 +179,26 @@ export class AddOrderModalComponent implements OnInit {
     }, err => {
       this.submitted = false;
     });
+  }
+
+  addVariableToList(list): void {
+    console.log(list);
+    const param: any = {
+      name: '',
+      value: ''
+    };
+    if (!this.coreService.isLastEntryEmpty(list, 'name', '')) {
+      list.push(param);
+    }
+  }
+
+  checkVariableTypeForForkList(argument, list): void {
+    for (const i in list) {
+      if (list[i].name === argument.name) {
+        argument.type = list[i].type;
+        break;
+      }
+    }
   }
 
   addArgument(isNew = false): void {
@@ -161,6 +219,10 @@ export class AddOrderModalComponent implements OnInit {
   removeArgument(index): void {
     this.arguments.splice(index, 1);
     this.updateSelectItems();
+  }
+
+  removeVariableFromList(index, list): void {
+    list.splice(index, 1);
   }
 
   onKeyPress($event): void {

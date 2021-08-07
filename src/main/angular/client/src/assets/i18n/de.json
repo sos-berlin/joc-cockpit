@@ -843,7 +843,9 @@
     "button.doNotRemindMe": "Mich nicht erinnern",
     "tooltip.globalVariablesAndEmailSettings": "Job-Ressourcen Voreinstellungen für globale Variablen und E-Mail",
     "tooltip.workflowExampleForUnix": "Beispiele für Arbeitsabläufe mit Agenten unter Unix",
-    "tooltip.workflowExampleForWindows": "Beispiele für Arbeitsabläufe mit Agenten unter Windows"
+    "tooltip.workflowExampleForWindows": "Beispiele für Arbeitsabläufe mit Agenten unter Windows",
+    "message.line1": "To give you an easy start, we suggest that you download some presets that you can import into JOC Cockpit from the Configuration View. After import the Defaults.zip archive will create a folder with the same name that includes Job Resources to create global %Job Environment Variables available% to your shell jobs.",
+    "message.line2": "The Demo.tar.gz and Demo.zip archives include examples for workflows and jobs for operation with Agents on Unix and Windows respectively. The examples can be helpful to create your own workflows and job dependencies, for details see %instructions%."
   },
   "inventory": {
     "label.validHeader": "Gültig",
@@ -1252,7 +1254,8 @@
         "acknowledge": "Quittiert"
       },
       "menu": {
-        "acknowledge": "Quittieren"
+        "acknowledge": "Quittieren",
+        "bulkAcknowledge": "Acknowledge"
       }
     }
   },
@@ -1272,6 +1275,7 @@
     "label.orderFound": "Auftrag gefunden",
     "label.ordersFound": "Aufträge gefunden",
     "label.lastOutcome": "Letztes Ergebnis",
+    "label.variableList": "Variable List",
     "button.allOrders": "Alle Aufträge",
     "button.cancel": "Abbrechen",
     "button.startNow": "Jetzt starten",

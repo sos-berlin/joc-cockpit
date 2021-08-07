@@ -1035,6 +1035,11 @@ export class ScriptEditorComponent implements AfterViewInit {
         localStorage.$SOS$SCRIPTWINDOWHIGHT = x.size.height;
       }
     });
+    setTimeout(() => {
+      if (this.cm && this.cm.codeMirror) {
+        this.cm.codeMirror.focus();
+      }
+    }, 500);
   }
 
   @HostListener('document:mousemove', ['$event'])
@@ -1245,6 +1250,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   extraConfiguration: any = {};
   jobs: any = [];
   jobResourceNames: any = [];
+  forkListVariables: any = [];
+  listOfParams: any = [];
   orderPreparation: any = {};
   workflow: any = {};
   history = {past: [], present: {}, future: [], type: 'new'};
@@ -1854,11 +1861,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   changeDataType(type, variable): void {
-    variable.value.default = '';
-    variable.value.final = '';
     if (type === 'List') {
+      delete variable.value.default;
+      delete variable.value.final;
       variable.value.listParameters = [];
       this.addVariableToList(variable.value);
+    } else{
+      variable.value.default = '';
+      variable.value.final = '';
     }
   }
 
@@ -2068,24 +2078,26 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       this.addVariable();
     }
     if (this.orderPreparation && !isEmpty(this.orderPreparation)) {
-      //this.variableDeclarations.allowUndeclared = this.orderPreparation.allowUndeclared;
+      // this.variableDeclarations.allowUndeclared = this.orderPreparation.allowUndeclared;
       if (this.orderPreparation.parameters && !isEmpty(this.orderPreparation.parameters)) {
         const temp = this.coreService.clone(this.orderPreparation.parameters);
         this.variableDeclarations.parameters = Object.entries(temp).map(([k, v]) => {
           const val: any = v;
-          if (val.final) {
-            val.type = 'Final';
-            this.coreService.removeSlashToString(val, 'final');
-          } else if (val.default) {
-            this.coreService.removeSlashToString(val, 'default');
-          } else if (val.type === 'List') {
+          if (val.type === 'List') {
+            delete val.default;
+            delete val.final;
             if (val.listParameters) {
               val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
                 return {name: k1, value: v1};
               });
-            } else{
+            } else {
               this.addVariableToList(val);
             }
+          } else if (val.final) {
+            val.type = 'Final';
+            this.coreService.removeSlashToString(val, 'final');
+          } else if (val.default) {
+            this.coreService.removeSlashToString(val, 'default');
           }
           return {name: k, value: val};
         });
@@ -2150,8 +2162,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.updateOtherProperties('variable');
   }
 
-  removeVariableFromList(list, index){
+  removeVariableFromList(list, index): void{
     list.splice(index, 1);
+    this.updateOtherProperties('variable');
   }
 
   onKeyPress($event): void {
@@ -2280,6 +2293,32 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           this.selectedNode.obj.limit = conf.configuration.limit || 1;
         }
       });
+    }
+  }
+
+  selectListForForkList(value): void {
+    this.listOfParams = [];
+    for (const i in this.forkListVariables) {
+      if (this.forkListVariables[i].name === value) {
+        if (this.forkListVariables[i].value && this.forkListVariables[i].value.listParameters) {
+          this.listOfParams = this.forkListVariables[i].value.listParameters;
+        }
+        break;
+      }
+    }
+  }
+
+  private getListOfVariables(obj): void {
+    this.forkListVariables = [];
+    if (this.variableDeclarations.parameters && this.variableDeclarations.parameters.length > 0) {
+      this.variableDeclarations.parameters.forEach((param) => {
+        if (param.value && param.value.type === 'List') {
+          this.forkListVariables.push(param);
+        }
+      });
+    }
+    if (obj.children) {
+      this.selectListForForkList(obj.children);
     }
   }
 
@@ -6120,6 +6159,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         };
         if (cell.value.tagName === 'Lock') {
           self.getLimit();
+        } else if (cell.value.tagName === 'ForkList') {
+          self.getListOfVariables(obj);
         }
       }
       self.ref.detectChanges();
@@ -7967,16 +8008,16 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             json.instructions[x].count = countObj;
           }
           if (json.instructions[x].TYPE === 'ForkList') {
-            json.instructions[x].workflow = {
-              instructions: json.instructions[x].instructions
-            };
             const childrenObj = clone(json.instructions[x].children);
             const childToIdObj = clone(json.instructions[x].childToId);
-            delete json.instructions[x].instructions;
             delete json.instructions[x].children;
             delete json.instructions[x].childToId;
             json.instructions[x].children = childrenObj;
             json.instructions[x].childToId = childToIdObj;
+            json.instructions[x].workflow = {
+              instructions: json.instructions[x].instructions
+            };
+            delete json.instructions[x].instructions;
           }
           if (json.instructions[x].catch) {
             json.instructions[x].catch.id = undefined;
@@ -8148,6 +8189,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       let temp = this.coreService.clone(this.variableDeclarations.parameters);
       variableDeclarations.parameters = temp.filter((value) => {
         if (value.value.type === 'List') {
+          delete value.value.default;
+          delete value.value.final;
           value.value.listParameters = this.coreService.keyValuePair(value.value.listParameters);
         } else if (value.value.type === 'Final') {
           delete value.value.type;

@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-about',
@@ -60,8 +61,25 @@ export class AboutModalComponent implements OnInit {
   selector: 'app-step-guide',
   templateUrl: './step-guide-dialog.component.html'
 })
-export class StepGuideComponent {
-  constructor(public modalService: NzModalRef) {
+export class StepGuideComponent implements OnInit {
+  line1: string;
+  line2: string;
+
+  constructor(public modalService: NzModalRef, private translate: TranslateService) {
+  }
+
+  static convertTextToLink(value: string, link): string {
+    return value.replace(new RegExp(/%(.*)%/, 'gi'),
+      '<a target="_blank" href="' + link + '" class="text-primary text-u-l">$1</a>');
+  }
+
+  ngOnInit(): void {
+    this.translate.get('info.message.line1').subscribe(translatedValue => {
+      this.line1 = StepGuideComponent.convertTextToLink(translatedValue, 'https://kb.sos-berlin.com/x/mQeGAw');
+    });
+    this.translate.get('info.message.line2').subscribe(translatedValue => {
+      this.line2 = StepGuideComponent.convertTextToLink(translatedValue, 'https://kb.sos-berlin.com/x/mQeGAw');
+    });
   }
 
   onSubmit(type): void {
