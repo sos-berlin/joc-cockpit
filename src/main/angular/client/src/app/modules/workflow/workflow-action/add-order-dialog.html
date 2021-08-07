@@ -88,8 +88,7 @@
                      [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                   <nz-input-number [required]="true" #value="ngModel"
                                    nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"
-                                   [nzMin]="0" [nzStep]="1" name="_value{{i}}" [(ngModel)]="argument.value"
-                                   (keypress)="onKeyPress($event)"></nz-input-number>
+                                   [nzMin]="0" [nzStep]="1" name="_value{{i}}" [(ngModel)]="argument.value"></nz-input-number>
                   <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                        class="text-danger help-block">
                     <div *ngIf="value.errors.required">
@@ -118,10 +117,7 @@
                 <div class="col-md-6 col-lg-6 m-b-sm"
                      [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                   <input #value="ngModel" [required]="true" autocomplete="off" type="text" class="form-control"
-                         name="_value{{i}}" (keypress)="onKeyPress($event)"
-                         [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
-                  <i *ngSwitchDefault class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline"
-                     (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
+                         name="_value{{i}}" [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
                   <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                        class="text-danger help-block">
                     <div *ngIf="value.errors.required">

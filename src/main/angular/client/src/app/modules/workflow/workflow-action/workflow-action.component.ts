@@ -55,9 +55,8 @@ export class AddOrderModalComponent implements OnInit {
             }
           }
         } else {
-          console.log(k, val);
           const actualList = [];
-          if(val.listParameters) {
+          if (val.listParameters) {
             if (isArray(val.listParameters)) {
               val.listParameters.forEach((item) => {
                 actualList.push({name: item.name, type: item.value.type});
