@@ -188,8 +188,9 @@
           <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.children' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.children</label>
           <div class="col-md-8 col-lg-9">
-            <input type="text" class="form-control" [appAutofocus]="true" required #children="ngModel" name="children"
-                             [(ngModel)]="selectedNode.obj.children">
+            <nz-select nzShowSearch name="children" required #children="ngModel" [(ngModel)]="selectedNode.obj.children" (ngModelChange)="selectListForForkList($event)">
+              <nz-option *ngFor="let item of forkListVariables" [nzLabel]="item.name" [nzValue]="item.name"></nz-option>
+            </nz-select>
             <div *ngIf="children.invalid && (children.dirty || children.touched)"
                  class="text-danger help-block">
               <div *ngIf="children.errors.required">
@@ -202,8 +203,9 @@
           <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.childToId' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.childToId</label>
           <div class="col-md-8 col-lg-9">
-            <input type="text" class="form-control"
-                   name="childToId" [(ngModel)]="selectedNode.obj.childToId">
+            <nz-select nzAllowClear name="childToId" [(ngModel)]="selectedNode.obj.childToId">
+              <nz-option *ngFor="let item of listOfParams" [nzLabel]="item.name" [nzValue]="item.name"></nz-option>
+            </nz-select>
           </div>
         </div>
       </div>
@@ -556,17 +558,16 @@
               <div class="col-md-5 col-lg-5 m-b-sm" translate>common.label.name</div>
               <div class="col-md-7 col-lg-7 m-b-sm" translate>common.label.value</div>
             </div>
-            <ng-container *ngIf="variable.value.type === 'List'">
+            <ng-container class="b-b p-b-sm" *ngIf="variable.value.type === 'List'">
               <div class="form-group col-md-12 row m-b-0 p-r-0"
                    *ngFor="let param of variable.value.listParameters; let j = index">
-                <div class="pos-abt" style="margin-top: 5px;left:4px;font-size:16px" (click)="addVariableToList(variable.value)">
-                  <a class="text-primary"><i class="fa fa-plus"></i></a>
+                <div *ngIf="j === variable.value.listParameters.length - 1" class="pos-abt cursor" style="margin-top: 5px;left:4px;font-size:16px" (click)="addVariableToList(variable.value)">
+                  <a class="text-primary-hover"><i class="fa fa-plus"></i></a>
                 </div>
                 <div class="col-md-5 col-lg-5 m-b-sm p-r-0"
                      [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
                   <input [readonly]="isTrash" identifierValidation #name="ngModel" autocomplete="off" type="text"
-                         class="form-control"
-                         name="name{{i}}{{j}}"
+                         class="form-control" name="name{{i}}{{j}}"
                          [(ngModel)]="param.name" placeholder="{{'common.placeholder.name' | translate}}"
                          (blur)="checkDuplicateEntries(param, j, variable.value.listParameters)">
                   <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)"
@@ -575,7 +576,8 @@
                   </div>
                 </div>
                 <div class="col-md-6 col-lg-6 m-b-sm p-r-0">
-                  <nz-select [nzDisabled]="isTrash" name="type{{i}}{{j}}" [(ngModel)]="param.value.type">
+                  <nz-select [nzDisabled]="isTrash" name="type{{i}}{{j}}" [(ngModel)]="param.value.type"
+                             (ngModelChange)="updateOtherProperties('variable')">
                     <nz-option [nzLabel]="'String' | translate" [nzValue]="'String'"></nz-option>
                     <nz-option [nzLabel]="'Number' | translate" [nzValue]="'Number'"></nz-option>
                     <nz-option [nzLabel]="'Boolean' | translate" [nzValue]="'Boolean'"></nz-option>

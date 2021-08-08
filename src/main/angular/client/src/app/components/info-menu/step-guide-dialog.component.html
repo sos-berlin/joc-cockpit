@@ -2,25 +2,27 @@
   <div class="row">
     <div class="col-sm-12">
       <div>
-        <h2>{{'info.label.welcome' | translate}}! <i nz-icon nzType="smile" nzTheme="twotone"></i></h2>
-        <div class="m-t-12 p-l">
+        <h2>{{'info.label.welcome' | translate}}!</h2>
+        <div class="m-t _500" [innerHTML]="line1"></div>
+        <div class="m-t m-b-xs _500" [innerHTML]="line2"></div>
+        <div class="m-t p-l-sm">
           <span [nz-tooltip]="'info.tooltip.globalVariablesAndEmailSettings' | translate">{{'info.button.jobResourceDefaults' | translate}}</span>:
           <a class="text-primary text-u-l m-l-sm" target="_blank" href="https://download.sos-berlin.com/JobScheduler.2.0/Defaults.zip">
             https://download.sos-berlin.com/JobScheduler.2.0/Defaults.zip
           </a>
         </div>
-        <div class="m-t-xs p-l">
+        <div class="m-t-xs p-l-sm">
           <span [nz-tooltip]="'info.tooltip.workflowExampleForUnix' | translate">{{'info.button.examplesForUnix' | translate}}</span>:
           <a class="text-primary text-u-l m-l-sm" target="_blank" href="https://download.sos-berlin.com/JobScheduler.2.0/Demo.tar.gz">
             https://download.sos-berlin.com/JobScheduler.2.0/Demo.tar.gz</a>
         </div>
-        <div class="m-t-xs p-l">
+        <div class="m-t-xs p-l-sm">
           <span [nz-tooltip]="'info.tooltip.workflowExampleForWindows' | translate">{{'info.button.examplesForWindows' | translate}}</span>:
           <a class="text-primary text-u-l m-l-sm" target="_blank" href="https://download.sos-berlin.com/JobScheduler.2.0/Demo.zip">
             https://download.sos-berlin.com/JobScheduler.2.0/Demo.zip</a>
         </div>
       </div>
-      <div class="inline m-t">
+      <div class="inline m-t-md">
         <button type="button" (click)="onSubmit('GOTIT')" class="btn btn-grey btn-sm m-r-12" translate>info.button.gotIt</button>
         <button type="button" (click)="onSubmit('REMINDMELATER')" class="btn btn-grey btn-sm m-r-12" translate>info.button.remindMeLater</button>
         <button type="button" (click)="onSubmit('DONOTREMINDME')" class="btn btn-grey btn-sm" translate>info.button.doNotRemindMe</button>

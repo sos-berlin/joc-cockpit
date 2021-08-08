@@ -5,6 +5,7 @@ import {Subscription} from 'rxjs';
 import {FileUploader, FileUploaderOptions} from 'ng2-file-upload';
 import {ToasterService} from 'angular2-toaster';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import { en_US, fr_FR, ja_JP, de_DE, NzI18nService } from 'ng-zorro-antd/i18n';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
@@ -287,7 +288,7 @@ export class UserComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(public coreService: CoreService, private dataService: DataService, public authService: AuthService, private router: Router,
-              private modal: NzModalService, private translate: TranslateService, private toasterService: ToasterService) {
+              private modal: NzModalService, private translate: TranslateService, private toasterService: ToasterService, private i18n: NzI18nService) {
     this.subscription1 = dataService.resetProfileSetting.subscribe(res => {
       if (res) {
         this.configObj.id = parseInt(sessionStorage.preferenceId, 10);
@@ -405,6 +406,8 @@ export class UserComponent implements OnInit, OnDestroy {
   setLocale(): void {
     localStorage.$SOS$LANG = this.preferences.locale;
     this.translate.use(this.preferences.locale);
+  
+    this.i18n.setLocale(this.preferences.locale === 'en' ? en_US : this.preferences.locale === 'fr' ? fr_FR : this.preferences.locale === 'de' ? de_DE : ja_JP);
     this.savePreferences();
   }
 
