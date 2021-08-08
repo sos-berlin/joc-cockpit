@@ -1107,7 +1107,7 @@
         },
         "forkList": {
           "children": "Listenvariable",
-          "childToId": "Abbildung Listenelement zu Auftragskennung"
+          "childToId": "Listenelement für Auftragskennung"
         },
         "if": {
           "predicate": "Das Prädikat einer If-Instruktion stellt einen Ausdruck oder Vergleich dar, der zu 'wahr' oder 'falsch' evaluiert."
