@@ -844,8 +844,8 @@
     "tooltip.globalVariablesAndEmailSettings": "Job-Ressourcen Voreinstellungen für globale Variablen und E-Mail",
     "tooltip.workflowExampleForUnix": "Beispiele für Arbeitsabläufe mit Agenten unter Unix",
     "tooltip.workflowExampleForWindows": "Beispiele für Arbeitsabläufe mit Agenten unter Windows",
-    "message.line1": "To give you an easy start, we suggest that you download some presets that you can import into JOC Cockpit from the Configuration View. After import the Defaults.zip archive will create a folder with the same name that includes Job Resources to create global %Job Environment Variables available% to your shell jobs.",
-    "message.line2": "The Demo.tar.gz and Demo.zip archives include examples for workflows and jobs for operation with Agents on Unix and Windows respectively. The examples can be helpful to create your own workflows and job dependencies, for details see %instructions%."
+    "message.line1": "Um den Anfang zz erleichtern, schlagen wir vor einige Voreinstellungen herunterzuladen und in die Konfigurationsansicht von JOC Cockpit zu importieren. Der Import des Defaults.zip Archivs erzeugt einen Ordner mit demselben Namen, der Job-Ressourcen für globale %Job Environment Variables available% in Shell Jobs enthält.",
+    "message.line2": "Die Demo.tar.gz und Demo.zip Archive enthalten Beispiele für Arbeitsabläufe und Jobs zum Betrieb mit Agenten unter Unix und Windows. Die Beispiele können hilfreich sein, um eigene Arbeitsabläufe und Job-Abhängigkeiten zu konfigurieren. Die Beispiele entsprechen den %instructions%."
   },
   "inventory": {
     "label.validHeader": "Gültig",
