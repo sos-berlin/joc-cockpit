@@ -1108,8 +1108,8 @@
           "joinVariables": "Variables of child orders in the branches of a Fork Instruction are added to the parent order when reaching the Join Instruction."
         },
         "forkList": {
-          "children": "Children",
-          "childToId": "Child to Id"
+          "children": "List variable for dynamic forking: expects the name of the order variable that holds a list of elements. For each element of the list variable a branch is created dynamically from the assigned ForkList instruction. The number of list variable elements determines the number of parallel branches of the ForkList instruction that are executed in parallel by child orders.",
+          "childToId": "List element for branch mapping: expects the name of an element within the selected list variable that holds a unique identifier for the branch that should be created dynamically."
         },
         "if": {
           "predicate": "A Predicate in an If Instruction is an expression or comparison that evaluates to 'true' or 'false'"

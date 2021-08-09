@@ -844,8 +844,8 @@
     "tooltip.globalVariablesAndEmailSettings": "Job-Ressourcen Voreinstellungen für globale Variablen und E-Mail",
     "tooltip.workflowExampleForUnix": "Beispiele für Arbeitsabläufe mit Agenten unter Unix",
     "tooltip.workflowExampleForWindows": "Beispiele für Arbeitsabläufe mit Agenten unter Windows",
-    "message.line1": "Um den Anfang zz erleichtern, schlagen wir vor einige Voreinstellungen herunterzuladen und in die Konfigurationsansicht von JOC Cockpit zu importieren. Der Import des Defaults.zip Archivs erzeugt einen Ordner mit demselben Namen, der Job-Ressourcen für globale %Job Environment Variables available% in Shell Jobs enthält.",
-    "message.line2": "Die Demo.tar.gz und Demo.zip Archive enthalten Beispiele für Arbeitsabläufe und Jobs zum Betrieb mit Agenten unter Unix und Windows. Die Beispiele können hilfreich sein, um eigene Arbeitsabläufe und Job-Abhängigkeiten zu konfigurieren. Die Beispiele entsprechen den %instructions%."
+    "message.line1": "Um den Start zu erleichtern, schlagen wir vor einige Voreinstellungen herunterzuladen und in der Konfigurationsansicht von JOC Cockpit zu importieren. Der Import des Defaults.zip Archivs erzeugt einen Ordner mit demselben Namen, der Job-Ressourcen für globale %Job Environment Variables available% in Shell Jobs enthält.",
+    "message.line2": "Die Archive Demo.tar.gz und Demo.zip enthalten Beispiele für Arbeitsabläufe und Jobs zum Betrieb mit Agenten unter Unix und Windows. Die Beispiele können hilfreich sein, um eigene Arbeitsabläufe und Job-Abhängigkeiten zu konfigurieren. Die Beispiele entsprechen den %instructions%."
   },
   "inventory": {
     "label.validHeader": "Gültig",
@@ -1108,8 +1108,8 @@
           "joinVariables": "Auftragsvariablen aus Zweigen einer Fork-Instruktion werden in der entsprechenden Join-Instruktion dem Elternauftrag übergeben."
         },
         "forkList": {
-          "children": "Listenvariable",
-          "childToId": "Listenelement für Auftragskennung"
+          "children": "Listenvariable für dynamische Verzweigung: Wird eine ForkList Instruktion im Arbeitsablauf verwendet, dann enthält diese Variable eine Liste von Elementen, für die jeweils paralleler Zweig der ForkList Instruktion erzeugt und durchlaufen wird: pro Listenelement werden die Instruktionen und Jobs der ForkList Instruktion in einem jeweils eigenen Zwei parallel durchlaufen.",
+          "childToId": "Listenelement für Kennung des Zweigs: erwartet wird der Name eines Elements der ausgewählten Listenvariable. Der Elementname muss eindeutig den Zweig bezeichnen, der dynamisch für jedes Listenelement erzeugt wird."
         },
         "if": {
           "predicate": "Das Prädikat einer If-Instruktion stellt einen Ausdruck oder Vergleich dar, der zu 'wahr' oder 'falsch' evaluiert."
