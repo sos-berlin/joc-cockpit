@@ -1283,7 +1283,7 @@
     "label.orderFound": "Auftrag gefunden",
     "label.ordersFound": "Aufträge gefunden",
     "label.lastOutcome": "Letztes Ergebnis",
-    "label.variableList": "Variable List",
+    "label.variableList": "Listenvariable",
     "button.allOrders": "Alle Aufträge",
     "button.cancel": "Abbrechen",
     "button.startNow": "Jetzt starten",
@@ -1392,8 +1392,8 @@
       "label.ecdsa": "ECDSA",
       "label.date": "Datum",
       "label.distinguishedName": "Distinguished Name",
-      "label.caCertificate": "CA Certificate",
-      "label.showCertificate": "Show Certificate",
+      "label.caCertificate": "CA Zertifikat",
+      "label.showCertificate": "Zertifikat anzeigen",
       "label.x509Certificate": "X.509 Zertifikat",
       "label.keyAlgorithm": "Schlüsselalgorithmus",
       "label.privateKey": "Privater Schlüssel",
@@ -1416,8 +1416,8 @@
       "label.expire": "Ablauffrist",
       "label.neverExpire": "Läuft nie ab",
       "label.noKeyPresent": "Kein Schlüssel vorhanden",
-      "label.noCertificatePresent": "no certificate present",
-      "label.importCertificate": "Import Certificate",
+      "label.noCertificatePresent": "kein Zertifikat vorhanden",
+      "label.importCertificate": "Zertifikat importieren",
       "message.noKeyFound": "Kein Schlüssel vorhanden",
       "message.noCAFound": "Keine Zertifizierungsstelle verfügbar",
       "message.keyGeneratedSuccessfully": "Schlüssel erfolgreich erzeugt",
@@ -1428,8 +1428,8 @@
       "tooltip.import": "Importieren",
       "tooltip.updateKey": "Schlüssel aktualisieren",
       "tooltip.generate": "Erzeugen",
-      "tooltip.importCertificate": "Import Certificate",
-      "tooltip.updateCertificate": "Update Certificate"
+      "tooltip.importCertificate": "Zertifikat importieren",
+      "tooltip.updateCertificate": "Zertifikat aktualisieren"
     }
   },
   "runtime": {
