@@ -90,7 +90,11 @@ export class AddOrderModalComponent implements OnInit {
       if (!obj.default && obj.default !== false && obj.default !== 0) {
         argument.isRequired = true;
       } else{
-        argument.value = obj.default;
+        if (obj.type === 'Boolean') {
+          argument.value = (obj.default === true || obj.default === 'true');
+        } else {
+          argument.value = obj.default;
+        }
       }
     }
     this.updateSelectItems();

@@ -152,7 +152,7 @@
                    [(ngModel)]="argument.name" placeholder="{{'common.placeholder.name' | translate}}">
           </div>
           <div class="col-sm-4 m-b-sm" *ngIf="!argument.isTextField">
-            <nz-select nzShowSearch name="name{{i}}"  [(ngModel)]="argument.name" (ngModelChange)="checkVariableType(argument)">
+            <nz-select nzShowSearch name="name{{i}}" [nzDisabled]="argument.isRequired" [(ngModel)]="argument.name" (ngModelChange)="checkVariableType(argument)">
               <nz-option *ngFor="let list of variableList" [nzDisabled]="list.isSelected" [nzLabel]="list.name" [nzValue]="list.name"></nz-option>
             </nz-select>
           </div>
