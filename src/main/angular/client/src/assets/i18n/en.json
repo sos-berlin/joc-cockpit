@@ -1180,8 +1180,8 @@
         "jobScript": "Job Script",
         "argumentName": "Argument Name",
         "argumentValue": "Argument Value",
-        "environmentName": "Environment Name",
-        "environmentValue": "Environment Value"
+        "environmentName": "Environment Variable Name",
+        "environmentValue": "Environment Variable Value"
       },
       "button": {
         "search": "Search"

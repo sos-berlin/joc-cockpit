@@ -1175,13 +1175,13 @@
         "countJobs": "Anzahl Jobs",
         "from": "Von",
         "to": "Bis",
-        "jobName": "Job Name",
+        "jobName": "Job-Name",
         "jobCriticality": "Job-Kritikalität",
-        "jobScript": "Job Script",
-        "argumentName": "Argument Name",
-        "argumentValue": "Argument Value",
-        "environmentName": "Environment Name",
-        "environmentValue": "Environment Value"
+        "jobScript": "Job-Skript",
+        "argumentName": "Name des Arguments",
+        "argumentValue": "Wert des Arguments",
+        "environmentName": "Name der Umgebungsvariable",
+        "environmentValue": "Wert der Umgebungsvariable"
       },
       "button": {
         "search": "Suche"
