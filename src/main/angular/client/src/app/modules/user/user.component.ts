@@ -42,20 +42,24 @@ export class UpdateKeyModalComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
     let obj;
-    if (this.securityLevel !== 'HIGH') {
-      if (this.algorithm.keyAlg === 'PGP') {
-        obj = {privateKey: this.data.privateKey};
-      } else if (this.algorithm.keyAlg === 'RSA' || this.algorithm.keyAlg === 'ECDSA') {
-        obj = {privateKey: this.data.privateKey, certificate: this.data.certificate};
+    if(this.type !== 'certificate') {
+      if (this.securityLevel !== 'HIGH') {
+        if (this.algorithm.keyAlg === 'PGP') {
+          obj = {privateKey: this.data.privateKey};
+        } else if (this.algorithm.keyAlg === 'RSA' || this.algorithm.keyAlg === 'ECDSA') {
+          obj = {privateKey: this.data.privateKey, certificate: this.data.certificate};
+        }
+      } else {
+        if (this.algorithm.keyAlg === 'PGP') {
+          obj = {publicKey: this.data.publicKey};
+        } else if (this.algorithm.keyAlg === 'RSA' || this.algorithm.keyAlg === 'ECDSA') {
+          obj = {publicKey: this.data.publicKey, certificate: this.data.certificate};
+        }
       }
-    } else {
-      if (this.algorithm.keyAlg === 'PGP') {
-        obj = {publicKey: this.data.publicKey};
-      } else if (this.algorithm.keyAlg === 'RSA' || this.algorithm.keyAlg === 'ECDSA') {
-        obj = {publicKey: this.data.publicKey, certificate: this.data.certificate};
-      }
+      obj.keyAlgorithm = this.algorithm.keyAlg;
+    } else{
+      obj = {certificate: this.data.certificate};
     }
-    obj.keyAlgorithm = this.algorithm.keyAlg;
     obj.auditLog = {};
     if (this.comments.comment) {
       obj.auditLog.comment = this.comments.comment;
@@ -66,7 +70,7 @@ export class UpdateKeyModalComponent implements OnInit {
     if (this.comments.ticketLink) {
       obj.auditLog.ticketLink = this.comments.ticketLink;
     }
-    const URL = this.type === 'key' ? 'profile/key/store' : 'profile/ca/store';
+    const URL = this.type === 'key' ? 'profile/key/store' : this.type === 'certificate' ? 'profile/key/ca/store' : 'profile/ca/store';
     this.coreService.post(URL, {keys: obj}).subscribe(res => {
       this.submitted = false;
       this.activeModal.close();
@@ -95,7 +99,7 @@ export class ImportKeyModalComponent implements OnInit {
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService,
               public translate: TranslateService, public toasterService: ToasterService) {
     this.uploader = new FileUploader({
-      url: this.type === 'key' ? './api/profile/key/import' : './api/profile/ca/import',
+      url: this.type === 'key' ? './api/profile/key/import' : this.type === 'certificate' ? './api/profile/key/ca/import' :  './api/profile/ca/import',
       queueLimit: 2
     });
     let uo: FileUploaderOptions = {};
@@ -276,6 +280,7 @@ export class UserComponent implements OnInit, OnDestroy {
   object: any = {};
   schedulerIds: any = {};
   keys: any;
+  caCertificates: any;
   certificates: any;
   configObj: any = {};
   timeZone: any = {};
@@ -508,6 +513,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   getKeys(): void {
     this.keys = {};
+    this.caCertificates = {};
     this.coreService.post('profile/key', {}).subscribe((res: any) => {
       this.keys = res;
       if (this.keys.validUntil) {
@@ -516,6 +522,16 @@ export class UserComponent implements OnInit, OnDestroy {
     }, (err) => {
       this.keys = {};
     });
+    if (this.permission.joc && this.permission.joc.administration.certificates.manage) {
+      this.coreService.post('profile/key/ca', {}).subscribe((res: any) => {
+        this.caCertificates = res;
+        if (this.caCertificates.validUntil) {
+          this.caCertificates.isKeyExpired = this.coreService.getTimeDiff(this.preferences, this.caCertificates.validUntil) < 0;
+        }
+      }, (err) => {
+        this.caCertificates = {};
+      });
+    }
   }
 
   getCA(): void {
@@ -547,7 +563,7 @@ export class UserComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        type === 'key' ? this.getKeys() : this.getCA();
+        type === 'ca' ? this.getCA() : this.getKeys();
       }
     });
   }
@@ -565,7 +581,7 @@ export class UserComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        type === 'key' ? this.getKeys() : this.getCA();
+        type === 'ca' ? this.getCA() : this.getKeys();
       }
     });
   }
@@ -585,7 +601,7 @@ export class UserComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        type === 'key' ? this.getKeys() : this.getCA();
+        type === 'ca' ? this.getCA() : this.getKeys();
       }
     });
   }
@@ -596,7 +612,8 @@ export class UserComponent implements OnInit, OnDestroy {
       nzContent: UpdateKeyModalComponent,
       nzComponentParams: {
         securityLevel: this.securityLevel,
-        data: type === 'key' ? this.keys : this.certificates
+        type,
+        data: type === 'key' ? this.keys : type === 'certificate' ? this.caCertificates : this.certificates
       },
       nzFooter: null,
       nzClosable: false

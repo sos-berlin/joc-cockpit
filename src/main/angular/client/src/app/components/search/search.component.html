@@ -173,22 +173,43 @@
                 </div>
               </div>
               <div class="form-group row">
-                <div class="col-md-12">
-                  <label translate>inventory.search.label.argument</label>
+                <label class="col-md-4 col-lg-3 form-control-label"
+                       translate>inventory.search.label.jobScript</label>
+                <div class="col-md-8 col-lg-9">
+                  <input autocomplete="off" type="text" class="form-control" name="jobScript"
+                         [(ngModel)]="searchObj.advanced.jobScript">
                 </div>
               </div>
-              <div class="form-group row m-b-0">
-                <div class="col-md-6 m-b-sm" translate>common.label.name</div>
-                <div class="col-md-6 m-b-sm" translate>common.label.value</div>
-              </div>
-              <div class="form-group row m-b-0">
-                <div class="col-md-6">
+              <div class="form-group row" *ngIf="searchObj.returnType === ENUM.WORKFLOW">
+                <label class="col-md-4 col-lg-3 form-control-label"
+                       translate>inventory.search.label.argumentName</label>
+                <div class="col-md-8 col-lg-9">
                   <input autocomplete="off" type="text" class="form-control" name="name"
                          [(ngModel)]="searchObj.advanced.argumentName" placeholder="{{'common.placeholder.name' | translate}}">
                 </div>
-                <div class="col-md-6">
+              </div>
+              <div class="form-group row" *ngIf="searchObj.returnType === ENUM.WORKFLOW">
+                <label class="col-md-4 col-lg-3 form-control-label"
+                       translate>inventory.search.label.argumentValue</label>
+                <div class="col-md-8 col-lg-9">
                   <input autocomplete="off" type="text" class="form-control" name="value"
                          [(ngModel)]="searchObj.advanced.argumentValue" placeholder="{{'common.placeholder.value' | translate}}">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-4 col-lg-3 form-control-label"
+                       translate>inventory.search.label.environmentName</label>
+                <div class="col-md-8 col-lg-9">
+                  <input autocomplete="off" type="text" class="form-control" name="envName"
+                         [(ngModel)]="searchObj.advanced.envName" placeholder="{{'common.placeholder.name' | translate}}">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-4 col-lg-3 form-control-label"
+                       translate>inventory.search.label.environmentValue</label>
+                <div class="col-md-8 col-lg-9">
+                  <input autocomplete="off" type="text" class="form-control" name="envValue"
+                         [(ngModel)]="searchObj.advanced.envValue" placeholder="{{'common.placeholder.value' | translate}}">
                 </div>
               </div>
             </div>

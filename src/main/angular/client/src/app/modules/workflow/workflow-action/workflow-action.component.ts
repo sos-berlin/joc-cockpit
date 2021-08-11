@@ -68,7 +68,7 @@ export class AddOrderModalComponent implements OnInit {
                 return {name: k1, value: val1};
               });
             }
-            this.forkListVariables.push({name: k, list: val.listParameters, actualList});
+            this.forkListVariables.push({name: k, list: val.listParameters, actualList: [actualList]});
           }
         }
         return {name: k, value: val};
@@ -153,11 +153,13 @@ export class AddOrderModalComponent implements OnInit {
       this.forkListVariables.forEach((item) => {
         order.arguments[item.name] = [];
         if (item.actualList) {
-          item.actualList.forEach((data) => {
+          for (const i in item.actualList) {
             const listObj = {};
-            listObj[data.name] = data.value;
+            item.actualList[i].forEach((data) => {
+              listObj[data.name] = data.value;
+            });
             order.arguments[item.name].push(listObj);
-          });
+          }
         }
       });
     }
@@ -172,7 +174,7 @@ export class AddOrderModalComponent implements OnInit {
     if (this.comments.ticketLink) {
       obj.auditLog.ticketLink = this.comments.ticketLink;
     }
-    this.coreService.post('orders/add', obj).subscribe((res: any) => {
+    this.coreService.post('orders/add', obj).subscribe((res) => {
       this.submitted = false;
       this.activeModal.close('Done');
     }, err => {
@@ -180,23 +182,25 @@ export class AddOrderModalComponent implements OnInit {
     });
   }
 
-  addVariableToList(list): void {
-    console.log(list);
-    const param: any = {
-      name: '',
-      value: ''
-    };
-    if (!this.coreService.isLastEntryEmpty(list, 'name', '')) {
-      list.push(param);
-    }
-  }
-
-  checkVariableTypeForForkList(argument, list): void {
-    for (const i in list) {
-      if (list[i].name === argument.name) {
-        argument.type = list[i].type;
+  addVariableToList(data): void {
+    const arr = [];
+    data.list.forEach(item => {
+      arr.push({name: item.name, type: item.value.type});
+    });
+    let flag = false;
+    for (const i in data.actualList) {
+      for (const j in data.actualList[i]) {
+        if (!data.actualList[i][j].value) {
+          flag = true;
+          break;
+        }
+      }
+      if (flag) {
         break;
       }
+    }
+    if (!flag) {
+      data.actualList.push(arr);
     }
   }
 

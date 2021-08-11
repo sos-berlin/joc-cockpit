@@ -2,7 +2,8 @@
   <h4 class="modal-title">
     <span *ngIf="paste && securityLevel !=='HIGH'" translate>profile.keyManagement.label.updateKeys</span>
     <span *ngIf="paste && securityLevel ==='HIGH'" translate>profile.keyManagement.label.updatePublicKey</span>
-    <span *ngIf="!paste" translate>profile.keyManagement.label.showKey</span>
+    <span *ngIf="!paste && type !== 'certificate'" translate>profile.keyManagement.label.showKey</span>
+    <span *ngIf="!paste && type === 'certificate'" translate>profile.keyManagement.label.showCertificate</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -13,7 +14,7 @@
     <div class="hide" [ngClass]="{'show': display}">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="9"></app-audit-log-input>
     </div>
-    <div class="form-group row" *ngIf="paste">
+    <div class="form-group row" *ngIf="paste && type !== 'certificate'">
       <div class="col-sm-3" translate>profile.keyManagement.label.keyAlgorithm</div>
       <div class="col-sm-9">
         <nz-radio-group name="alg" [(ngModel)]="algorithm.keyAlg">
@@ -27,7 +28,7 @@
       <div class="col-sm-3" translate>Key ID:</div>
       <div class="col-sm-9">{{data.keyID}}</div>
     </div>
-    <div class="form-group row" *ngIf="securityLevel !== 'HIGH' && ((!paste && data.privateKey) || paste)">
+    <div class="form-group row" *ngIf="securityLevel !== 'HIGH' && ((!paste && data.privateKey) || paste) && type !== 'certificate'">
       <label class="col-sm-12 form-control-label" translate>profile.keyManagement.label.privateKey</label>
       <div class="col-sm-12" [ngClass]="{'has-error' : ((privateKey.dirty || privateKey.touched) && privateKey.invalid) }">
         <textarea class="form-control" rows="10" name="privateKey" [(ngModel)]="data.privateKey" placeholder="{{'profile.keyManagement.placeholder.pastePrivateKey' | translate}}"  [readOnly]="!paste" required #privateKey="ngModel" autofocus autocomplete="false"></textarea>

@@ -74,11 +74,15 @@ export class StepGuideComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.translate.get('info.message.line1').subscribe(translatedValue => {
-      this.line1 = StepGuideComponent.convertTextToLink(translatedValue, 'https://kb.sos-berlin.com/x/mQeGAw');
+    this.translate.get('info.link.jobEnvironmentVariables').subscribe(link => {
+      this.translate.get('info.message.line1').subscribe(translatedValue => {
+        this.line1 = StepGuideComponent.convertTextToLink(translatedValue, link);
+      });
     });
-    this.translate.get('info.message.line2').subscribe(translatedValue => {
-      this.line2 = StepGuideComponent.convertTextToLink(translatedValue, 'https://kb.sos-berlin.com/x/mQeGAw');
+    this.translate.get('info.link.instructions').subscribe(link => {
+      this.translate.get('info.message.line2').subscribe(translatedValue => {
+        this.line2 = StepGuideComponent.convertTextToLink(translatedValue, link);
+      });
     });
   }
 

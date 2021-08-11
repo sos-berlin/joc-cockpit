@@ -845,7 +845,11 @@
     "tooltip.workflowExampleForUnix": "Exemples de workflow à utiliser avec les agents s'exécutant sur Unix",
     "tooltip.workflowExampleForWindows": "Exemples de workflow à utiliser avec les agents s'exécutant sur Windows",
     "message.line1": "To give you an easy start, we suggest that you download some presets that you can import into JOC Cockpit from the Configuration View. After import the Defaults.zip archive will create a folder with the same name that includes Job Resources to create global %Job Environment Variables available% to your shell jobs.",
-    "message.line2": "The Demo.tar.gz and Demo.zip archives include examples for workflows and jobs for operation with Agents on Unix and Windows respectively. The examples can be helpful to create your own workflows and job dependencies, for details see %instructions%."
+    "message.line2": "The Demo.tar.gz and Demo.zip archives include examples for workflows and jobs for operation with Agents on Unix and Windows respectively. The examples can be helpful to create your own workflows and job dependencies, for details see %instructions%.",
+    "link": {
+      "jobEnvironmentVariables": "https://kb.sos-berlin.com/x/mQeGAw",
+      "instructions": "https://kb.sos-berlin.com/x/JoXAAw"
+    }
   },
   "inventory": {
     "label.validHeader": "Valide",
@@ -1173,7 +1177,11 @@
         "to": "à",
         "jobName": "Nom de la Tâche",
         "jobCriticality": "Criticité de la tâche",
-        "argument": "Argument"
+        "jobScript": "Job Script",
+        "argumentName": "Argument Name",
+        "argumentValue": "Argument Value",
+        "environmentName": "Environment Name",
+        "environmentValue": "Environment Value"
       },
       "button": {
         "search": "Chercher"
@@ -1383,10 +1391,9 @@
       "label.rsa": "RSA",
       "label.ecdsa": "ECDSA",
       "label.date": "Date",
-      "label.commonName": "Common Name",
-      "label.organizationUnit": "Unité d'Organisation",
-      "label.organization": "Organisation",
-      "label.countryCode": "Code Pays",
+      "label.distinguishedName": "Distinguished Name",
+      "label.caCertificate": "CA Certificate",
+      "label.showCertificate": "Show Certificate",
       "label.x509Certificate": "X.509 Certificat",
       "label.keyAlgorithm": "Algorithme de Clé",
       "label.privateKey": "Clé Privée",
@@ -1409,6 +1416,8 @@
       "label.expire": "Expirer",
       "label.neverExpire": "Expire jamais",
       "label.noKeyPresent": "aucune clé présente",
+      "label.noCertificatePresent": "no certificate present",
+      "label.importCertificate": "Import Certificate",
       "message.noKeyFound": "Aucune clé n'est présente",
       "message.noCAFound": "Aucune CA n'est présente",
       "message.keyGeneratedSuccessfully": "La clé a été générée avec succès",
@@ -1418,7 +1427,9 @@
       "placeholder.pasteCertificate": "Collez le certificat ici",
       "tooltip.import": "Importer",
       "tooltip.updateKey": "Mise à jour de la Clé",
-      "tooltip.generate": "Générer"
+      "tooltip.generate": "Générer",
+      "tooltip.importCertificate": "Import Certificate",
+      "tooltip.updateCertificate": "Update Certificate"
     }
   },
   "runtime": {

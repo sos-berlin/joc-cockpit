@@ -623,6 +623,46 @@
               <div class="m-l-12">
                 <div class="row m-t-sm">
                   <div class="col-sm-12">
+                    <div class="m-t-sm m-b-md" *ngIf="caCertificates && permission.joc.administration.certificates.manage">
+                      <div class="row">
+                        <div class="col-md-2">
+                          <span class="text-dark _600" translate>profile.keyManagement.label.caCertificate</span>
+                        </div>
+                        <div class="col-md-10">
+                          <span *ngIf="caCertificates.keyID || caCertificates.keyAlgorithm">
+                            <span class="text-dark _600" style="padding-right: 10%" translate>{{caCertificates.keyID}}</span>
+                            <span class="text-black-lt">
+                              <i class="fa fa-check text-success"
+                                 [ngClass]="{'fa-times text-danger': caCertificates.isKeyExpired}"></i>&nbsp;
+                              <span *ngIf="!caCertificates.isKeyExpired" translate>profile.keyManagement.label.valid</span>
+                              <span *ngIf="caCertificates.isKeyExpired" translate>profile.keyManagement.label.expiredKey</span>
+                              <span *ngIf="caCertificates.validUntil">
+                                <span class="m-l" translate>profile.keyManagement.label.validUntil</span>:
+                                <span class="text-muted p-l-sm">{{caCertificates.validUntil | stringToDate}}</span>
+                              </span>
+                               <span *ngIf="!caCertificates.validUntil">
+                                <span class="m-l" translate>profile.keyManagement.label.noValidDate</span>
+                              </span>
+                            </span>
+                            <a class="text-hover-primary m-l-12" [nz-tooltip]="'profile.keyManagement.label.showCertificate' | translate"
+                               (click)="showKey('certificate')"><i class="fa fa-television"></i></a>
+                          </span>
+                          <span *ngIf="!caCertificates.keyID" translate>
+                            profile.keyManagement.message.noCertificatePresent
+                          </span>
+                          <div class="inline pull-right m-t-n-xs" style="margin-bottom: 2px">
+                            <button *ngIf="permission.joc.administration.certificates.manage" class="btn btn-sm btn-grey m-l-12" (click)="pasteKey('certificate')"
+                                    [nz-tooltip]="'profile.keyManagement.tooltip.updateCertificate' | translate">
+                              <i class="fa fa-paste"></i>
+                            </button>
+                            <button *ngIf="permission.joc.administration.certificates.manage" class="btn btn-sm btn-grey m-l-12" (click)="importKey('certificate')"
+                                    [nz-tooltip]="'profile.keyManagement.tooltip.importCertificate' | translate">
+                              <i nz-icon nzType="upload" nzTheme="outline"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <div class="m-t-sm" *ngIf="keys">
                       <div class="row">
                         <div class="col-md-2">

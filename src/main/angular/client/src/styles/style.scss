@@ -5393,8 +5393,8 @@ General CSS
 
 .ant-drawer-content-wrapper {
   width: 40% !important;
-  padding-left: 12px;
-  padding-right: 12px;
+  padding-left: 0;
+  padding-right: 0;
   background: var(--bg-box);
   box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.1);
 }

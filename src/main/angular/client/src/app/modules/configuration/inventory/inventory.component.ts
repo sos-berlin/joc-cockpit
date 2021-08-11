@@ -1339,7 +1339,7 @@ export class ImportWorkflowModalComponent implements OnInit {
     overwrite: false,
     format: 'ZIP',
     targetFolder: '',
-    type: 'suffix'
+    type: 'ignore'
   };
 
   constructor(public activeModal: NzModalRef, private modal: NzModalService, private translate: TranslateService,

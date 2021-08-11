@@ -39,9 +39,9 @@ export class StartUpModalComponent implements OnInit {
     this.controller = {
       url: '',
       type: 'STANDALONE',
-      title: 'STANDALONE',
-      primaryTitle: 'PRIMARY',
-      backupTitle: 'BACKUP',
+      title: 'STANDALONE CONTROLLER',
+      primaryTitle: 'PRIMARY CONTROLLER',
+      backupTitle: 'SECONDARY CONTROLLER',
     };
 
     if (this.agents && this.agents.length > 0) {

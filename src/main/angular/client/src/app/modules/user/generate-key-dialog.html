@@ -40,48 +40,12 @@
     </div>
     <div *ngIf="type === 'ca'">
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>profile.keyManagement.label.commonName</label>
-        <div class="col-md-8 col-lg-6" [ngClass]="{ 'has-error' : (commonName.dirty || commonName.touched) && commonName.invalid}">
+        <label class="col-md-4 col-lg-3 form-control-label" translate>profile.keyManagement.label.distinguishedName</label>
+        <div class="col-md-8 col-lg-6" [ngClass]="{ 'has-error' : (dn.dirty || dn.touched) && dn.invalid}">
           <input autocomplete="off" required class="form-control"
-                 name="commonName" [(ngModel)]="caObj.commonName" #commonName="ngModel">
-          <div *ngIf="commonName.invalid && (commonName.dirty || commonName.touched)" class="text-danger help-block">
-            <div *ngIf="commonName.errors.required">
-              <div translate>common.message.requiredError</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>profile.keyManagement.label.organizationUnit</label>
-        <div class="col-md-8 col-lg-6" [ngClass]="{ 'has-error' : (organizationUnit.dirty || organizationUnit.touched) && organizationUnit.invalid}">
-          <input autocomplete="off" required class="form-control"
-                 name="organizationUnit" [(ngModel)]="caObj.organizationUnit" #organizationUnit="ngModel">
-          <div *ngIf="organizationUnit.invalid && (organizationUnit.dirty || organizationUnit.touched)" class="text-danger help-block">
-            <div *ngIf="organizationUnit.errors.required">
-              <div translate>common.message.requiredError</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>profile.keyManagement.label.organization</label>
-        <div class="col-md-8 col-lg-6" [ngClass]="{ 'has-error' : (organization.dirty || organization.touched) && organization.invalid}">
-          <input autocomplete="off" required class="form-control"
-                 name="organization" [(ngModel)]="caObj.organization" #organization="ngModel">
-          <div *ngIf="organization.invalid && (organization.dirty || organization.touched)" class="text-danger help-block">
-            <div *ngIf="organization.errors.required">
-              <div translate>common.message.requiredError</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>profile.keyManagement.label.countryCode</label>
-        <div class="col-md-8 col-lg-6" [ngClass]="{ 'has-error' : (countryCode.dirty || countryCode.touched) && countryCode.invalid}">
-          <input autocomplete="off" required class="form-control"
-                 name="countryCode" maxlength="6" [(ngModel)]="caObj.countryCode" #countryCode="ngModel">
-          <div *ngIf="countryCode.invalid && (countryCode.dirty || countryCode.touched)" class="text-danger help-block">
-            <div *ngIf="countryCode.errors.required">
+                 name="dn" [(ngModel)]="caObj.dn" #dn="ngModel">
+          <div *ngIf="dn.invalid && (dn.dirty || dn.touched)" class="text-danger help-block">
+            <div *ngIf="dn.errors.required">
               <div translate>common.message.requiredError</div>
             </div>
           </div>

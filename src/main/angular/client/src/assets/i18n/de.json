@@ -845,7 +845,11 @@
     "tooltip.workflowExampleForUnix": "Beispiele für Arbeitsabläufe mit Agenten unter Unix",
     "tooltip.workflowExampleForWindows": "Beispiele für Arbeitsabläufe mit Agenten unter Windows",
     "message.line1": "Um den Start zu erleichtern, schlagen wir vor einige Voreinstellungen herunterzuladen und in der Konfigurationsansicht von JOC Cockpit zu importieren. Der Import des Defaults.zip Archivs erzeugt einen Ordner mit demselben Namen, der Job-Ressourcen für globale %Job Environment Variables available% in Shell Jobs enthält.",
-    "message.line2": "Die Archive Demo.tar.gz und Demo.zip enthalten Beispiele für Arbeitsabläufe und Jobs zum Betrieb mit Agenten unter Unix und Windows. Die Beispiele können hilfreich sein, um eigene Arbeitsabläufe und Job-Abhängigkeiten zu konfigurieren. Die Beispiele entsprechen den %instructions%."
+    "message.line2": "Die Archive Demo.tar.gz und Demo.zip enthalten Beispiele für Arbeitsabläufe und Jobs zum Betrieb mit Agenten unter Unix und Windows. Die Beispiele können hilfreich sein, um eigene Arbeitsabläufe und Job-Abhängigkeiten zu konfigurieren. Die Beispiele entsprechen den %instructions%.",
+    "link": {
+      "jobEnvironmentVariables": "https://kb.sos-berlin.com/x/mQeGAw",
+      "instructions": "https://kb.sos-berlin.com/x/JoXAAw"
+    }
   },
   "inventory": {
     "label.validHeader": "Gültig",
@@ -1173,7 +1177,11 @@
         "to": "Bis",
         "jobName": "Job Name",
         "jobCriticality": "Job-Kritikalität",
-        "argument": "Argument"
+        "jobScript": "Job Script",
+        "argumentName": "Argument Name",
+        "argumentValue": "Argument Value",
+        "environmentName": "Environment Name",
+        "environmentValue": "Environment Value"
       },
       "button": {
         "search": "Suche"
@@ -1383,10 +1391,9 @@
       "label.rsa": "RSA",
       "label.ecdsa": "ECDSA",
       "label.date": "Datum",
-      "label.commonName": "Trivialname",
-      "label.organizationUnit": "Organisationseinheit",
-      "label.organization": "Organisation",
-      "label.countryCode": "Landkennzeichen",
+      "label.distinguishedName": "Distinguished Name",
+      "label.caCertificate": "CA Certificate",
+      "label.showCertificate": "Show Certificate",
       "label.x509Certificate": "X.509 Zertifikat",
       "label.keyAlgorithm": "Schlüsselalgorithmus",
       "label.privateKey": "Privater Schlüssel",
@@ -1409,6 +1416,8 @@
       "label.expire": "Ablauffrist",
       "label.neverExpire": "Läuft nie ab",
       "label.noKeyPresent": "Kein Schlüssel vorhanden",
+      "label.noCertificatePresent": "no certificate present",
+      "label.importCertificate": "Import Certificate",
       "message.noKeyFound": "Kein Schlüssel vorhanden",
       "message.noCAFound": "Keine Zertifizierungsstelle verfügbar",
       "message.keyGeneratedSuccessfully": "Schlüssel erfolgreich erzeugt",
@@ -1418,7 +1427,9 @@
       "placeholder.pasteCertificate": "Zertifikat hier einfügen",
       "tooltip.import": "Importieren",
       "tooltip.updateKey": "Schlüssel aktualisieren",
-      "tooltip.generate": "Erzeugen"
+      "tooltip.generate": "Erzeugen",
+      "tooltip.importCertificate": "Import Certificate",
+      "tooltip.updateCertificate": "Update Certificate"
     }
   },
   "runtime": {

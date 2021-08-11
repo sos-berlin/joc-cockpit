@@ -1,7 +1,8 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="securityLevel !=='HIGH'" translate>profile.keyManagement.label.importPrivateKey</span>
-    <span *ngIf="securityLevel ==='HIGH'" translate>profile.keyManagement.label.importPublicKey</span>
+    <span *ngIf="type !== 'certificate' && securityLevel !=='HIGH'" translate>profile.keyManagement.label.importPrivateKey</span>
+    <span *ngIf="type !== 'certificate' && securityLevel ==='HIGH'" translate>profile.keyManagement.label.importPublicKey</span>
+    <span *ngIf="type === 'certificate'" translate>profile.keyManagement.label.importCertificate</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -13,7 +14,7 @@
       <div class="col-md-12 hide" [ngClass]="{'show': display}">
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="9"></app-audit-log-input>
       </div>
-      <div class="col-md-12">
+      <div class="col-md-12" *ngIf="type !== 'certificate'">
         <div class="form-group row">
           <div class="col-md-4 col-lg-3" translate>profile.keyManagement.label.keyAlgorithm</div>
           <div class="col-md-8 col-lg-9">
