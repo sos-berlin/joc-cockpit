@@ -2098,6 +2098,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             this.coreService.removeSlashToString(val, 'final');
           } else if (val.default) {
             this.coreService.removeSlashToString(val, 'default');
+            if (val.type === 'Boolean') {
+              val.default = (val.default === true || val.default === 'true');
+            }
           }
           return {name: k, value: val};
         });
